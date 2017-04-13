@@ -3,6 +3,7 @@ package cs.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -73,6 +75,19 @@ public class DictController {
 			dictService.deleteDict(ids[0]);
 		}		
 	}
+	
+	@RequiresPermissions("dict#dictItems#get")	
+	@RequestMapping(name = "获取字典数据", path = "dictItems", method = RequestMethod.GET)
+	public @ResponseBody List<DictDto> getDictItems(@RequestParam(required = true) String dictCode) throws ParseException {		
+		return dictService.getDictItemByCode(dictCode);		
+	}
+	
+	@RequiresPermissions("dict#dictNameData#get")	
+	@RequestMapping(name = "获取字典数据字面值", path = "dictNameData", method = RequestMethod.GET)
+	public @ResponseBody Map<String, String> dictNameData(@RequestParam(required = true) String dictCode) throws ParseException {				
+		return dictService.getDictNameByCode(dictCode);				
+	}
+	
 	@RequiresPermissions("dict#html/list#get")
 	@RequestMapping(name = "数据字典列表页面", path = "html/list", method = RequestMethod.GET)
 	public String list() {

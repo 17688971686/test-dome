@@ -3,6 +3,7 @@ package cs.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import cs.common.ICurrentUser;
 import cs.common.cache.CacheFactory;
+import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.domain.Dict;
 import cs.model.DictDto;
@@ -33,7 +35,7 @@ public class DictServiceImpl implements DictService {
 	@Autowired
 	private ICurrentUser currentUser;
 	
-	private ICache cache = CacheFactory.getCache();
+	private ICache cache = CacheManager.getCache();
 	
 	@Override
 	public PageModelDto<DictDto> get(ODataObj odataObj) {
@@ -84,7 +86,7 @@ public class DictServiceImpl implements DictService {
 		dict.setIsUsed("0");
 
 		dictRepo.save(dict);
-		
+		clearCache(dict.getDictCode());
 		
 	}
 	@Override
@@ -104,6 +106,7 @@ public class DictServiceImpl implements DictService {
 		dict.setModifiedDate(new Date());
 		
 		dictRepo.save(dict);
+		clearCache(dict.getDictCode());
 		
 	}
 	@Override
@@ -132,6 +135,7 @@ public class DictServiceImpl implements DictService {
 		Dict dict = dictRepo.findById(dictId);
 		if(dict != null){
 			dictRepo.delete(dict);
+			clearCache(dict.getDictCode());
 		}
 		
 	}
@@ -152,21 +156,39 @@ public class DictServiceImpl implements DictService {
 	 * */
 	@Override
 	public List<DictDto> getDictItemByCode(String dictCode) {
-		// TODO Auto-generated method stub
 		//先从缓存取，如果取不到就查询数据库，把查到的数据放到缓存
 		//缓存键格式DICT_ITEMS+dictCode
 		List<DictDto> dictDtos = (List<DictDto>)cache.get("DICT_ITEMS".concat(dictCode));
 		
 		if(dictDtos == null){
 			//TODO:查询数据库
+			List<Dict> dicts = dictRepo.findDictItemByCode(dictCode);
+			dictDtos = new ArrayList<DictDto>();
+			if(dicts != null){
+				
+				for(Dict dict:dicts){
+					DictDto dictDto = new DictDto();
+					
+					BeanUtils.copyProperties(dict, dictDto);
+					
+					dictDtos.add(dictDto);
+				}
+				
+				//放到缓存
+				cache.put("DICT_ITEMS".concat(dictCode), dictDtos);
+			}
 			
-			//放到缓存
-			cache.put("DICT_ITEMS".concat(dictCode), dictDtos);
 		}
 		
 		return dictDtos;
 	}
 	
+	private void clearCache(String dictCode) {
+		//update cache
+		cache.clear("DICT_ITEMS".concat(dictCode));		
+		cache.clear("DICT_NAME_DATA".concat(dictCode));
+		
+	}
 	
 	/**
 	 * 通过编码类型取得字典名称，用于翻译出字典值，只返回字典数据
@@ -178,14 +200,27 @@ public class DictServiceImpl implements DictService {
 	public Map<String, String> getDictNameByCode(String dictCode) {
 		//先从缓存取，如果取不到就查询数据库，把查到的数据放到缓存
 		//缓存键格式DICT_NAME_DATA+dictCode
-		Map<String, String> dictNameDataMap = (Map<String, String>)cache.get("DICT_ITEMS".concat(dictCode));
+		Map<String, String> dictNameDataMap = (Map<String, String>)cache.get("DICT_NAME_DATA".concat(dictCode));
 		
 		if(dictNameDataMap == null){
 			//TODO:查询数据库
+			List<DictDto> dictItems = getDictItemByCode(dictCode);
+			
+			if(dictItems != null){
+				
+				//dictNameDataMap = new ArrayList<Map<String, String>>();
+				dictNameDataMap = new HashMap<String, String>();
+				for(DictDto dictDto : dictItems){
+					
+					String key = dictDto.getDictCode().concat("_").concat(dictDto.getDictKey());
+					dictNameDataMap.put(key, dictDto.getDictName());
+				}
+				
+				//放到缓存
+				cache.put("DICT_NAME_DATA".concat(dictCode), dictNameDataMap);
+			}
 			
 			
-			//放到缓存
-			cache.put("DICT_NAME_DATA".concat(dictCode), dictNameDataMap);
 		}
 		
 		return dictNameDataMap;

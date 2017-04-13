@@ -69,4 +69,12 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 		}
 	}
 
+	@Override
+	public List<Dict> findDictItemByCode(String dictCode) {
+		Criteria criteria = this.getSession().createCriteria(Dict.class);
+		criteria.add(Restrictions.eq(Dict_.dictCode.getName(), dictCode));
+		criteria.add(Restrictions.eq(Dict_.dictType.getName(), "1"));		
+		return criteria.list();
+	}
+
 }
