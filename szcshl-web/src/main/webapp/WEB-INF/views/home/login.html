@@ -39,56 +39,18 @@
 <link href="${path}/contents/shared/css.css" rel="stylesheet" />
 
 <!--Begin:自定义css-->
-<!-- 网站图标 -->
-<link rel="icon" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico" type="image/x-icon" />
-<link rel="shortcut icon" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico" />
-<link rel="bookmark" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico" />
+
 <!--End:自定义css -->
 <style>
-/****************基础样式开始**************/
-body,h1,h2,h3,h4{
-        font-family: 'Hiragino Sans GB', 'Microsoft Yahei', arial, 宋体, 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
-}
-table{
-    /*width:100%;*/
-    font-size:14px;
-}
-table div{
-    width:100%;
-    font-size:14px;
-}
-a{
- font-family:'微软雅黑';
-}
-*{ padding:0; margin:0;}
-ul,li{list-style-type:none;}
-.clear{ clear:both; font-size:0;line-height:0; height:1px;}
-a{ font-size:12px; text-decoration:none; }
-a:link{font-size:12px;  text-decoration:none;}
-a:visited{font-size:12px;  text-decoration:none;}
-a:hover{ font-size:12px; text-decoration:none;}
-a:active{font-size:12px;  text-decoration:none;}
-
-
-/****************基础样式结束**************/
-
     body{
-        background:url(${path}/contents/libs/adminLTE/dist/img/bg.jpg) no-repeat;
-        background-size: cover;      
+        background:#d2d6de;
     }
-    .login-box, .register-box {
-    width: 960px;
-    margin: 7% auto;
-    overflow:hidden;
+    .login-box-body{
+        background:#fff;
+        width:400px;
     }
-    .login-box-body {
-    background: rgba(255,255,255,1);
-    width: 360px;
-    float: right;
-    padding-bottom: 80px;
-      }
     .login-logo{
-   		 /* width:400px; */
+   		 width:400px;
     }
     .vcode{
         cursor:pointer;
@@ -100,106 +62,20 @@ a:active{font-size:12px;  text-decoration:none;}
         list-style:none;
         color:red;
     }
- .top{
-	    height: 80px;
-    line-height: 80px;
-    background: rgba(255,255,255,1);
-    color: #000;
- }   
- .row-add{
-	 width:1200px;
-	 margin:auto;
- }
- .fr{
-     float:left;
- }
- .rt{
-     float:right;
- }
- ul{list-style-type:none;}
- li{list-style-type:none;}
- .row-add ul{
-	 width:700px;
-	 margin:auto;
- }
- .row-add ul li{
-	 float:left;
-	 height:80px;
-	 width:80px;
-	 line-height:80px;
-	 text-align:center;
-	 background:rgba(255,255,255,0.5);
-	 margin:30px;
-	 border-radius: 80px;
-	 color: #000;
-	 cursor: default;
-	 }
- .show_text{
-	 width:300px;
-	 background:rgba(255,255,255,0.5);
-	 margin-top:10px;
-	 margin-left:-110px;
-	 border-radius: 80px;
-	 display:none;
-	 -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
-     -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
-     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);   
- }
-  .row-add ul li:hover  .show_text{
-	  display:block;
-  }
-  .waring-mesge{
-     position:fixed;
-     top:0;
-     left:0;
-     width:100%;
-     height:100%;
-     background:rgba(0, 0, 0, 0.3);
-     z-index:1000;
-     display:none;
-  }
-  .waring-text{
-     position:fixed;
-     margin:auto;left:0; right:0; top:0; bottom:0;
-     width:300px;
-     height:100px;
-     background:#fff;
-     z-index:1001;
-     text-align:center;
-     vertical-align: middle;
-     line-height:100px;
-     border-radius: 5px;
-  }
-  footer{
-  position:fixed;
-  height:80px; 
-  background:#fff;
-  text-align:center;
-  bottom:0px;
-  width:100%;
-  line-height:80px;
-  }
+    
 </style>
 
-<div class="top">
-     <div class="row-add">
-         <span class="fr"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/logo.png" height="43"></span>
-         <span id="Time" class="rt"></span>
-     </div>
-</div>
 
 <div class="login-box" ng-app="loginApp" ng-controller="LoginCtrl as vm">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
-    
+    <div class="login-logo">
+        管理平台
+    </div>
     <!-- /.login-logo -->
-    <img src="${path}/contents/libs/adminLTE/dist/img/soprtsss.png" width="594" height="271">
     <div class="login-box-body" >
-    <!-- <div class="login-logo">
-      <img id="menus" src="${path}/contents/libs/adminLTE/dist/img/logo.png" height="43">
-    </div> -->
-    <h4>密码登录</h4>
+
         <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
             <div>
                 <span ng-show="vm.message" class="errors" ng-bind="vm.message" ></span>
@@ -232,49 +108,10 @@ a:active{font-size:12px;  text-decoration:none;}
             </div>
         </form>
 
+
     </div>
-             <div style="text-align:center; margin-top:20px;color:#fff; font-size:18px;">系统功能提示</div>
     <!-- /.login-box-body -->
 </div>
-
-<div class="row-add" style="margin-top:-120px;">
-     <ul>
-         <li>维护
-             <div class="fr show_text">
-                                             处理系统全部相关问题，反馈解决方案
-             </div>
-         </li>
-         <li>管理
-             <div class="fr show_text">
-                                            系统综合管理，其他管理
-             </div>
-         </li>
-         <li>申报
-             <div class="fr show_text">
-                                            申报审查，方案管理
-             </div>
-         </li>
-         <li>公告
-             <div class="fr show_text">
-                                           系统公告
-             </div>
-         </li>
-         <li>办公
-              <div class="fr show_text">
-                                           综合办公
-             </div>
-         </li>
-     </ul>
-</div>
-
-<div id="mesge" class="waring-mesge">
-     <div class="waring-text">
-                          正在提交中...<img src="${path}/contents/libs/adminLTE/dist/img/loading.gif"/>
-     </div>
-</div>
-<footer>
-        深圳市龙岗区文体旅游局版权所有
-</footer>
 <!-- /.login-box -->
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
 	<script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
@@ -289,45 +126,8 @@ a:active{font-size:12px;  text-decoration:none;}
 		
 	<script src="${path}/contents/app/common/common.js"></script>
 <script>
-
-//获取当前时间
-function getNowFormatDate() {
-    var date = new Date();
-    var seperator1 = "-";
-    var seperator2 = ":";
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    var mins=date.getMinutes();
-    var seconds=date.getSeconds();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
     
-    if (mins >= 0 && mins <= 9) {
-    	mins = "0" + mins;
-    }
-    
-    if (seconds >= 0 && seconds <= 9) {
-    	seconds = "0" + seconds;
-    }
-    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-            + " " + date.getHours() + seperator2 + mins
-            + seperator2 + seconds;
-    return currentdate;
-}  
-
-setInterval(function(){
-	$('#Time').html(getNowFormatDate());
-}, 1000);
-
-
-
-
-
-(function () {
+    (function () {
         'use strict';
 
         angular.module('loginApp', [
@@ -363,7 +163,6 @@ setInterval(function(){
                         url: '${path}/account/login',
                         data: vm.model
                     }
-                    $('#mesge').show();
                     var httpSuccess = function success(response) {
                         vm.isSubmit = false;                        
                         common.requestSuccess({
@@ -372,7 +171,6 @@ setInterval(function(){
                         	fn:function () {
                                 
                                 var isSuccess = response.data.isSuccess;
-                                console.log(response.data);
                                 if (isSuccess) {
                                     vm.message = "";
                                     //common.cookie().set("data", "token", response.data.Token, "", "/");
