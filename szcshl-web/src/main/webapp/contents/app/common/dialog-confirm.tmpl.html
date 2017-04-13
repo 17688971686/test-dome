@@ -1,0 +1,20 @@
+﻿<meta charset="UTF-8">
+
+<div class="confirmDialog modal fade" tabindex="-1" role="dialog" >
+    <div class="modal-dialog"  style="margin:80px auto;width:80%;max-width:400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-info">{{vm.dialogConfirmTitle||'提示'}}</h4>
+            </div>
+            <div class="modal-body text-danger">
+                <p ng-show="!vm.isDialogHtml">{{vm.dialogConfirmMessage}}</p>
+                <p ng-show="vm.isDialogHtml" ng-bind-html="vm.trust(vm.dialogConfirmMessage)"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="vm.dialogConfirmSubmit(vm.dialogConfirmMark)" class="btn btn-info" >确认</button>
+                <button type="button"  class="btn btn-info" data-dismiss="modal">取消</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

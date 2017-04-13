@@ -1,0 +1,56 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/org">部门管理</a></li>
+        <li class="active">{{vm.model.name}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+       		 <a class="btn btn-sm btn-primary" href="#/org"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+       		 <@shiro.hasPermission name="org#{orgId}/users#post"> 
+            <button class="btn btn-sm btn-primary" ng-click="vm.showAddUserDialog()"><span class="glyphicon glyphicon-plus"></span>添加成员</button>            
+             </@shiro.hasPermission> 
+              <@shiro.hasPermission name="org#{orgId}/users#delete"> 
+            <button class="btn btn-sm btn-danger" ng-click="vm.removes()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量移除</button>
+        </@shiro.hasPermission> 
+        </div>
+        <script type="text/template" id="columnBtns">
+ <@shiro.hasPermission name="org#{orgId}/users#delete"> 
+			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>移除</button>
+ </@shiro.hasPermission> 
+		</script>
+        
+        <script type="text/template" id="allUserGridBtns">
+<@shiro.hasPermission name="org#{orgId}/users#post"> 
+			<button class="btn btn-xs btn-success"  ng-click="{0}" ><span class="glyphicon glyphicon-plus"></span>添加</button>
+ </@shiro.hasPermission> 
+		</script>
+		
+         <div class="orgUserGrid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+    </form>
+</div>
+
+<!-- 添加用户 -->
+<div class="addUser modal fade"  role="dialog" >
+    <div class="modal-dialog"  style="margin:80px auto;width:80%;max-width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"  aria-label="Close" ng-click="vm.closeAddUserDialog()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-info">添加成员</h4>
+            </div>
+            <div class="modal-body">
+                <div class="grid" kendo-grid="grid" k-options="vm.orgUserGrid"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"  class="btn btn-info"  ng-click="vm.closeAddUserDialog()">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+

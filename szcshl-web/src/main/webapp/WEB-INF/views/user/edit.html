@@ -1,0 +1,77 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/user">用户管理</a></li>       
+        <li class="active" >{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/user"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">登录名： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.loginName " id="loginName" name="loginName" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
+                    <span class="errors" ng-show="vm.isUserExist">角色已存在</span></td>
+            </tr>
+             <tr>
+                <td class="formAlignRight">显示名： </td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.displayName" id="displayName" name="displayName" data-val="false" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
+               <tr ng-hide="vm.isUpdate">
+                <td class="formAlignRight">密码： <span class="required">*</span></td>
+                <td>
+                    <input type="password" maxlength="200" class="form-control input-sm " ng-model="vm.model.password " id="password" name="password" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr ng-hide="vm.isUpdate">
+                <td class="formAlignRight">确认密码： <span class="required">*</span></td>
+                <td>
+                    <input type="password" maxlength="200" class="form-control input-sm " ng-model="vm.model.passwordConfirm " id="passwordConfirm" name="passwordConfirm" data-val="true" data-val-required="必填" data-val-equalto="两次密码不一致" data-val-equalto-other="password">
+                </td>
+                <td><span data-valmsg-for="passwordConfirm" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">备注： </td>
+                <td>
+                <textarea class="form-control" maxlength="200" name="remark" id="remark" ng-model="vm.model.remark" style="height:120px;"></textarea>
+                </td>
+                <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style=" vertical-align:top">所属角色： </td>
+                <td >
+                    <div >
+                
+                        <ul id="zTree" class="ztree"></ul>
+                    </div>
+                   
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,416 @@
+<#assign path=request.contextPath/>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户登录</title>
+</head>
+<body>
+<!-- Bootstrap 3.3.6 -->
+<link rel="stylesheet"
+	href="${path}/contents/libs/bootstrap/dist/css/bootstrap.min.css">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+	href="${path}/contents/libs/font-awesome/css/font-awesome.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet"
+	href="${path}/contents/libs/ionicons/css/ionicons.min.css">
+<!-- Theme style -->
+<link rel="stylesheet"
+	href="${path}/contents/libs/adminLTE/dist/css/AdminLTE.min.css">
+<!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect.
+    -->
+<!--<link rel="stylesheet" href="/contents/libs/adminLTE/dist/css/skins/skin-blue.min.css">-->
+<link href="${path}/contents/libs/adminLTE/dist/css/skins/skin-green.min.css"
+	rel="stylesheet" />
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<link href="${path}/contents/libs/kendoui/kendo.common.min.css"
+	rel="stylesheet" />
+<link href="${path}/contents/libs/kendoui/kendo.blueopal.min.css"
+	rel="stylesheet" />
+<link href="${path}/contents/shared/css.css" rel="stylesheet" />
+
+<!--Begin:自定义css-->
+<!-- 网站图标 -->
+<link rel="icon" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico" />
+<link rel="bookmark" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico" />
+<!--End:自定义css -->
+<style>
+/****************基础样式开始**************/
+body,h1,h2,h3,h4{
+        font-family: 'Hiragino Sans GB', 'Microsoft Yahei', arial, 宋体, 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
+}
+table{
+    /*width:100%;*/
+    font-size:14px;
+}
+table div{
+    width:100%;
+    font-size:14px;
+}
+a{
+ font-family:'微软雅黑';
+}
+*{ padding:0; margin:0;}
+ul,li{list-style-type:none;}
+.clear{ clear:both; font-size:0;line-height:0; height:1px;}
+a{ font-size:12px; text-decoration:none; }
+a:link{font-size:12px;  text-decoration:none;}
+a:visited{font-size:12px;  text-decoration:none;}
+a:hover{ font-size:12px; text-decoration:none;}
+a:active{font-size:12px;  text-decoration:none;}
+
+
+/****************基础样式结束**************/
+
+    body{
+        background:url(${path}/contents/libs/adminLTE/dist/img/bg.jpg) no-repeat;
+        background-size: cover;      
+    }
+    .login-box, .register-box {
+    width: 960px;
+    margin: 7% auto;
+    overflow:hidden;
+    }
+    .login-box-body {
+    background: rgba(255,255,255,1);
+    width: 360px;
+    float: right;
+    padding-bottom: 80px;
+      }
+    .login-logo{
+   		 /* width:400px; */
+    }
+    .vcode{
+        cursor:pointer;
+    }
+    .input-validation-error{
+        border:1px solid red;
+    }
+    ul{
+        list-style:none;
+        color:red;
+    }
+ .top{
+	    height: 80px;
+    line-height: 80px;
+    background: rgba(255,255,255,1);
+    color: #000;
+ }   
+ .row-add{
+	 width:1200px;
+	 margin:auto;
+ }
+ .fr{
+     float:left;
+ }
+ .rt{
+     float:right;
+ }
+ ul{list-style-type:none;}
+ li{list-style-type:none;}
+ .row-add ul{
+	 width:700px;
+	 margin:auto;
+ }
+ .row-add ul li{
+	 float:left;
+	 height:80px;
+	 width:80px;
+	 line-height:80px;
+	 text-align:center;
+	 background:rgba(255,255,255,0.5);
+	 margin:30px;
+	 border-radius: 80px;
+	 color: #000;
+	 cursor: default;
+	 }
+ .show_text{
+	 width:300px;
+	 background:rgba(255,255,255,0.5);
+	 margin-top:10px;
+	 margin-left:-110px;
+	 border-radius: 80px;
+	 display:none;
+	 -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+     -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);   
+ }
+  .row-add ul li:hover  .show_text{
+	  display:block;
+  }
+  .waring-mesge{
+     position:fixed;
+     top:0;
+     left:0;
+     width:100%;
+     height:100%;
+     background:rgba(0, 0, 0, 0.3);
+     z-index:1000;
+     display:none;
+  }
+  .waring-text{
+     position:fixed;
+     margin:auto;left:0; right:0; top:0; bottom:0;
+     width:300px;
+     height:100px;
+     background:#fff;
+     z-index:1001;
+     text-align:center;
+     vertical-align: middle;
+     line-height:100px;
+     border-radius: 5px;
+  }
+  footer{
+  position:fixed;
+  height:80px; 
+  background:#fff;
+  text-align:center;
+  bottom:0px;
+  width:100%;
+  line-height:80px;
+  }
+</style>
+
+<div class="top">
+     <div class="row-add">
+         <span class="fr"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/logo.png" height="43"></span>
+         <span id="Time" class="rt"></span>
+     </div>
+</div>
+
+<div class="login-box" ng-app="loginApp" ng-controller="LoginCtrl as vm">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+    
+    <!-- /.login-logo -->
+    <img src="${path}/contents/libs/adminLTE/dist/img/soprtsss.png" width="594" height="271">
+    <div class="login-box-body" >
+    <!-- <div class="login-logo">
+      <img id="menus" src="${path}/contents/libs/adminLTE/dist/img/logo.png" height="43">
+    </div> -->
+    <h4>密码登录</h4>
+        <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
+            <div>
+                <span ng-show="vm.message" class="errors" ng-bind="vm.message" ></span>
+            </div>
+
+            <div>
+                <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="用户名" maxlength="100" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div>
+                <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
+            </div>
+            <div class="form-group has-feedback">
+                
+                <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+           
+         
+            <div class="row">
+             
+                <!-- /.col -->
+                <div class="pull-right col-sm-12">
+                    <button  type="button" ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-primary btn-block btn-flat">登 录</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+    </div>
+             <div style="text-align:center; margin-top:20px;color:#fff; font-size:18px;">系统功能提示</div>
+    <!-- /.login-box-body -->
+</div>
+
+<div class="row-add" style="margin-top:-120px;">
+     <ul>
+         <li>维护
+             <div class="fr show_text">
+                                             处理系统全部相关问题，反馈解决方案
+             </div>
+         </li>
+         <li>管理
+             <div class="fr show_text">
+                                            系统综合管理，其他管理
+             </div>
+         </li>
+         <li>申报
+             <div class="fr show_text">
+                                            申报审查，方案管理
+             </div>
+         </li>
+         <li>公告
+             <div class="fr show_text">
+                                           系统公告
+             </div>
+         </li>
+         <li>办公
+              <div class="fr show_text">
+                                           综合办公
+             </div>
+         </li>
+     </ul>
+</div>
+
+<div id="mesge" class="waring-mesge">
+     <div class="waring-text">
+                          正在提交中...<img src="${path}/contents/libs/adminLTE/dist/img/loading.gif"/>
+     </div>
+</div>
+<footer>
+        深圳市龙岗区文体旅游局版权所有
+</footer>
+<!-- /.login-box -->
+<script src="${path}/contents/libs/jquery/jquery.js"></script>
+	<script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
+	<script src="${path}/contents/libs/angular/angular.js"></script>
+	<script src="${path}/contents/libs/angular/sanitize.js"></script>
+	<script src="${path}/contents/libs/angular/angular-ui-router.js"></script>
+	<script src="${path}/contents/libs/angular-ui/angular-locale_zh-cn.js"></script>
+	<script src="${path}/contents/libs/boilerplate/plugins.js"></script>
+	<script src="${path}/contents/libs/jquery-validation/jquery.validate.js"></script>
+	<script
+		src="${path}/contents/libs/jquery-validation/jquery.validate.unobtrusive.js"></script>
+		
+	<script src="${path}/contents/app/common/common.js"></script>
+<script>
+
+//获取当前时间
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    var mins=date.getMinutes();
+    var seconds=date.getSeconds();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    
+    if (mins >= 0 && mins <= 9) {
+    	mins = "0" + mins;
+    }
+    
+    if (seconds >= 0 && seconds <= 9) {
+    	seconds = "0" + seconds;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + mins
+            + seperator2 + seconds;
+    return currentdate;
+}  
+
+setInterval(function(){
+	$('#Time').html(getNowFormatDate());
+}, 1000);
+
+
+
+
+
+(function () {
+        'use strict';
+
+        angular.module('loginApp', [
+            // Angular modules
+            // Custom modules
+
+            // 3rd Party Modules
+
+        ]);
+    })();
+
+    (function () {
+        'use strict';
+        angular
+            .module('loginApp')
+            .controller('LoginCtrl', controller);
+
+        controller.$inject = ['$http'];
+
+        function controller($http) {
+            /* jshint validthis:true */
+            var vm = this;
+            vm.title = 'controller';
+
+           
+            vm.submit = function () {
+                common.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    var httpOptions = {
+                        method: 'post',
+                        url: '${path}/account/login',
+                        data: vm.model
+                    }
+                    $('#mesge').show();
+                    var httpSuccess = function success(response) {
+                        vm.isSubmit = false;                        
+                        common.requestSuccess({
+                        	vm:vm,
+                        	response:response,
+                        	fn:function () {
+                                
+                                var isSuccess = response.data.isSuccess;
+                                console.log(response.data);
+                                if (isSuccess) {
+                                    vm.message = "";
+                                    //common.cookie().set("data", "token", response.data.Token, "", "/");
+                                    location.href = "${path}/admin/index.html";
+                                } else {
+                                    
+                                    vm.message=response.data.message
+                                }
+                        	}
+                        });
+
+                    }
+                    common.http({
+                    	vm:vm,
+                    	$http:$http,
+                    	httpOptions:httpOptions,
+                    	success:httpSuccess
+                    });
+                }
+
+                
+
+            }
+            vm.keyEnter = function (e) {
+                if (e.which === 13) {
+                    vm.submit()
+                }
+            }
+
+            activate();
+            function activate() { }
+        }
+    })();
+
+</script>
+
+
+
+
+</body>
+</html>

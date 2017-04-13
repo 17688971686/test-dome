@@ -1,0 +1,18 @@
+﻿<meta charset="UTF-8">
+
+<div class="alertDialog modal fade" tabindex="-1" role="dialog" >
+    <div class="modal-dialog"  style="margin:80px auto;width:80%;max-width:400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"  aria-label="Close" ng-click="vm.alertDialogFn()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-info">{{vm.alertDialogTitle||'提示'}}</h4>
+            </div>
+            <div class="modal-body text-danger">
+                <p class="alertDialogMessage">{{vm.alertDialogMessage}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button"  class="btn btn-info"  ng-click="vm.alertDialogFn()">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

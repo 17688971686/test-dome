@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx 		
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		
+		">
+
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<mvc:resources location="/contents/" mapping="/contents/**" />
+
+	<context:component-scan base-package="cs"></context:component-scan>
+<mvc:interceptors>
+		<bean class="cs.common.ApiFilter" />
+	</mvc:interceptors> 
+
+
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="prefix" value="/WEB-INF/views/"></property> <property name="suffix" 
+		value=".jsp"></property> </bean> -->
+
+	<bean id="freemarkerConfig" class="cs.common.ShiroTagFreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/views/" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="defaultEncoding">UTF-8</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="prefix" value="" />
+		<property name="suffix" value=".html" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		
+		
+		 <property name="loginUrl" value="/"/> 
+			<property name="successUrl" value="/"/> 
+			<property name="unauthorizedUrl" value="/"/> 
+		<!-- The 'filters' property is not necessary since any declared javax.servlet.Filter 
+			bean -->
+		<!-- defined will be automatically acquired and available via its beanName 
+			in chain -->
+		<!-- definitions, but you can perform instance overrides or name aliases 
+			here if you like: -->
+		<!-- <property name="filters"> <util:map> <entry key="anAlias" value-ref="someFilter"/> 
+			</util:map> </property> -->
+		<!-- <property name="filterChainDefinitions"> <value> # some example chain 
+			definitions: /admin/** = authc, roles[admin] /docs/** = authc, perms[document:read] 
+			/** = authc # more URL-to-FilterChain definitions here </value> </property> -->
+	</bean>
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- Single realm app. If you have multiple realms, use the 'realms' property 
+			instead. -->
+			
+		<property name="realm" ref="myRealm" />
+		
+		<!-- By default the servlet container sessions will be used. Uncomment 
+			this line to use shiro's native sessions (see the JavaDoc for more): -->
+		<!-- <property name="sessionMode" value="native"/> -->
+	</bean>
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- Define the Shiro Realm implementation you want to use to connect to 
+		your back-end -->
+	<!-- security datasource: -->
+	<bean id="myRealm" class="cs.common.SystemRealm"></bean>
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor" />
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+
+	<!-- Step 1: Define Database DataSource / connection pool -->
+	<bean id="myDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2b8&amp;useSSL=false" />
+		<property name="user" value="root" />
+		<property name="password" value="Passw0rd" />
+
+		<!-- these are connection pool properties for C3P0 -->
+		<property name="minPoolSize" value="5" />
+		<property name="maxPoolSize" value="20" />
+		<property name="maxIdleTime" value="30000" />
+	</bean>
+
+	<!-- Step 2: Setup Hibernate session factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="packagesToScan" value="cs.domain" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- update,create,create-drop -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+
+	</bean>
+
+	<!-- Step 3: Setup Hibernate transaction manager -->
+	<bean id="myTransactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- Step 4: Enable configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="myTransactionManager" />
+
+
+</beans>
