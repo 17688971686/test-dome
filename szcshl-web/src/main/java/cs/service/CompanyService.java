@@ -9,11 +9,11 @@ public interface CompanyService {
 
 	PageModelDto<CompanyDto> get(ODataObj odataObj);
 
-	void createMeeting(CompanyDto companyDto);
+	void createCompany(CompanyDto companyDto);
 
-	void deleteMeeting(String id);
+	void deleteCompany(String id);
 
-	void deleteMeeting(String[] ids);
+	void deleteCompany(String[] ids);
 	
-	void updateMeeting(CompanyDto companyDto);
+	void updateCompany(CompanyDto companyDto);
 }

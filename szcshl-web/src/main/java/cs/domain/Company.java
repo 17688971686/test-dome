@@ -2,7 +2,10 @@ package cs.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -11,10 +14,12 @@ import javax.persistence.Table;
  * 2016年9月12日
  */
 @Entity
-@Table(name = "Company")
+@Table(name = "cs_Company")
 public class Company extends DomainBase{
 
 	@Id
+	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String id; //单位ID
 	@Column(columnDefinition="varchar(255)")
 	private String coName; //单位名称

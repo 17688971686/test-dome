@@ -60,27 +60,59 @@
 						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 						
 					},  {
-						field : "companyIdentity",
-						title : "部门标识",
+						field : "coName",
+						title : "单位名称",
 						width : 200,						
 						filterable : false
-					}, {
-						field : "name",
-						title : "部门名称",
+					},
+					{
+						field : "coPhone",
+						title : "单位电话",
 						width : 200,						
 						filterable : false
-					},{
-						field : "remark",
-						title : "描述",
+					},
+					{
+						field : "coPC",
+						title : "邮编",
+						width : 200,						
 						filterable : false
-					}, {
-						field : "createdDate",
-						title : "创建时间",
-						width : 180,
-						filterable : false,
-						format : "{0:yyyy/MM/dd HH:mm:ss}"
-
-					},  {
+					},
+					{
+						field : "coAddress",
+						title : "地址",
+						width : 200,						
+						filterable : false
+					},
+					{
+						field : "coSite",
+						title : "网站",
+						width : 200,						
+						filterable : false
+					},
+					{
+						field : "coSynopsis",
+						title : "单位简介",
+						width : 200,						
+						filterable : false
+					},
+					/*{
+						field : "coDept",
+						title : "直属部门",
+						width : 200,						
+						filterable : false
+					},
+					{
+						field : "coDeptName",
+						title : "直属部门名称",
+						width : 200,						
+						filterable : false
+					},*/
+					{
+						field : "coFax",
+						title : "传真",
+						filterable : false
+					}, 
+					{
 						field : "",
 						title : "操作",
 						width : 280,
@@ -231,6 +263,7 @@
 		}// end fun updatecompany
 		
 		function deletecompany(vm,id) {
+		
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',

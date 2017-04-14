@@ -6,10 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.model.CompanyDto;
 import cs.model.MeetingRoomDto;
@@ -46,4 +49,33 @@ public class CompanyController {
 		return ctrlName + "/edit";
 	}
 	// end#html
+	@RequiresPermissions("company##post")
+	@RequestMapping(name = "创建单位", path = "",method=RequestMethod.POST)	
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public void post(@RequestBody CompanyDto companyDto){
+		
+		companyService.createCompany(companyDto);
+	}
+	@RequiresPermissions("company##put")
+	@RequestMapping(name = "更新单位" ,path = "" ,method =RequestMethod.PUT)
+	@ResponseStatus( value =HttpStatus.NO_CONTENT)
+	public void put(@RequestBody CompanyDto companyDto){
+		
+		companyService.updateCompany(companyDto);
+	}
+	
+	@RequiresPermissions("company##delete")
+	@RequestMapping(name = "删除单位" ,path = "" ,method =RequestMethod.DELETE)
+	@ResponseStatus( value =HttpStatus.NO_CONTENT)
+	public void delete (@RequestBody String id){
+		
+		String [] ids=id.split(",");
+		if(ids.length>1){
+			
+			companyService.deleteCompany(ids);
+		}else{
+			companyService.deleteCompany(id);
+		}
+	}
+	
 }

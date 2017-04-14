@@ -11,7 +11,7 @@
     <form id="form" name="form">
         <div class="toolbar">
         <@shiro.hasPermission name="company##post"> 
-            <a class="btn btn-sm btn-primary" href="#/companyEdit/"><span class="glyphicon glyphicon-plus"></span>新增部门</a>    
+            <a class="btn btn-sm btn-primary" href="#/companyEdit/"><span class="glyphicon glyphicon-plus"></span>新增单位</a>    
            </@shiro.hasPermission> 
            
             <@shiro.hasPermission name="company##delete">    
@@ -23,7 +23,7 @@
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
  </@shiro.hasPermission> 
 <@shiro.hasPermission name="company##put"> 
-	        <a class="btn btn-xs btn-primary" href="#/orgEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+	        <a class="btn btn-xs btn-primary" href="#/companyEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
  </@shiro.hasPermission> 
 
 		</script>

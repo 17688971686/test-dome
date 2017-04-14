@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
 import cs.domain.Company;
@@ -16,6 +20,7 @@ import cs.repository.repositoryImpl.CompanyRepo;
 @Service
 public class CompanyServiceImpl implements CompanyService{
 
+	private static Logger logger = Logger.getLogger(CompanyServiceImpl.class);
 	@Autowired
 	private ICurrentUser currentUser;
 	@Autowired
@@ -48,25 +53,81 @@ public class CompanyServiceImpl implements CompanyService{
 		pageModelDto.setValue(comDtoList);
 		return pageModelDto;
 	}
-
 	@Override
-	public void createMeeting(CompanyDto companyDto) {
+	@Transactional
+	public void createCompany(CompanyDto companyDto) {
+		//判断单位名称是否添加
+		Criteria criteria =	companyRepo.getSession().createCriteria(Company.class);
+		criteria.add(Restrictions.eq("coName", companyDto.getCoName()));
+		List<Company> com = criteria.list();
+		if(com.isEmpty()){
+			
+			Company c =new Company();
+			c.setId(UUID.randomUUID().toString());
+			c.setCoAddress(companyDto.getCoAddress());
+			c.setCoDept(companyDto.getCoDept());
+			c.setCoDeptName(companyDto.getCoDeptName());
+			c.setCoFax(companyDto.getCoFax());
+			c.setCoName(companyDto.getCoName());
+			c.setCoPC(companyDto.getCoPC());
+			c.setCoPhone(companyDto.getCoPhone());
+			c.setCoSite(companyDto.getCoSite());
+			c.setCoSynopsis(companyDto.getCoSynopsis());
+			c.setCreatedBy(currentUser.getLoginName());
+			c.setModifiedBy(currentUser.getLoginName());
+			
+			companyRepo.save(c);
+			logger.info(String.format("创建单位，单位名:%s", companyDto.getCoName()));
+		}else{
+			
+			throw new IllegalArgumentException(String.format("该单位已存在：%s 已经存在，请重新输入", companyDto.getCoName()));
+
+		}
 		
 	}
-
 	@Override
-	public void deleteMeeting(String id) {
+	@Transactional
+	public void deleteCompany(String id) {
+		
+		Company com  = companyRepo.findById(id);
+		if(com !=null){
+			
+			companyRepo.delete(com);
+			logger.info(String.format("删除单位，单位名:%s", com.getCoName()));
+		}
 		
 	}
-
 	@Override
-	public void deleteMeeting(String[] ids) {
+	@Transactional
+	public void deleteCompany(String[] ids) {
+
+		for( String id : ids){
+			
+			this.deleteCompany(id);
+		}
+		logger.info("批量删除单位");
 		
 	}
-
 	@Override
-	public void updateMeeting(CompanyDto companyDto) {
+	@Transactional
+	public void updateCompany(CompanyDto companyDto) {
 		
+		Company c =companyRepo.findById(companyDto.getId());
+	
+		c.setCoAddress(companyDto.getCoAddress());
+		c.setCoDept(companyDto.getCoDept());
+		c.setCoDeptName(companyDto.getCoDeptName());
+		c.setCoFax(companyDto.getCoFax());
+		c.setCoName(companyDto.getCoName());
+		c.setCoPC(companyDto.getCoPC());
+		c.setCoPhone(companyDto.getCoPhone());
+		c.setCoSite(companyDto.getCoSite());
+		c.setCoSynopsis(companyDto.getCoSynopsis());
+		c.setCreatedBy(currentUser.getLoginName());
+		c.setModifiedBy(currentUser.getLoginName());
+		
+		companyRepo.save(c);
+		logger.info(String.format("编辑单位，单位名:%s", companyDto.getCoName()));
 	}
 
 }

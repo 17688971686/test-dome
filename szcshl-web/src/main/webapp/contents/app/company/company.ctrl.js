@@ -10,7 +10,7 @@
     function company($location, companySvc) {
         /* jshint validthis:true */
         var vm = this;
-        vm.title = '部门列表';
+        vm.title = '单位列表';
         
 
         vm.del = function (id) {        	
@@ -27,6 +27,7 @@
         }
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
+        	//alert(selectIds.length);
             if (selectIds.length == 0) {
             	common.alert({
                 	vm:vm,

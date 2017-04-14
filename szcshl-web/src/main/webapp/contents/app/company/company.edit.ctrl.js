@@ -10,18 +10,19 @@
     function company($location, companySvc,$state) {
         /* jshint validthis:true */
         var vm = this;
-        vm.title = '新增部门';
+        vm.title = '新增单位';
         vm.iscompanyExist=false;
         vm.id = $state.params.id;
         if (vm.id) {
             vm.isUpdate = true;
-            vm.title = '更新部门';
+            vm.title = '更新单位';
         }
         
         vm.create = function () {
         	companySvc.createcompany(vm);
         };
         vm.update = function () {
+        	alert(vm.id);
         	companySvc.updatecompany(vm);
         };
         
