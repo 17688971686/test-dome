@@ -38,7 +38,7 @@ public class UserController {
 	@RequiresPermissions("user##post")
 	@RequestMapping(name = "创建用户", path = "",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public void  post(@RequestBody UserDto userDto)  {		
+	public void  post(@RequestBody UserDto userDto)  {
 		userService.createUser(userDto);		
 	}
 	@RequiresPermissions("user##delete")
@@ -68,6 +68,7 @@ public class UserController {
 	@RequiresPermissions("user#html/edit#get")
 	@RequestMapping(name = "编辑用户页面", path = "html/edit", method = RequestMethod.GET)
 	public String edit() {
+		//userService.createUser(userDto);
 		return ctrlName + "/edit";
 	}
 	// end#html

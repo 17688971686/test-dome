@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ICurrentUser currentUser;
 
+	@Autowired
+	private IdentityService identityService;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -92,16 +97,21 @@ public class UserServiceImpl implements UserService {
 			user.setCreatedBy(currentUser.getLoginName());
 			user.setPassword(userDto.getPassword());
 			user.setModifiedBy(currentUser.getLoginName());
+			List<String> roleNames = new ArrayList<String>();
 			// 加入角色
 			for (RoleDto roleDto : userDto.getRoles()) {
 				Role role = roleRepo.findById(roleDto.getId());
 				if (role != null) {
 					user.getRoles().add(role);
+					roleNames.add(role.getRoleName());
+					//System.out.println(role.getRoleName());
 				}
 
 			}
 
 			userRepo.save(user);
+			//System.out.println(userDto.getId()+userDto.getLoginName()+userDto.getPassword());
+			createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
 			logger.info(String.format("创建用户,登录名:%s", userDto.getLoginName()));
 		} else {
 			throw new IllegalArgumentException(String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
@@ -116,6 +126,7 @@ public class UserServiceImpl implements UserService {
 		if (user != null) {
 			if(!user.getLoginName().equals("admin")){
 				userRepo.delete(user);
+				this.deleteActivitiUser(user.getId());
 				logger.info(String.format("删除用户,用户名:%s", user.getLoginName()));
 			}
 			
@@ -138,19 +149,20 @@ public class UserServiceImpl implements UserService {
 		user.setRemark(userDto.getRemark());
 		user.setDisplayName(userDto.getDisplayName());
 		user.setModifiedBy(currentUser.getLoginName());
-
+		
 		// 清除已有role
 		user.getRoles().clear();
-
+			List<String> roleNames=new ArrayList<String>();
 		// 加入角色
 		for (RoleDto roleDto : userDto.getRoles()) {
 			Role role = roleRepo.findById(roleDto.getId());
+			roleNames.add(roleDto.getRoleName());
 			if (role != null) {
 				user.getRoles().add(role);
 			}
 		}
-
 		userRepo.save(user);
+		this.updateActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
 		logger.info(String.format("更新用户,用户名:%s", userDto.getLoginName()));
 	}
 	@Override
@@ -218,4 +230,57 @@ public class UserServiceImpl implements UserService {
 	public User findUserByName(String userName){
 		return userRepo.findUserByName(userName);
 	}
+	
+	  protected void createActivitiUser(String userId, String userName, String userPwd, 
+		List<String> groups){
+	   if (identityService.createUserQuery().userId(userId).count() == 0) {
+
+	            // Following data can already be set by demo setup script
+
+		   org.activiti.engine.identity.User user = identityService.newUser(userId);
+           user.setFirstName(userName);
+           user.setPassword(userPwd);
+          identityService.saveUser(user);
+	            
+         if (groups != null) {
+            for (String group : groups) {
+                identityService.createMembership(userId, group);
+            }
+         }
+		}
+	}
+	 protected void deleteActivitiUser(String userId){
+		 if (identityService.createUserQuery().userId(userId).count() != 0) {
+
+	            // Following data can already be set by demo setup script
+	            List<Group> oldGroups = identityService.createGroupQuery().groupMember(userId).list();
+	            for(Group group:oldGroups){
+	            	identityService.deleteMembership(userId, group.getId());
+	            }
+	            identityService.deleteUser(userId);
+		 }
+	 }
+	 
+	 
+	 protected void updateActivitiUser(String userId, String userName, String userPwd, 
+	          List<String> groups){
+		 if (identityService.createUserQuery().userId(userId).count() != 0) {
+			 List<Group> oldGroups = identityService.createGroupQuery().groupMember(userId).list();
+	            for(Group oldgroup:oldGroups){
+	            	identityService.deleteMembership(userId, oldgroup.getName());
+	            }
+	            identityService.deleteUser(userId);
+	            // Following data can already be set by demo setup script
+
+	            org.activiti.engine.identity.User user = identityService.newUser(userId);
+	            user.setFirstName(userName);
+	            user.setPassword(userPwd);
+	            identityService.saveUser(user);
+	            if (groups != null) {
+	                for (String group : groups) {
+	                    identityService.createMembership(userId, group);
+	                }
+	            }
+		 }
+	 }
 }

@@ -21,4 +21,10 @@ public class RoleRepoImpl extends AbstractRepository<Role, String> implements Ro
 		return !roles.isEmpty();
 	}
 
+	@Override
+	public Role findById(String id) {
+		return super.findById(id);
+	}
+	
+
 }

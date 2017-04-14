@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class RoleServiceImpl implements RoleService {
 	private RoleRepo roleRepository;
 	@Autowired
 	private ICurrentUser currentUser;
+	@Autowired
+	private IdentityService identityService;
 
 	/*
 	 * (non-Javadoc)
@@ -82,10 +86,12 @@ public class RoleServiceImpl implements RoleService {
 				resource.setMethod(resourceDto.getMethod());
 				resource.setPath(resourceDto.getPath());
 				resource.setName(resourceDto.getName());
-			role.getResources().add(resource);
+			    role.getResources().add(resource);
+			
 		}
 
 		roleRepository.save(role);		
+		this.createActivitiGroup(role.getRoleName());
 		logger.info(String.format("创建角色,角色名:%s", roleDto.getRoleName()));
 		}else{
 			throw new IllegalArgumentException(String.format("角色名：%s 已经存在,请重新输入！",	roleDto.getRoleName()));
@@ -96,9 +102,9 @@ public class RoleServiceImpl implements RoleService {
 	@Transactional
 	public void updateRole(RoleDto roleDto) {
 		Role role = roleRepository.findById(roleDto.getId());
+		String oldRoleName=role.getRoleName();
 		role.setRemark(roleDto.getRemark());
 		role.setModifiedBy(currentUser.getLoginName());
-
 		//清除已有resource
 		role.getResources().clear();
 		
@@ -110,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
 			resource.setName(resourceDto.getName());
 			role.getResources().add(resource);
 		}
-		
+		this.updateActivitiGroup(oldRoleName, roleDto.getRoleName());
 		roleRepository.save(role);
 		logger.info(String.format("更新角色,角色名:%s", roleDto.getRoleName()));
 	}
@@ -120,8 +126,9 @@ public class RoleServiceImpl implements RoleService {
 	public void deleteRole(String id) {
 		Role role = roleRepository.findById(id);
 		if (role != null) {
+			this.deleteActivitiGroup(role.getRoleName());
 			List<User> users=role.getUsers();
-			for (User user : users) {//把角色里的用户移出才能删除
+			for (User user : users) {//把用户里的角色移出才能删除
 				//user.getRoles().remove(role);
 			}
 			if(!role.getRoleName().equals("超级管理员")){
@@ -138,8 +145,45 @@ public class RoleServiceImpl implements RoleService {
 	@Transactional
 	public void deleteRoles(String[] ids) {
 		for (String id : ids) {
+			Role role=roleRepository.findById(id);
+			this.deleteActivitiGroup(role.getRoleName());
 			this.deleteRole(id);
 		}
 		logger.info("批量删除角色");
 	}
+	
+	
+	
+	 protected void createActivitiGroup( String roleName){
+		  Group group=identityService.newGroup(roleName);
+		  group.setName(roleName);
+		  identityService.saveGroup(group);
+     }
+     protected void updateActivitiGroup( String oldRoleName,String newRoleName){
+	 if(identityService.createGroupQuery().groupId(oldRoleName).count()!=0){
+		 identityService.deleteGroup(oldRoleName);
+		 Group group=identityService.newGroup(newRoleName);
+		 identityService.saveGroup(group);
+		 List< org.activiti.engine.identity.User> groupUsers = identityService.createUserQuery().memberOfGroup(oldRoleName).list();
+		  for ( org.activiti.engine.identity.User user : groupUsers) {
+			identityService.deleteMembership(user.getId(), oldRoleName);
+			identityService.createMembership(user.getId(), newRoleName);
+		 }
+		  
+	 }
+}
+
+protected void deleteActivitiGroup(String roleName){
+	  if(identityService.createGroupQuery().groupId(roleName).count()!=0){
+		  List< org.activiti.engine.identity.User> groupUsers = identityService.createUserQuery().memberOfGroup(roleName).list();
+		  for ( org.activiti.engine.identity.User user : groupUsers) {
+			identityService.deleteMembership(user.getId(), roleName);
+		  }
+		 identityService.deleteGroup(roleName);
+	  }
+}
+	/*public Role findByRoleId(String id) {
+		String hql = " from Role where roleId = ?";
+		return RoleRepo.;
+	}*/
 }
