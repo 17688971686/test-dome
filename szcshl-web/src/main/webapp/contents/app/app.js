@@ -76,6 +76,48 @@
 	        }) 
 	        //end#log
 	        
+	        //begin#meeting
+	        .state('meeting', {
+	            url: '/meeting',
+	            templateUrl: rootPath + '/meeting/html/list.html',
+	            controller: 'meetingCtrl',
+	            controllerAs: 'vm'
+	        }).state('meetingEdit', {
+	            url: '/meetingEdit/:id',
+	            templateUrl: rootPath + '/meeting/html/edit.html',
+	            controller: 'meetingEditCtrl',
+	            controllerAs: 'vm'
+	        }) 
+	        //end#meeting
+	        
+	        //begin#room
+	        .state('room', {
+	            url: '/room',
+	            templateUrl: rootPath + '/room/html/list.html',
+	            controller: 'roomCtrl',
+	            controllerAs: 'vm'
+	        }).state('roomEdit', {
+	            url: '/roomEdit/:id',
+	            templateUrl: rootPath + '/room/html/edit.html',
+	            controller: 'roomEditCtrl',
+	            controllerAs: 'vm'
+	        }) 
+	        //end#room
+	        
+	        //begin#company
+	        .state('company', {
+	            url: '/company',
+	            templateUrl: rootPath + '/company/html/list.html',
+	            controller: 'companyCtrl',
+	            controllerAs: 'vm'
+	        }).state('companyEdit', {
+	            url: '/companyEdit/:id',
+	            templateUrl: rootPath + '/company/html/edit.html',
+	            controller: 'companyEditCtrl',
+	            controllerAs: 'vm'
+	        }) 
+	        //end#company
+	        
             //begin#home
 	        .state('accountPwd', {
 	            url: '/accountPwd',
