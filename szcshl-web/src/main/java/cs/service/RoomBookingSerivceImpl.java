@@ -26,6 +26,12 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	private RoomBookingRepo roomBookingRepo;
 	@Override
 	@Transactional
+	public List<RoomBooking> getList(ODataObj oDataObj) {
+		List<RoomBooking> roomList=	roomBookingRepo.findByOdata(oDataObj);
+		return roomList;
+	}
+	@Override
+	@Transactional
 	public PageModelDto<RoomBookingDto> get(ODataObj odataObj) {
 		
 		List<RoomBooking> roomList=	roomBookingRepo.findByOdata(odataObj);
@@ -60,29 +66,29 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		logger.info("预定会议查询");
 		return pageModelDto;
 	}
-
 	@Override
-	public void createRole(RoomBookingDto roomBookingDto) {
+	public void createRoom(RoomBookingDto roomBookingDto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void updateRoom(RoomBookingDto roomBookingDto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteRoom(String id) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteRooms(String[] ids) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void updateRole(RoomBookingDto roomBookingDto) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
-	@Override
-	public void deleteRole(String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteRoles(String[] ids) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }

@@ -93,7 +93,7 @@
 	        //begin#room
 	        .state('room', {
 	            url: '/room',
-	            templateUrl: rootPath + '/room/html/list.html',
+	            templateUrl: rootPath + '/room/html/roomlist.html',
 	            controller: 'roomCtrl',
 	            controllerAs: 'vm'
 	        }).state('roomEdit', {

@@ -1,0 +1,122 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/room">会议室预定管理</a></li>       
+        <li class="active" >{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/room"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+          <!--   <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button> -->
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr> 
+
+            <tr>
+                <td class="formAlignRight">会议名称： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="20" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.num " id="num" name="num" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+               
+            </tr>
+             
+              <tr >
+                <td class="formAlignRight">会议室地点： <span class="required">*</span></td>
+                <td>
+                 <select id="type" name="mrID" class="form-control input-sm " ng-model="mrID" data-val="true" data-val-required="必填">
+                   <option value="">未选择</option>
+                 <option value="13栋15楼">13栋15楼</option>
+				<option value="12栋14楼">12栋14楼</option>
+				<option value="11栋13楼">11栋13楼</option>
+			      
+            </select>
+                </td>
+                <td>
+                <span data-valmsg-for="mrName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+              <tr >
+                <td class="formAlignRight">会议类型： <span class="required">*</span></td>
+                <td>
+                  <select id="type" name="type"ng-model="type" class="form-control input-sm " data-val="true" data-val-required="必填">
+                 <option value="">未选择</option>
+                 <option value="1">其他会议</option>
+				<option value="2">紧急会议</option>
+				<option value="3">办公会议</option>
+            </select>
+                </td>
+                <td><span data-valmsg-for="mrName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+              <tr >
+                <td class="formAlignRight">会议室类型： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.mrType " id="mrType" name="mrType" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="mrType" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+              <tr >
+                <td class="formAlignRight">会议主持人： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.host " id="host" name="host" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+              <tr>
+                <td class="formAlignRight">会议预定人： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.dueToPeople " id="dueToPeople" name="dueToPeople" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+              <tr >
+                <td class="formAlignRight">会议日期： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.rbDay " id="rbDay" name="rbDay" data-val="true" data-val-required="必填">
+                    
+                </td>
+                <td><span data-valmsg-for="rbDay" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">会议开始时间： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.beginTime " id="beginTime" name="beginTime" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                <span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">会议结束时间： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.endTime " id="endTime" name="endTime" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+             <input type="hidden" maxlength="200" class="form-control input-sm " ng-model="vm.model.createDate " id="createDate" name="createDate" >
+            
+            <tr>
+                <td class="formAlignRight">备注： </td>
+                <td>
+                <textarea class="form-control" maxlength="200" name="remark" id="remark" ng-model="vm.model.remark" style="height:120px;"></textarea>
+                </td>
+                <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+        </table>
+    </form>
+</div>
