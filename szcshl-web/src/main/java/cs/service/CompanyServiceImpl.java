@@ -34,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService{
 			
 			CompanyDto comDto =new CompanyDto();
 			
-			comDto.setId(UUID.randomUUID().toString());
+			comDto.setId(item.getId());
 			comDto.setCoAddress(item.getCoAddress());
 			comDto.setCoDept(item.getCoDept());
 			comDto.setCoDeptName(item.getCoDeptName());
@@ -93,17 +93,19 @@ public class CompanyServiceImpl implements CompanyService{
 		if(com !=null){
 			
 			companyRepo.delete(com);
-			logger.info(String.format("删除单位，单位名:%s", com.getCoName()));
+		//	this.deleteCompany(id);
+			logger.info(String.format("删除单位，单位名coName:%s", com.getCoName()));
 		}
 		
 	}
 	@Override
 	@Transactional
-	public void deleteCompany(String[] ids) {
+	public void deleteCompanys(String[] ids) {
 
 		for( String id : ids){
 			
 			this.deleteCompany(id);
+			//companyRepo.delete(entity);
 		}
 		logger.info("批量删除单位");
 		

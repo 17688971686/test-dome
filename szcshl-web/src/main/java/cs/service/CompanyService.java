@@ -13,7 +13,7 @@ public interface CompanyService {
 
 	void deleteCompany(String id);
 
-	void deleteCompany(String[] ids);
+	void deleteCompanys(String[] ids);
 	
 	void updateCompany(CompanyDto companyDto);
 }

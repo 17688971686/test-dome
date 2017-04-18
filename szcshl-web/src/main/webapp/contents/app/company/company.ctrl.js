@@ -14,7 +14,7 @@
         
 
         vm.del = function (id) {        	
-        	 
+        	
              common.confirm({
             	 vm:vm,
             	 title:"",

@@ -17,9 +17,10 @@ import javax.persistence.Table;
 @Table(name = "cs_Company")
 public class Company extends DomainBase{
 
-	@Id
+	
 	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
+	@Id
 	private String id; //单位ID
 	@Column(columnDefinition="varchar(255)")
 	private String coName; //单位名称

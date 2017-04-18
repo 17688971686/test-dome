@@ -152,6 +152,7 @@
 
 		// begin#initZtreeClient
 		function initZtreeClient(vm) {
+			
 			var httpOptions = {
 				method : 'get',
 				url : url_role
@@ -225,7 +226,6 @@
 		}
 		// begin#grid
 		function grid(vm) {
-
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',

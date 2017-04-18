@@ -70,9 +70,10 @@ public class CompanyController {
 	public void delete (@RequestBody String id){
 		
 		String [] ids=id.split(",");
+		System.out.println(ids+"fffffffffffffffffffff");
 		if(ids.length>1){
 			
-			companyService.deleteCompany(ids);
+			companyService.deleteCompanys(ids);
 		}else{
 			companyService.deleteCompany(id);
 		}
