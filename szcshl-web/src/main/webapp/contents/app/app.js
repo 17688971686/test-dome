@@ -96,10 +96,10 @@
 	            templateUrl: rootPath + '/room/html/roomlist.html',
 	            controller: 'roomCtrl',
 	            controllerAs: 'vm'
-	        }).state('roomEdit', {
-	            url: '/roomEdit/:id',
-	            templateUrl: rootPath + '/room/html/edit.html',
-	            controller: 'roomEditCtrl',
+	        }).state('roomCount', {
+	            url: '/roomCount/:id',
+	            templateUrl: rootPath + '/room/html/countlist.html',
+	            controller: 'roomCountCtrl',
 	            controllerAs: 'vm'
 	        }) 
 	        //end#room

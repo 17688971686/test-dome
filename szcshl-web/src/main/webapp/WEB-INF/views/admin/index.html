@@ -204,8 +204,8 @@ desired effect
 						</a>
 							<ul class="treeview-menu">
 								<li><a href="javascript:void(0)" ui-sref="meeting" >会议室管理</a></li>
-							  <!-- <li><a href="javascript:void(0)" ui-sref="room" >会议预定管理</a></li> -->  
-								<li><a href="javascript:void(0)" ui-sref="room" >会议预定管理2</a></li> 
+								<li><a href="javascript:void(0)" ui-sref="room" >会议预定管理</a></li> 
+							   	<li><a href="javascript:void(0)" ui-sref="roomCount" >会议预定统计情况</a></li>   
 							</ul>
 							
 							
@@ -351,11 +351,12 @@ desired effect
 	<script src="${path}/contents/app/meeting/meeting.ctrl.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/meeting/meeting.edit.ctrl.js?version = ${.now}"></script>
 	<!-- room -->
-	 <script src="${path}/contents/app/room/room.ctrl.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/room/room.ctrl.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/room/room.edit.ctrl.js?version = ${.now}"></script>
-	
 	<script src="${path}/contents/app/room/room.svc.js?version = ${.now}"></script> 
-	<script src="${path}/contents/app/room/roomBooking.svc.js?version = ${.now}"></script> 
+	
+	<script src="${path}/contents/app/room/room.count.ctrl.js?version = ${.now}"></script> 
+	<script src="${path}/contents/app/room/room.count.svc.js?version = ${.now}"></script> 
 	
 	<!-- company -->
 	<script src="${path}/contents/app/company/company.ctrl.js?version = ${.now}"></script>

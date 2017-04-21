@@ -1,0 +1,193 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/room">会议预定统计管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+<form id="form" name="form">
+        <!-- <div class="toolbar">
+        <@shiro.hasPermission name="company##post"> 
+            <a class="btn btn-sm btn-primary" href="#/companyEdit/"><span class="glyphicon glyphicon-plus"></span>新增单位</a>    
+           </@shiro.hasPermission> 
+           
+            <@shiro.hasPermission name="company##delete">    
+            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
+       </@shiro.hasPermission> 
+        </div> -->
+   <script type="text/template" id="columnBtns">
+ 	<@shiro.hasPermission name="company##delete"> 
+			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+ 	</@shiro.hasPermission> 
+	<@shiro.hasPermission name="company##put"> 
+	        <a class="btn btn-xs btn-primary" href="#/companyEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+ 	</@shiro.hasPermission> 
+
+</script>
+        
+       <!--   <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div> -->
+
+ <title>专家信息录入</title>
+<link href="css/base.css" type="text/css"  rel="stylesheet" />
+
+
+<body>
+
+ 
+<div class="conttent_list"> 
+<p class="pro_title_1" style="margin:10px;">设定查询条件</p>
+<div class="title_box" ng-app="myApp"   >
+
+  <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+      <span class="side_a"> 会议名称
+       <input name="rbName" ng-model="vm.model.rbName" type="text" />
+      </select>
+      </span> 
+      <span class="side_a" style="margin-left:40px;"> 会议地点
+          <select ng-model="vm.mrID" id="mrID"  name="mrID">
+           <option value="">请选择</option>
+			<option ng-repeat="x in vm.room" value="{{x.mrID}}">{{x.addressName}}</option>
+		</select>
+       
+      </select>
+      </span>
+      
+       <span class="side_a" style="margin-left:40px;"> 会议类型
+         <select name="rbType" id="rbType" ng-model="vm.rbType" required>
+		
+		 <option value="">请选择</option>
+			<option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
+      </select>
+      </span>
+      
+      <span class="side_b">
+          <input ng-click="vm.showClick()"  type="button" value="开始查询" />&nbsp;
+          <input  ng-click="formReset()" type="button" value="重置" />
+          <input id="res" name="res" type="reset" style="display:none;" /> 
+      </span>
+  </div>
+  
+    <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+      <span class="side_a"> 会议日期 
+      <input name="beginTime"  id="beginTime"ng-model="vm.beginTime" type="text" />
+      </span> 
+      <span class="side_a" style="margin-left:40px;"> 至 
+      <input name="endTime" id="endTime" ng-model="vm.endTime" type="text" />
+      </span> 
+      </span> 
+  </div>
+  
+    <div style="overflow:hidden; line-height:40px;">
+      <span class="side_a">
+     	<span class="side_a" style="margin-left:40px;"> 预定人 
+      	<select id="dueToPeople" name="dueToPeople" ng-model="vm.model.dueToPeople">
+      	 <option value="">请选择</option>
+           <option ng-repeat="x in vm.room" value="{{x.dueToPeople}}">{{x.dueToPeople}}</option>
+	   </select>
+      </span> 
+      </span> 
+      <span class="side_a" style="margin-left:40px;"> 
+   		 <span class="side_a" style="margin-left:40px;"> 评审部门
+      	<select  name="stage" ng-model="rb.stage"  >
+      	 <option value="">请选择</option>
+         <option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
+      </select>
+      </span>
+      </span> 
+   
+  </div>
+
+</div>
+</div>
+</form>  
+  
+<div class="conttent_list" style="margin-top:20px;">
+
+<div style="overflow:hidden;">
+  <div class="side_a" style=" border:1px solid #000; width:99%;">
+       <p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px; color:#FFFF00;font-size:20px ;">会议列表 </p>
+      
+      <!--  <iframe name="regular" src="${request.contextPath}/Expert/List?state=1" width="100%" marginwidth="0" height="560" marginheight="0" scrolling="auto" frameborder="0"></iframe> --> 
+       <!--  <table id="formalgrid"></table> -->
+        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+      
+        
+  </div>
+
+
+ </div>     
+</div>
+
+ 
+</div>
+
+<style >
+.pro_title {
+	font-size: 14px;
+	text-align: center;
+	font-family: "微软雅黑";
+}
+.pro_title_1 {
+	font-size: 12px;
+	font-weight: bold;
+}
+.list_text {
+	font-size: 12px;
+}
+
+.conttent_list table{border-right:1px solid #000;	border-left: 1px solid #000;border-bottom:1px solid #000;}
+.conttent_list table td{
+	border-left: 1px solid #000;
+	border-top: 1px solid #000;
+	padding-left: 5px;
+}
+.conttent_list{
+	background-image: url(images/remark-title.jpg);
+	background-repeat: no-repeat;
+	padding: 40px;
+	width:80%;
+	margin:auto;
+	background-color: #FFF;
+}
+.text_input {
+	border: 1px solid #0CF;
+}
+.conttent_list table tr .list_text .waring {
+	color: #F30;
+}
+.waring {
+	color: #F30;
+	text-align: right;
+}
+.textarea_list {
+	display:block;
+	margin: 10px;
+	width:95%;
+	height: 120px;
+
+}
+
+.bton {
+	margin: auto;
+}
+.conttent_list table tr .list_text .pro_title_1 .list_text {
+	font-weight: normal;
+}
+body {
+	background-color: #F9F9F9;
+}
+.bottom_btn {
+	text-align: center;
+}
+.error{ color:red; font-family:"yahei"; font-size:12px; font-weight:bold;}
+.pro_title {
+	font-size: 16px;
+}
+.side_a{ float:left;}
+.side_b{ float:right;}
+.title_box{ border:1px solid #999; border-radius:5px; margin:10px 0;  padding:0 20px; overflow:hidden;}
+.pM{ font-size:16px; font-weight:bold;}
+</style>

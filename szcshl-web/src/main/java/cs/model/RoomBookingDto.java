@@ -2,6 +2,8 @@ package cs.model;
 
 import javax.persistence.Column;
 
+import org.hibernate.annotations.Formula;
+
 public class RoomBookingDto extends BaseDto{
 
 	private String id;
@@ -35,6 +37,7 @@ public class RoomBookingDto extends BaseDto{
 	public void setRbName(String rbName) {
 		this.rbName = rbName;
 	}
+	@Formula("(select m.addr from MeetingRoom m where m.mrID = mrID)")
 	public String getAddressName() {
 		return addressName;
 	}

@@ -1,6 +1,9 @@
 package cs.domain;
 
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -62,6 +65,7 @@ public class RoomBooking extends DomainBase{
 	public void setRbName(String rbName) {
 		this.rbName = rbName;
 	}
+	@Formula("(select m.addr from MeetingRoom m where m.mrID = mrID)")
 	public String getAddressName() {
 		return addressName;
 	}

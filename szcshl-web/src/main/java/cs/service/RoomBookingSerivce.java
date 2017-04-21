@@ -2,6 +2,9 @@ package cs.service;
 
 import java.util.List;
 
+import org.apache.poi.ss.formula.functions.T;
+
+import cs.domain.MeetingRoom;
 import cs.domain.RoomBooking;
 import cs.model.PageModelDto;
 import cs.model.RoleDto;
@@ -15,5 +18,12 @@ public interface RoomBookingSerivce {
 	void updateRoom(RoomBookingDto roomBookingDto);
 	void deleteRoom(String id);
 	void deleteRooms(String[] ids);
-	List<RoomBooking> getList(ODataObj oDataObj);
+	List<RoomBookingDto> getList(ODataObj oDataObj);
+	List<RoomBooking> findAll();
+	List<RoomBooking> findWeek();
+	List<RoomBooking> findStageNextWeek();
+	List<RoomBooking> findNextWeek();
+	List<MeetingRoom> findMeetingAll();
+
+	
 }

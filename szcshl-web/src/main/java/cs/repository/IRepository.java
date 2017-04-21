@@ -5,7 +5,9 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 
+
 import cs.repository.odata.ODataObj;
+
 
 public interface IRepository<T, ID> {
 	public T findById(ID id);
@@ -24,4 +26,8 @@ public interface IRepository<T, ID> {
 
 	public void setSession(Session session);
 	public Session getSession();
+	
+	 public List<T> getListByHQL(String hqlString, Object... values);
+	 
+	 
 }

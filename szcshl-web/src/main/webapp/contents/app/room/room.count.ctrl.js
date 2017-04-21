@@ -3,39 +3,20 @@
 
     angular
         .module('app')
-        .controller('roomCtrl', room);
+        .controller('roomCountCtrl', roomCount);
 
-    room.$inject = ['$location','roomSvc','$scope']; 
+    roomCount.$inject = ['$location','roomCountSvc']; 
 
-    function room($location, roomSvc,$scope) {
+    function roomCount($location, roomCountSvc) {
         /* jshint validthis:true */
-    	var vm = this;
-        vm.title = '会议室预定列表';
+        var vm = this;
+        vm.title = '预定会议统计列表';
         
-        //导出本周评审会议安排
-        vm.exportWeek = function(){
-        	roomSvc.exportWeek();
-        }
-        //导出本周全部会议安排
-        vm.exportThisWeek = function(){
+        //多条件查询
+        vm.showClick = function(){
         	
-        	roomSvc.exportThisWeek();
+        	roomCountSvc.showClick(vm);
         }
-        //导出下周全部会议安排
-        vm.exportNextWeek = function(){
-        	
-        	roomSvc.exportNextWeek();
-        }
-        //导出下周评审会议安排
-        vm.stageNextWeek = function(){
-        	
-        	roomSvc.stageNextWeek();
-        }
-        //会议室查询
-        vm.findMeeting = function(){
-        	roomSvc.findMeeting(vm);
-        }
-        
         vm.del = function (id) {        	
         	
              common.confirm({
@@ -44,14 +25,13 @@
             	 msg:"确认删除数据吗？",
             	 fn:function () {
                   	$('.confirmDialog').modal('hide');             	
-                    roomSvc.deleteRoom(vm,id);
+                    roomCountSvc.deleteroomCount(vm,id);
                  }
              })
         }
-        
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
-        	
+        	//alert(selectIds.length);
             if (selectIds.length == 0) {
             	common.alert({
                 	vm:vm,
@@ -69,11 +49,8 @@
        }
         activate();
         function activate() {
-        	
-        	//调用room.svc.js的初始化方法
-           roomSvc.initRoom(vm);
-           roomSvc.showMeeting(vm);
-           //roomSvc.findUser(vm);
+            roomCountSvc.grid(vm);
+            roomCountSvc.roomShow(vm);
         }
     }
 })();

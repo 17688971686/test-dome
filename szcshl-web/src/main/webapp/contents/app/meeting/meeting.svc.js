@@ -74,7 +74,7 @@
 
 		// begin#deleteUser
 		function deleteMeeting(vm, id) {
-			
+			alert(id);
 			vm.isSubmit = true;
 			var httpOptions = {
 				method : 'delete',
