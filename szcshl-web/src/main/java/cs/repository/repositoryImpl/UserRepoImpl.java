@@ -47,11 +47,16 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 		Set<String> permissions = new HashSet<>();
 		if (list.size()>0) {
 			User user = list.get(0);
-			user.getRoles().forEach(x -> {
-				x.getResources().forEach(y -> {
-					permissions.add(y.getPath());
-				});
-
+			//如果超级管理员，则默认给所有权限，开发阶段暂时这么使用
+			user.getRoles().forEach(x -> {	
+				if("超级管理员".equals(x.getRoleName())){
+					permissions.clear();
+					permissions.add("*");
+				}else{
+					x.getResources().forEach(y -> {
+						permissions.add(y.getPath());
+					});
+				}
 			});
 		}
 		return permissions;
