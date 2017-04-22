@@ -19,7 +19,8 @@
         appPath: "",//app路径
         http: http,//http请求    
         gridDataSource: gridDataSource,//gridDataSource
-        loginUrl: window.rootPath +'/home/login'        
+        loginUrl: window.rootPath +'/home/login',
+        buildOdataFilter:buildOdataFilter	//创建多条件查询的filter
     };
 
     window.common = service;
@@ -303,8 +304,36 @@
          return dataSource;
     }
 
-    
 
+    function buildOdataFilter(from){
+    	var t = new Array();
+    	$(from).find('input,radio,select,textarea').each(function(index,obj){
+    		if(obj.name && obj.value){
+    			var param = {};
+        		param.operator = $(this).attr('operator');
+                param.name =  obj.name;
+                param.value =  obj.value;
+                t[index] = param;
+    		} 		
+        });   	 
+    		
+		var i = 0;
+		var filterStr = "$filter="
+	    $.each(t, function() {
+	    	if(this.value){
+	    		if(i > 0){
+		    		filterStr += " and ";
+		    	}
+	    		filterStr += this.name + " " + this.operator + " '"+ this.value +"'";
+	    		i++;
+	    	}		    	
+	    });
+		if(i > 0){
+			return filterStr;
+		}else{
+			return "";
+		}		
+    }
 
     //init
     init();
