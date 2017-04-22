@@ -15,6 +15,7 @@
 			grid : grid,
 			roomShow : roomShow,
 			showClick : showClick,
+			
 		//	getroomCountById : getroomCountById,
 			
 		};		
@@ -35,16 +36,74 @@
 			  }); 
 			
 		}
+		
 		//多条件查询
+		function conneFilter(vm){
+			var arr=new Array();
+			var filter="?";
+			var value="";
+			var url=url_room+filter+","+value;
+			var i=0;
+			if(vm.model.rbName!=null){
+				var paramObj = {}
+				paramObj.name = "rbName";
+				paramObj.value = vm.model.rbName;
+				
+				arr[i++]=paramObj;
+				
+			}
+			if(vm.model.mrID!=null){
+				var paramObj = {}
+				paramObj.name = "mrID";
+				paramObj.value = vm.model.mrID;
+				arr[i++]=paramObj;
+			}
+			if(vm.model.rbType!=null){
+				var paramObj = {}
+				paramObj.name = "rbType";
+				paramObj.value = vm.model.rbType;
+				arr[i++]=paramObj;
+			}
+		
+			/*var rbDay=$("#beginTime").val();
+			
+			if(rbDay!=null){
+				var paramObj = {}
+				paramObj.name = "rbDay";
+				paramObj.value = rbDay;
+				alert(paramObj.value)
+				arr[i++]=paramObj;
+			}
+			var end = $("#endTime").val();
+			if(end!=null){
+				var paramObj = {}
+				paramObj.name ="rbDay";
+				paramObj.value=end;
+				arr[i++] =paramObj;
+			}*/
+			if(vm.model.dueToPeople!=null){
+				var paramObj = {}
+				paramObj.name = "dueToPeople";
+				paramObj.value = vm.model.dueToPeople;
+				arr[i++]=paramObj;
+			}
+			
+			var param = "?$filter=";
+			for(var k=0;k<arr.length;k++){
+				if(k > 0){
+					param += " and ";
+				}
+				param += arr[k].name +" eq " + "\'"+arr[k].value+"\'";
+			}
+			//url=url_expert+filter+value;
+			return param;
+		}
 		function showClick(vm){
-			
-			
-			//alert(common.format(url_room + "?$filter=dueToPeople eq '{0}' and rbName eq '{1}'", vm.model.dueToPeople,vm.model.rbName));
-			
-		//	return;
+			var url=conneFilter(vm);
+			alert(url);
 			var httpOptions = {
 					method : 'get',
-					url : common.format(url_room + "?$filter=dueToPeople eq '{0}' and rbName eq '{1}'", vm.model.dueToPeople,vm.model.rbName)
+					url : url_room+url
 			};
 			
 			var httpSuccess = function success(response) {
@@ -65,8 +124,9 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		//}
+		
 		}
+		
 		function grid(vm) {
 			//时间控件start
 			$(document).ready(function () {
@@ -87,6 +147,7 @@
 			 }); 
 			//时间控件end
 			
+
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
@@ -110,26 +171,17 @@
 			});
 
 			// End:dataSource
-
+			
 			// Begin:column
 			var columns = [
-					{
-						template : function(item) {
-							return kendo
-									.format(
-											"<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-											item.id)
-						},
-						filterable : false,
-						width : 40,
-						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-						
-					},  {
-						field : "host",
-						title : "序号",
-						width : 100,						
-						filterable : false
-					},
+					
+					{  
+					    field: "rowNumber",  
+					    title: "序号",  
+					    width: 80,
+					    template: "<span class='row-number'></span>"  
+					 }
+					,
 					{
 						field : "rbName",
 						title : "会议名称",
@@ -172,18 +224,7 @@
 						width : 100,						
 						filterable : false
 					},
-					/*{
-						field : "coDept",
-						title : "直属部门",
-						width : 200,						
-						filterable : false
-					},
-					{
-						field : "coDeptName",
-						title : "直属部门名称",
-						width : 200,						
-						filterable : false
-					},*/
+					
 					
 					/*{
 						field : "",
@@ -206,11 +247,14 @@
 					pageable : common.kendoGridConfig().pageable,
 					noRecords:common.kendoGridConfig().noRecordMessage,
 					columns : columns,
+					//dataBounds :dataBounds,
 					resizable: true
 				};
+		
 			
 		}// end fun grid
 
+		
 
 
 	}

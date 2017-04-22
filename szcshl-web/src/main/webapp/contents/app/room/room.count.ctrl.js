@@ -51,6 +51,7 @@
         function activate() {
             roomCountSvc.grid(vm);
             roomCountSvc.roomShow(vm);
+           
         }
     }
 })();
