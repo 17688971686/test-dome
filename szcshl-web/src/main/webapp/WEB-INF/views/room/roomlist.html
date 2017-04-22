@@ -7,12 +7,12 @@
         <li class="active">{{vm.title}}</li>
     </ol>
  
-        <div kendo-scheduler k-options="vm.schedulerOptions">
-        
+         <div kendo-scheduler k-options="vm.schedulerOptions">
+        <!-- <div class="grid"  kendo-scheduler kendo-grid="grid" k-options="vm.gridOptions"></div> -->
         <div style="height: 120px;">
         <br>
         会议室查询：${user}
-       	 <select ng-model="vm.id"  ng-change="vm.findMeeting()" style="width: 10%">
+       	 <select ng-model="vm.mrID"  ng-change="vm.findMeeting()" style="width: 10%">
 			<option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
 		</select>
        	 
@@ -60,11 +60,11 @@
 	<div class="movie-template">
 		
 		<p>
-			开始时间：#: kendo.toString(start, "HH:mm") #
-			编号：#: kendo.toString(id, "HH:mm") #
+			开始时间：#: kendo.toString(start, "yyyy-MM-dd HH:mm") #
+		
 		</p>
 		<p>
-			结束时间：#: kendo.toString(end, "HH:mm") #
+			结束时间：#: kendo.toString(end, "yyyy-MM-dd HH:mm") #
 		</p>
 		<h3>会议地点：#: title #</h3>
 		<h3>会议地点：#: host #</h3>
@@ -74,6 +74,9 @@
 
 <script id="customEditorTemplate" type="text/x-kendo-template">
 <form id="form" name="form">
+	<div>
+          <span ng-show="message" class="errors" ng-bind="message" ></span>
+   </div>
 <div class="k-edit-label"><label for="title">会议名称</label></div>
 	<div data-container-for="title" class="k-edit-field">
 	

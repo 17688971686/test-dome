@@ -69,6 +69,7 @@ public class RoomBookingController {
 		return meeting;
 	}
 	
+	
 	@RequiresPermissions("room#roomShow#get")
 	@RequestMapping( name="会议室预定查询", path="roomShow", method=RequestMethod.GET)
 	@ResponseBody

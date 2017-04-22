@@ -22,7 +22,7 @@
         	companySvc.createcompany(vm);
         };
         vm.update = function () {
-        	alert(vm.id);
+        
         	companySvc.updatecompany(vm);
         };
         

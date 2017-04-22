@@ -37,15 +37,20 @@
 	           transport: {
 				  read:function(options){
 					 //console.log(options);
-					 
-					  $http.get(url_room 
+					  var mrID = options.data.mrID;
+					  var url =  rootPath + "/room" ;
+					  if(mrID){
+						  url += "?"+mrID;
+					  }
+					  //alert(url);
+					  $http.get(url 
 					  ).success(function(data) {  
 						  //console.log(data);
-						 // console.log(data.value);
+						//  console.log(data.value);
 						  options.success(data.value);
 						 // console.log(vm.success);
 					  }).error(function(data) {  
-					      //处理错误  
+					     
 						  alert("查询失败");
 					  });  
 				  },
@@ -94,6 +99,7 @@
 	            },
 
 	          });
+		
 			
 			vm.schedulerOptions = {
 			            date: new Date(),
@@ -105,6 +111,7 @@
 			                { type: "week", selected: true },
 			                
 			                "month",
+			                "agenda",
 			            ],
 			           //statr 时间
 			            editable: {
@@ -157,35 +164,9 @@
 		
 		//查询会议室
 		function findMeeting(vm){
-			/*alert(vm.id);
-			var id = vm.id;
-			$('#scheduler').data('kendoScheduler').dataSource.read({"id":id});*/	
-		//	alert(common.format(url_room + "?$filter=id eq '{0}'", vm.id));
-			//return ;
-			var httpOptions = {
-					method : 'get',
-					url : common.format(url_room + "?$filter=id eq '{0}'", vm.id)
-			};
 			
-			var httpSuccess = function success(response) {
-				console.log(response);
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {						
-						vm.schedulerOptions.dataSource.data([]);
-						vm.schedulerOptions.dataSource.data(response.data.value);
-						vm.schedulerOptions.dataSource.total(response.data.count);
-					}
-				});
-			}
 
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
+			vm.schedulerOptions.dataSource.read({"mrID":common.format("$filter=mrID eq '{0}'", vm.mrID)});
 		}
 		//start#showMeeting
 		
@@ -199,8 +180,8 @@
 			rb.rbDay=$("#rbDay").val();
 			rb.beginTime = $("#beginTime").val();
 			rb.endTime = $("#endTime").val();
-			alert(rb.rbDay);
-			alert(rb.beginTime);
+			//alert(rb.rbDay);
+			//alert(rb.beginTime);
 			//alert(rb.endTime);
 			rb.host = model.host;
 			rb.mrID = model.mrID;
@@ -211,6 +192,7 @@
 			
 			common.initJqValidation();
 			var isValid = $('form').valid();
+			alert(isValid);
 			if (isValid) {
 				vm.isSubmit = true;
 				var httpOptions = {
@@ -219,28 +201,25 @@
 					data : rb
 				}
 				var httpSuccess = function success(response) {
-
+					 vm.isSubmit = false;   
+					console.log(response.data.message);
 					common.requestSuccess({
-						vm : vm,
-						response : response,
-						
-						fn : function() {
-
-							/*common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-									//$('.modal-backdrop').remove();
-									location.href = url_back;
-								}
-							})*/
-							var msg ="添加成功";
-							alert(msg);
-						}
-
-					});
+                    	vm:vm,
+                    	response:response,
+                    	fn:function () {
+                            
+                            var isSuccess = response.data.isSuccess;
+                            if (isSuccess) {
+                                vm.message = "";
+                                //common.cookie().set("data", "token", response.data.Token, "", "/");
+                              //  location.href = "${path}/admin/index.html";
+                            } else {
+                                
+                                vm.message=response.data.message
+                            }
+                    	}
+                    });
+					 alert("添加成功");
 
 				}
 
@@ -254,6 +233,8 @@
 			}
 		}
 		//end#save
+		
+		
 		
 		//start#update
 		function updateRoom(vm){

@@ -100,7 +100,7 @@
 		}
 		function showClick(vm){
 			var url=conneFilter(vm);
-			alert(url);
+		//	alert(url);
 			var httpOptions = {
 					method : 'get',
 					url : url_room+url

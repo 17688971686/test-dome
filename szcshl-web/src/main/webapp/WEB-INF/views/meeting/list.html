@@ -10,6 +10,7 @@
     </ol>
     <form id="form" name="form">
         <div class="toolbar">
+       
         	<@shiro.hasPermission name="meeting##post"> 
             	<a class="btn btn-sm btn-primary" href="#/meetingEdit/"><span class="glyphicon glyphicon-plus"></span>新增会议室</a> 
             </@shiro.hasPermission>
@@ -17,7 +18,9 @@
             <@shiro.hasPermission name="meeting##delete">           
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
         	</@shiro.hasPermission>
+        	
         </div>
+        
         <script type="text/template" id="columnBtns">
 		<@shiro.hasPermission name="meeting##delete">
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>

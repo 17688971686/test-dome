@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gson.JsonObject;
+
 import cs.common.ICurrentUser;
 import cs.common.Response;
 import cs.domain.MeetingRoom;
@@ -190,19 +192,21 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	}
 	@Override
 	@Transactional
-	public void createRoom(RoomBookingDto roomBookingDto) {
+	public Response createRoom(RoomBookingDto roomBookingDto) {
 		//判断会议名称是否存在
 		Criteria criteria =	roomBookingRepo.getSession().createCriteria(RoomBooking.class);	
 		criteria.add(Restrictions.eq("rbName", roomBookingDto.getRbName()));
 		List<RoomBooking>  room = criteria.list();
 		String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
 		Response response =new Response();
+		JsonObject jsonObject = new JsonObject();
 		List<RoomBooking> roomb =  roomBookingRepo.getListByHQL(hql);
 		if(room.isEmpty()){
 			
 			if(roomb !=null && roomb.size()>0){
 			
 				response.setMessage("会议安排时间冲突!!!");
+				//jsonObject.addProperty("StatusCode", "1");
 			}else{
 				
 				RoomBooking rb = new RoomBooking();
@@ -223,12 +227,15 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				rb.setCreatedBy(currentUser.getLoginName());
 				rb.setModifiedBy(currentUser.getLoginName());
 				roomBookingRepo.save(rb);
+				jsonObject.addProperty("StatusCode", "0");
 			}
 		}else{
 			
 			throw new IllegalArgumentException(String.format("会议名称：%s 已经存在，请重新输入", roomBookingDto.getRbName()));
 
 		}
+		
+		return response;
 	}
 	
 	@Override
