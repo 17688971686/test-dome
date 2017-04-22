@@ -93,6 +93,7 @@ public class ODataObj {
 		// build select
 		if (select != null && !select.isEmpty()) {
 			this.select = select.split(",");
+			
 		}
 		// build skip,top,inlinecount
 		if (skip != null && !skip.isEmpty()) {

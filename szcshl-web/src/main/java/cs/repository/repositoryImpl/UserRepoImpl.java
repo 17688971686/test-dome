@@ -38,7 +38,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 		List<User> list = oDataObj.buildQuery(crit).list();
 		return list;
 	}
-
+ 
 	@Override
 	public Set<String> getUserPermission(String userName) {
 		Criteria crit = this.getSession().createCriteria(User.class);

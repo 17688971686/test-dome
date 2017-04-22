@@ -416,7 +416,7 @@
 		function getDictById(vm){
 			var httpOptions = {
 					method : 'get',
-					url : common.format(url_dictgroup + "?$filter=dictId eq '{0}'", vm.id)
+					url : common.format(url_dictgroup + "?$filter=dictId eq '{0}' ", vm.id)
 			};
 			
 			var httpSuccess = function success(response) {

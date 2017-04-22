@@ -224,9 +224,22 @@ desired effect
 					</a>
 						<ul class="treeview-menu">
 							<li><a href="javascript:void(0)" ui-sref="demo">demo</a></li>
-						</ul>
-					</li>
-					
+
+
+						</ul></li>
+				<li class="treeview"><a href="javascript:void(0)"> <i class="fa fa-link"></i> <span class="title">专家管理</span> <span
+							class="pull-right-container"> <i
+								class="fa fa-angle-left pull-right"></i>
+						</span>
+					</a>
+						<ul class="treeview-menu">
+							<li><a href="javascript:void(0)" ui-sref="expert">重复专家查询</a></li>
+							<li><a href="javascript:void(0)" ui-sref="expertEdit">专家信息录入</a></li>
+							<li><a href="javascript:void(0)" ui-sref="expert">专家信息审核</a></li>
+							<li><a href="javascript:void(0)" ui-sref="expert">综合查询</a></li>
+							<li><a href="javascript:void(0)" ui-sref="expert">专家评审统计</a></li>
+							
+						</ul></li>			
 
 				</ul>
 				<!-- /.sidebar-menu -->
@@ -345,6 +358,10 @@ desired effect
 	<script src="${path}/contents/app/dict/dict.ctrl.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/dict/dict.svc.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/dict/dict.edit.ctrl.js?version = ${.now}"></script>
+	
+	<script src="${path}/contents/app/expert/expert.ctrl.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/expert/expert.svc.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/expert/expert.edit.ctrl.js?version = ${.now}"></script>
 	</script>
 	<!-- End:自定义Js-->
 </body>

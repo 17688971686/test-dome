@@ -307,6 +307,7 @@
 
     function buildOdataFilter(from){
     	var t = new Array();
+    	var arrIndex = 0;
     	$(from).find('input,radio,select,textarea').each(function(index,obj){
     		if(obj.name && obj.value){
     			var param = {};
@@ -314,10 +315,11 @@
     				param.operator = $(this).attr('operator');
     			}else{
     				param.operator = 'eq';
-    			}      		
+    			}	
                 param.name =  obj.name;
                 param.value =  obj.value;
-                t[index] = param;
+                t[arrIndex] = param;
+                arrIndex++;
     		} 		
         });   	 
     		
