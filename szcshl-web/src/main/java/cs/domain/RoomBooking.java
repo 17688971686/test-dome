@@ -65,7 +65,7 @@ public class RoomBooking extends DomainBase{
 	public void setRbName(String rbName) {
 		this.rbName = rbName;
 	}
-	@Formula("(select m.addr from MeetingRoom m where m.id = mrID)")
+	@Formula("(select m.addr from cs_meetingRoom m where m.id = mrID)")
 	public String getAddressName() {
 		return addressName;
 	}

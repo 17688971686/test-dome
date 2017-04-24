@@ -202,20 +202,23 @@
 				}
 				var httpSuccess = function success(response) {
 					 vm.isSubmit = false;   
-					console.log(response.data.message);
+					//console.log(response.data.message);
 					common.requestSuccess({
                     	vm:vm,
                     	response:response,
                     	fn:function () {
                             
                             var isSuccess = response.data.isSuccess;
+                        //  console.log(isSuccess);
                             if (isSuccess) {
                                 vm.message = "";
+                               
                                 //common.cookie().set("data", "token", response.data.Token, "", "/");
                               //  location.href = "${path}/admin/index.html";
                             } else {
                                 
                                 vm.message=response.data.message
+                              //  console.log(vm.message);
                             }
                     	}
                     });

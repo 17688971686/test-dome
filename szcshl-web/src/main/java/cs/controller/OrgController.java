@@ -1,6 +1,7 @@
 package cs.controller;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.domain.User;
+import cs.model.CompanyDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.OrgService;
+import cs.service.UserService;
 
 @Controller
 @RequestMapping(name = "部门", path = "org")
@@ -28,6 +32,9 @@ public class OrgController {
 	@Autowired
 	private OrgService orgService;
 
+	@Autowired
+	private UserService userService;
+	
 	@RequiresPermissions("org##get")	
 	@RequestMapping(name = "获取部门数据", path = "", method = RequestMethod.GET)
 	public @ResponseBody PageModelDto<OrgDto> get(HttpServletRequest request) throws ParseException {
@@ -35,6 +42,24 @@ public class OrgController {
 		PageModelDto<OrgDto> orgDtos = orgService.get(odataObj);
 
 		return orgDtos;
+	}
+	
+	@RequiresPermissions("org#getUser#get")	
+	@RequestMapping(name = "获取所有科长", path = "getUser", method = RequestMethod.GET)
+	@ResponseBody
+	public  List<UserDto> getUser(HttpServletRequest request)throws  java.text.ParseException{
+		ODataObj oDataObj = new ODataObj(request);
+		 List<UserDto> user=orgService.getUser(oDataObj);
+		return user;
+	}
+	@RequiresPermissions("org#getCompany#get")	
+	@RequestMapping(name = "获取所有单位", path = "getCompany", method = RequestMethod.GET)
+	@ResponseBody
+	public List<CompanyDto> getCompany(HttpServletRequest request) throws ParseException{
+		
+		ODataObj oDataObj = new ODataObj(request);
+		List<CompanyDto> comDto = 	orgService.getCompany(oDataObj);
+		return comDto;
 	}
 
 	@RequiresPermissions("org##post")	

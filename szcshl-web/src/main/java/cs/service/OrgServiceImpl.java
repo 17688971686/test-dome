@@ -12,12 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.domain.Company;
 import cs.domain.Org;
 import cs.domain.User;
+import cs.model.CompanyDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.CompanyRepo;
 import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.UserRepo;
 
@@ -31,6 +34,8 @@ public class OrgServiceImpl implements OrgService {
 	@Autowired
 	private ICurrentUser currentUser;
 
+	@Autowired
+	private CompanyRepo companyRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -42,13 +47,25 @@ public class OrgServiceImpl implements OrgService {
 		List<Org> orgList = orgRepo.findByOdata(odataObj);
 		List<OrgDto> orgDtoList = new ArrayList<>();
 		for (Org item : orgList) {
+			
 			OrgDto orgDto = new OrgDto();
+			
 			orgDto.setId(item.getId());
 			orgDto.setName(item.getName());
 			orgDto.setCreatedDate(item.getCreatedDate());
-			orgDto.setRemark(item.getRemark());
 			orgDto.setOrgIdentity(item.getOrgIdentity());
-
+			orgDto.setRemark(item.getRemark());
+			
+			
+			orgDto.setOrgPhone(item.getOrgPhone());
+			orgDto.setOrgFax(item.getOrgFax());
+			orgDto.setOrgAddress(item.getOrgAddress());
+			orgDto.setOrgFunction(item.getOrgFunction());
+			
+			orgDto.setOrgDirectorName(item.getOrgDirectorName());//科长
+			orgDto.setOrgAssistantName(item.getOrgAssistantName());//副科长
+			orgDto.setOrgCompanyName(item.getOrgCompanyName());//单位名称
+			
 			orgDtoList.add(orgDto);
 		}
 		PageModelDto<OrgDto> pageModelDto = new PageModelDto<>();
@@ -68,9 +85,18 @@ public class OrgServiceImpl implements OrgService {
 		List<Org> orgs = criteria.list();
 		if (orgs.isEmpty()) {// 部门不存在
 			Org org = new Org();
-			org.setRemark(orgDto.getRemark());
-			org.setName(orgDto.getName());
 			org.setId(UUID.randomUUID().toString());
+			org.setName(orgDto.getName());
+			org.setRemark(orgDto.getRemark());
+			
+			org.setOrgPhone(orgDto.getOrgPhone());
+			org.setOrgFax(orgDto.getOrgFax());
+			org.setOrgAddress(orgDto.getOrgAddress());
+			org.setOrgFunction(orgDto.getOrgFunction());
+			
+			org.setOrgDirector(orgDto.getOrgDirector());//科长
+			org.setOrgAssistant(orgDto.getOrgAssistant());//副科长
+			org.setOrgCompany(orgDto.getOrgCompany());//单位名称
 			org.setCreatedBy(currentUser.getLoginName());
 			org.setOrgIdentity(orgDto.getOrgIdentity());
 			org.setModifiedBy(currentUser.getLoginName());
@@ -91,7 +117,14 @@ public class OrgServiceImpl implements OrgService {
 		org.setRemark(orgDto.getRemark());
 		org.setName(orgDto.getName());
 		org.setModifiedBy(currentUser.getLoginName());
-
+		org.setOrgPhone(orgDto.getOrgPhone());
+		org.setOrgFax(orgDto.getOrgFax());
+		org.setOrgAddress(orgDto.getOrgAddress());
+		org.setOrgFunction(orgDto.getOrgFunction());
+		
+		org.setOrgDirector(orgDto.getOrgDirector());//科长
+		org.setOrgAssistant(orgDto.getOrgAssistant());//副科长
+		org.setOrgCompany(orgDto.getOrgCompany());//单位名称
 		orgRepo.save(org);
 		logger.info(String.format("更新部门,部门名:%s", orgDto.getName()));
 	}
@@ -219,6 +252,54 @@ public class OrgServiceImpl implements OrgService {
 			}
 			logger.info(String.format("批量删除部门用户,部门%s", org.getOrgIdentity()));
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<UserDto> getUser(ODataObj odataObj) {
+		List<User> listUser = userRepo.findByOdata(odataObj);
+		List<UserDto> userDtoList = new ArrayList<>();
+		for (User item : listUser) {
+			UserDto userDto = new UserDto();
+			userDto.setId(item.getId());
+			userDto.setLoginName(item.getLoginName());
+			userDto.setDisplayName(item.getDisplayName());
+			userDto.setPassword(item.getPassword());
+			userDto.setRemark(item.getRemark());
+			userDto.setCreatedDate(item.getCreatedDate());
+
+			userDtoList.add(userDto);
+		}
+	
+		return userDtoList;
+	}
+
+	@Override
+	@Transactional
+	public List<CompanyDto> getCompany(ODataObj odataObj) {
+	
+		List<Company> com	=companyRepo.findByOdata(odataObj);
+	
+		List<CompanyDto> comDtoList= new ArrayList<>();
+		for(Company item : com){
+		
+			CompanyDto comDto =new CompanyDto();
+			
+			comDto.setId(item.getId());
+			comDto.setCoAddress(item.getCoAddress());
+			comDto.setCoDept(item.getCoDept());
+			comDto.setCoDeptName(item.getCoDeptName());
+			comDto.setCoFax(item.getCoFax());
+			comDto.setCoName(item.getCoName());
+			comDto.setCoPC(item.getCoPC());
+			comDto.setCoPhone(item.getCoPhone());
+			comDto.setCoSite(item.getCoSite());
+			comDto.setCoSynopsis(item.getCoSynopsis());
+	
+			comDtoList.add(comDto);
+		
+		}
+		return comDtoList;
 	}
 
 }

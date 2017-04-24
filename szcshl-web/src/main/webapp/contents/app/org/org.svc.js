@@ -14,14 +14,16 @@
 			createOrg : createOrg,			
 			getOrgById : getOrgById,
 			updateOrg:updateOrg,
-			deleteOrg:deleteOrg			
+			deleteOrg:deleteOrg	,
+			getUser : getUser,
+			getCompany : getCompany,
 		};		
 		return service;	
 		
 		
 		
 		function grid(vm) {
-
+			console.log(vm);
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
@@ -62,16 +64,68 @@
 					},  {
 						field : "orgIdentity",
 						title : "部门标识",
-						width : 200,						
+						width : 80,						
 						filterable : false
-					}, {
+					}, 
+					{
 						field : "name",
 						title : "部门名称",
-						width : 200,						
+						width : 130,						
 						filterable : false
-					},{
+					},
+					{
+						field : "orgPhone",
+						title : "电话",
+						width : 130,						
+						filterable : false
+					},
+					{
+						field : "orgFax",
+						title : "传真",
+						width : 130,						
+						filterable : false
+					},
+					{
+						field : "orgAddress",
+						title : "地址",
+						width : 130,						
+						filterable : false
+					},
+					{
+						field : "orgFunction",
+						title : "职能",
+						width :130,						
+						filterable : false
+					},
+					{
+						field : "orgDirectorName",
+						title : "科长",
+						width : 100,						
+						filterable : false
+					},
+					{
+						field : "orgAssistantName",
+						title : "副科长",
+						width : 100,						
+						filterable : false
+					},
+					
+					/*{
+						field : "orgOrder",
+						title : "单位序号",
+						width : 160,						
+						filterable : false
+					},*/
+					{
+						field : "orgCompanyName",
+						title : "单位名称",
+						width : 130,						
+						filterable : false
+					},
+					{
 						field : "remark",
 						title : "描述",
+						width : 130,	
 						filterable : false
 					}, {
 						field : "createdDate",
@@ -83,7 +137,7 @@
 					},  {
 						field : "",
 						title : "操作",
-						width : 280,
+						width : 200,
 						template:function(item){							
 							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
 							
@@ -97,6 +151,7 @@
 		
 			vm.gridOptions={
 					dataSource : common.gridDataSource(dataSource),
+				
 					filterable : common.kendoGridConfig().filterable,
 					pageable : common.kendoGridConfig().pageable,
 					noRecords:common.kendoGridConfig().noRecordMessage,
@@ -107,6 +162,9 @@
 		}// end fun grid
 
 		function createOrg(vm) {
+			
+			alert(vm.model.orgDirector);
+			
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid && vm.isorgExist == false) {
@@ -157,9 +215,46 @@
 //				})
 			}
 		}// end fun createorg
-
+		//获取科长信息
+		function getUser(vm){
 		
-
+			var httpOptions = {
+					method : 'get',
+					url : common.format(url_org + "/getUser")
+				}
+				var httpSuccess = function success(response) {
+					vm.user ={};
+					vm.user =response.data;
+					
+				}
+				
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
+		}
+		//获取单位信息
+		function getCompany(vm){
+			
+			var httpOptions = {
+					method : 'get',
+					url : common.format(url_org + "/getCompany")
+				}
+				var httpSuccess = function success(response) {
+					vm.company ={};
+					vm.company =response.data;
+					console.log(vm.company);
+				}
+				
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
+		}
 		function getOrgById(vm) {
 			var httpOptions = {
 				method : 'get',

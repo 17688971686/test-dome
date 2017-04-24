@@ -31,6 +31,8 @@
         	if (vm.isUpdate) {
         		orgSvc.getOrgById(vm);
             } 
+        	orgSvc.getUser(vm);
+        	orgSvc.getCompany(vm);
         }
     }
 })();
