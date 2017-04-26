@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -105,6 +106,23 @@ public class AbstractRepository<T,ID extends Serializable> extends RepositoryHel
 		logger.debug("getSession");		
 		this.session = sessionFactory.getCurrentSession();
 		return this.session;
+	}
+
+	@Override
+	public List<T> getListByHQL(String hqlString, Object... values) {
+		 Query query = this.getCurrentSession().createQuery(hqlString);
+	        if (values != null)
+	        {
+	            for (int i = 0; i < values.length; i++)
+	            {
+	                query.setParameter(i, values[i]);
+	            }
+	        }
+	        return query.list();
+	}
+
+	private Session getCurrentSession() {
+		return this.sessionFactory.getCurrentSession();
 	}
 
 }
