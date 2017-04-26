@@ -34,7 +34,14 @@ public class OrgDto extends BaseDto {
     
 	private String orgIdentity;
 	
+	private UserDto userDto;
 	
+	public UserDto getUserDto() {
+		return userDto;
+	}
+	public void setUserDto(UserDto userDto) {
+		this.userDto = userDto;
+	}
 	public String getOrgPhone() {
 		return orgPhone;
 	}

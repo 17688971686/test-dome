@@ -23,7 +23,6 @@
 		
 		
 		function grid(vm) {
-			console.log(vm);
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
@@ -98,7 +97,7 @@
 						filterable : false
 					},
 					{
-						field : "orgDirectorName",
+						field : "userDto.loginName",
 						title : "科长",
 						width : 100,						
 						filterable : false
@@ -162,9 +161,7 @@
 		}// end fun grid
 
 		function createOrg(vm) {
-			
-			alert(vm.model.orgDirector);
-			
+			//alert(vm.model.userDto.id);
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid && vm.isorgExist == false) {

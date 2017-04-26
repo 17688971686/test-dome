@@ -98,7 +98,7 @@
              <tr>
                 <td class="formAlignRight">科长： <span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.orgDirector" id="orgDirector" name="orgDirector"class="form-control input-sm " data-val="true" data-val-required="必填">
+                    <select ng-model="vm.model.userDto.id" id="orgDirector" name="orgDirector"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
 					</select>
                 </td>
@@ -108,7 +108,7 @@
                 </td>
             </tr>
             
-             <tr>
+             <!-- <tr>
                 <td class="formAlignRight">副科长： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgAssistant" id="orgAssistant" name="orgAssistant"class="form-control input-sm " >
@@ -180,7 +180,7 @@
                     <span class="errors" ng-show="vm.isOrgExist">部门已存在</span>
                 </td>
             </tr>
-       
+        -->
             <tr>
                 <td class="formAlignRight">备注： </td>
                 <td>

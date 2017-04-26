@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -73,16 +75,17 @@ public class Org extends DomainBase {
 	@Column(columnDefinition="varchar(255)")
 	private String orgIdentity;
 	
-	@OneToMany(mappedBy="org")
-	private Set<User> users =new HashSet<User>();
+	@ManyToOne
+	@JoinColumn(name="userOrgID")
+	private User userOrgs;
 	
-	
-	public Set<User> getUsers() {
-		return users;
+
+	public User getUserOrgs() {
+		return userOrgs;
 	}
 
-	public void setUsers(Set<User> users) {
-		this.users = users;
+	public void setUserOrgs(User userOrgs) {
+		this.userOrgs = userOrgs;
 	}
 
 	public String getOrgPhone() {

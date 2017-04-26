@@ -32,8 +32,8 @@
             } else {
             	userSvc.initZtreeClient(vm);
             	userSvc.getDict(vm);
-            	userSvc.getOrg(vm);
             }
+        	userSvc.getOrg(vm);
         }
     }
 })();

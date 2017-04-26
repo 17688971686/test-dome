@@ -14,6 +14,7 @@ import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.RoleRepo;
 import cs.repository.repositoryImpl.UserRepo;
+import cs.utils.Cryptography;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -80,12 +82,6 @@ public class UserServiceImpl implements UserService {
 			userDto.setLastLogin(item.getLastLogin());
 			userDto.setUserIP(item.getUserIP());
 			userDto.setLastLoginDate(item.getLastLoginDate());
-			
-//			Org o = item.getOrg();
-//			OrgDto org = new OrgDto();
-//			org.setName(o.getName());
-//			userDto.setOrgDto(org);
-			
 	            
 			// 查询相关角色
 			List<RoleDto> roleDtoList = new ArrayList<>();
@@ -124,6 +120,7 @@ public class UserServiceImpl implements UserService {
 	public void createUser(UserDto userDto) {
 		
 		User findUser=userRepo.findUserByName(userDto.getLoginName());
+		
 		if (findUser==null) {// 用户不存在
 			User user = new User();
 			user.setRemark(userDto.getRemark());
@@ -131,12 +128,15 @@ public class UserServiceImpl implements UserService {
 			user.setDisplayName(userDto.getDisplayName());
 			user.setId(UUID.randomUUID().toString());
 			user.setCreatedBy(currentUser.getLoginName());
-			user.setPassword(userDto.getPassword());
-			user.setModifiedBy(currentUser.getLoginName());
+			//MD5加密密码
+			String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
+			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
+			String password = Cryptography.md5(userDto.getPassword(), userDto.getPassword()+salt2,2);
+			user.setUserSalt(salt1);
+			user.setPassword(password);
 			
-		
-			    
-			user.setUserSex(userDto.getUserSex());		
+			
+			user.setModifiedBy(currentUser.getLoginName());
 			user.setUserPhone(userDto.getUserPhone());
 			user.setUserMPhone(userDto.getUserMPhone());
 			user.setEmail(userDto.getEmail());
@@ -240,6 +240,10 @@ public class UserServiceImpl implements UserService {
 		user.setUseState(userDto.getUseState());
 		user.setPwdState(userDto.getPwdState());
 		user.setUserOrder(userDto.getUserOrder());
+		
+		OrgDto oDto =  userDto.getOrgDto();
+		Org o = orgRepo.findById(oDto.getId());
+		user.setOrg(o);
 		
 		// 清除已有role
 		user.getRoles().clear();

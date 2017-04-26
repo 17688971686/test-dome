@@ -9,6 +9,7 @@
 		var url_user = rootPath + "/user";
 		var url_back = '#/user';
 		var url_role = rootPath + "/role";
+		var url_dictgroup = rootPath + "/dict";
 		var service = {
 			grid : grid,
 			getUserById : getUserById,

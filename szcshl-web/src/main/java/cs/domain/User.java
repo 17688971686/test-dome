@@ -59,9 +59,7 @@ public class User extends DomainBase {
 	
 	@Column(columnDefinition="varchar(255) ")
 	private String remark;
-
 	
-	//@Column(columnDefinition="int(11)")
 	private int loginFailCount;
 	@Column(columnDefinition="date")
 	private Date lastLoginDate;

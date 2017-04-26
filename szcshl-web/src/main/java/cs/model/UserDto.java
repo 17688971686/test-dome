@@ -38,25 +38,12 @@ public class UserDto extends BaseDto {
 	private Date lastLoginDate;
 	//角色
 	private List<RoleDto> roles=new ArrayList<>();
-	//部门
-	//private List<OrgDto> orgs =new ArrayList<>();
 	
 	private OrgDto orgDto;
 	
-	private Set<OrgDto> org = new HashSet<OrgDto>();
 	
 	public OrgDto getOrgDto() {
 		return orgDto;
-	}
-
-
-	public Set<OrgDto> getOrg() {
-		return org;
-	}
-
-
-	public void setOrg(Set<OrgDto> org) {
-		this.org = org;
 	}
 
 
