@@ -1,5 +1,7 @@
 package cs.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +25,8 @@ public class AccountController {
 	
 	@RequestMapping(name = "登录", path = "login", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public @ResponseBody Response post(@RequestBody UserDto userDto) {
-		Response loginResult= userService.Login(userDto.getLoginName(), userDto.getPassword());
+	public @ResponseBody Response post(@RequestBody UserDto userDto,HttpServletRequest request) {
+		Response loginResult= userService.Login(userDto.getLoginName(), userDto.getPassword(),request);
 		
 		return loginResult;
 	}
