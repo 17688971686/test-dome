@@ -55,6 +55,85 @@
             </tr>
             
             <tr>
+                <td class="formAlignRight">联系电话：<span class="required">*</span> </td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userPhone" id="userPhone" name="userPhone" data-val="false" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">联系手机：<span class="required">*</span> </td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userMPhone" id="userMPhone" name="userMPhone" data-val="false" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="userMPhone" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">电子邮件： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.email" id="email" name="email" data-val="false" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            <tr>
+                <td class="formAlignRight">序号：<span class="required">*</span> </td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userOrder" id="userOrder" name="userOrder" data-val="false" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="userOrder" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+             <tr>
+                <td class="formAlignRight">性别：<span class="required">*</span> </td>
+                <td>
+                     <select ng-model="vm.model.userSex" id="userSex" name="userSex"class="form-control input-sm " >
+						<option ng-repeat="x in vm.sex" value="{{x.vm.sex}}">{{x.dictKey}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="userSex" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            <tr>
+                <td class="formAlignRight">停用情况：<span class="required">*</span> </td>
+                <td>
+                     <select ng-model="vm.model.useState" id="useState" name="useState"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="useState" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
+             <tr>
+                <td class="formAlignRight">密码情况：<span class="required">*</span> </td>
+                <td>
+                     <select ng-model="vm.model.pwdState" id="pwdState" name="useState"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="pwdState" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+             <tr>
+                <td class="formAlignRight">在职情况：<span class="required">*</span> </td>
+                <td>
+                     <select ng-model="vm.model.jobState" id="jobState" name="jobState"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="jobState" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
+             <tr>
+                <td class="formAlignRight">所在部门：<span class="required">*</span> </td>
+                <td>
+                     <select ng-model="vm.model.orgDto.id" id="id" name="id"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.org" value="{{x.id}}" >{{x.name}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
+            
+            <tr>
                 <td class="formAlignRight">备注： </td>
                 <td>
                 <textarea class="form-control" maxlength="200" name="remark" id="remark" ng-model="vm.model.remark" style="height:120px;"></textarea>

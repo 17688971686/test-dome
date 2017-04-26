@@ -1,6 +1,7 @@
 package cs.controller;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
@@ -34,6 +36,15 @@ public class UserController {
 		PageModelDto<UserDto> userDtos = userService.get(odataObj);
 
 		return userDtos;
+	}
+	@RequiresPermissions("user#getOrg#get")	
+	@RequestMapping(name = "获取用户数据", path = "getOrg", method = RequestMethod.GET)
+	@ResponseBody
+	public List<OrgDto> getOrg(HttpServletRequest request) throws ParseException{
+		
+		ODataObj odataObj = new ODataObj(request);
+		List<OrgDto> orgDto = userService.getOrg(odataObj);
+		return orgDto;
 	}
 	@RequiresPermissions("user##post")
 	@RequestMapping(name = "创建用户", path = "",method=RequestMethod.POST)	

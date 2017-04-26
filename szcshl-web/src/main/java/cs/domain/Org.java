@@ -1,12 +1,15 @@
 package cs.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Formula;
@@ -69,12 +72,18 @@ public class Org extends DomainBase {
     
 	@Column(columnDefinition="varchar(255)")
 	private String orgIdentity;
-//	private Set<User_OA> user_oa = new HashSet<>();//普通用户
-//	private Set<Department> orgSelf = new HashSet<Department>();
+	
+	@OneToMany(mappedBy="org")
+	private Set<User> users =new HashSet<User>();
 	
 	
-	@ManyToMany(mappedBy="orgs")
-	private List<User> users= new ArrayList<>();
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
 
 	public String getOrgPhone() {
 		return orgPhone;
@@ -255,13 +264,13 @@ public class Org extends DomainBase {
 		this.name = name;
 	}
 
-	public List<User> getUsers() {
+	/*public List<User> getUsers() {
 		return users;
 	}
 
 	public void setUsers(List<User> users) {
 		this.users = users;
-	}
+	}*/
 
 	public String getRemark() {
 		return remark;

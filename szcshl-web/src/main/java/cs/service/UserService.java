@@ -1,9 +1,13 @@
 package cs.service;
 
+import java.util.List;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import cs.common.Response;
 import cs.domain.User;
+import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
@@ -20,11 +24,15 @@ public interface UserService {
 	
 	void updateUser(UserDto userDto);
 	
-	Response Login(String userName, String password);
+	Response Login(String userName, String password, HttpServletRequest request);
 	Set<String> getCurrentUserPermissions();
 	void logout();
 	void changePwd(String password);
 	
 	User findUserByName(String userName);
+
+	 List<User> getUser();
+
+	List<OrgDto> getOrg(ODataObj odataObj );
 
 }

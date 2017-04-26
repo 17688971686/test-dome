@@ -1,10 +1,13 @@
 package cs.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
@@ -16,15 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import cs.common.ICurrentUser;
 import cs.common.Response;
+import cs.domain.Org;
 import cs.domain.Role;
 import cs.domain.User;
+import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.RoleDto;
 import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.RoleRepo;
 import cs.repository.repositoryImpl.UserRepo;
 
@@ -39,8 +44,10 @@ public class UserServiceImpl implements UserService {
 	private ICurrentUser currentUser;
 
 	@Autowired
+	private OrgRepo orgRepo;
+	@Autowired
 	private IdentityService identityService;
-	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -51,6 +58,7 @@ public class UserServiceImpl implements UserService {
 	public PageModelDto<UserDto> get(ODataObj odataObj) {
 		
 		List<User> listUser = userRepo.findByOdata(odataObj);
+		
 		List<UserDto> userDtoList = new ArrayList<>();
 		for (User item : listUser) {
 			UserDto userDto = new UserDto();
@@ -60,7 +68,25 @@ public class UserServiceImpl implements UserService {
 			userDto.setPassword(item.getPassword());
 			userDto.setRemark(item.getRemark());
 			userDto.setCreatedDate(item.getCreatedDate());
-
+			
+			userDto.setUserSex(item.getUserSex());		
+			userDto.setUserPhone(item.getUserPhone());
+			userDto.setUserMPhone(item.getUserMPhone());
+			userDto.setEmail(item.getEmail());
+			userDto.setJobState(item.getJobState());
+			userDto.setUseState(item.getUseState());
+			userDto.setPwdState(item.getPwdState());
+			userDto.setUserOrder(item.getUserOrder());
+			userDto.setLastLogin(item.getLastLogin());
+			userDto.setUserIP(item.getUserIP());
+			userDto.setLastLoginDate(item.getLastLoginDate());
+			
+//			Org o = item.getOrg();
+//			OrgDto org = new OrgDto();
+//			org.setName(o.getName());
+//			userDto.setOrgDto(org);
+			
+	            
 			// 查询相关角色
 			List<RoleDto> roleDtoList = new ArrayList<>();
 			for (Role role : item.getRoles()) {
@@ -73,7 +99,15 @@ public class UserServiceImpl implements UserService {
 				roleDtoList.add(roleDto);
 			}
 			userDto.setRoles(roleDtoList);
-
+			
+			OrgDto orgDto = new OrgDto();
+            if(item.getOrg() !=null){            	
+            	orgDto.setId(item.getOrg().getId());
+            	orgDto.setName(item.getOrg().getName());            	
+            }
+            userDto.setOrgDto(orgDto);
+			
+			
 			userDtoList.add(userDto);
 		}
 		PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
@@ -84,9 +118,11 @@ public class UserServiceImpl implements UserService {
 		return pageModelDto;
 	}
 
+	
 	@Override
 	@Transactional
 	public void createUser(UserDto userDto) {
+		
 		User findUser=userRepo.findUserByName(userDto.getLoginName());
 		if (findUser==null) {// 用户不存在
 			User user = new User();
@@ -97,7 +133,21 @@ public class UserServiceImpl implements UserService {
 			user.setCreatedBy(currentUser.getLoginName());
 			user.setPassword(userDto.getPassword());
 			user.setModifiedBy(currentUser.getLoginName());
+			
+		
+			    
+			user.setUserSex(userDto.getUserSex());		
+			user.setUserPhone(userDto.getUserPhone());
+			user.setUserMPhone(userDto.getUserMPhone());
+			user.setEmail(userDto.getEmail());
+			user.setJobState(userDto.getJobState());
+			user.setUseState(userDto.getUseState());
+			user.setPwdState(userDto.getPwdState());
+			user.setUserOrder(userDto.getUserOrder());
+			
+			List<String> orgs = new ArrayList<String>();
 			List<String> roleNames = new ArrayList<String>();
+			
 			// 加入角色
 			for (RoleDto roleDto : userDto.getRoles()) {
 				Role role = roleRepo.findById(roleDto.getId());
@@ -108,7 +158,11 @@ public class UserServiceImpl implements UserService {
 				}
 
 			}
-
+			//添加部门
+			OrgDto oDto =  userDto.getOrgDto();
+			Org o = orgRepo.findById(oDto.getId());
+			//o.setId(o.getId());
+			user.setOrg(o);
 			userRepo.save(user);
 			//System.out.println(userDto.getId()+userDto.getLoginName()+userDto.getPassword());
 			createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
@@ -117,6 +171,34 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException(String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
 		}
 
+	}
+	@Override
+	@Transactional
+	public List<OrgDto> getOrg(ODataObj odataObj ) {
+		List<Org> org= orgRepo.findByOdata(odataObj);
+		List<OrgDto> orgDto = new ArrayList<>();
+		for(Org item : org){
+			
+			OrgDto orgDtos = new OrgDto();
+			orgDtos.setId(item.getId());
+			orgDtos.setName(item.getName());
+			orgDtos.setRemark(item.getRemark());
+			
+			orgDtos.setOrgPhone(item.getOrgPhone());
+			orgDtos.setOrgFax(item.getOrgFax());
+			orgDtos.setOrgAddress(item.getOrgAddress());
+			orgDtos.setOrgFunction(item.getOrgFunction());
+			
+			orgDtos.setOrgDirector(item.getOrgDirector());//科长
+			orgDtos.setOrgAssistant(item.getOrgAssistant());//副科长
+			orgDtos.setOrgCompany(item.getOrgCompany());//单位名称
+			orgDtos.setCreatedBy(currentUser.getLoginName());
+			orgDtos.setOrgIdentity(item.getOrgIdentity());
+			orgDtos.setModifiedBy(currentUser.getLoginName());
+			
+			orgDto.add(orgDtos);
+		}
+		return orgDto;
 	}
 
 	@Override
@@ -150,6 +232,15 @@ public class UserServiceImpl implements UserService {
 		user.setDisplayName(userDto.getDisplayName());
 		user.setModifiedBy(currentUser.getLoginName());
 		
+		user.setUserSex(userDto.getUserSex());		
+		user.setUserPhone(userDto.getUserPhone());
+		user.setUserMPhone(userDto.getUserMPhone());
+		user.setEmail(userDto.getEmail());
+		user.setJobState(userDto.getJobState());
+		user.setUseState(userDto.getUseState());
+		user.setPwdState(userDto.getPwdState());
+		user.setUserOrder(userDto.getUserOrder());
+		
 		// 清除已有role
 		user.getRoles().clear();
 			List<String> roleNames=new ArrayList<String>();
@@ -167,18 +258,24 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	@Transactional
-	public Response Login(String userName, String password){
+	public Response Login(String userName, String password,HttpServletRequest request){
 		User user=userRepo.findUserByName(userName);
 		Response response =new Response();
+		 
 		if(user!=null){
-			if(user.getLoginFailCount()>5&&user.getLastLoginDate().getDay()==(new Date()).getDay()){	
-				response.setMessage("登录失败次数过多,请明天再试!");
-				logger.warn(String.format("登录失败次数过多,用户名:%s", userName));
-			}
-			else if(password!=null&&password.equals(user.getPassword())){
+//			if(user.getLoginFailCount()>5&&user.getLastLoginDate().getDay()==(new Date()).getDay()){	
+//				response.setMessage("登录失败次数过多,请明天再试!");
+//				logger.warn(String.format("登录失败次数过多,用户名:%s", userName));
+//			}
+			if(password!=null&&password.equals(user.getPassword())){
 				currentUser.setLoginName(user.getLoginName());
 				currentUser.setDisplayName(user.getDisplayName());
 				user.setLoginFailCount(0);
+				String loginIP=	request.getRemoteAddr();
+				System.out.println(loginIP);
+				user.setUserIP(loginIP);
+				 String lastloign = sdf.format(new Date());//获取当前时间
+				 user.setLastLogin(lastloign);
 				user.setLastLoginDate(new Date());
 				//shiro
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());
@@ -280,4 +377,17 @@ public class UserServiceImpl implements UserService {
 	            }
 		 }
 	 }
+
+
+	@Override
+	@Transactional
+	public List<User> getUser() {
+		List<User>  user=userRepo.findAll();
+		return user;
+		
+	}
+
+	
+
+	
 }
