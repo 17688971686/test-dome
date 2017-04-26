@@ -11,4 +11,5 @@ public interface UserRepo extends IRepository<User, String> {
 	User findUserByName(String userName);
 	List<User> getUsersNotIn(List<String> userIds, ODataObj oDataObj);
 	Set<String> getUserPermission(String userName);
+	List<User> findUserByRoleName(String roleName);
 }

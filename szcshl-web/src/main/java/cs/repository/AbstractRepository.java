@@ -10,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cs.repository.odata.ODataObj;
@@ -30,6 +31,18 @@ public class AbstractRepository<T,ID extends Serializable> extends RepositoryHel
 		this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 	
+	public Criteria  getExecutableCriteria(){
+        return DetachedCriteria.forClass(this.getPersistentClass()).getExecutableCriteria(getSession()); 
+    }
+	
+	public DetachedCriteria getDetachedCriteria(){
+		return DetachedCriteria.forClass(this.getPersistentClass());
+	}
+	
+	public Criteria  getCriteriaByDetachedCriteria(DetachedCriteria dc){
+        return dc.getExecutableCriteria(getSession()); 
+    }
+	 
 	@Override
 	public T findById(ID id) {
 		logger.debug("findById");		

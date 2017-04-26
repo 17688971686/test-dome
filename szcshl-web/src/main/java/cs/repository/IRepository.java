@@ -25,9 +25,5 @@ public interface IRepository<T, ID> {
 	public void clear();
 
 	public void setSession(Session session);
-	public Session getSession();
-	
-	 public List<T> getListByHQL(String hqlString, Object... values);
-	 
-	 
+	public Session getSession(); 
 }

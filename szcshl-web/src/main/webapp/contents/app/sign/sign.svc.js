@@ -347,7 +347,35 @@
 		//S_初始化流程处理页面
 		function initFlowDeal(vm){			
 			initFillData(vm);			
-			common.initFlowData(vm);												
+			common.initFlowData(vm);	
+			
+	
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/flow/proccessInstance/nextNodeDeal",
+					params : {proccessInstanceId:vm.flow.processInstanceId,flowKey:"signflow"}						
+				}
+
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {						
+						//初始化未完成
+						vm.flow.nextGroup = response.data.nextGroup;	
+						vm.flow.nextDealUserList = response.data.nextDealUserList;	
+					}
+					
+				})
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+			
 		}//E_初始化流程处理页面
 		
 		//S_提交下一步

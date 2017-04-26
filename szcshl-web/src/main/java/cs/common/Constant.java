@@ -55,7 +55,11 @@ public class Constant {
 	 *
 	 */
 	public static enum EnumFlowNodeGroupName{
-		COMM_DEPT_DIRECTOR("综合部部长"),CENTRAL_LEADER("中心领导"),DIRECTOR("主任"),FILER("归档员");
+		COMM_DEPT_DIRECTOR("综合部部长"),
+		CENTRAL_LEADER("中心领导"),
+		DIRECTOR("主任"),
+		FILER("归档员"),
+		DEPT_LEADER("部门领导");
 		
 		private String value;
 

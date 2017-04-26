@@ -62,4 +62,14 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 		}
 		return permissions;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<User> findUserByRoleName(String roleName) {
+		Criteria criteria = getExecutableCriteria();		 
+		List<User> list = criteria.createAlias("roles","roles")
+        .add(Restrictions.eq("roles.roleName",roleName)).list();
+		 
+		 return list;
+	}
 }

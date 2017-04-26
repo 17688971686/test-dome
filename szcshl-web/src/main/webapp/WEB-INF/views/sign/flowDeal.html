@@ -6,6 +6,33 @@
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.commitNextStep()" ><span class="glyphicon glyphicon-ok"></span>提交下一步</button>
 </div>
+<div class="well well-sm" style="background:white;" >
+	<form id="flow_form" name="flow_form" >
+	<input type="hidden" ng-model="vm.flow.taskId" value="{{vm.flow.taskId}}" /> <!-- hidden taskId -->
+	<input type="hidden" ng-model="vm.flow.processInstanceId" value="{{vm.flow.processInstanceId}}" /><!-- hidden processInstanceId -->
+	<input type="text" ng-model="vm.flow.nextGroup" value="{{vm.flow.nextGroup}}" />
+	
+	<table class="table table-bordered">
+		  <caption>流程信息处理</caption>
+		  <tbody>
+		    <tr>
+		      <td width="15%" class="text-center">处理意见</td>
+		      <td>
+		      		<textarea rows="3" ng-model="vm.model.leaderhandlesug" name="leaderhandlesug" style="width:98%"> </textarea> 
+			  </td>
+			</tr>
+			<tr> 
+		      <td width="15%" class="text-center">下一步环节处理人</td>
+		      <td>
+					<select ng-model="vm.flow.nextDealUser" name="nextDealUser" id="nextDealUser">
+						<option ng-repeat="u in vm.flow.nextDealUserList" value="{{u.loginName}}">{{u.displayName}}</option>
+					</select>
+			  </td>
+		    </tr>
+		</tbody>
+	</table>
+	</form>		    
+</div>
 <ul id="myTab" class="nav nav-tabs">
     <li class="active"><a  data-toggle="tab" for-div="sign_detail"> 详情数据</a></li>
     <li><a  data-toggle="tab" for-div="sign_diagram">流程图</a></li>
@@ -16,10 +43,7 @@
 	<div class="well well-sm tab-pane fade in active" style="background:white;" id="sign_detail">
 		<!-- s form -->
 		<form id="sign_fill_form" name="sign_fill_form" >
-			<input type="hidden" ng-model="vm.model.signid" value="{{vm.model.signid}}" />	<!-- hidden id -->
-			<input type="hidden" ng-model="vm.flow.taskId" value="{{vm.flow.taskId}}" /> <!-- hidden taskId -->
-			<input type="hidden" ng-model="vm.flow.processInstanceId" value="{{vm.flow.processInstanceId}}" /><!-- hidden processInstanceId -->
-			
+			<input type="hidden" ng-model="vm.model.signid" value="{{vm.model.signid}}" />	<!-- hidden id -->						
 			<!-- s table -->
 			<table class="table table-bordered">
 			  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>评估论证项目报审登记表</strong></caption>

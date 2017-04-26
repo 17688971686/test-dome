@@ -16,6 +16,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.subject.Subject;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -382,7 +383,6 @@ public class UserServiceImpl implements UserService {
 		 }
 	 }
 
-
 	@Override
 	@Transactional
 	public List<User> getUser() {
@@ -390,8 +390,21 @@ public class UserServiceImpl implements UserService {
 		return user;
 		
 	}
-
-	
+	 
+	/**
+	 * 根据角色名称获取用户信息
+	 * @author ldm
+	 */
+	@Override
+	public List<User> findUserByRoleName(String roleName) {
+		return userRepo.findUserByRoleName(roleName);		
+	}
 
 	
 }
+
+
+
+	
+
+	

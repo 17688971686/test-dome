@@ -25,14 +25,18 @@ public interface UserService {
 	void updateUser(UserDto userDto);
 	
 	Response Login(String userName, String password, HttpServletRequest request);
+	
 	Set<String> getCurrentUserPermissions();
+	
 	void logout();
+	
 	void changePwd(String password);
 	
 	User findUserByName(String userName);
 
-	 List<User> getUser();
+	List<User> getUser();
 
 	List<OrgDto> getOrg(ODataObj odataObj );
-
+	
+	List<User> findUserByRoleName(String roleName);
 }
