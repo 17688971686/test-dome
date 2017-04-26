@@ -10,5 +10,10 @@ import cs.repository.AbstractRepository;
 @Repository
 public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>  implements RoomBookingRepo{
 
+	@Override
+	public List<RoomBooking> findByHql(String hql) {		
+		return findByHql(hql);
+	}
+
 
 }

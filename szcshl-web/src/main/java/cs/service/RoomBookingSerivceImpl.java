@@ -82,7 +82,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
         String sunday=df.format(cal.getTime());
       
         String hql="from RoomBooking where rbDay between '"+monday+"' and '"+sunday+"' order by rbDay asc";
-        List<RoomBooking> rb= roomBookingRepo.getListByHQL(hql);
+        List<RoomBooking> rb= roomBookingRepo.findByHql(hql);
 		return rb ;
 	}
 	//本周全部会议安排
@@ -100,7 +100,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         String sunday=df.format(cal.getTime());
         String hql="from RoomBooking where rbDay between '"+monday+"' and '"+sunday+"' order by rbDay asc";
-        List<RoomBooking> rb= roomBookingRepo.getListByHQL(hql);
+        List<RoomBooking> rb= roomBookingRepo.findByHql(hql);
 		return rb;
 	}
 	//导出下周平射会议安排
@@ -121,7 +121,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         String nextSunday=df.format(cal.getTime());
         String hql="from RoomBooking where rbDay between '"+nextMonday+"' and '"+nextSunday+"' order by rbDay asc";
-    	List<RoomBooking> room =roomBookingRepo.getListByHQL(hql);
+    	List<RoomBooking> room =roomBookingRepo.findByHql(hql);
 		return room;
 	}
 	//导出下周全部会议安排
@@ -142,7 +142,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         String nextSunday=df.format(cal.getTime());
     	String hql="from RoomBooking where rbDay between '"+nextMonday+"' and '"+nextSunday+"' order by rbDay asc";
-    	List<RoomBooking> room =roomBookingRepo.getListByHQL(hql);
+    	List<RoomBooking> room =roomBookingRepo.findByHql(hql);
 		return room;
 	}
 	
@@ -200,7 +200,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
 		Response response =new Response();
 		JsonObject jsonObject = new JsonObject();
-		List<RoomBooking> roomb =  roomBookingRepo.getListByHQL(hql);
+		List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
 		if(room.isEmpty()){
 			
 			if(roomb !=null && roomb.size()>0){
@@ -245,7 +245,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		
 		RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
 		String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
-		List<RoomBooking> roomb =  roomBookingRepo.getListByHQL(hql);
+		List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
 		if(room !=null && roomb.size()>1){
 			response.setMessage("会议安排时间冲突!!!");
 		}else{

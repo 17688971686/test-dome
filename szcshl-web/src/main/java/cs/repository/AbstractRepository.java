@@ -121,19 +121,6 @@ public class AbstractRepository<T,ID extends Serializable> extends RepositoryHel
 		return this.session;
 	}
 
-	@Override
-	public List<T> getListByHQL(String hqlString, Object... values) {
-		 Query query = this.getCurrentSession().createQuery(hqlString);
-	        if (values != null)
-	        {
-	            for (int i = 0; i < values.length; i++)
-	            {
-	                query.setParameter(i, values[i]);
-	            }
-	        }
-	        return query.list();
-	}
-
 	private Session getCurrentSession() {
 		return this.sessionFactory.getCurrentSession();
 	}
