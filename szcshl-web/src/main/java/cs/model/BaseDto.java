@@ -13,6 +13,24 @@ public class BaseDto {
 	
 	private String modifiedDate;
 	private String modifiedBy;
+	
+	//流程参数
+	private String taskId;				//任务ID	
+	private String processInstanceId;	//流程实例ID
+	
+	
+	public String getTaskId() {
+		return taskId;
+	}
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
 	public String getCreatedDate() {
 		return createdDate;
 	}

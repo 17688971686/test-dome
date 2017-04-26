@@ -20,7 +20,8 @@
         http: http,//http请求    
         gridDataSource: gridDataSource,//gridDataSource
         loginUrl: window.rootPath +'/home/login',
-        buildOdataFilter:buildOdataFilter	//创建多条件查询的filter
+        buildOdataFilter:buildOdataFilter,	//创建多条件查询的filter
+        initFlowData : initFlowData		//初始化流程数据
     };
 
     window.common = service;
@@ -172,8 +173,7 @@
                         url: url,
                         dataType: "json",
                         type: "GET",
-                        beforeSend: function (req) {
-                            
+                        beforeSend: function (req) {                            
                             req.setRequestHeader('Token', service.getToken());
                         }
                     }
@@ -339,8 +339,84 @@
 		}else{
 			return "";
 		}		
-    }
-
+    }   
+    
+ 	//S_初始化流程数据
+    function initFlowData(vm){
+    	var processInstanceId = vm.flow.processInstanceId;
+		
+		vm.flow.picture = rootPath+"/flow/proccessInstance/img/"+processInstanceId;		
+		
+		
+		var dataSource = new kendo.data.DataSource({
+			type : 'odata',
+			transport : kendoGridConfig().transport(rootPath+"/flow/proccessInstance/history/"+processInstanceId),
+			schema : kendoGridConfig().schema({
+				id : "id"
+			}),
+			rowNumber: true,  
+            headerCenter: true,  
+		});
+					
+		var columns = [	
+			{
+                field: "",
+                title: "序号",
+                template: "<span class='row-number'></span>",
+                width:30
+            },
+			{
+				field : "activityName",
+				title : "环节名称",
+				width : 200,
+				filterable : false
+			},
+			{
+				field : "startTime",
+				title : "开始时间",
+				width : 200,
+				filterable : false,
+				template: "#=  (startTime == null)? '' : kendo.toString(new Date(startTime), 'yyyy-MM-dd hh:mm:ss') #"	
+			},
+			{
+				field : "",
+				title : "结束时间",
+				width : 200,
+				filterable : false,
+				template: function(item) {
+					if(item.endTime){
+						return kendo.toString(new Date(item.endTime), 'yyyy-MM-dd hh:mm:ss');
+					}
+					else{
+						return " ";
+					}
+				}	
+			},
+			{
+				field : "assignee",
+				title : "目前处理人",
+				width : 200,
+				filterable : false
+			}
+		];
+		// End:column
+		vm.flow.historygrid = {
+			dataSource : gridDataSource(dataSource),
+			filterable : kendoGridConfig().filterable,
+			pageable : kendoGridConfig().pageable,
+			noRecords : kendoGridConfig().noRecordMessage,
+			columns : columns,
+			resizable : true,
+			dataBound: function () {  
+                var rows = this.items();   
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function (i) {                    	
+                     $(this).find(".row-number").html(i+1);                
+                });  
+            } 
+		};				
+    }//E_初始化流程数据
+    
     //init
     init();
     function init() {

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import cs.repository.odata.ODataObj;
 
-public class AbstractRepository<T,ID extends Serializable> implements IRepository<T, ID> {
+public class AbstractRepository<T,ID extends Serializable> extends RepositoryHelper implements IRepository<T, ID> {
 	protected static Logger logger = Logger.getLogger(AbstractRepository.class);
 	private Class<T> persistentClass;
 	private Session session;	

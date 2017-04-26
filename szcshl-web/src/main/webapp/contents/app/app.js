@@ -146,8 +146,37 @@
 	            templateUrl: rootPath + '/dict/html/edit.html',
 	            controller: 'dictEditCtrl',
 	            controllerAs: 'vm'
-	        });
+	        })
         	//endDict
+	        
+	        //begin#sign
+	        .state('addSign', {
+	            url: '/addSign',
+	            templateUrl: rootPath + '/sign/html/add.html',
+	            controller: 'signCreateCtrl',
+	            controllerAs: 'vm'
+	        }).state('fillSign', {
+	        	url: '/fillSign/:signid',
+	            templateUrl: rootPath + '/sign/html/fillin.html',
+	            controller: 'signFillinCtrl',
+	            controllerAs: 'vm'
+	        }).state('listSign', {
+	            url: '/listSign',
+	            templateUrl: rootPath + '/sign/html/list.html',
+	            controller: 'signCtrl',
+	            controllerAs: 'vm'
+	        }).state('flowSign', {
+	            url: '/flowSign',
+	            templateUrl: rootPath + '/sign/html/flow.html',
+	            controller: 'signFlowCtrl',
+	            controllerAs: 'vm'
+	        }).state('flowDeal', {
+                url: '/flowDeal/:signid/:taskId/:processInstanceId',
+                templateUrl: rootPath + '/sign/html/flowDeal.html',
+                controller: 'signFlowDealCtrl',
+                controllerAs: 'vm'
+            });
+        	//end#sign
     }]);
     
 })();

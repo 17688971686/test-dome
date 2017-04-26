@@ -52,6 +52,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 				if("超级管理员".equals(x.getRoleName())){
 					permissions.clear();
 					permissions.add("*");
+					return ;
 				}else{
 					x.getResources().forEach(y -> {
 						permissions.add(y.getPath());

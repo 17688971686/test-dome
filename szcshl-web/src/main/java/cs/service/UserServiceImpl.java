@@ -231,23 +231,20 @@ public class UserServiceImpl implements UserService {
 		return userRepo.findUserByName(userName);
 	}
 	
-	  protected void createActivitiUser(String userId, String userName, String userPwd, 
-		List<String> groups){
-	   if (identityService.createUserQuery().userId(userId).count() == 0) {
-
-	            // Following data can already be set by demo setup script
-
-		   org.activiti.engine.identity.User user = identityService.newUser(userId);
-           user.setFirstName(userName);
-           user.setPassword(userPwd);
-          identityService.saveUser(user);
-	            
-         if (groups != null) {
-            for (String group : groups) {
-                identityService.createMembership(userId, group);
-            }
-         }
-		}
+	  protected void createActivitiUser(String userId, String userName, String userPwd, List<String> groups){
+		  if (identityService.createUserQuery().userId(userId).count() == 0) {
+			   // Following data can already be set by demo setup script
+			   org.activiti.engine.identity.User user = identityService.newUser(userId);
+	           user.setFirstName(userName);
+	           user.setPassword(userPwd);
+	           identityService.saveUser(user);
+		            
+	           if (groups != null) {
+	              for (String group : groups) {
+	                  identityService.createMembership(userId, group);
+	              }
+	           }
+		  }
 	}
 	 protected void deleteActivitiUser(String userId){
 		 if (identityService.createUserQuery().userId(userId).count() != 0) {

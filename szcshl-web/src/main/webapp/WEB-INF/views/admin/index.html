@@ -212,7 +212,22 @@ desired effect
 					</li>
 					<!-- end -->
 					
-					
+					<!-- start 项目管理-->
+					<li class="treeview">
+					<a href="javascript:void(0)"> 
+					<i class="fa fa-link"></i> <span class="title">项目签收管理</span>
+					 <span
+						class="pull-right-container">
+						<i class="fa fa-angle-left pull-right"></i>
+					</span>
+					</a>
+						<ul class="treeview-menu">
+							<li><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
+							<li><a href="javascript:void(0)" ui-sref="listSign">项目列表</a></li>
+							<li><a href="javascript:void(0)" ui-sref="flowSign">项目待处理</a></li>							
+						</ul>
+					</li>
+					<!-- end 项目签收-->
 						
 					<li class="treeview">
 					<a href="javascript:void(0)"> 
@@ -347,10 +362,18 @@ desired effect
 	<script src="${path}/contents/app/company/company.edit.ctrl.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/company/company.svc.js?version = ${.now}"></script>
 	
-
 	<!-- home -->
 	<script src="${path}/contents/app/home/home.ctrl.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/home/home.svc.js?version = ${.now}"></script>
+	
+	<!-- sign -->
+	<script src="${path}/contents/app/sign/sign.svc.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/sign/sign.ctrl.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/sign/sign.create.ctrl.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/sign/sign.fillin.ctrl.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/sign/sign.flow.ctrl.js?version = ${.now}"></script>
+	<script src="${path}/contents/app/sign/sign.flowDeal.ctrl.js?version = ${.now}"></script>
+			
 	<!-- demo -->
 	<script src="${path}/contents/app/demo/demo.ctrl.js?version = ${.now}"></script>
 	<script src="${path}/contents/app/demo/demo.svc.js?version = ${.now}"></script>
