@@ -12,6 +12,15 @@ public class FlowDto {
 	
 	private String nextGroup;			//下一环节处理组（角色）
 	private String nextDealUser;		//下一环节处理人
+	private String dealOption;			//处理意见
+
+	
+	public String getDealOption() {
+		return dealOption;
+	}
+	public void setDealOption(String dealOption) {
+		this.dealOption = dealOption;
+	}
 	
 	public String getTaskId() {
 		return taskId;

@@ -14,11 +14,9 @@
 			updateSign : updateSign,
 			initFillData : initFillData,		//初始化表单填写页面
 			completeFill : completeFill,		//提交表单填写
-			flowgrid : flowgrid,				//初始化待处理页面
-			initFlowDeal : initFlowDeal,		//初始化流程处理页面
-			commitNextStep : commitNextStep		//提交下一步
+			flowgrid : flowgrid				//初始化待处理页面
 		};
-		return service;	
+		return service;			
 		
 		//S_初始化grid
 		function grid(vm){
@@ -341,46 +339,6 @@
                     });  
                 } 
 			};						
-		}//E_初始化待处理页面
-		
-		
-		//S_初始化流程处理页面
-		function initFlowDeal(vm){			
-			initFillData(vm);			
-			common.initFlowData(vm);	
-			
-	
-			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/flow/proccessInstance/nextNodeDeal",
-					params : {proccessInstanceId:vm.flow.processInstanceId,flowKey:"signflow"}						
-				}
-
-			var httpSuccess = function success(response) {					
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function() {						
-						//初始化未完成
-						vm.flow.nextGroup = response.data.nextGroup;	
-						vm.flow.nextDealUserList = response.data.nextDealUserList;	
-					}
-					
-				})
-			}
-
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-			
-		}//E_初始化流程处理页面
-		
-		//S_提交下一步
-		function commitNextStep(vm){
-			alert("提交到下一步，待完成！");
-		}//E_提交下一步
+		}//E_初始化待处理页面										
 	}		
 })();

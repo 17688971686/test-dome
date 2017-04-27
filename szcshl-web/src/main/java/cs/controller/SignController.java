@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.Validate;
+import cs.model.FlowDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
 import cs.repository.odata.ODataObj;
@@ -116,8 +118,8 @@ public class SignController {
 	@RequiresPermissions("sign#html/flowDeal#get")
 	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
 	public String flowDeal(){
-		
-		
+				
 		return ctrlName + "/flowDeal";
 	}	
+	
 }

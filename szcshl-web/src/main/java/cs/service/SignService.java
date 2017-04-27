@@ -2,6 +2,10 @@ package cs.service;
 
 import java.util.Map;
 
+import org.activiti.engine.runtime.ProcessInstance;
+
+import cs.common.ResultMsg;
+import cs.model.FlowDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
 import cs.repository.odata.ODataObj;
@@ -21,4 +25,6 @@ public interface SignService{
 	PageModelDto<SignDto> getFlow(ODataObj odataObj);
 
 	void claimSignFlow(String taskId);
+	
+	ResultMsg dealSignFlow(ProcessInstance processInstance,FlowDto flowDto) throws Exception;
 }

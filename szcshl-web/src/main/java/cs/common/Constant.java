@@ -51,7 +51,7 @@ public class Constant {
 	
 	/**
 	 * 流程环节 处理组名称
-	 * @author Administrator
+	 * @author ldm
 	 *
 	 */
 	public static enum EnumFlowNodeGroupName{
@@ -71,4 +71,24 @@ public class Constant {
 	        return value;
 	    }
 	}
+	
+	/**
+	 * 消息返回码
+	 * @author ldm
+	 *
+	 */
+	public static enum MsgCode{
+		OK("ok"),ERROR("error");
+		
+		private String value;
+
+		MsgCode(String value){
+	        this.value = value;
+	    }
+
+	    public String getValue(){
+	        return value;
+	    }
+	}
+			
 }

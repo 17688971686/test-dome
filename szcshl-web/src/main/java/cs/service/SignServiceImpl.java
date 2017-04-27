@@ -21,12 +21,16 @@ import com.alibaba.fastjson.JSON;
 
 import cs.common.Constant;
 import cs.common.ICurrentUser;
+import cs.common.ResultMsg;
+import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.Constant.MsgCode;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.Role;
 import cs.domain.Sign;
 import cs.domain.User;
+import cs.model.FlowDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
 import cs.repository.odata.ODataObj;
@@ -198,5 +202,45 @@ public class SignServiceImpl implements SignService {
 	@Override
 	public void claimSignFlow(String taskId) {
 		 taskService.claim(taskId, currentUser.getLoginName());
+	}
+
+	/************************************** 以下是流程处理业务  ******************************************/
+	@Override
+	@Transactional
+	public ResultMsg dealSignFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception{
+		ResultMsg resultMsg = new ResultMsg();
+		
+		if(!Validate.isString(flowDto.getNextDealUser()) && !Validate.isString(flowDto.getNextDealUser())){
+			log.info("项目签收流程处理失败：获取不到下一环节处理组和处理人信息！");
+			throw new Exception( "保存失败，错误信息已记录，请联系管理员尽快处理！");			
+		}
+		
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+		if(task == null){
+			log.info("项目签收流程处理失败：获取不到activiti任务！");
+			throw new Exception( "保存失败，错误信息已记录，请联系管理员尽快处理！");
+		}
+		
+		String signid = processInstance.getBusinessKey();
+		switch(processInstance.getActivityId()){	
+			//综合部部长审批
+			case "ministerApproval":
+				Sign sign = signRepo.findById(signid);
+				sign.setComprehensivehandlesug(flowDto.getDealOption());
+				signRepo.save(sign);
+				
+				Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
+				taskService.complete(task.getId(),nextProcessVariables);
+				resultMsg.setReCode(MsgCode.OK.getValue());
+				resultMsg.setReMsg("操作成功！");
+				break;
+			case "endevent1":
+				
+				break;
+			default:
+				;
+		}	
+				
+		return resultMsg;
 	}
 }

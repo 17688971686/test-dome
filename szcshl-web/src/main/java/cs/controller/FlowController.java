@@ -20,6 +20,7 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,8 +28,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.Constant.MsgCode;
+import cs.common.ResultMsg;
+import cs.model.FlowDto;
 import cs.model.PageModelDto;
 import cs.service.FlowService;
+import cs.service.SignService;
 import cs.service.UserService;
 
 @Controller
@@ -45,7 +50,7 @@ public class FlowController {
 	private ProcessEngine processEngine;
 	
 	@Autowired
-	private FlowService flowService;
+	private SignService signService;
 	@Autowired
 	private UserService userService;
 	
@@ -64,8 +69,7 @@ public class FlowController {
 	private InputStream getProccessInstanceImage(String proccessInstanceId) {
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(proccessInstanceId);
-  
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(proccessInstanceId);        
         // 使用spring注入引擎请使用下面的这行代码
         processEngineConfiguration = processEngine.getProcessEngineConfiguration();
         Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngineConfiguration);
@@ -91,19 +95,54 @@ public class FlowController {
 	}  
 
 	@RequestMapping(name = "获取下一环节处理信息",path = "proccessInstance/nextNodeDeal",method = RequestMethod.GET)
-	public @ResponseBody Map<String,Object> nextNodeDeal(@RequestParam(required = true) String proccessInstanceId,@RequestParam(required = true) String flowKey){
+	public @ResponseBody Map<String,Object> nextNodeDeal(@RequestParam(required = true) String proccessInstanceId){
 		Map<String,Object> result  = new HashMap<String,Object>();
-		HistoricActivityInstance activityInstance =  flowService.getCurInstanceInfo(proccessInstanceId);
+		result.put("isEnd", false);
 		
-		if(flowKey.equals(Constant.EnumFlow.SIGN.getValue())){
-			switch(activityInstance.getActivityId()){
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();		
+		
+		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
+			switch(processInstance.getActivityId()){					
 				case "ministerApproval":
 					String roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
 					result.put("nextGroup", roleName);	//中心部门领导角色
 					result.put("nextDealUserList",userService.findUserByRoleName(roleName) );	//中心部门领导角色
+					
+					break;
+				case "endevent1":
+					result.put("isEnd", true);
 					break;
 			}			
 		}		
 		return result;
+	}
+	
+	@RequestMapping(name = "流程提交",path = "commit",method = RequestMethod.POST)
+	public @ResponseBody ResultMsg flowCommit(@RequestBody FlowDto flowDto) throws Exception{
+		ResultMsg resultMsg = null;
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();	
+		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
+				resultMsg = signService.dealSignFlow(processInstance, flowDto);			
+		}
+		if(resultMsg == null){
+			resultMsg = new ResultMsg();
+			resultMsg.setReCode(MsgCode.ERROR.getValue());
+			resultMsg.setReMsg("流程处理失败，失败记录已记录，请联系管理员进行处理！");
+		}
+		return resultMsg;
+	}
+
+	@RequestMapping(name = "流程回退",path = "back",method = RequestMethod.POST)
+	public @ResponseBody ResultMsg flowBack(@RequestParam FlowDto glowDto){
+		ResultMsg resultMsg = new ResultMsg();
+		
+		return resultMsg;
+	}
+	
+	@RequestMapping(name = "流程终止",path = "forcedend",method = RequestMethod.POST)
+	public @ResponseBody ResultMsg flowForcedend(@RequestParam FlowDto glowDto){
+		ResultMsg resultMsg = new ResultMsg();
+		
+		return resultMsg;
 	}
 }

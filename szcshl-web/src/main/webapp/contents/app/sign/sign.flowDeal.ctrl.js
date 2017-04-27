@@ -3,15 +3,15 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state']; 
+    sign.$inject = ['$location','signSvc','$state','flowSvc']; 
 
-    function sign($location,signSvc,$state) {        
+    function sign($location,signSvc,$state,flowSvc) {        
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};
         vm.flow = {};
-        vm.model.signid = $state.params.signid;	//业务ID
-        vm.flow.taskId = $state.params.taskId;	//流程任务ID
+        vm.model.signid = $state.params.signid;	
+        vm.flow.taskId = $state.params.taskId;			//流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
         
         active();
@@ -26,11 +26,22 @@
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
         	})  
         	
-        	signSvc.initFlowDeal(vm);   
+        	signSvc.initFillData(vm);
+        	
+        	flowSvc.initFlowData(vm);
+        	flowSvc.getNextStepInfo(vm);
         }
-                
+        
         vm.commitNextStep = function (){
-        	signSvc.commitNextStep(vm);
+        	flowSvc.commit(vm);
         }
+        
+        vm.commitBack = function(){
+        	alert("流程回退！");
+        }
+        
+        vm.commitOver = function(){
+        	alert("流程结束！");
+        }               
     }
 })();
