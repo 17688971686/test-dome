@@ -42,20 +42,26 @@
 				{
 					field : "activityName",
 					title : "环节名称",
-					width : 200,
+					width : 120,
+					filterable : false
+				},
+				{
+					field : "assignee",
+					title : "处理人",
+					width : 80,
 					filterable : false
 				},
 				{
 					field : "startTime",
 					title : "开始时间",
-					width : 200,
+					width : 120,
 					filterable : false,
 					template: "#=  (startTime == null)? '' : kendo.toString(new Date(startTime), 'yyyy-MM-dd hh:mm:ss') #"	
-				},
+				},											
 				{
 					field : "",
 					title : "结束时间",
-					width : 200,
+					width : 120,
 					filterable : false,
 					template: function(item) {
 						if(item.endTime){
@@ -67,9 +73,15 @@
 					}	
 				},
 				{
-					field : "assignee",
-					title : "目前处理人",
-					width : 200,
+					field : "duration",
+					title : "处理时长",
+					width : 120,
+					filterable : false
+				},
+				{
+					field : "message",
+					title : "处理信息",
+					width : 300,
 					filterable : false
 				}
 			];
@@ -139,7 +151,6 @@
 					vm:vm,
 					response:response,
 					fn:function() {		
-						console.log(response);
 						common.alert({
 							vm:vm,
 							msg: response.data.reMsg,

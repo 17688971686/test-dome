@@ -30,7 +30,9 @@ import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.MsgCode;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.model.FlowDto;
+import cs.model.FlowHistoryDto;
 import cs.model.PageModelDto;
 import cs.service.FlowService;
 import cs.service.SignService;
@@ -53,6 +55,10 @@ public class FlowController {
 	private SignService signService;
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private FlowService flowService;
+	
 	
 	@RequestMapping(name = "读取流程图",path = "proccessInstance/img/{proccessInstanceId}",method = RequestMethod.GET)
     public void readProccessInstanceImg(@PathVariable("proccessInstanceId") String proccessInstanceId, HttpServletResponse response)
@@ -84,11 +90,9 @@ public class FlowController {
 	}
 	
 	@RequestMapping(name = "读取流程历史记录",path = "proccessInstance/history/{proccessInstanceId}",method = RequestMethod.GET)
-	public @ResponseBody PageModelDto<HistoricActivityInstance> findHisActivitiList(@PathVariable("proccessInstanceId") String proccessInstanceId){   
-	    List<HistoricActivityInstance> list = processEngine.getHistoryService().
-	    		createHistoricActivityInstanceQuery().processInstanceId(proccessInstanceId).list();  	 
-	   
-	    PageModelDto<HistoricActivityInstance> pageModelDto = new PageModelDto<HistoricActivityInstance>();				
+	public @ResponseBody PageModelDto<FlowHistoryDto> findHisActivitiList(@PathVariable("proccessInstanceId") String proccessInstanceId){   	    
+		List<FlowHistoryDto> list = flowService.convertHistory(proccessInstanceId);		
+	    PageModelDto<FlowHistoryDto> pageModelDto = new PageModelDto<FlowHistoryDto>();				
 		pageModelDto.setCount(list.size());
 		pageModelDto.setValue(list);		
 	    return pageModelDto;
@@ -100,18 +104,40 @@ public class FlowController {
 		result.put("isEnd", false);
 		
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();		
-		
+		String roleName = "";
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
 			switch(processInstance.getActivityId()){					
-				case "ministerApproval":
-					String roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
-					result.put("nextGroup", roleName);	//中心部门领导角色
-					result.put("nextDealUserList",userService.findUserByRoleName(roleName) );	//中心部门领导角色
-					
+				case "ministerApproval":		//部长审批->中心领导
+					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();										
 					break;
-				case "endevent1":
+				case "leaderApproval":			//中心领导->选负责人
+					roleName = EnumFlowNodeGroupName.DEPT_PRINCIPAL.getValue();		
+					break;
+				case "selectPrincipal":			//负责人-> 审批项目
+					break;
+				case "approval":				//审批项目->部长审批会议方案
+					break;
+				case "approvalPlan":			//部长审批会议方案->中心领导审批
+					break;
+				case "leaderApprovalPlan":		//中心领导审批->发文申请
+					break;
+				case "dispatch":				//发文申请->部长审批
+					break;
+				case "ministerDispatches":		//部长审批->分管副主任审批
+					break;
+				case "secDirectorDispatches":	//分管副主任审批->主任审批
+					break;
+				case "directorDispatches":		//主任审批->归档
+					break;	
+				case "doFile":					//归档->
+					break;	
+				case "endevent1":				//结束
 					result.put("isEnd", true);
 					break;
+			}	
+			if(Validate.isString(roleName)){
+				result.put("nextGroup", roleName);	
+				result.put("nextDealUserList",userService.findUserByRoleName(roleName) );	
 			}			
 		}		
 		return result;

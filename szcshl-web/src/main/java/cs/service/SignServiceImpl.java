@@ -222,25 +222,37 @@ public class SignServiceImpl implements SignService {
 		}
 		
 		String signid = processInstance.getBusinessKey();
+		Sign sign = null;
 		switch(processInstance.getActivityId()){	
 			//综合部部长审批
-			case "ministerApproval":
-				Sign sign = signRepo.findById(signid);
-				sign.setComprehensivehandlesug(flowDto.getDealOption());
-				signRepo.save(sign);
-				
-				Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
-				taskService.complete(task.getId(),nextProcessVariables);
-				resultMsg.setReCode(MsgCode.OK.getValue());
-				resultMsg.setReMsg("操作成功！");
+			case "ministerApproval":	
+				sign = signRepo.findById(signid);
+				sign.setComprehensivehandlesug(flowDto.getDealOption());												
 				break;
-			case "endevent1":
-				
+			//中心领导审批	
+			case "leaderApproval":
+				sign = signRepo.findById(signid);
+				sign.setLeaderhandlesug(flowDto.getDealOption());												
+				break;
+			case "endevent1":				
 				break;
 			default:
 				;
 		}	
-				
+		if(sign != null){
+			signRepo.save(sign);
+		}
+		
+		taskService.addComment(task.getId(),processInstance.getId(),flowDto.getDealOption());	//添加处理信息
+		if(Validate.isString(flowDto.getNextDealUser()) && Validate.isString(flowDto.getNextGroup())){
+			Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
+			taskService.complete(task.getId(),nextProcessVariables);
+		}else{
+			taskService.complete(task.getId());
+		}
+						
+		resultMsg.setReCode(MsgCode.OK.getValue());
+		resultMsg.setReMsg("操作成功！");		
 		return resultMsg;
 	}
 }

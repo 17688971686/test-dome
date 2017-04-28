@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
 			String password = Cryptography.md5(userDto.getPassword(), userDto.getPassword()+salt2,2);
 			user.setUserSalt(salt1);
-			user.setPassword(password);
+			user.setPassword(userDto.getPassword());
 			
 			
 			user.setModifiedBy(currentUser.getLoginName());
