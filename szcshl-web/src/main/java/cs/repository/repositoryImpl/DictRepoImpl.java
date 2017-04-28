@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import cs.domain.Dict;
 import cs.domain.Dict_;
+import cs.model.DictDto;
 import cs.repository.AbstractRepository;
 
 
@@ -33,7 +34,6 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 	@Override
 	public Dict findByName(String dictGroupName) {
 		Criteria criteria = this.getSession().createCriteria(Dict.class);
-		//criteria.add(Restrictions.eq(DictGroup_.dictGroupName.getName(), dictGroupName));
 		List<Dict> dictGroups = criteria.list();
 		if (dictGroups.size() > 0) {
 			return dictGroups.get(0);
@@ -43,9 +43,12 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 	}
 
 	@Override
-	public Dict findByCode(String dictCode) {
+	public Dict findByCode(String dictCode,String excludeId) {
 		Criteria criteria = this.getSession().createCriteria(Dict.class);
 		criteria.add(Restrictions.eq(Dict_.dictCode.getName(), dictCode));
+		if(excludeId != null&&!excludeId.isEmpty()){
+			criteria.add(Restrictions.not(Restrictions.eq(Dict_.dictId.getName(), excludeId)));
+		}
 		List<Dict> dictGroups = criteria.list();
 		if (dictGroups.size() > 0) {
 			return dictGroups.get(0);
@@ -69,12 +72,44 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 		}
 	}
 
+	/**
+	 * 通过字典编码，查找出该字典编码的子级字典，如果dictCode为空，则查询第一级字典
+	 * */
 	@Override
 	public List<Dict> findDictItemByCode(String dictCode) {
 		Criteria criteria = this.getSession().createCriteria(Dict.class);
-		criteria.add(Restrictions.eq(Dict_.dictCode.getName(), dictCode));
-		criteria.add(Restrictions.eq(Dict_.dictType.getName(), "1"));		
+		if(dictCode == null||dictCode.isEmpty()){
+			
+		}else{
+			criteria.add(Restrictions.eq(Dict_.dictCode.getName(), dictCode));
+		}
+		
+		
 		return criteria.list();
+	}
+
+	@Override
+	public Dict findByKeyAndNameAtSomeLevel(String dictKey, String dictName, String parentId,String excludeId) {
+		Criteria criteria = this.getSession().createCriteria(Dict.class);	
+		criteria.add(Restrictions.eqOrIsNull(Dict_.parentId.getName(), parentId));
+		criteria.add(Restrictions.or(Restrictions.eq(Dict_.dictKey.getName(), dictKey),Restrictions.eq(Dict_.dictName.getName(), dictName)));
+		if(excludeId != null&&!excludeId.isEmpty()){
+			criteria.add(Restrictions.not(Restrictions.eq(Dict_.dictId.getName(), excludeId)));
+		}
+		List<Dict> dictGroups = criteria.list();
+		if (dictGroups.size() > 0) {
+			return dictGroups.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public List<Dict> findByPdictId(String parentId) {
+		Criteria criteria = this.getSession().createCriteria(Dict.class);	
+		criteria.add(Restrictions.eqOrIsNull(Dict_.parentId.getName(), parentId));	
+		return criteria.list();
+		
 	}
 
 }

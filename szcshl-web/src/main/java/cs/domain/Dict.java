@@ -1,5 +1,7 @@
 package cs.domain;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +29,7 @@ public class Dict extends DomainBase{
 	@Column(columnDefinition="VARCHAR(50)")
 	private String dictCode;
 	//字典值，业务表保存
-	@Column(columnDefinition="VARCHAR(10)")
+	@Column(columnDefinition="VARCHAR(64)")
 	private String dictKey;
 	//字典名称，字面值
 	@Column(columnDefinition="VARCHAR(100)")
@@ -40,8 +42,8 @@ public class Dict extends DomainBase{
 	@Column(nullable = false,columnDefinition="VARCHAR(1)")
 	private String isUsed = "0";
 	//字典类型，0表示字典分类，1表示字典数据,不可为空
-	@Column(nullable = false,columnDefinition="VARCHAR(1)")
-	private String dictType;
+	@Column(nullable=true, columnDefinition="VARCHAR(1)")
+	private String dictType = "0";
 	
 	//是否是系统字典，系统字典项不允许删除，应用运行时初始化,0是系统字典，1是应用字典，默认是1
 	@Column(columnDefinition="VARCHAR(1)")

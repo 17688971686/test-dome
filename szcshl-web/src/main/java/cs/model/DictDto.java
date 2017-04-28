@@ -18,7 +18,7 @@ public class DictDto extends BaseDto{
 
 	private String isUsed;
 
-	private String dictType;
+	private String dictType = "0";
 	
 
 	private String isSysDict;

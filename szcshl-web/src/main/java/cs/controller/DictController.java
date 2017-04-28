@@ -2,8 +2,10 @@ package cs.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,16 +40,22 @@ public class DictController {
 	@RequestMapping(name = "获取字典数据", path = "", method = RequestMethod.GET)
 	public @ResponseBody PageModelDto<DictDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
-		/*PageModelDto<DictGroupDto> dictGroupDto = new PageModelDto<DictGroupDto>();//= orgService.get(odataObj);
-		List<DictGroupDto> dictGroupDtos = new ArrayList<DictGroupDto>();
-		DictGroupDto dgd = new DictGroupDto();
-		dgd.setDictCode("xxx");
-		dgd.setDictGroupName("xxx");
-		dictGroupDtos.add(dgd);
-		dictGroupDto.setValue(dictGroupDtos);*/
 		PageModelDto<DictDto> dictDtos = dictService.get(odataObj);
-		
+		List<DictDto> dtos = dictService.getDictItemByCode("DICT_SEX");		
 		return dictDtos;
+	}
+	
+	
+	@RequiresPermissions("dict#dictItems#get")	
+	@RequestMapping(name = "获取字典数据", path = "dictItems", method = RequestMethod.GET)
+	public @ResponseBody List<DictDto> getDictItems(String dictCode) throws ParseException {		
+		return dictService.getDictItemByCode(dictCode);		
+	}
+	
+	@RequiresPermissions("dict#dictNameData#get")	
+	@RequestMapping(name = "获取字典数据字面值", path = "dictNameData", method = RequestMethod.GET)
+	public @ResponseBody Map<String, String> dictNameData(@RequestParam(required = true) String dictCode) throws ParseException {				
+		return dictService.getDictNameByCode(dictCode);				
 	}
 	
 	@RequiresPermissions("dict##post")
@@ -75,19 +83,6 @@ public class DictController {
 			dictService.deleteDict(ids[0]);
 		}		
 	}
-	
-	@RequiresPermissions("dict#dictItems#get")	
-	@RequestMapping(name = "获取字典数据", path = "dictItems", method = RequestMethod.GET)
-	public @ResponseBody List<DictDto> getDictItems(@RequestParam(required = true) String dictCode) throws ParseException {		
-		return dictService.getDictItemByCode(dictCode);		
-	}
-	
-	@RequiresPermissions("dict#dictNameData#get")	
-	@RequestMapping(name = "获取字典数据字面值", path = "dictNameData", method = RequestMethod.GET)
-	public @ResponseBody Map<String, String> dictNameData(@RequestParam(required = true) String dictCode) throws ParseException {				
-		return dictService.getDictNameByCode(dictCode);				
-	}
-	
 	@RequiresPermissions("dict#html/list#get")
 	@RequestMapping(name = "数据字典列表页面", path = "html/list", method = RequestMethod.GET)
 	public String list() {
@@ -97,6 +92,8 @@ public class DictController {
 	@RequiresPermissions("dict#html/edit#get")
 	@RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
 	public String edit() {
+		
+	
 		return ctrlName + "/edit";
 	}
 	

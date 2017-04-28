@@ -177,6 +177,17 @@
                 controllerAs: 'vm'
             });
         	//end#sign
-    }]);
+    }]).run(function($rootScope,$http){
+    	$rootScope.topSelectChange = function(dictName,dicts){
+    		for(var i=0;i<dicts.length;i++){
+    			if(dict[i].dictName == dictName){
+    				return dict[i].dicts;
+    			}
+    		}
+    	}   	
+    	common.initDictData({$http:$http,scope:$rootScope});
+    })
+    
+    ;
     
 })();

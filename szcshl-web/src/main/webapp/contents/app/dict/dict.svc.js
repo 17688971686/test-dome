@@ -3,24 +3,47 @@
 
 	angular.module('app').factory('dictSvc', dict);
 
-	dict.$inject = [ '$http' ,'$state'];
+	dict.$inject = [ '$http' ,'$state','$location'];
 
-	function dict($http,$state) {
-		//var url_user = rootPath + "/dict";
+	function dict($http,$state,$location) {
 		var url_back = '#/dict';
 		var url_dictgroup = rootPath + "/dict";
+		var url_dictitems = rootPath + "/dict/dictNameData";
 		var service = {
-			initDictGroupTree:initDictGroupTree,
-			createDictGroup:createDictGroup,
+			initDictTree:initDictTree,
+			createDict:createDict,
 			getDictById:getDictById,
-			updateDictGroup:updateDictGroup,
-			deleteDictData:deleteDictData,
+			updateDict:updateDict,
+			deleteDict:deleteDict,
 			initpZtreeClient:initpZtreeClient,
-			getTreeData:getTreeData
+			getTreeData:getTreeData,
+			getdictItems:getdictItems
 		};
 
 		return service;
 
+		function getdictItems(vm){
+			var dictCode = 'DICT_SEX';
+			
+			
+			var httpOptions = {
+					method : 'get',
+					url : common.format(url_dictitems + "?dictCode={0}", dictCode)
+			};
+			
+			var httpSuccess = function success(response) {
+			
+				
+			}
+
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+			
+		}
 		
 		function getTreeData(vm){
 			
@@ -67,7 +90,7 @@
 
 		
 		//beginDeleteGroup
-		function deleteDictData(vm,id){
+		function deleteDict(vm,id){
 		
            
 			vm.isSubmit = true;
@@ -84,15 +107,14 @@
 					response : response,
 					fn : function() {
 						vm.isSubmit = false;	
-
+						location.href = url_back;
 						common.alert({
 							vm : vm,
 							msg : "操作成功",
 							fn : function() {	
 								$('.alertDialog').modal('hide');
 								$('.modal-backdrop').remove();
-								//location.href = url_back;
-							
+								$state.go('dict',{},{reload:true});
 							}
 						});
 						
@@ -111,15 +133,16 @@
 		
 		}
 
-		//begin#createDictGroup
-		function createDictGroup(vm){
+		//begin#createDict
+		function createDict(vm){
 			common.initJqValidation();
 		
 			var isValid = $('form').valid();
 			
-			if(vm.model.dictType == "1"&&!vm.model.parentId){
-				vm.message = "字典数据项必须选择字典类型";
-				isValid = false;
+		
+			var nodes = vm.zpTree.getCheckedNodes(true);
+			if(nodes&&nodes.length>0){
+				vm.model.parentId = nodes[0].id;
 			}
 			
 			if(isValid){
@@ -145,8 +168,7 @@
 								fn : function() {	
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
-									location.href = url_back;
-								
+									$state.go('dict',{},{reload:true});
 								}
 							});
 						}
@@ -169,8 +191,8 @@
 				
 		}
 		
-		//updateDictGroup
-		function updateDictGroup(vm){
+		//updateDict
+		function updateDict(vm){
 			common.initJqValidation();
 			
 			var isValid = $('form').valid();
@@ -196,9 +218,9 @@
 								msg : "操作成功",
 								fn : function() {	
 									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');									
-									//location.href = url_back;
-								
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();	
+									$state.go('dict.edit', { id: vm.model.dictId},{reload:true});
 								}
 							})
 						}
@@ -220,7 +242,7 @@
 		}
 		
 		// begin#initZtreeClient
-		function initDictGroupTree(vm) {
+		function initDictTree(vm) {
 			var httpOptions = {
 				method : 'get',
 				url : url_dictgroup
@@ -234,13 +256,13 @@
 					fn : function() {
 						var zTreeObj;
 						var setting = {
-							check : {
+							/*check : {
 								chkboxType : {
 									"Y" : "s",
 									"N" : "s"
 								},
 								enable : true
-							},
+							},*/
 							callback: {
 								onClick: zTreeOnClick
 								//onCheck: zTreeOnCheck
@@ -249,8 +271,7 @@
 								simpleData: {
 									enable: true,
 									idKey: "id",
-									pIdKey: "pId",
-									rootPId: 0
+									pIdKey: "pId"
 								}
 							}
 						};
@@ -280,46 +301,26 @@
 								function(x) {
 									var isParent = false;
 									var pId = null;
-									
-									if(x.dictType == "0"){//编码
-										isParent = true;
-									
-										if(x.parentId){										
-											pId = x.parentId;
-										}
-										return {
-											id : x.dictId,
-											name : x.dictName,
-											isParent:isParent,
-											pId:pId
-										};
-										
-									}else if(x.dictType == "1"){//数据项
-										if(x.parentId){										
-											pId = x.parentId;
-										}
-										return {
-											id : x.dictId,
-											name : x.dictName,
-											isParent:isParent,
-											pId:pId
-										};
+									if(x.parentId){										
+										pId = x.parentId;
 									}
-									
+									return {
+										id : x.dictId,
+										name : x.dictName,
+										pId:pId
+									};
 									
 								}).toArray();
-						/*var rootNode = {
-							id : '',
+						var rootNode = {
+							id : '0',
 							name : '字典集合',
+							'chkDisabled':true,
 							children : zNodes
-						};*/
-						zTreeObj = $.fn.zTree.init($("#zTree"), setting,
-								zNodes);
+						};
+								
+						zTreeObj = $.fn.zTree.init($("#zTree"), setting,zNodes);
 						vm.dictsTree = zTreeObj;
-						if (vm.isUpdate) {
-							//updateZtree(vm);
-
-						}
+			
 					}
 
 				});
@@ -348,55 +349,52 @@
 					response : response,
 					fn : function() {
 						
-						var zTreeObj;
+						var zpTreeObj;
 						var setting = {
 							check: {enable: true,chkStyle: "radio",radioType: "all"},
 							callback: {
-								onCheck: zTreeOnCheck
+								//onCheck: zTreeOnCheck,
+								//onClick: zTreeOnClick
 							},
 							data: {
 								simpleData: {
 									enable: true,
 									idKey: "id",
-									pIdKey: "pId",
-									rootPId: 0
+									pIdKey: "pId"//,
+									//rootPId: 0
 								}
 							}
 						};
 						
 						
 						function zTreeOnCheck(event, treeId, treeNode) {
-							var selId = treeNode.id;
-							vm.model.parentId = selId;
-							vm.model.parent = treeNode;
-							if(vm.model.dictType == '1'){
-								vm.model.dictCode = treeNode.dictCode;
-							}
-							vm.apply();	
+							
+						
 						};
-						var zNodes = $linq(response.data.value).where(function (x) { return x.dictType == "0"; }).select(
+						
+						function zTreeOnClick(event, treeId, treeNode,clickFlag) {
+							
+						};
+						var zNodes = $linq(response.data.value).select(
 								function(x) {
-									if(x.dictType == "0"){
-										var isParent = false;
-										var pId = null;
-										if(x.parentId){
-											isParent = true;
-											pId = x.parentId;
-										}
-										return {
-											id : x.dictId,
-											name : x.dictName,
-											isParent:true,
-											pId:pId,
-											dictCode:x.dictCode
-										};
+									var pId;
+									if(x.parentId){										
+										pId = x.parentId;
 									}
+									return {
+										id : x.dictId,
+										name : x.dictName,
+										pId:pId
+									};
 									
 								}).toArray();
-					
-						zTreeObj = $.fn.zTree.init($("#pzTree"), setting,zNodes);
-					
-						
+						var rootNode = {
+								id : '',
+								name : '字典集合',
+								'chkDisabled':true,
+								children : zNodes
+							};
+						vm.zpTree = $.fn.zTree.init($("#pzTree"), setting,zNodes);						
 					}
 
 				});
@@ -416,16 +414,11 @@
 		function getDictById(vm){
 			var httpOptions = {
 					method : 'get',
-					url : common.format(url_dictgroup + "?$filter=dictId eq '{0}' ", vm.id)
+					url : common.format(url_dictgroup + "?$filter=dictId eq '{0}'", vm.id)
 			};
 			
 			var httpSuccess = function success(response) {
 				vm.model = response.data.value[0];
-				if(vm.model.dictType=="0"){
-					vm.model.dictTypeName = "字典类型";
-				}else if(vm.model.dictType=="1"){
-					vm.model.dictTypeName = "字典数据";
-				}
 				getTreeData(vm);
 			}
 

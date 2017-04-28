@@ -20,7 +20,8 @@
         http: http,//http请求    
         gridDataSource: gridDataSource,//gridDataSource
         loginUrl: window.rootPath +'/home/login',
-        buildOdataFilter:buildOdataFilter	//创建多条件查询的filter
+        buildOdataFilter:buildOdataFilter,	//创建多条件查询的filter
+        initDictData : initDictData 	//初始化数字字典
     };
 
     window.common = service;
@@ -340,6 +341,56 @@
 			return "";
 		}		
     }   
+    
+    function initDictData(options){
+        options.$http({
+       		method : 'get',
+				url : rootPath+'/dict/dictItems'
+        }).then(function(response){
+         //save the metadata
+       	 options.scope.dictMetaData = response.data;
+       	 var dictsObj = {};
+       	 reduceDict(dictsObj,response.data);
+       	 options.scope.DICT = dictsObj;
+        }, function (response) {         
+        	alert('初始化数据字典失败');
+        });
+   }
+    
+    function reduceDict(dictsObj,dicts,keyName){
+    	if(!dicts||dicts.length == 0){
+    		return ;
+    	}
+    	if(!keyName){
+    		//find the top dict
+    		for(var i = 0;i<dicts.length;i++){
+    			var dict = dicts[i];
+    			if(!dict.parentId){   				
+    				dictsObj[dict.dictCode] = {};
+    				dictsObj[dict.dictCode].dictId = dict.dictId;
+    				dictsObj[dict.dictCode].dictName = dict.dictName;   				
+    				reduceDict(dictsObj[dict.dictCode],dicts,dict.dictId);
+    			}
+    		}
+    	}else{
+    		//find sub dicts  		
+    		for(var i = 0;i<dicts.length;i++){
+    			var dict = dicts[i];
+    			if(dict.parentId&&dict.parentId == keyName){
+    				if(!dictsObj.dicts){
+    					dictsObj.dicts = new Array();
+    				}
+    				var subDict = {};
+    				subDict.dictId = dict.dictId;
+    				subDict.dictName = dict.dictName;
+    				dictsObj.dicts.push(subDict);    				
+    				//recruce
+    				reduceDict(subDict,dicts,dict.dictId);
+    			}
+    		}
+    	}
+    }
+
     
     //init
     init();

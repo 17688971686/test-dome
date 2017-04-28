@@ -5,10 +5,9 @@
         .module('app')
         .controller('dictCtrl', dict);
 
-    dict.$inject = ['$location','dictSvc']; 
+    dict.$inject = ['$location','dictSvc','$scope']; 
 
-    function dict($location, dictSvc) {
-        /* jshint validthis:true */
+    function dict($location, dictSvc,$scope) {
     	var vm = this;
         vm.title = '字典';
         
@@ -18,39 +17,34 @@
              common.confirm({
             	 vm:vm,
             	 title:"",
-            	 msg:"确认删除数据吗？",
+            	 msg:"删除字典将会连下级字典一起删除，确认删除数据吗？",
             	 fn:function () {
                   	$('.confirmDialog').modal('hide');             	
-                  	dictSvc.deleteDictData(vm,id);
+                  	dictSvc.deleteDict(vm,id);
                  }
              })
         }
         vm.dels = function () {     
-			var nodes = vm.dictsTree.getCheckedNodes(true);
-            var nodes_ids = $linq(nodes).select(function (x) { return { id: x.id};}).toArray();
 
-            if (nodes.length == 0) {
+            var nodes = vm.dictsTree.getSelectedNodes();
+            
+            if (nodes&&nodes.length >0) {
+            	 vm.del(nodes[0].id)
+            } else {
             	common.alert({
                 	vm:vm,
                 	msg:'请选择数据'
                 	
                 });
-            } else {
-            	var ids=[];
-            	var len = nodes.length;
-            	
-                for (var i = 0; i < len; i++) {
-                	ids.push(nodes_ids[i].id);
-				}  
-               
-                var idStr=ids.join(',');
-                vm.del(idStr);
             }   
        }
+        
         activate();
         function activate() {
-           dictSvc.initDictGroupTree(vm);
+            dictSvc.initDictTree(vm);
         }
+               
+        
     }
     
    

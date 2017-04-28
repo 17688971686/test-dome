@@ -8,8 +8,8 @@
 <div class="well well-sm" style="background:white;">
     <form id="form" name="form">
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.createDictGroup()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
-            <button class="btn btn-sm btn-success" ng-click="vm.updateDictGroup()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.createDict()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.updateDict()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
          </div>
         <table style="width:100%">
             <tr>
@@ -19,7 +19,7 @@
             </tr>
 
 
-			<tr>
+			<!-- <tr>
                 <td class="formAlignRight">字典类型： <span class="required">*</span></td>
                 <td>
                 <select ng-model="vm.model.dictType" ng-change="vm.dictTypeChange()" ng-hide="vm.isUpdate">
@@ -29,15 +29,7 @@
                 </td>
                 <td><span data-valmsg-for="dictGroupName" data-valmsg-replace="true" class="errors"></span>
                     <span class="errors" ng-show="vm.isDictNameExist">名称已存在</span></td>
-            </tr>
-            
-             <tr>
-                <td class="formAlignRight">字典值： <span class="required">*</span></td>
-                <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.model.dictType=='0'"  ng-model="vm.model.dictKey" id="dictKey" name="dictKey" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="dictKey" data-valmsg-replace="true" class="errors"></span>
-            </tr>
+            </tr> -->
             <tr>
                 <td class="formAlignRight">字典名称： <span class="required">*</span></td>
                 <td>
@@ -46,6 +38,14 @@
                 <td><span data-valmsg-for="dictName" data-valmsg-replace="true" class="errors"></span>
                     <span class="errors" ng-show="vm.isDictNameExist">分组名称已存在</span></td>
             </tr>
+             <tr>
+                <td class="formAlignRight">字典值： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.dictKey" id="dictKey" name="dictKey" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="dictKey" data-valmsg-replace="true" class="errors"></span>
+            </tr>
+            
             <tr>
                 <td class="formAlignRight">父级： </td>
                 <td>
@@ -58,21 +58,11 @@
              <tr>
                 <td class="formAlignRight">字典编码： <span class="required">*</span> </td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.isUpdate||vm.model.dictType=='1'"  ng-model="vm.model.dictCode" id="dictCode" name="dictCode" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.isUpdate"  ng-model="vm.model.dictCode" id="dictCode" name="dictCode" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="dictCode" data-valmsg-replace="true" class="errors"></span>
                  <span class="errors" ng-show="vm.isDictCodeExist">字典编码已存在</span></td>
-            </tr>
-            
-              
-            <tr>
-                <td class="formAlignRight">描述： </td>
-                <td>
-                <textarea class="form-control" maxlength="200" name="description" id="description" ng-model="vm.model.description" style="height:120px;"></textarea>
-                </td>
-                <td><span data-valmsg-for="description" data-valmsg-replace="true" class="errors"></span></td>
-            </tr>
-           
+            </tr>                                    
         </table>
     </form>
 </div>
