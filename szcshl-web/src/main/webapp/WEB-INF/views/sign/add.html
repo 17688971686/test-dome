@@ -2,7 +2,11 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
+<div id="dialog">不要吹牛</div>
+<script src="${path}/contents/app/common/dialog.js"></script>
+<script>
+    var dialog = $('#dialog').kendoGDialog({title:"弹窗"}).data('kendoGDialog');
+</script>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sign">项目签收</a></li>
@@ -60,8 +64,12 @@
             <tr>
                 <td class="formAlignRight">项目阶段： <span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.reviewstage" name="reviewstage" id="reviewstage">
-						<option ng-repeat="x in vm.dicList" value="{{x.dictName}}">{{x.dictName}}</option>
+                    <select ng-model="vm.model.reviewstage" ng-change="vm.model.secondCodeDicts = topSelectChange(vm.model.reviewstage,DICT.PRO_STAGE.dicts)" name="reviewstage" id="reviewstage">
+						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					</select>
+					
+					<select ng-model="vm.model.secondCode" name="reviewstage" id="reviewstage">
+						<option ng-repeat="x in vm.model.secondCodeDicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="reviewstage" data-valmsg-replace="true" class="errors"></span></td>

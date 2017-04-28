@@ -180,8 +180,8 @@
     }]).run(function($rootScope,$http){
     	$rootScope.topSelectChange = function(dictName,dicts){
     		for(var i=0;i<dicts.length;i++){
-    			if(dict[i].dictName == dictName){
-    				return dict[i].dicts;
+    			if(dicts[i].dictName == dictName){
+    				return dicts[i].dicts;
     			}
     		}
     	}   	
