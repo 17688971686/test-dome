@@ -26,11 +26,17 @@
 
     window.common = service;
 
-    function initJqValidation() {
-        $("form").removeData("validator");
-        $("form").removeData("unobtrusiveValidation");
-        $.validator.unobtrusive.parse("form");
-    }
+    function initJqValidation(formObj) {
+    	if(formObj){
+    		formObj.removeData("validator");
+    		formObj.removeData("unobtrusiveValidation");
+    	     $.validator.unobtrusive.parse(formObj);
+    	}else{
+    		 $("form").removeData("validator");
+	         $("form").removeData("unobtrusiveValidation");
+	         $.validator.unobtrusive.parse("form");
+    	}     
+    }   
     function requestError(options) {    	
         var message = '发生错误,系统已记录,我们会尽快处理！';
         if (options.response != undefined) {

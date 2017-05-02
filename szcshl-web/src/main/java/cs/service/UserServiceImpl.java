@@ -400,6 +400,15 @@ public class UserServiceImpl implements UserService {
 		return userRepo.findUserByRoleName(roleName);		
 	}
 
+
+	/**
+	 * 根据部门ID查询对应的用户信息
+	 */
+	@Override
+	public List<User> findUserByDeptId(String deptId) {
+		return userRepo.findUserByDeptId(deptId);
+	}
+
 	
 }
 

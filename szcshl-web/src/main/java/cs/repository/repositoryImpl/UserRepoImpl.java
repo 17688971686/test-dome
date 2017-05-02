@@ -15,7 +15,6 @@ import cs.repository.odata.ODataObj;
 
 @Repository
 public class UserRepoImpl extends AbstractRepository<User, String> implements UserRepo {
-
 	@Override
 	public User findUserByName(String userName) {
 		Criteria criteria = this.getSession().createCriteria(User.class);
@@ -71,5 +70,15 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         .add(Restrictions.eq("roles.roleName",roleName)).list();
 		 
 		 return list;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<User> findUserByDeptId(String deptId) {
+		Criteria criteria = getExecutableCriteria();		 
+		List<User> list = criteria.createAlias("org","org")
+        .add(Restrictions.eq("org.id",deptId)).list();
+		
+		return list;
 	}
 }

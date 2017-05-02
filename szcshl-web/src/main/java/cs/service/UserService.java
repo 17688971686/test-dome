@@ -39,4 +39,6 @@ public interface UserService {
 	List<OrgDto> getOrg(ODataObj odataObj );
 	
 	List<User> findUserByRoleName(String roleName);
+
+	List<User> findUserByDeptId(String deptId);
 }

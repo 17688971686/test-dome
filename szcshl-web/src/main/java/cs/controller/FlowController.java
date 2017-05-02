@@ -1,9 +1,8 @@
 package cs.controller;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,9 +11,16 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +35,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.MsgCode;
+import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
+import cs.domain.User;
 import cs.model.FlowDto;
 import cs.model.FlowHistoryDto;
+import cs.model.Node;
 import cs.model.PageModelDto;
 import cs.service.FlowService;
 import cs.service.SignService;
@@ -40,8 +49,7 @@ import cs.service.UserService;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
-public class FlowController {
-	
+public class FlowController {	
 	@Autowired
 	private RuntimeService runtimeService;	
 	@Autowired
@@ -50,12 +58,12 @@ public class FlowController {
 	private ProcessEngineConfiguration processEngineConfiguration;
 	@Autowired
 	private ProcessEngine processEngine;
-	
 	@Autowired
 	private SignService signService;
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private ICurrentUser currentUser;
 	@Autowired
 	private FlowService flowService;
 	
@@ -99,12 +107,37 @@ public class FlowController {
 	}  
 
 	@RequestMapping(name = "获取下一环节处理信息",path = "proccessInstance/nextNodeDeal",method = RequestMethod.GET)
-	public @ResponseBody Map<String,Object> nextNodeDeal(@RequestParam(required = true) String proccessInstanceId){
-		Map<String,Object> result  = new HashMap<String,Object>();
-		result.put("isEnd", false);
-		
+	public @ResponseBody FlowDto nextNodeDeal(@RequestParam(required = true) String proccessInstanceId){
+		FlowDto flowDto = new FlowDto();
+		flowDto.setEnd(false);
+				
+		//流程实例
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();		
+		//获取当前环节信息
+		ActivityImpl activityImpl = getCurNode(processInstance.getProcessDefinitionKey(),processInstance.getActivityId());		
+		TaskDefinition curTaskDefinition = ((UserTaskActivityBehavior)activityImpl.getActivityBehavior()).getTaskDefinition();
+		if(curTaskDefinition != null){
+			Node curNode = new Node();
+			curNode.setActivitiName(curTaskDefinition.getNameExpression().getExpressionText());
+			curNode.setActivitiId(curTaskDefinition.getKey());			
+			flowDto.setCurNode(curNode);
+		}	
+		//获取下一环节信息--获取从某个节点出来的所有线路
+		List<PvmTransition> outTransitions = activityImpl.getOutgoingTransitions();
+		if(outTransitions != null){
+			List<Node> nextNodeList = new ArrayList<Node>(outTransitions.size());
+			for(PvmTransition tr:outTransitions){
+				PvmActivity ac = tr.getDestination(); //获取线路的终点节点
+				Node nextNode = new Node();
+				nextNode.setActivitiName(ac.getProperty("name").toString());
+				nextNode.setActivitiId(tr.getId());	
+				nextNodeList.add(nextNode);
+			}
+			flowDto.setNextNode(nextNodeList);
+		}
+				
 		String roleName = "";
+		User curUser = null;
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
 			switch(processInstance.getActivityId()){					
 				case "ministerApproval":		//部长审批->中心领导
@@ -113,9 +146,10 @@ public class FlowController {
 				case "leaderApproval":			//中心领导->选负责人
 					roleName = EnumFlowNodeGroupName.DEPT_PRINCIPAL.getValue();		
 					break;
-				case "selectPrincipal":			//负责人-> 审批项目
+				case "selectPrincipal":			//选负责人-> 审批项目
+					curUser = userService.findUserByName( currentUser.getLoginName());;
 					break;
-				case "approval":				//审批项目->部长审批会议方案
+				case "approval":				//审批项目-> 部长审批会议方案
 					break;
 				case "approvalPlan":			//部长审批会议方案->中心领导审批
 					break;
@@ -132,15 +166,18 @@ public class FlowController {
 				case "doFile":					//归档->
 					break;	
 				case "endevent1":				//结束
-					result.put("isEnd", true);
+					flowDto.setEnd(true);
 					break;
 			}	
 			if(Validate.isString(roleName)){
-				result.put("nextGroup", roleName);	
-				result.put("nextDealUserList",userService.findUserByRoleName(roleName) );	
+				flowDto.setNextGroup(roleName);
+				flowDto.setNextDealUserList(userService.findUserByRoleName(roleName));
+			}else if(Validate.isObject(curUser)){
+				flowDto.setNextGroup(curUser.getOrg().getName());
+				flowDto.setNextDealUserList(userService.findUserByDeptId(curUser.getOrg().getId()));				
 			}			
 		}		
-		return result;
+		return flowDto;
 	}
 	
 	@RequestMapping(name = "流程提交",path = "commit",method = RequestMethod.POST)
@@ -171,4 +208,25 @@ public class FlowController {
 		
 		return resultMsg;
 	}
+	
+	/**
+	* 根据key获得一个最新的流程定义
+	* @param key
+	* @return
+	*/
+	private ProcessDefinition getNewProcessDefinition(String key) {
+		//根据key查询已经激活的流程定义，并且按照版本进行降序。那么第一个就是将要得到的最新流程定义对象
+		List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).orderByProcessDefinitionVersion().desc().list();
+		if (processDefinitionList.size() > 0) {
+			return processDefinitionList.get(0);
+		}
+		return null;
+	}
+	
+	private ActivityImpl getCurNode(String flowKey,String activityId) {
+		ProcessDefinition processDefinition = getNewProcessDefinition(flowKey);
+		ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity)((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(processDefinition.getId());  
+		return  processDefinitionEntity.findActivity(activityId);//当前节点				  
+	}
+	 
 }

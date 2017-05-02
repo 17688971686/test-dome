@@ -115,13 +115,20 @@
 				common.requestSuccess({
 					vm:vm,
 					response:response,
-					fn:function() {						
+					fn:function() {			
+						console.log(response);
 						//初始化未完成
 						vm.flow.nextGroup = response.data.nextGroup;	
 						vm.nextDealUserList = response.data.nextDealUserList;	
 						if(response.data.nextDealUserList){
 							vm.flow.nextDealUser = response.data.nextDealUserList[0].loginName;	//默认选中
-						}						
+						}	
+						vm.curNodeName = response.data.curNode.activitiName;
+						
+						if(response.data.nextNode){
+							vm.nextNode = response.data.nextNode;
+							vm.flow.nextNodeAcivitiId = response.data.nextNode[0].activitiId;
+						}
 						vm.isOverStep = response.data.isEnd;
 						vm.isHaveNext = response.data.isEnd == true?false:true;
 					}
@@ -139,38 +146,42 @@
 	    
 	    //S_提交下一步
 		function commit(vm){
-			disableButton(vm);
-			var httpOptions = {
-					method : 'post',
-					url : rootPath+"/flow/commit",
-					data : vm.flow						
+			common.initJqValidation($("#flow_form"));			
+			var isValid = $("#flow_form").valid();
+			if(isValid){
+				disableButton(vm);
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/flow/commit",
+						data : vm.flow						
+					}
+
+				var httpSuccess = function success(response) {					
+					common.requestSuccess({
+						vm:vm,
+						response:response,
+						fn:function() {		
+							common.alert({
+								vm:vm,
+								msg: response.data.reMsg,
+								fn:function() {
+									if(response.data.reCode == "error"){
+										enableButton(vm);
+									}
+								}
+							})
+						}
+						
+					})
 				}
 
-			var httpSuccess = function success(response) {					
-				common.requestSuccess({
+				common.http({
 					vm:vm,
-					response:response,
-					fn:function() {		
-						common.alert({
-							vm:vm,
-							msg: response.data.reMsg,
-							fn:function() {
-								if(response.data.reCode == "error"){
-									enableButton(vm);
-								}
-							}
-						})
-					}
-					
-				})
-			}
-
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
+			}			
 		}//E_提交下一步
 		
 		//S_禁用按钮

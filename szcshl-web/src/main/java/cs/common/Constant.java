@@ -10,7 +10,7 @@ public class Constant {
 	/**
 	 * 定义一个业务状态
 	 * "0" 表示否
-	 * "1" 表示是
+	 * "9" 表示是
 	 * @author ldm
 	 *
 	 */
