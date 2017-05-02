@@ -53,9 +53,11 @@ public class Org extends DomainBase {
 	private String orgCompany; //所属单位
 	@Column(columnDefinition="varchar(255)")
 	private String orgOrder; //单位序号
+	
 	//编号对应的字段
 	@Column(columnDefinition="varchar(255)")
 	private String orgFirstName; //上级部门名称
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgDirectorName; //科长名称
 	@Column(columnDefinition="varchar(255)")
@@ -75,17 +77,15 @@ public class Org extends DomainBase {
 	@Column(columnDefinition="varchar(255)")
 	private String orgIdentity;
 	
-	@ManyToOne
-	@JoinColumn(name="userOrgID")
-	private User userOrgs;
-	
-
-	public User getUserOrgs() {
-		return userOrgs;
+	@OneToMany(mappedBy="org")
+	private List<User> users;
+		
+	public List<User> getUsers() {
+		return users;
 	}
 
-	public void setUserOrgs(User userOrgs) {
-		this.userOrgs = userOrgs;
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 	public String getOrgPhone() {

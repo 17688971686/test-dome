@@ -97,7 +97,7 @@
 						filterable : false
 					},
 					{
-						field : "userDto.loginName",
+						field : "orgDirector",
 						title : "科长",
 						width : 100,						
 						filterable : false
@@ -108,13 +108,6 @@
 						width : 100,						
 						filterable : false
 					},
-					
-					/*{
-						field : "orgOrder",
-						title : "单位序号",
-						width : 160,						
-						filterable : false
-					},*/
 					{
 						field : "orgCompanyName",
 						title : "单位名称",

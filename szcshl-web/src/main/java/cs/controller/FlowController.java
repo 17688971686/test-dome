@@ -37,12 +37,14 @@ import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.MsgCode;
 import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.User;
 import cs.model.FlowDto;
 import cs.model.FlowHistoryDto;
 import cs.model.Node;
 import cs.model.PageModelDto;
+import cs.model.UserDto;
 import cs.service.FlowService;
 import cs.service.SignService;
 import cs.service.UserService;
@@ -138,6 +140,8 @@ public class FlowController {
 				
 		String roleName = "";
 		User curUser = null;
+		List<User> nextUserList = new ArrayList<User>();		
+		
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
 			switch(processInstance.getActivityId()){					
 				case "ministerApproval":		//部长审批->中心领导
@@ -171,11 +175,21 @@ public class FlowController {
 			}	
 			if(Validate.isString(roleName)){
 				flowDto.setNextGroup(roleName);
-				flowDto.setNextDealUserList(userService.findUserByRoleName(roleName));
+				nextUserList = userService.findUserByRoleName(roleName);								
 			}else if(Validate.isObject(curUser)){
 				flowDto.setNextGroup(curUser.getOrg().getName());
-				flowDto.setNextDealUserList(userService.findUserByDeptId(curUser.getOrg().getId()));				
-			}			
+				nextUserList = userService.findUserByDeptId(curUser.getOrg().getId());						
+			}	
+			
+			if(nextUserList != null){
+				List<UserDto> nextUserDtoList = new ArrayList<UserDto>(nextUserList.size());
+				nextUserList.forEach(u ->{
+					UserDto ud = new UserDto();
+					BeanCopierUtils.copyProperties(u, ud);
+					nextUserDtoList.add(ud);
+				});
+				flowDto.setNextDealUserList(nextUserDtoList);
+			}
 		}		
 		return flowDto;
 	}

@@ -1,5 +1,7 @@
 package cs.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 
 import org.hibernate.annotations.Formula;
@@ -34,13 +36,13 @@ public class OrgDto extends BaseDto {
     
 	private String orgIdentity;
 	
-	private UserDto userDto;
-	
-	public UserDto getUserDto() {
-		return userDto;
+	private List<UserDto> userDtos;
+		
+	public List<UserDto> getUserDtos() {
+		return userDtos;
 	}
-	public void setUserDto(UserDto userDto) {
-		this.userDto = userDto;
+	public void setUserDtos(List<UserDto> userDtos) {
+		this.userDtos = userDtos;
 	}
 	public String getOrgPhone() {
 		return orgPhone;

@@ -46,30 +46,25 @@ public class OrgServiceImpl implements OrgService {
 	public PageModelDto<OrgDto> get(ODataObj odataObj) {
 		List<Org> orgList = orgRepo.findByOdata(odataObj);
 		List<OrgDto> orgDtoList = new ArrayList<>();
-		for (Org item : orgList) {
-			
-			OrgDto orgDto = new OrgDto();
-			
+		for (Org item : orgList) {			
+			OrgDto orgDto = new OrgDto();			
 			orgDto.setId(item.getId());
 			orgDto.setName(item.getName());
 			orgDto.setCreatedDate(item.getCreatedDate());
 			orgDto.setOrgIdentity(item.getOrgIdentity());
 			orgDto.setRemark(item.getRemark());
-			
-			
+						
 			orgDto.setOrgPhone(item.getOrgPhone());
 			orgDto.setOrgFax(item.getOrgFax());
 			orgDto.setOrgAddress(item.getOrgAddress());
 			orgDto.setOrgFunction(item.getOrgFunction());
 			
-			UserDto userDto = new UserDto();
-			if(item.getUserOrgs()!=null){
-				
+			/*UserDto userDto = new UserDto();
+			if(item.getUsers() != null){				
 				userDto.setId(item.getUserOrgs().getId());
 				userDto.setLoginName(item.getUserOrgs().getLoginName());
 			}
-			orgDto.setUserDto(userDto);
-			//orgDto.setOrgDirectorName(item.getOrgDirectorName());//科长
+			orgDto.setUserDto(userDto);*/
 		
 			orgDto.setOrgAssistantName(item.getOrgAssistantName());//副科长
 			orgDto.setOrgCompanyName(item.getOrgCompanyName());//单位名称
@@ -105,12 +100,7 @@ public class OrgServiceImpl implements OrgService {
 			//org.setOrgDirector(orgDto.getOrgDirector());//科长
 			org.setOrgAssistant(orgDto.getOrgAssistant());//副科长
 			org.setOrgCompany(orgDto.getOrgCompany());//单位名称
-		
-			//添加科长
-			UserDto userDto =orgDto.getUserDto();
-			User user = userRepo.findById(userDto.getId());
-			org.setUserOrgs(user);
-			
+								
 			org.setCreatedBy(currentUser.getLoginName());
 			org.setOrgIdentity(orgDto.getOrgIdentity());
 			org.setModifiedBy(currentUser.getLoginName());

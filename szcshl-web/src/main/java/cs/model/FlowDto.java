@@ -2,8 +2,6 @@ package cs.model;
 
 import java.util.List;
 
-import cs.domain.User;
-
 /**
  * 流程处理参数
  * @author ldm
@@ -20,14 +18,14 @@ public class FlowDto {
 	private boolean isEnd;				//是否已经结束
 	
 	/******************    以下字段用于页面显示  ********************/
-	private Node curNode;				//当前节点
-	private List<Node> nextNode;		//下一节点
-	private List<User> nextDealUserList;	//下一环节处理人
+	private Node curNode;					//当前节点
+	private List<Node> nextNode;			//下一节点
+	private List<UserDto> nextDealUserList;	//下一环节处理人
 	
-	public List<User> getNextDealUserList() {
+	public List<UserDto> getNextDealUserList() {
 		return nextDealUserList;
 	}
-	public void setNextDealUserList(List<User> nextDealUserList) {
+	public void setNextDealUserList(List<UserDto> nextDealUserList) {
 		this.nextDealUserList = nextDealUserList;
 	}
 	public Node getCurNode() {
