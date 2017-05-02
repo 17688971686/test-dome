@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.commitNextStep()" ng-disabled="vm.disabledButton"   ng-show="vm.isHaveNext" ng-hide="vm.isOverStep"><span class="glyphicon glyphicon-ok"></span>提交下一步</button>
-	<button class="btn btn-sm btn-danger" ng-click="vm.commitBack()" ng-disabled="vm.disabledButton"><span class="glyphicon glyphicon-backwar"></span>回退</button>
-	<button class="btn btn-sm btn-success" ng-click="vm.commitOver()" ng-disabled="vm.disabledButton" ng-hide="vm.isHaveNext" ng-show="vm.isOverStep" ><span class="glyphicon glyphicon-ok"></span>结束流程</button>
+	<button class="btn btn-sm btn-danger" ng-click="vm.commitBack()" ng-disabled="vm.disabledButton"><span class="glyphicon glyphicon-chevron-left"></span>回退</button>
+	<button class="btn btn-sm btn-success" ng-click="vm.commitOver()" ng-disabled="vm.disabledButton" ng-hide="vm.isHaveNext" ng-show="vm.isOverStep" ><span class="glyphicon glyphicon-remove"></span>结束流程</button>
 </div>
 <div class="well well-sm" style="background:white;" >
 	<form id="flow_form" name="flow_form" >

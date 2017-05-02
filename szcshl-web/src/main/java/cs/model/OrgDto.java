@@ -32,7 +32,7 @@ public class OrgDto extends BaseDto {
 
 	private String orgContactName; //联络人名称
 	private String orgCompanyName; //所属单位名称
-    private String  orgDtID;//钉钉ID
+    private String orgDtID;//钉钉ID
     
 	private String orgIdentity;
 	
@@ -122,21 +122,21 @@ public class OrgDto extends BaseDto {
 	public void setOrgFirstName(String orgFirstName) {
 		this.orgFirstName = orgFirstName;
 	}
-	@Formula("(select u.loginName from cs_user u where u.id = orgDirector)")
+	
 	public String getOrgDirectorName() {
 		return orgDirectorName;
 	}
 	public void setOrgDirectorName(String orgDirectorName) {
 		this.orgDirectorName = orgDirectorName;
 	}
-	@Formula("(select u.loginName from cs_user u where u.id = orgAssistant)")
+	
 	public String getOrgAssistantName() {
 		return orgAssistantName;
 	}
 	public void setOrgAssistantName(String orgAssistantName) {
 		this.orgAssistantName = orgAssistantName;
 	}
-	@Formula("(select c.coName from cs_Company c where c.id = orgCompany)")
+	
 	public String getOrgCompanyName() {
 		return orgCompanyName;
 	}

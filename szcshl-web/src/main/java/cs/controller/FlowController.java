@@ -39,6 +39,7 @@ import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.Org;
 import cs.domain.User;
 import cs.model.FlowDto;
 import cs.model.FlowHistoryDto;
@@ -138,9 +139,9 @@ public class FlowController {
 			flowDto.setNextNode(nextNodeList);
 		}
 				
-		String roleName = "";
+		String roleName = null;
 		User curUser = null;
-		List<User> nextUserList = new ArrayList<User>();		
+		List<User> nextUserList = new ArrayList<User>();
 		
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
 			switch(processInstance.getActivityId()){					
@@ -151,9 +152,13 @@ public class FlowController {
 					roleName = EnumFlowNodeGroupName.DEPT_PRINCIPAL.getValue();		
 					break;
 				case "selectPrincipal":			//选负责人-> 审批项目
-					curUser = userService.findUserByName( currentUser.getLoginName());;
+					curUser = userService.findUserByName( currentUser.getLoginName());
 					break;
 				case "approval":				//审批项目-> 部长审批会议方案
+					curUser = userService.findUserByName( currentUser.getLoginName());
+					Org org = curUser.getOrg();
+					User user = userService.findById(org.getOrgDirector());
+					nextUserList.add(user);
 					break;
 				case "approvalPlan":			//部长审批会议方案->中心领导审批
 					break;
@@ -173,15 +178,19 @@ public class FlowController {
 					flowDto.setEnd(true);
 					break;
 			}	
-			if(Validate.isString(roleName)){
-				flowDto.setNextGroup(roleName);
-				nextUserList = userService.findUserByRoleName(roleName);								
-			}else if(Validate.isObject(curUser)){
-				flowDto.setNextGroup(curUser.getOrg().getName());
-				nextUserList = userService.findUserByDeptId(curUser.getOrg().getId());						
-			}	
 			
-			if(nextUserList != null){
+			if(nextUserList.size() == 0){
+				if(Validate.isString(roleName)){
+					flowDto.setNextGroup(roleName);
+					nextUserList = userService.findUserByRoleName(roleName);								
+				}else if(Validate.isObject(curUser)){
+					flowDto.setNextGroup(curUser.getOrg().getName());
+					nextUserList = userService.findUserByDeptId(curUser.getOrg().getId());						
+				}
+			}
+			
+						
+			if(nextUserList != null && nextUserList.size() > 0){
 				List<UserDto> nextUserDtoList = new ArrayList<UserDto>(nextUserList.size());
 				nextUserList.forEach(u ->{
 					UserDto ud = new UserDto();

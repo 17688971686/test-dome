@@ -19,15 +19,15 @@
        </@shiro.hasPermission> 
         </div>
         <script type="text/template" id="columnBtns">
- <@shiro.hasPermission name="org##delete"> 
+ 		<@shiro.hasPermission name="org##delete"> 
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
- </@shiro.hasPermission> 
-<@shiro.hasPermission name="org##put"> 
+ 		</@shiro.hasPermission> 
+		<@shiro.hasPermission name="org##put"> 
 	        <a class="btn btn-xs btn-primary" href="#/orgEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
- </@shiro.hasPermission> 
-<@shiro.hasPermission name="org#orgId/users#get"> 
+ 		</@shiro.hasPermission> 
+		<@shiro.hasPermission name="org#orgId/users#get"> 
 			<a class="btn btn-xs btn-primary" href="#/orgUser/{1}"><span class="glyphicon glyphicon-pencil"></span>成员</a>
- </@shiro.hasPermission> 
+ 		</@shiro.hasPermission> 
 		</script>
         
          <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>

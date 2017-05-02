@@ -15,7 +15,6 @@
 			getOrgById : getOrgById,
 			updateOrg:updateOrg,
 			deleteOrg:deleteOrg	,
-			getUser : getUser,
 			getCompany : getCompany,
 		};		
 		return service;	
@@ -205,26 +204,7 @@
 //				})
 			}
 		}// end fun createorg
-		//获取科长信息
-		function getUser(vm){
 		
-			var httpOptions = {
-					method : 'get',
-					url : common.format(url_org + "/getUser")
-				}
-				var httpSuccess = function success(response) {
-					vm.user ={};
-					vm.user =response.data;
-					
-				}
-				
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-		}
 		//获取单位信息
 		function getCompany(vm){
 			
@@ -248,13 +228,16 @@
 		function getOrgById(vm) {
 			var httpOptions = {
 				method : 'get',
-				url : common.format(url_org + "?$filter=id eq '{0}'", vm.id)
+				url :  url_org + "/html/getOrgById",
+				params:{id:vm.id}
 			}
-			var httpSuccess = function success(response) {
-				vm.model = response.data.value[0];
-				if (vm.isUpdate) {
-					//initZtreeClient(vm);
+			var httpSuccess = function success(response) {															
+				if(response.data.userDtos){
+					vm.userDtos = {}
+					vm.userDtos = response.data.userDtos;
 				}
+				vm.model = response.data;
+				
 			}
 			
 			common.http({
@@ -271,9 +254,7 @@
 			if (isValid && vm.isorgExist == false) {
 				vm.isSubmit = true;
 				vm.model.id=vm.id;// id
-				
-			
-               
+							              
 				var httpOptions = {
 					method : 'put',
 					url : url_org,

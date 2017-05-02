@@ -116,7 +116,7 @@
 					vm:vm,
 					response:response,
 					fn:function() {			
-						console.log(response);
+						//console.log(response);
 						//初始化未完成
 						vm.flow.nextGroup = response.data.nextGroup;	
 						vm.nextDealUserList = response.data.nextDealUserList;	

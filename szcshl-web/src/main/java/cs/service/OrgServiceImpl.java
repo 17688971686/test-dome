@@ -1,6 +1,7 @@
 package cs.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.Company;
 import cs.domain.Org;
 import cs.domain.User;
@@ -33,44 +35,29 @@ public class OrgServiceImpl implements OrgService {
 	private OrgRepo orgRepo;
 	@Autowired
 	private ICurrentUser currentUser;
-
 	@Autowired
 	private CompanyRepo companyRepo;
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cs.service.OrgService#get(cs.repository.odata.ODataObj)
-	 */
+	
 	@Override
-	@Transactional
 	public PageModelDto<OrgDto> get(ODataObj odataObj) {
 		List<Org> orgList = orgRepo.findByOdata(odataObj);
 		List<OrgDto> orgDtoList = new ArrayList<>();
-		for (Org item : orgList) {			
-			OrgDto orgDto = new OrgDto();			
-			orgDto.setId(item.getId());
-			orgDto.setName(item.getName());
-			orgDto.setCreatedDate(item.getCreatedDate());
-			orgDto.setOrgIdentity(item.getOrgIdentity());
-			orgDto.setRemark(item.getRemark());
-						
-			orgDto.setOrgPhone(item.getOrgPhone());
-			orgDto.setOrgFax(item.getOrgFax());
-			orgDto.setOrgAddress(item.getOrgAddress());
-			orgDto.setOrgFunction(item.getOrgFunction());
-			
-			/*UserDto userDto = new UserDto();
-			if(item.getUsers() != null){				
-				userDto.setId(item.getUserOrgs().getId());
-				userDto.setLoginName(item.getUserOrgs().getLoginName());
+		orgList.forEach(o ->{
+			OrgDto orgDto = new OrgDto();	
+			BeanCopierUtils.copyProperties(o, orgDto);
+			List<User> userList = o.getUsers();
+			if(userList != null && userList.size() > 0){
+				List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
+				userList.forEach(u ->{
+					UserDto userDto = new UserDto();
+					BeanCopierUtils.copyProperties(u, userDto);
+					userDtoList.add(userDto);
+				});
+				orgDto.setUserDtos(userDtoList);
 			}
-			orgDto.setUserDto(userDto);*/
-		
-			orgDto.setOrgAssistantName(item.getOrgAssistantName());//副科长
-			orgDto.setOrgCompanyName(item.getOrgCompanyName());//单位名称
-			
 			orgDtoList.add(orgDto);
-		}
+		});
+		
 		PageModelDto<OrgDto> pageModelDto = new PageModelDto<>();
 		pageModelDto.setCount(odataObj.getCount());
 		pageModelDto.setValue(orgDtoList);
@@ -120,16 +107,18 @@ public class OrgServiceImpl implements OrgService {
 	public void updateOrg(OrgDto orgDto) {
 		Org org = orgRepo.findById(orgDto.getId());
 		org.setRemark(orgDto.getRemark());
-		org.setName(orgDto.getName());
-		org.setModifiedBy(currentUser.getLoginName());
+		org.setName(orgDto.getName());		
 		org.setOrgPhone(orgDto.getOrgPhone());
 		org.setOrgFax(orgDto.getOrgFax());
 		org.setOrgAddress(orgDto.getOrgAddress());
 		org.setOrgFunction(orgDto.getOrgFunction());
+		org.setOrgOrder(orgDto.getOrgOrder());
 		
 		org.setOrgDirector(orgDto.getOrgDirector());//科长
 		org.setOrgAssistant(orgDto.getOrgAssistant());//副科长
 		org.setOrgCompany(orgDto.getOrgCompany());//单位名称
+		org.setModifiedBy(currentUser.getLoginName());
+		org.setModifiedDate(new Date());
 		orgRepo.save(org);
 		logger.info(String.format("更新部门,部门名:%s", orgDto.getName()));
 	}
@@ -305,6 +294,24 @@ public class OrgServiceImpl implements OrgService {
 		
 		}
 		return comDtoList;
+	}
+
+	@Override
+	public OrgDto findById(String id) {
+		Org org = orgRepo.findById(id);
+		OrgDto orgDto = new OrgDto();	
+		BeanCopierUtils.copyProperties(org, orgDto);
+		List<User> userList = org.getUsers();
+		if(userList != null && userList.size() > 0){
+			List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
+			userList.forEach(u ->{
+				UserDto userDto = new UserDto();
+				BeanCopierUtils.copyProperties(u, userDto);
+				userDtoList.add(userDto);
+			});
+			orgDto.setUserDtos(userDtoList);
+		}
+		return orgDto;
 	}
 
 }

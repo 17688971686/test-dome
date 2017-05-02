@@ -41,4 +41,6 @@ public interface UserService {
 	List<User> findUserByRoleName(String roleName);
 
 	List<User> findUserByDeptId(String deptId);
+
+	User findById(String id);
 }

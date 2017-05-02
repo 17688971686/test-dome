@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -31,9 +32,6 @@ public class OrgController {
 	private String ctrlName = "org";
 	@Autowired
 	private OrgService orgService;
-
-	@Autowired
-	private UserService userService;
 	
 	@RequiresPermissions("org##get")	
 	@RequestMapping(name = "获取部门数据", path = "", method = RequestMethod.GET)
@@ -44,14 +42,14 @@ public class OrgController {
 		return orgDtos;
 	}
 	
-	@RequiresPermissions("org#getUser#get")	
-	@RequestMapping(name = "获取所有科长", path = "getUser", method = RequestMethod.GET)
-	@ResponseBody
-	public  List<UserDto> getUser(HttpServletRequest request)throws  java.text.ParseException{
-		ODataObj oDataObj = new ODataObj(request);
-		 List<UserDto> user=orgService.getUser(oDataObj);
-		return user;
+	@RequiresPermissions("org#html/getOrgById#get")	
+	@RequestMapping(name = "根据ID获取部门数据", path = "html/getOrgById", method = RequestMethod.GET)
+	public @ResponseBody OrgDto get(@RequestParam(required = true)String id) throws ParseException {
+		OrgDto orgDto = orgService.findById(id);
+
+		return orgDto;
 	}
+	
 	@RequiresPermissions("org#getCompany#get")	
 	@RequestMapping(name = "获取所有单位", path = "getCompany", method = RequestMethod.GET)
 	@ResponseBody

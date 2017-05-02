@@ -20,37 +20,47 @@ import org.hibernate.annotations.Formula;
 @Table(name="cs_org")
 public class Org extends DomainBase {
 	@Id
-	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String id;
+	
 	@Column(columnDefinition="varchar(255)")
 	private String name;//部门名称
+	
 	@Column(columnDefinition="varchar(255)")
 	private String remark;//部门简介
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgPhone; //电话
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgFax; //传真
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgAddress; //地址
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgFunction; //职能
 	//编号
 	@Column(columnDefinition="varchar(255)")
 	private String orgFirst; //上级部门
+	
 	@Column(columnDefinition="varchar(255)")
-	private String orgDirector; //部门主管（科长）
+	private String orgDirector; //部门主管（科长/部长）
 	
 	@Column(columnDefinition="varchar(255)")
 	private String orgAssistant; //部门助理(副科长)
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgMLeader; //主管领导（署长）
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgSLeader; //分管领导（分管署长）
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgContact; //联络人
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgCompany; //所属单位
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgOrder; //单位序号
 	
@@ -59,18 +69,26 @@ public class Org extends DomainBase {
 	private String orgFirstName; //上级部门名称
 	
 	@Column(columnDefinition="varchar(255)")
+	@Formula("(select u.loginName from cs_user u where u.id = orgDirector)")
 	private String orgDirectorName; //科长名称
+	
 	@Column(columnDefinition="varchar(255)")
+	@Formula("(select u.loginName from cs_user u where u.id = orgAssistant)")
 	private String orgAssistantName; //副科长名称
+	
 	@Column(columnDefinition="varchar(255)")
+	@Formula("(select u.loginName from cs_user u where u.id = orgMLeader)")
 	private String orgMLeaderName; //署长名称
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgSLeaderName;  //分管署长名称
 
 	@Column(columnDefinition="varchar(255)")
 	private String orgContactName; //联络人名称
+	
 	@Column(columnDefinition="varchar(255)")
 	private String orgCompanyName; //所属单位名称
+	
 	@Column(columnDefinition="varchar(255)")
     private String  orgDtID;//钉钉ID
     
@@ -131,7 +149,7 @@ public class Org extends DomainBase {
 	public String getOrgDirector() {
 		return orgDirector;
 	}
-
+	
 	public void setOrgDirector(String orgDirector) {
 		this.orgDirector = orgDirector;
 	}
@@ -191,8 +209,7 @@ public class Org extends DomainBase {
 	public void setOrgFirstName(String orgFirstName) {
 		this.orgFirstName = orgFirstName;
 	}
-	//科长
-	@Formula("(select u.loginName from cs_user u where u.id = orgDirector)")
+	//科长	
 	public String getOrgDirectorName() {
 		return orgDirectorName;
 	}
@@ -200,13 +217,11 @@ public class Org extends DomainBase {
 	public void setOrgDirectorName(String orgDirectorName) {
 		this.orgDirectorName = orgDirectorName;
 	}
-	//副科长
-	@Formula("(select u.loginName from cs_user u where u.id = orgAssistant)")
+	//副科长	
 	public String getOrgAssistantName() {
 		return orgAssistantName;
 	}
 	//单位名称
-	@Formula("(select c.coName from cs_Company c where c.id = orgCompany)")
 	public String getOrgCompanyName() {
 		return orgCompanyName;
 	}
@@ -218,6 +233,7 @@ public class Org extends DomainBase {
 		this.orgAssistantName = orgAssistantName;
 	}
 
+	//主管领导	
 	public String getOrgMLeaderName() {
 		return orgMLeaderName;
 	}
@@ -266,14 +282,6 @@ public class Org extends DomainBase {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	/*public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}*/
 
 	public String getRemark() {
 		return remark;

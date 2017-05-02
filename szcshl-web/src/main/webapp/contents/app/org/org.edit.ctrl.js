@@ -30,9 +30,8 @@
         function activate() {
         	if (vm.isUpdate) {
         		orgSvc.getOrgById(vm);
-            } 
-        	orgSvc.getUser(vm);
-        	orgSvc.getCompany(vm);
+            }        	
+        	//orgSvc.getCompany(vm);
         }
     }
 })();

@@ -2,7 +2,6 @@ package cs.service;
 
 import java.util.List;
 
-import cs.domain.User;
 import cs.model.CompanyDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
@@ -23,4 +22,5 @@ public interface OrgService {
 	void removeOrgUsers(String[] userIds, String orgId);
 	public List<UserDto> getUser(ODataObj odataObj);
 	List<CompanyDto> getCompany(ODataObj odataObj);
+	OrgDto findById(String id);
 }
