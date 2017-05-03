@@ -3,13 +3,10 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
-
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.updateFillin()" ><span class="glyphicon glyphicon-ok"></span>提交</button>
-	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	 <a class="btn btn-sm btn-primary" href="#/listSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+    <button class="btn btn-sm btn-success" ng-click="vm.completeFill()" ><span class="glyphicon glyphicon-ok"></span>提交</button>
 </div>
-      
+        
 <div class="well well-sm" style="background:white;">
 	<!-- s form -->
 	<form id="sign_fill_form" name="sign_fill_form" >
@@ -23,17 +20,14 @@
 		    <tr>
 		      <td width="15%" class="text-center">主办事处</td>
 		      <td>
-		      		
-					<select ng-model="vm.model.maindepetid" ng-change="vm.model.maindepetid = selectChangeOrg(vm.model.maindepetid,)" id="maindepetid" name="vm.model.maindepetid" >
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}" >{{o.name}}</option>
+		      		<select ng-model="vm.model.maindepetid" name="maindepetid" id="maindepetid">
+						<option ng-repeat="x in vm.maindept" value="{{x.id}}">{{x.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">主办事处联系人</td>
 		      <td>
-		      
-					<select ng-model="vm.model.maindepetcontactuserid" name="maindepetid" id="maindepetid">
-					
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.orgPhone}}</option>
+					<select ng-model="vm.model.maindepetcontactuserid" name="maindepetcontactuserid" id="maindepetcontactuserid">
+						<option ng-repeat="u in vm.maindeptuser" value="{{u.id}}">{{u.displayName}}</option>
 					</select>
 			  </td>
 		    </tr>
@@ -41,13 +35,13 @@
 		      <td width="15%" class="text-center">协办事处</td>
 		      <td>
 					<select ng-model="vm.model.assistdeptid" name="assistdeptid" id="assistdeptid">
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.name}}</option>
+						<option ng-repeat="x in vm.assistdept" value="{{x.id}}">{{x.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">协办事处联系人</td>
 		      <td>
 					<select ng-model="vm.model.assistdeptcontactuserid" name="assistdeptcontactuserid" id="assistdeptcontactuserid">
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.orgPhone}}</option>
+						<option ng-repeat="u in vm.assistdeptuser" value="{{u.id}}">{{u.displayName}}</option>
 					</select>
 			  </td>
 		    </tr>
@@ -63,15 +57,15 @@
 		      <td width="15%" class="text-center">建设单位</td>
 		      <td>
 					<select ng-model="vm.model.builtcompanyid" name="builtcompanyid" id="builtcompanyid">
-						<option ng-repeat="x in DICT.BUILTCOMAPNY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="b in vm.builtcompany" value="{{b.id}}">{{b.coName}}</option>
 					</select>
 			  </td>
 		    </tr>
 		    <tr>		     
-		      <td width="15%" class="text-center">编制单位</td>
+		      <td width="15%" class="text-center">编制单位单位</td>
 		      <td>
 					<select ng-model="vm.model.designcompanyid" name="designcompanyid" id="designcompanyid">
-						<option ng-repeat="x in DICT.DESIGNCOMPANY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="b in vm.designcompany" value="{{b.id}}">{{b.coName}}</option>
 					</select>
 			  </td>
 		    </tr> 
@@ -79,13 +73,13 @@
 		      <td width="15%" class="text-center" rowspan="2">缓急程度</td>
 		      <td rowspan="2">
 					<select ng-model="vm.model.urgencydegree" name="urgencydegree" id="urgencydegree">
-						<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in vm.urgencydegreeList" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">年度计划类别</td>
 		      <td>
 					<select ng-model="vm.model.yearplantype" name="yearplantype" id="yearplantype">
-						<option ng-repeat="x in DICT.YEARPLANTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in vm.yearplantypeList" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 			  </td>
 		    </tr>
@@ -93,7 +87,7 @@
 		      <td width="15%" class="text-center">秘密登记</td>
 		      <td>
 					<select ng-model="vm.model.secrectlevel" name="secrectlevel" id="secrectlevel">
-						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in vm.secrectlevelList" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 			  </td>
 		    </tr> 
@@ -116,26 +110,26 @@
 							      <tr>
 							        <td style="border-top:none;text-align:right;">委项目处理表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugProDealCount" name="sugProDealCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal"  ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealCopy" name="sugProDealCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">委文件处理表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugFileDealCount" name="sugFileDealCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugFileDealOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugFileDealCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugFileDealOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugFileDealCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目单位申报表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugOrgApplyCount" name="sugOrgApplyCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgApplyOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgApplyCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgApplyOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgApplyCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目单位请示报告</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgReqOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgReqCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgReqOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgReqCopy"></td>
 							      </tr>					        					      
 							    </tbody>
 							  </table>
@@ -152,21 +146,20 @@
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目建议书</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugProAdviseCount" name="sugProAdviseCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProAdviseOriginal" ng-true-value="9" ng-false-value="0"
-							          ></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProAdviseCopy" name="sugProAdviseCopy"ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProAdviseOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProAdviseCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目建议书电子文档</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.proSugEledocCount" name="proSugEledocCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.proSugEledocOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.proSugEledocCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.proSugEledocOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.proSugEledocCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">相关会议纪要</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugMeetCount" name="sugMeetCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugMeetOriginal" ng-true-value="9" ng-false-value="0" ></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugMeetCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugMeetOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugMeetCopy"></td>
 							      </tr>	
 							      		        					      
 							    </tbody>
@@ -194,38 +187,38 @@
 							      <tr>
 							        <td style="border-top:none;text-align:right;">委项目处理表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyProDealCount" name="studyProDealCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyPealOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyProDealCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyPealOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyProDealCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">委文件处理表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyFileDealCount" name="studyFileDealCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyFileDealOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyFileDealCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyFileDealOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyFileDealCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目单位申报表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyOrgApplyCount" name="studyOrgApplyCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgApplyOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgApplyCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgApplyOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgApplyCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目单位请示报告</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyOrgReqCount" name="studyOrgReqCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgReqOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgReqCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgReqOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyOrgReqCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目建议书批复</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyProSugCount" name="studyProSugCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyProSugOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyProSugCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyProSugOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyProSugCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">相关会议纪要</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyMeetCount" name="studyMeetCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyMeetOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyMeetCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyMeetOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.studyMeetCopy"></td>
 							      </tr>					        					      
 							    </tbody>
 							  </table>
@@ -242,32 +235,32 @@
 							      <tr>
 							        <td style="border-top:none;text-align:right;">环保批复文件</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.envproReplyCount" name="envproReplyCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.envproReplyOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.envproReplyCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.envproReplyOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.envproReplyCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">规划选址批文</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.planAddrCount" name="planAddrCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.planAddrOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.planAddrCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.planAddrOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.planAddrCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">可研报告</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.reportCount" name="reportCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.reportOrigin" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.reportCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.reportOrigin"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.reportCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">可研报告电子文档</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.eledocCount" name="eledocCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.eledocOriginal"  ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.eledocCopy"  ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.eledocOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.eledocCopy"></td>
 							      </tr>	
 							      <tr>
 							        <td style="border-top:none;text-align:right;">节能报告</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.energyCount" name="energyCount"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.energyOriginal"  ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.energyCopy"  ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.energyOriginal"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.energyCopy"></td>
 							      </tr>			        					      
 							    </tbody>
 							  </table>
@@ -295,8 +288,7 @@
 			  </td>		      
 		    </tr>
 		  </tbody>		  
-		</table>	
-		<!-- end table -->
+		</table>	<!-- end table -->
 		<p class="h6"><strong>送件人：张三</strong></p>
 	</form> <!-- end form -->
 </div>

@@ -175,13 +175,7 @@
                 templateUrl: rootPath + '/sign/html/flowDeal.html',
                 controller: 'signFlowDealCtrl',
                 controllerAs: 'vm'
-            }).state('signDetails', {//详细信息
-                url: '/signDetails/:signid',
-                templateUrl: rootPath + '/sign/html/signDetails.html',
-                controller: 'signDetailsCtrl',
-                controllerAs: 'vm'
             });
-        
         	//end#sign
     }]).run(function($rootScope,$http){
     	$rootScope.topSelectChange = function(dictName,dicts){

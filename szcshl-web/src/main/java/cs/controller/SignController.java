@@ -1,7 +1,6 @@
 package cs.controller;
 
 import java.text.ParseException;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,8 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.Validate;
-import cs.model.OrgDto;
+import cs.model.FlowDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
 import cs.repository.odata.ODataObj;
@@ -42,14 +42,11 @@ public class SignController {
 		PageModelDto<SignDto> signDtos = signService.get(odataObj);		
 		return signDtos;
 	}
-	//编辑收文
+	
 	@RequiresPermissions("sign##put")
 	@RequestMapping(name = "更新收文", path = "",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ResponseBody
-	public void  update(@RequestBody SignDto signDto) throws Exception  {	
-		
-		
+	public void  update(SignDto signDto) throws Exception  {	
 		signService.updateSign(signDto);		
 	}
 	
@@ -89,7 +86,7 @@ public class SignController {
 	
 	@RequestMapping(name = "初始化项目页面", path = "html/initFillPageData",method=RequestMethod.GET)	
 	@Transactional
-	public @ResponseBody Map<String,Object> initFillPageData(@RequestParam(required = true)String signid,String taskId){
+	public @ResponseBody Map<String,Object> initFillPageData(@RequestParam(required = true)String signid,@RequestParam String taskId){
 		if(Validate.isString(taskId)){
 			signService.claimSignFlow(taskId);
 		}
@@ -102,13 +99,7 @@ public class SignController {
 		
 		return ctrlName + "/fillin";
 	}
-	//收文详细信息
-	@RequiresPermissions("sign#html/signDetails#get")
-	@RequestMapping(name = "收文详细信息", path = "html/signDetails", method = RequestMethod.GET)
-	public String signDetails(){
-		
-		return ctrlName +"/signDetails";
-	}
+	
 	@RequiresPermissions("sign#html/flow#get")
 	@RequestMapping(name = "流程待处理", path = "html/flow", method = RequestMethod.GET)
 	public String flow(){
@@ -130,25 +121,5 @@ public class SignController {
 				
 		return ctrlName + "/flowDeal";
 	}	
-	@RequiresPermissions("sign##delete")
-	@RequestMapping(name = "删除收文" ,path = "" ,method =RequestMethod.DELETE)
-	@ResponseStatus( value =HttpStatus.NO_CONTENT)
-	public void deleteSign(@RequestBody String signid){
-		String [] ids=signid.split(",");
-		if(ids.length>1){
-
-			signService.deleteSigns(ids);
-		}else{
-			
-			signService.deleteSign(signid);
-		}
-	}
-	@RequiresPermissions("sign#selectSign#get")
-	@RequestMapping(name = "获取办事处信息", path = "selectSign", method = RequestMethod.GET)
-	public 	@ResponseBody List<OrgDto> selectSign(HttpServletRequest request) throws ParseException{
-		ODataObj odataObj = new ODataObj(request);
-		List<OrgDto> orgDto =	signService.selectSign(odataObj);
-		return orgDto;
-	}
 	
 }
