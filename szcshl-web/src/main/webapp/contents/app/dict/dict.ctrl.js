@@ -8,6 +8,7 @@
     dict.$inject = ['$location','dictSvc','$scope']; 
 
     function dict($location, dictSvc,$scope) {
+    	  /* jshint validthis:true */
     	var vm = this;
         vm.title = '字典';
         
