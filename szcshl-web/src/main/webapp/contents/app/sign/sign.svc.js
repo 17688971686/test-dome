@@ -14,7 +14,9 @@
 			updateSign : updateSign,
 			initFillData : initFillData,		//初始化表单填写页面
 			completeFill : completeFill,		//提交表单填写
-			flowgrid : flowgrid				//初始化待处理页面
+			flowgrid : flowgrid	,	//初始化待处理页面
+			updateFillin : updateFillin,//申报编辑
+			deleteSign :　deleteSign,//删除收文
 		};
 		return service;			
 		
@@ -68,7 +70,7 @@
 						field : "projectcode",
 						title : "项目编号",
 						width : 200,
-						filterable : true
+						filterable : false,
 					},
 					{
 						field : "createdDate",
@@ -76,6 +78,17 @@
 						width : 180,
 						filterable : false,
 						format : "{0:yyyy/MM/dd HH:mm:ss}"
+
+					},
+					{
+						field : "",
+						title : "操作",
+						width : 180,
+						template : function(item) {
+							return common.format($('#columnBtns').html(),
+									item.signid, item.signid,"vm.del('" + item.signid + "')");
+
+						}
 
 					}
 			];
@@ -119,6 +132,8 @@
 			});
 		}//E_查询grid
 		
+		
+		
 		//S_初始化数字字典
 		function initDicListData(vm){
 			var httpOptions = {
@@ -135,7 +150,8 @@
 					response : response,
 					fn : function() {						
 						vm.dicList = {};
-						vm.dicList = response.data;					
+						vm.dicList = response.data;		
+						
 					}
 				});
 			};
@@ -182,6 +198,77 @@
 			}
 		}//E_创建收文
 		
+		//Start 申报登记编辑
+		function updateFillin(vm){
+	
+				var httpOptions = {
+					method : 'put',
+					url : rootPath+"/sign",
+					data : vm.model,
+				}
+
+				var httpSuccess = function success(response) {
+
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.isSubmit = false;
+									$('.alertDialog').modal('hide');
+								}
+							})
+						}
+
+					})
+				}
+
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+
+		}
+		//End 申报登记编辑
+		
+		//Start 删除收文 
+		function deleteSign(vm, signid) {
+			
+			vm.isSubmit = true;
+			var httpOptions = {
+				method : 'delete',
+				url : rootPath+"/sign",
+				data : signid
+
+			}
+			var httpSuccess = function success(response) {
+
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.isSubmit = false;
+						vm.gridOptions.dataSource.read();
+					}
+
+				});
+
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		//End 删除收文
+		
 		//S_更新
 		function updateSign(vm){
 			var updateUrl = rootPath+"/sign";			
@@ -220,8 +307,11 @@
 			});
 		}//E_更新
 		
+		
+		//end
 		//S_初始化填报页面数据
 		function initFillData(vm){
+		
 			var paramsValue = {} ;			
 			paramsValue.signid = vm.model.signid;
 			if(vm.flow.taskId){
@@ -240,7 +330,9 @@
 					fn:function() {						
 						//初始化未完成
 						//alert(response.data.sign.signid);	
-						vm.model = response.data.sign;		
+						vm.model = response.data.sign;	
+						vm.orglist =response.data.orgs
+					//	console.log(vm.orglist);
 					}
 					
 				})

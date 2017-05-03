@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('signFillinCtrl', sign);
+    angular.module('app').controller('signDetailsCtrl', sign);
 
     sign.$inject = ['$location','signSvc','$state']; 
 
@@ -27,6 +27,7 @@
     	   
        }
        
+    
        
     }
 })();
