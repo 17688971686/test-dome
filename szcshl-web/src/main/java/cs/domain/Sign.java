@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -80,7 +82,7 @@ public class Sign extends DomainBase{
 	private String urgencydegree;
 	
 	//年度计划类别
-	@Column(columnDefinition="VARCHAR(16)")
+	@Column(columnDefinition="VARCHAR(30)")
 	private String yearplantype;
 	
 	//秘密登记
@@ -388,9 +390,25 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String energyCopy;
 
+	//收文与部门关联：一对一关系
+	@OneToOne
+	@JoinColumn(name ="orgSignId")
+	private Org orgSignId;
+	
 	public Sign() {
 		super();
 	}
+	
+	
+	public Org getOrgSignId() {
+		return orgSignId;
+	}
+
+
+	public void setOrgSignId(Org orgSignId) {
+		this.orgSignId = orgSignId;
+	}
+
 
 	public String getSignid() {
 		return signid;

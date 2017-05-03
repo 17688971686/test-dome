@@ -215,7 +215,7 @@
 				var httpSuccess = function success(response) {
 					vm.company ={};
 					vm.company =response.data;
-					console.log(vm.company);
+					//console.log(vm.company);
 				}
 				
 				common.http({

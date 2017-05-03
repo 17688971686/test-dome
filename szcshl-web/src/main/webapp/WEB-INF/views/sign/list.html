@@ -19,6 +19,23 @@
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.updateSign()">更新测试</a>
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.fillSignTest()">表单填写</a>     	   	    		    		  	
+	 		
+	 		 <@shiro.hasPermission name="sign##delete">           
+            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
+        	</@shiro.hasPermission>
+	 	 <script type="text/template" id="columnBtns">
+		
+		<@shiro.hasPermission name="sign##put">
+	        <a class="btn btn-xs btn-primary" href="#/fillSign/{0}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+		</@shiro.hasPermission>
+		<@shiro.hasPermission name="sign##put">
+	        <a class="btn btn-xs btn-primary" href="#/signDetails/{1}"><span class="glyphicon glyphicon-pencil"></span>查看详情</a>
+		</@shiro.hasPermission>
+		<@shiro.hasPermission name="sign##delete">
+			<button class="btn btn-xs btn-danger"  ng-click="{2}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+		</@shiro.hasPermission>
+		</script>
+	 
 	   	</form>      
 	 </div> 
 	     	

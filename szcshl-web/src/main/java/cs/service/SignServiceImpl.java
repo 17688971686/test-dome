@@ -1,6 +1,5 @@
 package cs.service;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,23 +16,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSON;
-
 import cs.common.Constant;
+import cs.common.Constant.MsgCode;
 import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
-import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.Constant.MsgCode;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.Org;
 import cs.domain.Role;
 import cs.domain.Sign;
 import cs.domain.User;
 import cs.model.FlowDto;
+import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.SignRepo;
 
 @Service
@@ -46,7 +45,8 @@ public class SignServiceImpl implements SignService {
 	private ICurrentUser currentUser;
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private OrgRepo orgRepo;
 	//flow service
 	@Autowired
 	private TaskService taskService;
@@ -82,7 +82,16 @@ public class SignServiceImpl implements SignService {
 		pageModelDto.setValue(signDtos);		
 		return pageModelDto;
 	}
+	@Override
+	@Transactional
+	public void updateSign(SignDto signDto) throws Exception {
+		
 
+		Sign sign = signRepo.findById(signDto.getSignid());
+		BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
+		signRepo.save(sign);
+		
+	}
 	@Override
 	@Transactional
 	public void completeFillSign(SignDto signDto) throws Exception{		
@@ -116,11 +125,7 @@ public class SignServiceImpl implements SignService {
 		}				
 	}
 
-	@Override
-	public void updateSign(SignDto signDto) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public Map<String, Object> initFillPageData(String signId) {
@@ -132,6 +137,7 @@ public class SignServiceImpl implements SignService {
 		SignToSignDto(sign,signDto);		
 		map.put("sign", signDto);
 		
+		map.put("orgs", orgRepo.findAll());
 		//2以下初始化待完成
 		//map.put("sign", signRepo.findById(signId));
 		//System.out.println(JSON.toJSONString(map));
@@ -254,5 +260,49 @@ public class SignServiceImpl implements SignService {
 		resultMsg.setReCode(MsgCode.OK.getValue());
 		resultMsg.setReMsg("操作成功！");		
 		return resultMsg;
+	}
+
+	@Override
+	@Transactional
+	public List<OrgDto> selectSign(ODataObj odataObj) {
+		
+		List<Org> org = orgRepo.findByOdata(odataObj);
+		List<OrgDto> orgDto = new ArrayList<OrgDto>();
+		if(org != null && org.size() > 0){
+			org.forEach(x->{
+				OrgDto orgDtos = new OrgDto();
+				BeanCopierUtils.copyProperties(x, orgDtos);
+				
+				orgDtos.setCreatedDate(x.getCreatedDate());
+				orgDtos.setModifiedDate(x.getModifiedDate());
+				
+				orgDto.add(orgDtos);
+			});						
+		}		
+		return orgDto;
+	}
+
+	@Override
+	@Transactional
+	public void deleteSign(String signid) {
+		
+		Sign sign =	signRepo.findById(signid);
+		if(sign !=null){
+			
+			signRepo.delete(sign);
+			log.info(String.format("删除收文, 会议室signid:%s", sign.getSignid()));
+		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteSigns(String[] signids) {
+		
+		for(String signid : signids){
+			
+			this.deleteSign(signid);
+	
+		}
+		log.info("批量删除收文");
 	}
 }

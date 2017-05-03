@@ -213,7 +213,7 @@
 			var httpSuccess = function success(response) {
 				vm.model = response.data.value[0];
 				if (vm.isUpdate) {
-					initZtreeClient(vm);
+					//initZtreeClient(vm);
 				}
 			}
 
