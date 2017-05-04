@@ -1,3 +1,4 @@
 /szcshl-web/*.iml
 /szcshl-web/target
 /.idea
+/szcshl-web/src/metamodel
