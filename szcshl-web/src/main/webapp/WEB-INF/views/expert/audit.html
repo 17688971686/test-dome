@@ -1,0 +1,208 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;margin: auto;overflow: auto">
+    <ol class="breadcrumb">
+       	<li><a href="#/expert">专家审核</a></li>
+        <!-- <li class="active">{{vm.titles}}</li> -->
+   	</ol>
+ <title>专家信息录入</title>
+<style >
+.pro_title {
+	font-size: 14px;
+	text-align: center;
+	font-family: "微软雅黑";
+}
+.pro_title_1 {
+	font-size: 12px;
+	font-weight: bold;
+}
+.list_text {
+	font-size: 12px;
+}
+
+.conttent_list table{border-right:1px solid #000;border-left: 1px solid #000;border-bottom:1px solid #000;}
+.conttent_list table td{
+	border-left: 1px solid #000;
+	border-top: 1px solid #000;
+	padding-left: 5px;
+}
+.conttent_list{
+	/* background-image: url(images/remark-title.jpg); */
+	background-repeat: no-repeat;
+	padding: 40px;
+	width:80%;
+	margin:auto;
+	background-color: #FFF;
+}
+.text_input {
+	border: 1px solid #0CF;
+}
+.conttent_list table tr .list_text .waring {
+	color: #F30;
+}
+.waring {
+	color: #F30;
+	text-align: right;
+}
+.textarea_list {
+	display:block;
+	margin: 10px;
+	width:95%;
+	height: 120px;
+
+}
+
+.bton {
+	margin: auto;
+}
+.conttent_list table tr .list_text .pro_title_1 .list_text {
+	font-weight: normal;
+}
+body {
+	background-color: #F9F9F9;
+}
+.bottom_btn {
+	text-align: center;
+}
+.error{ color:red; font-family:"yahei"; font-size:12px; font-weight:bold;}
+.pro_title {
+	font-size: 16px;
+}
+.side_a{ float:left;}
+.side_b{ float:right;}
+.title_box{ border:1px solid #999; border-radius:5px; margin:10px 0;  padding:0 20px; overflow:hidden;}
+.pM{ font-size:16px; font-weight:bold;}
+</style>
+<body>
+<form id="form" name="form">
+<div class="conttent_list" style="margin:auto;width:90%"> 
+<p class="pro_title_1" >设定查询条件</p>
+<div class="title_box">
+  <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+      <span class="side_a"> 专家范围 
+      		<select ng-model="vm.model.expertrange" name="expertrange" operator="eq" >
+				<option value="">请选择</option>
+				<option ng-repeat="x in vm.expertrange" value="{{x.dictKey}}">{{x.dictName}}</option>
+			</select>
+      </span> 
+      <span class="side_a" style="margin-left:40px;">姓名
+         <input  name="name" type="text" ng-model="vm.model.name" height="30px" data-val="true" operator="like" data-val-required="必填"/>
+      </span>
+      
+       <span class="side_a" style="margin-left:40px;"> 性别 
+       		<select ng-model="vm.model.sex"  operator="eq" name="sex">
+				<option value="">请选择</option>
+				<option ng-repeat="x in vm.sex" value="{{x.dictKey}}">{{x.dictName}}</option>
+			</select>
+      </span>
+  </div>
+  <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+      <span class="side_b">
+       <button class="k-button k-primary" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>开始查询</button>
+         <!--  <input ng-click="vm.search()" class="k-button k-primary" type="button" value="开始查询"/>&nbsp; -->
+				<input  ng-click="formReset()" class="k-button k-primary" type="button" value="重置" />
+          		<!-- <input id="res" name="res" type="reset" style="display:none;" />  -->
+      </span>
+      
+       <span class="side_a" style="margin-left:40px;"> 学位 
+       		<select ng-model="vm.model.degRee" operator="eq" name="degRee" >
+				<option value="">请选择</option>
+				<option ng-repeat="x in vm.degRee" value="{{x.dictKey}}">{{x.dictName}}</option>
+			</select>
+      </span>
+       <span class="side_a" style="margin-left:40px;"> 职务 
+       		<select ng-model="vm.model.job"  operator="eq" name="job">
+				<option value="">请选择</option>
+				<option ng-repeat="x in vm.job" value="{{x.dictKey}}">{{x.dictName}}</option>
+			</select>
+      </span>
+       <span class="side_a" style="margin-left:40px;"> 职称
+       		<select ng-model="vm.model.title" operator="eq" name="title" >
+				<option value="">请选择</option>
+				<option ng-repeat="x in vm.title" value="{{x.dictKey}}">{{x.dictName}}</option>
+			</select>
+      </span>
+ </div>
+ <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+       <span class="side_a" style="margin-left:40px;"> 工作单位 
+        	<input name="comPany" ng-model="mv.model.comPany" type="text" operator="eq"/>
+      </span>
+       <span class="side_a" style="margin-left:40px;"> 毕业学校 
+        	<input name="acaDemy" ng-model="mv.model.acaDemy" type="text" operator="eq"/>
+      </span>
+  </div>
+</div>
+</div>
+</form>
+<div class="conttent_list" style="margin-top:20px;">
+<div style="overflow:auto;">
+  <div class="side_a" style=" border:1px solid #000; width:40%;" >
+        <p class="list_text"  style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px;">1. 审核中 <span class="side_b" style="padding:0 20px; color:#fff;">全选  取消选择 </span></p>
+         <div id="grid1" class="grid1" kendo-grid="grid1" k-options="vm.gridOptions1"></div>
+  </div>
+ <!-- 点击的地方 -->
+  <div class="side_a" style="width:19%;" >
+<!-- 正式专家 -->
+     <div style="height:180px; text-align:center;padding-top: 50px">
+     
+             <p style="height:50px;">&nbsp;<input ng-click="vm.forward(1)" ng-disabled="vm.isSubmit"  type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.back(2)" ng-disabled="vm.isSubmit"  type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+     </div>
+     <!-- 备选专家 -->
+     <div style="height:180px; text-align:center; margin-top:20px;padding-top: 50px">
+             <p style="height:50px;">&nbsp;<input ng-click="vm.forward(2)" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.back(3)" ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+     </div>
+      <!-- 已停用 -->
+     <div style="height:180px; text-align:center; margin-top:5px;padding-top: 50px">
+             <p style="height:50px;">&nbsp;<input  ng-click="vm.forward(3)" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.back(4)" ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+     </div>
+      <!-- 已删除 -->
+     <div style="height:180px; text-align:center; margin-top:5px;padding-top: 50px">
+             <p style="height:50px;">&nbsp;<input  ng-click="vm.forward(4)" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.back(5)"  ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+     </div>
+  </div>
+  <div class="side_a" style=" width:40%;">
+      <div style="padding:0 10px; overflow:hidden; ">
+      <!-- 正式专家 列表-->
+         <div style="border:1px solid #ccc;">
+             <p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px;">2. 正式专家 <span class="side_b" style="padding:0 20px; color:#fff;">全选  取消选择 </span></p>
+           <div id="grid2" class="grid2" kendo-grid="grid2" k-options="vm.gridOptions2"></div>
+         </div>
+       </div> 
+        <!-- 备选专家 列表-->
+       <div style="padding:0 10px; overflow:hidden; margin-top:5px;">
+         <div style="border:1px solid #ccc;">
+             <p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px;">3. 备选专家 <span class="side_b" style="padding:0 20px; color:#fff;">全选  取消选择 </span></p>
+               <div id="grid3" class="grid3" kendo-grid="grid3" k-options="vm.gridOptions3"></div>
+         </div>
+       </div>    
+       <!-- 已停用列表-->
+       <div style="padding:0 10px; overflow:hidden;margin-top:5px;">
+         <div style="border:1px solid #ccc;">
+             <p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px;">4. 已停用 <span class="side_b" style="padding:0 20px; color:#fff;">全选  取消选择 </span></p>
+               <div id="grid4" class="grid4" kendo-grid="grid4" k-options="vm.gridOptions4"></div>
+         </div>
+       </div>    
+        <!-- 已删除 列表-->
+       <div style="padding:0 10px; overflow:hidden;margin-top:5px;">
+         <div style="border:1px solid #ccc;">
+             <p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px;">5. 已删除 <span class="side_b" style="padding:0 20px; color:#fff;">全选  取消选择 </span></p>
+              <div id="grid5" class="grid4" kendo-grid="grid5" k-options="vm.gridOptions5"></div>
+         </div>
+       </div>    
+            
+  </div>
+ </div>
+
+</div>
+</body>
+</div>
+
+
+

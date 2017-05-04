@@ -1,0 +1,108 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;margin: auto;height: 800px">
+    <ol class="breadcrumb">
+        <li><a href="#/expert">专家重复查询</a></li>
+        <li class="active">{{vm.titles}}</li>
+    </ol>
+ <title>专家信息录入</title>
+<style >
+.pro_title {
+	font-size: 14px;
+	text-align: center;
+	font-family: "微软雅黑";
+}
+.pro_title_1 {
+	font-size: 12px;
+	font-weight: bold;
+}
+.list_text {
+	font-size: 12px;
+}
+
+.conttent_list table{border-right:1px solid #000;	border-left: 1px solid #000;border-bottom:1px solid #000;}
+.conttent_list table td{
+	border-left: 1px solid #000;
+	border-top: 1px solid #000;
+	padding-left: 5px;
+}
+.conttent_list{
+	/* background-image: url(images/remark-title.jpg); */
+	background-repeat: no-repeat;
+	padding: 40px;
+	width:80%;
+	margin:auto;
+	background-color: #FFF;
+}
+.text_input {
+	border: 1px solid #0CF;
+}
+.conttent_list table tr .list_text .waring {
+	color: #F30;
+}
+.waring {
+	color: #F30;
+	text-align: right;
+}
+.textarea_list {
+	display:block;
+	margin: 10px;
+	width:95%;
+	height: 120px;
+
+}
+
+.bton {
+	margin: auto;
+}
+.conttent_list table tr .list_text .pro_title_1 .list_text {
+	font-weight: normal;
+}
+body {
+	background-color: #F9F9F9;
+}
+.bottom_btn {
+	text-align: center;
+}
+.error{ color:red; font-family:"yahei"; font-size:12px; font-weight:bold;}
+.pro_title {
+	font-size: 16px;
+}
+.side_a{ float:left;}
+.side_b{ float:right;}
+.title_box{ border:1px solid #999; border-radius:5px; margin:10px 0;  padding:0 20px; overflow:hidden;}
+.pM{ font-size:16px; font-weight:bold;}
+</style>
+<body>
+<div class="conttent_list" style="margin-top:20px;width:90%;">
+	<p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px; color:#FFFF00;font-size:20px ;width:100%;">专家列表 </p>    
+	<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+
+ <script type="text/template" id="columnBtns">
+ <@shiro.hasPermission name="expert##delete"> 
+			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+ </@shiro.hasPermission> 
+<@shiro.hasPermission name="expert##put"> 
+	        <a class="btn btn-xs btn-primary" href="#/expertEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+ </@shiro.hasPermission> 
+</script>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
