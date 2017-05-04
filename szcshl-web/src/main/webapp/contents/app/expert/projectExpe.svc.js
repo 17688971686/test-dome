@@ -72,14 +72,12 @@
 		
 		//begin#getProjectById
 		function getProjectById(vm){
-			
 			var httpOptions = {
 					method : 'get',
 					url : common.format( rootPath + "/projectExpe/getProject?$filter=peID eq '{0}'", vm.peID)
 			}
 			var httpSuccess = function success(response) {
 				vm.model = response.data[0];
-				console.log(vm.model);
 				if (vm.isUpdate) {
 					//initZtreeClient(vm);
 				}
@@ -99,6 +97,7 @@
 		function saveProject(vm){
 			vm.isSubmit = true;
 			vm.model.peID=vm.peID;
+			vm.model.expertID = vm.expertID;
 			vm.model.projectbeginTime=$('#projectbeginTime').val();
 			vm.model.projectendTime=$('#projectendTime').val();
 			//alert(vm.model.projectendTime);
@@ -154,7 +153,6 @@
 					url :  rootPath + "/projectExpe/getProject?$filter=expert.expertID eq '"+vm.model.expertID+"'"
 			}
 			var httpSuccess = function success(response) {
-				console.log(response);
 				common.requestSuccess({
 					vm : vm,
 					response : response,
@@ -176,7 +174,6 @@
 		
 		//begin#updateProject
 		function updateProject(vm){
-			common.initJqValidation();
 			var isCheck=$("input[name='checkpj']:checked");
 			if(isCheck.length<1){
 				common.alert({
@@ -201,6 +198,7 @@
 			}else{
 				vm.peID=isCheck.val();
 				getProjectById(vm);
+				vm.expertID = vm.model.expertID;
 				gotoJPage(vm);
 				
 				
@@ -233,8 +231,13 @@
 		}
 		// end#gotoJPage
 		
+		//清空页面数据
+		//begin#cleanValue
 		function cleanValue(){
-			$("input").val("");
+			var tab=$("#pjwindow").find('input');
+			 $.each(tab,function(i,obj){
+				 obj.value="";
+			 });
 		}
 		// begin#createProject
 		function createProject(vm){
@@ -243,8 +246,6 @@
 				//vm.isSubmit = true;
 				vm.model.projectbeginTime=$('#projectbeginTime').val();
 				vm.model.projectendTime=$('#projectendTime').val();
-				vm.model.expertID=vm.expertID;
-				//alert(vm.expertID);
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/projectExpe/projectExpe",

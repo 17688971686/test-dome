@@ -26,7 +26,7 @@ public class WorkExpe implements Serializable {
 	private static final long serialVersionUID = 3L;
 	@Id
 	private String weID; //Id
-	@Column(name = "beginTime", nullable = true, length = 500)
+	@Column(name = "beginTime", nullable = true)
     private String beginTime;//开始时间  
     @Column(name = "endTime", nullable = true, length = 500)
     private String endTime; //结束时间

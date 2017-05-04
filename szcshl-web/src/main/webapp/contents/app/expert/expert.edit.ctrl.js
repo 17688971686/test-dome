@@ -65,7 +65,6 @@
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
         }
-        
         activate();
         function activate() {
         	 kendo.culture("zh-CN");

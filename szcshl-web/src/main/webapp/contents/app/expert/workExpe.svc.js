@@ -21,13 +21,11 @@
 		return service;
 		//begin#getWork
 		function getWork(vm){
-			alert("ddfdf");
 			var httpOptions = {
 					method : 'GET',
 					url : rootPath + "/workExpe/getWork?$filter=expert.expertID eq '"+vm.model.expertID+"'"
 				}
 				var httpSuccess = function success(response) {
-					console.log(response);
 					common.requestSuccess({
 						vm : vm,
 						response : response,
@@ -101,7 +99,6 @@
 		
 		//begin#updateWork
 		function updateWork(vm){
-			common.initJqValidation();
 			var isCheck=$("input[name='checkwr']:checked");
 			if(isCheck.length<1){
 				common.alert({
@@ -126,6 +123,7 @@
 			}else{
 				    vm.weID=isCheck.val();
 				    getWorkById(vm);
+				    vm.expertID = vm.model.expertID;
 				    gotoWPage(vm);
 					
 				
@@ -136,14 +134,12 @@
 		
 		//begin#getWorkById
 		function getWorkById(vm){
-			
 			var httpOptions = {
 					method : 'get',
 					url : common.format( rootPath + "/workExpe/getWork?$filter=weID eq '{0}'", vm.weID)
 				}
 				var httpSuccess = function success(response) {
 					vm.model = response.data[0];
-					console.log(vm.model);
 					if (vm.isUpdate) {
 						//initZtreeClient(vm);
 					}
@@ -157,10 +153,16 @@
 			
 			
 		}
+		
 		//清空页面数据
+		//begin#cleanValue
 		function cleanValue(){
-			$("input").val("");
+			var tab=$("#wrwindow").find('input');
+			 $.each(tab,function(i,obj){
+				 obj.value="";
+			 });
 		}
+		
 		// begin#gotoWPage
 		function gotoWPage(vm){
 			var WorkeWindow = $("#wrwindow");
@@ -214,6 +216,7 @@
 		function saveWork(vm){
 			vm.isSubmit = true;
 			vm.model.weID=vm.weID;
+			vm.model.expertID = vm.expertID;
 			vm.model.beginTime=$('#beginTime').val();
 			vm.model.endTime=$('#endTime').val();
 
@@ -253,12 +256,11 @@
 		}
 		//begin#createWork
 		function createWork(vm){
-			common.initJqValidation();
 			var isValid = $('form').valid();
 				//vm.isSubmit = true;
 				vm.model.beginTime=$('#beginTime').val();
 				vm.model.endTime=$('#endTime').val();
-				console.log(vm.model);
+				//console.log(vm.model.expertID);
 				var httpOptions = {
 					method : 'post',
 					url : rootPath+"/workExpe/workExpe",
@@ -269,9 +271,9 @@
 						vm : vm,
 						response : response,
 						fn : function() {
+							cleanValue();
 							 window.parent.$("#wrwindow").data("kendoWindow").close();
 							 getWork(vm);
-							 cleanValue();
 							common.alert({
 								vm : vm,
 								msg : "操作成功",

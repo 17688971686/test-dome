@@ -65,7 +65,7 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 				project.setExpert(expert);
 				project.setCreateTime(formatter.format(new Date()));
 				projectExpeRepo.save(project);
-				logger.info(String.format("添加羡慕经验,项目名称为:%s", project.getProjectName()));
+				logger.info(String.format("添加项目经验,项目名称为:%s", project.getProjectName()));
 			} else {
 				throw new IllegalArgumentException(String.format("项目为%s 已存在,请重新输入", projectExpeDto.getProjectName()));
 			}
@@ -78,7 +78,7 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 			ProjectExpe projectExpe = projectExpeRepo.findById(id);
 			if (projectExpe != null) {
 				projectExpeRepo.delete(projectExpe);
-				logger.info(String.format("鍒犻櫎椤圭洰缁忛獙,椤圭洰鍚嶇О:%s", projectExpe.getProjectName()));
+				logger.info(String.format("删除项目经验,单位名称为О:%s", projectExpe.getProjectName()));
 				
 			}
 		}
@@ -88,7 +88,7 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 			for (String id : ids) {
 				this.deleteProject(id);
 			}
-			logger.info("鎵归噺鍒犻櫎涓撳");
+			logger.info("删除项目经验");
 		}
 		
 		@Override
@@ -100,6 +100,6 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 			projectExpe.setProjectName(projectExpeDto.getProjectName());
 			projectExpe.setProjectType(projectExpeDto.getProjectType());
 			projectExpeRepo.save(projectExpe);
-			logger.info(String.format("鏇存柊椤圭洰缁忛獙,椤圭洰鍚嶇О:%s", projectExpeDto.getProjectName()));
+			logger.info(String.format("更新项目经验,单位名称为О:%s", projectExpeDto.getProjectName()));
 		}
 }

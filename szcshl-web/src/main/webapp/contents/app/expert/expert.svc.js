@@ -19,7 +19,7 @@
 			getDict : getDict,
 			gridAudit:gridAudit,
 			updateAudit:updateAudit,
-			searchMAudit:searchMAudit,
+			searchMAudit:searchMAudit
 		};
 		//end expert
 		return service;
@@ -282,7 +282,7 @@
 									vm.isHide=false;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
-									//alert(vm.expertID);
+									vm.model.expertID=response.data.expertID;
 									 // $("#add").html(common.format($('#wk').html(),response.data.expertID));
 									 // $("#addPj").html(common.format($('#pj').html(),response.data.expertID));
 									  //location.href ="#/expertEdit/#";
