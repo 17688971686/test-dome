@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
+import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
 import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
@@ -27,13 +28,16 @@ import cs.domain.Org;
 import cs.domain.Role;
 import cs.domain.Sign;
 import cs.domain.User;
+import cs.domain.WorkProgram;
 import cs.model.FlowDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
+import cs.model.WorkProgramDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.SignRepo;
+import cs.repository.repositoryImpl.WorkProgramRepo;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -47,6 +51,9 @@ public class SignServiceImpl implements SignService {
 	private UserService userService;
 	@Autowired
 	private OrgRepo orgRepo;
+	@Autowired
+	private WorkProgramRepo workProgramRepo;
+	
 	//flow service
 	@Autowired
 	private TaskService taskService;
@@ -57,7 +64,8 @@ public class SignServiceImpl implements SignService {
 	@Transactional
 	public void createSign(SignDto signDto) { 
 		Sign sign = new Sign(); 
-		SignDtoToSign(signDto,sign);       
+		SignDtoToSign(signDto,sign);     
+		sign.setSignState(EnumState.NORMAL.getValue());
         signRepo.save(sign);
 	}			
 	
@@ -82,32 +90,30 @@ public class SignServiceImpl implements SignService {
 		pageModelDto.setValue(signDtos);		
 		return pageModelDto;
 	}
+	
 	@Override
 	@Transactional
-	public void updateSign(SignDto signDto) throws Exception {
-		
-
+	public void updateSign(SignDto signDto) throws Exception {		
 		Sign sign = signRepo.findById(signDto.getSignid());
 		BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-		signRepo.save(sign);
-		
-	}
-	@Override
-	@Transactional
-	public void completeFillSign(SignDto signDto) throws Exception{		
-		if(!Validate.isString(signDto.getSignid())){
-			throw new Exception( "操作异常，错误信息已记录，请联系管理员尽快处理！");
-		}
-		Sign sign = signRepo.findById(signDto.getSignid());
-		BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-		
 		sign.setModifiedBy(currentUser.getLoginName());
 	    sign.setModifiedDate(new Date());
-		signRepo.save(sign);
-		
+		signRepo.save(sign);		
+	}
+	
+	@Override
+	@Transactional
+	public void startFlow(String signid) throws Exception{		
+		if(!Validate.isString(signid)){
+			throw new Exception( "操作异常，错误信息已记录，请联系管理员尽快处理！");
+		}				
 		try{
+			Sign sign = signRepo.findById(signid);
+			sign.setFolwState(EnumState.PROCESS.getValue());
+			signRepo.save(sign);	
+			
 			//创建流程 并 跳过第一第二环节
-			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.SIGN.getValue(),signDto.getSignid());
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.SIGN.getValue(),signid);
 			//设置第三环节参数，为综合部部长
 			Map<String,Object> flowParamMap = ActivitiUtil.flowArguments(null,currentUser.getLoginName(),currentUser.getLoginName(),false);
 			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();		
@@ -134,7 +140,13 @@ public class SignServiceImpl implements SignService {
 		//1收文对象
 		Sign sign = signRepo.findById(signId);
 		SignDto signDto = new SignDto();
-		SignToSignDto(sign,signDto);		
+		SignToSignDto(sign,signDto);			
+		if(sign.getWorkProgram() != null){
+			WorkProgram wp = sign.getWorkProgram();
+			WorkProgramDto wpDto = new WorkProgramDto();
+			BeanCopierUtils.copyProperties(wp, wpDto);
+			signDto.setWorkProgramDto(wpDto);
+		}		
 		map.put("sign", signDto);
 		
 		map.put("orgs", orgRepo.findAll());
@@ -161,8 +173,7 @@ public class SignServiceImpl implements SignService {
 				taskQuery.taskCandidateGroupIn(roleList);
 			}
 		}	
-		
-		
+						
 		long total = taskQuery.count();		
 		List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
 		
@@ -176,13 +187,15 @@ public class SignServiceImpl implements SignService {
 				String signId = pi.getBusinessKey();
 				
 				SignDto signDto = new SignDto();
-				Sign sign = signRepo.findById(signId);				
-				SignToSignDto(sign,signDto);
-				// 添加流程参数
-				signDto.setTaskId(t.getId());
-				signDto.setProcessInstanceId(t.getProcessInstanceId());
-				
-				signDtos.add(signDto);
+				Sign sign = signRepo.findById(signId);	
+				if(sign != null && Validate.isString(sign.getSignid())){
+					SignToSignDto(sign,signDto);
+					// 添加流程参数
+					signDto.setTaskId(t.getId());
+					signDto.setProcessInstanceId(t.getProcessInstanceId());
+					
+					signDtos.add(signDto);
+				}			
 			});		
 		}				
 		pageModelDto.setCount(Integer.valueOf(String.valueOf(total)));
@@ -216,7 +229,7 @@ public class SignServiceImpl implements SignService {
 	public ResultMsg dealSignFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception{
 		ResultMsg resultMsg = new ResultMsg();
 		
-		if(!Validate.isString(flowDto.getNextDealUser()) && !Validate.isString(flowDto.getNextDealUser())){
+		if(!Validate.isString(flowDto.getNextGroup()) && !Validate.isString(flowDto.getNextDealUser())){
 			log.info("项目签收流程处理失败：获取不到下一环节处理组和处理人信息！");
 			throw new Exception( "保存失败，错误信息已记录，请联系管理员尽快处理！");			
 		}
@@ -226,36 +239,55 @@ public class SignServiceImpl implements SignService {
 			log.info("项目签收流程处理失败：获取不到activiti任务！");
 			throw new Exception( "保存失败，错误信息已记录，请联系管理员尽快处理！");
 		}
-		
+			
 		String signid = processInstance.getBusinessKey();
 		Sign sign = null;
+		boolean saveSignFlag = false;
 		switch(processInstance.getActivityId()){	
 			//综合部部长审批
 			case "ministerApproval":	
 				sign = signRepo.findById(signid);
-				sign.setComprehensivehandlesug(flowDto.getDealOption());												
+				sign.setComprehensivehandlesug(flowDto.getDealOption());	
+				saveSignFlag = true;
 				break;
 			//中心领导审批	
 			case "leaderApproval":
 				sign = signRepo.findById(signid);
-				sign.setLeaderhandlesug(flowDto.getDealOption());												
+				sign.setLeaderhandlesug(flowDto.getDealOption());	
+				saveSignFlag = true;
+				break;
+			//选负责人	
+			case "selectPrincipal":
+				break;
+			//项目负责人审批项目	
+			case "approval":
+				break;	
+			//部长审批方案	
+			case "approvalPlan":
+				sign = signRepo.findById(signid);
+				WorkProgram workProgram = sign.getWorkProgram();
+				workProgram.setMinisterSuggesttion(flowDto.getDealOption());
+				workProgramRepo.save(workProgram);
+				break;	
+			//中心领导审批	
+			case "leaderApprovalPlan":
+				sign = signRepo.findById(signid);
+				WorkProgram wk = sign.getWorkProgram();
+				wk.setLeaderSuggesttion(flowDto.getDealOption());
+				workProgramRepo.save(wk);
 				break;
 			case "endevent1":				
 				break;
 			default:
 				;
 		}	
-		if(sign != null){
+		if(sign != null && saveSignFlag){
 			signRepo.save(sign);
 		}
 		
 		taskService.addComment(task.getId(),processInstance.getId(),flowDto.getDealOption());	//添加处理信息
-		if(Validate.isString(flowDto.getNextDealUser()) && Validate.isString(flowDto.getNextGroup())){
-			Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
-			taskService.complete(task.getId(),nextProcessVariables);
-		}else{
-			taskService.complete(task.getId());
-		}
+		Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
+		taskService.complete(task.getId(),nextProcessVariables);
 						
 		resultMsg.setReCode(MsgCode.OK.getValue());
 		resultMsg.setReMsg("操作成功！");		
@@ -264,10 +296,10 @@ public class SignServiceImpl implements SignService {
 
 	@Override
 	@Transactional
-	public List<OrgDto> selectSign(ODataObj odataObj) {
-		
+	public List<OrgDto> selectSign(ODataObj odataObj) {		
 		List<Org> org = orgRepo.findByOdata(odataObj);
 		List<OrgDto> orgDto = new ArrayList<OrgDto>();
+		
 		if(org != null && org.size() > 0){
 			org.forEach(x->{
 				OrgDto orgDtos = new OrgDto();
@@ -284,25 +316,33 @@ public class SignServiceImpl implements SignService {
 
 	@Override
 	@Transactional
-	public void deleteSign(String signid) {
-		
+	public void deleteSign(String signid) {		
 		Sign sign =	signRepo.findById(signid);
-		if(sign !=null){
-			
-			signRepo.delete(sign);
-			log.info(String.format("删除收文, 会议室signid:%s", sign.getSignid()));
-		}
+		sign.setSignState(EnumState.DELETE.getValue());
+		signRepo.save(sign);
+		log.info(String.format("删除收文, 逻辑删除成功！", sign.getSignid()));		
 	}
 
 	@Override
 	@Transactional
-	public void deleteSigns(String[] signids) {
-		
-		for(String signid : signids){
-			
-			this.deleteSign(signid);
-	
+	public void deleteSigns(String[] signids) {		
+		for(String signid : signids){			
+			this.deleteSign(signid);	
 		}
 		log.info("批量删除收文");
+	}
+
+	@Override
+	public void stopFlow(String signid) {
+		Sign sign = signRepo.findById(signid);
+		sign.setFolwState(EnumState.STOP.getValue());
+		signRepo.save(sign);
+	}
+
+	@Override
+	public void restartFlow(String signid) {
+		Sign sign = signRepo.findById(signid);
+		sign.setFolwState(EnumState.PROCESS.getValue());
+		signRepo.save(sign);		
 	}
 }

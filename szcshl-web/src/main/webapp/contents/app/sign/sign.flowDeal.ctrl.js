@@ -7,7 +7,7 @@
 
     function sign($location,signSvc,$state,flowSvc) {        
         var vm = this;
-        vm.title = "项目流程处理";
+        vm.title = "项目流程处理";       
         vm.model = {};
         vm.flow = {};
         vm.model.signid = $state.params.signid;	
@@ -25,11 +25,13 @@
         		$(".tab-pane").removeClass("active").removeClass("in");
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
         	})  
-        	
-        	signSvc.initFillData(vm);
-        	
+        	//先初始化流程信息        
+        	vm.flowDeal = true;
         	flowSvc.initFlowData(vm);
         	flowSvc.getNextStepInfo(vm);
+        	
+        	//再初始化业务信息
+        	signSvc.initFillData(vm);
         }
         
         vm.commitNextStep = function (){
@@ -42,6 +44,24 @@
         
         vm.commitOver = function(){
         	alert("流程结束！");
-        }               
+        }  
+        vm.hideWorkBt = function(){
+        	if(vm.flow.curNodeAcivitiId == "approval"){
+        		if(vm.model.isreviewcompleted > 0 ){
+            		vm.showWorkBt = false;
+            		return true;
+            	}else{
+            		vm.showWorkBt = true;
+            		return false;
+            	}
+    		}else{
+    			vm.showWorkBt = false;
+        		return true;
+    		}
+        }
+       
+        vm.addWorkProgram = function(){
+        	$state.go('workprogramEdit', {signid:vm.model.signid});
+        }
     }
 })();

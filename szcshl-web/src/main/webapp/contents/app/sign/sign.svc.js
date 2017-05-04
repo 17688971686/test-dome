@@ -8,15 +8,15 @@
 	function sign($http,$state) {
 		var service = {
 			grid : grid,						//初始化项目列表
-			querySign : querySign,
-			initDicListData : initDicListData,
-			createSign : createSign,
-			updateSign : updateSign,
+			querySign : querySign,				//查询
+			createSign : createSign,			//新增
 			initFillData : initFillData,		//初始化表单填写页面
-			completeFill : completeFill,		//提交表单填写
-			flowgrid : flowgrid	,	//初始化待处理页面
-			updateFillin : updateFillin,//申报编辑
-			deleteSign :　deleteSign,//删除收文
+			flowgrid : flowgrid,				//初始化待处理页面
+			updateFillin : updateFillin,		//申报编辑
+			deleteSign :　deleteSign,			//删除收文
+			startFlow : startFlow,				//发起流程
+			stopFlow : stopFlow,				//停止流程
+			restartFlow : restartFlow			//重启流程
 		};
 		return service;			
 		
@@ -43,17 +43,13 @@
 					dir : "desc"
 				}
 			});
-
 			// End:dataSource
 
 			// Begin:column
 			var columns = [
 					{
 						template : function(item) {
-							return kendo
-									.format(
-											"<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-											item.signid)
+							return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.signid)
 						},
 						filterable : false,
 						width : 40,
@@ -79,15 +75,49 @@
 						filterable : false,
 						format : "{0:yyyy/MM/dd HH:mm:ss}"
 
+					},					
+					{
+						field : "",
+						title : "流程状态",
+						width : 180,
+						filterable : false,
+						template : function(item) {
+							if(item.folwState){
+								if(item.folwState == 1){
+									return "进行中"
+								}else if(item.folwState == 2){
+									return "已暂停"
+								}else if(item.folwState == 8){
+									return "强制结束"
+								}else if(item.folwState == 9){
+									return "已完成"
+								}
+							}else{
+								return "未发起"
+							}
+						}
 					},
 					{
 						field : "",
 						title : "操作",
 						width : 180,
 						template : function(item) {
-							return common.format($('#columnBtns').html(),
-									item.signid, item.signid,"vm.del('" + item.signid + "')");
-
+							//如果已经发起流程，则只能查看
+							var isFlowStart = false,hideStopButton = true,hideRestartButton=true;
+							if(item.folwState && item.folwState > 0){
+								isFlowStart = true;
+								if(item.folwState == 1){
+									hideStopButton = false;
+								}
+								if(item.folwState == 2){
+									hideRestartButton = false;
+								}								
+							}						
+							return common.format($('#columnBtns').html(), item.signid, 
+									item.signid,isFlowStart,"vm.del('" + item.signid + "')",isFlowStart,
+									"vm.startFlow('" + item.signid + "')", isFlowStart,
+									"vm.stopFlow('" + item.signid + "')", hideStopButton,
+									"vm.restartFlow('" + item.signid + "')", hideRestartButton);
 						}
 
 					}
@@ -130,40 +160,8 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//E_查询grid
-		
-		
-		
-		//S_初始化数字字典
-		function initDicListData(vm){
-			var httpOptions = {
-				method : 'get',
-				url : rootPath+"/dict/dictItems",
-				params:{
-					dictCode:'PRO_STAGE'
-				}
-			};
-			
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {						
-						vm.dicList = {};
-						vm.dicList = response.data;		
-						
-					}
-				});
-			};
-			
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}//E_初始化数字字典  
-		
+		}//E_查询grid		
+								
 		//S_创建收文
 		function createSign(vm){
 			common.initJqValidation();
@@ -238,17 +236,15 @@
 		//End 申报登记编辑
 		
 		//Start 删除收文 
-		function deleteSign(vm, signid) {
-			
+		function deleteSign(vm, signid) {			
 			vm.isSubmit = true;
 			var httpOptions = {
 				method : 'delete',
 				url : rootPath+"/sign",
 				data : signid
-
 			}
+			
 			var httpSuccess = function success(response) {
-
 				common.requestSuccess({
 					vm : vm,
 					response : response,
@@ -267,56 +263,16 @@
 				success : httpSuccess
 			});
 		}
-		//End 删除收文
+		//End 删除收文				
 		
-		//S_更新
-		function updateSign(vm){
-			var updateUrl = rootPath+"/sign";			
-			if("fillcomplete" == vm.putType){
-				updateUrl = rootPath+"/sign/html/completeFill";
-			}
-				
-			var httpOptions = {
-				method : 'put',
-				url : updateUrl,
-				data : vm.model
-			}
-
-			var httpSuccess = function success(response) {					
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function() {						
-						common.alert({
-							vm:vm,
-							msg:"操作成功",
-							fn:function() {
-								$('.alertDialog').modal('hide');							
-							}
-						})
-					}
-					
-				})
-			}
-
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-		}//E_更新
-		
-		
-		//end
 		//S_初始化填报页面数据
-		function initFillData(vm){
-		
+		function initFillData(vm){		
 			var paramsValue = {} ;			
-			paramsValue.signid = vm.model.signid;
-			if(vm.flow.taskId){
+			paramsValue.signid = vm.model.signid;			
+			if(vm.flowDeal){
 				paramsValue.taskId = vm.flow.taskId; 
 			}
+			
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/sign/html/initFillPageData",
@@ -327,14 +283,20 @@
 				common.requestSuccess({
 					vm:vm,
 					response:response,
-					fn:function() {						
-						//初始化未完成
-						//alert(response.data.sign.signid);	
-						vm.model = response.data.sign;	
-						vm.orglist =response.data.orgs
-					//	console.log(vm.orglist);
-					}
-					
+					fn:function() {											
+						vm.model = response.data.sign;							
+						vm.orglist =response.data.orgs	
+						
+						//如果是流程处理，则显示相应的按钮或者tab
+						if(vm.flowDeal){							
+							vm.hideWorkBt();	//控制按钮显示和隐藏						
+											
+							if(vm.model.isreviewcompleted > 0){
+								vm.work = response.data.sign.workProgramDto;	//显示工作方案tab		
+							}
+						}
+						
+					}					
 				})
 			}
 
@@ -344,13 +306,7 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-		}//E_初始化填报页面数据
-		
-		//S_填报完成
-		function completeFill(vm){
-			vm.putType = "fillcomplete"
-			updateSign(vm);
-		}//E_填报完成
+		}//E_初始化填报页面数据				
 		
 		//S_初始化待处理页面
 		function flowgrid(vm){
@@ -407,8 +363,13 @@
 					field : "",
 					title : "操作",
 					width : 180,
-					template:function(item){							
-						return common.format($('#columnBtns').html(),item.signid,item.taskId,item.processInstanceId);
+					template:function(item){
+						//如果项目已暂停，则停止对流程操作
+						var hideDealButton = false;
+						if(item.folwState && item.folwState == 2){
+							hideDealButton = true;
+						}
+						return common.format($('#columnBtns').html(),item.signid,item.taskId,item.processInstanceId,hideDealButton);
 					}	
 				}
 			];
@@ -431,6 +392,93 @@
                     });  
                 } 
 			};						
-		}//E_初始化待处理页面										
+		}//E_初始化待处理页面
+		
+		//S_发起流程
+		function startFlow(vm,signid){
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/sign/html/startFlow",
+					params : {signid:signid}
+				}
+				
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.gridOptions.dataSource.read();
+						common.alert({
+							vm : vm,
+							msg : "操作成功"								
+						})
+					}
+				});
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}//E_发起流程
+		
+		//S_停止流程
+		function stopFlow(vm,signid){
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/sign/html/stopFlow",
+					params : {signid:signid}
+				}
+				
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.gridOptions.dataSource.read();
+						common.alert({
+							vm : vm,
+							msg : "操作成功"								
+						})
+					}
+				});
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}//E_停止流程
+		
+		//S_重启流程
+		function restartFlow(vm,signid){
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/sign/html/restartFlow",
+					params : {signid:signid}
+				}
+				
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.gridOptions.dataSource.read();
+						common.alert({
+							vm : vm,
+							msg : "操作成功"								
+						})
+					}
+				});
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}//E_重启流程
 	}		
 })();

@@ -116,14 +116,21 @@
 					vm:vm,
 					response:response,
 					fn:function() {			
-						//console.log(response);
-						//初始化未完成
 						vm.flow.nextGroup = response.data.nextGroup;	
 						vm.nextDealUserList = response.data.nextDealUserList;	
 						if(response.data.nextDealUserList){
 							vm.flow.nextDealUser = response.data.nextDealUserList[0].loginName;	//默认选中
 						}	
-						vm.curNodeName = response.data.curNode.activitiName;
+						
+						if(response.data.curNode){
+							vm.flow.curNodeName = response.data.curNode.activitiName;
+							vm.flow.curNodeAcivitiId = response.data.curNode.activitiId;
+							/****************************以下为添加业务按钮部分**************************/
+							if(response.data.curNode.activitiId == "approval"){	
+								vm.hideWorkBt();								
+							}
+						}
+						
 						
 						if(response.data.nextNode){
 							vm.nextNode = response.data.nextNode;
@@ -160,15 +167,13 @@
 					common.requestSuccess({
 						vm:vm,
 						response:response,
-						fn:function() {		
+						fn:function() {	
+							if(response.data.reCode == "error"){
+								enableButton(vm);
+							}
 							common.alert({
 								vm:vm,
-								msg: response.data.reMsg,
-								fn:function() {
-									if(response.data.reCode == "error"){
-										enableButton(vm);
-									}
-								}
+								msg: response.data.reMsg
 							})
 						}
 						

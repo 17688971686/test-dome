@@ -125,4 +125,16 @@ public class AbstractRepository<T,ID extends Serializable> extends RepositoryHel
 		return this.sessionFactory.getCurrentSession();
 	}
 
+	@Override
+	public void bathUpdate(List<T> t) {
+		for(int i=0,l=t.size();i<l;i++){
+			T entity = t.get(i);
+			save(entity);
+			if(i>0 && i/50 == 0){
+				flush();
+				clear();
+			}
+		}
+	}
+
 }

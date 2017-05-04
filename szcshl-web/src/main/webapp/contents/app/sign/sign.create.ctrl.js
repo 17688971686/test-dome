@@ -8,9 +8,7 @@
     function sign($location, signSvc,$state) {        
         var vm = this;
     	vm.model = {};						//创建一个form对象
-        vm.title = '新增收文';        		//标题
-            
-        signSvc.initDicListData(vm);
+        vm.title = '新增收文';        		//标题            
         
         vm.create = function () {
         	signSvc.createSign(vm);

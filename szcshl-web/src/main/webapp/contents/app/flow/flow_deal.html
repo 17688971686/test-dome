@@ -3,12 +3,16 @@
     <button class="btn btn-sm btn-success" ng-click="vm.commitNextStep()" ng-disabled="vm.disabledButton"   ng-show="vm.isHaveNext" ng-hide="vm.isOverStep"><span class="glyphicon glyphicon-ok"></span>提交下一步</button>
 	<button class="btn btn-sm btn-danger" ng-click="vm.commitBack()" ng-disabled="vm.disabledButton"><span class="glyphicon glyphicon-chevron-left"></span>回退</button>
 	<button class="btn btn-sm btn-success" ng-click="vm.commitOver()" ng-disabled="vm.disabledButton" ng-hide="vm.isHaveNext" ng-show="vm.isOverStep" ><span class="glyphicon glyphicon-remove"></span>结束流程</button>
+	<!-- 业务按钮 -->
+	<button class="btn btn-sm btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.commitWorkProgram" ng-hide="vm.hideWorkBt()" ng-show="vm.showWorkBt" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
 </div>
 <div class="well well-sm" style="background:white;" >
 	<form id="flow_form" name="flow_form" >
 	<input type="hidden" ng-model="vm.flow.taskId" value="{{vm.flow.taskId}}" /> <!-- hidden taskId -->
 	<input type="hidden" ng-model="vm.flow.processInstanceId" value="{{vm.flow.processInstanceId}}" /><!-- hidden processInstanceId -->
-	<input type="hidden" ng-model="vm.flow.nextGroup" value="{{vm.flow.nextGroup}}" />
+	<input type="hidden" ng-model="vm.flow.nextGroup" value="{{vm.flow.nextGroup}}" />	
+	
+	<input type="hidden" ng-model="vm.flow.curNodeAcivitiId" value="{{vm.flow.curNodeAcivitiId}}" />	
 	
 	<table class="table table-bordered">
 		  <caption class="h5">流程处理</caption>
@@ -16,7 +20,7 @@
 		    <tr>
 		      <td width="15%" class="text-center">本环节名称</td>
 		      <td>
-		      		{{vm.curNodeName}}		      		
+		      		{{vm.flow.curNodeName}}		      		
 			  </td>
 			</tr>				
 		    <tr>

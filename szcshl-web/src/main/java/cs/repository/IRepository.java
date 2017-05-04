@@ -17,6 +17,8 @@ public interface IRepository<T, ID> {
 	public List<T> findByOdata(ODataObj oDataObj);
 
 	public T save(T entity);
+	
+	public void bathUpdate(List<T> t);
 
 	public void delete(T entity);
 

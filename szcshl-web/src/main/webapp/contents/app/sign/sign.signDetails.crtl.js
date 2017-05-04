@@ -16,18 +16,10 @@
         
         signSvc.initFillData(vm); 
     	
-        vm.completeFill = function (){
-        	
-        	 signSvc.completeFill(vm);
-        }
        //申报登记编辑
-       vm.updateFillin = function (){
-    	   
-    	   signSvc.updateFillin(vm);
-    	   
+       vm.updateFillin = function (){    	   
+    	   signSvc.updateFillin(vm);   	   
        }
-       
-    
-       
+                  
     }
 })();

@@ -20,8 +20,6 @@ public interface SignService{
 
 	void updateSign(SignDto signDto) throws Exception;
 
-	void completeFillSign(SignDto signDto) throws Exception;
-
 	Map<String, Object> initFillPageData(String signId);
 
 	PageModelDto<SignDto> getFlow(ODataObj odataObj);
@@ -35,4 +33,10 @@ public interface SignService{
 	void deleteSign(String signid);
 
 	public void deleteSigns(String[] signids);
+
+	void startFlow(String signid) throws Exception;
+
+	void stopFlow(String signid);
+
+	void restartFlow(String signid);
 }

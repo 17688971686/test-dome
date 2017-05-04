@@ -157,10 +157,12 @@ public class FlowController {
 				case "approval":				//审批项目-> 部长审批会议方案
 					curUser = userService.findUserByName( currentUser.getLoginName());
 					Org org = curUser.getOrg();
+					flowDto.setNextGroup(org.getName());
 					User user = userService.findById(org.getOrgDirector());
 					nextUserList.add(user);
 					break;
 				case "approvalPlan":			//部长审批会议方案->中心领导审批
+					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
 					break;
 				case "leaderApprovalPlan":		//中心领导审批->发文申请
 					break;

@@ -1,0 +1,191 @@
+<meta charset="UTF-8">
+<table class="table table-bordered">
+  <caption class="text-center h3"><strong>项目建议书评审方案</strong></caption>
+  <caption style="width:100%;">
+  	<span style="float:left;">评审方式: {{vm.work.reviewType}}  {{vm.work.isSigle}}</span>
+  	<span style="float:right;">收文日期:{{vm.work.titleDate}}</span>
+  </caption>
+  <tbody>
+    <tr>
+      <td colspan="2" style="width:150px;" class="text-center">项目名称</td>
+      <td colspan="5">
+      		{{vm.work.projectName}}
+	  </td>		      
+    </tr>
+    <tr>
+      <td colspan="2" style="width:150px;" class="text-center">来文单位</td>
+      <td colspan="3">
+			{{vm.work.sendFileUnit}}
+	  </td>
+      <td  style="width:150px;" class="text-center">来文单位联系人</td>
+      <td>
+			{{vm.work.sendFileUser}}
+	  </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="width:150px;" class="text-center">建设单位</td>
+      <td colspan="3">
+      		{{vm.work.buildCompany}}
+      </td>
+      <td  style="width:150px;" class="text-center">编制单位</td>
+      <td>
+      		{{vm.work.designCompany}}
+      </td>
+    </tr>	    
+    <tr>
+      <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
+      <td colspan="3">
+      		
+      </td>
+      <td style="width:150px;" class="text-center">是否有环评</td>
+      <td>
+      	<label>
+	        <input type="radio" ng-value="9" ng-model="vm.work.isHaveEIA" name="isHaveEIA">是
+	    </label>
+	    <label>
+	        <input type="radio" ng-value="0" ng-model="vm.work.isHaveEIA" name="isHaveEIA">否
+	    </label>		      		
+      </td>
+    </tr>	
+    <tr>		     
+      <td colspan="2" style="width:150px;" class="text-center">项目类别</td>
+      <td>
+			
+	  </td>
+	  <td style="width:50px;" class="text-center">小类</td>
+      <td>
+			
+	  </td>
+	  <td style="width:150px;" class="text-center">行业类别</td>
+      <td>
+      	
+      </td>
+    </tr> 
+    <tr>
+      <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
+      <td rowspan="3" colspan="3">
+			
+	  </td>
+	  <td style="width:150px;" class="text-center">手机</td>
+      <td>
+      	
+      </td>
+    </tr>
+    <tr>		     
+      <td style="width:150px;" class="text-center">电话</td>
+      <td>
+      	
+      </td>
+    </tr> 
+    <tr>		     
+      <td style="width:150px;" class="text-center">传真</td>
+      <td>
+      	
+      </td>
+    </tr> 
+    <tr>
+    	<td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
+	    <td style="width:100px;" class="text-center">申报建设规模</td>			
+	    <td colspan="3">
+	      	
+	    </td>
+	    <td style="width:150px;" class="text-center">申报投资</td>
+	    <td >
+	      	
+	    </td>
+    </tr>
+    <tr>
+    	<td style="width:100px;" class="text-center">申报建设内容</td>			
+	    <td colspan="5">
+	      	
+	    </td>			    
+    </tr>
+    <tr>
+    	<td style="width:100px;" class="text-center">项目背景</td>			
+	    <td colspan="5">
+	      	
+	    </td>			   
+	</tr> 
+	<tr>
+		<td rowspan="2" colspan="2" style="width:150px;" class="text-center">评审部门</td>	
+	    <td rowspan="2" colspan="3">
+	      	
+	    </td>
+	    <td style="width:150px;" class="text-center">第一负责人</td>
+	    <td >
+	      	
+	    </td>
+	</tr> 
+	<tr>
+		<td style="width:150px;" class="text-center">第二负责人</td>
+	    <td >
+	      	
+	    </td>
+	</tr> 
+	<tr>
+		<td colspan="2" style="width:150px;" class="text-center">是否有补充资料函</td>	
+	    <td colspan="3">
+	      	<label>
+		        <input type="radio" ng-value="9" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">是
+		    </label>
+		    <label>
+		        <input type="radio" ng-value="0" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">否
+		    </label>	
+	    </td>
+	    <td style="width:150px;" class="text-center">补充资料函发文日期</td>
+	    <td >
+	      	
+	    </td>
+	</tr>
+	<tr>
+		<td colspan="2" style="width:150px;" class="text-center">评审会时间</td>	
+	    <td colspan="3">
+	      	
+	    </td>
+	    <td style="width:150px;" class="text-center">会议地点</td>
+	    <td >
+	      	
+	    </td>
+	</tr>
+	<tr>
+		<td colspan="2" style="width:150px;" class="text-center">调研时间</td>	
+	    <td colspan="3">
+	      	
+	    </td>
+	    <td style="width:150px;" class="text-center">专家费用</td>
+	    <td >
+	      	
+	    </td>
+	</tr>
+	<tr>
+      <td colspan="2" style="width:150px;" class="text-center">拟聘请专家</td>
+      <td colspan="5">
+	  	  
+	  </td>		      
+    </tr> 
+	<tr>
+      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
+      <td colspan="5">
+	  	  
+	  </td>		      
+    </tr>  
+	<tr>
+      <td colspan="2" style="width:150px;" class="text-center">拟评审重点问题</td>
+      <td colspan="5">
+	  	<textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%"> </textarea>  
+	  </td>		      
+    </tr> 		    		     		 
+    <tr>
+      <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
+      <td colspan="5">
+	  	<textarea rows="3" ng-model="vm.work.ministerSuggesttion" name="ministerSuggesttion" style="width:98%"> </textarea>  
+	  </td>		      
+    </tr>
+    <tr>
+      <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
+      <td colspan="5">
+	  	<textarea rows="3" ng-model="vm.work.leaderSuggesttion" name="leaderSuggesttion" style="width:98%"> </textarea> 
+	  </td>		      
+    </tr>		   
+  </tbody>		  
+</table>	<!-- end table -->

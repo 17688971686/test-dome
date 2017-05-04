@@ -50,7 +50,7 @@ public class Sign extends DomainBase{
 	private String projectname;
 	
 	//是否登记完毕
-	@Column(columnDefinition="VARCHAR(1)")
+	@Column(columnDefinition="VARCHAR(2)")
 	private String isregisteredcompleted;
 	
 	//主办处室ID
@@ -82,7 +82,7 @@ public class Sign extends DomainBase{
 	private String urgencydegree;
 	
 	//年度计划类别
-	@Column(columnDefinition="VARCHAR(30)")
+	@Column(columnDefinition="VARCHAR(16)")
 	private String yearplantype;
 	
 	//秘密登记
@@ -173,7 +173,10 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2048)")
 	private String pasedescription;
 	
-	
+	//是否完成评审方案
+	@Column(columnDefinition="VARCHAR(2)")
+	private String isreviewcompleted;
+
 	//建议书项目处理表份数	 
 	@Column(columnDefinition="INTEGER")
 	private Integer sugProDealCount;
@@ -390,25 +393,25 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String energyCopy;
 
+	//是否已发起流程
+	@Column(columnDefinition="VARCHAR(2)")
+	private String folwState;
+
+	//收文状态
+	@Column(columnDefinition="VARCHAR(2)")
+	private String signState;
+	
 	//收文与部门关联：一对一关系
 	@OneToOne
 	@JoinColumn(name ="orgSignId")
 	private Org orgSignId;
 	
+	@OneToOne(mappedBy="sign")  
+	private WorkProgram workProgram;
+	
 	public Sign() {
 		super();
 	}
-	
-	
-	public Org getOrgSignId() {
-		return orgSignId;
-	}
-
-
-	public void setOrgSignId(Org orgSignId) {
-		this.orgSignId = orgSignId;
-	}
-
 
 	public String getSignid() {
 		return signid;
@@ -1136,6 +1139,38 @@ public class Sign extends DomainBase{
 
 	public void setEnergyCopy(String energyCopy) {
 		this.energyCopy = energyCopy;
+	}
+
+	public String getIsreviewcompleted() {
+		return isreviewcompleted;
+	}
+
+	public void setIsreviewcompleted(String isreviewcompleted) {
+		this.isreviewcompleted = isreviewcompleted;
+	}	
+	
+	public String getFolwState() {
+		return folwState;
+	}
+
+	public void setFolwState(String folwState) {
+		this.folwState = folwState;
+	}
+	
+	public String getSignState() {
+		return signState;
+	}
+
+	public void setSignState(String signState) {
+		this.signState = signState;
+	}
+
+	public WorkProgram getWorkProgram() {
+		return workProgram;
+	}
+
+	public void setWorkProgram(WorkProgram workProgram) {
+		this.workProgram = workProgram;
 	}
 		
 }

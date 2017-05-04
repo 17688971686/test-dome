@@ -6,16 +6,22 @@ package cs.common;
  *
  */
 public class Constant {
-
+	public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
 	/**
 	 * 定义一个业务状态
 	 * "0" 表示否
-	 * "9" 表示是
+	 * "1" 表示进行中
+	 * "2" 表示暂停
+	 * "5" 表示正常
+	 * "7" 表示已删除
+	 * "8" 表示强制结束
+	 * "9" 表示是,或者已完成
 	 * @author ldm
 	 *
 	 */
 	public static enum EnumState{
-	    NO("0"),YES("9");
+	    NO("0"),PROCESS("1"),STOP("2"),NORMAL("5"),
+	    DELETE("7"),FORCE("8"),YES("9");
 
 	    private String value;
 

@@ -180,20 +180,39 @@
                 templateUrl: rootPath + '/sign/html/signDetails.html',
                 controller: 'signDetailsCtrl',
                 controllerAs: 'vm'
-            });
-        
-        	//end#sign
-    }]).run(function($rootScope,$http){
-    	$rootScope.topSelectChange = function(dictName,dicts){
+            })//end#sign
+            
+            //begin#workprogram
+            .state('workprogramEdit', {
+	            url: '/workprogramEdit/:signid',
+	            templateUrl: rootPath + '/workprogram/html/edit.html',
+	            controller: 'workprogramEditCtrl',
+	            controllerAs: 'vm'
+	        })
+            //end#workprogram
+            ;       
+    }]).run(function($rootScope,$http,$state, $stateParams){
+    	 $rootScope.$state = $state;  
+         $rootScope.$stateParams = $stateParams; 
+         $rootScope.$on("$stateChangeSuccess",  function(event, toState, toParams, fromState, fromParams) {   
+             $rootScope.previousState_name = fromState.name;  
+             $rootScope.previousState_params = fromParams;  
+         });  
+         //实现返回的函数  
+         $rootScope.back = function() {
+             $state.go($rootScope.previousState_name,$rootScope.previousState_params);  
+         };
+         
+         $rootScope.topSelectChange = function(dictName,dicts){
     		for(var i=0;i<dicts.length;i++){
     			if(dicts[i].dictName == dictName){
     				return dicts[i].dicts;
     			}
     		}
-    	}   	
-    	common.initDictData({$http:$http,scope:$rootScope});
-    })
-    
-    ;
+         }   	
+         common.initDictData({$http:$http,scope:$rootScope});
+    	
+         
+    });
     
 })();

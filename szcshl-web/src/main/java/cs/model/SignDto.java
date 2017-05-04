@@ -7,6 +7,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 
+import cs.domain.WorkProgram;
+
 public class SignDto extends BaseDto {
 	
 	private String signid;
@@ -257,11 +259,38 @@ public class SignDto extends BaseDto {
 	//部长处理意见
 	private String ministerhandlesug;
 	
+	//是否已经发起流程
+	private String folwState;
+	
+	//收文状态
+	private String signState;
+	
 	//部门
 	private OrgDto orgDto;
 	
 	public OrgDto getOrgDto() {
 		return orgDto;
+	}
+	
+	private String isreviewcompleted;	
+
+	
+	private WorkProgramDto workProgramDto;
+		
+	public WorkProgramDto getWorkProgramDto() {
+		return workProgramDto;
+	}
+
+	public void setWorkProgramDto(WorkProgramDto workProgramDto) {
+		this.workProgramDto = workProgramDto;
+	}
+
+	public String getIsreviewcompleted() {
+		return isreviewcompleted;
+	}
+
+	public void setIsreviewcompleted(String isreviewcompleted) {
+		this.isreviewcompleted = isreviewcompleted;
 	}
 
 	public void setOrgDto(OrgDto orgDto) {
@@ -1019,12 +1048,20 @@ public class SignDto extends BaseDto {
 	public void setMinisterhandlesug(String ministerhandlesug) {
 		this.ministerhandlesug = ministerhandlesug;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+	public String getFolwState() {
+		return folwState;
+	}
+
+	public void setFolwState(String folwState) {
+		this.folwState = folwState;
+	}
+
+	public String getSignState() {
+		return signState;
+	}
+
+	public void setSignState(String signState) {
+		this.signState = signState;
+	}			
 }

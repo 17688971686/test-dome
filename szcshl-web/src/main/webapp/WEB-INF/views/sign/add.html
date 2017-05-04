@@ -58,7 +58,7 @@
                 <td><span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span></td>
             </tr>                     
             <tr>
-                <td class="formAlignRight">项目阶段： <span class="required">*</span></td>{{vm.model.secondCodeDicts}}//{{vm.model.reviewstage}}
+                <td class="formAlignRight">项目阶段： <span class="required">*</span></td>
                 <td colspan="3">
                     <select ng-model="vm.model.reviewstage" ng-change="vm.model.secondCodeDicts = topSelectChange(vm.model.reviewstage,DICT.PRO_STAGE.dicts)" name="reviewstage" id="reviewstage">
 						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>

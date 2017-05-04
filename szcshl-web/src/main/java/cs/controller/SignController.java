@@ -47,9 +47,7 @@ public class SignController {
 	@RequestMapping(name = "更新收文", path = "",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ResponseBody
-	public void  update(@RequestBody SignDto signDto) throws Exception  {	
-		
-		
+	public void  update(@RequestBody SignDto signDto) throws Exception  {					
 		signService.updateSign(signDto);		
 	}
 	
@@ -77,15 +75,6 @@ public class SignController {
 		
 		return signDto.getSignid();
 	}		
-	
-	@RequiresPermissions("sign#html/completeFill#PUT")
-	@RequestMapping(name = "完成填写，发起流程", path = "html/completeFill",method=RequestMethod.PUT)	
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void completeFill(@RequestBody SignDto signDto) throws Exception {	
-		//complete
-		signDto.setIsregisteredcompleted(Constant.EnumState.YES.getValue());
-		signService.completeFillSign(signDto);	
-	}
 	
 	@RequestMapping(name = "初始化项目页面", path = "html/initFillPageData",method=RequestMethod.GET)	
 	@Transactional
@@ -124,25 +113,47 @@ public class SignController {
 		return signDtos;
 	}
 	
+	@RequiresPermissions("sign#html/startFlow#post")
+	@RequestMapping(name = "发起流程", path = "html/startFlow", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void startFlow(@RequestParam(required = true)String signid) throws Exception{
+		signService.startFlow(signid);
+	}
+	
+	@RequiresPermissions("sign#html/stopFlow#post")
+	@RequestMapping(name = "发起流程", path = "html/stopFlow", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void stopFlow(@RequestParam(required = true)String signid) throws Exception{
+		signService.stopFlow(signid);
+	}
+	
+	
+	@RequiresPermissions("sign#html/restartFlow#post")
+	@RequestMapping(name = "重启流程", path = "html/restartFlow", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void restartFlow(@RequestParam(required = true)String signid) throws Exception{
+		signService.restartFlow(signid);
+	}
+	
 	@RequiresPermissions("sign#html/flowDeal#get")
 	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
 	public String flowDeal(){
 				
 		return ctrlName + "/flowDeal";
 	}	
+	
 	@RequiresPermissions("sign##delete")
 	@RequestMapping(name = "删除收文" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
 	public void deleteSign(@RequestBody String signid){
 		String [] ids=signid.split(",");
 		if(ids.length>1){
-
 			signService.deleteSigns(ids);
-		}else{
-			
+		}else{			
 			signService.deleteSign(signid);
 		}
 	}
+	
 	@RequiresPermissions("sign#selectSign#get")
 	@RequestMapping(name = "获取办事处信息", path = "selectSign", method = RequestMethod.GET)
 	public 	@ResponseBody List<OrgDto> selectSign(HttpServletRequest request) throws ParseException{
