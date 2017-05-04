@@ -1,4 +1,4 @@
-﻿package cs.repository.repositoryImpl;
+package cs.repository.repositoryImpl;
 
 import java.util.List;
 
@@ -7,8 +7,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import cs.domain.Expert;
-import cs.domain.User;
-import cs.domain.User_;
 import cs.repository.AbstractRepository;
 @Service
 public class ExpertRepoImpl extends AbstractRepository<Expert,String> implements ExpertRepo {
