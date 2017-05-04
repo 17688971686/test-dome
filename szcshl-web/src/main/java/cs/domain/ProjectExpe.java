@@ -1,4 +1,4 @@
-﻿package cs.domain;
+package cs.domain;
 
 import java.io.Serializable;
 
