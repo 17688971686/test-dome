@@ -82,8 +82,9 @@ public class RoomBookingController {
 	@RequestMapping( name="获取会议室预定人", path="findUser", method=RequestMethod.GET)
 	@ResponseBody
 	public User userObj(){
-		User user=userService.findUserByName(currentUser.getLoginName());
-		return user;
+		//User user=userService.findUserByName(currentUser.getLoginName());
+		return null;
+		
 	}
 	@RequiresPermissions("room#exports#get")
 	@RequestMapping( name="导出本周评审会议安排", path="exports", method=RequestMethod.GET)
@@ -186,11 +187,11 @@ public class RoomBookingController {
 	@RequestMapping(name = "预定会议室列表", path = "html/roomlist" ,method = RequestMethod.GET)
 	public String roomlist(HttpServletRequest request ,ModelMap model){
 		
-		User user=userService.findUserByName(currentUser.getLoginName());
-		if(user!=null){
-			model.addAttribute("user", user.getLoginName());
-			
-		}
+//		User user=userService.findUserByName(currentUser.getLoginName());
+//		if(user!=null){
+//			model.addAttribute("user", user.getLoginName());
+//			
+//		}
 		return ctrlName +"/roomlist";
 	}
 	
