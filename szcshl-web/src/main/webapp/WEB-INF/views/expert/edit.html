@@ -1,0 +1,501 @@
+
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet" />
+<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
+<div ng-include
+	src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<style>
+.pro_title {
+	font-size: 14px;
+	text-align: center;
+	font-family: "微软雅黑";
+}
+
+.pro_title_1 {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.list_text {
+	font-size: 12px;
+}
+
+.conttent_list table {
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+.conttent_list table td {
+	border-left: 1px solid #000;
+	border-top: 1px solid #000;
+	padding-left: 5px;
+}
+
+.conttent_list {
+	/* background-image: url(images/remark-title.jpg); */
+	background-repeat: no-repeat;
+	padding: 40px;
+	width: 100%;
+	margin: auto;
+	background-color: #FFF;
+}
+
+.text_input {
+	border: 1px solid #0CF;
+}
+
+.conttent_list table tr .list_text .waring {
+	color: #F30;
+}
+
+.waring {
+	color: #F30;
+	text-align: right;
+}
+
+.textarea_list {
+	display: block;
+	margin: 10px;
+	width: 95%;
+	height: 120px;
+}
+
+.conttent_list table {
+	margin: 10px;
+}
+
+.bton {
+	margin: auto;
+}
+
+.conttent_list table tr .list_text .pro_title_1 .list_text {
+	font-weight: normal;
+}
+
+body {
+	background-color: #F9F9F9;
+}
+
+.bottom_btn {
+	text-align: center;
+}
+
+.error {
+	color: red;
+	font-family: "yahei";
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.pro_title {
+	font-size: 16px;
+}
+
+.side_a {
+	float: left;
+}
+
+.side_b {
+	float: right;
+}
+
+.title_box {
+	border: 1px solid #999;
+	border-radius: 5px;
+	margin: 10px 0;
+	padding: 0 20px;
+	overflow: hidden;
+}
+
+.pM {
+	font-size: 16px;
+	font-weight: bold;
+}
+</style>
+<div class="well well-sm" style="background: white;">
+<form id="form" name="form">
+	<ol class="breadcrumb">
+		<li><a href="#/expertEdit">深圳市政府投资项目咨询专家申请表</a></li>
+		<li class="active">{{vm.titles}}</li>
+	</ol>
+		<table width="950" border="1" cellpadding="0" cellspacing="0"
+			style="margin: auto; margin-top: 30px;">
+			<tr>
+				<td class="formAlignRight">姓名 <span class="required">*</span></td>
+				<td>
+				<input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.name" id="loginName" name="name" data-val="true" data-val-required="必填"> 
+				 <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				<td class="formAlignRight">性别</td>
+				<td> 
+					<select ng-model="vm.model.sex" class="form-control input-sm "  name="sex">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.sex" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					<!-- <select class="form-control input-sm "  ng-model="vm.model.sex " id="sex" name="sex" data-val="true" data-val-required="必填">
+							<option value="">请选择</option>
+							<option value="1">男</option>
+					</select> -->
+				<span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				<td align="center">出生年月</td>
+				<td>
+					<input type="text" name="birthDay" id="birthDay"
+					class="form-control input-sm " ng-model="vm.model.birthDay" data-val="true" data-val-required="必填">
+					<span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				<td width="121" rowspan="4"><img name="" src="" width="121"
+					height="148" alt="" /></td>
+			</tr>
+			<tr>
+				<td align="center">身份证号</td>
+				<td colspan="3">
+					<input style="width: 250px" type="text"
+					name="idCard" id="idCard" class="form-control input-sm "
+					ng-model="vm.model.idCard" data-val="true" data-val-required="必填">
+					 <span data-valmsg-for="idCard" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				<td align="center">最高学历</td>
+				<td>
+					<select ng-model="vm.model.qualifiCations" class="form-control input-sm "  name="qualifiCations">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.qualifiCations" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					 <span data-valmsg-for="qualifiCations" data-valmsg-replace="true" class="errors"></span>
+				 </td>
+			</tr>
+			<tr>
+				<td align="center">毕业院校</td>
+				<td colspan="3"><input style="width: 250px" type="text"
+					name="acaDemy" id="acaDemy" class="form-control input-sm "
+					ng-model="vm.model.acaDemy" data-val="true" data-val-required="必填">
+					 <span data-valmsg-for="acaDemy" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				<td align="center">最高学位</td>
+				<td>
+					<select ng-model="vm.model.degRee" class="form-control input-sm " name="degRee">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.degRee" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					<span data-valmsg-for="degRee" data-valmsg-replace="true" class="errors"></span>
+				</td>
+			</tr>
+			<tr>
+				<td align="center">手机号码</td>
+				<td colspan="3"><input style="width: 250px" type="text"
+					name="userPhone" id="userPhone" class="form-control input-sm "
+					 ng-model="vm.model.userPhone" data-val="true" data-val-required="必填" class="form-control input-sm "> 
+					<span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				<td align="center">毕业时间</td>
+				<td><input type="text" name="createDate" id="createDate"
+					 class="form-control input-sm " ng-model="vm.model.createDate" data-val="true" data-val-required="必填"> 
+					 <span data-valmsg-for="createDate" data-valmsg-replace="true" class="errors"></span>
+					</td>
+			</tr>
+			<tr>
+
+				<td align="center">工作单位</td>
+				<td colspan="2"><input style="width: 200px" type="text"
+					name="comPany" id="comPany" class="form-control input-sm "
+					ng-model="vm.model.comPany"  data-val="true" data-val-required="必填"> 
+					 <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
+				<td align="center">现任职位</td>
+				<td>
+					<select ng-model="vm.model.job" class="form-control input-sm " name="job">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.job" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
+					</td>
+				<td align="center">职称</td>
+				<td>
+					<select ng-model="vm.model.title" class="form-control input-sm " name="title">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.title" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					<span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
+				</td>
+			</tr>
+			<tr>
+				<td align="center">办公电话</td>
+				<td colspan="2"><input style="width: 200px" type="text"
+					name="phone" id="phone" class="form-control input-sm "
+					ng-model="vm.model.phone">  
+						<span data-valmsg-for="phone" data-valmsg-replace="true" class="errors"></span> 
+				</td>
+				<td align="center">传真</td>
+				<td><input type="text" name="fax" id="fax" class="form-control input-sm "
+					ng-model="vm.model.fax" ng-maxlength="20" data-val="true" data-val-required="必填">
+					 <span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
+				</td>
+				<td align="center">电子邮箱</td>
+				<td><input type="text" name="email" id="email"
+					class="form-control input-sm " ng-model="vm.model.email" data-val="true" data-val-required="必填"> 
+					<span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span> 
+				</td>
+			</tr>
+			<tr>
+				<td height="37" align="center">通讯地址</td>
+				<td colspan="4"><input style="width: 400px" type="text"
+					name="addRess" id="addRess" class="form-control input-sm "
+					ng-model="vm.model.addRess" data-val="true" data-val-required="必填"> 
+					<span data-valmsg-for="addRess" data-valmsg-replace="true" class="errors"></span> 
+				</span></td>
+				<td align="center">邮编</td>
+				<td><input type="text" name="zipCode" id="zipCode"
+					class="form-control input-sm " ng-model="vm.model.zipCode" data-val="true" data-val-required="必填">
+						<span data-valmsg-for="zipCode" data-valmsg-replace="true" class="errors"></span> 
+						<!-- ng-show="myForm.zipCode.$error.pattern">邮编格式不正确</span> -->
+				</span></td>
+			</tr>
+			<tr>
+				<td height="37" align="center">所学专业</td>
+				<td ><input style="width: 200px" type="text"
+					name="maJor" id="maJor" class="form-control input-sm " ng-model="vm.model.maJor"
+					data-val="true" data-val-digits="121212" data-val-required="必填"> 
+					<span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
+				</td>
+				<td colspan="2" align="center">专家范围</td>
+				<td colspan="3">
+					<select ng-model="vm.model.state" class="form-control input-sm "  name="state" style="width: 200px">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.statez" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					<span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
+				</td>
+			</tr>
+			
+			<tr>
+				<td height="37" align="center">专家类别</td>
+				<td>
+					<select ng-model="vm.model.expeRttype" class="form-control input-sm "  name="expeRttype" style="width: 200px">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.expeRttype" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+				</td>
+				<td colspan="2" align="center">工程造价类</td>
+				<td>
+					<select ng-model="vm.model.procoSttype" class="form-control input-sm "  name="expeRttype" style="width: 200px">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.procoSttype" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+				</td>
+				<td align="center">工程技术类</td>
+				
+				<td>
+					<select ng-model="vm.model.proteChtype" class="form-control input-sm " name="protechtype">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.proteChtype" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td height="97" align="center">备注</td>
+				<td colspan="6"><textarea style="width: 880px; height: 95px"
+						name="remark" ng-model="vm.model.remark" class="form-control input-sm "
+						data-bind="value:remark"></textarea></td>
+			</tr>
+
+			<td colspan="7">
+				<div style="width: 730px; margin: auto;">
+					<span class="side_a waring">每条信息必须保存完整！</span> <span class="side_b">
+						<button class="btn btn-sm btn-success" ng-click="vm.create()"  ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            			<button class="btn btn-sm btn-success" ng-click="vm.update()"  ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>编辑</button>
+						<a class="btn btn-sm btn-primary" href="#/expert"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+					</span>
+				</div>
+			</td>
+
+		</table>
+		</form>
+		<p class="pro_title_1" style="margin:10px;margin-left: 350px;">工作经历</p>
+		<div style="border:1px solid #000; padding:5px 20px; overflow:hidden; width: 950px;margin: auto;">
+		<table width="900" border="0" cellpadding="0" cellspacing="0" id="workTab">
+  	<tr>
+  	<td width="22" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="pjallChecked" id="pjallChecked"/> </td>
+    <td width="182" align="center" bgcolor="#eeeeee">开始时间</td>
+    <td width="182" align="center" bgcolor="#eeeeee">结束时间</td>
+    <td width="182" align="center" bgcolor="#eeeeee">工作单位</td>
+    <td align="center" bgcolor="#eeeeee">职务</td>
+  </tr>
+
+  <tr ng-repeat="x in vm.work">
+  <td align="center"> <input type="checkbox" name="checkwr" ng-checked="addWork" value="{{ x.weID }}"/></td>
+    <td style="text-align: center;">{{ x.beginTime }}</td>
+    <td style="text-align: center;">{{ x.endTime }}</td>
+    <td style="text-align: center;">{{ x.companyName }}</td>
+    <td style="text-align: center;">{{ x.job }}</td>
+  </tr>
+
+</table>
+
+<div style="width:730px; margin:auto;"> 
+ <span class="side_a waring">每条信息必须保存完整！至少有一条信息。</span> 
+ <span class="side_b">
+ </span>
+</div>
+	<div style="text-align: right;">
+	 	<button class="btn btn-sm btn-success" ng-click="vm.gotoWPage()"  ng-hide="vm.isHide"><span class="glyphicon glyphicon-ok"></span>添加</button>
+	 	<button class="btn btn-sm btn-success" ng-click="vm.updateWork()"  ng-hide="vm.isHide"  ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+	 	<button class="btn btn-sm btn-success" ng-click="vm.deleteWork()"  ng-hide="vm.isHide"  ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>删除</button>
+     </div>
+ </div>
+ 
+ 
+ <p class="pro_title_1" style="margin:10px;margin-left: 350px;">项目经验</p>
+<div style="border:1px solid #000; padding:5px 20px; overflow:hidden;width: 950px;margin: auto;">
+<table width="900" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+  <td width="22" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addProject" name="pjallChecked" id="pjallChecked"/> </td>
+    <td align="center" bgcolor="#eeeeee">开始时间</td>
+    <td align="center" bgcolor="#eeeeee">结束时间</td>
+    <td align="center" bgcolor="#eeeeee">项目名称</td>
+    <td align="center" bgcolor="#eeeeee">项目类别</td>
+    </tr>
+  <tr ng-repeat="x in vm.project">
+    <td align="center"> <input type="checkbox" name="checkpj" ng-checked="addProject" value="{{ x.peID }}"/></td>
+    <td style="text-align: center;" >{{x.projectbeginTime}}</td>
+    <td style="text-align: center;" >{{x.projectendTime}}</td>
+    <td style="text-align: center;" >{{x.projectName}}</td>
+    <td style="text-align: center;" >{{x.projectType}}</td>
+    </tr>
+</table>
+
+<div style="width:730px; margin:auto;"> 
+ <span class="side_a waring">每条信息必须保存完整！至少有一条信息。</span> 
+ <span class="side_b">
+ </span>
+</div>
+ <div style="text-align: right;">
+	 	<button class="btn btn-sm btn-success" ng-hide="vm.isHide" ng-click="vm.gotoJPage()"  ><span class="glyphicon glyphicon-ok"></span>添加</button>
+     	<button class="btn btn-sm btn-success" ng-hide="vm.isHide" ng-click="vm.updateProject()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
+     	<button class="btn btn-sm btn-success" ng-hide="vm.isHide" ng-click="vm.delertProject()" ><span class="glyphicon glyphicon-ok"></span>删除</button>
+ </div>
+ </div>
+
+<div id="wrwindow" style="visibility: hidden;" >
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/workExpe">添加工作经验</a></li>       
+       <!--  <li class="active" >{{vm.title}}</li> -->
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.createWork()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.saveWork()"><span class="glyphicon glyphicon-ok"></span>更新</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.onWClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">开始时间： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="20" class="form-control input-sm " ng-model="vm.model.beginTime" id="beginTime" name="beginTime" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+               
+            </tr>
+             
+              <tr >
+                <td class="formAlignRight">结束时间： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.endTime" id="endTime" name="endTime" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+              <tr >
+                <td class="formAlignRight">工作单位： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.companyName " id="companyName" name="companyName" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="companyName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+              <tr >
+                <td class="formAlignRight">职务： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.job " id="job" name="job" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div id="pjwindow" style="visibility: hidden;">
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/workExpe">添加项目经验</a></li>       
+       <!--  <li class="active" >{{vm.title}}</li> -->
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.createProject()" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.saveProject()"  ><span class="glyphicon glyphicon-ok"></span>更新</button>
+             <button class="btn btn-sm btn-primary" ng-click="vm.onPClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+			  <tr>
+                <td class="formAlignRight">开始时间： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="20" class="form-control input-sm " ng-model="vm.model.projectbeginTime" id="projectbeginTime" name="projectbeginTime" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+               
+            </tr>
+             
+              <tr >
+                <td class="formAlignRight">结束时间： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectendTime" id="projectendTime" name="projectendTime" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                <span data-valmsg-for="projectendTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">项目名称： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="20" class="form-control input-sm "  ng-model="vm.model.projectName"  name="projectName" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+               
+            </tr>
+             
+              <tr >
+                <td class="formAlignRight">项目类别： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectType" id="projectType" name="projectType" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+        </table>
+    </form>
+</div>
+
+
+
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+
+
+
