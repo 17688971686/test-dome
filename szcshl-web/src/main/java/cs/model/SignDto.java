@@ -26,10 +26,14 @@ public class SignDto extends BaseDto {
 	private String isregisteredcompleted;
 	
 	private String maindepetid;
+	private String maindeptName;
+	private String mainDeptUserName;
 	
 	private String maindepetcontactuserid;
 	
 	private String assistdeptid;
+	private String assistdeptName;
+	private String assistDeptUserName;
 	
 	private String assistdeptcontactuserid;
 	
@@ -1047,6 +1051,37 @@ public class SignDto extends BaseDto {
 
 	public void setMinisterhandlesug(String ministerhandlesug) {
 		this.ministerhandlesug = ministerhandlesug;
+	}
+	public String getMaindeptName() {
+		return maindeptName;
+	}
+
+	public void setMaindeptName(String maindeptName) {
+		this.maindeptName = maindeptName;
+	}
+
+	public String getMainDeptUserName() {
+		return mainDeptUserName;
+	}
+
+	public void setMainDeptUserName(String mainDeptUserName) {
+		this.mainDeptUserName = mainDeptUserName;
+	}
+
+	public String getAssistdeptName() {
+		return assistdeptName;
+	}
+
+	public void setAssistdeptName(String assistdeptName) {
+		this.assistdeptName = assistdeptName;
+	}
+
+	public String getAssistDeptUserName() {
+		return assistDeptUserName;
+	}
+
+	public void setAssistDeptUserName(String assistDeptUserName) {
+		this.assistDeptUserName = assistDeptUserName;
 	}
 
 	public String getFolwState() {

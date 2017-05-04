@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 
 /**
  * 设置为动态更新，只更新有修改的字段
@@ -56,18 +57,32 @@ public class Sign extends DomainBase{
 	//主办处室ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String maindepetid;
-	
+	//主办事处名称
+	@Formula("(select o.name from cs_org o where o.id = maindepetid)")
+	private String maindeptName;
+
 	//主办处室联系人ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String maindepetcontactuserid;
 	
+	//主办事处联系人	
+	@Formula("(select u.loginName from cs_user u where u.id = maindepetcontactuserid)")
+	private String mainDeptUserName;
+	
+	
 	//协办处室ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String assistdeptid;
-	
+	//协办事处名称
+	@Formula("(select o.name from cs_org o where o.id = assistdeptid)")
+	private String assistdeptName;
 	//协办处室联系人ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String assistdeptcontactuserid;
+	
+	//协办事处联系人
+	@Formula("(select u.loginName from cs_user u where u.id = assistdeptcontactuserid)")
+	private String assistDeptUserName;
 	
 	//编制单位ID
 	@Column(columnDefinition="VARCHAR(64)")
@@ -1172,5 +1187,47 @@ public class Sign extends DomainBase{
 	public void setWorkProgram(WorkProgram workProgram) {
 		this.workProgram = workProgram;
 	}
-		
+
+
+	public String getMaindeptName() {
+		return maindeptName;
+	}
+
+
+	public void setMaindeptName(String maindeptName) {
+		this.maindeptName = maindeptName;
+	}
+
+
+	public String getMainDeptUserName() {
+		return mainDeptUserName;
+	}
+
+
+	public void setMainDeptUserName(String mainDeptUserName) {
+		this.mainDeptUserName = mainDeptUserName;
+	}
+
+
+	public String getAssistdeptName() {
+		return assistdeptName;
+	}
+
+
+	public void setAssistdeptName(String assistdeptName) {
+		this.assistdeptName = assistdeptName;
+	}
+
+
+	public String getAssistDeptUserName() {
+		return assistDeptUserName;
+	}
+
+
+	public void setAssistDeptUserName(String assistDeptUserName) {
+		this.assistDeptUserName = assistDeptUserName;
+	}
+
+	
+	
 }

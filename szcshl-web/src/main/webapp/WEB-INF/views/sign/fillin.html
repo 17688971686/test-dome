@@ -22,31 +22,29 @@
 		    <tr>
 		      <td width="15%" class="text-center">主办事处</td>
 		      <td>
-		      		
-					<select ng-model="vm.model.maindepetid" ng-change="vm.model.maindepetid = selectChangeOrg(vm.model.maindepetid,)" id="maindepetid" name="vm.model.maindepetid" >
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}" >{{o.name}}</option>
+					<select ng-model="vm.model.maindepetid" ng-change="vm.selectByOrgId()" id="maindepetid" name="maindepetid" >
+						<option ng-repeat="mo in vm.orglist" value="{{mo.id}}" >{{mo.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">主办事处联系人</td>
 		      <td>
-		      
 					<select ng-model="vm.model.maindepetcontactuserid" name="maindepetid" id="maindepetid">
-					
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.orgPhone}}</option>
+						<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.model.maindepetcontactuserid == mu.id"  value="{{mu.id}}">{{mu.loginName}}</option>
 					</select>
 			  </td>
 		    </tr>
+		    
 		    <tr>
 		      <td width="15%" class="text-center">协办事处</td>
 		      <td>
-					<select ng-model="vm.model.assistdeptid" name="assistdeptid" id="assistdeptid">
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.name}}</option>
+					<select ng-model="vm.model.assistdeptid" ng-change="vm.selectOrg()" name="assistdeptid" id="assistdeptid">
+						<option ng-repeat="ad in vm.orglist" ng-selected="vm.model.assistdeptid == ad.id" value="{{ad.id}}">{{ad.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">协办事处联系人</td>
 		      <td>
 					<select ng-model="vm.model.assistdeptcontactuserid" name="assistdeptcontactuserid" id="assistdeptcontactuserid">
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.orgPhone}}</option>
+						<option ng-repeat="au in vm.assistUserList" ng-selected="vm.model.assistdeptcontactuserid == au.id" value="{{au.id}}">{{au.name}}</option>
 					</select>
 			  </td>
 		    </tr>

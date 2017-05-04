@@ -44,6 +44,7 @@ import cs.domain.User;
 import cs.model.FlowDto;
 import cs.model.FlowHistoryDto;
 import cs.model.Node;
+import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
 import cs.service.FlowService;
@@ -140,8 +141,8 @@ public class FlowController {
 		}
 				
 		String roleName = null;
-		User curUser = null;
-		List<User> nextUserList = new ArrayList<User>();
+		UserDto curUser = null;
+		List<UserDto> nextUserList = new ArrayList<UserDto>();
 		
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
 			switch(processInstance.getActivityId()){					
@@ -156,9 +157,8 @@ public class FlowController {
 					break;
 				case "approval":				//审批项目-> 部长审批会议方案
 					curUser = userService.findUserByName( currentUser.getLoginName());
-					Org org = curUser.getOrg();
-					flowDto.setNextGroup(org.getName());
-					User user = userService.findById(org.getOrgDirector());
+					OrgDto org = curUser.getOrgDto();
+					UserDto user = userService.findById(org.getOrgDirector());
 					nextUserList.add(user);
 					break;
 				case "approvalPlan":			//部长审批会议方案->中心领导审批
@@ -186,8 +186,8 @@ public class FlowController {
 					flowDto.setNextGroup(roleName);
 					nextUserList = userService.findUserByRoleName(roleName);								
 				}else if(Validate.isObject(curUser)){
-					flowDto.setNextGroup(curUser.getOrg().getName());
-					nextUserList = userService.findUserByDeptId(curUser.getOrg().getId());						
+					flowDto.setNextGroup(curUser.getOrgDto().getName());
+					nextUserList = userService.findUserByDeptId(curUser.getOrgDto().getId());						
 				}
 			}
 			

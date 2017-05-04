@@ -25,15 +25,16 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.Org;
-import cs.domain.Role;
 import cs.domain.Sign;
 import cs.domain.User;
 import cs.domain.WorkProgram;
 import cs.model.FlowDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
+import cs.model.RoleDto;
 import cs.model.SignDto;
 import cs.model.WorkProgramDto;
+import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.SignRepo;
@@ -96,6 +97,12 @@ public class SignServiceImpl implements SignService {
 	public void updateSign(SignDto signDto) throws Exception {		
 		Sign sign = signRepo.findById(signDto.getSignid());
 		BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
+		Date now = new Date();
+	    sign.setCreatedBy(currentUser.getLoginName());
+	    sign.setCreatedDate(now);
+	    sign.setModifiedBy(currentUser.getLoginName());
+	    sign.setModifiedDate(now);
+	    
 		sign.setModifiedBy(currentUser.getLoginName());
 	    sign.setModifiedDate(new Date());
 		signRepo.save(sign);		
@@ -150,6 +157,15 @@ public class SignServiceImpl implements SignService {
 		map.put("sign", signDto);
 		
 		map.put("orgs", orgRepo.findAll());
+		
+		if(Validate.isString(sign.getMaindepetid())){
+			List<UserDto> userList = userService.findUserByDeptId(sign.getMaindepetid());
+			map.put("mainUserList", userList);
+		}
+		if(Validate.isString(sign.getAssistdeptid())){
+			List<UserDto> userList = userService.findUserByDeptId(sign.getAssistdeptid());
+			map.put("assistUserList", userList);
+		}
 		//2以下初始化待完成
 		//map.put("sign", signRepo.findById(signId));
 		//System.out.println(JSON.toJSONString(map));
@@ -159,11 +175,11 @@ public class SignServiceImpl implements SignService {
 	@Override
 	public PageModelDto<SignDto> getFlow(ODataObj odataObj) {
 		//获取当前用户信息
-		User curUser = userService.findUserByName(currentUser.getLoginName());
+		UserDto curUser = userService.findUserByName(currentUser.getLoginName());
 		TaskQuery taskQuery = taskService.createTaskQuery().processDefinitionKey(Constant.EnumFlow.SIGN.getValue());
 		taskQuery.or().taskCandidateUser(curUser.getLoginName()).taskAssignee(curUser.getLoginName());
 		
-		List<Role> roles = curUser.getRoles();
+		List<RoleDto> roles = curUser.getRoles();
 		if(roles != null){
 			List<String> roleList = new ArrayList<String>(roles.size());
 			roles.forEach(role ->{
@@ -344,5 +360,11 @@ public class SignServiceImpl implements SignService {
 		Sign sign = signRepo.findById(signid);
 		sign.setFolwState(EnumState.PROCESS.getValue());
 		signRepo.save(sign);		
+	}
+	@Override
+	@Transactional
+	public Org findByIdOrg(String id) {
+		Org org = orgRepo.findById(id);
+		return org;
 	}
 }

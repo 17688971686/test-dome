@@ -196,6 +196,74 @@
 			}
 		}//E_创建收文
 		
+		//Start 根据id查找 主办事处
+		function selectOrgById(vm){
+			alert(vm.id);
+			var id = vm.model.maindepetid;
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/sign/findByIdOrg",
+					params:{
+						id:id
+					}
+					
+				};
+				
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {						
+							vm.org = {};
+							vm.org = response.data;	
+							console.log(vm.org.orgPhone);
+							
+						}
+					});
+				};
+				
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+			
+		}
+		//end根据id查找
+		
+		//start 获取协办事处
+		function selectOrg(vm){
+			var id = vm.model.assistdeptid;
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/sign/findByIdOrg",
+					params:{
+						id:id
+					}
+					
+				};
+				
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {						
+							vm.o = {};
+							vm.o = response.data;	
+						}
+					});
+				};
+				
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+		}
+		//end 获取协办事处
+		
 		//Start 申报登记编辑
 		function updateFillin(vm){
 	

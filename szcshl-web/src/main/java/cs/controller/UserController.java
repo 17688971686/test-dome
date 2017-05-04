@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.domain.User;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
@@ -29,9 +30,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-    @RequiresPermissions("user##get")
-    @RequestMapping(name = "获取用户数据", path = "", method = RequestMethod.GET)
+	
+	@RequiresPermissions("user#findUsersByIdOrg#get")
+	@RequestMapping(name = "查找部门信息", path = "findUsersByIdOrg",method=RequestMethod.GET)	
     @ResponseBody
     public PageModelDto<UserDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);

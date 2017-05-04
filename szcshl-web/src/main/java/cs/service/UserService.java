@@ -32,15 +32,15 @@ public interface UserService {
 	
 	void changePwd(String password);
 	
-	User findUserByName(String userName);
+	UserDto findUserByName(String userName);
 
-	List<User> getUser();
+	List<UserDto> getUser();
 
 	List<OrgDto> getOrg(ODataObj odataObj );
 	
-	List<User> findUserByRoleName(String roleName);
+	List<UserDto> findUserByRoleName(String roleName);
 
-	List<User> findUserByDeptId(String deptId);
+	List<UserDto> findUserByDeptId(String deptId);
 
-	User findById(String id);
+	UserDto findById(String id);
 }

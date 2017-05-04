@@ -24,8 +24,10 @@ import cs.common.utils.Validate;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
+import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.SignService;
+import cs.service.UserService;
 
 @Controller
 @RequestMapping(name = "收文", path = "sign")
@@ -34,6 +36,8 @@ public class SignController {
 	String ctrlName = "sign";
 	@Autowired
 	private SignService signService;
+	@Autowired
+	private UserService userService;
 	
 	@RequiresPermissions("sign##get")	
 	@RequestMapping(name = "获取收文数据", path = "", method = RequestMethod.GET)

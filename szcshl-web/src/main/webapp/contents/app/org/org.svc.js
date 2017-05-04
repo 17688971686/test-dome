@@ -96,7 +96,7 @@
 						filterable : false
 					},
 					{
-						field : "orgDirector",
+						field : "orgDirectorName",
 						title : "科长",
 						width : 100,						
 						filterable : false
@@ -226,6 +226,7 @@
 				});
 		}
 		function getOrgById(vm) {
+			
 			var httpOptions = {
 				method : 'get',
 				url :  url_org + "/html/getOrgById",
@@ -235,6 +236,7 @@
 				if(response.data.userDtos){
 					vm.userDtos = {}
 					vm.userDtos = response.data.userDtos;
+					
 				}
 				vm.model = response.data;
 				

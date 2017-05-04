@@ -20,5 +20,25 @@
     	   signSvc.updateFillin(vm);  	   
         }
              
+       //申报登记编辑
+       vm.updateFillin = function (){
+    	   
+    	   signSvc.updateFillin(vm);
+    	   
+       }
+       
+       vm.selectByOrgId = function(){
+    	   
+    	   signSvc.selectByOrgId(vm);
+       }
+       //选择部门
+       vm.selectSign = function(){
+    	  
+    	   signSvc.selectSignById(vm);
+       }
+       
+       vm.selectOrg = function (){
+    	   signSvc.selectOrg(vm);
+       }
     }
 })();
