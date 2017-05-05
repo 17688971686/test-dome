@@ -6,6 +6,7 @@ import java.util.Map;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import cs.common.ResultMsg;
+import cs.domain.Org;
 import cs.model.FlowDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
@@ -39,4 +40,6 @@ public interface SignService{
 	void stopFlow(String signid);
 
 	void restartFlow(String signid);
+
+	SignDto findById(String signid);
 }

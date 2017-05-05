@@ -72,6 +72,7 @@ public class CompanyServiceImpl implements CompanyService{
 			c.setCoPC(companyDto.getCoPC());
 			c.setCoPhone(companyDto.getCoPhone());
 			c.setCoSite(companyDto.getCoSite());
+			c.setCoType(companyDto.getCoType());
 			c.setCoSynopsis(companyDto.getCoSynopsis());
 			c.setCreatedBy(currentUser.getLoginName());
 			c.setModifiedBy(currentUser.getLoginName());
@@ -124,6 +125,7 @@ public class CompanyServiceImpl implements CompanyService{
 		c.setCoPC(companyDto.getCoPC());
 		c.setCoPhone(companyDto.getCoPhone());
 		c.setCoSite(companyDto.getCoSite());
+		c.setCoType(companyDto.getCoType());
 		c.setCoSynopsis(companyDto.getCoSynopsis());
 		c.setCreatedBy(currentUser.getLoginName());
 		c.setModifiedBy(currentUser.getLoginName());

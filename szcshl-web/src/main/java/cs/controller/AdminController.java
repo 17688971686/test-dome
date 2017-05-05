@@ -3,16 +3,13 @@ package cs.controller;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.ICurrentUser;
 import cs.common.Util;
-import cs.domain.User;
-import cs.service.HomeService;
+import cs.model.UserDto;
 import cs.service.UserService;
 
 @Controller
@@ -37,7 +34,7 @@ public class AdminController {
 	@RequiresPermissions("admin#welcome#get")
 	@RequestMapping(name = "欢迎页", path = "welcome")
 	public String welcome(Model model) {
-		User user=userService.findUserByName( currentUser.getLoginName());
+		UserDto user=userService.findUserByName( currentUser.getLoginName());
 		if(user!=null){
 			model.addAttribute("user", user.getLoginName());
 			model.addAttribute("lastLoginDate", Util.formatDate( user.getLastLoginDate()));

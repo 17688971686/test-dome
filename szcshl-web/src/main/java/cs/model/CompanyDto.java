@@ -15,6 +15,7 @@ public class CompanyDto extends BaseDto {
 	private String coSynopsis; //单位简介
 	private String coDept; //直属部门
 	private String coDeptName;//直属部门名称
+	private String coType;//单位类型
 	public String getId() {
 		return id;
 	}
@@ -74,6 +75,12 @@ public class CompanyDto extends BaseDto {
 	}
 	public void setCoDeptName(String coDeptName) {
 		this.coDeptName = coDeptName;
+	}
+	public String getCoType() {
+		return coType;
+	}
+	public void setCoType(String coType) {
+		this.coType = coType;
 	}
 	
 	

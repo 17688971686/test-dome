@@ -10,13 +10,17 @@
 			grid : grid,						//初始化项目列表
 			querySign : querySign,				//查询
 			createSign : createSign,			//新增
-			initFillData : initFillData,		//初始化表单填写页面
-			flowgrid : flowgrid,				//初始化待处理页面
+			initFillData : initFillData,		//初始化表单填写页面（可编辑）
+			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
 			deleteSign :　deleteSign,			//删除收文
+			
+			flowgrid : flowgrid,				//初始化待处理页面			
 			startFlow : startFlow,				//发起流程
 			stopFlow : stopFlow,				//停止流程
-			restartFlow : restartFlow			//重启流程
+			restartFlow : restartFlow,			//重启流程
+			findUsersByOrgId : findUsersByOrgId,//根据部门ID选择用户
+			initFlowPageData : initFlowPageData	//初始化流程收文信息
 		};
 		return service;			
 		
@@ -59,19 +63,31 @@
 					{
 						field : "projectname",
 						title : "项目名称",
-						width : 200,
-						filterable : true
+						width : 160,
+						filterable : false
 					},
 					{
 						field : "projectcode",
 						title : "项目编号",
-						width : 200,
+						width : 160,
+						filterable : false,
+					},
+					{
+						field : "maindeptName",
+						title : "主办事处名称",
+						width : 100,
+						filterable : false,
+					},
+					{
+						field : "mainDeptUserName",
+						title : "主办事处联系人",
+						width : 100,
 						filterable : false,
 					},
 					{
 						field : "createdDate",
 						title : "创建时间",
-						width : 180,
+						width : 160,
 						filterable : false,
 						format : "{0:yyyy/MM/dd HH:mm:ss}"
 
@@ -79,7 +95,7 @@
 					{
 						field : "",
 						title : "流程状态",
-						width : 180,
+						width : 160,
 						filterable : false,
 						template : function(item) {
 							if(item.folwState){
@@ -194,7 +210,46 @@
 						success:httpSuccess
 					});
 			}
-		}//E_创建收文
+		}//E_创建收文		
+		
+		//S_根据部门ID选择用户
+		function findUsersByOrgId(vm,type){
+			var param = {};
+			if("main" == type){
+				param.orgId = vm.model.maindepetid;
+			}else{
+				param.orgId = vm.model.assistdeptid;
+			}
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/user/findUsersByOrgId",
+					params:param					
+				};
+				
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {		
+						if("main" == type){
+							vm.mainUserList = {};
+							vm.mainUserList = response.data;
+						}else{
+							vm.assistUserList = {};
+							vm.assistUserList = response.data;
+						}
+					}
+				});
+			};
+			
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		//E_根据部门ID选择用户
 		
 		//Start 申报登记编辑
 		function updateFillin(vm){
@@ -267,16 +322,10 @@
 		
 		//S_初始化填报页面数据
 		function initFillData(vm){		
-			var paramsValue = {} ;			
-			paramsValue.signid = vm.model.signid;			
-			if(vm.flowDeal){
-				paramsValue.taskId = vm.flow.taskId; 
-			}
-			
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/sign/html/initFillPageData",
-					params : paramsValue						
+					params : {signid : vm.model.signid}						
 				}
 
 			var httpSuccess = function success(response) {					
@@ -285,17 +334,13 @@
 					response:response,
 					fn:function() {											
 						vm.model = response.data.sign;							
-						vm.orglist =response.data.orgs	
-						
-						//如果是流程处理，则显示相应的按钮或者tab
-						if(vm.flowDeal){							
-							vm.hideWorkBt();	//控制按钮显示和隐藏						
-											
-							if(vm.model.isreviewcompleted > 0){
-								vm.work = response.data.sign.workProgramDto;	//显示工作方案tab		
-							}
+						vm.orglist =response.data.orgList	
+						if(response.data.mainUserList){
+							vm.mainUserList = response.data.mainUserList;
 						}
-						
+						if(response.data.assistUserList){
+							vm.assistUserList = response.data.assistUserList;
+						}
 					}					
 				})
 			}
@@ -307,6 +352,33 @@
 				success:httpSuccess
 			});
 		}//E_初始化填报页面数据				
+		
+		//S_初始化详情数据	
+		function initDetailData(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/sign/html/initDetailPageData",
+					params : {signid : vm.model.signid}						
+				}
+
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {											
+						vm.model = response.data;													
+					}					
+				})
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}//E_初始化详情数据
+		
 		
 		//S_初始化待处理页面
 		function flowgrid(vm){
@@ -480,5 +552,34 @@
 				success : httpSuccess
 			});
 		}//E_重启流程
+		
+		//S_初始化流程页面
+		function initFlowPageData(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/sign/html/initFlowPageData",
+					params : {signid:vm.model.signid,taskId:vm.flow.taskId}
+				}
+				
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.model = response.data;
+						vm.hideWorkBt();	//控制按钮显示和隐藏																	
+						if(vm.model.isreviewcompleted > 0){
+							vm.work = response.data.workProgramDto;	//显示工作方案tab		
+						}						
+					}
+				});
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}//E_初始化流程页面
 	}		
 })();

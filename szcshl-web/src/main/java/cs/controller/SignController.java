@@ -24,8 +24,10 @@ import cs.common.utils.Validate;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.SignDto;
+import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.SignService;
+import cs.service.UserService;
 
 @Controller
 @RequestMapping(name = "收文", path = "sign")
@@ -34,6 +36,8 @@ public class SignController {
 	String ctrlName = "sign";
 	@Autowired
 	private SignService signService;
+	@Autowired
+	private UserService userService;
 	
 	@RequiresPermissions("sign##get")	
 	@RequestMapping(name = "获取收文数据", path = "", method = RequestMethod.GET)
@@ -74,16 +78,7 @@ public class SignController {
 		signService.createSign(signDto);	
 		
 		return signDto.getSignid();
-	}		
-	
-	@RequestMapping(name = "初始化项目页面", path = "html/initFillPageData",method=RequestMethod.GET)	
-	@Transactional
-	public @ResponseBody Map<String,Object> initFillPageData(@RequestParam(required = true)String signid,String taskId){
-		if(Validate.isString(taskId)){
-			signService.claimSignFlow(taskId);
-		}
-		return signService.initFillPageData(signid);	
-	}
+	}				
 	
 	@RequiresPermissions("sign#html/fillin#get")
 	@RequestMapping(name = "填写表格页面", path = "html/fillin", method = RequestMethod.GET)
@@ -91,17 +86,51 @@ public class SignController {
 		
 		return ctrlName + "/fillin";
 	}
+	
 	//收文详细信息
 	@RequiresPermissions("sign#html/signDetails#get")
 	@RequestMapping(name = "收文详细信息", path = "html/signDetails", method = RequestMethod.GET)
 	public String signDetails(){
 		
 		return ctrlName +"/signDetails";
+	}	
+	
+	@RequiresPermissions("sign##delete")
+	@RequestMapping(name = "删除收文" ,path = "" ,method =RequestMethod.DELETE)
+	@ResponseStatus( value =HttpStatus.NO_CONTENT)
+	public void deleteSign(@RequestBody String signid){
+		String [] ids=signid.split(",");
+		if(ids.length>1){
+			signService.deleteSigns(ids);
+		}else{			
+			signService.deleteSign(signid);
+		}
 	}
+		
+	@RequestMapping(name = "初始收文编辑页面", path = "html/initFillPageData",method=RequestMethod.GET)	
+	@Transactional
+	public @ResponseBody Map<String,Object> initFillPageData(@RequestParam(required = true)String signid,String taskId){		
+		return signService.initFillPageData(signid);	
+	}
+	
+	@RequestMapping(name = "初始化详情页面", path = "html/initDetailPageData",method=RequestMethod.GET)	
+	@Transactional
+	public @ResponseBody SignDto initDetailPageData(@RequestParam(required = true)String signid){		
+		return signService.findById(signid);	
+	}
+	
+	@RequiresPermissions("sign#selectSign#get")
+	@RequestMapping(name = "获取办事处信息", path = "selectSign", method = RequestMethod.GET)
+	public 	@ResponseBody List<OrgDto> selectSign(HttpServletRequest request) throws ParseException{
+		ODataObj odataObj = new ODataObj(request);
+		List<OrgDto> orgDto =	signService.selectSign(odataObj);
+		return orgDto;
+	}
+		
+	/***************************************  S 流程处理的方法     *******************************************/
 	@RequiresPermissions("sign#html/flow#get")
 	@RequestMapping(name = "流程待处理", path = "html/flow", method = RequestMethod.GET)
-	public String flow(){
-		
+	public String flow(){		
 		return ctrlName + "/flow";
 	}
 	
@@ -112,6 +141,22 @@ public class SignController {
 		PageModelDto<SignDto> signDtos = signService.getFlow(odataObj);		
 		return signDtos;
 	}
+	
+	@RequestMapping(name = "初始化流程处理页面", path = "html/initFlowPageData",method=RequestMethod.GET)	
+	@Transactional
+	public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true)String signid,String taskId){
+		if(Validate.isString(taskId)){
+			signService.claimSignFlow(taskId);
+		}
+		return signService.findById(signid);	
+	}
+
+	@RequiresPermissions("sign#html/flowDeal#get")
+	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
+	public String flowDeal(){
+		
+		return ctrlName + "/flowDeal";
+	}	
 	
 	@RequiresPermissions("sign#html/startFlow#post")
 	@RequestMapping(name = "发起流程", path = "html/startFlow", method = RequestMethod.POST)
@@ -126,40 +171,13 @@ public class SignController {
 	public void stopFlow(@RequestParam(required = true)String signid) throws Exception{
 		signService.stopFlow(signid);
 	}
-	
-	
+		
 	@RequiresPermissions("sign#html/restartFlow#post")
 	@RequestMapping(name = "重启流程", path = "html/restartFlow", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void restartFlow(@RequestParam(required = true)String signid) throws Exception{
 		signService.restartFlow(signid);
 	}
-	
-	@RequiresPermissions("sign#html/flowDeal#get")
-	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
-	public String flowDeal(){
-				
-		return ctrlName + "/flowDeal";
-	}	
-	
-	@RequiresPermissions("sign##delete")
-	@RequestMapping(name = "删除收文" ,path = "" ,method =RequestMethod.DELETE)
-	@ResponseStatus( value =HttpStatus.NO_CONTENT)
-	public void deleteSign(@RequestBody String signid){
-		String [] ids=signid.split(",");
-		if(ids.length>1){
-			signService.deleteSigns(ids);
-		}else{			
-			signService.deleteSign(signid);
-		}
-	}
-	
-	@RequiresPermissions("sign#selectSign#get")
-	@RequestMapping(name = "获取办事处信息", path = "selectSign", method = RequestMethod.GET)
-	public 	@ResponseBody List<OrgDto> selectSign(HttpServletRequest request) throws ParseException{
-		ODataObj odataObj = new ODataObj(request);
-		List<OrgDto> orgDto =	signService.selectSign(odataObj);
-		return orgDto;
-	}
-	
+		
+	/***************************************  E 流程处理的方法     *******************************************/
 }

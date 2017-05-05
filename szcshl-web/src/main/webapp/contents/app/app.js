@@ -219,6 +219,15 @@
 	            controllerAs: 'vm'
 	        })
             //end#workprogram
+	        
+	        //begin#workprogram
+            .state('dispatchEdit', {
+	            url: '/dispatchEdit/:signid',
+	            templateUrl: rootPath + '/dispatch/html/edit.html',
+	            controller: 'dispatchEditCtrl',
+	            controllerAs: 'vm'
+	        })
+            //end#workprogram
             ;       
     }]).run(function($rootScope,$http,$state, $stateParams){
     	 $rootScope.$state = $state;  

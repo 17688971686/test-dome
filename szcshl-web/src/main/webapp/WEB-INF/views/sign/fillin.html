@@ -22,31 +22,30 @@
 		    <tr>
 		      <td width="15%" class="text-center">主办事处</td>
 		      <td>
-		      		
-					<select ng-model="vm.model.maindepetid" ng-change="vm.model.maindepetid = selectChangeOrg(vm.model.maindepetid,)" id="maindepetid" name="vm.model.maindepetid" >
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}" >{{o.name}}</option>
+					<select ng-model="vm.model.maindepetid" ng-change="vm.findUsersByOrgId('main')" id="maindepetid" name="maindepetid" >
+						<option ng-repeat="mo in vm.orglist" ng-selected="vm.model.maindepetid == mo.id" value="{{mo.id}}" >{{mo.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">主办事处联系人</td>
 		      <td>
-		      
 					<select ng-model="vm.model.maindepetcontactuserid" name="maindepetid" id="maindepetid">
-					
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.orgPhone}}</option>
+						<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.model.maindepetcontactuserid == mu.id"  value="{{mu.id}}">{{mu.loginName}} </option>
 					</select>
+					
 			  </td>
 		    </tr>
+		    
 		    <tr>
 		      <td width="15%" class="text-center">协办事处</td>
 		      <td>
-					<select ng-model="vm.model.assistdeptid" name="assistdeptid" id="assistdeptid">
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.name}}</option>
+					<select ng-model="vm.model.assistdeptid" ng-change="vm.findUsersByOrgId('assist')" name="assistdeptid" id="assistdeptid">
+						<option ng-repeat="ad in vm.orglist" ng-selected="vm.model.assistdeptid == ad.id" value="{{ad.id}}">{{ad.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">协办事处联系人</td>
 		      <td>
 					<select ng-model="vm.model.assistdeptcontactuserid" name="assistdeptcontactuserid" id="assistdeptcontactuserid">
-						<option ng-repeat="o in vm.orglist" value="{{o.id}}">{{o.orgPhone}}</option>
+						<option ng-repeat="au in vm.assistUserList" ng-selected="vm.model.assistdeptcontactuserid == au.id" value="{{au.id}}">{{au.loginName}}</option>
 					</select>
 			  </td>
 		    </tr>
@@ -54,7 +53,7 @@
 		      <td width="15%" class="text-center">收文编号</td>
 		      <td>{{vm.model.filecode}}</td>
 		      <td width="15%" class="text-center">项目代码</td>
-		      <td>{{vm.model.projectcode}}</td>
+		      <td>{{vm.model.projectcode}} </td>
 		    </tr>	    
 		    <tr>
 		      <td width="15%" rowspan="2" class="text-center">项目名称</td>
@@ -278,24 +277,24 @@
 		    <tr>
 		      <td width="15%" class="text-center">综合部拟办意见</td>
 		      <td colspan="3">
-			  	<textarea rows="3" ng-model="vm.model.comprehensivehandlesug" name="comprehensivehandlesug" style="width:98%"> </textarea>  
+		      {{vm.model.comprehensivehandlesug}}
 			  </td>		      
 		    </tr>
 		    <tr>
 		      <td width="15%" class="text-center">中心领导签批意见</td>
 		      <td colspan="3">
-			  	<textarea rows="3" ng-model="vm.model.leaderhandlesug" name="leaderhandlesug" style="width:98%"> </textarea> 
+			  	{{vm.model.leaderhandlesug}}
 			  </td>		      
 		    </tr>
 		    <tr>
 		      <td width="15%" class="text-center">部长处理意见</td>
 		      <td colspan="3">
-			  	<textarea rows="3" ng-model="vm.model.ministerhandlesug" name="ministerhandlesug" style="width:98%"> </textarea> 
+			  	{{vm.model.ministerhandlesug}}
 			  </td>		      
 		    </tr>
 		  </tbody>		  
 		</table>	
 		<!-- end table -->
-		<p class="h6"><strong>送件人：张三</strong></p>
+		<p class="h6"><strong>送件人：{{vm.model.createdBy}}</strong></p>
 	</form> <!-- end form -->
 </div>

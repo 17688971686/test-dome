@@ -40,6 +40,8 @@ public class Company extends DomainBase{
 	private String coDept; //直属部门
 	@Column(columnDefinition="varchar(255)")
 	private String coDeptName;//直属部门名称
+	@Column(columnDefinition="varchar(255)")
+	private String coType;//单位类型
 	
 //	private String coFirst; //上级单位
 //	private Set<Department> department = new HashSet<Department>();
@@ -104,6 +106,13 @@ public class Company extends DomainBase{
 	public void setCoDeptName(String coDeptName) {
 		this.coDeptName = coDeptName;
 	}
+	public String getCoType() {
+		return coType;
+	}
+	public void setCoType(String coType) {
+		this.coType = coType;
+	}
+	
 	
 	
 }

@@ -12,9 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.domain.User;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.UserDto;
@@ -29,9 +31,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-    @RequiresPermissions("user##get")
-    @RequestMapping(name = "获取用户数据", path = "", method = RequestMethod.GET)
+	
+	@RequiresPermissions("user##get")
+	@RequestMapping(name = "获取用户数据", path = "",method=RequestMethod.GET)	
     @ResponseBody
     public PageModelDto<UserDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -47,7 +49,15 @@ public class UserController {
         List<OrgDto> orgDto = userService.getOrg(odataObj);
         return orgDto;
     }
-
+    
+    @RequiresPermissions("user#findUsersByOrgId#get")
+    @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByOrgId", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findUsersByOrgId(@RequestParam(required = true)String orgId){
+    	List<UserDto> userDto = userService.findUserByDeptId(orgId);
+    	return userDto;
+    }
+    
     @RequiresPermissions("user##post")
     @RequestMapping(name = "创建用户", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)

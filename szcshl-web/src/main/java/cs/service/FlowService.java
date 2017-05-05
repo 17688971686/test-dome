@@ -8,4 +8,5 @@ import cs.model.FlowHistoryDto;
 public interface FlowService {
 
 	List<FlowHistoryDto> convertHistory(String processInstanceId);
+	HistoricActivityInstance getHistoricInfoByActivityId(String processInstanceId,String activityId);
 }

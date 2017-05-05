@@ -29,27 +29,27 @@
 						url : rootPath+"/workprogram",
 						data : vm.work
 					}
-					var httpSuccess = function success(response) {									
-						common.requestSuccess({
-							vm:vm,
-							response:response,
-							fn:function() {		
-								common.alert({
-									vm:vm,
-									msg:"操作成功,请继续处理流程！",
-									fn:function() {
-										$rootScope.back();	//返回到流程页面
-									}
-								})								
-							}						
-						});
-					}
-					common.http({
+				var httpSuccess = function success(response) {									
+					common.requestSuccess({
 						vm:vm,
-						$http:$http,
-						httpOptions:httpOptions,
-						success:httpSuccess
+						response:response,
+						fn:function() {		
+							common.alert({
+								vm:vm,
+								msg:"操作成功,请继续处理流程！",
+								fn:function() {
+									$rootScope.back();	//返回到流程页面
+								}
+							})								
+						}						
 					});
+				}
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
 			}
 		}//E_保存操作
 	}		

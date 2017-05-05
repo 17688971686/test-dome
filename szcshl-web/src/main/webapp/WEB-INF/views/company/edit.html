@@ -76,6 +76,26 @@
                     <span class="errors" ng-show="vm.isOrgExist">部门标识已存在</span></td>
             </tr>
             
+            <tr>
+                <td class="formAlignRight">上级单位： <span class="required">*</span></td>
+                <td>
+                   <select ng-model="vm.model.orgDirector" id="orgDirector" name="orgDirector" class="form-control input-sm " data-val="true" data-val-required="必填" >
+						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgDirector == x.id" value="{{x.id}}" >{{x.displayName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="coSite" data-valmsg-replace="true" class="errors"></span>
+                    <span class="errors" ng-show="vm.isOrgExist">部门标识已存在</span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">单位类型： <span class="required">*</span></td>
+                <td>
+                    <select ng-model="vm.model.coType" id="coType" name="coType" class="form-control input-sm " data-val="true" data-val-required="必填" >
+						<option ng-repeat="x in DICT.COTYPE.dicts"  value="{{x.dictName}}" >{{x.dictName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="coSite" data-valmsg-replace="true" class="errors"></span>
+                    <span class="errors" ng-show="vm.isOrgExist">部门标识已存在</span></td>
+            </tr>
             
             <tr>
                 <td class="formAlignRight">单位简介： </td>

@@ -31,7 +31,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	
 	@Override
 	@Transactional
-	public void createWork(WorkProgramDto workProgramDto) throws Exception {
+	public void save(WorkProgramDto workProgramDto) throws Exception {
 				
 		if(Validate.isString(workProgramDto.getSignId())){
 			WorkProgram workProgram = new WorkProgram(); 		
@@ -45,7 +45,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 			
 			Sign sign = signRepo.findById(workProgramDto.getSignId());
 			workProgram.setSign(sign);
-			workProgram.setId(UUID.randomUUID().toString());
+			if(!Validate.isString(workProgramDto.getId())){
+				workProgram.setId(UUID.randomUUID().toString());
+			}			
 			workProgramRepo.save(workProgram);
 			
 			sign.setIsreviewcompleted(EnumState.YES.getValue());

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
 import cs.common.Response;
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.Org;
 import cs.domain.Role;
 import cs.domain.User;
@@ -329,8 +330,21 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	@Transactional
-	public User findUserByName(String userName){
-		return userRepo.findUserByName(userName);
+	public UserDto findUserByName(String userName){
+		User user = userRepo.findUserByName(userName);
+		UserDto userDto = new UserDto();
+		BeanCopierUtils.copyProperties(user, userDto);
+		List<Role> roleList = user.getRoles();
+		if(roleList != null && roleList.size() >0){
+			List<RoleDto> roleDtoList = new ArrayList<RoleDto>(roleList.size());
+			RoleDto roleDto = new RoleDto();
+			roleList.forEach(r ->{
+				BeanCopierUtils.copyProperties(r, roleDto);
+				roleDtoList.add(roleDto);
+			});
+			userDto.setRoles(roleDtoList);
+		}		
+		return userDto;
 	}
 	
 	  protected void createActivitiUser(String userId, String userName, String userPwd, List<String> groups){
@@ -385,9 +399,19 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public List<User> getUser() {
-		List<User>  user=userRepo.findAll();
-		return user;
+	public List<UserDto> getUser() {
+		List<User>  users=userRepo.findAll();
+		List<UserDto> userDtolist = new  ArrayList<>();
+		if(users != null && users.size() > 0){
+			users.forEach(x->{
+				UserDto userDto = new UserDto();
+				BeanCopierUtils.copyProperties(x, userDto);
+				userDto.setCreatedDate(x.getCreatedDate());
+				userDto.setModifiedDate(x.getModifiedDate());
+				userDtolist.add(userDto);
+			});						
+		}	
+		return userDtolist;
 		
 	}
 	 
@@ -396,8 +420,20 @@ public class UserServiceImpl implements UserService {
 	 * @author ldm
 	 */
 	@Override
-	public List<User> findUserByRoleName(String roleName) {
-		return userRepo.findUserByRoleName(roleName);		
+	public List<UserDto> findUserByRoleName(String roleName) {
+		List<User> users=userRepo.findUserByRoleName(roleName);
+		List<UserDto> userDtolist = new  ArrayList<>();
+
+		if(users != null && users.size() > 0){
+			users.forEach(x->{
+				UserDto userDto = new UserDto();
+				BeanCopierUtils.copyProperties(x, userDto);
+				userDto.setCreatedDate(x.getCreatedDate());
+				userDto.setModifiedDate(x.getModifiedDate());
+				userDtolist.add(userDto);
+			});						
+		}	
+		return userDtolist;		
 	}
 
 
@@ -405,14 +441,31 @@ public class UserServiceImpl implements UserService {
 	 * 根据部门ID查询对应的用户信息
 	 */
 	@Override
-	public List<User> findUserByDeptId(String deptId) {
-		return userRepo.findUserByDeptId(deptId);
+	public List<UserDto> findUserByDeptId(String deptId) {
+		List<User> userList = userRepo.findUserByDeptId(deptId);
+		List<UserDto> userDtolist = new ArrayList<>();
+		
+		if(userList != null && userList.size() > 0){
+			userList.forEach(x->{
+				UserDto userDto = new UserDto();
+				BeanCopierUtils.copyProperties(x, userDto);
+				userDto.setCreatedDate(x.getCreatedDate());
+				userDto.setModifiedDate(x.getModifiedDate());
+				userDtolist.add(userDto);
+			});						
+		}		
+
+		return userDtolist;
 	}
 
 
 	@Override
-	public User findById(String id) {
-		return userRepo.findById(id);
+	public UserDto findById(String id) {
+		
+		User  user=	userRepo.findById(id);
+		UserDto userDto = new UserDto();
+		BeanCopierUtils.copyProperties(user, userDto);
+		return userDto;
 	}	
 }
 

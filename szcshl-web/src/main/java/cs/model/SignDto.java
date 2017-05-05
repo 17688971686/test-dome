@@ -26,10 +26,14 @@ public class SignDto extends BaseDto {
 	private String isregisteredcompleted;
 	
 	private String maindepetid;
+	private String maindeptName;
+	private String mainDeptUserName;
 	
 	private String maindepetcontactuserid;
 	
 	private String assistdeptid;
+	private String assistdeptName;
+	private String assistDeptUserName;
 	
 	private String assistdeptcontactuserid;
 	
@@ -265,6 +269,12 @@ public class SignDto extends BaseDto {
 	//收文状态
 	private String signState;
 	
+	//是否完成工作方案评审
+	private String isreviewcompleted;	
+
+	//是否完成发文
+	private String isDispatchCompleted;		
+
 	//部门
 	private OrgDto orgDto;
 	
@@ -272,11 +282,19 @@ public class SignDto extends BaseDto {
 		return orgDto;
 	}
 	
-	private String isreviewcompleted;	
-
-	
-	private WorkProgramDto workProgramDto;
 		
+	private WorkProgramDto workProgramDto;
+	
+	private DispatchDocDto dispatchDocDto;
+		
+	public DispatchDocDto getDispatchDocDto() {
+		return dispatchDocDto;
+	}
+
+	public void setDispatchDocDto(DispatchDocDto dispatchDocDto) {
+		this.dispatchDocDto = dispatchDocDto;
+	}
+
 	public WorkProgramDto getWorkProgramDto() {
 		return workProgramDto;
 	}
@@ -1048,6 +1066,37 @@ public class SignDto extends BaseDto {
 	public void setMinisterhandlesug(String ministerhandlesug) {
 		this.ministerhandlesug = ministerhandlesug;
 	}
+	public String getMaindeptName() {
+		return maindeptName;
+	}
+
+	public void setMaindeptName(String maindeptName) {
+		this.maindeptName = maindeptName;
+	}
+
+	public String getMainDeptUserName() {
+		return mainDeptUserName;
+	}
+
+	public void setMainDeptUserName(String mainDeptUserName) {
+		this.mainDeptUserName = mainDeptUserName;
+	}
+
+	public String getAssistdeptName() {
+		return assistdeptName;
+	}
+
+	public void setAssistdeptName(String assistdeptName) {
+		this.assistdeptName = assistdeptName;
+	}
+
+	public String getAssistDeptUserName() {
+		return assistDeptUserName;
+	}
+
+	public void setAssistDeptUserName(String assistDeptUserName) {
+		this.assistDeptUserName = assistDeptUserName;
+	}
 
 	public String getFolwState() {
 		return folwState;
@@ -1063,5 +1112,13 @@ public class SignDto extends BaseDto {
 
 	public void setSignState(String signState) {
 		this.signState = signState;
-	}			
+	}	
+	
+	public String getIsDispatchCompleted() {
+		return isDispatchCompleted;
+	}
+
+	public void setIsDispatchCompleted(String isDispatchCompleted) {
+		this.isDispatchCompleted = isDispatchCompleted;
+	}
 }
