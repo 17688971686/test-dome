@@ -126,14 +126,27 @@
 	            controllerAs: 'vm'
 	        }) 
 	        //end#home
-	         //begin#home
-	        .state('demo', {
-	            url: '/demo',
-	            templateUrl: rootPath + '/demo/html/list.html',
-	            controller: 'demoCtrl',
-	            controllerAs: 'vm'
-	        }) 
-	          //end#home
+            //begin#demo
+            .state('demo', {
+                url: '/demo',
+                templateUrl: rootPath + '/demo/html/list.html',
+                controller: 'demoCtrl',
+                controllerAs: 'vm'
+            })
+            //end#demo
+            //begin#mytest
+            .state('mytest', {
+                url: '/mytest',
+                templateUrl: rootPath + '/mytest/html/list.html',
+                controller: 'mytestCtrl',
+                controllerAs: 'vm'
+            }).state('mytestrEdit', {
+				url: '/mytestEdit/:id',
+				templateUrl: rootPath + '/mytest/html/edit.html',
+				controller: 'mytestEditCtrl',
+				controllerAs: 'vm'
+			})
+			//end#mytest
 	        //beginDict
 	        .state('dict', {
 	            url: '/dict',
