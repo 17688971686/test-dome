@@ -16,7 +16,9 @@
 			deleteSign :　deleteSign,			//删除收文
 			startFlow : startFlow,				//发起流程
 			stopFlow : stopFlow,				//停止流程
-			restartFlow : restartFlow			//重启流程
+			restartFlow : restartFlow,			//重启流程
+			selectByOrgId : selectByOrgId,		//主办部门
+			selectByAssistOrgId : selectByAssistOrgId,//协办部门
 		};
 		return service;			
 		
@@ -59,19 +61,31 @@
 					{
 						field : "projectname",
 						title : "项目名称",
-						width : 200,
-						filterable : true
+						width : 160,
+						filterable : false
 					},
 					{
 						field : "projectcode",
 						title : "项目编号",
-						width : 200,
+						width : 160,
+						filterable : false,
+					},
+					{
+						field : "maindeptName",
+						title : "主办事处名称",
+						width : 100,
+						filterable : false,
+					},
+					{
+						field : "mainDeptUserName",
+						title : "主办事处联系人",
+						width : 100,
 						filterable : false,
 					},
 					{
 						field : "createdDate",
 						title : "创建时间",
-						width : 180,
+						width : 160,
 						filterable : false,
 						format : "{0:yyyy/MM/dd HH:mm:ss}"
 
@@ -79,7 +93,7 @@
 					{
 						field : "",
 						title : "流程状态",
-						width : 180,
+						width : 160,
 						filterable : false,
 						template : function(item) {
 							if(item.folwState){
@@ -232,14 +246,15 @@
 		}
 		//end根据id查找
 		
-		//start 获取协办事处
-		function selectOrg(vm){
-			var id = vm.model.assistdeptid;
+		
+		//Start 获取部门主办
+		function selectByOrgId(vm){
+			var orgId = vm.model.maindepetid;
 			var httpOptions = {
 					method : 'get',
-					url : rootPath+"/sign/findByIdOrg",
+					url : rootPath+"/user/findUsersByIdOrg",
 					params:{
-						id:id
+						orgId:orgId
 					}
 					
 				};
@@ -249,8 +264,9 @@
 						vm : vm,
 						response : response,
 						fn : function() {						
-							vm.o = {};
-							vm.o = response.data;	
+							vm.mainUserList = {};
+							vm.mainUserList = response.data;
+							
 						}
 					});
 				};
@@ -262,7 +278,41 @@
 					success : httpSuccess
 				});
 		}
-		//end 获取协办事处
+		//end 获取主办部门
+		
+		//start 获取协办部门
+		function selectByAssistOrgId(vm){
+			var orgId = vm.model.assistdeptid;
+			
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/user/findUsersByIdOrg",
+					params:{
+						orgId:orgId
+					}
+					
+				};
+				
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {						
+							vm.assistUserList = {};
+							vm.assistUserList = response.data;
+							console.log(vm.assistUserList );
+						}
+					});
+				};
+				
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+		}
+		//end 获取协办部门
 		
 		//Start 申报登记编辑
 		function updateFillin(vm){

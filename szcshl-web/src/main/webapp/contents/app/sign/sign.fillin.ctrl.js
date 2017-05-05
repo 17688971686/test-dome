@@ -22,23 +22,18 @@
              
        //申报登记编辑
        vm.updateFillin = function (){
-    	   
     	   signSvc.updateFillin(vm);
-    	   
        }
        
+       //选择主办部门
        vm.selectByOrgId = function(){
-    	   
     	   signSvc.selectByOrgId(vm);
        }
-       //选择部门
-       vm.selectSign = function(){
-    	  
-    	   signSvc.selectSignById(vm);
-       }
        
-       vm.selectOrg = function (){
-    	   signSvc.selectOrg(vm);
+       //选择协办部门
+       vm.selectByAssistOrgId = function(){
+    	   signSvc.selectByAssistOrgId(vm);
        }
+
     }
 })();

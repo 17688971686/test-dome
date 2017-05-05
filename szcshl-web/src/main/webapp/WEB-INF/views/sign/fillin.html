@@ -29,22 +29,23 @@
 		      <td width="15%" class="text-center">主办事处联系人</td>
 		      <td>
 					<select ng-model="vm.model.maindepetcontactuserid" name="maindepetid" id="maindepetid">
-						<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.model.maindepetcontactuserid == mu.id"  value="{{mu.id}}">{{mu.loginName}}</option>
+						<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.model.maindepetcontactuserid == mu.id"  value="{{mu.id}}">{{mu.loginName}} </option>
 					</select>
+					
 			  </td>
 		    </tr>
 		    
 		    <tr>
 		      <td width="15%" class="text-center">协办事处</td>
 		      <td>
-					<select ng-model="vm.model.assistdeptid" ng-change="vm.selectOrg()" name="assistdeptid" id="assistdeptid">
+					<select ng-model="vm.model.assistdeptid" ng-change="vm.selectByAssistOrgId()" name="assistdeptid" id="assistdeptid">
 						<option ng-repeat="ad in vm.orglist" ng-selected="vm.model.assistdeptid == ad.id" value="{{ad.id}}">{{ad.name}}</option>
 					</select>
 			  </td>
 		      <td width="15%" class="text-center">协办事处联系人</td>
 		      <td>
 					<select ng-model="vm.model.assistdeptcontactuserid" name="assistdeptcontactuserid" id="assistdeptcontactuserid">
-						<option ng-repeat="au in vm.assistUserList" ng-selected="vm.model.assistdeptcontactuserid == au.id" value="{{au.id}}">{{au.name}}</option>
+						<option ng-repeat="au in vm.assistUserList" ng-selected="vm.model.assistdeptcontactuserid == au.id" value="{{au.id}}">{{au.loginName}}</option>
 					</select>
 			  </td>
 		    </tr>
@@ -52,7 +53,7 @@
 		      <td width="15%" class="text-center">收文编号</td>
 		      <td>{{vm.model.filecode}}</td>
 		      <td width="15%" class="text-center">项目代码</td>
-		      <td>{{vm.model.projectcode}}</td>
+		      <td>{{vm.model.projectcode}} </td>
 		    </tr>	    
 		    <tr>
 		      <td width="15%" rowspan="2" class="text-center">项目名称</td>
