@@ -1,12 +1,11 @@
 package cs.common.service;
 
-import cs.model.MyTestDto;
 import cs.model.PageModelDto;
 import cs.repository.odata.ODataObj;
 
 /**
  * Description: 公共业务处理借口
- * User: Administrator
+ * User: tzg
  * Date: 2017/5/4 17:21
  * @param <T>   数据库映射实体类
  * @param <D>   页面数据映射实体
@@ -45,6 +44,5 @@ public interface IService<T, D> {
      */
     PageModelDto<T> get(ODataObj odataObj);
 
-//    List<T> selectList(D query);
 
 }
