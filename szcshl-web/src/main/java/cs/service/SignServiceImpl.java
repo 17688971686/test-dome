@@ -26,16 +26,16 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.Org;
 import cs.domain.Sign;
-import cs.domain.User;
 import cs.domain.WorkProgram;
 import cs.model.FlowDto;
 import cs.model.OrgDto;
 import cs.model.PageModelDto;
 import cs.model.RoleDto;
 import cs.model.SignDto;
-import cs.model.WorkProgramDto;
 import cs.model.UserDto;
+import cs.model.WorkProgramDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.DispatchDocRepo;
 import cs.repository.repositoryImpl.OrgRepo;
 import cs.repository.repositoryImpl.SignRepo;
 import cs.repository.repositoryImpl.WorkProgramRepo;
@@ -54,6 +54,8 @@ public class SignServiceImpl implements SignService {
 	private OrgRepo orgRepo;
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
+	@Autowired
+	private DispatchDocRepo dispatchDocRepo;
 	
 	//flow service
 	@Autowired
@@ -156,8 +158,17 @@ public class SignServiceImpl implements SignService {
 		}		
 		map.put("sign", signDto);
 		
-		map.put("orgs", orgRepo.findAll());
-		
+		List<OrgDto> orgDtoList = new ArrayList<OrgDto>();
+		List<Org> orgList = orgRepo.findAll();
+		if(orgList != null){
+			orgList.forEach( o ->{
+				OrgDto orgDto = new OrgDto();
+				BeanCopierUtils.copyProperties(o, orgDto);
+				orgDtoList.add(orgDto);
+			});
+			map.put("orgList", orgDtoList);
+		}
+				
 		if(Validate.isString(sign.getMaindepetid())){
 			List<UserDto> userList = userService.findUserByDeptId(sign.getMaindepetid());
 			map.put("mainUserList", userList);
@@ -166,9 +177,7 @@ public class SignServiceImpl implements SignService {
 			List<UserDto> userList = userService.findUserByDeptId(sign.getAssistdeptid());
 			map.put("assistUserList", userList);
 		}
-		//2以下初始化待完成
-		//map.put("sign", signRepo.findById(signId));
-		//System.out.println(JSON.toJSONString(map));
+		
 		return map;
 	}
 
@@ -292,6 +301,33 @@ public class SignServiceImpl implements SignService {
 				wk.setLeaderSuggesttion(flowDto.getDealOption());
 				workProgramRepo.save(wk);
 				break;
+			//发文申请	
+			case "dispatch":	
+				break;
+			//部长审核	
+			case "ministerDispatches":
+				/*sign = signRepo.findById(signid);
+				DispatchDoc dispatchDoc = sign.getDispatchDoc();
+				dispatchDoc.setMinisterSuggesttion(flowDto.getDealOption());
+				dispatchDoc.setMinisterDate(new Date());
+				dispatchDocRepo.save(dispatchDoc);*/
+				break;
+			//分管副主任审核
+			case "secDirectorDispatches":
+				/*sign = signRepo.findById(signid);
+				DispatchDoc dpd = sign.getDispatchDoc();
+				dpd.setViceDirectorSuggesttion(flowDto.getDealOption());
+				dpd.setViceDirectorDate(new Date());
+				dispatchDocRepo.save(dpd);*/
+				break;
+			//主任审核
+			case "directorDispatches":
+				/*sign = signRepo.findById(signid);
+				DispatchDoc dpdoc = sign.getDispatchDoc();
+				dpdoc.setDirectorSuggesttion(flowDto.getDealOption());
+				dpdoc.setDirectorDate(new Date());
+				dispatchDocRepo.save(dpdoc);*/
+				break;			
 			case "endevent1":				
 				break;
 			default:
@@ -361,10 +397,13 @@ public class SignServiceImpl implements SignService {
 		sign.setFolwState(EnumState.PROCESS.getValue());
 		signRepo.save(sign);		
 	}
+	
 	@Override
-	@Transactional
-	public Org findByIdOrg(String id) {
-		Org org = orgRepo.findById(id);
-		return org;
+	public SignDto findById(String signid) {
+		Sign sign = signRepo.findById(signid);
+		SignDto signDto = new SignDto();
+		SignToSignDto(sign,signDto);	
+		
+		return signDto;
 	}
 }

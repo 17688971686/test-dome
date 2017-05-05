@@ -41,5 +41,5 @@ public interface SignService{
 
 	void restartFlow(String signid);
 
-	Org findByIdOrg(String id);
+	SignDto findById(String signid);
 }

@@ -416,13 +416,21 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String signState;
 	
+	//收文是否完成
+	private String isDispatchCompleted;
+	
 	//收文与部门关联：一对一关系
 	@OneToOne
 	@JoinColumn(name ="orgSignId")
 	private Org orgSignId;
 	
+	//工作方案
 	@OneToOne(mappedBy="sign")  
 	private WorkProgram workProgram;
+	
+	//发文
+	@OneToOne(mappedBy="sign")  
+	private DispatchDoc dispatchDoc;
 	
 	public Sign() {
 		super();
@@ -1188,21 +1196,17 @@ public class Sign extends DomainBase{
 		this.workProgram = workProgram;
 	}
 
-
 	public String getMaindeptName() {
 		return maindeptName;
 	}
-
 
 	public void setMaindeptName(String maindeptName) {
 		this.maindeptName = maindeptName;
 	}
 
-
 	public String getMainDeptUserName() {
 		return mainDeptUserName;
 	}
-
 
 	public void setMainDeptUserName(String mainDeptUserName) {
 		this.mainDeptUserName = mainDeptUserName;
@@ -1213,21 +1217,32 @@ public class Sign extends DomainBase{
 		return assistdeptName;
 	}
 
-
 	public void setAssistdeptName(String assistdeptName) {
 		this.assistdeptName = assistdeptName;
 	}
 
-
 	public String getAssistDeptUserName() {
 		return assistDeptUserName;
 	}
-
 
 	public void setAssistDeptUserName(String assistDeptUserName) {
 		this.assistDeptUserName = assistDeptUserName;
 	}
 
 	
+	public DispatchDoc getDispatchDoc() {
+		return dispatchDoc;
+	}
+
+	public void setDispatchDoc(DispatchDoc dispatchDoc) {
+		this.dispatchDoc = dispatchDoc;
+	}
 	
+	public String getIsDispatchCompleted() {
+		return isDispatchCompleted;
+	}
+
+	public void setIsDispatchCompleted(String isDispatchCompleted) {
+		this.isDispatchCompleted = isDispatchCompleted;
+	}
 }

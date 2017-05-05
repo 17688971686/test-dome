@@ -25,14 +25,9 @@
     	   signSvc.updateFillin(vm);
        }
        
-       //选择主办部门
-       vm.selectByOrgId = function(){
-    	   signSvc.selectByOrgId(vm);
-       }
-       
-       //选择协办部门
-       vm.selectByAssistOrgId = function(){
-    	   signSvc.selectByAssistOrgId(vm);
+       //根据部门查询用户
+       vm.findUsersByOrgId = function(type){
+    	   signSvc.findUsersByOrgId(vm,type);
        }
 
     }

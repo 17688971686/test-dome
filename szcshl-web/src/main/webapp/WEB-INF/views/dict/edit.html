@@ -22,12 +22,7 @@
                 <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
                 <td></td>
             </tr>
-
-
-
-
-           
-            
+          
              <tr>
                 <td class="formAlignRight">字典值： <span class="required">*</span></td>
                 <td>
@@ -51,35 +46,22 @@
                     <input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.dictKey" id="dictKey" name="dictKey" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="dictKey" data-valmsg-replace="true" class="errors"></span>
-            </tr>
-            
-
+            </tr>           
             <tr>
                 <td class="formAlignRight">父级： </td>
                 <td>
                  <ul id="pzTree" class="ztree" ng-hide="vm.isUpdate"></ul>
-                 <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"  ng-show="vm.isUpdate" ng-model="vm.model.parentDictName">
-                 
-
+                 <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"  ng-show="vm.isUpdate" ng-model="vm.model.parentDictName">                 
                 </td>
             </tr>
              <tr>
                 <td class="formAlignRight">字典编码： <span class="required">*</span> </td>
                 <td>
-
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.isUpdate"  ng-model="vm.model.dictCode" id="dictCode" name="dictCode" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="dictCode" data-valmsg-replace="true" class="errors"></span>
                  <span class="errors" ng-show="vm.isDictCodeExist">字典编码已存在</span></td>
-            </tr>                                    
-
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.isUpdate||vm.model.dictType=='1'"  ng-model="vm.model.dictCode" id="dictCode" name="dictCode" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="dictCode" data-valmsg-replace="true" class="errors"></span>
-                 <span class="errors" ng-show="vm.isDictCodeExist">字典编码已存在</span></td>
-            </tr>
-            
-              
+            </tr>                                  
             <tr>
                 <td class="formAlignRight">描述： </td>
                 <td>

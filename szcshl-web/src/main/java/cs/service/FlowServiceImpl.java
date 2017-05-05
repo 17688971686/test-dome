@@ -62,4 +62,20 @@ public class FlowServiceImpl implements FlowService{
 		}	
 		return message.toString();
 	}	
+	
+	public HistoricActivityInstance getHistoricInfoByActivityId(String processInstanceId,String activityId){
+		List<HistoricActivityInstance> listH = processEngine.getHistoryService().
+	    		createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).desc().list(); 		
+		HistoricActivityInstance resultObj = null;
+		if(listH != null){	
+			for(int i=0,l=listH.size();i<l;i++){
+				HistoricActivityInstance h = listH.get(i);
+				if(activityId.equals(h.getActivityId())){
+					resultObj = h;
+					break;
+				}
+			}			
+		}
+		return resultObj;
+	}
 }

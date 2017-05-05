@@ -11,6 +11,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -164,7 +165,7 @@ public class FlowController {
 				case "approvalPlan":			//部长审批会议方案->中心领导审批
 					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
 					break;
-				case "leaderApprovalPlan":		//中心领导审批->发文申请
+				case "leaderApprovalPlan":		//中心领导审批->发文申请					
 					break;
 				case "dispatch":				//发文申请->部长审批
 					break;
@@ -191,16 +192,7 @@ public class FlowController {
 				}
 			}
 			
-						
-			if(nextUserList != null && nextUserList.size() > 0){
-				List<UserDto> nextUserDtoList = new ArrayList<UserDto>(nextUserList.size());
-				nextUserList.forEach(u ->{
-					UserDto ud = new UserDto();
-					BeanCopierUtils.copyProperties(u, ud);
-					nextUserDtoList.add(ud);
-				});
-				flowDto.setNextDealUserList(nextUserDtoList);
-			}
+			flowDto.setNextDealUserList(nextUserList);
 		}		
 		return flowDto;
 	}

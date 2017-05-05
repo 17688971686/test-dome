@@ -31,7 +31,7 @@
         	flowSvc.getNextStepInfo(vm);
         	
         	//再初始化业务信息
-        	signSvc.initFillData(vm);
+        	signSvc.initFlowPageData(vm);
         }
         
         vm.commitNextStep = function (){
@@ -45,6 +45,8 @@
         vm.commitOver = function(){
         	alert("流程结束！");
         }  
+        
+        //S_隐藏工作方案按钮判断
         vm.hideWorkBt = function(){
         	if(vm.flow.curNodeAcivitiId == "approval"){
         		if(vm.model.isreviewcompleted > 0 ){
@@ -58,10 +60,29 @@
     			vm.showWorkBt = false;
         		return true;
     		}
-        }
+        }//E_隐藏工作方案按钮判断
        
+        //S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function(){
         	$state.go('workprogramEdit', {signid:vm.model.signid});
-        }
+        }//E_跳转到 工作方案 编辑页面
+        
+        //E_隐藏收文按钮判断
+        vm.hideDisPatchBt = function(){
+        	var hidden = true;
+        	if(vm.flow.curNodeAcivitiId == "dispatch"){
+        		if(vm.model.isDispatchCompleted > 0 ){
+        			hidden = true;
+            	}else{
+            		hidden = false;
+            	}
+    		}        	
+        	return hidden;
+        }//E_隐藏收文按钮判断
+        
+        //S_跳转到 发文 编辑页面
+        vm.addDisPatch = function(){
+        	$state.go('dispatchEdit', {signid:vm.model.signid});
+        }//E_跳转到 发文 编辑页面
     }
 })();

@@ -269,6 +269,12 @@ public class SignDto extends BaseDto {
 	//收文状态
 	private String signState;
 	
+	//是否完成工作方案评审
+	private String isreviewcompleted;	
+
+	//是否完成发文
+	private String isDispatchCompleted;		
+
 	//部门
 	private OrgDto orgDto;
 	
@@ -276,11 +282,19 @@ public class SignDto extends BaseDto {
 		return orgDto;
 	}
 	
-	private String isreviewcompleted;	
-
-	
-	private WorkProgramDto workProgramDto;
 		
+	private WorkProgramDto workProgramDto;
+	
+	private DispatchDocDto dispatchDocDto;
+		
+	public DispatchDocDto getDispatchDocDto() {
+		return dispatchDocDto;
+	}
+
+	public void setDispatchDocDto(DispatchDocDto dispatchDocDto) {
+		this.dispatchDocDto = dispatchDocDto;
+	}
+
 	public WorkProgramDto getWorkProgramDto() {
 		return workProgramDto;
 	}
@@ -1098,5 +1112,13 @@ public class SignDto extends BaseDto {
 
 	public void setSignState(String signState) {
 		this.signState = signState;
-	}			
+	}	
+	
+	public String getIsDispatchCompleted() {
+		return isDispatchCompleted;
+	}
+
+	public void setIsDispatchCompleted(String isDispatchCompleted) {
+		this.isDispatchCompleted = isDispatchCompleted;
+	}
 }

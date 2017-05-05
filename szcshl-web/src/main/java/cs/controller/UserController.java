@@ -50,11 +50,11 @@ public class UserController {
         return orgDto;
     }
     
-    @RequiresPermissions("user#findUsersByIdOrg#get")
-    @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByIdOrg", method = RequestMethod.GET)
+    @RequiresPermissions("user#findUsersByOrgId#get")
+    @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByOrgId", method = RequestMethod.GET)
     @ResponseBody
-    public List<UserDto> findUsersByIdOrg(@RequestParam(required = true)String orgId){
-    	List<UserDto> userDto = 	userService.findUserByDeptId(orgId);
+    public List<UserDto> findUsersByOrgId(@RequestParam(required = true)String orgId){
+    	List<UserDto> userDto = userService.findUserByDeptId(orgId);
     	return userDto;
     }
     

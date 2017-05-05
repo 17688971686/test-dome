@@ -28,6 +28,7 @@ import cs.domain.RoomBooking;
 import cs.domain.User;
 import cs.model.PageModelDto;
 import cs.model.RoomBookingDto;
+import cs.model.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.MeetingRoomService;
 import cs.service.RoomBookingSerivce;
@@ -80,11 +81,10 @@ public class RoomBookingController {
 	}
 	@RequiresPermissions("room#findUser#get")
 	@RequestMapping( name="获取会议室预定人", path="findUser", method=RequestMethod.GET)
-	@ResponseBody
-	public User userObj(){
-		//User user=userService.findUserByName(currentUser.getLoginName());
-		return null;
-		
+	@ResponseBody		
+	public UserDto userObj(){
+		UserDto user = userService.findUserByName(currentUser.getLoginName());
+		return user;
 	}
 	@RequiresPermissions("room#exports#get")
 	@RequestMapping( name="导出本周评审会议安排", path="exports", method=RequestMethod.GET)
@@ -185,13 +185,12 @@ public class RoomBookingController {
 	}*/
 	@RequiresPermissions("room#html/roomlist#get")
 	@RequestMapping(name = "预定会议室列表", path = "html/roomlist" ,method = RequestMethod.GET)
-	public String roomlist(HttpServletRequest request ,ModelMap model){
-		
-//		User user=userService.findUserByName(currentUser.getLoginName());
-//		if(user!=null){
-//			model.addAttribute("user", user.getLoginName());
-//			
-//		}
+	public String roomlist(HttpServletRequest request ,ModelMap model){		
+		UserDto user = userService.findUserByName(currentUser.getLoginName());
+		if(user!=null){
+			model.addAttribute("user", user.getLoginName());
+			
+		}
 		return ctrlName +"/roomlist";
 	}
 	
