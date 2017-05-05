@@ -95,7 +95,7 @@
             </tr>
             
              <tr>
-                <td class="formAlignRight">科长： <span class="required">*</span></td>
+                <td class="formAlignRight">部长： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgDirector" id="orgDirector" name="orgDirector" class="form-control input-sm " data-val="true" data-val-required="必填" >
 						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgDirector == x.id" value="{{x.id}}" >{{x.displayName}}</option>
@@ -106,7 +106,7 @@
                 </td>              
             </tr>
             <tr>
-                <td class="formAlignRight">副科长： <span class="required">*</span></td>
+                <td class="formAlignRight">副部长： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgAssistant" id="orgAssistant" name="orgAssistant"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgAssistant == x.id" value="{{x.id}}" >{{x.displayName}}</option>
@@ -117,7 +117,7 @@
                 </td>
             </tr>
              <tr>
-                <td class="formAlignRight">暑长： <span class="required">*</span></td>
+                <td class="formAlignRight">主任： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgMLeader" id="orgMLeader" name="orgMLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgMLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>
@@ -128,7 +128,7 @@
                 </td>
             </tr>
              <tr>
-                <td class="formAlignRight">分管暑长： <span class="required">*</span></td>
+                <td class="formAlignRight">分管副主任： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgSLeader" id="orgSLeader" name="orgSLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgSLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>

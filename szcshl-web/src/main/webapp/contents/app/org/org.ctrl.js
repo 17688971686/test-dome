@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('orgCtrl', org);
+    angular.module('app').controller('orgCtrl', org);
 
     org.$inject = ['$location','orgSvc']; 
 
@@ -12,9 +10,7 @@
         var vm = this;
         vm.title = '部门列表';
         
-
-        vm.del = function (id) {        	
-        	 
+        vm.del = function (id) {        	       	 
              common.confirm({
             	 vm:vm,
             	 title:"",

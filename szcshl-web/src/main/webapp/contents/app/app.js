@@ -233,14 +233,14 @@
 	        })
             //end#workprogram
 	        
-	        //begin#workprogram
+	        //begin#dispatch
             .state('dispatchEdit', {
 	            url: '/dispatchEdit/:signid',
 	            templateUrl: rootPath + '/dispatch/html/edit.html',
 	            controller: 'dispatchEditCtrl',
 	            controllerAs: 'vm'
 	        })
-            //end#workprogram
+            //end#dispatch
             ;       
     }]).run(function($rootScope,$http,$state, $stateParams){
     	 $rootScope.$state = $state;  
@@ -260,10 +260,9 @@
     				return dicts[i].dicts;
     			}
     		}
-         }   	
-         common.initDictData({$http:$http,scope:$rootScope});
-    	
+         }  
          
+         common.initDictData({$http:$http,scope:$rootScope});   	        
     });
     
 })();

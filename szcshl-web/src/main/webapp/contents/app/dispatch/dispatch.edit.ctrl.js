@@ -5,15 +5,17 @@
 
     dispatch.$inject = ['$location','dispatchSvc','$state']; 
 
-    function dispatch($location, dispatchSvc,$state) {     
+    function dispatch($location, dispatchSvc, $state) {     
         var vm = this;
         vm.title = '项目发文编辑';
-        vm.dispatch.signId = $state.params.signid;
+
+        vm.dispatchDoc = {};
+        vm.dispatchDoc.signId = $state.params.signid;
         
-        dispatchSvc.initEdit(vm);
+        dispatchSvc.initDispatchData();
         
-        vm.saveDisPatch = function(){
-        	dispatchSvc.saveDisPatch(vm);
+        vm.create = function(){
+        	dispatchSvc.saveDispatch(vm);
         }
     }
 })();

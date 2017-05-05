@@ -14,7 +14,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cs.service.UserService;
+import cs.service.sys.UserService;
 
 public class SystemRealm  extends AuthorizingRealm {
 

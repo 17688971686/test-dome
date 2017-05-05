@@ -1,14 +1,11 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('orgEditCtrl', org);
+    angular.module('app').controller('orgEditCtrl', org);
 
     org.$inject = ['$location','orgSvc','$state']; 
 
     function org($location, orgSvc,$state) {
-        /* jshint validthis:true */
         var vm = this;
         vm.title = '新增部门';
         vm.isorgExist=false;

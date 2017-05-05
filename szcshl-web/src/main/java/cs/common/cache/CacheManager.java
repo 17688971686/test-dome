@@ -2,7 +2,7 @@ package cs.common.cache;
 
 import org.apache.log4j.Logger;
 
-import cs.service.UserServiceImpl;
+import cs.service.sys.UserServiceImpl;
 
 /**
  * @author lqs

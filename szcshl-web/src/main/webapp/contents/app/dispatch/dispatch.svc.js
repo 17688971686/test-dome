@@ -3,30 +3,30 @@
 	
 	angular.module('app').factory('dispatchSvc', dispatch);
 	
-	dispatch.$inject = ['$http','$state'];
+	dispatch.$inject = ['$rootScope','$http'];
 
-	function sign($http,$state) {
+	function dispatch($rootScope,$http) {
 		var service = {
-			initEdit : initEdit,						//初始化发文编辑页面
-			saveDisPatch : saveDisPatch					//保存发文
+			initDispatchData : initDispatchData,		//初始化流程数据	
+			saveDispatch : saveDispatch					//保存
 		};
-		return service;	
-		
-		//S_初始化发文编辑页面
-		function initEdit(){
+		return service;			
+	
+		//S_初始化
+		function initDispatchData(){
 			
-		}//E_初始化发文编辑页面
+		}//E_初始化
 		
-		//S_保存发文
-		function saveDisPatch(){
+		//S_保存
+		function saveDispatch(vm){
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
 			if (isValid) {
-				vm.commitProcess = true;
+				vm.saveProcess = true;
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/dispatch",
-						data : vm.dispatch
+						data : vm.dispatchDoc
 					}
 				var httpSuccess = function success(response) {									
 					common.requestSuccess({
@@ -50,6 +50,7 @@
 					success:httpSuccess
 				});
 			}
-		}//E_保存发文
+		}//E_保存
+		
 	}
-});
+})();

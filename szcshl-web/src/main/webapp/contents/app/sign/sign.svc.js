@@ -567,10 +567,12 @@
 					response : response,
 					fn : function() {
 						vm.model = response.data;
-						vm.hideWorkBt();	//控制按钮显示和隐藏																	
+						vm.hideWorkBt();	//控制工作方案按钮显示和隐藏																	
 						if(vm.model.isreviewcompleted > 0){
 							vm.work = response.data.workProgramDto;	//显示工作方案tab		
-						}						
+						}
+						
+						vm.hideDisPatchBt(); 	//控制发文按钮显示和隐藏	
 					}
 				});
 			}

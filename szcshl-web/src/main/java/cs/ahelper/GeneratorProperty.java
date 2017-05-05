@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import cs.domain.Role_;
-import cs.model.RoleDto;
+import cs.domain.sys.Role_;
+import cs.model.sys.RoleDto;
 
 public class GeneratorProperty {
 

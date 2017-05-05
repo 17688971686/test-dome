@@ -153,27 +153,21 @@
 		}// end fun grid
 
 		function createOrg(vm) {
-			//alert(vm.model.userDto.id);
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid && vm.isorgExist == false) {
 				vm.isSubmit = true;
-				
-		
-	               
 				var httpOptions = {
 					method : 'post',
 					url : url_org,
 					data : vm.model
 				}
 
-				var httpSuccess = function success(response) {				
-					
+				var httpSuccess = function success(response) {									
 					common.requestSuccess({
 						vm:vm,
 						response:response,
-						fn:function() {							
-							
+						fn:function() {														
 							common.alert({
 								vm:vm,
 								msg:"操作成功",
@@ -184,10 +178,8 @@
 									location.href = url_back;
 								}
 							})
-						}
-						
+						}						
 					});
-
 				}
 
 				common.http({
@@ -196,13 +188,7 @@
 					httpOptions:httpOptions,
 					success:httpSuccess
 				});
-
-			} else {				
-//				common.alert({
-//					vm:vm,
-//					msg:"您填写的信息不正确,请核对后提交!"
-//				})
-			}
+			} 
 		}// end fun createorg
 		
 		//获取单位信息

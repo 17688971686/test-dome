@@ -4,24 +4,25 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.commitProcess"><span class="glyphicon glyphicon-ok"></span>提交</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>提交</button>
     <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
         
 <div class="well well-sm" style="background:white;">
 	<!-- s form -->
-	<form id="dispatch_form" name="dispatch_form" >		
+	<form id="dispatch_form" name="dispatch_form" >	
+		<vm.dispatch.signId	
 		<!-- s table -->
 		<table class="table table-bordered">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：
-			  	<select ng-model="vm.dispatch.dispatchWay"  name="dispatchWay" id="dispatchWay">
+			  	<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay">
 					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
 				</select>				
 			</span>
 		  	<span style="float:right;">发文类型：
-		  		<select ng-model="vm.dispatch.dispatchType"  name="dispatchType" id="dispatchType">
+		  		<select ng-model="vm.dispatchDoc.dispatchType"  name="dispatchType" id="dispatchType">
 					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
 				</select>	
 			</span>
