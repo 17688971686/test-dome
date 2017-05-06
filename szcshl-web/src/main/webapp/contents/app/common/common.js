@@ -21,7 +21,8 @@
         gridDataSource: gridDataSource,//gridDataSource
         loginUrl: window.rootPath +'/home/login',
         buildOdataFilter:buildOdataFilter,	//创建多条件查询的filter
-        initDictData : initDictData 	//初始化数字字典
+        initDictData : initDictData, 	//初始化数字字典
+        
     };
 
     window.common = service;
@@ -174,7 +175,7 @@
                     model: model
                 };
             },
-            transport: function (url) {
+            transport: function (url,form) {
                 return {
                     read: {
                         url: url,
@@ -182,6 +183,18 @@
                         type: "GET",
                         beforeSend: function (req) {                            
                             req.setRequestHeader('Token', service.getToken());
+                        },
+                        data : function(){
+                        	if(form){
+                        		var filterParam = common.buildOdataFilter(form);
+                            	if(filterParam){
+                            		return {"$filter":filterParam};
+                            	}else{
+                            		return {};
+                            	}
+                        	}else{
+                        		return {};
+                        	}                        	
                         }
                     }
                 }
@@ -311,7 +324,7 @@
          return dataSource;
     }
 
-
+    //S_封装filer的参数
     function buildOdataFilter(from){
     	var t = new Array();
     	var arrIndex = 0;
@@ -331,7 +344,7 @@
         });   	 
     		
 		var i = 0;
-		var filterStr = "$filter="
+		var filterStr = "";
 	    $.each(t, function() {
 	    	if(this.value){
 	    		if(i > 0){
@@ -341,12 +354,8 @@
 	    		i++;
 	    	}		    	
 	    });
-		if(i > 0){
-			return filterStr;
-		}else{
-			return "";
-		}		
-    }   
+	    return filterStr;		
+    }//E_封装filer的参数 
     
     function initDictData(options){
         options.$http({
@@ -396,8 +405,7 @@
     		}
     	}
     }
-
-    
+  
     //init
     init();
     function init() {
