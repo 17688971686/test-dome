@@ -1,9 +1,7 @@
 package cs.controller.demo;
 
-import cs.domain.demo.MyTest;
 import cs.model.PageModelDto;
 import cs.model.demo.MyTestDto;
-import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.demo.MyTestService;
 
@@ -41,9 +39,7 @@ public class MyTestController {
     @RequestMapping(name = "创建My test", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody MyTestDto record) {
-        if (record.getCreateTime() == null)
-            record.setCreateTime(new Date());
-        myTestService.save(record);
+        myTestService.create(record);
     }
 
     @RequiresPermissions("mytest##delete")
@@ -62,9 +58,7 @@ public class MyTestController {
     @RequestMapping(name = "更新My test", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody MyTestDto record) {
-        if (record.getUpdateTime() == null)
-            record.setUpdateTime(new Date());
-        myTestService.save(record);
+        myTestService.update(record);
     }
 
     // begin#html

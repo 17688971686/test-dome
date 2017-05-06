@@ -1,8 +1,12 @@
 package cs.domain.demo;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import cs.domain.DomainBase;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.lang.reflect.Field;
 
 /**
  * Description: My test!
@@ -11,32 +15,23 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "MY_TEST")
-public class MyTest implements Serializable {
+public class MyTest extends DomainBase {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	@Id
-    private String testId;
-    @Column(nullable = false)
+    private String id;
+    @Column(nullable = false, columnDefinition = "varchar(255)")
     private String testName;
-    @Column( nullable = false, columnDefinition = "date")
-    private Date createTime;
-    @Column(columnDefinition = "date")
-    private Date updateTime;
+    @Column(columnDefinition = "varchar(255)")
+    private String test01;
+    @Column(columnDefinition = "varchar(255)")
+    private String test02;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    public String getId() {
+        return id;
     }
 
-    public String getTestId() {
-        return testId;
-    }
-
-    public void setTestId(String testId) {
-        this.testId = testId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTestName() {
@@ -47,19 +42,20 @@ public class MyTest implements Serializable {
         this.testName = testName;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getTest01() {
+        return test01;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setTest01(String test01) {
+        this.test01 = test01;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public String getTest02() {
+        return test02;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setTest02(String test02) {
+        this.test02 = test02;
     }
+
 }

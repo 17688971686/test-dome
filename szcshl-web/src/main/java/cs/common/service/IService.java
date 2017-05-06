@@ -13,10 +13,16 @@ import cs.repository.odata.ODataObj;
 public interface IService<T, D> {
 
     /**
-     * 保持记录
+     * 删除记录
      * @param record
      */
-    void save(D record);
+    void create(D record);
+
+    /**
+     * 更新数据
+     * @param record
+     */
+    void update(D record);
 
     /**
      * 删除记录

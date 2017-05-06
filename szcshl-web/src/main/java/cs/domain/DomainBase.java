@@ -8,65 +8,62 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 
-
 @MappedSuperclass
 public abstract class DomainBase {
-	@Temporal(TemporalType.TIMESTAMP)	
-	@Column(updatable=false,nullable=false,columnDefinition="date")
-	private Date createdDate=new Date();
-	@Column(updatable=false,nullable=false,columnDefinition="varchar(255)")
-	private String createdBy="";
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable=false,columnDefinition="date")
-	private Date modifiedDate=new Date();
-	@Column(nullable=false,columnDefinition="varchar(255)")
-	private String modifiedBy="";
-	
-	//@Column(columnDefinition="int(11)")
-	private int itemOrder;
-	
-	public Date getModifiedDate() {
-		return modifiedDate;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false, nullable = false, columnDefinition = "date")
+    private Date createdDate = new Date();
+    @Column(updatable = false, nullable = false, columnDefinition = "varchar(255)")
+    private String createdBy = "";
 
-	public void setModifiedDate(Date modifiedDate) {		
-		this.modifiedDate =  modifiedDate;
-	}	
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, columnDefinition = "date")
+    private Date modifiedDate = new Date();
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    private String modifiedBy = "";
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
+    //@Column(columnDefinition="int(11)")
+    private int itemOrder;
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public Date getCreatedDate() {
+        return createdDate;
+    }
 
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public int getItemOrder() {
-		return itemOrder;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setItemOrder(int itemOrder) {
-		this.itemOrder = itemOrder;
-	}
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
 
-	
-	
-	
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public int getItemOrder() {
+        return itemOrder;
+    }
+
+    public void setItemOrder(int itemOrder) {
+        this.itemOrder = itemOrder;
+    }
+
+
 }

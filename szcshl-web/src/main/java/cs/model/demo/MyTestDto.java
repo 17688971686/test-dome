@@ -3,19 +3,17 @@ package cs.model.demo;
 import cs.domain.demo.MyTest;
 import cs.model.BaseDto2;
 
-import java.util.Date;
-
 /**
  * Description: 页面数据模型
- * User: Administrator
+ * User: tzg
  * Date: 2017/5/4 17:54
  */
 public class MyTestDto extends BaseDto2<MyTest> {
 
-    private String testId;
+    private String id;
     private String testName;
-    private Date createTime;
-    private Date updateTime;
+    private String test01;
+    private String test02;
 
     public MyTestDto() {
     }
@@ -29,12 +27,12 @@ public class MyTestDto extends BaseDto2<MyTest> {
         return MyTest.class;
     }
 
-    public String getTestId() {
-        return testId;
+    public String getId() {
+        return id;
     }
 
-    public void setTestId(String testId) {
-        this.testId = testId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTestName() {
@@ -45,19 +43,19 @@ public class MyTestDto extends BaseDto2<MyTest> {
         this.testName = testName;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getTest01() {
+        return test01;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setTest01(String test01) {
+        this.test01 = test01;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public String getTest02() {
+        return test02;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setTest02(String test02) {
+        this.test02 = test02;
     }
 }
