@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <D> 页面数据映射实体
  * @param <R> 数据库操作接口
  */
-public abstract class AbstractServiceImpl<T, D extends BaseDto2<T>, R extends IRepository<T, String>> implements IService<T, D> {
+public abstract class ServiceImpl<T, D extends BaseDto2<T>, R extends IRepository<T, String>> implements IService<T, D> {
 
     protected Logger logger = Logger.getLogger(this.getClass());
 
