@@ -20,7 +20,7 @@
 			stopFlow : stopFlow,				//停止流程
 			restartFlow : restartFlow,			//重启流程
 			findUsersByOrgId : findUsersByOrgId,//根据部门ID选择用户
-			initFlowPageData : initFlowPageData	//初始化流程收文信息
+			initFlowPageData : initFlowPageData //初始化流程收文信息
 		};
 		return service;			
 		
@@ -28,8 +28,8 @@
 		function grid(vm){
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/sign"),
+				type : 'odata', 
+				transport :common.kendoGridConfig().transport(rootPath+"/sign",$("#searchform")),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -41,7 +41,7 @@
 				serverPaging : true,
 				serverSorting : true,
 				serverFiltering : true,
-				pageSize : 10,
+				pageSize : 3,
 				sort : {
 					field : "createdDate",
 					dir : "desc"
@@ -151,31 +151,8 @@
 		}//E_初始化grid
 		
 		//S_查询grid
-		function querySign(vm){
-			var filterParam = common.buildOdataFilter($("#searchform"));
-			var httpOptions = {
-				method : 'get',
-				url : common.format(rootPath+"/sign?"+filterParam) 
-			};
-			
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {						
-						vm.gridOptions.dataSource.data([]);
-						vm.gridOptions.dataSource.data(response.data.value);
-						vm.gridOptions.dataSource.total(response.data.count);
-					}
-				});
-			};
-			
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
+		function querySign(vm){								
+			vm.gridOptions.dataSource.read();			
 		}//E_查询grid		
 								
 		//S_创建收文
