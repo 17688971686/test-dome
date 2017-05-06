@@ -23,7 +23,7 @@
             var isValid = $('form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-                vm.model.testId = vm.id;// id
+                vm.model.id = vm.id;// id
 
                 var httpOptions = {
                     method: 'put',
@@ -108,7 +108,7 @@
                     method: 'post',
                     url: url_user,
                     data: vm.model
-                }
+                };
 
                 var httpSuccess = function success(response) {
 
@@ -147,7 +147,7 @@
         function getMytestById(vm) {
             var httpOptions = {
                 method: 'get',
-                url: common.format(url_user + "?$filter=testId eq '{0}'", vm.id)
+                url: common.format(url_user + "?$filter=id eq '{0}'", vm.id)
             };
             var httpSuccess = function success(response) {
                 vm.model = response.data.value[0];
@@ -169,10 +169,10 @@
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(url_user),
                 schema: common.kendoGridConfig().schema({
-                    id: "testId",
+                    id: "id",
                     fields: {
-                        testId: {
-                            type: "string"
+                        createdDate: {
+                            type: "date"
                         }
                     }
                 }),
@@ -181,7 +181,7 @@
                 serverFiltering: true,
                 pageSize: 10,
                 sort: {
-                    field: "createTime",
+                    field: "createdDate",
                     dir: "desc"
                 }
             });
@@ -193,14 +193,14 @@
                 {
                     template: function (item) {
                         return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.testId)
+                            item.id)
                     },
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
                 {
-                    field: "testId",
+                    field: "id",
                     title: "主键",
                     width: 100,
                     filterable: true
@@ -212,16 +212,28 @@
                     filterable: true
                 },
                 {
+                    field: "test01",
+                    title: "test01",
+                    width: 80,
+                    filterable: false
+                },
+                {
+                    field: "test02",
+                    title: "test02",
+                    width: 80,
+                    filterable: false
+                },
+                {
                     field: "",
                     title: "创建时间",
                     width: 80,
                     filterable: false,
                     template: function(item) {
-                        if(!item.createTime){
+                        if(!item.createdDate){
                             return " ";
                         }
                         else{
-                            return kendo.toString(new Date(item.createTime), 'yyyy-MM-dd hh:mm:ss');
+                            return kendo.toString(new Date(item.createdDate), 'yyyy-MM-dd hh:mm:ss');
                         }
                     }
                 },
@@ -231,11 +243,11 @@
                     width: 80,
                     filterable: false,
                     template: function(item) {
-                        if(!item.updateTime){
+                        if(!item.modifiedDate){
                             return " ";
                         }
                         else{
-                            return kendo.toString(new Date(item.updateTime), 'yyyy-MM-dd hh:mm:ss');
+                            return kendo.toString(new Date(item.modifiedDate), 'yyyy-MM-dd hh:mm:ss');
                         }
                     }
                 },
@@ -245,7 +257,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.testId + "')", item.testId);
+                            "vm.del('" + item.id + "')", item.id);
                     }
                 }
             ];

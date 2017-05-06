@@ -26,14 +26,6 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">主键： <span class="required">*</span></td>
-                <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"
-                           ng-model="vm.model.testId " id="testId" name="testId" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="testId" data-valmsg-replace="true" class="errors"></span></td>
-            </tr>
-            <tr>
                 <td class="formAlignRight">显示名：<span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.testName"
@@ -43,23 +35,23 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">创建时间：<span class="required">*</span></td>
+                <td class="formAlignRight">test01：<span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.createTime"
-                           id="createTime" name="createTime" data-val="true" data-val-required="必填">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.test01"
+                           id="test01" name="test01" data-val="true" data-val-required="必填">
                 </td>
                 <td>
-                    <span data-valmsg-for="createTime" data-valmsg-replace="true" class="errors"></span>
+                    <span data-valmsg-for="test01" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
 
             <tr>
-                <td class="formAlignRight">更新时间：</td>
+                <td class="formAlignRight">test02：</td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.updateTime"
-                           id="updateTime" name="updateTime" data-val="false" data-val-required="必填">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.test02"
+                           id="test02" name="test02" data-val="false" data-val-required="必填">
                 </td>
-                <td><span data-valmsg-for="updateTime" data-valmsg-replace="true" class="errors"></span></td>
+                <td><span data-valmsg-for="test02" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
 
         </table>

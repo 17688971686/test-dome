@@ -27,9 +27,6 @@
 
         activate();
         function activate() {
-            $("#createTime,#updateTime").kendoDatePicker({
-                culture:'zh-CN'
-            });
             if (vm.isUpdate) {
                 mytestSvc.getMytestById(vm);
             }
