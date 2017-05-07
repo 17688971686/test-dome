@@ -4,16 +4,12 @@ import ${beanPackage}.${beanName};
 import cs.model.BaseDto2;
 
 /**
-* Description: 页面数据模型
-* User: tzg
-* Date: 2017/5/4 17:54
+* Description: ${comment!''} 页面数据模型
+* User: ${author!''}
+* Date: ${.now}
 */
 public class ${beanName}Dto extends BaseDto2<${beanName}> {
 
-    private String id;
-    private String testName;
-    private String test01;
-    private String test02;
 <#list fields as f>
     private ${f.type} ${f.name};
 </#list>

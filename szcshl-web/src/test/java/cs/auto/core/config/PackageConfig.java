@@ -28,9 +28,9 @@ public class PackageConfig {
 
     private String dto = "model";
 
-    private String repository = "repository.repositoryImpl";
+    private String repo = "repository.repositoryImpl";
 
-    private String repositoryImpl = "repository.repositoryImpl";
+    private String repoImpl = "repository.repositoryImpl";
 
     private String service = "service";
 
@@ -70,20 +70,20 @@ public class PackageConfig {
         this.dto = dto;
     }
 
-    public String getRepository() {
-        return repository;
+    public String getRepo() {
+        return repo;
     }
 
-    public void setRepository(String repository) {
-        this.repository = repository;
+    public void setRepo(String repo) {
+        this.repo = repo;
     }
 
-    public String getRepositoryImpl() {
-        return repositoryImpl;
+    public String getRepoImpl() {
+        return repoImpl;
     }
 
-    public void setRepositoryImpl(String repositoryImpl) {
-        this.repositoryImpl = repositoryImpl;
+    public void setRepoImpl(String repoImpl) {
+        this.repoImpl = repoImpl;
     }
 
     public String getService() {
