@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.lang.reflect.Field;
 
 /**
  * Description: My test!
@@ -19,11 +18,11 @@ public class MyTest extends DomainBase {
 
 	@Id
     private String id;
-    @Column(nullable = false, columnDefinition = "varchar(255)")
+    @Column(nullable = false, columnDefinition = "varchar(255) comment '测试名'")
     private String testName;
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(255) comment '测试01'")
     private String test01;
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(255) comment '测试02'")
     private String test02;
 
     public String getId() {
