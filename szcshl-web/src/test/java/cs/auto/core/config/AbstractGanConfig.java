@@ -1,60 +1,49 @@
 package cs.auto.core.config;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 代码生成器配置类
+ * 基础配置抽象类
  *
  * @author tzg
- * @date 2017/5/7 14:10
+ * @date 2017/5/7 15:29
  */
-public class GanerateConfig {
+public abstract class AbstractGanConfig {
 
     protected Logger logger = Logger.getLogger(this.getClass());
 
-    protected Class cls;
-
-    /**
-     * 实例化代码生成器的配置类
-     * @param cls       数据映射实体类
-     */
-    public GanerateConfig(Class cls) {
-        this.cls = cls;
-    }
-
-    /**
-     * 实例化代码生成器的配置类
-     * @param cls       数据映射实体类
-     * @param comment   注解
-     */
-    public GanerateConfig(Class cls, String comment) {
-        this.cls = cls;
-        this.comment = comment;
-    }
-
-    /**
-     * 实例化代码生成器的配置类
-     * @param cls       数据映射实体类
-     * @param comment   注解
-     * @param ouputPath 输出路径
-     */
-    public GanerateConfig(Class cls, String comment, String ouputPath) {
-        this.cls = cls;
-        this.comment = comment;
-        this.ouputPath = ouputPath;
-    }
+    public abstract void generateParams();
 
     /**
      * freemarker模板参数
      */
     protected Map<String, Object> paramMap = new HashMap<String, Object>(10);
+    protected List<FileConfig> fileConfs = new ArrayList<FileConfig>();
+
+    /**
+     * 模板路径
+     */
+    protected String templatePath;
+
+    /**
+     * 输出目录路径
+     */
+    protected String ouputPath = "D:\\tmp"; // 默认在D盘创建一个零售目录（只支持Windows）
+
+    /**
+     * 是否覆盖
+     */
+    protected boolean fileOverride = false;
+
+    /**
+     * 是否打开输出目录
+     */
+    protected boolean open = true;
 
     public Map<String, Object> getParamMap() {
         return paramMap;
@@ -64,51 +53,55 @@ public class GanerateConfig {
         this.paramMap = paramMap;
     }
 
-    /**
-     * 生成代码生成器的配置信息
-     */
-    public void generateParams() {
-        logger.info("<<=====================开始生成代码生成器的配置信息==============================");
-        String beanPackage = cls.getPackage().getName();
-        beanName = cls.getSimpleName();
-        paramMap.put("beanPackage", beanPackage);
-        paramMap.put("beanName", beanName);
+    public List<FileConfig> getFileConfs() {
+        return fileConfs;
+    }
 
-        packageConfig = new PackageConfig();
-        paramMap.put("packageConfig", packageConfig);
+    public void setFileConfs(List<FileConfig> fileConfs) {
+        this.fileConfs = fileConfs;
+    }
 
-        if(beanPackage.indexOf(packageConfig.getDomain()) > -1) {
-            String pf = beanPackage.replace(packageConfig.getDomain(), "%s");
-            dtoPackage = String.format(pf, packageConfig.getDto());
-            repoPackage = String.format(pf, packageConfig.getRepo());
-            repoImplPackage = String.format(pf, packageConfig.getRepoImpl());
-            servicePackage = String.format(pf, packageConfig.getService());
-            serviceImplPackage = String.format(pf, packageConfig.getServiceImpl());
-            controllerPackage = String.format(pf, packageConfig.getController());
-        }
+    public String getTemplatePath() {
+        return templatePath;
+    }
 
-        paramMap.put("dtoPackage", dtoPackage);
-        paramMap.put("repoPackage", repoPackage);
-        paramMap.put("repoImplPackage", repoImplPackage);
-        paramMap.put("servicePackage", servicePackage);
-        paramMap.put("serviceImplPackage", serviceImplPackage);
-        paramMap.put("controllerPackage", controllerPackage);
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
 
-        List<ClsField> clsFields = new ArrayList<ClsField>();
-        ClsField cf;
-        Field[] fields = cls.getDeclaredFields();
-        for (Field f : fields) {
-            cf = new ClsField();
-            cf.setName(f.getName());
-            cf.setType(f.getType().getSimpleName());
-            clsFields.add(cf);
-        }
-        paramMap.put("fields", clsFields);
+    public String getOuputPath() {
+        return ouputPath;
+    }
 
-        paramMap.put("comment", comment);
-        paramMap.put("author", author);
-//        logger.info(JSON.toJSONString(paramMap));
-        logger.info("<<=====================结束生成代码生成器的配置信息==============================");
+    public void setOuputPath(String ouputPath) {
+        this.ouputPath = ouputPath;
+    }
+
+    public boolean isFileOverride() {
+        return fileOverride;
+    }
+
+    public void setFileOverride(boolean fileOverride) {
+        this.fileOverride = fileOverride;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+
+    protected String beanName;
+
+    public String getBeanName() {
+        return beanName;
+    }
+
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
     }
 
     //==========================类名格式 begin======================================================
@@ -270,95 +263,5 @@ public class GanerateConfig {
         this.controllerPackage = controllerPackage;
     }
     //============================生成类的包路径 end====================================================
-
-
-    protected String beanName;
-    protected String comment = "";
-    /**
-     * 作者名
-     */
-    protected String author = System.getProperty("user.name");
-    /**
-     * 输出目录路径
-     */
-    protected String ouputPath = "D:\\tmp"; // 默认在D盘创建一个零售目录（只支持Windows）
-    /**
-     * 是否覆盖
-     */
-    protected boolean fileOverride = false;
-    /**
-     * 是否打开输出目录
-     */
-    protected boolean open = true;
-    /**
-     * 模板路径
-     */
-    protected String templatePath;
-
-    private PackageConfig packageConfig;
-
-    public String getBeanName() {
-        return beanName;
-    }
-
-    public void setBeanName(String beanName) {
-        this.beanName = beanName;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getOuputPath() {
-        return ouputPath;
-    }
-
-    public void setOuputPath(String ouputPath) {
-        this.ouputPath = ouputPath;
-    }
-
-    public boolean isFileOverride() {
-        return fileOverride;
-    }
-
-    public void setFileOverride(boolean fileOverride) {
-        this.fileOverride = fileOverride;
-    }
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
-
-    public String getTemplatePath() {
-        return templatePath;
-    }
-
-    public void setTemplatePath(String templatePath) {
-        this.templatePath = templatePath;
-    }
-
-    public PackageConfig getPackageConfig() {
-        return packageConfig;
-    }
-
-    public void setPackageConfig(PackageConfig packageConfig) {
-        this.packageConfig = packageConfig;
-    }
 
 }

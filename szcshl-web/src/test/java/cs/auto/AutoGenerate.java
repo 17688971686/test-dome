@@ -1,7 +1,7 @@
 package cs.auto;
 
 import cs.auto.core.Generate;
-import cs.auto.core.config.GanerateConfig;
+import cs.auto.core.config.GanConfig;
 import cs.domain.demo.MyTest;
 
 /**
@@ -13,7 +13,7 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        GanerateConfig config = new GanerateConfig(MyTest.class, "My test");
+        GanConfig config = new GanConfig(MyTest.class, "My test");
         config.setAuthor("tzg");
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\test");
         config.setFileOverride(true);

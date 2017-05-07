@@ -5,7 +5,7 @@ package cs.auto.core.config;
  * User: tzg
  * Date: 2017/5/6 17:44
  */
-public class ClsField {
+public class FieldConfig {
     /**
      * 字段名称
      */

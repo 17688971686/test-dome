@@ -1,11 +1,13 @@
 package cs.auto.core;
 
-import cs.auto.core.config.GanerateConfig;
+import cs.auto.core.config.AbstractGanConfig;
+import cs.auto.core.config.FileConfig;
 import freemarker.template.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -25,9 +27,9 @@ public abstract class AbstractGenerate {
     /**
      * 代码生成的配置类
      */
-    protected GanerateConfig gconf = null;
+    protected AbstractGanConfig gconf = null;
 
-    public AbstractGenerate(GanerateConfig gconf) {
+    public AbstractGenerate(AbstractGanConfig gconf) {
         this.gconf = gconf;
         execute();
     }
@@ -108,6 +110,20 @@ public abstract class AbstractGenerate {
         } catch (TemplateException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取输出文件路径
+     * @param moduleName
+     * @param fileName
+     * @return
+     */
+    protected String getOutputPath(String moduleName, String fileName) {
+        String path = gconf.getOuputPath().concat(File.separator);
+        if (StringUtils.isNoneBlank(moduleName)) {
+            path.concat(moduleName.replace(".", File.separator)).concat(File.separator);
+        }
+        return path.concat(String.format(fileName, gconf.getBeanName()));
     }
 
 }
