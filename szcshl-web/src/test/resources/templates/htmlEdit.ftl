@@ -26,7 +26,7 @@
             </tr>
 <#list info.fields as f><#if f.isId=false>
             <tr>
-                <td class="formAlignRight">显示名：<#if f.required=true><span class="required">*</span></#if></td>
+                <td class="formAlignRight"><#if f.comment??>${f.comment}<#else>${f.name!''}</#if>：<#if f.required=true><span class="required">*</span></#if></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.testName"
                            id="testName" name="testName" <#if f.required=true>data-val="true" data-val-required="必填"</#if> />

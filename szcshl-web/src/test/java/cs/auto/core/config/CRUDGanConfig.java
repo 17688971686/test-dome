@@ -3,19 +3,22 @@ package cs.auto.core.config;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * 代码生成器配置类
+ * 代码生成器配置类（基本增删改查）
  *
  * @author tzg
  * @date 2017/5/7 14:10
  */
-public class GanConfig extends AbstractGanConfig {
+public class CRUDGanConfig extends AbstractGanConfig {
 
 
     protected Class cls;
@@ -25,7 +28,7 @@ public class GanConfig extends AbstractGanConfig {
      *
      * @param cls 数据映射实体类
      */
-    public GanConfig(Class cls) {
+    public CRUDGanConfig(Class cls) {
         this.cls = cls;
     }
 
@@ -35,7 +38,7 @@ public class GanConfig extends AbstractGanConfig {
      * @param cls     数据映射实体类
      * @param comment 注解
      */
-    public GanConfig(Class cls, String comment) {
+    public CRUDGanConfig(Class cls, String comment) {
         this.cls = cls;
         this.comment = comment;
     }
@@ -47,7 +50,7 @@ public class GanConfig extends AbstractGanConfig {
      * @param comment   注解
      * @param ouputPath 输出路径
      */
-    public GanConfig(Class cls, String comment, String ouputPath) {
+    public CRUDGanConfig(Class cls, String comment, String ouputPath) {
         this.cls = cls;
         this.comment = comment;
         this.ouputPath = ouputPath;
@@ -71,6 +74,8 @@ public class GanConfig extends AbstractGanConfig {
         generateParams();
     }
 
+    Pattern commentPattern = Pattern.compile("\\s+comment+\\s+\\'*(\\d|\\b|[\\u0391-\\uFFE5]||\\s)+\\'"),
+        notNullPattern = Pattern.compile("\\s+(?i)not+\\s+(?i)null(?!\\S)");
     protected String formatStr = "cs.%s";
     protected String module = null;
 
@@ -90,6 +95,9 @@ public class GanConfig extends AbstractGanConfig {
 
         List<FieldConfig> clsFields = new ArrayList<FieldConfig>();
         FieldConfig cf;
+        Column fcol;
+        String colDef, colComment;
+        Matcher matcher;
         Field[] fields = cls.getDeclaredFields();
         for (Field f : fields) {
             cf = new FieldConfig();
@@ -97,6 +105,23 @@ public class GanConfig extends AbstractGanConfig {
             cf.setType(f.getType().getSimpleName());
             if(f.isAnnotationPresent(Id.class)) {
                 cf.setIsId(true);
+            } else if(f.isAnnotationPresent(Column.class)) {
+                fcol = f.getAnnotation(Column.class);
+                cf.setRequired(!fcol.nullable());
+                colDef = fcol.columnDefinition();
+                if (StringUtils.isNoneBlank(colDef)) {
+                    if (!cf.getRequired()) {
+                        matcher = notNullPattern.matcher(colDef);
+                        cf.setRequired(matcher.find());
+                    }
+                    if (colDef.indexOf("comment") > -1) {
+                        matcher = commentPattern.matcher(colDef);
+                        if(matcher.find()) {
+                            colComment = matcher.group();
+                            cf.setComment(colComment.substring(colComment.indexOf("'") + 1, colComment.lastIndexOf("'")));
+                        }
+                    }
+                }
             }
             clsFields.add(cf);
         }
@@ -125,7 +150,6 @@ public class GanConfig extends AbstractGanConfig {
 
         logger.info("<<=====================结束生成代码生成器的配置信息==============================");
     }
-
 
     /**
      * 获取输出文件路径

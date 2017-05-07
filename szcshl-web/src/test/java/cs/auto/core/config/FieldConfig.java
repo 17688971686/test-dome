@@ -15,6 +15,10 @@ public class FieldConfig {
      */
     private String type;
     /**
+     * 字段注释
+     */
+    private String comment;
+    /**
      * 是否ID
      */
     private Boolean isId = false;
@@ -37,6 +41,14 @@ public class FieldConfig {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Boolean getIsId() {

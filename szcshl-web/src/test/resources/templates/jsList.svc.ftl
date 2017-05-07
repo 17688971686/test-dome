@@ -196,8 +196,8 @@
                 },
 <#list info.fields as f><#if f.isId=true><#assign idField = f.name></#if>
                 {
-                    field: "${f.name}",
-                    title: "${f.name}",
+                    field: "${f.name!''}",
+                    title: "<#if f.comment??>${f.comment}<#else>${f.name!''}</#if>",
                     width: 100,
                     filterable: true<#if f.type='Date'>,
                     template: function(item) {

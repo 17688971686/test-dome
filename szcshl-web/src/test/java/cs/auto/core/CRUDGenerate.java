@@ -1,24 +1,24 @@
 package cs.auto.core;
 
 import cs.auto.core.config.FileConfig;
-import cs.auto.core.config.GanConfig;
+import cs.auto.core.config.CRUDGanConfig;
 
 import java.io.*;
 import java.util.List;
 
 /**
- * Description: 代码生成器基础配置
+ * Description: 代码生成器基础配置(基本增删改查)
  * User: tzg
  * Date: 2017/5/6 16:43
  */
-public class Generate extends AbstractGenerate {
+public class CRUDGenerate extends AbstractGenerate {
 
 
     /**
      * 根据配置生成代码
      * @param conf
      */
-    public Generate(GanConfig conf) {
+    public CRUDGenerate(CRUDGanConfig conf) {
         super(conf);
     }
 

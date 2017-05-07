@@ -48,7 +48,7 @@ public abstract class AbstractGenerate {
             cfg = new Configuration();
             if (StringUtils.isBlank(gconf.getTemplatePath())) {
                 // 读取classpath下的一个目录（读取jar文件）
-                cfg.setClassForTemplateLoading(Generate.class, "/templates");
+                cfg.setClassForTemplateLoading(CRUDGenerate.class, "/templates");
             } else {
                 // 读取指定目录
                 try {
