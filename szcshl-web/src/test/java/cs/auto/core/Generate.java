@@ -2,7 +2,6 @@ package cs.auto.core;
 
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.GanConfig;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.List;
@@ -24,11 +23,12 @@ public class Generate extends AbstractGenerate {
     }
 
     public void execute() {
-        gconf.generateParams();
+        gconf.autoGenerate();
+
         logger.info("<<=====================开始生成代码===============================");
         List<FileConfig> fileConfs = gconf.getFileConfs();
         for (FileConfig fc : fileConfs) {
-            createFile(fc.getTemplatePath(), fc.getOutputPath());
+            createFile(fc);
         }
         logger.info("<<=====================代码已成功生成===============================");
 

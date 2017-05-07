@@ -1,7 +1,9 @@
 package cs.auto.core.config;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Id;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -15,11 +17,13 @@ import java.util.List;
  */
 public class GanConfig extends AbstractGanConfig {
 
+
     protected Class cls;
 
     /**
      * 实例化代码生成器的配置类
-     * @param cls       数据映射实体类
+     *
+     * @param cls 数据映射实体类
      */
     public GanConfig(Class cls) {
         this.cls = cls;
@@ -27,8 +31,9 @@ public class GanConfig extends AbstractGanConfig {
 
     /**
      * 实例化代码生成器的配置类
-     * @param cls       数据映射实体类
-     * @param comment   注解
+     *
+     * @param cls     数据映射实体类
+     * @param comment 注解
      */
     public GanConfig(Class cls, String comment) {
         this.cls = cls;
@@ -37,6 +42,7 @@ public class GanConfig extends AbstractGanConfig {
 
     /**
      * 实例化代码生成器的配置类
+     *
      * @param cls       数据映射实体类
      * @param comment   注解
      * @param ouputPath 输出路径
@@ -47,44 +53,40 @@ public class GanConfig extends AbstractGanConfig {
         this.ouputPath = ouputPath;
     }
 
+    @Override
+    public void autoGenerate() {
+        fileConfs.add(new FileConfig(FileConst.dtoCls));
+        fileConfs.add(new FileConfig(FileConst.repoCls));
+        fileConfs.add(new FileConfig(FileConst.repoImplCls));
+        fileConfs.add(new FileConfig(FileConst.serviceCls));
+        fileConfs.add(new FileConfig(FileConst.serviceImplCls));
+        fileConfs.add(new FileConfig(FileConst.controllerCls));
+
+        fileConfs.add(new FileConfig(FileConst.listHtml));
+        fileConfs.add(new FileConfig(FileConst.listCtrlJs));
+        fileConfs.add(new FileConfig(FileConst.listSvcJs));
+        fileConfs.add(new FileConfig(FileConst.editHtml));
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));
+
+        generateParams();
+    }
+
+    protected String formatStr = "cs.%s";
+    protected String module = null;
 
     /**
      * 生成代码生成器的配置信息
      */
-    @Override
     public void generateParams() {
         logger.info("<<=====================开始生成代码生成器的配置信息==============================");
+        paramMap.put("well_", "#");
+        paramMap.put("dollar_", "$");
+        paramMap.put("at_", "@");
+
         String beanPackage = cls.getPackage().getName();
         beanName = cls.getSimpleName();
         paramMap.put("beanPackage", beanPackage);
         paramMap.put("beanName", beanName);
-
-        dtoClsName = String.format(dtoClsName, beanName);
-        repoClsName = String.format(repoClsName, beanName);
-        repoImplClsName = String.format(repoImplClsName, beanName);
-        serviceClsName = String.format(serviceClsName, beanName);
-        serviceImplClsName = String.format(serviceImplClsName, beanName);
-        controllerClsName = String.format(controllerClsName, beanName);
-
-        packageConfig = new PackageConfig();
-        paramMap.put("packageConfig", packageConfig);
-
-        if(beanPackage.indexOf(packageConfig.getDomain()) > -1) {
-            String pf = beanPackage.replace(packageConfig.getDomain(), "%s");
-            dtoPackage = String.format(pf, packageConfig.getDto());
-            repoPackage = String.format(pf, packageConfig.getRepo());
-            repoImplPackage = String.format(pf, packageConfig.getRepoImpl());
-            servicePackage = String.format(pf, packageConfig.getService());
-            serviceImplPackage = String.format(pf, packageConfig.getServiceImpl());
-            controllerPackage = String.format(pf, packageConfig.getController());
-        }
-
-        paramMap.put("dtoPackage", dtoPackage);
-        paramMap.put("repoPackage", repoPackage);
-        paramMap.put("repoImplPackage", repoImplPackage);
-        paramMap.put("servicePackage", servicePackage);
-        paramMap.put("serviceImplPackage", serviceImplPackage);
-        paramMap.put("controllerPackage", controllerPackage);
 
         List<FieldConfig> clsFields = new ArrayList<FieldConfig>();
         FieldConfig cf;
@@ -93,39 +95,54 @@ public class GanConfig extends AbstractGanConfig {
             cf = new FieldConfig();
             cf.setName(f.getName());
             cf.setType(f.getType().getSimpleName());
+            if(f.isAnnotationPresent(Id.class)) {
+                cf.setIsId(true);
+            }
             clsFields.add(cf);
         }
         paramMap.put("fields", clsFields);
 
         paramMap.put("comment", comment);
         paramMap.put("author", author);
-//        logger.info(JSON.toJSONString(paramMap));
 
-        generateFileConf();
+        if (beanPackage.indexOf(PackageConst.PACKAGE_DOMAIN) > -1) {
+            paramMap.put("module", beanPackage.substring(beanPackage.indexOf(PackageConst.PACKAGE_DOMAIN) + 1));
+            formatStr = beanPackage.replace(PackageConst.PACKAGE_DOMAIN, "%s");
+        }
+
+        for (FileConfig fc : fileConfs) {
+            fc.setFileName(String.format(fc.getFileName(), beanName));
+            paramMap.put(fc.getSuffix(), fc.getFileName());
+            if (StringUtils.isNoneBlank(fc.getLayer())) {
+                fc.setLayer(String.format(formatStr, fc.getLayer()));
+                paramMap.put(fc.getSuffix().concat("Layer"), fc.getLayer());
+            }
+            fc.setOutputPath(getOutputPath(fc.getLayer(), fc.getFileName(), fc.getFileType()));
+            fc.setInfo(paramMap);
+        }
+
+        logger.debug(JSON.toJSONString(paramMap));
+
         logger.info("<<=====================结束生成代码生成器的配置信息==============================");
     }
 
-    public void generateFileConf() {
-        fileConfs.add(new FileConfig(dtoClsName, TemplateConfig.JAVA_DTO, getOutputPath(dtoPackage, dtoClsName)));
-        fileConfs.add(new FileConfig(repoClsName, TemplateConfig.JAVA_REPO, getOutputPath(repoPackage, repoClsName)));
-        fileConfs.add(new FileConfig(repoImplClsName, TemplateConfig.JAVA_REPO_IMPL, getOutputPath(repoImplPackage, repoImplClsName)));
-        fileConfs.add(new FileConfig(serviceClsName, TemplateConfig.JAVA_SERVICE, getOutputPath(servicePackage, serviceClsName)));
-        fileConfs.add(new FileConfig(serviceImplClsName, TemplateConfig.JAVA_SERVICE_IMPL, getOutputPath(serviceImplPackage, serviceImplClsName)));
-        fileConfs.add(new FileConfig(controllerClsName, TemplateConfig.JAVA_CONTROLLER, getOutputPath(controllerPackage, controllerClsName)));
-    }
 
     /**
      * 获取输出文件路径
-     * @param moduleName
-     * @param fileName
+     *
+     * @param layer    层名/包名
+     * @param fileName 文件名
+     * @param suffix   文件后缀
      * @return
      */
-    protected String getOutputPath(String moduleName, String fileName) {
+    protected String getOutputPath(String layer, String fileName, String suffix) {
         String path = ouputPath.concat(File.separator);
-        if (StringUtils.isNoneBlank(moduleName)) {
-            path.concat(moduleName.replace(".", File.separator)).concat(File.separator);
+        if (StringUtils.isNoneBlank(layer)) {
+            path = path.concat(layer.replace(".", File.separator)).concat(File.separator);
+        } else if (StringUtils.isNoneBlank(module)) {
+            path = path.concat(module).concat(File.separator);
         }
-        return path.concat(fileName);
+        return path.concat(fileName).concat(suffix);
     }
 
     protected String comment = "";
@@ -134,8 +151,6 @@ public class GanConfig extends AbstractGanConfig {
      */
     protected String author = System.getProperty("user.name");
 
-
-    private PackageConfig packageConfig;
 
     public String getComment() {
         return comment;
@@ -151,14 +166,6 @@ public class GanConfig extends AbstractGanConfig {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public PackageConfig getPackageConfig() {
-        return packageConfig;
-    }
-
-    public void setPackageConfig(PackageConfig packageConfig) {
-        this.packageConfig = packageConfig;
     }
 
 }

@@ -14,6 +14,14 @@ public class FieldConfig {
      * 字段类型
      */
     private String type;
+    /**
+     * 是否ID
+     */
+    private Boolean isId = false;
+    /**
+     * 是否必填项
+     */
+    private Boolean required = false;
 
     public String getName() {
         return name;
@@ -29,5 +37,21 @@ public class FieldConfig {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getIsId() {
+        return isId;
+    }
+
+    public void setIsId(Boolean isId) {
+        this.isId = isId;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 }

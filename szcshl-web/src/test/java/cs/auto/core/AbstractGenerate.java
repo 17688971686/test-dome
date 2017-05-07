@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -71,18 +70,18 @@ public abstract class AbstractGenerate {
     }
 
     /**
-     * @param templatePath        模板文件名,相对上面的模版根目录templates路径,例如/module/view.templatePath templates/module/view.templatePath
-     * @param outputFilePath 要生成的静态文件的路径,相对设置中的根路径,例如 "jsp/user/1.html"
-     * @return
+     * 根据文件信息生成相应的文件
+     * @param fileConfig
      */
-    protected void createFile(String templatePath, String outputFilePath) {
-        if (StringUtils.isAnyBlank(templatePath, outputFilePath)) {
+    protected void createFile(FileConfig fileConfig) {
+        String tplName = fileConfig.getTemplateName(), output = fileConfig.getOutputPath();
+        if (StringUtils.isAnyBlank(tplName, output)) {
             return;
         }
         // 创建Template对象
         try {
 
-            File outFile = new File(outputFilePath);
+            File outFile = new File(output);
             if (outFile.exists() && !gconf.isFileOverride()) { // 检测已存在的文件是否要重写
                 return;
             }
@@ -96,15 +95,15 @@ public abstract class AbstractGenerate {
             }
 
             Configuration cfg = getConfiguration();
-            Template template = cfg.getTemplate(templatePath);
+            Template template = cfg.getTemplate(tplName);
             template.setEncoding("UTF-8");
 
             // 生成静态页面
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
-            template.process(gconf.getParamMap(), out);
+            template.process(fileConfig, out);
             out.flush();
             out.close();
-            logger.info("===>> 模板: " + templatePath + ";  文件: " + outputFilePath);
+            logger.info("===>> 模板: " + tplName + ";  文件: " + output);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TemplateException e) {
@@ -112,18 +111,5 @@ public abstract class AbstractGenerate {
         }
     }
 
-    /**
-     * 获取输出文件路径
-     * @param moduleName
-     * @param fileName
-     * @return
-     */
-    protected String getOutputPath(String moduleName, String fileName) {
-        String path = gconf.getOuputPath().concat(File.separator);
-        if (StringUtils.isNoneBlank(moduleName)) {
-            path.concat(moduleName.replace(".", File.separator)).concat(File.separator);
-        }
-        return path.concat(String.format(fileName, gconf.getBeanName()));
-    }
 
 }
