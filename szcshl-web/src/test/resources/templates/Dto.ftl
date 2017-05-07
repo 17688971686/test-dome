@@ -8,10 +8,10 @@ import cs.model.BaseDto2;
 
 
 /**
-* Description: ${comment!''} 页面数据模型
-* User: ${author!''}
-* Date: ${.now}
-*/
+ * Description: ${comment!''} 页面数据模型
+ * User: ${author!''}
+ * Date: ${.now}
+ */
 public class ${beanName}Dto extends BaseDto2<${beanName}> {
 
 <#list fields as f>

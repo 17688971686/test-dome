@@ -7,10 +7,10 @@ import ${dtoPackage}.${beanName}Dto;
 import cs.repo.odata.ODataObj;
 
 /**
-* Description: ${comment!''} 业务操作接口
-* author: ${author!''}
-* Date: ${.now}
-*/
+ * Description: ${comment!''} 业务操作接口
+ * author: ${author!''}
+ * Date: ${.now}
+ */
 public interface ${beanName}Service extends IService<${beanName}, ${beanName}Dto> {
 
     /**

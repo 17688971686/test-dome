@@ -16,10 +16,10 @@ import java.text.ParseException;
 import java.util.Date;
 
 /**
-* Description: ${comment!''} 控制层
-* author: ${author!''}
-* Date: ${.now}
-*/
+ * Description: ${comment!''} 控制层
+ * author: ${author!''}
+ * Date: ${.now}
+ */
 @Controller
 @RequestMapping(name = "${comment!''}", path = "${beanName?uncap_first}")
 public class ${beanName}Controller {
