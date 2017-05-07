@@ -2,6 +2,10 @@
 
 import ${beanPackage}.${beanName};
 import cs.model.BaseDto2;
+<#list fields as f>
+    <#if f.type='Date'>import java.util.Date;</#if>
+</#list>
+
 
 /**
 * Description: ${comment!''} 页面数据模型
