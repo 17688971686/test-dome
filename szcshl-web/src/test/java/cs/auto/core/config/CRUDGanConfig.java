@@ -134,7 +134,10 @@ public class CRUDGanConfig extends AbstractGanConfig {
         paramMap.put("author", author);
 
         if (beanPackage.indexOf(PackageConst.PACKAGE_DOMAIN) > -1) {
-            paramMap.put("module", beanPackage.substring(beanPackage.indexOf(PackageConst.PACKAGE_DOMAIN) + 1));
+            module = beanPackage.substring(beanPackage.lastIndexOf(PackageConst.PACKAGE_DOMAIN) + PackageConst.PACKAGE_DOMAIN.length() + 1);
+            if (StringUtils.isNotBlank(module)) {
+                paramMap.put("module", module);
+            }
             formatStr = beanPackage.replace(PackageConst.PACKAGE_DOMAIN, "%s");
         }
 

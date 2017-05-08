@@ -69,13 +69,13 @@ public class ${fileName!''} {
     @RequiresPermissions("${info.beanName?uncap_first}#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return "${info.module!''}/${info.beanName?uncap_first}List";
+        return "${info.beanName?uncap_first}/${info.beanName?uncap_first}List";
     }
 
     @RequiresPermissions("${info.beanName?uncap_first}#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return "${info.module!''}/${info.beanName?uncap_first}Edit";
+        return "${info.beanName?uncap_first}/${info.beanName?uncap_first}Edit";
     }
     // end#html
 
