@@ -24,7 +24,7 @@ public class AutoGenerate {
         config.setAuthor("tzg");
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\test");
         config.setFileOverride(true);
-        config.setOpen(false);
+        config.setOpen(true);
         config.setFileConfs(getFileConf());
         new CRUDGenerate(config);
 
