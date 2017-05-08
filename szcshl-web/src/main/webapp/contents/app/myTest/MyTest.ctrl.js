@@ -1,12 +1,11 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('mytestCtrl', mytest);
+    angular.module('app').controller('myTestCtrl', myTest);
 
-    mytest.$inject = ['$location', 'mytestSvc'];
+    myTest.$inject = ['$location', 'myTestSvc'];
 
-    function mytest($location, mytestSvc) {
-        /* jshint validthis:true */
+    function myTest($location, myTestSvc) {
         var vm = this;
         vm.title = 'My test';
 
@@ -17,7 +16,7 @@
                 msg: "确认删除数据吗？",
                 fn: function () {
                     $('.confirmDialog').modal('hide');
-                    mytestSvc.deleteMytest(vm, id);
+                    myTestSvc.deleteMytest(vm, id);
                 }
             });
         }
@@ -40,7 +39,7 @@
 
         activate();
         function activate() {
-            mytestSvc.grid(vm);
+            myTestSvc.grid(vm);
         }
     }
 })();

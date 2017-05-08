@@ -41,33 +41,33 @@
                 controller: 'userCtrl',
                 controllerAs: 'vm'
             }).state('userEdit', {
-            url: '/userEdit/:id',
-            templateUrl: rootPath + '/user/html/edit.html',
-            controller: 'userEditCtrl',
-            controllerAs: 'vm'
-        })
-        //end#user
+                url: '/userEdit/:id',
+                templateUrl: rootPath + '/user/html/edit.html',
+                controller: 'userEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#user
 
-        //begin#org
+            //begin#org
             .state('org', {
                 url: '/org',
                 templateUrl: rootPath + '/org/html/list.html',
                 controller: 'orgCtrl',
                 controllerAs: 'vm'
             }).state('orgEdit', {
-            url: '/orgEdit/:id',
-            templateUrl: rootPath + '/org/html/edit.html',
-            controller: 'orgEditCtrl',
-            controllerAs: 'vm'
-        }).state('orgUser', {
-            url: '/orgUser/:id',
-            templateUrl: rootPath + '/org/html/orgUser.html',
-            controller: 'orgUserCtrl',
-            controllerAs: 'vm'
-        })
-        //end#org
+                url: '/orgEdit/:id',
+                templateUrl: rootPath + '/org/html/edit.html',
+                controller: 'orgEditCtrl',
+                controllerAs: 'vm'
+            }).state('orgUser', {
+                url: '/orgUser/:id',
+                templateUrl: rootPath + '/org/html/orgUser.html',
+                controller: 'orgUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#org
 
-        //begin#log
+            //begin#log
             .state('log', {
                 url: '/log',
                 templateUrl: rootPath + '/log/html/list.html',
@@ -83,42 +83,42 @@
                 controller: 'meetingCtrl',
                 controllerAs: 'vm'
             }).state('meetingEdit', {
-            url: '/meetingEdit/:id',
-            templateUrl: rootPath + '/meeting/html/edit.html',
-            controller: 'meetingEditCtrl',
-            controllerAs: 'vm'
-        })
-        //end#meeting
+                url: '/meetingEdit/:id',
+                templateUrl: rootPath + '/meeting/html/edit.html',
+                controller: 'meetingEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#meeting
 
-        //begin#room
+            //begin#room
             .state('room', {
                 url: '/room',
                 templateUrl: rootPath + '/room/html/roomlist.html',
                 controller: 'roomCtrl',
                 controllerAs: 'vm'
             }).state('roomCount', {
-            url: '/roomCount/:id',
-            templateUrl: rootPath + '/room/html/countlist.html',
-            controller: 'roomCountCtrl',
-            controllerAs: 'vm'
-        })
-        //end#room
+                url: '/roomCount/:id',
+                templateUrl: rootPath + '/room/html/countlist.html',
+                controller: 'roomCountCtrl',
+                controllerAs: 'vm'
+            })
+            //end#room
 
-        //begin#company
+            //begin#company
             .state('company', {
                 url: '/company',
                 templateUrl: rootPath + '/company/html/list.html',
                 controller: 'companyCtrl',
                 controllerAs: 'vm'
             }).state('companyEdit', {
-            url: '/companyEdit/:id',
-            templateUrl: rootPath + '/company/html/edit.html',
-            controller: 'companyEditCtrl',
-            controllerAs: 'vm'
-        })
-        //end#company
+                url: '/companyEdit/:id',
+                templateUrl: rootPath + '/company/html/edit.html',
+                controller: 'companyEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#company
 
-        //begin#home
+            //begin#home
             .state('accountPwd', {
                 url: '/accountPwd',
                 templateUrl: rootPath + '/account/html/changePwd.html',
@@ -135,19 +135,19 @@
             })
             //end#demo
             //begin#mytest
-            .state('mytest', {
-                url: '/mytest',
-                templateUrl: rootPath + '/mytest/html/list.html',
-                controller: 'mytestCtrl',
+            .state('myTest', {
+                url: '/myTest',
+                templateUrl: rootPath + '/myTest/html/list.html',
+                controller: 'myTestCtrl',
                 controllerAs: 'vm'
-            }).state('mytestrEdit', {
-            url: '/mytestEdit/:id',
-            templateUrl: rootPath + '/mytest/html/edit.html',
-            controller: 'mytestEditCtrl',
-            controllerAs: 'vm'
-        })
-        //end#mytest
-        //beginDict
+            }).state('myTestEdit', {
+                url: '/myTestEdit/:id',
+                templateUrl: rootPath + '/myTest/html/edit.html',
+                controller: 'myTestEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#mytest
+            //beginDict
             .state('dict', {
                 url: '/dict',
                 templateUrl: rootPath + '/dict/html/list.html',
@@ -198,33 +198,33 @@
                 controller: 'signCreateCtrl',
                 controllerAs: 'vm'
             }).state('fillSign', {
-            url: '/fillSign/:signid',
-            templateUrl: rootPath + '/sign/html/fillin.html',
-            controller: 'signFillinCtrl',
-            controllerAs: 'vm'
-        }).state('listSign', {
-            url: '/listSign',
-            templateUrl: rootPath + '/sign/html/list.html',
-            controller: 'signCtrl',
-            controllerAs: 'vm'
-        }).state('flowSign', {
-            url: '/flowSign',
-            templateUrl: rootPath + '/sign/html/flow.html',
-            controller: 'signFlowCtrl',
-            controllerAs: 'vm'
-        }).state('flowDeal', {
-            url: '/flowDeal/:signid/:taskId/:processInstanceId',
-            templateUrl: rootPath + '/sign/html/flowDeal.html',
-            controller: 'signFlowDealCtrl',
-            controllerAs: 'vm'
-        }).state('signDetails', {//详细信息
-            url: '/signDetails/:signid',
-            templateUrl: rootPath + '/sign/html/signDetails.html',
-            controller: 'signDetailsCtrl',
-            controllerAs: 'vm'
-        })//end#sign
+                url: '/fillSign/:signid',
+                templateUrl: rootPath + '/sign/html/fillin.html',
+                controller: 'signFillinCtrl',
+                controllerAs: 'vm'
+            }).state('listSign', {
+                url: '/listSign',
+                templateUrl: rootPath + '/sign/html/list.html',
+                controller: 'signCtrl',
+                controllerAs: 'vm'
+            }).state('flowSign', {
+                url: '/flowSign',
+                templateUrl: rootPath + '/sign/html/flow.html',
+                controller: 'signFlowCtrl',
+                controllerAs: 'vm'
+            }).state('flowDeal', {
+                url: '/flowDeal/:signid/:taskId/:processInstanceId',
+                templateUrl: rootPath + '/sign/html/flowDeal.html',
+                controller: 'signFlowDealCtrl',
+                controllerAs: 'vm'
+            }).state('signDetails', {//详细信息
+                url: '/signDetails/:signid',
+                templateUrl: rootPath + '/sign/html/signDetails.html',
+                controller: 'signDetailsCtrl',
+                controllerAs: 'vm'
+            })//end#sign
 
-        //begin#workprogram
+            //begin#workprogram
             .state('workprogramEdit', {
                 url: '/workprogramEdit/:signid',
                 templateUrl: rootPath + '/workprogram/html/edit.html',

@@ -1,24 +1,24 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('mytestSvc', mytest);
+    angular.module('app').factory('myTestSvc', myTest);
 
-    mytest.$inject = ['$http'];
+    myTest.$inject = ['$http'];
 
-    function mytest($http) {
-        var url_user = rootPath + "/mytest", url_back = '#/mytest';
+    function myTest($http) {
+        var url_myTest = rootPath + "/myTest", url_back = '#/myTest';
         var service = {
             grid: grid,
-            getMytestById: getMytestById,
-            createMytest: createMytest,
-            deleteMytest: deleteMytest,
-            updateMytest: updateMytest
+            getMyTestById: getMyTestById,
+            createMyTest: createMyTest,
+            deleteMyTest: deleteMyTest,
+            updateMyTest: updateMyTest
         };
 
         return service;
 
-        // begin#updateMytest
-        function updateMytest(vm) {
+        // begin#updateMyTest
+        function updateMyTest(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -27,7 +27,7 @@
 
                 var httpOptions = {
                     method: 'put',
-                    url: url_user,
+                    url: url_myTest,
                     data: vm.model
                 }
 
@@ -67,17 +67,16 @@
 
         }
 
-        // begin#deleteMytest
-        function deleteMytest(vm, id) {
+        // begin#deleteMyTest
+        function deleteMyTest(vm, id) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
-                url: url_user,
+                url: url_myTest,
                 data: id
+            };
 
-            }
             var httpSuccess = function success(response) {
-
                 common.requestSuccess({
                     vm: vm,
                     response: response,
@@ -85,10 +84,9 @@
                         vm.isSubmit = false;
                         vm.gridOptions.dataSource.read();
                     }
-
                 });
+            };
 
-            }
             common.http({
                 vm: vm,
                 $http: $http,
@@ -97,8 +95,8 @@
             });
         }
 
-        // begin#createMytest
-        function createMytest(vm) {
+        // begin#createMyTest
+        function createMyTest(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -106,17 +104,15 @@
 
                 var httpOptions = {
                     method: 'post',
-                    url: url_user,
+                    url: url_myTest,
                     data: vm.model
                 };
 
                 var httpSuccess = function success(response) {
-
                     common.requestSuccess({
                         vm: vm,
                         response: response,
                         fn: function () {
-
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功",
@@ -126,12 +122,10 @@
                                     $('.modal-backdrop').remove();
                                     location.href = url_back;
                                 }
-                            })
+                            });
                         }
-
                     });
-
-                }
+                };
 
                 common.http({
                     vm: vm,
@@ -143,11 +137,11 @@
             }
         }
 
-        // begin#getMytestById
-        function getMytestById(vm) {
+        // begin#getMyTestById
+        function getMyTestById(vm) {
             var httpOptions = {
                 method: 'get',
-                url: common.format(url_user + "?$filter=id eq '{0}'", vm.id)
+                url: common.format(url_myTest + "?$filter=id eq '{0}'", vm.id)
             };
             var httpSuccess = function success(response) {
                 vm.model = response.data.value[0];
@@ -167,7 +161,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user),
+                transport: common.kendoGridConfig().transport(url_myTest),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -201,55 +195,27 @@
                 },
                 {
                     field: "id",
-                    title: "主键",
+                    title: "id",
                     width: 100,
                     filterable: true
                 },
                 {
                     field: "testName",
-                    title: "显示名",
+                    title: "测试名",
                     width: 100,
                     filterable: true
                 },
                 {
                     field: "test01",
-                    title: "test01",
-                    width: 80,
-                    filterable: false
+                    title: "测试01",
+                    width: 100,
+                    filterable: true
                 },
                 {
                     field: "test02",
-                    title: "test02",
-                    width: 80,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "创建时间",
-                    width: 80,
-                    filterable: false,
-                    template: function(item) {
-                        if(!item.createdDate){
-                            return " ";
-                        }
-                        else{
-                            return kendo.toString(new Date(item.createdDate), 'yyyy-MM-dd hh:mm:ss');
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "更新时间",
-                    width: 80,
-                    filterable: false,
-                    template: function(item) {
-                        if(!item.modifiedDate){
-                            return " ";
-                        }
-                        else{
-                            return kendo.toString(new Date(item.modifiedDate), 'yyyy-MM-dd hh:mm:ss');
-                        }
-                    }
+                    title: "测试02",
+                    width: 100,
+                    filterable: true
                 },
                 {
                     field: "",

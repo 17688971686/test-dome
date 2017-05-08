@@ -1,13 +1,11 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('mytestEditCtrl', mytest);
+    angular.module('app').controller('myTestEditCtrl', myTest);
 
-    mytest.$inject = ['$location', 'mytestSvc', '$state'];
+    myTest.$inject = ['$location', 'myTestSvc', '$state'];
 
-    function mytest($location, mytestSvc, $state) {
+    function myTest($location, myTestSvc, $state) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '添加My test';
@@ -19,16 +17,16 @@
         }
 
         vm.create = function () {
-            mytestSvc.createMytest(vm);
+            myTestSvc.createMyTest(vm);
         };
         vm.update = function () {
-            mytestSvc.updateMytest(vm);
+            myTestSvc.updateMyTest(vm);
         };
 
         activate();
         function activate() {
             if (vm.isUpdate) {
-                mytestSvc.getMytestById(vm);
+                myTestSvc.getMyTestById(vm);
             }
         }
     }
