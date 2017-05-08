@@ -14,9 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
+import cs.domain.project.Sign;
 import cs.domain.sys.Dict;
 import cs.domain.sys.Role;
 import cs.domain.sys.User;
@@ -24,6 +26,7 @@ import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ProjectExpeDto;
 import cs.model.expert.WorkExpeDto;
+import cs.model.project.SignDto;
 import cs.model.sys.DictDto;
 import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
@@ -59,7 +62,7 @@ public class ExpertServiceImpl implements ExpertService {
 			List<ExpertDto> listExpertDto=new ArrayList<>();
 			for (Expert item : listExpert) {
 				ExpertDto expertDto=new ExpertDto();
-				expertDto.setIdCard(item.getIdCard());
+				/*expertDto.setIdCard(item.getIdCard());
 				expertDto.setAcaDemy(item.getAcaDemy());
 				expertDto.setAddRess(item.getAddRess());
 				expertDto.setBirthDay(item.getBirthDay());
@@ -81,7 +84,8 @@ public class ExpertServiceImpl implements ExpertService {
 				expertDto.setProteChtype(item.getProteChtype());
 				expertDto.setRemark(item.getRemark());
 				expertDto.setQualifiCations(item.getQualifiCations());
-				expertDto.setZipCode(item.getZipCode());
+				expertDto.setZipCode(item.getZipCode());*/
+				ExpertToExpertDto(item, expertDto);
 				
 				List<WorkExpeDto> workDtoList=new ArrayList<>();
 				for (WorkExpe workExpe : item.getWork()) {
@@ -122,7 +126,7 @@ public class ExpertServiceImpl implements ExpertService {
 			Expert findExpert=expertRepo.findExpertByName(expertDto.getName());
 			Expert expert = new Expert();
 			if (findExpert==null) {// 重复专家查询
-				expert.setExpertID(UUID.randomUUID().toString());
+				/*expert.setExpertID(UUID.randomUUID().toString());
 				expert.setIdCard(expertDto.getIdCard());
 				expert.setAcaDemy(expertDto.getAcaDemy());
 				expert.setAddRess(expertDto.getAddRess());
@@ -146,8 +150,9 @@ public class ExpertServiceImpl implements ExpertService {
 				expert.setQualifiCations(expertDto.getQualifiCations());
 				expert.setZipCode(expertDto.getZipCode());
 				expert.setModifiedBy(currentUser.getLoginName());
-				expert.setCreatedBy(currentUser.getLoginName());
+				expert.setCreatedBy(currentUser.getLoginName());*/
 				expert.setState("1");
+				ExpertDtoToExpert(expertDto,expert);
 				expertRepo.save(expert);
 				//expert=expertRepo.findExpertByName(expertDto.getName());
 				logger.info(String.format("添加专家,专家名为:%s", expert.getName()));
@@ -219,11 +224,27 @@ public class ExpertServiceImpl implements ExpertService {
 			logger.info("专家审核");
 		}
 		
+		
+		private void ExpertDtoToExpert(ExpertDto expertDto,Expert expert){
+			BeanCopierUtils.copyProperties(expertDto, expert);
+	        Date now = new Date();
+	        expert.setCreatedBy(currentUser.getLoginName());
+	        expert.setCreatedDate(now);
+	        expert.setModifiedBy(currentUser.getLoginName());
+	        expert.setModifiedDate(now);
+		}
+		
+		private void ExpertToExpertDto(Expert expert,ExpertDto expertDto){
+			BeanCopierUtils.copyProperties(expert, expertDto);
+			expertDto.setCreatedDate(expert.getCreatedDate());
+			expertDto.setModifiedDate(expert.getModifiedDate());
+		}
 		@Override
 		@Transactional
 		public void updateExpert(ExpertDto expertDto) {
 			Expert expert = expertRepo.findById(expertDto.getExpertID());
-			expert.setIdCard(expertDto.getIdCard());
+			BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
+			/*expert.setIdCard(expertDto.getIdCard());
 			expert.setAcaDemy(expertDto.getAcaDemy());
 			expert.setAddRess(expertDto.getAddRess());
 			expert.setBirthDay(expertDto.getBirthDay());
@@ -245,7 +266,7 @@ public class ExpertServiceImpl implements ExpertService {
 			expert.setQualifiCations(expertDto.getQualifiCations());
 			expert.setZipCode(expertDto.getZipCode());
 			expert.setModifiedDate(new Date());
-			expert.setModifiedBy(currentUser.getLoginName());
+			expert.setModifiedBy(currentUser.getLoginName());*/
 			expertRepo.save(expert);
 			logger.info(String.format("更新专家,专家名为:%s", expertDto.getName()));
 		}

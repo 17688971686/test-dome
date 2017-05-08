@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
 import cs.common.cache.CacheManager;
@@ -61,6 +61,7 @@ public class DictServiceImpl implements DictService {
 		return pageModelDto;
 	} 
 	@Override
+	@Transactional
 	public void createDict(DictDto dictDto) {
 		
 		checkDictExists(dictDto,null);
@@ -109,6 +110,7 @@ public class DictServiceImpl implements DictService {
 		}
 	}
 	@Override
+	@Transactional
 	public void updateDict(DictDto dictDto) {
 		
 		checkDictExists(dictDto,dictDto.getDictId());
@@ -171,6 +173,7 @@ public class DictServiceImpl implements DictService {
 		return null;
 	}
 	@Override
+	@Transactional
 	public void deleteDict(String dictId) {
 		Dict dict = dictRepo.findById(dictId);
 		if(dict != null){
@@ -180,6 +183,7 @@ public class DictServiceImpl implements DictService {
 		
 	}
 	@Override
+	@Transactional
 	public void deleteDicts(String[] dictCodes) {
 		if(dictCodes.length > 0){
 			for(String dictCode:dictCodes){

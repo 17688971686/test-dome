@@ -1,7 +1,4 @@
 package cs.model.expert;
-
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +7,7 @@ import javax.persistence.Column;
 import cs.model.BaseDto;
 
 /**
- * 专家
+ * 专家信息管理
  * @author Administrator
  *
  */

@@ -132,7 +132,7 @@ body {
 				<td> 
 					<select ng-model="vm.model.sex" class="form-control input-sm "  name="sex">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.sex" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					<!-- <select class="form-control input-sm "  ng-model="vm.model.sex " id="sex" name="sex" data-val="true" data-val-required="必填">
 							<option value="">请选择</option>
@@ -161,7 +161,7 @@ body {
 				<td>
 					<select ng-model="vm.model.qualifiCations" class="form-control input-sm "  name="qualifiCations">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.qualifiCations" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.QUALIFI_CATIONS.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					 <span data-valmsg-for="qualifiCations" data-valmsg-replace="true" class="errors"></span>
 				 </td>
@@ -177,7 +177,7 @@ body {
 				<td>
 					<select ng-model="vm.model.degRee" class="form-control input-sm " name="degRee">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.degRee" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.DEGREE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					<span data-valmsg-for="degRee" data-valmsg-replace="true" class="errors"></span>
 				</td>
@@ -206,7 +206,7 @@ body {
 				<td>
 					<select ng-model="vm.model.job" class="form-control input-sm " name="job">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.job" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.JOY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
 					</td>
@@ -214,7 +214,7 @@ body {
 				<td>
 					<select ng-model="vm.model.title" class="form-control input-sm " name="title">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.title" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.TITLE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					<span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
 				</td>
@@ -262,7 +262,7 @@ body {
 				<td colspan="3">
 					<select ng-model="vm.model.state" class="form-control input-sm "  name="state" style="width: 200px">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.statez" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					<span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
 				</td>
@@ -273,22 +273,22 @@ body {
 				<td>
 					<select ng-model="vm.model.expeRttype" class="form-control input-sm "  name="expeRttype" style="width: 200px">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.expeRttype" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.EXPERT_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
 				<td colspan="2" align="center">工程造价类</td>
 				<td>
 					<select ng-model="vm.model.procoSttype" class="form-control input-sm "  name="expeRttype" style="width: 200px">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.procoSttype" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.PROCOST_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
-				<td align="center">工程技术类</td>
+				<td align="center">项目类型</td>
 				
 				<td>
 					<select ng-model="vm.model.proteChtype" class="form-control input-sm " name="protechtype">
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.proteChtype" value="{{x.dictKey}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.PROTECH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
 			</tr>
