@@ -2,3 +2,4 @@
 /szcshl-web/target
 /.idea
 /szcshl-web/src/metamodel
+/szcshl-web/node_modules
