@@ -5,12 +5,12 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/mytest">My test!</a></li>
+        <li><a href="#/myTest">My test</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="form" name="form">
         <div class="toolbar">
-            <a class="btn btn-sm btn-primary" href="#/mytest"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <a class="btn btn-sm btn-primary" href="#/myTest"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
             <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit"
                     ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建
             </button>
@@ -24,36 +24,30 @@
                 <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
                 <td></td>
             </tr>
-
             <tr>
-                <td class="formAlignRight">显示名：<span class="required">*</span></td>
+                <td class="formAlignRight">测试名：<span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.testName"
-                           id="testName" name="testName" data-val="true" data-val-required="必填">
+                           id="testName" name="testName" data-val="true" data-val-required="必填" />
                 </td>
                 <td><span data-valmsg-for="testName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
-
             <tr>
-                <td class="formAlignRight">test01：<span class="required">*</span></td>
+                <td class="formAlignRight">测试01：</td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.test01"
-                           id="test01" name="test01" data-val="true" data-val-required="必填">
+                           id="test01" name="test01"  />
                 </td>
-                <td>
-                    <span data-valmsg-for="test01" data-valmsg-replace="true" class="errors"></span>
-                </td>
+                <td><span data-valmsg-for="test01" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
-
             <tr>
-                <td class="formAlignRight">test02：</td>
+                <td class="formAlignRight">测试02：</td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.test02"
-                           id="test02" name="test02" data-val="false" data-val-required="必填">
+                           id="test02" name="test02"  />
                 </td>
                 <td><span data-valmsg-for="test02" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
-
         </table>
     </form>
 </div>
