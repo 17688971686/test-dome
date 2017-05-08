@@ -43,7 +43,7 @@ public class CRUDGenerate extends AbstractGenerate {
         System.out.println(String.format("}).state('%sEdit', {", _beanName));
         System.out.println(String.format("  url: '/%sEdit/:id',", _beanName));
         System.out.println(String.format("  templateUrl: rootPath + '/%s/html/edit.html',", _beanName));
-        System.out.println(String.format("  controller: '%sEeitCtrl',", _beanName));
+        System.out.println(String.format("  controller: '%sEditCtrl',", _beanName));
         System.out.println("  controllerAs: 'vm'");
         System.out.println("})");
         logger.info("<<=====================代码已成功生成===============================");
