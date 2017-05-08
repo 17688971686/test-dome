@@ -28,10 +28,10 @@
             <tr>
                 <td class="formAlignRight"><#if f.comment??>${f.comment}<#else>${f.name!''}</#if>：<#if f.required=true><span class="required">*</span></#if></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.testName"
-                           id="testName" name="testName" <#if f.required=true>data-val="true" data-val-required="必填"</#if> />
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.${f.name!''}"
+                           id="${f.name!''}" name="${f.name!''}" <#if f.required=true>data-val="true" data-val-required="必填"</#if> />
                 </td>
-                <td><span data-valmsg-for="testName" data-valmsg-replace="true" class="errors"></span></td>
+                <td><span data-valmsg-for="${f.name!''}" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
 </#if></#list>
         </table>
