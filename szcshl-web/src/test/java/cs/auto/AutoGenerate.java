@@ -2,8 +2,12 @@ package cs.auto;
 
 import cs.auto.core.CRUDGenerate;
 import cs.auto.core.config.CRUDGanConfig;
+import cs.auto.core.config.FileConfig;
+import cs.auto.core.config.FileConst;
 import cs.domain.demo.MyTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,19 +25,30 @@ public class AutoGenerate {
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\test");
         config.setFileOverride(true);
         config.setOpen(false);
+        config.setFileConfs(getFileConf());
         new CRUDGenerate(config);
 
-//        String test = "varchar(255) not NULL comment   '测试名' varchar(255) not NULLa comment   ' 测试名 '  comment   '' 测试名 '' not  NULL";
-//        Pattern pattern = Pattern.compile("\\s+comment+\\s+\\'*(\\d|\\b|[\\u0391-\\uFFE5]||\\s)+\\'"),
-//                notNullPattern = Pattern.compile("\\s+(?i)not+\\s+(?i)null(?!\\S)");
-//        Matcher matcher = pattern.matcher(test);
-//        while(matcher.find()) {
-//            System.out.println("1     " + matcher.group());
-//        }
-//        matcher = notNullPattern.matcher(test);
-//        while(matcher.find()) {
-//            System.out.println("2     " + matcher.group());
-//        }
+    }
+
+    /**
+     * 创建文件配置信息
+     * @return
+     */
+    public static List<FileConfig> getFileConf() {
+        List<FileConfig> fileConfs = new ArrayList<FileConfig>();
+        fileConfs.add(new FileConfig(FileConst.dtoCls));
+        fileConfs.add(new FileConfig(FileConst.repoCls));
+        fileConfs.add(new FileConfig(FileConst.repoImplCls));
+        fileConfs.add(new FileConfig(FileConst.serviceCls));
+        fileConfs.add(new FileConfig(FileConst.serviceImplCls));
+        fileConfs.add(new FileConfig(FileConst.controllerCls));
+
+        fileConfs.add(new FileConfig(FileConst.listHtml));
+        fileConfs.add(new FileConfig(FileConst.listCtrlJs));
+        fileConfs.add(new FileConfig(FileConst.listSvcJs));
+        fileConfs.add(new FileConfig(FileConst.editHtml));
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));
+        return fileConfs;
     }
 
 }

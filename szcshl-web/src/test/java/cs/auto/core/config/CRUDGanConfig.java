@@ -58,19 +58,22 @@ public class CRUDGanConfig extends AbstractGanConfig {
 
     @Override
     public void autoGenerate() {
-        fileConfs.add(new FileConfig(FileConst.dtoCls));
-        fileConfs.add(new FileConfig(FileConst.repoCls));
-        fileConfs.add(new FileConfig(FileConst.repoImplCls));
-        fileConfs.add(new FileConfig(FileConst.serviceCls));
-        fileConfs.add(new FileConfig(FileConst.serviceImplCls));
-        fileConfs.add(new FileConfig(FileConst.controllerCls));
-
-        fileConfs.add(new FileConfig(FileConst.listHtml));
-        fileConfs.add(new FileConfig(FileConst.listCtrlJs));
-        fileConfs.add(new FileConfig(FileConst.listSvcJs));
-        fileConfs.add(new FileConfig(FileConst.editHtml));
-        fileConfs.add(new FileConfig(FileConst.editCtrJs));
-
+//        fileConfs.add(new FileConfig(FileConst.dtoCls));
+//        fileConfs.add(new FileConfig(FileConst.repoCls));
+//        fileConfs.add(new FileConfig(FileConst.repoImplCls));
+//        fileConfs.add(new FileConfig(FileConst.serviceCls));
+//        fileConfs.add(new FileConfig(FileConst.serviceImplCls));
+//        fileConfs.add(new FileConfig(FileConst.controllerCls));
+//
+//        fileConfs.add(new FileConfig(FileConst.listHtml));
+//        fileConfs.add(new FileConfig(FileConst.listCtrlJs));
+//        fileConfs.add(new FileConfig(FileConst.listSvcJs));
+//        fileConfs.add(new FileConfig(FileConst.editHtml));
+//        fileConfs.add(new FileConfig(FileConst.editCtrJs));
+        if (fileConfs == null || fileConfs.isEmpty()) {
+            logger.error("缺少文件配置信息（fileConfs）");
+            return;
+        }
         generateParams();
     }
 
