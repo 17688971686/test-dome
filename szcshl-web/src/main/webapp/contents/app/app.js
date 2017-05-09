@@ -239,8 +239,16 @@
                 templateUrl: rootPath + '/dispatch/html/edit.html',
                 controller: 'dispatchEditCtrl',
                 controllerAs: 'vm'
-            })
-        //end#dispatch
+            })//end#dispatch
+            
+            //begin#fileRecord
+        	.state('fileRecordEdit', {
+            	url: '/fileRecordEdit/:signid',
+            	templateUrl: rootPath + '/fileRecord/html/edit.html',
+            	controller: 'fileRecordEditCtrl',
+            	controllerAs: 'vm'
+        	})
+        	//end#fileRecord
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         $rootScope.$state = $state;

@@ -10,6 +10,13 @@
 				initFlowData : initFlowData,		//初始化流程数据
 				getNextStepInfo : getNextStepInfo,	//获取下一环节信息
 				commit : commit,					//提交
+				rollBackToLast : rollBackToLast,	//回退到上一环节	
+				rollBack : rollBack,				//回退到选定环节
+				initBackNode : initBackNode,		//初始化回退环节信息
+				initDealUerByAcitiviId : initDealUerByAcitiviId,
+				suspendFlow : suspendFlow,			//流程挂起
+				activeFlow : activeFlow,			//重启流程
+				deleteFlow : deleteFlow,			//流程终止
 				disableButton : disableButton,		//禁用按钮
 				enableButton : enableButton			//启用按钮
 		};
@@ -89,14 +96,15 @@
 			vm.historygrid = {
 				dataSource : common.gridDataSource(dataSource),
 				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
 				noRecords : common.kendoGridConfig().noRecordMessage,
 				columns : columns,
 				resizable : true,
-				dataBound: function () {  
-	                var rows = this.items();   
-	                var pagesize = this.pager.pageSize();  
-	                $(rows).each(function (i) {                    	
+				dataBound: function () {  					
+	                var rows = this.items(); 	               
+	                $(rows).each(function (i) {	
+	                	 if(i == rows.length -1 ){
+	                		 initBackNode(vm);
+	                	 }
 	                     $(this).find(".row-number").html(i+1);                
 	                });  
 	            } 
@@ -108,36 +116,53 @@
 	    	var httpOptions = {
 					method : 'get',
 					url : rootPath+"/flow/proccessInstance/nextNodeDeal",
-					params : {proccessInstanceId:vm.flow.processInstanceId}						
+					params : {
+						taskId: vm.flow.taskId,
+						proccessInstanceId:vm.flow.processInstanceId					
+					}
 				}
 
 			var httpSuccess = function success(response) {					
 				common.requestSuccess({
 					vm:vm,
 					response:response,
-					fn:function() {			
-						vm.flow.nextGroup = response.data.nextGroup;	
-						vm.nextDealUserList = response.data.nextDealUserList;	
-						if(response.data.nextDealUserList){
-							vm.flow.nextDealUser = response.data.nextDealUserList[0].loginName;	//默认选中
-						}	
+					fn:function() {		
+						vm.flow.end = response.data.end;
+						vm.isOverStep = vm.flow.end;
+						vm.isHaveNext = vm.flow.end == true?false:true;	
 						
-						if(response.data.curNode){
-							vm.flow.curNodeName = response.data.curNode.activitiName;
-							vm.flow.curNodeAcivitiId = response.data.curNode.activitiId;
-							/****************************以下为添加业务按钮部分**************************/
-							if(response.data.curNode.activitiId == "approval"){	
-								vm.hideWorkBt();								
+						if(vm.flow.end == false){
+							if(response.data.curNode){
+								vm.flow.curNodeName = response.data.curNode.activitiName;
+								vm.flow.curNodeAcivitiId = response.data.curNode.activitiId;
+								//显示相应的按钮
+								if(vm.flow.curNodeAcivitiId == "approval" || vm.flow.curNodeAcivitiId == "dispatch" 
+									|| vm.flow.curNodeAcivitiId == "doFile"){	
+									vm.showBtByAcivitiId(vm.flow.curNodeAcivitiId);								
+								}							
+							}												
+							if(response.data.nextNode){
+								vm.nextNode = response.data.nextNode;
+								vm.flow.nextNodeAcivitiId = response.data.nextNode[0].activitiId;
 							}
-						}
-						
-						
-						if(response.data.nextNode){
-							vm.nextNode = response.data.nextNode;
-							vm.flow.nextNodeAcivitiId = response.data.nextNode[0].activitiId;
-						}
-						vm.isOverStep = response.data.isEnd;
-						vm.isHaveNext = response.data.isEnd == true?false:true;
+							if(response.data.nextGroup){
+								vm.flow.nextGroup = response.data.nextGroup;	
+							}						
+							if(response.data.nextDealUserList){
+								vm.nextDealUserList = response.data.nextDealUserList;	
+								if(response.data.nextDealUserList && response.data.nextDealUserList.length > 0){
+									vm.flow.nextDealUser = response.data.nextDealUserList[0].loginName;	//默认选中
+								}
+							}	
+							if(response.data.nextUserListMap){
+								vm.nextDealUserMap = {};
+								vm.nextDealUserMap = response.data.nextUserListMap;
+								vm.nextDealUserList = vm.nextDealUserMap[vm.flow.nextNodeAcivitiId];
+								if(vm.nextDealUserList){
+									vm.flow.nextDealUser = vm.nextDealUserList[0].loginName;	//默认选中
+								}
+							}
+						}																							
 					}
 					
 				})
@@ -188,6 +213,200 @@
 				});
 			}			
 		}//E_提交下一步
+		
+		//S_回退到上一步
+		function rollBackToLast(vm){
+			disableButton(vm);			
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/flow/rollbacklast",
+					data : vm.flow							
+				}
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {	
+						if(response.data.reCode == "error"){
+							enableButton(vm);
+						}
+						common.alert({
+							vm:vm,
+							msg: response.data.reMsg
+						})
+					}
+					
+				})
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}//E_回退到上一步
+		
+		//S_回退到指定环节
+		function rollBack(vm){	
+			if(vm.flow.back == null || vm.flow.back.activitiId == null || vm.flow.back.activitiId == ""){
+				common.alert({
+					vm:vm,
+					msg: "请先选择要会退的环节！"
+				})
+				return;
+			}
+        	      	
+        	common.confirm({
+             	 vm:vm,
+             	 title:"",
+             	 msg:"确认回退吗？",
+             	 fn:function () {
+             		disableButton(vm);
+        			//设置
+        			vm.flow.rollBackActiviti = vm.flow.back.activitiId;
+        			vm.flow.rollBackActiviti = vm.flow.back.assignee;
+        			
+        			var httpOptions = {
+        					method : 'post',
+        					url : rootPath+"/flow/rollback",
+        					data : vm.flow							
+        				}
+        			var httpSuccess = function success(response) {					
+        				common.requestSuccess({
+        					vm:vm,
+        					response:response,
+        					fn:function() {	
+        						if(response.data.reCode == "error"){
+        							enableButton(vm);
+        						}
+        						common.alert({
+        							vm:vm,
+        							msg: response.data.reMsg
+        						})
+        					}       					
+        				})
+        			}
+
+        			common.http({
+        				vm:vm,
+        				$http:$http,
+        				httpOptions:httpOptions,
+        				success:httpSuccess
+        			});                   	
+                }
+             })            			
+		}//E_回退到指定环节
+		
+		//S_初始化回退环节信息
+		function initBackNode(vm){
+			vm.backNode = [];
+			//初始化可回退环节
+			var datas = vm.historygrid.dataSource.data()						
+			var totalNumber = datas.length;			
+			for(var i = 0; i<totalNumber; i++) {
+				if(datas[i].assignee && datas[i].endTime){				
+					vm.backNode.push({"activitiId":datas[i].activityId,"activitiName":datas[i].activityName,"assignee":datas[i].assignee});
+				}							    
+			}
+		}//E_初始化回退环节信息				
+		
+		//S_初始化下一环节处理人
+		function initDealUerByAcitiviId(vm){
+			vm.nextDealUserList = vm.nextDealUserMap[vm.flow.nextNodeAcivitiId];
+			if(vm.nextDealUserList){
+				vm.flow.nextDealUser = vm.nextDealUserList[0].loginName;	//默认选中
+			}
+		}//E_初始化下一环节处理人	
+		
+		//S_流程挂起
+		function suspendFlow(vm,businessKey){
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/flow/suspend/"+businessKey						
+				}
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {	
+						common.alert({
+							vm:vm,
+							msg: "操作成功！"
+						})
+					}       					
+				})
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});                   	
+		}//E_流程挂起
+		
+		//S_流程激活
+		function activeFlow(vm,businessKey){
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/flow/active/"+businessKey						
+				}
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {	
+						common.alert({
+							vm:vm,
+							msg: "操作成功！"
+						})
+					}       					
+				})
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}//E_流程激活
+		
+		//S_终止流程
+		function deleteFlow(vm){
+			if(vm.flow.dealOption == null || vm.flow.dealOption == ""){
+				common.alert({
+					vm:vm,
+					msg: "请填写处理信息！"
+				})
+				return ;
+			}
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/flow/deleteFLow",
+					data : vm.flow								
+				}
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {	
+						common.alert({
+							vm:vm,
+							msg: "操作成功！"
+						})
+					}       					
+				})
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}//E_终止流程
 		
 		//S_禁用按钮
 		function disableButton(vm){

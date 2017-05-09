@@ -1,0 +1,37 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="toolbar">
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>提交</button>
+    <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+</div>
+        
+<div class="well well-sm" style="background:white;">
+	<!-- s form -->
+	<form id="fileRecord_form" name="fileRecord_form" >	
+		<!-- hidden input -->
+		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
+		
+		<!-- s table -->
+		<table class="table table-bordered">
+		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目归档审批表</strong></caption>		 
+		  <tbody>
+		    <tr>
+		    	<td class="formAlignRight">归档标题： <span class="required">*</span></td>
+              	<td>
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" id="fileTitle" name="fileTitle" value="{{vm.fileRecord.fileTitle}}" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span></td>  
+                
+		      	<td class="formAlignRight">归档编号： <span class="required">*</span></td>
+              	<td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.fileRecord.fileNo" id="fileNo" name="fileNo" value="{{vm.fileRecord.fileNo}}" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="fileNo" data-valmsg-replace="true" class="errors"></span></td>                			     
+		    </tr>		   
+		  </tbody>		  
+		</table>	<!-- end table -->
+	</form> <!-- end form -->
+</div>

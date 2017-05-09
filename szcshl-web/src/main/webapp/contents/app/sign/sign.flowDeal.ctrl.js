@@ -39,50 +39,42 @@
         }
         
         vm.commitBack = function(){
-        	alert("流程回退！");
-        }
+        	flowSvc.rollBack(vm);      	
+        }              
         
-        vm.commitOver = function(){
-        	alert("流程结束！");
+        vm.deleteFlow = function(){
+        	common.confirm({
+             	 vm:vm,
+             	 title:"",
+             	 msg:"终止流程将无法恢复，确认挂起么？",
+             	 fn:function () {
+                   	$('.confirmDialog').modal('hide');             	
+                   	flowSvc.deleteFlow(vm);
+                }
+             })
         }  
         
-        //S_隐藏工作方案按钮判断
-        vm.hideWorkBt = function(){
-        	if(vm.flow.curNodeAcivitiId == "approval"){
-        		if(vm.model.isreviewcompleted > 0 ){
-            		vm.showWorkBt = false;
-            		return true;
-            	}else{
-            		vm.showWorkBt = true;
-            		return false;
-            	}
-    		}else{
-    			vm.showWorkBt = false;
-        		return true;
-    		}
-        }//E_隐藏工作方案按钮判断
+        vm.initDealUerByAcitiviId = function(){
+        	flowSvc.initDealUerByAcitiviId(vm);
+        }
+        
+        //根据特定的环节隐藏相应的业务按钮
+        vm.showBtByAcivitiId = function(acivitiId){
+        	return vm.flow.curNodeAcivitiId == acivitiId?true:false;       	
+        }
        
         //S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function(){
         	$state.go('workprogramEdit', {signid:vm.model.signid});
-        }//E_跳转到 工作方案 编辑页面
-        
-        //E_隐藏收文按钮判断
-        vm.hideDisPatchBt = function(){
-        	var hidden = true;
-        	if(vm.flow.curNodeAcivitiId == "dispatch"){
-        		if(vm.model.isDispatchCompleted > 0 ){
-        			hidden = true;
-            	}else{
-            		hidden = false;
-            	}
-    		}        	
-        	return hidden;
-        }//E_隐藏收文按钮判断
-        
+        }//E_跳转到 工作方案 编辑页面               
+               
         //S_跳转到 发文 编辑页面
         vm.addDisPatch = function(){
         	$state.go('dispatchEdit', {signid:vm.model.signid});
         }//E_跳转到 发文 编辑页面
+                   
+        vm.addDoFile = function(){
+        	$state.go('fileRecordEdit', {signid:vm.model.signid});
+        }
     }
 })();

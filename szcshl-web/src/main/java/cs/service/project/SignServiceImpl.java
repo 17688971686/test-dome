@@ -25,6 +25,7 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
+import cs.domain.project.FileRecord;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.Org;
@@ -37,6 +38,7 @@ import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
@@ -58,12 +60,14 @@ public class SignServiceImpl implements SignService {
 	private WorkProgramRepo workProgramRepo;
 	@Autowired
 	private DispatchDocRepo dispatchDocRepo;
-	
+	@Autowired
+	private FileRecordRepo fileRecordRepo;
 	//flow service
 	@Autowired
 	private TaskService taskService;
 	@Autowired
 	private RuntimeService runtimeService;
+
 	
 	@Override
 	@Transactional
@@ -91,7 +95,7 @@ public class SignServiceImpl implements SignService {
 				signDtos.add(signDto);
 			});						
 		}		
-		pageModelDto.setCount(signDtos.size());
+		pageModelDto.setCount(odataObj.getCount());
 		pageModelDto.setValue(signDtos);		
 		return pageModelDto;
 	}
@@ -256,7 +260,7 @@ public class SignServiceImpl implements SignService {
 	public ResultMsg dealSignFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception{
 		ResultMsg resultMsg = new ResultMsg();
 		
-		if(!Validate.isString(flowDto.getNextGroup()) && !Validate.isString(flowDto.getNextDealUser())){
+		if(!flowDto.isEnd() && (!Validate.isString(flowDto.getNextGroup()) || !Validate.isString(flowDto.getNextDealUser()))){
 			log.info("项目签收流程处理失败：获取不到下一环节处理组和处理人信息！");
 			throw new Exception(Constant.ERROR_MSG);			
 		}
@@ -333,7 +337,22 @@ public class SignServiceImpl implements SignService {
 				dpdoc.setDirectorSuggesttion(flowDto.getDealOption());
 				dpdoc.setDirectorDate(new Date());
 				dispatchDocRepo.save(dpdoc);
-				break;			
+				break;
+			//第二负责人审批
+			case "secondApproval":				
+				
+				break;
+			//归档确认
+			case "doConfirmFile":
+				sign = signRepo.findById(signid);
+				FileRecord fileRecord = sign.getFileRecord();
+				fileRecord.setFileDate(new Date());
+				fileRecord.setSignUserid(currentUser.getLoginName());
+				fileRecordRepo.save(fileRecord);
+				
+				sign.setSignState(EnumState.YES.getValue());	//更改状态
+				saveSignFlag = true;
+				break;	
 			case "endevent1":				
 				break;
 			default:
@@ -344,9 +363,13 @@ public class SignServiceImpl implements SignService {
 		}
 		
 		taskService.addComment(task.getId(),processInstance.getId(),flowDto.getDealOption());	//添加处理信息
-		Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
-		taskService.complete(task.getId(),nextProcessVariables);
-						
+		if(flowDto.isEnd()){
+			taskService.complete(task.getId());
+		}else{
+			Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
+			taskService.complete(task.getId(),nextProcessVariables);
+		}
+								
 		resultMsg.setReCode(MsgCode.OK.getValue());
 		resultMsg.setReMsg("操作成功！");		
 		return resultMsg;
@@ -394,7 +417,7 @@ public class SignServiceImpl implements SignService {
 	public void stopFlow(String signid) {
 		Sign sign = signRepo.findById(signid);
 		sign.setFolwState(EnumState.STOP.getValue());
-		signRepo.save(sign);
+		signRepo.save(sign);		
 	}
 
 	@Override
@@ -411,5 +434,12 @@ public class SignServiceImpl implements SignService {
 		SignToSignDto(sign,signDto);	
 		
 		return signDto;
+	}
+
+	@Override
+	public void endFlow(String signid) {
+		Sign sign = signRepo.findById(signid);
+		sign.setFolwState(EnumState.FORCE.getValue());
+		signRepo.save(sign);	
 	}
 }

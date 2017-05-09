@@ -436,6 +436,18 @@ public class Sign extends DomainBase{
 	@OneToOne(mappedBy="sign")  
 	private DispatchDoc dispatchDoc;
 	
+	//归档
+	@OneToOne(mappedBy="sign")  
+	private FileRecord fileRecord;
+	
+	public FileRecord getFileRecord() {
+		return fileRecord;
+	}
+
+	public void setFileRecord(FileRecord fileRecord) {
+		this.fileRecord = fileRecord;
+	}
+
 	public Sign() {
 		super();
 	}

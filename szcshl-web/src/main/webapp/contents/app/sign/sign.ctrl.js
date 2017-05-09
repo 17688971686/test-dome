@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state']; 
+    sign.$inject = ['$location','signSvc','$state','flowSvc']; 
 
-    function sign($location,signSvc,$state) {        
+    function sign($location,signSvc,$state,flowSvc) {        
         var vm = this;
         vm.title = "收文列表";
         
@@ -67,8 +67,8 @@
               	 title:"",
               	 msg:"停止流程后，将无法对流程环节进行操作，确认停止么？",
               	 fn:function () {
-                    	$('.confirmDialog').modal('hide');             	
-                    	signSvc.stopFlow(vm,signid);
+                    $('.confirmDialog').modal('hide');             	
+                    flowSvc.suspend(vm,signid);
                  }
               })
          }//end 停止流程
@@ -80,8 +80,8 @@
               	 title:"",
               	 msg:"确认重启流程么？",
               	 fn:function () {
-                    	$('.confirmDialog').modal('hide');             	
-                    	signSvc.restartFlow(vm,signid);
+                    $('.confirmDialog').modal('hide');             	
+                    flowSvc.activeFlow(vm,signid);
                  }
               })
          }//end 重启流程

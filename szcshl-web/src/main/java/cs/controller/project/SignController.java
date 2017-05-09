@@ -42,7 +42,7 @@ public class SignController {
 	@RequiresPermissions("sign##get")	
 	@RequestMapping(name = "获取收文数据", path = "", method = RequestMethod.GET)
 	public @ResponseBody PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
-		ODataObj odataObj = new ODataObj(request);
+		ODataObj odataObj = new ODataObj(request);	
 		PageModelDto<SignDto> signDtos = signService.get(odataObj);		
 		return signDtos;
 	}
@@ -98,7 +98,7 @@ public class SignController {
 	@RequiresPermissions("sign##delete")
 	@RequestMapping(name = "删除收文" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
-	public void deleteSign(@RequestBody String signid){
+	public void deleteSign(@RequestParam String signid){
 		String [] ids=signid.split(",");
 		if(ids.length>1){
 			signService.deleteSigns(ids);
@@ -163,21 +163,7 @@ public class SignController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void startFlow(@RequestParam(required = true)String signid) throws Exception{
 		signService.startFlow(signid);
-	}
-	
-	@RequiresPermissions("sign#html/stopFlow#post")
-	@RequestMapping(name = "发起流程", path = "html/stopFlow", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void stopFlow(@RequestParam(required = true)String signid) throws Exception{
-		signService.stopFlow(signid);
-	}
-		
-	@RequiresPermissions("sign#html/restartFlow#post")
-	@RequestMapping(name = "重启流程", path = "html/restartFlow", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void restartFlow(@RequestParam(required = true)String signid) throws Exception{
-		signService.restartFlow(signid);
-	}
+	}	
 		
 	/***************************************  E 流程处理的方法     *******************************************/
 }

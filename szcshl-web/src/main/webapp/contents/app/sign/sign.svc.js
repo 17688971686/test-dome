@@ -17,8 +17,6 @@
 			
 			flowgrid : flowgrid,				//初始化待处理页面			
 			startFlow : startFlow,				//发起流程
-			stopFlow : stopFlow,				//停止流程
-			restartFlow : restartFlow,			//重启流程
 			findUsersByOrgId : findUsersByOrgId,//根据部门ID选择用户
 			initFlowPageData : initFlowPageData //初始化流程收文信息
 		};
@@ -151,7 +149,7 @@
 		}//E_初始化grid
 		
 		//S_查询grid
-		function querySign(vm){								
+		function querySign(vm){	
 			vm.gridOptions.dataSource.read();			
 		}//E_查询grid		
 								
@@ -470,66 +468,8 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//E_发起流程
-		
-		//S_停止流程
-		function stopFlow(vm,signid){
-			var httpOptions = {
-					method : 'post',
-					url : rootPath+"/sign/html/stopFlow",
-					params : {signid:signid}
-				}
-				
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.gridOptions.dataSource.read();
-						common.alert({
-							vm : vm,
-							msg : "操作成功"								
-						})
-					}
-				});
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}//E_停止流程
-		
-		//S_重启流程
-		function restartFlow(vm,signid){
-			var httpOptions = {
-					method : 'post',
-					url : rootPath+"/sign/html/restartFlow",
-					params : {signid:signid}
-				}
-				
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.gridOptions.dataSource.read();
-						common.alert({
-							vm : vm,
-							msg : "操作成功"								
-						})
-					}
-				});
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}//E_重启流程
-		
+		}//E_发起流程				
+						
 		//S_初始化流程页面
 		function initFlowPageData(vm){
 			var httpOptions = {
@@ -543,13 +483,10 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.model = response.data;
-						vm.hideWorkBt();	//控制工作方案按钮显示和隐藏																	
+						vm.model = response.data;																	
 						if(vm.model.isreviewcompleted > 0){
 							vm.work = response.data.workProgramDto;	//显示工作方案tab		
-						}
-						
-						vm.hideDisPatchBt(); 	//控制发文按钮显示和隐藏	
+						}												
 					}
 				});
 			}

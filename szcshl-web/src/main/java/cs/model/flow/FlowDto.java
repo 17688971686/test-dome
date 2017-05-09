@@ -1,6 +1,7 @@
 package cs.model.flow;
 
 import java.util.List;
+import java.util.Map;
 
 import cs.model.sys.UserDto;
 
@@ -17,13 +18,23 @@ public class FlowDto {
 	private String nextDealUser;		//下一环节处理人
 	private String nextNodeAcivitiId;	//下一环节节点ID
 	private String dealOption;			//处理意见
-	private boolean isEnd;				//是否已经结束
+	private boolean end;				//是否已经结束
+	private boolean seleteNode;		//是否是选择环节
+	private String rollBackActiviti;	//回退环节
+	private String backNodeDealUser;	//回退环节的处理人
 	
 	/******************    以下字段用于页面显示  ********************/
 	private Node curNode;					//当前节点
 	private List<Node> nextNode;			//下一节点
 	private List<UserDto> nextDealUserList;	//下一环节处理人
-	
+	private Map<String,List<UserDto>> nextUserListMap;		//下一环节处理人(多选)	
+			
+	public Map<String, List<UserDto>> getNextUserListMap() {
+		return nextUserListMap;
+	}
+	public void setNextUserListMap(Map<String, List<UserDto>> nextUserListMap) {
+		this.nextUserListMap = nextUserListMap;
+	}
 	public List<UserDto> getNextDealUserList() {
 		return nextDealUserList;
 	}
@@ -79,13 +90,32 @@ public class FlowDto {
 	}
 	public void setNextNodeAcivitiId(String nextNodeAcivitiId) {
 		this.nextNodeAcivitiId = nextNodeAcivitiId;
-	}	
-
+	}		
+		
 	public boolean isEnd() {
-		return isEnd;
+		return end;
 	}
-	public void setEnd(boolean isEnd) {
-		this.isEnd = isEnd;
+	public void setEnd(boolean end) {
+		this.end = end;
+	}
+	public boolean isSeleteNode() {
+		return seleteNode;
+	}
+	public void setSeleteNode(boolean seleteNode) {
+		this.seleteNode = seleteNode;
+	}
+	public String getRollBackActiviti() {
+		return rollBackActiviti;
+	}
+	public void setRollBackActiviti(String rollBackActiviti) {
+		this.rollBackActiviti = rollBackActiviti;
+	}
+		
+	public String getBackNodeDealUser() {
+		return backNodeDealUser;
+	}
+	public void setBackNodeDealUser(String backNodeDealUser) {
+		this.backNodeDealUser = backNodeDealUser;
 	}
 	public FlowDto() {
 		super();

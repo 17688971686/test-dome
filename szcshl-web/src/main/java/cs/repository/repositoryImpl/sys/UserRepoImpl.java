@@ -8,6 +8,8 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import cs.domain.sys.Org_;
+import cs.domain.sys.Role_;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
@@ -66,8 +68,8 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 	@SuppressWarnings("unchecked")
 	public List<User> findUserByRoleName(String roleName) {
 		Criteria criteria = getExecutableCriteria();		 
-		List<User> list = criteria.createAlias("roles","roles")
-        .add(Restrictions.eq("roles.roleName",roleName)).list();
+		List<User> list = criteria.createAlias(User_.roles.getName(),User_.roles.getName())
+        .add(Restrictions.eq(User_.roles.getName()+"."+Role_.roleName.getName(),roleName)).list();
 		 
 		 return list;
 	}
@@ -76,8 +78,8 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 	@SuppressWarnings("unchecked")
 	public List<User> findUserByDeptId(String deptId) {
 		Criteria criteria = getExecutableCriteria();		 
-		List<User> list = criteria.createAlias("org","org")
-        .add(Restrictions.eq("org.id",deptId)).list();
+		List<User> list = criteria.createAlias(User_.org.getName(),User_.org.getName())
+        .add(Restrictions.eq(User_.org.getName()+"."+Org_.id.getName(),deptId)).list();
 		
 		return list;
 	}
