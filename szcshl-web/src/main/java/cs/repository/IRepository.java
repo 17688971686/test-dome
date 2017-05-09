@@ -11,9 +11,13 @@ import cs.repository.odata.ODataObj;
 
 public interface IRepository<T, ID> {
 	public T findById(ID id);
-
+	
+	public T getById(ID id);
+	
 	public List<T> findAll();
+	
 	public List<T> findByCriteria(Criterion ... criterion);
+	
 	public List<T> findByOdata(ODataObj oDataObj);
 
 	public T save(T entity);
@@ -27,5 +31,6 @@ public interface IRepository<T, ID> {
 	public void clear();
 
 	public void setSession(Session session);
+	
 	public Session getSession(); 
 }

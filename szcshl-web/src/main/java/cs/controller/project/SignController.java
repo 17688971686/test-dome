@@ -24,10 +24,8 @@ import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.SignService;
-import cs.service.sys.UserService;
 
 @Controller
 @RequestMapping(name = "收文", path = "sign")
@@ -36,8 +34,6 @@ public class SignController {
 	String ctrlName = "sign";
 	@Autowired
 	private SignService signService;
-	@Autowired
-	private UserService userService;
 	
 	@RequiresPermissions("sign##get")	
 	@RequestMapping(name = "获取收文数据", path = "", method = RequestMethod.GET)
@@ -46,12 +42,13 @@ public class SignController {
 		PageModelDto<SignDto> signDtos = signService.get(odataObj);		
 		return signDtos;
 	}
+	
 	//编辑收文
 	@RequiresPermissions("sign##put")
 	@RequestMapping(name = "更新收文", path = "",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ResponseBody
-	public void  update(@RequestBody SignDto signDto) throws Exception  {					
+	public void  update(@RequestBody SignDto signDto){	
+		
 		signService.updateSign(signDto);		
 	}
 	
@@ -69,7 +66,7 @@ public class SignController {
 	
 	@RequiresPermissions("sign##post")
 	@RequestMapping(name = "创建收文", path = "",method=RequestMethod.POST)	
-	public @ResponseBody String post(@RequestBody SignDto signDto)  {
+	public @ResponseBody SignDto post(@RequestBody SignDto signDto)  {
 		if(!Validate.isString(signDto.getSignid())){
 			signDto.setSignid(UUID.randomUUID().toString());
         }
@@ -77,7 +74,7 @@ public class SignController {
 		signDto.setIsregisteredcompleted(Constant.EnumState.NO.getValue());
 		signService.createSign(signDto);	
 		
-		return signDto.getSignid();
+		return signDto;
 	}				
 	
 	@RequiresPermissions("sign#html/fillin#get")

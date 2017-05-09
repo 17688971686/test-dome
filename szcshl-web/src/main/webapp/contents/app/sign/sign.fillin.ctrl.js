@@ -18,12 +18,7 @@
         //申报登记编辑
         vm.updateFillin = function (){   	   
     	   signSvc.updateFillin(vm);  	   
-        }
-             
-       //申报登记编辑
-       vm.updateFillin = function (){
-    	   signSvc.updateFillin(vm);
-       }
+        }                  
        
        //根据部门查询用户
        vm.findUsersByOrgId = function(type){

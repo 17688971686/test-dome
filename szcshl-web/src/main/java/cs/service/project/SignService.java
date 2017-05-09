@@ -6,7 +6,6 @@ import java.util.Map;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import cs.common.ResultMsg;
-import cs.domain.sys.Org;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
@@ -19,7 +18,7 @@ public interface SignService{
 
 	PageModelDto<SignDto> get(ODataObj odataObj);
 
-	void updateSign(SignDto signDto) throws Exception;
+	void updateSign(SignDto signDto);
 
 	Map<String, Object> initFillPageData(String signId);
 
@@ -43,5 +42,5 @@ public interface SignService{
 
 	void endFlow(String signid);
 	
-	SignDto findById(String signid);
+	SignDto findById(String signid);	
 }

@@ -35,7 +35,14 @@
         }
         
         vm.commitNextStep = function (){
-        	flowSvc.commit(vm);
+        	if(signSvc.checkBusinessFill(vm)){
+        		flowSvc.commit(vm);
+        	}else{
+        		common.alert({
+					vm:vm,
+					msg: "请先完成相应的业务表单填写再提交",					
+				})
+        	}      	
         }
         
         vm.commitBack = function(){

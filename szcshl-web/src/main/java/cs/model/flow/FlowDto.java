@@ -13,6 +13,7 @@ import cs.model.sys.UserDto;
 public class FlowDto {
 
 	private String taskId;				//任务ID	
+	private String processKey;			//流程类型
 	private String processInstanceId;	//流程实例ID	
 	private String nextGroup;			//下一环节处理组（角色）
 	private String nextDealUser;		//下一环节处理人
@@ -116,6 +117,13 @@ public class FlowDto {
 	}
 	public void setBackNodeDealUser(String backNodeDealUser) {
 		this.backNodeDealUser = backNodeDealUser;
+	}
+		
+	public String getProcessKey() {
+		return processKey;
+	}
+	public void setProcessKey(String processKey) {
+		this.processKey = processKey;
 	}
 	public FlowDto() {
 		super();

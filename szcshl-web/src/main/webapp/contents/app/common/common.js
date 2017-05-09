@@ -110,6 +110,9 @@
     	options.vm.alertDialogMessage = options.msg;
     	options.vm.alertDialogFn = function () {
             if (options.fn) {
+            	if(options.closeDialog && options.closeDialog == true){
+            		 $('.alertDialog').modal('hide');    
+            	}
             	options.fn();               
             } else {
                 $('.alertDialog').modal('hide');                

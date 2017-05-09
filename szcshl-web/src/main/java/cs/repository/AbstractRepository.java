@@ -137,4 +137,9 @@ public class AbstractRepository<T,ID extends Serializable> extends RepositoryHel
 		}
 	}
 
+	@Override
+	public T getById(ID id) {
+		return getSession().get(this.getPersistentClass(), id);
+	}
+
 }

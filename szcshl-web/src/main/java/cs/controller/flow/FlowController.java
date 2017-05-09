@@ -16,8 +16,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -122,6 +120,8 @@ public class FlowController {
 				
 		//流程实例
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();		
+		flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
+		
 		//获取当前环节信息
 		ActivityImpl activityImpl = flowService.getActivityImpl(taskId,processInstance.getActivityId());		
 		TaskDefinition curTaskDefinition = ((UserTaskActivityBehavior)activityImpl.getActivityBehavior()).getTaskDefinition();
@@ -134,6 +134,7 @@ public class FlowController {
 		String roleName = null;
 		UserDto curUser = null;
 		List<UserDto> nextUserList = new ArrayList<UserDto>();
+		boolean isSetValue = false;	//是否已经设置值
 		
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
 			switch(processInstance.getActivityId()){					
@@ -159,24 +160,30 @@ public class FlowController {
 					SignDto signDto = signService.findById(processInstance.getBusinessKey());
 					curUser = userService.findUserByName(signDto.getMainchargeuserid());
 					nextUserList.add(curUser);
+					isSetValue = true;
 					break;
 				case "dispatch":				//发文申请->部长审批
 					curUser = userService.findUserByName( currentUser.getLoginName());
 					OrgDto minOrg = curUser.getOrgDto();
-					UserDto minUser = userService.findById(minOrg.getOrgDirector());
-					nextUserList.add(minUser);
+					if(minOrg != null){
+						UserDto minUser = userService.findById(minOrg.getOrgDirector());
+						nextUserList.add(minUser);
+					}	
+					isSetValue = true;
 					break;
 				case "ministerDispatches":		//部长审批->分管副主任审批
 					curUser = userService.findUserByName( currentUser.getLoginName());
 					OrgDto slOrg = curUser.getOrgDto();
 					UserDto slUser = userService.findById(slOrg.getOrgSLeader());
 					nextUserList.add(slUser);
+					isSetValue = true;
 					break;
 				case "secDirectorDispatches":	//分管副主任审批->主任审批
 					curUser = userService.findUserByName( currentUser.getLoginName());
 					OrgDto mlOrg = curUser.getOrgDto();
 					UserDto mlUser = userService.findById(mlOrg.getOrgMLeader());
 					nextUserList.add(mlUser);
+					isSetValue = true;
 					break;
 				case "directorDispatches":		//主任审批->归档
 					roleName = EnumFlowNodeGroupName.FILER.getValue();	
@@ -193,6 +200,7 @@ public class FlowController {
 					nextUserList.add(doFileUser);
 					nextUserListMap.put("doConfirmFile", nextUserList);
 					flowDto.setNextUserListMap(nextUserListMap);
+					isSetValue = true;
 					break;	
 				case "secondApproval":			//第二负责人确认
 					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
@@ -205,18 +213,17 @@ public class FlowController {
 					break;
 			}	
 			
-			if(!flowDto.isSeleteNode()){
-				if(nextUserList.size() == 0){
-					if(Validate.isString(roleName)){
-						flowDto.setNextGroup(roleName);
-						nextUserList = userService.findUserByRoleName(roleName);								
-					}else if(Validate.isObject(curUser)){
-						flowDto.setNextGroup(curUser.getOrgDto().getName());
-						nextUserList = userService.findUserByDeptId(curUser.getOrgDto().getId());						
-					}
-				}				
-				flowDto.setNextDealUserList(nextUserList);
-			}
+			if(isSetValue == false && flowDto.isEnd() == false){
+				if(Validate.isString(roleName)){
+					flowDto.setNextGroup(roleName);
+					nextUserList = userService.findUserByRoleName(roleName);								
+				}else if(Validate.isObject(curUser)){
+					flowDto.setNextGroup(curUser.getOrgDto().getName());
+					nextUserList = userService.findUserByDeptId(curUser.getOrgDto().getId());						
+				}
+			}				
+			flowDto.setNextDealUserList(nextUserList);
+			
 			
 			if(flowDto.isEnd() == false){
 				//获取下一环节信息--获取从某个节点出来的所有线路

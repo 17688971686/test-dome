@@ -83,6 +83,7 @@ public class DictController {
 			dictService.deleteDict(ids[0]);
 		}		
 	}
+	
 	@RequiresPermissions("dict#html/list#get")
 	@RequestMapping(name = "数据字典列表页面", path = "html/list", method = RequestMethod.GET)
 	public String list() {

@@ -130,6 +130,7 @@
 						vm.flow.end = response.data.end;
 						vm.isOverStep = vm.flow.end;
 						vm.isHaveNext = vm.flow.end == true?false:true;	
+						vm.flow.processKey = response.data.processKey;
 						
 						if(vm.flow.end == false){
 							if(response.data.curNode){
@@ -198,7 +199,13 @@
 							}
 							common.alert({
 								vm:vm,
-								msg: response.data.reMsg
+								msg: response.data.reMsg,
+								closeDialog : true,
+								fn : function() {									
+									if(vm.flow.processKey == "signflow"){
+										$state.go('flowSign');
+									}									
+								}
 							})
 						}
 						

@@ -14,7 +14,7 @@
 			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
 			deleteSign :　deleteSign,			//删除收文
-			
+			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
 			flowgrid : flowgrid,				//初始化待处理页面			
 			startFlow : startFlow,				//发起流程
 			findUsersByOrgId : findUsersByOrgId,//根据部门ID选择用户
@@ -39,7 +39,7 @@
 				serverPaging : true,
 				serverSorting : true,
 				serverFiltering : true,
-				pageSize : 3,
+				pageSize : 10,
 				sort : {
 					field : "createdDate",
 					dir : "desc"
@@ -172,7 +172,8 @@
 									vm:vm,
 									msg:"操作成功,请继续填写报审登记表！",
 									fn:function() {
-										$state.go('fillSign', {signid: response.data});
+										$('.alertDialog').modal('hide');
+										$state.go('fillSign', {signid: response.data.signid});
 									}
 								})
 							}						
@@ -228,40 +229,35 @@
 		
 		//Start 申报登记编辑
 		function updateFillin(vm){
-	
-				var httpOptions = {
-					method : 'put',
-					url : rootPath+"/sign",
-					data : vm.model,
-				}
-
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-								}
-							})
-						}
-
-					})
-				}
-
-				common.http({
+			vm.isSubmit = true;
+			var httpOptions = {
+				method : 'put',
+				url : rootPath+"/sign",
+				data : vm.model,
+			}
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
 					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
+					response : response,
+					fn : function() {
+						common.alert({
+							vm : vm,
+							msg : "操作成功",
+							fn : function() {
+								vm.isSubmit = false;
+								$('.alertDialog').modal('hide');
+							}
+						})
+					}
+				})
+			}
 
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
 		}
 		//End 申报登记编辑
 		
@@ -497,5 +493,30 @@
 				success : httpSuccess
 			});
 		}//E_初始化流程页面
+		
+		//S_业务表单检查
+		function checkBusinessFill(vm){
+			if(vm.flow.curNodeAcivitiId == "approval"){
+				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted==9){
+					return true;
+				}else{
+					return false;
+				}
+			}else if(vm.flow.curNodeAcivitiId == "dispatch"){
+				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
+					return true;
+				}else{
+					return false;
+				}
+			}else if(vm.flow.curNodeAcivitiId == "doFile"){
+				if(vm.model.filenum){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			
+			return true;
+		}//E_业务表单检查
 	}		
 })();

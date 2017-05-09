@@ -75,6 +75,7 @@ public class SignServiceImpl implements SignService {
 		Sign sign = new Sign(); 
 		SignDtoToSign(signDto,sign);     
 		sign.setSignState(EnumState.NORMAL.getValue());
+		
         signRepo.save(sign);
 	}			
 	
@@ -102,18 +103,15 @@ public class SignServiceImpl implements SignService {
 	
 	@Override
 	@Transactional
-	public void updateSign(SignDto signDto) throws Exception {		
-		Sign sign = signRepo.findById(signDto.getSignid());
+	public void updateSign(SignDto signDto) {		
+		Sign sign = signRepo.findById(signDto.getSignid());		
 		BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-		Date now = new Date();
-	    sign.setCreatedBy(currentUser.getLoginName());
-	    sign.setCreatedDate(now);
-	    sign.setModifiedBy(currentUser.getLoginName());
-	    sign.setModifiedDate(now);
-	    
+	   	    
 		sign.setModifiedBy(currentUser.getLoginName());
 	    sign.setModifiedDate(new Date());
-		signRepo.save(sign);		
+		signRepo.save(sign);
+		
+		log.info("更新sign 成功！signid="+signDto.getSignid());
 	}
 	
 	@Override
@@ -127,16 +125,18 @@ public class SignServiceImpl implements SignService {
 			sign.setFolwState(EnumState.PROCESS.getValue());
 			signRepo.save(sign);	
 			
-			//创建流程 并 跳过第一第二环节
+			//创建流程 并 
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.SIGN.getValue(),signid);
-			//设置第三环节参数，为综合部部长
+			//跳过第一第二环节
 			Map<String,Object> flowParamMap = ActivitiUtil.flowArguments(null,currentUser.getLoginName(),currentUser.getLoginName(),false);
-			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();		
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();	
+			taskService.addComment(task.getId(),processInstance.getId(),"系统自动处理");	//添加处理信息
 			taskService.complete(task.getId(),flowParamMap);
 			
 			//设置第三环节参数，为综合部部长
 			ActivitiUtil.flowArguments(flowParamMap,null,Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue(),true);		
 			task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+			taskService.addComment(task.getId(),processInstance.getId(),"系统自动处理");	//添加处理信息
 			taskService.complete(task.getId(),flowParamMap);
 			
 			log.info("项目签收流程创建成功,流程实例ID为"+processInstance.getId()+"，并成功跳过前2个环节！");
@@ -260,7 +260,7 @@ public class SignServiceImpl implements SignService {
 	public ResultMsg dealSignFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception{
 		ResultMsg resultMsg = new ResultMsg();
 		
-		if(!flowDto.isEnd() && (!Validate.isString(flowDto.getNextGroup()) || !Validate.isString(flowDto.getNextDealUser()))){
+		if(!flowDto.isEnd() && (!Validate.isString(flowDto.getNextGroup()) && !Validate.isString(flowDto.getNextDealUser()))){
 			log.info("项目签收流程处理失败：获取不到下一环节处理组和处理人信息！");
 			throw new Exception(Constant.ERROR_MSG);			
 		}

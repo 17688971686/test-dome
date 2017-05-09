@@ -5,6 +5,7 @@ package cs.model.project;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import cs.domain.project.FileRecord;
 import cs.model.BaseDto;
 import cs.model.sys.OrgDto;
 
@@ -285,7 +286,17 @@ public class SignDto extends BaseDto {
 	private WorkProgramDto workProgramDto;
 	
 	private DispatchDocDto dispatchDocDto;
-		
+	
+	private FileRecord fileRecord;
+	
+	public FileRecord getFileRecord() {
+		return fileRecord;
+	}
+
+	public void setFileRecord(FileRecord fileRecord) {
+		this.fileRecord = fileRecord;
+	}
+	
 	public DispatchDocDto getDispatchDocDto() {
 		return dispatchDocDto;
 	}

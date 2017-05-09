@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -15,7 +14,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
-import cs.domain.sys.Org;
 
 /**
  * 设置为动态更新，只更新有修改的字段
@@ -60,6 +58,7 @@ public class Sign extends DomainBase{
 	//主办处室ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String maindepetid;
+	
 	//主办事处名称
 	@Formula("(select o.name from cs_org o where o.id = maindepetid)")
 	private String maindeptName;
@@ -420,13 +419,8 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String signState;
 	
-	//收文是否完成
+	//发文是否完成
 	private String isDispatchCompleted;
-	
-	//收文与部门关联：一对一关系
-	@OneToOne
-	@JoinColumn(name ="orgSignId")
-	private Org orgSignId;
 	
 	//工作方案
 	@OneToOne(mappedBy="sign")  

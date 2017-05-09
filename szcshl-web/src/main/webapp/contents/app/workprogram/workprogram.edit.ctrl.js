@@ -11,7 +11,6 @@
         vm.title = '创建评审方案';        	//标题
          
         vm.work.signId = $state.params.signid;		//这个是收文ID
-        alert(vm.work.signId);
         
         workprogramSvc.initPage(vm);
        
