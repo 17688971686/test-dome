@@ -422,6 +422,12 @@ public class Sign extends DomainBase{
 	//发文是否完成
 	private String isDispatchCompleted;
 	
+
+	//收文与部门关联：一对一关系
+	/*@OneToOne
+	@JoinColumn(name ="orgSignId")
+	private Org orgSignId;
+	*/
 	//工作方案
 	@OneToOne(mappedBy="sign")  
 	private WorkProgram workProgram;

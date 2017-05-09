@@ -160,30 +160,22 @@
                 controller: 'dictEditCtrl',
                 controllerAs: 'vm'
             })
-            .state('expert', {
-                url: '/edit/:id',
-                templateUrl: rootPath + '/expert/html/edit.html',
-                controller: 'expertCtrl',
-                controllerAs: 'vm'
-            })
-            .state('queryAll', {
+            .state('ExpertList', {
                 templateUrl: rootPath + '/expert/html/queryAllList.html',
                 controller: 'expertCtrl',
                 controllerAs: 'vm'
             })
-            .state('queryRe', {
-                //url: '/queryRe/:id',
+            .state('ExpertReList', {
                 templateUrl: rootPath + '/expert/html/queryReList.html',
                 controller: 'expertCtrl',
                 controllerAs: 'vm'
             })
-            .state('audit', {
-                //url: '/edit/:id',
+            .state('ExpertAudit', {
                 templateUrl: rootPath + '/expert/html/audit.html',
                 controller: 'expertCtrl',
                 controllerAs: 'vm'
             })
-            .state('expertEdit', {
+            .state('ExpertEdit', {
                 url: '/expertEdit/:expertID',
                 templateUrl: rootPath + '/expert/html/edit.html',
                 controller: 'expertEditCtrl',
