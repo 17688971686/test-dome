@@ -136,16 +136,16 @@
             //end#demo
             //begin#mytest
             .state('myTest', {
-                url: '/myTest',
-                templateUrl: rootPath + '/myTest/html/list.html',
-                controller: 'myTestCtrl',
-                controllerAs: 'vm'
-            }).state('myTestEdit', {
-                url: '/myTestEdit/:id',
-                templateUrl: rootPath + '/myTest/html/edit.html',
-                controller: 'myTestEditCtrl',
-                controllerAs: 'vm'
-            })
+			  url: '/myTest',
+			  templateUrl: rootPath + '/myTest/html/list.html',
+			  controller: 'myTestCtrl',
+			  controllerAs: 'vm'
+			}).state('myTestEdit', {
+			  url: '/myTestEdit/:id',
+			  templateUrl: rootPath + '/myTest/html/edit.html',
+			  controller: 'myTestEditCtrl',
+			  controllerAs: 'vm'
+			})
             //end#mytest
             //beginDict
             .state('dict', {

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import cs.domain.DomainBase;
 /**
- * 娑撴挸顔嶇�圭偘缍嬬猾锟�
+ * 专家信息
  * @author Administrator
  *
  */
@@ -25,11 +25,11 @@ public class Expert extends DomainBase {
 	private String expertID;//专家ID
 	@Column(columnDefinition="varchar(255) NOT NULL")
 	private String name;//专家姓名
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(255) comment '性别'")
 	private String sex;//性别
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(255) comment '出生日期'")
 	private Date birthDay;//出生日期
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(255) comment '身份证号'")
 	private String idCard;//身份证号
 	@Column(columnDefinition="varchar(255) ")
 	private String qualifiCations;//最高学历

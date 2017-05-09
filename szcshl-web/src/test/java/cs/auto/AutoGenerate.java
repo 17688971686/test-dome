@@ -1,15 +1,14 @@
 package cs.auto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cs.auto.core.CRUDGenerate;
 import cs.auto.core.config.CRUDGanConfig;
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
 import cs.domain.demo.MyTest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import cs.domain.expert.Expert;
 
 /**
  * Description: 代码生成器
@@ -20,11 +19,11 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(MyTest.class, "My test");
+        CRUDGanConfig config = new CRUDGanConfig(Expert.class, "专家信息");
         config.setAuthor("tzg");
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\test");
         config.setFileOverride(true);
-        config.setOpen(false);
+        config.setOpen(true);
         config.setFileConfs(getFileConf());
         new CRUDGenerate(config);
 

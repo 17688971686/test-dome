@@ -6,6 +6,8 @@ import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,7 +27,7 @@ public class RoomBooking extends DomainBase{
 	private String mrID;//会议室编号
 	@Column(columnDefinition="varchar(255)")
 	private String rbName;//会议名称
-	@Column(columnDefinition="varchar(255)")
+	@Formula("(select m.addr from cs_meetingRoom m where m.id = mrID)")
 	private String addressName;//会议地点
 	
 	@Column(columnDefinition="varchar(255)")
@@ -34,11 +36,11 @@ public class RoomBooking extends DomainBase{
 	private String host;//会议主持人
 	
 	@Column(columnDefinition="varchar(255)")
-	private String rbDay;//会议日期
+	private Date rbDay;//会议日期
 	@Column(columnDefinition="varchar(255)")
-	private String  beginTime;//会议开始时间
+	private Date  beginTime;//会议开始时间
 	@Column(columnDefinition="varchar(255)")
-	private String endTime;//结束时间
+	private Date endTime;//结束时间
 	
 	@Column(columnDefinition="varchar(255)")
 	private String rbStatus;//会议预定状态，1,已预定，0未预定
@@ -86,25 +88,25 @@ public class RoomBooking extends DomainBase{
 	public void setHost(String host) {
 		this.host = host;
 	}
-	public String getRbDay() {
+	
+	public Date getRbDay() {
 		return rbDay;
 	}
-	public void setRbDay(String rbDay) {
+	public void setRbDay(Date rbDay) {
 		this.rbDay = rbDay;
 	}
-	public String getBeginTime() {
+	public Date getBeginTime() {
 		return beginTime;
 	}
-	public void setBeginTime(String beginTime) {
+	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
 	public String getRbStatus() {
 		return rbStatus;
 	}

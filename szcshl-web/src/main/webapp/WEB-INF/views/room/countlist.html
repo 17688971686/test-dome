@@ -9,15 +9,6 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 <form id="form" name="form">
-        <!-- <div class="toolbar">
-        <@shiro.hasPermission name="company##post"> 
-            <a class="btn btn-sm btn-primary" href="#/companyEdit/"><span class="glyphicon glyphicon-plus"></span>新增单位</a>    
-           </@shiro.hasPermission> 
-           
-            <@shiro.hasPermission name="company##delete">    
-            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-       </@shiro.hasPermission> 
-        </div> -->
    <script type="text/template" id="columnBtns">
  	<@shiro.hasPermission name="company##delete"> 
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
@@ -47,7 +38,7 @@
       </select>
       </span> 
       <span class="side_a" style="margin-left:40px;"> 会议地点
-          <select ng-model="vm.mrID" id="mrID"  name="mrID">
+          <select ng-model="vm.model.mrID" id="mrID"  name="mrID">
            <option value="">请选择</option>
 			<option ng-repeat="x in vm.room" value="{{x.mrID}}">{{x.addressName}}</option>
 		</select>
@@ -56,11 +47,9 @@
       </span>
       
        <span class="side_a" style="margin-left:40px;"> 会议类型
-         <select name="rbType" id="rbType" ng-model="vm.rbType" required>
-		
-		 <option value="">请选择</option>
-			<option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
-      </select>
+         <select ng-model="vm.model.rbType" name="rbType" id="rbType">
+				<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+		</select>
       </span>
       
       <span class="side_b">

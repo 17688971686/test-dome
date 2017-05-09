@@ -1,9 +1,12 @@
 package cs.model.meeting;
 
 
+import java.util.Date;
+
 import javax.persistence.Column;
 
 import org.hibernate.annotations.Formula;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import cs.model.BaseDto;
 
@@ -65,6 +68,7 @@ public class RoomBookingDto extends BaseDto{
 	public void setRbDay(String rbDay) {
 		this.rbDay = rbDay;
 	}
+	
 	public String getBeginTime() {
 		return beginTime;
 	}
@@ -77,7 +81,6 @@ public class RoomBookingDto extends BaseDto{
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
-	
 	public String getContent() {
 		return content;
 	}

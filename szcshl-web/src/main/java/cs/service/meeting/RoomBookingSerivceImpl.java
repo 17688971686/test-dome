@@ -3,6 +3,7 @@ package cs.service.meeting;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import com.google.gson.JsonObject;
 
 import cs.common.ICurrentUser;
 import cs.common.Response;
+import cs.common.utils.DateUtils;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.model.PageModelDto;
@@ -46,9 +48,15 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			RoomBookingDto  roomDto = new RoomBookingDto();
 			
 			roomDto.setId(item.getId());
-			roomDto.setRbDay(item.getRbDay());
-			roomDto.setBeginTime(item.getBeginTime());
-			roomDto.setEndTime(item.getEndTime());
+			Date rbDay = item.getRbDay();
+			String day = DateUtils.toString(rbDay);
+			roomDto.setRbDay(day);
+			Date bengin =	item.getBeginTime();
+			String start =DateUtils.toString(bengin);
+			roomDto.setBeginTime(start);
+			Date end = item.getEndTime();
+			String endTime = DateUtils.toString(end);
+			roomDto.setEndTime(endTime);
 			roomDto.setRbName(item.getRbName());
 			roomDto.setRemark(item.getRemark());
 			roomDto.setContent(item.getContent());
@@ -58,7 +66,6 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			roomDto.setRbType(item.getRbType());
 			roomDto.setRbStatus(item.getRbStatus());
 			roomDto.setAddressName(item.getAddressName());
-			
 			roomDto.setCreatedBy(currentUser.getLoginName());
 			roomDto.setModifiedBy(currentUser.getLoginName());
 			
@@ -70,80 +77,28 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Override
 	@Transactional
 	public List<RoomBooking> findAll() {
-		
-		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //获取本周一的日期
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        String monday=df.format(cal.getTime());
-        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //增加一个星期，才是我们中国人理解的本周日的日期
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        String sunday=df.format(cal.getTime());
-      
-        String hql="from RoomBooking where rbDay between '"+monday+"' and '"+sunday+"' order by rbDay asc";
-        List<RoomBooking> rb= roomBookingRepo.findByHql(hql);
+		List<RoomBooking> rb = roomBookingRepo.thisWeekRoomStage();
 		return rb ;
 	}
 	//本周全部会议安排
 	@Override
 	@Transactional
 	public List<RoomBooking> findWeek() {
-		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //获取本周一的日期
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        String monday=df.format(cal.getTime());
-        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //增加一个星期，才是我们中国人理解的本周日的日期
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        String sunday=df.format(cal.getTime());
-        String hql="from RoomBooking where rbDay between '"+monday+"' and '"+sunday+"' order by rbDay asc";
-        List<RoomBooking> rb= roomBookingRepo.findByHql(hql);
+		 List<RoomBooking> rb= roomBookingRepo.findWeekBook();
 		return rb;
 	}
-	//导出下周平射会议安排
+	//导出下周评审会议安排
 	@Override
 	@Transactional
 	public List<RoomBooking> findStageNextWeek() {
-		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //增加一个星期，才是我们中国人理解的本周日的日期
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        //获取下周星期一
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        String nextMonday=df.format(cal.getTime());
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //获取下周星期日
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        String nextSunday=df.format(cal.getTime());
-        String hql="from RoomBooking where rbDay between '"+nextMonday+"' and '"+nextSunday+"' order by rbDay asc";
-    	List<RoomBooking> room =roomBookingRepo.findByHql(hql);
+		List<RoomBooking> room =roomBookingRepo.findStageNextWeek();
 		return room;
 	}
 	//导出下周全部会议安排
 	@Override
 	@Transactional
 	public List<RoomBooking> findNextWeek() {
-		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //增加一个星期，才是我们中国人理解的本周日的日期
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        //获取下周星期一
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        String nextMonday=df.format(cal.getTime());
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //获取下周星期日
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        String nextSunday=df.format(cal.getTime());
-    	String hql="from RoomBooking where rbDay between '"+nextMonday+"' and '"+nextSunday+"' order by rbDay asc";
-    	List<RoomBooking> room =roomBookingRepo.findByHql(hql);
+		List<RoomBooking> room =roomBookingRepo.findNextWeek();
 		return room;
 	}
 	
@@ -154,6 +109,9 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		return meeting;
 	}
 	
+	/* (non-Javadoc)
+	 * @see cs.service.meeting.RoomBookingSerivce#get(cs.repository.odata.ODataObj)
+	 */
 	@Override
 	@Transactional
 	public PageModelDto<RoomBookingDto> get(ODataObj odataObj) {
@@ -166,15 +124,21 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			
 			roomDto.setId(item.getId());
 			roomDto.setMrID(item.getMrID());
-			roomDto.setRbDay(item.getRbDay());
-			roomDto.setBeginTime(item.getBeginTime());
-			roomDto.setEndTime(item.getEndTime());
+			Date rbDay = item.getRbDay();
+			String  day=DateUtils.toString(rbDay);
+			roomDto.setRbDay(day);
+			Date bengin =	item.getBeginTime();
+			String start =DateUtils.toStringHours(bengin);
+			roomDto.setBeginTime(start);
+			Date end = item.getEndTime();
+			String endTime = DateUtils.toStringHours(end);
+			roomDto.setEndTime(endTime);
 			roomDto.setRbName(item.getRbName());
 			roomDto.setRemark(item.getRemark());
 			roomDto.setContent(item.getContent());
 			roomDto.setDueToPeople(item.getDueToPeople());
 			roomDto.setHost(item.getHost());
-			roomDto.setMrID(item.getMrID());//
+			roomDto.setMrID(item.getMrID());
 			roomDto.setRbType(item.getRbType());
 			roomDto.setRbStatus(item.getRbStatus());
 			roomDto.setAddressName(item.getAddressName());
@@ -195,28 +159,35 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Transactional
 	public Response createRoom(RoomBookingDto roomBookingDto) {
 		//判断会议名称是否存在
+		Response response =new Response();
 		Criteria criteria =	roomBookingRepo.getSession().createCriteria(RoomBooking.class);	
 		criteria.add(Restrictions.eq("rbName", roomBookingDto.getRbName()));
 		List<RoomBooking>  room = criteria.list();
-		String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
-		Response response =new Response();
-		JsonObject jsonObject = new JsonObject();
-		List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
+		//String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
+		//List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
+		//Criteria criteriaroom = roomBookingRepo.getSession().createCriteria(RoomBooking.class);
+		//criteriaroom.add(Restrictions.between("beginTime",roomBookingDto.getBeginTime(),roomBookingDto.getEndTime()));
+//		criteriaroom.add(Restrictions.between("endTime", roomBookingDto.getBeginTime(), roomBookingDto.getEndTime()));
+		//List<RoomBooking>  roomlist=criteriaroom.list();
 		if(room.isEmpty()){
-			
-			if(roomb !=null && roomb.size()>0){
-			
-				response.setMessage("会议安排时间冲突!!!");
-				//jsonObject.addProperty("StatusCode", "1");
-			}else{
+//			if(roomlist !=null && roomlist.size()>0){
+//				response.setMessage("会议安排时间冲突!!!");
+//				throw new IllegalArgumentException(String.format("会议安排时间冲突", roomBookingDto.getBeginTime()));
+//			}else{
 				
 				RoomBooking rb = new RoomBooking();
 				
 				rb.setId(UUID.randomUUID().toString());
 				rb.setMrID(roomBookingDto.getMrID());
-				rb.setRbDay(roomBookingDto.getRbDay());
-				rb.setBeginTime(roomBookingDto.getBeginTime());
-				rb.setEndTime(roomBookingDto.getEndTime());
+				String rbday = roomBookingDto.getRbDay();
+				Date date = DateUtils.toDateDay(rbday);
+				rb.setRbDay(date);
+				String begin=roomBookingDto.getBeginTime();
+				Date start =DateUtils.toDate(begin);
+				rb.setBeginTime(start);
+				String endTime = roomBookingDto.getEndTime();
+				Date end =DateUtils.toDate(endTime);
+				rb.setEndTime(end);
 				rb.setContent(roomBookingDto.getContent());
 				rb.setRbType(roomBookingDto.getRbType());
 				rb.setRbName(roomBookingDto.getRbName());
@@ -228,12 +199,9 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				rb.setCreatedBy(currentUser.getLoginName());
 				rb.setModifiedBy(currentUser.getLoginName());
 				roomBookingRepo.save(rb);
-				jsonObject.addProperty("StatusCode", "0");
-			}
+//			}
 		}else{
-			
 			throw new IllegalArgumentException(String.format("会议名称：%s 已经存在，请重新输入", roomBookingDto.getRbName()));
-
 		}
 		
 		return response;
@@ -245,14 +213,14 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		Response response =new Response();
 		
 		RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
-		String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
-		List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
-		if(room !=null && roomb.size()>1){
-			response.setMessage("会议安排时间冲突!!!");
-		}else{
-			room.setRbDay(roomBookingDto.getRbDay());
-			room.setBeginTime(roomBookingDto.getBeginTime());
-			room.setEndTime(roomBookingDto.getEndTime());
+//		String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
+//		List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
+//		if(roomb !=null && roomb.size()>1){
+//			response.setMessage("会议安排时间冲突!!!");
+//		}else{
+//			room.setRbDay(roomBookingDto.getRbDay());
+//			room.setBeginTime(roomBookingDto.getBeginTime());
+//			room.setEndTime(roomBookingDto.getEndTime());
 			room.setContent(roomBookingDto.getContent());
 			room.setRbType(roomBookingDto.getRbType());
 			room.setRbName(roomBookingDto.getRbName());
@@ -264,14 +232,13 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			room.setModifiedBy(currentUser.getLoginName());
 			roomBookingRepo.save(room);
 			logger.info(String.format("更新会议室预定,会议名称:%s", roomBookingDto.getRbName()));
-		}
+//		}
 		
 	}
 	@Override
 	@Transactional
 	public void deleteRoom(String id) {
-		
-	RoomBooking room = 	roomBookingRepo.findById(id);
+		RoomBooking room = 	roomBookingRepo.findById(id);
 		if(room != null){
 			roomBookingRepo.delete(room);
 			logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
@@ -279,19 +246,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	}
 	@Override
 	public void deleteRooms(String[] ids) {
-		// TODO Auto-generated method stub
 		
 	}
 	
-	
-	
-
-	
-	
-	
-	
-	
-	
-
 
 }

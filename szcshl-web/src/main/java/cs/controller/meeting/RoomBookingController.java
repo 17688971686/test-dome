@@ -64,12 +64,9 @@ public class RoomBookingController {
 	@RequestMapping( name="会议室查询", path="meeting", method=RequestMethod.GET)
 	@ResponseBody
 	public List<MeetingRoom> meetingList(String mrID ,HttpServletRequest request ,ModelMap model) throws  java.text.ParseException{
-		
 		List<MeetingRoom> meeting=roomBookingSerivce.findMeetingAll();
-		
 		return meeting;
 	}
-	
 	
 	@RequiresPermissions("room#roomShow#get")
 	@RequestMapping( name="会议室预定查询", path="roomShow", method=RequestMethod.GET)

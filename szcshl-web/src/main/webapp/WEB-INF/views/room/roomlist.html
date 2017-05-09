@@ -11,7 +11,7 @@
         <!-- <div class="grid"  kendo-scheduler kendo-grid="grid" k-options="vm.gridOptions"></div> -->
         <div style="height: 120px;">
         <br>
-        会议室查询：${user}
+        会议室查询：
        	 <select ng-model="vm.mrID"  ng-change="vm.findMeeting()" style="width: 10%">
 			<option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
 		</select>
@@ -36,10 +36,10 @@
 			</@shiro.hasPermission>
 			</center>	
         </div>
-        
+         <!--
             <span k-event-template class='custom-event'>{{dataItem.title}}</span>
             
-            <div k-all-day-event-template class='custom-all-day-event'>{{dataItem.title}}</div>
+            <div k-all-day-event-template class='custom-all-day-event'>{{dataItem.title}}</div> -->
       
         </div>
  
@@ -60,11 +60,11 @@
 	<div class="movie-template">
 		
 		<p>
-			开始时间：#: kendo.toString(start, "yyyy-MM-dd HH:mm") #
+			开始时间：#: kendo.toString(start, " HH:mm") #
 		
 		</p>
 		<p>
-			结束时间：#: kendo.toString(end, "yyyy-MM-dd HH:mm") #
+			结束时间：#: kendo.toString(end, " HH:mm") #
 		</p>
 		<h3>会议地点：#: title #</h3>
 		<h3>会议地点：#: host #</h3>
@@ -91,12 +91,9 @@
 	</div>
 	<div class="k-edit-label"><label for="title">会议类型</label></div>
 	<div data-container-for="title" class="k-edit-field">
-		 <select id="type" name="rbType"ng-model="rbType" required>
-                 <option value="">未选择</option>
-                 <option value="1">其他会议</option>
-				<option value="2">紧急会议</option>
-				<option value="3">办公会议</option>
-            </select>
+		 <select ng-model="rbType" name="rbType" id="rbType">
+				<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+		</select>
 	</div>
 	<div class="k-edit-label"><label for="title">会议主持人</label></div>
 	<div data-container-for="title" class="k-edit-field">
@@ -110,15 +107,13 @@
 
 	<div class="k-edit-label"><label for="title">会议日期</label></div>
 	<div data-container-for="title" class="k-edit-field">
-		
-		<input id="rbDay"type="text" data-type="date" data-format="yyyy-MM-dd"   data-bind="value:start,invisible:isAllDay"  data-role="datetimepicker"  name="rbDay" ng-model="rbDay"  />
-	
+		<input id="rbDay"type="text" data-type="date" data-format="yyyy-MM-dd HH:mm:ss"  data-bind="value:start,invisible:isAllDay"  data-role="datetimepicker"  name="rbDay" ng-model="rbDay"  />
 	</div>
 	<div class="k-edit-label">
 		<label for="start">开始时间</label>
 	</div>
 	<div data-container-for="start" class="k-edit-field">
-		<input id="beginTime"type="text" data-type="date" data-format="yyyy-MM-dd HH:mm"  data-bind="value:start,invisible:isAllDay"  data-role="timepicker"  name="beginTime" ng-model="beginTime"  />
+		<input id="beginTime"type="text" data-type="date" data-format="yyyy-MM-dd HH:mm:ss"  data-bind="value:start,invisible:isAllDay"  data-role="timepicker"  name="beginTime" ng-model="beginTime"  />
 		<span data-bind="text: endTimezone"></span>
 		<span data-bind="text: startTimezone, invisible: endTimezone"></span>
 		<span data-for="beginTime" class="k-invalid-msg" style="display: none;"></span>
@@ -127,7 +122,7 @@
 
 	<div class="k-edit-label"><label for="end">结束时间</label></div>
 	<div data-container-for="end" class="k-edit-field">
-		<input type="text" id="endTime" data-type="date" data-format="yyyy-MM-dd HH:mm" ng-onchange="startEnd()" data-bind="value:end,invisible:isAllDay" data-role="timepicker"  name="endTime" ng-model="endTime"data-datecompare-msg="End date should be greater than or equal to the start date" />
+		<input type="text" id="endTime" data-type="date" data-format="yyyy-MM-dd HH:mm:ss" ng-onchange="startEnd()" data-bind="value:end,invisible:isAllDay" data-role="timepicker"  name="endTime" ng-model="endTime"data-datecompare-msg="End date should be greater than or equal to the start date" />
 		<span data-bind="text: endTimezone"></span>
 		<span data-bind="text: startTimezone, invisible: endTimezone"></span>
 		<span data-for="end" class="k-invalid-msg" style="display: none;"></span>

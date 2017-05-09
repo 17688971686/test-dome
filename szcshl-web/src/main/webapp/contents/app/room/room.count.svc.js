@@ -7,7 +7,6 @@
 	function roomCount($http,$compile) {	
 		var url_roomCount = rootPath +"/roomCount";
 		var url_room = rootPath + "/room";
-		//alert(url_roomCount);
 		var url_back = '#/roomCount';
 		var url_user=rootPath +'/user';
 			
@@ -26,12 +25,9 @@
 			
 			 $http.get(url_room+"/roomShow" 
 			  ).success(function(data) {  
-				  //console.log(data);
 				  vm.room ={};
 				  vm.room=data;
-				
 			  }).error(function(data) {  
-			      //处理错误  
 				  alert("查询会议室失败");
 			  }); 
 			
@@ -48,9 +44,14 @@
 				var paramObj = {}
 				paramObj.name = "rbName";
 				paramObj.value = vm.model.rbName;
-				
 				arr[i++]=paramObj;
 				
+			}
+			if(vm.model.rbType !=null){
+				var paramObj = {}
+				paramObj.name = "rbType";
+				paramObj.value = vm.model.rbType;
+				arr[i++]=paramObj;
 			}
 			if(vm.model.mrID!=null){
 				var paramObj = {}
@@ -58,12 +59,7 @@
 				paramObj.value = vm.model.mrID;
 				arr[i++]=paramObj;
 			}
-			if(vm.model.rbType!=null){
-				var paramObj = {}
-				paramObj.name = "rbType";
-				paramObj.value = vm.model.rbType;
-				arr[i++]=paramObj;
-			}
+			
 		
 			/*var rbDay=$("#beginTime").val();
 			
@@ -100,7 +96,6 @@
 		}
 		function showClick(vm){
 			var url=conneFilter(vm);
-		//	alert(url);
 			var httpOptions = {
 					method : 'get',
 					url : url_room+url
@@ -133,16 +128,12 @@
 			  	 kendo.culture("zh-CN");
 			      $("#beginTime").kendoDatePicker({
 			      	 format: "yyyy-MM-dd",
-			      
-			      
 			      });
 			  }); 
 			$(document).ready(function () {
 			 	 kendo.culture("zh-CN");
 			     $("#endTime").kendoDatePicker({
 			     	 format: "yyyy-MM-dd",
-			     
-			     
 			     });
 			 }); 
 			//时间控件end
@@ -158,7 +149,8 @@
 						createdDate : {
 							type : "date"
 						}
-					}
+					},
+					
 				}),
 				serverPaging : true,
 				serverSorting : true,
@@ -167,18 +159,28 @@
 				sort : {
 					field : "createdDate",
 					dir : "desc"
-				}
+				},
+			
 			});
 
 			// End:dataSource
-			
+			var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
 			// Begin:column
 			var columns = [
 					
 					{  
 					    field: "rowNumber",  
 					    title: "序号",  
-					    width: 80,
+					    width: 60,
 					    template: "<span class='row-number'></span>"  
 					 }
 					,
@@ -209,6 +211,7 @@
 					{
 						field : "endTime",
 						title : "会议结束时间",
+						type : "date",
 						width : 160,						
 						filterable : false
 					},
@@ -247,7 +250,7 @@
 					pageable : common.kendoGridConfig().pageable,
 					noRecords:common.kendoGridConfig().noRecordMessage,
 					columns : columns,
-					//dataBounds :dataBounds,
+					dataBound :dataBound,
 					resizable: true
 				};
 		
