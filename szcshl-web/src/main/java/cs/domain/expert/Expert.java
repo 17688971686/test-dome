@@ -1,6 +1,7 @@
 package cs.domain.expert;
 
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -27,7 +28,7 @@ public class Expert extends DomainBase {
 	@Column(columnDefinition="varchar(255) ")
 	private String sex;//性别
 	@Column(columnDefinition="varchar(255) ")
-	private String birthDay;//出生日期
+	private Date birthDay;//出生日期
 	@Column(columnDefinition="varchar(255) ")
 	private String idCard;//身份证号
 	@Column(columnDefinition="varchar(255) ")
@@ -39,7 +40,7 @@ public class Expert extends DomainBase {
 	@Column(columnDefinition="varchar(255) ")
 	private String userPhone;//手机号码
 	@Column(columnDefinition="varchar(255) ")
-	private String createDate;//创建日期
+	private Date createDate;//创建日期
 	@Column(columnDefinition="varchar(255) ")
 	private String comPany;//工作单位
 	@Column(columnDefinition="varchar(255) ")
@@ -74,6 +75,18 @@ public class Expert extends DomainBase {
 	@OneToMany(mappedBy="expert")
 	private List<ProjectExpe> project;
 	
+	public Date getBirthDay() {
+		return birthDay;
+	}
+	public void setBirthDay(Date birthDay) {
+		this.birthDay = birthDay;
+	}
+	public Date getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 	public List<ProjectExpe> getProject() {
 		return project;
 	}
@@ -111,15 +124,6 @@ public class Expert extends DomainBase {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-	public String getBirthDay() {
-		return birthDay;
-	}
-	public void setBirthDay(String birthDay) {
-		this.birthDay = birthDay;
-	}
-	public String getQualifiCations() {
-		return qualifiCations;
-	}
 	public void setQualifiCations(String qualifiCations) {
 		this.qualifiCations = qualifiCations;
 	}
@@ -140,12 +144,6 @@ public class Expert extends DomainBase {
 	}
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
-	}
-	public String getCreateDate() {
-		return createDate;
-	}
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
 	}
 	public String getComPany() {
 		return comPany;

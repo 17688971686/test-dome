@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +28,7 @@ public class WorkExpeServiceImpl implements WorkExpeService {
     private ExpertRepo expertRepo;
 	@Autowired
     private WorkExpeRepo workExpeRepo;
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	@Override
 	public List<WorkExpeDto> getWork(ODataObj odataObj) {
 		List<WorkExpe> listWork = workExpeRepo.findByOdata(odataObj);
@@ -36,9 +37,13 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 		for (WorkExpe item : listWork) {
 			WorkExpeDto workDto=new WorkExpeDto();
 			workDto.setWeID(item.getWeID());
-			workDto.setBeginTime(item.getBeginTime());
+			if(item.getBeginTime()!=null){
+			workDto.setBeginTime(formatter.format(item.getBeginTime()));
+			}
 			workDto.setExpertID(item.getExpert().getExpertID());
-			workDto.setEndTime(item.getEndTime());
+			if(item.getEndTime()!=null){
+			workDto.setEndTime(formatter.format(item.getEndTime()));
+			}
 			workDto.setJob(item.getJob());
 			workDto.setCompanyName(item.getCompanyName());
 			listWorktDto.add( workDto);
@@ -57,11 +62,15 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 			WorkExpe work = new WorkExpe();
 			Expert expert = expertRepo.findById(workExpeDto.getExpertID());
 			work.setWeID(UUID.randomUUID().toString());
-			work.setBeginTime(workExpeDto.getBeginTime());
-			work.setEndTime(workExpeDto.getEndTime());
+			try {
+				work.setBeginTime(formatter.parse(workExpeDto.getBeginTime()));
+				work.setEndTime(formatter.parse(workExpeDto.getEndTime()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			work.setCompanyName(workExpeDto.getCompanyName());
 			work.setJob(workExpeDto.getJob());
-			work.setCreate_Time(formatter.format(new Date()));
+			work.setCreate_Time(new Date());
 			work.setExpert(expert);
 			workExpeRepo.save(work);
 				
@@ -106,8 +115,12 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 	@Transactional
 	public void updateWork(WorkExpeDto workExpeDto) {
 		WorkExpe workExpe = workExpeRepo.findById(workExpeDto.getWeID());
-		workExpe.setBeginTime(workExpeDto.getBeginTime());
-		workExpe.setEndTime(workExpeDto.getEndTime());
+		try {
+			workExpe.setBeginTime(formatter.parse(workExpeDto.getBeginTime()));
+			workExpe.setEndTime(formatter.parse(workExpeDto.getEndTime()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		workExpe.setCompanyName(workExpeDto.getCompanyName());
 		workExpe.setJob(workExpeDto.getJob());
 		workExpeRepo.save(workExpe);

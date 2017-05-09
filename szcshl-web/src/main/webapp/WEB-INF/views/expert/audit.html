@@ -147,24 +147,23 @@ body {
   <div class="side_a" style="width:19%;" >
 <!-- 正式专家 -->
      <div style="height:180px; text-align:center;padding-top: 50px">
-     
-             <p style="height:50px;">&nbsp;<input ng-click="vm.forward(1)" ng-disabled="vm.isSubmit"  type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
-             <p style="height:50px;">&nbsp;<input ng-click="vm.back(2)" ng-disabled="vm.isSubmit"  type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.normalExpert()" ng-disabled="vm.isSubmit" type="button"  value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.unnormalExpert()" ng-disabled="vm.isSubmit"  type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
      </div>
      <!-- 备选专家 -->
      <div style="height:180px; text-align:center; margin-top:20px;padding-top: 50px">
-             <p style="height:50px;">&nbsp;<input ng-click="vm.forward(2)" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
-             <p style="height:50px;">&nbsp;<input ng-click="vm.back(3)" ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.optionExpert()" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.unoptionExpert()" ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
      </div>
       <!-- 已停用 -->
      <div style="height:180px; text-align:center; margin-top:5px;padding-top: 50px">
-             <p style="height:50px;">&nbsp;<input  ng-click="vm.forward(3)" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
-             <p style="height:50px;">&nbsp;<input ng-click="vm.back(4)" ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input  ng-click="vm.blockExpert()" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.unblockExpert()" ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
      </div>
       <!-- 已删除 -->
      <div style="height:180px; text-align:center; margin-top:5px;padding-top: 50px">
-             <p style="height:50px;">&nbsp;<input  ng-click="vm.forward(4)" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
-             <p style="height:50px;">&nbsp;<input ng-click="vm.back(5)"  ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input  ng-click="vm.deletedExpert()" ng-disabled="vm.isSubmit" type="button" value="&gt;&gt;" style=" width:80px; height:25px;" /></p>
+             <p style="height:50px;">&nbsp;<input ng-click="vm.undeletedExpert()"  ng-disabled="vm.isSubmit" type="button" value="&lt;&lt;" style=" width:80px; height:25px;" /></p>
      </div>
   </div>
   <div class="side_a" style=" width:40%;">

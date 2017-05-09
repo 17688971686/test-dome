@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,9 +28,7 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
      private ExpertRepo expertRepo;
 	 @Autowired
      private ProjectExpeRepo projectExpeRepo;
-     @Autowired
-     private ICurrentUser currentUser;
-     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	@Override
 	public List<ProjectExpeDto> getProject(ODataObj odataObj) {
 		List<ProjectExpe> listWork = projectExpeRepo.findByOdata(odataObj);
@@ -37,8 +36,8 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		List<ProjectExpeDto> listProjectDto=new ArrayList<>();
 		for (ProjectExpe item : listWork) {
 			ProjectExpeDto projectDto=new ProjectExpeDto();
-			projectDto.setProjectbeginTime(item.getProjectbeginTime());
-			projectDto.setProjectendTime(item.getProjectendTime());
+			projectDto.setProjectbeginTime(formatter.format(item.getProjectbeginTime()));
+			projectDto.setProjectendTime(formatter.format(item.getProjectendTime()));
 			projectDto.setProjectName(item.getProjectName());
 			projectDto.setProjectType(item.getProjectType());
 			projectDto.setCreateTime(formatter.format(new Date()));
@@ -60,11 +59,19 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 				ProjectExpe project = new ProjectExpe();
 				project.setPeID(UUID.randomUUID().toString());
 				project.setProjectName(projectExpeDto.getProjectName());
-				project.setProjectbeginTime(projectExpeDto.getProjectbeginTime());
-				project.setProjectendTime(projectExpeDto.getProjectendTime());
+				try {
+					if(projectExpeDto.getProjectbeginTime()!=null){
+					project.setProjectbeginTime(formatter.parse(projectExpeDto.getProjectbeginTime()));
+					}
+					if(projectExpeDto.getProjectendTime()!=null){
+					project.setProjectendTime(formatter.parse(projectExpeDto.getProjectendTime()));
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 				project.setProjectType(projectExpeDto.getProjectType());
 				project.setExpert(expert);
-				project.setCreateTime(formatter.format(new Date()));
+				project.setCreateTime(new Date());
 				projectExpeRepo.save(project);
 				logger.info(String.format("添加项目经验,项目名称为:%s", project.getProjectName()));
 			} else {
@@ -96,8 +103,12 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		@Transactional
 		public void updateProject(ProjectExpeDto projectExpeDto) {
 			ProjectExpe projectExpe = projectExpeRepo.findById(projectExpeDto.getPeID());
-			projectExpe.setProjectbeginTime (projectExpeDto.getProjectbeginTime());
-			projectExpe.setProjectendTime(projectExpeDto.getProjectendTime());
+			try {
+				projectExpe.setProjectbeginTime (formatter.parse(projectExpeDto.getProjectbeginTime()));
+				projectExpe.setProjectendTime(formatter.parse(projectExpeDto.getProjectendTime()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			projectExpe.setProjectName(projectExpeDto.getProjectName());
 			projectExpe.setProjectType(projectExpeDto.getProjectType());
 			projectExpeRepo.save(projectExpe);

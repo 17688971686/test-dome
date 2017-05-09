@@ -19,10 +19,47 @@
 			getDict : getDict,
 			gridAudit:gridAudit,
 			updateAudit:updateAudit,
-			searchMAudit:searchMAudit
+			searchMAudit:searchMAudit,
+			forward:forward,
+			back:back
+			
 		};
 		//end expert
 		return service;
+		//begin#back
+		 function back (flag){
+	        	var selectIds = common.getKendoCheckId('#grid'+flag);
+	        	if (selectIds.length == 0) {
+	        		common.alert({
+	        			vm:vm,
+	        			msg:'请选择数据'
+	        		});
+	        	}else{
+	        		var ids=[];
+	        		for (var i = 0; i < selectIds.length; i++) {
+	        			ids.push(selectIds[i].value);
+	        		}  
+	        		var idStr=ids.join(',');
+	        		expertSvc.updateAudit(vm,idStr,5);
+	        	}
+	        }
+		 //begin#forward
+		function forward (flag){
+        	var selectIds = common.getKendoCheckId('#grid1');
+            if (selectIds.length == 0) {
+            	common.alert({
+                	vm:vm,
+                	msg:'请选择数据'
+                });
+            }else{
+            	var ids=[];
+                for (var i = 0; i < selectIds.length; i++) {
+                	ids.push(selectIds[i].value);
+				}  
+                var idStr=ids.join(',');
+                expertSvc.updateAudit(vm,idStr,flag);
+            }
+        }
 		//begin updateAudit
 		function updateAudit(vm,ids,flag){
 			//alert(ids);
@@ -176,7 +213,6 @@
 		
 		// begin#searchMAudit
 		function searchMAudit(vm) {
-			//vm.isSubmit = true;
 			var url=common.buildOdataFilter($("#form"));
 			//alert(url);
 			var httpOptions = {

@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +49,7 @@ public class ExpertServiceImpl implements ExpertService {
        private ProjectExpeRepo projectExpeRepo;
        @Autowired
        private ICurrentUser currentUser;
-       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		@Override
 		public List<ExpertDto> findAll() {
 			
@@ -65,14 +66,12 @@ public class ExpertServiceImpl implements ExpertService {
 				/*expertDto.setIdCard(item.getIdCard());
 				expertDto.setAcaDemy(item.getAcaDemy());
 				expertDto.setAddRess(item.getAddRess());
-				expertDto.setBirthDay(item.getBirthDay());
 				expertDto.setComPany(item.getComPany());
 				expertDto.setDegRee(item.getDegRee());
 				expertDto.setEmail(item.getEmail());
 				expertDto.setExpertID(item.getExpertID());
 				expertDto.setExpeRttype(item.getExpeRttype());
 				expertDto.setFax(item.getFax());
-				expertDto.setCreateDate(item.getCreateDate());
 				expertDto.setName(item.getName());
 				expertDto.setSex(item.getSex());
 				expertDto.setPhone(item.getPhone());
@@ -86,14 +85,19 @@ public class ExpertServiceImpl implements ExpertService {
 				expertDto.setQualifiCations(item.getQualifiCations());
 				expertDto.setZipCode(item.getZipCode());*/
 				ExpertToExpertDto(item, expertDto);
-				
+				if(item.getBirthDay()!=null){
+					expertDto.setBirthDay(formatter.format(item.getBirthDay()));
+				}
+				if(item.getCreateDate()!=null){
+					expertDto.setCreateDate(formatter.format(item.getCreateDate()));
+				}
 				List<WorkExpeDto> workDtoList=new ArrayList<>();
 				for (WorkExpe workExpe : item.getWork()) {
 					WorkExpeDto workDto=new WorkExpeDto();
 					workDto.setWeID(workExpe.getWeID());
-					workDto.setBeginTime(workExpe.getBeginTime());
+					workDto.setBeginTime(formatter.format(workExpe.getBeginTime()));
+					workDto.setEndTime(formatter.format(workExpe.getEndTime()));
 					workDto.setExpertID(workExpe.getExpert().getExpertID());
-					workDto.setEndTime(workExpe.getEndTime());
 					workDto.setJob(workExpe.getJob());
 					workDto.setCompanyName(workExpe.getCompanyName());
 					workDtoList.add(workDto);
@@ -103,11 +107,10 @@ public class ExpertServiceImpl implements ExpertService {
 				 List<ProjectExpeDto> projectDtoList=new ArrayList<>();
 				 for (ProjectExpe projectExpe : item.getProject()) {
 					 ProjectExpeDto projectDto=new ProjectExpeDto();
-						projectDto.setProjectbeginTime(projectExpe.getProjectbeginTime());
-						projectDto.setProjectendTime(projectExpe.getProjectendTime());
+						projectDto.setProjectbeginTime(formatter.format(projectExpe.getProjectbeginTime()));
+						projectDto.setProjectendTime(formatter.format(projectExpe.getProjectendTime()));
 						projectDto.setProjectName(projectExpe.getProjectName());
 						projectDto.setProjectType(projectExpe.getProjectType());
-						projectDto.setCreateTime(formatter.format(new Date()));
 						projectDto.setPeID(projectExpe.getPeID());
 						projectDtoList.add(projectDto);
 				 }
@@ -151,8 +154,19 @@ public class ExpertServiceImpl implements ExpertService {
 				expert.setZipCode(expertDto.getZipCode());
 				expert.setModifiedBy(currentUser.getLoginName());
 				expert.setCreatedBy(currentUser.getLoginName());*/
-				expert.setState("1");
 				ExpertDtoToExpert(expertDto,expert);
+				try {
+					if(expertDto.getCreateDate()!=null){
+					expert.setCreateDate(formatter.parse(expertDto.getCreateDate()));
+					}
+					if(expertDto.getBirthDay()!=null){
+					expert.setBirthDay(formatter.parse(expertDto.getBirthDay()));
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				expert.setState("1");
+				expert.setExpertID(UUID.randomUUID().toString());
 				expertRepo.save(expert);
 				//expert=expertRepo.findExpertByName(expertDto.getName());
 				logger.info(String.format("添加专家,专家名为:%s", expert.getName()));

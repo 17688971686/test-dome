@@ -11,6 +11,9 @@
     	vm.data={};
         vm.titles = '专家列表';
         
+        vm.normalExpert = function() {
+        	expertSvc.forward(1);
+        };
         vm.search = function () {
         	expertSvc.searchMuti(vm);
         };
@@ -27,7 +30,7 @@
                   	expertSvc.deleteExpert(vm,id);
                  }
              })
-        }
+        };
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
@@ -44,40 +47,30 @@
                 var idStr=ids.join(',');
                 vm.del(idStr);
             }   
-       }
+       };
+       
         
-        vm.forward=function(flag){
-        	var selectIds = common.getKendoCheckId('#grid1');
-            if (selectIds.length == 0) {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                });
-            }else{
-            	var ids=[];
-                for (var i = 0; i < selectIds.length; i++) {
-                	ids.push(selectIds[i].value);
-				}  
-                var idStr=ids.join(',');
-                expertSvc.updateAudit(vm,idStr,flag);
-            }
+      /*  vm.optionExpert=function() {
+        	expertSvc.forward (2);
         }
-        vm.back=function(flag){
-        	var selectIds = common.getKendoCheckId('#grid'+flag);
-        	if (selectIds.length == 0) {
-        		common.alert({
-        			vm:vm,
-        			msg:'请选择数据'
-        		});
-        	}else{
-        		var ids=[];
-        		for (var i = 0; i < selectIds.length; i++) {
-        			ids.push(selectIds[i].value);
-        		}  
-        		var idStr=ids.join(',');
-        		expertSvc.updateAudit(vm,idStr,5);
-        	}
+        vm.blockExpert=function() {
+        	expertSvc.forward (3);
         }
+        vm.deletedExpert=function(){
+        	expertSvc.forward (4);
+        }
+        vm.unnormalExpert=function(){
+        	expertSvc.back(2);
+        }
+        vm.unoptionExpert=function(){
+        	expertSvc.back(3);
+        }
+        vm.unblockExpert=function(){
+        	expertSvc.back(4);
+        }
+        vm.undeletedExpert=function(){
+        	expertSvc.back(5);
+        }*/
         activate();
         function activate() {
         	//expertSvc.getDict(vm,"SEX,QUALIFICATIONS,DEGREE,JOB,TITLE,EXPERTTYPE,PROCOSTTYPE,PROTECHTYPE,EXPERTRANGE");

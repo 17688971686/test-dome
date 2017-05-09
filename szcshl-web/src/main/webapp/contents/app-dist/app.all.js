@@ -2183,10 +2183,10 @@
 		function searchMuti(vm) {
 			//vm.isSubmit = true;
 			var url=common.buildOdataFilter($("#form"));
-			//alert(url);
+			//alert(url_expert+"?$filter="+url);
 			var httpOptions = {
 					method : 'get',
-					url :url_expert+"?"+url
+					url :url_expert+"?$filter="+url
 				}
 			//alert(url);
 			var httpSuccess = function success(response) {
@@ -2212,13 +2212,12 @@
 		// begin#searchMAudit
 		function searchMAudit(vm) {
 			//vm.isSubmit = true;
+			//alert(url_expert+"?$filter="+url+" and state eq '1'");
 			var url=common.buildOdataFilter($("#form"));
-			//alert(url);
 			var httpOptions = {
 					method : 'get',
-					url :url_expert+"?"+url+" and state eq '1'"
+					url :url_expert+"?$filter="+url+" and state eq '1'"
 			}
-			//alert(url_expert+"?"+url+" and state eq '1'");
 			var httpSuccess = function success(response) {
 				common.requestSuccess({
 					vm : vm,

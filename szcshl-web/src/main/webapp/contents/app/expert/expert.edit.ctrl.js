@@ -20,7 +20,6 @@
             vm.isHide=false;
             vm.expertID=vm.id;
             expertSvc.getExpertById(vm);
-            
         }
         vm.create=function(){
         	expertSvc.createExpert(vm);
