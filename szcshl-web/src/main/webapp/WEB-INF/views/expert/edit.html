@@ -31,6 +31,7 @@
 	border-left: 1px solid #000;
 	border-top: 1px solid #000;
 	padding-left: 5px;
+	text-align: center;
 }
 
 .conttent_list {
@@ -123,13 +124,13 @@ body {
 		<table width="100%" border="1" cellpadding="0" cellspacing="0"
 			style="margin: auto; margin-top: 30px;">
 			<tr>
-				<td class="formAlignRight">姓名 <span class="required">*</span></td>
-				<td>
+				<td class="formAlignRight" width="10%">姓名 <span class="required">*</span></td>
+				<td width="20%">
 				<input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.name" id="loginName" name="name" data-val="true" data-val-required="必填"> 
 				 <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
 				</td>
-				<td class="formAlignRight">性别</td>
-				<td> 
+				<td class="formAlignRight" width="10%">性别</td>
+				<td width="10%"> 
 					<select ng-model="vm.model.sex" class="form-control input-sm "  name="sex">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
@@ -140,24 +141,24 @@ body {
 					</select> -->
 				<span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
 				</td>
-				<td align="center">出生年月</td>
-				<td>
-					<input type="text" name="birthDay" id="birthDay"
+				<td align="center" class="formAlignRight" width="20%">出生年月</td>
+				<td width="10%" >
+					<input type="text" name="birthDay" id="birthDay" style="width: 210px;"
 					class="form-control input-sm " ng-model="vm.model.birthDay" data-val="true" data-val-required="必填">
 					<span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
 				</td>
-				<td width="121" rowspan="4"><img name="" src="" width="121"
+				<td width="121" rowspan="4" style="text-align: center;"><img name="" src="" width="121"
 					height="148" alt="" /></td>
 			</tr>
 			<tr>
-				<td align="center">身份证号</td>
+				<td align="center" class="formAlignRight">身份证号</td>
 				<td colspan="3">
-					<input style="width: 250px" type="text"
+					<input type="text"
 					name="idCard" id="idCard" class="form-control input-sm "
 					ng-model="vm.model.idCard" data-val="true" data-val-required="必填">
 					 <span data-valmsg-for="idCard" data-valmsg-replace="true" class="errors"></span>
 				</td>
-				<td align="center">最高学历</td>
+				<td class="formAlignRight">最高学历</td>
 				<td>
 					<select ng-model="vm.model.qualifiCations" class="form-control input-sm "  name="qualifiCations">
 						<option value="">请选择</option>
@@ -167,13 +168,13 @@ body {
 				 </td>
 			</tr>
 			<tr>
-				<td align="center">毕业院校</td>
-				<td colspan="3"><input style="width: 250px" type="text"
+				<td class="formAlignRight">毕业院校</td>
+				<td colspan="3"><input type="text"
 					name="acaDemy" id="acaDemy" class="form-control input-sm "
 					ng-model="vm.model.acaDemy" data-val="true" data-val-required="必填">
 					 <span data-valmsg-for="acaDemy" data-valmsg-replace="true" class="errors"></span>
 				</td>
-				<td align="center">最高学位</td>
+				<td class="formAlignRight">最高学位</td>
 				<td>
 					<select ng-model="vm.model.degRee" class="form-control input-sm " name="degRee">
 						<option value="">请选择</option>
@@ -183,26 +184,26 @@ body {
 				</td>
 			</tr>
 			<tr>
-				<td align="center">手机号码</td>
-				<td colspan="3"><input style="width: 250px" type="text"
+				<td class="formAlignRight">手机号码</td>
+				<td colspan="3"><input type="text"
 					name="userPhone" id="userPhone" class="form-control input-sm "
 					 ng-model="vm.model.userPhone" data-val="true" data-val-required="必填" class="form-control input-sm "> 
 					<span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
 				</td>
-				<td align="center">毕业时间</td>
-				<td><input type="text" name="createDate" id="createDate"
-					 class="form-control input-sm " ng-model="vm.model.createDate" data-val="true" data-val-required="必填"> 
+				<td class="formAlignRight" >毕业时间</td>
+				<td ><input type="text" name="createDate" id="createDate" style="width: 210px;"
+					 class="form-control input-sm " ng-model="vm.model.createDate" data-val="true" data-val-required="必填" > 
 					 <span data-valmsg-for="createDate" data-valmsg-replace="true" class="errors"></span>
 					</td>
 			</tr>
 			<tr>
 
-				<td align="center">工作单位</td>
-				<td colspan="2"><input style="width: 200px" type="text"
+				<td class="formAlignRight">工作单位</td>
+				<td colspan="2"><input type="text"
 					name="comPany" id="comPany" class="form-control input-sm "
 					ng-model="vm.model.comPany"  data-val="true" data-val-required="必填"> 
 					 <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
-				<td align="center">现任职位</td>
+				<td class="formAlignRight" >现任职位</td>
 				<td>
 					<select ng-model="vm.model.job" class="form-control input-sm " name="job">
 						<option value="">请选择</option>
@@ -210,7 +211,7 @@ body {
 					</select>
 					<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
 					</td>
-				<td align="center">职称</td>
+				<td class="formAlignRight">职称</td>
 				<td>
 					<select ng-model="vm.model.title" class="form-control input-sm " name="title">
 						<option value="">请选择</option>
@@ -220,47 +221,47 @@ body {
 				</td>
 			</tr>
 			<tr>
-				<td align="center">办公电话</td>
-				<td colspan="2"><input style="width: 200px" type="text"
+				<td class="formAlignRight">办公电话</td>
+				<td colspan="2"><input type="text"
 					name="phone" id="phone" class="form-control input-sm "
 					ng-model="vm.model.phone">  
 						<span data-valmsg-for="phone" data-valmsg-replace="true" class="errors"></span> 
 				</td>
-				<td align="center">传真</td>
+				<td class="formAlignRight">传真</td>
 				<td><input type="text" name="fax" id="fax" class="form-control input-sm "
 					ng-model="vm.model.fax" ng-maxlength="20" data-val="true" data-val-required="必填">
-					 <span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
+					 <span data-valmsg-for="title" data-valmsg-replace="true" class="errors" ></span> 
 				</td>
-				<td align="center">电子邮箱</td>
+				<td class="formAlignRight">电子邮箱</td>
 				<td><input type="text" name="email" id="email"
 					class="form-control input-sm " ng-model="vm.model.email" data-val="true" data-val-required="必填"> 
 					<span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span> 
 				</td>
 			</tr>
 			<tr>
-				<td height="37" align="center">通讯地址</td>
-				<td colspan="4"><input style="width: 400px" type="text"
+				<td class="formAlignRight">通讯地址</td>
+				<td colspan="4"><input type="text"
 					name="addRess" id="addRess" class="form-control input-sm "
 					ng-model="vm.model.addRess" data-val="true" data-val-required="必填"> 
 					<span data-valmsg-for="addRess" data-valmsg-replace="true" class="errors"></span> 
 				</span></td>
-				<td align="center">邮编</td>
-				<td><input type="text" name="zipCode" id="zipCode"
+				<td class="formAlignRight">邮编</td>
+				<td><input type="text" name="zipCode" id="zipCode" 
 					class="form-control input-sm " ng-model="vm.model.zipCode" data-val="true" data-val-required="必填">
 						<span data-valmsg-for="zipCode" data-valmsg-replace="true" class="errors"></span> 
 						<!-- ng-show="myForm.zipCode.$error.pattern">邮编格式不正确</span> -->
 				</span></td>
 			</tr>
 			<tr>
-				<td height="37" align="center">所学专业</td>
-				<td ><input style="width: 200px" type="text"
+				<td class="formAlignRight">所学专业</td>
+				<td ><input type="text"
 					name="maJor" id="maJor" class="form-control input-sm " ng-model="vm.model.maJor"
 					data-val="true" data-val-digits="121212" data-val-required="必填"> 
 					<span data-valmsg-for="title" data-valmsg-replace="true" class="errors"></span> 
 				</td>
-				<td colspan="2" align="center">专家范围</td>
+				<td colspan="2" class="formAlignRight">专家范围</td>
 				<td colspan="3">
-					<select ng-model="vm.model.state" class="form-control input-sm "  name="state" style="width: 200px">
+					<select ng-model="vm.model.state" class="form-control input-sm "  name="state">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
@@ -269,21 +270,21 @@ body {
 			</tr>
 			
 			<tr>
-				<td height="37" align="center">专家类别</td>
-				<td>
-					<select ng-model="vm.model.expeRttype" class="form-control input-sm "  name="expeRttype" style="width: 200px">
+				<td class="formAlignRight">专家类别</td>
+				<td >
+					<select ng-model="vm.model.expeRttype" class="form-control input-sm "  name="expeRttype" width="10%">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.EXPERT_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
-				<td colspan="2" align="center">工程造价类</td>
+				<td colspan="2" class="formAlignRight">工程造价类</td>
 				<td>
-					<select ng-model="vm.model.procoSttype" class="form-control input-sm "  name="expeRttype" style="width: 200px">
+					<select ng-model="vm.model.procoSttype" class="form-control input-sm "  name="expeRttype">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.PROCOST_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
-				<td align="center">项目类型</td>
+				<td class="formAlignRight">项目类型</td>
 				
 				<td>
 					<select ng-model="vm.model.proteChtype" class="form-control input-sm " name="protechtype">
@@ -293,8 +294,8 @@ body {
 				</td>
 			</tr>
 			<tr>
-				<td height="97" align="center">备注</td>
-				<td colspan="6"><textarea style="width: 880px; height: 95px"
+				<td height="97" class="formAlignRight">备注</td>
+				<td colspan="6"><textarea style="width: 100%; height: 95px"
 						name="remark" ng-model="vm.model.remark" class="form-control input-sm "
 						data-bind="value:remark"></textarea></td>
 			</tr>
@@ -315,15 +316,15 @@ body {
 		<div style="border:1px solid #000; padding:5px 20px; overflow:hidden; width: 100%;margin: auto;">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" id="workTab">
   	<tr>
-  	<td width="22" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="pjallChecked" id="pjallChecked"/> </td>
-    <td width="182" align="center" bgcolor="#eeeeee">开始时间</td>
-    <td width="182" align="center" bgcolor="#eeeeee">结束时间</td>
-    <td width="182" align="center" bgcolor="#eeeeee">工作单位</td>
-    <td align="center" bgcolor="#eeeeee">职务</td>
+  	<td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="pjallChecked" id="pjallChecked"/> </td>
+    <td width="10%" align="center" bgcolor="#eeeeee">开始时间</td>
+    <td width="10%" align="center" bgcolor="#eeeeee">结束时间</td>
+    <td width="20%" align="center" bgcolor="#eeeeee">工作单位</td>
+    <td width="20%" align="center" bgcolor="#eeeeee">职务</td>
   </tr>
 
   <tr ng-repeat="x in vm.work">
-  <td align="center"> <input type="checkbox" name="checkwr" ng-checked="addWork" value="{{ x.weID }}"/></td>
+  <td  align="center"> <input type="checkbox" name="checkwr" ng-checked="addWork" value="{{ x.weID }}"/></td>
     <td style="text-align: center;">{{ x.beginTime }}</td>
     <td style="text-align: center;">{{ x.endTime }}</td>
     <td style="text-align: center;">{{ x.companyName }}</td>
@@ -349,11 +350,11 @@ body {
 <div style="border:1px solid #000; padding:5px 20px; overflow:hidden;width: 100%;margin: auto;">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
-  <td width="22" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addProject" name="pjallChecked" id="pjallChecked"/> </td>
-    <td align="center" bgcolor="#eeeeee">开始时间</td>
-    <td align="center" bgcolor="#eeeeee">结束时间</td>
-    <td align="center" bgcolor="#eeeeee">项目名称</td>
-    <td align="center" bgcolor="#eeeeee">项目类别</td>
+  <td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addProject" name="pjallChecked" id="pjallChecked"/> </td>
+    <td width="10%" align="center" bgcolor="#eeeeee">开始时间</td>
+    <td width="10%" align="center" bgcolor="#eeeeee">结束时间</td>
+    <td width="20%" align="center" bgcolor="#eeeeee">项目名称</td>
+    <td width="20%" align="center" bgcolor="#eeeeee">项目类别</td>
     </tr>
   <tr ng-repeat="x in vm.project">
     <td align="center"> <input type="checkbox" name="checkpj" ng-checked="addProject" value="{{ x.peID }}"/></td>

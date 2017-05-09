@@ -121,10 +121,10 @@
 					}
 				})
 			}else{
+				    gotoWPage(vm);
 				    vm.weID=isCheck.val();
 				    getWorkById(vm);
 				    vm.expertID = vm.model.expertID;
-				    gotoWPage(vm);
 					
 				
 				
@@ -139,9 +139,12 @@
 					url : common.format( rootPath + "/workExpe/getWork?$filter=weID eq '{0}'", vm.weID)
 				}
 				var httpSuccess = function success(response) {
-					vm.model = response.data[0];
+					//vm.model = response.data[0];
+					vm.model.companyName=response.data[0].companyName;
+					vm.model.job=response.data[0].job;
+					$('#beginTime').val(response.data[0].beginTime);
+					$('#endTime').val(response.data[0].endTime);
 					if (vm.isUpdate) {
-						//initZtreeClient(vm);
 					}
 				}
 				common.http({
@@ -234,6 +237,7 @@
 					fn : function() {
 						 window.parent.$("#wrwindow").data("kendoWindow").close();
 						 getWork(vm);
+						 cleanValue();
 						common.alert({
 							vm : vm,
 							msg : "操作成功",

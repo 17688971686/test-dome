@@ -257,7 +257,23 @@ public class ExpertServiceImpl implements ExpertService {
 		@Transactional
 		public void updateExpert(ExpertDto expertDto) {
 			Expert expert = expertRepo.findById(expertDto.getExpertID());
+			List<WorkExpeDto> workDtoList=expertDto.getWork();
+			List<WorkExpe> workList=new ArrayList<>();
+			WorkExpe work=new WorkExpe();
+			for (WorkExpeDto workExpeDto : workDtoList) {
+				BeanCopierUtils.copyPropertiesIgnoreNull(workExpeDto, work);
+				workList.add(work);
+			}
+			List<ProjectExpeDto> projectDtoList=expertDto.getProject();
+			List<ProjectExpe> projectList=new ArrayList<>();
+			ProjectExpe project=new ProjectExpe();
+			for (ProjectExpeDto projectDto : projectDtoList) {
+				BeanCopierUtils.copyPropertiesIgnoreNull(projectDto, project);
+				projectList.add(project);
+			}
 			BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
+			expert.setWork(workList);
+			expert.setProject(projectList);
 			/*expert.setIdCard(expertDto.getIdCard());
 			expert.setAcaDemy(expertDto.getAcaDemy());
 			expert.setAddRess(expertDto.getAddRess());

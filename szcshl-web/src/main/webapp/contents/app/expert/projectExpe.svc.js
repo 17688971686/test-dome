@@ -77,7 +77,11 @@
 					url : common.format( rootPath + "/projectExpe/getProject?$filter=peID eq '{0}'", vm.peID)
 			}
 			var httpSuccess = function success(response) {
-				vm.model = response.data[0];
+				//vm.model = response.data[0];
+				vm.model.projectName=response.data[0].projectName;
+				vm.model.projectType=response.data[0].projectType;
+				$('#projectbeginTime').val(response.data[0].projectbeginTime);
+				$('#projectendTime').val(response.data[0].projectendTime);
 				if (vm.isUpdate) {
 					//initZtreeClient(vm);
 				}
@@ -115,6 +119,7 @@
 					fn : function() {
 						window.parent.$("#pjwindow").data("kendoWindow").close();
 						getProject(vm);
+						cleanValue();
 						common.alert({
 							vm : vm,
 							msg : "操作成功",

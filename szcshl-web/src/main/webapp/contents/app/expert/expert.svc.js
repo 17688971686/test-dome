@@ -103,7 +103,7 @@
 		
 		// begin#updateExpert
 		function updateExpert(vm) {
-			common.initJqValidation();
+			//common.initJqValidation();
 			var isValid = $('form').valid();
 			//alert(isValid);
 			//if (isValid) {

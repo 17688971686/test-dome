@@ -7,13 +7,14 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import cs.domain.expert.Expert;
+import cs.domain.expert.Expert_;
 import cs.repository.AbstractRepository;
 @Service
 public class ExpertRepoImpl extends AbstractRepository<Expert,String> implements ExpertRepo {
 	@Override
 	public Expert findExpertByName(String expertName) {
 		Criteria criteria = this.getSession().createCriteria(Expert.class);
-		criteria.add(Restrictions.eq("name", expertName));
+		criteria.add(Restrictions.eq(Expert_.name.getName(), expertName));
 		List<Expert> experts = criteria.list();
 		if (experts.size() > 0) {
 			return experts.get(0);

@@ -25,7 +25,7 @@ public class ProjectExpe implements Serializable {
 	private String peID; //Id
 	@Column(name = "projectName", nullable = false, length = 100)
     private String projectName; //项目名称
-	@Column(name = " projectType", nullable = false, length = 100)
+	@Column(name = "projectType", nullable = false, length = 100)
     private String projectType; //项目类型
 	@Column(name = "projectbeginTime", nullable = false)
     private Date projectbeginTime; //项目开始时间
