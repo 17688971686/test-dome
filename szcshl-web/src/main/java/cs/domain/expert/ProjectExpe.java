@@ -27,11 +27,11 @@ public class ProjectExpe implements Serializable {
     private String projectName; //项目名称
 	@Column(name = " projectType", nullable = false, length = 100)
     private String projectType; //项目类型
-	@Column(name = "projectbeginTime", nullable = false, length = 100)
+	@Column(name = "projectbeginTime", nullable = false)
     private Date projectbeginTime; //项目开始时间
-	@Column(name = "projectendTime", nullable = false, length = 100)
+	@Column(name = "projectendTime", nullable = false)
     private Date projectendTime; //项目结束时间
-	@Column(name = "createTime", nullable = false, length = 100)
+	@Column(name = "createTime", nullable = false)
     private Date createTime; //创建日期
 	@ManyToOne
 	  @JoinColumn(name="expertID")

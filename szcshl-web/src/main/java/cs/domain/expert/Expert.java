@@ -23,51 +23,51 @@ public class Expert extends DomainBase {
 	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String expertID;//专家ID
-	@Column(columnDefinition="varchar(255) NOT NULL")
+	@Column(columnDefinition="varchar(32) NOT NULL")
 	private String name;//专家姓名
-	@Column(columnDefinition="varchar(255) comment '性别'")
+	@Column(columnDefinition="varchar(2) comment '性别'")
 	private String sex;//性别
-	@Column(columnDefinition="varchar(255) comment '出生日期'")
+	@Column(columnDefinition="date")
 	private Date birthDay;//出生日期
-	@Column(columnDefinition="varchar(255) comment '身份证号'")
+	@Column(columnDefinition="varchar(50) comment '身份证号'")
 	private String idCard;//身份证号
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(128) ")
 	private String qualifiCations;//最高学历
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(128) ")
 	private String acaDemy;//毕业院校
 	@Column(columnDefinition="varchar(255) ")
 	private String degRee;//最高学位
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(50) ")
 	private String userPhone;//手机号码
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="date")
 	private Date createDate;//创建日期
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(128) ")
 	private String comPany;//工作单位
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(100) ")
 	private String job;//现任职位
 	@Column(columnDefinition="varchar(255) ")
 	private String title;//职称
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(50) ")
 	private String phone;//办公电话
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(50) ")
 	private String fax;//传真
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(50) ")
 	private String email;//电子邮箱
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(225) ")
 	private String addRess;//通讯地址
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(50) ")
 	private String zipCode;//邮编
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(128) ")
 	private String maJor;//所学专业
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(30) ")
 	private String expeRttype;//专家类别
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(30) ")
 	private String procoSttype;//工程造价类
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(30) ")
 	private String proteChtype;//项目类型
 	@Column(columnDefinition="varchar(255) ")
 	private String remark;//备注
-	@Column(columnDefinition="varchar(255) ")
+	@Column(columnDefinition="varchar(30) ")
 	private String state;//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
 	@OneToMany(mappedBy="expert")
 	private List<WorkExpe> work;

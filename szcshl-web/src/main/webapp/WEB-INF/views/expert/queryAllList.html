@@ -32,7 +32,7 @@
 .conttent_list{
 	/* background-image: url(images/remark-title.jpg); */
 	background-repeat: no-repeat;
-	padding: 40px;
+	padding:0px;
 	width:80%;
 	margin:auto;
 	background-color: #FFF;
@@ -79,27 +79,28 @@ body {
 <body>
 
   <form id="form" name="form">
-<div class="conttent_list" style="margin:auto;width:90%"> 
+<div class="conttent_list" style="margin:auto;width:100%"> 
 <p class="pro_title_1" >设定查询条件</p>
 <div class="title_box">
-  <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
-      <span class="side_a"> 专家范围 
-      		<select ng-model="vm.model.expertrange" name="expertrange" operator="eq">
+ <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+      <span class="side_a" style="margin-left:40px;"> 专家范围 
+      		<select ng-model="vm.model.expertrange" name="expertrange" operator="eq" style="height: 30px;width: 100px" >
 				<option value="">请选择</option>
 				<option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 			</select>
       </span> 
-      <span class="side_a" style="margin-left:40px;">姓名
-         <input  name="name" type="text" ng-model="vm.model.name" height="30px" data-val="true" operator="like" data-val-required="必填"/>
+      <span class="side_a" style="margin-left:40px;">姓&nbsp;&nbsp;名
+         <input  name="name" type="text" ng-model="vm.model.name" data-val="true" operator="like" data-val-required="必填" style="height: 30px;width: 170px"/>
       </span>
       
-       <span class="side_a" style="margin-left:40px;"> 性别 
-       		<select ng-model="vm.model.sex" operator="eq" name="sex">
+       <span class="side_a" style="margin-left:40px;"> 性&nbsp;&nbsp;别 
+       		<select ng-model="vm.model.sex"  operator="eq" name="sex" style="height: 30px;width: 100px">
 				<option value="">请选择</option>
 				<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 			</select>
       </span>
   </div>
+  
   <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
       <span class="side_b">
        <button class="k-button k-primary" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>开始查询</button>
@@ -111,38 +112,42 @@ body {
   				</@shiro.hasPermission> 
       </span>
       
-       <span class="side_a" style="margin-left:40px;"> 学位 
-       		<select ng-model="vm.model.degRee" operator="eq" name="degRee">
+         <span class="side_a" style="margin-left:60px;"> 学&nbsp;&nbsp;位 
+       		<select ng-model="vm.model.degRee" operator="eq" name="degRee" style="height: 30px;width: 100px">
 				<option value="">请选择</option>
 				<option ng-repeat="x in DICT.DEGREE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 			</select>
       </span>
-       <span class="side_a" style="margin-left:40px;"> 职务 
-       		<select ng-model="vm.model.job" operator="eq" name="job">
+      
+       <span class="side_a" style="margin-left:40px;"> 职&nbsp;&nbsp;务 
+       		<select ng-model="vm.model.job"  operator="eq" name="job" style="height: 30px;width: 100px">
 				<option value="">请选择</option>
 				<option ng-repeat="x in DICT.JOY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 			</select>
       </span>
-       <span class="side_a" style="margin-left:40px;"> 职称
-       		<select ng-model="vm.model.title"  operator="eq" name="title">
+      
+       <span class="side_a" style="margin-left:110px;"> 职&nbsp;&nbsp;称
+       		<select ng-model="vm.model.title" operator="eq" name="title" style="height: 30px;width: 100px">
 				<option value="">请选择</option>
 				<option ng-repeat="x in DICT.TITLE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 			</select>
       </span>
- </div>
- <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
+  </div>
+  
+  <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
        <span class="side_a" style="margin-left:40px;"> 工作单位 
-        	<input name="comPany" ng-model="mv.model.comPany" type="text" operator="eq"/>
+        	<input name="comPany" ng-model="mv.model.comPany" type="text" operator="eq" style="height: 30px;width: 250px"/>
       </span>
-       <span class="side_a" style="margin-left:40px;"> 毕业学校 
-        	<input name="acaDemy" ng-model="mv.model.acaDemy" type="text" operator="eq"/>
+       <span class="side_a" style="margin-left:120px;"> 毕业学校 
+        	<input name="acaDemy" ng-model="mv.model.acaDemy" type="text" operator="eq" style="height: 30px;width: 250px"/>
       </span>
   </div>
+  
 </div>
 </div>
  </form>
   
-<div class="conttent_list" style="margin-top:20px;width:90%;">
+<div class="conttent_list" style="margin-top:20px;width:100%;">
 	<p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px; color:#FFFF00;font-size:20px ;width:100%;">专家列表 </p>    
 	<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>

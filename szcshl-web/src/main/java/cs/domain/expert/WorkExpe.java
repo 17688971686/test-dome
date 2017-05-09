@@ -35,7 +35,7 @@ public class WorkExpe implements Serializable {
     private String companyName; //单位名称
     @Column(name = "job", nullable = true, length = 500)
     private String job; //职位
-    @Column(name = "create_Time", nullable = true, length = 500)
+    @Column(name = "create_Time", nullable = true)
     private Date create_Time; //创建时间
     @ManyToOne
     @JoinColumn(name="expertID")
