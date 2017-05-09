@@ -10,10 +10,6 @@
     	var vm = this;
     	vm.data={};
         vm.titles = '专家列表';
-        
-        vm.normalExpert = function() {
-        	expertSvc.forward(1);
-        };
         vm.search = function () {
         	expertSvc.searchMuti(vm);
         };
@@ -49,28 +45,31 @@
             }   
        };
        
-        
-      /*  vm.optionExpert=function() {
-        	expertSvc.forward (2);
-        }
+       
+        vm.normalExpert = function() {
+       	  expertSvc.forward(vm,1);
+        };
+        vm.optionExpert=function() {
+        	expertSvc.forward (vm,2);
+        };
         vm.blockExpert=function() {
-        	expertSvc.forward (3);
-        }
+        	expertSvc.forward (vm,3);
+        };
         vm.deletedExpert=function(){
-        	expertSvc.forward (4);
-        }
+        	expertSvc.forward (vm,4);
+        };
         vm.unnormalExpert=function(){
-        	expertSvc.back(2);
-        }
+        	expertSvc.back(vm,2);
+        };
         vm.unoptionExpert=function(){
-        	expertSvc.back(3);
-        }
+        	expertSvc.back(vm,3);
+        };
         vm.unblockExpert=function(){
-        	expertSvc.back(4);
-        }
+        	expertSvc.back(vm,4);
+        };
         vm.undeletedExpert=function(){
-        	expertSvc.back(5);
-        }*/
+        	expertSvc.back(vm,5);
+        };
         activate();
         function activate() {
         	//expertSvc.getDict(vm,"SEX,QUALIFICATIONS,DEGREE,JOB,TITLE,EXPERTTYPE,PROCOSTTYPE,PROTECHTYPE,EXPERTRANGE");

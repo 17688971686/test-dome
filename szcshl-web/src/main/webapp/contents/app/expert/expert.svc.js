@@ -27,7 +27,8 @@
 		//end expert
 		return service;
 		//begin#back
-		 function back (flag){
+		 //专家审核由各审核状态向待审核状态的改变
+		 function back (vm,flag){
 	        	var selectIds = common.getKendoCheckId('#grid'+flag);
 	        	if (selectIds.length == 0) {
 	        		common.alert({
@@ -40,11 +41,12 @@
 	        			ids.push(selectIds[i].value);
 	        		}  
 	        		var idStr=ids.join(',');
-	        		expertSvc.updateAudit(vm,idStr,5);
+	        		updateAudit(vm,idStr,5);
 	        	}
 	        }
 		 //begin#forward
-		function forward (flag){
+		 //专家审核由待审核状态向各状态的改变
+		function forward (vm,flag){
         	var selectIds = common.getKendoCheckId('#grid1');
             if (selectIds.length == 0) {
             	common.alert({
@@ -57,7 +59,7 @@
                 	ids.push(selectIds[i].value);
 				}  
                 var idStr=ids.join(',');
-                expertSvc.updateAudit(vm,idStr,flag);
+                updateAudit(vm,idStr,flag);
             }
         }
 		//begin updateAudit
@@ -313,7 +315,7 @@
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
-									//vm.isSubmit = false;
+									vm.isSubmit = true;
 									vm.isUpdate=false;
 									vm.isHide=false;
 									$('.alertDialog').modal('hide');
