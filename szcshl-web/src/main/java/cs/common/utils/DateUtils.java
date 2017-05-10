@@ -13,7 +13,7 @@ public class DateUtils {
     */
 	public static String toString(Date date) {  
         String time;  
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");  
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
        // formater.applyPattern("yyyy-MM-dd HH:mm:ss");  
         time = formater.format(date);  
         return time;  

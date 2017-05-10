@@ -26,8 +26,8 @@ public class MeetingRoomController {
 	@Autowired
 	private MeetingRoomService meetingRoomService;
 	
-	@RequiresPermissions("meeting##get")
-	@RequestMapping(name="获取会议室数据",path = "",method =RequestMethod.GET)
+	@RequiresPermissions("meeting#fingByOData#post")
+	@RequestMapping(name="获取会议室数据",path = "fingByOData",method =RequestMethod.POST)
 	public @ResponseBody PageModelDto<MeetingRoomDto> get( HttpServletRequest request ) throws java.text.ParseException {
 	
 		ODataObj odataObj = new ODataObj(request);

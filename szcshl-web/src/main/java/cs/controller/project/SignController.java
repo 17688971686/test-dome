@@ -35,8 +35,8 @@ public class SignController {
 	@Autowired
 	private SignService signService;
 	
-	@RequiresPermissions("sign##get")	
-	@RequestMapping(name = "获取收文数据", path = "", method = RequestMethod.GET)
+	@RequiresPermissions("sign#fingByOData#post")	
+	@RequestMapping(name = "获取收文数据", path = "fingByOData", method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);	
 		PageModelDto<SignDto> signDtos = signService.get(odataObj);		
@@ -131,8 +131,8 @@ public class SignController {
 		return ctrlName + "/flow";
 	}
 	
-	@RequiresPermissions("sign#html/initflow#get")
-	@RequestMapping(name = "项目待处理列表", path = "html/initflow",method=RequestMethod.GET)	
+	@RequiresPermissions("sign#html/initflow#post")
+	@RequestMapping(name = "项目待处理列表", path = "html/initflow",method=RequestMethod.POST)	
 	public @ResponseBody PageModelDto<SignDto> initflow(HttpServletRequest request) throws ParseException {			
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<SignDto> signDtos = signService.getFlow(odataObj);		

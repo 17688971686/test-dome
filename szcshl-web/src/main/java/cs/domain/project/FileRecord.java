@@ -11,6 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 
@@ -25,6 +26,7 @@ public class FileRecord extends DomainBase{
 		
 	//项目名称
 	@Column(columnDefinition="VARCHAR(200)")
+	@Formula("(select s.projectname from sign s where s.signid = signid)")
 	private String projectName;
 	
 	//档案编号
@@ -33,10 +35,12 @@ public class FileRecord extends DomainBase{
 	
 	//项目单位
 	@Column(columnDefinition="VARCHAR(100)")
+	@Formula("(select s.builtcompanyid from sign s where s.signid = signid)")
 	private String projectCompany;
 	
 	//项目代码
 	@Column(columnDefinition="VARCHAR(30)")
+	@Formula("(select s.projectcode from sign s where s.signid = signid)")
 	private String projectCode;
 	
 	//文件标题
@@ -71,7 +75,7 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sugproHandleFormScan;
 	
-	//委文件处理表是否有复印件
+	//委文件处理表是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sugfileHandleFormOriginal;
 	
@@ -79,7 +83,7 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sugfileHandleFormCopy;
 	
-	//委文件处理表是否有复印件
+	//委文件处理表是否有扫描件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sugfileHandleFormScan;
 	
@@ -107,11 +111,11 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sugproComletterScan;
 	
-	//暂停申请表是否有复印件
+	//暂停申请表是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String pauseFormOriginal;
 	
-	//暂停申请表是否有复印件
+	//暂停申请表是否复印件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String pauseFormCopy;
 	
@@ -175,7 +179,7 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="INTEGER")
 	private Integer electronicDiskCount;
 	
-	//相相关会议纪要是否有原件
+	//相关会议纪要是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String meetingSummaryOriginal;
 	
@@ -263,8 +267,41 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="INTEGER")
 	private Integer meetingSignCount;
 	
+	//专家个人意见分数
+	@Column(columnDefinition="INTEGER")
+	private Integer expertAmanCount;
+	
+	//专家个人意见原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String expertAmanOriginal;
+	
+	//专家个人意见附件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String expertAmanCopy;
+	
+	//专家个人意见扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String expertAmanScan;
+	
+	//评审费发放表分数
+	@Column(columnDefinition="INTEGER")
+	private Integer stageCostCount;
+	
+	//评审费发放原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String stageCostOriginal;
+	
+	//评审费发放附件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String stageCostCopy;
+	
+	//评审费发放扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String stageCostScan;
+	
 	//项目负责人Id
 	@Column(columnDefinition="VARCHAR(64)")
+	@Formula("(select s.mainchargeuserid from sign s where s.signid = signid)")
 	private String projectChargeUserid;
 	
 	//表格打印日期
@@ -811,5 +848,70 @@ public class FileRecord extends DomainBase{
 	public void setFileDate(Date fileDate) {
 		this.fileDate = fileDate;
 	}
+
+	public Integer getExpertAmanCount() {
+		return expertAmanCount;
+	}
+
+	public void setExpertAmanCount(Integer expertAmanCount) {
+		this.expertAmanCount = expertAmanCount;
+	}
+
+	public String getExpertAmanOriginal() {
+		return expertAmanOriginal;
+	}
+
+	public void setExpertAmanOriginal(String expertAmanOriginal) {
+		this.expertAmanOriginal = expertAmanOriginal;
+	}
+
+	public String getExpertAmanCopy() {
+		return expertAmanCopy;
+	}
+
+	public void setExpertAmanCopy(String expertAmanCopy) {
+		this.expertAmanCopy = expertAmanCopy;
+	}
+
+	public String getExpertAmanScan() {
+		return expertAmanScan;
+	}
+
+	public void setExpertAmanScan(String expertAmanScan) {
+		this.expertAmanScan = expertAmanScan;
+	}
+
+	public Integer getStageCostCount() {
+		return stageCostCount;
+	}
+
+	public void setStageCostCount(Integer stageCostCount) {
+		this.stageCostCount = stageCostCount;
+	}
+
+	public String getStageCostOriginal() {
+		return stageCostOriginal;
+	}
+
+	public void setStageCostOriginal(String stageCostOriginal) {
+		this.stageCostOriginal = stageCostOriginal;
+	}
+
+	public String getStageCostCopy() {
+		return stageCostCopy;
+	}
+
+	public void setStageCostCopy(String stageCostCopy) {
+		this.stageCostCopy = stageCostCopy;
+	}
+
+	public String getStageCostScan() {
+		return stageCostScan;
+	}
+
+	public void setStageCostScan(String stageCostScan) {
+		this.stageCostScan = stageCostScan;
+	}
+	
 	
 }

@@ -8,7 +8,6 @@
     </ol>
  
          <div kendo-scheduler k-options="vm.schedulerOptions">
-        <!-- <div class="grid"  kendo-scheduler kendo-grid="grid" k-options="vm.gridOptions"></div> -->
         <div style="height: 120px;">
         <br>
         会议室查询：
@@ -36,23 +35,29 @@
 			</@shiro.hasPermission>
 			</center>	
         </div>
-         <!--
+           
+             <!--
+             <div k-all-day-event-template class='custom-all-day-event'>{{dataItem.end}}</div>
             <span k-event-template class='custom-event'>{{dataItem.title}}</span>
-            
-            <div k-all-day-event-template class='custom-all-day-event'>{{dataItem.title}}</div> -->
+             -->
       
         </div>
  
 
 <style>
     .custom-event {
-        color: #fff;
+        color: #000000;
         text-shadow: 0 1px 0 #000;
     }
     .custom-all-day-event {
         text-align: center;
         text-transform: uppercase
     }
+    .k-event {
+    cursor: default;
+    min-height: 5.0em;
+    min-width: 15em;
+}
 </style>
 
 
@@ -60,14 +65,12 @@
 	<div class="movie-template">
 		
 		<p>
-			开始时间：#: kendo.toString(start, " HH:mm") #
-		
+			开始时间：#: kendo.toString(start, "HH:mm") #
+			<br>
+			结束时间：#: kendo.toString(end, "HH:mm") #
+			<br>
+			会议地点：#: title #
 		</p>
-		<p>
-			结束时间：#: kendo.toString(end, " HH:mm") #
-		</p>
-		<h3>会议地点：#: title #</h3>
-		<h3>会议地点：#: host #</h3>
 	
 	</div>
 </script>
@@ -122,7 +125,7 @@
 
 	<div class="k-edit-label"><label for="end">结束时间</label></div>
 	<div data-container-for="end" class="k-edit-field">
-		<input type="text" id="endTime" data-type="date" data-format="yyyy-MM-dd HH:mm:ss" ng-onchange="startEnd()" data-bind="value:end,invisible:isAllDay" data-role="timepicker"  name="endTime" ng-model="endTime"data-datecompare-msg="End date should be greater than or equal to the start date" />
+		<input type="text" id="endTime" data-type="date" data-format="yyyy-MM-dd HH:mm:ss" ng-onchange="startEnd()" data-bind="value:end,invisible:isAllDay" data-role="timepicker"  name="endTime" ng-model="endTime" data-datecompare-msg="End date should be greater than or equal to the start date" />
 		<span data-bind="text: endTimezone"></span>
 		<span data-bind="text: startTimezone, invisible: endTimezone"></span>
 		<span data-for="end" class="k-invalid-msg" style="display: none;"></span>

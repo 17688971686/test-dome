@@ -33,8 +33,8 @@ public class OrgController {
 	@Autowired
 	private OrgService orgService;
 	
-	@RequiresPermissions("org##get")	
-	@RequestMapping(name = "获取部门数据", path = "", method = RequestMethod.GET)
+	@RequiresPermissions("org#fingByOData#post")	
+	@RequestMapping(name = "获取部门数据", path = "fingByOData", method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<OrgDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<OrgDto> orgDtos = orgService.get(odataObj);

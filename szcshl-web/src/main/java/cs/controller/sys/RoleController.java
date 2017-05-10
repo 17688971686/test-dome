@@ -26,8 +26,8 @@ public class RoleController {
 	@Autowired
 	private RoleService roleService;
 	
-	@RequiresPermissions("role##get")
-	@RequestMapping(name = "获取角色数据", path = "",method=RequestMethod.GET)	
+	@RequiresPermissions("role#fingByOData#post")
+	@RequestMapping(name = "获取角色数据", path = "fingByOData",method=RequestMethod.POST)	
 	public @ResponseBody PageModelDto<RoleDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj=new ODataObj(request);
 		PageModelDto<RoleDto> roleDtos=roleService.get(odataObj);

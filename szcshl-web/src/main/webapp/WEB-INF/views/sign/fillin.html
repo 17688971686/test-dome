@@ -73,13 +73,15 @@
 					</select>
 			  </td>
 		    </tr> 
+		    
 		    <tr>
-		      <td width="15%" class="text-center" rowspan="2">缓急程度</td>
-		      <td rowspan="2">
+		      <td width="15%" class="text-center" >缓急程度</td>
+		      <td>
 					<select ng-model="vm.model.urgencydegree" name="urgencydegree" id="urgencydegree">
 						<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 			  </td>
+			  
 		      <td width="15%" class="text-center">年度计划类别</td>
 		      <td>
 					<select ng-model="vm.model.yearplantype" name="yearplantype" id="yearplantype">
@@ -87,6 +89,7 @@
 					</select>
 			  </td>
 		    </tr>
+		    
 		    <tr>		     
 		      <td width="15%" class="text-center">秘密登记</td>
 		      <td>
@@ -94,7 +97,32 @@
 						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 			  </td>
+		     <td width="15%" class="text-center">评审阶段</td>
+		      <td>
+					<select ng-model="vm.model.reviewstage" name="reviewstage" id="reviewstage">
+						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					</select>
+			  </td>
 		    </tr> 
+		     
+		        <tr>		     
+		      <td width="15%" class="text-center">评审部门</td>
+		      <td>
+					<select ng-model="vm.model.reviewdeptid" name="reviewdeptid" id="reviewdeptid">
+						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					</select>
+			  </td>
+		     <td width="15%" class="text-center">是否项目签收</td>
+		      <td>
+					<label>
+				        <input type="radio" ng-value="9" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">是
+				    </label>
+				    <label>
+				        <input type="radio" ng-value="0" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">否
+				    </label>
+			  </td>
+		    </tr> 
+		    
 		    <tr>
 		    	<td width="15%" class="text-center" rowspan="2">备审资料</td>
 		    	<td colspan="3">

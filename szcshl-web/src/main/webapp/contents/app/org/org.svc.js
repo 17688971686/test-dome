@@ -25,7 +25,7 @@
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_org),
+				transport : common.kendoGridConfig().transport(url_org+"/fingByOData"),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {

@@ -131,7 +131,23 @@ public class FileRecordDto extends BaseDto{
 	private String meetingSignCopy;	
 	 
 	private String meetingScan;	
-	 
+	
+	private Integer expertAmanCount;
+		
+	private String expertAmanOriginal;
+		
+	private String expertAmanCopy;
+		
+	private String expertAmanScan;
+		
+	private Integer stageCostCount;
+		
+	private String stageCostOriginal;
+		
+	private String stageCostCopy;
+		
+	private String stageCostScan;
+	
 	private Integer meetingSignCount;
 	
 	private String projectChargeUserid;
@@ -668,6 +684,70 @@ public class FileRecordDto extends BaseDto{
 
 	public void setFileDate(Date fileDate) {
 		this.fileDate = fileDate;
+	}
+
+	public Integer getExpertAmanCount() {
+		return expertAmanCount;
+	}
+
+	public void setExpertAmanCount(Integer expertAmanCount) {
+		this.expertAmanCount = expertAmanCount;
+	}
+
+	public String getExpertAmanOriginal() {
+		return expertAmanOriginal;
+	}
+
+	public void setExpertAmanOriginal(String expertAmanOriginal) {
+		this.expertAmanOriginal = expertAmanOriginal;
+	}
+
+	public String getExpertAmanCopy() {
+		return expertAmanCopy;
+	}
+
+	public void setExpertAmanCopy(String expertAmanCopy) {
+		this.expertAmanCopy = expertAmanCopy;
+	}
+
+	public String getExpertAmanScan() {
+		return expertAmanScan;
+	}
+
+	public void setExpertAmanScan(String expertAmanScan) {
+		this.expertAmanScan = expertAmanScan;
+	}
+
+	public Integer getStageCostCount() {
+		return stageCostCount;
+	}
+
+	public void setStageCostCount(Integer stageCostCount) {
+		this.stageCostCount = stageCostCount;
+	}
+
+	public String getStageCostOriginal() {
+		return stageCostOriginal;
+	}
+
+	public void setStageCostOriginal(String stageCostOriginal) {
+		this.stageCostOriginal = stageCostOriginal;
+	}
+
+	public String getStageCostCopy() {
+		return stageCostCopy;
+	}
+
+	public void setStageCostCopy(String stageCostCopy) {
+		this.stageCostCopy = stageCostCopy;
+	}
+
+	public String getStageCostScan() {
+		return stageCostScan;
+	}
+
+	public void setStageCostScan(String stageCostScan) {
+		this.stageCostScan = stageCostScan;
 	}
 	
 }

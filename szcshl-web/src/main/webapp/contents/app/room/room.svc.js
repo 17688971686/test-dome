@@ -117,7 +117,7 @@
 			            timezone: "Etc/UTC",
 			            dataSource :dataSource,
 			            
-			          /*  resources: [
+			          /* resources: [
 			                {
 			                    field: "ownerId",
 			                    title: "Owner",
@@ -158,14 +158,14 @@
 			var model = vm.data.models[0];
 			var rb = {};
 			rb.rbName=model.rbName;
-			rb.rbDay = kendo.toString(model.rbDay, "yyyy-MM-dd HH:mm:ss");
+			//rb.rbDay = kendo.toString(model.rbDay, "yyyy-MM-dd HH:mm:ss");
 			rb.beginTime = kendo.toString(model.beginTime, "yyyy-MM-dd HH:mm:ss");
 			rb.endTime = kendo.toString(model.endTime, "yyyy-MM-dd HH:mm:ss");
 			
-			//rb.rbDay=$("#rbDay").val();
+			rb.rbDay=$("#rbDay").val();
 			//rb.beginTime = $("#beginTime").val();
 			//rb.endTime = $("#endTime").val();
-			//alert(rb.rbDay);
+			alert(rb.rbDay);
 			//alert(rb.beginTime);
 			//alert(rb.endTime);
 			

@@ -32,8 +32,8 @@ public class UserController {
     private UserService userService;
 
 	
-	@RequiresPermissions("user##get")
-	@RequestMapping(name = "获取用户数据", path = "",method=RequestMethod.GET)	
+	@RequiresPermissions("user#fingByOData#post")
+	@RequestMapping(name = "获取用户数据", path = "fingByOData",method=RequestMethod.POST)	
     @ResponseBody
     public PageModelDto<UserDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);

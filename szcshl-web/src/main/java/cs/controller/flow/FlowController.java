@@ -103,7 +103,7 @@ public class FlowController {
 
 	}
 	
-	@RequestMapping(name = "读取流程历史记录",path = "proccessInstance/history/{proccessInstanceId}",method = RequestMethod.GET)
+	@RequestMapping(name = "读取流程历史记录",path = "proccessInstance/history/{proccessInstanceId}",method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<FlowHistoryDto> findHisActivitiList(@PathVariable("proccessInstanceId") String proccessInstanceId){   	    
 		List<FlowHistoryDto> list = flowService.convertHistory(proccessInstanceId);		
 	    PageModelDto<FlowHistoryDto> pageModelDto = new PageModelDto<FlowHistoryDto>();				

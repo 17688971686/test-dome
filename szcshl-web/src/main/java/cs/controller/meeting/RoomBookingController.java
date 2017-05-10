@@ -59,7 +59,13 @@ public class RoomBookingController {
 		PageModelDto<RoomBookingDto> roomDtos=roomBookingSerivce.get(oDataObj);
 		return roomDtos;
 	}
-	
+	@RequiresPermissions("room#fingByOData#post")
+	@RequestMapping(name="获取会议预定数据",path = "fingByOData",method =RequestMethod.POST)
+	public @ResponseBody PageModelDto<RoomBookingDto> getCountList(HttpServletRequest request) throws ParseException{
+		ODataObj oDataObj = new ODataObj(request);
+		PageModelDto<RoomBookingDto> roomDtos=roomBookingSerivce.get(oDataObj);
+		return roomDtos;
+	}
 	@RequiresPermissions("room#meeting#get")
 	@RequestMapping( name="会议室查询", path="meeting", method=RequestMethod.GET)
 	@ResponseBody

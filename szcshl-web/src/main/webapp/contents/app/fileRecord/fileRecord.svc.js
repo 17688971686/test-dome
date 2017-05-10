@@ -8,12 +8,13 @@
 	function fileRecord($rootScope,$http) {
 		var service = {
 			initFileRecordData : initFileRecordData,		//初始化流程数据	
-			saveFileRecord : saveFileRecord					//保存
+			saveFileRecord : saveFileRecord,					//保存
 		};
-		return service;			
-	
+		return service;	
+		
 		//S_初始化
-		function initFileRecordData(vm){			
+		function initFileRecordData(vm){	
+			
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/fileRecord/html/initBySignId",
@@ -25,7 +26,8 @@
 					response:response,
 					fn:function() {		
 						if(response.data != null && response.data != ""){
-							vm.fileRecord = response.data;								
+							vm.fileRecord = response.data;	
+							
 						}	
 					}						
 				});
@@ -40,6 +42,7 @@
 		
 		//S_保存
 		function saveFileRecord(vm){
+		
 			common.initJqValidation($("#fileRecord_form"));
 			var isValid = $("#fileRecord_form").valid();
 			if (isValid) {

@@ -45,6 +45,7 @@ public class FileRecordServiceImpl implements FileRecordService {
 			fileRecord.setSign(sign);
 			if(!Validate.isString(fileRecord.getFileRecordId())){
 				fileRecord.setFileRecordId(UUID.randomUUID().toString());
+				fileRecord.setFileDate(now);
 			}			
 			fileRecordRepo.save(fileRecord);	
 			
@@ -69,6 +70,11 @@ public class FileRecordServiceImpl implements FileRecordService {
 				BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
 				fileRecordDto.setSignId(signid);
 				return fileRecordDto;
+			}else{
+				fileRecord.setProjectName(sign.getProjectname());
+				fileRecord.setProjectCode(sign.getProjectcode());
+				fileRecord.setProjectCompany(sign.getDesigncompanyid());
+				fileRecord.setProjectChargeUserid(sign.getMainchargeuserid());
 			}
 		}
 		return null;

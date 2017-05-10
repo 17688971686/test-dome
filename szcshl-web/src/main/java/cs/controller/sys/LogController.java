@@ -23,8 +23,8 @@ public class LogController {
 	@Autowired
 	private LogService logService;
 
-	@RequiresPermissions("log##get")	
-	@RequestMapping(name = "获取日志数据", path = "", method = RequestMethod.GET)
+	@RequiresPermissions("log#fingByOData#post")	
+	@RequestMapping(name = "获取日志数据", path = "fingByOData", method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<LogDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<LogDto> logDtos = logService.get(odataObj);

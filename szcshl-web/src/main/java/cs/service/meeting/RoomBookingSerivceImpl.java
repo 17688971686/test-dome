@@ -124,15 +124,19 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			
 			roomDto.setId(item.getId());
 			roomDto.setMrID(item.getMrID());
+			
 			Date rbDay = item.getRbDay();
 			String  day=DateUtils.toString(rbDay);
 			roomDto.setRbDay(day);
+			
 			Date bengin =	item.getBeginTime();
 			String start =DateUtils.toStringHours(bengin);
 			roomDto.setBeginTime(start);
+			
 			Date end = item.getEndTime();
 			String endTime = DateUtils.toStringHours(end);
 			roomDto.setEndTime(endTime);
+			
 			roomDto.setRbName(item.getRbName());
 			roomDto.setRemark(item.getRemark());
 			roomDto.setContent(item.getContent());
@@ -165,15 +169,16 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		List<RoomBooking>  room = criteria.list();
 		//String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
 		//List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
+		
 		//Criteria criteriaroom = roomBookingRepo.getSession().createCriteria(RoomBooking.class);
 		//criteriaroom.add(Restrictions.between("beginTime",roomBookingDto.getBeginTime(),roomBookingDto.getEndTime()));
 //		criteriaroom.add(Restrictions.between("endTime", roomBookingDto.getBeginTime(), roomBookingDto.getEndTime()));
-		//List<RoomBooking>  roomlist=criteriaroom.list();
+		//List<RoomBooking>  roomlist = criteriaroom.list();
 		if(room.isEmpty()){
-//			if(roomlist !=null && roomlist.size()>0){
-//				response.setMessage("会议安排时间冲突!!!");
-//				throw new IllegalArgumentException(String.format("会议安排时间冲突", roomBookingDto.getBeginTime()));
-//			}else{
+			//if(roomlist !=null && roomlist.size()>0){
+				//response.setMessage("会议安排时间冲突!!!");
+				//throw new IllegalArgumentException(String.format("会议安排时间冲突", roomBookingDto.getBeginTime()));
+			//}else{
 				
 				RoomBooking rb = new RoomBooking();
 				
@@ -199,7 +204,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				rb.setCreatedBy(currentUser.getLoginName());
 				rb.setModifiedBy(currentUser.getLoginName());
 				roomBookingRepo.save(rb);
-//			}
+			//}
 		}else{
 			throw new IllegalArgumentException(String.format("会议名称：%s 已经存在，请重新输入", roomBookingDto.getRbName()));
 		}
@@ -221,6 +226,16 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 //			room.setRbDay(roomBookingDto.getRbDay());
 //			room.setBeginTime(roomBookingDto.getBeginTime());
 //			room.setEndTime(roomBookingDto.getEndTime());
+			String rbday = roomBookingDto.getRbDay();
+			Date date = DateUtils.toDateDay(rbday);
+			room.setRbDay(date);
+			String begin=roomBookingDto.getBeginTime();
+			Date start =DateUtils.toDate(begin);
+			room.setBeginTime(start);
+			String endTime = roomBookingDto.getEndTime();
+			Date end =DateUtils.toDate(endTime);
+			room.setEndTime(end);
+			
 			room.setContent(roomBookingDto.getContent());
 			room.setRbType(roomBookingDto.getRbType());
 			room.setRbName(roomBookingDto.getRbName());

@@ -28,8 +28,8 @@ public class CompanyController {
 	@Autowired
 	private CompanyService companyService;
 	
-	@RequiresPermissions("company##get")
-	@RequestMapping(name="获取单位数据",path = "",method =RequestMethod.GET)
+	@RequiresPermissions("company#fingByOData#post")
+	@RequestMapping(name="获取单位数据",path = "fingByOData",method =RequestMethod.POST)
 	public @ResponseBody PageModelDto<CompanyDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj oDataObj = new ODataObj(request);
 		PageModelDto<CompanyDto> comDtos=companyService.get(oDataObj);
