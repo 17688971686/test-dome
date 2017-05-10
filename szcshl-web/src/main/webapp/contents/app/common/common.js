@@ -111,7 +111,8 @@
     	options.vm.alertDialogFn = function () {
             if (options.fn) {
             	if(options.closeDialog && options.closeDialog == true){
-            		 $('.alertDialog').modal('hide');    
+            		 $('.alertDialog').modal('hide'); 
+            		 $('.modal-backdrop').remove();
             	}
             	options.fn();               
             } else {
@@ -183,7 +184,7 @@
                     read: {
                         url: url,
                         dataType: "json",
-                        type: "GET",
+                        type: "post",
                         beforeSend: function (req) {                            
                             req.setRequestHeader('Token', service.getToken());
                         },
@@ -363,9 +364,8 @@
     function initDictData(options){
         options.$http({
        		method : 'get',
-				url : rootPath+'/dict/dictItems'
+			url : rootPath+'/dict/dictItems'
         }).then(function(response){
-         //save the metadata
        	 options.scope.dictMetaData = response.data;
        	 var dictsObj = {};
        	 reduceDict(dictsObj,response.data);
@@ -386,7 +386,9 @@
     			if(!dict.parentId){   				
     				dictsObj[dict.dictCode] = {};
     				dictsObj[dict.dictCode].dictId = dict.dictId;
-    				dictsObj[dict.dictCode].dictName = dict.dictName;   				
+    				dictsObj[dict.dictCode].dictCode = dict.dictCode;
+    				dictsObj[dict.dictCode].dictName = dict.dictName;  
+    				dictsObj[dict.dictCode].dictKey = dict.dictKey;   
     				reduceDict(dictsObj[dict.dictCode],dicts,dict.dictId);
     			}
     		}
@@ -401,6 +403,8 @@
     				var subDict = {};
     				subDict.dictId = dict.dictId;
     				subDict.dictName = dict.dictName;
+    				subDict.dictCode = dict.dictCode;
+    				subDict.dictKey = dict.dictKey; 
     				dictsObj.dicts.push(subDict);    				
     				//recruce
     				reduceDict(subDict,dicts,dict.dictId);
