@@ -99,6 +99,9 @@
 		
 		//begin#saveProject
 		function saveProject(vm){
+			common.initJqValidation($('#ProjectForm'));
+			var isValid = $('#ProjectForm').valid();
+			if (isValid) {
 			vm.isSubmit = true;
 			vm.model.peID=vm.peID;
 			vm.model.expertID = vm.expertID;
@@ -132,6 +135,7 @@
 				
 				})
 			}
+			}
 			
 			common.http({
 				vm : vm,
@@ -147,7 +151,7 @@
 			// })
 			//}
 			
-		}
+	}
 		
 		
 		
@@ -246,9 +250,9 @@
 		}
 		// begin#createProject
 		function createProject(vm){
-			common.initJqValidation();
-			var isValid = $('form').valid();
-				//vm.isSubmit = true;
+			common.initJqValidation($('#ProjectForm'));
+			var isValid = $('#ProjectForm').valid();
+			if (isValid) {
 				vm.model.projectbeginTime=$('#projectbeginTime').val();
 				vm.model.projectendTime=$('#projectendTime').val();
 				var httpOptions = {
@@ -288,6 +292,7 @@
 					success : httpSuccess
 				});
 
+		}
 		}
 	}
 })();

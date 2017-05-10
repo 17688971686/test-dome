@@ -63,27 +63,6 @@ public class ExpertServiceImpl implements ExpertService {
 			List<ExpertDto> listExpertDto=new ArrayList<>();
 			for (Expert item : listExpert) {
 				ExpertDto expertDto=new ExpertDto();
-				/*expertDto.setIdCard(item.getIdCard());
-				expertDto.setAcaDemy(item.getAcaDemy());
-				expertDto.setAddRess(item.getAddRess());
-				expertDto.setComPany(item.getComPany());
-				expertDto.setDegRee(item.getDegRee());
-				expertDto.setEmail(item.getEmail());
-				expertDto.setExpertID(item.getExpertID());
-				expertDto.setExpeRttype(item.getExpeRttype());
-				expertDto.setFax(item.getFax());
-				expertDto.setName(item.getName());
-				expertDto.setSex(item.getSex());
-				expertDto.setPhone(item.getPhone());
-				expertDto.setUserPhone(item.getUserPhone());
-				expertDto.setMaJor(item.getMaJor());
-				expertDto.setTitle(item.getTitle());
-				expertDto.setJob(item.getJob());
-				expertDto.setProcoSttype(item.getProcoSttype());
-				expertDto.setProteChtype(item.getProteChtype());
-				expertDto.setRemark(item.getRemark());
-				expertDto.setQualifiCations(item.getQualifiCations());
-				expertDto.setZipCode(item.getZipCode());*/
 				ExpertToExpertDto(item, expertDto);
 				if(item.getBirthDay()!=null){
 					expertDto.setBirthDay(formatter.format(item.getBirthDay()));
@@ -126,34 +105,9 @@ public class ExpertServiceImpl implements ExpertService {
 		@Override
 		@Transactional
 		public String createExpert(ExpertDto expertDto) {
-			Expert findExpert=expertRepo.findExpertByName(expertDto.getName());
+			Expert findExpert=expertRepo.findExpertByName(expertDto.getIdCard());
 			Expert expert = new Expert();
 			if (findExpert==null) {// 重复专家查询
-				/*expert.setExpertID(UUID.randomUUID().toString());
-				expert.setIdCard(expertDto.getIdCard());
-				expert.setAcaDemy(expertDto.getAcaDemy());
-				expert.setAddRess(expertDto.getAddRess());
-				expert.setBirthDay(expertDto.getBirthDay());
-				expert.setComPany(expertDto.getComPany());
-				expert.setDegRee(expertDto.getDegRee());
-				expert.setEmail(expertDto.getEmail());
-				expert.setExpeRttype(expertDto.getExpeRttype());
-				expert.setFax(expertDto.getFax());
-				expert.setCreateDate(expertDto.getCreateDate());
-				expert.setName(expertDto.getName());
-				expert.setSex(expertDto.getSex());
-				expert.setPhone(expertDto.getPhone());
-				expert.setUserPhone(expertDto.getUserPhone());
-				expert.setMaJor(expertDto.getMaJor());
-				expert.setTitle(expertDto.getTitle());
-				expert.setJob(expertDto.getJob());
-				expert.setProcoSttype(expertDto.getProcoSttype());
-				expert.setProteChtype(expertDto.getProteChtype());
-				expert.setRemark(expertDto.getRemark());
-				expert.setQualifiCations(expertDto.getQualifiCations());
-				expert.setZipCode(expertDto.getZipCode());
-				expert.setModifiedBy(currentUser.getLoginName());
-				expert.setCreatedBy(currentUser.getLoginName());*/
 				ExpertDtoToExpert(expertDto,expert);
 				try {
 					if(expertDto.getCreateDate()!=null){
@@ -171,7 +125,7 @@ public class ExpertServiceImpl implements ExpertService {
 				//expert=expertRepo.findExpertByName(expertDto.getName());
 				logger.info(String.format("添加专家,专家名为:%s", expert.getName()));
 			} else {
-				throw new IllegalArgumentException(String.format("专家名%s 已存在,请重新输入", expertDto.getName()));
+				throw new IllegalArgumentException(String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
 			}
 			return expert.getExpertID();
 		}

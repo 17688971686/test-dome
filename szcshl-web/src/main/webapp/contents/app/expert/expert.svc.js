@@ -103,10 +103,9 @@
 		
 		// begin#updateExpert
 		function updateExpert(vm) {
-			//common.initJqValidation();
+			common.initJqValidation();
 			var isValid = $('form').valid();
-			//alert(isValid);
-			//if (isValid) {
+			if (isValid) {
 				vm.isSubmit = true;
 				vm.model.expertID = vm.expertID;// id
 				vm.model.birthDay= $("#birthDay").val();
@@ -143,13 +142,7 @@
 					httpOptions : httpOptions,
 					success : httpSuccess
 				});
-
-			//} else {
-				// common.alert({
-				// vm:vm,
-				// msg:"您填写的信息不正确,请核对后提交!"
-				// })
-			//}
+			}
 
 		}
 		// begin#deleteUser
@@ -286,19 +279,9 @@
 		// begin#createUser
 		
 		function createExpert(vm) {	
-			/*vm.work = new Array();
-			
-			var obj = {};
-			obj.beginTime = "1234"
-			obj.endTime = "1234"
-			obj.companyName = "1234"
-			obj.job = "1234"
-			vm.work.push(obj);
-
-			
-			return ;*/
 			common.initJqValidation();
 			var isValid = $('form').valid();
+			if(isValid){
 				vm.model.birthDay=$('#birthDay').val();
 				vm.model.createDate=$('#createDate').val();
 				var httpOptions = {
@@ -340,6 +323,7 @@
 					success : httpSuccess
 				});
 
+			}
 		}
 		// end#createUser
 		
@@ -355,6 +339,8 @@
 				vm.model = response.data.value[0];
 				vm.work=response.data.value[0].work;
 				vm.project=response.data.value[0].project;
+				$('#birthDay').val(vm.model.birthDay);
+				$('#createDate').val(vm.model.createDate);
 				console.log(vm.model);
 				if (vm.isUpdate) {
 					//initZtreeClient(vm);
