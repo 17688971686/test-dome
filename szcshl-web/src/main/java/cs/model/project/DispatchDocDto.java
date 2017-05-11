@@ -1,60 +1,283 @@
 package cs.model.project;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.Formula;
+
+import cs.domain.project.Sign;
 import cs.model.BaseDto;
 
 public class DispatchDocDto extends BaseDto{
-	//主键
-	private String id;	
+private String id;	
+	
 	//发文方式
 	private String dispatchWay;
+	
 	//项目类别
 	private String projectType;
+	
 	//发文类别
 	private String dispatchType;
 	
+	//文件标题
 	private String fileTitle;
 	
+	//发文部门
 	private String orgId;
 	
+	//拟稿人
 	private String userId;
 	
-	private Date draftDate;
+	//校对人
+	private String proofreadId;
 	
+	//拟稿日期
+	private String draftDate;
+	
+	//密码等级
 	private String secretLevel;
 	
+	//年度计划
 	private String yearPlan;
 	
+	//紧急等级
 	private String urgentLevel;
 	
-	private Date dispatchDate;
+	//发文日期
+	private String dispatchDate;
 	
+	//文件字号
 	private String fileNum;
 	
+	//发文范围
 	private String dispatchScope;
 	
-	private String printCount;
+	//打印份数
+	private Integer printCount;
 	
-	private String desc;
+	//相关说明
+	private String description;
 	
+	//评审意见摘要
 	private String reviewAbstract;
 	
+	//部长核稿意见
 	private String ministerSuggesttion;
 	
+	//部长核稿日期
 	private Date ministerDate;
 	
+	//分管副局长核稿意见
 	private String viceDirectorSuggesttion;
 	
+	//分管副局长核稿日期
 	private Date viceDirectorDate;
 	
+	//局长核稿意见
 	private String directorSuggesttion;
 	
+	//局长核稿日期
 	private Date directorDate;
 
+	//申报金额
+	private BigDecimal declareValue;
+	
+	//审定金额
+	private BigDecimal authorizeValue;
+	
+	//核减（增）金额
+	private BigDecimal extraValue;
+	
+	//增减（增）率
+	private BigDecimal extraRate;
+	
+	//批复金额
+	private BigDecimal approveValue;
+	
+	//备注
+	private String remark;
+	
+	//项目建设必要性
+	private String projectBuildNecess;
+	
+	//审定建设规模及内容
+	private String buildSizeContent;
+	
+	//投资匡算及资金来源
+	private String fundTotalOrigin;
+	
+	//下一阶段工作要求
+	private String nextWorkPlan;
+	
+	//编号对应的字段
+	//拟稿人名称
+	private String userName;
+	
+	//发文部门名称
+	private String orgName;
+	
+	//校对人名称
+	private String proofreadName;
+	
 	//签收ID
 	private String signId;
-		
+	
+	//主任签发
+	private String DirectorIssue;
+	
+	//是否与其他表关联
+	private String isRelated;
+	
+	
+	public String getDraftDate() {
+		return draftDate;
+	}
+
+	public void setDraftDate(String draftDate) {
+		this.draftDate = draftDate;
+	}
+
+	public String getDispatchDate() {
+		return dispatchDate;
+	}
+
+	public void setDispatchDate(String dispatchDate) {
+		this.dispatchDate = dispatchDate;
+	}
+
+	public String getProofreadId() {
+		return proofreadId;
+	}
+
+	public void setProofreadId(String proofreadId) {
+		this.proofreadId = proofreadId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public BigDecimal getDeclareValue() {
+		return declareValue;
+	}
+
+	public void setDeclareValue(BigDecimal declareValue) {
+		this.declareValue = declareValue;
+	}
+
+	public BigDecimal getAuthorizeValue() {
+		return authorizeValue;
+	}
+
+	public void setAuthorizeValue(BigDecimal authorizeValue) {
+		this.authorizeValue = authorizeValue;
+	}
+
+	public BigDecimal getExtraValue() {
+		return extraValue;
+	}
+
+	public void setExtraValue(BigDecimal extraValue) {
+		this.extraValue = extraValue;
+	}
+
+	public BigDecimal getExtraRate() {
+		return extraRate;
+	}
+
+	public void setExtraRate(BigDecimal extraRate) {
+		this.extraRate = extraRate;
+	}
+
+	public BigDecimal getApproveValue() {
+		return approveValue;
+	}
+
+	public void setApproveValue(BigDecimal approveValue) {
+		this.approveValue = approveValue;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getProjectBuildNecess() {
+		return projectBuildNecess;
+	}
+
+	public void setProjectBuildNecess(String projectBuildNecess) {
+		this.projectBuildNecess = projectBuildNecess;
+	}
+
+	public String getBuildSizeContent() {
+		return buildSizeContent;
+	}
+
+	public void setBuildSizeContent(String buildSizeContent) {
+		this.buildSizeContent = buildSizeContent;
+	}
+
+	public String getFundTotalOrigin() {
+		return fundTotalOrigin;
+	}
+
+	public void setFundTotalOrigin(String fundTotalOrigin) {
+		this.fundTotalOrigin = fundTotalOrigin;
+	}
+
+	public String getNextWorkPlan() {
+		return nextWorkPlan;
+	}
+
+	public void setNextWorkPlan(String nextWorkPlan) {
+		this.nextWorkPlan = nextWorkPlan;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getProofreadName() {
+		return proofreadName;
+	}
+
+	public void setProofreadName(String proofreadName) {
+		this.proofreadName = proofreadName;
+	}
+
+	public void setPrintCount(Integer printCount) {
+		this.printCount = printCount;
+	}
+
+	public Integer getPrintCount() {
+		return printCount;
+	}
+
 	public String getSignId() {
 		return signId;
 	}
@@ -119,13 +342,6 @@ public class DispatchDocDto extends BaseDto{
 		this.userId = userId;
 	}
 
-	public Date getDraftDate() {
-		return draftDate;
-	}
-
-	public void setDraftDate(Date draftDate) {
-		this.draftDate = draftDate;
-	}
 
 	public String getSecretLevel() {
 		return secretLevel;
@@ -151,14 +367,6 @@ public class DispatchDocDto extends BaseDto{
 		this.urgentLevel = urgentLevel;
 	}
 
-	public Date getDispatchDate() {
-		return dispatchDate;
-	}
-
-	public void setDispatchDate(Date dispatchDate) {
-		this.dispatchDate = dispatchDate;
-	}
-
 	public String getFileNum() {
 		return fileNum;
 	}
@@ -173,22 +381,6 @@ public class DispatchDocDto extends BaseDto{
 
 	public void setDispatchScope(String dispatchScope) {
 		this.dispatchScope = dispatchScope;
-	}
-
-	public String getPrintCount() {
-		return printCount;
-	}
-
-	public void setPrintCount(String printCount) {
-		this.printCount = printCount;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
 	}
 
 	public String getReviewAbstract() {
@@ -245,6 +437,22 @@ public class DispatchDocDto extends BaseDto{
 
 	public void setDirectorDate(Date directorDate) {
 		this.directorDate = directorDate;
+	}
+
+	public String getDirectorIssue() {
+		return DirectorIssue;
+	}
+
+	public void setDirectorIssue(String directorIssue) {
+		DirectorIssue = directorIssue;
+	}
+
+	public String getIsRelated() {
+		return isRelated;
+	}
+
+	public void setIsRelated(String isRelated) {
+		this.isRelated = isRelated;
 	}
 			
 }

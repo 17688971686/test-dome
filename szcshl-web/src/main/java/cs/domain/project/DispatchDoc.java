@@ -1,5 +1,6 @@
 package cs.domain.project;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 
@@ -43,13 +45,17 @@ public class DispatchDoc extends DomainBase{
 	@Column(columnDefinition="VARCHAR(256)")
 	private String fileTitle;
 	
-	//范文部门
+	//发文部门
 	@Column(columnDefinition="VARCHAR(64)")
 	private String orgId;
 	
 	//拟稿人
 	@Column(columnDefinition="VARCHAR(64)")
 	private String userId;
+	
+	//校对人
+	@Column(columnDefinition="VARCHAR(64)")
+	private String proofreadId;
 	
 	//拟稿日期
 	@Column(columnDefinition="DATE")
@@ -111,15 +117,208 @@ public class DispatchDoc extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String directorSuggesttion;
 	
+	//主任签发
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String DirectorIssue;
+	
 	//局长核稿日期
 	@Column(columnDefinition="DATE")
 	private Date directorDate;
 
+	//申报金额
+	@Column(columnDefinition="NUMBER")
+	private BigDecimal declareValue;
+	
+	//审定金额
+	@Column(columnDefinition="NUMBER")
+	private BigDecimal authorizeValue;
+	
+	//核减（增）金额
+	@Column(columnDefinition="NUMBER")
+	private BigDecimal extraValue;
+	
+	//增减（增）率
+	@Column(columnDefinition="NUMBER")
+	private BigDecimal extraRate;
+	
+	//批复金额
+	@Column(columnDefinition="NUMBER")
+	private BigDecimal approveValue;
+	
+	//备注
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String remark;
+	
+	//项目建设必要性
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String projectBuildNecess;
+	
+	//审定建设规模及内容
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String buildSizeContent;
+	
+	//投资匡算及资金来源
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String fundTotalOrigin;
+	
+	//下一阶段工作要求
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String nextWorkPlan;
+	
+	//是否有其他关联
+	@Column(columnDefinition="VARCHAR(30)")
+	private String isRelated;
+	
 	//收文，一对一
 	@OneToOne
 	@JoinColumn(name="signId")
 	private Sign sign;
-		
+	
+	//编号对应的字段
+	//拟稿人名称
+	@Column(columnDefinition="VARCHAR(225)")
+	@Formula("(select u.loginName from cs_user u where u.id = userId)")
+	private String userName;
+	
+	//发文部门名称
+	@Column(columnDefinition="VARCHAR(225)")
+	@Formula("(select o.name from cs_org o where o.id = orgId)")
+	private String orgName;
+	
+	//校对人名称
+	@Column(columnDefinition="VARCHAR(225)")
+	@Formula("(select u.loginName from cs_user u where u.id = proofreadId)")
+	private String proofreadName;
+	
+	
+	public String getIsRelated() {
+		return isRelated;
+	}
+
+	public void setIsRelated(String isRelated) {
+		this.isRelated = isRelated;
+	}
+
+	public String getDirectorIssue() {
+		return DirectorIssue;
+	}
+
+	public void setDirectorIssue(String directorIssue) {
+		DirectorIssue = directorIssue;
+	}
+
+	public BigDecimal getDeclareValue() {
+		return declareValue;
+	}
+
+	public void setDeclareValue(BigDecimal declareValue) {
+		this.declareValue = declareValue;
+	}
+
+	public BigDecimal getAuthorizeValue() {
+		return authorizeValue;
+	}
+
+	public void setAuthorizeValue(BigDecimal authorizeValue) {
+		this.authorizeValue = authorizeValue;
+	}
+
+	public BigDecimal getExtraValue() {
+		return extraValue;
+	}
+
+	public void setExtraValue(BigDecimal extraValue) {
+		this.extraValue = extraValue;
+	}
+
+	public BigDecimal getExtraRate() {
+		return extraRate;
+	}
+
+	public void setExtraRate(BigDecimal extraRate) {
+		this.extraRate = extraRate;
+	}
+
+	public BigDecimal getApproveValue() {
+		return approveValue;
+	}
+
+	public void setApproveValue(BigDecimal approveValue) {
+		this.approveValue = approveValue;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getProjectBuildNecess() {
+		return projectBuildNecess;
+	}
+
+	public void setProjectBuildNecess(String projectBuildNecess) {
+		this.projectBuildNecess = projectBuildNecess;
+	}
+
+	public String getBuildSizeContent() {
+		return buildSizeContent;
+	}
+
+	public void setBuildSizeContent(String buildSizeContent) {
+		this.buildSizeContent = buildSizeContent;
+	}
+
+	public String getFundTotalOrigin() {
+		return fundTotalOrigin;
+	}
+
+	public void setFundTotalOrigin(String fundTotalOrigin) {
+		this.fundTotalOrigin = fundTotalOrigin;
+	}
+
+	public String getNextWorkPlan() {
+		return nextWorkPlan;
+	}
+
+	public void setNextWorkPlan(String nextWorkPlan) {
+		this.nextWorkPlan = nextWorkPlan;
+	}
+
+	public String getProofreadId() {
+		return proofreadId;
+	}
+
+	public void setProofreadId(String proofreadId) {
+		this.proofreadId = proofreadId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getProofreadName() {
+		return proofreadName;
+	}
+
+	public void setProofreadName(String proofreadName) {
+		this.proofreadName = proofreadName;
+	}
+
 	public Sign getSign() {
 		return sign;
 	}

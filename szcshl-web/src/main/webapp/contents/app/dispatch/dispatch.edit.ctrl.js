@@ -11,11 +11,23 @@
 
         vm.dispatchDoc = {};
         vm.dispatchDoc.signId = $state.params.signid;
-        
-        dispatchSvc.initDispatchData();
-        
+        //alert(vm.dispatchDoc.dispatchWay);
         vm.create = function(){
         	dispatchSvc.saveDispatch(vm);
+        }
+        
+        activate();
+        function activate() {
+        	 kendo.culture("zh-CN");
+             $("#draftDate").kendoDatePicker({
+             	 format: "yyyy-MM-dd",
+             	 weekNumber: true
+             });
+             $("#dispatchDate").kendoDatePicker({
+            	 format: "yyyy-MM-dd",
+            	 weekNumber: true
+             });
+             dispatchSvc.initDispatchData(vm);
         }
     }
 })();
