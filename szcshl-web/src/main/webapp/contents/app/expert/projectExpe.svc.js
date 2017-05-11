@@ -208,11 +208,7 @@
 				vm.peID=isCheck.val();
 				getProjectById(vm);
 				vm.expertID = vm.model.expertID;
-				gotoJPage(vm);
-				
-				
-				
-				
+				gotoJPage(vm);																
 			}
 		}
 		
@@ -224,9 +220,9 @@
 			};*/
 			var WorkeWindow = $("#pjwindow");
 			 WorkeWindow.kendoWindow({
-	                width: "1000px",
-	                height: "500px",
-	                title: "添加工作经历",
+	                width: "690px",
+	                height: "330px",
+	                title: "添加项目经历",
 	                visible: false,
 	                modal: true,
 	                closable: true,
@@ -272,8 +268,7 @@
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
-									//vm.isSubmit = false;
-									//vm.isUpdate=true;
+									vm.projectkHistory = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
 									

@@ -10,6 +10,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
+import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 
 public interface SignService{
@@ -42,5 +43,7 @@ public interface SignService{
 
 	void endFlow(String signid);
 	
-	SignDto findById(String signid);	
+	SignDto findById(String signid);
+
+	UserDto findSecondChargePerson(String signid);	
 }

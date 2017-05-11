@@ -2,8 +2,6 @@ package cs.model;
 
 import java.util.Date;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import cs.common.Util;
 
 public class BaseDto {

@@ -16,7 +16,7 @@
                 msg: "确认删除数据吗？",
                 fn: function () {
                     $('.confirmDialog').modal('hide');
-                    ${info.beanName?uncap_first}Svc.deleteMytest(vm, id);
+                    ${info.beanName?uncap_first}Svc.delete${info.beanName!''}(vm, id);
                 }
             });
         }

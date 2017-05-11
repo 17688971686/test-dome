@@ -63,10 +63,14 @@ public class WorkProgramDto extends BaseDto{
 	private String reviewDept;
 	
 	//第一负责人
-	private String mianChargePerson;
+	private String mianChargeUserId;
+	
+	private String mianChargeUserName;
 	
 	//第二负责人
-	private String secondChargePerson;
+	private String secondChargeUserId;
+	
+	private String secondChargeUserName;
 	
 	//是否有补充函
 	private String isHaveSuppLetter;
@@ -293,20 +297,36 @@ public class WorkProgramDto extends BaseDto{
 		this.reviewDept = reviewDept;
 	}
 
-	public String getMianChargePerson() {
-		return mianChargePerson;
+	public String getMianChargeUserId() {
+		return mianChargeUserId;
 	}
 
-	public void setMianChargePerson(String mianChargePerson) {
-		this.mianChargePerson = mianChargePerson;
+	public void setMianChargeUserId(String mianChargeUserId) {
+		this.mianChargeUserId = mianChargeUserId;
 	}
 
-	public String getSecondChargePerson() {
-		return secondChargePerson;
+	public String getMianChargeUserName() {
+		return mianChargeUserName;
 	}
 
-	public void setSecondChargePerson(String secondChargePerson) {
-		this.secondChargePerson = secondChargePerson;
+	public void setMianChargeUserName(String mianChargeUserName) {
+		this.mianChargeUserName = mianChargeUserName;
+	}
+
+	public String getSecondChargeUserId() {
+		return secondChargeUserId;
+	}
+
+	public void setSecondChargeUserId(String secondChargeUserId) {
+		this.secondChargeUserId = secondChargeUserId;
+	}
+
+	public String getSecondChargeUserName() {
+		return secondChargeUserName;
+	}
+
+	public void setSecondChargeUserName(String secondChargeUserName) {
+		this.secondChargeUserName = secondChargeUserName;
 	}
 
 	public String getIsHaveSuppLetter() {

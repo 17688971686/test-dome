@@ -2,10 +2,11 @@ package cs.repository;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 
-
+import cs.common.HqlBuilder;
 import cs.repository.odata.ODataObj;
 
 
@@ -32,5 +33,16 @@ public interface IRepository<T, ID> {
 
 	public void setSession(Session session);
 	
-	public Session getSession(); 
+	Criteria  getExecutableCriteria();
+	
+	public Session getSession();
+	
+	List<T> findByHql(String hql, Object... values);
+	
+	public int executeHql(String hql);
+	
+	public int executeHql(HqlBuilder hqlBuilder);
+
+	public int executeSql(String sql);
+
 }

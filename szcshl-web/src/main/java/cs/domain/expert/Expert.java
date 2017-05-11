@@ -20,55 +20,92 @@ import cs.domain.DomainBase;
 @Table(name="cs_expert")
 public class Expert extends DomainBase {
 	@Id
-	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String expertID;//专家ID
+	
 	@Column(columnDefinition="varchar(32) NOT NULL")
 	private String name;//专家姓名
-	@Column(columnDefinition="varchar(2) comment '性别'")
+	
+	@Column(columnDefinition="varchar(5)")
 	private String sex;//性别
+	
 	@Column(columnDefinition="date")
 	private Date birthDay;//出生日期
-	@Column(columnDefinition="varchar(50) comment '身份证号'")
+	
+	@Column(columnDefinition="varchar(50)")
 	private String idCard;//身份证号
+	
 	@Column(columnDefinition="varchar(128) ")
 	private String qualifiCations;//最高学历
+	
 	@Column(columnDefinition="varchar(128) ")
 	private String acaDemy;//毕业院校
+	
 	@Column(columnDefinition="varchar(255) ")
 	private String degRee;//最高学位
+	
 	@Column(columnDefinition="varchar(50) ")
 	private String userPhone;//手机号码
+	
 	@Column(columnDefinition="date")
-	private Date createDate;//创建日期
+	private Date graduateDate;//毕业时间
+	
 	@Column(columnDefinition="varchar(128) ")
 	private String comPany;//工作单位
+	
 	@Column(columnDefinition="varchar(100) ")
 	private String job;//现任职位
+	
 	@Column(columnDefinition="varchar(255) ")
-	private String title;//职称
+	private String post;//职称
+	
 	@Column(columnDefinition="varchar(50) ")
 	private String phone;//办公电话
+	
 	@Column(columnDefinition="varchar(50) ")
 	private String fax;//传真
+	
 	@Column(columnDefinition="varchar(50) ")
 	private String email;//电子邮箱
+	
 	@Column(columnDefinition="varchar(225) ")
 	private String addRess;//通讯地址
+	
 	@Column(columnDefinition="varchar(50) ")
 	private String zipCode;//邮编
+		
+	@Column(columnDefinition="varchar(64) ")
+	private String majorStudy;	//所学专业
+	
+	@Column(columnDefinition="varchar(64) ")
+	private String majorWork;	//从事专业
+	
 	@Column(columnDefinition="varchar(128) ")
-	private String maJor;//所学专业
+	private String maJorBig;//突出专业(大类)
+	
+	@Column(columnDefinition="varchar(128) ")
+	private String maJorSmall;//突出专业(小类)
+	
 	@Column(columnDefinition="varchar(30) ")
 	private String expeRttype;//专家类别
+	
 	@Column(columnDefinition="varchar(30) ")
 	private String procoSttype;//工程造价类
+	
 	@Column(columnDefinition="varchar(30) ")
 	private String proteChtype;//项目类型
+	
 	@Column(columnDefinition="varchar(255) ")
 	private String remark;//备注
+	
+	@Column(columnDefinition="varchar(256) ")
+	private String openingBank;//开户行
+	
+	@Column(columnDefinition="varchar(32) ")
+	private String bankAccount;	//银行账号
+	
 	@Column(columnDefinition="varchar(30) ")
-	private String state;//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
+	private String state;	//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
+	
 	@OneToMany(mappedBy="expert")
 	private List<WorkExpe> work;
 	
@@ -80,12 +117,12 @@ public class Expert extends DomainBase {
 	}
 	public void setBirthDay(Date birthDay) {
 		this.birthDay = birthDay;
+	}	
+	public Date getGraduateDate() {
+		return graduateDate;
 	}
-	public Date getCreateDate() {
-		return createDate;
-	}
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+	public void setGraduateDate(Date graduateDate) {
+		this.graduateDate = graduateDate;
 	}
 	public List<ProjectExpe> getProject() {
 		return project;
@@ -117,7 +154,6 @@ public class Expert extends DomainBase {
 	public void setName(String name) {
 		this.name = name;
 	}
-	@Column(name = "sex",  length = 6)
 	public String getSex() {
 		return sex;
 	}
@@ -157,11 +193,12 @@ public class Expert extends DomainBase {
 	public void setJob(String job) {
 		this.job = job;
 	}
-	public String getTitle() {
-		return title;
+	
+	public String getPost() {
+		return post;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setPost(String post) {
+		this.post = post;
 	}
 	public String getPhone() {
 		return phone;
@@ -192,12 +229,21 @@ public class Expert extends DomainBase {
 	}
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}	
+	public String getMaJorBig() {
+		return maJorBig;
 	}
-	public String getMaJor() {
-		return maJor;
+	public void setMaJorBig(String maJorBig) {
+		this.maJorBig = maJorBig;
 	}
-	public void setMaJor(String maJor) {
-		this.maJor = maJor;
+	public String getMaJorSmall() {
+		return maJorSmall;
+	}
+	public void setMaJorSmall(String maJorSmall) {
+		this.maJorSmall = maJorSmall;
+	}
+	public String getQualifiCations() {
+		return qualifiCations;
 	}
 	public String getExpeRttype() {
 		return expeRttype;
@@ -229,13 +275,29 @@ public class Expert extends DomainBase {
 	public void setState(String state) {
 		this.state = state;
 	}
-	
-	
-
-	
-	
-	
-	
-	
-
+	public String getMajorStudy() {
+		return majorStudy;
+	}
+	public void setMajorStudy(String majorStudy) {
+		this.majorStudy = majorStudy;
+	}
+	public String getMajorWork() {
+		return majorWork;
+	}
+	public void setMajorWork(String majorWork) {
+		this.majorWork = majorWork;
+	}
+	public String getOpeningBank() {
+		return openingBank;
+	}
+	public void setOpeningBank(String openingBank) {
+		this.openingBank = openingBank;
+	}
+	public String getBankAccount() {
+		return bankAccount;
+	}
+	public void setBankAccount(String bankAccount) {
+		this.bankAccount = bankAccount;
+	}
+			
 }

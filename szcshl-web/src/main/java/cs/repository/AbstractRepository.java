@@ -6,17 +6,21 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
+import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import cs.common.HqlBuilder;
 import cs.repository.odata.ODataObj;
 
-public class AbstractRepository<T,ID extends Serializable> extends RepositoryHelper implements IRepository<T, ID> {
+public class AbstractRepository<T,ID extends Serializable> implements IRepository<T, ID> {
 	protected static Logger logger = Logger.getLogger(AbstractRepository.class);
+	
 	private Class<T> persistentClass;
 	private Session session;	
 	@Autowired
@@ -142,4 +146,55 @@ public class AbstractRepository<T,ID extends Serializable> extends RepositoryHel
 		return getSession().get(this.getPersistentClass(), id);
 	}
 
+	
+	@Override
+	public List<T> findByHql(String hql, Object... values) {
+		return createQuery(hql, values).list();
+	}
+
+
+	protected Query<T> createQuery(String queryString, Object... values) {
+		Query<T> queryObject = getSession().createQuery(queryString,this.getPersistentClass());
+		if (values != null) {
+			for (int i = 0; i < values.length; i++) {
+				queryObject.setParameter(i, values[i]);
+			}
+		}
+		return queryObject;
+	}
+
+	@Override
+	public int executeHql(String hql) {
+		Query<?> q = this.getCurrentSession().createQuery(hql);
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int executeSql(String sql) {
+		NativeQuery<T> q = this.getCurrentSession().createNativeQuery(sql,this.getPersistentClass());
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int executeHql(HqlBuilder hqlBuilder) {
+		Query<?> q = setParamsToQuery(this.getCurrentSession().createQuery(hqlBuilder.getHqlString()),hqlBuilder);
+		int total = q.executeUpdate();
+		return total;
+	}
+	
+	public Query<?> setParamsToQuery(Query<?> query,HqlBuilder hqlBuilder) {
+		List<String> params = hqlBuilder.getParams();
+		List<Object> values = hqlBuilder.getValues();
+		List<Type> types = hqlBuilder.getTypes();
+		if (params != null) {
+			for (int i = 0; i < params.size(); i++) {
+				if (types.get(i) == null) {
+					query.setParameter(params.get(i), values.get(i));
+				} else {
+					query.setParameter(params.get(i), values.get(i), types.get(i));
+				}
+			}
+		}		
+		return query;
+	}	
 }

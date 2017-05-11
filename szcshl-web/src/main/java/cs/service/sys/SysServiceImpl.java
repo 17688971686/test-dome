@@ -20,20 +20,22 @@ import cs.domain.sys.Resource;
 import cs.domain.sys.Role;
 import cs.domain.sys.SysConfig;
 import cs.domain.sys.User;
-import cs.repository.repositoryImpl.sys.RoleRepoImpl;
-import cs.repository.repositoryImpl.sys.SysConfigRepoImpl;
-import cs.repository.repositoryImpl.sys.UserRepoImpl;
+import cs.repository.repositoryImpl.sys.RoleRepo;
+import cs.repository.repositoryImpl.sys.SysConfigRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 
 @Service
 public class SysServiceImpl implements SysService {
 	private static Logger logger = Logger.getLogger(SysServiceImpl.class);
 
 	@Autowired
-	private RoleRepoImpl roleRepo;
+	private RoleRepo roleRepo;
+	
 	@Autowired
-	private UserRepoImpl userRepo;
+	private UserRepo userRepo;
+	
 	@Autowired
-	private SysConfigRepoImpl sysConfigRepo;
+	private SysConfigRepo sysConfigRepo;
 
 	@Override
 	public List<SysResourceDto> get() {

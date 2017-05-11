@@ -7,7 +7,7 @@
     ${info.beanName?uncap_first}.$inject = ['$http'];
 
     function ${info.beanName?uncap_first}($http) {
-        var url_${info.beanName?uncap_first} = rootPath + "/${info.beanName?uncap_first}", url_back = '#/${info.beanName?uncap_first}';
+        var url_${info.beanName?uncap_first} = rootPath + "/${info.beanName?uncap_first}", url_back = '#/${info.beanName?uncap_first}List';
         var service = {
             grid: grid,
             get${info.beanName!''}ById: get${info.beanName!''}ById,
@@ -82,8 +82,15 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                        vm.isSubmit = false;
-                        vm.gridOptions.dataSource.read();
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
                     }
                 });
             };
@@ -117,10 +124,9 @@
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功",
+                                closeDialog :true,
                                 fn: function () {
                                     vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
                                     location.href = url_back;
                                 }
                             });
@@ -140,12 +146,13 @@
 
         // begin#get${info.beanName!''}ById
         function get${info.beanName!''}ById(vm) {
-            var httpOptions = {
+        	var httpOptions = {
                 method: 'get',
-                url: common.format(url_${info.beanName?uncap_first} + "?$filter=id eq '{0}'", vm.${idField!'id'})
+                url: rootPath + "/${info.beanName?uncap_first}/html/findById",
+                params:{${idField}:vm.${idField}}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data.value[0];
+                vm.model = response.data;
             };
 
             common.http({
@@ -153,7 +160,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
-            });
+            });                       
         }
 
         // begin#grid

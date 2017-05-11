@@ -28,6 +28,7 @@ import java.util.Date;
 @RequestMapping(name = "${info.comment!''}", path = "${info.beanName?uncap_first}")
 public class ${fileName!''} {
 
+	String ctrlName = "${info.beanName?uncap_first}";
     @Autowired
     private ${info.beanName!''}Service ${info.beanName?uncap_first}Service;
 
@@ -36,7 +37,8 @@ public class ${fileName!''} {
     @ResponseBody
     public PageModelDto<${info.beanName}Dto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        return ${info.beanName?uncap_first}Service.getDto(odataObj);
+        PageModelDto<${info.beanName}Dto> ${info.beanName?uncap_first}Dtos = ${info.beanName?uncap_first}Service.get(odataObj);	
+        return ${info.beanName?uncap_first}Dtos;
     }
 
     @RequiresPermissions("${info.beanName?uncap_first}##post")
@@ -46,16 +48,17 @@ public class ${fileName!''} {
         ${info.beanName?uncap_first}Service.create(record);
     }
 
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
+	@Transactional
+	public @ResponseBody ${info.beanName}Dto findById(@RequestParam(required = true)String id){		
+		return ${info.beanName?uncap_first}Service.findById(id);
+	}
+	
     @RequiresPermissions("${info.beanName?uncap_first}##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-        String[] ids = id.split(",");
-        if (ids.length > 1) {
-            ${info.beanName?uncap_first}Service.delete(ids);
-        } else {
-            ${info.beanName?uncap_first}Service.delete(id);
-        }
+    	${info.beanName?uncap_first}Service.delete(id);      
     }
 
     @RequiresPermissions("${info.beanName?uncap_first}##put")
@@ -69,13 +72,13 @@ public class ${fileName!''} {
     @RequiresPermissions("${info.beanName?uncap_first}#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return "${info.beanName?uncap_first}/${info.beanName?uncap_first}List";
+        return ctrlName+"/list"; 
     }
 
     @RequiresPermissions("${info.beanName?uncap_first}#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return "${info.beanName?uncap_first}/${info.beanName?uncap_first}Edit";
+        return ctrlName+"/edit";
     }
     // end#html
 

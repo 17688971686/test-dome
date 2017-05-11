@@ -16,7 +16,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.subject.Subject;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -448,8 +447,8 @@ public class UserServiceImpl implements UserService {
 	 * 根据部门ID查询对应的用户信息
 	 */
 	@Override
-	public List<UserDto> findUserByDeptId(String deptId) {
-		List<User> userList = userRepo.findUserByDeptId(deptId);
+	public List<UserDto> findUserByOrgId(String orgId) {
+		List<User> userList = userRepo.findUserByOrgId(orgId);
 		List<UserDto> userDtolist = new ArrayList<>();
 		
 		if(userList != null && userList.size() > 0){

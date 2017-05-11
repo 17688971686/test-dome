@@ -243,21 +243,34 @@ desired effect
 
                     </ul>
                 </li>
+                
+                <!-- begin 专家管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">专家管理</span> <span
+                        <i class="fa fa-link"></i> <span class="title">专家管理</span> 
+                        <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
+                    </a>
+                    <ul class="treeview-menu">
+                    	<li><a href="javascript:void(0)" ui-sref="expertEdit({id:null})">专家信息录入</a></li>
+                    	<li><a href="javascript:void(0)" ui-sref="expertAudit">专家信息审核</a></li>
+                    	<li><a href="javascript:void(0)" ui-sref="expertRepeat">重复专家查询</a></li>                          
+                        <li><a href="javascript:void(0)" ui-sref="expert">综合查询</a></li>                     
+                    </ul>
+                </li>
+                <!-- end 专家管理 -->
+
+				<!-- begin 机关单位管理 -->
+				<li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-link"></i> <span class="title">机关单位管理</span> <span
                             class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="ExpertReList">重复专家查询</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="ExpertEdit">专家信息录入</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="ExpertAudit">专家信息审核</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="ExpertList">综合查询</a></li>
-
+                        <li><a href="javascript:void(0)" ui-sref="listDept">机关部门</a></li>                       
                     </ul>
                 </li>
-
+                <!-- end 机关单位管理 -->
             </ul>
             <!-- /.sidebar-menu -->
 

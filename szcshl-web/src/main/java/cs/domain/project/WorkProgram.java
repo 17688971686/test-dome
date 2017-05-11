@@ -11,6 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 
@@ -112,12 +113,18 @@ public class WorkProgram extends DomainBase{
 	private String reviewDept;
 	
 	//第一负责人
-	@Column(columnDefinition="VARCHAR(10)")
-	private String mianChargePerson;
+	@Column(columnDefinition="VARCHAR(64)")
+	private String mianChargeUserId;
+	
+	@Formula("(select u.displayname from cs_user u where u.id = mianChargeUserId)")
+	private String mianChargeUserName;
 	
 	//第二负责人
-	@Column(columnDefinition="VARCHAR(10)")
-	private String secondChargePerson;
+	@Column(columnDefinition="VARCHAR(64)")
+	private String secondChargeUserId;
+	
+	@Formula("(select u.displayname from cs_user u where u.id = secondChargeUserId)")
+	private String secondChargeUserName;
 	
 	//是否有补充函
 	@Column(columnDefinition="VARCHAR(2)")
@@ -346,22 +353,38 @@ public class WorkProgram extends DomainBase{
 
 	public void setReviewDept(String reviewDept) {
 		this.reviewDept = reviewDept;
+	}	
+
+	public String getMianChargeUserId() {
+		return mianChargeUserId;
 	}
 
-	public String getMianChargePerson() {
-		return mianChargePerson;
+	public void setMianChargeUserId(String mianChargeUserId) {
+		this.mianChargeUserId = mianChargeUserId;
 	}
 
-	public void setMianChargePerson(String mianChargePerson) {
-		this.mianChargePerson = mianChargePerson;
+	public String getMianChargeUserName() {
+		return mianChargeUserName;
 	}
 
-	public String getSecondChargePerson() {
-		return secondChargePerson;
+	public void setMianChargeUserName(String mianChargeUserName) {
+		this.mianChargeUserName = mianChargeUserName;
 	}
 
-	public void setSecondChargePerson(String secondChargePerson) {
-		this.secondChargePerson = secondChargePerson;
+	public String getSecondChargeUserId() {
+		return secondChargeUserId;
+	}
+
+	public void setSecondChargeUserId(String secondChargeUserId) {
+		this.secondChargeUserId = secondChargeUserId;
+	}
+
+	public String getSecondChargeUserName() {
+		return secondChargeUserName;
+	}
+
+	public void setSecondChargeUserName(String secondChargeUserName) {
+		this.secondChargeUserName = secondChargeUserName;
 	}
 
 	public String getIsHaveSuppLetter() {

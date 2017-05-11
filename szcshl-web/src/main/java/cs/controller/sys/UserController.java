@@ -54,7 +54,7 @@ public class UserController {
     @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByOrgId", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findUsersByOrgId(@RequestParam(required = true)String orgId){
-    	List<UserDto> userDto = userService.findUserByDeptId(orgId);
+    	List<UserDto> userDto = userService.findUserByOrgId(orgId);
     	return userDto;
     }
     

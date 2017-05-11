@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.common.utils.DateUtils;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ProjectExpe;
 import cs.model.expert.ProjectExpeDto;
@@ -24,94 +25,96 @@ import cs.service.sys.UserServiceImpl;
 @Service
 public class ProjectExpeServiceImpl implements ProjectExpeService {
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
-	 @Autowired
-     private ExpertRepo expertRepo;
-	 @Autowired
-     private ProjectExpeRepo projectExpeRepo;
-     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	@Autowired
+    private ExpertRepo expertRepo;
+	@Autowired
+    private ProjectExpeRepo projectExpeRepo;
+	@Autowired
+	private ICurrentUser currentUser;
+	
 	@Override
 	public List<ProjectExpeDto> getProject(ODataObj odataObj) {
-		List<ProjectExpe> listWork = projectExpeRepo.findByOdata(odataObj);
-		//PageModelDto<WorkExpeDto> pageModelDto = new PageModelDto<>();
+		List<ProjectExpe> projectExpeList = projectExpeRepo.findByOdata(odataObj);
 		List<ProjectExpeDto> listProjectDto=new ArrayList<>();
-		for (ProjectExpe item : listWork) {
+		for (ProjectExpe item : projectExpeList) {
 			ProjectExpeDto projectDto=new ProjectExpeDto();
-			projectDto.setProjectbeginTime(formatter.format(item.getProjectbeginTime()));
-			projectDto.setProjectendTime(formatter.format(item.getProjectendTime()));
+			projectDto.setProjectbeginTime(DateUtils.ConverToString(item.getProjectbeginTime()));
+			projectDto.setProjectendTime(DateUtils.ConverToString(item.getProjectendTime()));
 			projectDto.setProjectName(item.getProjectName());
 			projectDto.setProjectType(item.getProjectType());
-			projectDto.setCreateTime(formatter.format(new Date()));
 			projectDto.setPeID(item.getPeID());
 			listProjectDto.add( projectDto);
 		}
-		//pageModelDto.setCount(odataObj.getCount());
-		//pageModelDto.setValue(listWorktDto);
 		logger.info("查找项目经验");
 		return listProjectDto;
 	}
      
-     @Override
-		@Transactional
-		public void createProject(ProjectExpeDto projectExpeDto) {
-    	 ProjectExpe findProject=projectExpeRepo.findProjectByName(projectExpeDto.getProjectName());
-			if (findProject==null) {// 项目经验不存在
-				Expert expert=expertRepo.findById(projectExpeDto.getExpertID());
-				ProjectExpe project = new ProjectExpe();
-				project.setPeID(UUID.randomUUID().toString());
-				project.setProjectName(projectExpeDto.getProjectName());
-				try {
-					if(projectExpeDto.getProjectbeginTime()!=null){
-					project.setProjectbeginTime(formatter.parse(projectExpeDto.getProjectbeginTime()));
-					}
-					if(projectExpeDto.getProjectendTime()!=null){
-					project.setProjectendTime(formatter.parse(projectExpeDto.getProjectendTime()));
-					}
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				project.setProjectType(projectExpeDto.getProjectType());
-				project.setExpert(expert);
-				project.setCreateTime(new Date());
-				projectExpeRepo.save(project);
-				logger.info(String.format("添加项目经验,项目名称为:%s", project.getProjectName()));
-			} else {
-				throw new IllegalArgumentException(String.format("项目为%s 已存在,请重新输入", projectExpeDto.getProjectName()));
+    @Override
+	@Transactional
+	public void createProject(ProjectExpeDto projectExpeDto) {
+    	Expert expert=expertRepo.findById(projectExpeDto.getExpertID());
+		ProjectExpe project = new ProjectExpe();
+		project.setPeID(UUID.randomUUID().toString());
+		project.setProjectName(projectExpeDto.getProjectName());
+		try {
+			if(projectExpeDto.getProjectbeginTime()!=null){
+				project.setProjectbeginTime(DateUtils.ConverToDate(projectExpeDto.getProjectbeginTime()));
 			}
+			if(projectExpeDto.getProjectendTime()!=null){
+				project.setProjectendTime(DateUtils.ConverToDate(projectExpeDto.getProjectendTime()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		project.setProjectType(projectExpeDto.getProjectType());
+		project.setExpert(expert);
 		
-     @Override
-		@Transactional
-		public void deleteProject(String id) {
-			
-			ProjectExpe projectExpe = projectExpeRepo.findById(id);
-			if (projectExpe != null) {
-				projectExpeRepo.delete(projectExpe);
-				logger.info(String.format("删除项目经验,单位名称为О:%s", projectExpe.getProjectName()));
-				
-			}
-		}
-		@Override
-		@Transactional
-		public void deleteProject(String[] ids) {
-			for (String id : ids) {
-				this.deleteProject(id);
-			}
-			logger.info("删除项目经验");
-		}
+		Date now = new Date();
+		project.setCreatedBy(currentUser.getLoginName());
+		project.setModifiedBy(currentUser.getLoginName());
+		project.setCreatedDate(now);
+		project.setModifiedDate(now);
 		
-		@Override
-		@Transactional
-		public void updateProject(ProjectExpeDto projectExpeDto) {
-			ProjectExpe projectExpe = projectExpeRepo.findById(projectExpeDto.getPeID());
-			try {
-				projectExpe.setProjectbeginTime (formatter.parse(projectExpeDto.getProjectbeginTime()));
-				projectExpe.setProjectendTime(formatter.parse(projectExpeDto.getProjectendTime()));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			projectExpe.setProjectName(projectExpeDto.getProjectName());
-			projectExpe.setProjectType(projectExpeDto.getProjectType());
-			projectExpeRepo.save(projectExpe);
-			logger.info(String.format("更新项目经验,单位名称为О:%s", projectExpeDto.getProjectName()));
+		projectExpeRepo.save(project);
+		logger.info(String.format("添加项目经验,项目名称为:%s", project.getProjectName()));
+	}
+		
+    @Override
+	@Transactional
+	public void deleteProject(String id) {			
+		ProjectExpe projectExpe = projectExpeRepo.findById(id);
+		if (projectExpe != null) {
+			projectExpeRepo.delete(projectExpe);
+			logger.info(String.format("删除项目经验,单位名称为О:%s", projectExpe.getProjectName()));				
 		}
+	}
+    
+	@Override
+	@Transactional
+	public void deleteProject(String[] ids) {
+		for (String id : ids) {
+			this.deleteProject(id);
+		}
+		logger.info("删除项目经验");
+	}
+	
+	@Override
+	@Transactional
+	public void updateProject(ProjectExpeDto projectExpeDto) {
+		ProjectExpe projectExpe = projectExpeRepo.findById(projectExpeDto.getPeID());
+		try {
+			projectExpe.setProjectbeginTime (DateUtils.ConverToDate(projectExpeDto.getProjectbeginTime()));
+			projectExpe.setProjectendTime(DateUtils.ConverToDate(projectExpeDto.getProjectendTime()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		projectExpe.setProjectName(projectExpeDto.getProjectName());
+		projectExpe.setProjectType(projectExpeDto.getProjectType());
+		
+		projectExpe.setModifiedBy(currentUser.getLoginName());
+		projectExpe.setModifiedDate(new Date());
+		
+		projectExpeRepo.save(projectExpe);
+		logger.info(String.format("更新项目经验,单位名称为О:%s", projectExpeDto.getProjectName()));
+	}
 }

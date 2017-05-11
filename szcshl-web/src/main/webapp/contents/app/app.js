@@ -160,29 +160,31 @@
                 controller: 'dictEditCtrl',
                 controllerAs: 'vm'
             })
-            .state('ExpertList', {
+            .state('expert', {
+            	url: '/expert',
                 templateUrl: rootPath + '/expert/html/queryAllList.html',
                 controller: 'expertCtrl',
                 controllerAs: 'vm'
-            })
-            .state('ExpertReList', {
-                templateUrl: rootPath + '/expert/html/queryReList.html',
-                controller: 'expertCtrl',
-                controllerAs: 'vm'
-            })
-            .state('ExpertAudit', {
+            })            
+            .state('expertAudit', {
+            	url: '/expertAudit',
                 templateUrl: rootPath + '/expert/html/audit.html',
-                controller: 'expertCtrl',
+                controller: 'expertAuditCtrl',
                 controllerAs: 'vm'
             })
-            .state('ExpertEdit', {
+            .state('expertRepeat', {
+            	url: '/expertRepeat',
+                templateUrl: rootPath + '/expert/html/repeat.html',
+                controller: 'expertRepeatCtrl',
+                controllerAs: 'vm'
+            })            
+            .state('expertEdit', {
                 url: '/expertEdit/:expertID',
                 templateUrl: rootPath + '/expert/html/edit.html',
                 controller: 'expertEditCtrl',
                 controllerAs: 'vm'
             })
             //endDict
-
             //begin#sign
             .state('addSign', {
                 url: '/addSign',
@@ -241,6 +243,21 @@
             	controllerAs: 'vm'
         	})
         	//end#fileRecord
+        	
+        	//begin#dept
+        	.state('listDept', {
+                url: '/listDept',
+                templateUrl: rootPath + '/dept/html/list.html',
+                controller: 'deptCtrl',
+                controllerAs: 'vm'
+            })
+        	.state('deptEdit', {
+            	url: '/deptEdit/:deptId',
+            	templateUrl: rootPath + '/dept/html/edit.html',
+            	controller: 'deptEditCtrl',
+            	controllerAs: 'vm'
+        	})
+        	//end#dept
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         $rootScope.$state = $state;
@@ -254,11 +271,20 @@
             $state.go($rootScope.previousState_name, $rootScope.previousState_params);
         };
 
-        $rootScope.topSelectChange = function (dictName, dicts) {
+        $rootScope.topSelectChange = function (dictKey, dicts , type) {       	
             for (var i = 0; i < dicts.length; i++) {
-                if (dicts[i].dictName == dictName) {
-                    return dicts[i].dicts;
-                }
+            	//根据code查询
+            	if(type && type == "code"){
+            		if (dicts[i].dictCode == dictKey) {
+                        return dicts[i].dicts;
+                    }
+            	//默认根据name查询	
+            	}else{
+            		if (dicts[i].dictName == dictKey) {
+                        return dicts[i].dicts;
+                    }
+            	}
+                
             }
         }
 

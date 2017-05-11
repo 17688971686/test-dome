@@ -76,10 +76,10 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<User> findUserByDeptId(String deptId) {
+	public List<User> findUserByOrgId(String orgId) {
 		Criteria criteria = getExecutableCriteria();		 
 		List<User> list = criteria.createAlias(User_.org.getName(),User_.org.getName())
-        .add(Restrictions.eq(User_.org.getName()+"."+Org_.id.getName(),deptId)).list();
+        .add(Restrictions.eq(User_.org.getName()+"."+Org_.id.getName(),orgId)).list();
 		
 		return list;
 	}

@@ -40,7 +40,7 @@ public interface UserService {
 	
 	List<UserDto> findUserByRoleName(String roleName);
 
-	List<UserDto> findUserByDeptId(String deptId);
+	List<UserDto> findUserByOrgId(String orgId);
 
 	UserDto findById(String id);
 }

@@ -3,7 +3,6 @@ package cs.service.sys;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -14,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.Validate;
-import cs.domain.project.Sign;
 import cs.domain.sys.Company;
 import cs.domain.sys.Org;
+import cs.domain.sys.Org_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.CompanyDto;
@@ -72,8 +70,8 @@ public class OrgServiceImpl implements OrgService {
 	@Transactional
 	public void createOrg(OrgDto orgDto) {
 		// 判断部门是否已经存在
-		Criteria criteria = orgRepo.getSession().createCriteria(Org.class);
-		criteria.add(Restrictions.eq("orgIdentity", orgDto.getOrgIdentity()));
+		Criteria criteria = orgRepo.getExecutableCriteria();
+		criteria.add(Restrictions.eq(Org_.orgIdentity.getName(), orgDto.getOrgIdentity()));
 		List<Org> orgs = criteria.list();
 		// 部门不存在
 		if (orgs.isEmpty()) {

@@ -22,7 +22,7 @@
         loginUrl: window.rootPath +'/home/login',
         buildOdataFilter:buildOdataFilter,	//创建多条件查询的filter
         initDictData : initDictData, 	//初始化数字字典
-        
+        kendoGridDataSource : kendoGridDataSource 	//获取gridDataSource
     };
 
     window.common = service;
@@ -141,6 +141,30 @@
         else
             return qs[1];
     }
+    
+    function kendoGridDataSource(url,searchForm){
+    	var dataSource = new kendo.data.DataSource({
+			type : 'odata',
+			transport : kendoGridConfig().transport(url,searchForm),
+			schema : kendoGridConfig().schema({
+				id : "id",
+				fields : {
+					createdDate : {
+						type : "date"
+					}
+				}
+			}),
+			serverPaging : true,
+			serverSorting : true,
+			serverFiltering : true,
+			pageSize : 10,
+			sort : {
+				field : "createdDate",
+				dir : "desc"
+			}
+		});
+		return dataSource;
+    }
     function kendoGridConfig() {
         return {
             filterable: {
@@ -179,7 +203,7 @@
                     model: model
                 };
             },
-            transport: function (url,form) {
+            transport: function (url,form,paramObj) {
                 return {
                     read: {
                         url: url,
@@ -191,10 +215,18 @@
                         data : function(){
                         	if(form){
                         		var filterParam = common.buildOdataFilter(form);
-                            	if(filterParam){
-                            		return {"$filter":filterParam};
+                        		if(filterParam){
+                            		if(paramObj && paramObj.filter){
+                            			return {"$filter":filterParam+" and "+paramObj.filter};
+                            		} else{
+                            			return {"$filter":filterParam};
+                            		}                      		
                             	}else{
-                            		return {};
+                            		if(paramObj && paramObj.filter){
+                            			return {"$filter":paramObj.filter};
+                            		}else{
+                            			return {};
+                            		}                       		
                             	}
                         	}else{
                         		return {};
@@ -366,20 +398,21 @@
        		method : 'get',
 			url : rootPath+'/dict/dictItems'
         }).then(function(response){
-       	 options.scope.dictMetaData = response.data;
-       	 var dictsObj = {};
-       	 reduceDict(dictsObj,response.data);
-       	 options.scope.DICT = dictsObj;
-        }, function (response) {         
+       	 	options.scope.dictMetaData = response.data;
+       	 	var dictsObj = {};
+       	 	reduceDict(dictsObj,response.data);
+       	 	options.scope.DICT = dictsObj;
+        }, 
+        function (response) {         
         	alert('初始化数据字典失败');
         });
    }
     
-    function reduceDict(dictsObj,dicts,keyName){
+    function reduceDict(dictsObj,dicts,parentId){
     	if(!dicts||dicts.length == 0){
     		return ;
     	}
-    	if(!keyName){
+    	if(!parentId){
     		//find the top dict
     		for(var i = 0;i<dicts.length;i++){
     			var dict = dicts[i];
@@ -396,7 +429,7 @@
     		//find sub dicts  		
     		for(var i = 0;i<dicts.length;i++){
     			var dict = dicts[i];
-    			if(dict.parentId&&dict.parentId == keyName){
+    			if(dict.parentId && dict.parentId == parentId){
     				if(!dictsObj.dicts){
     					dictsObj.dicts = new Array();
     				}

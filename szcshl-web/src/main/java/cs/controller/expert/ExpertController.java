@@ -20,16 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.google.gson.JsonObject;
 
-import cs.domain.expert.Expert;
-import cs.domain.sys.Dict;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
-import cs.model.expert.ProjectExpeDto;
-import cs.model.expert.WorkExpeDto;
-import cs.model.sys.DictDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.WorkExpeRepo;
-import cs.repository.repositoryImpl.sys.DictRepo;
 import cs.service.expert.ExpertService;
 
 @Controller
@@ -40,13 +33,25 @@ public class ExpertController {
 	private ExpertService expertService;
 
 	
-	@RequiresPermissions("expert##get")	
-	@RequestMapping(name = "获取专家数据", path = "", method = RequestMethod.GET)
-	public @ResponseBody PageModelDto<ExpertDto> get(HttpServletRequest request) throws ParseException {
+	@RequiresPermissions("expert#findByOData#post")	
+	@RequestMapping(name = "获取专家数据", path = "findByOData", method = RequestMethod.POST)
+	public @ResponseBody PageModelDto<ExpertDto> findPageByOData(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<ExpertDto> expertDtos = expertService.get(odataObj);
 		return expertDtos;
 	}	
+	
+	@RequiresPermissions("expert#findRepeatByOData#post")	
+	@RequestMapping(name = "获取专家数据", path = "findRepeatByOData", method = RequestMethod.POST)
+	public @ResponseBody PageModelDto<ExpertDto> findRepeatByOData(){
+		List<ExpertDto> list = expertService.findAllRepeat();
+		PageModelDto<ExpertDto> pageModelDto = new PageModelDto<ExpertDto>();				
+		pageModelDto.setCount(list.size());
+		pageModelDto.setValue(list);	
+		
+		return pageModelDto;
+	}
+	
 	@RequiresPermissions("expert##post")
 	@RequestMapping(name = "创建专家", path = "",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
@@ -60,6 +65,7 @@ public class ExpertController {
 			e.printStackTrace();
 		}
 	}
+	
 	@RequiresPermissions("expert##delete")
 	@RequestMapping(name = "删除专家", path = "",method=RequestMethod.DELETE)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -71,22 +77,30 @@ public class ExpertController {
 			expertService.deleteExpert(id);	
 		}		
 	}
-	@RequiresPermissions("expert##updateAudit")
+	
+	@RequiresPermissions("expert#findById#post")
+	@RequestMapping(name = "初始化详情页面", path = "findById",method=RequestMethod.GET)	
+	public @ResponseBody ExpertDto findById(@RequestParam(required = true)String id){
+		return expertService.findById(id);
+	}
+	
+	@RequiresPermissions("expert#updateAudit#post")
 	@RequestMapping(name = "评审专家", path = "updateAudit",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void  updateAudit(@RequestParam String id,String flag)  {
-		String[] ids=id.split(",");
+	public void  updateAudit(@RequestParam String ids,String flag)  {
 		expertService.updateAudit(ids,flag);	
 	}
+	
 	@RequiresPermissions("expert##put")
 	@RequestMapping(name = "更新专家", path = "",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void  put(@RequestBody ExpertDto expertDto){		
 		expertService.updateExpert(expertDto);	
 	}
+	
 	// begin#html
-	@RequiresPermissions("expert#html/queryReList#get")
-	@RequestMapping(name = "专家重复查询列表页面", path = "html/queryReList", method = RequestMethod.GET)
+	@RequiresPermissions("expert#html/repeat#get")
+	@RequestMapping(name = "专家重复查询列表页面", path = "html/repeat", method = RequestMethod.GET)
 	public String list() {
 		return ctrlName + "/queryReList";
 	}

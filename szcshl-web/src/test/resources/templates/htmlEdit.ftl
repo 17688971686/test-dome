@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/${info.beanName?uncap_first}">${info.comment!''}</a></li>
+        <li><a href="#/${info.beanName?uncap_first}List">${info.comment!''}</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="form" name="form">

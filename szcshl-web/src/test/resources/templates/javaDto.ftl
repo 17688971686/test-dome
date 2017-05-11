@@ -9,10 +9,10 @@ import cs.model.BaseDto2;
 
 /**
  * Description: ${info.comment!''} 页面数据模型
- * User: ${info.author!''}
+ * author: ${info.author!''}
  * Date: ${.now}
  */
-public class ${info.beanName}Dto extends BaseDto2<${info.beanName}> {
+public class ${info.beanName}Dto extends BaseDto {
 
 <#list info.fields as f>
     private ${f.type} ${f.name};
@@ -20,17 +20,8 @@ public class ${info.beanName}Dto extends BaseDto2<${info.beanName}> {
 
     public ${info.beanName}Dto() {
     }
-
-    public ${info.beanName}Dto(${info.beanName} source) {
-        super(source);
-    }
-
-    @Override
-    protected Class<${info.beanName}> getCls() {
-        return ${info.beanName}.class;
-    }
-
-<#list info.fields as f>
+   
+	<#list info.fields as f>
     public ${f.type} get${f.name?cap_first}() {
         return ${f.name};
     }
@@ -38,6 +29,6 @@ public class ${info.beanName}Dto extends BaseDto2<${info.beanName}> {
     public void set${f.name?cap_first}(${f.type} ${f.name}) {
         this.${f.name} = ${f.name};
     }
-</#list>
+	</#list>
 
 }

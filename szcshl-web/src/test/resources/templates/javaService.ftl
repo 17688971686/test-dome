@@ -1,6 +1,5 @@
 <#if layer??>package ${layer};</#if>
 
-import cs.common.service.IService;
 import ${info.beanPackage}.${info.beanName};
 import cs.model.PageModelDto;
 <#if info.Dto??>
@@ -13,13 +12,16 @@ import cs.repo.odata.ODataObj;
  * author: ${info.author!''}
  * Date: ${.now}
  */
-public interface ${fileName!''} extends IService<${info.beanName}, ${info.beanName}Dto> {
+public interface ${fileName!''} {
+    
+    PageModelDto<${info.beanName}Dto> get(ODataObj odataObj);
 
-    /**
-    * 获取数据
-    * @param odataObj
-    * @return
-    */
-    PageModelDto<${info.beanName}Dto> getDto(ODataObj odataObj);
+	void save(${info.beanName}Dto record);
+
+	void update(${info.beanName}Dto record);
+
+	${info.beanName}Dto findById(String deptId);
+
+	void delete(String id);
 
 }

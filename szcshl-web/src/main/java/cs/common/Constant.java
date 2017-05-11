@@ -32,9 +32,30 @@ public class Constant {
 	    public String getValue(){
 	        return value;
 	    }
-
 	}
 	
+	/**
+	 * 专家状态
+	 * @author Administrator
+	 *
+	 */
+	public static enum EnumExpertState{
+		AUDITTING("1"),			//审核中
+		OFFICIAL("2"),			//正式
+		ALTERNATIVE("3"),		//备选
+		STOP("4"),				//停用
+		REMOVE("5");			//已删除
+
+	    private String value;
+
+	    EnumExpertState(String value){
+	        this.value = value;
+	    }
+
+	    public String getValue(){
+	        return value;
+	    }
+	}
 	/**
 	 * 业务流程名称
 	 * @author ldm

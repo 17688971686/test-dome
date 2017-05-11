@@ -176,11 +176,11 @@ public class SignServiceImpl implements SignService {
 		}
 				
 		if(Validate.isString(sign.getMaindepetid())){
-			List<UserDto> userList = userService.findUserByDeptId(sign.getMaindepetid());
+			List<UserDto> userList = userService.findUserByOrgId(sign.getMaindepetid());
 			map.put("mainUserList", userList);
 		}
 		if(Validate.isString(sign.getAssistdeptid())){
-			List<UserDto> userList = userService.findUserByDeptId(sign.getAssistdeptid());
+			List<UserDto> userList = userService.findUserByOrgId(sign.getAssistdeptid());
 			map.put("assistUserList", userList);
 		}
 		
@@ -441,5 +441,15 @@ public class SignServiceImpl implements SignService {
 		Sign sign = signRepo.findById(signid);
 		sign.setFolwState(EnumState.FORCE.getValue());
 		signRepo.save(sign);	
+	}
+
+	@Override
+	public UserDto findSecondChargePerson(String signid) {
+		Sign sign = signRepo.findById(signid);
+		WorkProgram workProgram = sign.getWorkProgram();
+		if(workProgram==null){
+			return null;
+		}		
+		return workProgram.getSecondChargeUserId()==null?null:userService.findById(workProgram.getSecondChargeUserId());
 	}
 }

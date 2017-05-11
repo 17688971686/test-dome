@@ -1,30 +1,24 @@
 package cs.model.expert;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.mapping.Array;
-
-import cs.domain.expert.ProjectExpe;
+import cs.model.BaseDto;
 
 
 
 /**
- * 椤圭洰宸ヤ綔瀹炰綋绫�
+ * 项目经验
  * @author Administrator
  *
  */
 
-public class ProjectExpeDto implements Serializable {
+public class ProjectExpeDto extends BaseDto {
 
 	private String peID; //Id
     private String projectName; //项目名称
     private String projectType; //项目类型
     private String projectbeginTime; //项目开始时间
     private String projectendTime; //项目结束时间
-    private String createTime; //创建日期
     private String expertID;//专家编号
+    
 	public String getProjectType() {
 		return projectType;
 	}
@@ -43,14 +37,7 @@ public class ProjectExpeDto implements Serializable {
 	}
 	public void setProjectendTime(String projectendTime) {
 		this.projectendTime = projectendTime;
-	}
-	public String getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
-	}
-	
+	}	
 	public String getPeID() {
 		return peID;
 	}

@@ -7,8 +7,7 @@ import cs.auto.core.CRUDGenerate;
 import cs.auto.core.config.CRUDGanConfig;
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
-import cs.domain.demo.MyTest;
-import cs.domain.expert.Expert;
+import cs.domain.organs.Dept;
 
 /**
  * Description: 代码生成器
@@ -19,9 +18,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(Expert.class, "专家信息");
-        config.setAuthor("tzg");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\test");
+        CRUDGanConfig config = new CRUDGanConfig(Dept.class, "部门");
+        config.setAuthor("xxx");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\dept");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());

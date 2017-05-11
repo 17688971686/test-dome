@@ -22,7 +22,7 @@ import cs.service.expert.ProjectExpeService;
 @Controller
 @RequestMapping(name = "项目经验", path = "projectExpe")
 public class ProjectExpeController {
-	private String ctrlName = "expert";
+	private String ctrlName = "projectExpe";
 	@Autowired
 	private ProjectExpeService projectExpeService;
 
@@ -33,12 +33,14 @@ public class ProjectExpeController {
 		List<ProjectExpeDto> projectDtos = projectExpeService.getProject(odataObj);
 		return projectDtos;
 	}	
+	
 	@RequiresPermissions("expert##post")
 	@RequestMapping(name = "添加项目经验", path = "projectExpe",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void  createProject(@RequestBody ProjectExpeDto project)  {
 		projectExpeService.createProject(project);		
 	}
+	
 	@RequiresPermissions("expert##delete")
 	@RequestMapping(name = "删除项目经验", path = "deleteProject",method=RequestMethod.DELETE)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -50,6 +52,7 @@ public class ProjectExpeController {
 			projectExpeService.deleteProject(ids[0]);	
 		}		
 	}
+	
 	@RequiresPermissions("expert##put")
 	@RequestMapping(name = "更新项目经验", path = "updateProject",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

@@ -3,20 +3,15 @@ package cs.service.expert;
 import java.util.List;
 
 import cs.domain.expert.Expert;
-import cs.domain.sys.Dict;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
-import cs.model.expert.ProjectExpeDto;
-import cs.model.expert.WorkExpeDto;
-import cs.model.sys.DictDto;
 import cs.repository.odata.ODataObj;
 
 public interface ExpertService{
 
 	public List<ExpertDto> findAll();
-	
-	
-	 PageModelDto<ExpertDto> get(ODataObj odataObj);
+		
+	PageModelDto<ExpertDto> get(ODataObj odataObj);
 
     String createExpert(ExpertDto expertDto);
 
@@ -24,12 +19,16 @@ public interface ExpertService{
 
 	void deleteExpert(String[] ids);
 	
-	 void updateExpert(ExpertDto expertDto);
+	void updateExpert(ExpertDto expertDto);
 	
-	 Expert findExpertByName(String expertName);
+	Expert findExpertByName(String expertName);
+	
+	PageModelDto<ExpertDto> searchMuti(ExpertDto expertDto);
 	 
-	 PageModelDto<ExpertDto> searchMuti(ExpertDto expertDto);
-	 
-	 void updateAudit(String[] ids,String flag);
+	void updateAudit(String ids,String flag);
+
+	public ExpertDto findById(String id);
+
+	public List<ExpertDto> findAllRepeat();
 	 
 }

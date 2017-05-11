@@ -188,24 +188,23 @@ public class FlowController {
 				case "directorDispatches":		//主任审批->归档
 					roleName = EnumFlowNodeGroupName.FILER.getValue();	
 					break;	
-				case "doFile":					//归档->
+				case "doFile":					//归档->(第二负责人确认 or 归档确认)
 					flowDto.setSeleteNode(true);
 					Map<String,List<UserDto>> nextUserListMap = new HashMap<String,List<UserDto>>(2);
-					UserDto doFileUser = userService.findById("910ec17f-c05e-4aa9-a8cf-99c59f5d2e3b");
-					nextUserList.add(doFileUser);
+					UserDto doFileUser = signService.findSecondChargePerson(processInstance.getBusinessKey());	
+					if(doFileUser != null){
+						nextUserList.add(doFileUser);
+					}					
 					nextUserListMap.put("secondApproval", nextUserList);
-					
-					nextUserList = new ArrayList<UserDto>(); 
-					doFileUser = userService.findById("f84c510e-7683-4d6f-bcb1-03edabc54daf");
-					nextUserList.add(doFileUser);
-					nextUserListMap.put("doConfirmFile", nextUserList);
+							
+					nextUserListMap.put("doConfirmFile", userService.findUserByRoleName(EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue()));
 					flowDto.setNextUserListMap(nextUserListMap);
 					isSetValue = true;
 					break;	
 				case "secondApproval":			//第二负责人确认
-					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
+					roleName = EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue();
 					break;		
-				case "doConfirmFile":			//归档确认结束环节
+				case "doConfirmFile":			//归档确认
 					flowDto.setEnd(true);
 					break;
 				case "endevent1":				//结束
@@ -219,7 +218,7 @@ public class FlowController {
 					nextUserList = userService.findUserByRoleName(roleName);								
 				}else if(Validate.isObject(curUser)){
 					flowDto.setNextGroup(curUser.getOrgDto().getName());
-					nextUserList = userService.findUserByDeptId(curUser.getOrgDto().getId());						
+					nextUserList = userService.findUserByOrgId(curUser.getOrgDto().getId());						
 				}
 			}				
 			flowDto.setNextDealUserList(nextUserList);
@@ -290,14 +289,7 @@ public class FlowController {
 			log.info("流程回退到上一步异常：无法获取任务ID(TaskId)");
 		}
 		return resultMsg;
-	}
-	
-	@RequestMapping(name = "流程终止",path = "forcedend",method = RequestMethod.POST)
-	public @ResponseBody ResultMsg flowForcedend(@RequestParam FlowDto glowDto){
-		ResultMsg resultMsg = new ResultMsg();
-		
-		return resultMsg;
-	}
+	}	
 	
 	@Transactional
 	@RequestMapping(name = "激活流程", path = "active/{businessKey}",method = RequestMethod.POST)  	
@@ -324,7 +316,7 @@ public class FlowController {
     } 
 	
 	@Transactional
-	@RequestMapping(name = "删除流程",path = "deleteFLow",method = RequestMethod.POST)  	
+	@RequestMapping(name = "终止流程",path = "deleteFLow",method = RequestMethod.POST)  	
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
     public void deleteFlow(@RequestParam FlowDto flowDto) {  
 		//流程实例

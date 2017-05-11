@@ -22,4 +22,11 @@ public class ExpertRepoImpl extends AbstractRepository<Expert,String> implements
 			return null;
 		}
 	}
+
+	@Override
+	public List<Expert> findAllRepeat() {
+		Criteria criteria = getExecutableCriteria();
+		criteria.add(Restrictions.sqlRestriction(" name IN (SELECT name FROM CS_EXPERT GROUP BY  name  HAVING COUNT (name) > 1)"));
+		return criteria.list();
+	}
 }

@@ -1,25 +1,19 @@
 package cs.model.expert;
 
-import java.io.Serializable;
-/**
- * 宸ヤ綔缁忓巻瀹炰綋绫�
- * @author Administrator
- *
- */
+import cs.model.BaseDto;
 
 
 /**
  * @author Administrator
  *
  */
-public class WorkExpeDto implements Serializable {
+public class WorkExpeDto extends BaseDto {
 
 	private String weID; //Id
     private String beginTime;//开始时间  
     private String endTime; //结束时间
     private String companyName; //单位名称
     private String job; //职位
-    private String create_Time; //创建时间
     private String  expertID; //专家编号
     private ExpertDto expertDto;
 
@@ -52,12 +46,6 @@ public class WorkExpeDto implements Serializable {
 	}
 	public void setJob(String job) {
 		this.job = job;
-	}
-	public String getCreate_Time() {
-		return create_Time;
-	}
-	public void setCreate_Time(String create_Time) {
-		this.create_Time = create_Time;
 	}
 	public String getWeID() {
 		return weID;

@@ -18,11 +18,11 @@ public class MyTest extends DomainBase {
 
 	@Id
     private String id;
-    @Column(nullable = false, columnDefinition = "varchar(255) comment '测试名'")
+    @Column(nullable = false, columnDefinition = "varchar(255)")
     private String testName;
-    @Column(columnDefinition = "varchar(255) comment '测试01'")
+    @Column(columnDefinition = "varchar(255) ")
     private String test01;
-    @Column(columnDefinition = "varchar(255) comment '测试02'")
+    @Column(columnDefinition = "varchar(255) ")
     private String test02;
 
     public String getId() {

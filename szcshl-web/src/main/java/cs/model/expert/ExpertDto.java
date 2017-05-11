@@ -1,8 +1,5 @@
 package cs.model.expert;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
 
 import cs.model.BaseDto;
 
@@ -21,23 +18,30 @@ public class ExpertDto extends BaseDto {
 	private String acaDemy;//毕业院校
 	private String degRee;//最高学位
 	private String userPhone;//手机号码
-	private String createDate;//创建日期
+	private String graduateDate;//毕业时间
 	private String comPany;//工作单位
 	private String job;//现任职位
-	private String title;//职称
+	private String post;//职称
 	private String phone;//办公电话
 	private String fax;//传真
 	private String email;//电子邮箱
 	private String addRess;//通讯地址
 	private String zipCode;//邮编
-	private String maJor;//所学专业
+	private String majorStudy;//所学专业
+	private String majorWork;//从事专业
+	private String maJorBig;//突出专业(大类)
+	private String maJorSmall;//突出专业(小类)
 	private String expeRttype;//专家类别
 	private String procoSttype;//工程造价类
 	private String proteChtype;//项目类型
 	private String remark;//备注
 	private String state;//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
-	private List<WorkExpeDto> work=new ArrayList<>();
-	private List<ProjectExpeDto> project=new ArrayList<>();
+	private String openingBank;
+	private String bankAccount;
+	
+	private List<WorkExpeDto> work;
+	private List<ProjectExpeDto> project;
+	
 	public String getIdCard() {
 		return idCard;
 	}
@@ -68,7 +72,7 @@ public class ExpertDto extends BaseDto {
 	public void setQualifiCations(String qualifiCations) {
 		this.qualifiCations = qualifiCations;
 	}
-	@Column(name = "acaDemy", nullable = false, length = 200)
+
 	public String getAcaDemy() {
 		return acaDemy;
 	}
@@ -87,11 +91,12 @@ public class ExpertDto extends BaseDto {
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
-	public String getCreateDate() {
-		return createDate;
+	
+	public String getGraduateDate() {
+		return graduateDate;
 	}
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
+	public void setGraduateDate(String graduateDate) {
+		this.graduateDate = graduateDate;
 	}
 	public String getComPany() {
 		return comPany;
@@ -105,11 +110,12 @@ public class ExpertDto extends BaseDto {
 	public void setJob(String job) {
 		this.job = job;
 	}
-	public String getTitle() {
-		return title;
+	
+	public String getPost() {
+		return post;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setPost(String post) {
+		this.post = post;
 	}
 	public String getPhone() {
 		return phone;
@@ -140,12 +146,18 @@ public class ExpertDto extends BaseDto {
 	}
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}	
+	public String getMaJorBig() {
+		return maJorBig;
 	}
-	public String getMaJor() {
-		return maJor;
+	public void setMaJorBig(String maJorBig) {
+		this.maJorBig = maJorBig;
 	}
-	public void setMaJor(String maJor) {
-		this.maJor = maJor;
+	public String getMaJorSmall() {
+		return maJorSmall;
+	}
+	public void setMaJorSmall(String maJorSmall) {
+		this.maJorSmall = maJorSmall;
 	}
 	public String getExpeRttype() {
 		return expeRttype;
@@ -195,6 +207,28 @@ public class ExpertDto extends BaseDto {
 	public void setProject(List<ProjectExpeDto> project) {
 		this.project = project;
 	}
-
-
+	public String getMajorStudy() {
+		return majorStudy;
+	}
+	public void setMajorStudy(String majorStudy) {
+		this.majorStudy = majorStudy;
+	}
+	public String getMajorWork() {
+		return majorWork;
+	}
+	public void setMajorWork(String majorWork) {
+		this.majorWork = majorWork;
+	}
+	public String getOpeningBank() {
+		return openingBank;
+	}
+	public void setOpeningBank(String openingBank) {
+		this.openingBank = openingBank;
+	}
+	public String getBankAccount() {
+		return bankAccount;
+	}
+	public void setBankAccount(String bankAccount) {
+		this.bankAccount = bankAccount;
+	}
 }
