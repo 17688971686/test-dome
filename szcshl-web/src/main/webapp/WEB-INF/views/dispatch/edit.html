@@ -19,13 +19,15 @@
 		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay">
 		  			<option value="">请选择</option>
 					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select>	
+				</select>
+				 <span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>	
 			</span>
 		  	<span style="float:right;">发文类型：
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType">
 		  			<option value="">请选择</option>
 					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
+				 <span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>
 			</span>
 		  </caption>
 		  <tbody>
@@ -49,9 +51,9 @@
 			   
 			  <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>
 		      <td rowspan="2">
-		      	<input type="text" name="draftDate" id="draftDate" style="width: 210px;"class="form-control input-sm " ng-model="vm.dispatchDoc.draftDate" 
-				value="X/01/X2000" data-val-date="必须为日期" data-val="true" > 			
-			    <span data-valmsg-for="draftDate" data-valmsg-replace="true" class="errors"></span>
+		      	<input type="text" name="draftDate" id="draftDate" style="width: 210px;" class="form-control input-sm " ng-model="vm.dispatchDoc.draftDate" 
+				value="X/01/X2000" data-val-date="必须为日期" data-val="true" data-val-required="必填" > 			
+			    <span data-valmsg-for="draftDate" data-valmsg-replace="true" class="errors" ></span>
 			  </td>
 		    </tr>
 		    
@@ -93,7 +95,7 @@
 		      <td >
 		      	<input type="text" name="dispatchDate" id="dispatchDate" style="width: 210px;"
 					 class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate" 
-					  value="X/01/X2000" data-val-date="必须为日期" data-val="true" > 		
+					  value="X/01/X2000" data-val-date="必须为日期" data-val="true"  data-val-required="必填"> 		
 			    <span data-valmsg-for="dispatchDate" data-valmsg-replace="true" class="errors"></span>
 			  </td>
 			  
@@ -154,7 +156,7 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">部长审核意见</td>
 		      <td colspan="5">
-		      	<textarea  maxlength="200" class="form-control input-sm " rows="3" ng-model="vm.dispatchDoc.ministerSuggesttion" id="dictKey" name="ministerSuggesttion"/>		
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="3" ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion" name="ministerSuggesttion"/>		
 			  </td>
 		    </tr>
 		     

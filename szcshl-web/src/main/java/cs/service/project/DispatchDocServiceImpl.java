@@ -114,9 +114,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				dispatch.setSign(sign);
 				//获取当前用户信息
 				UserDto curUser = userService.findUserByName(currentUser.getLoginName());
-				//dispatch.setUserName(curUser.getLoginName());
+				dispatch.setUserName(curUser.getLoginName());
 				dispatch.setUserId(curUser.getId());
-				//dispatch.setOrgName(curUser.getOrgDto().getName());
+				dispatch.setOrgName(curUser.getOrgDto().getName());
 				dispatch.setOrgId(curUser.getOrgDto().getId());
 				dispatchTodispatchDto(dispatch,dispatchDto);
 				dispatchDto.setSignId(signId);
