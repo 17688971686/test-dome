@@ -1,51 +1,34 @@
 package cs.service.expert;
 
-import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant.EnumExpertState;
-import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
-import cs.common.Util;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
+import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.Expert_;
 import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
-import cs.domain.organs.Dept;
-import cs.domain.project.Sign;
-import cs.domain.sys.Dict;
-import cs.domain.sys.Role;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ProjectExpeDto;
 import cs.model.expert.WorkExpeDto;
-import cs.model.project.SignDto;
-import cs.model.sys.DictDto;
-import cs.model.sys.RoleDto;
-import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
 import cs.repository.repositoryImpl.expert.WorkExpeRepo;
-import cs.repository.repositoryImpl.sys.DictRepo;
 import cs.service.sys.UserServiceImpl;
 
 @Service
@@ -107,6 +90,7 @@ public class ExpertServiceImpl implements ExpertService {
 			}
 			expert.setState(EnumExpertState.AUDITTING.getValue());
 			expert.setExpertID(UUID.randomUUID().toString());
+			expert.setExpertNo(NumIncreaseUtils.getExpertNo());
 			expertRepo.save(expert);
 			logger.info(String.format("添加专家,专家名为:%s", expert.getName()));
 		} else {

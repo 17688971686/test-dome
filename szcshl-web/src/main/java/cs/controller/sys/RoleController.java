@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -34,7 +35,12 @@ public class RoleController {
 		
 		return roleDtos;		
 	}
-	
+		
+	@RequiresPermissions("role#findById#post")
+	@RequestMapping(name = "获取角色数据", path = "findById",method=RequestMethod.POST)	
+	public @ResponseBody RoleDto get(@RequestParam(required = true)String roleId){
+		return roleService.findById(roleId);			
+	}
 	
 	@RequiresPermissions("role##post")
 	@RequestMapping(name = "创建角色", path = "",method=RequestMethod.POST)	
@@ -61,10 +67,8 @@ public class RoleController {
 			roleService.deleteRole(id);	
 		}	
 	}
-	
-	
-	//begin#html
-	
+		
+	//begin#html	
 	@RequiresPermissions("role#html/list#get")
 	@RequestMapping(name="角色列表页面",path="html/list",method=RequestMethod.GET)
 	public String list(){

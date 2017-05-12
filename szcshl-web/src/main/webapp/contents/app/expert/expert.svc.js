@@ -127,14 +127,12 @@
 
 					});
 				}
-
 				common.http({
 					vm : vm,
 					$http : $http,
 					httpOptions : httpOptions,
 					success : httpSuccess
 				});
-
 			}
 		}
 		// end#createExpert
@@ -161,7 +159,7 @@
 					vm.projectkHistory = true;
 					vm.project=response.data.project;					
 				}											
-			}
+			} 
 			common.http({
 				vm : vm,
 				$http : $http,
@@ -338,11 +336,7 @@
 		function auditGrid(vm){
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
-<<<<<<< Updated upstream
 				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '1'"}),
-=======
-				transport : common.kendoGridConfig().transport(url+"/fingByOData"),
->>>>>>> Stashed changes
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -619,6 +613,6 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//end updateAudit
+		}//end updateAudit				
 	}
 })();

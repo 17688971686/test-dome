@@ -7,6 +7,7 @@ package cs.common;
  */
 public class Constant {
 	public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
+	public static final String businessPropertiesName = "business.properties";
 	/**
 	 * 定义一个业务状态
 	 * "0" 表示否

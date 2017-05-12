@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('roleEditCtrl', role);
+    angular.module('app').controller('roleEditCtrl', role);
 
     role.$inject = ['$location','roleSvc','$state']; 
 

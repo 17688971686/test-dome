@@ -22,7 +22,8 @@
         loginUrl: window.rootPath +'/home/login',
         buildOdataFilter:buildOdataFilter,	//创建多条件查询的filter
         initDictData : initDictData, 	//初始化数字字典
-        kendoGridDataSource : kendoGridDataSource 	//获取gridDataSource
+        kendoGridDataSource : kendoGridDataSource, 	//获取gridDataSource
+        initUploadOption : initUploadOption		//附件上传参数
     };
 
     window.common = service;
@@ -446,6 +447,52 @@
     	}
     }
   
+    //S_附件上传参数初始化
+    function initUploadOption(options){
+    	return {
+			async: {
+	            saveUrl: rootPath + "/file",
+	            removeUrl: rootPath + "/file/delete",
+	            autoUpload: false
+	        },
+	        select: function(e){
+	        	if(options.onSelect){
+	        		options.onSelect(e)
+	        	}else{
+	        		$.each(e.files, function (index, value) {
+	                    console.log("Name: " + value.name+"Size: " + value.size + " bytes" + "Extension: " + value.extension);
+	                });
+	        	}
+	        },
+	        upload: function(e){
+	        	if(options.onUpload){
+	        		options.onUpload(e)
+	        	}else{
+	        		var files = e.files;
+	        		console.log(e.response)
+	        	}
+	        },
+	        success: function(e){
+	        	if(options.onSuccess){
+	        		options.onSuccess(e)
+	        	}else{
+	        		var files = e.files;	        		                
+	                if (e.operation == "upload") {
+	                	files[0].sysFileId = e.response.sysFileId;	                	
+	                }
+	        	}
+	        },
+	        remove: function(e){
+	        	if(options.onRemove){
+	        		options.onRemove(e)
+	        	}else{
+	        		var files = e.files;
+	                e.data = {'sysFileId':files[0].sysFileId};
+	        	}
+	        }
+    	}
+    }//E_附件上传参数初始化
+    
     //init
     init();
     function init() {

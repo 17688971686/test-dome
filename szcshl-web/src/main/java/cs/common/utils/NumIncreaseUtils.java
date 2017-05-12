@@ -1,26 +1,28 @@
 package cs.common.utils;
 
+import cs.common.Constant;
+
 /**
  * 数字递增工具类
  * @author ldm
  *
  */
 public class NumIncreaseUtils {
-
-	private static String businessPropertiesName = "business.properties";
+	
 	private static String FILENO_YEAR = "fileno_year";
 	private static String FILENO_KEY = "fileno_increase_no";
 	private static String PREFIX="深投审";
 	private static String FILE_RECORD_YEAR = "file_record_year";
 	private static String FILE_RECORD_KEY = "file_record_no";
+	private static String EXPERT_NO = "expert_no";					
 	
 	/**
 	 * 获取文档编号
 	 * @return
 	 */
-	private static synchronized  String getFileNo(){
+	public static synchronized  String getFileNo(){
 		String curNo = "1";
-		PropertyUtil propertyUtil = new PropertyUtil(businessPropertiesName);
+		PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
 		String year = propertyUtil.readProperty(FILENO_YEAR);
 		int curYear = DateUtils.getCurYear();
 		if(curYear == Integer.valueOf(year)){
@@ -39,10 +41,9 @@ public class NumIncreaseUtils {
 	 * @param typeName （GD表示概率，PD表示评估）
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private static synchronized String getFileRecordNo(String typeName){
+	public static synchronized String getFileRecordNo(String typeName){
 		String curNo = "1";
-		PropertyUtil propertyUtil = new PropertyUtil(businessPropertiesName);
+		PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
 		String year = propertyUtil.readProperty(FILE_RECORD_YEAR);
 		int curYear = DateUtils.getCurYear();
 		if(curYear == Integer.valueOf(year)){
@@ -55,7 +56,21 @@ public class NumIncreaseUtils {
 		return curYear+typeName+curNo;
 	}
 	
-	public static void main(String[] args){
-		System.out.println(getFileNo());
+	/**
+	 * 获取专家编号（5位数）
+	 * @return
+	 */
+	public static synchronized String getExpertNo(){
+		PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+		String expertNo = propertyUtil.readProperty(EXPERT_NO);		
+		propertyUtil.writeProperty(EXPERT_NO, (Integer.valueOf(expertNo)+1)+"");		
+		return String.format("%05d", Integer.valueOf(expertNo));
 	}
+	
+	
+	public static void main(String[] args){
+		System.out.println(getExpertNo());
+	}
+	
+	
 }

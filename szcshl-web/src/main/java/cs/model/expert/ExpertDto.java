@@ -10,6 +10,7 @@ import cs.model.BaseDto;
  */
 public class ExpertDto extends BaseDto {
 	private String expertID;//专家ID
+	private String expertNo;//专家编号
 	private String name;//专家姓名
 	private String sex;//性别
 	private String birthDay;//出生日期
@@ -231,4 +232,11 @@ public class ExpertDto extends BaseDto {
 	public void setBankAccount(String bankAccount) {
 		this.bankAccount = bankAccount;
 	}
+	public String getExpertNo() {
+		return expertNo;
+	}
+	public void setExpertNo(String expertNo) {
+		this.expertNo = expertNo;
+	}
+	
 }

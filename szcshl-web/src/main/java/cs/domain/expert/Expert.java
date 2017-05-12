@@ -22,6 +22,9 @@ public class Expert extends DomainBase {
 	@Id
 	private String expertID;//专家ID
 	
+	@Column(columnDefinition="varchar(5)")
+	private String expertNo;//专家编号
+	
 	@Column(columnDefinition="varchar(32) NOT NULL")
 	private String name;//专家姓名
 	
@@ -298,6 +301,12 @@ public class Expert extends DomainBase {
 	}
 	public void setBankAccount(String bankAccount) {
 		this.bankAccount = bankAccount;
+	}
+	public String getExpertNo() {
+		return expertNo;
+	}
+	public void setExpertNo(String expertNo) {
+		this.expertNo = expertNo;
 	}
 			
 }

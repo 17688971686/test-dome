@@ -79,7 +79,7 @@
         }
         
         activate();
-        function activate() {
+        function activate() {       	
         	 kendo.culture("zh-CN");
              $("#birthDay").kendoDatePicker({
              	 format: "yyyy-MM-dd",

@@ -180,13 +180,17 @@
 
 		}// end fun checkRole
 
+		//begin getRoleById
 		function getRoleById(vm) {
 			var httpOptions = {
-				method : 'get',
-				url : common.format(url_role + "?$filter=id eq '{0}'", vm.id)
+				method : 'post',
+				url : rootPath + "/role/findById",
+				params:{
+					roleId:vm.id
+				}
 			}
 			var httpSuccess = function success(response) {
-				vm.model = response.data.value[0];
+				vm.model = response.data;
 				if (vm.isUpdate) {
 					initZtreeClient(vm);
 				}
@@ -198,7 +202,7 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-		}// end fun getRoleById
+		}//end  getRoleById
 		
 		function updateRole(vm){
 			common.initJqValidation();			

@@ -274,6 +274,9 @@ public class SignServiceImpl implements SignService {
 		String signid = processInstance.getBusinessKey();
 		Sign sign = null;
 		boolean saveSignFlag = false;
+		
+		Map<String,Object> variables = processInstance.getProcessVariables();
+		
 		switch(processInstance.getActivityId()){	
 			//综合部部长审批
 			case "ministerApproval":	
@@ -338,6 +341,12 @@ public class SignServiceImpl implements SignService {
 				dpdoc.setDirectorDate(new Date());
 				dispatchDocRepo.save(dpdoc);
 				break;
+			//归档	
+			case "doFile":
+				if("secondApproval".equals(flowDto.getNextNodeAcivitiId())){
+					variables.put("secondCharger", 1);
+				}
+				break;
 			//第二负责人审批
 			case "secondApproval":				
 				
@@ -366,8 +375,8 @@ public class SignServiceImpl implements SignService {
 		if(flowDto.isEnd()){
 			taskService.complete(task.getId());
 		}else{
-			Map<String,Object> nextProcessVariables = ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
-			taskService.complete(task.getId(),nextProcessVariables);
+			variables = ActivitiUtil.flowArguments(variables,flowDto.getNextDealUser(),flowDto.getNextGroup(),false);
+			taskService.complete(task.getId(),variables);
 		}
 								
 		resultMsg.setReCode(MsgCode.OK.getValue());

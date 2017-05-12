@@ -49,7 +49,7 @@ public class RoleServiceImpl implements RoleService {
 			roleDto.setCreatedDate(item.getCreatedDate());
 			roleDto.setRemark(item.getRemark());
 
-			List<ResourceDto> resourceDtoList = new ArrayList<>();
+			/*List<ResourceDto> resourceDtoList = new ArrayList<>();
 			for (Resource resource : item.getResources()) {
 				ResourceDto resourceDto = new ResourceDto();
 				resourceDto.setMethod(resource.getMethod());
@@ -57,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
 				resourceDto.setPath(resource.getPath());
 				resourceDtoList.add(resourceDto);
 			}
-			roleDto.setResources(resourceDtoList);
+			roleDto.setResources(resourceDtoList);*/
 			roleDtoList.add(roleDto);
 		}
 		PageModelDto<RoleDto> pageModelDto = new PageModelDto<>();
@@ -159,31 +159,53 @@ public class RoleServiceImpl implements RoleService {
 		  group.setName(roleName);
 		  identityService.saveGroup(group);
      }
+	 
      protected void updateActivitiGroup( String oldRoleName,String newRoleName){
-	 if(identityService.createGroupQuery().groupId(oldRoleName).count()!=0){
-		 identityService.deleteGroup(oldRoleName);
-		 Group group=identityService.newGroup(newRoleName);
-		 identityService.saveGroup(group);
-		 List< org.activiti.engine.identity.User> groupUsers = identityService.createUserQuery().memberOfGroup(oldRoleName).list();
-		  for ( org.activiti.engine.identity.User user : groupUsers) {
-			identityService.deleteMembership(user.getId(), oldRoleName);
-			identityService.createMembership(user.getId(), newRoleName);
+		 if(identityService.createGroupQuery().groupId(oldRoleName).count()!=0){
+			 identityService.deleteGroup(oldRoleName);
+			 Group group=identityService.newGroup(newRoleName);
+			 identityService.saveGroup(group);
+			 List< org.activiti.engine.identity.User> groupUsers = identityService.createUserQuery().memberOfGroup(oldRoleName).list();
+			  for ( org.activiti.engine.identity.User user : groupUsers) {
+				identityService.deleteMembership(user.getId(), oldRoleName);
+				identityService.createMembership(user.getId(), newRoleName);
+			 }
+			  
 		 }
-		  
-	 }
-}
-
-protected void deleteActivitiGroup(String roleName){
-	  if(identityService.createGroupQuery().groupId(roleName).count()!=0){
-		  List< org.activiti.engine.identity.User> groupUsers = identityService.createUserQuery().memberOfGroup(roleName).list();
-		  for ( org.activiti.engine.identity.User user : groupUsers) {
-			identityService.deleteMembership(user.getId(), roleName);
+	}
+	
+	protected void deleteActivitiGroup(String roleName){
+		  if(identityService.createGroupQuery().groupId(roleName).count()!=0){
+			  List< org.activiti.engine.identity.User> groupUsers = identityService.createUserQuery().memberOfGroup(roleName).list();
+			  for ( org.activiti.engine.identity.User user : groupUsers) {
+				identityService.deleteMembership(user.getId(), roleName);
+			  }
+			 identityService.deleteGroup(roleName);
 		  }
-		 identityService.deleteGroup(roleName);
-	  }
-}
-	/*public Role findByRoleId(String id) {
-		String hql = " from Role where roleId = ?";
-		return RoleRepo.;
-	}*/
+	}
+		/*public Role findByRoleId(String id) {
+			String hql = " from Role where roleId = ?";
+			return RoleRepo.;
+		}*/
+	
+	@Override
+	public RoleDto findById(String roleId) {
+		Role role= roleRepository.findById(roleId);
+		RoleDto roleDto = new RoleDto();
+		roleDto.setId(role.getId());
+		roleDto.setRoleName(role.getRoleName());
+		roleDto.setCreatedDate(role.getCreatedDate());
+		roleDto.setRemark(role.getRemark());
+
+		List<ResourceDto> resourceDtoList = new ArrayList<>();
+		for (Resource resource : role.getResources()) {
+			ResourceDto resourceDto = new ResourceDto();
+			resourceDto.setMethod(resource.getMethod());
+			resourceDto.setName(resource.getName());
+			resourceDto.setPath(resource.getPath());
+			resourceDtoList.add(resourceDto);
+		}
+		roleDto.setResources(resourceDtoList);
+		return roleDto;
+	}
 }
