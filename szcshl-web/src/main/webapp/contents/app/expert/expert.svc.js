@@ -338,7 +338,11 @@
 		function auditGrid(vm){
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
+<<<<<<< Updated upstream
 				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '1'"}),
+=======
+				transport : common.kendoGridConfig().transport(url+"/fingByOData"),
+>>>>>>> Stashed changes
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {

@@ -4,32 +4,101 @@
 	angular.module('app').factory('workprogramSvc', workprogram);
 	
 	workprogram.$inject = ['$rootScope','$http','$state'];
-
 	function workprogram($rootScope,$http,$state) {
+		var url_user = rootPath + "/user";
 		var service = {
 			initPage : initPage,		//初始化页面参数
-			createWP : createWP			//新增操作
+			createWP : createWP	,		//新增操作
+			findOrgs : findOrgs,		//查找主管部门
 		};
-		return service;			
+		return service;	
+		
+		//start 查找主管部门
+		function findOrgs(vm){
+			 var httpOptions = {
+		                method: 'get',
+		                url: common.format(url_user + "/getOrg")
+		            }
+		            var httpSuccess = function success(response) {
+		                vm.orgs = {};
+		                vm.orgs = response.data;
+		            }
+
+		            common.http({
+		                vm: vm,
+		                $http: $http,
+		                httpOptions: httpOptions,
+		                success: httpSuccess
+		            });
+		}
+		//end 查找主管部门
 		
 		//S_初始化页面参数
 		function initPage(vm){
+			//时间控件start
+			$(document).ready(function () {
+			  	 kendo.culture("zh-CN");
+			      $("#studyBeginTime").kendoDatePicker({
+			      	 format: "yyyy-MM-dd",
+			      });
+			  }); 
+			$(document).ready(function () {
+			 	 kendo.culture("zh-CN");
+			     $("#studyEndTime").kendoDatePicker({
+			     	 format: "yyyy-MM-dd",
+			     });
+			 }); 
+			$(document).ready(function () {
+			 	 kendo.culture("zh-CN");
+			     $("#suppLetterDate").kendoDatePicker({
+			     	 format: "yyyy-MM-dd",
+			     });
+			 }); 
 			
+			//时间控件end
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/workprogram/html/initWorkBySignId",
+					params : {signId:vm.work.signId}
+				}
+			var httpSuccess = function success(response) {									
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {		
+						if(response.data != null && response.data != ""){
+							vm.work = response.data;
+							
+						}	
+					}						
+				});
+			}
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
 		}//S_初始化页面参数	
 		
 		
 		//S_保存操作
 		function createWP(vm){
+			
+			vm.work.studyBeginTime = $("#studyBeginTime").val();
+			vm.work.studyEndTime = $("#studyEndTime").val();
+			vm.work.suppLetterDate = $("#suppLetterDate").val();
 			common.initJqValidation($("#work_program_form"));
 			var isValid = $("#work_program_form").valid();
-			if (isValid) {
+			
 				vm.commitProcess = true;
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/workprogram",
 						data : vm.work
 					}
-				var httpSuccess = function success(response) {									
+				var httpSuccess = function success(response) {	
+					console.log(response);
 					common.requestSuccess({
 						vm:vm,
 						response:response,
@@ -50,7 +119,8 @@
 					httpOptions:httpOptions,
 					success:httpSuccess
 				});
-			}
+			//}
 		}//E_保存操作
-	}		
+	}	
+	
 })();

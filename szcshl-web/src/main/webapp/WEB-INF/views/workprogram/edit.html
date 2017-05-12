@@ -5,16 +5,18 @@
 
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.commitProcess"><span class="glyphicon glyphicon-ok"></span>提交</button>
-    <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+    <a  class="btn btn-sm btn-danger" href="#/flowSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 </div>
         
 <div class="well well-sm" style="background:white;">
 	<!-- s form -->
-	<form id="work_program_form" name="work_program_form" >		
+	<form id="work_program_form" name="work_program_form" >	
+	<input type="hidden" ng-model="vm.work.id" value="{{vm.work.id}}" > 
+	
 		<!-- s table -->
 		<table class="table table-bordered">
 		  <caption class="text-center h3"><strong>项目建议书评审方案</strong></caption>
-		  <caption style="width:100%;">
+		  <!-- <caption style="width:100%;">
 		  	<span style="float:left;">评审方式
 			  	<select ng-model="vm.work.reviewType"  name="reviewType" id="reviewType">
 					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
@@ -24,7 +26,7 @@
 				</select>
 			</span>
 		  	<span style="float:right;">收文日期:2017年4月24日</span>
-		  </caption>
+		  </caption> -->
 		  <tbody>
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">项目名称</td>
@@ -45,17 +47,40 @@
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">建设单位</td>
 		      <td colspan="3">
-		      		{{vm.work.buildCompany}}
+		      		<select ng-model="vm.work.buildCompany"  name="buildCompany" id="buildCompany">
+					<option ng-repeat="x in DICT.BUILTCOMAPNY.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
 		      </td>
 		      <td  style="width:150px;" class="text-center">编制单位</td>
 		      <td>
-		      		{{vm.work.designCompany}}
+		      		<select ng-model="vm.work.designCompany" name="designCompany" id="designCompany">
+						<option ng-repeat="x in DICT.DESIGNCOMPANY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					</select>
+		      </td>
+		    </tr>	
+		     <tr>
+		      <td colspan="2" style="width:150px;" class="text-center">评审方式</td>
+		      <td colspan="3">
+		      		<select ng-model="vm.work.reviewType"  name="reviewType" id="reviewType">
+					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+					<select ng-model="vm.work.isSigle"  name="isSigle" id="isSigle">
+					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+				</select>
+		      </td>
+		      <td  style="width:150px;" class="text-center"></td>
+		      <td>
+		      	<!-- <select ng-model="vm.work.isSigle"  name="isSigle" id="isSigle">
+					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+				</select> -->
 		      </td>
 		    </tr>	    
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
 		      <td colspan="3">
-		      		
+		      		<select ng-model="vm.work.mainDeptId"  name="mainDeptId" id="mainDeptId">
+					<option ng-repeat="x in vm.orgs" value="{{x.id}}">{{x.name}}</option>
+					</select>
 		      </td>
 		      <td style="width:150px;" class="text-center">是否有环评</td>
 		      <td>
@@ -70,76 +95,96 @@
 		    <tr>		     
 		      <td colspan="2" style="width:150px;" class="text-center">项目类别</td>
 		      <td>
+		      <select ng-model="vm.work.projectType"  name="projectType" id="projectType">
+					<option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+			</select>
 					
 			  </td>
 			  <td style="width:50px;" class="text-center">小类</td>
 		      <td>
-					
+		    	 
+		    	<select ng-model="vm.work.projectSubType"  name="projectSubType" id="projectSubType">
+					<option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+				</select>
 			  </td>
 			  <td style="width:150px;" class="text-center">行业类别</td>
 		      <td>
-		      	
+		     	 <select ng-model="vm.work.industryType"  name="industryType" id="industryType">
+					<option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+				</select>
 		      </td>
 		    </tr> 
 		    <tr>
 		      <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
 		      <td rowspan="3" colspan="3">
-					
+		  	   <input type="text" style="width:100%; height: 100px;" class="form-control input-sm "   ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson" data-val="true" data-val-required="必填"> 
 			  </td>
 			  <td style="width:150px;" class="text-center">手机</td>
 		      <td>
-		      	
+		       <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonPhone" name="contactPersonPhone" data-val="true" data-val-required="必填">
 		      </td>
 		    </tr>
 		    <tr>		     
 		      <td style="width:150px;" class="text-center">电话</td>
 		      <td>
-		      	
+		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonTel" name="contactPersonTel" data-val="true" data-val-required="必填">
 		      </td>
 		    </tr> 
 		    <tr>		     
 		      <td style="width:150px;" class="text-center">传真</td>
 		      <td>
-		      	
+		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonFax" name="contactPersonFax" data-val="true" data-val-required="必填">
 		      </td>
 		    </tr> 
 		    <tr>
 		    	<td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
 			    <td style="width:100px;" class="text-center">申报建设规模</td>			
 			    <td colspan="3">
-			      	
+			      	<textarea rows="3" ng-model="vm.work.buildSize" name="buildSize" cols="" style="width:100%;"></textarea>
 			    </td>
 			    <td style="width:150px;" class="text-center">申报投资</td>
 			    <td >
 			      	
+			      	 <textarea rows="3" ng-model="vm.work.appalyInvestment" name="appalyInvestment" cols="" style="width:100%;"></textarea>
 			    </td>
 		    </tr>
 		    <tr>
 		    	<td style="width:100px;" class="text-center">申报建设内容</td>			
 			    <td colspan="5">
 			      	
+			      	 	<textarea rows="3"  ng-model="vm.work.buildContent" name="buildContent"cols="" style="width:100%;"></textarea>
 			    </td>			    
 		    </tr>
 		    <tr>
 		    	<td style="width:100px;" class="text-center">项目背景</td>			
 			    <td colspan="5">
 			      	
+			      	 	<textarea rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround" style="width:100%;"></textarea>
 			    </td>			   
 			</tr> 
 			<tr>
-				<td rowspan="2" colspan="2" style="width:150px;" class="text-center">评审部门</td>	
+				<td rowspan="2" colspan="2" style="width:150px;" class="text-center">评估部门</td>	
 			    <td rowspan="2" colspan="3">
-			      	
-			    </td>
+			       <select ng-model="vm.work.reviewDept" style="width:300px;" name="reviewDept" id="reviewDept">
+					<option ng-repeat="x in vm.orgs" value="{{x.name}}">{{x.name}}</option>
+					</select> 
+				<!-- 				
+					<textarea rows="3" ng-model="vm.work.reviewDept" ng-click="vm.findReviewDept()"name="reviewDept" cols="" style="width:100%;"></textarea>
+				 -->		
+				 </td>
 			    <td style="width:150px;" class="text-center">第一负责人</td>
 			    <td >
-			      	
+			      	<select ng-model="vm.work.mianChargePerson"  name="mianChargePerson" id="mianChargePerson">
+					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
 			    </td>
 			</tr> 
 			<tr>
 				<td style="width:150px;" class="text-center">第二负责人</td>
 			    <td >
-			      	
+			      	<select ng-model="vm.work.secondChargePerson"  name="secondChargePerson" id="mianChargePerson">
+					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
 			    </td>
 			</tr> 
 			<tr>
@@ -154,41 +199,55 @@
 			    </td>
 			    <td style="width:150px;" class="text-center">补充资料函发文日期</td>
 			    <td >
-			      	
+			      	<input name="suppLetterDate" id="suppLetterDate"  ng-model="vm.work.suppLetterDate" value="" type="text" />
+			      	{{vm.work.suppLetterDate}}
 			    </td>
 			</tr>
 			<tr>
 				<td colspan="2" style="width:150px;" class="text-center">评审会时间</td>	
 			    <td colspan="3">
-			      	
+			      		
 			    </td>
 			    <td style="width:150px;" class="text-center">会议地点</td>
 			    <td >
-			      	
+			      		{{vm.work.meetingAddress}}
 			    </td>
 			</tr>
 			<tr>
-				<td colspan="2" style="width:150px;" class="text-center">调研时间</td>	
+				<td colspan="2" style="width:150px;" class="text-center">调研开始时间</td>	
 			    <td colspan="3">
-			      	
+			      	 <input name="studyBeginTime"  id="studyBeginTime"ng-model="vm.work.studyBeginTime" type="text" />
+			      	{{vm.work.studyBeginTime}}
 			    </td>
-			    <td style="width:150px;" class="text-center">专家费用</td>
+			    <td style="width:150px;" class="text-center">调研结束时间</td>
 			    <td >
-			      	
+			      		<input name="studyEndTime"  id="studyEndTime"ng-model="vm.work.studyEndTime" type="text" />
+			      		{{vm.work.studyEndTime}}
 			    </td>
 			</tr>
 			<tr>
-		      <td colspan="2" style="width:150px;" class="text-center">拟聘请专家</td>
+				<td colspan="2" style="width:150px;" class="text-center">专家费用</td>	
+			    <td colspan="3">
+			      	{{vm.work.BigDecimal}}
+			      	<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.BigDecimal" name="BigDecimal" data-val="true" data-val-required="必填">
+			    </td>
+			    <td style="width:150px;" class="text-center"></td>
+			    <td >
+			    
+			    </td>
+			</tr>
+			<!-- <tr>
+		      <td colspan="2" style="width:150px;" class="text-center">拟聘请专家1</td>
 		      <td colspan="5">
-			  	  
+			  	  	{{vm.work.suppLetterDate}}
 			  </td>		      
 		    </tr> 
 			<tr>
-		      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
+		      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导2</td>
 		      <td colspan="5">
-			  	  
+			  	  	{{vm.work.suppLetterDate}}
 			  </td>		      
-		    </tr>  
+		    </tr>   -->
 			<tr>
 		      <td colspan="2" style="width:150px;" class="text-center">拟评审重点问题</td>
 		      <td colspan="5">
@@ -205,6 +264,12 @@
 		      <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
 		      <td colspan="5">
 			  	<textarea rows="3" ng-model="vm.work.leaderSuggesttion" name="leaderSuggesttion" style="width:98%"> </textarea> 
+			  </td>		      
+		    </tr>
+		     <tr>
+		      <td colspan="2" style="width:150px;" class="text-center">标题时间：</td>
+		      <td colspan="5">
+		      {{vm.work.titleDate}}
 			  </td>		      
 		    </tr>		   
 		  </tbody>		  

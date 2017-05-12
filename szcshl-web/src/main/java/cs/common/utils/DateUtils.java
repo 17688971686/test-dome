@@ -660,6 +660,22 @@ public class DateUtils {
 		}
     	return date;
     } 
+    /**
+     * 将字符串类型String转换为Date类型
+     * @param dateStr
+     * @return
+     */
+    public static Date toDateString(String dateStr){
+    	Date date = null;
+    	SimpleDateFormat formater = new SimpleDateFormat();
+    	formater.applyPattern("yyyy-MM-dd");
+    	try {
+			date =formater.parse(dateStr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return date;
+    }
     /** 
      * 将时间字符串转换为Date类型  天
      * @param dateStr 

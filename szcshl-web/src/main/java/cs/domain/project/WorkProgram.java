@@ -38,6 +38,7 @@ public class WorkProgram extends DomainBase{
 	
 	//项目名称
 	@Column(columnDefinition="VARCHAR(200)")
+	@Formula("(select s.projectname from sign s where s.signid = signid)")
 	private String projectName;
 	
 	//来文单位

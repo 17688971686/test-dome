@@ -6,4 +6,6 @@ public interface WorkProgramService {
 
 	void save(WorkProgramDto workProgramDto) throws Exception ;
 
+	WorkProgramDto initWorkBySignId(String signId);
+
 }

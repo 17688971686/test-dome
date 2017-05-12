@@ -11,8 +11,7 @@
         /* jshint validthis:true */
         var vm = this;
         vm.title = '单位列表';
-        
-
+       
         vm.del = function (id) {        	
         	
              common.confirm({
@@ -43,6 +42,10 @@
                 vm.del(idStr);
             }   
        }
+        vm.queryConpany =function(){
+        	alert("ssss");
+        	companySvc.queryConpany(vm)
+        }
         activate();
         function activate() {
             companySvc.grid(vm);

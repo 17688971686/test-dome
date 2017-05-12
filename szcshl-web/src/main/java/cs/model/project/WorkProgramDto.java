@@ -76,16 +76,16 @@ public class WorkProgramDto extends BaseDto{
 	private String isHaveSuppLetter;
 	
 	//补充资料函发文日期
-	private Date suppLetterDate;
+	private String suppLetterDate;
 	
 	//会议地点
 	private String meetingAddress;
 	
 	//调研开始时间
-	private Date studyBeginTime;
+	private String studyBeginTime;
 	
 	//调研结束时间
-	private Date studyEndTime;
+	private String studyEndTime;
 	
 	//专家费用
 	private BigDecimal expertCost;
@@ -100,7 +100,7 @@ public class WorkProgramDto extends BaseDto{
 	private String leaderSuggesttion;
 	
 	//标题日期
-	private Date titleDate;
+	private String titleDate;
 	
 	//收文对象
 	private Sign sign;
@@ -337,11 +337,12 @@ public class WorkProgramDto extends BaseDto{
 		this.isHaveSuppLetter = isHaveSuppLetter;
 	}
 
-	public Date getSuppLetterDate() {
+
+	public String getSuppLetterDate() {
 		return suppLetterDate;
 	}
 
-	public void setSuppLetterDate(Date suppLetterDate) {
+	public void setSuppLetterDate(String suppLetterDate) {
 		this.suppLetterDate = suppLetterDate;
 	}
 
@@ -353,19 +354,20 @@ public class WorkProgramDto extends BaseDto{
 		this.meetingAddress = meetingAddress;
 	}
 
-	public Date getStudyBeginTime() {
+
+	public String getStudyBeginTime() {
 		return studyBeginTime;
 	}
 
-	public void setStudyBeginTime(Date studyBeginTime) {
+	public void setStudyBeginTime(String studyBeginTime) {
 		this.studyBeginTime = studyBeginTime;
 	}
 
-	public Date getStudyEndTime() {
+	public String getStudyEndTime() {
 		return studyEndTime;
 	}
 
-	public void setStudyEndTime(Date studyEndTime) {
+	public void setStudyEndTime(String studyEndTime) {
 		this.studyEndTime = studyEndTime;
 	}
 
@@ -401,12 +403,14 @@ public class WorkProgramDto extends BaseDto{
 		this.leaderSuggesttion = leaderSuggesttion;
 	}
 
-	public Date getTitleDate() {
+	public String getTitleDate() {
 		return titleDate;
 	}
 
-	public void setTitleDate(Date titleDate) {
+	public void setTitleDate(String titleDate) {
 		this.titleDate = titleDate;
 	}
+
+	
 			
 }

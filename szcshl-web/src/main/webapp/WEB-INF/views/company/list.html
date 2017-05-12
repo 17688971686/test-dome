@@ -9,7 +9,15 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="form" name="form">
+    		 
+        
         <div class="toolbar">
+        <span class="help-inline">单位名称：</span>
+	    	<input type="text" ng-model="vm.model.coName" operator="like" name="coName" id="coName" placeholder="请输入">
+	    	<span class="help-inline" style="margin-left:10px;">单位电话：</span>
+	    	<input type="text" ng-model="vm.model.coPhone" operator="eq" name="coPhone" id="coPhone" placeholder="请输入">	    		
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryConpany()">查询</a>
+	    	
         <@shiro.hasPermission name="company##post"> 
             <a class="btn btn-sm btn-primary" href="#/companyEdit/"><span class="glyphicon glyphicon-plus"></span>新增单位</a>    
            </@shiro.hasPermission> 

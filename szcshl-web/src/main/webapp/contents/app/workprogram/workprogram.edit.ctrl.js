@@ -13,9 +13,13 @@
         vm.work.signId = $state.params.signid;		//这个是收文ID
         
         workprogramSvc.initPage(vm);
-       
+        workprogramSvc.findOrgs(vm);//查找主管部门
         vm.create = function () {
+        	
         	workprogramSvc.createWP(vm);
-        };       
+        };      
+        vm.findReviewDept = function(){
+        	alert("ssd");
+        }
     }
 })();

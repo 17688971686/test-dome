@@ -203,8 +203,6 @@
                 vm.org = {};
                 vm.org = response.data;
 
-                console.log(vm.org);
-
             }
 
             common.http({

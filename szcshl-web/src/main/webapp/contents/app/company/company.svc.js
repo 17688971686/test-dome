@@ -14,7 +14,8 @@
 			createcompany : createcompany,			
 			getcompanyById : getcompanyById,
 			updatecompany:updatecompany,
-			deletecompany:deletecompany			
+			deletecompany:deletecompany	,
+			queryConpany : queryConpany,//模糊查询
 		};		
 		return service;	
 		
@@ -137,23 +138,26 @@
 				};
 			
 		}// end fun grid
-
+		
+		//Start 模糊查询
+		function queryConpany(vm){
+			alert("sdfs");
+			vm.gridOptions.dataSource.read();	
+			console.log(vm.gridOptions.dataSource.read());
+		}
+		// end 模糊查询
 		function createcompany(vm) {
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid && vm.iscompanyExist == false) {
 				vm.isSubmit = true;
-				
-		
-	               
 				var httpOptions = {
 					method : 'post',
 					url : url_company,
 					data : vm.model
 				}
-
+				
 				var httpSuccess = function success(response) {				
-					
 					common.requestSuccess({
 						vm:vm,
 						response:response,

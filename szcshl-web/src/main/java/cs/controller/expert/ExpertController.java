@@ -33,9 +33,13 @@ public class ExpertController {
 	private ExpertService expertService;
 
 	
+
 	@RequiresPermissions("expert#findByOData#post")	
 	@RequestMapping(name = "获取专家数据", path = "findByOData", method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<ExpertDto> findPageByOData(HttpServletRequest request) throws ParseException {
+
+	
+
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<ExpertDto> expertDtos = expertService.get(odataObj);
 		return expertDtos;
