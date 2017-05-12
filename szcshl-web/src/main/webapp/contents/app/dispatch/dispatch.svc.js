@@ -1,5 +1,5 @@
 (function() {
-	'use strict';
+	'dispatch strict';
 	
 	angular.module('app').factory('dispatchSvc', dispatch);
 	
@@ -47,6 +47,7 @@
 		function saveDispatch(vm){
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
+			if(isValid){
 			vm.dispatchDoc.proofreadName=$("#proofreadId").find("option:selected").text();
 			vm.dispatchDoc.draftDate=$("#draftDate").val();
 			vm.dispatchDoc.dispatchDate=$("#dispatchDate").val();
@@ -81,6 +82,7 @@
 					httpOptions:httpOptions,
 					success:httpSuccess
 				});
+			}
 			}
 		}//E_保存
 		

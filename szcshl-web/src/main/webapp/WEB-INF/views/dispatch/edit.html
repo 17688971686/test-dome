@@ -16,14 +16,14 @@
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：
-		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay">
+		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" data-val="true" data-val-required="必填">
 		  			<option value="">请选择</option>
 					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 				 <span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>	
 			</span>
 		  	<span style="float:right;">发文类型：
-		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType">
+		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true" data-val-required="必填">
 		  			<option value="">请选择</option>
 					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>

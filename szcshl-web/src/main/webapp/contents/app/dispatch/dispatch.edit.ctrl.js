@@ -1,5 +1,5 @@
 (function () {
-    'use strict';
+    'dispatch strict';
 
     angular.module('app').controller('dispatchEditCtrl', dispatch);
 

@@ -48,7 +48,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				}else{
 					dispatchDoc=dispatchList.get(0);
 				}
-				dispatchDtoTodispatch(dispatchDocDto,dispatchDoc);
+				dispatchDtoTodispatch(dispatchDocDto,dispatchDoc);	
 				dispatchDoc.setDraftDate(DateUtils.ConverToDate(dispatchDocDto.getDraftDate()));
 				dispatchDoc.setDispatchDate(DateUtils.ConverToDate(dispatchDocDto.getDispatchDate()));
 				Sign sign = signRepo.findById(dispatchDocDto.getSignId());
