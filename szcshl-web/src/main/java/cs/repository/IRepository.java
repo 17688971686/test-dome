@@ -37,7 +37,7 @@ public interface IRepository<T, ID> {
 	
 	public Session getSession();
 	
-	List<T> findByHql(String hql, Object... values);
+	List<T> findByHql(HqlBuilder hqlBuilder);
 	
 	public int executeHql(String hql);
 	

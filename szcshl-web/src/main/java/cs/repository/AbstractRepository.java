@@ -145,23 +145,13 @@ public class AbstractRepository<T,ID extends Serializable> implements IRepositor
 	public T getById(ID id) {
 		return getSession().get(this.getPersistentClass(), id);
 	}
-
 	
 	@Override
-	public List<T> findByHql(String hql, Object... values) {
-		return createQuery(hql, values).list();
+	public List<T> findByHql(HqlBuilder hqlBuilder) {
+		Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());		
+		return setParamsToQuery2(q,hqlBuilder).list();
 	}
 
-
-	protected Query<T> createQuery(String queryString, Object... values) {
-		Query<T> queryObject = getSession().createQuery(queryString,this.getPersistentClass());
-		if (values != null) {
-			for (int i = 0; i < values.length; i++) {
-				queryObject.setParameter(i, values[i]);
-			}
-		}
-		return queryObject;
-	}
 
 	@Override
 	public int executeHql(String hql) {
@@ -182,7 +172,23 @@ public class AbstractRepository<T,ID extends Serializable> implements IRepositor
 		return total;
 	}
 	
-	public Query<?> setParamsToQuery(Query<?> query,HqlBuilder hqlBuilder) {
+	protected Query<?> setParamsToQuery(Query<?> query,HqlBuilder hqlBuilder) {
+		List<String> params = hqlBuilder.getParams();
+		List<Object> values = hqlBuilder.getValues();
+		List<Type> types = hqlBuilder.getTypes();
+		if (params != null) {
+			for (int i = 0; i < params.size(); i++) {
+				if (types.get(i) == null) {
+					query.setParameter(params.get(i), values.get(i));
+				} else {
+					query.setParameter(params.get(i), values.get(i), types.get(i));
+				}
+			}
+		}		
+		return query;
+	}
+	
+	protected Query<T> setParamsToQuery2(Query<T> query,HqlBuilder hqlBuilder) {
 		List<String> params = hqlBuilder.getParams();
 		List<Object> values = hqlBuilder.getValues();
 		List<Type> types = hqlBuilder.getTypes();
