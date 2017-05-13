@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import cs.common.Constant.EnumState;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
+import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
@@ -41,6 +43,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Transactional
 	public void save(DispatchDocDto dispatchDocDto) throws Exception{
 		if(Validate.isString(dispatchDocDto.getSignId())){
+			Date now=new Date();
 			List<DispatchDoc> dispatchList=dispatchDocRepo.findDispatchBySignId(dispatchDocDto.getSignId());
 			DispatchDoc dispatchDoc=null;
 				if(dispatchList.size()<1){
@@ -49,7 +52,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 					dispatchDoc=dispatchList.get(0);
 				}
 				dispatchDtoTodispatch(dispatchDocDto,dispatchDoc);	
-				dispatchDoc.setDraftDate(DateUtils.ConverToDate(dispatchDocDto.getDraftDate()));
+				dispatchDoc.setDraftDate(now);
 				dispatchDoc.setDispatchDate(DateUtils.ConverToDate(dispatchDocDto.getDispatchDate()));
 				Sign sign = signRepo.findById(dispatchDocDto.getSignId());
 				dispatchDoc.setSign(sign);
@@ -89,7 +92,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Override
 	public Map<String, Object> initDispatchData(String signId) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		
+		Date now=new Date();
 		List<DispatchDoc> dispatchList=dispatchDocRepo.findDispatchBySignId(signId);
 		Sign sign = signRepo.findById(signId);
 		//获取本部门领导信息
@@ -102,7 +105,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			dispatchTodispatchDto(dispatch,dispatchDto);
 			dispatchDto.setDraftDate(DateUtils.convertDateToString(dispatch.getDraftDate()));
 			dispatchDto.setDispatchDate(DateUtils.convertDateToString(dispatch.getDispatchDate()));
-			dispatchDto.setSignId(signId);
+			dispatchDto.setCreatedBy(dispatchDto.getUserName());
 			
 		}else{
 			dispatch=new DispatchDoc();
@@ -116,10 +119,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				dispatch.setOrgName(curUser.getOrgDto().getName());
 				dispatch.setOrgId(curUser.getOrgDto().getId());
 				dispatchTodispatchDto(dispatch,dispatchDto);
-				dispatchDto.setSignId(signId);
-				
+				dispatchDto.setDraftDate(DateUtils.convertDateToString(now));
+				dispatchDto.setFileNum(NumIncreaseUtils.getFileNo());
 			}
 		}
+		dispatchDto.setSignId(signId);
 		map.put("dispatch",dispatchDto);
 		return map;
 	}

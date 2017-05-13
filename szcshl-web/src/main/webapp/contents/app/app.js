@@ -75,7 +75,16 @@
                 controllerAs: 'vm'
             })
             //end#log
-
+            
+            //begin#upload
+        	.state('upload', {
+        		url: '/upload/:uploadid',
+        		templateUrl: rootPath + '/upload/html/edit.html',
+        		controller: 'uploadEditCtrl',
+        		controllerAs: 'vm'
+        	})
+        	//end#upload
+        	
             //begin#meeting
             .state('meeting', {
                 url: '/meeting',

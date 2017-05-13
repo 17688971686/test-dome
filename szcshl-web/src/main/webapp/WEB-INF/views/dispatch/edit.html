@@ -35,14 +35,11 @@
 		  
 		    <tr>
 		      <td style="width:150px;" class="text-center">发文部门</td>
-		      <td >
-		      	<input  type="text" maxlength="100" class="form-control input-sm " ng-model="vm.dispatchDoc.orgName" id="orgName" name="orgName" data-val="true" data-val-required="必填">
-			    <span data-valmsg-for="orgName" data-valmsg-replace="true" class="errors"></span>
-			  </td>
+		      <td >{{vm.dispatchDoc.orgName}}</td>
 			  
 			  <td rowspan="2" style="width:150px;" class="text-center">校对人</td>
 		      <td rowspan="2">
-		      	<select ng-model="vm.dispatchDoc.proofreadId"  name="proofreadId" id="proofreadId" class="form-control input-sm " >
+		      	<select ng-model="vm.dispatchDoc.proofreadId"  name="proofreadId" id="proofreadId" class="form-control input-sm " data-val="true" data-val-required="必填" >
 		  			<option value="">请选择</option>
 					<option ng-repeat="x in vm.proofread" value="{{x.id}}">{{x.loginName}}</option>
 				</select>			
@@ -60,22 +57,20 @@
 		    
 		    <tr>
 		      <td style="width:150px;" class="text-center">拟稿人</td>
-		      <td >
-		      	<input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.dispatchDoc.userName" id="userName" name="userName" data-val="true" data-val-required="必填">	  	
-			    <span data-valmsg-for="userName" data-valmsg-replace="true" class="errors"></span>
-			  </td>
+		      <td >{{vm.dispatchDoc.userName}}</td>
 		    </tr>
 		    
 		    
 		    <tr>
 		      <td style="width:150px;" class="text-center">秘密等级</td>
-		      <td >
-		      	<input  type="text" class="form-control input-sm "  ng-model="vm.dispatchDoc.secretLevel" id="secretLevel" name="secretLevel">
-			  </td>
+		      <td >{{vm.dispatchDoc.secretLevel}}</td>
 			  
 			  <td style="width:150px;" class="text-center">年度计划</td>
 		      <td >
-			  	<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.yearPlan" id="yearPlan" name="yearPlan" data-val="true" data-val-required="必填">
+		      	<select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm "  data-val="true" data-val-required="必填">
+		  			<option value="">请选择</option>
+					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+				</select>
 			    <span data-valmsg-for="yearPlan" data-valmsg-replace="true" class="errors"></span>
 			  </td>
 			  
@@ -95,15 +90,12 @@
 		      <td >
 		      	<input type="text" name="dispatchDate" id="dispatchDate" style="width: 210px;"
 					 class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate" 
-					  value="X/01/X2000" data-val-date="必须为日期" data-val="true"  data-val-required="必填"> 		
+					  value="X/01/X2000" data-val-date="必须为日期"> 		
 			    <span data-valmsg-for="dispatchDate" data-valmsg-replace="true" class="errors"></span>
 			  </td>
 			  
 			  <td style="width:150px;" class="text-center">文件字号</td>
-		      <td >
-		      	<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.fileNum" id="fileNum" name="fileNum" data-val="true" data-val-required="必填">		
-			  	<span data-valmsg-for="fileNum" data-valmsg-replace="true" class="errors"></span>
-			  </td>
+		      <td >{{vm.dispatchDoc.fileNum}}</td>
 			  
 			  <td style="width:150px;" class="text-center">是否有其他关联</td>
 		      <td >
@@ -128,11 +120,8 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">发行范围</td>
 		      <td colspan="5">
-		      	<select ng-model="vm.dispatchDoc.dispatchScope" class="form-control input-sm " name="dispatchScope" data-val="true" data-val-required="必填">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.DISPATCH_SCOPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select>	
-			   <span data-valmsg-for="dispatchScope" data-valmsg-replace="true" class="errors"></span>			     
+		      	<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope" data-val="true" data-val-required="必填">		
+			   	<span data-valmsg-for="dispatchScope" data-valmsg-replace="true" class="errors"></span>			     
 			  </td>
 		    </tr>
 		    

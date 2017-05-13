@@ -41,6 +41,7 @@ public class NumIncreaseUtils {
 	 * @param typeName （GD表示概率，PD表示评估）
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	public static synchronized String getFileRecordNo(String typeName){
 		String curNo = "1";
 		PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);

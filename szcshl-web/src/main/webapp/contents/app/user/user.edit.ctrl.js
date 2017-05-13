@@ -31,7 +31,6 @@
                 userSvc.getUserById(vm);
             } else {
                 userSvc.initZtreeClient(vm);
-                userSvc.getDict(vm);
             }
             userSvc.getOrg(vm);
         }

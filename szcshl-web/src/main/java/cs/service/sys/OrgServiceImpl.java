@@ -3,6 +3,7 @@ package cs.service.sys;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -78,6 +79,7 @@ public class OrgServiceImpl implements OrgService {
 			Org org = new Org();						
 			BeanCopierUtils.copyProperties(orgDto, org);
 			Date now = new Date();
+			org.setId(UUID.randomUUID().toString());
 			org.setCreatedBy(currentUser.getLoginName());
 			org.setCreatedDate(now);
 			org.setModifiedBy(currentUser.getLoginName());

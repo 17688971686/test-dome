@@ -6,7 +6,7 @@
     user.$inject = ['$http'];
 
     function user($http) {
-        var url_user = rootPath + "/user", url_back = '#/user', url_role = rootPath + "/role",
+        var url_user = rootPath + "/user", url_back = '#/user', url_role = rootPath + "/role/fingByOData",
             url_dictgroup = rootPath + "/dict";
         var service = {
             grid: grid,
@@ -15,8 +15,7 @@
             createUser: createUser,
             deleteUser: deleteUser,
             updateUser: updateUser,
-            getOrg: getOrg,
-            getDict: getDict
+            getOrg: getOrg
         };
 
         return service;
@@ -28,7 +27,7 @@
             if (isValid) {
                 vm.isSubmit = true;
                 vm.model.id = vm.id;// id
-
+                
                 // zTree
                 var nodes = getZtreeChecked();
                 var nodes_role = $linq(nodes).where(function (x) {
@@ -169,28 +168,7 @@
                 });
 
             }
-        }
-
-        //获取字典信息
-        function getDict(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: url_dictgroup
-            };
-
-            var httpSuccess = function success(response) {
-                //vm.dict ={};
-                vm.sex = response.data;
-                console.log(vm.sex);
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
+        }      
 
         //获取部门信息
         function getOrg(vm) {
@@ -216,7 +194,7 @@
         // begin#initZtreeClient
         function initZtreeClient(vm) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: url_role
             }
             var httpSuccess = function success(response) {
@@ -269,8 +247,8 @@
         // begin#getUserById
         function getUserById(vm) {
             var httpOptions = {
-                method: 'get',
-                url: common.format(url_user + "?$filter=id eq '{0}'", vm.id)
+                method: 'POST',
+                url: common.format(url_user +"/fingByOData"+ "?$filter=id eq '{0}'", vm.id)
             }
             var httpSuccess = function success(response) {
                 vm.model = response.data.value[0];

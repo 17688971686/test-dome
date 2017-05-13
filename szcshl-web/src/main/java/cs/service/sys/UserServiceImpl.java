@@ -24,6 +24,7 @@ import cs.common.ICurrentUser;
 import cs.common.Response;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Cryptography;
+import cs.common.utils.Validate;
 import cs.domain.sys.Org;
 import cs.domain.sys.Role;
 import cs.domain.sys.User;
@@ -130,10 +131,10 @@ public class UserServiceImpl implements UserService {
 			user.setId(UUID.randomUUID().toString());
 			user.setCreatedBy(currentUser.getLoginName());
 			//MD5加密密码
-			String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
+			/*String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
 			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
 			String password = Cryptography.md5(userDto.getPassword(), userDto.getPassword()+salt2,2);
-			user.setUserSalt(salt1);
+			user.setUserSalt(salt1);*/
 			user.setPassword(userDto.getPassword());
 			
 			
@@ -159,11 +160,11 @@ public class UserServiceImpl implements UserService {
 				}
 
 			}
-			//添加部门
-			OrgDto oDto =  userDto.getOrgDto();
-			Org o = orgRepo.findById(oDto.getId());
-			//o.setId(o.getId());
-			user.setOrg(o);
+			//添加部门			
+			if(Validate.isString(userDto.getOrgId())){
+				Org o = orgRepo.findById(userDto.getOrgId());
+				user.setOrg(o);
+			}			
 			userRepo.save(user);
 			//System.out.println(userDto.getId()+userDto.getLoginName()+userDto.getPassword());
 			createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
@@ -242,9 +243,11 @@ public class UserServiceImpl implements UserService {
 		user.setPwdState(userDto.getPwdState());
 		user.setUserOrder(userDto.getUserOrder());
 		
-		OrgDto oDto =  userDto.getOrgDto();
-		Org o = orgRepo.findById(oDto.getId());
-		user.setOrg(o);
+		//添加部门			
+		if(Validate.isString(userDto.getOrgId())){
+			Org o = orgRepo.findById(userDto.getOrgId());
+			user.setOrg(o);
+		}	
 		
 		// 清除已有role
 		user.getRoles().clear();

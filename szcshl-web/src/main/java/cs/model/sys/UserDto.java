@@ -32,7 +32,7 @@ public class UserDto extends BaseDto {
 	private String userSalt; //加密盐
 	private Long userOrder; //用户序号
 	
-	private String orgUserId;
+	private String orgId;	//关联部门ID
 	
 	private int loginFailCount;
 	@Column(columnDefinition="date")
@@ -47,15 +47,16 @@ public class UserDto extends BaseDto {
 		return orgDto;
 	}
 
-
-	public String getOrgUserId() {
-		return orgUserId;
+	public String getOrgId() {
+		return orgId;
 	}
 
 
-	public void setOrgUserId(String orgUserId) {
-		this.orgUserId = orgUserId;
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
 	}
+
 
 
 	public void setOrgDto(OrgDto orgDto) {
