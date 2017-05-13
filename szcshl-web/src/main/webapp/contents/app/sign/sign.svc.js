@@ -156,7 +156,9 @@
 		//S_创建收文
 		function createSign(vm){
 			common.initJqValidation();
-			var isValid = $('form').valid();
+			var isValid = $('form').valid();		
+			alert(vm.model.reviewstage + "--"+isValid);
+			return false;
 			if (isValid) {
 				var httpOptions = {
 						method : 'post',

@@ -86,32 +86,32 @@ public class OrgController {
 		}
 	}
 
-	@RequiresPermissions("org#{orgId}/users#get")	
-	@RequestMapping(name = "部门用户", path = "{orgId}/users", method = RequestMethod.GET)
-	public @ResponseBody PageModelDto<UserDto> orgUsers(@PathVariable String orgId) {
+	@RequiresPermissions("org#users#post")	
+	@RequestMapping(name = "部门用户", path = "users", method = RequestMethod.POST)
+	public @ResponseBody PageModelDto<UserDto> orgUsers(@RequestParam String orgId) {
 
 		return orgService.getOrgUsers(orgId);
 	}
 	
-	@RequiresPermissions("org#{orgId}/userNotIn#get")	
-	@RequestMapping(name = "非部门用户", path = "{orgId}/userNotIn", method = RequestMethod.GET)
-	public @ResponseBody PageModelDto<UserDto> userNotIn(@PathVariable String orgId,HttpServletRequest request) throws ParseException {
+	@RequiresPermissions("org#userNotIn#post")	
+	@RequestMapping(name = "非部门用户", path = "userNotIn", method = RequestMethod.POST)
+	public @ResponseBody PageModelDto<UserDto> userNotIn(@RequestParam String orgId,HttpServletRequest request) throws ParseException {
 
 		ODataObj odataObj = new ODataObj(request);
 		return orgService.getUsersNotInOrg(orgId, odataObj);
 	}
 	
-	@RequiresPermissions("org#{orgId}/users#post")	
-	@RequestMapping(name = "添加用户到部门", path = "{orgId}/users", method = RequestMethod.POST)
+	@RequiresPermissions("org#addUsers#post")	
+	@RequestMapping(name = "添加用户到部门", path = "addUsers", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public void postUserToOrg(@PathVariable String orgId,@RequestBody String userId) {
+	public void postUserToOrg(@RequestParam String orgId,@RequestParam String userId) {
 		orgService.addUserToOrg(userId, orgId);
 	}
 	
-	@RequiresPermissions("org#{orgId}/users#delete")
-	@RequestMapping(name = "从部门移除用户", path = "{orgId}/users", method = RequestMethod.DELETE)
+	@RequiresPermissions("org#deleteUsers#delete")
+	@RequestMapping(name = "从部门移除用户", path = "deleteUsers", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void deleteUserFromOrg(@PathVariable String orgId,@RequestBody String userId) {
+	public void deleteUserFromOrg(@RequestParam String orgId,@RequestParam String userId) {
 		String[] ids = userId.split(",");
 		if (ids.length > 1) {
 			orgService.removeOrgUsers(ids,orgId);

@@ -13,22 +13,23 @@
     </div>
     <div class="well well-sm" style="background:white;">	    
 	    <span class="help-inline">委内收文编号：</span>
-	    	<input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">	    		    	
+	    	<input type="text"  placeholder="请输入">	    		    	
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" >直接根据委内收文编号从委内下载数据</a>     	   	    		    		  	
 	   	</form>      
 	</div> 
-
+	<!-- 
 	<div class="toolbar">
           <p>项目预签收</p>
     </div>
     <div class="well well-sm" style="background:white;">    
 	    <span class="help-inline">委内收文编号：</span>
-	    	<input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">	    		    	
+	    	<input type="text"  placeholder="请输入">	    		    	
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" >根据收文编号下载收文预签收信息</a>     	   	    		    		  	      
 	</div> 
+	 -->
     <form id="form" name="form">
     	<div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.create()" ><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ><span class="glyphicon glyphicon-ok"></span>保存</button>
         </div>
         <table style="width:100%">
             <tr>
@@ -39,14 +40,16 @@
             <tr>
                 <td class="formAlignRight">委内收文编号： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true"  data-val-required="必填"
+                    data-val-regex-pattern="^(A|B|C|D)+20[1-4]+[0-9]{5}" data-val-regex="收文编号格式不正确" >
                 </td>
                 <td><span data-valmsg-for="filecode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>                      
             <tr>    
                 <td class="formAlignRight">项目代码： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.projectcode" id="projectcode" name="projectcode" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.projectcode" id="projectcode" name="projectcode" data-val="true" data-val-required="必填"
+                    data-val-regex-pattern="^([0-9]|-)*$" data-val-regex="收文编号格式不正确" >
                 </td>
                 <td><span data-valmsg-for="projectcode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>     
@@ -60,13 +63,11 @@
             <tr>
                 <td class="formAlignRight">项目阶段： <span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.reviewstage" ng-change="vm.model.secondCodeDicts = topSelectChange(vm.model.reviewstage,DICT.PRO_STAGE.dicts)" name="reviewstage" id="reviewstage">
+                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="必填" class="{required:true, minlength:1}" multiple="multiple">
 						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					
-					<select ng-model="vm.model.secondCode" name="reviewstage" id="reviewstage">
-						<option ng-repeat="x in vm.model.secondCodeDicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
+					<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.ispresign" name="ispresign"  ng-true-value="9" ng-false-value="0"> 项目预签收
                 </td>
                 <td><span data-valmsg-for="reviewstage" data-valmsg-replace="true" class="errors"></span></td>
             </tr>                             

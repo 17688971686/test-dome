@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.external;
 
-import cs.domain.organs.Dept;
+import cs.domain.external.Dept;
 import cs.repository.IRepository;
 
 

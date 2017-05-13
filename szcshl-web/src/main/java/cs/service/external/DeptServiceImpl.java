@@ -13,7 +13,7 @@ import cs.common.Constant.EnumState;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
-import cs.domain.organs.Dept;
+import cs.domain.external.Dept;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.repository.odata.ODataObj;

@@ -361,12 +361,6 @@
                     filterable: false
                 },
                 {
-                    field: "pwdState",
-                    title: "更改密码",
-                    width: 80,
-                    filterable: false
-                },
-                {
                     field: "userIP",
                     title: "登录IP",
                     width: 160,
@@ -378,14 +372,23 @@
                     width: 160,
                     filterable: false
                 },
-
                 {
-                    field: "createdDate",
-                    title: "创建时间",
+                    field: "",
+                    title: "所属角色",
                     width: 160,
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
-
+                    template: function(item) {
+						if(item.roles){
+							var resultStr = "";
+							for(var i=0,l=item.roles.length;i<l;i++){
+								resultStr += item.roles[i].roleName +", ";
+							}
+							return resultStr;
+						}
+						else{
+							return " ";
+						}
+					}	
                 },
                 {
                     field: "remark",

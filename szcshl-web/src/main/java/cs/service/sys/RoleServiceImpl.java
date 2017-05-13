@@ -128,17 +128,15 @@ public class RoleServiceImpl implements RoleService {
 		if (role != null) {
 			this.deleteActivitiGroup(role.getRoleName());
 			List<User> users=role.getUsers();
-			for (User user : users) {//把用户里的角色移出才能删除
-				//user.getRoles().remove(role);
+			//把用户里的角色移出才能删除
+			for (User user : users) {
+				user.getRoles().remove(role);
 			}
 			if(!role.getRoleName().equals("超级管理员")){
 				roleRepository.delete(role);
 				logger.info(String.format("删除角色,角色名:%s", role.getRoleName()));
-			}
-			
+			}			
 		}
-
-
 	}
 
 	@Override

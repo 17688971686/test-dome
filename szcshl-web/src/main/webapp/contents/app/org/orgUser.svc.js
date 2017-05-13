@@ -7,8 +7,8 @@
 	function org($http,$compile) {	
 		var url_org = "/org";
 		var url_back = '#/org';
-		var user_userNotIn='/org/{0}/userNotIn';
-		var url_orgUsers="/org/{0}/users";
+		var user_userNotIn=rootPath+'/org/userNotIn';
+		var url_orgUsers=rootPath+"/org/users";
 		
 			
 		var service = {	
@@ -23,21 +23,20 @@
 		function remove(vm,userId){		
             var httpOptions = {
                 method: 'delete',
-                url:common.format(url_orgUsers,vm.id),
-                data:userId
-                
+                url:rootPath+"/org/deleteUsers",
+                params:{
+                	orgId:vm.id,
+                	userId: userId
+                }                
             }
-            var httpSuccess = function success(response) {
-                
+            var httpSuccess = function success(response) {                
                 common.requestSuccess({
 					vm:vm,
 					response:response,
 					fn:function () {						
 	                    vm.gridOptions.dataSource.read();	                   
-	                }
-					
+	                }					
 				});
-
             }
             common.http({
 				vm:vm,
@@ -45,29 +44,28 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-		}
-		
+		}		
 		
 		//begin#add
 		function add(vm,userId){		
             var httpOptions = {
                 method: 'post',
-                url:common.format(url_orgUsers,vm.id),
-                data:userId
-                
+                url:rootPath+"/org/addUsers",
+                params:{
+                	orgId:vm.id,
+                	userId: userId
+                }                
             }
-            var httpSuccess = function success(response) {
-                
+            
+            var httpSuccess = function success(response) {              
                 common.requestSuccess({
 					vm:vm,
 					response:response,
 					fn:function () {
 						vm.orgUserGrid.dataSource.read();
 	                    vm.gridOptions.dataSource.read();	                   
-	                }
-					
+	                }					
 				});
-
             }
             common.http({
 				vm:vm,
@@ -82,7 +80,7 @@
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(common.format(user_userNotIn,vm.id)),
+				transport : common.kendoGridConfig().transport(user_userNotIn+"?orgId="+vm.id),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -154,7 +152,7 @@
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(common.format(url_orgUsers,vm.id)),
+				transport : common.kendoGridConfig().transport(url_orgUsers+"?orgId="+vm.id),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {

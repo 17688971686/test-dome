@@ -1,4 +1,4 @@
-package cs.domain.organs;
+package cs.domain.external;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

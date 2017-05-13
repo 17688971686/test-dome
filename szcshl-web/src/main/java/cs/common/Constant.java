@@ -63,7 +63,7 @@ public class Constant {
 	 *
 	 */
 	public static enum EnumFlow{
-	    SIGN("signflow");
+	    SIGN("signflow"),NEW_SIGN("newsignflow");
 
 	    private String value;
 
