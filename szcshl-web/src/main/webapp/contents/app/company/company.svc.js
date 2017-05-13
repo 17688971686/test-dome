@@ -96,13 +96,13 @@
 						width : 200,						
 						filterable : false
 					},
-					/*{
-						field : "coDept",
-						title : "直属部门",
+					{
+						field : "coType",
+						title : "单位类型",
 						width : 200,						
 						filterable : false
 					},
-					{
+					/*{
 						field : "coDeptName",
 						title : "直属部门名称",
 						width : 200,						

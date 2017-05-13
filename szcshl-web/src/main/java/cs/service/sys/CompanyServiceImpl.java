@@ -44,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService{
 			comDto.setCoPhone(item.getCoPhone());
 			comDto.setCoSite(item.getCoSite());
 			comDto.setCoSynopsis(item.getCoSynopsis());
-	
+			comDto.setCoType(item.getCoType());
 			comDtoList.add(comDto);
 			
 		}
