@@ -11,6 +11,8 @@
 	<!-- 扫描service自动注入为bean -->
 	<!-- <context:component-scan base-package="cs.service,cs.repository.repositoryImpl" /> -->
 	
-	<context:component-scan base-package="cs"></context:component-scan>
+	<context:component-scan base-package="cs">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
 
 </beans>

@@ -8,7 +8,7 @@
 		var url_user = rootPath + "/user";
 		var service = {
 			initPage : initPage,		//初始化页面参数
-			createWP : createWP	,		//新增操作
+			createWP : createWP,		//新增操作
 			findOrgs : findOrgs,		//查找主管部门
 			findUsersByOrgId : findUsersByOrgId,//查询评估部门
 		};
@@ -16,21 +16,21 @@
 		
 		//start 查找主管部门
 		function findOrgs(vm){
-			 var httpOptions = {
-		                method: 'get',
-		                url: common.format(url_user + "/getOrg")
-		            }
-		            var httpSuccess = function success(response) {
-		                vm.orgs = {};
-		                vm.orgs = response.data;
-		            }
+			var httpOptions = {
+                method: 'get',
+                url: common.format(url_user + "/getOrg")
+            }
+            var httpSuccess = function success(response) {
+                vm.orgs = {};
+                vm.orgs = response.data;
+            }
 
-		            common.http({
-		                vm: vm,
-		                $http: $http,
-		                httpOptions: httpOptions,
-		                success: httpSuccess
-		            });
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
 		}
 		//end 查找主管部门
 		//S_根据部门ID选择用户
@@ -119,13 +119,12 @@
 		
 		//S_保存操作
 		function createWP(vm){
-			
 			vm.work.studyBeginTime = $("#studyBeginTime").val();
 			vm.work.studyEndTime = $("#studyEndTime").val();
 			vm.work.suppLetterDate = $("#suppLetterDate").val();
 			common.initJqValidation($("#work_program_form"));
 			var isValid = $("#work_program_form").valid();
-			
+			if(isValid){
 				vm.commitProcess = true;
 				var httpOptions = {
 						method : 'post',
@@ -155,9 +154,9 @@
 					$http:$http,
 					httpOptions:httpOptions,
 					success:httpSuccess
-				});
-			//}
+				});			
+			}			
 		}//E_保存操作
-	}	
-	
+		
+	}		
 })();

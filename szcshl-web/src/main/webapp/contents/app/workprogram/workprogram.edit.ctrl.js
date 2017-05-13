@@ -18,10 +18,11 @@
         vm.findUsersByOrgId = function(type){
         	workprogramSvc.findUsersByOrgId(vm,type);
         }
-        vm.create = function () {
-        	
+        
+        vm.create = function () {       	
         	workprogramSvc.createWP(vm);
-        };      
+        };  
+            
         vm.findReviewDept = function(){
         	alert("ssd");
         }

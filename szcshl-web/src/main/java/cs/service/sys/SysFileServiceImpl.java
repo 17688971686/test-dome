@@ -18,6 +18,7 @@ import cs.common.ICurrentUser;
 import cs.common.utils.SysFileUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
@@ -92,11 +93,14 @@ public class SysFileServiceImpl implements SysFileService{
 
 	@Override
 	@Transactional
-	public void deleteById(String sysFileId) {				
-		SysFile sysFile = sysFileRepo.findById(sysFileId);
+	public void deleteById(String sysFileId) {		
+		sysFileRepo.deleteById(SysFile_.sysFileId.getName(), sysFileId);
+		//SysFile sysFile = sysFileRepo.findById(sysFileId);	//有bug
+		
+		/*SysFile sysFile = sysFileRepo.getById(sysFileId);
 		if(sysFile != null && Validate.isString(sysFile.getSysFileId())){
 			sysFileRepo.delete(sysFile);
-		}		
+		}*/		
 	}
 
 }

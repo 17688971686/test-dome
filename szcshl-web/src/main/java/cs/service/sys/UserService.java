@@ -19,8 +19,6 @@ public interface UserService {
 	void createUser(UserDto userDto);
 
 	void deleteUser(String id);
-
-	void deleteUsers(String[] ids);
 	
 	void updateUser(UserDto userDto);
 	

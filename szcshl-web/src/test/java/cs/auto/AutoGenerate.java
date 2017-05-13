@@ -7,7 +7,7 @@ import cs.auto.core.CRUDGenerate;
 import cs.auto.core.config.CRUDGanConfig;
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
-import cs.domain.organs.Dept;
+import cs.domain.sys.SysFile;
 
 /**
  * Description: 代码生成器
@@ -18,8 +18,8 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(Dept.class, "部门");
-        config.setAuthor("xxx");
+        CRUDGanConfig config = new CRUDGanConfig(SysFile.class, "附件");
+        config.setAuthor("ldm");
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\dept");
         config.setFileOverride(true);
         config.setOpen(true);

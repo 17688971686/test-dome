@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
@@ -69,12 +68,7 @@ public class UserController {
     @RequestMapping(name = "删除用户", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-        String[] ids = id.split(",");
-        if (ids.length > 1) {
-            userService.deleteUsers(ids);
-        } else {
-            userService.deleteUser(id);
-        }
+    	userService.deleteUser(id);
     }
 
     @RequiresPermissions("user##put")

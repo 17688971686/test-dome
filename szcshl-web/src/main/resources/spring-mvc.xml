@@ -12,8 +12,12 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<mvc:resources location="/contents/" mapping="/contents/**" />
+	
 	<!-- 自动扫描@Controller注入为bean -->
-	<context:component-scan base-package="cs.controller.**" />
+	<context:component-scan base-package="cs.controller" >
+	 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
 	<!-- <context:component-scan base-package="com.dingding.dingPC.controller" /> -->
 	<mvc:interceptors>
 		<bean class="cs.common.ApiFilter" />
@@ -44,7 +48,7 @@
 
 	<!-- 支持上传文件-->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="10485760"/>
+		<property name="maxUploadSize" value="104857600"/>
 		<property name="uploadTempDir" value="resources/upload/temp" />
 		<property name="defaultEncoding" value="utf-8"/>
 	</bean>

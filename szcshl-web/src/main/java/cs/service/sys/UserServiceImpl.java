@@ -25,9 +25,11 @@ import cs.common.Response;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Cryptography;
 import cs.common.utils.Validate;
+import cs.common.utils.DateUtils;
 import cs.domain.sys.Org;
 import cs.domain.sys.Role;
 import cs.domain.sys.User;
+import cs.domain.sys.User_;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.RoleDto;
@@ -206,7 +208,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public void deleteUser(String id) {
-		User user = userRepo.findById(id);
+		userRepo.deleteById(User_.id.getName(), id);
+		/*User user = userRepo.findById(id);
 		if (user != null) {
 			if(!user.getLoginName().equals("admin")){
 				userRepo.delete(user);
@@ -214,16 +217,7 @@ public class UserServiceImpl implements UserService {
 				logger.info(String.format("删除用户,用户名:%s", user.getLoginName()));
 			}
 			
-		}
-	}
-
-	@Override
-	@Transactional
-	public void deleteUsers(String[] ids) {
-		for (String id : ids) {
-			this.deleteUser(id);
-		}
-		logger.info("批量删除用户");
+		}*/
 	}
 
 	@Override
@@ -282,8 +276,8 @@ public class UserServiceImpl implements UserService {
 				String loginIP=	request.getRemoteAddr();
 				System.out.println(loginIP);
 				user.setUserIP(loginIP);
-				 String lastloign = sdf.format(new Date());//获取当前时间
-				 user.setLastLogin(lastloign);
+				String lastloign = DateUtils.toString(new Date());//获取当前时间
+				user.setLastLogin(lastloign);
 				user.setLastLoginDate(new Date());
 				//shiro
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());

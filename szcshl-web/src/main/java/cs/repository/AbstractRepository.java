@@ -14,8 +14,11 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.HqlBuilder;
+import cs.domain.expert.Expert;
+import cs.domain.expert.Expert_;
 import cs.repository.odata.ODataObj;
 
 public class AbstractRepository<T,ID extends Serializable> implements IRepository<T, ID> {
@@ -202,5 +205,28 @@ public class AbstractRepository<T,ID extends Serializable> implements IRepositor
 			}
 		}		
 		return query;
+	}
+
+	@Override
+	public int deleteById(String idPropertyName, String idValue) {
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+		hqlBuilder.append(" delete from  "+getPersistentClass().getSimpleName());		
+		String[] idArr = idValue.split(",");		
+        if (idArr.length > 1) {
+        	hqlBuilder.append( " where "+idPropertyName+" in ( ");	  
+        	int totalL = idArr.length;
+        	for(int i=0;i<totalL;i++){
+        		if(i==totalL-1){
+        			hqlBuilder.append(" :id"+i).setParam("id"+i, idArr[i]);
+        		}else{
+        			hqlBuilder.append(" :id"+i+",").setParam("id"+i, idArr[i]);
+        		}	        		
+        	}
+        	hqlBuilder.append(" )");
+        } else {
+        	hqlBuilder.append( " where "+idPropertyName+" = :id ");
+        	hqlBuilder.setParam("id", idValue);
+        }
+        return executeHql(hqlBuilder);
 	}	
 }
