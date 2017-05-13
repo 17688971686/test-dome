@@ -14,6 +14,10 @@
         
         workprogramSvc.initPage(vm);
         workprogramSvc.findOrgs(vm);//查找主管部门
+        //查询评估部门
+        vm.findUsersByOrgId = function(type){
+        	workprogramSvc.findUsersByOrgId(vm,type);
+        }
         vm.create = function () {
         	
         	workprogramSvc.createWP(vm);

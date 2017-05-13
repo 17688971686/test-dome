@@ -10,6 +10,7 @@
 			initPage : initPage,		//初始化页面参数
 			createWP : createWP	,		//新增操作
 			findOrgs : findOrgs,		//查找主管部门
+			findUsersByOrgId : findUsersByOrgId,//查询评估部门
 		};
 		return service;	
 		
@@ -32,6 +33,40 @@
 		            });
 		}
 		//end 查找主管部门
+		//S_根据部门ID选择用户
+		function findUsersByOrgId(vm,type){
+			var param = {};
+			if("main" == type){
+				param.orgId = vm.work.reviewDept;
+			}
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/user/findUsersByOrgId",
+					params:param					
+				};
+				
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {		
+						if("main" == type){
+							vm.mainUserList = {};
+							vm.mainUserList = response.data;
+							console.log(vm.mainUserList);
+						}
+					}
+				});
+			};
+			
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		//E_根据部门ID选择用户
 		
 		//S_初始化页面参数
 		function initPage(vm){
@@ -107,6 +142,8 @@
 								vm:vm,
 								msg:"操作成功,请继续处理流程！",
 								fn:function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
 									$rootScope.back();	//返回到流程页面
 								}
 							})								

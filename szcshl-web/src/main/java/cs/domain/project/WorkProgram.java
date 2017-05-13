@@ -110,7 +110,7 @@ public class WorkProgram extends DomainBase{
 	private String projectBackGround;
 	
 	//评估部门
-	@Column(columnDefinition="VARCHAR(30)")
+	@Column(columnDefinition="VARCHAR(60)")
 	private String reviewDept;
 	
 	//第一负责人

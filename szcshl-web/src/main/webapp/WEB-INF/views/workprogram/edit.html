@@ -4,8 +4,8 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.commitProcess"><span class="glyphicon glyphicon-ok"></span>提交</button>
-    <a  class="btn btn-sm btn-danger" href="#/flowSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.commitProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
+      <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
         
 <div class="well well-sm" style="background:white;">
@@ -16,18 +16,23 @@
 		<!-- s table -->
 		<table class="table table-bordered">
 		  <caption class="text-center h3"><strong>项目建议书评审方案</strong></caption>
-		  <!-- <caption style="width:100%;">
-		  	<span style="float:left;">评审方式
-			  	<select ng-model="vm.work.reviewType"  name="reviewType" id="reviewType">
+		 
+		  <tbody>
+		    <tr>
+		      <td colspan="2" style="width:150px;" class="text-center">评审方式</td>
+		      <td colspan="3">
+		      		<select ng-model="vm.work.reviewType"  name="reviewType" id="reviewType">
 					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-				</select>
-				<select ng-model="vm.work.isSigle"  name="isSigle" id="isSigle">
+					</select>
+					<select ng-model="vm.work.isSigle"  name="isSigle" id="isSigle">
 					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
 				</select>
-			</span>
-		  	<span style="float:right;">收文日期:2017年4月24日</span>
-		  </caption> -->
-		  <tbody>
+		      </td>
+		      <td  style="width:150px;" class="text-center">标题日期:</td>
+		      <td>
+		         {{vm.work.titleDate}}
+		      </td>
+		    </tr>	  
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">项目名称</td>
 		      <td colspan="5">
@@ -58,23 +63,7 @@
 					</select>
 		      </td>
 		    </tr>	
-		     <tr>
-		      <td colspan="2" style="width:150px;" class="text-center">评审方式</td>
-		      <td colspan="3">
-		      		<select ng-model="vm.work.reviewType"  name="reviewType" id="reviewType">
-					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-					</select>
-					<select ng-model="vm.work.isSigle"  name="isSigle" id="isSigle">
-					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-				</select>
-		      </td>
-		      <td  style="width:150px;" class="text-center"></td>
-		      <td>
-		      	<!-- <select ng-model="vm.work.isSigle"  name="isSigle" id="isSigle">
-					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-				</select> -->
-		      </td>
-		    </tr>	    
+		     
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
 		      <td colspan="3">
@@ -165,26 +154,27 @@
 			<tr>
 				<td rowspan="2" colspan="2" style="width:150px;" class="text-center">评估部门</td>	
 			    <td rowspan="2" colspan="3">
-			       <select ng-model="vm.work.reviewDept" style="width:300px;" name="reviewDept" id="reviewDept">
-					<option ng-repeat="x in vm.orgs" value="{{x.name}}">{{x.name}}</option>
-					</select> 
-				<!-- 				
-					<textarea rows="3" ng-model="vm.work.reviewDept" ng-click="vm.findReviewDept()"name="reviewDept" cols="" style="width:100%;"></textarea>
-				 -->		
+			      <!--  <select ng-model="vm.work.reviewDept" ng-change="vm.findUsersByOrgId('main')"style="width:300px;" name="reviewDept" id="reviewDept">
+					<option ng-repeat="x in vm.orgs" value="{{x.id}}">{{x.name}}</option>
+					</select>  -->
+					{{vm.work.reviewDept}}
 				 </td>
 			    <td style="width:150px;" class="text-center">第一负责人</td>
 			    <td >
-			      	<select ng-model="vm.work.mianChargePerson"  name="mianChargePerson" id="mianChargePerson">
-					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-					</select>
+			      	<!-- <select ng-model="vm.work.mianChargePerson"  name="reviewDept" id="reviewDept">
+						<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.work.mianChargePerson == mu.id"  value="{{mu.id}}">{{mu.loginName}} </option>
+					</select> -->
+					{{vm.work.mianChargeUserName}}
+					
 			    </td>
 			</tr> 
 			<tr>
 				<td style="width:150px;" class="text-center">第二负责人</td>
 			    <td >
-			      	<select ng-model="vm.work.secondChargePerson"  name="secondChargePerson" id="mianChargePerson">
-					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-					</select>
+			      	<!-- <select ng-model="vm.work.secondChargePerson"  name="secondChargePerson" id="mianChargePerson">
+					<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.work.mianChargePerson == mu.id"  value="{{mu.loginName}}">{{mu.loginName}} </option>
+					</select> -->
+					{{vm.work.secondChargeUserName}}
 			    </td>
 			</tr> 
 			<tr>
@@ -236,18 +226,21 @@
 			    
 			    </td>
 			</tr>
-			<!-- <tr>
-		      <td colspan="2" style="width:150px;" class="text-center">拟聘请专家1</td>
+			 <tr>
+		      <td colspan="2" style="width:150px;" class="text-center">拟聘请专家</td>
 		      <td colspan="5">
-			  	  	{{vm.work.suppLetterDate}}
+			  	    <a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
 			  </td>		      
 		    </tr> 
-			<tr>
-		      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导2</td>
+			 <tr>
+		      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
 		      <td colspan="5">
-			  	  	{{vm.work.suppLetterDate}}
+			      <div  style="width: 200px; height:30px; border:0px solid #00F;float:right;">
+			     		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				  	  	 <a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+				 </div>
 			  </td>		      
-		    </tr>   -->
+		    </tr>   
 			<tr>
 		      <td colspan="2" style="width:150px;" class="text-center">拟评审重点问题</td>
 		      <td colspan="5">
@@ -257,13 +250,32 @@
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
 		      <td colspan="5">
-			  	<textarea rows="3" ng-model="vm.work.ministerSuggesttion" name="ministerSuggesttion" style="width:98%"> </textarea>  
+			  	<!--  <textarea rows="3" ng-model="vm.work.ministerSuggesttion" name="ministerSuggesttion" style="width:60%"> </textarea>    -->
+				中心领导审批：
+				<div  style="width: 200px; height:100px; border:0px solid #00F;float:right;">
+				<br>
+				签名：
+				<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+				<br>
+				日期：
+				</div>
 			  </td>		      
 		    </tr>
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
 		      <td colspan="5">
-			  	<textarea rows="3" ng-model="vm.work.leaderSuggesttion" name="leaderSuggesttion" style="width:98%"> </textarea> 
+			  	<!-- <textarea rows="3" ng-model="vm.work.leaderSuggesttion" name="leaderSuggesttion" style="width:98%"> </textarea>  -->
+			  	中心领导签批意见：
+				<div  style="width: 200px; height:100px; border:0px solid #00F;float:right;">
+				<br>
+				签名：
+				<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+				<br>
+				日期：
 			  </td>		      
 		    </tr>
 		     <tr>

@@ -82,7 +82,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 			if(work !=null && Validate.isString(work.getId())){
 				
 				WorkProgramDto workDto = new WorkProgramDto();
-				//补充资料函发文日期
+				/*//补充资料函发文日期
 				Date suppLetter=work.getSuppLetterDate();
 				String suppletDate = DateUtils.toStringDay(suppLetter);
 				workDto.setSuppLetterDate(suppletDate);
@@ -93,7 +93,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 				//调研结束时间
 				Date endTime =	work.getStudyEndTime();
 				String end =DateUtils.toStringDay(endTime);
-				workDto.setStudyEndTime(end);
+				workDto.setStudyEndTime(end);*/
 				//标题时间
 				Date title=	work.getTitleDate();
 				String titleDate = DateUtils.toStringDay(title);
