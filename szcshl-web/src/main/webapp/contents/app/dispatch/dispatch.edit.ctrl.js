@@ -15,6 +15,16 @@
         vm.create = function(){
         	dispatchSvc.saveDispatch(vm);
         }
+        vm.count=function(){
+        	var declareValue=vm.dispatchDoc.declareValue;
+        	var authorizeValue=vm.dispatchDoc.authorizeValue;
+        	if(declareValue&&authorizeValue){
+        		var dvalue=declareValue-authorizeValue;
+        		var extraRate=(dvalue/declareValue).toFixed(4)*100;
+        		vm.dispatchDoc.extraRate=extraRate;
+        		vm.dispatchDoc.extraValue=dvalue;
+        	}
+        }
         
         activate();
         function activate() {

@@ -176,20 +176,18 @@
 		      		<tr>
 		      			<td>投资额（万元）</td>
 		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.declareValue" id="declareValue" name="declareValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
+		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.declareValue" ng-blur="vm.count()" id="declareValue" name="declareValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
 		      				<span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors"></span>
 		      			</td>
 		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
+		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.authorizeValue" ng-blur="vm.count()" id="authorizeValue" name="authorizeValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
 		      				<span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
 		      			</td>
 		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.extraValue" id="extraValue" name="extraValue" data-val-regex="金额格式不正确" data-val-regex-pattern="(\-|[1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
-		      				<span data-valmsg-for="extraValue" data-valmsg-replace="true" class="errors"></span>
+		      			{{vm.dispatchDoc.extraValue}}
 		      			</td>
 		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.extraRate" id="extraRate" name="extraRate" data-val-regex="金额格式不正确" data-val-regex-pattern="(\-|[1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
-		      				<span data-valmsg-for="extraRate" data-valmsg-replace="true" class="errors"></span>
+		      			{{vm.dispatchDoc.extraRate}}<span>%</span>
 		      			</td>
 		      			<td>
 		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
