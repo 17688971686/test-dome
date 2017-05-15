@@ -30,6 +30,7 @@
 						$("#draftDate").val(vm.dispatchDoc.draftDate);
 						$("#dispatchDate").val(vm.dispatchDoc.dispatchDate);
 						$("#proofreadId").find("option:selected").text(vm.dispatchDoc.proofreadName);
+						$("#proofreadId").find("option:selected").val(vm.dispatchDoc.proofreadId);
 					}		
 				})
 			}

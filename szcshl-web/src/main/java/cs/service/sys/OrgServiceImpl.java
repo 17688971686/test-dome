@@ -274,6 +274,21 @@ public class OrgServiceImpl implements OrgService {
 				BeanCopierUtils.copyProperties(u, userDto);
 				userDtoList.add(userDto);
 			});
+			List<User> mainUser=userRepo.findUserByRoleName("主任");
+			if(mainUser != null && mainUser.size() > 0){
+				mainUser.forEach(mainu ->{
+					orgDto.setOrgMLeader(mainu.getId());;
+					orgDto.setOrgMLeaderName(mainu.getLoginName());
+				});
+			}
+			List<User> secondUser=userRepo.findUserByRoleName("副主任");
+			if(secondUser != null && secondUser.size() > 0){
+				secondUser.forEach(secondu ->{
+					UserDto userDto = new UserDto();
+					BeanCopierUtils.copyProperties(secondu, userDto);
+					userDtoList.add(userDto);
+				});
+			}
 			orgDto.setUserDtos(userDtoList);
 		}
 		return orgDto;

@@ -121,6 +121,7 @@ public class RoleServiceImpl implements RoleService {
 		logger.info(String.format("更新角色,角色名:%s", roleDto.getRoleName()));
 	}
 
+	//删除角色
 	@Override
 	@Transactional
 	public void deleteRole(String id) {

@@ -119,9 +119,10 @@
              <tr>
                 <td class="formAlignRight">主任： <span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.orgMLeader" id="orgMLeader" name="orgMLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
+                {{vm.model.orgMLeaderName}}
+                    <!-- <select ng-model="vm.model.orgMLeader" id="orgMLeader" name="orgMLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgMLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>
-					</select>
+					</select> -->
                 </td>
                 <td>
                 	<span data-valmsg-for="orgMLeader" data-valmsg-replace="true" class="errors"></span>
