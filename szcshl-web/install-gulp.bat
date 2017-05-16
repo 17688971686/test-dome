@@ -1,4 +1,5 @@
-call npm install gulp gulp-jshint gulp-concat gulp-uglify gulp-clean gulp-notify gulp-rename --save-dev --registry=https://registry.npm.taobao.org
-
+@echo off
+echo 安装gulp相关依赖包
+call npm install --registry=https://registry.npm.taobao.org
 
 pause

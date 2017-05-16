@@ -1,9 +1,10 @@
 var gulp = require('gulp'),
-    // jshint = require('gulp-jshint'),
+    jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     clean = require('gulp-clean'),
     concat = require('gulp-concat'),
+    plumber = require('gulp-plumber'),
     notify = require('gulp-notify')//,
     // cache = require('gulp-cache'),
     // livereload = require('gulp-livereload')
@@ -12,7 +13,8 @@ var gulp = require('gulp'),
 // JS处理任务
 gulp.task('scripts', function () {
     return gulp.src('src/main/webapp/contents/app/**/*.js')          //引入所有需处理的JS
-        // .pipe(jshint.reporter('default'))   //S代码检查
+        .pipe(plumber())
+        .pipe(jshint.reporter('default'))   //S代码检查
         .pipe(concat('app.all.js'))         //合并JS文件
         .pipe(gulp.dest('src/main/webapp/contents/app-dist'))        //完整版输出
         .pipe(rename({suffix: '.min'}))     //重命名
@@ -24,8 +26,7 @@ gulp.task('scripts', function () {
 
 // 目标目录清理
 gulp.task('clean', function () {
-    return gulp.src(['src/main/webapp/contents/app-dist'], {read: false})
-        .pipe(clean());
+    return gulp.src(['src/main/webapp/contents/app-dist'], {read: false}).pipe(plumber()).pipe(clean());
 });
 
 // 预设任务，执行清理后，
