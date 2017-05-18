@@ -3,12 +3,12 @@
 	
 	angular.module('app').factory('flowSvc', flow);
 	
-	flow.$inject = ['$http','$state'];
+	flow.$inject = ['$http','$state','signFlowSvc'];
 
-	function flow($http,$state) {
+	function flow($http,$state,signFlowSvc) {
 		var service = {
 				initFlowData : initFlowData,		//初始化流程数据
-				getNextStepInfo : getNextStepInfo,	//获取下一环节信息
+				getFlowInfo : getFlowInfo,			//获取流程信息
 				commit : commit,					//提交
 				rollBackToLast : rollBackToLast,	//回退到上一环节	
 				rollBack : rollBack,				//回退到选定环节
@@ -16,22 +16,18 @@
 				initDealUerByAcitiviId : initDealUerByAcitiviId,
 				suspendFlow : suspendFlow,			//流程挂起
 				activeFlow : activeFlow,			//重启流程
-				deleteFlow : deleteFlow,			//流程终止
-				disableButton : disableButton,		//禁用按钮
-				enableButton : enableButton			//启用按钮
+				deleteFlow : deleteFlow			//流程终止
 		};
 		return service;			
 		
 		//S_初始化流程数据
 	    function initFlowData(vm){
-	    	var processInstanceId = vm.flow.processInstanceId;
-			
-			vm.picture = rootPath+"/flow/proccessInstance/img/"+processInstanceId;		
-			
-			
+	    	var processInstanceId = vm.flow.processInstanceId;			
+			vm.picture = rootPath+"/flow/processInstance/img/"+processInstanceId;		
+						
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/flow/proccessInstance/history/"+processInstanceId),
+				transport : common.kendoGridConfig().transport(rootPath+"/flow/processInstance/history/"+processInstanceId),
 				schema : common.kendoGridConfig().schema({
 					id : "id"
 				}),
@@ -111,14 +107,14 @@
 			};				
 	    }//E_初始化流程数据
 	    
-	    //S_获取下一环节信息
-	    function getNextStepInfo(vm){
+	    //S_getFlowInfo
+	    function getFlowInfo(vm){
 	    	var httpOptions = {
 					method : 'get',
-					url : rootPath+"/flow/proccessInstance/nextNodeDeal",
+					url : rootPath+"/flow/processInstance/flowNodeInfo",
 					params : {
 						taskId: vm.flow.taskId,
-						proccessInstanceId:vm.flow.processInstanceId					
+						processInstanceId:vm.flow.processInstanceId					
 					}
 				}
 
@@ -127,43 +123,8 @@
 					vm:vm,
 					response:response,
 					fn:function() {		
-						vm.flow.end = response.data.end;
-						vm.isOverStep = vm.flow.end;
-						vm.isHaveNext = vm.flow.end == true?false:true;	
-						vm.flow.processKey = response.data.processKey;
-						
-						if(vm.flow.end == false){
-							if(response.data.curNode){
-								vm.flow.curNodeName = response.data.curNode.activitiName;
-								vm.flow.curNodeAcivitiId = response.data.curNode.activitiId;
-								//显示相应的按钮
-								if(vm.flow.curNodeAcivitiId == "approval" || vm.flow.curNodeAcivitiId == "dispatch" 
-									|| vm.flow.curNodeAcivitiId == "doFile"){	
-									vm.showBtByAcivitiId(vm.flow.curNodeAcivitiId);								
-								}							
-							}												
-							if(response.data.nextNode){
-								vm.nextNode = response.data.nextNode;
-								vm.flow.nextNodeAcivitiId = response.data.nextNode[0].activitiId;
-							}
-							if(response.data.nextGroup){
-								vm.flow.nextGroup = response.data.nextGroup;	
-							}						
-							if(response.data.nextDealUserList){
-								vm.nextDealUserList = response.data.nextDealUserList;	
-								if(response.data.nextDealUserList && response.data.nextDealUserList.length > 0){
-									vm.flow.nextDealUser = response.data.nextDealUserList[0].loginName;	//默认选中
-								}
-							}	
-							if(response.data.nextUserListMap){
-								vm.nextDealUserMap = {};
-								vm.nextDealUserMap = response.data.nextUserListMap;
-								vm.nextDealUserList = vm.nextDealUserMap[vm.flow.nextNodeAcivitiId];
-								if(vm.nextDealUserList){
-									vm.flow.nextDealUser = vm.nextDealUserList[0].loginName;	//默认选中
-								}
-							}
-						}																							
+						vm.flow = response.data;
+						signFlowSvc.initBusinessParams(vm);
 					}
 					
 				})
@@ -175,14 +136,14 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-	    }//E_获取下一环节信息
+	    }//E_getFlowInfo
 	    
 	    //S_提交下一步
 		function commit(vm){
 			common.initJqValidation($("#flow_form"));			
 			var isValid = $("#flow_form").valid();
 			if(isValid){
-				disableButton(vm);
+				vm.isCommit = true;
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/flow/commit",
@@ -193,18 +154,19 @@
 					common.requestSuccess({
 						vm:vm,
 						response:response,
-						fn:function() {	
-							if(response.data.reCode == "error"){
-								enableButton(vm);
-							}
+						fn:function() {								
 							common.alert({
 								vm:vm,
 								msg: response.data.reMsg,
 								closeDialog : true,
-								fn : function() {									
-									if(vm.flow.processKey == "signflow"){
-										$state.go('flowSign');
-									}									
+								fn : function() {	
+									if(response.data.reCode == "error"){
+										vm.isCommit = false;
+									}else{
+										if(vm.flow.processKey == "FINAL_SIGN_FLOW"){
+											$state.go('flowSign');
+										}
+									}																		
 								}
 							})
 						}
@@ -216,14 +178,14 @@
 					vm:vm,
 					$http:$http,
 					httpOptions:httpOptions,
-					success:httpSuccess
+					success:httpSuccess,
+					onError: function(response){vm.iscommit = false;}
 				});
 			}			
 		}//E_提交下一步
-		
+		 
 		//S_回退到上一步
-		function rollBackToLast(vm){
-			disableButton(vm);			
+		function rollBackToLast(vm){	
 			var httpOptions = {
 					method : 'post',
 					url : rootPath+"/flow/rollbacklast",
@@ -233,10 +195,7 @@
 				common.requestSuccess({
 					vm:vm,
 					response:response,
-					fn:function() {	
-						if(response.data.reCode == "error"){
-							enableButton(vm);
-						}
+					fn:function() {							
 						common.alert({
 							vm:vm,
 							msg: response.data.reMsg
@@ -269,10 +228,9 @@
              	 title:"",
              	 msg:"确认回退吗？",
              	 fn:function () {
-             		disableButton(vm);
         			//设置
         			vm.flow.rollBackActiviti = vm.flow.back.activitiId;
-        			vm.flow.rollBackActiviti = vm.flow.back.assignee;
+        			vm.flow.backNodeDealUser = vm.flow.back.assignee;
         			
         			var httpOptions = {
         					method : 'post',
@@ -283,10 +241,7 @@
         				common.requestSuccess({
         					vm:vm,
         					response:response,
-        					fn:function() {	
-        						if(response.data.reCode == "error"){
-        							enableButton(vm);
-        						}
+        					fn:function() {	       						
         						common.alert({
         							vm:vm,
         							msg: response.data.reMsg
@@ -414,16 +369,7 @@
 				success:httpSuccess
 			});
 		}//E_终止流程
-		
-		//S_禁用按钮
-		function disableButton(vm){
-			vm.disabledButton = true;
-		}//E_禁用按钮
-		
-		//S_启用按钮
-		function enableButton(vm){
-			vm.disabledButton = false;
-		}//E_启用按钮
+				
 	}
 	
 })();

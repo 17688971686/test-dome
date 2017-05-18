@@ -9,6 +9,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,12 +79,7 @@ public class OrgController {
 	@RequestMapping(name = "删除部门", path = "", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(@RequestBody String id) {
-		String[] ids = id.split(",");
-		if (ids.length > 1) {
-			orgService.deleteOrgs(ids);
-		} else {
-			orgService.deleteOrg(id);
-		}
+		orgService.deleteOrg(id);
 	}
 
 	@RequiresPermissions("org#users#post")	
@@ -120,6 +116,12 @@ public class OrgController {
 		}
 	}
 	
+	@RequiresPermissions("org#findUserChargeOrg#get")	
+	@RequestMapping(name = "用户掌管的部门", path = "findUserChargeOrg", method = RequestMethod.GET)
+	public @ResponseBody List<OrgDto> userNotIn()  {	
+		
+		return orgService.findUserChargeOrg();
+	}
 	
 	
 	// begin#html

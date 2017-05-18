@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.sun.tools.internal.ws.wsdl.framework.ParseException;
-
+import java.text.ParseException;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
@@ -36,7 +35,7 @@ public class OfficeUserController {
     @RequiresPermissions("officeUser#fingByOData#post")
 	@RequestMapping(name = "获取数据", path = "fingByOData", method = RequestMethod.POST)
 	@ResponseBody
-    public PageModelDto<OfficeUserDto> get(HttpServletRequest request) throws ParseException, java.text.ParseException {
+    public PageModelDto<OfficeUserDto> get(HttpServletRequest request) throws ParseException {
 		 ODataObj odataObj = new ODataObj(request);
 		 PageModelDto<OfficeUserDto> officeUserDtos = officeUserService.get(odataObj);	
 		 return officeUserDtos;

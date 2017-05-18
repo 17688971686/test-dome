@@ -46,10 +46,10 @@ public class Org extends DomainBase {
 	private String orgAssistant; //部门助理(副科长)
 	
 	@Column(columnDefinition="varchar(255)")
-	private String orgMLeader; //主管领导（署长）
+	private String orgMLeader; //主任
 	
 	@Column(columnDefinition="varchar(255)")
-	private String orgSLeader; //分管领导（分管署长）
+	private String orgSLeader; //分管领导（副主任）
 	
 	@Column(columnDefinition="varchar(255)")
 	private String orgContact; //联络人

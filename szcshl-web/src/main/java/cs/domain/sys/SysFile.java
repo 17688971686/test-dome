@@ -35,7 +35,7 @@ public class SysFile extends DomainBase{
 	private String fileType;	
 	
 	@Column(columnDefinition = "varchar(64)")
-	private String proccessInstanceId;
+	private String processInstanceId;
 	
 	public String getSysFileId() {
 		return sysFileId;
@@ -73,11 +73,11 @@ public class SysFile extends DomainBase{
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
 	}
-	public String getProccessInstanceId() {
-		return proccessInstanceId;
+	public String getProcessInstanceId() {
+		return processInstanceId;
 	}
-	public void setProccessInstanceId(String proccessInstanceId) {
-		this.proccessInstanceId = proccessInstanceId;
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
 	}			
 
 	

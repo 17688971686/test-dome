@@ -2,7 +2,9 @@ package cs.model.project;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import cs.domain.expert.ExpertReview;
 import cs.domain.project.Sign;
 import cs.model.BaseDto;
 
@@ -60,7 +62,8 @@ public class WorkProgramDto extends BaseDto{
 	private String projectBackGround;
 	
 	//评估部门
-	private String reviewDept;
+	private String reviewOrgId;
+	private String reviewOrgName;
 	
 	//第一负责人
 	private String mianChargeUserId;
@@ -96,14 +99,24 @@ public class WorkProgramDto extends BaseDto{
 	//部长处理意见
 	private String ministerSuggesttion;
 	
+	private Date ministerDate;
+	
 	//中心领导处理意见
 	private String leaderSuggesttion;
+	
+	private Date leaderDate;
 	
 	//标题日期
 	private String titleDate;
 	
 	//收文对象
 	private Sign sign;
+	
+	//是否主流程
+	private String isMain;
+	
+	//评审专家
+	private List<ExpertReview> expertReviews;
 	
 	public Sign getSign() {
 		return sign;
@@ -287,14 +300,22 @@ public class WorkProgramDto extends BaseDto{
 
 	public void setProjectBackGround(String projectBackGround) {
 		this.projectBackGround = projectBackGround;
+	}	
+	
+	public String getReviewOrgId() {
+		return reviewOrgId;
 	}
 
-	public String getReviewDept() {
-		return reviewDept;
+	public void setReviewOrgId(String reviewOrgId) {
+		this.reviewOrgId = reviewOrgId;
 	}
 
-	public void setReviewDept(String reviewDept) {
-		this.reviewDept = reviewDept;
+	public String getReviewOrgName() {
+		return reviewOrgName;
+	}
+
+	public void setReviewOrgName(String reviewOrgName) {
+		this.reviewOrgName = reviewOrgName;
 	}
 
 	public String getMianChargeUserId() {
@@ -411,6 +432,35 @@ public class WorkProgramDto extends BaseDto{
 		this.titleDate = titleDate;
 	}
 
-	
-			
+	public Date getMinisterDate() {
+		return ministerDate;
+	}
+
+	public void setMinisterDate(Date ministerDate) {
+		this.ministerDate = ministerDate;
+	}
+
+	public Date getLeaderDate() {
+		return leaderDate;
+	}
+
+	public void setLeaderDate(Date leaderDate) {
+		this.leaderDate = leaderDate;
+	}
+
+	public String getIsMain() {
+		return isMain;
+	}
+
+	public void setIsMain(String isMain) {
+		this.isMain = isMain;
+	}
+
+	public List<ExpertReview> getExpertReviews() {
+		return expertReviews;
+	}
+
+	public void setExpertReviews(List<ExpertReview> expertReviews) {
+		this.expertReviews = expertReviews;
+	}		
 }

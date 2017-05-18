@@ -15,7 +15,7 @@ public class SysFileDto extends BaseDto {
     private String showName;
     private Integer fileSize;
     private String fileType;
-    private String proccessInstanceId;
+    private String processInstanceId;
 
     public SysFileDto() {
     }
@@ -63,10 +63,10 @@ public class SysFileDto extends BaseDto {
         this.fileType = fileType;
     }
 
-    public String getProccessInstanceId() {
-		return proccessInstanceId;
+    public String getProcessInstanceId() {
+		return processInstanceId;
 	}
-	public void setProccessInstanceId(String proccessInstanceId) {
-		this.proccessInstanceId = proccessInstanceId;
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
 	}	
 }

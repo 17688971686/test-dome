@@ -146,7 +146,7 @@ public class FlowServiceImpl implements FlowService{
         
         for (Task task : tasks) {
         	taskService.addComment(task.getId(),instance.getId(),flowDto.getDealOption());	//添加处理信息
-            taskService.complete(task.getId(), ActivitiUtil.flowArguments(null,flowDto.getNextDealUser(),flowDto.getNextGroup(),false));
+            taskService.complete(task.getId(), ActivitiUtil.flowArguments(null,"张一帆","",false));
             historyService.deleteHistoricTaskInstance(task.getId());
         }
         

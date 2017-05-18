@@ -106,20 +106,8 @@ public class OrgServiceImpl implements OrgService {
 	@Override
 	@Transactional
 	public void deleteOrg(String id) {
-		Org org = orgRepo.getById(id);
-		if (org != null) {
-			orgRepo.delete(org);
-			logger.info(String.format("删除部门,部门identity:%s", org.getOrgIdentity()));
-		}
-	}
-
-	@Override
-	@Transactional
-	public void deleteOrgs(String[] ids) {
-		for (String id : ids) {
-			this.deleteOrg(id);
-		}
-		logger.info("批量删除部门");
+		orgRepo.deleteById(Org_.id.getName(), id);		
+		logger.info(String.format("删除部门,部门identity:%s", id));		
 	}
 
 	@Override
@@ -292,6 +280,21 @@ public class OrgServiceImpl implements OrgService {
 			orgDto.setUserDtos(userDtoList);
 		}
 		return orgDto;
+	}
+
+	@Override
+	public List<OrgDto> findUserChargeOrg() {
+		List<Org> orgList = orgRepo.findUserChargeOrg();
+		if(orgList != null){
+			List<OrgDto> orgDtoList = new ArrayList<OrgDto>(orgList.size());
+			orgList.forEach( o ->{
+				OrgDto orgDto = new OrgDto();
+				BeanCopierUtils.copyProperties(o, orgDto);
+				orgDtoList.add(orgDto);
+			});
+			return orgDtoList;
+		}
+		return null;
 	}
 
 }

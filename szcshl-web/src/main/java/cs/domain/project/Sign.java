@@ -3,10 +3,12 @@ package cs.domain.project;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -21,7 +23,7 @@ import cs.domain.DomainBase;
  *
  */
 @Entity
-@Table(name = "SIGN")
+@Table(name = "sign")
 @DynamicUpdate(true)	
 public class Sign extends DomainBase{
 
@@ -420,17 +422,12 @@ public class Sign extends DomainBase{
 	private String signState;
 	
 	//发文是否完成
+	@Column(columnDefinition="VARCHAR(2)")
 	private String isDispatchCompleted;
 	
-
-	//收文与部门关联：一对一关系
-	/*@OneToOne
-	@JoinColumn(name ="orgSignId")
-	private Org orgSignId;
-	*/
 	//工作方案
-	@OneToOne(mappedBy="sign")  
-	private WorkProgram workProgram;
+	@OneToMany(mappedBy="sign")  
+	private List<WorkProgram> workProgramList;
 	
 	//发文
 	@OneToOne(mappedBy="sign")  
@@ -439,6 +436,30 @@ public class Sign extends DomainBase{
 	//归档
 	@OneToOne(mappedBy="sign")  
 	private FileRecord fileRecord;
+	
+	//主流程第一负责人ID
+	@Column(columnDefinition="VARCHAR(64)")
+	private String mFlowMainUserId;	
+	
+	//主流程第二负责人ID
+	@Column(columnDefinition="VARCHAR(64)")
+	private String mFlowAssistUserId;
+	
+	//次流程第一负责人ID
+	@Column(columnDefinition="VARCHAR(64)")
+	private String aFlowMainUserId;	
+	
+	//次流程第二负责人ID
+	@Column(columnDefinition="VARCHAR(64)")
+	private String aFlowAssistUserId;		
+	
+	//主办部门
+	@Column(columnDefinition="VARCHAR(64)")
+	private String mOrgId;
+	
+	//协办部门
+	@Column(columnDefinition="VARCHAR(64)")
+	private String aOrgId;
 	
 	public FileRecord getFileRecord() {
 		return fileRecord;
@@ -1202,14 +1223,14 @@ public class Sign extends DomainBase{
 
 	public void setSignState(String signState) {
 		this.signState = signState;
+	}	
+
+	public List<WorkProgram> getWorkProgramList() {
+		return workProgramList;
 	}
 
-	public WorkProgram getWorkProgram() {
-		return workProgram;
-	}
-
-	public void setWorkProgram(WorkProgram workProgram) {
-		this.workProgram = workProgram;
+	public void setWorkProgramList(List<WorkProgram> workProgramList) {
+		this.workProgramList = workProgramList;
 	}
 
 	public String getMaindeptName() {
@@ -1261,4 +1282,52 @@ public class Sign extends DomainBase{
 	public void setIsDispatchCompleted(String isDispatchCompleted) {
 		this.isDispatchCompleted = isDispatchCompleted;
 	}
+
+	public String getmFlowMainUserId() {
+		return mFlowMainUserId;
+	}
+
+	public void setmFlowMainUserId(String mFlowMainUserId) {
+		this.mFlowMainUserId = mFlowMainUserId;
+	}
+
+	public String getmFlowAssistUserId() {
+		return mFlowAssistUserId;
+	}
+
+	public void setmFlowAssistUserId(String mFlowAssistUserId) {
+		this.mFlowAssistUserId = mFlowAssistUserId;
+	}
+
+	public String getaFlowMainUserId() {
+		return aFlowMainUserId;
+	}
+
+	public void setaFlowMainUserId(String aFlowMainUserId) {
+		this.aFlowMainUserId = aFlowMainUserId;
+	}
+
+	public String getaFlowAssistUserId() {
+		return aFlowAssistUserId;
+	}
+
+	public void setaFlowAssistUserId(String aFlowAssistUserId) {
+		this.aFlowAssistUserId = aFlowAssistUserId;
+	}
+
+	public String getmOrgId() {
+		return mOrgId;
+	}
+
+	public void setmOrgId(String mOrgId) {
+		this.mOrgId = mOrgId;
+	}
+
+	public String getaOrgId() {
+		return aOrgId;
+	}
+
+	public void setaOrgId(String aOrgId) {
+		this.aOrgId = aOrgId;
+	}		
 }

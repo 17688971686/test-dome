@@ -11,6 +11,7 @@
 			createWP : createWP,		//新增操作
 			findOrgs : findOrgs,		//查找主管部门
 			findUsersByOrgId : findUsersByOrgId,//查询评估部门
+			selectExpert:selectExpert	//选择专家
 		};
 		return service;	
 		
@@ -71,25 +72,17 @@
 		//S_初始化页面参数
 		function initPage(vm){
 			//时间控件start
-			$(document).ready(function () {
-			  	 kendo.culture("zh-CN");
-			      $("#studyBeginTime").kendoDatePicker({
-			      	 format: "yyyy-MM-dd",
-			      });
-			  }); 
-			$(document).ready(function () {
-			 	 kendo.culture("zh-CN");
-			     $("#studyEndTime").kendoDatePicker({
-			     	 format: "yyyy-MM-dd",
-			     });
-			 }); 
-			$(document).ready(function () {
-			 	 kendo.culture("zh-CN");
-			     $("#suppLetterDate").kendoDatePicker({
-			     	 format: "yyyy-MM-dd",
-			     });
-			 }); 
-			
+			kendo.culture("zh-CN");
+		    $("#studyBeginTime").kendoDatePicker({
+		    	format: "yyyy-MM-dd",
+		    });
+		    $("#studyEndTime").kendoDatePicker({
+		     	format: "yyyy-MM-dd",
+		    });
+		    $("#suppLetterDate").kendoDatePicker({
+		     	format: "yyyy-MM-dd",
+		    });
+			 			
 			//时间控件end
 			var httpOptions = {
 					method : 'get',
@@ -103,7 +96,7 @@
 					fn:function() {		
 						if(response.data != null && response.data != ""){
 							vm.work = response.data;
-							
+							vm.work.signId = $state.params.signid
 						}	
 					}						
 				});
@@ -119,34 +112,29 @@
 		
 		//S_保存操作
 		function createWP(vm){
-			alert(vm.work);
-			console.log(vm.work);
 			vm.work.studyBeginTime = $("#studyBeginTime").val();
 			vm.work.studyEndTime = $("#studyEndTime").val();
 			vm.work.suppLetterDate = $("#suppLetterDate").val();
-			common.initJqValidation($("#work_program_form"));
+			common.initJqValidation($("#work_program_form"));			
 			var isValid = $("#work_program_form").valid();
-		//	if(isValid){
-				vm.commitProcess = true;
+			if(isValid){
+				vm.iscommit = true;
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/workprogram/addWork",
 						data : vm.work
 					}
 				var httpSuccess = function success(response) {	
-					console.log(response);
 					common.requestSuccess({
 						vm:vm,
 						response:response,
 						fn:function() {		
+							vm.iscommit = false;
+							vm.work.id = response.data.id;
 							common.alert({
 								vm:vm,
-								msg:"操作成功,请继续处理流程！",
-								fn:function() {
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									$rootScope.back();	//返回到流程页面
-								}
+								msg:"操作成功！",
+								closeDialog:true
 							})								
 						}						
 					});
@@ -155,7 +143,8 @@
 					vm:vm,
 					$http:$http,
 					httpOptions:httpOptions,
-					success:httpSuccess
+					success:httpSuccess,
+					onError: function(response){vm.iscommit = false;}
 				});			
 		//	}			
 		}//E_保存操作

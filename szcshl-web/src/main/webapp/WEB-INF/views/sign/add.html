@@ -63,7 +63,8 @@
             <tr>
                 <td class="formAlignRight">项目阶段： <span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="必填" class="{required:true, minlength:1}" multiple="multiple">
+                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="必填" >
+						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					

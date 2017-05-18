@@ -156,7 +156,7 @@
 			  controllerAs: 'vm'
 			})
             //end#mytest
-            //beginDict
+            //begin Dict
             .state('dict', {
                 url: '/dict',
                 templateUrl: rootPath + '/dict/html/list.html',
@@ -169,6 +169,9 @@
                 controller: 'dictEditCtrl',
                 controllerAs: 'vm'
             })
+            //end Dict
+            
+            //begin expert
             .state('expert', {
             	url: '/expert',
                 templateUrl: rootPath + '/expert/html/queryAllList.html',
@@ -193,7 +196,14 @@
                 controller: 'expertEditCtrl',
                 controllerAs: 'vm'
             })
-            //endDict
+            .state('expertReviewEdit', {
+                url: '/expertReview/:workProgramId',
+                templateUrl: rootPath + '/expertReview/html/selectExpert.html',
+                controller: 'expertSelectCtrl',
+                controllerAs: 'vm'
+            })
+            //end expert
+            
             //begin#sign
             .state('addSign', {
                 url: '/addSign',
@@ -301,7 +311,9 @@
         $rootScope.back = function () {
             $state.go($rootScope.previousState_name, $rootScope.previousState_params);
         };
-
+        //kendo 语言
+    	kendo.culture("zh-CN");
+    	
         $rootScope.topSelectChange = function (dictKey, dicts , type) {       	
             for (var i = 0; i < dicts.length; i++) {
             	//根据code查询

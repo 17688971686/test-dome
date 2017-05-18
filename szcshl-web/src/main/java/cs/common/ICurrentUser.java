@@ -1,5 +1,7 @@
 package cs.common;
 
+import cs.domain.sys.User;
+
 public interface ICurrentUser {
 
 	String getLoginName();
@@ -9,5 +11,9 @@ public interface ICurrentUser {
 	String getDisplayName();
 
 	void setDisplayName(String displayName);
+	
+	void setLoginUser(User user);
+	
+	User getLoginUser();
 
 }

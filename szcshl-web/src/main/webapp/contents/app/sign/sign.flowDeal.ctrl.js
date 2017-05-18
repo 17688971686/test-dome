@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state','flowSvc']; 
+    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc']; 
 
-    function sign($location,signSvc,$state,flowSvc) {        
+    function sign($location,signSvc,$state,flowSvc,signFlowSvc) {        
         var vm = this;
         vm.title = "项目流程处理";       
         vm.model = {};
@@ -25,28 +25,31 @@
         		$(".tab-pane").removeClass("active").removeClass("in");
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
         	})  
-        	//先初始化流程信息        
-        	vm.flowDeal = true;
-        	flowSvc.initFlowData(vm);
-        	flowSvc.getNextStepInfo(vm);
         	
+        	//先初始化流程信息        
+        	flowSvc.initFlowData(vm);
+        	flowSvc.getFlowInfo(vm);
+       	
         	//再初始化业务信息
         	signSvc.initFlowPageData(vm);
         }
         
         vm.commitNextStep = function (){
-        	if(signSvc.checkBusinessFill(vm)){
+        	if(signFlowSvc.checkBusinessFill(vm)){
         		flowSvc.commit(vm);
         	}else{
         		common.alert({
 					vm:vm,
-					msg: "请先完成相应的业务表单填写再提交",					
+					msg: "请先完成相应的业务操作才能提交",					
 				})
         	}      	
         }
         
         vm.commitBack = function(){
-        	flowSvc.rollBack(vm);      	
+        	vm.flow.back = {};
+        	vm.flow.back.activitiId = "FGLD_SP_SW";
+        	vm.flow.back.assignee = "张一帆"
+        	flowSvc.rollBack(vm);       	//回退到上一个环节
         }              
         
         vm.deleteFlow = function(){
@@ -83,6 +86,27 @@
                    
         vm.addDoFile = function(){
         	$state.go('fileRecordEdit', {signid:vm.model.signid});
+        }
+        
+        //业务判断
+        vm.checkBox = function($event,type,disabletype){
+        	var checkbox = $event.target;  
+            var checked = checkbox.checked;  
+            var checkboxValue = checkbox.value;
+            if(checked){  
+            	$('.seleteTable input[selectType=\"'+type+'\"]').each(function () {
+            		var id = $(this).attr("id");            	
+            		var value = $(this).attr("value");           		          		
+            		if(id != (type+"_"+checkboxValue)){ 
+            			$("#"+disabletype+"_"+value).removeAttr("disabled");  
+            			$(this).removeAttr("checked");           			
+            		}else{            			
+            			$("#"+disabletype+"_"+checkboxValue).attr("disabled","disabled");  
+            		}
+            	});                 
+            }else{  
+            	$("#"+disabletype+"_"+checkboxValue).removeAttr("disabled");  
+            }  
         }
     }
 })();

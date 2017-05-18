@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
 import cs.common.utils.SysFileUtil;
-import cs.common.utils.Validate;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
@@ -35,7 +34,7 @@ public class SysFileServiceImpl implements SysFileService{
 	
 	@Override
 	@Transactional
-	public SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType, String module,String proccessInstanceId)  {
+	public SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType, String module,String processInstanceId)  {
 		SysFileDto sysFileDto = new SysFileDto();
 		SysFile sysFile = new SysFile();
 		logger.debug("Begin save file "+fileName+"-"+businessId);
@@ -45,7 +44,7 @@ public class SysFileServiceImpl implements SysFileService{
 						
 			sysFile.setSysFileId(UUID.randomUUID().toString());
 			sysFile.setBusinessId(businessId);
-			sysFile.setProccessInstanceId(proccessInstanceId);
+			sysFile.setProcessInstanceId(processInstanceId);
 			sysFile.setFileSize(bytes.length);
 			sysFile.setShowName(fileName);
 			sysFile.setFileType(fileType);

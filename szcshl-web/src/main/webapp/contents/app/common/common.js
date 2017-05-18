@@ -45,7 +45,6 @@
             if (options.response.status == 401) {
                 location.href = service.loginUrl;
             }
-
             message = options.response.data.message || message;
         }       
         service.alert({
@@ -254,11 +253,14 @@
 
     function http(options) {
         options.headers = { Token: service.getToken()};
-        options.$http(options.httpOptions).then(options.success, function (response) {         
-        	common.requestError({        		
+        options.$http(options.httpOptions).then(options.success, function (response) { 
+        	if(options.onError){
+        		options.onError(response);
+        	}
+    		common.requestError({        		
         		vm:options.vm,
         		response:response
-        	}); 
+        	});         	       	
         });
     }
     
@@ -373,8 +375,8 @@
     			}else{
     				param.operator = 'eq';
     			}	
-                param.name =  obj.name;
-                param.value =  obj.value;
+                param.name = $.trim(obj.name);
+                param.value = $.trim(obj.value);
                 t[arrIndex] = param;
                 arrIndex++;
     		} 		

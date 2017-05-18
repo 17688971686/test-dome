@@ -36,6 +36,12 @@ public class ActivitiUtil {
 		return map;
 	}
 	
+	public static Map<String,Object> setAssigneeValue(String assignee){
+		Map<String,Object> map = new HashMap<String,Object>(1);
+		map.put("user", assignee);
+		return map;
+	}
+	
 	/**
 	 * 毫秒转化时分秒毫秒 
 	 * @param ms

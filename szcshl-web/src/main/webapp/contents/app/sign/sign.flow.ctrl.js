@@ -3,11 +3,11 @@
 
     angular.module('app').controller('signFlowCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state']; 
+    sign.$inject = ['$location','signFlowSvc','$state']; 
 
-    function sign($location,signSvc,$state) {        
+    function sign($location,signFlowSvc,$state) {        
         var vm = this;
         vm.title = "项目待处理";
-        signSvc.flowgrid(vm);        
+        signFlowSvc.pendingSign(vm);        
     }
 })();

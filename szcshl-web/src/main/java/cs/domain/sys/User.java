@@ -16,37 +16,47 @@ import cs.domain.DomainBase;
 @Table(name="cs_user")
 public class User extends DomainBase {
 	@Id	
-	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String id;
+	
 	@Column(columnDefinition="varchar(255) NOT NULL")
-	private String loginName;
+	private String loginName;//登录名
+	
 	@Column(columnDefinition="varchar(255) NOT NULL")
 	private String password;
+	
 	@Column(columnDefinition="varchar(255) ")
 	private String displayName;//显示名
+	
 	@Column(columnDefinition="varchar(255) ")
 	private String userSex; //性别
+	
 	@Column(columnDefinition="varchar(255) ")
     private String userPhone; //联系电话
+	
 	@Column(columnDefinition="varchar(255) ")
     private String userMPhone; //联系手机
+	
 	@Column(columnDefinition="varchar(255) ")
     private String email; //电子邮件
+	
 	@Column(columnDefinition="varchar(255) ")
     private String jobState; //在职情况
+	
 	@Column(columnDefinition="varchar(255) ")
     private String useState; //是否停用
+	
 	@Column(columnDefinition="varchar(255) ")
     private String pwdState; //是否需要更改密码
+	
 	@Column(columnDefinition="varchar(255) ")
     private String userIP; //登录IP
+	
 	@Column(columnDefinition="varchar(255) ")
     private String lastLogin; //最后登录时间
-	@Column(columnDefinition="varchar(255) ")
-    private String userCreateTime; //创建时间
+	
 	@Column(columnDefinition="varchar(255) ")
 	private String userSalt; //加密盐
+	
 	@Column(columnDefinition="varchar(255) ")
 	private Long userOrder; //用户序号
 	
@@ -56,7 +66,9 @@ public class User extends DomainBase {
 	@Column(columnDefinition="varchar(255) ")
 	private String remark;
 	
+	@Column(columnDefinition="integer")
 	private int loginFailCount;
+	
 	@Column(columnDefinition="date")
 	private Date lastLoginDate;
 	
@@ -182,12 +194,7 @@ public class User extends DomainBase {
 	public void setLastLogin(String lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-	public String getUserCreateTime() {
-		return userCreateTime;
-	}
-	public void setUserCreateTime(String userCreateTime) {
-		this.userCreateTime = userCreateTime;
-	}
+	
 	public String getUserSalt() {
 		return userSalt;
 	}

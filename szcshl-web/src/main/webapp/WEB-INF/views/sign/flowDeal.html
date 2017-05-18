@@ -3,36 +3,42 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
-<!-- 流程处理页面 -->
-<div ng-include src="'${path}/contents/app/sign/flow_deal.html'"></div>
-
-<ul id="myTab" class="nav nav-tabs">
-    <li class="active"><a  data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-    <li ng-show="vm.model.isreviewcompleted > 0 " ><a  data-toggle="tab" for-div="sign_workprogram">工作方案</a></li> <!-- 填完工作方案才显示 -->
-    <li><a  data-toggle="tab" for-div="sign_diagram">流程图</a></li>
-    <li><a  data-toggle="tab" for-div="sign_history">处理记录</a></li>   
-</ul>
-
-<div class="tab-content" style="background:white;">        
-	<!-- 隐藏域部分 -->
-	<input type="hidden" ng-model="vm.model.isreviewcompleted" value="{{vm.model.isreviewcompleted}}" />	
+<div class="well well-sm" style="background:white;">
+	<ol class="breadcrumb">
+	    <li><a href="#/listSign">项目签收管理</a></li>
+	    <li class="active">{{vm.title}}</li>
+	</ol>    
+	    
+	<!-- 流程处理页面 -->
+	<div ng-include src="'${path}/contents/app/sign/newFlowDeal.html'"></div>
 	
-	<!-- 详情页 -->
-	<div class="well well-sm tab-pane fade in active" style="background:white;" id="sign_detail">		
-		<div ng-include src="'${path}/contents/app/sign/detail.html'"></div>
-	</div><!-- end tab1 -->
+	<ul id="myTab" class="nav nav-tabs">
+	    <li class="active"><a  data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
+	    <li ng-show="vm.model.isreviewcompleted == 9 " ><a  data-toggle="tab" for-div="sign_workprogram">工作方案</a></li> <!-- 填完工作方案才显示 -->
+	    <li><a  data-toggle="tab" for-div="sign_diagram">流程图</a></li>
+	    <li><a  data-toggle="tab" for-div="sign_history">处理记录</a></li>   
+	</ul>
 	
-	
-	<div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram">
-		<img style="" src="{{vm.picture}}">			
-	</div><!-- end tab2 -->
-	
-	<div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">		 
-		<div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
-	</div><!-- end tab3 -->
-	
-	<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram">	
-		<div ng-include src="'${path}/contents/app/workprogram/detail.html'" />
-	</div><!-- end tab3 -->
-	
+	<div class="tab-content" style="background:white;">        
+		<!-- 隐藏域部分 -->
+		<input type="hidden" ng-model="vm.model.isreviewcompleted" value="{{vm.model.isreviewcompleted}}" />	
+		
+		<!-- 详情页 -->
+		<div class="well well-sm tab-pane fade in active" style="background:white;" id="sign_detail">		
+			<div ng-include src="'${path}/contents/app/sign/detail.html'"></div>
+		</div><!-- end tab1 -->
+		
+		
+		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram">
+			<img style="" src="{{vm.picture}}">			
+		</div><!-- end tab2 -->
+		
+		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">		 
+			<div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
+		</div><!-- end tab3 -->
+		
+		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram">	
+			<div ng-include src="'${path}/contents/app/workprogram/detail.html'" />
+		</div><!-- end tab3 -->	
+	</div>
 </div>

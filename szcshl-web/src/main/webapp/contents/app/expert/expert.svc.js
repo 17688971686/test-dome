@@ -337,8 +337,6 @@
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
 				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '1'"}),
-
-				transport : common.kendoGridConfig().transport(url+"/fingByOData"),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {

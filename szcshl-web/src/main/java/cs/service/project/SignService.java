@@ -10,7 +10,6 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 
 public interface SignService{
@@ -27,8 +26,6 @@ public interface SignService{
 
 	void claimSignFlow(String taskId);
 	
-	ResultMsg dealSignFlow(ProcessInstance processInstance,FlowDto flowDto) throws Exception;
-
 	List<OrgDto> selectSign(ODataObj odataObj);
 	
 	void deleteSign(String signid);
@@ -44,6 +41,12 @@ public interface SignService{
 	void endFlow(String signid);
 	
 	SignDto findById(String signid);
+	
+	
+	//以下是新流程处理
+	void startNewFlow(String signid) throws Exception;
 
-	UserDto findSecondChargePerson(String signid);	
+	PageModelDto<SignDto> getPendingSign(ODataObj odataObj);
+
+	ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception;	
 }

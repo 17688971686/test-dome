@@ -1,6 +1,5 @@
 package cs.service.sys;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,18 +13,17 @@ import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.ICurrentUser;
 import cs.common.Response;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.Cryptography;
-import cs.common.utils.Validate;
 import cs.common.utils.DateUtils;
+import cs.common.utils.Validate;
 import cs.domain.sys.Org;
 import cs.domain.sys.Role;
 import cs.domain.sys.User;
@@ -48,12 +46,11 @@ public class UserServiceImpl implements UserService {
 	private RoleRepo roleRepo;
 	@Autowired
 	private ICurrentUser currentUser;
-
 	@Autowired
 	private OrgRepo orgRepo;
 	@Autowired
 	private IdentityService identityService;
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -245,7 +242,7 @@ public class UserServiceImpl implements UserService {
 		
 		// 清除已有role
 		user.getRoles().clear();
-			List<String> roleNames=new ArrayList<String>();
+		List<String> roleNames=new ArrayList<String>();
 		// 加入角色
 		for (RoleDto roleDto : userDto.getRoles()) {
 			Role role = roleRepo.findById(roleDto.getId());
@@ -272,6 +269,7 @@ public class UserServiceImpl implements UserService {
 			if(password!=null&&password.equals(user.getPassword())){
 				currentUser.setLoginName(user.getLoginName());
 				currentUser.setDisplayName(user.getDisplayName());
+				currentUser.setLoginUser(user);
 				user.setLoginFailCount(0);
 				String loginIP=	request.getRemoteAddr();
 				System.out.println(loginIP);
@@ -283,7 +281,7 @@ public class UserServiceImpl implements UserService {
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());
 				Subject currentUser = SecurityUtils.getSubject();
 				currentUser.login(token);
-				
+
 				response.setIsSuccess(true);
 				logger.info(String.format("登录成功,用户名:%s", userName));
 			}else{
@@ -367,7 +365,6 @@ public class UserServiceImpl implements UserService {
 	}
 	 protected void deleteActivitiUser(String userId){
 		 if (identityService.createUserQuery().userId(userId).count() != 0) {
-
 	            // Following data can already be set by demo setup script
 	            List<Group> oldGroups = identityService.createGroupQuery().groupMember(userId).list();
 	            for(Group group:oldGroups){
@@ -378,8 +375,7 @@ public class UserServiceImpl implements UserService {
 	 }
 	 
 	 
-	 protected void updateActivitiUser(String userId, String userName, String userPwd, 
-	          List<String> groups){
+	 protected void updateActivitiUser(String userId, String userName, String userPwd, List<String> groups){
 		 if (identityService.createUserQuery().userId(userId).count() != 0) {
 			 List<Group> oldGroups = identityService.createGroupQuery().groupMember(userId).list();
 	            for(Group oldgroup:oldGroups){
@@ -457,19 +453,115 @@ public class UserServiceImpl implements UserService {
 				userDtolist.add(userDto);
 			});						
 		}		
-
 		return userDtolist;
 	}
 
 
 	@Override
-	public UserDto findById(String id) {
-		
+	public UserDto findById(String id) {		
 		User  user=	userRepo.findById(id);
 		UserDto userDto = new UserDto();
 		BeanCopierUtils.copyProperties(user, userDto);
+		if(user.getOrg() != null){
+			OrgDto orgDto = new OrgDto();
+			BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
+			userDto.setOrgDto(orgDto);
+		}
 		return userDto;
+	}
+
+
+	/**
+	 * 当前用户是否是用户的部门领导
+	 */
+	@Override
+	public boolean curUserIsOrgDirector(UserDto checkUser) {
+		return currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector())?true:false;
+	}
+
+
+	/**
+	 * 当前用户是否是用户的分管领导
+	 */
+	@Override
+	public boolean curUserIsOrgSLeader(UserDto checkUser) {
+		return currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader())?true:false;
+	}
+
+
+	/**
+	 * 当前用户是否是用户的上级领导（包括部门领导和分管领导）
+	 */
+	@Override
+	public boolean curUserIsSuperLeader(UserDto checkUser) {
+		boolean isTrue = true;
+		isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector())?true:false;
+		isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader())?true:false;
+		return isTrue;
+	}
+
+
+	/**
+	 * 获取当前用户的部门领导
+	 */
+	@Override
+	public UserDto getOrgDirector() {
+		UserDto user = findById(currentUser.getLoginUser().getOrg().getOrgDirector());
+		if(user != null && Validate.isString(user.getId())){
+			return user;
+		}
+		return null;
+	}
+
+
+	/**
+	 * 获取当前用户的分管主任
+	 */
+	@Override
+	public UserDto getOrgSLeader() {
+		Org org = orgRepo.findById(currentUser.getLoginUser().getOrg().getId());
+		List<UserDto> userList = findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+		if(userList == null || userList.size() == 0){	
+			return null;
+		}
+		UserDto user = filterOrgSLeader(userList,org);
+		if(user != null && Validate.isString(user.getLoginName())){
+			return user;
+		}
+		return null;
 	}	
+	
+	/**
+	 * 获取部门部长
+	 * @param userList
+	 * @param org
+	 * @return
+	 */
+	public UserDto filterOrgDirector(List<UserDto> userList,Org org){
+		for(int i=0,l=userList.size();i<l;i++){
+			UserDto delUser = userList.get(i);
+			if(delUser.getId().equals(org.getOrgDirector())){
+				return delUser;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取部门副主任
+	 * @param userList
+	 * @param org
+	 * @return
+	 */
+	public UserDto filterOrgSLeader(List<UserDto> userList,Org org){
+		for(int i=0,l=userList.size();i<l;i++){
+			UserDto delUser = userList.get(i);
+			if(delUser.getId().equals(org.getOrgSLeader())){
+				return delUser;
+			}
+		}
+		return null;
+	}
 }
 
 

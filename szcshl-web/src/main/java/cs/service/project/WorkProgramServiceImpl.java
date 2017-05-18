@@ -1,6 +1,7 @@
 package cs.service.project;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -10,15 +11,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
+import cs.domain.sys.User;
 import cs.model.project.WorkProgramDto;
+import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.sys.UserService;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -29,19 +37,20 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	private ICurrentUser currentUser;
 	@Autowired
 	private SignRepo signRepo;
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	@Transactional
-	public void save(WorkProgramDto workProgramDto) throws Exception {
-				
+	public void save(WorkProgramDto workProgramDto) throws Exception {				
 		if(Validate.isString(workProgramDto.getSignId())){
 			WorkProgram workProgram = new WorkProgram(); 		
 			BeanCopierUtils.copyProperties(workProgramDto, workProgram);
 			
 			Date now = new Date();
-			workProgram.setCreatedBy(currentUser.getLoginName());
+			workProgram.setCreatedBy(currentUser.getLoginUser().getId());
 			workProgram.setCreatedDate(now);
-			workProgram.setModifiedBy(currentUser.getLoginName());
+			workProgram.setModifiedBy(currentUser.getLoginUser().getId());
 			workProgram.setModifiedDate(now);
 			//标题时间
 			workProgram.setTitleDate(now);
@@ -57,56 +66,122 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 			String endTime=	workProgramDto.getStudyEndTime();
 			Date end = DateUtils.toDateString(endTime);
 			workProgram.setStudyEndTime(end);
-			Sign sign = signRepo.findById(workProgramDto.getSignId());
-			workProgram.setSign(sign);
+			
 			if(!Validate.isString(workProgramDto.getId())){
 				workProgram.setId(UUID.randomUUID().toString());
-			}			
+			}	
+			
+			Sign sign = signRepo.findById(workProgramDto.getSignId());			
+			if(!Validate.isString(workProgramDto.getIsMain())){
+				//判断是否是主流程
+				if(currentUser.getLoginUser().getId().equals(sign.getmFlowMainUserId()) 
+						|| currentUser.getLoginUser().getId().equals(sign.getmFlowAssistUserId())){
+					workProgram.setIsMain(Constant.EnumState.YES.getValue());
+				}else{
+					workProgram.setIsMain(Constant.EnumState.NO.getValue());
+				}
+			}
+			
+			workProgram.setSign(sign);			
 			workProgramRepo.save(workProgram);
 			
 			sign.setIsreviewcompleted(EnumState.YES.getValue());
-			sign.setWorkProgram(workProgram);
+			sign.getWorkProgramList().add(workProgram);
 			signRepo.save(sign);
-			
+			//用于返回页面
+			workProgramDto.setId(workProgram.getId());
 		}else{
 			log.info("工作方案添加操作：无法获取收文ID（SignId）信息");
 			throw new Exception(Constant.ERROR_MSG);
 		}
 	}
 
+	/**
+	 * 根据收文ID初始化用户待处理的工作方案
+	 */
 	@Override
-	public WorkProgramDto initWorkBySignId(String signId) {
-		Sign sign  =signRepo.findById(signId);
-		if(sign !=null){
-			WorkProgram work =sign.getWorkProgram();
-			if(work !=null && Validate.isString(work.getId())){
+	public WorkProgramDto initWorkBySignId(String signId,String isMain) {
+		WorkProgramDto workProgramDto = new WorkProgramDto();
+		User curUser = currentUser.getLoginUser();		
+                
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from "+WorkProgram.class.getSimpleName()+" where "+WorkProgram_.sign.getName()+"."+Sign_.signid.getName()+" = :signId ");
+        hqlBuilder.setParam("signId", signId);
+        //hqlBuilder.append(" and ("+ WorkProgram_.mianChargeUserId.getName()+" = :mainUserId  or " + WorkProgram_.secondChargeUserId.getName()+" =:sencondUserId )");
+        //hqlBuilder.setParam("mainUserId", curUser.getId()).setParam("sencondUserId", curUser.getId());
+        if(Validate.isString(isMain)){
+        	hqlBuilder.append(" and "+WorkProgram_.isMain.getName()+" = :isMain ").setParam("isMain", isMain);
+        }
+        List<WorkProgram> list = workProgramRepo.findByHql(hqlBuilder);
+		
+        Sign sign = signRepo.findById(signId);
+        
+		if(list != null && list.size() > 0){
+			//如果当前人是负责人，或者是创建人的上级领导，则显示
+			WorkProgram workProgram = null;
+			for(int i=0,l= list.size();i<l;i++){
+				workProgram = list.get(i);
+				UserDto checkUser = userService.findById(workProgram.getCreatedBy());
+				if(curUserIsSignChange(sign,checkUser) || userService.curUserIsSuperLeader(checkUser)){
+					BeanCopierUtils.copyProperties(workProgram,workProgramDto);
+					workProgramDto.setTitleDate(DateUtils.convertDateToString(workProgram.getTitleDate()));
+				}				
+			}			
+		}else{						
+			workProgramDto.setProjectName(sign.getProjectname());
+			workProgramDto.setTitleDate(DateUtils.convertDateToString(new Date()));
+			//来文单位默认全部是：深圳市发展和改革委员会，可改...
+			//联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
+			workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
+			workProgramDto.setSendFileUser(sign.getMainDeptUserName());
+			
+			//处理第一负责人和第二负责人
+			//主流程
+			if(curUser.getId().equals(sign.getmFlowMainUserId()) || curUser.getId().equals(sign.getmFlowAssistUserId())){
+				UserDto dealUser = userService.findById(sign.getmFlowMainUserId());
+				workProgramDto.setMianChargeUserId(dealUser.getId());
+				workProgramDto.setMianChargeUserName(dealUser.getDisplayName());
+				workProgramDto.setReviewOrgId(dealUser.getOrgDto().getId());
+				workProgramDto.setReviewOrgName(dealUser.getOrgDto().getName());
+				workProgramDto.setIsMain(Constant.EnumState.YES.getValue());
 				
-				WorkProgramDto workDto = new WorkProgramDto();
-				/*//补充资料函发文日期
-				Date suppLetter=work.getSuppLetterDate();
-				String suppletDate = DateUtils.toStringDay(suppLetter);
-				workDto.setSuppLetterDate(suppletDate);
-				//调研开始时间
-				Date beginTime =work.getStudyBeginTime();
-				String start =DateUtils.toStringDay(beginTime);
-				workDto.setStudyBeginTime(start);
-				//调研结束时间
-				Date endTime =	work.getStudyEndTime();
-				String end =DateUtils.toStringDay(endTime);
-				workDto.setStudyEndTime(end);*/
-				//标题时间
-				Date title=	work.getTitleDate();
-				String titleDate = DateUtils.toStringDay(title);
-				workDto.setTitleDate(titleDate);
-				BeanCopierUtils.copyProperties(work, workDto);
-				workDto.setSignId(signId);
-				return workDto;
-			}/*else{
-				work.setProjectName(sign.getProjectname());
-			}*/
+				if(Validate.isString(sign.getmFlowAssistUserId())){
+					dealUser = userService.findById(sign.getmFlowAssistUserId());
+					workProgramDto.setSecondChargeUserId(dealUser.getId());
+					workProgramDto.setSecondChargeUserName(dealUser.getDisplayName());
+				}				
+			//协办流程
+			}else{
+				UserDto dealUser = userService.findById(sign.getaFlowMainUserId());
+				workProgramDto.setMianChargeUserId(dealUser.getId());
+				workProgramDto.setMianChargeUserName(dealUser.getDisplayName());
+				workProgramDto.setReviewOrgId(dealUser.getOrgDto().getId());
+				workProgramDto.setReviewOrgName(dealUser.getOrgDto().getName());
+				workProgramDto.setIsMain(Constant.EnumState.NO.getValue());
+				
+				if(Validate.isString(sign.getaFlowAssistUserId())){
+					dealUser = userService.findById(sign.getmFlowAssistUserId());
+					workProgramDto.setSecondChargeUserId(dealUser.getId());
+					workProgramDto.setSecondChargeUserName(dealUser.getDisplayName());
+				}												
+			}			
 		}
 		
-		return null;
+		return workProgramDto;
 	}
 
+	//当前用户是否是收文的负责人
+	protected boolean curUserIsSignChange(Sign sign,UserDto checkUser){
+		User curUser = currentUser.getLoginUser();	
+		if(curUser.getOrg() == null){
+			 return false;
+		}
+		if(	checkUser.getOrgDto().getId().equals(curUser.getOrg().getId()) 
+			&& (curUser.getId()).equals(sign.getmFlowAssistUserId()) || (curUser.getId()).equals(sign.getmFlowMainUserId())
+			|| (curUser.getId()).equals(sign.getaFlowAssistUserId()) || (curUser.getId()).equals(sign.getaFlowMainUserId())){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

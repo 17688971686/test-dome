@@ -14,7 +14,6 @@
 			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
 			deleteSign :　deleteSign,			//删除收文
-			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
 			flowgrid : flowgrid,				//初始化待处理页面			
 			startFlow : startFlow,				//发起流程
 			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
@@ -522,7 +521,28 @@
 									"vm.stopFlow('" + item.signid + "')", hideStopButton,
 									"vm.restartFlow('" + item.signid + "')", hideRestartButton);
 						}
-
+					},
+					{
+						field : "",
+						title : "操作",
+						width : 180,
+						template : function(item) {
+							//如果已经发起流程，则只能查看
+							var isFlowStart = false,hideStopButton = true,hideRestartButton=true;
+							if(item.folwState && item.folwState > 0){
+								isFlowStart = true;
+								if(item.folwState == 1){
+									hideStopButton = false;
+								}
+								if(item.folwState == 2){
+									hideRestartButton = false;
+								}								
+							}						
+							return common.format($('#columnNewBtns').html(), 
+									"vm.startNewFlow('" + item.signid + "')", isFlowStart,
+									"vm.stopNewFlow('" + item.signid + "')", hideStopButton,
+									"vm.restartNewFlow('" + item.signid + "')", hideRestartButton);
+						}					
 					}
 			];
 			// End:column
@@ -545,10 +565,8 @@
 		//S_创建收文
 		function createSign(vm){
 			common.initJqValidation();
-			var isValid = $('form').valid();		
-			alert(vm.model.reviewstage + "--"+isValid);
-			return false;
-			if (isValid) {
+			var isValid = $('form').valid();				
+			if (isValid) {				
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/sign",
@@ -562,8 +580,8 @@
 								common.alert({
 									vm:vm,
 									msg:"操作成功,请继续填写报审登记表！",
+									closeDialog:true,
 									fn:function() {
-										$('.alertDialog').modal('hide');
 										$state.go('fillSign', {signid: response.data.signid});
 									}
 								})
@@ -754,27 +772,7 @@
 		//S_初始化待处理页面
 		function flowgrid(vm){
 			// Begin:dataSource
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/sign/html/initflow"),
-				schema : common.kendoGridConfig().schema({
-					id : "id",
-					fields : {
-						createdDate : {
-							type : "date"
-						}
-					}
-				}),
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,
-				pageSize : 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
-						
+			var dataSource = common.kendoGridDataSource(rootPath+"/sign/html/initflow");										
 			var columns = [
 				 {
                      field: "",
@@ -872,7 +870,7 @@
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/sign/html/initFlowPageData",
-					params : {signid:vm.model.signid,taskId:vm.flow.taskId}
+					params : {signid:vm.model.signid}
 				}
 				
 			var httpSuccess = function success(response) {
@@ -880,10 +878,7 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.model = response.data;																	
-						if(vm.model.isreviewcompleted > 0){
-							vm.work = response.data.workProgramDto;	//显示工作方案tab		
-						}												
+						vm.model = response.data;																		
 					}
 				});
 			}
@@ -893,31 +888,6 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//E_初始化流程页面
-		
-		//S_业务表单检查
-		function checkBusinessFill(vm){
-			if(vm.flow.curNodeAcivitiId == "approval"){
-				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted==9){
-					return true;
-				}else{
-					return false;
-				}
-			}else if(vm.flow.curNodeAcivitiId == "dispatch"){
-				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
-					return true;
-				}else{
-					return false;
-				}
-			}else if(vm.flow.curNodeAcivitiId == "doFile"){
-				if(vm.model.filenum){
-					return true;
-				}else{
-					return false;
-				}
-			}
-			
-			return true;
-		}//E_业务表单检查
+		}//E_初始化流程页面				
 	}		
 })();

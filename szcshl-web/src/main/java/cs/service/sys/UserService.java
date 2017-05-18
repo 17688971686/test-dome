@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.common.Response;
-import cs.domain.sys.User;
+import cs.domain.sys.Org;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
@@ -41,4 +41,18 @@ public interface UserService {
 	List<UserDto> findUserByOrgId(String orgId);
 
 	UserDto findById(String id);
+	
+	boolean curUserIsOrgDirector(UserDto checkUser);
+	
+	boolean curUserIsOrgSLeader(UserDto checkUser);
+	
+	boolean curUserIsSuperLeader(UserDto checkUser);
+	
+	UserDto filterOrgDirector(List<UserDto> userList,Org org);
+	
+	UserDto filterOrgSLeader(List<UserDto> userList,Org org);
+	
+	UserDto getOrgDirector();
+	
+	UserDto getOrgSLeader();
 }

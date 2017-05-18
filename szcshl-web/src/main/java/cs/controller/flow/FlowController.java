@@ -2,9 +2,7 @@ package cs.controller.flow;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,12 +11,16 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,22 +36,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant;
-import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.MsgCode;
-import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.Node;
-import cs.model.project.SignDto;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
 import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
-import cs.service.sys.UserService;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -67,17 +63,15 @@ public class FlowController {
 	@Autowired
 	private SignService signService;
 	@Autowired
-	private UserService userService;
-	@Autowired
-	private ICurrentUser currentUser;
-	@Autowired
 	private FlowService flowService;
+	@Autowired
+	private TaskService taskService;
 	
 	
-	@RequestMapping(name = "读取流程图",path = "proccessInstance/img/{proccessInstanceId}",method = RequestMethod.GET)
-    public void readProccessInstanceImg(@PathVariable("proccessInstanceId") String proccessInstanceId, HttpServletResponse response)
+	@RequestMapping(name = "读取流程图",path = "processInstance/img/{processInstanceId}",method = RequestMethod.GET)
+    public void readProccessInstanceImg(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response)
             throws Exception {   	
-    	InputStream imageStream = getProccessInstanceImage(proccessInstanceId); 
+    	InputStream imageStream = getProcessInstanceImage(processInstanceId); 
         // 输出资源内容到相应对象
         byte[] b = new byte[1024];
         int len;
@@ -86,10 +80,10 @@ public class FlowController {
         }
     }
 	
-	private InputStream getProccessInstanceImage(String proccessInstanceId) {
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();
+	private InputStream getProcessInstanceImage(String processInstanceId) {
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(proccessInstanceId);        
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);        
         // 使用spring注入引擎请使用下面的这行代码
         processEngineConfiguration = processEngine.getProcessEngineConfiguration();
         Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngineConfiguration);
@@ -103,145 +97,40 @@ public class FlowController {
 
 	}
 	
-	@RequestMapping(name = "读取流程历史记录",path = "proccessInstance/history/{proccessInstanceId}",method = RequestMethod.POST)
-	public @ResponseBody PageModelDto<FlowHistoryDto> findHisActivitiList(@PathVariable("proccessInstanceId") String proccessInstanceId){   	    
-		List<FlowHistoryDto> list = flowService.convertHistory(proccessInstanceId);		
+	@RequestMapping(name = "读取流程历史记录",path = "processInstance/history/{processInstanceId}",method = RequestMethod.POST)
+	public @ResponseBody PageModelDto<FlowHistoryDto> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId){   	    
+		List<FlowHistoryDto> list = flowService.convertHistory(processInstanceId);		
 	    PageModelDto<FlowHistoryDto> pageModelDto = new PageModelDto<FlowHistoryDto>();				
 		pageModelDto.setCount(list.size());
 		pageModelDto.setValue(list);		
 	    return pageModelDto;
 	}  
 
-	@RequestMapping(name = "获取下一环节处理信息",path = "proccessInstance/nextNodeDeal",method = RequestMethod.GET)
-	public @ResponseBody FlowDto nextNodeDeal(@RequestParam(required = true) String taskId,@RequestParam(required = true) String proccessInstanceId){
+	@RequestMapping(name = "获取流程处理信息",path = "processInstance/flowNodeInfo",method = RequestMethod.GET)
+	public @ResponseBody FlowDto flowNodeInfo(@RequestParam(required = true) String taskId,@RequestParam(required = true) String processInstanceId){
 		FlowDto flowDto = new FlowDto();
+		flowDto.setTaskId(taskId);
+		flowDto.setProcessInstanceId(processInstanceId);
 		flowDto.setEnd(false);
 		flowDto.setSeleteNode(false);
-				
-		//流程实例
-		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proccessInstanceId).singleResult();		
-		flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
-		
-		//获取当前环节信息
-		ActivityImpl activityImpl = flowService.getActivityImpl(taskId,processInstance.getActivityId());		
-		TaskDefinition curTaskDefinition = ((UserTaskActivityBehavior)activityImpl.getActivityBehavior()).getTaskDefinition();
-		if(curTaskDefinition != null){
-			Node curNode = new Node();
-			curNode.setActivitiName(curTaskDefinition.getNameExpression().getExpressionText());
-			curNode.setActivitiId(curTaskDefinition.getKey());			
-			flowDto.setCurNode(curNode);
-		}						
-		String roleName = null;
-		UserDto curUser = null;
-		List<UserDto> nextUserList = new ArrayList<UserDto>();
-		boolean isSetValue = false;	//是否已经设置值
-		
-		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
-			switch(processInstance.getActivityId()){					
-				case "ministerApproval":		//部长审批->中心领导
-					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();										
-					break;
-				case "leaderApproval":			//中心领导->选负责人
-					roleName = EnumFlowNodeGroupName.DEPT_PRINCIPAL.getValue();		
-					break;
-				case "selectPrincipal":			//选负责人-> 审批项目
-					curUser = userService.findUserByName( currentUser.getLoginName());
-					break;
-				case "approval":				//审批项目-> 部长审批会议方案
-					curUser = userService.findUserByName( currentUser.getLoginName());
-					OrgDto org = curUser.getOrgDto();
-					UserDto user = userService.findById(org.getOrgDirector());
-					nextUserList.add(user);
-					break;
-				case "approvalPlan":			//部长审批会议方案->中心领导审批
-					roleName = EnumFlowNodeGroupName.DEPT_LEADER.getValue();
-					break;
-				case "leaderApprovalPlan":		//中心领导审批->(项目负责人)发文申请	
-					SignDto signDto = signService.findById(processInstance.getBusinessKey());
-					curUser = userService.findUserByName(signDto.getMainchargeuserid());
-					nextUserList.add(curUser);
-					isSetValue = true;
-					break;
-				case "dispatch":				//发文申请->部长审批
-					curUser = userService.findUserByName( currentUser.getLoginName());
-					OrgDto minOrg = curUser.getOrgDto();
-					if(minOrg != null){
-						UserDto minUser = userService.findById(minOrg.getOrgDirector());
-						nextUserList.add(minUser);
-					}	
-					isSetValue = true;
-					break;
-				case "ministerDispatches":		//部长审批->分管副主任审批
-					curUser = userService.findUserByName( currentUser.getLoginName());
-					OrgDto slOrg = curUser.getOrgDto();
-					UserDto slUser = userService.findById(slOrg.getOrgSLeader());
-					nextUserList.add(slUser);
-					isSetValue = true;
-					break;
-				case "secDirectorDispatches":	//分管副主任审批->主任审批
-					curUser = userService.findUserByName( currentUser.getLoginName());
-					OrgDto mlOrg = curUser.getOrgDto();
-					UserDto mlUser = userService.findById(mlOrg.getOrgMLeader());
-					nextUserList.add(mlUser);
-					isSetValue = true;
-					break;
-				case "directorDispatches":		//主任审批->归档
-					roleName = EnumFlowNodeGroupName.FILER.getValue();	
-					break;	
-				case "doFile":					//归档->(第二负责人确认 or 归档确认)
-					flowDto.setSeleteNode(true);
-					Map<String,List<UserDto>> nextUserListMap = new HashMap<String,List<UserDto>>(2);
-					UserDto doFileUser = signService.findSecondChargePerson(processInstance.getBusinessKey());	
-					if(doFileUser != null){
-						nextUserList.add(doFileUser);
-					}					
-					nextUserListMap.put("secondApproval", nextUserList);
-							
-					nextUserListMap.put("doConfirmFile", userService.findUserByRoleName(EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue()));
-					flowDto.setNextUserListMap(nextUserListMap);
-					isSetValue = true;
-					break;	
-				case "secondApproval":			//第二负责人确认
-					roleName = EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue();
-					break;		
-				case "doConfirmFile":			//归档确认
-					flowDto.setEnd(true);
-					break;
-				case "endevent1":				//结束
-					flowDto.setEnd(true);
-					break;
-			}	
-			
-			if(isSetValue == false && flowDto.isEnd() == false){
-				if(Validate.isString(roleName)){
-					flowDto.setNextGroup(roleName);
-					nextUserList = userService.findUserByRoleName(roleName);								
-				}else if(Validate.isObject(curUser)){
-					flowDto.setNextGroup(curUser.getOrgDto().getName());
-					nextUserList = userService.findUserByOrgId(curUser.getOrgDto().getId());						
-				}
-			}				
-			flowDto.setNextDealUserList(nextUserList);
-			
-			
-			if(flowDto.isEnd() == false){
-				//获取下一环节信息--获取从某个节点出来的所有线路
-				List<TaskDefinition> taskDefinitionList = new ArrayList<TaskDefinition>();
-				flowService.nextTaskDefinition(taskDefinitionList,activityImpl,processInstance.getActivityId());
-				
-				if(taskDefinitionList.size()>0){
-					List<Node> nextNodeList = new ArrayList<Node>(taskDefinitionList.size());    		
-					taskDefinitionList.forEach(tf->{
-						Node nextNode = new Node();
-						nextNode.setActivitiId(tf.getKey());        		
-						nextNode.setActivitiName(tf.getNameExpression().getExpressionText());
-		        		nextNodeList.add(nextNode);
-		        	});
 		    		
-					flowDto.setNextNode(nextNodeList);
-		    	}
+		//流程实例
+		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();		
+		flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
+	
+		Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();   
+		if(task != null){
+			Node curNode = new Node();
+			curNode.setActivitiName(task.getName());
+			curNode.setActivitiId(task.getTaskDefinitionKey());			
+			flowDto.setCurNode(curNode);
+		}
+		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())){
+			if(Constant.FLOW_BMLD_QR_GD.equals(task.getTaskDefinitionKey())){
+				flowDto.setEnd(true);
 			}
-		}		
+		}			
+				
 		return flowDto;
 	}
 		
@@ -250,14 +139,9 @@ public class FlowController {
 	public @ResponseBody ResultMsg flowCommit(@RequestBody FlowDto flowDto) throws Exception{
 		ResultMsg resultMsg = null;
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();	
-		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
-				resultMsg = signService.dealSignFlow(processInstance, flowDto);			
-		}
-		if(resultMsg == null){
-			resultMsg = new ResultMsg();
-			resultMsg.setReCode(MsgCode.ERROR.getValue());
-			resultMsg.setReMsg("流程处理失败，失败记录已记录，请联系管理员进行处理！");
-		}
+		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())){
+			resultMsg = signService.dealFlow(processInstance, flowDto);			
+		}		
 		return resultMsg;
 	}
 
@@ -297,7 +181,7 @@ public class FlowController {
     public void activeFlow(@PathVariable("businessKey") String businessKey) {  
     	ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(businessKey);
     	runtimeService.activateProcessInstanceById(processInstance.getId()); 
-    	if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
+    	if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())){
     		signService.restartFlow(businessKey);
     	}
     	log.info("流程激活成功！businessKey="+businessKey);
@@ -309,7 +193,7 @@ public class FlowController {
     public void suspendFlow(@PathVariable("businessKey") String businessKey) {  
     	ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(businessKey);
     	runtimeService.suspendProcessInstanceById(processInstance.getId()); 
-    	if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
+    	if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())){
     		signService.stopFlow(businessKey);
     	}
     	log.info("流程挂起成功！businessKey="+businessKey);
@@ -322,7 +206,7 @@ public class FlowController {
 		//流程实例
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
 		runtimeService.deleteProcessInstance(processInstance.getId(), flowDto.getDealOption());
-		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN.getValue())){
+		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())){
     		signService.endFlow(processInstance.getBusinessKey());
     	}
     	log.info("流程终止成功！businessKey="+processInstance.getBusinessKey());

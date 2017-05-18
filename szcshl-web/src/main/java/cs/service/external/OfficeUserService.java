@@ -2,11 +2,9 @@ package cs.service.external;
 
 import java.util.List;
 
-import cs.domain.external.OfficeUser;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
-import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 
 public interface OfficeUserService {

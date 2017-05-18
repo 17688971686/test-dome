@@ -210,6 +210,14 @@ public class ODataObj {
 				case "le":
 					criteria.add(Restrictions.le(field, value));
 					break;
+				case "ni":	//not in
+					Object[] notInObjValues = splitObj(value,",");
+					criteria.add(Restrictions.not(Restrictions.in(field, notInObjValues)));
+					break;
+				case "in":	//in
+					Object[] inObjValues = splitObj(value,",");
+					criteria.add(Restrictions.in(field, inObjValues));
+					break;	
 				default:
 					break;
 				}
@@ -238,6 +246,19 @@ public class ODataObj {
 		}
 		logger.debug("end:buildQuery");
 		return criteria;
+	}
+
+	private Object[] splitObj(Object value, String splitOperate) {		
+		if (value instanceof String) {
+			String s = value.toString();
+			String[] sArr = s.split(splitOperate);
+			Object[] resultObj = new Object[sArr.length];
+			for(int i=0,l=sArr.length;i<l;i++){
+				resultObj[i] = sArr[i];
+			}
+			return resultObj;
+		}
+		return null;
 	}
 
 }

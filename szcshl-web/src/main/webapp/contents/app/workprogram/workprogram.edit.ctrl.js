@@ -23,6 +23,10 @@
         	alert(1);
         	workprogramSvc.createWP(vm);
         };  
+        
+        vm.selectExpert = function(){
+        	workprogramSvc.selectExpert(vm);
+        }
             
         vm.findReviewDept = function(){
         	alert("ssd");

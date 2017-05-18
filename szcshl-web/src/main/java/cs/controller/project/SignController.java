@@ -141,18 +141,8 @@ public class SignController {
 	
 	@RequestMapping(name = "初始化流程处理页面", path = "html/initFlowPageData",method=RequestMethod.GET)	
 	@Transactional
-	public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true)String signid,String taskId){
-		if(Validate.isString(taskId)){
-			signService.claimSignFlow(taskId);
-		}
+	public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true)String signid){		
 		return signService.findById(signid);	
-	}
-
-	@RequiresPermissions("sign#html/flowDeal#get")
-	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
-	public String flowDeal(){
-		
-		return ctrlName + "/flowDeal";
 	}	
 	
 	@RequiresPermissions("sign#html/startFlow#post")
@@ -163,4 +153,28 @@ public class SignController {
 	}	
 		
 	/***************************************  E 流程处理的方法     *******************************************/
+	
+	/***************************************  S 新流程处理的方法     *******************************************/
+	@RequiresPermissions("sign#html/startNewFlow#post")
+	@RequestMapping(name = "发起流程", path = "html/startNewFlow", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void startNewFlow(@RequestParam(required = true)String signid) throws Exception{
+		signService.startNewFlow(signid);
+	}
+	
+	@RequiresPermissions("sign#html/pendingSign#post")
+	@RequestMapping(name = "签收待处理", path = "html/pendingSign",method=RequestMethod.POST)	
+	public @ResponseBody PageModelDto<SignDto> pendingSign(HttpServletRequest request) throws ParseException {			
+		ODataObj odataObj = new ODataObj(request);
+		PageModelDto<SignDto> signDtos = signService.getPendingSign(odataObj);		
+		return signDtos;
+	}
+	
+	@RequiresPermissions("sign#html/flowDeal#get")
+	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
+	public String flowDeal(){
+		
+		return ctrlName + "/flowDeal";
+	}	
+	/***************************************  E 新流程处理的方法     *******************************************/
 }

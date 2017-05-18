@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.domain.expert.WorkExpe;
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
-import cs.service.expert.ExpertService;
 import cs.service.expert.WorkExpeService;
 
 @Controller

@@ -4,7 +4,7 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.commitProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
       <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
         
@@ -42,11 +42,11 @@
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">来文单位</td>
 		      <td colspan="3">
-					{{vm.work.sendFileUnit}}
+					<input  type="text" maxlength="200" class="form-control input-sm " value="{{vm.work.sendFileUnit}}"  ng-model="vm.work.sendFileUnit" id="sendFileUnit" name="sendFileUnit" data-val="true" data-val-required="必填">					 
 			  </td>
 		      <td  style="width:150px;" class="text-center">来文单位联系人</td>
 		      <td>
-					{{vm.work.sendFileUser}}
+					<input  type="text" maxlength="100" class="form-control input-sm " value="{{vm.work.sendFileUser}}"  ng-model="vm.work.sendFileUser" id="sendFileUser" name="sendFileUser" >					 
 			  </td>
 		    </tr>
 		    <tr>
@@ -106,23 +106,23 @@
 		    <tr>
 		      <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
 		      <td rowspan="3" colspan="3">
-		  	   <input type="text" style="width:100%; height: 100px;" class="form-control input-sm "   ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson" data-val="true" data-val-required="必填"> 
+		  	   <input type="text" style="width:100%; height: 100px;" class="form-control input-sm "   ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson"> 
 			  </td>
 			  <td style="width:150px;" class="text-center">手机</td>
 		      <td>
-		       <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonPhone" name="contactPersonPhone" data-val="true" data-val-required="必填">
+		       <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonPhone" name="contactPersonPhone">
 		      </td>
 		    </tr>
 		    <tr>		     
 		      <td style="width:150px;" class="text-center">电话</td>
 		      <td>
-		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonTel" name="contactPersonTel" data-val="true" data-val-required="必填">
+		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonTel" name="contactPersonTel">
 		      </td>
 		    </tr> 
 		    <tr>		     
 		      <td style="width:150px;" class="text-center">传真</td>
 		      <td>
-		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonFax" name="contactPersonFax" data-val="true" data-val-required="必填">
+		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonFax" name="contactPersonFax">
 		      </td>
 		    </tr> 
 		    <tr>
@@ -154,26 +154,16 @@
 			<tr>
 				<td rowspan="2" colspan="2" style="width:150px;" class="text-center">评估部门</td>	
 			    <td rowspan="2" colspan="3">
-			      <!--  <select ng-model="vm.work.reviewDept" ng-change="vm.findUsersByOrgId('main')"style="width:300px;" name="reviewDept" id="reviewDept">
-					<option ng-repeat="x in vm.orgs" value="{{x.id}}">{{x.name}}</option>
-					</select>  -->
-					{{vm.work.reviewDept}}
+					{{vm.work.reviewOrgName}}
 				 </td>
 			    <td style="width:150px;" class="text-center">第一负责人</td>
 			    <td >
-			      	<!-- <select ng-model="vm.work.mianChargePerson"  name="reviewDept" id="reviewDept">
-						<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.work.mianChargePerson == mu.id"  value="{{mu.id}}">{{mu.loginName}} </option>
-					</select> -->
-					{{vm.work.mianChargeUserName}}
-					
+					{{vm.work.mianChargeUserName}}					
 			    </td>
 			</tr> 
 			<tr>
 				<td style="width:150px;" class="text-center">第二负责人</td>
 			    <td >
-			      	<!-- <select ng-model="vm.work.secondChargePerson"  name="secondChargePerson" id="mianChargePerson">
-					<option ng-repeat="mu in vm.mainUserList" ng-selected="vm.work.mianChargePerson == mu.id"  value="{{mu.loginName}}">{{mu.loginName}} </option>
-					</select> -->
 					{{vm.work.secondChargeUserName}}
 			    </td>
 			</tr> 
@@ -219,7 +209,7 @@
 				<td colspan="2" style="width:150px;" class="text-center">专家费用</td>	
 			    <td colspan="3">
 			      	{{vm.work.BigDecimal}}
-			      	<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.BigDecimal" name="BigDecimal" data-val="true" data-val-required="必填">
+			      	<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.expertCost" name="expertCost" >
 			    </td>
 			    <td style="width:150px;" class="text-center"></td>
 			    <td >
@@ -229,7 +219,7 @@
 			 <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">拟聘请专家</td>
 		      <td colspan="5">
-			  	    <a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+			  	    <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
 			  </td>		      
 		    </tr> 
 			 <tr>
@@ -250,40 +240,15 @@
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
 		      <td colspan="5">
-			  	<!--  <textarea rows="3" ng-model="vm.work.ministerSuggesttion" name="ministerSuggesttion" style="width:60%"> </textarea>    -->
-				中心领导审批：
-				<div  style="width: 200px; height:100px; border:0px solid #00F;float:right;">
-				<br>
-				签名：
-				<br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-				<br>
-				日期：
-				</div>
+			  	
 			  </td>		      
 		    </tr>
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
 		      <td colspan="5">
-			  	<!-- <textarea rows="3" ng-model="vm.work.leaderSuggesttion" name="leaderSuggesttion" style="width:98%"> </textarea>  -->
-			  	中心领导签批意见：
-				<div  style="width: 200px; height:100px; border:0px solid #00F;float:right;">
-				<br>
-				签名：
-				<br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-				<br>
-				日期：
+			  	
 			  </td>		      
-		    </tr>
-		     <tr>
-		      <td colspan="2" style="width:150px;" class="text-center">标题时间：</td>
-		      <td colspan="5">
-		      {{vm.work.titleDate}}
-			  </td>		      
-		    </tr>		   
+		    </tr>		      
 		  </tbody>		  
 		</table>	<!-- end table -->
 	</form> <!-- end form -->

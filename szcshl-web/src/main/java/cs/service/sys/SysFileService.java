@@ -19,7 +19,7 @@ public interface SysFileService {
 	 * @param fileType 文件类型
 	 * @param urlGenerator 文件url生成器
 	 * */
-	public SysFileDto save(byte[] bytes,String fileName,String businessId,String fileType,String module,String proccessInstanceId);
+	public SysFileDto save(byte[] bytes,String fileName,String businessId,String fileType,String module,String processInstanceId);
 
 	public void deleteById(String sysFileId);
 	

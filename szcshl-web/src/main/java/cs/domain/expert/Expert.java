@@ -308,5 +308,5 @@ public class Expert extends DomainBase {
 	public void setExpertNo(String expertNo) {
 		this.expertNo = expertNo;
 	}
-			
+	
 }

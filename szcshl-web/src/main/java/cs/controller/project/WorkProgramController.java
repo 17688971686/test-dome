@@ -29,14 +29,15 @@ public class WorkProgramController {
 	@RequestMapping(name = "工作方案提交", path = "addWork",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@ResponseBody
-	public void post(@RequestBody  WorkProgramDto workProgramDto) throws Exception  {
+	public WorkProgramDto post(@RequestBody  WorkProgramDto workProgramDto) throws Exception  {
 		workProgramService.save(workProgramDto);
+		return workProgramDto;
 	}
 	
-	@RequestMapping(name = "工作方案编辑页面", path = "html/initWorkBySignId",method=RequestMethod.GET)	
-	@Transactional
-	public @ResponseBody WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId){
-		WorkProgramDto workDto =	workProgramService.initWorkBySignId(signId);
+	@RequiresPermissions("workprogram#initWorkBySignId#get")
+	@RequestMapping(name = "工作方案编辑", path = "html/initWorkBySignId",method=RequestMethod.GET)	
+	public @ResponseBody WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId,String isMain){
+		WorkProgramDto workDto =workProgramService.initWorkBySignId(signId,isMain);
 		return workDto;
 	}
 	

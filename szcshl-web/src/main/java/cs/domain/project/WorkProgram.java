@@ -2,18 +2,20 @@ package cs.domain.project;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
+import cs.domain.expert.ExpertReview;
 
 /**
  * 工作方案
@@ -37,8 +39,7 @@ public class WorkProgram extends DomainBase{
 	private String isSigle;
 	
 	//项目名称
-	@Column(columnDefinition="VARCHAR(200)")
-	@Formula("(select s.projectname from sign s where s.signid = signid)")
+	@Column(columnDefinition="VARCHAR(256)")
 	private String projectName;
 	
 	//来文单位
@@ -110,21 +111,24 @@ public class WorkProgram extends DomainBase{
 	private String projectBackGround;
 	
 	//评估部门
-	@Column(columnDefinition="VARCHAR(60)")
-	private String reviewDept;
+	@Column(columnDefinition="VARCHAR(64)")
+	private String reviewOrgId;
+	
+	@Column(columnDefinition="VARCHAR(128)")
+	private String reviewOrgName;
 	
 	//第一负责人
 	@Column(columnDefinition="VARCHAR(64)")
 	private String mianChargeUserId;
 	
-	@Formula("(select u.displayname from cs_user u where u.id = mianChargeUserId)")
+	@Column(columnDefinition="VARCHAR(64)")
 	private String mianChargeUserName;
 	
 	//第二负责人
 	@Column(columnDefinition="VARCHAR(64)")
 	private String secondChargeUserId;
 	
-	@Formula("(select u.displayname from cs_user u where u.id = secondChargeUserId)")
+	@Column(columnDefinition="VARCHAR(64)")
 	private String secondChargeUserName;
 	
 	//是否有补充函
@@ -159,19 +163,34 @@ public class WorkProgram extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String ministerSuggesttion;
 	
+	//部长处理日期
+	@Column(columnDefinition="DATE")
+	private Date ministerDate;
+	
 	//中心领导处理意见
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String leaderSuggesttion;
+	
+	//中心领导处理日期
+	@Column(columnDefinition="DATE")
+	private Date leaderDate;
 	
 	//标题日期
 	@Column(columnDefinition="DATE")
 	private Date titleDate;
 
+	//是否主流程的工作方案
+	@Column(columnDefinition="VARCHAR(2)")
+	private String isMain;
+	
 	//收文，一对一
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="signId")
 	private Sign sign;
-
+	
+	@OneToMany(mappedBy="workProgram")
+	private List<ExpertReview> expertReviews;
+	
 	public Sign getSign() {
 		return sign;
 	}
@@ -348,13 +367,21 @@ public class WorkProgram extends DomainBase{
 		this.projectBackGround = projectBackGround;
 	}
 
-	public String getReviewDept() {
-		return reviewDept;
+	public String getReviewOrgId() {
+		return reviewOrgId;
 	}
 
-	public void setReviewDept(String reviewDept) {
-		this.reviewDept = reviewDept;
-	}	
+	public void setReviewOrgId(String reviewOrgId) {
+		this.reviewOrgId = reviewOrgId;
+	}
+
+	public String getReviewOrgName() {
+		return reviewOrgName;
+	}
+
+	public void setReviewOrgName(String reviewOrgName) {
+		this.reviewOrgName = reviewOrgName;
+	}
 
 	public String getMianChargeUserId() {
 		return mianChargeUserId;
@@ -467,5 +494,37 @@ public class WorkProgram extends DomainBase{
 	public void setTitleDate(Date titleDate) {
 		this.titleDate = titleDate;
 	}
-			
+
+	public Date getMinisterDate() {
+		return ministerDate;
+	}
+
+	public void setMinisterDate(Date ministerDate) {
+		this.ministerDate = ministerDate;
+	}
+
+	public Date getLeaderDate() {
+		return leaderDate;
+	}
+
+	public void setLeaderDate(Date leaderDate) {
+		this.leaderDate = leaderDate;
+	}
+
+	public String getIsMain() {
+		return isMain;
+	}
+
+	public void setIsMain(String isMain) {
+		this.isMain = isMain;
+	}
+
+	public List<ExpertReview> getExpertReviews() {
+		return expertReviews;
+	}
+
+	public void setExpertReviews(List<ExpertReview> expertReviews) {
+		this.expertReviews = expertReviews;
+	}
+		
 }

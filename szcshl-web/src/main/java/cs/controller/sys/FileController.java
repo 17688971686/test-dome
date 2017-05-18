@@ -47,12 +47,12 @@ public class FileController {
 	//@RequiresPermissions("file##post")
 	@RequestMapping(name = "文件上传", path = "",method=RequestMethod.POST)	
 	public @ResponseBody SysFileDto upload(HttpServletRequest request,@RequestParam("file")MultipartFile multipartFile,
-			@RequestParam(required = true)String businessId,String fileType,String module,String proccessInstanceId) throws IOException{
+			@RequestParam(required = true)String businessId,String fileType,String module,String processInstanceId) throws IOException{
 		SysFileDto sysFileDto = null;
 		String fileName = multipartFile.getOriginalFilename();	
 		
 		if(!multipartFile.isEmpty()){
-			sysFileDto = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType,module,proccessInstanceId);
+			sysFileDto = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType,module,processInstanceId);
 		}else{
 			logger.info("文件上传失败，无法获取文件信息！");
 			throw new IOException(Constant.ERROR_MSG);

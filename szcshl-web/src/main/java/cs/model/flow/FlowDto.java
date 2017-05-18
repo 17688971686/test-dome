@@ -20,9 +20,11 @@ public class FlowDto {
 	private String nextNodeAcivitiId;	//下一环节节点ID
 	private String dealOption;			//处理意见
 	private boolean end;				//是否已经结束
-	private boolean seleteNode;		//是否是选择环节
+	private boolean seleteNode;			//是否是选择环节
 	private String rollBackActiviti;	//回退环节
 	private String backNodeDealUser;	//回退环节的处理人
+	
+	private Map<String,Object> businessMap;	//业务参数
 	
 	/******************    以下字段用于页面显示  ********************/
 	private Node curNode;					//当前节点
@@ -124,6 +126,13 @@ public class FlowDto {
 	}
 	public void setProcessKey(String processKey) {
 		this.processKey = processKey;
+	}
+	
+	public Map<String, Object> getBusinessMap() {
+		return businessMap;
+	}
+	public void setBusinessMap(Map<String, Object> businessMap) {
+		this.businessMap = businessMap;
 	}
 	public FlowDto() {
 		super();

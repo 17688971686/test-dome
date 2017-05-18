@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state','flowSvc']; 
+    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc']; 
 
-    function sign($location,signSvc,$state,flowSvc) {        
+    function sign($location,signSvc,$state,flowSvc,signFlowSvc) {        
         var vm = this;
         vm.title = "收文列表";
         
@@ -85,5 +85,19 @@
                  }
               })
          }//end 重启流程
+         
+         //************************** S 以下是新流程处理js **************************//
+         vm.startNewFlow = function(signid){
+        	 common.confirm({
+              	 vm:vm,
+              	 title:"",
+              	 msg:"发起流程后，将不能对信息进行修改，确认发起流程么？",
+              	 fn:function () {
+                    	$('.confirmDialog').modal('hide');             	
+                    	signFlowSvc.startFlow(vm,signid);
+                 }
+              })
+         }
+         //************************** S 以下是新流程处理js **************************//
     }
 })();

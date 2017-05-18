@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.common.ICurrentUser;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
@@ -29,6 +31,8 @@ public class UserController {
     private String ctrlName = "user";
     @Autowired
     private UserService userService;
+    @Autowired
+	private ICurrentUser currentUser;
 
 	
 	@RequiresPermissions("user#fingByOData#post")
@@ -55,6 +59,14 @@ public class UserController {
     public List<UserDto> findUsersByOrgId(@RequestParam(required = true)String orgId){
     	List<UserDto> userDto = userService.findUserByOrgId(orgId);
     	return userDto;
+    }
+    
+    @RequiresPermissions("user#findChargeUsers#get")
+    @RequestMapping(name = "获取所在部门的用户", path = "findChargeUsers", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findChargeUsers(){
+    	User curUser = currentUser.getLoginUser();
+    	return userService.findUserByOrgId(curUser.getOrg().getId());
     }
     
     @RequiresPermissions("user##post")
