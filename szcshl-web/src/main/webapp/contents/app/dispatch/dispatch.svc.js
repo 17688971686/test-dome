@@ -49,11 +49,10 @@
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
 			if(isValid){
-			vm.dispatchDoc.proofreadName=$("#proofreadId").find("option:selected").text();
-			vm.dispatchDoc.draftDate=$("#draftDate").val();
-			vm.dispatchDoc.dispatchDate=$("#dispatchDate").val();
-			console.log(vm.dispatchDoc);
-			if (isValid) {
+				vm.dispatchDoc.proofreadName=$("#proofreadId").find("option:selected").text();
+				vm.dispatchDoc.draftDate=$("#draftDate").val();
+				vm.dispatchDoc.dispatchDate=$("#dispatchDate").val();
+				
 				vm.saveProcess = true;
 				var httpOptions = {
 						method : 'post',
@@ -81,9 +80,9 @@
 					vm:vm,
 					$http:$http,
 					httpOptions:httpOptions,
-					success:httpSuccess
+					success:httpSuccess,
+					onError: function(response){vm.saveProcess = false;}
 				});
-			}
 			}
 		}//E_保存
 		

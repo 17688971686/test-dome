@@ -218,7 +218,14 @@
 				}else{
 					return false;
 				}
-			}else if(vm.flow.curNode.activitiId == "FW_SQ"){
+			}
+			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1"){
+				vm.flow.businessMap.M_WP_ID = vm.work.id;
+			}
+			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
+				vm.flow.businessMap.A_WP_ID = vm.work.id;
+			}			
+			else if(vm.flow.curNode.activitiId == "FW_SQ"){
 				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
 					return true;
 				}else{
@@ -247,13 +254,10 @@
 					response:response,
 					fn:function() {								
 						vm.work = response.data;	
-						console.log(response);
-						vm.flow.businessMap = {};
-						if(activitiId == "BZ_SP_GZAN1" || activitiId == "FGLD_SP_GZFA1"){
-							vm.flow.businessMap.M_WP_ID = vm.work.id;
+						if(activitiId == "BZ_SP_GZAN1" || activitiId == "FGLD_SP_GZFA1" 
+							|| activitiId == "BZ_SP_GZAN2" || activitiId == "FGLD_SP_GZFA2"){
+							
 							$("#show_workprogram_a").click();
-						}else if(activitiId == "BZ_SP_GZAN2" || activitiId == "FGLD_SP_GZFA2"){
-							vm.flow.businessMap.A_WP_ID = vm.work.id;
 						}
 					}						
 				});

@@ -10,6 +10,7 @@
         vm.title = "项目流程处理";       
         vm.model = {};
         vm.flow = {};
+ 					
         vm.work = {};
         vm.model.signid = $state.params.signid;	
         vm.flow.taskId = $state.params.taskId;			//流程任务ID

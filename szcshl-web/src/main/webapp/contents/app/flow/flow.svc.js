@@ -179,7 +179,7 @@
 					$http:$http,
 					httpOptions:httpOptions,
 					success:httpSuccess,
-					onError: function(response){vm.iscommit = false;}
+					onError: function(response){vm.isCommit = false;}
 				});
 			}			
 		}//E_提交下一步
