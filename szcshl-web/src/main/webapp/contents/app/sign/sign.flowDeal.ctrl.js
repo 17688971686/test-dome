@@ -10,6 +10,7 @@
         vm.title = "项目流程处理";       
         vm.model = {};
         vm.flow = {};
+        vm.work = {};
         vm.model.signid = $state.params.signid;	
         vm.flow.taskId = $state.params.taskId;			//流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
@@ -46,9 +47,6 @@
         }
         
         vm.commitBack = function(){
-        	vm.flow.back = {};
-        	vm.flow.back.activitiId = "FGLD_SP_SW";
-        	vm.flow.back.assignee = "张一帆"
         	flowSvc.rollBack(vm);       	//回退到上一个环节
         }              
         

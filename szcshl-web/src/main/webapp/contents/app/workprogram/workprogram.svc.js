@@ -149,5 +149,17 @@
 			}			
 		}//E_保存操作
 		
+		//S_selectExpert
+		function selectExpert(vm){
+			if(vm.work.id && vm.work.id != ''){
+				$state.go('expertReviewEdit', { workProgramId:vm.work.id});
+			}else{
+				common.alert({
+					vm:vm,
+					msg:"请先保存，再继续执行操作！"					
+				})
+			}
+		}//E_selectExpert
+		
 	}		
 })();

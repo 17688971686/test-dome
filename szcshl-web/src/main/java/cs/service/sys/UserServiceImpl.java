@@ -496,6 +496,9 @@ public class UserServiceImpl implements UserService {
 	public boolean curUserIsSuperLeader(UserDto checkUser) {
 		boolean isTrue = true;
 		isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector())?true:false;
+		if(isTrue){
+			return isTrue;
+		}
 		isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader())?true:false;
 		return isTrue;
 	}

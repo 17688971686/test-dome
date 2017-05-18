@@ -211,20 +211,20 @@
 					vm.flow.businessMap.A_USER_ID = $(this).val();				
 				});
 				return true;
-			}
-			else if(vm.flow.curNodeAcivitiId == "approval"){
+				
+			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" || vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
 				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted==9){
 					return true;
 				}else{
 					return false;
 				}
-			}else if(vm.flow.curNodeAcivitiId == "dispatch"){
+			}else if(vm.flow.curNode.activitiId == "FW_SQ"){
 				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
 					return true;
 				}else{
 					return false;
 				}
-			}else if(vm.flow.curNodeAcivitiId == "doFile"){
+			}else if(vm.flow.curNode.activitiId == "MFZR_GD"){
 				if(vm.model.filenum){
 					return true;
 				}else{
@@ -245,10 +245,13 @@
 				common.requestSuccess({
 					vm:vm,
 					response:response,
-					fn:function() {		
+					fn:function() {								
 						vm.work = response.data;	
+						console.log(response);
+						vm.flow.businessMap = {};
 						if(activitiId == "BZ_SP_GZAN1" || activitiId == "FGLD_SP_GZFA1"){
 							vm.flow.businessMap.M_WP_ID = vm.work.id;
+							$("#show_workprogram_a").click();
 						}else if(activitiId == "BZ_SP_GZAN2" || activitiId == "FGLD_SP_GZFA2"){
 							vm.flow.businessMap.A_WP_ID = vm.work.id;
 						}

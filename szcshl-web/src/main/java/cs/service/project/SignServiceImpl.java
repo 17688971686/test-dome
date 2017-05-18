@@ -82,13 +82,10 @@ public class SignServiceImpl implements SignService {
 	private RuntimeService runtimeService;
 	@Autowired
 	private DeptRepo deptRepo;
-	@Autowired
-	private OfficeUserRepo officeUserRepo;
 	
 	@Autowired
 	private OfficeUserService officeUserService;
-	@Autowired
-	private CompanyService companyService;
+
 	@Autowired
 	private CompanyRepo companyRepo;
 	@Override
