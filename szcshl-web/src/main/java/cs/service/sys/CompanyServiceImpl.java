@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.sys.Company;
 import cs.model.PageModelDto;
 import cs.model.sys.CompanyDto;
@@ -132,6 +133,13 @@ public class CompanyServiceImpl implements CompanyService{
 		
 		companyRepo.save(c);
 		logger.info(String.format("编辑单位，单位名:%s", companyDto.getCoName()));
+	}
+	@Override
+	public CompanyDto findByIdCompany(String id) {
+		Company com =	companyRepo.findById(id);
+		CompanyDto comDto = new CompanyDto();
+		BeanCopierUtils.copyProperties(com, comDto);
+		return comDto;
 	}
 
 }

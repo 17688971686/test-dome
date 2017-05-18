@@ -19,8 +19,6 @@
 		};		
 		return service;	
 		
-		
-		
 		function grid(vm) {
 
 			// Begin:dataSource
@@ -63,43 +61,49 @@
 					},  {
 						field : "coName",
 						title : "单位名称",
-						width : 200,						
+						width : 260,						
 						filterable : false
 					},
 					{
 						field : "coPhone",
 						title : "单位电话",
-						width : 200,						
+						width : 160,						
 						filterable : false
 					},
 					{
 						field : "coPC",
 						title : "邮编",
-						width : 200,						
+						width : 160,						
 						filterable : false
 					},
 					{
 						field : "coAddress",
 						title : "地址",
-						width : 200,						
+						width : 160,						
 						filterable : false
 					},
 					{
 						field : "coSite",
 						title : "网站",
-						width : 200,						
+						width : 160,						
+						filterable : false
+					},
+					{
+						field : "coFax",
+						title : "传真",
+						width : 160,
 						filterable : false
 					},
 					{
 						field : "coSynopsis",
 						title : "单位简介",
-						width : 200,						
+						width : 160,						
 						filterable : false
 					},
 					{
 						field : "coType",
 						title : "单位类型",
-						width : 200,						
+						width : 160,						
 						filterable : false
 					},
 					/*{
@@ -108,15 +112,11 @@
 						width : 200,						
 						filterable : false
 					},*/
-					{
-						field : "coFax",
-						title : "传真",
-						filterable : false
-					}, 
+					 
 					{
 						field : "",
 						title : "操作",
-						width : 280,
+						width : 200,
 						template:function(item){							
 							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
 							
@@ -141,7 +141,7 @@
 		
 		//Start 模糊查询
 		function queryConpany(vm){
-			alert("sdfs");
+			
 			vm.gridOptions.dataSource.read();	
 			console.log(vm.gridOptions.dataSource.read());
 		}
@@ -193,19 +193,17 @@
 //				})
 			}
 		}// end fun createcompany
-
 		
-
+		//start  getcompanyById
 		function getcompanyById(vm) {
 			var httpOptions = {
 				method : 'get',
-				url : common.format(url_company + "?$filter=id eq '{0}'", vm.id)
+				url : url_company +"/html/findByIdCompany",
+				params:{id:vm.id}
 			}
 			var httpSuccess = function success(response) {
-				vm.model = response.data.value[0];
-				if (vm.isUpdate) {
-					//initZtreeClient(vm);
-				}
+				vm.model=response.data;
+				console.log(vm.model);
 			}
 			
 			common.http({
@@ -214,7 +212,7 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-		}// end fun getcompanyById
+		}// end  getcompanyById
 		
 		function updatecompany(vm){
 			common.initJqValidation();			
@@ -222,9 +220,6 @@
 			if (isValid && vm.iscompanyExist == false) {
 				vm.isSubmit = true;
 				vm.model.id=vm.id;// id
-				
-			
-               
 				var httpOptions = {
 					method : 'put',
 					url : url_company,

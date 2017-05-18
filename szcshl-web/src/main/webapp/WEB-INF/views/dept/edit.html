@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/dept">部门</a></li>
+        <li><a href="#/dept">办事处</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="form" name="form">
@@ -25,21 +25,30 @@
                 <td></td>
             </tr>
             <tr>
-                <td class="formAlignRight">部门名称：</td>
+                <td class="formAlignRight">办事处名称：</td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.deptName" id="deptName" name="deptName"  data-val="true" data-val-required="必填"/>
                 </td>
                 <td><span data-valmsg-for="deptName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
+             <tr>
+                <td class="formAlignRight">办事处联系人：</td>
+                <td>
+                     <select ng-model="vm.model.deptOfficeId" id="deptOfficeId" name="deptOfficeId"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="o in vm.offiecs" ng-selected="vm.model.deptOfficeId == o.officeID"  value="{{o.officeID}}" >{{o.officeUserName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="deptUserName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
             <tr>
-                <td class="formAlignRight">部门地址：</td>
+                <td class="formAlignRight">办事处地址：</td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.address" id="address" name="address"  data-val="true" data-val-required="必填"/>
                 </td>
                 <td><span data-valmsg-for="address" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">部门类型：</td>
+                <td class="formAlignRight">办事处类型：</td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.deptType" id="deptType" name="deptType"  data-val="true" data-val-required="必填"/>
                 </td>

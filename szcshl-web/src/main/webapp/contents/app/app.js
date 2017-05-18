@@ -253,6 +253,21 @@
         	})
         	//end#fileRecord
         	
+        	//start #officeUser
+        	.state('officeUserList', {
+                url: '/officeUserList',
+                templateUrl: rootPath + '/officeUser/html/list.html',
+                controller: 'officeUserCtrl',
+                controllerAs: 'vm'
+            })
+        	.state('officeUserEdit', {
+            	url: '/officeUserEdit/:officeID',
+            	templateUrl: rootPath + '/officeUser/html/edit.html',
+            	controller: 'officeUserEditCtrl',
+            	controllerAs: 'vm'
+        	})
+        	// end #officeUser
+        	
         	//begin#dept
         	.state('listDept', {
                 url: '/listDept',
@@ -265,8 +280,15 @@
             	templateUrl: rootPath + '/dept/html/edit.html',
             	controller: 'deptEditCtrl',
             	controllerAs: 'vm'
-        	})
+        	}).state('deptOfficeUser', {
+                url: '/deptOfficeUser/:deptId',
+                templateUrl: rootPath + '/dept/html/listOfficeUser.html',
+                controller: 'deptOfficeUserCtrl',
+                controllerAs: 'vm'
+            })
         	//end#dept
+        	
+        	
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         $rootScope.$state = $state;

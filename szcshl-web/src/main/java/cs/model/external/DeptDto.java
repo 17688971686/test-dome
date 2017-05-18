@@ -1,5 +1,7 @@
 package cs.model.external;
 
+import java.util.List;
+
 import cs.model.BaseDto;
     
 /**
@@ -11,10 +13,13 @@ public class DeptDto extends BaseDto {
 
     private String deptId;
     private String deptName;
+    private String deptUserName;
+    private String deptOfficeId;
     private String address;
     private String deptType;
     private String status;
-
+    private List<OfficeUserDto> offices;
+    
     public DeptDto() {
     }
   
@@ -53,5 +58,33 @@ public class DeptDto extends BaseDto {
     public void setStatus(String status) {
         this.status = status;
     }
+
+	public String getDeptUserName() {
+		return deptUserName;
+	}
+
+	public void setDeptUserName(String deptUserName) {
+		this.deptUserName = deptUserName;
+	}
+
+	public List<OfficeUserDto> getOffices() {
+		return offices;
+	}
+
+	public void setOffices(List<OfficeUserDto> offices) {
+		this.offices = offices;
+	}
+
+	public String getDeptOfficeId() {
+		return deptOfficeId;
+	}
+
+	public void setDeptOfficeId(String deptOfficeId) {
+		this.deptOfficeId = deptOfficeId;
+	}
+
+	
+	
+    
 
 }

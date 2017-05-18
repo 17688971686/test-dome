@@ -16,4 +16,6 @@ public interface CompanyService {
 	void deleteCompanys(String[] ids);
 	
 	void updateCompany(CompanyDto companyDto);
+
+	CompanyDto findByIdCompany(String id);
 }

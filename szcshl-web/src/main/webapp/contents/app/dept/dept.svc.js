@@ -12,18 +12,19 @@
             getDeptById: getDeptById,
             createDept: createDept,
             deleteDept: deleteDept,
-            updateDept: updateDept
+            updateDept: updateDept,
         };
 
         return service;
 
         // begin#updateDept
         function updateDept(vm) {
+        	alert(vm.model.deptOfficeId);
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-                vm.model.id = vm.id;// id
+               // vm.model.deptId = vm.deptId;// id
 
                 var httpOptions = {
                     method: 'put',
@@ -143,7 +144,12 @@
                 params:{deptId:vm.deptId}
             };
             var httpSuccess = function success(response) {
+                if(response.data.offices){
+                	vm.offices ={};
+                	vm.offiecs = response.data.offices;
+                }
                 vm.model = response.data;
+               // console.log(vm.model);
             };
 
             common.http({
@@ -153,15 +159,16 @@
                 success: httpSuccess
             });
         }
-
+        
+        
         // begin#grid
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_dept),
+                transport: common.kendoGridConfig().transport(url_dept+"/fingByOData"),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
+                    id: "deptId",
                     fields: {
                         createdDate: {
                             type: "date"
@@ -192,13 +199,19 @@
                 },
                 {
                     field: "deptName",
-                    title: "部门名称",
+                    title: "办事处名称",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "deptUserName",
+                    title: "办事处联系人",
                     width: 100,
                     filterable: true
                 },
                 {
                     field: "address",
-                    title: "地址",
+                    title: "办事处地址",
                     width: 100,
                     filterable: false
                 },
@@ -231,7 +244,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.deptId + "')", item.deptId);
+                            "vm.del('" + item.deptId + "')", item.deptId,item.deptId);
                     }
                 }
             ];

@@ -43,7 +43,6 @@
             }   
        }
         vm.queryConpany =function(){
-        	alert("ssss");
         	companySvc.queryConpany(vm)
         }
         activate();

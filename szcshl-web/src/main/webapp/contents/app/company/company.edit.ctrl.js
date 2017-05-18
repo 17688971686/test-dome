@@ -22,10 +22,8 @@
         	companySvc.createcompany(vm);
         };
         vm.update = function () {
-        
         	companySvc.updatecompany(vm);
         };
-        
 
         activate();
         function activate() {

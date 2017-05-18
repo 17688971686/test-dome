@@ -1,7 +1,7 @@
 package cs.controller.external;
 
 import java.text.ParseException;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.domain.external.OfficeUser;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
+import cs.model.external.OfficeUserDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.service.external.DeptService;
 
 @Controller
-@RequestMapping(name = "部门", path = "dept")
+@RequestMapping(name = "办事处", path = "dept")
 public class DeptController {
 
 	String ctrlName = "dept";
@@ -31,13 +34,47 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @RequiresPermissions("dept##get")
-    @RequestMapping(name = "获取数据", path = "", method = RequestMethod.GET)
+    @RequiresPermissions("dept#fingByOData#post")
+    @RequestMapping(name = "获取数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<DeptDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<DeptDto> deptDtos = deptService.get(odataObj);	
         return deptDtos;
+    }
+    
+    @RequiresPermissions("dept#getDeptOfficeUsers#post")	
+   	@RequestMapping(name = "获取用户所在办事处", path = "getDeptOfficeUsers", method = RequestMethod.POST)
+    public @ResponseBody PageModelDto<OfficeUserDto> getDeptOfficeUser(@RequestParam String deptId){
+    	return deptService.getDeptOfficeUsers(deptId);
+    }
+    
+	@RequiresPermissions("org#addOfficeUser#post")	
+	@RequestMapping(name = "添加人员到办事处", path = "addOfficeUser", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.CREATED)
+    public void  postOfficeUserToDept(@RequestParam String deptId,@RequestParam String officeId){
+		deptService.addOfficeUserToDept(deptId,officeId);
+    }
+    
+	@RequiresPermissions("dept#deleteOfficeUsers#delete")
+	@RequestMapping(name = "从办事处移除用户", path = "deleteOfficeUsers", method = RequestMethod.DELETE)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void deleteOfficeUserFromDept(@RequestParam String deptId,@RequestParam String officeId){
+		String [] ids =officeId.split(",");
+		if(ids.length >1){
+			deptService.removeOfficeUserDepts(ids,deptId);
+		}else{
+			deptService.removeOfficeUserDept(officeId,deptId);
+		}
+		
+	}
+	
+    @RequiresPermissions("dept#NotInoDeptfficeUsers#post")	
+	@RequestMapping(name = "获取非用户所在办事处", path = "NotInoDeptfficeUsers", method = RequestMethod.POST)
+    public @ResponseBody PageModelDto<OfficeUserDto> getNotInofficeUsers(@RequestParam String deptId,HttpServletRequest request) throws ParseException{
+    	ODataObj odataObj = new ODataObj(request);
+    	PageModelDto<OfficeUserDto> officeDto= deptService.getOfficeUsersNotInDept(deptId, odataObj);
+    	return officeDto;
     }
 
     @RequiresPermissions("dept##post")
@@ -78,5 +115,10 @@ public class DeptController {
     public String edit() {
         return ctrlName+"/edit";
     }
+    @RequiresPermissions("dept#html/listOfficeUser#get")
+	@RequestMapping(name = "办事处人员列表", path = "html/listOfficeUser", method = RequestMethod.GET)
+	public String listUser() {
+		return ctrlName + "/listOfficeUser";
+	}
 
 }

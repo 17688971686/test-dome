@@ -19,7 +19,8 @@
         	workprogramSvc.findUsersByOrgId(vm,type);
         }
         
-        vm.create = function () {       	
+        vm.create = function () {  
+        	alert(1);
         	workprogramSvc.createWP(vm);
         };  
             

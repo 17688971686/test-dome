@@ -136,8 +136,8 @@
              <tr>
                 <td class="formAlignRight">所在部门：<span class="required">*</span> </td>
                 <td>
-                     <select ng-model="vm.model.orgId" id="orgId" name="vm.model.orgId"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.org" value="{{x.id}}" >{{x.name}}</option>
+                     <select ng-model="vm.model.orgId" id="orgId" name="orgId"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.org" ng-selected="vm.model.orgId == x.id"  value="{{x.id}}" >{{x.name}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>

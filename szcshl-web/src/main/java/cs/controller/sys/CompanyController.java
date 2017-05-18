@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -35,32 +36,40 @@ public class CompanyController {
 		PageModelDto<CompanyDto> comDtos=companyService.get(oDataObj);
 		return comDtos;
 	}
+	
+	@RequiresPermissions("org#html/findByIdCompany#get")	
+	@RequestMapping(name = "根据ID获取单位数据", path = "html/findByIdCompany", method = RequestMethod.GET)
+	public @ResponseBody CompanyDto findByIdCompany(@RequestParam(required = true)String id){
+		CompanyDto comDto =	companyService.findByIdCompany(id);
+		return comDto;
+	}
+	
+	
 	//begin#html
 	@RequiresPermissions("company#html/list#get")
 	@RequestMapping(name = "单位列表", path = "html/list" ,method = RequestMethod.GET)
 	public String list(){
-			
 		return ctrlName +"/list";
 	}
+	
 	@RequiresPermissions("company#html/edit#get")
 	@RequestMapping(name = "单位编辑页面", path = "html/edit" ,method = RequestMethod.GET)
 	public String edit(){
-			
 		return ctrlName + "/edit";
 	}
+	
 	// end#html
 	@RequiresPermissions("company##post")
 	@RequestMapping(name = "创建单位", path = "",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void post(@RequestBody CompanyDto companyDto){
-		
 		companyService.createCompany(companyDto);
 	}
+	
 	@RequiresPermissions("company##put")
 	@RequestMapping(name = "更新单位" ,path = "" ,method =RequestMethod.PUT)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
 	public void put(@RequestBody CompanyDto companyDto){
-		
 		companyService.updateCompany(companyDto);
 	}
 	
@@ -68,11 +77,8 @@ public class CompanyController {
 	@RequestMapping(name = "删除单位" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
 	public void delete (@RequestBody String id){
-		
 		String [] ids=id.split(",");
-		System.out.println(ids+"fffffffffffffffffffff");
 		if(ids.length>1){
-			
 			companyService.deleteCompanys(ids);
 		}else{
 			companyService.deleteCompany(id);

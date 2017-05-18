@@ -12,6 +12,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +26,16 @@ import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.external.Dept;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.FileRecord;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.domain.sys.Company;
 import cs.domain.sys.Org;
 import cs.model.PageModelDto;
+import cs.model.external.DeptDto;
+import cs.model.external.OfficeUserDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
@@ -37,11 +43,16 @@ import cs.model.sys.OrgDto;
 import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.external.DeptRepo;
+import cs.repository.repositoryImpl.external.OfficeUserRepo;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.CompanyRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.service.external.OfficeUserService;
+import cs.service.sys.CompanyService;
 import cs.service.sys.UserService;
 
 @Service
@@ -67,8 +78,17 @@ public class SignServiceImpl implements SignService {
 	private TaskService taskService;
 	@Autowired
 	private RuntimeService runtimeService;
-
+	@Autowired
+	private DeptRepo deptRepo;
+	@Autowired
+	private OfficeUserRepo officeUserRepo;
 	
+	@Autowired
+	private OfficeUserService officeUserService;
+	@Autowired
+	private CompanyService companyService;
+	@Autowired
+	private CompanyRepo companyRepo;
 	@Override
 	@Transactional
 	public void createSign(SignDto signDto) { 
@@ -164,26 +184,42 @@ public class SignServiceImpl implements SignService {
 		}		
 		map.put("sign", signDto);
 		
-		List<OrgDto> orgDtoList = new ArrayList<OrgDto>();
-		List<Org> orgList = orgRepo.findAll();
-		if(orgList != null){
-			orgList.forEach( o ->{
-				OrgDto orgDto = new OrgDto();
-				BeanCopierUtils.copyProperties(o, orgDto);
-				orgDtoList.add(orgDto);
-			});
-			map.put("orgList", orgDtoList);
-		}
-				
-		if(Validate.isString(sign.getMaindepetid())){
-			List<UserDto> userList = userService.findUserByOrgId(sign.getMaindepetid());
-			map.put("mainUserList", userList);
-		}
-		if(Validate.isString(sign.getAssistdeptid())){
-			List<UserDto> userList = userService.findUserByOrgId(sign.getAssistdeptid());
-			map.put("assistUserList", userList);
-		}
 		
+		//获取办事处所有信息
+		List<DeptDto> deptDtolist = new ArrayList<DeptDto>();
+		List<Dept> deptlist =deptRepo.findAll();
+		if(deptlist !=null){
+			deptlist.forEach(o ->{
+				DeptDto deptDto = new DeptDto();
+				BeanCopierUtils.copyProperties(o, deptDto);
+				deptDtolist.add(deptDto);
+			});
+			map.put("deptlist", deptDtolist);
+		}
+		//主办事处
+		if(Validate.isString(sign.getMaindepetid())){
+			List<OfficeUserDto> officeList =officeUserService.findOfficeUserByDeptId(sign.getMaindepetid());
+			map.put("mainOfficeList", officeList);
+		}
+		//协办事处
+		if(Validate.isString(sign.getAssistdeptid())){
+			List<OfficeUserDto> officeList =officeUserService.findOfficeUserByDeptId(sign.getAssistdeptid());
+			map.put("assistOfficeList", officeList);
+		}
+		//编制单位查询
+		Criteria criteria =	companyRepo.getSession().createCriteria(Company.class);
+		criteria.add(Restrictions.eq("coType", "编制单位"));
+		List<Company> designcomlist = criteria.list();
+		if(designcomlist!=null){
+			map.put("designcomlist", designcomlist);
+		}
+		//建设单位查询
+		Criteria c =companyRepo.getSession().createCriteria(Company.class);
+		c.add(Restrictions.eq("coType", "建设单位"));
+		List<Company> builtcomlist = c.list();
+		if(builtcomlist!=null){
+			map.put("builtcomlist", builtcomlist);
+		}
 		return map;
 	}
 

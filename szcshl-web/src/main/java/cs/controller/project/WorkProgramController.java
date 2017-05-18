@@ -25,8 +25,8 @@ public class WorkProgramController {
 	private WorkProgramService workProgramService;
 	
 
-	@RequiresPermissions("workprogram##post")
-	@RequestMapping(name = "工作方案提交", path = "",method=RequestMethod.POST)	
+	@RequiresPermissions("workprogram#addWork#post")
+	@RequestMapping(name = "工作方案提交", path = "addWork",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@ResponseBody
 	public void post(@RequestBody  WorkProgramDto workProgramDto) throws Exception  {

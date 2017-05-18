@@ -1,0 +1,71 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/officeUserList">添加人员</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/officeUserList"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit"
+                    ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建
+            </button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
+                    ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
+            </button>
+        </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">办事处联系人：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officeUserName"
+                           id="officeUserName" name="officeUserName"  />
+                </td>
+                <td><span data-valmsg-for="officeUserName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">所在办事处：</td>
+                <td>
+                     <select ng-model="vm.model.departId" id="departId" name="departId"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.depts" ng-selected="vm.model.departId == x.deptId"  value="{{x.deptId}}" >{{x.deptName}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="officeUserName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">电话：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officePhone"
+                           id="officePhone" name="officePhone"  />
+                </td>
+                <td><span data-valmsg-for="officePhone" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">邮件：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officeEmail"
+                           id="officeEmail" name="officeEmail"  />
+                </td>
+                <td><span data-valmsg-for="officeEmail" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">描述：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officeDesc"
+                           id="officeDesc" name="officeDesc"  />
+                </td>
+                <td><span data-valmsg-for="officeDesc" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>

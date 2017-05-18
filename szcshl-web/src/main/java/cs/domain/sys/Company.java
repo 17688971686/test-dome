@@ -40,7 +40,7 @@ public class Company extends DomainBase{
 	@Column(columnDefinition="varchar(255)")
 	private String coDeptName;//直属部门名称
 	@Column(columnDefinition="varchar(255)")
-	private String coType;//单位类型
+	private String coType;//单位类型  0:表示建设单位，1:表示编制单位
 	
 //	private String coFirst; //上级单位
 //	private Set<Department> department = new HashSet<Department>();

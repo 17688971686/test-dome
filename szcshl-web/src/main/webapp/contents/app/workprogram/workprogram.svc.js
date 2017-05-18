@@ -119,16 +119,18 @@
 		
 		//S_保存操作
 		function createWP(vm){
+			alert(vm.work);
+			console.log(vm.work);
 			vm.work.studyBeginTime = $("#studyBeginTime").val();
 			vm.work.studyEndTime = $("#studyEndTime").val();
 			vm.work.suppLetterDate = $("#suppLetterDate").val();
 			common.initJqValidation($("#work_program_form"));
 			var isValid = $("#work_program_form").valid();
-			if(isValid){
+		//	if(isValid){
 				vm.commitProcess = true;
 				var httpOptions = {
 						method : 'post',
-						url : rootPath+"/workprogram",
+						url : rootPath+"/workprogram/addWork",
 						data : vm.work
 					}
 				var httpSuccess = function success(response) {	
@@ -155,7 +157,7 @@
 					httpOptions:httpOptions,
 					success:httpSuccess
 				});			
-			}			
+		//	}			
 		}//E_保存操作
 		
 	}		

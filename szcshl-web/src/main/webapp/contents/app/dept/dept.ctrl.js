@@ -7,7 +7,7 @@
 
     function dept($location, deptSvc) {
         var vm = this;
-        vm.title = '部门列表';
+        vm.title = '办事列表';
 
         vm.del = function (id) {
             common.confirm({
