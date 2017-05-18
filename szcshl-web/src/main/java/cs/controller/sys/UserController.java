@@ -1,7 +1,9 @@
 package cs.controller.sys;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.ICurrentUser;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -76,6 +79,17 @@ public class UserController {
         userService.createUser(userDto);
     }
 
+    @RequestMapping(name = "部门编辑角色初始化", path = "initRoleUsers", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,List<UserDto>> initRoleUsers() {
+    	Map<String,List<UserDto>> resultMap = new HashMap<String,List<UserDto>>(3);
+    	resultMap.put("DEPT_LEADER", userService.findUserByRoleName(EnumFlowNodeGroupName.DEPT_LEADER.getValue()));
+    	resultMap.put("VICE_DIRECTOR", userService.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
+    	resultMap.put("DIRECTOR", userService.findUserByRoleName(EnumFlowNodeGroupName.DIRECTOR.getValue()));
+    	
+    	return resultMap;
+    }
+    
     @RequiresPermissions("user##delete")
     @RequestMapping(name = "删除用户", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

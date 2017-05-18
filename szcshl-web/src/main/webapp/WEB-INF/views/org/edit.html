@@ -95,34 +95,24 @@
             </tr>
             
              <tr>
-                <td class="formAlignRight">部长： <span class="required">*</span></td>
+                <td class="formAlignRight">部门负责人： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgDirector" id="orgDirector" name="orgDirector" class="form-control input-sm " data-val="true" data-val-required="必填" >
-						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgDirector == x.id" value="{{x.id}}" >{{x.displayName}}</option>
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.OrgDirectorUsers" ng-selected="vm.model.orgDirector == x.id" value="{{x.id}}" >{{x.displayName}}</option>
 					</select>
                 </td>  
                 <td>
                 	<span data-valmsg-for="orgDirector" data-valmsg-replace="true" class="errors"></span>
                 </td>              
-            </tr>
-            <tr>
-                <td class="formAlignRight">副部长： <span class="required">*</span></td>
-                <td>
-                    <select ng-model="vm.model.orgAssistant" id="orgAssistant" name="orgAssistant"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgAssistant == x.id" value="{{x.id}}" >{{x.displayName}}</option>
-					</select>
-                </td>
-                <td>
-                	<span data-valmsg-for="orgAssistant" data-valmsg-replace="true" class="errors"></span>
-                </td>
-            </tr>
+            </tr>          
              <tr>
                 <td class="formAlignRight">主任： <span class="required">*</span></td>
-                <td>
-                {{vm.model.orgMLeaderName}}
-                    <!-- <select ng-model="vm.model.orgMLeader" id="orgMLeader" name="orgMLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgMLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>
-					</select> -->
+                <td>               
+                    <select ng-model="vm.model.orgMLeader" id="orgMLeader" name="orgMLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.orgMLeaderUsers" ng-selected="vm.model.orgMLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>
+					</select> 
                 </td>
                 <td>
                 	<span data-valmsg-for="orgMLeader" data-valmsg-replace="true" class="errors"></span>
@@ -132,7 +122,8 @@
                 <td class="formAlignRight">分管副主任： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgSLeader" id="orgSLeader" name="orgSLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.userDtos" ng-selected="vm.model.orgSLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>
+						<option value="">请选择</option>
+						<option ng-repeat="x in vm.orgSLeaderUser" ng-selected="vm.model.orgSLeader == x.id" value="{{x.id}}">{{x.displayName}}</option>
 					</select>
                 </td>
                 <td>

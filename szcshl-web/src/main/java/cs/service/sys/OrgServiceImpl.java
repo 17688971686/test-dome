@@ -254,7 +254,7 @@ public class OrgServiceImpl implements OrgService {
 		Org org = orgRepo.findById(id);
 		OrgDto orgDto = new OrgDto();	
 		BeanCopierUtils.copyProperties(org, orgDto);
-		List<User> userList = org.getUsers();
+		/*List<User> userList = org.getUsers();
 		if(userList != null && userList.size() > 0){
 			List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
 			userList.forEach(u ->{
@@ -278,7 +278,7 @@ public class OrgServiceImpl implements OrgService {
 				});
 			}
 			orgDto.setUserDtos(userDtoList);
-		}
+		}*/
 		return orgDto;
 	}
 

@@ -16,11 +16,11 @@
 			updateOrg:updateOrg,
 			deleteOrg:deleteOrg	,
 			getCompany : getCompany,
+			initRoleUsers: initRoleUsers //初始化角色数据
 		};		
 		return service;	
 		
-		
-		
+				
 		function grid(vm) {
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
@@ -211,23 +211,16 @@
 					success:httpSuccess
 				});
 		}
-		function getOrgById(vm) {
-			
+		
+		function getOrgById(vm) {			
 			var httpOptions = {
 				method : 'get',
 				url :  url_org + "/html/getOrgById",
 				params:{id:vm.id}
 			}
-			var httpSuccess = function success(response) {															
-				if(response.data.userDtos){
-					vm.userDtos = {}
-					vm.userDtos = response.data.userDtos;
-					
-				}
-				vm.model = response.data;
-				
-			}
-			
+			var httpSuccess = function success(response) {																			
+				vm.model = response.data;				
+			}			
 			common.http({
 				vm:vm,
 				$http:$http,
@@ -276,11 +269,6 @@
 					success:httpSuccess
 				});
 
-			} else {
-//				common.alert({
-//				vm:vm,
-//				msg:"您填写的信息不正确,请核对后提交!"
-//			})
 			}
 		}// end fun updateorg
 		
@@ -292,8 +280,7 @@
                 data:id
                 
             }
-            var httpSuccess = function success(response) {
-                
+            var httpSuccess = function success(response) {                
                 common.requestSuccess({
 					vm:vm,
 					response:response,
@@ -313,8 +300,30 @@
 			});
         }// end fun deleteorg
 		
-		
-		
+		//S_initRoleUsers
+		function initRoleUsers(vm){
+			var httpOptions = {
+                method: 'get',
+                url:rootPath +'/user/initRoleUsers'               
+            }
+            var httpSuccess = function success(response) {	                
+                common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function () {	
+						vm.orgMLeaderUsers = response.data.DIRECTOR;
+						vm.orgSLeaderUser = response.data.VICE_DIRECTOR;
+						vm.OrgDirectorUsers = response.data.DEPT_LEADER;
+	                }						
+				});
+            }
+            common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}//E_initRoleUsers
 		
 
 	}

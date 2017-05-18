@@ -25,10 +25,10 @@
 
         activate();
         function activate() {
+        	orgSvc.initRoleUsers(vm);
         	if (vm.isUpdate) {
         		orgSvc.getOrgById(vm);
-            }        	
-        	//orgSvc.getCompany(vm);
+            }        	        	
         }
     }
 })();
