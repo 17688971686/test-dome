@@ -1,10 +1,12 @@
 package cs.controller.project;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.junit.runners.Parameterized.Parameters;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.google.gson.JsonObject;
 
 import cs.domain.project.Sign;
 import cs.model.expert.ExpertDto;
@@ -48,6 +52,12 @@ public class DispatchDocController {
 		dispatchDocService.mergeDispa(signId,linkSignId);
 	}
 	
+	@RequiresPermissions("dispatch##post")
+	@RequestMapping(name = "生成文件字号", path = "fileNum",method=RequestMethod.POST)	
+	public @ResponseBody String  getFileNum(@RequestParam String dispaId) throws Exception  {
+		String fileNum=dispatchDocService.fileNum(dispaId);
+		return fileNum;
+	}
 	
 	@RequiresPermissions("dispatch##getSign##POST")	
 	@RequestMapping(name = "获取待选项目", path = "getSign", method = RequestMethod.GET)

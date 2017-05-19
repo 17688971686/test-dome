@@ -24,6 +24,7 @@ import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.sys.UserDto;
@@ -55,7 +56,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		MergeDispa mergeDispa=mergeDispaRepo.findById(bussnessId);
 		List<SignDto> signDtoList=null;
 		String linkSignId="";
-		if(mergeDispa!=null&&mergeDispa.equals("")){
+		if(mergeDispa!=null&&!mergeDispa.equals("")){
 			
 			linkSignId=mergeDispa.getLinkSignId();
 			signDtoList= new ArrayList<>();
@@ -84,18 +85,27 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	//获取待选项目
 	@Override
 	public List<SignDto> get(String linkSignId) {
+		List<SignDto> signDtoList=new ArrayList<>();
 		List<Sign> list=null;
-		if(!linkSignId.equals("")){
+		if(linkSignId.equals("")){
 			 list=signRepo.findAll();
 		}else{
-			String hql=" from sign where signid not in("+linkSignId+")";
+			String[] linkSids=linkSignId.split(",");
 			HqlBuilder hqlBuilder= HqlBuilder.create();
-			hqlBuilder.append(hql);
+			hqlBuilder.append(" from "+Sign.class.getSimpleName()+" where "+Sign_.signid.getName()+" not in(");
+			for (int i=0;i<linkSids.length;i++) {
+				if(i==0){
+					hqlBuilder.append(":linkSids"+i);
+					hqlBuilder.setParam("linkSids"+i, linkSids[i]);
+				}else{
+					hqlBuilder.append(",:linkSids"+i);
+					hqlBuilder.setParam("linkSids"+i, linkSids[i]);
+				}	
+			}
+			hqlBuilder.append(")");
 			list=signRepo.findByHql(hqlBuilder);
-		}
-		List<SignDto> signDtoList=new ArrayList<>();
+	}
 		for (Sign sign : list) {
-				
 					SignDto signDto=new SignDto();
 					if(!Validate.isString(sign.getIsDispatchCompleted())||sign.getIsDispatchCompleted().equals("0")){
 						BeanCopierUtils.copyProperties(sign, signDto);
@@ -107,7 +117,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		}
 		
 		return signDtoList;
-	}		
+	}
 	
 	//获取已选项目
 	@Override
@@ -147,6 +157,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		mergeDispaRepo.save(mergeDispa);
 		
 		//mergeDispaServiceImpl.mergeProject(dispatchDocDto);
+	}
+	//生成文件字号
+	@Override
+	@Transactional
+	public String fileNum(String dispaId){
+		String fileNum=NumIncreaseUtils.getFileNo();
+		DispatchDoc dispa=dispatchDocRepo.findById(dispaId);
+		dispa.setFileNum(fileNum);
+		dispatchDocRepo.save(dispa);
+		dispa.getSign().setDocnum(fileNum);
+		return fileNum;
 	}
 	
 	//保存发文拟稿
@@ -242,7 +263,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				dispatch.setOrgId(curUser.getOrgDto().getId());
 				dispatchTodispatchDto(dispatch,dispatchDto);
 				dispatchDto.setDraftDate(DateUtils.convertDateToString(now));
-				dispatchDto.setFileNum(NumIncreaseUtils.getFileNo());
 			//}
 		}
 		dispatchDto.setSignId(signId);

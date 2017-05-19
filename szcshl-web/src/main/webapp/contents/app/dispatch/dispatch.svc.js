@@ -13,9 +13,66 @@
 			chooseProject : chooseProject,			     //选择待选项目
 			getsign : getsign,							 //显示待选项目
 			cancelProject : cancelProject,				 //取消选择
-			mergeDispa : mergeDispa						 //合并发文
+			mergeDispa : mergeDispa,						 //合并发文
+			fileNum : fileNum
 		};
 		return service;			
+		
+		function fileNum(vm){
+			if(!vm.dispatchDoc.id){
+				common.alert({
+					vm:vm,
+					msg:"请先保存再生成文件字号",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}
+			if(vm.dispatchDoc.fileNum){
+				common.alert({
+					vm:vm,
+					msg:"已生成文件字号",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}
+			
+			vm.isSubmit=true;
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/dispatch/fileNum",
+					params:{dispaId:vm.dispatchDoc.id}
+				}
+			
+			var httpSuccess = function success(response) {	
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.dispatchDoc.fileNum=response.data;	
+						vm.isSubmit=false;
+						common.alert({ 
+							vm : vm,
+							msg : "操作成功"
+						})							
+					}
+				
+				});
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}
+		
 		
 		// begin#gotoWPage
 		function gotoMergePage(vm) {
@@ -119,7 +176,7 @@
 		function saveDispatch(vm){
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
-			if(isValid){
+			//if(isValid){
 				vm.dispatchDoc.proofreadName=$("#proofreadId").find("option:selected").text();
 				vm.dispatchDoc.draftDate=$("#draftDate").val();
 				vm.dispatchDoc.dispatchDate=$("#dispatchDate").val();
@@ -154,7 +211,7 @@
 					onError: function(response){vm.saveProcess = false;}
 				});
 				initDispatchData(vm);
-			}
+			//}
 		}//E_保存
 		
 		//begin##chooseProject
@@ -170,10 +227,9 @@
 			 }else{
 				 idStr=ids.join(',');
 			 }
-			 console.log(idStr);
 			 vm.linkSignId=idStr;
 			 getselectedSign(vm);
-			 getSign(vm);
+			 getsign(vm);
 		}
 		//end##chooseProject
 		
@@ -242,6 +298,7 @@
 		
 		//begin##getsign
 		function getsign(vm){
+			console.log(vm.linkSignId);
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/dispatch/getSign",

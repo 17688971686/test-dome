@@ -12,7 +12,7 @@
         vm.dispatchDoc = {};
         vm.dispatchDoc.signId = $state.params.signid;
         //创建发文
-        vm.linkSignId={};
+        vm.linkSignId="";
         vm.create = function(){
         	dispatchSvc.saveDispatch(vm);
         }
@@ -71,6 +71,11 @@
         //确定合并
         vm.mergeDispa=function(){
         	dispatchSvc.mergeDispa(vm);
+        }
+        
+        //生成文件字号
+        vm.fileNum=function(){
+        	dispatchSvc.fileNum(vm);
         }
         activate();
         function activate() {

@@ -14,5 +14,6 @@ public interface DispatchDocService {
 	 List<SignDto> getSignbyIds(String[] ids);
 	 void mergeDispa(String signId,String linkSignId);
 	 Map<String,Object> getSeleSignBysId(String bussnessId);
+	 String fileNum(String dispaId);
 
 }

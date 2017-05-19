@@ -277,6 +277,9 @@
                     fields: {
                         createdDate: {
                             type: "date"
+                        },
+                        modifiedDate: {
+                        	type: "date"
                         }
                     }
                 }),

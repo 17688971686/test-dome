@@ -221,9 +221,11 @@
 			}
 			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1"){
 				vm.flow.businessMap.M_WP_ID = vm.work.id;
+				return true;
 			}
 			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
 				vm.flow.businessMap.A_WP_ID = vm.work.id;
+				return true; 
 			}			
 			else if(vm.flow.curNode.activitiId == "FW_SQ"){
 				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
@@ -243,6 +245,7 @@
 		
 		//S_getChargeWorkProgram
 		function getChargeWorkProgram(vm,activitiId){
+			vm.flow.businessMap = {};
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/workprogram/html/initWorkBySignId",
