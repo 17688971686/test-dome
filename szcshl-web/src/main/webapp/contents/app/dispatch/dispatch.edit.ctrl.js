@@ -11,10 +11,13 @@
 
         vm.dispatchDoc = {};
         vm.dispatchDoc.signId = $state.params.signid;
-        //alert(vm.dispatchDoc.dispatchWay);
+        //创建发文
+        vm.linkSignId={};
         vm.create = function(){
         	dispatchSvc.saveDispatch(vm);
         }
+        
+        //核减（增）/核减率（增）计算
         vm.count=function(){
         	var declareValue=vm.dispatchDoc.declareValue;
         	var authorizeValue=vm.dispatchDoc.authorizeValue;
@@ -26,6 +29,49 @@
         	}
         }
         
+        //选择发文方式
+        vm.isSelect=function(){
+        	var selectValue=$("#dispatchWay").find("option:selected").text();
+        	if(selectValue=="合并发文"){
+        		$("#mergeOptions").css("visibility","visible");
+        		var isCheck = $("#mainproject").attr("checked");
+        		console.log(isCheck);
+        		if (isCheck) {
+        			$("#linkbtn").css("visibility","visible");
+        		}else{
+        			$("#linkbtn").css("visibility","hidden");
+        		}
+        	}else{
+        		$("#mergeOptions").css("visibility","hidden");
+        		
+        	}
+        	
+        }
+        
+        //打开合并页面
+        vm.gotoMergePage=function(){
+        	dispatchSvc.gotoMergePage(vm);
+        }
+        
+        //选择待选项目
+        vm.chooseProject=function(){
+        	dispatchSvc.chooseProject(vm);
+        }
+        
+        //取消选择
+        vm.cancelProject=function(){
+        	dispatchSvc.cancelProject(vm);
+        }
+        
+        //关闭窗口
+        vm.onClose=function(){
+        	window.parent.$("#mwindow").data("kendoWindow").close();
+        }
+        
+        //确定合并
+        vm.mergeDispa=function(){
+        	dispatchSvc.mergeDispa(vm);
+        }
         activate();
         function activate() {
         	 kendo.culture("zh-CN");

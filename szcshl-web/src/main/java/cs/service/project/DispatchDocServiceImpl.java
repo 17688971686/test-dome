@@ -1,6 +1,7 @@
 package cs.service.project;
 
-import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,17 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
+import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.model.project.DispatchDocDto;
+import cs.model.project.SignDto;
 import cs.model.sys.UserDto;
+import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.UserService;
 
 @Service
@@ -38,14 +45,119 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	private UserService userService;
 	@Autowired
 	private SignRepo signRepo;
-
+	@Autowired
+	private MergeDispaRepo mergeDispaRepo;
+	
+	//初始化页面获取已选项目
+	@Override
+	public Map<String,Object> getSeleSignBysId(String bussnessId){
+		Map<String,Object> map=new HashMap<>();
+		MergeDispa mergeDispa=mergeDispaRepo.findById(bussnessId);
+		List<SignDto> signDtoList=null;
+		String linkSignId="";
+		if(mergeDispa!=null&&mergeDispa.equals("")){
+			
+			linkSignId=mergeDispa.getLinkSignId();
+			signDtoList= new ArrayList<>();
+			String [] ids=linkSignId.split(",");
+			
+			for (String id : ids) {
+				
+				if(Validate.isString(id)){
+					
+					SignDto signDto=new SignDto();
+					Sign sign=signRepo.findById(id);
+					BeanCopierUtils.copyProperties(sign, signDto);
+					signDto.setCreatedDate(sign.getCreatedDate());
+					signDto.setModifiedDate(sign.getModifiedDate());
+					signDtoList.add(signDto);
+				}
+			}
+			
+		}
+		map.put("signDtoList", signDtoList);
+		map.put("linkSignId", linkSignId);
+		return map;
+	}
+	
+	
+	//获取待选项目
+	@Override
+	public List<SignDto> get(String linkSignId) {
+		List<Sign> list=null;
+		if(!linkSignId.equals("")){
+			 list=signRepo.findAll();
+		}else{
+			String hql=" from sign where signid not in("+linkSignId+")";
+			HqlBuilder hqlBuilder= HqlBuilder.create();
+			hqlBuilder.append(hql);
+			list=signRepo.findByHql(hqlBuilder);
+		}
+		List<SignDto> signDtoList=new ArrayList<>();
+		for (Sign sign : list) {
+				
+					SignDto signDto=new SignDto();
+					if(!Validate.isString(sign.getIsDispatchCompleted())||sign.getIsDispatchCompleted().equals("0")){
+						BeanCopierUtils.copyProperties(sign, signDto);
+						signDto.setCreatedDate(sign.getCreatedDate());
+						signDto.setModifiedDate(sign.getModifiedDate());
+						signDtoList.add(signDto);
+					}
+				
+		}
+		
+		return signDtoList;
+	}		
+	
+	//获取已选项目
+	@Override
+	public List<SignDto> getSignbyIds(String[] ids){
+		List<SignDto> signDtoList=new ArrayList<>();
+		for (String id : ids) {
+			
+			if(Validate.isString(id)){
+				
+				SignDto signDto=new SignDto();
+				Sign sign=signRepo.findById(id);
+				BeanCopierUtils.copyProperties(sign, signDto);
+				signDto.setCreatedDate(sign.getCreatedDate());
+				signDto.setModifiedDate(sign.getModifiedDate());
+				signDtoList.add(signDto);
+				
+			}
+		}
+		return signDtoList;
+	}
+	
+	//生成发文关联
 	@Override
 	@Transactional
-	public void save(DispatchDocDto dispatchDocDto) throws Exception{
+	public void mergeDispa(String signId,String linkSignId){
+		Date now = new Date();
+		Sign sign=signRepo.findById(signId);
+		MergeDispa mergeDispa=new MergeDispa();
+		mergeDispa.setBusinessId(sign.getDispatchDoc().getId());
+		mergeDispa.setType(sign.getDispatchDoc().getDispatchType());
+		mergeDispa.setSignId(signId);
+		mergeDispa.setLinkSignId(linkSignId);
+		mergeDispa.setCreatedBy(currentUser.getLoginName());
+		mergeDispa.setModifiedBy(currentUser.getLoginName());
+		mergeDispa.setCreatedDate(now);
+		mergeDispa.setModifiedDate(now);
+		mergeDispaRepo.save(mergeDispa);
+		
+		//mergeDispaServiceImpl.mergeProject(dispatchDocDto);
+	}
+	
+	//保存发文拟稿
+	@Override
+	@Transactional
+	public void save(DispatchDocDto dispatchDocDto){
+		
+		DispatchDoc dispatchDoc=null;
 		if(Validate.isString(dispatchDocDto.getSignId())){
 			Date now=new Date();
 			List<DispatchDoc> dispatchList=dispatchDocRepo.findDispatchBySignId(dispatchDocDto.getSignId());
-			DispatchDoc dispatchDoc=null;
 				if(dispatchList.size()<1){
 					dispatchDoc = new DispatchDoc();
 				}else{
@@ -53,7 +165,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				}
 				dispatchDtoTodispatch(dispatchDocDto,dispatchDoc);	
 				dispatchDoc.setDraftDate(now);
-				dispatchDoc.setDispatchDate(DateUtils.ConverToDate(dispatchDocDto.getDispatchDate()));
+				try {
+					dispatchDoc.setDispatchDate(DateUtils.ConverToDate(dispatchDocDto.getDispatchDate()));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 				Sign sign = signRepo.findById(dispatchDocDto.getSignId());
 				dispatchDoc.setSign(sign);
 				if(!Validate.isString(dispatchDoc.getId())){
@@ -66,7 +182,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				signRepo.save(sign);
 		}else{
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
-			throw new Exception(Constant.ERROR_MSG);
+			try {
+				throw new Exception(Constant.ERROR_MSG);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -88,6 +208,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		dispatchDoc.setModifiedBy(currentUser.getLoginName());
 		dispatchDoc.setModifiedDate(now);
 	}
+	
+	
 	//初始化页面内容
 	@Override
 	public Map<String, Object> initDispatchData(String signId) {
@@ -100,7 +222,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		map.put("mainUserList", userList);
 		DispatchDoc dispatch=null;
 		DispatchDocDto dispatchDto=new DispatchDocDto();
-		if(dispatchList.size()==1){
+		if(dispatchList.size()>0){
 			dispatch=dispatchList.get(0);
 			dispatchTodispatchDto(dispatch,dispatchDto);
 			dispatchDto.setDraftDate(DateUtils.convertDateToString(dispatch.getDraftDate()));
@@ -109,7 +231,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			
 		}else{
 			dispatch=new DispatchDoc();
-			if(Validate.isString(sign.getMaindepetid())){
+			//if(Validate.isString(sign.getMaindepetid())){
 				dispatch.setSecretLevel(sign.getSecrectlevel());
 				dispatch.setSign(sign);
 				//获取当前用户信息
@@ -121,11 +243,13 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				dispatchTodispatchDto(dispatch,dispatchDto);
 				dispatchDto.setDraftDate(DateUtils.convertDateToString(now));
 				dispatchDto.setFileNum(NumIncreaseUtils.getFileNo());
-			}
+			//}
 		}
 		dispatchDto.setSignId(signId);
 		map.put("dispatch",dispatchDto);
 		return map;
 	}
 
+	
+	
 }
