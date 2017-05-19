@@ -1,6 +1,5 @@
 package cs.service.project;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,17 +21,16 @@ import cs.common.utils.DateUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
 import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.UserService;
 
 @Service
@@ -104,16 +102,15 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			}
 			hqlBuilder.append(")");
 			list=signRepo.findByHql(hqlBuilder);
-	}
+		}
 		for (Sign sign : list) {
-					SignDto signDto=new SignDto();
-					if(!Validate.isString(sign.getIsDispatchCompleted())||sign.getIsDispatchCompleted().equals("0")){
-						BeanCopierUtils.copyProperties(sign, signDto);
-						signDto.setCreatedDate(sign.getCreatedDate());
-						signDto.setModifiedDate(sign.getModifiedDate());
-						signDtoList.add(signDto);
-					}
-				
+			SignDto signDto=new SignDto();
+			if(!Validate.isString(sign.getIsDispatchCompleted())||sign.getIsDispatchCompleted().equals("0")){
+				BeanCopierUtils.copyProperties(sign, signDto);
+				signDto.setCreatedDate(sign.getCreatedDate());
+				signDto.setModifiedDate(sign.getModifiedDate());
+				signDtoList.add(signDto);
+			}				
 		}
 		
 		return signDtoList;
@@ -173,7 +170,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	//保存发文拟稿
 	@Override
 	@Transactional
-	public void save(DispatchDocDto dispatchDocDto){
+	public void save(DispatchDocDto dispatchDocDto) throws Exception {
 		
 		DispatchDoc dispatchDoc=null;
 		if(Validate.isString(dispatchDocDto.getSignId())){
@@ -186,11 +183,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				}
 				dispatchDtoTodispatch(dispatchDocDto,dispatchDoc);	
 				dispatchDoc.setDraftDate(now);
-				try {
-					dispatchDoc.setDispatchDate(DateUtils.ConverToDate(dispatchDocDto.getDispatchDate()));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+				dispatchDoc.setDispatchDate(DateUtils.ConverToDate(dispatchDocDto.getDispatchDate()));
 				Sign sign = signRepo.findById(dispatchDocDto.getSignId());
 				dispatchDoc.setSign(sign);
 				if(!Validate.isString(dispatchDoc.getId())){
@@ -203,11 +196,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				signRepo.save(sign);
 		}else{
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
-			try {
-				throw new Exception(Constant.ERROR_MSG);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			throw new Exception(Constant.ERROR_MSG);
 		}
 		
 	}
@@ -269,7 +258,26 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		map.put("dispatch",dispatchDto);
 		return map;
 	}
+		
+	@Override
+	public DispatchDocDto initDispatchBySignId(String signId) {
+		DispatchDocDto dispatchDocDto = new DispatchDocDto();
+		
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from "+DispatchDoc.class.getSimpleName()+" where "+DispatchDoc_.sign.getName()+"."+Sign_.signid.getName()+" = :signId ");
+        hqlBuilder.setParam("signId", signId);               
+        
+        List<DispatchDoc> list = dispatchDocRepo.findByHql(hqlBuilder);
+        if(list != null && list.size() > 0){
+        	DispatchDoc  dispatchDoc = list.get(0);
+        	BeanCopierUtils.copyProperties(dispatchDoc,dispatchDocDto);
+        	//日期要手动转换
+        	dispatchDocDto.setCreatedDate(dispatchDoc.getCreatedDate());
+        	dispatchDocDto.setDraftDate(DateUtils.convertDateToString(dispatchDoc.getDraftDate()));
+        	dispatchDocDto.setDispatchDate(DateUtils.convertDateToString(dispatchDoc.getDispatchDate()));
+        	dispatchDocDto.setDirectorDate(DateUtils.convertDateToString(dispatchDoc.getDirectorDate()));
+        }
+		return dispatchDocDto;
+	}
 
-	
-	
 }

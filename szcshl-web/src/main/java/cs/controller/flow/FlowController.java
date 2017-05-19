@@ -1,9 +1,10 @@
 package cs.controller.flow;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.text.ParseException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -12,17 +13,14 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -36,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant;
+import cs.common.ICurrentUser;
 import cs.common.Constant.MsgCode;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
@@ -43,6 +42,8 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.Node;
+import cs.model.flow.TaskDto;
+import cs.repository.odata.ODataObj;
 import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
@@ -66,7 +67,24 @@ public class FlowController {
 	private FlowService flowService;
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private ICurrentUser currentUser;
 	
+	@RequiresPermissions("flow#html/tasks#post")
+	@RequestMapping(name = "个人待办信息", path = "html/tasks",method=RequestMethod.POST)	
+	public @ResponseBody PageModelDto<TaskDto> tasks(HttpServletRequest request) throws ParseException  {	
+		ODataObj odataObj = new ODataObj(request);				
+		PageModelDto<TaskDto> pageModelDto = flowService.queryGTasks(odataObj);				
+		return pageModelDto;
+	}
+	
+	@RequiresPermissions("flow#html/tasksCount#get")
+	@RequestMapping(name = "个人待办数量", path = "html/tasksCount",method=RequestMethod.GET)	
+	public @ResponseBody long tasksCount(HttpServletRequest request) throws ParseException  {	
+		TaskQuery taskQuery = taskService.createTaskQuery();
+		taskQuery.taskCandidateOrAssigned(currentUser.getLoginUser().getLoginName());			
+		return taskQuery.count();
+	}
 	
 	@RequestMapping(name = "读取流程图",path = "processInstance/img/{processInstanceId}",method = RequestMethod.GET)
     public void readProccessInstanceImg(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response)

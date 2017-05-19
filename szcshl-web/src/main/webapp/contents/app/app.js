@@ -11,12 +11,12 @@
         // 3rd Party Modules
 
     ]).config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/');
+        $urlRouterProvider.otherwise('/index');
         $stateProvider
             .state('index', {
-                url: '/',
-                templateUrl: rootPath + '/admin/welcome.html',
-                controller: 'roleCtrl',
+                url: '/index',
+                templateUrl: rootPath + '/admin/gtasks.html',
+                controller: 'adminCtrl',
                 controllerAs: 'vm'
             })
             //begin#role
@@ -225,8 +225,8 @@
                 templateUrl: rootPath + '/sign/html/flow.html',
                 controller: 'signFlowCtrl',
                 controllerAs: 'vm'
-            }).state('flowDeal', {
-                url: '/flowDeal/:signid/:taskId/:processInstanceId',
+            }).state('signFlowDeal', {
+                url: '/signFlowDeal/:signid/:taskId/:processInstanceId',
                 templateUrl: rootPath + '/sign/html/flowDeal.html',
                 controller: 'signFlowDealCtrl',
                 controllerAs: 'vm'
@@ -301,6 +301,7 @@
         	
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
+    	$rootScope.$GtasksCount = 0;
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
@@ -309,11 +310,15 @@
         });
         //实现返回的函数
         $rootScope.back = function () {
-            $state.go($rootScope.previousState_name, $rootScope.previousState_params);
+        	if($rootScope.previousState_name ){
+        		$state.go($rootScope.previousState_name, $rootScope.previousState_params);
+        	}else{
+        		window.history.back();
+        	}           
         };
         //kendo 语言
     	kendo.culture("zh-CN");
-    	
+    	   	    	
         $rootScope.topSelectChange = function (dictKey, dicts , type) {       	
             for (var i = 0; i < dicts.length; i++) {
             	//根据code查询
@@ -330,8 +335,10 @@
                 
             }
         }
-
-        common.initDictData({$http: $http, scope: $rootScope});
+      
+        common.getTaskCount({$http: $http, scope: $rootScope});
+    	common.initDictData({$http: $http, scope: $rootScope});
+    	
     });
 
 })();

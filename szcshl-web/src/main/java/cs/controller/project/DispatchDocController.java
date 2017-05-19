@@ -1,15 +1,10 @@
 package cs.controller.project;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.junit.runners.Parameterized.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,13 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.google.gson.JsonObject;
-
-import cs.domain.project.Sign;
-import cs.model.expert.ExpertDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
-import cs.repository.odata.ODataObj;
 import cs.service.project.DispatchDocService;
 
 @Controller
@@ -86,6 +76,12 @@ public class DispatchDocController {
 	public @ResponseBody Map<String,Object> initDispatch(@RequestParam String signid) throws Exception  {
 		Map<String,Object> map=dispatchDocService.initDispatchData(signid);
 		return map;
+	}
+	
+	@RequiresPermissions("dispatch#html/initDispatchBySignId#get")
+	@RequestMapping(name = "查询流程发文信息", path = "html/initDispatchBySignId",method=RequestMethod.GET)	
+	public @ResponseBody DispatchDocDto initDispatchBySignId(@RequestParam String signId) throws Exception  {
+		return dispatchDocService.initDispatchBySignId(signId);
 	}
 	
 	@RequiresPermissions("dispatch#html/edit#get")

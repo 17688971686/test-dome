@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.HistoryService;
@@ -28,17 +27,23 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.ICurrentUser;
+import cs.common.cache.CacheFactory;
+import cs.common.cache.DefaultCacheFactory;
+import cs.common.cache.ICache;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.Validate;
+import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
-import cs.model.flow.Node;
-import cs.service.project.SignServiceImpl;
+import cs.model.flow.TaskDto;
+import cs.repository.odata.ODataObj;
 
 @Service
 public class FlowServiceImpl implements FlowService{
@@ -53,6 +58,8 @@ public class FlowServiceImpl implements FlowService{
 	private RuntimeService runtimeService;	
 	@Autowired
 	private RepositoryService repositoryService;
+	@Autowired
+	private ICurrentUser currentUser;
 	
 	@Override
 	public List<FlowHistoryDto> convertHistory(String processInstanceId) {
@@ -323,5 +330,52 @@ public class FlowServiceImpl implements FlowService{
 	@Override
 	public Task findTaskByBusinessKey(String businessKey) {
 		return taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
+	}
+
+	/**
+	 * 查询个人待办任务
+	 */
+	@Override
+	public PageModelDto<TaskDto> queryGTasks(ODataObj odataObj) {
+		CacheFactory cacheFactory = new DefaultCacheFactory();
+		ICache cache = cacheFactory.getCache();
+		
+		PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
+		
+		TaskQuery taskQuery = taskService.createTaskQuery();
+		taskQuery.taskCandidateOrAssigned(currentUser.getLoginUser().getLoginName());	
+		
+		int total = Integer.valueOf(String.valueOf(taskQuery.count()));		
+		List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
+		if(tasks != null && tasks.size() > 0){
+			List<TaskDto> list = new ArrayList<TaskDto>(tasks.size());
+			tasks.forEach(t -> {				
+				ProcessInstance pi = (ProcessInstance) cache.get(t.getProcessInstanceId());
+				if(pi == null || !Validate.isString(pi.getId())){
+					pi= runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
+					cache.put(t.getProcessInstanceId(), pi);
+				}				
+				TaskDto taskDto = new TaskDto();	
+				taskDto.setBusinessKey(pi.getBusinessKey());
+				taskDto.setFlowKey(pi.getProcessDefinitionKey());
+				taskDto.setFlowName(pi.getProcessDefinitionName());
+				taskDto.setTaskId(t.getId());
+				taskDto.setTaskName(t.getName());
+				taskDto.setFormKey(t.getFormKey());
+				taskDto.setParentTaskId(t.getParentTaskId());
+				taskDto.setProcessInstanceId(t.getProcessInstanceId());
+				taskDto.setProcessDefinitionId(t.getProcessDefinitionId());
+				taskDto.setProcessVariables(t.getProcessVariables());
+				taskDto.setCreateDate(t.getCreateTime());
+				taskDto.setSuspended(t.isSuspended());
+				taskDto.setTaskDefinitionKey(t.getTaskDefinitionKey());
+				taskDto.setAssignee(t.getAssignee());
+				list.add(taskDto);
+			});
+			pageModelDto.setValue(list);
+		}		
+		pageModelDto.setCount(total);
+		
+		return pageModelDto;
 	}
 }

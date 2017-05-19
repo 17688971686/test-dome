@@ -5,7 +5,7 @@
 
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>提交</button>
-	 <a  class="btn btn-sm btn-danger" href="#/flowSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+	 <a  class="btn btn-sm btn-danger" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 </div>
         
 <div class="well well-sm" style="background:white;">
@@ -21,37 +21,36 @@
 		    <tr>
 		      <td width="15%" class="text-center">项目名称</td>
 		      <td>
-				 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectName" name="projectName">
-				
+				 	{{vm.fileRecord.projectName}}
 			  </td>
 		       <td width="15%" class="text-center">档案编号</td>
 		      <td>
-		     <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileNo" name="fileNo">
+		      	 	{{vm.fileRecord.fileNo}}
 		      </td>
 		    </tr>
 		    
 		    <tr>
 		      <td width="15%" class="text-center">项目单位</td>
 		      <td>
-		      <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectCompany" name="projectCompany">
+		      		{{vm.fileRecord.projectCompany}}
 			  </td>
 		      <td width="15%" class="text-center">项目代码</td>
 		      <td>
-					 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectCode" name="projectCode">
+					{{vm.fileRecord.projectCode}}
 			  </td>
 		    </tr>
 		    <tr>
 		      <td width="15%" class="text-center">文件标题</td>
 		      <td>
-		      <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle">
+		      		<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle" id="fileTitle" data-val="true"  data-val-required="必填">		      
+		      		<span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
 		      </td>
 		       <td width="15%" class="text-center">文号</td>
 		      <td>
-		     <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileNumber" name="fileNumber">
+		     		{{vm.fileRecord.fileNumber}}
 		      </td>
 		    </tr>	
-		       
-		   
+		       		   
 		    <tr>
 		    	<td width="15%" class="text-center" rowspan="2">项目建议书申报资料</td>
 		    	<td colspan="3">
@@ -300,39 +299,33 @@
 		    <tr>
 		      <td width="15%" class="text-center">其他资料</td>
 		      <td colspan="3">
-			  	<a class="btn btn-xs btn-primary" href="#/fill/{0}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+			  	<a class="btn btn-xs btn-primary" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
 			  </td>		      
-		    </tr>
-		    
+		    </tr>		    
 		      <tr>
 		      <td width="15%" class="text-center">项目负责人（签名）</td>
-		      <td>
-		   		 <!--  <select ng-model="vm.fileRecord.projectChargeUserid"  style="width:30%;" id="projectChargeUserid" name="projectChargeUserid" >
-						<option ng-repeat="s in vm.sign"  value="{{s.maindepetcontactuserid}}" >{{s.mainchargeuserid}}</option>
-				 </select> -->
-				 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectChargeUserid" name="printDate">
+		      <td>		   		 
+				 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectChargeUser" name="projectChargeUser">
 		      </td>
 		       <td width="15%" class="text-center">表格打印日期</td>
 		      <td>
-					<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.printDate" name="printDate">
+					<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.printDate" name="printDate">
 			  </td>
 		    </tr>	
 		    
 		    <tr>
 		      <td width="15%" class="text-center">档案员签收</td>
 		      <td>
-		      <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.signUserid" name="signUserid">
+		     	 <select ng-model="vm.signUser" id="signUserid"  ng-options="o as o.displayName for o in vm.signUserList">		     			     											
+				 	<option value="">请选择</option>
+				 </select> 				
 		      </td>
-		       <td width="15%" class="text-center">存档日期</td>
+		      <td width="15%" class="text-center">存档日期</td>
 		      <td>
-					<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileDate"  name="fileDate">
+					<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileDate"  name="fileDate">
 			  </td>
 		    </tr>	   
-		  </tbody>	
-		  
-		  	  
-		</table>	<!-- end table -->
-		
-		
+		  </tbody>			  		  	  
+		</table>	<!-- end table -->				
 	</form> <!-- end form -->
 </div>

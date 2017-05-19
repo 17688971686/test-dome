@@ -42,4 +42,12 @@ public class AdminController {
 		
 		return ctrlName + "/welcome";
 	}
+	
+	@RequiresPermissions("admin#gtasks#get")
+	@RequestMapping(name = "个人待办", path = "gtasks")
+	public String gtasks(Model model) {		
+		
+		return ctrlName + "/gtasks";
+	}
+	
 }

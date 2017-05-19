@@ -9,9 +9,11 @@
         var vm = this;
         vm.title = "项目流程处理";       
         vm.model = {};
-        vm.flow = {};
- 					
+        vm.flow = {};					
         vm.work = {};
+        vm.dispatchDoc = {};
+        vm.fileRecord = {};
+        
         vm.model.signid = $state.params.signid;	
         vm.flow.taskId = $state.params.taskId;			//流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID

@@ -11,7 +11,9 @@
 			pendingSign:pendingSign,		//签收待处理
 			initBusinessParams:initBusinessParams,	//初始化业务参数
 			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
-			getChargeWorkProgram:getChargeWorkProgram
+			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
+			getChargeDispatch : getChargeDispatch,		//获取发文
+			getChargeFilerecord : getChargeFilerecord	//获取归档信息
 		};
 		return service;		
 		
@@ -119,8 +121,7 @@
 				var httpOptions = {
 						method : 'get',
 						url : rootPath+"/org/findUserChargeOrg"
-					}
-					
+					}					
 				var httpSuccess = function success(response) {
 					common.requestSuccess({
 						vm : vm,
@@ -141,10 +142,9 @@
 				vm.businessTr = true;
 				vm.BM_FB = true;
 				var httpOptions = {
-						method : 'get',
-						url : rootPath+"/user/findChargeUsers"
-					}
-					
+					method : 'get',
+					url : rootPath+"/user/findChargeUsers"
+				}					
 				var httpSuccess = function success(response) {
 					common.requestSuccess({
 						vm : vm,
@@ -163,22 +163,42 @@
 			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" || vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){ //项目负责人承办
 				vm.businessTr = true;
 				vm.XMFZR_SP_GZFA = true;
-				getChargeWorkProgram(vm,vm.flow.curNode.activitiId);
 				
-			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "BZ_SP_GZAN2"){ //部长审批
-				getChargeWorkProgram(vm,vm.flow.curNode.activitiId);
-				
-			}else if(vm.flow.curNode.activitiId == "FGLD_SP_GZFA1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){ //分管副主任审批
-				getChargeWorkProgram(vm,vm.flow.curNode.activitiId);
+				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted >= 0){ //如果填报完成，则显示
+					vm.show_workprogram = true;
+					getChargeWorkProgram(vm);
+				}								
+			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "BZ_SP_GZAN2"
+				|| vm.flow.curNode.activitiId == "FGLD_SP_GZFA1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){ //部长审批,分管副主任审批
+				vm.show_workprogram = true;
+				getChargeWorkProgram(vm);
 				
 			}else if(vm.flow.curNode.activitiId == "FW_SQ" ){ //发文
 				vm.businessTr = true;
-				vm.FW_SQ = true;				
+				vm.FW_SQ = true;		
+				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted >= 0){
+					vm.show_dispatch = true;
+					getChargeDispatch(vm);
+				}	
+			
+			}//审核发文	
+			else if(vm.flow.curNode.activitiId == "BZ_SP_FW" || vm.flow.curNode.activitiId == "FGLD_SP_FW" || vm.flow.curNode.activitiId == "ZR_SP_FW"){ 
+				vm.show_dispatch = true;
+				getChargeDispatch(vm);
+				
 			}else if(vm.flow.curNode.activitiId == "MFZR_GD" ){ //归档
 				vm.businessTr = true;
-				vm.FW_SQ = true;
-				
+				vm.MFZR_GD = true;
+				if(vm.model.filenum){
+					vm.show_filerecord = true;
+					getChargeFilerecord(vm)
+				}
 			}
+			else if(vm.flow.curNode.activitiId == "AZFR_SP_GD" || "BMLD_QR_GD"){ //归档
+				vm.show_filerecord = true;
+				getChargeFilerecord(vm)								
+			}
+			
 			
 		}//E_initBusinessParams
 		
@@ -233,6 +253,9 @@
 				}else{
 					return false;
 				}
+			}else if(vm.flow.curNode.activitiId == "BZ_SP_FW" || vm.flow.curNode.activitiId == "FGLD_SP_FW" || vm.flow.curNode.activitiId == "ZR_SP_FW" ){ //审核发文
+				vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+				return true;				
 			}else if(vm.flow.curNode.activitiId == "MFZR_GD"){
 				if(vm.model.filenum){
 					return true;
@@ -244,8 +267,7 @@
 		}//E_checkBusinessFill
 		
 		//S_getChargeWorkProgram
-		function getChargeWorkProgram(vm,activitiId){
-			vm.flow.businessMap = {};
+		function getChargeWorkProgram(vm){
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/workprogram/html/initWorkBySignId",
@@ -257,11 +279,7 @@
 					response:response,
 					fn:function() {								
 						vm.work = response.data;	
-						if(activitiId == "BZ_SP_GZAN1" || activitiId == "FGLD_SP_GZFA1" 
-							|| activitiId == "BZ_SP_GZAN2" || activitiId == "FGLD_SP_GZFA2"){
-							
-							$("#show_workprogram_a").click();
-						}
+						$("#show_workprogram_a").click();
 					}						
 				});
 			}

@@ -1,11 +1,6 @@
 package cs.model.project;
 
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 import cs.model.BaseDto;
 
 public class FileRecordDto extends BaseDto{
@@ -150,13 +145,15 @@ public class FileRecordDto extends BaseDto{
 	
 	private Integer meetingSignCount;
 	
-	private String projectChargeUserid;
+	private String projectChargeUser;
 	
-	private Date printDate;
+	private String printDate;
 	
 	private String signUserid;
 	
-	private Date fileDate;
+	private String signUserName;
+	
+	private String fileDate;
 
 	public String getFileRecordId() {
 		return fileRecordId;
@@ -654,21 +651,6 @@ public class FileRecordDto extends BaseDto{
 		this.meetingSignCount = meetingSignCount;
 	}
 
-	public String getProjectChargeUserid() {
-		return projectChargeUserid;
-	}
-
-	public void setProjectChargeUserid(String projectChargeUserid) {
-		this.projectChargeUserid = projectChargeUserid;
-	}
-
-	public Date getPrintDate() {
-		return printDate;
-	}
-
-	public void setPrintDate(Date printDate) {
-		this.printDate = printDate;
-	}
 
 	public String getSignUserid() {
 		return signUserid;
@@ -678,14 +660,7 @@ public class FileRecordDto extends BaseDto{
 		this.signUserid = signUserid;
 	}
 
-	public Date getFileDate() {
-		return fileDate;
-	}
-
-	public void setFileDate(Date fileDate) {
-		this.fileDate = fileDate;
-	}
-
+	
 	public Integer getExpertAmanCount() {
 		return expertAmanCount;
 	}
@@ -749,5 +724,37 @@ public class FileRecordDto extends BaseDto{
 	public void setStageCostScan(String stageCostScan) {
 		this.stageCostScan = stageCostScan;
 	}
+
+	public String getSignUserName() {
+		return signUserName;
+	}
+
+	public void setSignUserName(String signUserName) {
+		this.signUserName = signUserName;
+	}
+
+	public String getProjectChargeUser() {
+		return projectChargeUser;
+	}
+
+	public void setProjectChargeUser(String projectChargeUser) {
+		this.projectChargeUser = projectChargeUser;
+	}
+
+	public String getPrintDate() {
+		return printDate;
+	}
+
+	public void setPrintDate(String printDate) {
+		this.printDate = printDate;
+	}
+
+	public String getFileDate() {
+		return fileDate;
+	}
+
+	public void setFileDate(String fileDate) {
+		this.fileDate = fileDate;
+	}		
 	
 }

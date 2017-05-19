@@ -11,7 +11,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 
@@ -26,7 +25,6 @@ public class FileRecord extends DomainBase{
 		
 	//项目名称
 	@Column(columnDefinition="VARCHAR(200)")
-	@Formula("(select s.projectname from sign s where s.signid = signid)")
 	private String projectName;
 	
 	//档案编号
@@ -35,12 +33,10 @@ public class FileRecord extends DomainBase{
 	
 	//项目单位
 	@Column(columnDefinition="VARCHAR(100)")
-	@Formula("(select s.builtcompanyid from sign s where s.signid = signid)")
 	private String projectCompany;
 	
 	//项目代码
 	@Column(columnDefinition="VARCHAR(30)")
-	@Formula("(select s.projectcode from sign s where s.signid = signid)")
 	private String projectCode;
 	
 	//文件标题
@@ -299,10 +295,9 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String stageCostScan;
 	
-	//项目负责人Id
+	//项目负责人
 	@Column(columnDefinition="VARCHAR(64)")
-	@Formula("(select s.mainchargeuserid from sign s where s.signid = signid)")
-	private String projectChargeUserid;
+	private String projectChargeUser;
 	
 	//表格打印日期
 	@Column(columnDefinition="DATE")
@@ -312,6 +307,10 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(64)")
 	private String signUserid;
 	
+	//档案签收员名称
+	@Column(columnDefinition="VARCHAR(64)")
+	private String signUserName;
+		
 	//存档日期
 	@Column(columnDefinition="DATE")
 	private Date fileDate;
@@ -815,14 +814,22 @@ public class FileRecord extends DomainBase{
 
 	public void setMeetingSignCount(Integer meetingSignCount) {
 		this.meetingSignCount = meetingSignCount;
+	}	
+
+	public String getProjectChargeUser() {
+		return projectChargeUser;
 	}
 
-	public String getProjectChargeUserid() {
-		return projectChargeUserid;
+	public void setProjectChargeUser(String projectChargeUser) {
+		this.projectChargeUser = projectChargeUser;
 	}
 
-	public void setProjectChargeUserid(String projectChargeUserid) {
-		this.projectChargeUserid = projectChargeUserid;
+	public String getSignUserName() {
+		return signUserName;
+	}
+
+	public void setSignUserName(String signUserName) {
+		this.signUserName = signUserName;
 	}
 
 	public Date getPrintDate() {

@@ -90,33 +90,26 @@ desired effect
     <header class="main-header">
         <!-- Logo -->
         <a href="/admin" class="logo"> <!-- mini logo for sidebar mini 50x50 pixels -->
-
             <span class="logo-mini"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/logo2.png" height="33"></span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/szlogo.png"
-                                       height="33"></span>
+            <span class="logo-lg"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="33"></span>
         </a>
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
             <!-- Sidebar toggle button-->
-            <a href="javascript:void(0)" class="sidebar-toggle"
-               data-toggle="offcanvas" role="button"> <span class="sr-only">Toggle
-						navigation</span>
+            <a href="javascript:void(0)" class="sidebar-toggle"  data-toggle="offcanvas" role="button"> 
+            	<span class="sr-only">Toggle navigation</span>
             </a>
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-
                     <!-- Notifications Menu -->
-
-
                     <!-- User Account Menu -->
                     <li class="dropdown user user-menu">
-                        <!-- Menu Toggle Button --> <a href="javascript:void(0)"
-                                                       class="dropdown-toggle" data-toggle="dropdown">
+                        <!-- Menu Toggle Button --> 
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
                         <!-- The user image in the navbar-->
-                        <img src="${path}/contents/images/user_icon.png" class="user-image"
-                             alt="User Image">
+                        <img src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
                         <!-- hidden-xs hides the username on small devices so only the image appears. -->
                         <span class="hidden-xs">${user}</span>
                     </a>
@@ -145,23 +138,26 @@ desired effect
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
 
-
                 <li class="treeview active"><a href="javascript:void(0)">
-                    <img style="width: 20px; height: 20px"
-                         src="${path}/contents/images/user_icon.png" class="user-image"
-                         alt="User Image"> <span class="title">我的工作台</span> <span
-                        class="pull-right-container"> <i
-                        class="fa fa-angle-left pull-right"></i>
-						</span>
+                 <a href="javascript:void(0)">
+                    <img style="width: 20px; height: 20px" src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
+                    <span class="title">我的工作台</span>
+                    <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span>
                 </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)"> <i
-                                class="fa fa-envelope-o"></i>消息通知 <span
-                                class="label label-success">4</span>
-                        </a></li>
-                        <li><a href="javascript:void(0)"> <i
-                                class="fa fa-flag-o"></i>待办事项 <span class="label label-danger">0</span>
-                        </a></li>
+                    	<li>
+	                        <a href="javascript:void(0)"  ui-sref="index"> 
+	                        	<i class="fa fa-flag-o"></i>待办事项 
+	                        	<span class="label label-danger">{{$GtasksCount}}</span>
+	                        </a>
+                        </li>
+                        <li>
+	                        <a href="javascript:void(0)"> 
+	                        	 <i  class="fa fa-envelope-o"></i>消息通知
+	                        	 <span class="label label-success">0</span>
+	                        </a>
+                        </li>
+                        
                     </ul>
                 </li>
 
@@ -169,9 +165,9 @@ desired effect
                     <a href="javascript:void(0)">
                         <i class="fa fa-link"></i>
                         <span class="title">用户部门管理</span>
-                        <span
-                                class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>
-					</span>
+                        <span class="pull-right-container"> 
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>

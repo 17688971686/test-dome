@@ -7,8 +7,11 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
+import cs.model.flow.TaskDto;
+import cs.repository.odata.ODataObj;
 
 public interface FlowService {
 
@@ -31,4 +34,6 @@ public interface FlowService {
 	ProcessInstance findProcessInstanceByBusinessKey(String businessKey);
 	
 	Task findTaskByBusinessKey(String businessKey);
+
+	PageModelDto<TaskDto> queryGTasks(ODataObj odataObj);
 }

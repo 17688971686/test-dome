@@ -8,7 +8,7 @@ import cs.model.project.SignDto;
 
 public interface DispatchDocService {
 
-	 void save(DispatchDocDto dispatchDocDto);
+	 void save(DispatchDocDto dispatchDocDto)throws Exception;
 	 Map<String, Object> initDispatchData(String signId);
 	 List<SignDto> getSign(String linkSignId);
 	 List<SignDto> getSignbyIds(String[] ids);
@@ -16,4 +16,5 @@ public interface DispatchDocService {
 	 Map<String,Object> getSeleSignBysId(String bussnessId);
 	 String fileNum(String dispaId);
 
+	 DispatchDocDto initDispatchBySignId(String signId);
 }

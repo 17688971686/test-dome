@@ -3,13 +3,6 @@ package cs.model.project;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
-import org.hibernate.annotations.Formula;
-
-import cs.domain.project.Sign;
 import cs.model.BaseDto;
 
 public class DispatchDocDto extends BaseDto{
@@ -82,7 +75,7 @@ private String id;
 	private String directorSuggesttion;
 	
 	//局长核稿日期
-	private Date directorDate;
+	private String directorDate;
 
 	//申报金额
 	private BigDecimal declareValue;
@@ -429,13 +422,13 @@ private String id;
 
 	public void setDirectorSuggesttion(String directorSuggesttion) {
 		this.directorSuggesttion = directorSuggesttion;
-	}
+	}	
 
-	public Date getDirectorDate() {
+	public String getDirectorDate() {
 		return directorDate;
 	}
 
-	public void setDirectorDate(Date directorDate) {
+	public void setDirectorDate(String directorDate) {
 		this.directorDate = directorDate;
 	}
 

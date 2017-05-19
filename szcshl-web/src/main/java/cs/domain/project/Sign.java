@@ -173,7 +173,7 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(100)")
 	private String filenum;
 	
-	//文件字号
+	//文号
 	@Column(columnDefinition="VARCHAR(100)")
 	private String docnum;
 	

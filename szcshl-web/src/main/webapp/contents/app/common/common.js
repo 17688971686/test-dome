@@ -23,7 +23,8 @@
         buildOdataFilter:buildOdataFilter,	//创建多条件查询的filter
         initDictData : initDictData, 	//初始化数字字典
         kendoGridDataSource : kendoGridDataSource, 	//获取gridDataSource
-        initUploadOption : initUploadOption		//附件上传参数
+        initUploadOption : initUploadOption,		//附件上传参数
+        getTaskCount : getTaskCount					//用户待办总数
     };
 
     window.common = service;
@@ -199,7 +200,7 @@
             schema: function (model) {
                 return {
                     data: "value",
-                    total: function (data) { return data['count']; },
+                    total: function (data) {return data['count']; },
                     model: model
                 };
             },
@@ -494,6 +495,16 @@
 	        }
     	}
     }//E_附件上传参数初始化
+    
+    //S_获取待办总数
+    function getTaskCount(options){
+    	options.$http({
+       		method : 'get',
+			url : rootPath+'/flow/html/tasksCount'
+        }).then(function(response){
+        	options.scope.$GtasksCount = response.data;
+        });
+    }//E_获取待办总数
     
     //init
     init();
