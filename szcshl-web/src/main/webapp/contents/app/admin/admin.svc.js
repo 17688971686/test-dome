@@ -19,7 +19,7 @@
 				schema : {
 					data: "value",
                     total: function (data) {
-                    	$rootScope.$GtasksCount = data['count']; 
+                    	$('#GtasksCount').html(common.format($('#GtasksCount').html(),data['count']));
                     	return data['count']; 
                     },
                     model:{

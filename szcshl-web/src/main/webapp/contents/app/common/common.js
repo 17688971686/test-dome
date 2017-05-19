@@ -91,8 +91,7 @@
             // and for Multiline search
             var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
             theString = theString.replace(regEx, arguments[i]);
-        }
-
+        }       
         return theString;
     }
     function blockNonNumber(val) {
@@ -502,7 +501,7 @@
        		method : 'get',
 			url : rootPath+'/flow/html/tasksCount'
         }).then(function(response){
-        	options.scope.$GtasksCount = response.data;
+        	$('#GtasksCount').html(format($('#GtasksCount').html(),response.data));
         });
     }//E_获取待办总数
     

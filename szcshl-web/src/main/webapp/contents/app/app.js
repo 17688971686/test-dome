@@ -301,7 +301,6 @@
         	
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
-    	$rootScope.$GtasksCount = 0;
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
@@ -336,7 +335,7 @@
             }
         }
       
-        common.getTaskCount({$http: $http, scope: $rootScope});
+        common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     	
     });

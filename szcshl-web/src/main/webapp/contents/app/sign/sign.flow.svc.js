@@ -291,6 +291,55 @@
 			});		
 		}//E_getChargeWorkProgram
 		
+		//S_getChargeDispatch
+		function getChargeDispatch(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/dispatch/html/initDispatchBySignId",
+					params : {signId:vm.model.signid}
+				}
+			var httpSuccess = function success(response) {									
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {								
+						vm.dispatchDoc = response.data;	
+						$("#show_dispatch_a").click();
+					}						
+				});
+			}
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});		
+		}//E_getChargeDispatch
+		
+		//S_getChargeFilerecord
+		function getChargeFilerecord(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/fileRecord/html/initBySignId",
+					params : {signId:vm.model.signid}
+				}
+			var httpSuccess = function success(response) {									
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {								
+						vm.fileRecord = response.data;	
+						$("#show_filerecord_a").click();
+					}						
+				});
+			}
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});		
+		}//E_getChargeFilerecord
 		
 	}//E_signFlow		
 })();
