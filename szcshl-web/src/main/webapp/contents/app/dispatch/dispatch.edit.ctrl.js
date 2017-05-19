@@ -8,6 +8,8 @@
     function dispatch($location, dispatchSvc, $state) {     
         var vm = this;
         vm.title = '项目发文编辑';
+        vm.isHide=true;
+        vm.isShow=false;
 
         vm.dispatchDoc = {};
         vm.dispatchDoc.signId = $state.params.signid;
@@ -33,21 +35,20 @@
         vm.isSelect=function(){
         	var selectValue=$("#dispatchWay").find("option:selected").text();
         	if(selectValue=="合并发文"){
-        		$("#mergeOptions").css("visibility","visible");
-        		var isCheck = $("#mainproject").attr("checked");
-        		console.log(isCheck);
-        		if (isCheck) {
-        			$("#linkbtn").css("visibility","visible");
-        		}else{
-        			$("#linkbtn").css("visibility","hidden");
-        		}
+        		vm.isHide=false;
         	}else{
-        		$("#mergeOptions").css("visibility","hidden");
+        		vm.isHide=true;
         		
         	}
-        	
         }
-        
+        vm.ischecked=function(){
+        	var ischeck=$("input[name='Type']:checked").val();
+    		if (ischeck=="1") {
+    			vm.isShow=true;
+    		}else{
+    			vm.isShow=false;
+    		}
+        }
         //打开合并页面
         vm.gotoMergePage=function(){
         	dispatchSvc.gotoMergePage(vm);
@@ -79,15 +80,6 @@
         }
         activate();
         function activate() {
-        	 kendo.culture("zh-CN");
-             $("#draftDate").kendoDatePicker({
-             	 format: "yyyy-MM-dd",
-             	 weekNumber: true
-             });
-             $("#dispatchDate").kendoDatePicker({
-            	 format: "yyyy-MM-dd",
-            	 weekNumber: true
-             });
              dispatchSvc.initDispatchData(vm);
         }
     }

@@ -19,7 +19,7 @@ import cs.domain.DomainBase;
 public class MergeDispa extends DomainBase{
 	@Id
 	private String businessId;//业务ID(发文/工作方案）
-	@Column(columnDefinition="VARCHAR(512)")
+	@Column(columnDefinition="VARCHAR(1000)")
 	private String linkSignId;//关联收文ID(一对多）
 	@Column(columnDefinition="VARCHAR(64)")
 	private String signId;//收文ID

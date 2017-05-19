@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,9 +30,11 @@ import cs.domain.project.Sign_;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.sys.UserDto;
+import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.UserService;
 
 @Service
@@ -49,17 +53,16 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	
 	//初始化页面获取已选项目
 	@Override
-	public Map<String,Object> getSeleSignBysId(String bussnessId){
-		Map<String,Object> map=new HashMap<>();
-		MergeDispa mergeDispa=mergeDispaRepo.findById(bussnessId);
-		List<SignDto> signDtoList=null;
-		String linkSignId="";
-		if(mergeDispa!=null&&!mergeDispa.equals("")){
-			
-			linkSignId=mergeDispa.getLinkSignId();
-			signDtoList= new ArrayList<>();
-			String [] ids=linkSignId.split(",");
-			
+	public Map<String, Object> getSeleSignBysId(String bussnessId) {
+		Map<String, Object> map = new HashMap<>();
+		MergeDispa mergeDispa = mergeDispaRepo.findById(bussnessId);
+		List<SignDto> signDtoList = null;
+		String linkSignId = "";
+		if (mergeDispa!=null && !mergeDispa.equals("")) {
+
+			linkSignId = mergeDispa.getLinkSignId();
+			signDtoList = new ArrayList<>();
+			String[] ids = linkSignId.split(",");
 			for (String id : ids) {
 				
 				if(Validate.isString(id)){
@@ -78,30 +81,29 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		map.put("linkSignId", linkSignId);
 		return map;
 	}
-	
-	
-	//获取待选项目
+
+	// 获取待选项目
 	@Override
 	public List<SignDto> getSign(String linkSignId) {
-		List<SignDto> signDtoList=new ArrayList<>();
-		List<Sign> list=null;
-		if(linkSignId.equals("")){
-			 list=signRepo.findAll();
-		}else{
-			String[] linkSids=linkSignId.split(",");
-			HqlBuilder hqlBuilder= HqlBuilder.create();
-			hqlBuilder.append(" from "+Sign.class.getSimpleName()+" where "+Sign_.signid.getName()+" not in(");
-			for (int i=0;i<linkSids.length;i++) {
-				if(i==0){
-					hqlBuilder.append(":linkSids"+i);
-					hqlBuilder.setParam("linkSids"+i, linkSids[i]);
-				}else{
-					hqlBuilder.append(",:linkSids"+i);
-					hqlBuilder.setParam("linkSids"+i, linkSids[i]);
-				}	
+		List<SignDto> signDtoList = new ArrayList<>();
+		List<Sign> list = null;
+		if (StringUtils.isBlank(linkSignId)) {
+			list = signRepo.findAll();
+		} else {
+			String[] linkSids = linkSignId.split(",");
+			if (StringUtils.isNoneBlank(linkSids)) {
+				HqlBuilder hqlBuilder = HqlBuilder.create().append(" from ").append(Sign.class.getSimpleName())
+						.append(" where ").append(Sign_.signid.getName()).append(" not in(");
+				for (int i = 0; i < linkSids.length; i++) {
+					if (i != 0) {
+						hqlBuilder.append(",");
+					}
+					hqlBuilder.append(":linkSids" + i);
+					hqlBuilder.setParam("linkSids" + i, linkSids[i]);
+				}
+				hqlBuilder.append(")");
+				list = signRepo.findByHql(hqlBuilder);
 			}
-			hqlBuilder.append(")");
-			list=signRepo.findByHql(hqlBuilder);
 		}
 		for (Sign sign : list) {
 			SignDto signDto=new SignDto();

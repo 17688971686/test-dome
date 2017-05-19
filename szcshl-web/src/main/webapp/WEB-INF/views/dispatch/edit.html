@@ -17,12 +17,12 @@
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：
-		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-change="vm.isSelect()">
+		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
 					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 			</span> 
-			&nbsp;&nbsp;<span id="mergeOptions" style="visibility: hidden"><input type="radio" id="mainproject" name="projectType" ng-model="vm.model.prjectType" value="1" ng-checked="true">主项目 
-			&nbsp;&nbsp; <input type="radio" id="secondproject" name="projectType" ng-model="vm.model.projectType" value="2">次项目  &nbsp;&nbsp;<button id="linkbtn" ng-click="vm.gotoMergePage()" >关联项目</button></span>
+			&nbsp;&nbsp;<span id="mergeOptions" ng-hide="vm.isHide"><input type="radio" id="mainproject" name="Type" value="1" ng-click="vm.ischecked()">主项目 
+			&nbsp;&nbsp; <input type="radio" id="secondproject" name="Type" ng-model="vm.model.projectType" value="2" ng-click="vm.ischecked()">次项目  &nbsp;&nbsp;<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-show="vm.isShow">关联项目</button></span>
 			
 		  	<span style="float:right;">发文类型：
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true" data-val-required="必填">
@@ -49,7 +49,7 @@
 			   
 			  <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>
 		      <td rowspan="2">
-		      	<input type="text" name="draftDate" id="draftDate" style="width: 210px;" class="form-control input-sm " ng-model="vm.dispatchDoc.draftDate" 
+		      	<input type="text" name="draftDate" id="draftDate" style="width: 210px;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.dispatchDoc.draftDate" 
 				value="X/01/X2000" data-val-date="必须为日期" data-val="true" data-val-required="必填" > 			
 			    <span data-valmsg-for="draftDate" data-valmsg-replace="true" class="errors" ></span>
 			  </td>
@@ -90,7 +90,7 @@
 		      <td style="width:150px;" class="text-center">发文日期</td>
 		      <td >
 		      	<input type="text" name="dispatchDate" id="dispatchDate" style="width: 210px;"
-					 class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate" 
+					 class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  kendo-date-picker k-format="'yyyy-MM-dd'"
 					  value="X/01/X2000" data-val-date="必须为日期"> 		
 			    <span data-valmsg-for="dispatchDate" data-valmsg-replace="true" class="errors"></span>
 			  </td>

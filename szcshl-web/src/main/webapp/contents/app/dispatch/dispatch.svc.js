@@ -119,6 +119,7 @@
 					fn:function() {
 						vm.dispatchDoc=response.data.dispatch;
 						vm.proofread = response.data.mainUserList;
+						vm.dispatchDoc.dispatchWay="";
 						$("#draftDate").val(vm.dispatchDoc.draftDate);
 						$("#dispatchDate").val(vm.dispatchDoc.dispatchDate);
 						$("#proofreadId").find("option:selected").text(vm.dispatchDoc.proofreadName);
