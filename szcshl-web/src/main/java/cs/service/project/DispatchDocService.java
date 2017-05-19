@@ -10,7 +10,7 @@ public interface DispatchDocService {
 
 	 void save(DispatchDocDto dispatchDocDto);
 	 Map<String, Object> initDispatchData(String signId);
-	 List<SignDto> get(String linkSignId);
+	 List<SignDto> getSign(String linkSignId);
 	 List<SignDto> getSignbyIds(String[] ids);
 	 void mergeDispa(String signId,String linkSignId);
 	 Map<String,Object> getSeleSignBysId(String bussnessId);
