@@ -84,7 +84,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	
 	//获取待选项目
 	@Override
-	public List<SignDto> get(String linkSignId) {
+	public List<SignDto> getSign(String linkSignId) {
 		List<SignDto> signDtoList=new ArrayList<>();
 		List<Sign> list=null;
 		if(linkSignId.equals("")){

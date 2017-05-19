@@ -62,7 +62,7 @@ public class DispatchDocController {
 	@RequiresPermissions("dispatch##getSign##POST")	
 	@RequestMapping(name = "获取待选项目", path = "getSign", method = RequestMethod.GET)
 	public @ResponseBody List<SignDto> getSign(@RequestParam String linkSignId) throws ParseException {	
-		List<SignDto> sList = dispatchDocService.get(linkSignId);
+		List<SignDto> sList = dispatchDocService.getSign(linkSignId);
 		return sList;
 	}	
 	
