@@ -45,12 +45,7 @@ public class ProjectExpeController {
 	@RequestMapping(name = "删除项目经验", path = "deleteProject",method=RequestMethod.DELETE)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void  deleteProject(@RequestBody String id)  {		
-		String[] ids=id.split(",");
-		if(ids.length>1){
-			projectExpeService.deleteProject(ids);	
-		}else{
-			projectExpeService.deleteProject(ids[0]);	
-		}		
+		projectExpeService.deleteProject(id);		
 	}
 	
 	@RequiresPermissions("expert##put")

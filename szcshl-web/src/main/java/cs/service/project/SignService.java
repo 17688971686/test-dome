@@ -22,8 +22,6 @@ public interface SignService{
 
 	Map<String, Object> initFillPageData(String signId);
 
-	PageModelDto<SignDto> getFlow(ODataObj odataObj);
-
 	void claimSignFlow(String taskId);
 	
 	List<OrgDto> selectSign(ODataObj odataObj);

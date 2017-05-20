@@ -33,11 +33,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.Constant;
 import cs.common.ICurrentUser;
 import cs.common.cache.CacheFactory;
 import cs.common.cache.DefaultCacheFactory;
 import cs.common.cache.ICache;
 import cs.common.utils.ActivitiUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -356,7 +358,15 @@ public class FlowServiceImpl implements FlowService{
 					cache.put(t.getProcessInstanceId(), pi);
 				}				
 				TaskDto taskDto = new TaskDto();	
-				taskDto.setBusinessKey(pi.getBusinessKey());
+				
+				if(pi.getBusinessKey().indexOf(Constant.FLOW_LINK_SYMBOL) > -1){
+					List<String> businessArr = StringUtil.getSplit(pi.getBusinessKey(), Constant.FLOW_LINK_SYMBOL);
+					taskDto.setBusinessKey(businessArr.get(0));
+					taskDto.setBusinessName(businessArr.get(1));
+				}else{
+					taskDto.setBusinessKey(pi.getBusinessKey());
+				}
+								
 				taskDto.setFlowKey(pi.getProcessDefinitionKey());
 				taskDto.setFlowName(pi.getProcessDefinitionName());
 				taskDto.setTaskId(t.getId());

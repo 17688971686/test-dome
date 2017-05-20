@@ -48,21 +48,27 @@
                      width:30
                  },
                  {
+                     field: "businessName",
+                     title: "任务名称",
+                     filterable : false,
+                     width:180
+                 },
+                 {
                      field: "flowName",
-                     title: "流程名称",
-                     width: 200,
+                     title: "所属流程",
+                     width: 180,
                      filterable : false,
                  },                 
                  {
                      field: "taskName",
                      title: "当前环节",
-                     width: 200,
+                     width: 180,
                      filterable : false,
                  },
                  {
                      field: "",
                      title: "开始时间",
-                     width: 200,
+                     width: 150,
                      filterable : false,
                      template: function(item) {
  						if(item.createDate){
@@ -76,7 +82,7 @@
                  {
                      field: "",
                      title: "流程状态",
-                     width: 200,
+                     width: 80,
                      filterable : false,
                      template:function(item){
  						if(item.isSuspended){

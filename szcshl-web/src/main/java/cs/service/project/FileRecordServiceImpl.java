@@ -44,36 +44,26 @@ public class FileRecordServiceImpl implements FileRecordService {
 			FileRecord fileRecord = new FileRecord(); 		
 			BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
 			
-			Date now = new Date();
-			fileRecord.setCreatedBy(currentUser.getLoginName());
-			fileRecord.setCreatedDate(now);
-			fileRecord.setModifiedBy(currentUser.getLoginName());
+			Date now = new Date();					
+			fileRecord.setModifiedBy(currentUser.getLoginName());			
 			fileRecord.setModifiedDate(now);
+			fileRecord.setFileDate(fileRecord.getFileDate()==null?now:fileRecord.getFileDate());
+			fileRecord.setPrintDate(fileRecord.getPrintDate()==null?now:fileRecord.getPrintDate());
 			
+			if(!Validate.isString(fileRecord.getFileRecordId())){
+				fileRecord.setFileRecordId(UUID.randomUUID().toString());	
+				fileRecord.setCreatedBy(currentUser.getLoginName());	
+				fileRecord.setCreatedDate(now);
+			}	
 			Sign sign = signRepo.findById(fileRecordDto.getSignId());
 			fileRecord.setSign(sign);
-			if(!Validate.isString(fileRecord.getFileRecordId())){
-				fileRecord.setFileRecordId(UUID.randomUUID().toString());				
-			}	
-			//存档编号
+			//设置归档编号(评估类)
 			if(!Validate.isString(fileRecord.getFileNo())){
-				fileRecord.setFileNo(NumIncreaseUtils.getFileRecordNo(""));
-			}
-			//存档日期
-			if(Validate.isString(fileRecordDto.getFileDate())){
-				fileRecord.setFileDate(DateUtils.ConverToDate(fileRecordDto.getFileDate()));
-			}else{
-				fileRecord.setFileDate(now);
-			}
-			//表格打印日期
-			if(Validate.isString(fileRecordDto.getPrintDate())){
-				fileRecord.setPrintDate(DateUtils.ConverToDate(fileRecordDto.getFileDate()));
-			}else{
-				fileRecord.setPrintDate(now);
+				fileRecord.setFileNo(NumIncreaseUtils.getFileRecordNo(Constant.FileNumType.PD.getValue()));
 			}
 			fileRecordRepo.save(fileRecord);	
 			
-			//更新归档编号
+			//更新收文信息			
 			sign.setFilenum(fileRecord.getFileNo());
 			sign.setFileRecord(fileRecord);
 			signRepo.save(sign);
@@ -96,8 +86,6 @@ public class FileRecordServiceImpl implements FileRecordService {
         if(list != null && list.size() > 0){
         	FileRecord  fileRecord = list.get(0);
         	BeanCopierUtils.copyProperties(fileRecord,fileRecordDto);
-        	fileRecordDto.setFileDate(DateUtils.convertDateToString(fileRecord.getFileDate()));
-        	fileRecordDto.setPrintDate(DateUtils.convertDateToString(fileRecord.getPrintDate()));
         }else{
         	//如果是新增，则要初始化
         	Sign sign = signRepo.findById(signid);
@@ -106,7 +94,7 @@ public class FileRecordServiceImpl implements FileRecordService {
         	fileRecordDto.setProjectCode(sign.getProjectcode());
         	fileRecordDto.setProjectCompany(sign.getBuiltcompanyid());	//建设单位名称
         	fileRecordDto.setProjectChargeUser(userRepo.findById(sign.getmFlowMainUserId()).getDisplayName());
-        	fileRecordDto.setFileNumber(Validate.isString(sign.getFilenum())?sign.getFilenum():"(无发文)");
+        	fileRecordDto.setFileNumber("");//文号
         }
 		return fileRecordDto;
 

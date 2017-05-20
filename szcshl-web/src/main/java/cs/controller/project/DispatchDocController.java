@@ -87,6 +87,6 @@ public class DispatchDocController {
 	@RequiresPermissions("dispatch#html/edit#get")
 	@RequestMapping(name = "发文编辑", path = "html/edit", method = RequestMethod.GET)
 	public String edit() {		
-				return ctrlName + "/edit";
+		return ctrlName + "/edit";
 	}
 }

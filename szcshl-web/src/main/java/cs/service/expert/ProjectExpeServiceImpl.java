@@ -1,7 +1,5 @@
 package cs.service.expert;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ProjectExpe;
+import cs.domain.expert.ProjectExpe_;
 import cs.model.expert.ProjectExpeDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
@@ -37,12 +37,8 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		List<ProjectExpe> projectExpeList = projectExpeRepo.findByOdata(odataObj);
 		List<ProjectExpeDto> listProjectDto=new ArrayList<>();
 		for (ProjectExpe item : projectExpeList) {
-			ProjectExpeDto projectDto=new ProjectExpeDto();
-			projectDto.setProjectbeginTime(DateUtils.ConverToString(item.getProjectbeginTime()));
-			projectDto.setProjectendTime(DateUtils.ConverToString(item.getProjectendTime()));
-			projectDto.setProjectName(item.getProjectName());
-			projectDto.setProjectType(item.getProjectType());
-			projectDto.setPeID(item.getPeID());
+			ProjectExpeDto projectDto = new ProjectExpeDto();
+			BeanCopierUtils.copyProperties(item,projectDto);			
 			listProjectDto.add( projectDto);
 		}
 		logger.info("查找项目经验");
@@ -52,22 +48,9 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
     @Override
 	@Transactional
 	public void createProject(ProjectExpeDto projectExpeDto) {
-    	Expert expert=expertRepo.findById(projectExpeDto.getExpertID());
 		ProjectExpe project = new ProjectExpe();
+		BeanCopierUtils.copyProperties(projectExpeDto,project);
 		project.setPeID(UUID.randomUUID().toString());
-		project.setProjectName(projectExpeDto.getProjectName());
-		try {
-			if(projectExpeDto.getProjectbeginTime()!=null){
-				project.setProjectbeginTime(DateUtils.ConverToDate(projectExpeDto.getProjectbeginTime()));
-			}
-			if(projectExpeDto.getProjectendTime()!=null){
-				project.setProjectendTime(DateUtils.ConverToDate(projectExpeDto.getProjectendTime()));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		project.setProjectType(projectExpeDto.getProjectType());
-		project.setExpert(expert);
 		
 		Date now = new Date();
 		project.setCreatedBy(currentUser.getLoginName());
@@ -75,41 +58,23 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		project.setCreatedDate(now);
 		project.setModifiedDate(now);
 		
+		project.setExpert(expertRepo.findById(projectExpeDto.getExpertID()));
 		projectExpeRepo.save(project);
 		logger.info(String.format("添加项目经验,项目名称为:%s", project.getProjectName()));
 	}
 		
     @Override
 	@Transactional
-	public void deleteProject(String id) {			
-		ProjectExpe projectExpe = projectExpeRepo.findById(id);
-		if (projectExpe != null) {
-			projectExpeRepo.delete(projectExpe);
-			logger.info(String.format("删除项目经验,单位名称为О:%s", projectExpe.getProjectName()));				
-		}
-	}
-    
-	@Override
-	@Transactional
-	public void deleteProject(String[] ids) {
-		for (String id : ids) {
-			this.deleteProject(id);
-		}
-		logger.info("删除项目经验");
+	public void deleteProject(String id) {	
+    	projectExpeRepo.deleteById(ProjectExpe_.peID.getName(), id);		
 	}
 	
 	@Override
 	@Transactional
 	public void updateProject(ProjectExpeDto projectExpeDto) {
 		ProjectExpe projectExpe = projectExpeRepo.findById(projectExpeDto.getPeID());
-		try {
-			projectExpe.setProjectbeginTime (DateUtils.ConverToDate(projectExpeDto.getProjectbeginTime()));
-			projectExpe.setProjectendTime(DateUtils.ConverToDate(projectExpeDto.getProjectendTime()));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		projectExpe.setProjectName(projectExpeDto.getProjectName());
-		projectExpe.setProjectType(projectExpeDto.getProjectType());
+		
+		BeanCopierUtils.copyProperties(projectExpeDto,projectExpe);
 		
 		projectExpe.setModifiedBy(currentUser.getLoginName());
 		projectExpe.setModifiedDate(new Date());

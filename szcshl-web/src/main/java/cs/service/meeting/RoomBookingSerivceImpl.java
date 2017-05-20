@@ -1,8 +1,6 @@
 package cs.service.meeting;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -14,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.JsonObject;
-
 import cs.common.ICurrentUser;
 import cs.common.Response;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
@@ -43,11 +40,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	public List<RoomBookingDto> getList(ODataObj oDataObj) {
 		List<RoomBooking> roomList=	roomBookingRepo.findByOdata(oDataObj);
 		List<RoomBookingDto> roomDtoList = new ArrayList<>();
-		for(RoomBooking item : roomList){
-			
+		for(RoomBooking item : roomList){			
 			RoomBookingDto  roomDto = new RoomBookingDto();
+			BeanCopierUtils.copyProperties(item, roomDto);
 			
-			roomDto.setId(item.getId());
+			/*roomDto.setId(item.getId());
 			Date rbDay = item.getRbDay();
 			String day = DateUtils.toString(rbDay);
 			roomDto.setRbDay(day);
@@ -67,7 +64,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			roomDto.setRbStatus(item.getRbStatus());
 			roomDto.setAddressName(item.getAddressName());
 			roomDto.setCreatedBy(currentUser.getLoginName());
-			roomDto.setModifiedBy(currentUser.getLoginName());
+			roomDto.setModifiedBy(currentUser.getLoginName());*/
 			
 			roomDtoList.add(roomDto);
 		}
@@ -114,15 +111,15 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	 */
 	@Override
 	@Transactional
-	public PageModelDto<RoomBookingDto> get(ODataObj odataObj) {
-		
+	public PageModelDto<RoomBookingDto> get(ODataObj odataObj) {		
 		List<RoomBooking> roomList=	roomBookingRepo.findByOdata(odataObj);
 		List<RoomBookingDto> roomDtoList = new ArrayList<>();
-		for(RoomBooking item : roomList){
-			
+		
+		for(RoomBooking item : roomList){			
 			RoomBookingDto  roomDto = new RoomBookingDto();
+			BeanCopierUtils.copyProperties(item, roomDto);
 			
-			roomDto.setId(item.getId());
+			/*roomDto.setId(item.getId());
 			roomDto.setMrID(item.getMrID());
 			
 			Date rbDay = item.getRbDay();
@@ -149,7 +146,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			
 			roomDto.setCreatedBy(currentUser.getLoginName());
 			roomDto.setModifiedBy(currentUser.getLoginName());
-			
+			*/
 			roomDtoList.add(roomDto);
 		}
 		
@@ -166,29 +163,17 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		Response response =new Response();
 		Criteria criteria =	roomBookingRepo.getSession().createCriteria(RoomBooking.class);	
 		criteria.add(Restrictions.eq("rbName", roomBookingDto.getRbName()));
-		List<RoomBooking>  room = criteria.list();
-		//String hql =" from RoomBooking where  beginTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"' or endTime between '"+roomBookingDto.getBeginTime()+"' and '"+roomBookingDto.getEndTime()+"'";
-		//List<RoomBooking> roomb =  roomBookingRepo.findByHql(hql);
-		
-		//Criteria criteriaroom = roomBookingRepo.getSession().createCriteria(RoomBooking.class);
-		//criteriaroom.add(Restrictions.between("beginTime",roomBookingDto.getBeginTime(),roomBookingDto.getEndTime()));
-//		criteriaroom.add(Restrictions.between("endTime", roomBookingDto.getBeginTime(), roomBookingDto.getEndTime()));
-		//List<RoomBooking>  roomlist = criteriaroom.list();
-		if(room.isEmpty()){
-			//if(roomlist !=null && roomlist.size()>0){
-				//response.setMessage("会议安排时间冲突!!!");
-				//throw new IllegalArgumentException(String.format("会议安排时间冲突", roomBookingDto.getBeginTime()));
-			//}else{
-				
+		List<RoomBooking>  room = criteria.list();		
+		if(room.isEmpty()){			
 				RoomBooking rb = new RoomBooking();
-				
+				BeanCopierUtils.copyProperties(roomBookingDto, rb);
 				rb.setId(UUID.randomUUID().toString());
-				rb.setMrID(roomBookingDto.getMrID());
-				String rbday = roomBookingDto.getRbDay();
-				Date date = DateUtils.toDateDay(rbday);
-				rb.setRbDay(date);
+				/*rb.setMrID(roomBookingDto.getMrID());
+				rb.setRbDay(DateUtils.ConverToDate(roomBookingDto.getRbDay(),DateUtils.DATE_PATTERN));
+				
 				String begin=roomBookingDto.getBeginTime();
 				Date start =DateUtils.toDate(begin);
+				
 				rb.setBeginTime(start);
 				String endTime = roomBookingDto.getEndTime();
 				Date end =DateUtils.toDate(endTime);
@@ -200,7 +185,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				rb.setDueToPeople(roomBookingDto.getDueToPeople());
 				rb.setRemark(roomBookingDto.getRemark());
 				rb.setRbStatus(roomBookingDto.getRbStatus());
-				rb.setAddressName(roomBookingDto.getAddressName());
+				rb.setAddressName(roomBookingDto.getAddressName());*/
+				Date now = new Date();
+				rb.setCreatedDate(now);
+				rb.setModifiedDate(now);
 				rb.setCreatedBy(currentUser.getLoginName());
 				rb.setModifiedBy(currentUser.getLoginName());
 				roomBookingRepo.save(rb);
@@ -226,7 +214,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 //			room.setRbDay(roomBookingDto.getRbDay());
 //			room.setBeginTime(roomBookingDto.getBeginTime());
 //			room.setEndTime(roomBookingDto.getEndTime());
-			String rbday = roomBookingDto.getRbDay();
+			/*String rbday = roomBookingDto.getRbDay();
 			Date date = DateUtils.toDateDay(rbday);
 			room.setRbDay(date);
 			String begin=roomBookingDto.getBeginTime();
@@ -234,7 +222,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			room.setBeginTime(start);
 			String endTime = roomBookingDto.getEndTime();
 			Date end =DateUtils.toDate(endTime);
-			room.setEndTime(end);
+			room.setEndTime(end);*/
 			
 			room.setContent(roomBookingDto.getContent());
 			room.setRbType(roomBookingDto.getRbType());

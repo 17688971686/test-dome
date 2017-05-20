@@ -1,15 +1,13 @@
 package cs.common.utils;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.log4j.Logger;
-
-import cs.service.project.SignServiceImpl;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import org.apache.log4j.Logger;
 
 /**
  * 日期工具类
@@ -17,12 +15,14 @@ import java.util.Locale;
  *
  */
 public class DateUtils {
-	private static Logger log = Logger.getLogger(SignServiceImpl.class);
+	private static Logger log = Logger.getLogger(DateUtils.class);
 	
-    private static final String TIME_PATTERN = "HH:mm";
-    public static final long DAY_MILLI = 24 * 60 * 60 * 1000;
+	public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_PATTERN = "yyyy-MM-dd";
+	public static final String TIME_PATTERN = "HH:mm";
+	public static final long DAY_MILLI = 24 * 60 * 60 * 1000;
 
-    private static final int DAY_OF_MONTH[] = {
+	public static final int DAY_OF_MONTH[] = {
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     };
 		  
@@ -35,53 +35,19 @@ public class DateUtils {
 	 */
 	public static long random(long begin,long end){
 	   long rtn = begin + (long)(Math.random() * (end - begin));
-	
+	   
 	   if(rtn == begin || rtn == end){
 		   return random(begin,end);
 	   }
 	   return rtn;
 	}
 
-    /**
-	  
-     */
-    public static String getDatePattern() {
-        String defaultDatePattern = "yyyy-MM-dd";
-        return defaultDatePattern;
-    }
-
-    public static String getDateTimePattern() {
-        return getDatePattern() + " HH:mm:ss.S";
-    }
-
-    /**
-     * 将时间格式化为yyyy-MM-dd
-     * @param aDate
-     * @return
-	  
-     */
-    public static String getDate(Date aDate) {
-        SimpleDateFormat df;
-        String returnValue = "";
-
-        if (aDate != null) {
-            df = new SimpleDateFormat(getDatePattern());
-            returnValue = df.format(aDate);
-        }
-
-        return (returnValue);
-    }
-
-    public static String getYear(Date aDate) {
-        SimpleDateFormat df;
-        String returnValue = "";
-
-        if (aDate != null) {
-            df = new SimpleDateFormat("yyyy");
-            returnValue = df.format(aDate);
-        }
-
-        return (returnValue);
+    public static String getYear(Date date) {
+    	if(date == null){
+    		return null;
+    	}
+        SimpleDateFormat df = new SimpleDateFormat("yyyy");
+        return df.format(date);
     }   
 
     /**
@@ -144,16 +110,6 @@ public class DateUtils {
         Date date = new Date(mi);
 
         return getDateTime(mask, date);
-    }
-
-    /**
-     * 
-     * @param aDate
-     * @return
-	  
-     */
-    public static String convertDateToString(Date aDate) {
-        return getDateTime(getDatePattern(), aDate);
     }
 
     /**
@@ -353,18 +309,14 @@ public class DateUtils {
             return DAY_OF_MONTH[month];
     }
 
-    public static Date getNextDay(Date date)
-    {
+    public static Date getNextDay(Date date){
         return addDay(date, 1);
     }
 
-    public static Date getStartDate(Date date)
-    {
-        if(date == null)
-        {
+    public static Date getStartDate(Date date){
+        if(date == null){
             return null;
-        } else
-        {
+        } else{
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             cal.set(11, 0);
@@ -375,32 +327,25 @@ public class DateUtils {
         }
     }
 
-    public static String getTime(Date date)
-    {
-        if(date == null)
-        {
+    public static String getTime(Date date){
+        if(date == null){
             return null;
-        } else
-        {
+        } else{
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
             return format.format(date);
         }
     }
 
-    public static String getTimeIgnoreSecond(Date date)
-    {
-        if(date == null)
-        {
+    public static String getTimeIgnoreSecond(Date date){
+        if(date == null){
             return null;
-        } else
-        {
+        } else{
             SimpleDateFormat format = new SimpleDateFormat("HH:mm");
             return format.format(date);
         }
     }
 
-    public static int getWeekOfYear(Date date)
-    {
+    public static int getWeekOfYear(Date date){
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return cal.get(3);
@@ -474,7 +419,7 @@ public class DateUtils {
 	  
      */
     public static String getCurrentDateTime(){
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_PATTERN);
     	Calendar c = Calendar.getInstance();
     	return sdf.format(c.getTime());
     }
@@ -596,28 +541,29 @@ public class DateUtils {
 	}
 	
 	/** 
-    * 将Date类型时间转换为字符串 
+    * 将Date类型时间转换为字符串 (yyyy-MM-dd HH:mm:ss)
     * @param date 
     * @return 
     */
-	public static String toString(Date date) {  
-        String time;  
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-       // formater.applyPattern("yyyy-MM-dd HH:mm:ss");  
-        time = formater.format(date);  
-        return time;  
+	public static String toStringDateTime(Date date) {    
+		if(date == null){
+			return null;
+		}
+        SimpleDateFormat formater = new SimpleDateFormat(DATE_TIME_PATTERN);  
+        return formater.format(date);   
        
     }
 	/** 
-	 * 将Date类型时间转换为字符串     一整天
+	 * 将Date类型时间转换为字符串 (yyyy-MM-dd)
 	 * @param date 
 	 * @return 
 	 */
 	public static String toStringDay(Date date){
-		String time ;
-		SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-		time = formater.format(date);
-		return time;
+		if(date == null){
+			return null;
+		}
+		SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN);
+		return formater.format(date);
 	}
 	/** 
 	 * 将Date类型时间转换为字符串    小时 
@@ -630,70 +576,7 @@ public class DateUtils {
 		time = formater.format(date);
 		return time;
 	}
-	/** 
-     * 按照参数提供的格式将Date类型时间转换为字符串 
-     * @param date 
-     * @param formaterString 
-     * @return   
-     */  
-    public static String toDateString(Date date, String formaterString) {  
-        String time;  
-        SimpleDateFormat formater = new SimpleDateFormat();  
-        formater.applyPattern(formaterString);  
-        time = formater.format(date);  
-        return time;  
-    }
-	/** 
-     * 将时间字符串转换为Date类型 
-     * @param dateStr 
-     * @return Date 
-     */  
-    public static Date toDate(String dateStr) {  
-    	Date date = null;
-    	SimpleDateFormat formater = new SimpleDateFormat();
-    	formater.applyPattern("yyyy-MM-dd HH:mm:ss");
-    	//formater.format("yyyy-MM-dd HH:mm:ss");
-    	try {
-			date =formater.parse(dateStr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	return date;
-    } 
-    /**
-     * 将字符串类型String转换为Date类型
-     * @param dateStr
-     * @return
-     */
-    public static Date toDateString(String dateStr){
-    	Date date = null;
-    	SimpleDateFormat formater = new SimpleDateFormat();
-    	formater.applyPattern("yyyy-MM-dd");
-    	try {
-			date =formater.parse(dateStr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	return date;
-    }
-    /** 
-     * 将时间字符串转换为Date类型  天
-     * @param dateStr 
-     * @return Date 
-     */  
-    public static Date toDateDay(String dateStr){
-    	
-    	Date date = null;
-    	SimpleDateFormat formater = new SimpleDateFormat();
-    	formater.applyPattern("yyyy-MM-dd HH:mm:ss");
-    	//formater.format("yyyy-MM-dd HH:mm:ss");
-    	try {
-			date =formater.parse(dateStr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	return date;
-    }
+	
     
     
     /** 
@@ -701,27 +584,38 @@ public class DateUtils {
      * @param dateStr 
      * @return date
      */  
-    public static String ConverToString(Date date)  
-    {  
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");  
-          
-        return df.format(date);  
+    public static String converToString(Date date,String dateFormt) { 
+    	 String returnValue = "";
+    	 if(date != null){
+    		  return returnValue;
+    	 }
+    	 if(!Validate.isString(dateFormt)){
+    		dateFormt = DATE_PATTERN;
+    	 }
+    	 SimpleDateFormat df = new SimpleDateFormat(dateFormt);
+
+    	 return df.format(date);             
     }  
     /** 
      * 把字符串转为日期    
      * @param dateStr 
      * @return date
      */  
-    public static Date ConverToDate(String strDate) throws ParseException {  
-    	Date date;
-    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");  
+    public static Date converToDate(String strDate,String dateFormt)  {  
+    	if(!Validate.isString(strDate)){
+    		return null;
+    	}
+    	if(!Validate.isString(dateFormt)){
+    		dateFormt = DATE_PATTERN;
+    	 }
+    	Date date = null;
+    	SimpleDateFormat df = new SimpleDateFormat(dateFormt);  
     	try {
             date = df.parse(strDate);
         } catch (ParseException pe) {
-            log.error("ParseException: " + pe); 
-            throw new ParseException(pe.getMessage(), pe.getErrorOffset());
+            log.error("ParseException: " + pe);             
         }
-        return (date);  
+        return date;  
     }
 	
     

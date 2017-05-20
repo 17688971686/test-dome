@@ -1,7 +1,5 @@
 package cs.service.expert;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,10 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.domain.expert.Expert;
 import cs.domain.expert.WorkExpe;
-import cs.model.expert.ExpertDto;
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
@@ -40,17 +38,8 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 		if(listWork != null && listWork.size() > 0){
 			listWorktDto = new ArrayList<>(listWork.size());
 			for (WorkExpe item : listWork) {
-				WorkExpeDto workDto=new WorkExpeDto();
-				workDto.setWeID(item.getWeID());
-				if(item.getBeginTime()!=null){
-					workDto.setBeginTime(DateUtils.convertDateToString(item.getBeginTime()));
-				}
-				workDto.setExpertID(item.getExpert().getExpertID());
-				if(item.getEndTime()!=null){
-					workDto.setEndTime(DateUtils.convertDateToString(item.getEndTime()));
-				}
-				workDto.setJob(item.getJob());
-				workDto.setCompanyName(item.getCompanyName());
+				WorkExpeDto workDto = new WorkExpeDto();
+				BeanCopierUtils.copyProperties(item, workDto);
 				listWorktDto.add( workDto);
 			}
 		}		
@@ -61,32 +50,25 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 	@Override
 	@Transactional
 	public void createWork(WorkExpeDto workExpeDto) {
-		WorkExpe findWork=workExpeRepo.findWorkByName(workExpeDto.getCompanyName());
-		if (findWork==null) {// 工作经验不存在			
+		//WorkExpe findWork = workExpeRepo.findWorkByName(workExpeDto.getCompanyName());
+		// 工作经验不存在	
+		//if (findWork==null) {		
 			WorkExpe work = new WorkExpe();
-			Expert expert = expertRepo.findById(workExpeDto.getExpertID());
-			work.setWeID(UUID.randomUUID().toString());
-			try {
-				work.setBeginTime(DateUtils.ConverToDate(workExpeDto.getBeginTime()));
-				work.setEndTime(DateUtils.ConverToDate(workExpeDto.getEndTime()));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			work.setCompanyName(workExpeDto.getCompanyName());
-			work.setJob(workExpeDto.getJob());
-			work.setExpert(expert);
+			BeanCopierUtils.copyProperties(workExpeDto, work);
 			
+			work.setWeID(UUID.randomUUID().toString());										
 			Date now = new Date();
 			work.setCreatedBy(currentUser.getLoginName());
 			work.setModifiedBy(currentUser.getLoginName());
 			work.setCreatedDate(now);
 			work.setModifiedDate(now);
 			
+			work.setExpert(expertRepo.findById(workExpeDto.getExpertID()));
 			workExpeRepo.save(work);				
 			logger.info(String.format("添加工作经验,单位名称:%s", work.getCompanyName()));
-		} else {
-			throw new IllegalArgumentException(String.format("公司名%s 已经存在", workExpeDto.getCompanyName()));
-		}
+		//} else {
+		//	throw new IllegalArgumentException(String.format("公司名%s 已经存在", workExpeDto.getCompanyName()));
+		//}
 	}
 		
 	@Override
@@ -112,14 +94,7 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 	@Transactional
 	public void updateWork(WorkExpeDto workExpeDto) {
 		WorkExpe workExpe = workExpeRepo.findById(workExpeDto.getWeID());
-		try {
-			workExpe.setBeginTime(DateUtils.ConverToDate(workExpeDto.getBeginTime()));
-			workExpe.setEndTime(DateUtils.ConverToDate(workExpeDto.getEndTime()));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		workExpe.setCompanyName(workExpeDto.getCompanyName());
-		workExpe.setJob(workExpeDto.getJob());
+		BeanCopierUtils.copyPropertiesIgnoreNull(workExpeDto, workExpe);
 		workExpeRepo.save(workExpe);
 		logger.info(String.format("更新工作经验,单位名称为:%s", workExpeDto.getCompanyName()));
 	}

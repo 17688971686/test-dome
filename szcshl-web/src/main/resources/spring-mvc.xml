@@ -22,21 +22,34 @@
 	<mvc:interceptors>
 		<bean class="cs.common.ApiFilter" />
 	</mvc:interceptors> 
+	
 	<!-- 以下为SpringMVC配置 -->
-	<mvc:annotation-driven>
-		<!-- 返回json数据，@response使用 -->
-		<mvc:message-converters register-defaults="true">
-			<!-- <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> -->
-			<bean class="cs.common.JacksonMessageConverter">
-				<property name="supportedMediaTypes">
-					<list>
-						<value>text/html;charset=UTF-8</value>
-						<value>application/json;charset=UTF-8</value>
-					</list>
-				</property>
-			</bean>
-		</mvc:message-converters>
-	</mvc:annotation-driven>
+    <mvc:annotation-driven>
+        <!-- 返回json数据，@response使用 -->
+        <mvc:message-converters register-defaults="true">
+            <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>text/json;charset=UTF-8</value>
+                    </list>
+                </property>
+                <property name="features">
+                    <list>
+                        <!-- Boolean字段如果为null,输出为false,而非null -->
+                        <value>WriteNullBooleanAsFalse</value>
+                        <!-- null String不输出  -->
+                        <!--<value>WriteNullStringAsEmpty</value>-->
+                        <!-- Date的日期转换器 -->
+                        <value>WriteDateUseDateFormat</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>       
+    </mvc:annotation-driven>
+    
 	
 	<!-- <mvc:resources mapping="/resources/**" location="/resources/"/>
     <mvc:resources mapping="/static/**" location="/static/"/>

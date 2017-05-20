@@ -22,7 +22,6 @@ import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.ICurrentUser;
 import cs.common.Response;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.sys.Org;
 import cs.domain.sys.Role;
@@ -58,31 +57,13 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	@Transactional
-	public PageModelDto<UserDto> get(ODataObj odataObj) {
-		
-		List<User> listUser = userRepo.findByOdata(odataObj);
-		
+	public PageModelDto<UserDto> get(ODataObj odataObj) {		
+		List<User> listUser = userRepo.findByOdata(odataObj);		
 		List<UserDto> userDtoList = new ArrayList<>();
+		
 		for (User item : listUser) {
 			UserDto userDto = new UserDto();
-			userDto.setId(item.getId());
-			userDto.setLoginName(item.getLoginName());
-			userDto.setDisplayName(item.getDisplayName());
-			userDto.setPassword(item.getPassword());
-			userDto.setRemark(item.getRemark());
-			userDto.setCreatedDate(item.getCreatedDate());
-			
-			userDto.setUserSex(item.getUserSex());		
-			userDto.setUserPhone(item.getUserPhone());
-			userDto.setUserMPhone(item.getUserMPhone());
-			userDto.setEmail(item.getEmail());
-			userDto.setJobState(item.getJobState());
-			userDto.setUseState(item.getUseState());
-			userDto.setPwdState(item.getPwdState());
-			userDto.setUserOrder(item.getUserOrder());
-			userDto.setLastLogin(item.getLastLogin());
-			userDto.setUserIP(item.getUserIP());
-			userDto.setLastLoginDate(item.getLastLoginDate());
+			BeanCopierUtils.copyProperties(item, userDto);
 	            
 			// 查询相关角色
 			List<RoleDto> roleDtoList = new ArrayList<>();
@@ -103,8 +84,7 @@ public class UserServiceImpl implements UserService {
             	orgDto.setName(item.getOrg().getName());            	
             }
             userDto.setOrgDto(orgDto);
-			
-			
+						
 			userDtoList.add(userDto);
 		}
 		PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
@@ -118,46 +98,31 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void createUser(UserDto userDto) {
-		
+	public void createUser(UserDto userDto) {		
 		User findUser=userRepo.findUserByName(userDto.getLoginName());
-		
-		if (findUser==null) {// 用户不存在
+		// 用户不存在
+		if (findUser==null) {
 			User user = new User();
-			user.setRemark(userDto.getRemark());
-			user.setLoginName(userDto.getLoginName());
-			user.setDisplayName(userDto.getDisplayName());
+			BeanCopierUtils.copyProperties(userDto, user);
+
 			user.setId(UUID.randomUUID().toString());
 			user.setCreatedBy(currentUser.getLoginName());
+			user.setModifiedBy(currentUser.getLoginName());
 			//MD5加密密码
 			/*String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
 			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
 			String password = Cryptography.md5(userDto.getPassword(), userDto.getPassword()+salt2,2);
 			user.setUserSalt(salt1);*/
 			user.setPassword(userDto.getPassword());
-			
-			
-			user.setModifiedBy(currentUser.getLoginName());
-			user.setUserPhone(userDto.getUserPhone());
-			user.setUserMPhone(userDto.getUserMPhone());
-			user.setEmail(userDto.getEmail());
-			user.setJobState(userDto.getJobState());
-			user.setUseState(userDto.getUseState());
-			user.setPwdState(userDto.getPwdState());
-			user.setUserOrder(userDto.getUserOrder());
-			
-			List<String> orgs = new ArrayList<String>();
-			List<String> roleNames = new ArrayList<String>();
-			
+															
+			List<String> roleNames = new ArrayList<String>();			
 			// 加入角色
 			for (RoleDto roleDto : userDto.getRoles()) {
 				Role role = roleRepo.findById(roleDto.getId());
 				if (role != null) {
 					user.getRoles().add(role);
 					roleNames.add(role.getRoleName());
-					//System.out.println(role.getRoleName());
 				}
-
 			}
 			//添加部门			
 			if(Validate.isString(userDto.getOrgId())){
@@ -165,7 +130,7 @@ public class UserServiceImpl implements UserService {
 				user.setOrg(o);
 			}			
 			userRepo.save(user);
-			//System.out.println(userDto.getId()+userDto.getLoginName()+userDto.getPassword());
+
 			createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
 			logger.info(String.format("创建用户,登录名:%s", userDto.getLoginName()));
 		} else {
@@ -178,25 +143,10 @@ public class UserServiceImpl implements UserService {
 	public List<OrgDto> getOrg(ODataObj odataObj ) {
 		List<Org> org= orgRepo.findByOdata(odataObj);
 		List<OrgDto> orgDto = new ArrayList<>();
-		for(Org item : org){
-			
+		
+		for(Org item : org){			
 			OrgDto orgDtos = new OrgDto();
-			orgDtos.setId(item.getId());
-			orgDtos.setName(item.getName());
-			orgDtos.setRemark(item.getRemark());
-			
-			orgDtos.setOrgPhone(item.getOrgPhone());
-			orgDtos.setOrgFax(item.getOrgFax());
-			orgDtos.setOrgAddress(item.getOrgAddress());
-			orgDtos.setOrgFunction(item.getOrgFunction());
-			
-			orgDtos.setOrgDirector(item.getOrgDirector());//科长
-			orgDtos.setOrgAssistant(item.getOrgAssistant());//副科长
-			orgDtos.setOrgCompany(item.getOrgCompany());//单位名称
-			orgDtos.setCreatedBy(currentUser.getLoginName());
-			orgDtos.setOrgIdentity(item.getOrgIdentity());
-			orgDtos.setModifiedBy(currentUser.getLoginName());
-			
+			BeanCopierUtils.copyProperties(item, orgDtos);						
 			orgDto.add(orgDtos);
 		}
 		return orgDto;
@@ -205,16 +155,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public void deleteUser(String id) {
-		userRepo.deleteById(User_.id.getName(), id);
-		/*User user = userRepo.findById(id);
-		if (user != null) {
-			if(!user.getLoginName().equals("admin")){
-				userRepo.delete(user);
-				this.deleteActivitiUser(user.getId());
-				logger.info(String.format("删除用户,用户名:%s", user.getLoginName()));
-			}
-			
-		}*/
+		userRepo.deleteById(User_.id.getName(), id);		
 	}
 
 	@Override
@@ -271,11 +212,10 @@ public class UserServiceImpl implements UserService {
 				currentUser.setDisplayName(user.getDisplayName());
 				currentUser.setLoginUser(user);
 				user.setLoginFailCount(0);
+				
 				String loginIP=	request.getRemoteAddr();
-				System.out.println(loginIP);
 				user.setUserIP(loginIP);
-				String lastloign = DateUtils.toString(new Date());//获取当前时间
-				user.setLastLogin(lastloign);
+				user.setLastLogin(new Date());
 				user.setLastLoginDate(new Date());
 				//shiro
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());

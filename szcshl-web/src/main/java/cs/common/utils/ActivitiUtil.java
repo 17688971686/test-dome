@@ -3,6 +3,8 @@ package cs.common.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import cs.common.Constant;
+
 /**
  * 流程工具类
  * @author ldm
@@ -80,4 +82,12 @@ public class ActivitiUtil {
 	    }  
 	    return sb.toString();  
 	}  
+	
+	public static String getProcessBusinessKey(String oldKey){
+		if(oldKey.indexOf(Constant.FLOW_LINK_SYMBOL) > -1){
+			return StringUtil.getSplit(oldKey, Constant.FLOW_LINK_SYMBOL).get(0);
+		}else{
+			return oldKey;
+		}
+	}
 }

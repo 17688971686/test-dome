@@ -14,7 +14,6 @@ import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
@@ -25,7 +24,6 @@ import cs.model.project.WorkProgramDto;
 import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.UserService;
 
 @Service
@@ -47,45 +45,34 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 			WorkProgram workProgram = new WorkProgram(); 		
 			BeanCopierUtils.copyProperties(workProgramDto, workProgram);
 			
-			Date now = new Date();
-			workProgram.setCreatedBy(currentUser.getLoginUser().getId());
-			workProgram.setCreatedDate(now);
+			Date now = new Date();		
 			workProgram.setModifiedBy(currentUser.getLoginUser().getId());
-			workProgram.setModifiedDate(now);
-			//标题时间
-			workProgram.setTitleDate(now);
-			//补充资料函发文日期
-			String sup=workProgramDto.getSuppLetterDate();
-			Date supdate=DateUtils.toDateString(sup);
-			workProgram.setSuppLetterDate(supdate);
-			//调研开始时间
-			String beginTiem = workProgramDto.getStudyBeginTime();
-			Date start = DateUtils.toDateString(beginTiem);
-			workProgram.setStudyBeginTime(start);
-			//调研结束时间
-			String endTime=	workProgramDto.getStudyEndTime();
-			Date end = DateUtils.toDateString(endTime);
-			workProgram.setStudyEndTime(end);
+			workProgram.setModifiedDate(now);			
 			
 			if(!Validate.isString(workProgramDto.getId())){
 				workProgram.setId(UUID.randomUUID().toString());
+				workProgram.setCreatedBy(currentUser.getLoginUser().getId());
+				workProgram.setCreatedDate(now);
 			}	
 			
-			Sign sign = signRepo.findById(workProgramDto.getSignId());			
-			if(!Validate.isString(workProgramDto.getIsMain())){
-				//判断是否是主流程
-				if(currentUser.getLoginUser().getId().equals(sign.getmFlowMainUserId()) 
-						|| currentUser.getLoginUser().getId().equals(sign.getmFlowAssistUserId())){
-					workProgram.setIsMain(Constant.EnumState.YES.getValue());
-				}else{
-					workProgram.setIsMain(Constant.EnumState.NO.getValue());
-				}
+			Sign sign = signRepo.findById(workProgramDto.getSignId());
+			//判断是否是主流程
+			boolean isMainFlow = false;
+			if((Validate.isString(workProgramDto.getIsMain()) && workProgramDto.getIsMain().equals(EnumState.YES.getValue()))
+					|| isMainSignChange(sign)){		
+				isMainFlow = true;				
+			}			
+			if(isMainFlow){
+				workProgram.setIsMain(EnumState.YES.getValue());
+				sign.setIsreviewCompleted(EnumState.YES.getValue());
+			}else{
+				workProgram.setIsMain(Constant.EnumState.NO.getValue());
+				sign.setIsreviewACompleted(EnumState.YES.getValue());
 			}
-			
+						
 			workProgram.setSign(sign);			
 			workProgramRepo.save(workProgram);
-			
-			sign.setIsreviewcompleted(EnumState.YES.getValue());
+						
 			sign.getWorkProgramList().add(workProgram);
 			signRepo.save(sign);
 			//用于返回页面
@@ -101,43 +88,57 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	 */
 	@Override
 	public WorkProgramDto initWorkBySignId(String signId,String isMain) {
-		WorkProgramDto workProgramDto = new WorkProgramDto();
-		User curUser = currentUser.getLoginUser();		
-                
+		boolean isMainUser = false,isAssistUser = false;
+		Sign sign = signRepo.findById(signId);
+		WorkProgramDto workProgramDto = new WorkProgramDto();	
+		 		              
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from "+WorkProgram.class.getSimpleName()+" where "+WorkProgram_.sign.getName()+"."+Sign_.signid.getName()+" = :signId ");
         hqlBuilder.setParam("signId", signId);
-        //hqlBuilder.append(" and ("+ WorkProgram_.mianChargeUserId.getName()+" = :mainUserId  or " + WorkProgram_.secondChargeUserId.getName()+" =:sencondUserId )");
-        //hqlBuilder.setParam("mainUserId", curUser.getId()).setParam("sencondUserId", curUser.getId());
+        
+        //如果有传入的参数，则优先按传入的参数查询，没有则根据当前用户判断
+        if(Validate.isString(isMain)){
+        	hqlBuilder.append(" and "+WorkProgram_.isMain.getName()+" = :isMain ").setParam("isMain", isMain);
+        }else{
+        	isMainUser = isMainSignChange(sign);
+        	if(isMainUser) {
+        		isMain = EnumState.YES.getValue();
+        	}else{
+        		isAssistUser = isAssistSignChange(sign);
+        		if(isAssistUser){
+        			isMain = EnumState.NO.getValue();
+        		}
+        	}
+        }
+        
         if(Validate.isString(isMain)){
         	hqlBuilder.append(" and "+WorkProgram_.isMain.getName()+" = :isMain ").setParam("isMain", isMain);
         }
         List<WorkProgram> list = workProgramRepo.findByHql(hqlBuilder);
-		
-        Sign sign = signRepo.findById(signId);
-        
+		              
 		if(list != null && list.size() > 0){
-			//如果当前人是负责人，或者是创建人的上级领导，则显示
+			//如果是创建人的上级领导，则显示
 			WorkProgram workProgram = null;
 			for(int i=0,l= list.size();i<l;i++){
 				workProgram = list.get(i);
 				UserDto checkUser = userService.findById(workProgram.getCreatedBy());
-				if(curUserIsSignChange(sign,checkUser) || userService.curUserIsSuperLeader(checkUser)){
+				if(userService.curUserIsSuperLeader(checkUser) || isMainUser || isAssistUser){
 					BeanCopierUtils.copyProperties(workProgram,workProgramDto);
-					workProgramDto.setTitleDate(DateUtils.convertDateToString(workProgram.getTitleDate()));
+					break;
 				}				
 			}			
-		}else{						
+		}
+		
+		if(!Validate.isString(workProgramDto.getId())){
 			workProgramDto.setProjectName(sign.getProjectname());
-			workProgramDto.setTitleDate(DateUtils.convertDateToString(new Date()));
+			workProgramDto.setTitleDate(new Date());
 			//来文单位默认全部是：深圳市发展和改革委员会，可改...
 			//联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
 			workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
 			workProgramDto.setSendFileUser(sign.getMainDeptUserName());
 			
-			//处理第一负责人和第二负责人
 			//主流程
-			if(curUser.getId().equals(sign.getmFlowMainUserId()) || curUser.getId().equals(sign.getmFlowAssistUserId())){
+			if(isMainUser){
 				UserDto dealUser = userService.findById(sign.getmFlowMainUserId());
 				workProgramDto.setMianChargeUserId(dealUser.getId());
 				workProgramDto.setMianChargeUserName(dealUser.getDisplayName());
@@ -170,18 +171,16 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 		return workProgramDto;
 	}
 
-	//当前用户是否是收文的负责人
-	protected boolean curUserIsSignChange(Sign sign,UserDto checkUser){
-		User curUser = currentUser.getLoginUser();	
-		if(curUser.getOrg() == null){
-			 return false;
-		}
-		if(	checkUser.getOrgDto().getId().equals(curUser.getOrg().getId()) 
-			&& (curUser.getId()).equals(sign.getmFlowAssistUserId()) || (curUser.getId()).equals(sign.getmFlowMainUserId())
-			|| (curUser.getId()).equals(sign.getaFlowAssistUserId()) || (curUser.getId()).equals(sign.getaFlowMainUserId())){
-			return true;
-		}else{
-			return false;
-		}
+	//判断当前用户是否是主流程的处理人
+	protected boolean isMainSignChange(Sign sign){
+		User curUser = currentUser.getLoginUser();
+		return (curUser.getId()).equals(sign.getmFlowAssistUserId()) || (curUser.getId()).equals(sign.getmFlowMainUserId());
 	}
+	
+	//判断当前用户是否是协流程处理人
+	protected boolean isAssistSignChange(Sign sign){
+		User curUser = currentUser.getLoginUser();
+		return (curUser.getId()).equals(sign.getaFlowAssistUserId()) || (curUser.getId()).equals(sign.getaFlowMainUserId());
+	}
+
 }

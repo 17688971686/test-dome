@@ -81,7 +81,6 @@
                
         //S_跳转到 发文 编辑页面
         vm.addDisPatch = function(){
-        	//console.log(vm.model.signid);
         	$state.go('dispatchEdit', {signid:vm.model.signid});
         }//E_跳转到 发文 编辑页面
                    

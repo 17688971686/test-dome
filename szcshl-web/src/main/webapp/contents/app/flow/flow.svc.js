@@ -163,9 +163,7 @@
 									if(response.data.reCode == "error"){
 										vm.isCommit = false;
 									}else{
-										if(vm.flow.processKey == "FINAL_SIGN_FLOW"){
-											$state.go('flowSign');
-										}
+										$state.go('index');
 									}																		
 								}
 							})

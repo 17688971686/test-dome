@@ -14,7 +14,6 @@ import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
@@ -43,12 +42,6 @@ public class ExpertServiceImpl implements ExpertService {
 	private ProjectExpeRepo projectExpeRepo;
 	@Autowired
 	private ICurrentUser currentUser;
-   
-	@Override
-	public List<ExpertDto> findAll() {
-		
-		return null;
-	}
 	
 	@Override
 	public PageModelDto<ExpertDto> get(ODataObj odataObj) {
@@ -56,15 +49,9 @@ public class ExpertServiceImpl implements ExpertService {
 		PageModelDto<ExpertDto> pageModelDto = new PageModelDto<>();
 		List<ExpertDto> listExpertDto = new ArrayList<>();
 		for (Expert item : listExpert) {
-			ExpertDto expertDto=new ExpertDto();
-			ExpertToExpertDto(item, expertDto);
-			if(item.getBirthDay() != null){
-				expertDto.setBirthDay(DateUtils.toString(item.getBirthDay()));
-			}
-			if(item.getGraduateDate() != null){
-				expertDto.setGraduateDate(DateUtils.toString(item.getGraduateDate()));
-			}
-			 listExpertDto.add(expertDto);
+			ExpertDto expertDto = new ExpertDto();
+			BeanCopierUtils.copyProperties(item, expertDto);	
+			listExpertDto.add(expertDto);
 		}
 		pageModelDto.setCount(odataObj.getCount());
 		pageModelDto.setValue(listExpertDto);
@@ -74,29 +61,28 @@ public class ExpertServiceImpl implements ExpertService {
 	@Override
 	@Transactional
 	public String createExpert(ExpertDto expertDto) {
-		Expert findExpert=expertRepo.findExpertByName(expertDto.getIdCard());
-		Expert expert = new Expert();
-		if (findExpert==null) {// 重复专家查询
-			ExpertDtoToExpert(expertDto,expert);
-			try {
-				if(expertDto.getGraduateDate() != null){
-					expert.setGraduateDate(DateUtils.ConverToDate(expertDto.getGraduateDate()));
-				}
-				if(expertDto.getBirthDay() != null){
-					expert.setBirthDay(DateUtils.ConverToDate(expertDto.getBirthDay()));
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		List<Expert> list = expertRepo.findExpertByIdCard(expertDto.getIdCard());
+		
+		if (list == null || list.size() == 0) {// 重复专家查询
+			Expert expert = new Expert();
+			BeanCopierUtils.copyProperties(expertDto, expert);
+			//设置默认属性
 			expert.setState(EnumExpertState.AUDITTING.getValue());
 			expert.setExpertID(UUID.randomUUID().toString());
 			expert.setExpertNo(NumIncreaseUtils.getExpertNo());
+			Date now = new Date();
+			expert.setCreatedDate(now);
+			expert.setCreatedBy(currentUser.getLoginName());
+			expert.setModifiedBy(currentUser.getLoginName());
+			expert.setModifiedDate(now);
+			//设置返回值
+			expertDto.setExpertID(expert.getExpertID());
 			expertRepo.save(expert);
 			logger.info(String.format("添加专家,专家名为:%s", expert.getName()));
 		} else {
 			throw new IllegalArgumentException(String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
 		}
-		return expert.getExpertID();
+		return expertDto.getExpertID();
 	}
 
 	@Override
@@ -104,16 +90,16 @@ public class ExpertServiceImpl implements ExpertService {
 	public void deleteExpert(String id) {		
 		Expert expert = expertRepo.findById(id);
 		if (expert != null) {
-				List<WorkExpe> workList = expert.getWork();
-				for (WorkExpe workExpe : workList) {
-					workExpeRepo.delete(workExpe);
-				}
-				List<ProjectExpe> projectList = expert.getProject();
-				for (ProjectExpe projectExpe : projectList) {
-					projectExpeRepo.delete(projectExpe);
-				}
-				expertRepo.delete(expert);
-				logger.info(String.format("删除专家,专家名为:%s", expert.getName()));
+			List<WorkExpe> workList = expert.getWork();
+			for (WorkExpe workExpe : workList) {
+				workExpeRepo.delete(workExpe);
+			}
+			List<ProjectExpe> projectList = expert.getProject();
+			for (ProjectExpe projectExpe : projectList) {
+				projectExpeRepo.delete(projectExpe);
+			}
+			expertRepo.delete(expert);
+			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));
 		}			
 	}
 	
@@ -154,80 +140,16 @@ public class ExpertServiceImpl implements ExpertService {
 		}						
 	}
 	
-	
-	private void ExpertDtoToExpert(ExpertDto expertDto,Expert expert){
-		BeanCopierUtils.copyProperties(expertDto, expert);
-        Date now = new Date();
-        expert.setCreatedBy(currentUser.getLoginName());
-        expert.setCreatedDate(now);
-        expert.setModifiedBy(currentUser.getLoginName());
-        expert.setModifiedDate(now);
-	}
-	
-	private void ExpertToExpertDto(Expert expert,ExpertDto expertDto){
-		BeanCopierUtils.copyProperties(expert, expertDto);
-		expertDto.setCreatedDate(expert.getCreatedDate());
-		expertDto.setModifiedDate(expert.getModifiedDate());
-	}
 	@Override
 	@Transactional
 	public void updateExpert(ExpertDto expertDto) {
 		Expert expert = expertRepo.findById(expertDto.getExpertID());
-		/*List<WorkExpeDto> workDtoList=expertDto.getWork();
-		List<WorkExpe> workList=new ArrayList<>();
-		WorkExpe work=new WorkExpe();
-		for (WorkExpeDto workExpeDto : workDtoList) {
-			BeanCopierUtils.copyPropertiesIgnoreNull(workExpeDto, work);
-			workList.add(work);
-		}
-		List<ProjectExpeDto> projectDtoList=expertDto.getProject();
-		List<ProjectExpe> projectList=new ArrayList<>();
-		ProjectExpe project=new ProjectExpe();
-		for (ProjectExpeDto projectDto : projectDtoList) {
-			BeanCopierUtils.copyPropertiesIgnoreNull(projectDto, project);
-			projectList.add(project);
-		}
-		expert.setWork(workList);
-		expert.setProject(projectList);
-		*/
 		BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
 		
-		/*expert.setIdCard(expertDto.getIdCard());
-		expert.setAcaDemy(expertDto.getAcaDemy());
-		expert.setAddRess(expertDto.getAddRess());
-		expert.setBirthDay(expertDto.getBirthDay());
-		expert.setComPany(expertDto.getComPany());
-		expert.setDegRee(expertDto.getDegRee());
-		expert.setEmail(expertDto.getEmail());
-		expert.setExpeRttype(expertDto.getExpeRttype());
-		expert.setCreateDate(expertDto.getCreateDate());
-		expert.setName(expertDto.getName());
-		expert.setSex(expertDto.getSex());
-		expert.setPhone(expertDto.getPhone());
-		expert.setUserPhone(expertDto.getUserPhone());
-		expert.setMaJor(expertDto.getMaJor());
-		expert.setTitle(expertDto.getTitle());
-		expert.setJob(expertDto.getJob());
-		expert.setProcoSttype(expertDto.getProcoSttype());
-		expert.setProteChtype(expertDto.getProteChtype());
-		expert.setRemark(expertDto.getRemark());
-		expert.setQualifiCations(expertDto.getQualifiCations());
-		expert.setZipCode(expertDto.getZipCode());
-		*/
 		expert.setModifiedDate(new Date());
 		expert.setModifiedBy(currentUser.getLoginName());
 		expertRepo.save(expert);
 		logger.info(String.format("更新专家,专家名为:%s", expertDto.getName()));
-	}
-	@Override
-	public Expert findExpertByName(String expertName) {
-		return expertRepo.findExpertByName(expertName);
-	}
-
-	@Override
-	public PageModelDto<ExpertDto> searchMuti(ExpertDto expertDto) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -236,37 +158,26 @@ public class ExpertServiceImpl implements ExpertService {
 		ExpertDto expertDto = new ExpertDto();
 		if(expert != null){
 			BeanCopierUtils.copyProperties(expert, expertDto);
-			if(expert.getBirthDay() != null){
-				expertDto.setBirthDay(DateUtils.toString(expert.getBirthDay()));
+			//工作经验
+			if(expert.getWork() != null && expert.getWork().size() > 0){
+				List<WorkExpeDto> workDtoList=new ArrayList<>(expert.getWork().size());
+				expert.getWork().forEach(ew ->{
+					WorkExpeDto workDto=new WorkExpeDto();
+					BeanCopierUtils.copyProperties(ew, workDto);				
+					workDtoList.add(workDto);
+				});
+				expertDto.setWork(workDtoList);
 			}
-			if(expert.getGraduateDate() != null){
-				expertDto.setGraduateDate(DateUtils.toString(expert.getGraduateDate()));
-			}
-			List<WorkExpeDto> workDtoList=new ArrayList<>();
-			for (WorkExpe workExpe : expert.getWork()) {
-				WorkExpeDto workDto=new WorkExpeDto();
-				workDto.setWeID(workExpe.getWeID());
-				workDto.setBeginTime(DateUtils.toString(workExpe.getBeginTime()));
-				workDto.setEndTime(DateUtils.toString(workExpe.getEndTime()));
-				workDto.setExpertID(workExpe.getExpert().getExpertID());
-				workDto.setJob(workExpe.getJob());
-				workDto.setCompanyName(workExpe.getCompanyName());
-				workDtoList.add(workDto);
-			}
-			 expertDto.setWork(workDtoList);
-			 
-			 List<ProjectExpeDto> projectDtoList=new ArrayList<>();
-			 for (ProjectExpe projectExpe : expert.getProject()) {
-				 ProjectExpeDto projectDto=new ProjectExpeDto();
-					projectDto.setProjectbeginTime(DateUtils.toString(projectExpe.getProjectbeginTime()));
-					projectDto.setProjectendTime(DateUtils.toString(projectExpe.getProjectendTime()));
-					projectDto.setProjectName(projectExpe.getProjectName());
-					projectDto.setProjectType(projectExpe.getProjectType());
-					projectDto.setPeID(projectExpe.getPeID());
+			//项目经验
+			if(expert.getProject() != null && expert.getProject().size() > 0){
+				List<ProjectExpeDto> projectDtoList=new ArrayList<>(expert.getProject().size());
+				(expert.getProject()).forEach(ep ->{
+					ProjectExpeDto projectDto=new ProjectExpeDto();
+					BeanCopierUtils.copyProperties(ep, projectDto);							
 					projectDtoList.add(projectDto);
-			 }
-			 
-			 expertDto.setProject(projectDtoList);
+				});
+				expertDto.setProject(projectDtoList);
+			}			 			
 		}
 		return expertDto;
 	}

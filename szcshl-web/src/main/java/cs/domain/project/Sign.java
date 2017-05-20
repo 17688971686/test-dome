@@ -162,12 +162,12 @@ public class Sign extends DomainBase{
 	private String isassistproc;
 	
 	//项目主负责人
-	@Column(columnDefinition="VARCHAR(64)")
-	private String mainchargeuserid;
+	//@Column(columnDefinition="VARCHAR(64)")
+	//private String mainchargeuserid;
 	
 	//评审部门
-	@Column(columnDefinition="VARCHAR(64)")
-	private String reviewdeptid;
+	//@Column(columnDefinition="VARCHAR(64)")
+	//private String reviewdeptid;
 	
 	//归档编号
 	@Column(columnDefinition="VARCHAR(100)")
@@ -195,7 +195,11 @@ public class Sign extends DomainBase{
 	
 	//是否完成评审方案
 	@Column(columnDefinition="VARCHAR(2)")
-	private String isreviewcompleted;
+	private String isreviewCompleted;
+	
+	//是否完成分支的评审方案
+	@Column(columnDefinition="VARCHAR(2)")
+	private String isreviewACompleted;
 
 	//建议书项目处理表份数	 
 	@Column(columnDefinition="INTEGER")
@@ -705,7 +709,7 @@ public class Sign extends DomainBase{
 		this.isassistproc = isassistproc;
 	}
 
-	public String getMainchargeuserid() {
+	/*public String getMainchargeuserid() {
 		return mainchargeuserid;
 	}
 
@@ -719,7 +723,7 @@ public class Sign extends DomainBase{
 
 	public void setReviewdeptid(String reviewdeptid) {
 		this.reviewdeptid = reviewdeptid;
-	}
+	}*/
 
 	public String getFilenum() {
 		return filenum;
@@ -1201,14 +1205,22 @@ public class Sign extends DomainBase{
 		this.energyCopy = energyCopy;
 	}
 
-	public String getIsreviewcompleted() {
-		return isreviewcompleted;
+	public String getIsreviewCompleted() {
+		return isreviewCompleted;
 	}
 
-	public void setIsreviewcompleted(String isreviewcompleted) {
-		this.isreviewcompleted = isreviewcompleted;
-	}	
-	
+	public void setIsreviewCompleted(String isreviewCompleted) {
+		this.isreviewCompleted = isreviewCompleted;
+	}
+
+	public String getIsreviewACompleted() {
+		return isreviewACompleted;
+	}
+
+	public void setIsreviewACompleted(String isreviewACompleted) {
+		this.isreviewACompleted = isreviewACompleted;
+	}
+
 	public String getFolwState() {
 		return folwState;
 	}

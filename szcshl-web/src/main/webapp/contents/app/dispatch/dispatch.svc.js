@@ -177,7 +177,7 @@
 		function saveDispatch(vm){
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
-			//if(isValid){
+			if(isValid){
 				vm.dispatchDoc.proofreadName=$("#proofreadId").find("option:selected").text();
 				vm.dispatchDoc.draftDate=$("#draftDate").val();
 				vm.dispatchDoc.dispatchDate=$("#dispatchDate").val();
@@ -211,8 +211,9 @@
 					success:httpSuccess,
 					onError: function(response){vm.saveProcess = false;}
 				});
+				
 				initDispatchData(vm);
-			//}
+			}
 		}//E_保存
 		
 		//begin##chooseProject
@@ -237,7 +238,6 @@
 		//begin##chooseProject
 		function cancelProject(vm){
 			var idStr=vm.linkSignId;
-			console.log(idStr);
 			var linkSignId=$("input[name='checkss']:checked");
 			$.each(linkSignId, function(i, obj) {
 				if(idStr.lastIndexOf(obj.value)==0){
@@ -246,7 +246,6 @@
 					idStr=idStr.replace(","+obj.value,"");
 				}
 			});
-			//console.log(idStr);
 			vm.linkSignId=idStr;
 			getselectedSign(vm);
 		}

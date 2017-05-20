@@ -13,8 +13,7 @@
 			initFillData : initFillData,		//初始化表单填写页面（可编辑）
 			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
-			deleteSign :　deleteSign,			//删除收文
-			flowgrid : flowgrid,				//初始化待处理页面			
+			deleteSign :　deleteSign,			//删除收文		
 			startFlow : startFlow,				//发起流程
 			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
@@ -393,7 +392,6 @@
 		//S_输入资料分数数字校验
 		var reg =true;
 		function regNumber(vm){
-			alert(vm.model.sugProDealCount);
 			var numbers = new RegExp("^[0-9]*$");
 			if(!vm.model.sugProDealCount){
 				$("#regNumber").hide();
@@ -639,8 +637,7 @@
 		//Start 申报登记编辑
 		function updateFillin(vm){
 				common.initJqValidation($('#sign_fill_form'));
-				var isValid = $('#sign_fill_form').valid();	
-				alert(vm.model.sugFileDealCount + "--"+isValid);
+				var isValid = $('#sign_fill_form').valid();	 
 				if (isValid) {
 				var httpOptions = {
 					method : 'put',
@@ -766,76 +763,8 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-		}//E_初始化详情数据
-		
-		
-		//S_初始化待处理页面
-		function flowgrid(vm){
-			// Begin:dataSource
-			var dataSource = common.kendoGridDataSource(rootPath+"/sign/html/initflow");										
-			var columns = [
-				 {
-                     field: "",
-                     title: "序号",
-                     template: "<span class='row-number'></span>",
-                     width:30
-                 },
-				{
-					field : "projectname",
-					title : "项目名称",
-					width : 200,
-					filterable : true
-				},
-				{
-					field : "projectcode",
-					title : "项目编号",
-					width : 200,
-					filterable : true
-				},
-				{
-					field : "createdDate",
-					title : "创建时间",
-					width : 180,
-					filterable : false,
-					format : "{0:yyyy/MM/dd HH:mm:ss}"
-
-				},
-				{
-					field : "",
-					title : "操作",
-					width : 180,
-					template:function(item){
-						//如果项目已暂停，则停止对流程操作
-						var hideDealButton = false;
-						if(item.folwState && item.folwState == 2){
-							hideDealButton = true;
-						}
-						return common.format($('#columnBtns').html(),item.signid,item.taskId,item.processInstanceId,hideDealButton);
-					}	
-				}
-			];
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				resizable : true,
-				dataBound: function () {  
-                    var rows = this.items();  
-                    var page = this.pager.page() - 1;  
-                    var pagesize = this.pager.pageSize();  
-                    $(rows).each(function () {  
-                        var index = $(this).index() + 1 + page * pagesize;  
-                        var rowLabel = $(this).find(".row-number");  
-                        $(rowLabel).html(index);  
-                    });  
-                } 
-			};						
-		}//E_初始化待处理页面
-		
-		
+		}//E_初始化详情数据						
+				
 		//S_发起流程
 		function startFlow(vm,signid){
 			var httpOptions = {

@@ -1,5 +1,6 @@
 package cs.common.utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,6 +10,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.cglib.beans.BeanCopier;
+
+import cs.domain.project.Sign;
+import cs.model.project.SignDto;
 
 /**
  * 对象拷贝工具类
@@ -50,4 +54,16 @@ public class BeanCopierUtils {
     public static void copyPropertiesIgnoreNull(Object source, Object target) {  
         BeanUtils.copyProperties(source, target, getNullPropertyNames(source));  
     }  
+    
+    public static void main(String[] args){
+    	//日期拷贝成功
+    	Sign s1 = new Sign();
+    	s1.setSignid("1");
+    	s1.setCreatedDate( new Date());
+    	
+    	SignDto s2 = new SignDto();
+    	
+    	copyProperties(s1,s2);
+    	System.out.println(s2.getSignid()+"--"+s2.getCreatedDate());
+    }
 }

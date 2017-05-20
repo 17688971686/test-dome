@@ -1,5 +1,8 @@
 package cs.model.expert;
+import java.util.Date;
 import java.util.List;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.model.BaseDto;
 
@@ -13,13 +16,15 @@ public class ExpertDto extends BaseDto {
 	private String expertNo;//专家编号
 	private String name;//专家姓名
 	private String sex;//性别
-	private String birthDay;//出生日期
+	@JSONField(format = "yyyy-MM-dd")
+	private Date birthDay;//出生日期
 	private String idCard;//身份证号
 	private String qualifiCations;//最高学历
 	private String acaDemy;//毕业院校
 	private String degRee;//最高学位
 	private String userPhone;//手机号码
-	private String graduateDate;//毕业时间
+	@JSONField(format = "yyyy-MM-dd")
+	private Date graduateDate;//毕业时间
 	private String comPany;//工作单位
 	private String job;//现任职位
 	private String post;//职称
@@ -61,12 +66,7 @@ public class ExpertDto extends BaseDto {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-	public String getBirthDay() {
-		return birthDay;
-	}
-	public void setBirthDay(String birthDay) {
-		this.birthDay = birthDay;
-	}
+	
 	public String getQualifiCations() {
 		return qualifiCations;
 	}
@@ -92,13 +92,7 @@ public class ExpertDto extends BaseDto {
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
-	
-	public String getGraduateDate() {
-		return graduateDate;
-	}
-	public void setGraduateDate(String graduateDate) {
-		this.graduateDate = graduateDate;
-	}
+
 	public String getComPany() {
 		return comPany;
 	}
@@ -238,5 +232,16 @@ public class ExpertDto extends BaseDto {
 	public void setExpertNo(String expertNo) {
 		this.expertNo = expertNo;
 	}
-	
+	public Date getBirthDay() {
+		return birthDay;
+	}
+	public void setBirthDay(Date birthDay) {
+		this.birthDay = birthDay;
+	}
+	public Date getGraduateDate() {
+		return graduateDate;
+	}
+	public void setGraduateDate(Date graduateDate) {
+		this.graduateDate = graduateDate;
+	}		
 }

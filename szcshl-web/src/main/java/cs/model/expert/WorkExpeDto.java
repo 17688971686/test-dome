@@ -1,5 +1,9 @@
 package cs.model.expert;
 
+import java.util.Date;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.model.BaseDto;
 
 
@@ -10,8 +14,10 @@ import cs.model.BaseDto;
 public class WorkExpeDto extends BaseDto {
 
 	private String weID; //Id
-    private String beginTime;//开始时间  
-    private String endTime; //结束时间
+	@JSONField(format = "yyyy-MM-dd")
+    private Date beginTime;//开始时间  
+	@JSONField(format = "yyyy-MM-dd")
+    private Date endTime; //结束时间
     private String companyName; //单位名称
     private String job; //职位
     private String  expertID; //专家编号
@@ -22,18 +28,6 @@ public class WorkExpeDto extends BaseDto {
 	}
 	public void setExpertDto(ExpertDto expertDto) {
 		this.expertDto = expertDto;
-	}
-	public String getBeginTime() {
-		return beginTime;
-	}
-	public void setBeginTime(String beginTime) {
-		this.beginTime = beginTime;
-	}
-	public String getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
 	}
 	public String getCompanyName() {
 		return companyName;
@@ -59,7 +53,16 @@ public class WorkExpeDto extends BaseDto {
 	public void setExpertID(String expertID) {
 		this.expertID = expertID;
 	}
-    
-    
-	
+	public Date getBeginTime() {
+		return beginTime;
+	}
+	public void setBeginTime(Date beginTime) {
+		this.beginTime = beginTime;
+	}
+	public Date getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}     	
 }

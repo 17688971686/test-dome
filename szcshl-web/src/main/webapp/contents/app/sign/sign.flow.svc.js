@@ -114,7 +114,7 @@
 		}//E_pendingSign
 		
 		//S_initBusinessParams
-		function initBusinessParams(vm){			
+		function initBusinessParams(vm){	
 			if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){//部门分办
 				vm.businessTr = true;
 				vm.FGLD_SP_SW = true;
@@ -160,18 +160,27 @@
 					httpOptions : httpOptions,
 					success : httpSuccess
 				});
-			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" || vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){ //项目负责人承办
+			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
 				vm.businessTr = true;
 				vm.XMFZR_SP_GZFA = true;
-				
-				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted >= 0){ //如果填报完成，则显示
+				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted >= 0){ //如果填报完成，则显示
 					vm.show_workprogram = true;
-					getChargeWorkProgram(vm);
+					getChargeWorkProgram(vm,true);
 				}								
-			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "BZ_SP_GZAN2"
-				|| vm.flow.curNode.activitiId == "FGLD_SP_GZFA1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){ //部长审批,分管副主任审批
+			}else if( vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
+				vm.businessTr = true;
+				vm.XMFZR_SP_GZFA = true; 
+				if(vm.model.isreviewACompleted && vm.model.isreviewACompleted >= 0){ //如果填报完成，则显示
+					vm.show_workprogram = true;
+					getChargeWorkProgram(vm,false);
+				}	
+			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1" ){ //部长审批,分管副主任审批
 				vm.show_workprogram = true;
-				getChargeWorkProgram(vm);
+				getChargeWorkProgram(vm,true);
+				
+			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
+				vm.show_workprogram = true;
+				getChargeWorkProgram(vm,false);
 				
 			}else if(vm.flow.curNode.activitiId == "FW_SQ" ){ //发文
 				vm.businessTr = true;
@@ -194,12 +203,11 @@
 					getChargeFilerecord(vm)
 				}
 			}
-			else if(vm.flow.curNode.activitiId == "AZFR_SP_GD" || "BMLD_QR_GD"){ //归档
+			else if(vm.flow.curNode.activitiId == "AZFR_SP_GD" || vm.flow.curNode.activitiId == "BMLD_QR_GD"){ //归档
 				vm.show_filerecord = true;
 				getChargeFilerecord(vm)								
 			}
-			
-			
+						
 		}//E_initBusinessParams
 		
 		//S_checkBusinessFill
@@ -232,8 +240,14 @@
 				});
 				return true;
 				
-			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" || vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
+			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1"){
 				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted==9){
+					return true;
+				}else{
+					return false;
+				}
+			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
+				if(vm.model.isreviewACompleted && vm.model.isreviewACompleted==9){
 					return true;
 				}else{
 					return false;
@@ -267,11 +281,12 @@
 		}//E_checkBusinessFill
 		
 		//S_getChargeWorkProgram
-		function getChargeWorkProgram(vm){
+		function getChargeWorkProgram(vm,isMain){
+			var mainState = isMain == true?"9":"0";
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/workprogram/html/initWorkBySignId",
-					params : {signId:vm.model.signid}
+					params : {signId:vm.model.signid,isMain:mainState}
 				}
 			var httpSuccess = function success(response) {									
 				common.requestSuccess({

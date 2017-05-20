@@ -15,7 +15,6 @@
         <button class="btn btn-sm btn-success" ng-click="vm.update()"  ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更改专家信息</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.gotoWPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加工作经验</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.gotoJPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加项目经验</button>
-		<a class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</a> 
 	</div>
 	<p class="pro_title_1" style="margin:10px;margin-left:0px;">专家信息</p>
 	<form id="form" name="form">
@@ -27,7 +26,7 @@
 			 	<span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			
-			<td class="formAlignRight" width="10%">性别</td>
+			<td class="formAlignRight" width="10%">性别<span class="required">*</span></td>
 			<td width="15%"> 
 				<select ng-model="vm.model.sex" class="form-control input-sm " name="sex" data-val-required="必填" data-val="true">
 					<option value="">请选择</option>
@@ -36,7 +35,7 @@
 				<span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			
-			<td align="center" class="formAlignRight" width="10%">出生年月</td>
+			<td align="center" class="formAlignRight" width="10%">出生年月<span class="required">*</span></td>
 			<td width="15%" >
 				<input type="text" name="birthDay" id="birthDay" style="width: 210px;" class="form-control input-sm " 
 				ng-model="vm.model.birthDay" data-val-date="必须为日期" data-val="true" data-val-required="必填">
@@ -47,14 +46,14 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="center" class="formAlignRight">身份证号</td>
+			<td align="center" class="formAlignRight">身份证号<span class="required">*</span></td>
 			<td >
 				<input type="text" name="idCard" id="idCard" class="form-control input-sm "
 					ng-model="vm.model.idCard" data-val="true" data-val-regex="身份证格式不正确" 
 					data-val-regex-pattern="[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)" data-val-required="必填">
 				 <span data-valmsg-for="idCard" data-valmsg-replace="true" class="errors"></span>
 			</td>
-			<td class="formAlignRight">最高学历</td>
+			<td class="formAlignRight">最高学历<span class="required">*</span></td>
 			<td>
 				<select ng-model="vm.model.qualifiCations" class="form-control input-sm "  name="qualifiCations"  data-val-required="必填" data-val="true">
 					<option value="">请选择</option>
@@ -62,7 +61,7 @@
 				</select>
 				 <span data-valmsg-for="qualifiCations" data-valmsg-replace="true" class="errors"></span>
 			</td>
-			<td class="formAlignRight">最高学位</td>
+			<td class="formAlignRight">最高学位<span class="required">*</span></td>
 			<td>
 				<select ng-model="vm.model.degRee" class="form-control input-sm " name="degRee"  data-val-required="必填" data-val="true">
 					<option value="">请选择</option>
@@ -72,13 +71,13 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="formAlignRight">毕业院校</td>
+			<td class="formAlignRight">毕业院校<span class="required">*</span></td>
 			<td colspan="3">
 				<input type="text" name="acaDemy" id="acaDemy" class="form-control input-sm "
 					ng-model="vm.model.acaDemy" data-val="true" data-val-required="必填">
 				 <span data-valmsg-for="acaDemy" data-valmsg-replace="true" class="errors"></span>
 			</td>			
-			<td class="formAlignRight" >毕业时间</td>
+			<td class="formAlignRight" >毕业时间<span class="required">*</span></td>
 			<td >
 				<input type="text" ng-model="vm.model.graduateDate" name="graduateDate" id="graduateDate" style="width: 210px;"
 				 class="form-control input-sm" value="" data-val-date="必须为日期" data-val="true" > 
@@ -86,12 +85,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="formAlignRight">工作单位</td>
+			<td class="formAlignRight">工作单位<span class="required">*</span></td>
 			<td >
 				<input type="text" name="comPany" id="comPany" class="form-control input-sm " ng-model="vm.model.comPany"  data-val="true" data-val-required="必填"> 
 				 <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
 			</td>	 				 
-			<td class="formAlignRight" >现任职位</td>
+			<td class="formAlignRight" >现任职位<span class="required">*</span></td>
 			<td>
 				<select ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true" data-val-required="必填">
 					<option value="">请选择</option>
@@ -100,7 +99,7 @@
 				<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 			
-			<td class="formAlignRight">职称</td>
+			<td class="formAlignRight">职称<span class="required">*</span></td>
 			<td>
 				<select ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true" data-val-required="必填">
 					<option value="">请选择</option>
@@ -110,7 +109,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="formAlignRight">手机号码</td>
+			<td class="formAlignRight">手机号码<span class="required">*</span></td>
 			<td >
 				<input type="text" name="userPhone" id="userPhone" class="form-control input-sm "
 				 ng-model="vm.model.userPhone" data-val="true" data-val-required="必填" 
@@ -120,15 +119,13 @@
 			
 			<td class="formAlignRight">电子邮箱</td>
 			<td>
-				<input type="text" name="email" id="email" class="form-control input-sm " 
-					ng-model="vm.model.email" value="jeffrey @mail.com" data-val="true" data-val-email="必须为Email格式" data-val-required="必填"> 
+				<input type="text" name="email" id="email" class="form-control input-sm "  ng-model="vm.model.email"  data-val="true" data-val-email="必须为Email格式" > 
 				<span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 			<td class="formAlignRight">办公电话</td>
 			<td >
-				<input type="text" name="phone" id="phone" class="form-control input-sm "
-					ng-model="vm.model.phone" data-val="true" data-val-required="必填"  data-val-regex="手办公电话格式不正确"
-				 	data-val-regex-pattern="(0[0-9]{2,3}/-)?([2-9][0-9]{6,7})+(/-[0-9]{1,4})?">  
+				<input type="text" name="phone" id="phone" class="form-control input-sm " ng-model="vm.model.phone" 
+				data-val="true"  data-val-regex="手办公电话格式不正确" data-val-regex-pattern="(0[0-9]{2,3}/-)?([2-9][0-9]{6,7})+(/-[0-9]{1,4})?">  
 				<span data-valmsg-for="phone" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 			<td class="formAlignRight">传真</td>
@@ -141,33 +138,32 @@
 		<tr>
 			<td class="formAlignRight">通讯地址</td>
 			<td colspan="5">
-				<input type="text" name="addRess" id="addRess" class="form-control input-sm "
-				ng-model="vm.model.addRess" data-val="true" data-val-required="必填"> 
+				<input type="text" name="addRess" id="addRess" class="form-control input-sm " ng-model="vm.model.addRess" data-val="true" > 
 				<span data-valmsg-for="addRess" data-valmsg-replace="true" class="errors"></span> 			
 			</td>
 			<td class="formAlignRight">邮编</td>
 			<td>
 				<input type="text" name="zipCode" id="zipCode"  class="form-control input-sm " ng-model="vm.model.zipCode" 
-					data-val-regex="邮编格式不正确" data-val-regex-pattern="[1-9]\d{5}(?!\d)" data-val="true" data-val-required="必填">
+					data-val-regex="邮编格式不正确" data-val-regex-pattern="[1-9]\d{5}(?!\d)" data-val="true"  >
 				<span data-valmsg-for="zipCode" data-valmsg-replace="true" class="errors"></span> 
 			</td>			
 		</tr>
 		<tr>
-			<td class="formAlignRight">所学专业</td>
+			<td class="formAlignRight">所学专业<span class="required">*</span></td>
 			<td colspan="7">
 				<input type="text" name="majorStudy" id="majorStudy" class="form-control input-sm " ng-model="vm.model.majorStudy" data-val="true" data-val-required="必填"> 
 				<span data-valmsg-for="majorStudy" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
 		<tr>	
-			<td class="formAlignRight">从事专业</td>
+			<td class="formAlignRight">从事专业<span class="required">*</span></td>
 			<td colspan="7">
 				<input type="text" name="majorWork" id="majorWork" class="form-control input-sm " ng-model="vm.model.majorWork" data-val="true" data-val-required="必填"> 
 				<span data-valmsg-for="majorWork" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
 		<tr>		
-			<td class="formAlignRight">突出专业（大类）</td>
+			<td class="formAlignRight">突出专业（大类）<span class="required">*</span></td>
 			<td >
 				<select ng-model="vm.model.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.model.maJorBig,DICT.MAJOR.dicts,'code')" class="form-control input-sm " name="maJorBig"  data-val-required="必填" data-val="true">
 					<option value="">请选择</option>
@@ -175,7 +171,7 @@
 				</select> 
 				<span data-valmsg-for="maJorBig" data-valmsg-replace="true" class="errors"></span> 										
 			</td>
-			<td class="formAlignRight">突出专业（小类）</td>
+			<td class="formAlignRight">突出专业（小类）<span class="required">*</span></td>
 			<td >
 				<select ng-model="vm.model.maJorSmall" class="form-control input-sm " name="maJorSmall"  data-val-required="必填" data-val="true">
 					<option value="">请选择</option>
@@ -183,7 +179,7 @@
 				</select> 
 				<span data-valmsg-for="maJorSmall" data-valmsg-replace="true" class="errors"></span> 
 			</td>
-			<td class="formAlignRight">专家类别</td>
+			<td class="formAlignRight">专家类别<span class="required">*</span></td>
 			<td >
 				<select ng-model="vm.model.expeRttype" class="form-control input-sm "  name="expeRttype" width="10%" data-val="true" data-val-required="必填">
 					<option value="">请选择</option>
@@ -191,7 +187,7 @@
 				</select>
 				<span data-valmsg-for="expeRttype" data-valmsg-replace="true" class="errors"></span> 
 			</td>
-			<td class="formAlignRight">区域类别</td>
+			<td class="formAlignRight">区域类别<span class="required">*</span></td>
 			<td>
 				<select ng-model="vm.model.procoSttype" class="form-control input-sm"  data-val="true" data-val-required="必填" name="procoSttype">
 					<option value="">请选择</option>
@@ -201,12 +197,12 @@
 			</td>
 		</tr>
 		<tr>	
-			<td class="formAlignRight">开户行</td>
+			<td class="formAlignRight">开户行<span class="required">*</span></td>
 			<td colspan="3">
 				<input type="text" name="openingBank" id="openingBank" class="form-control input-sm " ng-model="vm.model.openingBank" data-val="true" data-val-required="必填"> 
 				<span data-valmsg-for="openingBank" data-valmsg-replace="true" class="errors"></span> 
 			</td>	
-			<td class="formAlignRight">银行账号</td>
+			<td class="formAlignRight">银行账号<span class="required">*</span></td>
 			<td colspan="3">
 				<input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm " ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填"> 
 				<span data-valmsg-for="bankAccount" data-valmsg-replace="true" class="errors"></span> 
@@ -215,8 +211,7 @@
 		<tr>
 			<td height="97" class="formAlignRight">备注</td>
 			<td colspan="7">
-				<textarea style="width: 100%; height: 95px" name="remark" ng-model="vm.model.remark" class="form-control input-sm "
-					data-bind="value:remark"></textarea>
+				<textarea style="width: 100%; height: 95px" name="remark" ng-model="vm.model.remark" class="form-control input-sm " data-bind="value:remark"></textarea>
 			</td>
 		</tr>		
 	</table>

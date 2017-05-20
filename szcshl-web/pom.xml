@@ -237,8 +237,7 @@
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>3.3.1</version>
-		</dependency>
-
+		</dependency>		
 	</dependencies>
 	<build>
 		<finalName>szcshl-web</finalName>

@@ -2,14 +2,8 @@ package cs.model.sys;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToMany;
-
-import cs.domain.sys.Org;
 import cs.model.BaseDto;
 
 public class UserDto extends BaseDto {
@@ -27,16 +21,14 @@ public class UserDto extends BaseDto {
     private String useState; //是否停用
     private String pwdState; //是否需要更改密码
     private String userIP; //登录IP
-    private String lastLogin; //最后登录时间
+    private Date lastLogin; //最后成功登录时间
+    private Date lastLoginDate;//最后登录时间
     private String userCreateTime; //创建时间
 	private String userSalt; //加密盐
-	private Long userOrder; //用户序号
-	
-	private String orgId;	//关联部门ID
-	
+	private Long userOrder; //用户序号	
+	private String orgId;	//关联部门ID	
 	private int loginFailCount;
-	@Column(columnDefinition="date")
-	private Date lastLoginDate;
+	
 	//角色
 	private List<RoleDto> roles=new ArrayList<>();
 	
@@ -83,12 +75,7 @@ public class UserDto extends BaseDto {
 	public void setLoginFailCount(int loginFailCount) {
 		this.loginFailCount = loginFailCount;
 	}
-	public Date getLastLoginDate() {
-		return lastLoginDate;
-	}
-	public void setLastLoginDate(Date lastLoginDate) {
-		this.lastLoginDate = lastLoginDate;
-	}
+	
 	public String getPassword() {
 		return password;
 	}
@@ -160,13 +147,15 @@ public class UserDto extends BaseDto {
 	}
 	public void setUserIP(String userIP) {
 		this.userIP = userIP;
-	}
-	public String getLastLogin() {
+	}	
+	public Date getLastLogin() {
 		return lastLogin;
 	}
-	public void setLastLogin(String lastLogin) {
+
+	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
 	}
+
 	public String getUserCreateTime() {
 		return userCreateTime;
 	}
@@ -185,8 +174,13 @@ public class UserDto extends BaseDto {
 	public void setUserOrder(Long userOrder) {
 		this.userOrder = userOrder;
 	}
-	
-	
-	
-	
+
+	public Date getLastLoginDate() {
+		return lastLoginDate;
+	}
+
+	public void setLastLoginDate(Date lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
+	}		
+		
 }

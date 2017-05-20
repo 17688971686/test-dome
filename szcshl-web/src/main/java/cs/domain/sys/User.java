@@ -3,6 +3,7 @@ package cs.domain.sys;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import cs.domain.DomainBase;
 
 @Entity
@@ -51,8 +53,8 @@ public class User extends DomainBase {
 	@Column(columnDefinition="varchar(255) ")
     private String userIP; //登录IP
 	
-	@Column(columnDefinition="varchar(255) ")
-    private String lastLogin; //最后登录时间
+	@Column(columnDefinition="date")
+    private Date lastLogin; //最后登录时间
 	
 	@Column(columnDefinition="varchar(255) ")
 	private String userSalt; //加密盐
@@ -187,14 +189,14 @@ public class User extends DomainBase {
 	}
 	public void setUserIP(String userIP) {
 		this.userIP = userIP;
-	}
-	public String getLastLogin() {
+	}	
+	
+	public Date getLastLogin() {
 		return lastLogin;
 	}
-	public void setLastLogin(String lastLogin) {
+	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-	
 	public String getUserSalt() {
 		return userSalt;
 	}

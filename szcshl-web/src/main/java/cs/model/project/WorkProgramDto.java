@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.domain.expert.ExpertReview;
 import cs.domain.project.Sign;
 import cs.model.BaseDto;
@@ -79,16 +81,19 @@ public class WorkProgramDto extends BaseDto{
 	private String isHaveSuppLetter;
 	
 	//补充资料函发文日期
-	private String suppLetterDate;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date suppLetterDate;
 	
 	//会议地点
 	private String meetingAddress;
 	
 	//调研开始时间
-	private String studyBeginTime;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date studyBeginTime;
 	
 	//调研结束时间
-	private String studyEndTime;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date studyEndTime;
 	
 	//专家费用
 	private BigDecimal expertCost;
@@ -99,15 +104,17 @@ public class WorkProgramDto extends BaseDto{
 	//部长处理意见
 	private String ministerSuggesttion;
 	
+	@JSONField(format = "yyyy-MM-dd")
 	private Date ministerDate;
 	
 	//中心领导处理意见
 	private String leaderSuggesttion;
 	
+	@JSONField(format = "yyyy-MM-dd")
 	private Date leaderDate;
 	
 	//标题日期
-	private String titleDate;
+	private Date titleDate;
 	
 	//收文对象
 	private Sign sign;
@@ -358,38 +365,12 @@ public class WorkProgramDto extends BaseDto{
 		this.isHaveSuppLetter = isHaveSuppLetter;
 	}
 
-
-	public String getSuppLetterDate() {
-		return suppLetterDate;
-	}
-
-	public void setSuppLetterDate(String suppLetterDate) {
-		this.suppLetterDate = suppLetterDate;
-	}
-
 	public String getMeetingAddress() {
 		return meetingAddress;
 	}
 
 	public void setMeetingAddress(String meetingAddress) {
 		this.meetingAddress = meetingAddress;
-	}
-
-
-	public String getStudyBeginTime() {
-		return studyBeginTime;
-	}
-
-	public void setStudyBeginTime(String studyBeginTime) {
-		this.studyBeginTime = studyBeginTime;
-	}
-
-	public String getStudyEndTime() {
-		return studyEndTime;
-	}
-
-	public void setStudyEndTime(String studyEndTime) {
-		this.studyEndTime = studyEndTime;
 	}
 
 	public BigDecimal getExpertCost() {
@@ -424,14 +405,6 @@ public class WorkProgramDto extends BaseDto{
 		this.leaderSuggesttion = leaderSuggesttion;
 	}
 
-	public String getTitleDate() {
-		return titleDate;
-	}
-
-	public void setTitleDate(String titleDate) {
-		this.titleDate = titleDate;
-	}
-
 	public Date getMinisterDate() {
 		return ministerDate;
 	}
@@ -462,5 +435,38 @@ public class WorkProgramDto extends BaseDto{
 
 	public void setExpertReviews(List<ExpertReview> expertReviews) {
 		this.expertReviews = expertReviews;
-	}		
+	}
+
+	public Date getSuppLetterDate() {
+		return suppLetterDate;
+	}
+
+	public void setSuppLetterDate(Date suppLetterDate) {
+		this.suppLetterDate = suppLetterDate;
+	}
+
+	public Date getStudyBeginTime() {
+		return studyBeginTime;
+	}
+
+	public void setStudyBeginTime(Date studyBeginTime) {
+		this.studyBeginTime = studyBeginTime;
+	}
+
+	public Date getStudyEndTime() {
+		return studyEndTime;
+	}
+
+	public void setStudyEndTime(Date studyEndTime) {
+		this.studyEndTime = studyEndTime;
+	}
+
+	public Date getTitleDate() {
+		return titleDate;
+	}
+
+	public void setTitleDate(Date titleDate) {
+		this.titleDate = titleDate;
+	}	
+		
 }

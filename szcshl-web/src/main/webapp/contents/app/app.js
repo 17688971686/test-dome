@@ -330,8 +330,7 @@
             		if (dicts[i].dictName == dictKey) {
                         return dicts[i].dicts;
                     }
-            	}
-                
+            	}               
             }
         }
       

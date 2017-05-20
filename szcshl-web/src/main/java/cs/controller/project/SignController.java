@@ -131,14 +131,6 @@ public class SignController {
 		return ctrlName + "/flow";
 	}
 	
-	@RequiresPermissions("sign#html/initflow#post")
-	@RequestMapping(name = "项目待处理列表", path = "html/initflow",method=RequestMethod.POST)	
-	public @ResponseBody PageModelDto<SignDto> initflow(HttpServletRequest request) throws ParseException {			
-		ODataObj odataObj = new ODataObj(request);
-		PageModelDto<SignDto> signDtos = signService.getFlow(odataObj);		
-		return signDtos;
-	}
-	
 	@RequestMapping(name = "初始化流程处理页面", path = "html/initFlowPageData",method=RequestMethod.GET)	
 	@Transactional
 	public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true)String signid){		

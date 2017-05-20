@@ -1,6 +1,10 @@
 package cs.model.project;
 
 
+import java.util.Date;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.model.BaseDto;
 
 public class FileRecordDto extends BaseDto{
@@ -147,13 +151,15 @@ public class FileRecordDto extends BaseDto{
 	
 	private String projectChargeUser;
 	
-	private String printDate;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date printDate;
 	
 	private String signUserid;
 	
 	private String signUserName;
 	
-	private String fileDate;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date fileDate;
 
 	public String getFileRecordId() {
 		return fileRecordId;
@@ -741,20 +747,19 @@ public class FileRecordDto extends BaseDto{
 		this.projectChargeUser = projectChargeUser;
 	}
 
-	public String getPrintDate() {
+	public Date getPrintDate() {
 		return printDate;
 	}
 
-	public void setPrintDate(String printDate) {
+	public void setPrintDate(Date printDate) {
 		this.printDate = printDate;
 	}
 
-	public String getFileDate() {
+	public Date getFileDate() {
 		return fileDate;
 	}
 
-	public void setFileDate(String fileDate) {
+	public void setFileDate(Date fileDate) {
 		this.fileDate = fileDate;
 	}		
-	
 }

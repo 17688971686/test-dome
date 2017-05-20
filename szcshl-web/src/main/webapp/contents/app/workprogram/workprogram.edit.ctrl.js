@@ -20,7 +20,6 @@
         }
         
         vm.create = function () {  
-        	alert(1);
         	workprogramSvc.createWP(vm);
         };  
         

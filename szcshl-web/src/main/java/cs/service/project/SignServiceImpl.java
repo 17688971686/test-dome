@@ -42,7 +42,6 @@ import cs.model.external.OfficeUserDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
-import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
@@ -90,7 +89,7 @@ public class SignServiceImpl implements SignService {
 	@Transactional
 	public void createSign(SignDto signDto) { 
 		Sign sign = new Sign(); 
-		SignDtoToSign(signDto,sign);     
+		BeanCopierUtils.copyProperties(signDto, sign);   
 		sign.setSignState(EnumState.NORMAL.getValue());
 		
         signRepo.save(sign);
@@ -170,7 +169,7 @@ public class SignServiceImpl implements SignService {
 		//1收文对象
 		Sign sign = signRepo.findById(signId);
 		SignDto signDto = new SignDto();
-		SignToSignDto(sign,signDto);					
+		BeanCopierUtils.copyProperties(sign, signDto);   					
 		map.put("sign", signDto);
 		
 		
@@ -211,69 +210,7 @@ public class SignServiceImpl implements SignService {
 		}
 		return map;
 	}
-
-	@Override
-	public PageModelDto<SignDto> getFlow(ODataObj odataObj) {
-		//获取当前用户信息
-		UserDto curUser = userService.findUserByName(currentUser.getLoginName());
-		TaskQuery taskQuery = taskService.createTaskQuery().processDefinitionKey(Constant.EnumFlow.SIGN.getValue());
-		taskQuery.or().taskCandidateUser(curUser.getLoginName()).taskAssignee(curUser.getLoginName());
-		
-		List<RoleDto> roles = curUser.getRoles();
-		if(roles != null){
-			List<String> roleList = new ArrayList<String>(roles.size());
-			roles.forEach(role ->{
-				roleList.add(role.getRoleName());
-			});
-			if(roleList != null && roleList.size() > 0){
-				taskQuery.taskCandidateGroupIn(roleList);
-			}
-		}	
-						
-		long total = taskQuery.count();		
-		List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
-		
-		PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
-		List<SignDto> signDtos = new ArrayList<SignDto>();
-		if(tasks != null){
-			tasks.forEach(t->{
-				// 通过任务对象获取流程实例
-				ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
-				// 通过流程实例获取“业务键”
-				String signId = pi.getBusinessKey();
-				
-				SignDto signDto = new SignDto();
-				Sign sign = signRepo.findById(signId);	
-				if(sign != null && Validate.isString(sign.getSignid())){
-					SignToSignDto(sign,signDto);
-					// 添加流程参数
-					signDto.setTaskId(t.getId());
-					signDto.setProcessInstanceId(t.getProcessInstanceId());
-					
-					signDtos.add(signDto);
-				}			
-			});		
-		}				
-		pageModelDto.setCount(Integer.valueOf(String.valueOf(total)));
-		pageModelDto.setValue(signDtos);		
-		return pageModelDto;
-	}
-
-	private void SignToSignDto(Sign sign,SignDto signDto){
-		BeanCopierUtils.copyProperties(sign, signDto);
-		signDto.setCreatedDate(sign.getCreatedDate());
-		signDto.setModifiedDate(sign.getModifiedDate());
-	}
 	
-	private void SignDtoToSign(SignDto signDto,Sign sign){
-		BeanCopierUtils.copyProperties(signDto, sign);
-        Date now = new Date();
-        sign.setCreatedBy(currentUser.getLoginName());
-        sign.setCreatedDate(now);
-        sign.setModifiedBy(currentUser.getLoginName());
-        sign.setModifiedDate(now);
-	}
-
 	@Override
 	public void claimSignFlow(String taskId) {
 		 taskService.claim(taskId, currentUser.getLoginName());
@@ -335,8 +272,7 @@ public class SignServiceImpl implements SignService {
 	public SignDto findById(String signid) {
 		Sign sign = signRepo.findById(signid);
 		SignDto signDto = new SignDto();
-		SignToSignDto(sign,signDto);	
-		
+		BeanCopierUtils.copyProperties(sign, signDto);			
 		return signDto;
 	}
 
@@ -361,8 +297,8 @@ public class SignServiceImpl implements SignService {
 			sign.setFolwState(EnumState.PROCESS.getValue());
 			signRepo.save(sign);	
 			
-			//创建流程 
-			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.FINAL_SIGN.getValue(),signid);
+			//创建流程 (业务数据：ID+符号+名称)
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.FINAL_SIGN.getValue(),signid+Constant.FLOW_LINK_SYMBOL+sign.getProjectname());
 			
 			List<UserDto> userList = userService.findUserByRoleName(EnumFlowNodeGroupName.SIGN_USER.getValue());
 			if(userList == null || userList.size() == 0){				
@@ -406,18 +342,9 @@ public class SignServiceImpl implements SignService {
 							
 			List<Sign> signList = signRepo.findByIds(Sign_.signid.getName(),StringUtils.join(idList.toArray(),","),Sign_.createdDate.getName()+" desc ");
 			for(int i=0;i<countValue;i++){
-				Sign s = signList.get(i);
-						
+				Sign s = signList.get(i);						
 				SignDto signDto = new SignDto();					
-				SignToSignDto(s,signDto);
-				for(int k=0;k<countValue;k++){
-					if(s.getSignid().equals(idList.get(k))){
-						Task t = tasks.get(k);		
-						// 添加流程参数
-						signDto.setTaskId(t.getId());
-						signDto.setProcessInstanceId(t.getProcessInstanceId());		
-					}
-				}								
+				BeanCopierUtils.copyProperties(s,signDto);												
 				signDtos.add(signDto);								
 			}																
 		}	
@@ -442,7 +369,8 @@ public class SignServiceImpl implements SignService {
 			throw new Exception(Constant.ERROR_MSG);
 		}			
 		//参数定义
-		String signid = processInstance.getBusinessKey(),businessId = "",assigneeValue = "";
+		
+		String signid = ActivitiUtil.getProcessBusinessKey(processInstance.getBusinessKey()),businessId = "",assigneeValue = "";		
 		Sign sign = null;
 		WorkProgram wk = null;
 		DispatchDoc dp = null;
@@ -588,7 +516,7 @@ public class SignServiceImpl implements SignService {
 				break;	
 			case Constant.FLOW_XMFZR_SP_GZFA2:		//项目负责人承办	
 				sign = signRepo.findById(signid);
-				if(!currentUser.getLoginUser().getId().equals(sign.getmFlowMainUserId())){
+				if(!currentUser.getLoginUser().getId().equals(sign.getaFlowMainUserId())){
 					return new ResultMsg(false,MsgCode.ERROR.getValue(),"您不是第一负责人，不能进行下一步操作！");
 				}
 				
@@ -635,7 +563,7 @@ public class SignServiceImpl implements SignService {
 				wk.setLeaderDate(new Date());
 				workProgramRepo.save(wk);
 				
-				//获取负责人
+				//获取主流程负责人
 				sign = signRepo.findById(signid);
 				dealUser = userService.findById(sign.getmFlowMainUserId());
 				assigneeValue = dealUser.getLoginName();
@@ -652,12 +580,12 @@ public class SignServiceImpl implements SignService {
 				wk.setLeaderDate(new Date());
 				workProgramRepo.save(wk);
 				
-				//获取负责人
+				//获取主流程负责人
 				sign = signRepo.findById(signid);
-				dealUser = userService.findById(sign.getaFlowMainUserId());
+				dealUser = userService.findById(sign.getmFlowMainUserId());
 				assigneeValue = dealUser.getLoginName();
-				if(Validate.isString(sign.getaFlowAssistUserId())){
-					dealUser = userService.findById(sign.getaFlowAssistUserId());
+				if(Validate.isString(sign.getmFlowAssistUserId())){
+					dealUser = userService.findById(sign.getmFlowAssistUserId());
 					assigneeValue += ","+dealUser.getLoginName();
 				}
 				variables.put("users", assigneeValue);

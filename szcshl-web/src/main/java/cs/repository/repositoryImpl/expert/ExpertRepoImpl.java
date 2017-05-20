@@ -12,15 +12,10 @@ import cs.repository.AbstractRepository;
 @Service
 public class ExpertRepoImpl extends AbstractRepository<Expert,String> implements ExpertRepo {
 	@Override
-	public Expert findExpertByName(String expertName) {
-		Criteria criteria = this.getSession().createCriteria(Expert.class);
-		criteria.add(Restrictions.eq(Expert_.name.getName(), expertName));
-		List<Expert> experts = criteria.list();
-		if (experts.size() > 0) {
-			return experts.get(0);
-		} else {
-			return null;
-		}
+	public List<Expert> findExpertByIdCard(String idCard) {
+		Criteria criteria = getExecutableCriteria();
+		criteria.add(Restrictions.eq(Expert_.idCard.getName(), idCard));
+		return  criteria.list();		
 	}
 
 	@Override

@@ -174,7 +174,6 @@
 				url : rootPath+ "/workExpe/getWork?$filter=expert.expertID eq '"+ vm.model.expertID + "'"
 			}
 			var httpSuccess = function success(response) {
-				console.log(response);
 				common.requestSuccess({
 					vm : vm,
 					response : response,

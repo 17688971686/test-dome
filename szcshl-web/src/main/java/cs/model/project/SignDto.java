@@ -5,6 +5,8 @@ package cs.model.project;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.domain.project.FileRecord;
 import cs.model.BaseDto;
 import cs.model.sys.OrgDto;
@@ -59,12 +61,15 @@ public class SignDto extends BaseDto {
 	
 	private String ishasreviewcost;
 	
+	@JSONField(format = "yyyy-MM-dd")
 	private Date signdate;
 	
 	private BigDecimal surplusdays;
 	
+	@JSONField(format = "yyyy-MM-dd")
 	private Date expectdispatchdate;
 	
+	@JSONField(format = "yyyy-MM-dd")
 	private Date receivedate;
 	
 	private BigDecimal daysafterdispatch;
@@ -72,10 +77,6 @@ public class SignDto extends BaseDto {
 	private BigDecimal reviewdays;
 	
 	private String isassistproc;
-	
-	private String mainchargeuserid;
-	
-	private String reviewdeptid;
 	
 	private String filenum;
 	
@@ -85,6 +86,7 @@ public class SignDto extends BaseDto {
 	
 	private BigDecimal pausedays;
 	
+	@JSONField(format = "yyyy-MM-dd")
 	private Date pausetime;
 	
 	private String pasedescription;	
@@ -270,7 +272,10 @@ public class SignDto extends BaseDto {
 	private String signState;
 	
 	//是否完成工作方案评审
-	private String isreviewcompleted;	
+	private String isreviewCompleted;
+	
+	//是否完成分支工作方案评审
+	private String isreviewACompleted;	
 
 	//是否完成发文
 	private String isDispatchCompleted;		
@@ -329,14 +334,22 @@ public class SignDto extends BaseDto {
 
 	public void setWorkProgramDto(WorkProgramDto workProgramDto) {
 		this.workProgramDto = workProgramDto;
+	}	
+
+	public String getIsreviewCompleted() {
+		return isreviewCompleted;
 	}
 
-	public String getIsreviewcompleted() {
-		return isreviewcompleted;
+	public void setIsreviewCompleted(String isreviewCompleted) {
+		this.isreviewCompleted = isreviewCompleted;
 	}
 
-	public void setIsreviewcompleted(String isreviewcompleted) {
-		this.isreviewcompleted = isreviewcompleted;
+	public String getIsreviewACompleted() {
+		return isreviewACompleted;
+	}
+
+	public void setIsreviewACompleted(String isreviewACompleted) {
+		this.isreviewACompleted = isreviewACompleted;
 	}
 
 	public void setOrgDto(OrgDto orgDto) {
@@ -575,7 +588,7 @@ public class SignDto extends BaseDto {
 		this.isassistproc = isassistproc;
 	}
 	
-	public String getMainchargeuserid(){
+	/*public String getMainchargeuserid(){
 		return mainchargeuserid;
 	}
 	
@@ -589,7 +602,7 @@ public class SignDto extends BaseDto {
 	
 	public void setReviewdeptid(String reviewdeptid){
 		this.reviewdeptid = reviewdeptid;
-	}
+	}*/
 	
 	public String getFilenum(){
 		return filenum;

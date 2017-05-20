@@ -8,7 +8,7 @@ import cs.model.project.SignDto;
 
 public interface DispatchDocService {
 
-	 void save(DispatchDocDto dispatchDocDto)throws Exception;
+	 void save(DispatchDocDto dispatchDocDto) throws Exception;
 	 Map<String, Object> initDispatchData(String signId);
 	 List<SignDto> getSign(String linkSignId);
 	 List<SignDto> getSignbyIds(String[] ids);

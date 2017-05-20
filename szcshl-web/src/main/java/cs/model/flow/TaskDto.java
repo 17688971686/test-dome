@@ -6,6 +6,7 @@ import java.util.Map;
 public class TaskDto {
 
 	private String businessKey;
+	private String businessName;
 	private String flowKey;
 	private String flowName;
 	private String taskId;	
@@ -106,6 +107,11 @@ public class TaskDto {
 	public void setFlowName(String flowName) {
 		this.flowName = flowName;
 	}
-	
-	
+	public String getBusinessName() {
+		return businessName;
+	}
+	public void setBusinessName(String businessName) {
+		this.businessName = businessName;
+	}
+		
 }

@@ -11,7 +11,7 @@
 			createWP : createWP,		//新增操作
 			findOrgs : findOrgs,		//查找主管部门
 			findUsersByOrgId : findUsersByOrgId,//查询评估部门
-			//selectExpert:selectExpert	//选择专家
+			selectExpert:selectExpert	//选择专家
 		};
 		return service;	
 		
@@ -54,7 +54,6 @@
 						if("main" == type){
 							vm.mainUserList = {};
 							vm.mainUserList = response.data;
-							console.log(vm.mainUserList);
 						}
 					}
 				});
