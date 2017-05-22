@@ -14,12 +14,9 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
-import cs.domain.expert.Expert_;
 import cs.repository.odata.ODataObj;
 
 public class AbstractRepository<T,ID extends Serializable> implements IRepository<T, ID> {

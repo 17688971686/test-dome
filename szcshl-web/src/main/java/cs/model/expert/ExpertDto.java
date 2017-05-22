@@ -1,10 +1,9 @@
 package cs.model.expert;
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.model.BaseDto;
+
 import java.util.Date;
 import java.util.List;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.model.BaseDto;
 
 /**
  * 专家信息管理

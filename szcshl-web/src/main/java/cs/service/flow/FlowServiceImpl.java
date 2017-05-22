@@ -13,6 +13,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -68,6 +69,7 @@ public class FlowServiceImpl implements FlowService{
 		List<HistoricActivityInstance> list = processEngine.getHistoryService().
 	    		createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).list();  
 		List<Comment> cmlist = taskService.getProcessInstanceComments(processInstanceId);
+	
 		if(list != null){			 						
 			List<FlowHistoryDto> reultList = new ArrayList<FlowHistoryDto>(list.size());
 			list.forEach(h ->{
@@ -79,7 +81,7 @@ public class FlowServiceImpl implements FlowService{
 				fh.setDuration(ActivitiUtil.formatTime(h.getDurationInMillis()));
 				fh.setStartTime(h.getStartTime());
 				fh.setEndTime(h.getEndTime());
-				fh.setAssignee(h.getAssignee());
+				fh.setAssignee(h.getAssignee());			
 				fh.setProcessInstanceId(h.getProcessInstanceId());	
 				fh.setMessage(getTaskMessage(cmlist,h.getTaskId()));
 				reultList.add(fh);
@@ -102,7 +104,7 @@ public class FlowServiceImpl implements FlowService{
 			});		
 		}	
 		return message.toString();
-	}
+	}	
 
 	@Override
 	@Transactional

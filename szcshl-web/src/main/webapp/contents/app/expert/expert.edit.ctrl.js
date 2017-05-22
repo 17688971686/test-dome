@@ -77,34 +77,5 @@
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
         }
-        
-        activate();
-        function activate() {       	
-        	 kendo.culture("zh-CN");
-             $("#birthDay").kendoDatePicker({
-             	 format: "yyyy-MM-dd",
-             	 weekNumber: true
-             });
-             $("#graduateDate").kendoDatePicker({
-            	 format: "yyyy-MM-dd",
-            	 weekNumber: true
-             });
-             $("#beginTime").kendoDatePicker({
-            	 format: "yyyy-MM-dd",
-            	 weekNumber: true
-             });
-             $("#endTime").kendoDatePicker({
-            	 format: "yyyy-MM-dd",
-            	 weekNumber: true
-             });
-             $("#projectendTime").kendoDatePicker({
-            	 format: "yyyy-MM-dd",
-            	 weekNumber: true
-             });
-             $("#projectbeginTime").kendoDatePicker({
-            	 format: "yyyy-MM-dd",
-            	 weekNumber: true
-             });       	
-        }
     }
 })();

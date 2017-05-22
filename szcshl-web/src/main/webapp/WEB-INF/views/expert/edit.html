@@ -37,7 +37,7 @@
 			
 			<td align="center" class="formAlignRight" width="10%">出生年月<span class="required">*</span></td>
 			<td width="15%" >
-				<input type="text" name="birthDay" id="birthDay" style="width: 210px;" class="form-control input-sm " 
+				<input type="text" name="birthDay" id="birthDay" style="width: 210px;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
 				ng-model="vm.model.birthDay" data-val-date="必须为日期" data-val="true" data-val-required="必填">
 				<span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
 			</td>
@@ -80,8 +80,8 @@
 			<td class="formAlignRight" >毕业时间<span class="required">*</span></td>
 			<td >
 				<input type="text" ng-model="vm.model.graduateDate" name="graduateDate" id="graduateDate" style="width: 210px;"
-				 class="form-control input-sm" value="" data-val-date="必须为日期" data-val="true" > 
-				 <span data-valmsg-for=""graduateDate"" data-valmsg-replace="true" class="errors"></span>
+					   kendo-date-picker k-format="'yyyy-MM-dd'"  class="form-control input-sm" value="" data-val-date="必须为日期" data-val="true" >
+				 <span data-valmsg-for=graduateDate" data-valmsg-replace="true" class="errors"></span>
 			</td>
 		</tr>
 		<tr>
@@ -287,7 +287,7 @@
             <tr>
                 <td class="formAlignRight">开始时间： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="20" class="form-control input-sm " ng-model="vm.model.beginTime" id="beginTime" name="beginTime" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="20" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" id="beginTime" name="beginTime" data-val="true" data-val-required="必填">
                 </td>
                  <td><span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
                
@@ -296,7 +296,7 @@
               <tr >
                 <td class="formAlignRight">结束时间： <span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.endTime" id="endTime" name="endTime" data-val="true" data-val-required="必填">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.endTime" kendo-date-picker k-format="'yyyy-MM-dd'"  id="endTime" name="endTime" data-val="true" data-val-required="必填">
                 </td>
                 <td>
                 <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
@@ -337,7 +337,7 @@
 			  <tr>
                 <td class="formAlignRight">开始时间： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="20" class="form-control input-sm " ng-model="vm.model.projectbeginTime" id="projectbeginTime" name="projectbeginTime" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="20" class="form-control input-sm " ng-model="vm.model.projectbeginTime" kendo-date-picker k-format="'yyyy-MM-dd'"  id="projectbeginTime" name="projectbeginTime" data-val="true" data-val-required="必填">
                 </td>
                  <td><span data-valmsg-for="projectbeginTime" data-valmsg-replace="true" class="errors"></span></td>
                
@@ -346,7 +346,7 @@
               <tr >
                 <td class="formAlignRight">结束时间： <span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectendTime" id="projectendTime" name="projectendTime" data-val="true" data-val-required="必填">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectendTime"  kendo-date-picker k-format="'yyyy-MM-dd'"  id="projectendTime" name="projectendTime" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="projectendTime" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

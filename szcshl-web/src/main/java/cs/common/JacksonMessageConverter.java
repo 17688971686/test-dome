@@ -1,13 +1,12 @@
 package cs.common;
 
-import java.io.IOException;
-
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.converter.HttpMessageNotWritableException;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.converter.HttpMessageNotWritableException;
+
+import java.io.IOException;
 
 @Deprecated
 public class JacksonMessageConverter extends FastJsonHttpMessageConverter{

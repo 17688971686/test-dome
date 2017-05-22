@@ -676,6 +676,7 @@ public class SignServiceImpl implements SignService {
 				fileRecordRepo.save(fileRecord);
 				
 				sign.setSignState(EnumState.YES.getValue());	//更改状态
+				sign.setFolwState(EnumState.YES.getValue());  	
 				saveSignFlag = true;
 				break;														
 			default:

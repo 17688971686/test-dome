@@ -27,8 +27,7 @@
     <mvc:annotation-driven>
         <!-- 返回json数据，@response使用 -->
         <mvc:message-converters register-defaults="true">
-            <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
-            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+            <bean class="cs.common.CustomerFastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>
                         <value>application/json;charset=UTF-8</value>
@@ -46,6 +45,7 @@
                         <value>WriteDateUseDateFormat</value>
                     </list>
                 </property>
+                <property name="defaultDateFormat" value="yyyy-MM-dd HH:mm:ss"></property>
             </bean>
         </mvc:message-converters>       
     </mvc:annotation-driven>

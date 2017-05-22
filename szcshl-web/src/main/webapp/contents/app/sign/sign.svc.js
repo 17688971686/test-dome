@@ -484,13 +484,13 @@
 						template : function(item) {
 							if(item.folwState){
 								if(item.folwState == 1){
-									return "进行中"
+									return '<span style="color:green;">进行中</span>';
 								}else if(item.folwState == 2){
-									return "已暂停"
+									return '<span style="color:orange;">已暂停</span>';
 								}else if(item.folwState == 8){
-									return "强制结束"
+									return '<span style="color:red;">强制结束</span>';
 								}else if(item.folwState == 9){
-									return "已完成"
+									return '<span style="color:blue;">已完成</span>';
 								}
 							}else{
 								return "未发起"
@@ -511,37 +511,15 @@
 								}
 								if(item.folwState == 2){
 									hideRestartButton = false;
-								}								
+								}																								
 							}						
-							return common.format($('#columnBtns').html(), item.signid, 
-									item.signid,isFlowStart,"vm.del('" + item.signid + "')",isFlowStart,
-									"vm.startFlow('" + item.signid + "')", isFlowStart,
+							return common.format($('#columnBtns').html(), item.signid, item.folwState,
+									item.signid,"vm.del('" + item.signid + "')",isFlowStart,
+									"vm.startNewFlow('" + item.signid + "')", isFlowStart,
 									"vm.stopFlow('" + item.signid + "')", hideStopButton,
 									"vm.restartFlow('" + item.signid + "')", hideRestartButton);
 						}
-					},
-					{
-						field : "",
-						title : "操作",
-						width : 180,
-						template : function(item) {
-							//如果已经发起流程，则只能查看
-							var isFlowStart = false,hideStopButton = true,hideRestartButton=true;
-							if(item.folwState && item.folwState > 0){
-								isFlowStart = true;
-								if(item.folwState == 1){
-									hideStopButton = false;
-								}
-								if(item.folwState == 2){
-									hideRestartButton = false;
-								}								
-							}						
-							return common.format($('#columnNewBtns').html(), 
-									"vm.startNewFlow('" + item.signid + "')", isFlowStart,
-									"vm.stopNewFlow('" + item.signid + "')", hideStopButton,
-									"vm.restartNewFlow('" + item.signid + "')", hideRestartButton);
-						}					
-					}
+					}				
 			];
 			// End:column
 

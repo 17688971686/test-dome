@@ -149,8 +149,6 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
-				$('#birthDay').val(vm.model.birthDay);
-				$('#createDate').val(vm.model.createDate);	
 				if(response.data.work && response.data.work.length > 0){
 					vm.showWorkHistory = true;
 					vm.work=response.data.work;
