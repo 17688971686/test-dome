@@ -72,7 +72,19 @@ public class Sign extends DomainBase{
 	//主办事处联系人	
 	@Formula("(select u.loginName from cs_user u where u.id = maindepetcontactuserid)")
 	private String mainDeptUserName;
+	
+	//主办事处联系电话	
+	@Formula("(select u.userPhone from cs_user u where u.id = maindepetcontactuserid)")
+	private String mainDeptContactPhone;
 		
+	public String getMainDeptContactPhone() {
+		return mainDeptContactPhone;
+	}
+
+	public void setMainDeptContactPhone(String mainDeptContactPhone) {
+		this.mainDeptContactPhone = mainDeptContactPhone;
+	}
+
 	//协办处室ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String assistdeptid;
@@ -1354,14 +1366,6 @@ public class Sign extends DomainBase{
 
 	public void setaOrgId(String aOrgId) {
 		this.aOrgId = aOrgId;
-	}
-
-	public String getBuiltcompanyName() {
-		return builtcompanyName;
-	}
-
-	public void setBuiltcompanyName(String builtcompanyName) {
-		this.builtcompanyName = builtcompanyName;
 	}
 
 	public String getDesigncompanyName() {

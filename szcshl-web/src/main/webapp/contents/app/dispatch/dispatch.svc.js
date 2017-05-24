@@ -173,7 +173,6 @@
 							fn:function() {
 								$('.alertDialog').modal('hide');
 								$('.modal-backdrop').remove();
-								$rootScope.back();	//返回到流程页面
 							}
 						})								
 					}						
