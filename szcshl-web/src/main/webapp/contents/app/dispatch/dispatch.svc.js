@@ -13,12 +13,14 @@
 			chooseProject : chooseProject,			     //选择待选项目
 			getsign : getsign,							 //显示待选项目
 			cancelProject : cancelProject,				 //取消选择
-			mergeDispa : mergeDispa,						 //合并发文
-			fileNum : fileNum
+			mergeDispa : mergeDispa,					 //合并发文
+			fileNum : fileNum,                           //生成文件字号
+			
 		};
 		return service;			
 		
 		function fileNum(vm){
+			vm.isSubmit = false;
 			if(!vm.dispatchDoc.id){
 				common.alert({
 					vm:vm,
@@ -30,7 +32,8 @@
 				})	
 				return;
 			}
-			if(vm.dispatchDoc.fileNum){
+			
+			/*if(vm.dispatchDoc.fileNum){
 				common.alert({
 					vm:vm,
 					msg:"已生成文件字号",
@@ -40,9 +43,8 @@
 					}
 				})	
 				return;
-			}
+			}*/
 			
-			vm.isSubmit=true;
 			var httpOptions = {
 					method : 'post',
 					url : rootPath+"/dispatch/fileNum",
@@ -55,7 +57,7 @@
 					response : response,
 					fn : function() {
 						vm.dispatchDoc.fileNum=response.data;	
-						vm.isSubmit=false;
+						vm.isSubmit = true;
 						common.alert({ 
 							vm : vm,
 							msg : "操作成功"
@@ -69,7 +71,8 @@
 				vm:vm,
 				$http:$http,
 				httpOptions:httpOptions,
-				success:httpSuccess
+				success:httpSuccess,
+				//onError: function(response){vm.isSubmit = true;}
 			});
 		}
 		
@@ -88,7 +91,6 @@
 				return;
 			}
 			var WorkeWindow = $("#mwindow");
-			// WorkeWindow.show();
 			WorkeWindow.kendoWindow({
 				width : "1200px",
 				height : "630px",
@@ -98,8 +100,8 @@
 				closable : true,
 				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
 			}).data("kendoWindow").center().open();
-			getsign(vm);
 			getSeleSignBysId(vm);
+			getsign(vm);
 			
 		}
 		// end#gotoWPage
@@ -119,11 +121,26 @@
 					fn:function() {
 						vm.dispatchDoc=response.data.dispatch;
 						vm.proofread = response.data.mainUserList;
-						vm.dispatchDoc.dispatchWay="";
-						$("#draftDate").val(vm.dispatchDoc.draftDate);
-						$("#dispatchDate").val(vm.dispatchDoc.dispatchDate);
-						$("#proofreadId").find("option:selected").text(vm.dispatchDoc.proofreadName);
-						$("#proofreadId").find("option:selected").val(vm.dispatchDoc.proofreadId);
+						vm.org = response.data.orgList;
+						//console.log(vm.dispatchDoc.fileNum);
+						
+						//如果是合并发文则显示主次项目选项
+						if(vm.dispatchDoc.dispatchWay=="合并发文"){
+							vm.isHide=false;
+		        		}else{
+		        			vm.isHide=true;
+		        		}
+						//如果是主项目则显示关联项目
+						if (vm.dispatchDoc.isMainProject=="9") {
+			    			vm.isHide2=false;
+			    		}else{
+			    			vm.isHide2=true;
+			    		}
+						
+						if(vm.dispatchDoc.fileNum){
+							vm.isSubmit = true;
+						}
+						
 					}		
 				})
 			}
@@ -177,11 +194,8 @@
 		function saveDispatch(vm){
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
+			vm.saveProcess = false;
 			if(isValid){
-				vm.dispatchDoc.proofreadName=$("#proofreadId").find("option:selected").text();
-				vm.dispatchDoc.draftDate=$("#draftDate").val();
-				vm.dispatchDoc.dispatchDate=$("#dispatchDate").val();
-				vm.saveProcess = true;
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/dispatch",
@@ -196,9 +210,10 @@
 								vm:vm,
 								msg:"操作成功,请继续处理流程！",
 								fn:function() {
+									vm.saveProcess = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
-									$rootScope.back();	//返回到流程页面
+									//$rootScope.back();	//返回到流程页面
 								}
 							})								
 						}						
@@ -209,9 +224,10 @@
 					$http:$http,
 					httpOptions:httpOptions,
 					success:httpSuccess,
-					onError: function(response){vm.saveProcess = false;}
+					//onError: function(response){vm.saveProcess = false;}
 				});
 				
+				//初始化数据获得保存后的数据
 				initDispatchData(vm);
 			}
 		}//E_保存
@@ -220,18 +236,21 @@
 		function chooseProject(vm){
 			var idStr=vm.linkSignId;
 			var linkSignId=$("input[name='checksign']:checked");
+			
 			var ids=[];
-			$.each(linkSignId, function(i, obj) {
-				ids.push(obj.value);
-			});
-			 if(idStr){
-				 idStr+=","+ids.join(',');
-			 }else{
-				 idStr=ids.join(',');
-			 }
-			 vm.linkSignId=idStr;
-			 getselectedSign(vm);
-			 getsign(vm);
+			if(linkSignId){
+				 $.each(linkSignId, function(i, obj) {
+					ids.push(obj.value);
+				 });
+				 if(idStr){
+					 idStr+=","+ids.join(',');
+				 }else{
+					 idStr=ids.join(',');
+				 }
+				 vm.linkSignId=idStr;
+				 getselectedSign(vm);
+				 getsign(vm);
+			}
 		}
 		//end##chooseProject
 		
@@ -239,15 +258,19 @@
 		function cancelProject(vm){
 			var idStr=vm.linkSignId;
 			var linkSignId=$("input[name='checkss']:checked");
-			$.each(linkSignId, function(i, obj) {
-				if(idStr.lastIndexOf(obj.value)==0){
-					idStr=idStr.replace(obj.value,"");
-				}else{
-					idStr=idStr.replace(","+obj.value,"");
-				}
-			});
-			vm.linkSignId=idStr;
-			getselectedSign(vm);
+			if(linkSignId){
+				$.each(linkSignId, function(i, obj) {
+					if(idStr.lastIndexOf(obj.value)==0){
+						idStr=idStr.replace(obj.value,"");
+					}else{
+						idStr=idStr.replace(","+obj.value,"");
+					}
+				});
+				vm.linkSignId=idStr
+				console.log(vm.linkSignId);
+				getselectedSign(vm);
+				getsign(vm);
+			}
 		}
 		//end##chooseProject
 		
@@ -294,29 +317,27 @@
 				success : httpSuccess
 			});
 		}
-		//end##getselectedSign
 		
 		//begin##getsign
 		function getsign(vm){
-			console.log(vm.linkSignId);
-			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/dispatch/getSign",
-					params:{
-						linkSignId:vm.linkSignId
+				vm.sign.signid=vm.linkSignId;
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/dispatch/getSign",
+						data : vm.sign
 					}
+				var httpSuccess = function success(response) {	
+					vm.signs=response.data;
 				}
-			var httpSuccess = function success(response) {
-				vm.sign=response.data;
-			} 
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-		//end##getsign
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess,
+					onError: function(response){}
+				});
+				
+		}//end##getsign
 		
 	}
 })();

@@ -25,7 +25,7 @@ public class SignDto extends BaseDto {
 	private String ispresign;
 	
 	private String projectname;
-	
+		
 	private String isregisteredcompleted;
 	
 	private String maindepetid;
@@ -307,6 +307,29 @@ public class SignDto extends BaseDto {
 	//流程实例ID
 	private String processInstanceId;
 	
+	//开始时间
+	@JSONField(format = "yyyy-MM-dd")
+	private Date startTime;
+	//结束时间
+	@JSONField(format = "yyyy-MM-dd")
+	private Date endTime;
+	
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
 	public OrgDto getOrgDto() {
 		return orgDto;
 	}

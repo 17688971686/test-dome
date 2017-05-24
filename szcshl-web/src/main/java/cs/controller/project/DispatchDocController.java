@@ -4,7 +4,10 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.junit.runners.Parameterized.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -15,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.domain.project.Sign;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
+import cs.repository.odata.ODataObj;
 import cs.service.project.DispatchDocService;
 
 @Controller
@@ -35,7 +40,7 @@ public class DispatchDocController {
 		dispatchDocService.save(dispatchDocDto);
 	}
 	
-	@RequiresPermissions("dispatch##post")
+	@RequiresPermissions("dispatch##get")
 	@RequestMapping(name = "生成关联信息", path = "mergeDispa",method=RequestMethod.GET)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void mergeDispa(@RequestParam String signId,String linkSignId) throws Exception  {
@@ -49,14 +54,14 @@ public class DispatchDocController {
 		return fileNum;
 	}
 	
-	@RequiresPermissions("dispatch##getSign##POST")	
-	@RequestMapping(name = "获取待选项目", path = "getSign", method = RequestMethod.GET)
-	public @ResponseBody List<SignDto> getSign(@RequestParam String linkSignId) throws ParseException {	
-		List<SignDto> sList = dispatchDocService.getSign(linkSignId);
+	@RequiresPermissions("dispatch#getSign#get")	
+	@RequestMapping(name = "获取待选项目", path ="getSign", method = RequestMethod.POST)
+	public @ResponseBody List<SignDto> getSign(@RequestBody SignDto signDto) throws Exception {	
+		List<SignDto> sList = dispatchDocService.getSign(signDto);
 		return sList;
 	}	
 	
-	@RequiresPermissions("dispatch##getSelectedSign")
+	@RequiresPermissions("dispatch##get")
 	@RequestMapping(name = "获取已选项目", path = "getSelectedSign",method=RequestMethod.GET)	
 	public @ResponseBody List<SignDto> getSignbyIds(@RequestParam String linkSignIds) throws Exception  {
 		String [] ids=linkSignIds.split(",");

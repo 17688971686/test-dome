@@ -9,12 +9,14 @@
         var vm = this;
         vm.title = '项目发文编辑';
         vm.isHide=true;
-        vm.isShow=false;
-
+        vm.isHide2=true;
+        vm.isSubmit = false;
+        vm.saveProcess=false;
+        vm.sign={};
         vm.dispatchDoc = {};
         vm.dispatchDoc.signId = $state.params.signid;
         //创建发文
-        vm.linkSignId="";
+        vm.linkSignId=" ";
         vm.create = function(){
         	dispatchSvc.saveDispatch(vm);
         }
@@ -33,27 +35,32 @@
         
         //选择发文方式
         vm.isSelect=function(){
-        	var selectValue=$("#dispatchWay").find("option:selected").text();
-        	if(selectValue=="合并发文"){
+        	//var selectValue=$("#dispatchWay").find("option:selected").text();
+        	if(vm.dispatchDoc.dispatchWay=="合并发文"){
         		vm.isHide=false;
         	}else{
         		vm.isHide=true;
         		
         	}
         }
+        
+        //选主项目
         vm.ischecked=function(){
-        	var ischeck=$("input[name='Type']:checked").val();
-    		if (ischeck=="1") {
-    			vm.isShow=true;
-    		}else{
-    			vm.isShow=false;
-    		}
+    			vm.isHide2=false;
+        }
+        
+      //选次项目
+        vm.ischecked2=function(){
+        	vm.isHide2=true;
         }
         //打开合并页面
         vm.gotoMergePage=function(){
         	dispatchSvc.gotoMergePage(vm);
         }
         
+        vm.search=function(){
+        	dispatchSvc.getSign(vm);
+        }
         //选择待选项目
         vm.chooseProject=function(){
         	dispatchSvc.chooseProject(vm);
@@ -74,6 +81,14 @@
         	dispatchSvc.mergeDispa(vm);
         }
         
+        vm.formReset=function(){
+        	var values=$("#searchform").find("input,select");
+        	values.val("");
+        }
+        
+        vm.search=function(){
+        	dispatchSvc.getsign(vm);
+        }
         //生成文件字号
         vm.fileNum=function(){
         	dispatchSvc.fileNum(vm);

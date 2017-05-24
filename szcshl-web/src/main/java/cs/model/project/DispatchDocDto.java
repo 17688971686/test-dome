@@ -3,6 +3,8 @@ package cs.model.project;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.model.BaseDto;
 
 public class DispatchDocDto extends BaseDto{
@@ -26,11 +28,9 @@ private String id;
 	//拟稿人
 	private String userId;
 	
-	//校对人
-	private String proofreadId;
-	
 	//拟稿日期
-	private String draftDate;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date draftDate;
 	
 	//密码等级
 	private String secretLevel;
@@ -42,7 +42,8 @@ private String id;
 	private String urgentLevel;
 	
 	//发文日期
-	private String dispatchDate;
+	@JSONField(format = "yyyy-MM-dd")
+	private Date dispatchDate;
 	
 	//文件字号
 	private String fileNum;
@@ -63,12 +64,14 @@ private String id;
 	private String ministerSuggesttion;
 	
 	//部长核稿日期
+	@JSONField(format = "yyyy-MM-dd")
 	private Date ministerDate;
 	
 	//分管副局长核稿意见
 	private String viceDirectorSuggesttion;
 	
 	//分管副局长核稿日期
+	@JSONField(format = "yyyy-MM-dd")
 	private Date viceDirectorDate;
 	
 	//局长核稿意见
@@ -126,29 +129,24 @@ private String id;
 	//是否与其他表关联
 	private String isRelated;
 	
+	//是否是主项目
+	private String isMainProject;
 	
-	public String getDraftDate() {
+	
+	public Date getDraftDate() {
 		return draftDate;
 	}
 
-	public void setDraftDate(String draftDate) {
+	public void setDraftDate(Date draftDate) {
 		this.draftDate = draftDate;
 	}
 
-	public String getDispatchDate() {
+	public Date getDispatchDate() {
 		return dispatchDate;
 	}
 
-	public void setDispatchDate(String dispatchDate) {
+	public void setDispatchDate(Date dispatchDate) {
 		this.dispatchDate = dispatchDate;
-	}
-
-	public String getProofreadId() {
-		return proofreadId;
-	}
-
-	public void setProofreadId(String proofreadId) {
-		this.proofreadId = proofreadId;
 	}
 
 	public String getDescription() {
@@ -446,6 +444,14 @@ private String id;
 
 	public void setIsRelated(String isRelated) {
 		this.isRelated = isRelated;
+	}
+
+	public String getIsMainProject() {
+		return isMainProject;
+	}
+
+	public void setIsMainProject(String isMainProject) {
+		this.isMainProject = isMainProject;
 	}
 			
 }

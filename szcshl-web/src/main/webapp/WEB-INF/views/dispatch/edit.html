@@ -4,7 +4,7 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()"  ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
     <button class="btn btn-sm btn-success" ng-click="vm.fileNum()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>生成字号</button>
     <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
@@ -18,18 +18,18 @@
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：
 		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
-					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.dispatchWay">{{x.dictName}}</option>
 				</select>
-			</span> 
-			&nbsp;&nbsp;<span id="mergeOptions" ng-hide="vm.isHide"><input type="radio" id="mainproject" name="Type" value="1" ng-click="vm.ischecked()">主项目 
-			&nbsp;&nbsp; <input type="radio" id="secondproject" name="Type" ng-model="vm.model.projectType" value="2" ng-click="vm.ischecked()">次项目  &nbsp;&nbsp;<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-show="vm.isShow">关联项目</button></span>
+			</span> &nbsp;&nbsp;
+			<span id="mergeOptions" ng-hide="vm.isHide">
+			<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9" ng-checked="vm.dispatchDoc.isMainProject =='9'" ng-click="vm.ischecked()">主项目 &nbsp;&nbsp; 
+			<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="vm.dispatchDoc.isMainProject =='0'" ng-click="vm.ischecked2()">次项目  &nbsp;&nbsp;
+			<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-hide="vm.isHide2">关联项目</button></span>
 			
 		  	<span style="float:right;">发文类型：
-		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true" data-val-required="必填">
-		  			<option value="">请选择</option>
-					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType">
+					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.dispatchType">{{x.dictName}}</option>
 				</select>
-				 <span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>
 			</span>
 		  </caption>
 		  <tbody>
@@ -37,21 +37,23 @@
 		  
 		    <tr>
 		      <td style="width:150px;" class="text-center">发文部门</td>
-		      <td >{{vm.dispatchDoc.orgName}}</td>
+		      <td>
+		      	<select ng-model="vm.dispatchDoc.orgName"  name="orgName" id="orgName" class="form-control input-sm " >
+					<option ng-repeat="x in vm.org" value="{{x.name}}" ng-selected="x.name == vm.dispatchDoc.orgName">{{x.name}}</option>
+				</select>			
+			  </td>
 			  
 			  <td rowspan="2" style="width:150px;" class="text-center">校对人</td>
 		      <td rowspan="2">
-		      	<select ng-model="vm.dispatchDoc.proofreadId"  name="proofreadId" id="proofreadId" class="form-control input-sm " >
-		  			<option value="">请选择</option>
-					<option ng-repeat="x in vm.proofread" value="{{x.id}}">{{x.loginName}}</option>
+		      	<select ng-model="vm.dispatchDoc.proofreadName"  name="proofreadName" id="proofreadName" class="form-control input-sm " >
+					<option ng-repeat="x in vm.proofread" value="{{x.loginName}}" ng-selected="x.loginName == vm.dispatchDoc.proofreadName">{{x.loginName}}</option>
 				</select>			
 			  </td>
 			   
 			  <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>
 		      <td rowspan="2">
 		      	<input type="text" name="draftDate" id="draftDate" style="width: 210px;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.dispatchDoc.draftDate" 
-				value="X/01/X2000" data-val-date="必须为日期" data-val="true" data-val-required="必填" > 			
-			    <span data-valmsg-for="draftDate" data-valmsg-replace="true" class="errors" ></span>
+				 data-val-date="必须为日期"  > 			
 			  </td>
 		    </tr>
 		    
@@ -64,13 +66,16 @@
 		    
 		    <tr>
 		      <td style="width:150px;" class="text-center">秘密等级</td>
-		      <td >{{vm.dispatchDoc.secretLevel}}</td>
+		      <td >
+		      <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
+					<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.secretLevel">{{x.dictName}}</option>
+				</select>
+			  </td>
 			  
 			  <td style="width:150px;" class="text-center">年度计划</td>
 		      <td >
 		      	<select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm "  data-val="true" data-val-required="必填">
-		  			<option value="">请选择</option>
-					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="x.dictName == vm.dispatchDoc.yearPlan">{{x.dictName}}</option>
 				</select>
 			    <span data-valmsg-for="yearPlan" data-valmsg-replace="true" class="errors"></span>
 			  </td>
@@ -78,8 +83,7 @@
 			  <td style="width:150px;" class="text-center">紧急程度</td>
 		      <td >
 		      	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel" data-val="true" data-val-required="必填">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="x.dictName">{{x.dictName}}</option>
 				</select>				
 			    <span data-valmsg-for="urgentLevel" data-valmsg-replace="true" class="errors"></span>		      
 			  </td>
@@ -91,7 +95,7 @@
 		      <td >
 		      	<input type="text" name="dispatchDate" id="dispatchDate" style="width: 210px;"
 					 class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  kendo-date-picker k-format="'yyyy-MM-dd'"
-					  value="X/01/X2000" data-val-date="必须为日期"> 		
+					  data-val-date="必须为日期"> 		
 			    <span data-valmsg-for="dispatchDate" data-valmsg-replace="true" class="errors"></span>
 			  </td>
 			  
@@ -237,8 +241,8 @@
 	</form> <!-- end form -->
 	<div id="mwindow" style="visibility: hidden;">
 	<div class="toolbar">
-	    <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
-		<button class="btn btn-sm btn-primary" ng-click="formReset()" >重置</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.search()"><span class="glyphicon glyphicon-search"></span>查询</button>
+		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
 		 <button class="btn btn-sm btn-success" ng-click="vm.mergeDispa()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>确定</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.onClose()" ><span class="glyphicon glyphicon-chevron-left"></span>关闭</button>
 	</div>
@@ -249,26 +253,26 @@
 			<tr>
 				<td class="formAlignRight" style="width:150px;">项目名称</td>
 				<td>
-					<input  type="text"  ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope" operator="like">		
+					<input  type="text"  ng-model="vm.sign.projectname" id="projectname" name="projectname">		
 				</td>
 				<td class="formAlignRight" style="width:150px;">建设单位</td>
 				<td>
-					<input  type="text"   ng-model="vm.dispatchDoc.orgName" id="orgName" name="orgName" operator="like">		
+					<input  type="text"   ng-model="vm.sign.builtcompanyName" id="builtcompanyName" name="builtcompanyName" >		
 				</td>
 			</tr>
 			
 			<tr>
 				<td class="formAlignRight" style="width:150px;">评审阶段</td>
 				<td >
-					<select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" style="width:172px;">
+					<select ng-model="vm.sign.reviewstage"  name="reviewstage" id="reviewstage" style="width:172px;">
 		  				<option value="">请选择</option>
-						<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
 				<td class="formAlignRight" style="width:150px;">签收日期</td>
 				<td>
-					<input type="text" name="dispatchDate" id="dispatchDate" style="width: 76px;" ng-model="vm.dispatchDoc.dispatchDate" > 	
-					- <input type="text" name="dispatchDate" id="dispatchDate" style="width: 76px;" ng-model="vm.dispatchDoc.dispatchDate" > 
+					<input type="text" name="signdate" id="signdate1" style="width: 170px;" ng-model="vm.sign.startTime" kendo-date-picker k-format="'yyyy-MM-dd'" > 	
+					- <input type="text" name="signdate" id="signdate2" style="width: 170px;" ng-model="vm.sign.endTime" kendo-date-picker k-format="'yyyy-MM-dd'" > 
 				</td>
 			</tr>	
 					
@@ -292,16 +296,16 @@
 						    <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
 						    <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
 						</tr>	
-						<tr ng-repeat="x in vm.sign">
+						<tr ng-repeat="x in vm.signs">
 						  	<td  align="center"> <input type="checkbox" name="checksign" value="{{ x.signid }}"/></td>
-						    <td style="text-align: center;">{{ x.workProgram.projectName }}</td>
+						    <td style="text-align: center;">{{ x.projectname }}</td>
 						    <td style="text-align: center;">{{ x.reviewstage }}</td>
 						    <td style="text-align: center;">{{ x.reviewdeptid }}</td>
+						    <td style="text-align: center;">{{ x.builtcompanyid }}</td>
 						    <td style="text-align: center;">{{ x.signdate }}</td>
-						    <td style="text-align: center;">{{ x.workProgram.contactPerson }}</td>
-						    <td style="text-align: center;">{{ x.workProgram.contactPersonPhone }}</td>
-						    <td style="text-align: center;">{{ x.jobState }}</td>
-						    <td style="text-align: center;">{{ x.workProgram.mianChargeUserName }}</td>
+						    <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
+						    <td style="text-align: center;">{{ x.mainDeptContactPhone }}</td>
+						    <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
 						</tr>	
 					</table>
 				</div>
@@ -327,14 +331,14 @@
 						</tr>	
 						<tr ng-repeat="x in vm.selectedSign">
 						  	<td  align="center"> <input type="checkbox" name="checkss" value="{{ x.signid }}"/></td>
-						    <td style="text-align: center;">{{ x.workProgram.projectName }}</td>
+						    <td style="text-align: center;">{{ x.projectname }}</td>
 						    <td style="text-align: center;">{{ x.reviewstage }}</td>
 						    <td style="text-align: center;">{{ x.reviewdeptid }}</td>
+						      <td style="text-align: center;">{{ x.builtcompanyid }}</td>
 						    <td style="text-align: center;">{{ x.signdate }}</td>
-						    <td style="text-align: center;">{{ x.workProgram.contactPerson }}</td>
-						    <td style="text-align: center;">{{ x.workProgram.contactPersonPhone }}</td>
-						    <td style="text-align: center;">{{ x.jobState }}</td>
-						    <td style="text-align: center;">{{ x.workProgram.mianChargeUserName }}</td>
+						    <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
+						    <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
+						    <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
 						</tr>	
 					</table>
 				</div>

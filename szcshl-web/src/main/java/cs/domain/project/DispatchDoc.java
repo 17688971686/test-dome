@@ -53,10 +53,6 @@ public class DispatchDoc extends DomainBase{
 	@Column(columnDefinition="VARCHAR(64)")
 	private String userId;
 	
-	//校对人
-	@Column(columnDefinition="VARCHAR(64)")
-	private String proofreadId;
-	
 	//拟稿日期
 	@Column(columnDefinition="DATE")
 	private Date draftDate;
@@ -84,7 +80,6 @@ public class DispatchDoc extends DomainBase{
 	//发文范围
 	@Column(columnDefinition="VARCHAR(512)")
 	private String dispatchScope;
-	
 	//打印份数
 	@Column(columnDefinition="INTEGER")
 	private Integer printCount;
@@ -187,9 +182,10 @@ public class DispatchDoc extends DomainBase{
 	
 	//校对人名称
 	@Column(columnDefinition="VARCHAR(225)")
-	@Formula("(select u.loginName from cs_user u where u.id = proofreadId)")
 	private String proofreadName;
 	
+	//是否为主项目
+	private String isMainProject;//(3：主项目，4：次项目)
 	
 	public String getIsRelated() {
 		return isRelated;
@@ -285,14 +281,6 @@ public class DispatchDoc extends DomainBase{
 
 	public void setNextWorkPlan(String nextWorkPlan) {
 		this.nextWorkPlan = nextWorkPlan;
-	}
-
-	public String getProofreadId() {
-		return proofreadId;
-	}
-
-	public void setProofreadId(String proofreadId) {
-		this.proofreadId = proofreadId;
 	}
 
 	public String getUserName() {
@@ -509,6 +497,14 @@ public class DispatchDoc extends DomainBase{
 
 	public void setDirectorDate(Date directorDate) {
 		this.directorDate = directorDate;
+	}
+
+	public String getIsMainProject() {
+		return isMainProject;
+	}
+
+	public void setIsMainProject(String isMainProject) {
+		this.isMainProject = isMainProject;
 	}
 			
 }

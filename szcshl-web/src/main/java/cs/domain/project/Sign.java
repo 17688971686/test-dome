@@ -103,8 +103,9 @@ public class Sign extends DomainBase{
 	
 	//建设单位名称
 	@Column(columnDefinition="VARCHAR(100)")
+	@Formula("(select c.coName from cs_Company c where c.id = builtcompanyid)")
 	private String builtcompanyName;
-
+	
 	//缓急程度
 	@Column(columnDefinition="VARCHAR(16)")
 	private String urgencydegree;
@@ -1353,6 +1354,14 @@ public class Sign extends DomainBase{
 
 	public void setaOrgId(String aOrgId) {
 		this.aOrgId = aOrgId;
+	}
+
+	public String getBuiltcompanyName() {
+		return builtcompanyName;
+	}
+
+	public void setBuiltcompanyName(String builtcompanyName) {
+		this.builtcompanyName = builtcompanyName;
 	}
 
 	public String getDesigncompanyName() {
