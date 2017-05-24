@@ -40,8 +40,10 @@ public class SignDto extends BaseDto {
 	private String assistdeptcontactuserid;
 	
 	private String designcompanyid;
+	private String designcompanyName;
 	
 	private String builtcompanyid;
+	private String builtcompanyName;
 	
 	private String urgencydegree;
 	
@@ -1209,6 +1211,23 @@ public class SignDto extends BaseDto {
 
 	public void setaOrgId(String aOrgId) {
 		this.aOrgId = aOrgId;
-	}	
+	}
+
+	public String getDesigncompanyName() {
+		return designcompanyName;
+	}
+
+	public void setDesigncompanyName(String designcompanyName) {
+		this.designcompanyName = designcompanyName;
+	}
+
+	public String getBuiltcompanyName() {
+		return builtcompanyName;
+	}
+
+	public void setBuiltcompanyName(String builtcompanyName) {
+		this.builtcompanyName = builtcompanyName;
+	}
+	
 	
 }

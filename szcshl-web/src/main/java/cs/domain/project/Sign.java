@@ -93,9 +93,17 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(64)")
 	private String designcompanyid;
 	
+	//编制单位名称
+	@Column(columnDefinition="VARCHAR(100)")
+	private String designcompanyName;
+	
 	//建设单位ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String builtcompanyid;
+	
+	//建设单位名称
+	@Column(columnDefinition="VARCHAR(100)")
+	private String builtcompanyName;
 	
 	//缓急程度
 	@Column(columnDefinition="VARCHAR(16)")
@@ -1341,5 +1349,22 @@ public class Sign extends DomainBase{
 
 	public void setaOrgId(String aOrgId) {
 		this.aOrgId = aOrgId;
-	}		
+	}
+
+	public String getDesigncompanyName() {
+		return designcompanyName;
+	}
+
+	public void setDesigncompanyName(String designcompanyName) {
+		this.designcompanyName = designcompanyName;
+	}
+
+	public String getBuiltcompanyName() {
+		return builtcompanyName;
+	}
+
+	public void setBuiltcompanyName(String builtcompanyName) {
+		this.builtcompanyName = builtcompanyName;
+	}
+	
 }

@@ -138,6 +138,9 @@ public class WorkProgram extends DomainBase{
 	//补充资料函发文日期
 	@Column(columnDefinition="DATE")
 	private Date suppLetterDate;
+	//评审会时间
+	@Column(columnDefinition="DATE")
+	private Date stageTime;
 	
 	//会议地点
 	@Column(columnDefinition="VARCHAR(128)")
@@ -526,5 +529,14 @@ public class WorkProgram extends DomainBase{
 	public void setExpertReviews(List<ExpertReview> expertReviews) {
 		this.expertReviews = expertReviews;
 	}
+
+	public Date getStageTime() {
+		return stageTime;
+	}
+
+	public void setStageTime(Date stageTime) {
+		this.stageTime = stageTime;
+	}
+	
 		
 }
