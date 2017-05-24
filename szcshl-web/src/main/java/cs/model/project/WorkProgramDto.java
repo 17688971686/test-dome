@@ -86,7 +86,7 @@ public class WorkProgramDto extends BaseDto{
 	//评审会时间
 	@JSONField(format = "yyyy-MM-dd")
 	private Date stageTime;
-	
+
 	//会议地点
 	private String meetingAddress;
 	
@@ -479,6 +479,6 @@ public class WorkProgramDto extends BaseDto{
 	public void setStageTime(Date stageTime) {
 		this.stageTime = stageTime;
 	}
-	
+
 		
 }

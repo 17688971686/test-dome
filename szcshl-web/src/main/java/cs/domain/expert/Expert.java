@@ -108,7 +108,7 @@ public class Expert extends DomainBase {
 	
 	@Column(columnDefinition="varchar(30) ")
 	private String state;	//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
-	
+
 	@OneToMany(mappedBy="expert")
 	private List<WorkExpe> work;
 	
@@ -127,6 +127,7 @@ public class Expert extends DomainBase {
 	public void setGraduateDate(Date graduateDate) {
 		this.graduateDate = graduateDate;
 	}
+
 	public List<ProjectExpe> getProject() {
 		return project;
 	}

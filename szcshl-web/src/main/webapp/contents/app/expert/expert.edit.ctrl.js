@@ -6,10 +6,9 @@
     expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','$state']; 
 
     function expert($location,projectExpeSvc,workExpeSvc,expertSvc,$state) {
-        /* jshint validthis:true */
         var vm = this;
         vm.model = {};
-        vm.title = '专家录入';
+        vm.title = '专家信息录入';
         vm.isuserExist=false;
         vm.isHide=true;
         vm.id = $state.params.expertID;     

@@ -19,6 +19,12 @@
                 controller: 'adminCtrl',
                 controllerAs: 'vm'
             })
+            .state('etasks', {
+                url: '/etasks',
+                templateUrl: rootPath + '/admin/etasks.html',
+                controller: 'adminEndCtrl',
+                controllerAs: 'vm'
+            })
             //begin#role
             .state('role', {
                 url: '/role',
@@ -234,6 +240,11 @@
                 url: '/signDetails/:signid',
                 templateUrl: rootPath + '/sign/html/signDetails.html',
                 controller: 'signDetailsCtrl',
+                controllerAs: 'vm'
+            }).state('endSignDetail', { //已经办结的详情信息
+                url: '/endSignDetail/:signid/:processInstanceId',
+                templateUrl: rootPath + '/sign/html/signEndDetails.html',
+                controller: 'signEndCtrl',
                 controllerAs: 'vm'
             })//end#sign
 

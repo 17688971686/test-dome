@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.model.expert.ExpertReviewDto;
+import cs.model.expert.ExpertSelConditionDto;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,16 +43,23 @@ public class ExpertController {
 	}	
 	
 	@RequiresPermissions("expert#findRepeatByOData#post")	
-	@RequestMapping(name = "获取专家数据", path = "findRepeatByOData", method = RequestMethod.POST)
+	@RequestMapping(name = "查询重复专家", path = "findRepeatByOData", method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<ExpertDto> findRepeatByOData(){
 		List<ExpertDto> list = expertService.findAllRepeat();
 		PageModelDto<ExpertDto> pageModelDto = new PageModelDto<ExpertDto>();				
 		pageModelDto.setCount(list.size());
-		pageModelDto.setValue(list);	
-		
+		pageModelDto.setValue(list);
 		return pageModelDto;
 	}
-	
+
+    @RequiresPermissions("expertReview#findReviewExpert#post")
+    @RequestMapping(name = "专家抽取", path = "findReviewExpert", method = RequestMethod.POST)
+    @ResponseBody
+    public List<ExpertDto> findReviewExpert(@RequestBody ExpertSelConditionDto epSelCondition) {
+		List<ExpertDto> pageModelDto = expertService.findExpert(epSelCondition);
+        return pageModelDto;
+    }
+
 	@RequiresPermissions("expert##post")
 	@RequestMapping(name = "创建专家", path = "",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)

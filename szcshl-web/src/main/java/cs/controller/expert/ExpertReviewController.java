@@ -40,7 +40,7 @@ public class ExpertReviewController {
     @RequiresPermissions("expertReview#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<ExpertReviewDto> get(HttpServletRequest request) throws ParseException {
+    public PageModelDto<ExpertReviewDto> findByOData(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<ExpertReviewDto> expertReviewDtos = expertReviewService.get(odataObj);	
         return expertReviewDtos;

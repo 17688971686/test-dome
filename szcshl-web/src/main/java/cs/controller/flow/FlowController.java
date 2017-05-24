@@ -71,7 +71,7 @@ public class FlowController {
 	private ICurrentUser currentUser;
 	
 	@RequiresPermissions("flow#html/tasks#post")
-	@RequestMapping(name = "个人待办信息", path = "html/tasks",method=RequestMethod.POST)	
+	@RequestMapping(name = "个人待办流程", path = "html/tasks",method=RequestMethod.POST)
 	public @ResponseBody PageModelDto<TaskDto> tasks(HttpServletRequest request) throws ParseException  {	
 		ODataObj odataObj = new ODataObj(request);				
 		PageModelDto<TaskDto> pageModelDto = flowService.queryGTasks(odataObj);				
@@ -79,13 +79,21 @@ public class FlowController {
 	}
 	
 	@RequiresPermissions("flow#html/tasksCount#get")
-	@RequestMapping(name = "个人待办数量", path = "html/tasksCount",method=RequestMethod.GET)	
+	@RequestMapping(name = "待办流程", path = "html/tasksCount",method=RequestMethod.GET)
 	public @ResponseBody long tasksCount(HttpServletRequest request) throws ParseException  {	
 		TaskQuery taskQuery = taskService.createTaskQuery();
 		taskQuery.taskCandidateOrAssigned(currentUser.getLoginUser().getLoginName());			
 		return taskQuery.count();
 	}
-	
+
+	@RequiresPermissions("flow#html/endTasks#post")
+	@RequestMapping(name = "已办结流程", path = "html/endTasks",method=RequestMethod.POST)
+	public @ResponseBody PageModelDto<TaskDto> endTasks(HttpServletRequest request) throws ParseException  {
+		ODataObj odataObj = new ODataObj(request);
+		PageModelDto<TaskDto> pageModelDto = flowService.queryETasks(odataObj);
+		return pageModelDto;
+	}
+
 	@RequestMapping(name = "读取流程图",path = "processInstance/img/{processInstanceId}",method = RequestMethod.GET)
     public void readProccessInstanceImg(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response)
             throws Exception {   	

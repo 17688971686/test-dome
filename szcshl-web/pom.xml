@@ -5,7 +5,7 @@
 	<artifactId>szcshl-web</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>framework Maven Webapp</name>
+	<name>szcshl-web Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>

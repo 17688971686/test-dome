@@ -96,7 +96,7 @@ public class Sign extends DomainBase{
 	//编制单位名称
 	@Column(columnDefinition="VARCHAR(100)")
 	private String designcompanyName;
-	
+
 	//建设单位ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String builtcompanyid;
@@ -104,7 +104,7 @@ public class Sign extends DomainBase{
 	//建设单位名称
 	@Column(columnDefinition="VARCHAR(100)")
 	private String builtcompanyName;
-	
+
 	//缓急程度
 	@Column(columnDefinition="VARCHAR(16)")
 	private String urgencydegree;
@@ -472,6 +472,10 @@ public class Sign extends DomainBase{
 	//协办部门
 	@Column(columnDefinition="VARCHAR(64)")
 	private String aOrgId;
+	
+	//流程实例ID
+	@Column(columnDefinition="VARCHAR(64)")
+	private String processInstanceId;
 	
 	public FileRecord getFileRecord() {
 		return fileRecord;
@@ -1366,5 +1370,12 @@ public class Sign extends DomainBase{
 	public void setBuiltcompanyName(String builtcompanyName) {
 		this.builtcompanyName = builtcompanyName;
 	}
-	
+
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
 }

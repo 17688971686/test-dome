@@ -157,6 +157,8 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
 			if(EnumExpertSelectType.SELF.getValue().equals(selectType)){	
 				deleteExpert(workProgramId,expertIdArr.get(i));
 			}
+			//评审会时间
+			domain.setReviewDate(workProgram.getStageTime());
 			domain.setSelectType(selectType);
 			domain.setExpert(expertRepo.findById(expertIdArr.get(i)));
 			domain.setWorkProgram(workProgram);

@@ -22,9 +22,11 @@
 		
 		//S_初始化流程数据
 	    function initFlowData(vm){
-	    	var processInstanceId = vm.flow.processInstanceId;			
-			vm.picture = rootPath+"/flow/processInstance/img/"+processInstanceId;		
-						
+	    	var processInstanceId = vm.flow.processInstanceId;
+            if(angular.isUndefined(vm.flow.hideFlowImg) || vm.flow.hideFlowImg == false){
+                vm.picture = rootPath+"/flow/processInstance/img/"+processInstanceId;
+            }
+
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
 				transport : common.kendoGridConfig().transport(rootPath+"/flow/processInstance/history/"+processInstanceId),

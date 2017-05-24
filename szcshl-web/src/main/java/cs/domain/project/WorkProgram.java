@@ -141,7 +141,7 @@ public class WorkProgram extends DomainBase{
 	//评审会时间
 	@Column(columnDefinition="DATE")
 	private Date stageTime;
-	
+
 	//会议地点
 	@Column(columnDefinition="VARCHAR(128)")
 	private String meetingAddress;
@@ -537,6 +537,6 @@ public class WorkProgram extends DomainBase{
 	public void setStageTime(Date stageTime) {
 		this.stageTime = stageTime;
 	}
-	
-		
+
+
 }

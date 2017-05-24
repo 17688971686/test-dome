@@ -614,7 +614,6 @@
 		
 		//Start 申报登记编辑
 		function updateFillin(vm){
-			
 				common.initJqValidation($('#sign_fill_form'));
 				var isValid = $('#sign_fill_form').valid();	 
 				if (isValid) {
@@ -723,14 +722,15 @@
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/sign/html/initDetailPageData",
-					params : {signid : vm.model.signid}						
+					params : {signid:vm.model.signid}
 				}
 
 			var httpSuccess = function success(response) {					
 				common.requestSuccess({
 					vm:vm,
 					response:response,
-					fn:function() {											
+					fn:function() {
+					    console.log(response.data);
 						vm.model = response.data;													
 					}					
 				})

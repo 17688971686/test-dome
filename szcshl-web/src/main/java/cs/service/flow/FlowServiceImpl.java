@@ -1,19 +1,21 @@
 package cs.service.flow;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipInputStream;
-
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import cs.common.ICurrentUser;
+import cs.common.cache.CacheFactory;
+import cs.common.cache.DefaultCacheFactory;
+import cs.common.cache.ICache;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.Validate;
+import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
+import cs.model.flow.FlowHistoryDto;
+import cs.model.flow.TaskDto;
+import cs.repository.odata.ODataObj;
+import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -34,19 +36,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.Constant;
-import cs.common.ICurrentUser;
-import cs.common.cache.CacheFactory;
-import cs.common.cache.DefaultCacheFactory;
-import cs.common.cache.ICache;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
-import cs.model.PageModelDto;
-import cs.model.flow.FlowDto;
-import cs.model.flow.FlowHistoryDto;
-import cs.model.flow.TaskDto;
-import cs.repository.odata.ODataObj;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipInputStream;
 
 @Service
 public class FlowServiceImpl implements FlowService{
@@ -93,17 +87,17 @@ public class FlowServiceImpl implements FlowService{
 		
 	}
 
-	private String getTaskMessage(List<Comment> list, String taskId) {		
-		StringBuffer message = new StringBuffer() ;
-		if(list != null && Validate.isString(taskId)){			
-			list.forEach(cl ->{			
-				if(taskId.equals(cl.getTaskId())){
-					message.append(cl.getFullMessage());
-					return ;
-				}				
-			});		
-		}	
-		return message.toString();
+	private String getTaskMessage(List<Comment> list, String taskId){
+        StringBuffer message = new StringBuffer() ;
+        if(list != null && Validate.isString(taskId)){
+            list.forEach(cl ->{
+                if(taskId.equals(cl.getTaskId())){
+                    message.append(cl.getFullMessage());
+                    return ;
+                }
+            });
+        }
+        return message.toString();
 	}	
 
 	@Override
@@ -359,16 +353,9 @@ public class FlowServiceImpl implements FlowService{
 					pi= runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
 					cache.put(t.getProcessInstanceId(), pi);
 				}				
-				TaskDto taskDto = new TaskDto();	
-				
-				if(pi.getBusinessKey().indexOf(Constant.FLOW_LINK_SYMBOL) > -1){
-					List<String> businessArr = StringUtil.getSplit(pi.getBusinessKey(), Constant.FLOW_LINK_SYMBOL);
-					taskDto.setBusinessKey(businessArr.get(0));
-					taskDto.setBusinessName(businessArr.get(1));
-				}else{
-					taskDto.setBusinessKey(pi.getBusinessKey());
-				}
-								
+				TaskDto taskDto = new TaskDto();
+                taskDto.setBusinessKey(pi.getBusinessKey());
+                taskDto.setBusinessName(pi.getName());
 				taskDto.setFlowKey(pi.getProcessDefinitionKey());
 				taskDto.setFlowName(pi.getProcessDefinitionName());
 				taskDto.setTaskId(t.getId());
@@ -388,6 +375,39 @@ public class FlowServiceImpl implements FlowService{
 		}		
 		pageModelDto.setCount(total);
 		
+		return pageModelDto;
+	}
+
+	@Override
+	public PageModelDto<TaskDto> queryETasks(ODataObj odataObj) {
+		PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
+
+		HistoryService historyService = processEngine.getHistoryService();
+		HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().variableValueEquals(currentUser.getLoginUser().getLoginName()).finished();
+
+		int total = Integer.valueOf(String.valueOf(hq.count()));
+        pageModelDto.setCount(total);
+
+		List<HistoricProcessInstance> historicList = hq.orderByProcessInstanceEndTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
+		if(historicList != null && historicList.size() > 0){
+			List<TaskDto> list = new ArrayList<TaskDto>(historicList.size());
+			historicList.forEach(h -> {
+				TaskDto taskDto = new TaskDto();
+                taskDto.setBusinessKey(h.getBusinessKey());
+                taskDto.setBusinessName(h.getName());
+				taskDto.setProcessInstanceId(h.getId());
+				taskDto.setProcessVariables(h.getProcessVariables());
+				taskDto.setProcessDefinitionId(h.getProcessDefinitionId());
+                taskDto.setCreateDate(h.getStartTime());
+				taskDto.setEndDate(h.getEndTime());
+				taskDto.setDurationInMillis(h.getDurationInMillis());
+				taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
+
+				list.add(taskDto);
+			});
+			pageModelDto.setValue(list);
+		}
+
 		return pageModelDto;
 	}
 }

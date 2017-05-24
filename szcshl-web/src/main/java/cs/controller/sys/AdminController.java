@@ -44,10 +44,16 @@ public class AdminController {
 	}
 	
 	@RequiresPermissions("admin#gtasks#get")
-	@RequestMapping(name = "个人待办", path = "gtasks")
+	@RequestMapping(name = "待办事项", path = "gtasks")
 	public String gtasks(Model model) {		
 		
 		return ctrlName + "/gtasks";
 	}
-	
+
+	@RequiresPermissions("admin#etasks#get")
+	@RequestMapping(name = "办结事项", path = "etasks")
+	public String etasks(Model model) {
+
+		return ctrlName + "/etasks";
+	}
 }

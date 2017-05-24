@@ -152,7 +152,6 @@
             var vm = this;
             vm.title = 'controller';
 
-           
             vm.submit = function () {
                 common.initJqValidation();
                 var isValid = $('form').valid();
@@ -169,14 +168,11 @@
                         	vm:vm,
                         	response:response,
                         	fn:function () {
-                                
                                 var isSuccess = response.data.isSuccess;
                                 if (isSuccess) {
                                     vm.message = "";
-                                    //common.cookie().set("data", "token", response.data.Token, "", "/");
                                     location.href = "${path}/admin/index.html";
                                 } else {
-                                    
                                     vm.message=response.data.message
                                 }
                         	}
@@ -190,10 +186,8 @@
                     	success:httpSuccess
                     });
                 }
-
-                
-
             }
+
             vm.keyEnter = function (e) {
                 if (e.which === 13) {
                     vm.submit()

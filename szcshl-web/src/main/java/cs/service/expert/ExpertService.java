@@ -4,6 +4,7 @@ import java.util.List;
 
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
 
 public interface ExpertService{
@@ -23,5 +24,6 @@ public interface ExpertService{
 	public ExpertDto findById(String id);
 
 	public List<ExpertDto> findAllRepeat();
-		 
+
+	List<ExpertDto> findExpert(ExpertSelConditionDto epSelCondition);
 }

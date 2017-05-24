@@ -28,8 +28,8 @@
         		var showDiv = aObj.attr("for-div");   		
         		$(".tab-pane").removeClass("active").removeClass("in");
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
-        	})  
-        	
+        	})
+
         	//先初始化流程信息        
         	flowSvc.initFlowData(vm);
         	flowSvc.getFlowInfo(vm);

@@ -5,23 +5,52 @@ import java.util.Map;
 
 public class TaskDto {
 
+	//业务key
 	private String businessKey;
+	//流程实例名称
 	private String businessName;
+	//流程key
 	private String flowKey;
+	//流程名称
 	private String flowName;
-	private String taskId;	
+	//任务ID
+	private String taskId;
+	//任务名称
 	private String taskName;
+	//待办人
 	private String assignee;
 	private String parentTaskId;
+	//流程实例ID
 	private String processInstanceId;
 	private String processDefinitionId;
 	private String taskDefinitionKey;
-	private Date createDate;	
+	//开始日期
+	private Date createDate;
+	//结束
+	private Date endDate;
 	private boolean  isSuspended;
-	private String formKey;	
+	private String formKey;
 	private Map<String, Object> processVariables;
-	
-	
+	//所用时长
+	private long durationInMillis;
+	private String durationTime;
+
+	public long getDurationInMillis() {
+		return durationInMillis;
+	}
+
+	public void setDurationInMillis(long durationInMillis) {
+		this.durationInMillis = durationInMillis;
+	}
+
+	public String getDurationTime() {
+		return durationTime;
+	}
+
+	public void setDurationTime(String durationTime) {
+		this.durationTime = durationTime;
+	}
+
 	public String getTaskId() {
 		return taskId;
 	}
@@ -113,5 +142,13 @@ public class TaskDto {
 	public void setBusinessName(String businessName) {
 		this.businessName = businessName;
 	}
-		
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 }

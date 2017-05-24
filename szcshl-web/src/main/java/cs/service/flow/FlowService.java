@@ -1,17 +1,17 @@
 package cs.service.flow;
-import java.util.List;
-
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.TaskDto;
 import cs.repository.odata.ODataObj;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+
+import java.util.List;
 
 public interface FlowService {
 
@@ -36,4 +36,6 @@ public interface FlowService {
 	Task findTaskByBusinessKey(String businessKey);
 
 	PageModelDto<TaskDto> queryGTasks(ODataObj odataObj);
+
+    PageModelDto<TaskDto> queryETasks(ODataObj odataObj);
 }

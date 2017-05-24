@@ -13,7 +13,8 @@
 			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
 			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
 			getChargeDispatch : getChargeDispatch,		//获取发文
-			getChargeFilerecord : getChargeFilerecord	//获取归档信息
+			getChargeFilerecord : getChargeFilerecord,	//获取归档信息
+            endSignDetail:endSignDetail                 //已办结的签收信息
 		};
 		return service;		
 		
@@ -355,6 +356,55 @@
 				success:httpSuccess
 			});		
 		}//E_getChargeFilerecord
-		
+
+        //S_endSignDetail
+        function endSignDetail(vm){
+            var httpOptions = {
+                method : 'get',
+                url : rootPath+"/sign/html/initDetailPageData",
+                params : {signid:vm.model.signid,queryAll:true}
+            }
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.model = response.data;
+                        if(vm.model.workProgramDtoList){
+                            vm.mainwork = {};
+                            vm.show_workprogram = true;
+                            if(vm.model.workProgramDtoList.length > 0){
+                                vm.showAssistwork = true;
+                                vm.assistwork = {};
+                                if(vm.model.workProgramDtoList[0].isMain == 9){
+                                    vm.mainwork = vm.model.workProgramDtoList[0];
+                                    vm.assistwork = vm.model.workProgramDtoList[1];
+                                } else{
+                                    vm.assistwork = vm.model.workProgramDtoList[0];
+                                    vm.mainwork = vm.model.workProgramDtoList[1]
+                                }
+                            }else{
+                                vm.mainwork = vm.model.workProgramDtoList[0];
+                            }
+                        }
+                        if(vm.model.dispatchDocDto){
+                            vm.show_dispatch = true;
+                        }
+                        if(vm.model.fileRecordDto){
+                            vm.show_filerecord = true;
+                        }
+                    }
+                })
+            }
+
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+        }//E_endSignDetail
+
 	}//E_signFlow		
 })();

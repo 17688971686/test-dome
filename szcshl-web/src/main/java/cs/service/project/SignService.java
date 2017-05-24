@@ -38,7 +38,7 @@ public interface SignService{
 
 	void endFlow(String signid);
 	
-	SignDto findById(String signid);
+	SignDto findById(String signid,boolean queryAll);
 	
 	
 	//以下是新流程处理

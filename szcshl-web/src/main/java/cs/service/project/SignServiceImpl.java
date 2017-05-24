@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.model.project.DispatchDocDto;
+import cs.model.project.FileRecordDto;
+import cs.model.project.WorkProgramDto;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -79,7 +83,8 @@ public class SignServiceImpl implements SignService {
 	private RuntimeService runtimeService;
 	@Autowired
 	private DeptRepo deptRepo;
-	
+	@Autowired
+	private ProcessEngine processEngine;
 	@Autowired
 	private OfficeUserService officeUserService;
 
@@ -91,7 +96,12 @@ public class SignServiceImpl implements SignService {
 		Sign sign = new Sign(); 
 		BeanCopierUtils.copyProperties(signDto, sign);   
 		sign.setSignState(EnumState.NORMAL.getValue());
-		
+
+		Date now = new Date();
+		sign.setCreatedDate(now);
+		sign.setModifiedDate(now);
+		sign.setCreatedBy(currentUser.getLoginName());
+		sign.setModifiedBy(currentUser.getLoginName());
         signRepo.save(sign);
 	}			
 	
@@ -269,10 +279,34 @@ public class SignServiceImpl implements SignService {
 	}
 	
 	@Override
-	public SignDto findById(String signid) {
+	public SignDto findById(String signid,boolean queryAll) {
 		Sign sign = signRepo.findById(signid);
 		SignDto signDto = new SignDto();
-		BeanCopierUtils.copyProperties(sign, signDto);			
+		BeanCopierUtils.copyProperties(sign, signDto);
+		//查询所有的属性
+		if(queryAll){
+            if(sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0){
+                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                sign.getWorkProgramList().forEach( workProgram -> {
+                    WorkProgramDto workProgramDto = new WorkProgramDto();
+                    BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                    workProgramDtoList.add(workProgramDto);
+                });
+                signDto.setWorkProgramDtoList(workProgramDtoList);
+            }
+
+            if(sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())){
+                DispatchDocDto dispatchDocDto = new DispatchDocDto();
+                BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
+                signDto.setDispatchDocDto(dispatchDocDto);
+            }
+
+            if(sign.getFileRecord() != null && Validate.isString(sign.getFileRecord().getFileRecordId())){
+                FileRecordDto fileRecordDto = new FileRecordDto();
+                BeanCopierUtils.copyProperties(sign.getFileRecord(), fileRecordDto);
+                signDto.setFileRecordDto(fileRecordDto);
+            }
+		}
 		return signDto;
 	}
 
@@ -291,15 +325,14 @@ public class SignServiceImpl implements SignService {
 			log.info("发起流程失败，无法获取收文ID！");
 			throw new Exception( Constant.ERROR_MSG);
 		}				
-		try{
-			//更改流程状态
-			Sign sign = signRepo.findById(signid);
-			sign.setFolwState(EnumState.PROCESS.getValue());
-			signRepo.save(sign);	
+		try{			
+			Sign sign = signRepo.findById(signid);	
 			
 			//创建流程 (业务数据：ID+符号+名称)
-			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.FINAL_SIGN.getValue(),signid+Constant.FLOW_LINK_SYMBOL+sign.getProjectname());
-			
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.FINAL_SIGN.getValue(),signid);
+			//设置流程实例名称
+			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(),sign.getProjectname());
+
 			List<UserDto> userList = userService.findUserByRoleName(EnumFlowNodeGroupName.SIGN_USER.getValue());
 			if(userList == null || userList.size() == 0){				
 				throw new Exception("发起流程失败，请先设置【签收员】角色用户！");
@@ -309,7 +342,12 @@ public class SignServiceImpl implements SignService {
 			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();	
 			taskService.addComment(task.getId(),processInstance.getId(),"系统自动处理");	//添加处理信息
 			taskService.complete(task.getId(),ActivitiUtil.setAssigneeValue(dealUser.getLoginName()));
-									
+			
+			//更改业务状态			
+			sign.setFolwState(EnumState.PROCESS.getValue());
+			sign.setProcessInstanceId(processInstance.getId());
+			signRepo.save(sign);
+			
 			log.info("项目签收流程创建成功,流程实例ID为"+processInstance.getId()+"，任务ID为"+task.getId());
 		}catch(Exception e){
 			log.info("项目签收流程创建失败：" + e.getMessage());

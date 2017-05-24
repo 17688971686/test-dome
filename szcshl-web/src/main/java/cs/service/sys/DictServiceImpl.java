@@ -89,6 +89,9 @@ public class DictServiceImpl implements DictService {
 		dict.setModifiedBy(currentUser.getLoginName());
 		dict.setIsUsed("0");
 
+		Date now = new Date();
+		dict.setCreatedDate(now);
+		dict.setModifiedDate(now);
 		dictRepo.save(dict);
 		clearCache(dict.getDictCode());
 		
@@ -137,12 +140,9 @@ public class DictServiceImpl implements DictService {
 		BeanUtils.copyProperties(dictDto, dict);
 		dict.setModifiedBy(currentUser.getLoginName());
 		dict.setModifiedDate(new Date());
-		
 		dictRepo.save(dict);
-		
+
 		clearCache(dict.getDictCode());
-		
-		
 	}
 	private void clearCache(String dictCode) {
 		//update cache

@@ -4,6 +4,7 @@ package cs.model.project;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -41,10 +42,10 @@ public class SignDto extends BaseDto {
 	
 	private String designcompanyid;
 	private String designcompanyName;
-	
+
 	private String builtcompanyid;
 	private String builtcompanyName;
-	
+
 	private String urgencydegree;
 	
 	private String yearplantype;
@@ -303,25 +304,28 @@ public class SignDto extends BaseDto {
 	//协办部门
 	private String aOrgId;
 	
+	//流程实例ID
+	private String processInstanceId;
+	
 	public OrgDto getOrgDto() {
 		return orgDto;
 	}
 	
 		
-	private WorkProgramDto workProgramDto;
+	private List<WorkProgramDto> workProgramDtoList;
 	
 	private DispatchDocDto dispatchDocDto;
 	
-	private FileRecord fileRecord;
-	
-	public FileRecord getFileRecord() {
-		return fileRecord;
+	private FileRecordDto fileRecordDto;
+
+	public FileRecordDto getFileRecordDto() {
+		return fileRecordDto;
 	}
 
-	public void setFileRecord(FileRecord fileRecord) {
-		this.fileRecord = fileRecord;
+	public void setFileRecordDto(FileRecordDto fileRecordDto) {
+		this.fileRecordDto = fileRecordDto;
 	}
-	
+
 	public DispatchDocDto getDispatchDocDto() {
 		return dispatchDocDto;
 	}
@@ -330,13 +334,13 @@ public class SignDto extends BaseDto {
 		this.dispatchDocDto = dispatchDocDto;
 	}
 
-	public WorkProgramDto getWorkProgramDto() {
-		return workProgramDto;
+	public List<WorkProgramDto> getWorkProgramDtoList() {
+		return workProgramDtoList;
 	}
 
-	public void setWorkProgramDto(WorkProgramDto workProgramDto) {
-		this.workProgramDto = workProgramDto;
-	}	
+	public void setWorkProgramDtoList(List<WorkProgramDto> workProgramDtoList) {
+		this.workProgramDtoList = workProgramDtoList;
+	}
 
 	public String getIsreviewCompleted() {
 		return isreviewCompleted;
@@ -1213,6 +1217,14 @@ public class SignDto extends BaseDto {
 		this.aOrgId = aOrgId;
 	}
 
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
+
 	public String getDesigncompanyName() {
 		return designcompanyName;
 	}
@@ -1228,6 +1240,4 @@ public class SignDto extends BaseDto {
 	public void setBuiltcompanyName(String builtcompanyName) {
 		this.builtcompanyName = builtcompanyName;
 	}
-	
-	
 }

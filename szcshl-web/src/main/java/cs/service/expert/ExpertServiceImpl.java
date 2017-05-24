@@ -5,7 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.domain.project.Sign;
+import cs.domain.project.WorkProgram;
+import cs.model.expert.ExpertSelConditionDto;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +49,10 @@ public class ExpertServiceImpl implements ExpertService {
 	private ProjectExpeRepo projectExpeRepo;
 	@Autowired
 	private ICurrentUser currentUser;
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private SignRepo signRepo;
 	
 	@Override
 	public PageModelDto<ExpertDto> get(ODataObj odataObj) {
@@ -198,4 +209,59 @@ public class ExpertServiceImpl implements ExpertService {
 		}
 		return dtoList;
 	}
+
+    /**
+     * 专家抽取
+     * @param epSelCondition
+     * @return
+     */
+    @Override
+    public List<ExpertDto> findExpert(ExpertSelConditionDto epSelCondition) {
+       /* 测试通过的sql语句
+       select * from CS_EXPERT ep
+        left join (
+                SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,
+                TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,
+                EXPERTID
+        FROM CS_EXPERT_REVIEW er
+        GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID
+        HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2
+        ) outep
+        on ep.EXPERTID = outep.EXPERTID
+
+        left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from WORK_PROGRAM wp where WP.ID = '72eed09b-9448-4ef2-bf66-bf867a67043f') lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY)
+        where (ep.STATE = '2' or ep.STATE = '3')
+        and outep.EXPERTID is null  --排除周满两次或者月满4次的专家
+        and lwp.ID is null --避归*/
+
+        StringBuffer sql = new StringBuffer();
+        //1、专家规避：与项目建设单位相同单位的专家需要规避，同本项目方案编制单位的专家需要规避
+        sql.append(" left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from WORK_PROGRAM wp ");
+        sql.append(" where WP.ID = '"+epSelCondition.getWorkProgramId()+"') lwp on (lwp.bcp = {alias}.COMPANY or lwp.dcp = {alias}.COMPANY) ");
+        //2、关联本周已抽取2次或者本月已抽取四次的专家
+        sql.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
+        sql.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,EXPERTID");
+        sql.append(" FROM CS_EXPERT_REVIEW er GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID ");
+        sql.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
+        sql.append("  ) outep on {alias}.EXPERTID = outep.EXPERTID ");
+        sql.append(" where ({alias}.STATE = '2' or {alias}.STATE = '3') ");
+        sql.append(" and lwp.ID is null " );    //排除单位相同的专家
+        sql.append(" and outep.EXPERTID is null");  //排除已满抽取次数的专家
+
+        Criteria criteria = expertRepo.getExecutableCriteria();
+		criteria.add(Restrictions.sqlRestriction(sql.toString()));
+
+        List<Expert> listExpert = criteria.list();
+
+        List<ExpertDto> listExpertDto = new ArrayList<>();
+        if(listExpert != null && listExpert.size() > 0){
+            for (Expert item : listExpert) {
+                ExpertDto epDto = new ExpertDto();
+                BeanCopierUtils.copyProperties(item, epDto);
+                listExpertDto.add(epDto);
+            }
+        }
+        return listExpertDto;
+    }
+
 }
