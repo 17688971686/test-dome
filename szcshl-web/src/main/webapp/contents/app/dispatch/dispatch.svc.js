@@ -15,6 +15,9 @@
 			cancelProject : cancelProject,				 //取消选择
 			mergeDispa : mergeDispa,					 //合并发文
 			fileNum : fileNum,                           //生成文件字号
+			getselectedSign : getselectedSign,
+			getSeleSignBysId : getSeleSignBysId,
+			
 			
 		};
 		return service;			
@@ -122,6 +125,8 @@
 						vm.dispatchDoc=response.data.dispatch;
 						vm.proofread = response.data.mainUserList;
 						vm.org = response.data.orgList;
+						//初始化获取合并发文关联的linkSignId
+						vm.linkSignId=response.data.linkSignId;
 						//console.log(vm.dispatchDoc.fileNum);
 						
 						//如果是合并发文则显示主次项目选项
@@ -195,6 +200,20 @@
 			var isValid = $("#dispatch_form").valid();
 			vm.saveProcess = false;
 			if(isValid){
+				//是否关联其它项目判断
+				if(vm.dispatchDoc.isMainProject =="9"){
+					if(vm.linkSignId==" "){
+						common.alert({
+							vm:vm,
+							msg:"请关联其它项目",
+							fn:function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})	
+						return;
+					}
+				}
 				var httpOptions = {
 						method : 'post',
 						url : rootPath+"/dispatch",

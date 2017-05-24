@@ -85,11 +85,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	// 获取待选项目
 	@Override
 	public List<SignDto> getSign(SignDto signDto) {
-		List<Sign> list = null;
 		
+		//List<MergeDispa> mergeDispaList=mergeDispaRepo.findLinkSignIdBySignId(signDto.getSignid());
+		List<Sign> list = null;
+		//MergeDispa mergeDidspa=mergeDispaRepo.findById("der");
 		HqlBuilder hqlBuilder = HqlBuilder.create(" from " + Sign.class.getSimpleName()).append(" where ");
 		if (StringUtils.isNotBlank(signDto.getSignid())) {
-			
 			String[] linkSids = signDto.getSignid().split(",");
 			hqlBuilder.append(Sign_.signid.getName()).append(" not in( ");
 			for (int i = 0, j = 0; i < linkSids.length; i++) {
@@ -219,10 +220,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	// 初始化页面内容
 	@Override
 	public Map<String, Object> initDispatchData(String signId) {
-		Sign sign = signRepo.findById(signId);
 		//String dispatype=sign.get
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+		String linkSignId=" ";
 		//获取所有部门信息
 		List<Org> orgList=orgRepo.findAll();
 		List<OrgDto> orgDtoList=new ArrayList<>();
@@ -233,6 +233,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		}
 		
 		DispatchDocDto dispatchDto = new DispatchDocDto();
+		Sign sign = signRepo.findById(signId);
 		DispatchDoc dispatch  = sign.getDispatchDoc();
 		if (dispatch == null) {
 			dispatch = new DispatchDoc();
@@ -245,6 +246,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 					currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getName());
 			dispatch.setOrgId(
 					currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getId());
+		}else{
+			MergeDispa mergeDispa = mergeDispaRepo.findById(dispatch.getId());
+			if(mergeDispa!=null){
+				linkSignId = mergeDispa.getLinkSignId();
+			}
 		}
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
 
@@ -256,6 +262,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		List<UserDto> userList = userService.findUserByOrgId(sign.getmOrgId());
 		map.put("mainUserList", userList);
 		map.put("orgList", orgDtoList);
+		map.put("linkSignId", linkSignId);
 		return map;
 	}
 
