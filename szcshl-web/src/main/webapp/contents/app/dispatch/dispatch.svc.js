@@ -231,6 +231,9 @@
 									vm.saveProcess = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
+									
+									//初始化数据获得保存后的数据
+									initDispatchData(vm);
 									//$rootScope.back();	//返回到流程页面
 								}
 							})								
@@ -245,8 +248,6 @@
 					//onError: function(response){vm.saveProcess = false;}
 				});
 				
-				//初始化数据获得保存后的数据
-				initDispatchData(vm);
 			}
 		}//E_保存
 		

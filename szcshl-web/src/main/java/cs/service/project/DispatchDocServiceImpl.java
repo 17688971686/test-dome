@@ -192,25 +192,27 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Transactional
 	public void save(DispatchDocDto dispatchDocDto) throws Exception {
 		if (Validate.isString(dispatchDocDto.getSignId())) {
+			Date now=new Date();
 			DispatchDoc dispatchDoc = new DispatchDoc();
+			
 			BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
-
-			Sign sign = signRepo.getById(dispatchDocDto.getSignId());
-			dispatchDoc.setSign(sign);
+			dispatchDoc.setCreatedBy(currentUser.getLoginName());
+			dispatchDoc.setModifiedBy(currentUser.getLoginName());
+			dispatchDoc.setCreatedDate(now);
+			dispatchDoc.setModifiedDate(now);
+			
 			if (!Validate.isString(dispatchDoc.getId())) {
-				Date now = new Date();
 				dispatchDoc.setId(UUID.randomUUID().toString());
 				dispatchDoc.setDraftDate(now);
-				dispatchDoc.setCreatedDate(now);
-				dispatchDoc.setModifiedDate(now);
-				dispatchDoc.setCreatedBy(currentUser.getLoginName());
-				dispatchDoc.setModifiedBy(currentUser.getLoginName());
 			}
-			dispatchDocRepo.save(dispatchDoc);
-
+			
+			Sign sign = signRepo.getById(dispatchDocDto.getSignId());
 			sign.setIsDispatchCompleted(EnumState.YES.getValue());
-			sign.setDispatchDoc(dispatchDoc);
-			signRepo.save(sign);
+			//sign.setDispatchDoc(dispatchDoc);
+			//signRepo.save(sign);
+			dispatchDoc.setSign(sign);
+			//session.refresh(dispatchDoc);
+			dispatchDocRepo.save(dispatchDoc);
 		} else {
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
 			throw new Exception(Constant.ERROR_MSG);
