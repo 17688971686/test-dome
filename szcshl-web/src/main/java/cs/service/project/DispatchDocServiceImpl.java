@@ -58,11 +58,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Override
 	public Map<String, Object> getSeleSignBysId(String bussnessId) {
 		Map<String, Object> map = new HashMap<>();
-		MergeDispa mergeDispa = mergeDispaRepo.findById(bussnessId);
+		MergeDispa mergeDispa = mergeDispaRepo.getById(bussnessId);
 		List<SignDto> signDtoList = null;
 		String linkSignId = " ";
 
-		if (mergeDispa != null) {
+		if (mergeDispa != null&& Validate.isString(mergeDispa.getBusinessId())) {
 			linkSignId = mergeDispa.getLinkSignId();
 			signDtoList = new ArrayList<>();
 			String[] ids = linkSignId.split(",");
@@ -195,7 +195,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			DispatchDoc dispatchDoc = new DispatchDoc();
 			BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
 
-			Sign sign = signRepo.findById(dispatchDocDto.getSignId());
+			Sign sign = signRepo.getById(dispatchDocDto.getSignId());
 			dispatchDoc.setSign(sign);
 			if (!Validate.isString(dispatchDoc.getId())) {
 				Date now = new Date();
@@ -221,6 +221,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Override
 	public Map<String, Object> initDispatchData(String signId) {
 		//String dispatype=sign.get
+		Date now=new Date();
 		Map<String, Object> map = new HashMap<String, Object>();
 		String linkSignId=" ";
 		//获取所有部门信息
@@ -237,6 +238,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		DispatchDoc dispatch  = sign.getDispatchDoc();
 		if (dispatch == null) {
 			dispatch = new DispatchDoc();
+			dispatch.setDraftDate(now);
 			dispatch.setSecretLevel(sign.getSecrectlevel());
 			// 获取当前用户信息
 			dispatch.setUserName(currentUser.getLoginUser().getLoginName());
@@ -247,8 +249,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			dispatch.setOrgId(
 					currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getId());
 		}else{
-			MergeDispa mergeDispa = mergeDispaRepo.findById(dispatch.getId());
-			if(mergeDispa!=null){
+			 MergeDispa mergeDispa = mergeDispaRepo.getById(dispatch.getId());
+			if(mergeDispa != null && Validate.isString(mergeDispa.getBusinessId())){
 				linkSignId = mergeDispa.getLinkSignId();
 			}
 		}

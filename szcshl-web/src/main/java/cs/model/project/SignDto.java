@@ -312,7 +312,7 @@ public class SignDto extends BaseDto {
 	private Date startTime;
 	//结束时间
 	@JSONField(format = "yyyy-MM-dd")
-	private Date endTime;
+	private Date endTime; 
 	
 	public Date getStartTime() {
 		return startTime;
@@ -1263,4 +1263,5 @@ public class SignDto extends BaseDto {
 	public void setBuiltcompanyName(String builtcompanyName) {
 		this.builtcompanyName = builtcompanyName;
 	}
+
 }
