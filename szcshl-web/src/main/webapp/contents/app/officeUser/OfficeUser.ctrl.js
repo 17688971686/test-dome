@@ -36,7 +36,10 @@
                 vm.del(idStr);
             }
         };
-
+        
+        vm.queryOffice = function(){
+        	officeUserSvc.queryOffice(vm);
+        }
         activate();
         function activate() {
             officeUserSvc.grid(vm);

@@ -37,7 +37,10 @@
                 vm.del(idStr);
             }
         };
-
+        
+        vm.queryDept = function(){
+        	deptSvc.queryDept(vm);
+        }
         activate();
         function activate() {
             deptSvc.grid(vm);

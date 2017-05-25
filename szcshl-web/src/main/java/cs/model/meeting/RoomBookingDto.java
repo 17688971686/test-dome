@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import org.hibernate.annotations.Formula;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.model.BaseDto;
 
 public class RoomBookingDto extends BaseDto{
@@ -18,13 +20,17 @@ public class RoomBookingDto extends BaseDto{
 	private String addressName;//会议地点
 	private String dueToPeople;//预定人
 	private String host;//会议主持人
-	private String rbDay;//会议日期
-	private String  beginTime;//会议开始时间
-	private String endTime;//结束时间
+	@JSONField(format = "yyyy-MM-dd")
+	private Date rbDay;//会议日期
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	private Date  beginTime;//会议开始时间
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	private Date endTime;//结束时间
 	private String rbStatus;//会议预定状态，1,已预定，0未预定
 	private String rbType;//会议类型
 	private String content;//主要内容
 	private String remark;//备注
+	private String workProgramId;//工作方案Id
 	public String getId() {
 		return id;
 	}
@@ -62,23 +68,23 @@ public class RoomBookingDto extends BaseDto{
 	public void setHost(String host) {
 		this.host = host;
 	}
-	public String getRbDay() {
+	
+	public Date getRbDay() {
 		return rbDay;
 	}
-	public void setRbDay(String rbDay) {
+	public void setRbDay(Date rbDay) {
 		this.rbDay = rbDay;
 	}
-	
-	public String getBeginTime() {
+	public Date getBeginTime() {
 		return beginTime;
 	}
-	public void setBeginTime(String beginTime) {
+	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 	public String getContent() {
@@ -105,6 +111,13 @@ public class RoomBookingDto extends BaseDto{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+	public String getWorkProgramId() {
+		return workProgramId;
+	}
+	public void setWorkProgramId(String workProgramId) {
+		this.workProgramId = workProgramId;
+	}
+	
 	
 	
 }

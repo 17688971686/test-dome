@@ -1,5 +1,7 @@
 package cs.service.sys;
 
+import java.util.List;
+
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.model.sys.CompanyDto;
@@ -18,4 +20,6 @@ public interface CompanyService {
 	void updateCompany(CompanyDto companyDto);
 
 	CompanyDto findByIdCompany(String id);
+
+	List<CompanyDto> findCompanys();
 }

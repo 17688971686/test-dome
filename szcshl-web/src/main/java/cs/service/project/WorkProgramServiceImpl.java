@@ -131,6 +131,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 		
 		if(!Validate.isString(workProgramDto.getId())){
 			workProgramDto.setProjectName(sign.getProjectname());
+			workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
+			workProgramDto.setDesignCompany(sign.getDesigncompanyName());
 			workProgramDto.setTitleDate(new Date());
 			//来文单位默认全部是：深圳市发展和改革委员会，可改...
 			//联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段

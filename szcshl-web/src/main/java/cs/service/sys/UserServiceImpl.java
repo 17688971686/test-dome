@@ -505,6 +505,23 @@ public class UserServiceImpl implements UserService {
 		}
 		return null;
 	}
+
+
+	@Override
+	public List<UserDto> findAllusers() {
+	List<User> users=userRepo.findAll();
+	List<UserDto> userDtos = new ArrayList<>();
+	if(users != null && users.size() > 0){
+		users.forEach(x ->{
+			UserDto userDto = new UserDto();
+			BeanCopierUtils.copyProperties(x, userDto);
+			userDto.setCreatedDate(x.getCreatedDate());
+			userDto.setModifiedDate(x.getModifiedDate());
+			userDtos.add(userDto);
+		});
+	}
+		return userDtos;
+	}
 }
 
 

@@ -12,10 +12,8 @@
         var vm = this;
         vm.title = '预定会议统计列表';
         
-        //多条件查询
-        vm.showClick = function(){
-        	
-        	roomCountSvc.showClick(vm);
+        vm.queryRoomCount = function(){
+        	roomCountSvc.queryRoomCount(vm);
         }
         vm.del = function (id) {        	
         	
@@ -50,7 +48,7 @@
         activate();
         function activate() {
             roomCountSvc.grid(vm);
-            roomCountSvc.roomShow(vm);
+            roomCountSvc.roomList(vm);
            
         }
     }

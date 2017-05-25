@@ -8,173 +8,46 @@
         <li><a href="#/room">会议预定统计管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-<form id="form" name="form">
-   <script type="text/template" id="columnBtns">
- 	<@shiro.hasPermission name="company##delete"> 
-			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
- 	</@shiro.hasPermission> 
-	<@shiro.hasPermission name="company##put"> 
-	        <a class="btn btn-xs btn-primary" href="#/companyEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
- 	</@shiro.hasPermission> 
 
-</script>
-        
-       <!--   <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div> -->
-
- <title>专家信息录入</title>
-<link href="css/base.css" type="text/css"  rel="stylesheet" />
-
-
-<body>
-
- 
-<div class="conttent_list"> 
-<p class="pro_title_1" style="margin:10px;">设定查询条件</p>
-<div class="title_box" ng-app="myApp"   >
-
-  <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
-      <span class="side_a"> 会议名称
-       <input name="rbName" ng-model="vm.model.rbName" type="text" />
-      </select>
-      </span> 
-      <span class="side_a" style="margin-left:40px;"> 会议地点
-          <select ng-model="vm.model.mrID" id="mrID"  name="mrID">
-           <option value="">请选择</option>
-			<option ng-repeat="x in vm.room" value="{{x.mrID}}">{{x.addressName}}</option>
-		</select>
-       
-      </select>
-      </span>
-      
-       <span class="side_a" style="margin-left:40px;"> 会议类型
-         <select ng-model="vm.model.rbType" name="rbType" id="rbType">
+  <div class="well">
+ <form id="roomCountform" name="roomCountform">
+	    
+	  <span class="help-inline">会议名称：</span>
+	  <input type="text" ng-model="vm.model.rbName" operator="like" name="rbName" id="rbName" placeholder="请输入">
+	 
+	 <span class="help-inline" style="margin-left:10px;">会议日期：</span>
+	 <input name="rbDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.rbDay" value="" type="text" />
+	至
+	<input name="rbDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.rbDay" value="" type="text" />
+	    <br>
+	    <span class="help-inline" style="margin-left:10px;">会议地点：</span>
+	    	 <select ng-model="vm.model.addressName" name="addressName" id="addressName">
+				<option ng-repeat="x in vm.roomlists" value="{{x.addressName}}">{{x.addressName}}</option>
+			</select>	
+		
+	    <span class="help-inline" style="margin-left:10px;">会议类型：</span>
+	    	 <select ng-model="vm.model.rbType" name="rbType" id="rbType">
 				<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+			</select>
+			
+		 <span class="help-inline" style="margin-left:10px;">评审部门：</span>
+	    	 <select ng-model="vm.model" name="rbType" id="rbType">
+				<option ng-repeat="" ></option>
+			</select>
+			
+		 <span class="help-inline" style="margin-left:10px;">预定人：</span>
+	    	 <select ng-model="vm.model.dueToPeople" name="dueToPeople" id="dueToPeople">
+				<option ng-repeat="r in vm.roomlists" value="{{r.dueToPeople}}">{{r.dueToPeople}}</option>
 		</select>
-      </span>
-      
-      <span class="side_b">
-          <input ng-click="vm.showClick()"  type="button" value="开始查询" />&nbsp;
-          <input  ng-click="formReset()" type="button" value="重置" />
-          <input id="res" name="res" type="reset" style="display:none;" /> 
-      </span>
-  </div>
-  
-    <div style="overflow:hidden; line-height:40px; border-bottom:1px solid #999;">
-      <span class="side_a"> 会议日期 
-      <input name="beginTime"  id="beginTime"ng-model="vm.beginTime" type="text" />
-      </span> 
-      <span class="side_a" style="margin-left:40px;"> 至 
-      <input name="endTime" id="endTime" ng-model="vm.endTime" type="text" />
-      </span> 
-      </span> 
-  </div>
-  
-    <div style="overflow:hidden; line-height:40px;">
-      <span class="side_a">
-     	<span class="side_a" style="margin-left:40px;"> 预定人 
-      	<select id="dueToPeople" name="dueToPeople" ng-model="vm.model.dueToPeople">
-      	 <option value="">请选择</option>
-           <option ng-repeat="x in vm.room" value="{{x.dueToPeople}}">{{x.dueToPeople}}</option>
-	   </select>
-      </span> 
-      </span> 
-      <span class="side_a" style="margin-left:40px;"> 
-   		 <span class="side_a" style="margin-left:40px;"> 评审部门
-      	<select  name="stage" ng-model="rb.stage"  >
-      	 <option value="">请选择</option>
-         <option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
-      </select>
-      </span>
-      </span> 
-   
-  </div>
-
-</div>
-</div>
-</form>  
-  
-<div class="conttent_list" style="margin-top:20px;">
-
-<div style="overflow:hidden;">
-  <div class="side_a" style=" border:1px solid #000; width:99%;">
-       <p class="list_text" style="margin:10px; background:#ccc; margin:0; line-height:30px; padding-left:10px; color:#FFFF00;font-size:20px ;">会议列表 </p>
-      
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-      
-        
-  </div>
-
-
- </div>     
-</div>
+	
+       <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryRoomCount()">查询</a>
+		<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.ResetRoomCount()">重置</a>	
+	 </div> 
+	 </form>      
+	 
+     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+ </div>
 
  
-</div>
 
-<style >
-.pro_title {
-	font-size: 14px;
-	text-align: center;
-	font-family: "微软雅黑";
-}
-.pro_title_1 {
-	font-size: 12px;
-	font-weight: bold;
-}
-.list_text {
-	font-size: 12px;
-}
 
-.conttent_list table{border-right:1px solid #000;	border-left: 1px solid #000;border-bottom:1px solid #000;}
-.conttent_list table td{
-	border-left: 1px solid #000;
-	border-top: 1px solid #000;
-	padding-left: 5px;
-}
-.conttent_list{
-	background-image: url(images/remark-title.jpg);
-	background-repeat: no-repeat;
-	padding: 0px;
-	width:100%;
-	margin:auto;
-	background-color: #FFF;
-}
-.text_input {
-	border: 1px solid #0CF;
-}
-.conttent_list table tr .list_text .waring {
-	color: #F30;
-}
-.waring {
-	color: #F30;
-	text-align: right;
-}
-.textarea_list {
-	display:block;
-	margin: 10px;
-	width:95%;
-	height: 120px;
-
-}
-
-.bton {
-	margin: auto;
-}
-.conttent_list table tr .list_text .pro_title_1 .list_text {
-	font-weight: normal;
-}
-body {
-	background-color: #F9F9F9;
-}
-.bottom_btn {
-	text-align: center;
-}
-.error{ color:red; font-family:"yahei"; font-size:12px; font-weight:bold;}
-.pro_title {
-	font-size: 16px;
-}
-.side_a{ float:left;}
-.side_b{ float:right;}
-.title_box{ border:1px solid #999; border-radius:5px; margin:10px 0;  padding:0 20px; overflow:hidden;}
-.pM{ font-size:16px; font-weight:bold;}
-</style>

@@ -5,7 +5,7 @@
 
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
-      <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+    <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
         
 <div class="well well-sm" style="background:white;">
@@ -52,15 +52,11 @@
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">建设单位</td>
 		      <td colspan="3">
-		      		<select ng-model="vm.work.buildCompany"  name="buildCompany" id="buildCompany">
-					<option ng-repeat="x in DICT.BUILTCOMAPNY.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
-					</select>
+					{{vm.work.buildCompany}}
 		      </td>
 		      <td  style="width:150px;" class="text-center">编制单位</td>
 		      <td>
-		      		<select ng-model="vm.work.designCompany" name="designCompany" id="designCompany">
-						<option ng-repeat="x in DICT.DESIGNCOMPANY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
+					{{vm.work.designCompany}}
 		      </td>
 		    </tr>	
 		     
@@ -68,7 +64,7 @@
 		      <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
 		      <td colspan="3">
 		      		<select ng-model="vm.work.mainDeptId"  name="mainDeptId" id="mainDeptId">
-					<option ng-repeat="x in vm.orgs" value="{{x.id}}">{{x.name}}</option>
+					<option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptId == x.coName" value="{{x.coName}}">{{x.coName}}</option>
 					</select>
 		      </td>
 		      <td style="width:150px;" class="text-center">是否有环评</td>
@@ -82,59 +78,68 @@
 		      </td>
 		    </tr>	
 		    <tr>		     
-		      <td colspan="2" style="width:150px;" class="text-center">项目类别</td>
+		      <td colspan="2" style="width:150px;" class="text-center">项目类别<span class="required">*</span></td>
 		      <td>
-		      <select ng-model="vm.work.projectType"  name="projectType" id="projectType">
+		      <select ng-model="vm.work.projectType"  name="projectType" id="projectType" data-val="true" data-val-required="必填">
 					<option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
 			</select>
-					
+				<span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>	
 			  </td>
-			  <td style="width:50px;" class="text-center">小类</td>
+			  <td style="width:50px;" class="text-center">小类<span class="required">*</span></td>
 		      <td>
 		    	 
-		    	<select ng-model="vm.work.projectSubType"  name="projectSubType" id="projectSubType">
+		    	<select ng-model="vm.work.projectSubType"  name="projectSubType" id="projectSubType" data-val="true" data-val-required="必填">
 					<option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
 				</select>
+				<span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>	
 			  </td>
-			  <td style="width:150px;" class="text-center">行业类别</td>
+			  <td style="width:150px;" class="text-center">行业类别<span class="required">*</span></td>
 		      <td>
-		     	 <select ng-model="vm.work.industryType"  name="industryType" id="industryType">
+		     	 <select ng-model="vm.work.industryType"  name="industryType" id="industryType" data-val="true" data-val-required="必填">
 					<option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
 				</select>
+				<span data-valmsg-for="industryType" data-valmsg-replace="true" class="errors"></span>
 		      </td>
 		    </tr> 
 		    <tr>
-		      <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
+		      <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人<span class="required">*</span></td>
 		      <td rowspan="3" colspan="3">
-		  	   <input type="text" style="width:100%; height: 100px;" class="form-control input-sm "   ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson"> 
+		  	   <input type="text" style="width:100%; height: 100px;" class="form-control input-sm "   ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson" data-val="true" data-val-required="必填"> 
+			  	<span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
 			  </td>
-			  <td style="width:150px;" class="text-center">手机</td>
+			  <td style="width:150px;" class="text-center">手机<span class="required">*</span></td>
 		      <td>
-		       <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonPhone" name="contactPersonPhone">
+		       <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonPhone" name="contactPersonPhone" data-val="true" data-val-digits="手机号码只能为数字" data-val-required="必填">
+		       <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
 		      </td>
 		    </tr>
 		    <tr>		     
-		      <td style="width:150px;" class="text-center">电话</td>
+		      <td style="width:150px;" class="text-center">电话<span class="required">*</span></td>
 		      <td>
-		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonTel" name="contactPersonTel">
+		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel" data-val-digits="电话号码只能为数字" data-val="true" data-val-required="必填">
+		      	 <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
 		      </td>
 		    </tr> 
 		    <tr>		     
-		      <td style="width:150px;" class="text-center">传真</td>
+		      <td style="width:150px;" class="text-center">传真<span class="required">*</span></td>
 		      <td>
-		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonFax" name="contactPersonFax">
+		      	 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax" data-val-digits="传真只能为数字" data-val="true" data-val-required="必填">
+		      	  <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
 		      </td>
 		    </tr> 
 		    <tr>
 		    	<td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
-			    <td style="width:100px;" class="text-center">申报建设规模</td>			
+			    <td style="width:100px;" class="text-center">申报建设规模<span class="required">*</td>			
 			    <td colspan="3">
-			      	<textarea rows="3" ng-model="vm.work.buildSize" name="buildSize" cols="" style="width:100%;"></textarea>
-			    </td>
-			    <td style="width:150px;" class="text-center">申报投资</td>
-			    <td >
+			    <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.buildSize" name="buildSize" id="buildSize"  data-val="true" data-val-required="必填">
+		      	  <span data-valmsg-for="buildSize" data-valmsg-replace="true" class="errors"></span>
 			      	
-			      	 <textarea rows="3" ng-model="vm.work.appalyInvestment" name="appalyInvestment" cols="" style="width:100%;"></textarea>
+			    </td>
+			    <td style="width:150px;" class="text-center">申报投资<span class="required">*</span></td>
+			    <td >
+			      	 <input type="text" style="width:30%;"  ng-model="vm.work.appalyInvestment"name="appalyInvestment" id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+			      	 万元
+			    	<span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
 			    </td>
 		    </tr>
 		    <tr>
@@ -179,37 +184,39 @@
 			    </td>
 			    <td style="width:150px;" class="text-center">补充资料函发文日期</td>
 			    <td >
-			      	<input name="suppLetterDate" id="suppLetterDate"  ng-model="vm.work.suppLetterDate" value="" type="text" />
-			      	{{vm.work.suppLetterDate}}
+			    
+			      	<input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.suppLetterDate" value="" type="text" />
 			    </td>
 			</tr>
 			<tr>
 				<td colspan="2" style="width:150px;" class="text-center">评审会时间</td>	
 			    <td colspan="3">
-			      		
+			      	<input type="text" style="width:60%;"class="form-control input-sm " ng-model="vm.work.workStageTime" name="workStageTime">	
+			    	<input type="button" ng-click="vm.addTimeStage()" class="btn btn-info" value="时间">
+			    	
 			    </td>
 			    <td style="width:150px;" class="text-center">会议地点</td>
 			    <td >
-			      		{{vm.work.meetingAddress}}
+			      	{{vm.work.meetingAddress}}
+			      	 
 			    </td>
 			</tr>
 			<tr>
 				<td colspan="2" style="width:150px;" class="text-center">调研开始时间</td>	
 			    <td colspan="3">
-			      	 <input name="studyBeginTime"  id="studyBeginTime"ng-model="vm.work.studyBeginTime" type="text" />
-			      	{{vm.work.studyBeginTime}}
+			      	 <input name="studyBeginTime" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.studyBeginTime" type="text" />
 			    </td>
 			    <td style="width:150px;" class="text-center">调研结束时间</td>
 			    <td >
-			      		<input name="studyEndTime"  id="studyEndTime"ng-model="vm.work.studyEndTime" type="text" />
-			      		{{vm.work.studyEndTime}}
+			      		<input name="studyEndTime"  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyEndTime" type="text" />
 			    </td>
 			</tr>
 			<tr>
-				<td colspan="2" style="width:150px;" class="text-center">专家费用</td>	
+				<td colspan="2" style="width:150px;" class="text-center">专家费用<span class="required">*</td>	
 			    <td colspan="3">
-			      	{{vm.work.BigDecimal}}
-			      	<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.work.expertCost" name="expertCost" >
+			      	<input type="text" style="width:30%;" ng-model="vm.work.expertCost" name="expertCost"  data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+			   		万元
+		      	  <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
 			    </td>
 			    <td style="width:150px;" class="text-center"></td>
 			    <td >
@@ -225,10 +232,10 @@
 			 <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
 		      <td colspan="5">
-			      <div  style="width: 200px; height:30px; border:0px solid #00F;float:right;">
+			     <!--  <div  style="width: 200px; height:30px; border:0px solid #00F;float:right;">
 			     		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				  	  	 <a class="btn btn-xs btn-primary" href="#/use/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-				 </div>
+				  	  	 <a class="btn btn-xs btn-primary" href=""><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+				 </div> -->
 			  </td>		      
 		    </tr>   
 			<tr>
@@ -240,16 +247,201 @@
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
 		      <td colspan="5">
-			  	
+			  		部长处理意见：
+			  		{{vm.work.ministerSuggesttion}}
+				<!-- <div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
+				<br>
+				签名：周京阴
+				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				   <button class="btn btn-xs btn-primary" ng-click="vm.ministerSugges();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+				<br>
+				<br>
+				</div> -->
+				日期：{{vm.work.ministerDate}}
 			  </td>		      
 		    </tr>
 		    <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
 		      <td colspan="5">
-			  	
+		      中心领导签批意见:
+		      {{vm.work.leaderSuggesttion}}
+			  	<!-- <div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
+				<br>
+				签名：周京阴
+				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				  <a class="btn btn-xs btn-primary" href=""><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+				<br>
+				<br>
+				</div> -->
+				日期：{{vm.work.leaderDate}}
 			  </td>		      
 		    </tr>		      
 		  </tbody>		  
 		</table>	<!-- end table -->
 	</form> <!-- end form -->
+
+ 	<!-- S 会议预定弹窗 -->
+	<div id="stageWindow" class="well well-sm" style="background:white;display:none;">
+    <form id="stageForm" name="stageForm">
+        <div class="toolbar">
+          <a class="btn btn-sm btn-primary" href="#/room"><span class="glyphicon glyphicon-chevron-left"></span>同项目预定多次会议室</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.saveWorks()" ng-disabled="vm.isSubmit" ng-show="updateWork"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.saveRoom()" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.onRoomClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+            
+              <tr>
+                <td class="formAlignRight">会议名称： <span class="required">*</span></td>
+                <td>
+                	<input type="hidden" class="form-control input-sm " ng-model="vm.model.workProgramId" name="workProgramId" id="workProgramId" >
+                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.rbName " id="rbName" name="rbName" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议地点： <span class="required">*</span></td>
+                <td>
+                    <select ng-model="vm.model.mrID" name="mrID" id="mrID" class="form-control input-sm " data-val="true" data-val-required="必填">
+						<option ng-repeat="x in vm.meetings" value="{{x.id}}">{{x.addr}}</option>
+					</select>
+                </td>
+                <td><span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议类型： <span class="required">*</span></td>
+                <td>
+                      <select ng-model="vm.model.rbType" name="rbType" id="rbType" class="form-control input-sm ">
+						<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+					 </select>
+                </td>
+                <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议主持人： <span class="required">*</span></td>
+                <td>
+                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.host " id="host" name="host" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议预定人： <span class="required">*</span></td>
+                <td>
+                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.dueToPeople " id="dueToPeople" name="dueToPeople" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+            
+			  <tr>
+                <td class="formAlignRight">会议日期： <span class="required">*</span></td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:40%;" ng-model="vm.model.rbDay" id="rbDay"  name="rbDay" data-val="true" data-val-required="必填">
+                </td>
+                 <td><span data-valmsg-for="rbDay" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">开始时间： <span class="required">*</span></td>
+                <td>
+                     <input type="text" kendo-time-picker k-format="'yyyy-MM-dd HH:mm:ss'" style="width:40%;" ng-model="vm.model.beginTime" id="beginTime"  name="beginTime">
+				</td>
+                 <td><span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+             
+              <tr >
+                <td class="formAlignRight">结束时间： <span class="required">*</span></td>
+                <td>
+                  <input type="text" kendo-time-picker k-format="'yyyy-MM-dd HH:mm:ss'" style="width:40%;" ng-model="vm.model.endTime" id="endTime" name="endTime"> 
+                <td>
+                <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">主要内容： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.content " id="content" name="content" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+              <tr >
+                <td class="formAlignRight">备注： <span class="required">*</span></td>
+                <td>
+                    <textarea type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.remark " id="remark" name="remark" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+        </table>
+    </form>
+	</div>
+	<!-- E 会议预定弹窗 -->
+	
+<!--S 部长处理意见弹窗 -->
+<div id="ministerSug" class="well well-sm" style="background:white;display:none;">
+    <form id="ministerSugform" name="ministerSugform">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveRooms()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <a class="btn btn-sm btn-success" href=""><span class="glyphicon glyphicon-pencil"></span>选择意见</a>
+            <button class="btn btn-sm btn-primary" ng-click="vm.onWClosess()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;">
+             	   
+                </td>
+                <td style="width:400px;"></td>
+                <td></td>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight"> <span class="required">*</span></td>
+                <td>
+                      <select ng-model="vm.model.rbType" multiple="multiple" style="width: 100%;" name="rbType" id="rbType" class="form-control input-sm ">
+						<option ng-repeat="x in vm.users" value="{{x.loginName}}">{{x.loginName}}</option>
+					 </select>
+                </td>
+                <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+            <tr>
+                <td class="formAlignRight"> <span class="required">*</span></td>
+                <td>
+                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.dueToPeople " id="dueToPeople" name="dueToPeople" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
+               
+            </tr>
+             <tr>
+                <td class="formAlignRight"> <span class="required">*</span></td>
+                <td>
+                	处理日期：
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:40%;" ng-model="vm.model.ministerDate" id="ministerDate"  name="ministerDate" data-val="true" data-val-required="必填">
+                </td>
+                 <td><span data-valmsg-for="ministerDate" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+              <tr >
+                <td class="formAlignRight"> <span class="required">*</span></td>
+                <td>
+           		     中心领导审批意见：
+                    <textarea type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.ministerSuggesttion " id="ministerSuggesttion" name="ministerSuggesttion" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
 </div>
+<!--E 部长处理意见弹窗 -->
+</div>
+
+
+
+

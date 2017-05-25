@@ -56,6 +56,13 @@ public class UserController {
         return orgDto;
     }
     
+    @RequiresPermissions("user#findAllUsers#get")
+    @RequestMapping(name = "查询所有用户信息", path = "findAllUsers", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findAllUsers(){
+    	List<UserDto>	userDtos =userService.findAllusers();
+    	return userDtos;
+    }
     @RequiresPermissions("user#findUsersByOrgId#get")
     @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByOrgId", method = RequestMethod.GET)
     @ResponseBody

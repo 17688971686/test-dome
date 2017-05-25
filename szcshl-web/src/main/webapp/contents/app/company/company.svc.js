@@ -24,7 +24,7 @@
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_company+"/fingByOData"),
+				transport : common.kendoGridConfig().transport(url_company+"/fingByOData",$("#form")),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -141,9 +141,7 @@
 		
 		//Start 模糊查询
 		function queryConpany(vm){
-			
 			vm.gridOptions.dataSource.read();	
-			console.log(vm.gridOptions.dataSource.read());
 		}
 		// end 模糊查询
 		function createcompany(vm) {

@@ -242,7 +242,7 @@
 				return true;
 				
 			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1"){
-				if(vm.model.isreviewcompleted && vm.model.isreviewcompleted==9){
+				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
 					return true;
 				}else{
 					return false;

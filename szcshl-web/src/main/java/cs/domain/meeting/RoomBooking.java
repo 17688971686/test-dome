@@ -28,6 +28,7 @@ public class RoomBooking extends DomainBase{
 	@Column(columnDefinition="varchar(255)")
 	private String rbName;//会议名称
 	@Formula("(select m.addr from cs_meetingRoom m where m.id = mrID)")
+	@Column(columnDefinition="varchar(255)")
 	private String addressName;//会议地点
 	
 	@Column(columnDefinition="varchar(255)")
@@ -35,11 +36,11 @@ public class RoomBooking extends DomainBase{
 	@Column(columnDefinition="varchar(255)")
 	private String host;//会议主持人
 	
-	@Column(columnDefinition="varchar(255)")
+	@Column(columnDefinition="date")
 	private Date rbDay;//会议日期
-	@Column(columnDefinition="varchar(255)")
+	@Column(columnDefinition="date")
 	private Date  beginTime;//会议开始时间
-	@Column(columnDefinition="varchar(255)")
+	@Column(columnDefinition="date")
 	private Date endTime;//结束时间
 	
 	@Column(columnDefinition="varchar(255)")
@@ -51,6 +52,10 @@ public class RoomBooking extends DomainBase{
 	private String content;//主要内容
 	@Column(columnDefinition="varchar(255)")
 	private String remark;//备注
+	//工作方案Id
+	@Column(columnDefinition="varchar(100)")
+	private String workProgramId;
+	
 	public String getId() {
 		return id;
 	}
@@ -131,6 +136,13 @@ public class RoomBooking extends DomainBase{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+	public String getWorkProgramId() {
+		return workProgramId;
+	}
+	public void setWorkProgramId(String workProgramId) {
+		this.workProgramId = workProgramId;
+	}
+	
 	
 	
 }

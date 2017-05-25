@@ -55,4 +55,6 @@ public interface UserService {
 	UserDto getOrgDirector();
 	
 	UserDto getOrgSLeader();
+
+	List<UserDto> findAllusers();
 }

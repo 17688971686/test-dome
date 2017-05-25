@@ -5,13 +5,26 @@
         .module('app')
         .controller('roomCtrl', room);
 
-    room.$inject = ['$location','roomSvc','$scope']; 
+    room.$inject = ['$location','roomSvc','$scope','$state']; 
 
-    function room($location, roomSvc,$scope) {
+    function room($location, roomSvc,$scope,$state) {
         /* jshint validthis:true */
     	var vm = this;
         vm.title = '会议室预定列表';
-        
+        vm.id = $state.params.id;
+      
+        //预定会议编辑
+       vm.editRoom = function(){
+        	roomSvc.editRoom(vm);
+        }
+        //预定会议室添加
+        vm.addRoom = function(){
+        	roomSvc.addRoom(vm);
+        }
+       
+        vm.onWClose = function(){
+        	//window.parent.$("#customEditorTemplate").data("kendoWindow").close();
+        }
         //导出本周评审会议安排
         vm.exportWeek = function(){
         	roomSvc.exportWeek();
@@ -69,7 +82,9 @@
        }
         activate();
         function activate() {
-        	
+        	if(vm.isUpdate){
+        		//roomSvc.editRoom(vm);
+        	}
         	//调用room.svc.js的初始化方法
            roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);

@@ -15,6 +15,7 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.sys.Company;
 import cs.model.PageModelDto;
+import cs.model.external.DeptDto;
 import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
@@ -140,6 +141,21 @@ public class CompanyServiceImpl implements CompanyService{
 		CompanyDto comDto = new CompanyDto();
 		BeanCopierUtils.copyProperties(com, comDto);
 		return comDto;
+	}
+	@Override
+	public List<CompanyDto> findCompanys() {
+		List<Company> companyList=companyRepo.findAll();
+		List<CompanyDto> comDtoList = new ArrayList<>();
+		if(companyList != null && companyList.size() > 0){
+			companyList.forEach(x->{
+				CompanyDto comDto = new CompanyDto();
+				BeanCopierUtils.copyProperties(x, comDto);
+				comDto.setCreatedDate(x.getCreatedDate());
+				comDto.setModifiedDate(x.getModifiedDate());
+				comDtoList.add(comDto);
+			});
+		}
+		return comDtoList;
 	}
 
 }

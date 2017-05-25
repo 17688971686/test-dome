@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,6 +45,13 @@ public class CompanyController {
 		return comDto;
 	}
 	
+	@RequiresPermissions("company#findCcompanys#get")	
+	@RequestMapping(name = "获取单位所有数据", path = "findCcompanys", method = RequestMethod.GET)
+	@ResponseBody
+	public List<CompanyDto> findCcompanys(){
+		List<CompanyDto> comDto = companyService.findCompanys();
+		return comDto;
+	}
 	
 	//begin#html
 	@RequiresPermissions("company#html/list#get")

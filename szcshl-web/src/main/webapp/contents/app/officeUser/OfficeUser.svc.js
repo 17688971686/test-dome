@@ -14,10 +14,14 @@
             deleteOfficeUser: deleteOfficeUser,
             updateOfficeUser: updateOfficeUser,
             getDepts:getDepts,						//获取所有办事处
+            queryOffice:queryOffice,
         };
 
         return service;
         
+        function queryOffice(vm){
+        	vm.gridOptions.dataSource.read();	
+        }
         //start 获取所有办事处
         function getDepts(vm){
         	var httpOptions = {
@@ -46,7 +50,6 @@
             if (isValid) {
                 vm.isSubmit = true;
                 vm.model.id = vm.id;// id
-
                 var httpOptions = {
                     method: 'put',
                     url: url_officeUser,
@@ -196,7 +199,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_officeUser+"/fingByOData"),
+                transport: common.kendoGridConfig().transport(url_officeUser+"/fingByOData",$("#formOffice")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

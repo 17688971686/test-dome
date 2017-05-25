@@ -13,10 +13,13 @@
             createDept: createDept,
             deleteDept: deleteDept,
             updateDept: updateDept,
+            queryDept:queryDept,
         };
 
         return service;
-
+        function queryDept(vm){
+        	vm.gridOptions.dataSource.read();	
+        }
         // begin#updateDept
         function updateDept(vm) {
         	alert(vm.model.deptOfficeId);
@@ -166,7 +169,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_dept+"/fingByOData"),
+                transport: common.kendoGridConfig().transport(url_dept+"/fingByOData",$("#formDept")),
                 schema: common.kendoGridConfig().schema({
                     id: "deptId",
                     fields: {

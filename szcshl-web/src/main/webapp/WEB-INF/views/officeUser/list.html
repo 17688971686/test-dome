@@ -8,8 +8,17 @@
         <li><a href="#/officeUser">办事处人员列表</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
-        <div class="toolbar">
+     <form id="formOffice" name="formOffice">
+		<div class="toolbar">
+			<span class="help-inline">办事处名称：</span> <input type="text"
+				ng-model="vm.model.deptName" operator="like" name="deptName" id="deptName"
+				placeholder="请输入"> <span class="help-inline"
+				style="margin-left: 10px;">联系人：</span> <input type="text"
+				ng-model="vm.model.officeUserName" operator="eq" name="officeUserName"
+				id="deptOfficeId" placeholder="请输入"> <a
+				class="btn btn-sm btn-primary" style="margin-left: 10px;"
+				ng-click="vm.queryOffice()">查询</a>
+	</form>
         <@shiro.hasPermission name="officeUser##post">
             <a class="btn btn-sm btn-primary" href="#/officeUserEdit/"><span class="glyphicon glyphicon-plus"></span>新增成员</a>
         </@shiro.hasPermission>

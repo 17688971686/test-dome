@@ -55,7 +55,7 @@ public class WorkProgramDto extends BaseDto{
 	//申报建设规模
 	private String buildSize;
 	//申报投资
-	private String appalyInvestment;
+	private BigDecimal appalyInvestment;
 	
 	//申报建设内容
 	private String buildContent;
@@ -83,13 +83,18 @@ public class WorkProgramDto extends BaseDto{
 	//补充资料函发文日期
 	@JSONField(format = "yyyy-MM-dd")
 	private Date suppLetterDate;
+	
 	//评审会时间
 	@JSONField(format = "yyyy-MM-dd")
 	private Date stageTime;
-
+	
+	//评审时间
+	private String workStageTime;
+	
 	//会议地点
 	private String meetingAddress;
 	
+	private String meetingId;
 	//调研开始时间
 	@JSONField(format = "yyyy-MM-dd")
 	private Date studyBeginTime;
@@ -288,11 +293,11 @@ public class WorkProgramDto extends BaseDto{
 		this.buildSize = buildSize;
 	}
 
-	public String getAppalyInvestment() {
+	public BigDecimal getAppalyInvestment() {
 		return appalyInvestment;
 	}
 
-	public void setAppalyInvestment(String appalyInvestment) {
+	public void setAppalyInvestment(BigDecimal appalyInvestment) {
 		this.appalyInvestment = appalyInvestment;
 	}
 
@@ -472,6 +477,8 @@ public class WorkProgramDto extends BaseDto{
 		this.titleDate = titleDate;
 	}
 
+	
+
 	public Date getStageTime() {
 		return stageTime;
 	}
@@ -479,6 +486,24 @@ public class WorkProgramDto extends BaseDto{
 	public void setStageTime(Date stageTime) {
 		this.stageTime = stageTime;
 	}
+
+	public String getMeetingId() {
+		return meetingId;
+	}
+
+	public void setMeetingId(String meetingId) {
+		this.meetingId = meetingId;
+	}
+
+	public String getWorkStageTime() {
+		return workStageTime;
+	}
+
+	public void setWorkStageTime(String workStageTime) {
+		this.workStageTime = workStageTime;
+	}
+	
+	
 
 		
 }

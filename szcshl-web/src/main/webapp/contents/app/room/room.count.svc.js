@@ -12,137 +12,44 @@
 			
 		var service = {
 			grid : grid,
-			roomShow : roomShow,
-			showClick : showClick,
-			
-		//	getroomCountById : getroomCountById,
+			queryRoomCount:queryRoomCount,//查询
+			roomList : roomList,
 			
 		};		
 		return service;	
 		
-		//会议预定查询下拉框使用
-		function roomShow(vm){
-			
-			 $http.get(url_room+"/roomShow" 
-			  ).success(function(data) {  
-				  vm.room ={};
-				  vm.room=data;
-			  }).error(function(data) {  
-				  alert("查询会议室失败");
-			  }); 
-			
+		function queryRoomCount(vm){
+			vm.gridOptions.dataSource.read();
 		}
 		
-		//多条件查询
-		function conneFilter(vm){
-			var arr=new Array();
-			var filter="?";
-			var value="";
-			var url=url_room+filter+","+value;
-			var i=0;
-			if(vm.model.rbName!=null){
-				var paramObj = {}
-				paramObj.name = "rbName";
-				paramObj.value = vm.model.rbName;
-				arr[i++]=paramObj;
-				
-			}
-			if(vm.model.rbType !=null){
-				var paramObj = {}
-				paramObj.name = "rbType";
-				paramObj.value = vm.model.rbType;
-				arr[i++]=paramObj;
-			}
-			if(vm.model.mrID!=null){
-				var paramObj = {}
-				paramObj.name = "mrID";
-				paramObj.value = vm.model.mrID;
-				arr[i++]=paramObj;
-			}
+		//S_查询所有会议室名称
+		function roomList(vm){
 			
-		
-			/*var rbDay=$("#beginTime").val();
-			
-			if(rbDay!=null){
-				var paramObj = {}
-				paramObj.name = "rbDay";
-				paramObj.value = rbDay;
-				alert(paramObj.value)
-				arr[i++]=paramObj;
-			}
-			var end = $("#endTime").val();
-			if(end!=null){
-				var paramObj = {}
-				paramObj.name ="rbDay";
-				paramObj.value=end;
-				arr[i++] =paramObj;
-			}*/
-			if(vm.model.dueToPeople!=null){
-				var paramObj = {}
-				paramObj.name = "dueToPeople";
-				paramObj.value = vm.model.dueToPeople;
-				arr[i++]=paramObj;
-			}
-			
-			var param = "?$filter=";
-			for(var k=0;k<arr.length;k++){
-				if(k > 0){
-					param += " and ";
-				}
-				param += arr[k].name +" eq " + "\'"+arr[k].value+"\'";
-			}
-			//url=url_expert+filter+value;
-			return param;
-		}
-		function showClick(vm){
-			var url=conneFilter(vm);
 			var httpOptions = {
-					method : 'get',
-					url : url_room+url
-			};
-			
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {						
-						vm.gridOptions.dataSource.data([]);
-						vm.gridOptions.dataSource.data(response.data.value);
-						vm.gridOptions.dataSource.total(response.data.count);
-					}
-				});
+					method: 'get',
+					url: common.format(url_room + "/roomNamelist")
 			}
-
+			var httpSuccess = function success(response) {
+				vm.roomlists = {};
+				vm.roomlists = response.data;
+			}
 			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
+				vm: vm,
+				$http: $http,
+				httpOptions: httpOptions,
+				success: httpSuccess
 			});
-		
-		}
-		
-		function grid(vm) {
-			//时间控件start
-			$(document).ready(function () {
-			  	 kendo.culture("zh-CN");
-			      $("#beginTime").kendoDatePicker({
-			      	 format: "yyyy-MM-dd",
-			      });
-			  }); 
-			$(document).ready(function () {
-			 	 kendo.culture("zh-CN");
-			     $("#endTime").kendoDatePicker({
-			     	 format: "yyyy-MM-dd",
-			     });
-			 }); 
-			//时间控件end
 			
-
+		}
+		//E_查询所有会议室名称
+		
+		//S_giid
+		function grid(vm) {
+			
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_room+"/fingByOData"),
+				transport : common.kendoGridConfig().transport(url_room+"/fingByOData",$("#roomCountform")),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -180,7 +87,8 @@
 					{  
 					    field: "rowNumber",  
 					    title: "序号",  
-					    width: 60,
+					    width: 40,
+					    filterable : false,
 					    template: "<span class='row-number'></span>"  
 					 }
 					,
@@ -228,18 +136,6 @@
 						filterable : false
 					},
 					
-					
-					/*{
-						field : "",
-						title : "操作",
-						width : 100,
-						template:function(item){							
-							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-							
-						}
-						
-
-					}*/
 
 			];
 			// End:column

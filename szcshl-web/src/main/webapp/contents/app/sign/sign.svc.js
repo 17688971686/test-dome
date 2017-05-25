@@ -786,7 +786,7 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.model = response.data;																		
+						vm.model = response.data;	
 					}
 				});
 			}

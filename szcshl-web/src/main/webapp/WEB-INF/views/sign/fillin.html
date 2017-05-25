@@ -60,16 +60,16 @@
 		      <td rowspan="2">{{vm.model.projectname}}</td>
 		      <td width="15%" class="text-center">建设单位</td>
 		      <td>
-					<select ng-model="vm.model.builtcompanyid" name="builtcompanyid" id="builtcompanyid" >
-						<option ng-repeat="x in vm.builtcomlist" ng-selected="vm.model.builtcompanyid == x.id" value="{{x.id}}">{{x.coName}}</option>
+					<select ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName" >
+						<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName"value="{{x.coName}}">{{x.coName}}</option>
 					</select>
 			  </td>
 		    </tr>
 		    <tr>		     
 		      <td width="15%" class="text-center">编制单位</td>
 		      <td>
-					<select ng-model="vm.model.designcompanyid" name="designcompanyid" id="designcompanyid">
-						<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyid == x.id" value="{{x.id}}" >{{x.coName}}</option>
+					<select ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName">
+						<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
 					</select>
 			  </td>
 		    </tr> 
@@ -334,8 +334,8 @@
 		    <tr>
 		      <td width="15%" class="text-center">综合部拟办意见</td>
 		      <td colspan="3">
-		      {{vm.model.comprehensivehandlesug}}
-		      	请张主任阅示。
+		      	请张主任阅示:
+		    	  {{vm.model.comprehensivehandlesug}}
 				<div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
 				<br>
 				综合部

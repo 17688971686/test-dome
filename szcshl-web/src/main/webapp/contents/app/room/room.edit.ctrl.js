@@ -18,8 +18,7 @@
             vm.title = '更新会议室';
         }
         
-        vm.create = function () {
-        	
+        vm.createroom = function () {
         	roomSvc.createroom(vm);
         };
         vm.update = function () {

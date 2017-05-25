@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 import cs.domain.expert.ExpertReview;
@@ -141,11 +142,17 @@ public class WorkProgram extends DomainBase{
 	//评审会时间
 	@Column(columnDefinition="DATE")
 	private Date stageTime;
+	
+	//评审时间
+	@Column(columnDefinition="VARCHAR(128)")
+	private String workStageTime;
 
 	//会议地点
-	@Column(columnDefinition="VARCHAR(128)")
+	@Formula("(select m.addr from cs_meetingRoom m where m.id = meetingId)")
 	private String meetingAddress;
 	
+	@Column(columnDefinition="VARCHAR(128)")
+	private String meetingId;
 	//调研开始时间
 	@Column(columnDefinition="DATE")
 	private Date studyBeginTime;
@@ -537,6 +544,23 @@ public class WorkProgram extends DomainBase{
 	public void setStageTime(Date stageTime) {
 		this.stageTime = stageTime;
 	}
+
+	public String getMeetingId() {
+		return meetingId;
+	}
+
+	public void setMeetingId(String meetingId) {
+		this.meetingId = meetingId;
+	}
+
+	public String getWorkStageTime() {
+		return workStageTime;
+	}
+
+	public void setWorkStageTime(String workStageTime) {
+		this.workStageTime = workStageTime;
+	}
+	
 
 
 }

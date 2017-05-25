@@ -19,10 +19,116 @@
 			exportThisWeek : exportThisWeek,
 			exportNextWeek : exportNextWeek,
 			stageNextWeek : stageNextWeek,
-			//findUser : findUser,
+			addRoom : addRoom,  //添加会议室预定
+			editRoom : editRoom,//编辑
 		};
 
 		return service;
+		
+		function editRoom(vm){
+			alert(vm.id);
+			common.initJqValidation($('#formRoom'));
+			var isValid = $('#formRoom').valid();
+			if (isValid) {
+			vm.model.rbDay = $("#rbDay").val();
+			vm.model.beginTime = $("#beginTime").val(); 
+			vm.model.endTime = $("#endTime").val();
+			vm.model.id = vm.id;// id
+			 console.log(vm.model);
+			vm.iscommit = true;
+				var httpOptions = {
+					method : 'put',
+					url : rootPath + "/room/updateRoom",
+					data : vm.model
+				}
+				var httpSuccess = function success(response) {
+					
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+						//	cleanValue();
+						//window.parent.$("#roomWindow").data("kendoWindow").close();
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.showWorkHistory = true;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})
+						}
+
+					});
+
+				}
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+			}
+		}
+		
+		// 清空页面数据
+		// begin#cleanValue
+		function cleanValue() {
+			var tab = $("#stageWindow").find('input');
+			$.each(tab, function(i, obj) {
+				obj.value = "";
+			});
+		}
+		// end#cleanValue
+		
+		//S_添加会议室预定
+		function addRoom(vm){
+		//	common.initJqValidation($('#stageForm'));
+		//	var isValid = $('#stageForm').valid();
+			//if (isValid) {
+			vm.model.rbDay = $("#rbDay").val();
+			vm.model.beginTime = $("#beginTime").val(); 
+			vm.model.endTime = $("#endTime").val();
+			console.log(vm.model);
+			
+				var httpOptions = {
+					method : 'post',
+					url : rootPath + "/room/addRoom",
+					data : vm.model
+				}
+				var httpSuccess = function success(response) {
+					
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+						//	cleanValue();
+							//window.parent.$("#roomWindow").data("kendoWindow").close();
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.showWorkHistory = true;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})
+						}
+
+					});
+
+				}
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+
+			//}
+		}
+		//E_添加会议室预定
 		
 		//start 初始化会议预定页面
 		function initRoom(vm){
@@ -42,21 +148,18 @@
 					  }
 					  $http.get(url 
 					  ).success(function(data) {  
-						  //console.log(data);
-						//  console.log(data.value);
 						  options.success(data.value);
 						 // console.log(vm.success);
 					  }).error(function(data) {  
-					     
 						  alert("查询失败");
 					  });  
 				  },
-				  create:function(vm){
-					  createRoom(vm);
-				  },
-				  update:function(vm){
-					  updateRoom(vm);
-				  },
+//				  create:function(vm){
+//					 createRoom(vm);
+//				  },
+//				  update:function(vm){
+//					  updateRoom(vm);
+//				  },
 				  destroy:function(vm){
 						deleteRoom(vm);
 				  },
@@ -139,8 +242,8 @@
 		function showMeeting(vm){
 			 $http.get(url_room+"/meeting" 
 			  ).success(function(data) {  
-				  vm.meeting ={};
-				  vm.meeting=data;
+				  vm.meetings ={};
+				  vm.meetings=data;
 			  }).error(function(data) {  
 				  alert("查询会议室失败");
 			  }); 
@@ -154,35 +257,26 @@
 		
 		//start#添加会议预定
 		function createRoom(vm) {
-			
+			common.initJqValidation();
+			var isValid = $('form').valid();
 			var model = vm.data.models[0];
 			var rb = {};
 			rb.rbName=model.rbName;
-			//rb.rbDay = kendo.toString(model.rbDay, "yyyy-MM-dd HH:mm:ss");
-			rb.beginTime = kendo.toString(model.beginTime, "yyyy-MM-dd HH:mm:ss");
-			rb.endTime = kendo.toString(model.endTime, "yyyy-MM-dd HH:mm:ss");
-			
 			rb.rbDay=$("#rbDay").val();
-			//rb.beginTime = $("#beginTime").val();
-			//rb.endTime = $("#endTime").val();
-			alert(rb.rbDay);
-			//alert(rb.beginTime);
-			//alert(rb.endTime);
-			
+			rb.beginTime = $("#beginTime").val();
+			rb.endTime = $("#endTime").val();
 			rb.host = model.host;
 			rb.mrID = model.mrID;
 			rb.rbType=model.rbType;
 			rb.dueToPeople=model.dueToPeople;
 			rb.content=model.content;
 			rb.remark=model.remark;
-			common.initJqValidation();
-			var isValid = $('form').valid();
 			
 			if (isValid) {
 				vm.isSubmit = true;
 				var httpOptions = {
 					method : 'post',
-					url : url_room,
+					url : url_room+"/addRoom",
 					data : rb
 				}
 				var httpSuccess = function success(response) {
@@ -191,7 +285,9 @@
                     	vm:vm,
                     	response:response,
                     	fn:function () {
-                    		alert("添加成功");
+                    		$('.alertDialog').modal('hide');
+							$('.modal-backdrop').remove();
+							location.href = url_back;
                     	}
                     });
 
@@ -210,6 +306,7 @@
 		
 		//start#update
 		function updateRoom(vm){
+			alert(1);
 			var model = vm.data.models[0];
 			var rb = {};
 			rb.rbName=model.rbName;
