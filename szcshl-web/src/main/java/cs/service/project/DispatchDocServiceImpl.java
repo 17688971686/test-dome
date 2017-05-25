@@ -211,7 +211,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			//sign.setDispatchDoc(dispatchDoc);
 			//signRepo.save(sign);
 			dispatchDoc.setSign(sign);
-			//session.refresh(dispatchDoc);
+			//Session session=this.
+			//session.merge(dispatchDoc);
 			dispatchDocRepo.save(dispatchDoc);
 		} else {
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
