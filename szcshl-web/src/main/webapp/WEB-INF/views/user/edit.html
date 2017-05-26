@@ -94,8 +94,8 @@
              <tr>
                 <td class="formAlignRight">性别：<span class="required">*</span> </td>
                 <td>
-                     <select ng-model="vm.model.userSex" id="userSex" name="userSex"class="form-control input-sm " >
-						<option ng-repeat="x in vm.sex" value="{{x.vm.sex}}">{{x.dictKey}}</option>
+                     <select ng-model="vm.model.userSex" name="userSex" id="userSex" class="form-control input-sm ">
+						<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="userSex" data-valmsg-replace="true" class="errors"></span>
@@ -105,7 +105,7 @@
                 <td class="formAlignRight">停用情况：<span class="required">*</span> </td>
                 <td>
                      <select ng-model="vm.model.useState" id="useState" name="useState"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
+						<option ng-repeat="x in DICT.USERSTATE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="useState" data-valmsg-replace="true" class="errors"></span>
@@ -116,7 +116,7 @@
                 <td class="formAlignRight">密码情况：<span class="required">*</span> </td>
                 <td>
                      <select ng-model="vm.model.pwdState" id="pwdState" name="useState"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
+						<option ng-repeat="x in DICT.PWDSTATE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="pwdState" data-valmsg-replace="true" class="errors"></span>
@@ -126,7 +126,7 @@
                 <td class="formAlignRight">在职情况：<span class="required">*</span> </td>
                 <td>
                      <select ng-model="vm.model.jobState" id="jobState" name="jobState"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
+						<option ng-repeat="x in DICT.JOBSTATE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="jobState" data-valmsg-replace="true" class="errors"></span>
@@ -137,7 +137,7 @@
                 <td class="formAlignRight">所在部门：<span class="required">*</span> </td>
                 <td>
                      <select ng-model="vm.model.orgId" id="orgId" name="orgId"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.org" ng-selected="vm.model.orgId == x.id"  value="{{x.id}}" >{{x.name}}</option>
+						<option ng-repeat="x in vm.org" ng-selected="vm.model.org.id == x.id"  value="{{x.id}}" >{{x.name}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>

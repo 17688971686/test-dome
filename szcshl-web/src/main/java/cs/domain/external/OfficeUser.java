@@ -28,7 +28,7 @@ public class OfficeUser extends DomainBase{
 	@Column(columnDefinition="varchar(80) ")
 	private String officeUserName;
 	//所在办事处
-	@Formula("(select d.deptName from dept d where d.deptId = departId)")
+	@Formula("(select d.deptName from es_dept d where d.deptId = departId)")
 	private String deptName;
 	
 	//办事处联系人电话

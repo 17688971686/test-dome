@@ -1,8 +1,6 @@
 package cs.controller.meeting;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.ICurrentUser;
-import cs.common.Util;
 import cs.common.utils.ExcelUtils;
-import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
+import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.UserDto;
@@ -72,8 +68,8 @@ public class RoomBookingController {
 	@RequiresPermissions("room#meeting#get")
 	@RequestMapping( name="会议室查询", path="meeting", method=RequestMethod.GET)
 	@ResponseBody
-	public List<MeetingRoom> meetingList(String mrID ,HttpServletRequest request ,ModelMap model) throws  ParseException{
-		List<MeetingRoom> meeting=roomBookingSerivce.findMeetingAll();
+	public List<MeetingRoomDto> meetingList(String mrID ,HttpServletRequest request ,ModelMap model) throws  ParseException{
+		List<MeetingRoomDto> meeting=roomBookingSerivce.findMeetingAll();
 		return meeting;
 	}
 	

@@ -38,7 +38,7 @@ public class CompanyController {
 		return comDtos;
 	}
 	
-	@RequiresPermissions("org#html/findByIdCompany#get")	
+	@RequiresPermissions("company#html/findByIdCompany#get")	
 	@RequestMapping(name = "根据ID获取单位数据", path = "html/findByIdCompany", method = RequestMethod.GET)
 	public @ResponseBody CompanyDto findByIdCompany(@RequestParam(required = true)String id){
 		CompanyDto comDto =	companyService.findByIdCompany(id);

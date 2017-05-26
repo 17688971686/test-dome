@@ -62,7 +62,7 @@ public class Sign extends DomainBase{
 	private String maindepetid;
 	
 	//主办事处名称
-	@Formula("(select d.deptName from DEPT d where d.deptId = maindepetid)")
+	@Formula("(select d.deptName from es_dept d where d.deptId = maindepetid)")
 	private String maindeptName;
 
 	//主办处室联系人ID
@@ -70,7 +70,7 @@ public class Sign extends DomainBase{
 	private String maindepetcontactuserid;
 	
 	//主办事处联系人	
-	@Formula("(select o.officeUserName from cs_OfficeUser o where o.officeID = maindepetcontactuserid)")
+	@Formula("(select o.officeUserName from es_OfficeUser o where o.officeID = maindepetcontactuserid)")
 	private String mainDeptUserName;
 	
 	//主办事处联系电话	
@@ -90,7 +90,7 @@ public class Sign extends DomainBase{
 	private String assistdeptid;
 	
 	//协办事处名称
-	@Formula("(select d.deptName from DEPT d where d.deptId = assistdeptid)")
+	@Formula("(select d.deptName from es_dept d where d.deptId = assistdeptid)")
 	private String assistdeptName;
 	
 	//协办处室联系人ID
@@ -98,7 +98,7 @@ public class Sign extends DomainBase{
 	private String assistdeptcontactuserid;
 	
 	//协办事处联系人
-	@Formula("(select o.officeUserName from cs_OfficeUser o where o.officeID = assistdeptcontactuserid)")
+	@Formula("(select o.officeUserName from es_OfficeUser o where o.officeID = assistdeptcontactuserid)")
 	private String assistDeptUserName;
 	
 	//编制单位ID

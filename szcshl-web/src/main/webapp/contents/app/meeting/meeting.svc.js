@@ -207,22 +207,21 @@
 		// begin#getUserById
 		function getMeetingById(vm) {
 			var httpOptions = {
-				method : 'get',
-				url : common.format(url_meeting + "?$filter=id eq '{0}'", vm.id)
-			}
-			var httpSuccess = function success(response) {
-				vm.model = response.data.value[0];
-				if (vm.isUpdate) {
-					//initZtreeClient(vm);
+					method : 'get',
+					url : url_meeting +"/html/findByIdMeeting",
+					params:{id:vm.id}
 				}
-			}
-
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
+				var httpSuccess = function success(response) {
+					vm.model=response.data;
+					console.log(vm.model);
+				}
+				
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
 		}
 		// begin#grid
 		function grid(vm) {

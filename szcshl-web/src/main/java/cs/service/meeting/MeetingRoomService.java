@@ -16,4 +16,6 @@ public interface MeetingRoomService {
 	void deleteMeeting(String[] ids);
 	
 	void updateMeeting(MeetingRoomDto meetingDto);
+
+	MeetingRoomDto findByIdMeeting(String id);
 }

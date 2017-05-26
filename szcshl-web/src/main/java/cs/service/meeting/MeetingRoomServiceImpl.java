@@ -15,9 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.CurrentUser;
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.meeting.MeetingRoom;
+import cs.domain.sys.Company;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
+import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.meeting.MeetingRoomRepo;
 @Service
@@ -142,6 +145,14 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 		meetingRoomRepo.save(meeting);
 		
 		logger.info(String.format("更新会议室,会议室名:%s", meetingDto.getMrName()));
+	}
+
+	@Override
+	public MeetingRoomDto findByIdMeeting(String id) {
+		MeetingRoom meeting =	meetingRoomRepo.findById(id);
+		MeetingRoomDto meetingDto = new MeetingRoomDto();
+		BeanCopierUtils.copyProperties(meeting, meetingDto);
+		return meetingDto;
 	}
 	
 	

@@ -8,6 +8,7 @@ import cs.common.Response;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.model.PageModelDto;
+import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.RoleDto;
@@ -25,7 +26,7 @@ public interface RoomBookingSerivce {
 	List<RoomBooking> findWeek();
 	List<RoomBooking> findStageNextWeek();
 	List<RoomBooking> findNextWeek();
-	List<MeetingRoom> findMeetingAll();
+	List<MeetingRoomDto> findMeetingAll();
 	void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto);
 
 	

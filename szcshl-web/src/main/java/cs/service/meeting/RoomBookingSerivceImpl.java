@@ -23,6 +23,8 @@ import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
 import cs.model.PageModelDto;
+import cs.model.external.DeptDto;
+import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.odata.ODataObj;
@@ -90,9 +92,19 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	
 	@Override
 	@Transactional
-	public List<MeetingRoom> findMeetingAll() {
+	public List<MeetingRoomDto> findMeetingAll() {
 		List<MeetingRoom> meeting	= meetingRoomRepo.findAll();
-		return meeting;
+		List<MeetingRoomDto> meetingDtos = new ArrayList<>();
+		if(meeting !=null && meeting.size() >0){
+			meeting.forEach(x->{
+				MeetingRoomDto meetingDto = new MeetingRoomDto();
+				BeanCopierUtils.copyProperties(x, meetingDto);
+				meetingDto.setCreatedDate(x.getCreatedDate());
+				meetingDto.setModifiedDate(x.getModifiedDate());
+				meetingDtos.add(meetingDto);
+			});
+		}
+		return meetingDtos;
 	}
 	
 	/* (non-Javadoc)

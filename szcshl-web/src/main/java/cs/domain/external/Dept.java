@@ -26,7 +26,7 @@ public class Dept extends DomainBase{
 	
 	//办事处联系人
 	@Column(columnDefinition="VARCHAR(128)")
-	@Formula("(select o.officeUserName from cs_OfficeUser o where o.officeID = deptOfficeId)")
+	@Formula("(select o.officeUserName from es_OfficeUser o where o.officeID = deptOfficeId)")
 	private String deptUserName;
 	
 	//办事处人员ID
