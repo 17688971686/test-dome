@@ -8,18 +8,22 @@
 	function meeting($http) {
 		var url_meeting = rootPath + "/meeting";
 		var url_back = '#/meeting';
-	//	var url_role = rootPath + "/role";
 		var service = {
 			grid : grid,
 			getMeetingById : getMeetingById,
-			initZtreeClient : initZtreeClient,
 			createMeeting : createMeeting,
 			deleteMeeting : deleteMeeting,
-			updateMeeting : updateMeeting
+			updateMeeting : updateMeeting,
+			queryMeeting:queryMeeting	//会议室查询
 		};
 
 		return service;
-
+		
+		//会议室查询
+		function queryMeeting(vm){
+			vm.gridOptions.dataSource.read();	
+		}
+		
 		// begin#updateUser
 		function updateMeeting(vm) {
 			
@@ -28,8 +32,6 @@
 			if (isValid) {
 				vm.isSubmit = true;
 				vm.model.id = vm.id;// id
-
-
 				var httpOptions = {
 					method : 'put',
 					url : url_meeting,
@@ -42,7 +44,6 @@
 						vm : vm,
 						response : response,
 						fn : function() {
-
 							common.alert({
 								vm : vm,
 								msg : "操作成功",
@@ -74,7 +75,6 @@
 
 		// begin#deleteUser
 		function deleteMeeting(vm, id) {
-		
 			vm.isSubmit = true;
 			var httpOptions = {
 				method : 'delete',
@@ -83,7 +83,6 @@
 
 			}
 			var httpSuccess = function success(response) {
-
 				common.requestSuccess({
 					vm : vm,
 					response : response,
@@ -109,8 +108,6 @@
 			var isValid = $('form').valid();
 			if (isValid) {
 				vm.isSubmit = true;
-
-
 				var httpOptions = {
 					method : 'post',
 					url : url_meeting,
@@ -118,7 +115,6 @@
 				}
 
 				var httpSuccess = function success(response) {
-
 					common.requestSuccess({
 						vm : vm,
 						response : response,
@@ -150,60 +146,6 @@
 			}
 		}
 
-		// begin#initZtreeClient
-		function initZtreeClient(vm) {
-			
-			var httpOptions = {
-				method : 'get',
-				url : url_role
-			}
-			var httpSuccess = function success(response) {
-
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						var zTreeObj;
-						var setting = {
-							check : {
-								chkboxType : {
-									"Y" : "ps",
-									"N" : "ps"
-								},
-								enable : true
-							}
-						};
-						var zNodes = $linq(response.data.value).select(
-								function(x) {
-									return {
-										id : x.id,
-										name : x.roleName
-									};
-								}).toArray();
-						var rootNode = {
-							id : '',
-							name : '角色集合',
-							children : zNodes
-						};
-						zTreeObj = $.fn.zTree.init($("#zTree"), setting,
-								rootNode);
-						if (vm.isUpdate) {
-							//updateZtree(vm);
-
-						}
-					}
-
-				});
-
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-
 		// begin#getUserById
 		function getMeetingById(vm) {
 			var httpOptions = {
@@ -228,7 +170,7 @@
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_meeting+"/fingByOData"),
+				transport : common.kendoGridConfig().transport(url_meeting+"/fingByOData",$("#meetingFrom")),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -248,6 +190,18 @@
 			});
 
 			// End:dataSource
+			  //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
 
 			// Begin:column
 			var columns = [
@@ -263,17 +217,19 @@
 						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
 					},
+					
 					{
 						field : "num",
 						title : "会议室编号",
 						width : 200,
-						filterable : true
+						filterable : false
 					},
+				
 					{
 						field : "mrName",
 						title : "会议室名称",
 						width : 200,
-						filterable : true
+						filterable : false
 					},
 					{
 						field : "addr",
@@ -334,6 +290,7 @@
 				pageable : common.kendoGridConfig().pageable,
 				noRecords : common.kendoGridConfig().noRecordMessage,
 				columns : columns,
+				dataBound:dataBound,
 				resizable : true
 			};
 

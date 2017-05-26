@@ -149,7 +149,7 @@ public class WorkProgram extends DomainBase{
 	private String workStageTime;
 
 	//会议地点
-	@Formula("(select m.addr from cs_meetingRoom m where m.id = meetingId)")
+	@Formula("(select m.addr from cs_meeting_room m where m.id = meetingId)")
 	private String meetingAddress;
 	
 	@Column(columnDefinition="VARCHAR(128)")

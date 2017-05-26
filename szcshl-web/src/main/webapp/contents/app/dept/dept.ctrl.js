@@ -30,7 +30,6 @@
             } else {
                 var ids = [];
                 for (var i = 0; i < selectIds.length; i++) {
-                	alert(selectIds[i].value);
                     ids.push(selectIds[i].value);
                 }
                 var idStr = ids.join(',');

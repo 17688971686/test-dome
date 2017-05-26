@@ -31,7 +31,7 @@
         	if (vm.isUpdate) {
         		meetingSvc.getMeetingById(vm);
             } else {
-            	//meetingSvc.initZtreeClient(vm);
+            	
             }
         }
     }

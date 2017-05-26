@@ -26,15 +26,19 @@
 		return service;
 		
 		function editRoom(vm){
-			alert(vm.id);
+			alert($("#rbName").val());
+			var model = vm.data.models[0];
+			var rb = {};
+			rb.rbName=model.rbName;
+			
+			alert(rb.rbName);
+			
 			common.initJqValidation($('#formRoom'));
 			var isValid = $('#formRoom').valid();
 			if (isValid) {
 			vm.model.rbDay = $("#rbDay").val();
 			vm.model.beginTime = $("#beginTime").val(); 
 			vm.model.endTime = $("#endTime").val();
-			vm.model.id = vm.id;// id
-			 console.log(vm.model);
 			vm.iscommit = true;
 				var httpOptions = {
 					method : 'put',
@@ -84,14 +88,12 @@
 		
 		//S_添加会议室预定
 		function addRoom(vm){
-		//	common.initJqValidation($('#stageForm'));
-		//	var isValid = $('#stageForm').valid();
-			//if (isValid) {
+			common.initJqValidation($('#formRoom'));
+			var isValid = $('#formRoom').valid();
+			if (isValid) {
 			vm.model.rbDay = $("#rbDay").val();
 			vm.model.beginTime = $("#beginTime").val(); 
 			vm.model.endTime = $("#endTime").val();
-			console.log(vm.model);
-			
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/room/addRoom",
@@ -126,7 +128,7 @@
 					success : httpSuccess
 				});
 
-			//}
+			}
 		}
 		//E_添加会议室预定
 		
@@ -140,7 +142,6 @@
 					}, 
 	           transport: {
 				  read:function(options){
-					 //console.log(options);
 					  var mrID = options.data.mrID;
 					  var url =  rootPath + "/room" ;
 					  if(mrID){
@@ -149,9 +150,8 @@
 					  $http.get(url 
 					  ).success(function(data) {  
 						  options.success(data.value);
-						 // console.log(vm.success);
 					  }).error(function(data) {  
-						  alert("查询失败");
+//						  alert("查询失败");
 					  });  
 				  },
 //				  create:function(vm){
@@ -307,7 +307,7 @@
 		
 		//start#update
 		function updateRoom(vm){
-			alert(1);
+		
 			var model = vm.data.models[0];
 			var rb = {};
 			rb.rbName=model.rbName;

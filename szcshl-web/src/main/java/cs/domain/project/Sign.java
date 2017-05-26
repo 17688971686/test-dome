@@ -98,7 +98,7 @@ public class Sign extends DomainBase{
 	private String assistdeptcontactuserid;
 	
 	//协办事处联系人
-	@Formula("(select o.officeUserName from es_OfficeUser o where o.officeID = assistdeptcontactuserid)")
+	@Formula("(select o.officeUserName from es_office_user o where o.officeID = assistdeptcontactuserid)")
 	private String assistDeptUserName;
 	
 	//编制单位ID
@@ -115,7 +115,6 @@ public class Sign extends DomainBase{
 	
 	//建设单位名称
 	@Column(columnDefinition="VARCHAR(100)")
-	@Formula("(select c.coName from cs_company c where c.id = builtcompanyid)")
 	private String builtcompanyName;
 	
 	//缓急程度

@@ -8,18 +8,26 @@
         <li><a href="#/meeting">会议室管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
-        <div class="toolbar">
-       
-        	<@shiro.hasPermission name="meeting##post"> 
+    <form id="meetingFrom" name="meetingFrom">
+     <div class="well">
+	    	<span class="help-inline">会议室名称：</span>
+	    	<input type="text" ng-model="vm.model.mrName" operator="like" name="mrName" id="mrName" placeholder="请输入">
+	    	
+	    	<span class="help-inline" style="margin-left:10px;">会议室编号：</span>
+	    	<input type="text" ng-model="vm.model.num" operator="eq" name="num" id="num" placeholder="请输入">	    		
+	    	
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryMeeting()">查询</a>   	   	    		    		  	
+	 		
+	 		<@shiro.hasPermission name="meeting##post"> 
             	<a class="btn btn-sm btn-primary" href="#/meetingEdit/"><span class="glyphicon glyphicon-plus"></span>新增会议室</a> 
             </@shiro.hasPermission>
             
             <@shiro.hasPermission name="meeting##delete">           
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
         	</@shiro.hasPermission>
-        	
-        </div>
+        		 	 	 
+	</form>      
+	 </div> 
         
         <script type="text/template" id="columnBtns">
 		<@shiro.hasPermission name="meeting##delete">
@@ -31,6 +39,6 @@
 		</script>
         
          <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    </form>
+   
 </div>
 

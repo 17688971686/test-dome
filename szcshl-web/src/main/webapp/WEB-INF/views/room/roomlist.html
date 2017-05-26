@@ -62,7 +62,7 @@
 
 div.k-window-content {
     position: relative;
-    height: 550px;
+    height: 600px;
     width:660px;
     padding: .58em;
     overflow: auto;
@@ -114,10 +114,11 @@ k-edit-form-container .k-edit-buttons {
               <tr>
                 <td class="formAlignRight">会议名称： <span class="required">*</span></td>
                 <td>
+					
                      <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.rbName " id="rbName" name="rbName" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors"></span></td>
-               
+                	<span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors">
+				</td>
+                
             </tr>
             <tr>
                 <td class="formAlignRight">会议地点： <span class="required">*</span></td>
@@ -125,34 +126,34 @@ k-edit-form-container .k-edit-buttons {
                     <select ng-model="vm.model.mrID" name="mrID" id="mrID" class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.meetings" value="{{x.id}}">{{x.addr}}</option>
 					</select>
+					<span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span></td>
                
             </tr>
             <tr>
                 <td class="formAlignRight">会议类型： <span class="required">*</span></td>
                 <td>
-                      <select ng-model="vm.model.rbType" name="rbType" id="rbType" class="form-control input-sm ">
+                      <select ng-model="vm.model.rbType" name="rbType" id="rbType" class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					 </select>
+					<span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>
                
             </tr>
             <tr>
                 <td class="formAlignRight">会议主持人： <span class="required">*</span></td>
                 <td>
                      <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.host " id="host" name="host" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
+                	<span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span>
+				</td>
                
             </tr>
             <tr>
                 <td class="formAlignRight">会议预定人： <span class="required">*</span></td>
                 <td>
                      <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.dueToPeople " id="dueToPeople" name="dueToPeople" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
+               		<span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span>
+			 </td>
                
             </tr>
             
@@ -183,8 +184,8 @@ k-edit-form-container .k-edit-buttons {
                 <td class="formAlignRight">主要内容： <span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.content " id="content" name="content" data-val="true" data-val-required="必填">
-                </td>
-                <td><span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span></td>
+                <span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span>
+				</td>
             </tr>
               <tr >
                 <td class="formAlignRight">备注： <span class="required">*</span></td>

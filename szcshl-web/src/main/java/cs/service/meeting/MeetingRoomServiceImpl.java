@@ -17,9 +17,11 @@ import cs.common.CurrentUser;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.meeting.MeetingRoom;
+import cs.domain.meeting.RoomBooking;
 import cs.domain.sys.Company;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
+import cs.model.meeting.RoomBookingDto;
 import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.meeting.MeetingRoomRepo;
@@ -36,25 +38,16 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 	@Transactional
 	public PageModelDto<MeetingRoomDto> get(ODataObj odataObj) {
 		List<MeetingRoom> meetingList=	meetingRoomRepo.findByOdata(odataObj);
-		List<MeetingRoomDto> meetingDtoList =new ArrayList<>();
-		for( MeetingRoom item : meetingList){
-			
-			MeetingRoomDto mrd =new MeetingRoomDto();
-			
-			mrd.setId(item.getId());
-			mrd.setAddr(item.getAddr());
-			mrd.setMrName(item.getMrName());
-			mrd.setCapacity(item.getCapacity());
-			mrd.setCreateDate(item.getCreateDate());
-			mrd.setMrStatus(item.getMrStatus());
-			mrd.setMrType(item.getMrType());
-			mrd.setNum(item.getNum());
-			mrd.setUserName(item.getUserName());
-			mrd.setUserPhone(item.getUserPhone());
-			mrd.setRemark(item.getRemark());
-			meetingDtoList.add(mrd);
-		}
-		
+		List<MeetingRoomDto> meetingDtoList =new ArrayList<MeetingRoomDto>(meetingList.size());
+		if(meetingList != null && meetingList.size() > 0){
+			meetingList.forEach(x->{
+				MeetingRoomDto  meetingDto = new MeetingRoomDto();
+				BeanCopierUtils.copyProperties(x, meetingDto);
+				meetingDto.setCreatedDate(x.getCreatedDate());
+				meetingDto.setModifiedDate(x.getModifiedDate());
+				meetingDtoList.add(meetingDto);
+			});						
+		}		
 		PageModelDto<MeetingRoomDto> pageModelDto =new PageModelDto<>();
 		pageModelDto.setCount(odataObj.getCount());
 		pageModelDto.setValue(meetingDtoList);

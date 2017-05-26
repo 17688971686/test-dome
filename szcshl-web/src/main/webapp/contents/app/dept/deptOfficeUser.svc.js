@@ -263,7 +263,7 @@
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
-               
+                
                 {
                     field: "officeUserName",
                     title: "办事处联系人",

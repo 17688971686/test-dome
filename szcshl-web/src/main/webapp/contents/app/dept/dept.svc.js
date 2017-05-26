@@ -208,7 +208,7 @@
                             item.deptId)
                     },
                     filterable: false,
-                    width: 30,
+                    width: 20,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
                 {  

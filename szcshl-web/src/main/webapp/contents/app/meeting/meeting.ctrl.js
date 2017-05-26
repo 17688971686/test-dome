@@ -43,6 +43,10 @@
                 vm.del(idStr);
             }   
        }
+        //会议室查询
+        vm.queryMeeting = function(){
+        	meetingSvc.queryMeeting(vm);
+        }
         activate();
         function activate() {
             meetingSvc.grid(vm);
