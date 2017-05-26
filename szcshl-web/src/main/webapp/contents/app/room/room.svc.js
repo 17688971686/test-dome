@@ -11,8 +11,6 @@
 		
 		var service = {
 			initRoom : initRoom,
-			createRoom : createRoom,
-			updateRoom : updateRoom,
 			showMeeting : showMeeting,
 			findMeeting : findMeeting,
 			exportWeek : exportWeek,
@@ -21,24 +19,29 @@
 			stageNextWeek : stageNextWeek,
 			addRoom : addRoom,  //添加会议室预定
 			editRoom : editRoom,//编辑
+			startEnd:startEnd	//结束时间不能小于开始时间
 		};
 
 		return service;
 		
+		//S_会议预定编辑
 		function editRoom(vm){
-			alert($("#rbName").val());
-			var model = vm.data.models[0];
-			var rb = {};
-			rb.rbName=model.rbName;
 			
-			alert(rb.rbName);
+			vm.model.id = $("#id").val();
+			vm.model.rbName = $("#rbName").val();
+			vm.model.mrID = $("#mrID").val();
+			vm.model.rbType = $("#rbType").val();
+			vm.model.host = $("#host").val();
+			vm.model.dueToPeople = $("#dueToPeople").val();
+			vm.model.rbDay = $("#rbDay").val();
+			vm.model.beginTime = $("#beginTime").val(); 
+			vm.model.endTime = $("#endTime").val();
+			vm.model.content = $("#content").val();
+			vm.model.content = $("#remark").val();
 			
 			common.initJqValidation($('#formRoom'));
 			var isValid = $('#formRoom').valid();
 			if (isValid) {
-			vm.model.rbDay = $("#rbDay").val();
-			vm.model.beginTime = $("#beginTime").val(); 
-			vm.model.endTime = $("#endTime").val();
 			vm.iscommit = true;
 				var httpOptions = {
 					method : 'put',
@@ -75,6 +78,7 @@
 				});
 			}
 		}
+		//E_会议预定编辑
 		
 		// 清空页面数据
 		// begin#cleanValue
@@ -255,112 +259,6 @@
 		function findMeeting(vm){
 			vm.schedulerOptions.dataSource.read({"mrID":common.format("$filter=mrID eq '{0}'", vm.mrID)});
 		}
-		
-		//start#添加会议预定
-		function createRoom(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			var model = vm.data.models[0];
-			var rb = {};
-			rb.rbName=model.rbName;
-			rb.rbDay=$("#rbDay").val();
-			rb.beginTime = $("#beginTime").val();
-			rb.endTime = $("#endTime").val();
-			rb.host = model.host;
-			rb.mrID = model.mrID;
-			rb.rbType=model.rbType;
-			rb.dueToPeople=model.dueToPeople;
-			rb.content=model.content;
-			rb.remark=model.remark;
-			
-			if (isValid) {
-				vm.isSubmit = true;
-				var httpOptions = {
-					method : 'post',
-					url : url_room+"/addRoom",
-					data : rb
-				}
-				var httpSuccess = function success(response) {
-					 vm.isSubmit = false;   
-					common.requestSuccess({
-                    	vm:vm,
-                    	response:response,
-                    	fn:function () {
-                    		$('.alertDialog').modal('hide');
-							$('.modal-backdrop').remove();
-							location.href = url_back;
-                    	}
-                    });
-
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-
-			}
-		}
-		//end#save
-		
-		//start#update
-		function updateRoom(vm){
-		
-			var model = vm.data.models[0];
-			var rb = {};
-			rb.rbName=model.rbName;
-			rb.id=model.id;
-			//rb.beginTime = kendo.toString(model.beginTime, "yyyy-MM-dd HH:mm");
-			rb.rbDay=$("#rbDay").val();
-			rb.beginTime = $("#beginTime").val();
-			rb.endTime = $("#endTime").val();
-			//alert(rb.rbDay);
-			//alert(rb.beginTime);
-			//alert(rb.endTime);
-			rb.host = model.host;
-			rb.mrID = model.mrID;
-			rb.rbType=model.rbType;
-			rb.dueToPeople=model.dueToPeople;
-			rb.content=model.content;
-			rb.remark=model.remark;
-			
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid) {
-				vm.isSubmit = true;
-				var httpOptions = {
-					method : 'put',
-					url : url_room,
-					data : rb
-				}
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						
-						fn : function() {
-							var msg ="编辑成功";
-							alert(msg);
-						}
-
-					});
-
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-
-			}
-		}
-		//end#update
-		
 		//start#deleteRoom
 		function deleteRoom(vm){
 			var model = vm.data.models[0];
@@ -369,17 +267,22 @@
 					method : 'delete',
 					url : url_room,
 					data : id
-
 			}
 			var httpSuccess = function success(response) {
-
 				common.requestSuccess({
 					vm : vm,
 					response : response,
-//					fn : function() {
-//						vm.isSubmit = false;
-//						vm.dataSource.dataSource.read();
-//					}
+					fn : function() {
+						/*common.alert({
+							vm : vm,
+							msg : "删除成功",
+							fn : function() {
+								vm.showWorkHistory = true;
+							$('.alertDialog').modal('show');
+							$('.modal-backdrop').remove();
+							}
+						})*/
+					}
 
 				});
 
@@ -397,11 +300,12 @@
 		
 		//start#time
 		//校验结束时间不能小于开始时间
-		function startEnd(){
+		function startEnd(vm){
 			var start = $("#beginTime").val();
 			var end = $("#endTime").val();
 			if(end<start){
-				alert("结束时间不能小于开始时间");
+				//alert("结束时间不能小于开始时间");
+				return;
 			}
 		}
 		//endTime#time

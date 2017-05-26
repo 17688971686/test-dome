@@ -43,7 +43,7 @@
              -->
       
         </div>
- 
+
 
 <style>
     .custom-event {
@@ -114,7 +114,7 @@ k-edit-form-container .k-edit-buttons {
               <tr>
                 <td class="formAlignRight">会议名称： <span class="required">*</span></td>
                 <td>
-					
+					 <input type="hidden" maxlength="200" class="form-control input-sm " ng-model="vm.model.id " id="id" name="id" data-val="true" data-val-required="必填">
                      <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.rbName " id="rbName" name="rbName" data-val="true" data-val-required="必填">
                 	<span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors">
 				</td>
@@ -176,7 +176,7 @@ k-edit-form-container .k-edit-buttons {
               <tr >
                 <td class="formAlignRight">结束时间： <span class="required">*</span></td>
                 <td>
-                  <input type="text" id="endTime" data-type="date" data-format="yyyy-MM-dd HH:mm:ss" ng-onchange="startEnd()" data-bind="value:end,invisible:isAllDay" data-role="timepicker"  name="endTime" ng-model="vm.model.endTime" data-datecompare-msg="End date should be greater than or equal to the start date" />
+                  <input type="text" id="endTime" data-type="date" data-format="yyyy-MM-dd HH:mm:ss" ng-change="vm.startEnd()" data-bind="value:end,invisible:isAllDay" data-role="timepicker"  name="endTime" ng-model="vm.model.endTime" data-datecompare-msg="End date should be greater than or equal to the start date" />
                 <td>
                 <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

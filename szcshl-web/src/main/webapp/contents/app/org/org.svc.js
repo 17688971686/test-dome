@@ -16,16 +16,21 @@
 			updateOrg:updateOrg,
 			deleteOrg:deleteOrg	,
 			getCompany : getCompany,
-			initRoleUsers: initRoleUsers //初始化角色数据
+			initRoleUsers: initRoleUsers, //初始化角色数据
+			queryOrg:queryOrg
 		};		
 		return service;	
 		
+		//查询
+		function queryOrg(vm){
+			vm.gridOptions.dataSource.read();
+		}
 				
 		function grid(vm) {
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_org+"/fingByOData"),
+				transport : common.kendoGridConfig().transport(url_org+"/fingByOData",$("#orgForm")),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -45,6 +50,19 @@
 			});
 
 			// End:dataSource
+			
+			 //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
 
 			// Begin:column
 			var columns = [
@@ -59,7 +77,17 @@
 						width : 40,
 						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 						
-					},  {
+					}, 
+					 {  
+					    field: "rowNumber",  
+					    title: "序号",  
+					    width: 70,
+					    filterable : false,
+					    template: "<span class='row-number'></span>"  
+					 }
+					,
+					
+					{
 						field : "orgIdentity",
 						title : "部门标识",
 						width : 80,						
@@ -77,12 +105,7 @@
 						width : 130,						
 						filterable : false
 					},
-					{
-						field : "orgFax",
-						title : "传真",
-						width : 130,						
-						filterable : false
-					},
+					
 					{
 						field : "orgAddress",
 						title : "地址",
@@ -147,6 +170,7 @@
 					pageable : common.kendoGridConfig().pageable,
 					noRecords:common.kendoGridConfig().noRecordMessage,
 					columns : columns,
+					dataBound:dataBound,
 					resizable: true
 				};
 			

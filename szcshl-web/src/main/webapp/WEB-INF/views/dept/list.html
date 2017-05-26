@@ -9,7 +9,7 @@
         <li class="active">{{vm.title}}</li>
     </ol>
    <form id="formDept" name="formDept">
-		<div class="toolbar">
+		<div class="well">
 			<span class="help-inline">办事处名称：</span> <input type="text"
 				ng-model="vm.model.deptName" operator="like" name="deptName" id="deptName"
 				placeholder="请输入"> <span class="help-inline"
@@ -18,8 +18,8 @@
 				id="deptUserName" placeholder="请输入"> <a
 				class="btn btn-sm btn-primary" style="margin-left: 10px;"
 				ng-click="vm.queryDept()">查询</a>
-		<!-- </div> -->
-	</form>
+		
+	
         <@shiro.hasPermission name="dept##post">
             <a class="btn btn-sm btn-primary" href="#/deptEdit/"><span class="glyphicon glyphicon-plus"></span>新增办事处</a>
         </@shiro.hasPermission>
@@ -27,6 +27,7 @@
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
         </@shiro.hasPermission>
         </div>
+        </form>
         <script type="text/template" id="columnBtns">
             <@shiro.hasPermission name="dept##delete">
             <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>

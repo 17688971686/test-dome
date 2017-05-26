@@ -8,15 +8,25 @@
         <li><a href="#/user">用户管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
-        <div class="toolbar">
-        	<@shiro.hasPermission name="user##post"> 
+    <form id="usersform" name="usersform">
+    		 
+       <div class="well">
+        <span class="help-inline">登录名：</span>
+	    	<input type="text" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入">
+	    	<span class="help-inline" style="margin-left:10px;">电话：</span>
+	    	<input type="text" ng-model="vm.model.userPhone" operator="eq" name="userPhone" id="userPhone" placeholder="请输入">
+	    	<span class="help-inline" style="margin-left:10px;">性别：</span>
+	    	<input type="text" ng-model="vm.model.userSex" operator="eq" name="userSex" id="userSex" placeholder="请输入">	    			    		
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a>
+	    
+       	  <@shiro.hasPermission name="user##post"> 
             	<a class="btn btn-sm btn-primary" href="#/userEdit/"><span class="glyphicon glyphicon-plus"></span>新增用户</a> 
             </@shiro.hasPermission>
             <@shiro.hasPermission name="user##delete">           
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        	</@shiro.hasPermission>
+        	</@shiro.hasPermission> 
         </div>
+     </form>
         <script type="text/template" id="columnBtns">
 		<@shiro.hasPermission name="user##delete">
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
@@ -27,6 +37,5 @@
 		</script>
         
          <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    </form>
 </div>
 
