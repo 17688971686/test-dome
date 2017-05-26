@@ -16,7 +16,9 @@
             refleshExpert : refleshExpert,	        //刷新已选专家信息
             updateExpertState : updateExpertState,	//更改专家状态
             showOutExpertGrid : showOutExpertGrid,  //境外专家选择框
-            saveOutExpert : saveOutExpert           //保存选择的境外专家
+            saveOutExpert : saveOutExpert,           //保存选择的境外专家
+            deleteAutoSelExpert : deleteAutoSelExpert,	//删除随机抽取的专家
+            countMatchExperts : countMatchExperts,      //计算符合条件的专家
         };
         return service;
                 
@@ -397,6 +399,68 @@
             }
         }//E_saveOutExpert
 
+        //S_deleteAutoSelExpert
+        function  deleteAutoSelExpert(vm,conditionId) {
+            vm.iscommit = true;
+            var httpOptions = {
+                method : 'post',
+                url : rootPath+"/expertReview/deleteExpert",
+                params : {workProgramId:vm.expertReview.workProgramId,expertSelConditionId:conditionId}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.iscommit = false;
+                        initSelect(vm);
+                        common.alert({
+                            vm:vm,
+                            msg:"操作成功！",
+                            closeDialog:true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess,
+                onError: function(response){vm.iscommit = false;}
+            });
+        }//E_deleteAutoSelExpert
 
+        //S_countMatchExperts
+        function countMatchExperts(vm,sortIndex){
+            var data = {};
+            vm.conditions.forEach(function (t, number) {
+                if(t.sort == sortIndex){
+                    data = t;
+                }
+            });
+            var httpOptions = {
+                method : 'post',
+                url : rootPath+"/expert/findReviewExpert",
+                data : data
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.autoExpertMap[sortIndex] = response.data;
+                        $("#expertCount"+sortIndex).html(response.data.length);
+                        //console.log(response.data);
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+        }//E_countMatchExperts
     }
 })();

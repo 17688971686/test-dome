@@ -73,7 +73,20 @@ public class ExpertReview extends DomainBase{
 	@JoinColumn(name="workProgramId")
 	private WorkProgram workProgram;
 
-	public String getId() {
+	//专家抽取条件
+    @ManyToOne
+    @JoinColumn(name="expertSelConditionId")
+	private ExpertSelCondition epSelCondition;
+
+    public ExpertSelCondition getEpSelCondition() {
+        return epSelCondition;
+    }
+
+    public void setEpSelCondition(ExpertSelCondition epSelCondition) {
+        this.epSelCondition = epSelCondition;
+    }
+
+    public String getId() {
 		return id;
 	}
 

@@ -16,9 +16,6 @@ import cs.domain.DomainBase;
 @Table(name = "cs_Company")
 public class Company extends DomainBase{
 
-	
-	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	@Id
 	private String id; //单位ID
 	@Column(columnDefinition="varchar(255)")
@@ -42,9 +39,6 @@ public class Company extends DomainBase{
 	@Column(columnDefinition="varchar(255)")
 	private String coType;//单位类型  0:表示建设单位，1:表示编制单位
 	
-//	private String coFirst; //上级单位
-//	private Set<Department> department = new HashSet<Department>();
-//	private Set<Company> coSelf = new HashSet<Company>();
 	public String getId() {
 		return id;
 	}

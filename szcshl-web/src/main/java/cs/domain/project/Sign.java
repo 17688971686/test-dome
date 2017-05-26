@@ -23,7 +23,7 @@ import cs.domain.DomainBase;
  *
  */
 @Entity
-@Table(name = "sign")
+@Table(name = "cs_sign")
 @DynamicUpdate(true)	
 public class Sign extends DomainBase{
 

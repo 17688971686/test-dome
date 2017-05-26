@@ -17,6 +17,7 @@ import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
 import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertSelCondition;
 
 /**
  * 工作方案
@@ -24,7 +25,7 @@ import cs.domain.expert.ExpertReview;
  *
  */
 @Entity
-@Table(name = "WORK_PROGRAM")
+@Table(name = "cs_work_program")
 @DynamicUpdate(true)
 public class WorkProgram extends DomainBase{
 
@@ -192,14 +193,27 @@ public class WorkProgram extends DomainBase{
 	//是否主流程的工作方案
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isMain;
-	
+
+    @Column(columnDefinition="varchar(2) ")
+    private String isSelete;    //是否已经抽取专家
+
+    @Column(columnDefinition="varchar(2) ")
+    private String isComfireResult; //抽取结果是否已经确认
+
+    @Column(columnDefinition="Integer")
+    private Integer selCount;       //专家抽取次数
 	//收文，一对一
 	@ManyToOne
 	@JoinColumn(name="signId")
 	private Sign sign;
-	
+
+    //专家评审方案
 	@OneToMany(mappedBy="workProgram")
 	private List<ExpertReview> expertReviews;
+
+    //专家抽取条件
+	@OneToMany(mappedBy="workProgram")
+	private List<ExpertSelCondition> epSelConditions;
 	
 	public Sign getSign() {
 		return sign;
@@ -561,6 +575,36 @@ public class WorkProgram extends DomainBase{
 		this.workStageTime = workStageTime;
 	}
 	
+    public List<ExpertSelCondition> getEpSelConditions() {
+        return epSelConditions;
+    }
+
+    public void setEpSelConditions(List<ExpertSelCondition> epSelConditions) {
+        this.epSelConditions = epSelConditions;
+    }
 
 
+    public String getIsSelete() {
+        return isSelete;
+    }
+
+    public void setIsSelete(String isSelete) {
+        this.isSelete = isSelete;
+    }
+
+    public String getIsComfireResult() {
+        return isComfireResult;
+    }
+
+    public void setIsComfireResult(String isComfireResult) {
+        this.isComfireResult = isComfireResult;
+    }
+
+    public Integer getSelCount() {
+        return selCount;
+    }
+
+    public void setSelCount(Integer selCount) {
+        this.selCount = selCount;
+    }
 }

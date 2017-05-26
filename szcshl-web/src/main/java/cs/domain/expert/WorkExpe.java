@@ -22,7 +22,7 @@ import cs.domain.DomainBase;
  *
  */
 @Entity
-@Table(name="cs_workeExpe")
+@Table(name="cs_worke_expe")
 public class WorkExpe extends DomainBase {
 
 	@Id

@@ -20,7 +20,6 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.DispatchDoc_;
 import cs.domain.project.MergeDispa;
@@ -31,7 +30,6 @@ import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -193,27 +191,28 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	public void save(DispatchDocDto dispatchDocDto) throws Exception {
 		if (Validate.isString(dispatchDocDto.getSignId())) {
 			Date now=new Date();
-			DispatchDoc dispatchDoc = new DispatchDoc();
-			
-			BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
-			dispatchDoc.setCreatedBy(currentUser.getLoginName());
-			dispatchDoc.setModifiedBy(currentUser.getLoginName());
-			dispatchDoc.setCreatedDate(now);
-			dispatchDoc.setModifiedDate(now);
-			
-			if (!Validate.isString(dispatchDoc.getId())) {
+			DispatchDoc dispatchDoc = null;													
+			if (!Validate.isString(dispatchDocDto.getId())) {
+				dispatchDoc = new DispatchDoc();
+				BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
 				dispatchDoc.setId(UUID.randomUUID().toString());
 				dispatchDoc.setDraftDate(now);
+				dispatchDoc.setCreatedBy(currentUser.getLoginName());
+				dispatchDoc.setCreatedDate(now);
+			}else{				
+				dispatchDoc = dispatchDocRepo.findById(dispatchDocDto.getId());
+				BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);				
 			}
+			dispatchDoc.setModifiedBy(currentUser.getLoginName());			
+			dispatchDoc.setModifiedDate(now);
 			
-			Sign sign = signRepo.getById(dispatchDocDto.getSignId());
-			sign.setIsDispatchCompleted(EnumState.YES.getValue());
-			//sign.setDispatchDoc(dispatchDoc);
-			//signRepo.save(sign);
+			Sign sign = signRepo.getById(dispatchDocDto.getSignId());			
 			dispatchDoc.setSign(sign);
-			//Session session=this.
-			//session.merge(dispatchDoc);
 			dispatchDocRepo.save(dispatchDoc);
+			
+			sign.setIsDispatchCompleted(EnumState.YES.getValue());
+			sign.setDispatchDoc(dispatchDoc);
+			signRepo.save(sign);
 		} else {
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
 			throw new Exception(Constant.ERROR_MSG);

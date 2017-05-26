@@ -2,15 +2,11 @@ package cs.domain.external;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
@@ -22,12 +18,10 @@ import cs.domain.DomainBase;
  */
 
 @Entity
-@Table(name="cs_OfficeUser")
+@Table(name="es_office_user")
 public class OfficeUser extends DomainBase{
 
 	@Id
-//	@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String officeID;
 	
 	//办事处联系人

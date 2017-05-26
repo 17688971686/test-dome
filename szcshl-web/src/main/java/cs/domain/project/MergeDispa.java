@@ -14,7 +14,7 @@ import cs.domain.DomainBase;
  *
  */
 @Entity
-@Table(name = "cs_mergeDispa")
+@Table(name = "cs_merge_dispa")
 @DynamicUpdate(true)	
 public class MergeDispa extends DomainBase{
 	@Id

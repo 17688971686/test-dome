@@ -13,9 +13,88 @@
 
     <!-- S 专家随机抽取 DIV -->
     <div class="toolbar" style="min-height: 200px;">
-        <p>
+        <div>
             <span>1、OA系统随机抽取专家方案</span>
-        </p>
+            <button class="btn btn-xs btn-success"  ng-click="vm.addCondition()" ><span class="glyphicon glyphicon-ok"></span>添加条件</button>
+            <button class="btn btn-xs btn-danger"  ng-click="vm.removeCondition()" ><span class="glyphicon glyphicon-remove"></span>删除条件</button>
+            <button class="btn btn-xs btn-success"  ng-click="vm.saveCondition()" ><span class="glyphicon glyphicon-ok"></span>保存 </button>
+            |
+            <button class="btn btn-xs btn-primary"  ng-click="vm.showAutoExpertWin()" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-asterisk"></span>开始随机抽取</button>
+            <button class="btn btn-xs btn-primary"  ng-disabled="true"><span class="glyphicon glyphicon-asterisk"></span>查看随机抽取结果</button>
+
+            <ol class="breadcrumb" style="font-size: 12px;">
+                <li class="active" >* 为了保证结果的正确性，请在每个条件抽取前，先保存已抽取的专家信息！</li>
+                <li class="active" >* 已经抽取专家的抽取信息不可删除！</li>
+            </ol>
+        </div>
+        <table class="table table-bordered" id="conditionTable">
+            <tr>
+                <td width="5%" align="center" ><input type='checkbox' ng-model="epCondtion" /></td>
+                <td width="5%" align="center">条件号</td>
+                <td width="15%" align="center" >突出专业（大类）</td>
+                <td width="15%" align="center" >突出专业（小类）</td>
+                <td width="10%" align="center" >专家类别</td>
+                <td width="10%" align="center" >正选专家人数</td>
+                <td width="10%" align="center" >备选专家人数</td>
+                <td width="10%" align="center" >符合人数</td>
+                <td width="20%" align="center">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.conditions">
+                <td align="center" ><input ng-hide="x.isSelete == 9 " type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{x.sort}}"/></td>
+                <td align="center">{{x.sort}}</td>
+                <td align="center">
+                    <select ng-disabled="vm.isAutoSelectExpert" id ="maJorBig{{x.sort}}" ng-model="$parent.condition[$index].maJorBig" class="form-control input-sm "
+                            ng-change="$parent.condition[$index].majobSmallDicts = topSelectChange($parent.condition[$index].maJorBig,DICT.MAJOR.dicts,'code')"  >
+                        <option value="">请选择</option>
+                        <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictCode}}" ng-selected="x.maJorBig == d.dictCode">{{d.dictName}}</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <select ng-disabled="vm.isAutoSelectExpert" id ="maJorSmall{{x.sort}}" ng-init="$parent.condition[$index].majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts,'code')"  ng-model="$parent.maJor[$index].maJorSamll"  class="form-control input-sm "  data-val-required="必填" data-val="true">
+                        <option value="" >请选择</option>
+                        <option ng-repeat="ds in $parent.condition[$index].majobSmallDicts" value="{{ds.dictCode}}" ng-selected="x.maJorSmall == ds.dictCode">{{ds.dictName}}</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <select ng-disabled="vm.isAutoSelectExpert" id ="expeRttype{{x.sort}}" class="form-control input-sm "  >
+                        <option value="">请选择</option>
+                        <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" ng-selected="x.expeRttype == dt.dictName" value="{{dt.dictName}}">{{dt.dictName}}</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <input ng-disabled="vm.isAutoSelectExpert" id ="officialNum{{x.sort}}" class="form-control input-sm" ng-init="$parent.condition[$index].officialNum = x.officialNum"  ng-model="$parent.condition[$index].officialNum" ng-keyup="vm.checkIntegerValue($parent.condition[$index].officialNum,'alternativeNum',x.sort)">
+                    <span id="errorsOfficialNum{{x.sort}}" data-valmsg-for="procoSttype" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td align="center">
+                    <input ng-disabled="vm.isAutoSelectExpert" id ="alternativeNum{{x.sort}}" class="form-control input-sm" ng-init="$parent.condition[$index].alternativeNum = x.alternativeNum" ng-model="$parent.condition[$index].alternativeNum" ng-keyup="vm.checkIntegerValue($parent.condition[$index].alternativeNum,'officialNum',x.sort)">
+                    <span id="errorsAlternativeNum{{x.sort}}" data-valmsg-for="procoSttype" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td align="center" ><span id="expertCount{{x.sort}}"></span></td>
+                <td align="center">
+                    <button class="btn btn-xs btn-primary" ng-show="x.id" ng-click="vm.countMatchExperts(x.sort)" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-gbp"></span>统计符合人数</button>
+                    <button class="btn btn-xs btn-primary" ng-show="x.isSelete == 9" ng-click="vm.resetAutoExpert(x.id,x.isComfireResult)" ng-disabled="vm.iscommit" ><span class="glyphicon glyphicon-remove"></span>再次抽取专家</button>
+                </td>
+            </tr>
+        </table>
+        <table class="table table-bordered" >
+            <tr ng-repeat="x in vm.autoExperts track by $index">
+                <td align="center">{{x.name}}</td>
+                <td align="center">{{x.comPany}}</td>
+                <td align="center">{{x.job}}/{{x.post}}</td>
+                <td align="center">{{x.majorStudy}}、{{x.majorWork}}</td>
+                <td align="center">{{x.userPhone}}</td>
+                <td align="center">{{x.expeRttype}}</td>
+                <td align="center">{{x.remark}}</td>
+            </tr>
+        </table>
+        <!--专家抽取选择框-->
+        <div id="aotuExpertDiv" class="well well-sm" style="display:none;">
+            <div class="toolbar">
+                <button class="btn btn-sm btn-success" ng-disabled="vm.iscommit" ng-click="vm.saveOutExpert()" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+                <span class="errors" id="aotuExpertError"></span>
+            </div>
+
+        </div>
     </div>
     <!-- E 专家随机抽取 DIV -->
 
@@ -31,7 +110,7 @@
         </form>
         <!-- E 隐藏表单 设置排除已选择的ID -->
         <p>
-         	<span>2、专家自选</span>
+         	<span>2、专家自选（自选专家，只能选择一名）</span>
          	<button class="btn btn-xs btn-success"  ng-click="vm.showSelfExpertGrid()" ><span class="glyphicon glyphicon-ok"></span>添加</button>
             <button class="btn btn-xs btn-danger"  ng-click="vm.delertSelfExpert()" ng-disabled="vm.iscommit" ><span class="glyphicon glyphicon-remove"></span>删除</button>
         </p>

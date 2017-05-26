@@ -65,8 +65,8 @@ public class ExpertReviewController {
     @RequiresPermissions("expertReview#deleteExpert#post")
     @RequestMapping(name = "删除已选专家", path = "deleteExpert", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteExpert(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String expertIds){
-        expertReviewService.deleteExpert(workProgramId, expertIds);
+    public void deleteExpert(@RequestParam(required=true)String workProgramId,String expertIds,String seleType,String expertSelConditionId){
+        expertReviewService.deleteExpert(workProgramId,expertIds,seleType,expertSelConditionId);
     } 
     
     @RequiresPermissions("expertReview##post")

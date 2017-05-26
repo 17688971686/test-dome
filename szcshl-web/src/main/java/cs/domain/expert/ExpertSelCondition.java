@@ -1,9 +1,15 @@
 package cs.domain.expert;
 
-import cs.domain.project.WorkProgram;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import cs.domain.project.WorkProgram;
 
 @Entity
 @Table(name="cs_expert_condition")
@@ -27,6 +33,9 @@ public class ExpertSelCondition {
 
     @Column(columnDefinition="integer")
     private Integer alternativeNum;    //备选专家个数
+
+    @Column(columnDefinition="integer")
+    private Integer sort;
 
     @ManyToOne
     @JoinColumn(name="workProgramId")
@@ -88,4 +97,13 @@ public class ExpertSelCondition {
     public void setWorkProgram(WorkProgram workProgram) {
         this.workProgram = workProgram;
     }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
 }

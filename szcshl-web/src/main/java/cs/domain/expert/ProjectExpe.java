@@ -18,7 +18,7 @@ import cs.domain.DomainBase;
  */
 
 @Entity
-@Table(name="cs_projectExpe")
+@Table(name="cs_project_expe")
 public class ProjectExpe extends DomainBase {
 
 	@Id

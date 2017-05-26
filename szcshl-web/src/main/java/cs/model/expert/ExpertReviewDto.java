@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertSelCondition;
 import cs.domain.project.WorkProgram;
 import cs.model.BaseDto;
 import cs.model.project.WorkProgramDto;
@@ -28,9 +29,11 @@ public class ExpertReviewDto extends BaseDto {
 	
 	private String expertId;
 	private String workProgramId;
-	
+	private String expertSelConditionId;
+
     private ExpertDto expertDto;
     private WorkProgramDto workProgramDto;
+	private ExpertSelCondition epSelCondition;
 
     public ExpertReviewDto() {
     }
@@ -141,6 +144,21 @@ public class ExpertReviewDto extends BaseDto {
 
 	public void setWorkProgramId(String workProgramId) {
 		this.workProgramId = workProgramId;
-	}  	
-	
+	}
+
+    public String getExpertSelConditionId() {
+        return expertSelConditionId;
+    }
+
+    public void setExpertSelConditionId(String expertSelConditionId) {
+        this.expertSelConditionId = expertSelConditionId;
+    }
+
+    public ExpertSelCondition getEpSelCondition() {
+        return epSelCondition;
+    }
+
+    public void setEpSelCondition(ExpertSelCondition epSelCondition) {
+        this.epSelCondition = epSelCondition;
+    }
 }

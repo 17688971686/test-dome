@@ -7,7 +7,6 @@ import java.util.List;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.domain.expert.ExpertReview;
-import cs.domain.project.Sign;
 import cs.model.BaseDto;
 
 /**	
@@ -125,21 +124,19 @@ public class WorkProgramDto extends BaseDto{
 	private Date titleDate;
 	
 	//收文对象
-	private Sign sign;
+	private SignDto signDto;
 	
 	//是否主流程
 	private String isMain;
-	
-	//评审专家
-	private List<ExpertReview> expertReviews;
-	
-	public Sign getSign() {
-		return sign;
-	}
 
-	public void setSign(Sign sign) {
-		this.sign = sign;
-	}
+	private String isSelete;    //是否已经抽取专家
+
+	private String isComfireResult; //抽取结果是否已经确认
+
+    private Integer selCount;       //专家抽取次数
+
+	//评审专家
+	private List<ExpertReview> expertReviews;	
 
 	public String getId() {
 		return id;
@@ -501,9 +498,37 @@ public class WorkProgramDto extends BaseDto{
 
 	public void setWorkStageTime(String workStageTime) {
 		this.workStageTime = workStageTime;
-	}
-	
-	
+	}		
 
-		
+    public SignDto getSignDto() {
+		return signDto;
+	}
+
+	public void setSignDto(SignDto signDto) {
+		this.signDto = signDto;
+	}
+
+	public String getIsSelete() {
+        return isSelete;
+    }
+
+    public void setIsSelete(String isSelete) {
+        this.isSelete = isSelete;
+    }
+
+    public String getIsComfireResult() {
+        return isComfireResult;
+    }
+
+    public void setIsComfireResult(String isComfireResult) {
+        this.isComfireResult = isComfireResult;
+    }
+
+    public Integer getSelCount() {
+        return selCount;
+    }
+
+    public void setSelCount(Integer selCount) {
+        this.selCount = selCount;
+    }
 }

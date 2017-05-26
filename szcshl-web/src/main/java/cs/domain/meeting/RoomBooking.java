@@ -1,24 +1,22 @@
 package cs.domain.meeting;
 
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Formula;
-
-import cs.domain.DomainBase;
-
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
+
+import cs.domain.DomainBase;
 /**
  * 会议预定表
  * @author sjy
  * 2017年4月14日
  */
 @Entity
-@Table(name="cs_roomBooking")
+@Table(name="cs_room_booking")
 public class RoomBooking extends DomainBase{
 
 	@Id

@@ -211,5 +211,10 @@ input,textarea{ outline:none;}
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
 }
 
+/*kendoui upload*/
+.k-upload{background-color:transparent}
+.k-upload-button{width: 20px;background-color: #daecf4}
+.k-file .k-upload-status{position: relative;margin-left: 30px;}
+.k-upload-status-total{display:none;}
 
 }

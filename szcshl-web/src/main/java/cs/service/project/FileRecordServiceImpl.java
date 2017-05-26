@@ -13,7 +13,6 @@ import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.FileRecord;
@@ -41,20 +40,24 @@ public class FileRecordServiceImpl implements FileRecordService {
 	@Transactional
 	public void save(FileRecordDto fileRecordDto) throws Exception{
 		if(Validate.isString(fileRecordDto.getSignId())){
-			FileRecord fileRecord = new FileRecord(); 		
-			BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
+			FileRecord fileRecord = null;	
 			
-			Date now = new Date();					
+			Date now = new Date();														
+			if(!Validate.isString(fileRecordDto.getFileRecordId())){
+				fileRecord = new FileRecord(); 	
+				BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);		
+				fileRecord.setFileRecordId(UUID.randomUUID().toString());	
+				fileRecord.setCreatedBy(currentUser.getLoginName());	
+				fileRecord.setCreatedDate(now);
+			}else{
+				fileRecord = fileRecordRepo.findById(fileRecordDto.getFileRecordId());
+				BeanCopierUtils.copyPropertiesIgnoreNull(fileRecordDto, fileRecord);				
+			}
 			fileRecord.setModifiedBy(currentUser.getLoginName());			
 			fileRecord.setModifiedDate(now);
 			fileRecord.setFileDate(fileRecord.getFileDate()==null?now:fileRecord.getFileDate());
 			fileRecord.setPrintDate(fileRecord.getPrintDate()==null?now:fileRecord.getPrintDate());
 			
-			if(!Validate.isString(fileRecord.getFileRecordId())){
-				fileRecord.setFileRecordId(UUID.randomUUID().toString());	
-				fileRecord.setCreatedBy(currentUser.getLoginName());	
-				fileRecord.setCreatedDate(now);
-			}	
 			Sign sign = signRepo.findById(fileRecordDto.getSignId());
 			fileRecord.setSign(sign);
 			//设置归档编号(评估类)

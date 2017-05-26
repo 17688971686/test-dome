@@ -21,7 +21,7 @@ import cs.domain.DomainBase;
  *
  */
 @Entity
-@Table(name = "DISPATCH_DOC")
+@Table(name = "cs_dispatch_doc")
 @DynamicUpdate(true)
 public class DispatchDoc extends DomainBase{
 

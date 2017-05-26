@@ -14,7 +14,7 @@ import org.hibernate.annotations.Formula;
 import cs.domain.DomainBase;
 
 @Entity
-@Table(name = "DEPT")
+@Table(name = "es_dept")
 @DynamicUpdate(true)
 public class Dept extends DomainBase{
 

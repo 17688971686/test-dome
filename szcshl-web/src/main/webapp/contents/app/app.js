@@ -344,7 +344,7 @@
             	}               
             }
         }
-      
+
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     	

@@ -15,7 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import cs.domain.DomainBase;
 
 @Entity
-@Table(name = "FILERECORD")
+@Table(name = "cs_file_record")
 @DynamicUpdate(true)
 public class FileRecord extends DomainBase{
 

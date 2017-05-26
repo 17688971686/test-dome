@@ -18,6 +18,7 @@ public class ExpertSelConditionDto {
     private String workProgramId;
     private WorkProgram workProgram;
     private String signId;
+    private Integer sort;
 
     public ExpertSelConditionDto() {
     }
@@ -98,5 +99,13 @@ public class ExpertSelConditionDto {
 
     public void setSignId(String signId) {
         this.signId = signId;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

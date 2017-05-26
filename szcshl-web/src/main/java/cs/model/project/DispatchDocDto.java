@@ -132,7 +132,17 @@ private String id;
 	//是否是主项目
 	private String isMainProject;
 	
+	//收文对象
+	private SignDto signDto;
 	
+	public SignDto getSignDto() {
+		return signDto;
+	}
+
+	public void setSignDto(SignDto signDto) {
+		this.signDto = signDto;
+	}
+
 	public Date getDraftDate() {
 		return draftDate;
 	}

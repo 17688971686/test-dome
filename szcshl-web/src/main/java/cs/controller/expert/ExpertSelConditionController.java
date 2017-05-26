@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 专家抽取条件 控制层
@@ -42,17 +44,28 @@ public class ExpertSelConditionController {
         expertSelConditionService.save(record);
     }
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
-	@Transactional
+
+    @RequiresPermissions("expertSelCondition#saveConditionList#post")
+    @RequestMapping(name = "创建记录", path = "saveConditionList", method = RequestMethod.POST)
+    public @ResponseBody List<ExpertSelConditionDto> saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary) throws Exception{
+        return  expertSelConditionService.saveConditionList(paramArrary);
+    }
+
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody ExpertSelConditionDto findById(@RequestParam(required = true)String id){		
 		return expertSelConditionService.findById(id);
 	}
-	
+
+    @RequestMapping(name = "通过评审方案查询", path = "html/findByWorkProId",method=RequestMethod.GET)
+    public @ResponseBody Map<String,Object> findByWorkProId(@RequestParam(required = true)String workProId){
+        return expertSelConditionService.findByWorkProId(workProId);
+    }
+
     @RequiresPermissions("expertSelCondition##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-    	expertSelConditionService.delete(id);      
+    public void delete(@RequestParam(required = true)String id,@RequestParam(required = true)String workProId,@RequestParam(required =true ,defaultValue = "false")boolean deleteEP) {
+        expertSelConditionService.delete(id,workProId,deleteEP);
     }
 
     @RequiresPermissions("expertSelCondition##put")

@@ -147,17 +147,40 @@ desired effect
                                 <i class="glyphicon glyphicon-thumbs-up"></i>办结任务
                             </a>
                         </li>
+                        <!-- 
                         <li>
 	                        <a href="javascript:void(0)"> 
 	                        	 <i  class="fa fa-envelope-o"></i>消息通知
 	                        	 <span class="label label-success">0</span>
 	                        </a>
                         </li>
-                        
+                         -->
                     </ul>
                 </li>
-
+                
+                <!-- begin 系统管理 -->
                 <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-link"></i>
+                        <span class="title">系统管理</span>
+                        <span class="pull-right-container"> 
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>                    
+                        <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
+                        <!-- 
+                        <li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="workflow">工作流管理(下个版本加入)</a></li>
+                         -->
+                    </ul>
+                </li>
+				<!-- end 系统管理 -->
+
+				<!-- begin 用户部门管理 -->
+				<li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-link"></i>
                         <span class="title">用户部门管理</span>
@@ -171,41 +194,37 @@ desired effect
                         <li><a href="javascript:void(0)" ui-sref="company">单位管理</a></li>
                     </ul>
                 </li>
-
-
+                <!-- end 用户部门管理 -->
+                
+				<!-- begin 专家管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i>
-                        <span class="title">系统管理</span>
-                        <span
-                                class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>
-							</span>
+                        <i class="fa fa-link"></i> <span class="title">专家管理</span> 
+                        <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="workflow">工作流管理(下个版本加入)</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
+                    	<li><a href="javascript:void(0)" ui-sref="expertEdit({id:null})">专家信息录入</a></li>
+                    	<li><a href="javascript:void(0)" ui-sref="expertAudit">专家信息审核</a></li>
+                    	<li><a href="javascript:void(0)" ui-sref="expertRepeat">重复专家查询</a></li>                          
+                        <li><a href="javascript:void(0)" ui-sref="expert">综合查询</a></li>                     
                     </ul>
                 </li>
-
+                <!-- end 专家管理 -->
+                
                 <!-- start 会议室管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-link"></i>
                         <span class="title">会议室管理</span>
-                        <span
-                                class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>
-							</span>
+                        <span class="pull-right-container"> 
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="meeting">会议室管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="room">会议预定管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="roomCount">会议预定统计情况</a></li>
                     </ul>
-
-
                 </li>
                 <!-- end -->
 
@@ -225,33 +244,6 @@ desired effect
                 </li>
                 <!-- end 项目签收-->
 
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">Demo</span>
-                        <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="demo">demo</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="myTest">My test</a></li>
-
-                    </ul>
-                </li>
-                
-                <!-- begin 专家管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">专家管理</span> 
-                        <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
-                    </a>
-                    <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="expertEdit({id:null})">专家信息录入</a></li>
-                    	<li><a href="javascript:void(0)" ui-sref="expertAudit">专家信息审核</a></li>
-                    	<li><a href="javascript:void(0)" ui-sref="expertRepeat">重复专家查询</a></li>                          
-                        <li><a href="javascript:void(0)" ui-sref="expert">综合查询</a></li>                     
-                    </ul>
-                </li>
-                <!-- end 专家管理 -->
-
 				<!-- begin 机关单位管理 -->
 				<li class="treeview">
                     <a href="javascript:void(0)">
@@ -265,6 +257,20 @@ desired effect
                     </ul>
                 </li>
                 <!-- end 机关单位管理 -->
+				<!-- 
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-link"></i> <span class="title">Demo</span>
+                        <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="demo">demo</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="myTest">My test</a></li>
+
+                    </ul>
+                </li>
+                 -->              
+				
             </ul>
             <!-- /.sidebar-menu -->
 

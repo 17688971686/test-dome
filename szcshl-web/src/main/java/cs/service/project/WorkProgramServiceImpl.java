@@ -42,18 +42,21 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	@Transactional
 	public void save(WorkProgramDto workProgramDto) throws Exception {				
 		if(Validate.isString(workProgramDto.getSignId())){
-			WorkProgram workProgram = new WorkProgram(); 		
-			BeanCopierUtils.copyProperties(workProgramDto, workProgram);
-			
+			WorkProgram workProgram = null;						
 			Date now = new Date();		
-			workProgram.setModifiedBy(currentUser.getLoginUser().getId());
-			workProgram.setModifiedDate(now);			
-			
+							
 			if(!Validate.isString(workProgramDto.getId())){
+				workProgram = new WorkProgram(); 
+				BeanCopierUtils.copyProperties(workProgramDto, workProgram);		
 				workProgram.setId(UUID.randomUUID().toString());
 				workProgram.setCreatedBy(currentUser.getLoginUser().getId());
 				workProgram.setCreatedDate(now);
+			}else{
+				workProgram = workProgramRepo.findById(workProgramDto.getId());
+				BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);					
 			}	
+			workProgram.setModifiedBy(currentUser.getLoginUser().getId());
+			workProgram.setModifiedDate(now);	
 			
 			Sign sign = signRepo.findById(workProgramDto.getSignId());
 			//判断是否是主流程

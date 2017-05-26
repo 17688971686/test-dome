@@ -5,11 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import cs.domain.project.Sign;
-import cs.domain.project.WorkProgram;
-import cs.model.expert.ExpertSelConditionDto;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -29,12 +24,15 @@ import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelConditionDto;
 import cs.model.expert.ProjectExpeDto;
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
 import cs.repository.repositoryImpl.expert.WorkExpeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.sys.UserServiceImpl;
 
 @Service
@@ -229,28 +227,44 @@ public class ExpertServiceImpl implements ExpertService {
         ) outep
         on ep.EXPERTID = outep.EXPERTID
 
-        left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from WORK_PROGRAM wp where WP.ID = '72eed09b-9448-4ef2-bf66-bf867a67043f') lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY)
+        left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp where WP.ID = '72eed09b-9448-4ef2-bf66-bf867a67043f') lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY)
         where (ep.STATE = '2' or ep.STATE = '3')
         and outep.EXPERTID is null  --排除周满两次或者月满4次的专家
         and lwp.ID is null --避归*/
 
         StringBuffer sql = new StringBuffer();
         //1、专家规避：与项目建设单位相同单位的专家需要规避，同本项目方案编制单位的专家需要规避
-        sql.append(" left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from WORK_PROGRAM wp ");
-        sql.append(" where WP.ID = '"+epSelCondition.getWorkProgramId()+"') lwp on (lwp.bcp = {alias}.COMPANY or lwp.dcp = {alias}.COMPANY) ");
+        sql.append(" {alias}.EXPERTID in (select ep.EXPERTID from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
+        sql.append(" where WP.ID = '"+epSelCondition.getWorkProgramId()+"') lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
         //2、关联本周已抽取2次或者本月已抽取四次的专家
         sql.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
         sql.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,EXPERTID");
         sql.append(" FROM CS_EXPERT_REVIEW er GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID ");
         sql.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
-        sql.append("  ) outep on {alias}.EXPERTID = outep.EXPERTID ");
-        sql.append(" where ({alias}.STATE = '2' or {alias}.STATE = '3') ");
+        sql.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
+        //3、排除本次已经选择的专家
+        sql.append(" left join CS_EXPERT_REVIEW erm on erm.EXPERTID = ep.EXPERTID and erm.WORKPROGRAMID = '"+epSelCondition.getWorkProgramId()+"' ");
+
+        sql.append(" where (ep.STATE = '2' or ep.STATE = '3') ");
         sql.append(" and lwp.ID is null " );    //排除单位相同的专家
-        sql.append(" and outep.EXPERTID is null");  //排除已满抽取次数的专家
+        sql.append(" and outep.EXPERTID is null ");  //排除已满抽取次数的专家
+        sql.append(" and ERM.EXPERTID is null  )");   //排除本次已经选择的专家
 
         Criteria criteria = expertRepo.getExecutableCriteria();
 		criteria.add(Restrictions.sqlRestriction(sql.toString()));
 
+		//突出专业，大类
+		if(Validate.isString(epSelCondition.getMaJorBig())){
+            criteria.add(Restrictions.eq(Expert_.maJorBig.getName(),epSelCondition.getMaJorBig()));
+		}
+        //突出专业，小类
+        if(Validate.isString(epSelCondition.getMaJorSmall())){
+            criteria.add(Restrictions.eq(Expert_.maJorSmall.getName(),epSelCondition.getMaJorSmall()));
+        }
+        //专家类型
+        if(Validate.isString(epSelCondition.getExpeRttype())){
+            criteria.add(Restrictions.eq(Expert_.expeRttype.getName(),epSelCondition.getExpeRttype()));
+        }
         List<Expert> listExpert = criteria.list();
 
         List<ExpertDto> listExpertDto = new ArrayList<>();

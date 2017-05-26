@@ -4,6 +4,9 @@ import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Description: 专家抽取条件 业务操作接口
@@ -20,6 +23,9 @@ public interface ExpertSelConditionService {
 
 	ExpertSelConditionDto findById(String deptId);
 
-	void delete(String id);
+	void delete(String id, String workProId, boolean deleteEP);
 
+	List<ExpertSelConditionDto> saveConditionList(ExpertSelConditionDto[] recordList) throws Exception;
+
+	Map<String,Object> findByWorkProId(String workProId) ;
 }

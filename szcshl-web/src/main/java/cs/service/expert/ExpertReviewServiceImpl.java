@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.domain.expert.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,6 @@ import cs.common.Constant.EnumState;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.Expert_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
@@ -155,7 +152,7 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
 			
 			//由于自选只能选一个，所以要先删除之前选的专家
 			if(EnumExpertSelectType.SELF.getValue().equals(selectType)){	
-				deleteExpert(workProgramId,expertIdArr.get(i));
+				deleteExpert(workProgramId,null,EnumExpertSelectType.SELF.getValue(),null);
 			}
 			//评审会时间
 			domain.setReviewDate(workProgram.getStageTime());
@@ -226,28 +223,38 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
 
 	@Override
 	@Transactional
-	public void deleteExpert(String workProgramId, String expertIds) {
+	public void deleteExpert(String workProgramId, String expertIds,String seleType,String expertSelConditionId) {
 		HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" delete from "+ExpertReview.class.getSimpleName());
         hqlBuilder.append(" where "+ExpertReview_.workProgram.getName()+"."+WorkProgram_.id.getName()+" = :workProgramId ");
         hqlBuilder.setParam("workProgramId", workProgramId);
-        
-        String[] idArr = expertIds.split(",");		
-        if (idArr.length > 1) {
-        	hqlBuilder.append( " and "+ExpertReview_.expert.getName()+"."+Expert_.expertID.getName()+" in ( ");	  
-        	int totalL = idArr.length;
-        	for(int i=0;i<totalL;i++){
-        		if(i==totalL-1){
-        			hqlBuilder.append(" :id"+i).setParam("id"+i, idArr[i]);
-        		}else{
-        			hqlBuilder.append(" :id"+i+",").setParam("id"+i, idArr[i]);
-        		}	        		
-        	}
-        	hqlBuilder.append(" ) ");
-        } else {
-        	hqlBuilder.append( " and "+ExpertReview_.expert.getName()+"."+Expert_.expertID.getName()+" = :expertId ");
-        	hqlBuilder.setParam("expertId", expertIds);
+
+        if(Validate.isString(expertIds)){
+			String[] idArr = expertIds.split(",");
+			if (idArr.length > 1) {
+				hqlBuilder.append( " and "+ExpertReview_.expert.getName()+"."+Expert_.expertID.getName()+" in ( ");
+				int totalL = idArr.length;
+				for(int i=0;i<totalL;i++){
+					if(i==totalL-1){
+						hqlBuilder.append(" :id"+i).setParam("id"+i, idArr[i]);
+					}else{
+						hqlBuilder.append(" :id"+i+",").setParam("id"+i, idArr[i]);
+					}
+				}
+				hqlBuilder.append(" ) ");
+			} else {
+				hqlBuilder.append( " and "+ExpertReview_.expert.getName()+"."+Expert_.expertID.getName()+" = :expertId ");
+				hqlBuilder.setParam("expertId", expertIds);
+			}
+		}
+
+		if(Validate.isString(seleType)){
+            hqlBuilder.append(" and "+ExpertReview_.selectType.getName() +" =:seleType").setParam("seleType",seleType);
         }
+
+        if(Validate.isString(expertSelConditionId)){
+			hqlBuilder.append(" and "+ ExpertReview_.epSelCondition.getName()+"."+ExpertSelCondition_.id.getName() +" =:expertSelConditionId").setParam("expertSelConditionId",expertSelConditionId);
+		}
         expertReviewRepo.executeHql(hqlBuilder);
 	}
 	

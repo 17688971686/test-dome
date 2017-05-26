@@ -13,12 +13,10 @@ import cs.domain.DomainBase;
  * 2016年9月12日
  */
 @Entity
-@Table(name = "cs_meetingRoom")
+@Table(name = "cs_meeting_room")
 public class MeetingRoom extends DomainBase{
 
 	@Id	
-	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
 	private String id;
 	@Column(columnDefinition="varchar(255)")
 	private String num;//编号

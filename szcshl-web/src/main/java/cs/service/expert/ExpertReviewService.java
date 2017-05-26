@@ -32,5 +32,5 @@ public interface ExpertReviewService {
 
 	void updateExpertState(String workProgramId, String expertIds, String state);
 
-	void deleteExpert(String workProgramId, String expertIds);
+	void deleteExpert(String workProgramId, String expertIds,String seleType,String expertSelConditionId);
 }
