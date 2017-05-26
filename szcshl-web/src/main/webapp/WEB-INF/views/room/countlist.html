@@ -31,8 +31,8 @@
 			</select>
 			
 		 <span class="help-inline" style="margin-left:10px;">评审部门：</span>
-	    	 <select ng-model="vm.model" name="rbType" id="rbType">
-				<option ng-repeat="" ></option>
+	    	 <select ng-model="vm.model.stageOrg" name="stageOrg" id="stageOrg">
+				<option ng-repeat="o in vm.orglist" value="{{o.name}}" >{{o.name}}</option>
 			</select>
 			
 		 <span class="help-inline" style="margin-left:10px;">预定人：</span>

@@ -23,36 +23,48 @@ public class RoomBooking extends DomainBase{
 	private String id;
 	@Column(columnDefinition="varchar(255)")
 	private String mrID;//会议室编号
+	
 	@Column(columnDefinition="varchar(255)")
 	private String rbName;//会议名称
+	
 	@Formula("(select m.addr from cs_meeting_room m where m.id = mrID)")
 	@Column(columnDefinition="varchar(255)")
 	private String addressName;//会议地点
 	
 	@Column(columnDefinition="varchar(255)")
 	private String dueToPeople;//预定人
+	
 	@Column(columnDefinition="varchar(255)")
 	private String host;//会议主持人
 	
 	@Column(columnDefinition="date")
 	private Date rbDay;//会议日期
+	
 	@Column(columnDefinition="date")
 	private Date  beginTime;//会议开始时间
+	
 	@Column(columnDefinition="date")
 	private Date endTime;//结束时间
 	
 	@Column(columnDefinition="varchar(255)")
 	private String rbStatus;//会议预定状态，1,已预定，0未预定
+	
 	@Column(columnDefinition="varchar(255)")
 	private String rbType;//会议类型
 	
 	@Column(columnDefinition="varchar(255)")
 	private String content;//主要内容
+	
 	@Column(columnDefinition="varchar(255)")
 	private String remark;//备注
+	
 	//工作方案Id
 	@Column(columnDefinition="varchar(100)")
 	private String workProgramId;
+	
+	//评审部门
+	@Column(columnDefinition="varchar(100)")
+	private String stageOrg;
 	
 	public String getId() {
 		return id;
@@ -140,6 +152,13 @@ public class RoomBooking extends DomainBase{
 	public void setWorkProgramId(String workProgramId) {
 		this.workProgramId = workProgramId;
 	}
+	public String getStageOrg() {
+		return stageOrg;
+	}
+	public void setStageOrg(String stageOrg) {
+		this.stageOrg = stageOrg;
+	}
+	
 	
 	
 	
