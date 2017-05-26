@@ -240,12 +240,13 @@
 		
 		//start#会议室地点查询
 		function showMeeting(vm){
-			 $http.get(url_room+"/meeting" 
+			 $http.get(
+				  url_room+"/meeting" 
 			  ).success(function(data) {  
 				  vm.meetings ={};
 				  vm.meetings=data;
 			  }).error(function(data) {  
-				  alert("查询会议室失败");
+				  //alert("查询会议室失败");
 			  }); 
 		}
 		//end #会议室地点查询

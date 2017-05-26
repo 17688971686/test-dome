@@ -13,7 +13,7 @@ import cs.domain.DomainBase;
  * 2016年9月12日
  */
 @Entity
-@Table(name = "cs_Company")
+@Table(name = "cs_company")
 public class Company extends DomainBase{
 
 	@Id

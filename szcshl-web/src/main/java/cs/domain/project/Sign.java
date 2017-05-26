@@ -70,11 +70,11 @@ public class Sign extends DomainBase{
 	private String maindepetcontactuserid;
 	
 	//主办事处联系人	
-	@Formula("(select o.officeUserName from es_OfficeUser o where o.officeID = maindepetcontactuserid)")
+	@Formula("(select o.officeUserName from es_office_user o where o.officeID = maindepetcontactuserid)")
 	private String mainDeptUserName;
 	
 	//主办事处联系电话	
-	@Formula("(select u.userPhone from cs_user u where u.id = maindepetcontactuserid)")
+	@Formula("(select u.officePhone from es_office_user u where u.officeID = maindepetcontactuserid)")
 	private String mainDeptContactPhone;
 		
 	public String getMainDeptContactPhone() {
@@ -115,7 +115,7 @@ public class Sign extends DomainBase{
 	
 	//建设单位名称
 	@Column(columnDefinition="VARCHAR(100)")
-	@Formula("(select c.coName from cs_Company c where c.id = builtcompanyid)")
+	@Formula("(select c.coName from cs_company c where c.id = builtcompanyid)")
 	private String builtcompanyName;
 	
 	//缓急程度
