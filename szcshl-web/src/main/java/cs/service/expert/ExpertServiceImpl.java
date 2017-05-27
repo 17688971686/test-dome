@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.StringUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -248,9 +249,8 @@ public class ExpertServiceImpl implements ExpertService {
             return null;
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        StringBuffer sql = new StringBuffer();
         //1、专家规避：与项目建设单位相同单位的专家需要规避，同本项目方案编制单位的专家需要规避
-        sql.append(" select ep.EXPERTID from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
+        hqlBuilder.append(" select * from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
         hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
         hqlBuilder.setParam("workProgramId",workProgramId);
         //2、关联本周已抽取2次或者本月已抽取四次的专家
@@ -273,13 +273,13 @@ public class ExpertServiceImpl implements ExpertService {
         int totalLength = epSelConditions.length;
         List<String> jorBig = new ArrayList<>(totalLength),jorSmall = new ArrayList<>(totalLength),rttype =new ArrayList<>(totalLength);
         for(ExpertSelConditionDto obj:epSelConditions){
-            if(Validate.isString(obj.getMaJorBig())){
+            if(Validate.isString(obj.getMaJorBig()) && !jorBig.contains(obj.getMaJorBig()) ){
                 jorBig.add(obj.getMaJorBig());
             }
-            if(Validate.isString(obj.getMaJorSmall())){
+            if(Validate.isString(obj.getMaJorSmall()) && !jorSmall.contains(obj.getMaJorSmall())){
                 jorSmall.add(obj.getMaJorSmall());
             }
-            if(Validate.isString(obj.getExpeRttype())){
+            if(Validate.isString(obj.getExpeRttype())  && !rttype.contains(obj.getExpeRttype())){
                 rttype.add(obj.getExpeRttype());
             }
         }

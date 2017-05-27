@@ -19,6 +19,7 @@
             saveOutExpert : saveOutExpert,           //保存选择的境外专家
             deleteAutoSelExpert : deleteAutoSelExpert,	//删除随机抽取的专家
             countMatchExperts : countMatchExperts,      //计算符合条件的专家
+            queryAutoExpert : queryAutoExpert,          //查询符合抽取条件的专家
         };
         return service;
                 
@@ -463,5 +464,36 @@
                 success:httpSuccess
             });
         }//E_countMatchExperts
+
+        //S_queryAutoExpert
+        function queryAutoExpert(vm){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expert/findReviewExpert",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(vm.conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm : vm,
+                    response : response,
+                    fn : function() {
+                        console.log(response.data);
+                    }
+                });
+            }
+            common.http({
+                vm : vm,
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }//E_queryAutoExpert
+
+
     }
 })();

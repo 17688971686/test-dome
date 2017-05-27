@@ -78,13 +78,61 @@
             expertReviewSvc.saveOutExpert(vm);
         }
 
-        //计算符合条件的专家，并缓存数据
+        //检查是否为正整数
+        function isUnsignedInteger(value){
+            if((/^(\+|-)?\d+$/.test(value)) && value>0 ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        /******************************  以下是专家抽取方法 ***********************************/
+        //封装专家抽取条件信息
+        function buildCondition(checkId){
+            if(vm.conditions.length > 0){
+                var validateResult = true;
+                vm.conditions.forEach(function (t, number) {
+                    if(checkId){
+                        if(angular.isUndefined(t.id) || t.id == ""){
+                            validateResult = false;
+                        }
+                    }
+                    t.workProgramId = vm.expertReview.workProgramId;
+                    t.maJorBig = $("#maJorBig"+t.sort).val();
+                    t.maJorSmall = $("#maJorSmall"+t.sort).val();
+                    t.expeRttype = $("#expeRttype"+t.sort).val();
+                    if($("#officialNum"+t.sort).val() && isUnsignedInteger($("#officialNum"+t.sort).val())){
+                        t.officialNum = $("#officialNum"+t.sort).val();
+                    }else{
+                        $("#errorsOfficialNum"+t.sort).html("必填，且为数字");
+                        validateResult = false;
+                    }
+                    if($("#alternativeNum"+t.sort).val() && isUnsignedInteger($("#alternativeNum"+t.sort).val())){
+                        t.alternativeNum = $("#alternativeNum"+t.sort).val();
+                    }else{
+                        $("#errorsAlternativeNum"+t.sort).html("必填，且为数字");
+                        validateResult = false;
+                    }
+                    if(validateResult){
+                        $("#errorsOfficialNum"+t.sort).html("");
+                        $("#errorsAlternativeNum"+t.sort).html("");
+                    }
+                });
+                return validateResult;
+            }else{
+                return false;
+            }
+
+
+        }
+        //计算符合条件的专家
         vm.countMatchExperts = function(sortIndex){
             expertReviewSvc.countMatchExperts(vm,sortIndex);
         }
 
+        //专家人数监听
         vm.checkIntegerValue = function(checkValue,idStr,idSort){
-            if(expertConditionSvc.isUnsignedInteger(checkValue)){
+            if(isUnsignedInteger(checkValue)){
                 $("#"+idStr+idSort).val(checkValue);
                 $("#errorsOfficialNum"+idSort).html("");
                 $("#errorsAlternativeNum"+idSort).html("");
@@ -155,28 +203,26 @@
                     msg : "当前项目已经进行整体专家方案的抽取，不能再修改方案！"
                 })
             }else{
-                expertConditionSvc.saveCondition(vm);
+                if(buildCondition(false)){
+                    expertConditionSvc.saveCondition(vm);
+                }else{
+                    common.alert({
+                        vm: vm,
+                        msg: "请先设置好条件再保存！",
+                        closeDialog: true
+                    })
+                }
             }
         }
 
         //显示随机抽取页面
         vm.showAutoExpertWin = function(){
-            var pass = true;
-            //遍历抽取条件，如果有未保存的，提示先保存
-            vm.conditions.forEach(function (t, number) {
-                if(angular.isUndefined(t.id) || t.id == ""){
-                    pass = false;
-                }
-            });
-            if(pass){
+            if(buildCondition(true)){
+                expertReviewSvc.queryAutoExpert(vm);
+            }else {
                 common.alert({
-                    vm : vm,
-                    msg : "功能正在开发中！"
-                })
-            }else{
-                common.alert({
-                    vm : vm,
-                    msg : "请先保存编辑的抽取方案！"
+                    vm: vm,
+                    msg: "请先保存编辑的抽取方案！"
                 })
             }
         }
