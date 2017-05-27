@@ -24,4 +24,6 @@ public interface SysFileService {
 	public void deleteById(String sysFileId);
 	
 	PageModelDto<SysFileDto> get(ODataObj odataObj);
+	
+	public SysFileDto savePhoto(byte[] bytes, String fileName, String businessId, String module,String fileType );
 }

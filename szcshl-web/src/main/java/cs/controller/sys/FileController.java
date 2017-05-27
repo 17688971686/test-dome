@@ -61,6 +61,24 @@ public class FileController {
 		return sysFileDto;
 	}
 	
+	//@RequiresPermissions("file##post")
+	@RequestMapping(name = "头像上传", path = "uploadPhoto",method=RequestMethod.POST)	
+	public @ResponseBody SysFileDto uploadPhoto(HttpServletRequest request,@RequestParam("file")MultipartFile multipartFile,
+			@RequestParam(required = true)String businessId,String fileType,String module
+			) throws IOException{
+		SysFileDto sysFileDto = null;
+		String fileName = multipartFile.getOriginalFilename();	
+		
+		if(!multipartFile.isEmpty()){
+			sysFileDto = fileService.savePhoto(multipartFile.getBytes(), fileName, businessId, fileType,module);
+		}else{
+			logger.info("文件上传失败，无法获取文件信息！");
+			throw new IOException(Constant.ERROR_MSG);
+		}
+		
+		return sysFileDto;
+	}
+	
 	
 	@RequestMapping(name = "文件删除", path = "delete",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,8 @@ import cs.domain.expert.Expert;
 import cs.domain.expert.Expert_;
 import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
+import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
@@ -33,6 +36,8 @@ import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
 import cs.repository.repositoryImpl.expert.WorkExpeRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.sys.SysFileService;
 import cs.service.sys.UserServiceImpl;
 
 @Service
@@ -51,6 +56,11 @@ public class ExpertServiceImpl implements ExpertService {
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private SignRepo signRepo;
+    @Autowired
+	private SysFileRepo sysFileRepo;
+    
+    @Autowired
+    private SysFileService fileService;
 	
 	@Override
 	public PageModelDto<ExpertDto> get(ODataObj odataObj) {
@@ -107,6 +117,16 @@ public class ExpertServiceImpl implements ExpertService {
 			for (ProjectExpe projectExpe : projectList) {
 				projectExpeRepo.delete(projectExpe);
 			}
+			
+			Criteria criteria=sysFileRepo.getSession().createCriteria(SysFile.class);
+			criteria.add(Restrictions.eq(SysFile_.businessId.getName(), id));
+			List<SysFile> sysFileList=criteria.list();
+			if(sysFileList.size()!=0){
+				SysFile sysFile=sysFileList.get(0);
+				//删除关联的头像
+				fileService.deleteById(sysFile.getSysFileId());
+			}
+			
 			expertRepo.delete(expert);
 			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));
 		}			
@@ -116,6 +136,14 @@ public class ExpertServiceImpl implements ExpertService {
 	@Transactional
 	public void deleteExpert(String[] ids) {
 		for (String id : ids) {
+			Criteria criteria=sysFileRepo.getSession().createCriteria(SysFile.class);
+			criteria.add(Restrictions.eq(SysFile_.businessId.getName(), id));
+			List<SysFile> sysFileList=criteria.list();
+			if(sysFileList.size()!=0){
+				SysFile sysFile=sysFileList.get(0);
+				fileService.deleteById(sysFile.getSysFileId());
+			}
+			//删除关联的头像
 			this.deleteExpert(id);
 		}
 		logger.info("删除专家");

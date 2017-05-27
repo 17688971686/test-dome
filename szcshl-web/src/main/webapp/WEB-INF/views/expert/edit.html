@@ -3,6 +3,25 @@
 <link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<style>
+#uploadBox .k-upload-status {
+	display: none;
+}
+
+#uploadBox .k-header {
+	background: transparent;
+	border: 0px;
+}
+
+#uploadBox em {
+	display: none;
+}
+
+#uploadBox .k-dropzone {
+	padding: 0px;
+	margin: 0px;
+}
+</style>
 
 <div class="well well-sm" style="background: white;">
 	<ol class="breadcrumb">	 
@@ -41,9 +60,17 @@
 				ng-model="vm.model.birthDay" data-val-date="必须为日期" data-val="true" data-val-required="必填">
 				<span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
 			</td>
-			<td width="121" colspan="2" rowspan="4" style="text-align: center;">
-				<img name="" src="" width="121" height="148" alt="" />
-			</td>
+			
+			<td width="121" colspan="2" rowspan="4" >
+				<p style="text-align: left;" class="text-danger" >上传头像：</p>
+				<div style="text-align: center;">
+					<img name="" id="img" src="" width="121" height="148" alt="" />
+				</div>
+				<div style="text-align: center;margin-top: 5px;" id="uploadBox" >
+					<input name="file" id="file" type="file" ng-show="vm.isUpload" />
+				</div>
+				
+			</td> 
 		</tr>
 		<tr>
 			<td align="center" class="formAlignRight">身份证号</td>
@@ -371,3 +398,5 @@
 	</div>
 	<!-- E 项目经历弹窗 -->
 </div>
+
+

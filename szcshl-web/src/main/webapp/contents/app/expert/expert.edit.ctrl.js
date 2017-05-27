@@ -11,14 +11,18 @@
         vm.title = '专家信息录入';
         vm.isuserExist=false;
         vm.isHide=true;
+        vm.uploadBtnName="选择头像";
+        vm.isUpload=false;
         vm.id = $state.params.expertID;     
         
         if (vm.id) {
-            vm.isUpdate = true;
+        	vm.isUpload = true;
             vm.title = '更新专家';
             vm.isHide=false;
             vm.expertID=vm.id;
+            vm.uploadBtnName="修改头像";
             expertSvc.getExpertById(vm);
+            expertSvc.getPhotoByExpertId(vm);
         }
         
         vm.create=function(){
@@ -75,6 +79,11 @@
         
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
+        }
+        
+        activate();
+        function activate() {
+        	expertSvc.initUpload(vm);       	
         }
     }
 })();

@@ -20,7 +20,10 @@
 			repeatGrid : repeatGrid,		//重复专家查询
 			updateAudit : updateAudit,		//专家评审
 			toAudit : toAudit,				//由个状态回到审核状态
-			auditTo : auditTo				//由审核状态去到各个状态
+			auditTo : auditTo,				//由审核状态去到各个状态
+			initUpload : initUpload,         //头像上传 
+			getPhotoByExpertId : getPhotoByExpertId
+			
 		};
 		return service;				
 		
@@ -118,6 +121,7 @@
 							vm.model.expertID=response.data.expertID;						
 							vm.isUpdate=true;
 							vm.showBt=true;	
+							vm.isUpload=true;	
 							vm.isSubmit = false;	
 							common.alert({
 								vm : vm,
@@ -164,7 +168,29 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//end#getExpertById								
+		}//end#getExpertById	
+		
+		// begin#getPhotoById
+		function getPhotoByExpertId(vm) {
+			var httpOptions = {
+					method : 'get',
+					url: common.format(rootPath +"/file"+ "?$filter=businessId eq '{0}'", vm.id)
+			}
+			var httpSuccess = function success(response) {
+				console.log(response.data.value[0].fileUrl);
+				if(response.data.value.length>0){
+					$("#img").attr("src","../"+response.data.value[0].fileUrl);
+					vm.sysFileId=response.data.value[0].sysFileId;
+					console.log(vm.sysFileId);
+				}
+			} 
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}//end#getPhotoById								
 		
 		// begin#grid
 		function grid(vm) {
@@ -611,6 +637,86 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//end updateAudit				
+		}//end updateAudit	
+		
+		
+		
+		//头像上传
+		//S_initUpload
+		function initUpload(vm){
+			var options={
+				onUpload:function(e){
+					e.data={businessId:vm.id,fileType:e.files[0].extension,module:'expert'}
+				},
+				onSelect:function(e){
+                    for (var i = 0; i < e.files.length; i++) {
+                        var file = e.files[i].rawFile;
+
+                        if (file) {
+                            var reader = new FileReader();
+                            reader.onloadend = function () {
+                            	$("#img").attr("src",this.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+				},
+				onSuccess:function(e){
+					var files = e.files;	        		                
+	                if (e.operation == "upload") {
+	                	files[0].sysFileId = e.response.sysFileId;
+	                	common.alert({ 
+							vm : vm,
+							msg : "上传成功"
+						})		
+	                }
+                },
+			}			
+			$("#file").kendoUpload({
+
+				async: {
+		            saveUrl: rootPath + "/file/uploadPhoto",
+		            removeUrl: rootPath + "/file/delete",
+		            autoUpload: false
+		            
+		        },
+		        validation: {
+                    allowedExtensions: [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
+                },
+		        select: function(e){
+		        	if(options.onSelect){
+		        		options.onSelect(e)
+		        		$.each(e.files, function (index, value) {
+		        			console.log(value);
+		                });
+		        	}
+		        },
+		        upload: function(e){
+		        	if(options.onUpload){
+		        		options.onUpload(e)
+		        	}else{
+		        		var files = e.files;
+		        		console.log(e.response)
+		        	}
+		        },
+		        success: function(e){
+		        	if(options.onSuccess){
+		        		options.onSuccess(e)
+		        	}else{
+		        		var files = e.files;	        		                
+		                if (e.operation == "upload") {
+		                	files[0].sysFileId = e.response.sysFileId;	                	
+		                }
+		        	}
+		        },
+		        showFileList: false,
+		    	localization:{
+		    		select: vm.uploadBtnName
+		    	}
+			});
+			
+		}//E_initUpload
+		
+
 	}
 })();
