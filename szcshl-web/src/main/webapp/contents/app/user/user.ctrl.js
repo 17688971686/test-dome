@@ -39,7 +39,7 @@
         };
         //查询
         vm.queryUser = function(){
-        	userSvc.queryUser();
+        	userSvc.queryUser(vm);
         }
         activate();
         function activate() {

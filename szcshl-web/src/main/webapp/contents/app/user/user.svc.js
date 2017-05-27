@@ -270,7 +270,6 @@
 
         // begin#grid
         function grid(vm) {
-
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
@@ -448,7 +447,7 @@
 
         //查询
         function queryUser(vm){
-        	vm.gridOptions.dataSource.read();	
+            vm.gridOptions.dataSource.read();
         }
         // begin common fun
         function getZtreeChecked() {

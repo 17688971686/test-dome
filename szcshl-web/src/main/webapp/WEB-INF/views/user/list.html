@@ -15,8 +15,6 @@
 	    	<input type="text" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入">
 	    	<span class="help-inline" style="margin-left:10px;">电话：</span>
 	    	<input type="text" ng-model="vm.model.userPhone" operator="eq" name="userPhone" id="userPhone" placeholder="请输入">
-	    	<span class="help-inline" style="margin-left:10px;">性别：</span>
-	    	<input type="text" ng-model="vm.model.userSex" operator="eq" name="userSex" id="userSex" placeholder="请输入">	    			    		
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a>
 	    
        	  <@shiro.hasPermission name="user##post"> 
