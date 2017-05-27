@@ -167,6 +167,19 @@ public class AbstractRepository<T,ID extends Serializable> implements IRepositor
 	}
 
 	@Override
+	public List<T> findBySql(HqlBuilder hqlBuilder) {
+		NativeQuery<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),this.getPersistentClass());
+		return setParamsToQuery2(q,hqlBuilder).list();
+	}
+
+    @Override
+    public int countBySql(HqlBuilder hqlBuilder) {
+        NativeQuery<?> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString());
+        Object countValue = setParamsToQuery(q,hqlBuilder).getSingleResult();
+        return countValue == null?0:Integer.valueOf(countValue.toString());
+    }
+
+    @Override
 	public int executeHql(HqlBuilder hqlBuilder) {
 		Query<?> q = setParamsToQuery(this.getCurrentSession().createQuery(hqlBuilder.getHqlString()),hqlBuilder);
 		int total = q.executeUpdate();

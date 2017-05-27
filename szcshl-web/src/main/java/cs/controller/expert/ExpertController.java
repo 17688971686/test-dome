@@ -52,11 +52,16 @@ public class ExpertController {
 		return pageModelDto;
 	}
 
-    @RequiresPermissions("expertReview#findReviewExpert#post")
+	@RequestMapping(name = "专家统计", path = "countReviewExpert", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer countReviewExpert(@RequestBody ExpertSelConditionDto epSelCondition) {
+		return expertService.countExpert(epSelCondition);
+	}
+
     @RequestMapping(name = "专家抽取", path = "findReviewExpert", method = RequestMethod.POST)
     @ResponseBody
-    public List<ExpertDto> findReviewExpert(@RequestBody ExpertSelConditionDto epSelCondition) {
-		List<ExpertDto> pageModelDto = expertService.findExpert(epSelCondition);
+    public List<ExpertDto> findReviewExpert(@RequestBody ExpertSelConditionDto[] paramArrary) {
+		List<ExpertDto> pageModelDto = expertService.findExpert(paramArrary);
         return pageModelDto;
     }
 

@@ -8,10 +8,11 @@
     function expertReview($location, expertReviewSvc,expertConditionSvc,$state) {
         var vm = this;
         vm.title = '选择专家';
-        vm.isAutoSelectExpert = true;
-        vm.conditionIndex = 1;  //条件号
-        vm.conditions = new Array();     //条件对象
-        vm.autoExpertMap = {};          //随机抽取专家缓存
+        vm.isAutoSelectExpert = true;       //专家是否已经抽取
+        vm.selExpertConfirm = false;        //抽取的专家是否已经确认
+        vm.conditionIndex = 1;              //条件号
+        vm.conditions = new Array();        //条件对象
+        vm.autoExpertMap = {};              //随机抽取专家
         vm.expertReview = {};
         vm.workProgram = {};
         vm.expertReview.workProgramId = $state.params.workProgramId;		//这个是收文ID
@@ -103,6 +104,7 @@
             }else{
                 vm.condition = {};
                 vm.condition.sort = vm.conditionIndex;
+                vm.condition.workProgramId = vm.expertReview.workProgramId;
                 vm.conditions.push(vm.condition);
                 vm.conditionIndex++;
             }
@@ -180,13 +182,11 @@
         }
 
         //再次抽取专家
-        vm.resetAutoExpert = function(conditionId,isComfired){
-            if(angular.isUndefined(isComfired) || isComfired){
-                common.alert({
-                    vm : vm,
-                    msg : "第一次抽取的专家还没经过初步确认，不能进行二次抽取！"
-                })
-            }
+        vm.resetAutoExpert = function(){
+            common.alert({
+                vm : vm,
+                msg : "功能待开发！"
+            })
         }
 
         //确认已选的专家

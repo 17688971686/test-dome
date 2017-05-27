@@ -25,5 +25,7 @@ public interface ExpertService{
 
 	public List<ExpertDto> findAllRepeat();
 
-	List<ExpertDto> findExpert(ExpertSelConditionDto epSelCondition);
+	List<ExpertDto> findExpert(ExpertSelConditionDto[] epSelCondition);
+
+    Integer countExpert(ExpertSelConditionDto epSelCondition);
 }

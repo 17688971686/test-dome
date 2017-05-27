@@ -46,6 +46,11 @@
                             }else{
                                 vm.isAutoSelectExpert = false;
                             }
+                            if(vm.workProgram.isComfireResult && vm.workProgram.isComfireResult == 9){
+                                vm.isComfireResult = true;
+                            }else{
+                                vm.isComfireResult = false;
+                            }
                         }
                     }
                 });
@@ -103,6 +108,9 @@
                            response : response,
                            fn : function() {
                                vm.conditions = response.data;
+                               vm.conditions.forEach(function (t, number) {
+                                    t.workProgramId = vm.expertReview.workProgramId;
+                               });
                                common.alert({
                                    vm: vm,
                                    msg: "操作成功！",

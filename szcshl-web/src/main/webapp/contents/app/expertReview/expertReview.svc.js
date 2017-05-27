@@ -437,11 +437,14 @@
             vm.conditions.forEach(function (t, number) {
                 if(t.sort == sortIndex){
                     data = t;
+                    data.maJorBig = $("#maJorBig"+t.sort).val();
+                    data.maJorSmall = $("#maJorSmall"+t.sort).val();
+                    data.expeRttype = $("#expeRttype"+t.sort).val();
                 }
             });
             var httpOptions = {
                 method : 'post',
-                url : rootPath+"/expert/findReviewExpert",
+                url : rootPath+"/expert/countReviewExpert",
                 data : data
             }
             var httpSuccess = function success(response) {
@@ -449,9 +452,7 @@
                     vm:vm,
                     response:response,
                     fn:function() {
-                        vm.autoExpertMap[sortIndex] = response.data;
-                        $("#expertCount"+sortIndex).html(response.data.length);
-                        //console.log(response.data);
+                        $("#expertCount"+sortIndex).html(response.data);
                     }
                 });
             }

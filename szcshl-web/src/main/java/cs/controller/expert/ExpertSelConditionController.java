@@ -48,7 +48,7 @@ public class ExpertSelConditionController {
     @RequiresPermissions("expertSelCondition#saveConditionList#post")
     @RequestMapping(name = "创建记录", path = "saveConditionList", method = RequestMethod.POST)
     public @ResponseBody List<ExpertSelConditionDto> saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary) throws Exception{
-        return  expertSelConditionService.saveConditionList(paramArrary);
+        return  (paramArrary==null||paramArrary.length==0)?null:expertSelConditionService.saveConditionList(paramArrary);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)

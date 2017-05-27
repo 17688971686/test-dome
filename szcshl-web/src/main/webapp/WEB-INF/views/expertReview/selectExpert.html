@@ -71,8 +71,8 @@
                 </td>
                 <td align="center" ><span id="expertCount{{x.sort}}"></span></td>
                 <td align="center">
-                    <button class="btn btn-xs btn-primary" ng-show="x.id" ng-click="vm.countMatchExperts(x.sort)" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-gbp"></span>统计符合人数</button>
-                    <button class="btn btn-xs btn-primary" ng-show="x.isSelete == 9" ng-click="vm.resetAutoExpert(x.id,x.isComfireResult)" ng-disabled="vm.iscommit" ><span class="glyphicon glyphicon-remove"></span>再次抽取专家</button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.countMatchExperts(x.sort)" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-gbp"></span>统计符合人数</button>
+                    <button class="btn btn-xs btn-primary" ng-show="vm.workProgram.isSelete &&  vm.workProgram.isComfireResult" ng-click="vm.resetAutoExpert()" ng-disabled="vm.iscommit" ><span class="glyphicon glyphicon-remove"></span>再次抽取专家</button>
                 </td>
             </tr>
         </table>

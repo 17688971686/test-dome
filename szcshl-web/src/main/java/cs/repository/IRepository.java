@@ -46,6 +46,10 @@ public interface IRepository<T, ID> {
 	public int executeHql(HqlBuilder hqlBuilder);
 
 	public int executeSql(String sql);
+
+    List<T> findBySql(HqlBuilder hqlBuilder);
+
+    public int countBySql(HqlBuilder hqlBuilder);
 	
 	public int deleteById(String idPropertyName,String idValue);
 

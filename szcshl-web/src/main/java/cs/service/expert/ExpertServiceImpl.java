@@ -209,64 +209,98 @@ public class ExpertServiceImpl implements ExpertService {
 	}
 
     /**
-     * 专家抽取
-     * @param epSelCondition
+     * 专家抽取(与统计sql语句基本相同，目前先不整合)
+     * @param epSelConditions
      * @return
      */
     @Override
-    public List<ExpertDto> findExpert(ExpertSelConditionDto epSelCondition) {
-       /* 测试通过的sql语句
-       select * from CS_EXPERT ep
-        left join (
-                SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,
-                TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,
-                EXPERTID
-        FROM CS_EXPERT_REVIEW er
-        GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID
-        HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2
-        ) outep
-        on ep.EXPERTID = outep.EXPERTID
-
-        left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp where WP.ID = '72eed09b-9448-4ef2-bf66-bf867a67043f') lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY)
-        where (ep.STATE = '2' or ep.STATE = '3')
-        and outep.EXPERTID is null  --排除周满两次或者月满4次的专家
-        and lwp.ID is null --避归*/
-
+    public List<ExpertDto> findExpert(ExpertSelConditionDto[] epSelConditions) {
+        String workProgramId = epSelConditions[0].getWorkProgramId();
+        if(!Validate.isString(workProgramId)){
+            return null;
+        }
+        HqlBuilder hqlBuilder = HqlBuilder.create();
         StringBuffer sql = new StringBuffer();
         //1、专家规避：与项目建设单位相同单位的专家需要规避，同本项目方案编制单位的专家需要规避
-        sql.append(" {alias}.EXPERTID in (select ep.EXPERTID from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
-        sql.append(" where WP.ID = '"+epSelCondition.getWorkProgramId()+"') lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
+        sql.append(" select ep.EXPERTID from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
+        hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
+        hqlBuilder.setParam("workProgramId",workProgramId);
         //2、关联本周已抽取2次或者本月已抽取四次的专家
-        sql.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
-        sql.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,EXPERTID");
-        sql.append(" FROM CS_EXPERT_REVIEW er GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID ");
-        sql.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
-        sql.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
+        hqlBuilder.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
+        hqlBuilder.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,EXPERTID");
+        hqlBuilder.append(" FROM CS_EXPERT_REVIEW er GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID ");
+        hqlBuilder.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
+        hqlBuilder.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
         //3、排除本次已经选择的专家
-        sql.append(" left join CS_EXPERT_REVIEW erm on erm.EXPERTID = ep.EXPERTID and erm.WORKPROGRAMID = '"+epSelCondition.getWorkProgramId()+"' ");
+        hqlBuilder.append(" left join CS_EXPERT_REVIEW erm on erm.EXPERTID = ep.EXPERTID and erm.WORKPROGRAMID = :workProgramId2 ");
+        hqlBuilder.setParam("workProgramId2",workProgramId);
 
-        sql.append(" where (ep.STATE = '2' or ep.STATE = '3') ");
-        sql.append(" and lwp.ID is null " );    //排除单位相同的专家
-        sql.append(" and outep.EXPERTID is null ");  //排除已满抽取次数的专家
-        sql.append(" and ERM.EXPERTID is null  )");   //排除本次已经选择的专家
+        hqlBuilder.append(" where (ep.STATE = :state1 or ep.STATE = :state2 ) ");
+        hqlBuilder.setParam("state1",EnumExpertState.OFFICIAL.getValue()).setParam("state2",EnumExpertState.ALTERNATIVE.getValue());
+        hqlBuilder.append(" and lwp.ID is null " );    //排除单位相同的专家
+        hqlBuilder.append(" and outep.EXPERTID is null ");  //排除已满抽取次数的专家
+        hqlBuilder.append(" and ERM.EXPERTID is null  ");   //排除本次已经选择的专家
 
-        Criteria criteria = expertRepo.getExecutableCriteria();
-		criteria.add(Restrictions.sqlRestriction(sql.toString()));
-
-		//突出专业，大类
-		if(Validate.isString(epSelCondition.getMaJorBig())){
-            criteria.add(Restrictions.eq(Expert_.maJorBig.getName(),epSelCondition.getMaJorBig()));
-		}
-        //突出专业，小类
-        if(Validate.isString(epSelCondition.getMaJorSmall())){
-            criteria.add(Restrictions.eq(Expert_.maJorSmall.getName(),epSelCondition.getMaJorSmall()));
+        //拼接专家抽取条件
+        int totalLength = epSelConditions.length;
+        List<String> jorBig = new ArrayList<>(totalLength),jorSmall = new ArrayList<>(totalLength),rttype =new ArrayList<>(totalLength);
+        for(ExpertSelConditionDto obj:epSelConditions){
+            if(Validate.isString(obj.getMaJorBig())){
+                jorBig.add(obj.getMaJorBig());
+            }
+            if(Validate.isString(obj.getMaJorSmall())){
+                jorSmall.add(obj.getMaJorSmall());
+            }
+            if(Validate.isString(obj.getExpeRttype())){
+                rttype.add(obj.getExpeRttype());
+            }
         }
-        //专家类型
-        if(Validate.isString(epSelCondition.getExpeRttype())){
-            criteria.add(Restrictions.eq(Expert_.expeRttype.getName(),epSelCondition.getExpeRttype()));
+        if(jorBig.size() == 1){
+            hqlBuilder.append(" and ep.MAJORBIG = :maJorBig ").setParam("maJorBig",jorBig.get(0));
+        }else if(jorBig.size() > 1){
+            hqlBuilder.append(" and ep.MAJORBIG in ( ");
+            for(int i=0,l=jorBig.size();i<l;i++){
+                if(i==0){
+                    hqlBuilder.append(" :jorBig"+i);
+                }else{
+                    hqlBuilder.append(", :jorBig"+i);
+                }
+                hqlBuilder.setParam("jorBig"+i, jorBig.get(i));
+            }
+            hqlBuilder.append(" ) ");
         }
-        List<Expert> listExpert = criteria.list();
 
+        if(jorSmall.size() == 1){
+            hqlBuilder.append(" and ep.MAJORSMALL = :maJorSmall ").setParam("maJorSmall",jorSmall.get(0));
+        }else if(jorSmall.size() > 1){
+            hqlBuilder.append(" and ep.MAJORSMALL in ( ");
+            for(int i=0,l=jorSmall.size();i<l;i++){
+                if(i==0){
+                    hqlBuilder.append(" :jorSamll"+i);
+                }else{
+                    hqlBuilder.append(", :jorSamll"+i);
+                }
+                hqlBuilder.setParam("jorSamll"+i, jorSmall.get(i));
+            }
+            hqlBuilder.append(" ) ");
+        }
+
+        if(rttype.size() == 1){
+            hqlBuilder.append(" and ep.EXPERTTYPE = :rttype ").setParam("rttype",jorBig.get(0));
+        }else if(rttype.size() > 1){
+            hqlBuilder.append(" and ep.EXPERTTYPE in ( ");
+            for(int i=0,l=rttype.size();i<l;i++){
+                if(i==0){
+                    hqlBuilder.append(" :rttype"+i);
+                }else{
+                    hqlBuilder.append(", :rttype"+i);
+                }
+                hqlBuilder.setParam("rttype"+i, rttype.get(i));
+            }
+            hqlBuilder.append(" ) ");
+        }
+
+        List<Expert> listExpert = expertRepo.findBySql(hqlBuilder);
         List<ExpertDto> listExpertDto = new ArrayList<>();
         if(listExpert != null && listExpert.size() > 0){
             for (Expert item : listExpert) {
@@ -277,5 +311,48 @@ public class ExpertServiceImpl implements ExpertService {
         }
         return listExpertDto;
     }
+
+	/**
+	 * 根据抽取条件，统计符合条件的专家
+	 * @param epSelCondition
+	 * @return
+	 */
+	@Override
+	public Integer countExpert(ExpertSelConditionDto epSelCondition) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select count(ep.EXPERTID) from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
+        hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
+        hqlBuilder.setParam("workProgramId",epSelCondition.getWorkProgramId());
+        //2、关联本周已抽取2次或者本月已抽取四次的专家
+        hqlBuilder.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
+        hqlBuilder.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,EXPERTID");
+        hqlBuilder.append(" FROM CS_EXPERT_REVIEW er GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID ");
+        hqlBuilder.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
+        hqlBuilder.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
+        //3、排除本次已经选择的专家
+        hqlBuilder.append(" left join CS_EXPERT_REVIEW erm on erm.EXPERTID = ep.EXPERTID and erm.WORKPROGRAMID = :workProgramId2 ");
+        hqlBuilder.setParam("workProgramId2",epSelCondition.getWorkProgramId());
+
+        hqlBuilder.append(" where (ep.STATE = :state1 or ep.STATE = :state2 ) ");
+        hqlBuilder.setParam("state1",EnumExpertState.OFFICIAL.getValue()).setParam("state2",EnumExpertState.ALTERNATIVE.getValue());
+        hqlBuilder.append(" and lwp.ID is null " );    //排除单位相同的专家
+        hqlBuilder.append(" and outep.EXPERTID is null ");  //排除已满抽取次数的专家
+        hqlBuilder.append(" and ERM.EXPERTID is null  ");   //排除本次已经选择的专家
+
+        //加上选择的条件
+        //突出专业，大类
+        if(Validate.isString(epSelCondition.getMaJorBig())){
+            hqlBuilder.append(" and ep.MAJORBIG = :maJorBig ").setParam("maJorBig",epSelCondition.getMaJorBig());
+        }
+        //突出专业，小类
+        if(Validate.isString(epSelCondition.getMaJorSmall())){
+            hqlBuilder.append(" and ep.MAJORSMALL = :maJorSmall ").setParam("maJorSmall",epSelCondition.getMaJorSmall());
+        }
+        //专家类型
+        if(Validate.isString(epSelCondition.getExpeRttype())){
+            hqlBuilder.append(" and ep.EXPERTTYPE = :rttype ").setParam("rttype",epSelCondition.getExpeRttype());
+        }
+		return expertRepo.countBySql(hqlBuilder);
+	}
 
 }
