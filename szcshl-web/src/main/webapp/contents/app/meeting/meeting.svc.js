@@ -189,8 +189,9 @@
 				}
 			});
 
-			// End:dataSource
-			  //S_序号
+			// End:dataSourc
+			
+			 //S_序号
             var  dataBound=function () {  
                 var rows = this.items();  
                 var page = this.pager.page() - 1;  
@@ -217,7 +218,14 @@
 						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
 					},
-					
+					{  
+					    field: "rowNumber",  
+					    title: "序号",  
+					    width: 70,
+					    filterable : false,
+					    template: "<span class='row-number'></span>"  
+					 }
+					,
 					{
 						field : "num",
 						title : "会议室编号",

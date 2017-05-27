@@ -15,11 +15,14 @@
             createUser: createUser,
             deleteUser: deleteUser,
             updateUser: updateUser,
-            getOrg: getOrg
+            getOrg: getOrg,
+            queryUser:queryUser
         };
 
         return service;
-
+        
+       
+        
         // begin#updateUser
         function updateUser(vm) {
             common.initJqValidation();
@@ -271,7 +274,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user+"/fingByOData"),
+                transport: common.kendoGridConfig().transport(url_user+"/fingByOData",$("#usersform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -294,7 +297,19 @@
             });
 
             // End:dataSource
-
+            
+            //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
             // Begin:column
             var columns = [
                 {
@@ -309,17 +324,25 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
+                {  
+				    field: "rowNumber",  
+				    title: "序号",  
+				    width: 70,
+				    filterable : false,
+				    template: "<span class='row-number'></span>"  
+				 }
+				,
                 {
                     field: "loginName",
                     title: "登录名",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "displayName",
                     title: "显示名",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "userSex",
@@ -417,11 +440,16 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound:dataBound,
                 resizable: true
             };
 
         }// end fun grid
 
+        //查询
+        function queryUser(vm){
+        	vm.gridOptions.dataSource.read();	
+        }
         // begin common fun
         function getZtreeChecked() {
             var treeObj = $.fn.zTree.getZTreeObj("zTree");

@@ -38,6 +38,10 @@
                 vm.del(idStr);
             }   
        }
+        //查询
+        vm.queryOrg = function(){
+        	orgSvc.queryOrg(vm);
+        }
         activate();
         function activate() {
             orgSvc.grid(vm);

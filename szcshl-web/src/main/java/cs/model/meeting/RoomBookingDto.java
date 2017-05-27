@@ -31,6 +31,8 @@ public class RoomBookingDto extends BaseDto{
 	private String content;//主要内容
 	private String remark;//备注
 	private String workProgramId;//工作方案Id
+	private String stageOrg;//评审部门
+	
 	public String getId() {
 		return id;
 	}
@@ -117,6 +119,13 @@ public class RoomBookingDto extends BaseDto{
 	public void setWorkProgramId(String workProgramId) {
 		this.workProgramId = workProgramId;
 	}
+	public String getStageOrg() {
+		return stageOrg;
+	}
+	public void setStageOrg(String stageOrg) {
+		this.stageOrg = stageOrg;
+	}
+	
 	
 	
 	

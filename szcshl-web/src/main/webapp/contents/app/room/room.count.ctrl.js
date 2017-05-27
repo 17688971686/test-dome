@@ -49,7 +49,7 @@
         function activate() {
             roomCountSvc.grid(vm);
             roomCountSvc.roomList(vm);
-           
+            roomCountSvc.findAllOrg(vm);
         }
     }
 })();

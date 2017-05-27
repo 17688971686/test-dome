@@ -92,7 +92,8 @@
 			common.initJqValidation($('#stageForm'));
 			var isValid = $('#stageForm').valid();
 			if (isValid) {
-				vm.model.workProgramId=vm.work.id;
+				vm.model.workProgramId = vm.work.id;
+				vm.model.stageOrg = vm.work.reviewOrgName;
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/room/saveRoom",

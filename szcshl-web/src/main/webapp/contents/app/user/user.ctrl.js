@@ -37,7 +37,10 @@
                 vm.del(idStr);
             }
         };
-
+        //查询
+        vm.queryUser = function(){
+        	userSvc.queryUser();
+        }
         activate();
         function activate() {
             userSvc.grid(vm);

@@ -7,6 +7,7 @@
 	function roomCount($http,$compile) {	
 		var url_roomCount = rootPath +"/roomCount";
 		var url_room = rootPath + "/room";
+		var url_user = rootPath + "/user";
 		var url_back = '#/roomCount';
 		var url_user=rootPath +'/user';
 			
@@ -14,6 +15,7 @@
 			grid : grid,
 			queryRoomCount:queryRoomCount,//查询
 			roomList : roomList,
+			findAllOrg:findAllOrg,//查询部门列表
 			
 		};		
 		return service;	
@@ -21,6 +23,25 @@
 		function queryRoomCount(vm){
 			vm.gridOptions.dataSource.read();
 		}
+		
+		//S_查询部门列表
+		function findAllOrg(vm){
+			var httpOptions = {
+					method: 'get',
+					url: common.format(url_user + "/getOrg")
+			}
+			var httpSuccess = function success(response) {
+				vm.orglist = {};
+				vm.orglist = response.data;
+			}
+			common.http({
+				vm: vm,
+				$http: $http,
+				httpOptions: httpOptions,
+				success: httpSuccess
+			});
+		}
+		//E_查询部门列表
 		
 		//S_查询所有会议室名称
 		function roomList(vm){
@@ -135,7 +156,6 @@
 						width : 100,						
 						filterable : false
 					},
-					
 
 			];
 			// End:column
@@ -149,12 +169,8 @@
 					dataBound :dataBound,
 					resizable: true
 				};
-		
 			
 		}// end fun grid
-
-		
-
 
 	}
 	

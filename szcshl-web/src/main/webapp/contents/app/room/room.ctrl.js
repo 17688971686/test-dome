@@ -21,6 +21,10 @@
         vm.addRoom = function(){
         	roomSvc.addRoom(vm);
         }
+        //结束时间不能小开始时间
+        vm.startEnd = function(){
+        	roomSvc.startEnd(vm);
+        }
        
         vm.onWClose = function(){
         	//window.parent.$("#customEditorTemplate").data("kendoWindow").close();

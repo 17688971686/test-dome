@@ -44,6 +44,19 @@
 			});
 
 			// End:dataSource
+			
+			  //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
 
 			// Begin:column
 			var columns = [
@@ -58,7 +71,16 @@
 						width : 40,
 						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 						
-					},  {
+					},  
+					 {  
+					    field: "rowNumber",  
+					    title: "序号",  
+					    width: 70,
+					    filterable : false,
+					    template: "<span class='row-number'></span>"  
+					 }
+					,
+					{
 						field : "coName",
 						title : "单位名称",
 						width : 260,						
@@ -89,12 +111,6 @@
 						filterable : false
 					},
 					{
-						field : "coFax",
-						title : "传真",
-						width : 160,
-						filterable : false
-					},
-					{
 						field : "coSynopsis",
 						title : "单位简介",
 						width : 160,						
@@ -106,12 +122,6 @@
 						width : 160,						
 						filterable : false
 					},
-					/*{
-						field : "coDeptName",
-						title : "直属部门名称",
-						width : 200,						
-						filterable : false
-					},*/
 					 
 					{
 						field : "",
@@ -134,6 +144,7 @@
 					pageable : common.kendoGridConfig().pageable,
 					noRecords:common.kendoGridConfig().noRecordMessage,
 					columns : columns,
+					dataBound:dataBound,
 					resizable: true
 				};
 			
