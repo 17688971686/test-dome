@@ -390,9 +390,11 @@
                         }
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;
+                            vm.dispatchDoc = vm.model.dispatchDocDto;
                         }
                         if(vm.model.fileRecordDto){
                             vm.show_filerecord = true;
+                            vm.fileRecord = vm.model.fileRecordDto;
                         }
                     }
                 })

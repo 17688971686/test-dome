@@ -26,12 +26,9 @@
 		return service;
 		
 		function editRoom(vm){
-			alert($("#rbName").val());
 			var model = vm.data.models[0];
 			var rb = {};
 			rb.rbName=model.rbName;
-			
-			alert(rb.rbName);
 			
 			common.initJqValidation($('#formRoom'));
 			var isValid = $('#formRoom').valid();
@@ -45,14 +42,11 @@
 					url : rootPath + "/room/updateRoom",
 					data : vm.model
 				}
-				var httpSuccess = function success(response) {
-					
+				var httpSuccess = function success(response) {					
 					common.requestSuccess({
 						vm : vm,
 						response : response,
 						fn : function() {
-						//	cleanValue();
-						//window.parent.$("#roomWindow").data("kendoWindow").close();
 							common.alert({
 								vm : vm,
 								msg : "操作成功",

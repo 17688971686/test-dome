@@ -1,17 +1,16 @@
 package cs.service.flow;
 
-import cs.common.ICurrentUser;
-import cs.common.cache.CacheFactory;
-import cs.common.cache.DefaultCacheFactory;
-import cs.common.cache.ICache;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.Validate;
-import cs.model.PageModelDto;
-import cs.model.flow.FlowDto;
-import cs.model.flow.FlowHistoryDto;
-import cs.model.flow.TaskDto;
-import cs.repository.odata.ODataObj;
-import org.activiti.engine.*;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipInputStream;
+
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -36,11 +35,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipInputStream;
+import cs.common.ICurrentUser;
+import cs.common.cache.CacheFactory;
+import cs.common.cache.DefaultCacheFactory;
+import cs.common.cache.ICache;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.Validate;
+import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
+import cs.model.flow.FlowHistoryDto;
+import cs.model.flow.TaskDto;
+import cs.repository.odata.ODataObj;
 
 @Service
 public class FlowServiceImpl implements FlowService{
@@ -60,10 +65,11 @@ public class FlowServiceImpl implements FlowService{
 	
 	@Override
 	public List<FlowHistoryDto> convertHistory(String processInstanceId) {
-		List<HistoricActivityInstance> list = processEngine.getHistoryService().
-	    		createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).list();  
+		List<HistoricActivityInstance> list = processEngine.getHistoryService().createHistoricActivityInstanceQuery()
+				.processInstanceId(processInstanceId).list(); 
+		
 		List<Comment> cmlist = taskService.getProcessInstanceComments(processInstanceId);
-	
+			
 		if(list != null){			 						
 			List<FlowHistoryDto> reultList = new ArrayList<FlowHistoryDto>(list.size());
 			list.forEach(h ->{
@@ -376,7 +382,7 @@ public class FlowServiceImpl implements FlowService{
 		pageModelDto.setCount(total);
 		
 		return pageModelDto;
-	}
+	}		
 
 	@Override
 	public PageModelDto<TaskDto> queryETasks(ODataObj odataObj) {

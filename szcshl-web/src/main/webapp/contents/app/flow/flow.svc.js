@@ -61,7 +61,7 @@
 					title : "开始时间",
 					width : 120,
 					filterable : false,
-					template: "#=  (startTime == null)? '' : kendo.toString(new Date(startTime), 'yyyy-MM-dd hh:mm:ss') #"	
+					template: "#=  (startTime == null)? '' : kendo.toString(new Date(startTime), 'yyyy-MM-dd HH:mm:ss') #"	
 				},											
 				{
 					field : "",
@@ -70,7 +70,7 @@
 					filterable : false,
 					template: function(item) {
 						if(item.endTime){
-							return kendo.toString(new Date(item.endTime), 'yyyy-MM-dd hh:mm:ss');
+							return kendo.toString(new Date(item.endTime), 'yyyy-MM-dd HH:mm:ss');
 						}
 						else{
 							return " ";

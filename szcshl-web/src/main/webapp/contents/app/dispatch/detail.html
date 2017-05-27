@@ -15,11 +15,7 @@
 	  
 	  <td rowspan="2" style="width:150px;" class="text-center">校对人</td>
       <td rowspan="2">
-      	<select ng-model="vm.dispatchDoc.proofreadId"  name="proofreadId" id="proofreadId" class="form-control input-sm " data-val="true" data-val-required="必填" >
-  			<option value="">请选择</option>
-			<option ng-repeat="x in vm.proofread" value="{{x.id}}">{{x.loginName}}</option>
-		</select>			
-	    <span data-valmsg-for="proofreadId" data-valmsg-replace="true" class="errors"></span>
+      	{{vm.dispatchDoc.proofreadName}}
 	  </td>
 	   
 	  <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>

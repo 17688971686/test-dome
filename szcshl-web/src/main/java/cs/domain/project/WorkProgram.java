@@ -1,23 +1,15 @@
 package cs.domain.project;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
-
 import cs.domain.DomainBase;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelCondition;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 工作方案

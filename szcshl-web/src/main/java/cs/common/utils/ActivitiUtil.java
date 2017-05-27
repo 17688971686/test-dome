@@ -1,7 +1,10 @@
 package cs.common.utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.activiti.engine.history.HistoricVariableInstance;
 
 import cs.common.Constant;
 
@@ -82,6 +85,21 @@ public class ActivitiUtil {
 	    }  
 	    return sb.toString();  
 	}  
+	
+	public static String getUserByVariables(Map<String,Object> valiables){
+		if(valiables != null){
+			if(valiables.get("users") != null && Validate.isString(valiables.get("users").toString())){
+				return valiables.get("users").toString();
+			}else if(valiables.get("muser") != null && Validate.isString(valiables.get("muser").toString())){
+				return valiables.get("muser").toString();
+			}else if(valiables.get("auser") != null && Validate.isString(valiables.get("auser").toString())){
+				return valiables.get("auser").toString();
+			}
+		}
+		
+		return "";
+	}
+	
 	
 	public static String getProcessBusinessKey(String oldKey){
 		if(oldKey.indexOf(Constant.FLOW_LINK_SYMBOL) > -1){

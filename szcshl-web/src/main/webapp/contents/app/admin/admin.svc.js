@@ -74,7 +74,7 @@
                      filterable : false,
                      template: function(item) {
  						if(item.createDate){
- 							return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd hh:mm:ss');
+ 							return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
  						}
  						else{
  							return " ";
@@ -177,7 +177,7 @@
                     filterable : false,
                     template: function(item) {
                         if(item.createDate){
-                            return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd hh:mm:ss');
+                            return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
                         }
                         else{
                             return " ";
@@ -191,7 +191,7 @@
                     filterable : false,
                     template: function(item) {
                         if(item.endDate){
-                            return kendo.toString(new Date(item.endDate), 'yyyy-MM-dd hh:mm:ss');
+                            return kendo.toString(new Date(item.endDate), 'yyyy-MM-dd HH:mm:ss');
                         }else{
                             return " ";
                         }
