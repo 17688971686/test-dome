@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
+import cs.domain.external.Dept_;
 import cs.domain.external.OfficeUser;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
@@ -55,6 +58,11 @@ public class DeptServiceImpl implements DeptService {
 	@Override
 	@Transactional
 	public void save(DeptDto record) {
+		Criteria criter =deptRepo.getExecutableCriteria();
+		criter.add(Restrictions.eq(Dept_.deptName.getName(), record.getDeptName()));
+		List<Dept> depts = criter.list();
+		if(depts.isEmpty()){
+		
 		Dept dept = new Dept(); 
 		BeanCopierUtils.copyProperties(record, dept); 
 		Date now = new Date();
@@ -65,6 +73,10 @@ public class DeptServiceImpl implements DeptService {
 		dept.setDeptId(UUID.randomUUID().toString());
 		dept.setStatus(EnumState.NORMAL.getValue());
 		deptRepo.save(dept);
+		logger.info(String.format("创建办事处,办事处名称:%s", record.getDeptName()));
+		}else{
+			throw new IllegalArgumentException(String.format("办事处名称：%s 已经存在,请重新输入！", record.getDeptName()));
+		}
 	}
 
 	@Override

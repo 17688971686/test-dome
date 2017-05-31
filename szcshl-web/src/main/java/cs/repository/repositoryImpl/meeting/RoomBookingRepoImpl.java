@@ -9,7 +9,9 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import cs.common.HqlBuilder;
 import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBooking_;
 import cs.repository.AbstractRepository;
 
 @Repository
@@ -51,8 +53,13 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         //增加一个星期，才是我们中国人理解的本周日的日期
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date sunday=cal.getTime();
+        HqlBuilder hql= HqlBuilder.create();
+//        hql.append(" from "+RoomBooking.class.getSimpleName()+" where "+RoomBooking_.rbDay.getName());
+//        hql.append(" between rbDay").setParam("rbDay", monday);
+//        hql.append(" and :rbDay").setParam("rbDay", sunday);
         Criteria criteria =getExecutableCriteria();
         List<RoomBooking> roomList= criteria.add(Restrictions.between("rbDay", monday, sunday)).list();
+        //List<RoomBooking> roomlist =roomBookingRepo.findByHql(hql);
 		return roomList;
 	}
 

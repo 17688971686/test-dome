@@ -3,6 +3,7 @@ package cs.service.meeting;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -65,8 +66,22 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Override
 	@Transactional
 	public List<RoomBooking> findAll() {
-		List<RoomBooking> rb = roomBookingRepo.thisWeekRoomStage();
-		return rb ;
+		Calendar cal =Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        //获取本周一的日期
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        Date  monday=cal.getTime();
+        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        //增加一个星期，才是我们中国人理解的本周日的日期
+        cal.add(Calendar.WEEK_OF_YEAR, 1);
+        Date sunday=cal.getTime();
+        HqlBuilder hql= HqlBuilder.create();
+        hql.append(" from "+RoomBooking.class.getSimpleName()+" where "+RoomBooking_.rbDay.getName());
+        hql.append(" between rbDay").setParam("rbDay", monday);
+        hql.append(" and :rbDay").setParam("rbDay", sunday);
+        List<RoomBooking> roomlist =roomBookingRepo.findByHql(hql);
+		return roomlist;
 	}
 	//本周全部会议安排
 	@Override
@@ -151,6 +166,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				RoomBooking rb = new RoomBooking();
 				BeanCopierUtils.copyProperties(roomBookingDto, rb);
 				rb.setId(UUID.randomUUID().toString());
+				Date days = roomBookingDto.getRbDay();
+				DateFormat datef = new SimpleDateFormat("yyyy-MM-dd");
+				String strdate = datef.format(days);
+				String day=GetWeekUtils.getWeek(days);
+				rb.setRbDate(strdate+"("+day+")");//星期几
 				Date now = new Date();
 				rb.setCreatedDate(now);
 				rb.setModifiedDate(now);
@@ -205,7 +225,6 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Override
 	@Transactional
 	public void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto) {
-		//判断会议名称是否存在
 		Criteria criteria =	roomBookingRepo.getSession().createCriteria(RoomBooking.class);	
 		criteria.add(Restrictions.eq("rbName", roomDto.getRbName()));
 		List<RoomBooking>  room = criteria.list();	
@@ -225,13 +244,20 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				RoomBooking rb = new RoomBooking();
 				BeanCopierUtils.copyProperties(roomDto, rb);
 				rb.setId(UUID.randomUUID().toString());
+				Date days = roomDto.getRbDay();
+				DateFormat dateformaf= new SimpleDateFormat("yyyy-MM-dd");
+				String strdate = dateformaf.format(days);
+				String stageday=GetWeekUtils.getWeek(days);
+				rb.setRbDate(strdate+"("+stageday+")");//星期几
+				String stageProject=roomDto.getStageProject();
+				rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
+				
 				Date now = new Date();
 				rb.setCreatedDate(now);
 				rb.setModifiedDate(now);
 				rb.setCreatedBy(currentUser.getLoginName());
 				rb.setModifiedBy(currentUser.getLoginName());
 				roomBookingRepo.save(rb);
-				//"ea31bbab-35ae-49d8-82b4-58f193f4a237"
 				WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
 				if(workProgram != null){
 					Date rbDay = roomDto.getRbDay();

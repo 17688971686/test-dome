@@ -94,7 +94,7 @@ public class RoomBookingController {
 	public void exports(HttpServletRequest req,HttpServletResponse resp){
 		try {
 			Workbook wb=new HSSFWorkbook();
-			String headers[]={"会议名称","会议日期","会议开始时间","会议结束时间","会议预定人","会议主持人","会议地点"};
+			String headers[]={"会议名称","评审项目","会议开始时间","会议结束时间","会议预定人","会议主持人","会议地点"};
 			List<RoomBooking> foom=roomBookingSerivce.findAll();
 			ExcelUtils.fillExcelData(foom,wb, headers);
 			ExcelUtils.exports(resp, wb, "本周评审会会议安排.xls");

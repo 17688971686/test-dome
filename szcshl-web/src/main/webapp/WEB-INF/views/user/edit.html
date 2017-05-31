@@ -26,16 +26,15 @@
             <tr>
                 <td class="formAlignRight">登录名： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.loginName " id="loginName" name="loginName" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "   ng-model="vm.model.loginName " id="loginName" name="loginName" data-val="true" data-val-required="必填">
                 </td>
                 <td>
                 <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
-                    <span class="errors" ng-show="vm.isUserExist">角色已存在</span></td>
             </tr>
              <tr>
                 <td class="formAlignRight">显示名： </td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.displayName" id="displayName" name="displayName" data-val="false" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.displayName" id="displayName" name="displayName" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
             </tr>
@@ -58,19 +57,17 @@
             <tr>
                 <td class="formAlignRight">联系电话：<span class="required">*</span> </td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userPhone" id="userPhone" name="userPhone" data-val="false" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userPhone" id="userPhone" name="userPhone" data-val-digits="电话号码只能为数字"  data-val="true" data-val-required="必填">
                 </td>
                 <td>
-                
                 <span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
-                 <span class="errors" ng-show="vm.isUserExist"></span></td>
                 </td>
             </tr>
             
             <tr>
                 <td class="formAlignRight">联系手机：<span class="required">*</span> </td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userMPhone" id="userMPhone" name="userMPhone" data-val="false" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.userMPhone" id="userMPhone"data-val-digits="手机号码只能为数字" name="userMPhone" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="userMPhone" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
@@ -78,7 +75,7 @@
             <tr>
                 <td class="formAlignRight">电子邮件： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.email" id="email" name="email" data-val="false" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.email" id="email"  name="email" data-val-email="邮箱格式为17865984@qq.com" data-val="true" data-val-required="必填">
                 </td>
                 <td>
                 <span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span></td>
@@ -87,14 +84,14 @@
             <tr>
                 <td class="formAlignRight">序号：<span class="required">*</span> </td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userOrder" id="userOrder" name="userOrder" data-val="false" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userOrder" id="userOrder" name="userOrder" data-val="true" data-val-required="必填" data-val-digits="序号只能为数字">
                 </td>
                 <td><span data-valmsg-for="userOrder" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
              <tr>
                 <td class="formAlignRight">性别：<span class="required">*</span> </td>
                 <td>
-                     <select ng-model="vm.model.userSex" name="userSex" id="userSex" class="form-control input-sm ">
+                     <select ng-model="vm.model.userSex" name="userSex" id="userSex" class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
                 </td>

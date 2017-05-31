@@ -25,15 +25,15 @@
                 <td></td>
             </tr>
             <tr>
-                <td class="formAlignRight">办事处联系人：</td>
+                <td class="formAlignRight">办事处联系人：<span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officeUserName"
-                           id="officeUserName" name="officeUserName"  />
+                           id="officeUserName" name="officeUserName"  data-val="true" data-val-required="必填" />
                 </td>
                 <td><span data-valmsg-for="officeUserName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">所在办事处：</td>
+                <td class="formAlignRight">所在办事处：<span class="required">*</span></td>
                 <td>
                      <select ng-model="vm.model.departId" id="departId" name="departId"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="x in vm.depts" ng-selected="vm.model.dept.deptId == x.deptId"  value="{{x.deptId}}" >{{x.deptName}}</option>
@@ -42,19 +42,19 @@
                 <td><span data-valmsg-for="officeUserName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">电话：</td>
+                <td class="formAlignRight">电话：<span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officePhone"
-                           id="officePhone" name="officePhone"  />
+                           id="officePhone" name="officePhone"   data-val="true" data-val-required="必填"/>
                 </td>
                 <td><span data-valmsg-for="officePhone" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             
             <tr>
-                <td class="formAlignRight">邮件：</td>
+                <td class="formAlignRight">邮件：<span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.officeEmail"
-                           id="officeEmail" name="officeEmail"  />
+                           id="officeEmail" name="officeEmail"  data-val="true" data-val-required="必填"  />
                 </td>
                 <td><span data-valmsg-for="officeEmail" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

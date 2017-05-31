@@ -40,6 +40,9 @@ public class RoomBooking extends DomainBase{
 	@Column(columnDefinition="date")
 	private Date rbDay;//会议日期
 	
+	@Column(columnDefinition="varchar(100)")
+	private String rbDate;//会议日期显示星期
+	
 	@Column(columnDefinition="date")
 	private Date  beginTime;//会议开始时间
 	
@@ -65,6 +68,10 @@ public class RoomBooking extends DomainBase{
 	//评审部门
 	@Column(columnDefinition="varchar(100)")
 	private String stageOrg;
+	
+	//评审项目,包含:(时间,评审单位,评审项目,项目类型,评审部门)
+	@Column(columnDefinition="varchar(200)")
+	private String stageProject;
 	
 	public String getId() {
 		return id;
@@ -158,7 +165,18 @@ public class RoomBooking extends DomainBase{
 	public void setStageOrg(String stageOrg) {
 		this.stageOrg = stageOrg;
 	}
-	
+	public String getRbDate() {
+		return rbDate;
+	}
+	public void setRbDate(String rbDate) {
+		this.rbDate = rbDate;
+	}
+	public String getStageProject() {
+		return stageProject;
+	}
+	public void setStageProject(String stageProject) {
+		this.stageProject = stageProject;
+	}
 	
 	
 	

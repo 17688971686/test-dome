@@ -22,6 +22,7 @@ public class RoomBookingDto extends BaseDto{
 	private String host;//会议主持人
 	@JSONField(format = "yyyy-MM-dd")
 	private Date rbDay;//会议日期
+	private String rbDate;//会议日期显示星期
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date  beginTime;//会议开始时间
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
@@ -32,7 +33,7 @@ public class RoomBookingDto extends BaseDto{
 	private String remark;//备注
 	private String workProgramId;//工作方案Id
 	private String stageOrg;//评审部门
-	
+	private String stageProject;//评审项目
 	public String getId() {
 		return id;
 	}
@@ -124,6 +125,18 @@ public class RoomBookingDto extends BaseDto{
 	}
 	public void setStageOrg(String stageOrg) {
 		this.stageOrg = stageOrg;
+	}
+	public String getRbDate() {
+		return rbDate;
+	}
+	public void setRbDate(String rbDate) {
+		this.rbDate = rbDate;
+	}
+	public String getStageProject() {
+		return stageProject;
+	}
+	public void setStageProject(String stageProject) {
+		this.stageProject = stageProject;
 	}
 	
 	

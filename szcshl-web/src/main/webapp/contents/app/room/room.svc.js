@@ -38,7 +38,6 @@
 			vm.model.endTime = $("#endTime").val();
 			vm.model.content = $("#content").val();
 			vm.model.content = $("#remark").val();
-			
 			common.initJqValidation($('#formRoom'));
 			var isValid = $('#formRoom').valid();
 			if (isValid) {
@@ -104,7 +103,6 @@
 					data : vm.model
 				}
 				var httpSuccess = function success(response) {
-					
 					common.requestSuccess({
 						vm : vm,
 						response : response,
@@ -179,14 +177,11 @@
 				pageSize : 10,
 	          
 				schema: {
-	            	
 	              model: {
-
 	              	id: "taskId", 
 	                fields: {
 	                    taskId: {
 	                        from: "id"
-	                        //type: ""
 	                    },
 	                    title: { from: "addressName", defaultValue: "addressName" },
 	                    start: { type: "date", from: "beginTime" },
@@ -198,10 +193,9 @@
 
 	          });
 		
-			
 			vm.schedulerOptions = {
 			            date: new Date(),
-			            startTime: new Date(),
+			            startTime: new Date("2017/6/1 08:00 "),
 			            height: 600,
 			            views: [
 			                "day",
@@ -214,7 +208,6 @@
 			           //statr 时间
 			            editable: {
 			                template: $("#customEditorTemplate").html(),
-
 			              },
 			            eventTemplate: $("#event-template").html(),
 			            edit: function(e) {
@@ -223,22 +216,7 @@
 			            //end
 			            timezone: "Etc/UTC",
 			            dataSource :dataSource,
-			            
-			          /* resources: [
-			                {
-			                    field: "ownerId",
-			                    title: "Owner",
-			                    dataSource: [
-			                        { text: "Alex", value: 1, color: "#f8a398" },
-			                        { text: "Bob", value: 2, color: "#51a0ed" },
-			                        { text: "Charlie", value: 3, color: "#56ca85" }
-			                    ]
-			                }
-			            ]*/
-			          
-			            
 			        };
-			 
 		}
 		//end 初始化会议预定页面
 		

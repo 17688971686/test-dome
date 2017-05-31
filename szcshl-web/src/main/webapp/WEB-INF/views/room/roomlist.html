@@ -6,22 +6,19 @@
         <li><a href="#/room">会议室预定管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    
- 
-         <div kendo-scheduler k-options="vm.schedulerOptions">
+         
+        <div kendo-scheduler k-options="vm.schedulerOptions">
         <div style="height: 120px;">
         <br>
         会议室查询：
        	 <select ng-model="vm.mrID"  ng-change="vm.findMeeting()" style="width: 10%">
 			<option ng-repeat="x in vm.meetings" value="{{x.id}}">{{x.addr}}</option>
 		</select>
-       	 
 		     <center>
 			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 		 	<@shiro.hasPermission name="room#exports#get">  
 			<button type="button" class="k-button k-primary" ng-click="vm.exportWeek()" value="">导出本周评审会会议安排</button>
 			</@shiro.hasPermission>
-			
 			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 			<@shiro.hasPermission name="room#exportWeek#get">  
 			<button type="button" class="k-button k-primary" ng-click="vm.exportThisWeek()" value="">导出本周全部会议安排</button>
@@ -36,14 +33,11 @@
 			</@shiro.hasPermission>
 			</center>	
         </div>
-           
              <!--
              <div k-all-day-event-template class='custom-all-day-event'>{{dataItem.end}}</div>
             <span k-event-template class='custom-event'>{{dataItem.title}}</span>
              -->
-      
         </div>
-
 
 <style>
     .custom-event {
@@ -69,8 +63,6 @@ div.k-window-content {
     outline: 0;
 }
 
-
-
 k-edit-form-container .k-edit-buttons {
     clear: both;
     text-align: right;
@@ -81,10 +73,8 @@ k-edit-form-container .k-edit-buttons {
 }
 </style>
 
-
 <script id="event-template" type="text/x-kendo-template">
 	<div class="movie-template">
-		
 		<p>
 			开始时间：#: kendo.toString(start, "HH:mm") #
 			<br>
@@ -92,16 +82,14 @@ k-edit-form-container .k-edit-buttons {
 			<br>
 			会议地点：#: title #
 		</p>
-	
 	</div>
 </script>
 <script id="customEditorTemplate" type="text/x-kendo-template">
 <div id="roomWindow"  >
 <form id="formRoom" name="formRoom">
-
 	 <div class="toolbar">
             <button class="btn btn-sm btn-success" ng-click="vm.addRoom()"   ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存</button>
-            <button class="btn btn-sm btn-success" ng-click="vm.editRoom()" ><span class="glyphicon glyphicon-ok"></span>编辑</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.editRoom()" ng-hide="vm.isUpdate" ><span class="glyphicon glyphicon-ok"></span>编辑</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.onWClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
          </div>
         <table style="width:100%">

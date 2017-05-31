@@ -94,6 +94,9 @@
 			if (isValid) {
 				vm.model.workProgramId = vm.work.id;
 				vm.model.stageOrg = vm.work.reviewOrgName;
+				vm.model.stageProject = "项目名称:"+vm.work.projectName+":"+vm.work.buildCompany+":"+vm.work.reviewOrgName;
+				//alert(vm.model.stageProject);
+//				return ;
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/room/saveRoom",

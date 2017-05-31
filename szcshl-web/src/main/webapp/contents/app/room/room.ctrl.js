@@ -12,7 +12,6 @@
     	var vm = this;
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
-      
         //预定会议编辑
        vm.editRoom = function(){
         	roomSvc.editRoom(vm);
@@ -21,6 +20,7 @@
         vm.addRoom = function(){
         	roomSvc.addRoom(vm);
         }
+        
         //结束时间不能小开始时间
         vm.startEnd = function(){
         	roomSvc.startEnd(vm);
@@ -86,13 +86,11 @@
        }
         activate();
         function activate() {
-        	if(vm.isUpdate){
-        		//roomSvc.editRoom(vm);
-        	}
-        	//调用room.svc.js的初始化方法
+//        	if(vm.isUpdate){
+//        		roomSvc.editRoom(vm);
+//        	}
            roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
-           //roomSvc.findUser(vm);
         }
     }
 })();

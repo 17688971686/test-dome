@@ -128,20 +128,27 @@
 					{
 						field : "rbDay",
 						title : "会议日期",
-						width : 160,						
+						type : "date",
+						width : 120,						
 						filterable : false
 					},
 					{
 						field : "beginTime",
 						title : "会议开始时间",
-						width : 160,						
+						width : 120,						
 						filterable : false
 					},
 					{
 						field : "endTime",
 						title : "会议结束时间",
 						type : "date",
-						width : 160,						
+						width : 120,						
+						filterable : false
+					},
+					{
+						field : "stageOrg",
+						title : "评审部门",
+						width : 100,						
 						filterable : false
 					},
 					{
