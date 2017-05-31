@@ -29,10 +29,6 @@ public class ExpertReview extends DomainBase{
 	@Id
 	private String id;
 	
-	//专家个数
-	@Column(columnDefinition="Integer")
-	private Integer expretCount;
-	
 	//评分
 	@Column(columnDefinition="NUMBER")
 	private Double score;
@@ -64,7 +60,11 @@ public class ExpertReview extends DomainBase{
 	//选择类型
 	@Column(columnDefinition="VARCHAR(2)")
 	private String selectType;
-	
+
+	//是否参加【默认参加(9)】
+	@Column(columnDefinition="VARCHAR(2)")
+	private String isJoin;
+
 	@OneToOne
 	@JoinColumn(name="expertId")
 	private Expert expert;
@@ -158,14 +158,6 @@ public class ExpertReview extends DomainBase{
 		this.payDate = payDate;
 	}
 
-	public Integer getExpretCount() {
-		return expretCount;
-	}
-
-	public void setExpretCount(Integer expretCount) {
-		this.expretCount = expretCount;
-	}
-
 	public String getState() {
 		return state;
 	}
@@ -178,9 +170,17 @@ public class ExpertReview extends DomainBase{
 		return selectType;
 	}
 
-	public void setSelectType(String selectType) {
+    public String getIsJoin() {
+        return isJoin;
+    }
+
+    public void setIsJoin(String isJoin) {
+        this.isJoin = isJoin;
+    }
+
+    public void setSelectType(String selectType) {
 		this.selectType = selectType;
 	}	
-	
-	
+
+
 }

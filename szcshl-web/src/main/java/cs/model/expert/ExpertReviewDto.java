@@ -17,7 +17,7 @@ import cs.model.project.WorkProgramDto;
 public class ExpertReviewDto extends BaseDto {
 
     private String id;
-    private Integer expretCount;
+	private String isJoin;
     private Double score;
     private Date reviewDate;
     private BigDecimal reviewCost;
@@ -106,12 +106,12 @@ public class ExpertReviewDto extends BaseDto {
 		this.payDate = payDate;
 	}
 
-	public Integer getExpretCount() {
-		return expretCount;
+	public String getIsJoin() {
+		return isJoin;
 	}
 
-	public void setExpretCount(Integer expretCount) {
-		this.expretCount = expretCount;
+	public void setIsJoin(String isJoin) {
+		this.isJoin = isJoin;
 	}
 
 	public String getState() {

@@ -3,23 +3,24 @@
 
     angular.module('app').factory('expertReviewSvc', expertReview);
 
-    expertReview.$inject = ['$http'];
+    expertReview.$inject = ['$http','$interval'];
 
-    function expertReview($http) {
-        var url_expertReview = rootPath + "/expertReview", url_back = '#/expertReviewList';
+    function expertReview($http,$interval) {
         var service = {      
-        	initExpertGrid:initExpertGrid,	    //初始化表格
-            initSelect : initSelect,		    //初始化专家选择页面
-            initSelfExpert : initSelfExpert,	//初始化自选专家页面
-            saveSelfExpert : saveSelfExpert,		//保存自选专家
-            delertExpert : delertExpert,	        //删除已选专家
-            refleshExpert : refleshExpert,	        //刷新已选专家信息
-            updateExpertState : updateExpertState,	//更改专家状态
-            showOutExpertGrid : showOutExpertGrid,  //境外专家选择框
-            saveOutExpert : saveOutExpert,           //保存选择的境外专家
+        	initExpertGrid:initExpertGrid,	            //初始化表格
+            initSelect : initSelect,		            //初始化专家选择页面
+            initSelfExpert : initSelfExpert,	        //初始化自选专家页面
+            saveSelfExpert : saveSelfExpert,		    //保存自选专家
+            delertExpert : delertExpert,	            //删除已选专家
+            refleshExpert : refleshExpert,	            //刷新已选专家信息
+            showOutExpertGrid : showOutExpertGrid,      //境外专家选择框
+            saveOutExpert : saveOutExpert,              //保存选择的境外专家
             deleteAutoSelExpert : deleteAutoSelExpert,	//删除随机抽取的专家
             countMatchExperts : countMatchExperts,      //计算符合条件的专家
             queryAutoExpert : queryAutoExpert,          //查询符合抽取条件的专家
+            validateAutoExpert : validateAutoExpert,    //验证查询的专家是否符合条件
+            affirmAutoExpert : affirmAutoExpert,	    //确认已经抽取的专家
+            updateJoinState : updateJoinState,          //更改是否参加状态
         };
         return service;
                 
@@ -80,13 +81,14 @@
                 params:{workProgramId:vm.expertReview.workProgramId}
             };
             var httpSuccess = function success(response) {           	
-            	vm.selfExperts = [],vm.selectExperts = [],vm.selectIds=[],vm.autoExperts = [],vm.outsideExperts = [];
+            	vm.selfExperts = [],vm.selectExperts = [],vm.selectIds=[],vm.outsideExperts = [];
+                vm.autoSelExperts.length = 0;
             	if(response.data && response.data.length > 0){             		
             		for(var i=0,l=response.data.length;i<l;i++){
             			vm.selectIds.push(response.data[i].expertDto.expertID);
-            			vm.selectExperts.push(response.data[i].expertDto);
+            			vm.selectExperts.push(response.data[i]);
             			if(response.data[i].selectType == "1"){
-                            vm.autoExperts.push(response.data[i].expertDto);
+                            vm.autoSelExperts.push(response.data[i].expertDto);
                         }else if(response.data[i].selectType == "2"){
             				vm.selfExperts.push(response.data[i].expertDto);
             			}else if(response.data[i].selectType == "3"){
@@ -270,12 +272,12 @@
         }//E_refleshExpert
         
         //S_updateExpertState
-        function updateExpertState(vm,expertIds,state){
+        function affirmAutoExpert(vm,expertIds){
         	vm.iscommit = true;
         	var httpOptions = {
 				method : 'post',
-				url : rootPath+"/expertReview/updateExpertState",
-				params : {workProgramId:vm.expertReview.workProgramId,expertIds:expertIds,state:state}
+				url : rootPath+"/expertReview/affirmAutoExpert",
+				params : {workProgramId:vm.expertReview.workProgramId,expertIds:expertIds}
 			}
 			var httpSuccess = function success(response) {	
 				common.requestSuccess({
@@ -283,6 +285,7 @@
 					response:response,
 					fn:function() {		
 						vm.iscommit = false;
+                        window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
 						common.alert({
 							vm:vm,
 							msg:"操作成功！",
@@ -482,7 +485,10 @@
                     vm : vm,
                     response : response,
                     fn : function() {
-                        console.log(response.data);
+                        if(response.data){
+                            vm.autoExpertList = response.data;
+                            validateAutoExpert(vm);
+                        }
                     }
                 });
             }
@@ -494,6 +500,133 @@
             });
         }//E_queryAutoExpert
 
+
+        //S_validateAutoExpert
+        function validateAutoExpert(vm){
+            //重置参数
+            var totalExpertCount = 0;
+            var officeExperts = new Array();
+            var nativeExperts = new Array();
+
+            vm.autoExpertList.forEach(function (e, number) {
+                if(e.state == '2' || e.state == 2){
+                    officeExperts.push(e);
+                }else{
+                    nativeExperts.push(e);
+                }
+            });
+            vm.conditions.forEach(function (c, number) {
+                totalExpertCount += parseInt(c.officialNum);
+            });
+            if(totalExpertCount > officeExperts.length){
+                common.alert({
+                    vm: vm,
+                    msg: "本次被抽取的正选专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！"
+                })
+            }else if(totalExpertCount > nativeExperts.length){
+                common.alert({
+                    vm: vm,
+                    msg: "本次被抽取的备选专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！"
+                })
+            }else{
+                vm.showAutoExpertWin();
+                //随机抽取
+                var timeCount = 0;
+                var selAutoExpertIds = "" ;
+                vm.t = $interval(function() {
+                    var selscope = Math.floor(Math.random()*(vm.autoExpertList.length));
+                    vm.showAutoExpertName = vm.autoExpertList[selscope].name;
+                    timeCount++;
+                    if(timeCount % 10 == 0){
+                        var selskey = Math.floor(Math.random()*(officeExperts.length));
+                        vm.autoSelExperts.push(officeExperts[selskey]);
+                        selAutoExpertIds += officeExperts[selskey].expertID+",";
+                        officeExperts.forEach(function (t, number) {
+                            if(officeExperts[selskey].expertID == t.expertID){
+                                officeExperts.splice(number,1);
+                            }
+                        });
+                        selskey = Math.floor(Math.random()*(nativeExperts.length));
+                        vm.autoSelExperts.push(nativeExperts[selskey]);
+                        selAutoExpertIds += nativeExperts[selskey].expertID+",";
+                        nativeExperts.forEach(function (t, number) {
+                            if(nativeExperts[selskey].expertID == t.expertID){
+                                nativeExperts.splice(number,1);
+                            }
+                        });
+                        totalExpertCount--;
+                        if(totalExpertCount == 0){
+                            $interval.cancel(vm.t);
+                            //保存抽取的专家
+                            vm.iscommit = true;
+                            var httpOptions = {
+                                method : 'post',
+                                url : rootPath+"/expertReview/saveExpertReview",
+                                params : {expertIds:selAutoExpertIds,workProgramId:vm.expertReview.workProgramId,selectType:"1"}
+                            }
+                            var httpSuccess = function success(response) {
+                                common.requestSuccess({
+                                    vm:vm,
+                                    response:response,
+                                    fn:function() {
+                                        vm.iscommit = false;
+                                        initSelect(vm);
+                                        common.alert({
+                                            vm:vm,
+                                            msg:"操作成功！",
+                                            closeDialog:true
+                                        })
+                                    }
+                                });
+                            }
+                            common.http({
+                                vm:vm,
+                                $http:$http,
+                                httpOptions:httpOptions,
+                                success:httpSuccess,
+                                onError: function(response){vm.iscommit = false;}
+                            });
+                        }
+                    }
+                }, 200);
+            }
+        }//E_validateAutoExpert
+
+        //S_updateJoinState
+        function updateJoinState(vm,ids,joinState){
+            vm.iscommit = true;
+            var httpOptions = {
+                method : 'post',
+                url : rootPath+"/expertReview/updateJoinState",
+                params : {ids:ids,joinState:joinState}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.iscommit = false;
+                        vm.selectExperts.forEach(function(e, number){
+                            if(ids.indexOf(e.id) >= 0){
+                                e.isJoin = joinState;
+                            }
+                        });
+                        common.alert({
+                            vm:vm,
+                            msg:"操作成功！",
+                            closeDialog:true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess,
+                onError: function(response){vm.iscommit = false;}
+            });
+        }//E_updateJoinState
 
     }
 })();

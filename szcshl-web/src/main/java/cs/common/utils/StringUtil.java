@@ -22,7 +22,7 @@ public class StringUtil {
 	/**
 	 * @param splitStr
 	 * @param splitChars
-	 * @return
+	 * @return 返回不是空值的字符串列表
 	 */
 	public static List<String> getSplit(String splitStr,String splitChars){
 		List<String> resultArray = null;
@@ -31,10 +31,15 @@ public class StringUtil {
 			while(true){
 				int index = splitStr.indexOf(splitChars);
 				if(index < 0){
-					resultArray.add(splitStr);
+                    if(Validate.isString(splitStr)){
+                        resultArray.add(splitStr);
+                    }
 					break;
 				}
-				resultArray.add(splitStr.substring(0, index));
+				String subString = splitStr.substring(0, index);
+				if(Validate.isString(subString)){
+                    resultArray.add(subString);
+                }
 				splitStr = splitStr.substring(index+1);
 			}
 		}
@@ -58,10 +63,12 @@ public class StringUtil {
         }
     }
 	public static void main(String[] args){
-		String s="sdgdsagds,asdgasdgsd,asdgsadg,adsgadsg,sd";		
+		String s="sdgdsagds,asdgasdgsd,,asdgsadg,adsgadsg,sd,";
 		List<String> re = getSplit(s,",");
+		int i=0;
 		for(String d : re){
-			System.out.println(d);
+			System.out.println(i+"=="+d);
+			i++;
 		}
 	}
 }

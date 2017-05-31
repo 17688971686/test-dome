@@ -314,7 +314,7 @@ public class ExpertServiceImpl implements ExpertService {
         }
 
         if(rttype.size() == 1){
-            hqlBuilder.append(" and ep.EXPERTTYPE = :rttype ").setParam("rttype",jorBig.get(0));
+            hqlBuilder.append(" and ep.EXPERTTYPE = :rttype ").setParam("rttype",rttype.get(0));
         }else if(rttype.size() > 1){
             hqlBuilder.append(" and ep.EXPERTTYPE in ( ");
             for(int i=0,l=rttype.size();i<l;i++){

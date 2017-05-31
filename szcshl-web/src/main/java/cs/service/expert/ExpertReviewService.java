@@ -30,7 +30,9 @@ public interface ExpertReviewService {
 
 	List<ExpertDto> refleshExpert(String workProgramId, String selectType);
 
-	void updateExpertState(String workProgramId, String expertIds, String state);
+	void updateExpertState(String workProgramId, String expertIds, String state,boolean isUpdateWP);
 
 	void deleteExpert(String workProgramId, String expertIds,String seleType,String expertSelConditionId);
+
+	void updateJoinState(String ids, String joinState);
 }

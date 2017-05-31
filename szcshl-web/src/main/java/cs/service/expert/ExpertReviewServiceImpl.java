@@ -149,24 +149,28 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
 		for(int i=0,l=expertIdArr.size();i<l;i++){
 			ExpertReview domain = new ExpertReview(); 
 			domain.setId(UUID.randomUUID().toString());
-			
-			//由于自选只能选一个，所以要先删除之前选的专家
-			if(EnumExpertSelectType.SELF.getValue().equals(selectType)){	
-				deleteExpert(workProgramId,null,EnumExpertSelectType.SELF.getValue(),null);
-			}
+            if(EnumExpertSelectType.SELF.getValue().equals(selectType)){
+                deleteExpert(workProgramId,null,EnumExpertSelectType.SELF.getValue(),null);
+            }
 			//评审会时间
 			domain.setReviewDate(workProgram.getStageTime());
 			domain.setSelectType(selectType);
 			domain.setExpert(expertRepo.findById(expertIdArr.get(i)));
 			domain.setWorkProgram(workProgram);
 			domain.setState(EnumState.NO.getValue());
-			
+            domain.setIsJoin(EnumState.YES.getValue());
+
 			domain.setCreatedBy(currentUser.getLoginName());
 			domain.setModifiedBy(currentUser.getLoginName());
 			domain.setCreatedDate(now);
 			domain.setModifiedDate(now);
 			expertReviewRepo.save(domain);
-		}												
+		}
+		//如果是自选，则要更新工作方案信息
+		if(EnumExpertSelectType.AUTO.getValue().equals(selectType)){
+            workProgram.setIsSelete(EnumState.YES.getValue());
+            workProgramRepo.save(workProgram);
+		}
 	}
 
 	@Override
@@ -195,7 +199,7 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
 
 	@Override
 	@Transactional
-	public void updateExpertState(String workProgramId, String expertIds, String state) {
+	public void updateExpertState(String workProgramId, String expertIds, String state,boolean isUpdateWP) {
 		HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" update "+ExpertReview.class.getSimpleName()+" set "+ExpertReview_.state.getName()+" = :state ");
         hqlBuilder.setParam("state", state);
@@ -219,6 +223,13 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
         	hqlBuilder.setParam("expertId", expertIds);
         }
         expertReviewRepo.executeHql(hqlBuilder);
+
+        //同时更新工作方案结果
+        if(isUpdateWP){
+            WorkProgram workProgram = workProgramRepo.findById(workProgramId);
+            workProgram.setIsComfireResult(EnumState.YES.getValue());
+            workProgramRepo.save(workProgram);
+        }
 	}
 
 	@Override
@@ -257,5 +268,31 @@ public class ExpertReviewServiceImpl  implements ExpertReviewService {
 		}
         expertReviewRepo.executeHql(hqlBuilder);
 	}
-	
+
+    @Override
+    @Transactional
+    public void updateJoinState(String ids, String joinState) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+ExpertReview.class.getSimpleName()+" set "+ExpertReview_.isJoin.getName()+" = :joinState ");
+        hqlBuilder.setParam("joinState", joinState);
+
+        String[] idArr = ids.split(",");
+        if (idArr.length > 1) {
+            hqlBuilder.append( " where "+ExpertReview_.id.getName()+" in ( ");
+            int totalL = idArr.length;
+            for(int i=0;i<totalL;i++){
+                if(i==totalL-1){
+                    hqlBuilder.append(" :id"+i).setParam("id"+i, idArr[i]);
+                }else{
+                    hqlBuilder.append(" :id"+i+",").setParam("id"+i, idArr[i]);
+                }
+            }
+            hqlBuilder.append(" ) ");
+        } else {
+            hqlBuilder.append( " where "+ExpertReview_.id.getName()+" = :expertId ");
+            hqlBuilder.setParam("expertId", ids);
+        }
+        expertReviewRepo.executeHql(hqlBuilder);
+    }
+
 }

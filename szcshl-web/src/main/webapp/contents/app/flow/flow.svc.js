@@ -264,7 +264,7 @@
 		function initBackNode(vm){
 			vm.backNode = [];
 			//初始化可回退环节
-			var datas = vm.historygrid.dataSource.data()						
+			var datas = vm.historygrid.dataSource.data();
 			var totalNumber = datas.length;			
 			for(var i = 0; i<totalNumber; i++) {
 				if(datas[i].assignee && datas[i].endTime){				

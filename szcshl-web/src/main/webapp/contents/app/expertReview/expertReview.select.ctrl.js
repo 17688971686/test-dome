@@ -12,7 +12,8 @@
         vm.selExpertConfirm = false;        //抽取的专家是否已经确认
         vm.conditionIndex = 1;              //条件号
         vm.conditions = new Array();        //条件对象
-        vm.autoExpertMap = {};              //随机抽取专家
+        vm.autoSelExperts = new Array();    //专家抽取结果
+        vm.autoExpertList = {};              //随机待抽取专家列表
         vm.expertReview = {};
         vm.workProgram = {};
         vm.expertReview.workProgramId = $state.params.workProgramId;		//这个是收文ID
@@ -215,16 +216,36 @@
             }
         }
 
-        //显示随机抽取页面
-        vm.showAutoExpertWin = function(){
+        //开始随机抽取
+        vm.startAutoExpertWin = function(){
             if(buildCondition(true)){
-                expertReviewSvc.queryAutoExpert(vm);
+                if(vm.isAutoSelectExpert){
+                    common.alert({
+                        vm : vm,
+                        msg : "该方案已经进行整体专家方案的抽取，不能在继续抽取！"
+                    })
+                }else{
+                    expertReviewSvc.queryAutoExpert(vm);
+                }
             }else {
                 common.alert({
                     vm: vm,
                     msg: "请先保存编辑的抽取方案！"
                 })
             }
+        }
+
+        //显示随机抽取结果
+        vm.showAutoExpertWin = function(){
+            $("#aotuExpertDiv").kendoWindow({
+                width : "800px",
+                height : "600px",
+                title : "专家抽取",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
         }
 
         //再次抽取专家
@@ -235,9 +256,31 @@
             })
         }
 
-        //确认已选的专家
-        vm.affirmExpert = function(){
-            var isCheck = $("input[name='seletedEp']:checked");
+        //确认已抽取的专家
+        vm.affirmAutoExpert = function(){
+            var updteIdArr = new Array();
+            vm.autoSelExperts.forEach(function (t, number) {
+                updteIdArr.push(t.id);
+            });
+            expertReviewSvc.affirmAutoExpert(vm,updteIdArr.join(","))
+        }
+
+        //确定实际参加会议的专家
+        vm.affirmJoinExpert = function(){
+            $("#confirmJoinExpert").kendoWindow({
+                width : "960px",
+                height : "600px",
+                title : "参加评审会专家确认",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+
+        //未参加改为参加
+        vm.updateToJoin = function(){
+            var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
             if (isCheck.length < 1) {
                 common.alert({
                     vm : vm,
@@ -248,8 +291,24 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                var idStr=ids.join(',');
-                expertReviewSvc.updateExpertState(vm,idStr,"9");
+                expertReviewSvc.updateJoinState(vm,ids.join(','),'9');
+            }
+        }
+
+        //参加改为未参加
+        vm.updateToNotJoin = function(){
+            var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
+            if (isCheck.length < 1) {
+                common.alert({
+                    vm : vm,
+                    msg : "请选择操作对象"
+                })
+            }else{
+                var ids=[];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState(vm,ids.join(','),'0');
             }
         }
     }

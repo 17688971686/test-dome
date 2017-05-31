@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.Constant;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,14 +54,12 @@ public class ExpertReviewController {
         return expertReviewService.refleshExpert(workProgramId,selectType);
     }      
     
-    @RequiresPermissions("expertReview#updateExpertState#post")
-    @RequestMapping(name = "更改专家状态", path = "updateExpertState", method = RequestMethod.POST)
+    @RequiresPermissions("expertReview#affirmAutoExpert#post")
+    @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String expertIds,
-    		@RequestParam(required=true)String state){
-        expertReviewService.updateExpertState(workProgramId, expertIds, state);
+    public void affirmAutoExpert(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String expertIds){
+        expertReviewService.updateExpertState(workProgramId, expertIds, Constant.EnumState.YES.getValue(),true);
     }
-    
     
     @RequiresPermissions("expertReview#deleteExpert#post")
     @RequestMapping(name = "删除已选专家", path = "deleteExpert", method = RequestMethod.POST)
@@ -82,6 +81,13 @@ public class ExpertReviewController {
     public void saveExpertReview(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String selectType,
     		@RequestParam(required=true)String expertIds) {
         expertReviewService.save(workProgramId,expertIds,selectType);
+    }
+
+    @RequiresPermissions("expertReview#updateJoinState#post")
+    @RequestMapping(name = "修改实际参加会议的专家", path = "updateJoinState", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void updateJoinState(@RequestParam(required=true)String ids,@RequestParam(required=true)String joinState) {
+        expertReviewService.updateJoinState(ids,joinState);
     }
     
 
