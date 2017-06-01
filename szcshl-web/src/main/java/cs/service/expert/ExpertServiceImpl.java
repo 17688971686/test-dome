@@ -1,6 +1,5 @@
 package cs.service.expert;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +20,7 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertGlory;
 import cs.domain.expert.Expert_;
 import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
@@ -28,10 +28,12 @@ import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertGloryDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.model.expert.ProjectExpeDto;
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertGloryRepo;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
 import cs.repository.repositoryImpl.expert.WorkExpeRepo;
@@ -51,6 +53,8 @@ public class ExpertServiceImpl implements ExpertService {
 	private WorkExpeRepo workExpeRepo;
 	@Autowired
 	private ProjectExpeRepo projectExpeRepo;
+	@Autowired
+	private ExpertGloryRepo expertGloryRepo;
 	@Autowired
 	private ICurrentUser currentUser;
     @Autowired
@@ -111,18 +115,30 @@ public class ExpertServiceImpl implements ExpertService {
 		Expert expert = expertRepo.findById(id);
 		if (expert != null) {
 			List<WorkExpe> workList = expert.getWork();
-			for (WorkExpe workExpe : workList) {
-				workExpeRepo.delete(workExpe);
+			if(Validate.isList(workList)){
+				for (WorkExpe workExpe : workList) {
+					workExpeRepo.delete(workExpe);
+				}
 			}
+			
 			List<ProjectExpe> projectList = expert.getProject();
-			for (ProjectExpe projectExpe : projectList) {
-				projectExpeRepo.delete(projectExpe);
+			if(Validate.isList(workList)){
+				for (ProjectExpe projectExpe : projectList) {
+					projectExpeRepo.delete(projectExpe);
+				}
+			}
+			
+			List<ExpertGlory> gloryList = expert.getGlory();
+			if(Validate.isList(workList)){
+				for (ExpertGlory expertGlory : gloryList) {
+					expertGloryRepo.delete(expertGlory);
+				}
 			}
 			
 			Criteria criteria=sysFileRepo.getSession().createCriteria(SysFile.class);
 			criteria.add(Restrictions.eq(SysFile_.businessId.getName(), id));
 			List<SysFile> sysFileList=criteria.list();
-			if(sysFileList.size()!=0){
+			if(Validate.isList(sysFileList)){
 				SysFile sysFile=sysFileList.get(0);
 				//删除关联的头像
 				fileService.deleteById(sysFile.getSysFileId());
@@ -215,6 +231,16 @@ public class ExpertServiceImpl implements ExpertService {
 					projectDtoList.add(projectDto);
 				});
 				expertDto.setProject(projectDtoList);
+			}			 			
+			//专家聘书
+			if(expert.getGlory() != null && expert.getGlory().size() > 0){
+				List<ExpertGloryDto> gloryDtoList=new ArrayList<>(expert.getGlory().size());
+				(expert.getGlory()).forEach(ep ->{
+					ExpertGloryDto gloryDto=new ExpertGloryDto();
+					BeanCopierUtils.copyProperties(ep, gloryDto);							
+					gloryDtoList.add(gloryDto);
+				});
+				expertDto.setGlory(gloryDtoList);
 			}			 			
 		}
 		return expertDto;

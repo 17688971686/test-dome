@@ -22,7 +22,8 @@
 			toAudit : toAudit,				//由个状态回到审核状态
 			auditTo : auditTo,				//由审核状态去到各个状态
 			initUpload : initUpload,         //头像上传 
-			getPhotoByExpertId : getPhotoByExpertId
+			getPhotoByExpertId : getPhotoByExpertId  //获取照片
+			
 			
 		};
 		return service;				
@@ -160,6 +161,10 @@
 				if(response.data.project && response.data.project.length > 0){
 					vm.projectkHistory = true;
 					vm.project=response.data.project;					
+				}											
+				if(response.data.glory && response.data.glory.length > 0){
+					vm.showExpertGlory = true;
+					vm.glory=response.data.glory;
 				}											
 			} 
 			common.http({

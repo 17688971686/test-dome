@@ -46,6 +46,7 @@ public class ExpertDto extends BaseDto {
 	
 	private List<WorkExpeDto> work;
 	private List<ProjectExpeDto> project;
+	private List<ExpertGloryDto> glory;
 	
 	public String getIdCard() {
 		return idCard;
@@ -242,5 +243,11 @@ public class ExpertDto extends BaseDto {
 	}
 	public void setGraduateDate(Date graduateDate) {
 		this.graduateDate = graduateDate;
+	}
+	public List<ExpertGloryDto> getGlory() {
+		return glory;
+	}
+	public void setGlory(List<ExpertGloryDto> glory) {
+		this.glory = glory;
 	}		
 }

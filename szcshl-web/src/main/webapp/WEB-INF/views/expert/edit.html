@@ -34,6 +34,7 @@
         <button class="btn btn-sm btn-success" ng-click="vm.update()"  ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更改专家信息</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.gotoWPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加工作经验</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.gotoJPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加项目经验</button>
+		<button class="btn btn-sm btn-success" ng-click="vm.createGloryPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加专家聘书</button>
 	</div>
 	<p class="pro_title_1" style="margin:10px;margin-left:0px;">专家信息</p>
 	<form id="form" name="form">
@@ -244,6 +245,37 @@
 	</table>
 	</form>
 	
+	<!-- S 专家聘书DIV -->
+	<div ng-show="vm.showExpertGlory">
+	<div class="toolbar">   	
+	 	<button class="btn btn-sm btn-success" ng-click="vm.updateGPage()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
+	 	<button class="btn btn-sm btn-success" ng-click="vm.deleteGlory()" ><span class="glyphicon glyphicon-ok"></span>删除</button>		
+	</div>	
+	<p class="pro_title_1" style="margin:10px;margin-left:0px;">专家聘书</p>		
+	<table class="table table-bordered" id="workTab">
+	  	<tr>
+		  	<td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addGlory" name="glallChecked" id="glallChecked"/> </td>
+		    <td width="10%" align="center" bgcolor="#eeeeee">是否发证</td>
+		    <td width="10%" align="center" bgcolor="#eeeeee">发证日期</td>
+		    <td width="20%" align="center" bgcolor="#eeeeee">有效期</td>
+		    <td width="20%" align="center" bgcolor="#eeeeee">有效期至</td>
+		    <td width="20%" align="center" bgcolor="#eeeeee">是否作废</td>
+		    <td width="20%" align="center" bgcolor="#eeeeee">备注</td>
+		</tr>	
+		<tr ng-repeat="x in vm.glory">
+		  	<td  align="center"> <input type="checkbox" name="checkgl" ng-checked="addGlory" value="{{ x.gID }}"/></td>
+		    <td style="text-align: center;">{{ x.isGetCertificate }}</td>
+		    <td style="text-align: center;">{{ x.gGetCertifiDate }}</td>
+		    <td style="text-align: center;">{{ x.gExpiryDate }}</td>
+		    <td style="text-align: center;">{{ x.gExpiryDateTo }}</td>
+		    <td style="text-align: center;">{{ x.isNoUsefull }}</td>
+		    <td style="text-align: center;">{{ x.gRemark }}</td>
+		</tr>	
+	</table>
+ 	</div>	
+ 	<!-- E 专家聘书DIV -->
+	
+	
 	<!-- S 工作经历DIV -->
 	<div ng-show="vm.showWorkHistory">
 	<div class="toolbar">   	
@@ -295,6 +327,92 @@
 	</table>
 	</div>
 	<!-- E 项目经历DIV -->
+	
+	<!-- S 专家聘书弹窗 -->
+	<div id="grwindow" class="well well-sm" style="background:white;display:none;">
+    <form id="gloryForm" name="gloryForm">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveGlory()" ng-disabled="vm.isSubmit"  ng-show="vm.isSaveGlory"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.updateGlory()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdateGlory"><span class="glyphicon glyphicon-ok"></span>更新</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.onGClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+         </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">姓名：</td>
+                <td>{{vm.model.name}}</td>
+                <td class="formAlignRight">性别： </td>
+                <td>{{vm.model.sex}}</td>
+            </tr>
+             
+              <tr >
+                <td class="formAlignRight">出生年月： </td>
+                <td>{{vm.model.birthDay}}</td>
+                <td class="formAlignRight">身份证号： </td>
+                <td>{{vm.model.idCard}}</td>
+            </tr>
+              <tr >
+                <td class="formAlignRight">学历： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.gQualifications " id="qualifications" name="gQualifications" data-val="true" data-val-required="必填">
+                	<span data-valmsg-for="gQualifications" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="formAlignRight">职称： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.gTitle " id="job" name="title" data-val="gTitle" data-val-required="必填">
+                	<span data-valmsg-for="gTitle" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">发证日期： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.gGetCertifiDate " kendo-date-picker k-format="'yyyy-MM-dd'" id="gGetCertifiDate" name="gGetCertifiDate" >
+                </td>
+                <td class="formAlignRight">有效期： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.gExpiryDate " id="job" name="expiryDate" data-val="gExpiryDate" data-val-required="必填">
+                	<span data-valmsg-for="gExpiryDate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">档案编号： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.gFileNum " id="gFileNum" name="gFileNum" data-val="true" data-val-required="必填">
+                	<span data-valmsg-for="gFileNum" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="formAlignRight">有效期至： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.gExpiryDateTo" kendo-date-picker k-format="'yyyy-MM-dd'" id="gExpiryDateTo" name="gExpiryDateTo" >
+                </td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">是否发证： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.isGetCertificate " id="isGetCertificate" name="isGetCertificate" data-val="true" data-val-required="必填">
+                	<span data-valmsg-for="isGetCertificate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="formAlignRight">是否作废： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.isNoUsefull " id="isNoUsefull" name="job" data-val="true" data-val-required="必填">
+                	<span data-valmsg-for="isNoUsefull" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+             <tr >
+                <td class="formAlignRight">备注： <span class="required">*</span></td>
+                <td colspan="3">
+                    <textarea style="width: 100%; height: 40px" name="gRemark" ng-model="vm.model.gRemark" class="form-control input-sm " data-bind="value:gRemark"></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+	</div>
+	<!-- E 专家聘书弹窗 -->
+	
 	
 	<!-- S 工作经历弹窗 -->
 	<div id="wrwindow" class="well well-sm" style="background:white;display:none;">

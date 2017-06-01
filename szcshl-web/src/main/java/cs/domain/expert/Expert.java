@@ -115,6 +115,16 @@ public class Expert extends DomainBase {
 	@OneToMany(mappedBy="expert")
 	private List<ProjectExpe> project;
 	
+	@OneToMany(mappedBy="expert")
+	private List<ExpertGlory> glory;
+	
+	
+	public List<ExpertGlory> getGlory() {
+		return glory;
+	}
+	public void setGlory(List<ExpertGlory> glory) {
+		this.glory = glory;
+	}
 	public Date getBirthDay() {
 		return birthDay;
 	}

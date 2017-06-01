@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertEditCtrl', expert);
 
-    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','$state']; 
+    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertGlorySvc','expertSvc','$state']; 
 
-    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,$state) {
+    function expert($location,projectExpeSvc,workExpeSvc,expertGlorySvc,expertSvc,$state) {
         var vm = this;
         vm.model = {};
         vm.title = '专家信息录入';
@@ -60,6 +60,12 @@
         vm.onPClose=function(){
         	window.parent.$("#pjwindow").data("kendoWindow").close();
         }
+        vm.onGClose=function(){
+        	vm.isSaveGlory=false;
+        	vm.isUpdateGlory=false;
+        	expertGlorySvc.cleanValue();
+        	window.parent.$("#grwindow").data("kendoWindow").close();
+        }
         
         vm.gotoJPage=function(){
         	projectExpeSvc.gotoJPage(vm);
@@ -79,6 +85,30 @@
         
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
+        }
+        
+        vm.createGloryPage=function(){
+        	expertGlorySvc.createPage(vm);
+        }
+        
+        vm.createGlory=function(){
+        	expertGlorySvc.createGlory(vm);
+        }
+        
+        vm.saveGlory=function(){
+        	expertGlorySvc.saveGlory(vm);
+        } 
+        
+        vm.deleteGlory=function(){
+        	expertGlorySvc.deleteGlory(vm);
+        }
+        
+        vm.updateGPage=function(){
+        	expertGlorySvc.updatePage(vm);
+        }
+        
+        vm.updateGlory=function(){
+        	expertGlorySvc.updateGlory(vm);
         }
         
         activate();
