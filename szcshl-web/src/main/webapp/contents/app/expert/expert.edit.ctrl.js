@@ -33,66 +33,70 @@
         	expertSvc.updateExpert(vm);
         }
         
-        vm.gotoWPage=function(){
-        	workExpeSvc.gotoWPage(vm);
+        //start工作经验
+        vm.createWPage=function(){
+        	workExpeSvc.createPage(vm);
+        }
+        
+        vm.saveWork=function(){
+        	workExpeSvc.saveWork(vm);
+        } 
+        
+        vm.deleteWork=function(){
+        	workExpeSvc.deleteWork(vm);
+        }
+        
+        vm.updateWPage=function(){
+        	workExpeSvc.updatePage(vm);
         }
         
         vm.updateWork=function(){
         	workExpeSvc.updateWork(vm);
         }
         
-        vm.createWork=function(){
-        	workExpeSvc.createWork(vm);
-        }
         
-        vm.saveWork=function(){
-        	workExpeSvc.saveWork(vm);
-        }
-        
-        vm.deleteWork=function(){
-        	workExpeSvc.deleteWork(vm);
-        }
         
         vm.onWClose=function(){
+        	vm.isSaveWork=false;
+        	vm.isUpdateWork=false;
+        	workExpeSvc.cleanValue();
         	window.parent.$("#wrwindow").data("kendoWindow").close();
         }
+        //end工作经验
         
+        //start项目经验
         vm.onPClose=function(){
+        	vm.isSaveProject=false;
+        	vm.isUpdateProject=false;
+        	projectExpeSvc.cleanValue();
         	window.parent.$("#pjwindow").data("kendoWindow").close();
         }
-        vm.onGClose=function(){
-        	vm.isSaveGlory=false;
-        	vm.isUpdateGlory=false;
-        	expertGlorySvc.cleanValue();
-        	window.parent.$("#grwindow").data("kendoWindow").close();
+        
+        vm.createPPage=function(){
+        	projectExpeSvc.createPage(vm);
         }
         
-        vm.gotoJPage=function(){
-        	projectExpeSvc.gotoJPage(vm);
+        vm.saveProject=function(){
+        	projectExpeSvc.saveProject(vm);
+        } 
+        
+        vm.deleteProject=function(){
+        	projectExpeSvc.deleteProject(vm);
+        }
+        
+        vm.updatePPage=function(){
+        	projectExpeSvc.updatePage(vm);
         }
         
         vm.updateProject=function(){
         	projectExpeSvc.updateProject(vm);
         }
         
-        vm.createProject=function(){
-        	projectExpeSvc.createProject(vm);
-        }
+        //end项目经验
         
-        vm.saveProject=function(){
-        	projectExpeSvc.saveProject(vm);
-        }
-        
-        vm.delertProject=function(){
-        	projectExpeSvc.delertProject(vm);
-        }
-        
+        //satart专家聘书
         vm.createGloryPage=function(){
         	expertGlorySvc.createPage(vm);
-        }
-        
-        vm.createGlory=function(){
-        	expertGlorySvc.createGlory(vm);
         }
         
         vm.saveGlory=function(){
@@ -111,6 +115,13 @@
         	expertGlorySvc.updateGlory(vm);
         }
         
+        vm.onGClose=function(){
+        	vm.isSaveGlory=false;
+        	vm.isUpdateGlory=false;
+        	expertGlorySvc.cleanValue();
+        	window.parent.$("#grwindow").data("kendoWindow").close();
+        }
+      //end专家聘书
         activate();
         function activate() {
         	expertSvc.initUpload(vm);       	

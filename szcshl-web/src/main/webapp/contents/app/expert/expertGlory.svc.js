@@ -254,7 +254,7 @@
 			WorkeWindow.kendoWindow({
 				width : "1000px",
 				height : "600px",
-				title : "添加工作经历",
+				title : "专家聘书",
 				visible : false,
 				modal : true,
 				closable : true,

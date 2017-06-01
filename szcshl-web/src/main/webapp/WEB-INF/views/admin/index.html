@@ -142,11 +142,17 @@ desired effect
 	                        	<span class="label label-danger" id="GtasksCount"><span>{0}</span></span>
 	                        </a>
                         </li>
+                         <li>
+                         	<a href="javascript:void(0)" ui-sref="listSign">
+                         		<i class="fa fa-flag-o"></i>项目列表
+                         	</a>
+                         </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="etasks">
                                 <i class="glyphicon glyphicon-thumbs-up"></i>办结任务
                             </a>
                         </li>
+                        
                         <!-- 
                         <li>
 	                        <a href="javascript:void(0)"> 
@@ -158,29 +164,23 @@ desired effect
                     </ul>
                 </li>
                 
-                <!-- begin 系统管理 -->
+                  <!-- start 项目管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i>
-                        <span class="title">系统管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
+                        <i class="fa fa-link"></i> <span class="title">项目签收管理</span>
+                        <span class="pull-right-container">
+						<i class="fa fa-angle-left pull-right"></i>
+					</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>                    
-                        <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
-                        <!-- 
-                        <li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="workflow">工作流管理(下个版本加入)</a></li>
-                         -->
+                        <li><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
+                        <!-- <li><a href="javascript:void(0)" ui-sref="flowSign">项目待处理</a></li> -->
                     </ul>
                 </li>
-				<!-- end 系统管理 -->
-
+                <!-- end 项目签收-->
+                
 				<!-- begin 用户部门管理 -->
-				<li class="treeview">
+				<!-- <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-link"></i>
                         <span class="title">用户部门管理</span>
@@ -189,17 +189,15 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="company">单位管理</a></li>
+                        
                     </ul>
-                </li>
+                </li> -->
                 <!-- end 用户部门管理 -->
                 
 				<!-- begin 专家管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">专家管理</span> 
+                        <i class="fa fa-link"></i> <span class="title">专家库管理</span> 
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
@@ -228,35 +226,46 @@ desired effect
                 </li>
                 <!-- end -->
 
-                <!-- start 项目管理-->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">项目签收管理</span>
-                        <span class="pull-right-container">
-						<i class="fa fa-angle-left pull-right"></i>
-					</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="listSign">项目列表</a></li>
-                        <!-- <li><a href="javascript:void(0)" ui-sref="flowSign">项目待处理</a></li> -->
-                    </ul>
-                </li>
-                <!-- end 项目签收-->
 
 				<!-- begin 机关单位管理 -->
-				<li class="treeview">
+				<!-- <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">办事处管理</span> <span
+                        <i class="fa fa-link"></i> <span class="title">处室管理</span> <span
                             class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                                              
+                    </ul>
+                </li> -->
+                <!-- end 机关单位管理 -->
+                
+                <!-- begin 系统管理 -->
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-link"></i>
+                        <span class="title">系统管理</span>
+                        <span class="pull-right-container"> 
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>                    
+                        <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="company">单位管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="listDept">办事处列表</a></li>
-                         <li><a href="javascript:void(0)" ui-sref="officeUserList">办事处人员列表</a></li>                       
+                        <li><a href="javascript:void(0)" ui-sref="officeUserList">办事处人员列表</a></li> 
+                        <!-- 
+                        <li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="workflow">工作流管理(下个版本加入)</a></li>
+                         -->
                     </ul>
                 </li>
-                <!-- end 机关单位管理 -->
+				<!-- end 系统管理 -->
+                
 				<!-- 
                 <li class="treeview">
                     <a href="javascript:void(0)">

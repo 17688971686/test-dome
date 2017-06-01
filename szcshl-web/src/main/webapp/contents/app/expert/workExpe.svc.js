@@ -7,17 +7,160 @@
 
 	function workExpe($http) {
 		var service = {
-			createWork : createWork,
-			saveWork : saveWork,
 			deleteWork : deleteWork,
-			updateWork : updateWork,
 			gotoWPage : gotoWPage,
 			getWorkById : getWorkById,
-			getWork : getWork
+			getWork : getWork,
+			
+			updatePage : updatePage,
+			updateWork :updateWork,
+			createPage : createPage,
+			saveWork : saveWork,
+			cleanValue : cleanValue
+			
 
 		};
 
 		return service;
+		
+		
+		function updatePage(vm){
+			vm.isUpdateWork=true;
+			var isCheck = $("input[name='checkwr']:checked");
+			if (isCheck.length < 1) {
+				common.alert({
+					vm : vm,
+					msg : "请选择操作对象",
+					fn : function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+						return;
+					}
+				})
+			} else if (isCheck.length > 1) {
+				common.alert({
+					vm : vm,
+					msg : "无法同时操作多条数据",
+					fn : function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+						return;
+					}
+				})
+			} else {				
+				vm.weID = isCheck.val();
+				getWorkById(vm);
+				gotoWPage(vm);
+				vm.expertID = vm.model.expertID;
+
+			}
+		
+		}
+		
+		function updateWork(vm){
+
+			common.initJqValidation();
+			var isValid = $('form').valid();
+			if (isValid) {
+				vm.model.weID = vm.weID;
+				vm.model.expertID = vm.expertID;
+				vm.model.beginTime = $('#beginTime').val();
+				vm.model.endTime = $('#endTime').val();
+
+				var httpOptions = {
+					method : 'put',
+					url : rootPath + "/workExpe/updateWork",
+					data : vm.model
+				}
+
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							window.parent.$("#wrwindow").data("kendoWindow").close();
+							getWork(vm);
+							cleanValue();
+							vm.isUpdateWork=false;
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.showWorkHistory = true;
+									$('.alertDialog').modal('hide');
+								}
+							})
+						}
+
+					})
+				}
+
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+			}
+		
+		}
+		
+		function createPage(vm){
+			vm.isSaveWork=true;
+			gotoWPage(vm);
+		}
+		
+		function saveWork(vm){
+
+			common.initJqValidation($('#workForm'));
+			var isValid = $('#workForm').valid();
+			if (isValid) {
+				vm.model.beginTime = $('#beginTime').val();
+				vm.model.endTime = $('#endTime').val();
+				
+				var httpOptions = {
+					method : 'post',
+					url : rootPath + "/workExpe/workExpe",
+					data : vm.model
+				}
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							window.parent.$("#wrwindow").data("kendoWindow").close();
+							cleanValue();
+							getWork(vm);
+							vm.isSaveWork=false;
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.showWorkHistory = true;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})
+						}
+
+					});
+
+				}
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+
+			}
+		
+		}
+		
+		
+		
+		
+		
 		// begin#getWork
 		function getWork(vm) {
 			var httpOptions = {
@@ -87,7 +230,7 @@
 		// end#delertWork
 
 		// begin#updateWork
-		function updateWork(vm) {
+		/*function updateWork(vm) {
 			var isCheck = $("input[name='checkwr']:checked");
 			if (isCheck.length < 1) {
 				common.alert({
@@ -116,7 +259,7 @@
 				vm.expertID = vm.model.expertID;
 
 			}
-		}
+		}*/
 
 		// begin#getWorkById
 		function getWorkById(vm) {
@@ -193,7 +336,7 @@
 
 		}
 		// begin#createWork
-		function createWork(vm) {
+		/*function createWork(vm) {
 			common.initJqValidation($('#workForm'));
 			var isValid = $('#workForm').valid();
 			if (isValid) {
@@ -235,10 +378,10 @@
 				});
 
 			}
-		}
+		}*/
 
 		// begin#saveWork
-		function saveWork(vm) {
+		/*function saveWork(vm) {
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid) {
@@ -281,7 +424,7 @@
 					success : httpSuccess
 				});
 			}
-		}
+		}*/
 	}
 
 })();

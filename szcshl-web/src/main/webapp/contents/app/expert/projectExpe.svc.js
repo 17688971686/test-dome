@@ -8,17 +8,172 @@
 	function projectExpe($http) {
 		var service = {
 				getProject:getProject,
-				createProject:createProject,
-				updateProject:updateProject,
-				saveProject:saveProject,
+				//createProject:createProject,
+				//updateProject:updateProject,
+				//saveProject:saveProject,
 				getProjectById:getProjectById,
-				delertProject:delertProject,
-				gotoJPage:gotoJPage
+				deleteProject:deleteProject,
+				gotoJPage:gotoJPage,
+				
+				updatePage : updatePage,
+				updateProject :updateProject,
+				createPage : createPage,
+				saveProject : saveProject,
+				cleanValue : cleanValue
+				
 		};
 		return service;
 		
+		function updatePage(vm){
+			vm.isUpdateProject=true;
+			var isCheck=$("input[name='checkpj']:checked");
+			if(isCheck.length<1){
+				common.alert({
+					vm : vm,
+					msg : "请选择操作对象",
+					fn : function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+						return;
+					}
+				})
+			}else if(isCheck.length>1){
+				common.alert({
+					vm : vm,
+					msg : "无法同时操作多条数据",
+					fn : function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+						return;
+					}
+				})
+			}else{
+				vm.peID=isCheck.val();
+				getProjectById(vm);
+				vm.expertID = vm.model.expertID;
+				gotoJPage(vm);																
+			}
+		
+		}
+		
+		function updateProject(vm){
+
+			common.initJqValidation($('#ProjectForm'));
+			var isValid = $('#ProjectForm').valid();
+			if (isValid) {
+			vm.isSubmit = true;
+			vm.model.peID=vm.peID;
+			vm.model.expertID = vm.expertID;
+			vm.model.projectbeginTime=$('#projectbeginTime').val();
+			vm.model.projectendTime=$('#projectendTime').val();
+			//alert(vm.model.projectendTime);
+			var httpOptions = {
+					method : 'put',
+					url : rootPath + "/projectExpe/updateProject",
+					data : vm.model
+			}
+			
+			var httpSuccess = function success(response) {
+				
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						window.parent.$("#pjwindow").data("kendoWindow").close();
+						getProject(vm);
+						cleanValue();
+						vm.isUpdateProject=false;
+						common.alert({
+							vm : vm,
+							msg : "操作成功",
+							fn : function() {
+								vm.isSubmit = false;
+								$('.alertDialog').modal('hide');
+							}
+						})
+					}
+				
+				})
+			}
+			}
+			
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+			
+			//} else {
+			// common.alert({
+			// vm:vm,
+			// msg:"您填写的信息不正确,请核对后提交!"
+			// })
+			//}
+			
+	
+		}
+		
+		function createPage(vm){
+			vm.isSaveProject=true;
+			gotoJPage(vm);
+		}
+		
+		function saveProject(vm){
+			
+			common.initJqValidation($('#ProjectForm'));
+			var isValid = $('#ProjectForm').valid();
+			if (isValid) {
+				vm.model.projectbeginTime=$('#projectbeginTime').val();
+				vm.model.projectendTime=$('#projectendTime').val();
+				var httpOptions = {
+					method : 'post',
+					url : rootPath + "/projectExpe/projectExpe",
+					data : vm.model
+				}
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							window.parent.$("#pjwindow").data("kendoWindow").close();
+							cleanValue();
+							getProject(vm);
+							vm.isSaveProject=false;
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.projectkHistory = true;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+									
+								}
+							})
+						}
+
+					});
+
+				}
+				
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+
+		}
+		
+		}
+		
+		
+		
+		
+		
+		
 		//begin#delertProject
-		function delertProject(vm){
+		function deleteProject(vm){
 			common.initJqValidation();
 			var isCheck=$("input[name='checkpj']:checked");
 			if(isCheck.length<1){
@@ -98,7 +253,7 @@
 		
 		
 		//begin#saveProject
-		function saveProject(vm){
+		/*function saveProject(vm){
 			common.initJqValidation($('#ProjectForm'));
 			var isValid = $('#ProjectForm').valid();
 			if (isValid) {
@@ -151,7 +306,7 @@
 			// })
 			//}
 			
-	}
+	}*/
 		
 		
 		
@@ -182,7 +337,7 @@
 		}
 		
 		//begin#updateProject
-		function updateProject(vm){
+		/*function updateProject(vm){
 			var isCheck=$("input[name='checkpj']:checked");
 			if(isCheck.length<1){
 				common.alert({
@@ -210,7 +365,7 @@
 				vm.expertID = vm.model.expertID;
 				gotoJPage(vm);																
 			}
-		}
+		}*/
 		
 		// begin#gotoJPage
 		function gotoJPage(vm){
@@ -245,7 +400,7 @@
 			 });
 		}
 		// begin#createProject
-		function createProject(vm){
+		/*function createProject(vm){
 			common.initJqValidation($('#ProjectForm'));
 			var isValid = $('#ProjectForm').valid();
 			if (isValid) {
@@ -288,6 +443,6 @@
 				});
 
 		}
-		}
+		}*/
 	}
 })();
