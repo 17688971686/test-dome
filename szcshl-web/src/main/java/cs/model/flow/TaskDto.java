@@ -34,7 +34,14 @@ public class TaskDto {
 	//所用时长
 	private long durationInMillis;
 	private String durationTime;
-
+	
+	//项目单位
+	//项目阶段
+	//签收日期
+	//剩余工作日
+	//预计发文日期
+	//送来人员
+	//送来时间
 	public long getDurationInMillis() {
 		return durationInMillis;
 	}
