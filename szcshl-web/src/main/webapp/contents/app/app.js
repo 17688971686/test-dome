@@ -313,6 +313,7 @@
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         $rootScope.$state = $state;
+
         $rootScope.$stateParams = $stateParams;
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
             $rootScope.previousState_name = fromState.name;
@@ -328,7 +329,7 @@
         };
         //kendo 语言
     	kendo.culture("zh-CN");
-    	   	    	
+
         $rootScope.topSelectChange = function (dictKey, dicts , type) {       	
             for (var i = 0; i < dicts.length; i++) {
             	//根据code查询

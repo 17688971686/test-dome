@@ -481,7 +481,6 @@ public class DateUtils {
     
     /**
      * 获取当年的第一天
-     * @param year
      * @return
      */
     public static Date getCurrYearFirst(){
@@ -492,7 +491,6 @@ public class DateUtils {
      
     /**
      * 获取当年的最后一天
-     * @param year
      * @return
      */
     public static Date getCurrYearLast(){
@@ -581,12 +579,13 @@ public class DateUtils {
     
     /** 
      * 把日期转为字符串  
-     * @param dateStr 
-     * @return date
+     * @param date
+     * @param dateFormt
+     * @return String
      */  
     public static String converToString(Date date,String dateFormt) { 
     	 String returnValue = "";
-    	 if(date != null){
+    	 if(date == null){
     		  return returnValue;
     	 }
     	 if(!Validate.isString(dateFormt)){
@@ -598,7 +597,8 @@ public class DateUtils {
     }  
     /** 
      * 把字符串转为日期    
-     * @param dateStr 
+     * @param strDate
+     * @param dateFormt
      * @return date
      */  
     public static Date converToDate(String strDate,String dateFormt)  {  
@@ -624,6 +624,7 @@ public class DateUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 	    Date myDate = sdf.parse(dateString);
 		System.out.println("<<---" + myDate);
+        System.out.println("KKKKKKKK"+converToString(new Date(),"HH:mm"));
 		
 	}
 }

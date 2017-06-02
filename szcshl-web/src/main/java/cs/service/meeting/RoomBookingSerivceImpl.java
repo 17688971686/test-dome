@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.DateUtils;
+import cs.common.utils.Validate;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -132,155 +134,117 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		List<RoomBookingDto> roomDtoList = new ArrayList<RoomBookingDto>(roomList.size());
 		if(roomList != null && roomList.size() > 0){
 			roomList.forEach(x->{
-				RoomBookingDto  roomDto = new RoomBookingDto();
+				RoomBookingDto roomDto = new RoomBookingDto();
 				BeanCopierUtils.copyProperties(x, roomDto);
-				roomDto.setCreatedDate(x.getCreatedDate());
-				roomDto.setModifiedDate(x.getModifiedDate());
-				roomDtoList.add(roomDto);
+				roomDto.setBeginTimeStr(DateUtils.converToString(x.getBeginTime(),"HH:mm"));
+				roomDto.setEndTimeStr(DateUtils.converToString(x.getEndTime(),"HH:mm"));
+                roomDtoList.add(roomDto);
 			});						
 		}		
 		pageModelDto.setCount(odataObj.getCount());
 		pageModelDto.setValue(roomDtoList);
 		return pageModelDto;
 	}
+
+	protected int checkRootBook(RoomBookingDto roomBookingDto){
+        //判断会议时间是否冲突
+        HqlBuilder sqlBuilder= HqlBuilder.create();
+        sqlBuilder.append(" select count(ID) from CS_ROOM_BOOKING where ("+RoomBooking_.beginTime.getName());
+        sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
+        sqlBuilder.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
+        sqlBuilder.append(" or "+RoomBooking_.endTime.getName());
+        sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
+        sqlBuilder.append(" and :endTime )").setParam("endTime", roomBookingDto.getEndTime());
+        sqlBuilder.append(" and "+RoomBooking_.mrID.getName()+" =:mrId").setParam("mrId",roomBookingDto.getMrID());
+        //排除本身
+        if(Validate.isString(roomBookingDto.getId())){
+            sqlBuilder.append(" and ID <> :id").setParam("id",roomBookingDto.getId());
+        }
+        return roomBookingRepo.countBySql(sqlBuilder);
+    }
+
 	@Override
 	@Transactional
 	public void createRoom(RoomBookingDto roomBookingDto) {
-		//判断会议名称是否存在
-		Criteria criteria =	roomBookingRepo.getSession().createCriteria(RoomBooking.class);	
-		criteria.add(Restrictions.eq("rbName", roomBookingDto.getRbName()));
-		List<RoomBooking>  room = criteria.list();	
-		RoomBookingDto roomDto = new RoomBookingDto();
-		HqlBuilder hql= HqlBuilder.create();
-		hql.append(" from "+RoomBooking.class.getSimpleName()+" where "+RoomBooking_.beginTime.getName());
-		hql.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
-		hql.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
-		hql.append(" or "+RoomBooking_.endTime.getName());
-		hql.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
-		hql.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
-		List<RoomBooking> roomList = roomBookingRepo.findByHql(hql);
-		if(room.isEmpty()){	
-			if(roomList != null && roomList.size() > 0){
-				throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomBookingDto.getBeginTime()));
-			}else{
-				RoomBooking rb = new RoomBooking();
-				BeanCopierUtils.copyProperties(roomBookingDto, rb);
-				rb.setId(UUID.randomUUID().toString());
-				Date days = roomBookingDto.getRbDay();
-				DateFormat datef = new SimpleDateFormat("yyyy-MM-dd");
-				String strdate = datef.format(days);
-				String day=GetWeekUtils.getWeek(days);
-				rb.setRbDate(strdate+"("+day+")");//星期几
-				Date now = new Date();
-				rb.setCreatedDate(now);
-				rb.setModifiedDate(now);
-				rb.setCreatedBy(currentUser.getLoginName());
-				rb.setModifiedBy(currentUser.getLoginName());
-				roomBookingRepo.save(rb);
-			}
-				
+		if(checkRootBook(roomBookingDto) > 0){
+			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomBookingDto.getBeginTime()));
 		}else{
-			throw new IllegalArgumentException(String.format("会议名称：%s 已经存在，请重新输入", roomBookingDto.getRbName()));
+			RoomBooking rb = new RoomBooking();
+			BeanCopierUtils.copyProperties(roomBookingDto, rb);
+			rb.setId(UUID.randomUUID().toString());
+			Date days = roomBookingDto.getRbDay();
+			String strdate = DateUtils.toStringDay(days);
+			String day=GetWeekUtils.getWeek(days);
+			rb.setRbDate(strdate+"("+day+")");//星期几
+			Date now = new Date();
+			rb.setCreatedDate(now);
+			rb.setModifiedDate(now);
+			rb.setCreatedBy(currentUser.getLoginName());
+			rb.setModifiedBy(currentUser.getLoginName());
+			roomBookingRepo.save(rb);
 		}
-		
 	}
 	
 	@Override
 	@Transactional
 	public void updateRoom(RoomBookingDto roomBookingDto) {
-		RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
-		HqlBuilder hql= HqlBuilder.create();
-		hql.append(" from "+RoomBooking.class.getSimpleName()+" where "+RoomBooking_.beginTime.getName());
-		hql.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
-		hql.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
-		hql.append(" or "+RoomBooking_.endTime.getName());
-		hql.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
-		hql.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
-		List<RoomBooking> roomList = roomBookingRepo.findByHql(hql);
-		if(roomList !=null && roomList.size() > 1){
+		if(checkRootBook(roomBookingDto) > 0){
 			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomBookingDto.getBeginTime()));
 		}else{
-			//RoomBooking room = new RoomBooking();
+            RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
 			BeanCopierUtils.copyPropertiesIgnoreNull(roomBookingDto, room);
 			room.setModifiedBy(currentUser.getLoginName());
 			room.setModifiedDate(new Date());
 			roomBookingRepo.save(room);
 			logger.info(String.format("更新会议室预定,会议名称:%s", roomBookingDto.getRbName()));
 		}
-		
 	}
+
 	@Override
 	@Transactional
 	public void deleteRoom(String id) {
-		RoomBooking room = 	roomBookingRepo.findById(id);
+		RoomBooking room = 	roomBookingRepo.getById(id);
 		if(room != null){
 			roomBookingRepo.delete(room);
 			logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
 		}
 	}
+
 	@Override
 	public void deleteRooms(String[] ids) {
 		
 	}
+
 	@Override
 	@Transactional
 	public void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto) {
-		Criteria criteria =	roomBookingRepo.getSession().createCriteria(RoomBooking.class);	
-		criteria.add(Restrictions.eq("rbName", roomDto.getRbName()));
-		List<RoomBooking>  room = criteria.list();	
-		RoomBookingDto roomDtos = new RoomBookingDto();
-		HqlBuilder hql= HqlBuilder.create();
-		hql.append(" from "+RoomBooking.class.getSimpleName()+" where "+RoomBooking_.beginTime.getName());
-		hql.append(" between :beginTime").setParam("beginTime", roomDto.getBeginTime());
-		hql.append(" and :endTime").setParam("endTime", roomDto.getEndTime());
-		hql.append(" or "+RoomBooking_.endTime.getName());
-		hql.append(" between :beginTime").setParam("beginTime", roomDto.getBeginTime());
-		hql.append(" and :endTime").setParam("endTime", roomDto.getEndTime());
-		List<RoomBooking> roomList = roomBookingRepo.findByHql(hql);
-		if(room.isEmpty()){	
-			if(roomList != null && roomList.size() > 0){
-				throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomDto.getBeginTime()));
-			}else{
-				RoomBooking rb = new RoomBooking();
-				BeanCopierUtils.copyProperties(roomDto, rb);
-				rb.setId(UUID.randomUUID().toString());
-				Date days = roomDto.getRbDay();
-				DateFormat dateformaf= new SimpleDateFormat("yyyy-MM-dd");
-				String strdate = dateformaf.format(days);
-				String stageday=GetWeekUtils.getWeek(days);
-				rb.setRbDate(strdate+"("+stageday+")");//星期几
-				String stageProject=roomDto.getStageProject();
-				rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
-				
-				Date now = new Date();
-				rb.setCreatedDate(now);
-				rb.setModifiedDate(now);
-				rb.setCreatedBy(currentUser.getLoginName());
-				rb.setModifiedBy(currentUser.getLoginName());
-				roomBookingRepo.save(rb);
-				WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
-				if(workProgram != null){
-					Date rbDay = roomDto.getRbDay();
-					String addr = roomDto.getMrID();
-					Date start = roomDto.getBeginTime();
-					Date end = roomDto.getEndTime();
-					DateFormat datef = new SimpleDateFormat("yyyy-MM-dd");
-					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					String d=datef.format(rbDay);
-					String s =df.format(start);
-					String e =df.format(end);
-					String day=GetWeekUtils.getWeek(rbDay);
-					workProgram.setWorkStageTime(d+"("+day+")"+s+"至"+e);
-					workProgram.setMeetingId(addr);
-					BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-					workProgramRepo.save(workProgram);
-				}
-			}
-				
-		}else{
-			throw new IllegalArgumentException(String.format("会议名称：%s 已经存在，请重新输入", roomDto.getRbName()));
-		}
-		
+        if(checkRootBook(roomDto) > 0){
+            throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomDto.getBeginTime()));
+        }else{
+            RoomBooking rb = new RoomBooking();
+            BeanCopierUtils.copyProperties(roomDto, rb);
+            String strdate = DateUtils.toStringDay(roomDto.getRbDay());
+            String stageday=GetWeekUtils.getWeek(roomDto.getRbDay());
+            rb.setRbDate(strdate+"("+stageday+")");//星期几
+            String stageProject=roomDto.getStageProject();
+            rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
+
+            Date now = new Date();
+            rb.setCreatedDate(now);
+            rb.setModifiedDate(now);
+            rb.setCreatedBy(currentUser.getLoginName());
+            rb.setModifiedBy(currentUser.getLoginName());
+            roomBookingRepo.save(rb);
+            WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
+            if(workProgram != null){
+                String d = DateUtils.toStringDay(roomDto.getRbDay());
+                String day = GetWeekUtils.getWeek(roomDto.getRbDay());
+                workProgram.setWorkStageTime(d+"("+day+")"+roomDto.getBeginTimeStr()+"至"+roomDto.getEndTimeStr());
+                workProgram.setMeetingId(roomDto.getMrID());
+                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                workProgramRepo.save(workProgram);
+            }
+        }
 	}
 	
 

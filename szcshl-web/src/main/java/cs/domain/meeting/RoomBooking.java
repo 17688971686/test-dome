@@ -21,6 +21,7 @@ public class RoomBooking extends DomainBase{
 
 	@Id
 	private String id;
+
 	@Column(columnDefinition="varchar(255)")
 	private String mrID;//会议室编号
 	
@@ -45,7 +46,7 @@ public class RoomBooking extends DomainBase{
 	
 	@Column(columnDefinition="date")
 	private Date  beginTime;//会议开始时间
-	
+
 	@Column(columnDefinition="date")
 	private Date endTime;//结束时间
 	
@@ -117,18 +118,23 @@ public class RoomBooking extends DomainBase{
 	public void setRbDay(Date rbDay) {
 		this.rbDay = rbDay;
 	}
+
 	public Date getBeginTime() {
 		return beginTime;
 	}
+
 	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
+
 	public Date getEndTime() {
 		return endTime;
 	}
+
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
+
 	public String getRbStatus() {
 		return rbStatus;
 	}

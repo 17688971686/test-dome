@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('roomCtrl', room);
+    angular.module('app').controller('roomCtrl', room);
 
     room.$inject = ['$location','roomSvc','$scope','$state']; 
 
@@ -12,23 +10,20 @@
     	var vm = this;
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
+        vm.timeObj = {};
+        vm.timeObj.$startTime = "08:00";
+        vm.timeObj.$endTime = "21:00";
+        vm.timeObj.$timeRange = new Array();
+
         //预定会议编辑
-       vm.editRoom = function(){
+        vm.editRoom = function(){
         	roomSvc.editRoom(vm);
         }
         //预定会议室添加
         vm.addRoom = function(){
         	roomSvc.addRoom(vm);
         }
-        
-        //结束时间不能小开始时间
-        vm.startEnd = function(){
-        	roomSvc.startEnd(vm);
-        }
-       
-        vm.onWClose = function(){
-        	//window.parent.$("#customEditorTemplate").data("kendoWindow").close();
-        }
+
         //导出本周评审会议安排
         vm.exportWeek = function(){
         	roomSvc.exportWeek();
@@ -53,8 +48,7 @@
         	roomSvc.findMeeting(vm);
         }
         
-        vm.del = function (id) {        	
-        	
+        vm.del = function (id) {
              common.confirm({
             	 vm:vm,
             	 title:"",
@@ -68,7 +62,6 @@
         
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
-        	
             if (selectIds.length == 0) {
             	common.alert({
                 	vm:vm,
@@ -84,13 +77,26 @@
                 vm.del(idStr);
             }   
        }
+
         activate();
         function activate() {
-//        	if(vm.isUpdate){
-//        		roomSvc.editRoom(vm);
-//        	}
            roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
+           //初始化日期范围
+            var beginN = parseInt(vm.timeObj.$startTime.split(":")[0]);
+            var endN = parseInt(vm.timeObj.$endTime.split(":")[0]);
+            var rangeN = endN - beginN;
+            for(var i=0;i<rangeN;i++){
+                if(beginN < 10){
+                    vm.timeObj.$timeRange.push("0"+beginN+":00");
+                    vm.timeObj.$timeRange.push("0"+beginN+":30");
+                }else{
+                    vm.timeObj.$timeRange.push(beginN+":00");
+                    vm.timeObj.$timeRange.push(beginN+":30");
+                }
+                beginN++;
+            }
+            vm.timeObj.$timeRange.push(vm.timeObj.$endTime);
         }
     }
 })();

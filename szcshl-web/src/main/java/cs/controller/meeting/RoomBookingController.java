@@ -52,7 +52,7 @@ public class RoomBookingController {
 	@RequestMapping(name="获取会议预定数据",path = "",method =RequestMethod.GET)
 	public @ResponseBody PageModelDto<RoomBookingDto> get(HttpServletRequest request)throws  ParseException {
 		ODataObj oDataObj = new ODataObj(request);
-		PageModelDto<RoomBookingDto> roomDtos=roomBookingSerivce.get(oDataObj);
+		PageModelDto<RoomBookingDto> roomDtos = roomBookingSerivce.get(oDataObj);
 		return roomDtos;
 	}
 	

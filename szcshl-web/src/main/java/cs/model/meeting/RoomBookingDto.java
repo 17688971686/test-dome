@@ -1,16 +1,11 @@
 package cs.model.meeting;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.common.utils.DateUtils;
+import cs.model.BaseDto;
+import org.hibernate.annotations.Formula;
 
 import java.util.Date;
-
-import javax.persistence.Column;
-
-import org.hibernate.annotations.Formula;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.model.BaseDto;
 
 public class RoomBookingDto extends BaseDto{
 
@@ -34,6 +29,11 @@ public class RoomBookingDto extends BaseDto{
 	private String workProgramId;//工作方案Id
 	private String stageOrg;//评审部门
 	private String stageProject;//评审项目
+    //开始结束时间段字符串
+	private String beginTimeStr;
+	private String endTimeStr;
+
+
 	public String getId() {
 		return id;
 	}
@@ -78,19 +78,24 @@ public class RoomBookingDto extends BaseDto{
 	public void setRbDay(Date rbDay) {
 		this.rbDay = rbDay;
 	}
-	public Date getBeginTime() {
-		return beginTime;
-	}
-	public void setBeginTime(Date beginTime) {
-		this.beginTime = beginTime;
-	}
-	public Date getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-	public String getContent() {
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getContent() {
 		return content;
 	}
 	public String getRbStatus() {
@@ -138,8 +143,20 @@ public class RoomBookingDto extends BaseDto{
 	public void setStageProject(String stageProject) {
 		this.stageProject = stageProject;
 	}
-	
-	
-	
-	
+
+    public String getBeginTimeStr() {
+        return DateUtils.converToString(this.beginTime,"HH:mm");
+    }
+
+    public void setBeginTimeStr(String beginTimeStr) {
+        this.beginTimeStr = beginTimeStr;
+    }
+
+    public String getEndTimeStr() {
+        return DateUtils.converToString(this.endTime,"HH:mm");
+    }
+
+    public void setEndTimeStr(String endTimeStr) {
+        this.endTimeStr = endTimeStr;
+    }
 }
