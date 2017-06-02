@@ -77,45 +77,45 @@
 	<table style="width:100%;">		
 		<tr>
 			<td rowspan="4" valign="top" padding:2px 10px;" class="breadcrumb">
-				<p class="label label-success">审核中</p>
+				<p class="label bg-yellow disabled color-palette">审核中</p>
 				<div id="grid1" class="grid1" kendo-grid="grid1" k-options="vm.gridOptions1"></div>
 			</td>
 			<td class="text-center" style="height:200px;width:100px;">
-				<p ><input ng-click="vm.auditToOfficial()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input ng-click="vm.officialToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
+				<p ><input class="btn_add" ng-click="vm.auditToOfficial()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
+		        <p ><input class="btn_remove" ng-click="vm.officialToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
 			</td>
-			<td valign="top">
+			<td valign="top" class="breadcrumb1">
 				<p class="label label-success">正式专家</p>
 				<div id="grid2" class="grid2" kendo-grid="grid2" k-options="vm.gridOptions2"></div>
 			</td>
 		</tr>
 		<tr>			
 			<td class="text-center" style="height:200px;">
-				<p ><input ng-click="vm.auditToAlternative()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input ng-click="vm.alternativeToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
+				<p ><input class="btn_add" ng-click="vm.auditToAlternative()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
+		        <p ><input class="btn_remove"ng-click="vm.alternativeToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
 			</td>
-			<td valign="top">
-				<p class="label label-success">备选专家</p>
+			<td valign="top" class="breadcrumb2">
+				<p class="label bg-teal disabled color-palette">备选专家</p>
 				<div id="grid3" class="grid3" kendo-grid="grid3" k-options="vm.gridOptions3"></div>
 			</td>
 		</tr>
 		<tr>			
 			<td class="text-center" style="height:200px;">
-				<p ><input ng-click="vm.auditToStop()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input ng-click="vm.stopToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
+				<p ><input class="btn_add" ng-click="vm.auditToStop()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
+		        <p ><input class="btn_remove" ng-click="vm.stopToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
 			</td>
-			<td valign="top">
-				<p class="label label-success">已停用</p>
+			<td valign="top" class="breadcrumb2">
+				<p class="label bg-red color-palette">已停用</p>
 				<div id="grid4" class="grid4" kendo-grid="grid4" k-options="vm.gridOptions4"></div>
 			</td>
 		</tr>
 		<tr>			
 			<td class="text-center" style="height:200px;">
-				<p ><input ng-click="vm.auditToRemove()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input ng-click="vm.temoveToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
+				<p ><input class="btn_add" ng-click="vm.auditToRemove()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
+		        <p ><input class="btn_remove" ng-click="vm.temoveToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
 			</td>
-			<td valign="top">
-				<p class="label label-success">已删除</p>
+			<td valign="top" class="breadcrumb3">
+				<p class="label bg-gray color-palette">已删除</p>
 				<div id="grid5" class="grid4" kendo-grid="grid5" k-options="vm.gridOptions5"></div>
 			</td>
 		</tr>

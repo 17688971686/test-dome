@@ -4,7 +4,7 @@
 <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 
-<div class="well well-sm" style="background: white;">
+<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
 	<ol class="breadcrumb">	 
 		<li><a href="#/expertList">专家管理</a></li>
 		<li class="active">{{vm.title}}</li>
@@ -17,8 +17,11 @@
 		<button class="btn btn-sm btn-success" ng-click="vm.gotoJPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加项目经验</button>
 	</div>
 	<p class="pro_title_1" style="margin:10px;margin-left:0px;">专家信息</p>
+	<h2 style="text-align: center; width:595px;margin: auto;">深圳市政府投资项目评审中心</h2>
+	<h4 style="text-align: center; width:595px;margin:10px auto;">专家信息录入表</h4>
+	
 	<form id="form" name="form">
-	<table class="table table-bordered">
+	<table class="">
 		<tr>
 			<td class="formAlignRight" width="10%">姓名 <span class="required">*</span></td>
 			<td width="15%">
@@ -37,7 +40,7 @@
 			
 			<td align="center" class="formAlignRight" width="10%">出生年月<span class="required">*</span></td>
 			<td width="15%" >
-				<input type="text" name="birthDay" id="birthDay" style="width: 210px;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+				<input type="text" name="birthDay" id="birthDay" style="width: 100%;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
 				ng-model="vm.model.birthDay" data-val-date="必须为日期" data-val="true" data-val-required="必填">
 				<span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
 			</td>
@@ -79,7 +82,7 @@
 			</td>			
 			<td class="formAlignRight" >毕业时间<span class="required">*</span></td>
 			<td >
-				<input type="text" ng-model="vm.model.graduateDate" name="graduateDate" id="graduateDate" style="width: 210px;"
+				<input type="text" ng-model="vm.model.graduateDate" name="graduateDate" id="graduateDate" style="width: 100%"
 					   kendo-date-picker k-format="'yyyy-MM-dd'"  class="form-control input-sm" value="" data-val-date="必须为日期" data-val="true" >
 				 <span data-valmsg-for=graduateDate" data-valmsg-replace="true" class="errors"></span>
 			</td>
@@ -128,7 +131,7 @@
 				data-val="true"  data-val-regex="手办公电话格式不正确" data-val-regex-pattern="(0[0-9]{2,3}/-)?([2-9][0-9]{6,7})+(/-[0-9]{1,4})?">  
 				<span data-valmsg-for="phone" data-valmsg-replace="true" class="errors"></span> 
 			</td>
-			<td class="formAlignRight">传真</td>
+			<td class="formAlignRight" width="60">传真</td>
 			<td>
 				<input type="text" name="fax" id="fax" class="form-control input-sm " ng-model="vm.model.fax" ng-maxlength="20" data-val="true" >
 				 <span data-valmsg-for="fax" data-valmsg-replace="true" class="errors" ></span> 
