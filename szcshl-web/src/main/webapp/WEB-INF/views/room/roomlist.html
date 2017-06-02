@@ -23,6 +23,9 @@
         bottom: -1em;
         padding: .6em;
     }
+	.k-animation-container ul{
+	  max-height:200px;
+	}
 </style>
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
@@ -120,23 +123,16 @@
             <tr>
                 <td class="formAlignRight">开始时间<span class="required">*</span></td>
                 <td>
-                    <select id="beginTimeStr" name="beginTimeStr" ng-model="vm.model.beginTimeStr" style="width: 100px;" data-val="true" data-val-required="时间段不能为空">
-                        <option value="">请选择</option>
-                        <option ng-repeat="x in vm.timeObj.$timeRange" value="{{x}}" ng-selected="vm.model.beginTimeStr == x">{{x}}</option>
-                    </select>
-                    <span id="errorTime" class="errors"></span>
-				</td>
-                 <td><span data-valmsg-for="beginTimeStr" data-valmsg-replace="true" class="errors"></span></td>
+                    <input kendo-time-picker k-formatt="'HH:mm'"  min="vm.startDateTime" max="vm.endDateTime" data-bind="value:start,invisible:isAllDay"  name="beginTime" id="beginTime" ng-model="vm.model.beginTime"  />
+                </td>
+                <td><span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr >
                 <td class="formAlignRight">结束时间<span class="required">*</span></td>
                 <td>
-                    <select id="endTimeStr"   name="endTimeStr" ng-model="vm.model.endTimeStr" style="width: 100px;" data-val="true" data-val-required="时间段不能为空">
-                        <option value="">请选择</option>
-                        <option ng-repeat="x in vm.timeObj.$timeRange" ng-selected="vm.model.endTimeStr == x" value="{{x}}">{{x}}</option>
-                    </select>
-                </td>
-                <td><span data-valmsg-for="endTimeStr" data-valmsg-replace="true" class="errors"></span></td>
+                    <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" data-bind="value:end,invisible:isAllDay"  name="endTime" id="endTime" ng-model="vm.model.endTime" data-datecompare-msg="结束时间必须大于开始时间！" />
+                <td>
+                    <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr >
                 <td class="formAlignRight">主要内容<span class="required">*</span></td>

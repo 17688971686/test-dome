@@ -49,7 +49,7 @@
                 <td class="formAlignRight">项目代码： <span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.projectcode" id="projectcode" name="projectcode" data-val="true" data-val-required="必填"
-                    data-val-regex-pattern="^([0-9]|-)*$" data-val-regex="收文编号格式不正确" >
+                    data-val-regex-pattern="^[0-9]{12}" data-val-regex="项目代码格式不正确" >
                 </td>
                 <td><span data-valmsg-for="projectcode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>     

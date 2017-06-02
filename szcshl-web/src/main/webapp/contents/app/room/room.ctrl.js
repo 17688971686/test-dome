@@ -10,10 +10,8 @@
     	var vm = this;
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
-        vm.timeObj = {};
-        vm.timeObj.$startTime = "08:00";
-        vm.timeObj.$endTime = "21:00";
-        vm.timeObj.$timeRange = new Array();
+        vm.startDateTime = new Date("2006/6/1 08:00");
+        vm.endDateTime = new Date("2030/6/1 21:00")
 
         //预定会议编辑
         vm.editRoom = function(){
@@ -82,21 +80,6 @@
         function activate() {
            roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
-           //初始化日期范围
-            var beginN = parseInt(vm.timeObj.$startTime.split(":")[0]);
-            var endN = parseInt(vm.timeObj.$endTime.split(":")[0]);
-            var rangeN = endN - beginN;
-            for(var i=0;i<rangeN;i++){
-                if(beginN < 10){
-                    vm.timeObj.$timeRange.push("0"+beginN+":00");
-                    vm.timeObj.$timeRange.push("0"+beginN+":30");
-                }else{
-                    vm.timeObj.$timeRange.push(beginN+":00");
-                    vm.timeObj.$timeRange.push(beginN+":30");
-                }
-                beginN++;
-            }
-            vm.timeObj.$timeRange.push(vm.timeObj.$endTime);
         }
     }
 })();

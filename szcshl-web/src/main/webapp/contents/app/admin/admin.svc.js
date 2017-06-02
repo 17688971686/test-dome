@@ -21,7 +21,11 @@
 				schema : {
 					data: "value",
                     total: function (data) {
-                    	$('#GtasksCount').html(common.format($('#GtasksCount').html(),data['count']));
+					    if(data['count']){
+                            $('#GtasksCount').html(common.format($('#GtasksCount').html(),data['count']));
+                        }else{
+                            $('#GtasksCount').html(common.format($('#GtasksCount').html(),0));
+                        }
                     	return data['count']; 
                     },
                     model:{

@@ -52,7 +52,7 @@
         	 common.confirm({
               	 vm:vm,
               	 title:"",
-              	 msg:"发起流程后，将不能对信息进行修改，确认发起流程么？",
+              	 msg:"请确认签收资料已经完整，确认么？",
               	 fn:function () {
                     	$('.confirmDialog').modal('hide');             	
                     	signSvc.startFlow(vm,signid);

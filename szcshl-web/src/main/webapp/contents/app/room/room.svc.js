@@ -150,10 +150,10 @@
                       if (isValid) {
                           var model = options.data.models[0];
                           model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTimeStr").val();
-                          model.endTimeStr = $("#endTimeStr").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTimeStr").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTimeStr").val()+":00";
+                          model.beginTimeStr = $("#beginTime").val();
+                          model.endTimeStr = $("#endTime").val();
+                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
                           if(model.endTime < model.beginTime){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
@@ -195,10 +195,10 @@
                       if (isValid) {
                           var model = options.data.models[0];
                           model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTimeStr").val();
-                          model.endTimeStr = $("#endTimeStr").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTimeStr").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTimeStr").val()+":00";
+                          model.beginTimeStr = $("#beginTime").val();
+                          model.endTimeStr = $("#endTime").val();
+                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
                           if(model.endTime < model.beginTime){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
@@ -289,8 +289,8 @@
 		
 			vm.schedulerOptions = {
                 date: new Date(),
-                startTime: new Date("2006/6/1 "+vm.timeObj.$startTime),
-                endTime: new Date("2030/6/1 "+vm.timeObj.$endTime),
+                startTime:vm.startDateTime,
+                endTime:vm.endDateTime,
                 height: 700,
                 views: [
                     "day",

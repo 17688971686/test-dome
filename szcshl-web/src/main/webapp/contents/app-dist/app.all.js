@@ -355,297 +355,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('adminCtrl', admin);
-
-    admin.$inject = ['$location','adminSvc']; 
-
-    function admin($location, adminSvc) {
-        var vm = this;
-        vm.title = '待办事项';
-             
-        activate();
-        function activate() {
-        	adminSvc.gtasksGrid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('adminEndCtrl', admin);
-
-    admin.$inject = ['$location','adminSvc']; 
-
-    function admin($location, adminSvc) {
-        var vm = this;
-        vm.title = '办结事项';
-             
-        activate();
-        function activate() {
-        	adminSvc.etasksGrid(vm);
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('adminSvc', admin);
-
-	admin.$inject = ['$rootScope', '$http'];	
-	
-	function admin($rootScope,$http) {
-		
-		var service = {
-			gtasksGrid : gtasksGrid,		//个人待办
-            etasksGrid : etasksGrid			//个人办结
-		}
-		return service;	
-
-		//S_gtasksGrid
-		function gtasksGrid(vm){
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/flow/html/tasks"),
-				schema : {
-					data: "value",
-                    total: function (data) {
-                    	$('#GtasksCount').html(common.format($('#GtasksCount').html(),data['count']));
-                    	return data['count']; 
-                    },
-                    model:{
-                    	id : "id",                 
-						fields : {
-							createdDate : {
-								type : "date"
-							}
-						}
-                    }
-				},
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,
-				pageSize : 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
-			var columns = [
-				 {
-                     field: "",
-                     title: "序号",
-                     template: "<span class='row-number'></span>",
-                     width:30
-                 },
-                 {
-                     field: "businessName",
-                     title: "任务名称",
-                     filterable : false,
-                     width:180
-                 },
-                 {
-                     field: "flowName",
-                     title: "所属流程",
-                     width: 180,
-                     filterable : false,
-                 },                 
-                 {
-                     field: "taskName",
-                     title: "当前环节",
-                     width: 180,
-                     filterable : false,
-                 },
-                 {
-                     field: "",
-                     title: "开始时间",
-                     width: 150,
-                     filterable : false,
-                     template: function(item) {
- 						if(item.createDate){
- 							return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
- 						}
- 						else{
- 							return " ";
- 						}
- 					}	
-                 },
-                 {
-                     field: "",
-                     title: "流程状态",
-                     width: 80,
-                     filterable : false,
-                     template:function(item){
- 						if(item.isSuspended){
- 							return '<span style="color:orange;">已暂停</span>';
- 						}else{
- 							return '<span style="color:green;">进行中</span>';
- 						}
- 					}
-                 },
-				{
-					field : "",
-					title : "操作",
-					width : 180,
-					template:function(item){
-						//项目签收流程，则跳转到项目签收流程处理野人
-						if(item.flowKey=="FINAL_SIGN_FLOW"){
-							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
-						}else{
-							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
-						}						
-					}	
-				}
-			];
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				resizable : true,
-				dataBound: function () {  
-                    var rows = this.items();  
-                    var page = this.pager.page() - 1;  
-                    var pagesize = this.pager.pageSize();  
-                    $(rows).each(function () {  
-                        var index = $(this).index() + 1 + page * pagesize;  
-                        var rowLabel = $(this).find(".row-number");  
-                        $(rowLabel).html(index);  
-                    });  
-                } 
-			};					
-		}//E_gtasksGrid
-
-        //S_etasksGrid
-		function etasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
-                type : 'odata',
-                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/endTasks"),
-                schema : {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model:{
-                        id : "id",
-                        fields : {
-                            createdDate : {
-                                type : "date"
-                            }
-                        }
-                    }
-                },
-                serverPaging : true,
-                serverSorting : true,
-                serverFiltering : true,
-                pageSize : 10,
-                sort : {
-                    field : "createdDate",
-                    dir : "desc"
-                }
-            });
-            var columns = [
-                {
-                    field: "",
-                    title: "序号",
-                    template: "<span class='row-number'></span>",
-                    width:30
-                },
-                {
-                    field: "businessName",
-                    title: "任务名称",
-                    filterable : false,
-                    width:180
-                },
-                {
-                    field: "",
-                    title: "开始时间",
-                    width: 150,
-                    filterable : false,
-                    template: function(item) {
-                        if(item.createDate){
-                            return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
-                        }
-                        else{
-                            return " ";
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "结束时间",
-                    width: 150,
-                    filterable : false,
-                    template: function(item) {
-                        if(item.endDate){
-                            return kendo.toString(new Date(item.endDate), 'yyyy-MM-dd HH:mm:ss');
-                        }else{
-                            return " ";
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "用时",
-                    width: 180,
-                    filterable : false,
-                    template:function(item){
-                        if(item.durationTime){
-                            return item.durationTime;
-                        }else{
-                            return '<span style="color:orangered;">已办结</span>';
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "流程状态",
-                    width: 120,
-                    filterable : false,
-                    template:function(item){
-                        return '<span style="color:orangered;">已办结</span>';
-                    }
-                },
-                {
-                    field : "",
-                    title : "操作",
-                    width : 80,
-                    template:function(item){
-                        if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0){
-                            return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
-                        }
-                     }
-                }
-            ];
-            // End:column
-            vm.gridOptions = {
-                dataSource : common.gridDataSource(dataSource),
-                filterable : common.kendoGridConfig().filterable,
-                pageable : common.kendoGridConfig().pageable,
-                noRecords : common.kendoGridConfig().noRecordMessage,
-                columns : columns,
-                resizable : true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-            };
-        }//E_etasksGrid
-	}
-			
-})();
-(function () {
-    'use strict';
-
     var service = {
         initJqValidation: initJqValidation,//重置form验证
         requestError: requestError,//请求错误时执行
@@ -2513,6 +2222,301 @@
         }// end 办事处列表
 
     }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('adminCtrl', admin);
+
+    admin.$inject = ['$location','adminSvc']; 
+
+    function admin($location, adminSvc) {
+        var vm = this;
+        vm.title = '待办事项';
+             
+        activate();
+        function activate() {
+        	adminSvc.gtasksGrid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('adminEndCtrl', admin);
+
+    admin.$inject = ['$location','adminSvc']; 
+
+    function admin($location, adminSvc) {
+        var vm = this;
+        vm.title = '办结事项';
+             
+        activate();
+        function activate() {
+        	adminSvc.etasksGrid(vm);
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('adminSvc', admin);
+
+	admin.$inject = ['$rootScope', '$http'];	
+	
+	function admin($rootScope,$http) {
+		
+		var service = {
+			gtasksGrid : gtasksGrid,		//个人待办
+            etasksGrid : etasksGrid			//个人办结
+		}
+		return service;	
+
+		//S_gtasksGrid
+		function gtasksGrid(vm){
+			var dataSource = new kendo.data.DataSource({
+				type : 'odata',
+				transport : common.kendoGridConfig().transport(rootPath+"/flow/html/tasks"),
+				schema : {
+					data: "value",
+                    total: function (data) {
+					    if(data['count']){
+                            $('#GtasksCount').html(common.format($('#GtasksCount').html(),data['count']));
+                        }else{
+                            $('#GtasksCount').html(common.format($('#GtasksCount').html(),0));
+                        }
+                    	return data['count']; 
+                    },
+                    model:{
+                    	id : "id",                 
+						fields : {
+							createdDate : {
+								type : "date"
+							}
+						}
+                    }
+				},
+				serverPaging : true,
+				serverSorting : true,
+				serverFiltering : true,
+				pageSize : 10,
+				sort : {
+					field : "createdDate",
+					dir : "desc"
+				}
+			});
+			var columns = [
+				 {
+                     field: "",
+                     title: "序号",
+                     template: "<span class='row-number'></span>",
+                     width:30
+                 },
+                 {
+                     field: "businessName",
+                     title: "任务名称",
+                     filterable : false,
+                     width:180
+                 },
+                 {
+                     field: "flowName",
+                     title: "所属流程",
+                     width: 180,
+                     filterable : false,
+                 },                 
+                 {
+                     field: "taskName",
+                     title: "当前环节",
+                     width: 180,
+                     filterable : false,
+                 },
+                 {
+                     field: "",
+                     title: "开始时间",
+                     width: 150,
+                     filterable : false,
+                     template: function(item) {
+ 						if(item.createDate){
+ 							return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
+ 						}
+ 						else{
+ 							return " ";
+ 						}
+ 					}	
+                 },
+                 {
+                     field: "",
+                     title: "流程状态",
+                     width: 80,
+                     filterable : false,
+                     template:function(item){
+ 						if(item.isSuspended){
+ 							return '<span style="color:orange;">已暂停</span>';
+ 						}else{
+ 							return '<span style="color:green;">进行中</span>';
+ 						}
+ 					}
+                 },
+				{
+					field : "",
+					title : "操作",
+					width : 180,
+					template:function(item){
+						//项目签收流程，则跳转到项目签收流程处理野人
+						if(item.flowKey=="FINAL_SIGN_FLOW"){
+							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
+						}else{
+							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+						}						
+					}	
+				}
+			];
+			// End:column
+			vm.gridOptions = {
+				dataSource : common.gridDataSource(dataSource),
+				filterable : common.kendoGridConfig().filterable,
+				pageable : common.kendoGridConfig().pageable,
+				noRecords : common.kendoGridConfig().noRecordMessage,
+				columns : columns,
+				resizable : true,
+				dataBound: function () {  
+                    var rows = this.items();  
+                    var page = this.pager.page() - 1;  
+                    var pagesize = this.pager.pageSize();  
+                    $(rows).each(function () {  
+                        var index = $(this).index() + 1 + page * pagesize;  
+                        var rowLabel = $(this).find(".row-number");  
+                        $(rowLabel).html(index);  
+                    });  
+                } 
+			};					
+		}//E_gtasksGrid
+
+        //S_etasksGrid
+		function etasksGrid(vm) {
+            var dataSource = new kendo.data.DataSource({
+                type : 'odata',
+                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/endTasks"),
+                schema : {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model:{
+                        id : "id",
+                        fields : {
+                            createdDate : {
+                                type : "date"
+                            }
+                        }
+                    }
+                },
+                serverPaging : true,
+                serverSorting : true,
+                serverFiltering : true,
+                pageSize : 10,
+                sort : {
+                    field : "createdDate",
+                    dir : "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width:30
+                },
+                {
+                    field: "businessName",
+                    title: "任务名称",
+                    filterable : false,
+                    width:180
+                },
+                {
+                    field: "",
+                    title: "开始时间",
+                    width: 150,
+                    filterable : false,
+                    template: function(item) {
+                        if(item.createDate){
+                            return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
+                        }
+                        else{
+                            return " ";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "结束时间",
+                    width: 150,
+                    filterable : false,
+                    template: function(item) {
+                        if(item.endDate){
+                            return kendo.toString(new Date(item.endDate), 'yyyy-MM-dd HH:mm:ss');
+                        }else{
+                            return " ";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "用时",
+                    width: 180,
+                    filterable : false,
+                    template:function(item){
+                        if(item.durationTime){
+                            return item.durationTime;
+                        }else{
+                            return '<span style="color:orangered;">已办结</span>';
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: 120,
+                    filterable : false,
+                    template:function(item){
+                        return '<span style="color:orangered;">已办结</span>';
+                    }
+                },
+                {
+                    field : "",
+                    title : "操作",
+                    width : 80,
+                    template:function(item){
+                        if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0){
+                            return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
+                        }
+                     }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource : common.gridDataSource(dataSource),
+                filterable : common.kendoGridConfig().filterable,
+                pageable : common.kendoGridConfig().pageable,
+                noRecords : common.kendoGridConfig().noRecordMessage,
+                columns : columns,
+                resizable : true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+        }//E_etasksGrid
+	}
+			
 })();
 (function () {
     'use strict';
@@ -10155,10 +10159,8 @@
     	var vm = this;
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
-        vm.timeObj = {};
-        vm.timeObj.$startTime = "08:00";
-        vm.timeObj.$endTime = "21:00";
-        vm.timeObj.$timeRange = new Array();
+        vm.startDateTime = new Date("2006/6/1 08:00");
+        vm.endDateTime = new Date("2030/6/1 21:00")
 
         //预定会议编辑
         vm.editRoom = function(){
@@ -10227,21 +10229,6 @@
         function activate() {
            roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
-           //初始化日期范围
-            var beginN = parseInt(vm.timeObj.$startTime.split(":")[0]);
-            var endN = parseInt(vm.timeObj.$endTime.split(":")[0]);
-            var rangeN = endN - beginN;
-            for(var i=0;i<rangeN;i++){
-                if(beginN < 10){
-                    vm.timeObj.$timeRange.push("0"+beginN+":00");
-                    vm.timeObj.$timeRange.push("0"+beginN+":30");
-                }else{
-                    vm.timeObj.$timeRange.push(beginN+":00");
-                    vm.timeObj.$timeRange.push(beginN+":30");
-                }
-                beginN++;
-            }
-            vm.timeObj.$timeRange.push(vm.timeObj.$endTime);
         }
     }
 })();
@@ -10429,10 +10416,10 @@
                       if (isValid) {
                           var model = options.data.models[0];
                           model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTimeStr").val();
-                          model.endTimeStr = $("#endTimeStr").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTimeStr").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTimeStr").val()+":00";
+                          model.beginTimeStr = $("#beginTime").val();
+                          model.endTimeStr = $("#endTime").val();
+                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
                           if(model.endTime < model.beginTime){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
@@ -10474,10 +10461,10 @@
                       if (isValid) {
                           var model = options.data.models[0];
                           model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTimeStr").val();
-                          model.endTimeStr = $("#endTimeStr").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTimeStr").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTimeStr").val()+":00";
+                          model.beginTimeStr = $("#beginTime").val();
+                          model.endTimeStr = $("#endTime").val();
+                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
                           if(model.endTime < model.beginTime){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
@@ -10568,8 +10555,8 @@
 		
 			vm.schedulerOptions = {
                 date: new Date(),
-                startTime: new Date("2006/6/1 "+vm.timeObj.$startTime),
-                endTime: new Date("2030/6/1 "+vm.timeObj.$endTime),
+                startTime:vm.startDateTime,
+                endTime:vm.endDateTime,
                 height: 700,
                 views: [
                     "day",
@@ -10759,7 +10746,7 @@
         	 common.confirm({
               	 vm:vm,
               	 title:"",
-              	 msg:"发起流程后，将不能对信息进行修改，确认发起流程么？",
+              	 msg:"请确认签收资料已经完整，确认么？",
               	 fn:function () {
                     	$('.confirmDialog').modal('hide');             	
                     	signSvc.startFlow(vm,signid);
