@@ -5,6 +5,8 @@
 
       
 <div class="well well-sm" style="background:white;">
+
+
 	<!-- s form -->
 	<form id="sign_fill_form" name="sign_fill_form" >
 		<div class="toolbar">
@@ -12,6 +14,8 @@
 			 <a class="btn btn-sm btn-primary" href="#/listSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 		</div>
 		<input type="hidden" ng-model="vm.model.signid" value="{{vm.model.signid}}" />	<!-- hidden id -->
+		
+		
 		
 		<!-- s table -->
 		<table class="table table-bordered">
@@ -21,32 +25,58 @@
 		  <tbody>
 		 
 		     <tr>
-		      <td width="15%" class="text-center">主办事处</td>
+		      <td width="15%" class="text-center">主办处室</td>
 		      <td>
-					<select ng-model="vm.model.maindepetid" ng-change="vm.findOfficeUsersByDeptId('main')" id="maindepetid" name="maindepetid" >
+					<!-- <select ng-model="vm.model.maindepetid" ng-change="vm.findOfficeUsersByDeptId('main')" id="maindepetid" name="maindepetid" >
+						<option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindepetid == md.deptId" value="{{md.deptId}}" >{{md.deptName}}</option>
+					</select> -->
+					<!-- <select ng-model="vm.model.maindepetid" id="maindepetid" name="maindepetid" style="width: 130px;height: 26px ;">
 						<option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindepetid == md.deptId" value="{{md.deptId}}" >{{md.deptName}}</option>
 					</select>
-			  </td>
-		      <td width="15%" class="text-center">主办事处联系人</td>
+					<input type="txet" ng-model="vm.model.maindeptName" name="maindeptName" value="" id="maindeptName">
+					</td> -->
+					<div style="position: relative;">
+							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
+								<select ng-model="vm.model.maindepetid" ng-change="vm.findOfficeUsersByDeptId('main')"  name="maindepetid" id="maindepetid"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindepetid == md.deptName" value="{{md.deptName}}" >{{md.deptName}}</option>
+								</select>
+							</span>
+							 <input type="text" ng-model="vm.model.maindepetid" name="maindepetid" id="maindepetid"
+								style="width: 214px; position: absolute; left: 0px;"value="">
+					</div>
+		      <td width="15%" class="text-center">主办处室联系人</td>
 		      <td>
-					<select ng-model="vm.model.maindepetcontactuserid" name="maindepetid" id="maindepetid">
+					<!-- <select ng-model="vm.model.maindepetcontactuserid" name="maindepetid" id="maindepetid">
+						<option>请选择</option>
 						<option ng-repeat="mu in vm.mainOfficeList" ng-selected="vm.model.maindepetcontactuserid == mu.officeID"  value="{{mu.officeID}}">{{mu.officeUserName}} </option>
-					</select>
+					</select> -->
+					<div style="position: relative;">
+							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
+								<select ng-model="vm.model.maindepetcontactuserid"  name="maindepetcontactuserid" id="maindepetcontactuserid"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="mu in vm.mainOfficeList" ng-selected="vm.model.maindepetcontactuserid == mu.officeUserName"  value="{{mu.officeUserName}}">{{mu.officeUserName}} </option>
+							</select>
+							</span>
+							 <input type="text" ng-model="vm.model.maindepetcontactuserid" name="maindepetcontactuserid" id="maindepetcontactuserid"
+								style="width: 214px; position: absolute; left: 0px;"value="">
+					</div>
 			  </td>
 		    </tr>
 		    
 		    <tr>
-		      <td width="15%" class="text-center">协办事处</td>
+		      <td width="15%" class="text-center">协办处室</td>
 		      <td>
 					<select ng-model="vm.model.assistdeptid" ng-change="vm.findOfficeUsersByDeptId('assist')" name="assistdeptid" id="assistdeptid">
 						<option ng-repeat="ad in vm.deptlist" ng-selected="vm.model.assistdeptid == ad.deptId" value="{{ad.deptId}}">{{ad.deptName}}</option>
 					</select>
 			  </td>
-		      <td width="15%" class="text-center">协办事处联系人</td>
+		      <td width="15%" class="text-center">协办处室联系人</td>
 		      <td>
-					<select ng-model="vm.model.assistdeptcontactuserid" name="assistdeptid" id="assistdeptid">
+					 <select ng-model="vm.model.assistdeptcontactuserid" name="assistdeptid" id="assistdeptid">
+						<option>请选择</option>
 						<option ng-repeat="au in vm.assistOfficeList" ng-selected="vm.model.assistdeptcontactuserid == au.officeID"  value="{{au.officeID}}">{{au.officeUserName}}</option>
 					</select>
+					
+				
 			  </td>
 		    </tr>
 		    <tr>
@@ -60,17 +90,35 @@
 		      <td rowspan="2">{{vm.model.projectname}}</td>
 		      <td width="15%" class="text-center">建设单位</td>
 		      <td>
-					<select ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName" >
+					<!-- <select ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName" >
 						<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
-					</select>
-			  </td>
+					</select> -->
+						<div style="position: relative;">
+							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
+								<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" id="builtcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+							</select>
+							</span>
+							 <input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName"
+								style="width: 214px; position: absolute; left: 0px;"value="">
+						</div>
+					</td>
 		    </tr>
 		    <tr>		     
 		      <td width="15%" class="text-center">编制单位</td>
 		      <td>
-					<select ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName">
+					<!-- <select ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName">
 						<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
-					</select>
+					</select> -->
+					<div style="position: relative;">
+							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
+								<select ng-model="vm.model.designcompanyName"  name="designcompanyName" id="designcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
+								</select>
+							</span>
+							 <input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName"
+								style="width: 214px; position: absolute; left: 0px;"value="">
+						</div>
 			  </td>
 		    </tr> 
 		    
@@ -336,26 +384,26 @@
 		      <td colspan="3">
 		      	请张主任阅示:
 		    	  {{vm.model.comprehensivehandlesug}}
-				<div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
+				<!-- <div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
 				<br>
 				综合部
 				<br>
 				日期：2017年5月23日
-				</div>
+				</div> -->
 			  </td>		      
 		    </tr>
 		    <tr>
 		      <td width="15%" class="text-center">中心领导签批意见</td>
 		      <td colspan="3">
-			  	{{vm.model.leaderhandlesug}}
 			  	中心领导审批：
-				<div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
+			  	{{vm.model.leaderhandlesug}}
+				 <!--<div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
 				<br>
 				签名：周京阴
 				<br>
 				<br>
 				日期：2017年5月23日
-				</div>
+				</div> -->
 			  </td>		      
 		    </tr>
 		    <tr>

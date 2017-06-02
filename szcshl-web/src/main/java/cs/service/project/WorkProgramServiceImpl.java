@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -15,11 +16,13 @@ import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.domain.sys.User;
+import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -186,6 +189,58 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	protected boolean isAssistSignChange(Sign sign){
 		User curUser = currentUser.getLoginUser();
 		return (curUser.getId()).equals(sign.getaFlowAssistUserId()) || (curUser.getId()).equals(sign.getaFlowMainUserId());
+	}
+
+	@Override
+	public List<SignDto> waitProjects(SignDto signDto) {
+		List<Sign> signlist= signRepo.findAll();
+		List<SignDto> signDtolist = new ArrayList<>();
+		if(signlist != null && signlist.size() > 0){
+			signlist.forEach(x->{
+				SignDto signdto = new SignDto();
+				BeanCopierUtils.copyProperties(x, signdto);
+				signdto.setCreatedDate(x.getCreatedDate());
+				signdto.setModifiedDate(x.getModifiedDate());
+				signDtolist.add(signdto);
+			});
+			
+		}
+		return signDtolist;
+	}
+
+	@Override
+	public List<SignDto> selectedProject(String[] ids) {
+		List<SignDto> signDtos = new ArrayList<>();
+		for(String id : ids){
+			if(Validate.isString(id)){
+				SignDto signDto = new SignDto();
+				Sign s=signRepo.findById(id);
+				BeanCopierUtils.copyProperties(s, signDto);
+				signDto.setCreatedDate(s.getCreatedDate());
+				signDto.setModifiedDate(s.getModifiedDate());
+				signDtos.add(signDto);
+			}
+		}
+		return signDtos;
+	}
+
+	@Override
+	@Transactional
+	public void mergeAddWork(String signId, String linkSignId) {
+		Date now = new Date();
+		Sign sign = signRepo.findById(signId);
+		MergeDispa  merge = new MergeDispa();
+		List<WorkProgram>works=sign.getWorkProgramList();
+		for(WorkProgram work :works){
+			merge.setBusinessId(work.getId());
+			merge.setType(work.getReviewType());
+		}
+		merge.setSignId(signId);
+		merge.setLinkSignId(linkSignId);
+		merge.setCreatedBy(currentUser.getLoginName());
+		merge.setModifiedBy(currentUser.getLoginName());
+		merge.setCreatedDate(now);
+		merge.setModifiedDate(now);
 	}
 
 }

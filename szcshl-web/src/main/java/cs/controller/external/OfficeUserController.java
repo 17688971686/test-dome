@@ -3,6 +3,7 @@ package cs.controller.external;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,7 +23,7 @@ import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.external.OfficeUserService;
-
+ 
 @Controller
 @RequestMapping(name = "办事处人员", path = "officeUser")
 public class OfficeUserController {
@@ -61,10 +62,12 @@ public class OfficeUserController {
 		return officeUserService.findById(officeID);
 	}
 	
-	@RequiresPermissions("officeUser#findOfficeUserByDeptId#get")
-	@RequestMapping(name = "根据ID获取办事处信息", path = "findOfficeUserByDeptId", method = RequestMethod.GET)
+	@RequiresPermissions("officeUser#findOfficeUserByDeptId#post")
+	@RequestMapping(name = "根据ID获取办事处信息", path = "findOfficeUserByDeptId", method = RequestMethod.POST)
     @ResponseBody
-	public List<OfficeUserDto> findOfficeUserDeptId(@RequestParam(required = true)String deptId){
+	public List<OfficeUserDto> findOfficeUserDeptId(@RequestParam(required = true) String deptId ,HttpServletRequest req ){
+		String name	=req.getParameter(deptId);
+		System.out.println(name);
 		List<OfficeUserDto> officeDto =officeUserService.findOfficeUserByDeptId(deptId);
 		return officeDto;
 	}

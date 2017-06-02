@@ -28,7 +28,7 @@ public class WorkProgram extends DomainBase{
 	@Column(columnDefinition="VARCHAR(20)")
 	private String reviewType;
 	
-	//是否单个评审
+	//是否单个评审  0:表示合并评审,9:表示单个评审
 	@Column(columnDefinition="VARCHAR(20)")
 	private String isSigle;
 	

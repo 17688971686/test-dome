@@ -12,12 +12,48 @@
          
         vm.work.signId = $state.params.signid;		//这个是收文ID
         
+        vm.linkSignId=" ";
+        
         workprogramSvc.initPage(vm);
         workprogramSvc.findCompanys(vm);//查找主管部门
+    	workprogramSvc.waitProjects(vm);//待选项目列表
         activate();
         function activate() {
         	workprogramSvc.findAllMeeting(vm);//查找所有会议室地点
         	workprogramSvc.findAllUsers(vm);//查询所有用户
+        
+        }
+        //保存合并评审
+        vm.mergeAddWork = function(vm){
+        	workprogramSvc.mergeAddWork(vm);
+        }
+        //合并评审
+        vm.reviewType = function(){
+        	if(vm.work.isSigle=="合并评审"){
+        		var isHide=false;
+        	}else{
+        		var isHide = true;
+        	}
+        }
+        //主项目
+        vm.mainIschecked = function(){
+        	vm.isHideProject = false;
+        }
+        //次项目
+        vm.subIschecked = function(){
+        	vm.isHideProject = true;
+        }
+        //项目关联页面
+        vm.gotoProjcet = function(){
+        	workprogramSvc.gotoProjcet(vm);
+        }
+        //选择项目
+        vm.selectworkProject = function(){
+        	workprogramSvc.selectworkProject(vm);
+        }
+        //取消项目
+        vm.cancelworkProject = function(){
+        	workprogramSvc.cancelworkProject(vm);
         }
         //会议预定添加弹窗
         vm.addTimeStage = function(){

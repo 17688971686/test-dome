@@ -1,5 +1,7 @@
 package cs.controller.project;
 
+import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.service.project.WorkProgramService;
 
@@ -38,6 +41,30 @@ public class WorkProgramController {
 	public @ResponseBody WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId,String isMain){
 		WorkProgramDto workDto =workProgramService.initWorkBySignId(signId,isMain);
 		return workDto;
+	}
+	
+	@RequiresPermissions("workprogram#waitProjects#post")
+	@RequestMapping(name = "待选项目列表", path = "waitProjects",method=RequestMethod.POST)	
+	@ResponseBody
+	public List<SignDto> waitProjects(SignDto signDto){
+		List<SignDto>	sign = workProgramService.waitProjects(signDto);
+		return sign;
+	}
+	
+	@RequiresPermissions("workprogram#selectedProject#post")
+	@RequestMapping(name = "已选项目列表", path = "selectedProject",method=RequestMethod.POST)
+	public @ResponseBody List<SignDto> selectedProject(@RequestParam(required = true)String linkSignIds){
+		String [] ids=linkSignIds.split(",");
+		List<SignDto> signList =workProgramService.selectedProject(ids);
+		return signList;
+	}
+	
+	@RequiresPermissions("workprogram#mergeAddWork#post")
+	@RequestMapping(name = "生成关联信息", path = "mergeAddWork",method=RequestMethod.POST)	
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public void mergeAddWork(@RequestParam String signId,String linkSignId){
+		
+		workProgramService.mergeAddWork(signId,linkSignId);
 	}
 	
 	@RequiresPermissions("workprogram#html/edit#get")

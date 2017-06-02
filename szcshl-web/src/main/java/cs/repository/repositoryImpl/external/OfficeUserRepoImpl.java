@@ -30,7 +30,7 @@ public class OfficeUserRepoImpl extends AbstractRepository<OfficeUser, String> i
 	public List<OfficeUser> findOfficeUserByDeptId(String deptId) {
 		Criteria criteria = getExecutableCriteria();
 		List<OfficeUser> officelist=criteria.createAlias(OfficeUser_.dept.getName(), OfficeUser_.dept.getName())
-				.add(Restrictions.eq(OfficeUser_.dept.getName()+"."+Dept_.deptId.getName(), deptId)).list();
+				.add(Restrictions.eq(OfficeUser_.dept.getName()+"."+Dept_.deptName.getName(), deptId)).list();
 		return officelist;
 	}
 

@@ -94,6 +94,7 @@
 				vm.model.sugFileDealCount=1;
 			}
 		}
+<<<<<<< Updated upstream
 		function sugOrgApplyOriginal(vm){
 			if(vm.model.sugOrgApplyOriginal==null){
 				vm.model.sugOrgApplyCount=1;
@@ -407,6 +408,10 @@
 			}
 		}
 		//E_输入资料分数数字校验
+=======
+		
+		//E_项目建设书阶段(一)
+>>>>>>> Stashed changes
 		
 		//S_初始化grid
 		function grid(vm){
@@ -452,6 +457,7 @@
 					},
 					{
 						field : "projectcode",
+<<<<<<< Updated upstream
 						title : "项目编号",
 						width : 160,
 						filterable : false,
@@ -466,6 +472,25 @@
 						field : "mainDeptUserName",
 						title : "主办事处联系人",
 						width : 100,
+=======
+						title : "收文编号",
+						width : 160,
+						filterable : false,
+					},
+					
+					{
+
+						field : "reviewstage",
+						title : "项目阶段",
+						width : 160,
+						filterable : false,
+					},
+					{
+
+						field : "projectcode",
+						title : "项目代码",
+						width : 160,
+>>>>>>> Stashed changes
 						filterable : false,
 					},
 					{
@@ -575,6 +600,7 @@
 		
 		//start  根据协办部门查询用户
 		function findOfficeUsersByDeptId(vm,status){
+//			/alert(vm.model.maindepetid);
 			var param = {};
 			if("main" == status){
 				param.deptId = vm.model.maindepetid;
@@ -582,9 +608,10 @@
 				param.deptId = vm.model.assistdeptid;
 			}
 			var httpOptions = {
-					method : 'get',
+					method : 'post',
 					url : rootPath+"/officeUser/findOfficeUserByDeptId",
-					params:param					
+					params:{deptId:param.deptId}	
+//					params :param
 				};
 				
 			var httpSuccess = function success(response) {
@@ -595,9 +622,11 @@
 						if("main" == status){
 							vm.mainOfficeList = {};
 							vm.mainOfficeList = response.data;
+							console.log(vm.mainOfficeList);
 						}else{
 							vm.assistOfficeList = {};
 							vm.assistOfficeList = response.data;
+							console.log(vm.assistOfficeList);
 						}
 					}
 				});
@@ -697,6 +726,7 @@
 						
 						if(response.data.mainOfficeList){
 							vm.mainOfficeList=response.data.mainOfficeList;
+							console.log(vm.mainOfficeList);
 						}
 						if(response.data.assistOfficeList){
 							vm.assistOfficeList=response.data.assistOfficeList;

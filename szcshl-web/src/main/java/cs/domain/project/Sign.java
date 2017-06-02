@@ -62,7 +62,8 @@ public class Sign extends DomainBase{
 	private String maindepetid;
 	
 	//主办事处名称
-	@Formula("(select d.deptName from es_dept d where d.deptId = maindepetid)")
+	//@Formula("(select d.deptName from es_dept d where d.deptId = maindepetid)")
+	@Column(columnDefinition="VARCHAR(128)")
 	private String maindeptName;
 
 	//主办处室联系人ID
