@@ -249,8 +249,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		DispatchDocDto dispatchDto = new DispatchDocDto();
 		Sign sign = signRepo.findById(signId);
 		DispatchDoc dispatch  = sign.getDispatchDoc();
-		//设置默认关联项目值
-		dispatch.setIsRelated("否");
+
 		if (dispatch==null||StringUtils.isBlank(dispatch.getId())) {
 			dispatch = new DispatchDoc();
 			dispatch.setDraftDate(now);
@@ -271,10 +270,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				linkSignId = mergeDispa.getLinkSignId();
 			}
 			
-			if((dispatch.getIsMainProject()).equals(Constant.EnumState.YES.getValue())){
+			if(Validate.isString(dispatch.getIsMainProject()) && dispatch.getIsMainProject().equals(Constant.EnumState.YES.getValue())){
 				dispatch.setIsRelated("是");
 			}
 		}
+        //设置默认关联项目值
+        dispatch.setIsRelated("否");
 		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
 		dispatchDto.setSignId(signId);

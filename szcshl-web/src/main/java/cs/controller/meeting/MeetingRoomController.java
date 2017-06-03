@@ -73,12 +73,7 @@ public class MeetingRoomController {
 	@RequestMapping(name = "删除会议室" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
 	public void delete (@RequestBody String id){
-		String [] ids=id.split(",");
-		if(ids.length>1){
-			meetingRoomService.deleteMeeting(ids);
-		}else{
-			meetingRoomService.deleteMeeting(id);
-		}
+		meetingRoomService.deleteMeeting(id);
 	}
 	
 }

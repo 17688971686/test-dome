@@ -40,7 +40,7 @@ public interface IRepository<T, ID> {
 	List<T> findByHql(HqlBuilder hqlBuilder);
 	
 	List<T> findByIds(String idPropertyName,String idValue,String orderStr);
-	
+
 	public int executeHql(String hql);
 	
 	public int executeHql(HqlBuilder hqlBuilder);

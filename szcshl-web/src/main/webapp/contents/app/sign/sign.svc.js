@@ -244,7 +244,7 @@
 				param.deptId = vm.model.assistdeptid;
 			}
 			var httpOptions = {
-					method : 'get',
+					method : 'post',
 					url : rootPath+"/officeUser/findOfficeUserByDeptId",
 					params:param					
 				};
@@ -423,7 +423,7 @@
                         if(vm.model.workProgramDtoList){
                             vm.mainwork = {};
                             vm.show_workprogram = true;
-                            if(vm.model.workProgramDtoList.length > 0){
+                            if(vm.model.workProgramDtoList.length > 1){
                                 vm.showAssistwork = true;
                                 vm.assistwork = {};
                                 if(vm.model.workProgramDtoList[0].isMain == 9){

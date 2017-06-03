@@ -91,7 +91,7 @@ public class FileRecordServiceImpl implements FileRecordService {
         	BeanCopierUtils.copyProperties(fileRecord,fileRecordDto);
         }else{
         	//如果是新增，则要初始化
-        	Sign sign = signRepo.findById(signid);
+        	Sign sign = signRepo.findByIds(Sign_.signid.getName(),signid,"").get(0);
         	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectCode(sign.getProjectcode());

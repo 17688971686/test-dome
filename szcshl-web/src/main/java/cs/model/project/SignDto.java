@@ -27,23 +27,31 @@ public class SignDto extends BaseDto {
 	private String projectname;
 		
 	private String isregisteredcompleted;
-	
+
+	private String ischangeEstimate;
+
 	private String maindepetid;
+
 	private String maindeptName;
+
 	private String mainDeptUserName;
 	
 	private String maindepetcontactuserid;
 	
 	private String assistdeptid;
+
 	private String assistdeptName;
+
 	private String assistDeptUserName;
 	
 	private String assistdeptcontactuserid;
 	
 	private String designcompanyid;
+
 	private String designcompanyName;
 
 	private String builtcompanyid;
+
 	private String builtcompanyName;
 
 	private String urgencydegree;
@@ -306,14 +314,14 @@ public class SignDto extends BaseDto {
 	
 	//流程实例ID
 	private String processInstanceId;
-	
+
 	//开始时间
 	@JSONField(format = "yyyy-MM-dd")
 	private Date startTime;
 	//结束时间
 	@JSONField(format = "yyyy-MM-dd")
-	private Date endTime; 
-	
+	private Date endTime;
+
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -1264,4 +1272,11 @@ public class SignDto extends BaseDto {
 		this.builtcompanyName = builtcompanyName;
 	}
 
+	public String getIschangeEstimate() {
+		return ischangeEstimate;
+	}
+
+	public void setIschangeEstimate(String ischangeEstimate) {
+		this.ischangeEstimate = ischangeEstimate;
+	}
 }

@@ -2,6 +2,7 @@ package cs.model.meeting;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.common.utils.DateUtils;
+import cs.domain.project.WorkProgram;
 import cs.model.BaseDto;
 import org.hibernate.annotations.Formula;
 
@@ -33,6 +34,15 @@ public class RoomBookingDto extends BaseDto{
 	private String beginTimeStr;
 	private String endTimeStr;
 
+	private WorkProgram workProgram;
+
+	public WorkProgram getWorkProgram() {
+		return workProgram;
+	}
+
+	public void setWorkProgram(WorkProgram workProgram) {
+		this.workProgram = workProgram;
+	}
 
 	public String getId() {
 		return id;

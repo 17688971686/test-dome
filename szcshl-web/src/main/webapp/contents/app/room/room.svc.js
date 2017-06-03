@@ -152,6 +152,9 @@
                           model.endTimeStr = $("#endTime").val();
                           model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
                           model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
+                          if(vm.workProgramId){
+                              model.workProgramId = vm.workProgramId;
+						  }
                           if(model.endTime < model.beginTime){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
@@ -289,7 +292,7 @@
                 date: new Date(),
                 startTime:vm.startDateTime,
                 endTime:vm.endDateTime,
-                height: 700,
+                height: 600,
                 views: [
                     "day",
                     "workWeek",

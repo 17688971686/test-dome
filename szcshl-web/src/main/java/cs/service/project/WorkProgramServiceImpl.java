@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.DateUtils;
+import cs.domain.meeting.RoomBooking;
+import cs.model.meeting.RoomBookingDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -134,6 +137,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 				UserDto checkUser = userService.findById(workProgram.getCreatedBy());
 				if(userService.curUserIsSuperLeader(checkUser) || isMainUser || isAssistUser){
 					BeanCopierUtils.copyProperties(workProgram,workProgramDto);
+					//初始化会议室预定情况
+					List<RoomBooking> roomBookings = workProgram.getRoomBookings();
+					if(roomBookings != null && roomBookings.size() > 0){
+						List<RoomBookingDto> roomBookingDtos = new ArrayList<RoomBookingDto>(roomBookings.size());
+						roomBookings.forEach(r ->{
+							RoomBookingDto rbDto = new RoomBookingDto();
+							BeanCopierUtils.copyProperties(r,rbDto);
+                            rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(),"HH:mm"));
+                            rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(),"HH:mm"));
+							roomBookingDtos.add(rbDto);
+						});
+						workProgramDto.setRoomBookings(roomBookingDtos);
+					}
 					break;
 				}				
 			}			

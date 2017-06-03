@@ -342,45 +342,16 @@
                     filterable: false
                 },
                 {
-                    field: "userSex",
-                    title: "性别",
-                    width: 80,
-                    filterable: false
-                },
-                {
-                    field: "userPhone",
-                    title: "联系电话",
-                    width: 80,
-                    filterable: false
-                },
-                {
                     field: "userMPhone",
                     title: "联系手机",
-                    width: 80,
+                    width: 120,
                     filterable: false
                 },
-                {
-                    field: "email",
-                    title: "电子邮件",
-                    width: 80,
-                    filterable: false
-                },
+
                 {
                     field: "orgDto.name",
                     title: "所属部门",
                     width: 100,
-                    filterable: false
-                },
-                {
-                    field: "jobState",
-                    title: "在职情况",
-                    width: 80,
-                    filterable: false
-                },
-                {
-                    field: "useState",
-                    title: "是否停用",
-                    width: 80,
                     filterable: false
                 },
                 {
@@ -404,7 +375,11 @@
 						if(item.roles){
 							var resultStr = "";
 							for(var i=0,l=item.roles.length;i<l;i++){
-								resultStr += item.roles[i].roleName +", ";
+							    if(i == 0){
+                                    resultStr += item.roles[i].roleName
+                                }else{
+                                    resultStr += ", "+item.roles[i].roleName ;
+                                }
 							}
 							return resultStr;
 						}
@@ -412,11 +387,6 @@
 							return " ";
 						}
 					}	
-                },
-                {
-                    field: "remark",
-                    title: "描述",
-                    filterable: false
                 },
                 {
                     field: "",

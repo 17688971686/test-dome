@@ -31,7 +31,7 @@
 				</select>
 			</span> &nbsp;&nbsp;
 			
-			<span id="mergeOptions" ng-hide="vm.isHide">
+			<span id="mergeOptions" ng-hide="true">
 			<input type="radio" id="isSigle"   name="Type" ng-model="vm.dispatchDoc.isSigle" ng-value="9" ng-checked="vm.dispatchDoc.isMainProject =='9'" ng-click="vm.mainIschecked()">主项目 &nbsp;&nbsp; 
 			<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isSigle" ng-value="0" ng-checked="vm.dispatchDoc.isMainProject =='0'" ng-click="vm.subIschecked()">次项目  &nbsp;&nbsp;
 			<button id="linkbtn" ng-click="vm.gotoProjcet()" ng-hide="vm.isHideProject">关联项目</button></span>
@@ -77,8 +77,7 @@
 									<option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptId == x.coName" value="{{x.coName}}">{{x.coName}}</option>
 							</select>
 							</span>
-							 <input type="text" ng-model="vm.work.mainDeptId" name="mainDeptId" id="mainDeptId"
-								style="width: 214px; position: absolute; left: 0px;"value="">
+							 <input type="text" ng-model="vm.work.mainDeptId" name="mainDeptId" id="mainDeptId" style="width: 214px; position: absolute; left: 0px;"value="">
 					</div>
 					
 				 </td>
@@ -206,9 +205,7 @@
 			<tr>
 				<td colspan="2" style="width:150px;" class="text-center">评审会时间</td>	
 			    <td colspan="3">
-			      	<input type="text" ng-click="vm.addTimeStage()"style="width:60%;"class="form-control input-sm " ng-model="vm.work.workStageTime" name="workStageTime">	
-			    	<!-- <input type="button" ng-click="vm.addTimeStage()" class="btn btn-info" value="时间"> -->
-			    	
+			      	<input type="text" ng-click="vm.addTimeStage()"style="width:60%;"class="form-control input-sm " ng-model="vm.work.workStageTime" name="workStageTime">
 			    </td>
 			    <td style="width:150px;" class="text-center">会议地点</td>
 			    <td >
@@ -303,7 +300,11 @@
             <button class="btn btn-sm btn-primary" ng-click="vm.gotoRoom()"><span class="glyphicon glyphicon-chevron-left"></span>同项目预定多次会议室</button>
             <button class="btn btn-sm btn-success" ng-click="vm.saveWorks()" ng-disabled="vm.isSubmit" ng-show="updateWork"><span class="glyphicon glyphicon-ok"></span>保存</button>
             <button class="btn btn-sm btn-success" ng-click="vm.saveRoom()" ><span class="glyphicon glyphicon-ok"></span>保存</button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.onRoomClose()" ><span class="glyphicon glyphicon-chevron-left"></span>关闭</button>
+
+			<button class="btn btn-sm btn-info" ng-click="vm.preBookRoom()" ng-show="vm.isHavePre"><span class="glyphicon glyphicon-ok"></span>上一页</button>
+			<button class="btn btn-sm btn-info" ng-click="vm.nextBookRoom()" ng-show="vm.isHaveNext"><span class="glyphicon glyphicon-ok"></span>下一页</button>
+
+			<button class="btn btn-sm btn-primary" ng-click="vm.onRoomClose()" ><span class="glyphicon glyphicon-chevron-left"></span>关闭</button>
          </div>
         <table style="width:100%">
             <tr>
@@ -316,7 +317,9 @@
                 <td>
                 	<input type="hidden" class="form-control input-sm " ng-model="vm.roombook.workProgramId" name="workProgramId" id="workProgramId" >
                 	<input type="hidden" class="form-control input-sm " ng-model="vm.roombook.stageOrg" name="stageOrg" id="stageOrg" >
-                     <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.roombook.rbName " id="rbName" name="rbName" data-val="true" data-val-required="必填">
+                    <input type="hidden" class="form-control input-sm " ng-model="vm.roombook.id">
+
+                    <input maxlength="200" class="form-control input-sm " ng-model="vm.roombook.rbName " id="rbName" name="rbName" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
@@ -367,7 +370,7 @@
             <tr>
                 <td class="formAlignRight">开始时间： <span class="required">*</span></td>
                 <td>
-                     <input kendo-time-picker k-format="'HH:mm'"  min="vm.startDateTime" max="vm.endDateTime" style="width:40%;" ng-model="vm.roombook.beginTime" id="beginTime"  name="beginTime">
+                     <input kendo-time-picker k-format="'HH:mm'"  min="vm.startDateTime" max="vm.endDateTime" style="width:40%;" ng-model="vm.roombook.beginTimeStr" id="beginTime"  name="beginTime">
 				</td>
                  <td><span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
 
@@ -375,7 +378,7 @@
             <tr>
                 <td class="formAlignRight">结束时间： <span class="required">*</span></td>
                 <td>
-                  <input kendo-time-picker k-format="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width:40%;" ng-model="vm.roombook.endTime" id="endTime" name="endTime">
+                  <input kendo-time-picker k-format="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width:40%;" ng-model="vm.roombook.endTimeStr" id="endTime" name="endTime">
                 <td>
                 <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

@@ -12,8 +12,6 @@ public interface MeetingRoomService {
 	void createMeeting(MeetingRoomDto meetingDto);
 
 	void deleteMeeting(String id);
-
-	void deleteMeeting(String[] ids);
 	
 	void updateMeeting(MeetingRoomDto meetingDto);
 

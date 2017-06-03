@@ -23,9 +23,6 @@
 			selectworkProject:selectworkProject,//选择项目
 			cancelworkProject:cancelworkProject,//取消项目
 			mergeAddWork:mergeAddWork,//保存合并评审
-			
-			
-			
 		};
 		return service;
 		
@@ -128,7 +125,6 @@
 		
 		//S_待选项目列表
 		function waitProjects(vm){
-		
 			var httpOptions = {
 	                method: 'post',
 	                url: common.format(url_work + "/waitProjects")
@@ -211,6 +207,10 @@
                 vm.roombook.stageProject = "项目名称:"+vm.work.projectName+":"+vm.work.buildCompany+":"+vm.work.reviewOrgName;
                 vm.roombook.beginTimeStr = $("#beginTime").val();
                 vm.roombook.endTimeStr = $("#endTime").val();
+                if($("#endTime").val() <$("#beginTime").val()){
+                    $("#errorTime").html("开始时间不能大于结束时间!");
+                    return ;
+                }
                 vm.roombook.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
                 vm.roombook.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
 				var httpOptions = {
@@ -323,12 +323,11 @@
 		
 		//S_初始化页面参数
 		function initPage(vm){
-		
 			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/workprogram/html/initWorkBySignId",
-					params : {signId:vm.work.signId}
-				}
+				method : 'get',
+				url : rootPath+"/workprogram/html/initWorkBySignId",
+				params : {signId:vm.work.signId}
+			}
 			var httpSuccess = function success(response) {									
 				common.requestSuccess({
 					vm:vm,
@@ -337,6 +336,15 @@
 						if(response.data != null && response.data != ""){
 							vm.work = response.data;
 							vm.work.signId = $state.params.signid
+							if(response.data.roomBookings && response.data.roomBookings.length > 0){
+                                vm.isRoomBook = true;
+                                vm.RoomBookings = {};
+                                vm.RoomBookings = response.data.roomBookings;
+                                vm.roombook = vm.RoomBookings[0];
+                                if(vm.RoomBookings.length > 1){
+                                    vm.isHaveNext = true;
+                                }
+							}
 						}	
 					}						
 				});

@@ -7,7 +7,7 @@
 
     function officeUser($location, officeUserSvc) {
         var vm = this;
-        vm.title = '办事处人员列表';
+        vm.title = '处室人员管理';
 
         vm.del = function (id) {
             common.confirm({

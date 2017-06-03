@@ -107,7 +107,7 @@
 
             //begin#room
             .state('room', {
-                url: '/room',
+                url: '/room/:workProgramId',
                 templateUrl: rootPath + '/room/html/roomlist.html',
                 controller: 'roomCtrl',
                 controllerAs: 'vm'

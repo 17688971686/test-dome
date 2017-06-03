@@ -8,12 +8,12 @@
     function dept($location, deptSvc, $state) {
         /* jshint validthis:true */
         var vm = this;
-        vm.title = '编辑办事处';
+        vm.title = '编辑处室';
         vm.isuserExist = false;
         vm.deptId = $state.params.deptId;
         if (vm.deptId) {
             vm.isUpdate = true;
-            vm.title = '更新办事处';
+            vm.title = '更新处室';
         }
 
         vm.create = function () {

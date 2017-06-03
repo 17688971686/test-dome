@@ -10,6 +10,7 @@ import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
@@ -163,13 +164,18 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			rb.setId(UUID.randomUUID().toString());
 			Date days = roomBookingDto.getRbDay();
 			String strdate = DateUtils.toStringDay(days);
-			String day=GetWeekUtils.getWeek(days);
+			String day = GetWeekUtils.getWeek(days);
 			rb.setRbDate(strdate+"("+day+")");//星期几
 			Date now = new Date();
 			rb.setCreatedDate(now);
 			rb.setModifiedDate(now);
 			rb.setCreatedBy(currentUser.getLoginName());
 			rb.setModifiedBy(currentUser.getLoginName());
+
+			if(Validate.isString(roomBookingDto.getWorkProgramId())){
+				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
+                rb.setWorkProgram(wp);
+			}
 			roomBookingRepo.save(rb);
 		}
 		
@@ -193,16 +199,24 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Override
 	@Transactional
 	public void deleteRoom(String id) {
-		RoomBooking room = 	roomBookingRepo.getById(id);
+		RoomBooking room = 	roomBookingRepo.findById(id);
 		if(room != null){
-			roomBookingRepo.delete(room);
-			logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
+		    if(room.getCreatedBy().equals(currentUser.getLoginUser().getId())){
+                roomBookingRepo.delete(room);
+                logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
+            }else{
+                throw new IllegalArgumentException("您不是会议室预定人员，不能对其进行删除操作！");
+            }
 		}
 	}
+
 	@Override
 	public void deleteRooms(String[] ids) {
-		
+		for(String id:ids){
+            deleteRoom(id);
+        }
 	}
+
 	@Override
 	@Transactional
 	public void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto) {
@@ -212,7 +226,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
             RoomBooking rb = new RoomBooking();
             BeanCopierUtils.copyProperties(roomDto, rb);
             String strdate = DateUtils.toStringDay(roomDto.getRbDay());
-            String stageday=GetWeekUtils.getWeek(roomDto.getRbDay());
+            String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
             rb.setRbDate(strdate+"("+stageday+")");//星期几
             String stageProject = roomDto.getStageProject();
             rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");

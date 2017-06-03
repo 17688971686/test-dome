@@ -5,12 +5,12 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/dept">办事处</a></li>
+        <li><a href="#/dept">处室管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
    <form id="formDept" name="formDept">
 		<div class="well">
-			<span class="help-inline">办事处名称：</span> <input type="text"
+			<span class="help-inline">处室名称：</span> <input type="text"
 				ng-model="vm.model.deptName" operator="like" name="deptName" id="deptName"
 				placeholder="请输入"> <span class="help-inline"
 				style="margin-left: 10px;">联系人：</span> <input type="text"
@@ -21,7 +21,7 @@
 		
 	
         <@shiro.hasPermission name="dept##post">
-            <a class="btn btn-sm btn-primary" href="#/deptEdit/"><span class="glyphicon glyphicon-plus"></span>新增办事处</a>
+            <a class="btn btn-sm btn-primary" href="#/deptEdit/"><span class="glyphicon glyphicon-plus"></span>新增</a>
         </@shiro.hasPermission>
         <@shiro.hasPermission name="dept##delete">
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>

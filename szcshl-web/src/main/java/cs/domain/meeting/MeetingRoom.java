@@ -35,8 +35,6 @@ public class MeetingRoom extends DomainBase{
 	@Column(columnDefinition="varchar(255) ")
 	private String userPhone;//负责人联系电话
 	@Column(columnDefinition="varchar(255) ")
-	private String createDate;//创建时间
-	@Column(columnDefinition="varchar(255) ")
 	private String remark;//备注
 	
 	
@@ -94,12 +92,7 @@ public class MeetingRoom extends DomainBase{
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
-	public String getCreateDate() {
-		return createDate;
-	}
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
-	}
+
 	public String getRemark() {
 		return remark;
 	}

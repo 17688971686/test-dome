@@ -10,6 +10,7 @@
     	var vm = this;
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
+        vm.workProgramId = $state.params.workProgramId;     //工作方案ID
       
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00");

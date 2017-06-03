@@ -3,6 +3,7 @@ package cs.domain.project;
 import cs.domain.DomainBase;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelCondition;
+import cs.domain.meeting.RoomBooking;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
@@ -210,7 +211,11 @@ public class WorkProgram extends DomainBase{
     //专家抽取条件
 	@OneToMany(mappedBy="workProgram")
 	private List<ExpertSelCondition> epSelConditions;
-	
+
+	//会议预定信息
+	@OneToMany(mappedBy="workProgram")
+	private List<RoomBooking> roomBookings;
+
 	public Sign getSign() {
 		return sign;
 	}
@@ -611,4 +616,12 @@ public class WorkProgram extends DomainBase{
 	public void setTitleName(String titleName) {
 		this.titleName = titleName;
 	}
+
+    public List<RoomBooking> getRoomBookings() {
+        return roomBookings;
+    }
+
+    public void setRoomBookings(List<RoomBooking> roomBookings) {
+        this.roomBookings = roomBookings;
+    }
 }

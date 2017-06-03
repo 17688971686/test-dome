@@ -14,7 +14,7 @@
 			createMeeting : createMeeting,
 			deleteMeeting : deleteMeeting,
 			updateMeeting : updateMeeting,
-			queryMeeting:queryMeeting	//会议室查询
+			queryMeeting : queryMeeting		//会议室查询
 		};
 
 		return service;
@@ -119,7 +119,6 @@
 						vm : vm,
 						response : response,
 						fn : function() {
-
 							common.alert({
 								vm : vm,
 								msg : "操作成功",
@@ -131,7 +130,6 @@
 								}
 							})
 						}
-
 					});
 
 				}
@@ -140,7 +138,8 @@
 					vm : vm,
 					$http : $http,
 					httpOptions : httpOptions,
-					success : httpSuccess
+					success : httpSuccess,
+                    onError: function(response){vm.iscommit = false;}
 				});
 
 			}
@@ -232,13 +231,18 @@
 						width : 200,
 						filterable : false
 					},
-				
 					{
 						field : "mrName",
 						title : "会议室名称",
 						width : 200,
 						filterable : false
 					},
+                    {
+                        field : "mrType",
+                        title : "会议室类型",
+                        width : 180,
+                        filterable : false,
+                    },
 					{
 						field : "addr",
 						title : "会议室地点",
@@ -251,7 +255,7 @@
 					},
 					{
 						field : "capacity",
-						title : "会议室容量（人）",
+						title : "会议室容量",
 						filterable : false
 					},
 					{
@@ -265,30 +269,13 @@
 						filterable : false
 					},
 					{
-						field : "createDate",
-						title : "创建时间",
-						filterable : false
-					},
-					{
-						field : "mrType",
-						title : "会议室类型",
-						width : 180,
-						filterable : false,
-						
-
-					},
-					{
 						field : "",
 						title : "操作",
 						width : 180,
 						template : function(item) {
-							return common.format($('#columnBtns').html(),
-									"vm.del('" + item.id + "')", item.id);
-
+							return common.format($('#columnBtns').html(),"vm.del('" + item.id + "')", item.id);
 						}
-
 					}
-
 			];
 			// End:column
 
@@ -301,7 +288,6 @@
 				dataBound:dataBound,
 				resizable : true
 			};
-
 		}// end fun grid
 
 		

@@ -214,6 +214,10 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2048)")
 	private String pasedescription;
 	
+	//是否调概
+	@Column(columnDefinition="VARCHAR(5)")
+	private String ischangeEstimate;
+
 	//是否完成评审方案
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isreviewCompleted;
@@ -490,6 +494,15 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(64)")
 	private String processInstanceId;
 	
+
+	public String getIschangeEstimate() {
+		return ischangeEstimate;
+	}
+
+	public void setIschangeEstimate(String ischangeEstimate) {
+		this.ischangeEstimate = ischangeEstimate;
+	}
+
 	public FileRecord getFileRecord() {
 		return fileRecord;
 	}

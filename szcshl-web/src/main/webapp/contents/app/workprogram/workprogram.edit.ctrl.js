@@ -12,6 +12,9 @@
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00"); 
         vm.work.signId = $state.params.signid;		//这个是收文ID
+        vm.isRoomBook = false;              //是否已经预定了会议时间
+        vm.isHavePre = false;               //预定多个会议室的时候，查看上一个
+        vm.isHaveNext = false;              //预定多个会议室的时候，查看下一个
                        	
         activate();
         function activate() {
@@ -54,15 +57,29 @@
         }
         //会议预定添加弹窗
         vm.addTimeStage = function(){
-        	 $("#stageWindow").kendoWindow({
-				width : "660px",
-				height : "550px",
-				title : "会议预定添加",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();
+            //如果已经预定了会议室，则显示
+            if(vm.isRoomBook){
+                $("#stageWindow").kendoWindow({
+                    width : "660px",
+                    height : "550px",
+                    title : "会议预定添加",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+            //否则，跳转到选择会议室页面
+            }else{
+                if(vm.work.id){
+                    $state.go('room', {workProgramId:vm.work.id});
+                }else{
+                    common.alert({
+                        vm:vm,
+                        msg:"正在加载数据，请耐心等待...！"
+                    })
+                }
+            }
+
         }
         
         //部长处理意见
@@ -74,10 +91,52 @@
         vm.saveRoom = function(){
         	workprogramSvc.saveRoom(vm);
         }
+
         //调整到会议室预定页面
         vm.gotoRoom = function(){
             window.parent.$("#stageWindow").data("kendoWindow").close();
-            $state.go("room");
+            if(vm.work.id){
+                $state.go('room', {workProgramId:vm.work.id});
+            }else{
+                common.alert({
+                    vm:vm,
+                    msg:"请先保存！"
+                })
+            }
+        }
+
+        //下一个会议预定信息
+        vm.nextBookRoom = function(){
+            var curIndex = 0;
+            vm.RoomBookings.forEach(function (u, number) {
+                if(u.id == vm.roombook.id){
+                    curIndex = number;
+                }
+            });
+            vm.isHavePre = true;
+            if(curIndex == (vm.RoomBookings.length-2)){
+                vm.isHaveNext = false;
+            }else{
+                vm.isHaveNext = true;
+            }
+            vm.roombook = vm.RoomBookings[curIndex+1];
+        }
+
+        //上一次会议预定信息
+        vm.preBookRoom = function(){
+            var curIndex = 0;
+            vm.RoomBookings.forEach(function (u, number) {
+                if(u.id == vm.roombook.id){
+                    curIndex = number;
+                }
+            });
+            vm.isHaveNext = true;
+            if(curIndex == 1){
+                vm.isHavePre = false;
+            }else{
+                vm.isHavePre = true;
+            }
+            vm.roombook = vm.RoomBookings[curIndex-1];
         }
         
         vm.onRoomClose = function(){

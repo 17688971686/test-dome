@@ -2,11 +2,9 @@ package cs.domain.meeting;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import cs.domain.project.WorkProgram;
 import org.hibernate.annotations.Formula;
 
 import cs.domain.DomainBase;
@@ -63,8 +61,9 @@ public class RoomBooking extends DomainBase{
 	private String remark;//备注
 
 	//工作方案Id
-	@Column(columnDefinition="varchar(100)")
-	private String workProgramId;
+	@ManyToOne
+	@JoinColumn(name="workProgramId")
+	private WorkProgram workProgram;
 
 	//评审部门
 	@Column(columnDefinition="varchar(100)")
@@ -142,12 +141,6 @@ public class RoomBooking extends DomainBase{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public String getWorkProgramId() {
-		return workProgramId;
-	}
-	public void setWorkProgramId(String workProgramId) {
-		this.workProgramId = workProgramId;
-	}
 	public String getStageOrg() {
 		return stageOrg;
 	}
@@ -181,5 +174,13 @@ public class RoomBooking extends DomainBase{
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public WorkProgram getWorkProgram() {
+		return workProgram;
+	}
+
+	public void setWorkProgram(WorkProgram workProgram) {
+		this.workProgram = workProgram;
 	}
 }

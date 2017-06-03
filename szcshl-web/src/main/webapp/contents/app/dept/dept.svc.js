@@ -221,19 +221,19 @@
  				,
                 {
                     field: "deptName",
-                    title: "办事处名称",
+                    title: "处室名称",
                     width: 100,
                     filterable: false
                 },
                 {
                     field: "deptUserName",
-                    title: "办事处联系人",
+                    title: "联系人",
                     width: 100,
                     filterable: false
                 },
                 {
                     field: "address",
-                    title: "办事处地址",
+                    title: "地址",
                     width: 100,
                     filterable: false
                 },

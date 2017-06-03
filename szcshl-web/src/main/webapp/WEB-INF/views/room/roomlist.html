@@ -35,6 +35,9 @@
     <li><a href="#/room">会议室预定管理</a></li>
     <li class="active">{{vm.title}}</li>
 </ol>
+<div class="toolbar">
+    <a class="btn btn-sm btn-primary" ng-click="back();" ng-disabled="vm.iscommit"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+</div>
 <div class="well">
     会议室查询：
     <select ng-model="vm.mrID"  ng-change="vm.findMeeting()" style="width: 10%">
