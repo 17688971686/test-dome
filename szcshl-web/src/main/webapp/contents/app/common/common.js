@@ -504,7 +504,6 @@
 		options.$http({
 			method : 'get',
 			url : rootPath+'/flow/html/tasksCount'
-<<<<<<< Updated upstream
         }).then(function(response){
         	$('#GtasksCount').html(response.data);
         });
@@ -513,7 +512,6 @@
     //init
     init();
     function init() {
-    	
     	//begin#grid 处理
     	//全选
         $(document).on('click', '#checkboxAll', function () {
@@ -527,37 +525,7 @@
             //$(this).find('td:nth-child(1)').find('input').prop('checked', true);
             //$(this).find('td:nth-child(2)').find('input').prop('checked', true);
         })
-        
         //end#grid 处理
-        
     }
-=======
-		}).then(function(response){
-			$('#GtasksCount').html(format($('#GtasksCount').html(),response.data));
-		});
-	}//E_获取待办总数
-
-	//init
-	init();
-	function init() {
-
-		//begin#grid 处理
-		//全选
-		$(document).on('click', '#checkboxAll', function () {
-			var isSelected = $(this).is(':checked');
-			$('.grid').find('tr td:nth-child(1)').find('input:checkbox').prop('checked', isSelected);
-		});
-		//点击行，改变背景
-		$('body').on('click', '.grid tr', function (e) {
-			$(this).parent().find('tr').removeClass('selected');
-			$(this).addClass('selected');
-			//$(this).find('td:nth-child(1)').find('input').prop('checked', true);
-			//$(this).find('td:nth-child(2)').find('input').prop('checked', true);
-		})
-
-		//end#grid 处理
-
-	}
->>>>>>> Stashed changes
 
 })();
