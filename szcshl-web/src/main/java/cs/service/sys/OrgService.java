@@ -23,4 +23,5 @@ public interface OrgService {
 	List<CompanyDto> getCompany(ODataObj odataObj);
 	OrgDto findById(String id);
 	List<OrgDto> findUserChargeOrg();
+	List<OrgDto> listAll();
 }

@@ -24,6 +24,10 @@ public class WorkProgram extends DomainBase{
 	@Id
 	private String id;
 	
+	//标题
+	@Column(columnDefinition="VARCHAR(64)")
+	private String titleName;
+	
 	//评审方式
 	@Column(columnDefinition="VARCHAR(20)")
 	private String reviewType;
@@ -599,4 +603,12 @@ public class WorkProgram extends DomainBase{
     public void setSelCount(Integer selCount) {
         this.selCount = selCount;
     }
+
+	public String getTitleName() {
+		return titleName;
+	}
+
+	public void setTitleName(String titleName) {
+		this.titleName = titleName;
+	}
 }

@@ -19,14 +19,12 @@
 			stageNextWeek : stageNextWeek,
 			addRoom : addRoom,  //添加会议室预定
 			editRoom : editRoom,//编辑
-			startEnd:startEnd	//结束时间不能小于开始时间
 		};
 
 		return service;
 		
 		//S_会议预定编辑
-		function editRoom(vm){
-			
+		function editRoom(vm){	
 			vm.model.id = $("#id").val();
 			vm.model.rbName = $("#rbName").val();
 			vm.model.mrID = $("#mrID").val();
@@ -38,7 +36,6 @@
 			vm.model.endTime = $("#endTime").val();
 			vm.model.content = $("#content").val();
 			vm.model.content = $("#remark").val();
-			
 			common.initJqValidation($('#formRoom'));
 			var isValid = $('#formRoom').valid();
 			if (isValid) {
@@ -49,26 +46,20 @@
 					data : vm.model
 				}
 				var httpSuccess = function success(response) {
-					
 					common.requestSuccess({
 						vm : vm,
 						response : response,
 						fn : function() {
-						//	cleanValue();
-						//window.parent.$("#roomWindow").data("kendoWindow").close();
 							common.alert({
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
-									vm.showWorkHistory = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
 								}
 							})
 						}
-
-					});
-
+					})
 				}
 				common.http({
 					vm : vm,
@@ -90,60 +81,52 @@
 		}
 		// end#cleanValue
 		
-		//S_添加会议室预定
+		//S_添加会议室预定(停用)
 		function addRoom(vm){
-			common.initJqValidation($('#formRoom'));
-			var isValid = $('#formRoom').valid();
-			if (isValid) {
-			vm.model.rbDay = $("#rbDay").val();
-			vm.model.beginTime = $("#beginTime").val(); 
-			vm.model.endTime = $("#endTime").val();
-				var httpOptions = {
-					method : 'post',
-					url : rootPath + "/room/addRoom",
-					data : vm.model
-				}
-				var httpSuccess = function success(response) {
-					
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-						//	cleanValue();
-							//window.parent.$("#roomWindow").data("kendoWindow").close();
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.showWorkHistory = true;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})
-						}
+            common.initJqValidation($('#formRoom'));
+            var isValid = $('#formRoom').valid();
+            if (isValid) {
+                var httpOptions = {
+                    method : 'post',
+                    url : rootPath + "/room/addRoom",
+                    data : vm.model
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm : vm,
+                        response : response,
+                        fn : function() {
+                            common.alert({
+                                vm : vm,
+                                msg : "操作成功",
+                                fn : function() {
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                }
+                            })
+                        }
 
-					});
+                    });
 
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
+                }
+                common.http({
+                    vm : vm,
+                    $http : $http,
+                    httpOptions : httpOptions,
+                    success : httpSuccess
+                });
 
-			}
+            }
 		}
 		//E_添加会议室预定
 		
 		//start 初始化会议预定页面
 		function initRoom(vm){
-			
 			var dataSource = new kendo.data.SchedulerDataSource({
-	          	 batch: true,
+				batch: true,
 				sync: function() {
-					  this.read();
-					}, 
+					this.read();
+				},
 	           transport: {
 				  read:function(options){
 					  var mrID = options.data.mrID;
@@ -151,94 +134,176 @@
 					  if(mrID){
 						  url += "?"+mrID;
 					  }
-					  $http.get(url 
+					  $http.get(
+					  	url
 					  ).success(function(data) {  
 						  options.success(data.value);
 					  }).error(function(data) {  
-//						  alert("查询失败");
+						  console.log("查询数据失败！");
 					  });  
 				  },
-//				  create:function(vm){
-//					 createRoom(vm);
-//				  },
-//				  update:function(vm){
-//					  updateRoom(vm);
-//				  },
-				  destroy:function(vm){
-						deleteRoom(vm);
+				  create:function(options){
+                      common.initJqValidation($('#formRoom'));
+                      var isValid = $('#formRoom').valid();
+                      if (isValid) {
+                          var model = options.data.models[0];
+                          model.rbDay = $("#rbDay").val();
+                          model.beginTimeStr = $("#beginTime").val();
+                          model.endTimeStr = $("#endTime").val();
+                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
+                          if(model.endTime < model.beginTime){
+                              $("#errorTime").html("开始时间不能大于结束时间!");
+                              return ;
+                          }
+                          var httpOptions = {
+                              method : 'post',
+                              url : rootPath + "/room/addRoom",
+                              data : model
+                          }
+                          var httpSuccess = function success(response) {
+                              common.requestSuccess({
+                                  vm : vm,
+                                  response : response,
+                                  fn : function() {
+                                      common.alert({
+                                          vm : vm,
+                                          msg : "操作成功",
+                                          fn : function() {
+                                              findMeeting(vm);
+                                              $('.alertDialog').modal('hide');
+                                              $('.modal-backdrop').remove();
+                                              vm.schedulerOptions.cancelEvent();
+                                          }
+                                      })
+                                  }
+                              });
+                          }
+                          common.http({
+                              vm : vm,
+                              $http : $http,
+                              httpOptions : httpOptions,
+                              success : httpSuccess
+                          });
+                      }
+				  },
+				  update:function(options){
+                      common.initJqValidation($('#formRoom'));
+                      var isValid = $('#formRoom').valid();
+                      if (isValid) {
+                          var model = options.data.models[0];
+                          model.rbDay = $("#rbDay").val();
+                          model.beginTimeStr = $("#beginTime").val();
+                          model.endTimeStr = $("#endTime").val();
+                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
+                          if(model.endTime < model.beginTime){
+                              $("#errorTime").html("开始时间不能大于结束时间!");
+                              return ;
+                          }
+                          var httpOptions = {
+                              method : 'put',
+                              url : rootPath + "/room/updateRoom",
+                              data : model
+                          }
+                          var httpSuccess = function success(response) {
+                              common.requestSuccess({
+                                  vm : vm,
+                                  response : response,
+                                  fn : function() {
+                                      common.alert({
+                                          vm : vm,
+                                          msg : "操作成功",
+                                          fn : function() {
+                                              findMeeting(vm);
+                                              $('.alertDialog').modal('hide');
+                                              $('.modal-backdrop').remove();
+                                              vm.schedulerOptions.cancelEvent();
+                                          }
+                                      })
+                                  }
+                              });
+                          }
+                          common.http({
+                              vm : vm,
+                              $http : $http,
+                              httpOptions : httpOptions,
+                              success : httpSuccess
+                          });
+                      }
+				  },
+				  destroy:function(options){
+                      var id = options.data.models[0].id;
+                      var httpOptions = {
+                          method : 'delete',
+                          url : url_room,
+                          data : id
+                      }
+                      var httpSuccess = function success(response) {
+                          common.requestSuccess({
+                              vm : vm,
+                              response : response,
+                              fn : function() {
+                                  common.alert({
+                                      vm : vm,
+                                      msg : "删除成功",
+                                      closeDialog:true
+                                  })
+                              }
+
+                          });
+
+                      }
+                      common.http({
+                          vm : vm,
+                          $http : $http,
+                          httpOptions : httpOptions,
+                          success : httpSuccess
+                      });
 				  },
 				  parameterMap: function(options, operation) {
+				      console.log(operation);
 	                if (operation !== "read" && options.models) {
-	                  return {models: kendo.stringify(options.models)};
-	                } 
+	                  return { models: kendo.stringify(options.models)};
+	                }
 	              }
 	           },
 	           serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,
-				pageSize : 10,
-	          
-				schema: {
-	            	
+               serverSorting : true,
+               serverFiltering : true,
+			   pageSize : 10,
+	           schema: {
 	              model: {
-
 	              	id: "taskId", 
 	                fields: {
-	                    taskId: {
-	                        from: "id"
-	                        //type: ""
-	                    },
-	                    title: { from: "addressName", defaultValue: "addressName" },
-	                    start: { type: "date", from: "beginTime" },
-	                    end: { type: "date", from: "endTime" },
-						
-						}
+	                    taskId: {from: "id"},
+	                    title: { from: "addressName", defaultValue: "会议室" },
+                        start: { type: "date", from: "beginTime" },
+                        end: { type: "date", from: "endTime" }
+                    }
 				  }
 	            },
-
 	          });
 		
-			
 			vm.schedulerOptions = {
-			            date: new Date(),
-			            startTime: new Date(),
-			            height: 600,
-			            views: [
-			                "day",
-			                "workWeek",
-			                { type: "week", selected: true },
-			                
-			                "month",
-			                "agenda",
-			            ],
-			           //statr 时间
-			            editable: {
-			                template: $("#customEditorTemplate").html(),
-
-			              },
-			            eventTemplate: $("#event-template").html(),
-			            edit: function(e) {
-
-			            },
-			            //end
-			            timezone: "Etc/UTC",
-			            dataSource :dataSource,
-			            
-			          /* resources: [
-			                {
-			                    field: "ownerId",
-			                    title: "Owner",
-			                    dataSource: [
-			                        { text: "Alex", value: 1, color: "#f8a398" },
-			                        { text: "Bob", value: 2, color: "#51a0ed" },
-			                        { text: "Charlie", value: 3, color: "#56ca85" }
-			                    ]
-			                }
-			            ]*/
-			          
-			            
-			        };
-			 
+                date: new Date(),
+                startTime:vm.startDateTime,
+                endTime:vm.endDateTime,
+                height: 700,
+                views: [
+                    "day",
+                    "workWeek",
+                    {type: "week", selected: true },
+                    "month"
+                ],
+                editable: {
+                    template: $("#customEditorTemplate").html(),
+                },
+                eventTemplate: $("#event-template").html(),
+                timezone: "Etc/UTC",
+                dataSource :dataSource,
+                footer: false,
+            };
 		}
 		//end 初始化会议预定页面
 		
@@ -257,7 +322,11 @@
 		
 		//查询会议室
 		function findMeeting(vm){
-			vm.schedulerOptions.dataSource.read({"mrID":common.format("$filter=mrID eq '{0}'", vm.mrID)});
+			if(vm.mrID){
+                vm.schedulerOptions.dataSource.read({"mrID":common.format("$filter=mrID eq '{0}'", vm.mrID)});
+			}else{
+                vm.schedulerOptions.dataSource.read();
+			}
 		}
 		//start#deleteRoom
 		function deleteRoom(vm){
@@ -273,15 +342,14 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						/*common.alert({
+						common.alert({
 							vm : vm,
 							msg : "删除成功",
 							fn : function() {
-								vm.showWorkHistory = true;
 							$('.alertDialog').modal('show');
 							$('.modal-backdrop').remove();
 							}
-						})*/
+						})
 					}
 
 				});
@@ -296,19 +364,6 @@
 			
 		}
 		//end#deleteRoom
-		
-		
-		//start#time
-		//校验结束时间不能小于开始时间
-		function startEnd(vm){
-			var start = $("#beginTime").val();
-			var end = $("#endTime").val();
-			if(end<start){
-				//alert("结束时间不能小于开始时间");
-				return;
-			}
-		}
-		//endTime#time
 		
 		//start#exportWeek
 		//本周评审会议

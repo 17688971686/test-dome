@@ -42,7 +42,7 @@ public interface SignService{
 	
 	
 	//以下是新流程处理
-	void startNewFlow(String signid) throws Exception;
+	void startNewFlow(String signid);
 
 	PageModelDto<SignDto> getPendingSign(ODataObj odataObj);
 

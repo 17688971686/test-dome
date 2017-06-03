@@ -13,7 +13,7 @@
     <form id="form" name="form">
         <div class="toolbar">
             <a class="btn btn-sm btn-primary" href="#/org"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存</button>
             <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
          </div>
         <table style="width:100%">
@@ -99,7 +99,7 @@
                 <td>
                     <select ng-model="vm.model.orgDirector" id="orgDirector" name="orgDirector" class="form-control input-sm " data-val="true" data-val-required="必填" >
 						<option value="">请选择</option>
-						<option ng-repeat="x in vm.OrgDirectorUsers" ng-selected="vm.model.orgDirector == x.id" value="{{x.id}}" >{{x.displayName}}</option>
+						<option ng-repeat="x in vm.OrgDirectorUsers" ng-selected="vm.model.orgDirector == x.id" value="{{x.id}}" >{{x.displayName}}</option> 
 					</select>
                 </td>  
                 <td>
@@ -118,7 +118,7 @@
                 	<span data-valmsg-for="orgMLeader" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
-             <tr>
+            <tr>
                 <td class="formAlignRight">分管副主任： <span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.orgSLeader" id="orgSLeader" name="orgSLeader"class="form-control input-sm " data-val="true" data-val-required="必填">
@@ -130,44 +130,15 @@
                 	<span data-valmsg-for="orgSLeader" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
-            <!--  
-             <tr>
-                <td class="formAlignRight">上级部门： <span class="required">*</span></td>
+            <tr>
+                <td class="formAlignRight">排序： <span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.orgFirst" id="orgFirst" name="orgFirst"class="form-control input-sm " >
-						<option ng-repeat="x in vm.meeting" value="{{x.id}}">{{x.addr}}</option>
-					</select>
+                    <input  type="number" maxlength="200" class="form-control input-sm" ng-model="vm.model.sort " id="sort" name="sort" data-val="true" data-val-digits="只能输入数字" data-val-required="必填" value="1">
                 </td>
                 <td>
-                <span data-valmsg-for="orgFirst" data-valmsg-replace="true" class="errors"></span>
-                    <span class="errors" ng-show="vm.isOrgExist">部门已存在</span>
+                	<span data-valmsg-for="sort" data-valmsg-replace="true" class="errors"></span>                
                 </td>
             </tr>
-             <tr>
-                <td class="formAlignRight">所属单位： <span class="required">*</span></td>
-                <td>
-                    <select ng-model="vm.model.orgCompany"id="orgCompany" name="orgCompany" class="form-control input-sm " >
-						<option ng-repeat="x in vm.company" value="{{x.id}}">{{x.coName}}</option>
-					</select>
-                </td>
-                <td>
-                <span data-valmsg-for="orgCompany" data-valmsg-replace="true" class="errors"></span>
-                    <span class="errors" ng-show="vm.isOrgExist">部门已存在</span>
-                </td>
-            </tr>
-             <tr>
-                <td class="formAlignRight">联络人： <span class="required">*</span></td>
-                <td>
-                    <select ng-model="vm.model.orgContact" id="orgContact" name="orgContact" class="form-control input-sm " >
-					<option ng-repeat="x in vm.user" value="{{x.id}}">{{x.loginName}}</option>
-					</select>
-                </td>
-                <td>
-                <span data-valmsg-for="orgContact" data-valmsg-replace="true" class="errors"></span>
-                    <span class="errors" ng-show="vm.isOrgExist">部门已存在</span>
-                </td>
-            </tr>
-        -->
             <tr>
                 <td class="formAlignRight">备注： </td>
                 <td>

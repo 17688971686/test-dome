@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('roomCtrl', room);
+    angular.module('app').controller('roomCtrl', room);
 
     room.$inject = ['$location','roomSvc','$scope','$state']; 
 
@@ -13,6 +11,9 @@
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
       
+        vm.startDateTime = new Date("2006/6/1 08:00");
+        vm.endDateTime = new Date("2030/6/1 21:00");
+
         //预定会议编辑
        vm.editRoom = function(){
         	roomSvc.editRoom(vm);
@@ -21,14 +22,7 @@
         vm.addRoom = function(){
         	roomSvc.addRoom(vm);
         }
-        //结束时间不能小开始时间
-        vm.startEnd = function(){
-        	roomSvc.startEnd(vm);
-        }
-       
-        vm.onWClose = function(){
-        	//window.parent.$("#customEditorTemplate").data("kendoWindow").close();
-        }
+
         //导出本周评审会议安排
         vm.exportWeek = function(){
         	roomSvc.exportWeek();
@@ -53,8 +47,7 @@
         	roomSvc.findMeeting(vm);
         }
         
-        vm.del = function (id) {        	
-        	
+        vm.del = function (id) {
              common.confirm({
             	 vm:vm,
             	 title:"",
@@ -68,7 +61,6 @@
         
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
-        	
             if (selectIds.length == 0) {
             	common.alert({
                 	vm:vm,
@@ -84,15 +76,11 @@
                 vm.del(idStr);
             }   
        }
+
         activate();
         function activate() {
-        	if(vm.isUpdate){
-        		//roomSvc.editRoom(vm);
-        	}
-        	//调用room.svc.js的初始化方法
            roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
-           //roomSvc.findUser(vm);
         }
     }
 })();

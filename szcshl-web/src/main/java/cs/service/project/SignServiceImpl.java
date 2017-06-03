@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cs.model.project.DispatchDocDto;
-import cs.model.project.FileRecordDto;
-import cs.model.project.WorkProgramDto;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -44,7 +41,10 @@ import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
 import cs.model.flow.FlowDto;
+import cs.model.project.DispatchDocDto;
+import cs.model.project.FileRecordDto;
 import cs.model.project.SignDto;
+import cs.model.project.WorkProgramDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
@@ -96,6 +96,7 @@ public class SignServiceImpl implements SignService {
 		Sign sign = new Sign(); 
 		BeanCopierUtils.copyProperties(signDto, sign);   
 		sign.setSignState(EnumState.NORMAL.getValue());
+        sign.setSendusersign(Constant.SEND_SIGN_NAME);      //送件人默认魏俊辉(可以更改)
 
 		Date now = new Date();
 		sign.setCreatedDate(now);
@@ -320,39 +321,39 @@ public class SignServiceImpl implements SignService {
 	/************************************** S  新流程项目处理   *********************************************/
 	@Override
 	@Transactional
-	public void startNewFlow(String signid) throws Exception{		
+	public void startNewFlow(String signid){
 		if(!Validate.isString(signid)){
 			log.info("发起流程失败，无法获取收文ID！");
-			throw new Exception( Constant.ERROR_MSG);
+			throw new IllegalArgumentException(Constant.ERROR_MSG);
 		}				
-		try{			
-			Sign sign = signRepo.findById(signid);	
-			
-			//创建流程 (业务数据：ID+符号+名称)
-			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.FINAL_SIGN.getValue(),signid);
-			//设置流程实例名称
-			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(),sign.getProjectname());
 
-			List<UserDto> userList = userService.findUserByRoleName(EnumFlowNodeGroupName.SIGN_USER.getValue());
-			if(userList == null || userList.size() == 0){				
-				throw new Exception("发起流程失败，请先设置【签收员】角色用户！");
-			}
-			UserDto dealUser = userList.get(0);
-			//跳过第一环节
-			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();	
-			taskService.addComment(task.getId(),processInstance.getId(),"系统自动处理");	//添加处理信息
-			taskService.complete(task.getId(),ActivitiUtil.setAssigneeValue(dealUser.getLoginName()));
-			
-			//更改业务状态			
-			sign.setFolwState(EnumState.PROCESS.getValue());
-			sign.setProcessInstanceId(processInstance.getId());
-			signRepo.save(sign);
-			
-			log.info("项目签收流程创建成功,流程实例ID为"+processInstance.getId()+"，任务ID为"+task.getId());
-		}catch(Exception e){
-			log.info("项目签收流程创建失败：" + e.getMessage());
-			throw new Exception( "保存失败，错误信息已记录，请联系管理员尽快处理！");
-		}				
+        Sign sign = signRepo.findById(signid);
+        //创建流程
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Constant.EnumFlow.FINAL_SIGN.getValue(),signid);
+        //设置流程实例名称
+        processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(),sign.getProjectname());
+
+        //跳过第一环节
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        taskService.addComment(task.getId(),processInstance.getId(),"系统自动处理");	//添加处理信息
+        taskService.complete(task.getId(),ActivitiUtil.setAssigneeValue(currentUser.getLoginName()));
+
+        //查找综合部部长
+        List<UserDto> userList = userService.findUserByRoleName(EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue());
+        if(userList == null || userList.size() == 0){
+            throw new IllegalArgumentException(String.format("请先设置【%s】角色用户!!!", EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue()));
+        }
+        //跳过第二环节
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        taskService.addComment(task.getId(),processInstance.getId(),"已经确认签收！");	//添加处理信息
+        taskService.complete(task.getId(),ActivitiUtil.setAssigneeValue(userList.get(0).getLoginName()));
+
+        //更改业务状态
+        sign.setFolwState(EnumState.PROCESS.getValue());
+        sign.setProcessInstanceId(processInstance.getId());
+        signRepo.save(sign);
+
+        log.info("项目签收流程创建成功,流程实例ID为"+processInstance.getId()+"，任务ID为"+task.getId());
 	}
 	
 	/**
@@ -439,12 +440,10 @@ public class SignServiceImpl implements SignService {
 				sign = signRepo.findById(signid);
 				sign.setComprehensivehandlesug(flowDto.getDealOption());
 				saveSignFlag = true;
-				//获取分管领导		
-				dealUser = userService.getOrgSLeader();
-				if(dealUser == null){
-					return new ResultMsg(false,MsgCode.ERROR.getValue(),"请先设置该部门的【"+EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()+"】角色用户！");
+				if(flowDto.getBusinessMap().get("FGLD") == null){
+					return new ResultMsg(false,MsgCode.ERROR.getValue(),"请选择分管领导！");
 				}
-				variables.put("user",dealUser.getLoginName());
+				variables.put("user",flowDto.getBusinessMap().get("FGLD").toString());
 				break;
 				
 			case Constant.FLOW_FGLD_SP_SW:			//分管副主任

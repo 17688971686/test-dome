@@ -19,6 +19,8 @@ public class WorkProgramDto extends BaseDto{
 	private String id;
 	//签收ID
 	private String signId;
+	//标题
+	private String titleName;
 	//评审方式
 	private String reviewType;
 	//是否单个评审
@@ -531,4 +533,13 @@ public class WorkProgramDto extends BaseDto{
     public void setSelCount(Integer selCount) {
         this.selCount = selCount;
     }
+
+	public String getTitleName() {
+		return titleName;
+	}
+
+	public void setTitleName(String titleName) {
+		this.titleName = titleName;
+	}
+    
 }

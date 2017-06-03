@@ -169,7 +169,7 @@
 							      <tr>
 							        <td style="border-top:none;text-align:right;">委项目处理表</td>
 							        <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm " ng-model="vm.model.sugProDealCount" name="sugProDealCount"  
-							        id="sugProDealCount"data-val="true" data-val-digits="份数只能为数字"></td>
+							        id="sugProDealCount" data-val="true" data-val-digits="份数只能为数字"></td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealCopy" name="sugProDealCopy" id="addCopy" ng-true-value="9" ng-false-value="0"></td>
 							     	 <td style="border-top:none;"><span data-valmsg-for="sugProDealCount" data-valmsg-replace="true" class="errors"></span></td>
@@ -415,8 +415,9 @@
 		    <tr>
 		      <td width="15%" class="text-center">送件人：</td>
 		      <td colspan="3">
-			  {{vm.model.createdBy}}
-			  </td>		      
+				  <input style="width:100px;" class="form-control input-sm"  ng-model="vm.model.sendusersign" name="sendusersign" id="sendusersign" data-val="true" data-val-required="必填">
+				  <span data-valmsg-for="sendusersign" data-valmsg-replace="true" class="errors"></span>
+			  </td>
 		    </tr>
 		    <tr>
 		      <td width="15%" class="text-center"></td>

@@ -54,10 +54,9 @@ public class OrgController {
 	@RequiresPermissions("org#getCompany#get")	
 	@RequestMapping(name = "获取所有单位", path = "getCompany", method = RequestMethod.GET)
 	@ResponseBody
-	public List<CompanyDto> getCompany(HttpServletRequest request) throws ParseException{
-		
+	public List<CompanyDto> getCompany(HttpServletRequest request) throws ParseException{		
 		ODataObj oDataObj = new ODataObj(request);
-		List<CompanyDto> comDto = 	orgService.getCompany(oDataObj);
+		List<CompanyDto> comDto = orgService.getCompany(oDataObj);
 		return comDto;
 	}
 
@@ -116,11 +115,10 @@ public class OrgController {
 		}
 	}
 	
-	@RequiresPermissions("org#findUserChargeOrg#get")	
-	@RequestMapping(name = "用户掌管的部门", path = "findUserChargeOrg", method = RequestMethod.GET)
-	public @ResponseBody List<OrgDto> userNotIn()  {	
-		
-		return orgService.findUserChargeOrg();
+	@RequiresPermissions("org#listAll#get")	
+	@RequestMapping(name = "所有部门查询", path = "listAll", method = RequestMethod.GET)
+	public @ResponseBody List<OrgDto> listAll()  {			
+		return orgService.listAll();
 	}
 	
 	

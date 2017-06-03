@@ -9,6 +9,8 @@ public class Constant {
 	public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
 	public static final String businessPropertiesName = "business.properties";
 	public static final String SEND_FILE_UNIT = "深圳市发展和改革委员会";
+	public static final String SEND_SIGN_NAME = "魏俊辉";
+	public static final String WORKPROGRAM_NAME = "评审工作方案";
 	public static final String FLOW_LINK_SYMBOL = "$";	//流程业务ID和名称关联符号
 	
 	/**

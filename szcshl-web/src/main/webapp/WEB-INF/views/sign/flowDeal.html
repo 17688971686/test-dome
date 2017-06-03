@@ -39,16 +39,16 @@
 			<div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
 		</div><!-- end tab3 -->
 
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram">
-			<div ng-include src="'${path}/contents/app/workprogram/detail.html'" />
-		</div><!-- 工作方案 -->
+		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" ng-show="vm.show_workprogram">
+            <div ng-include src="'${path}/contents/app/workprogram/all_detail.html'" />
+        </div><!-- 工作方案 -->
 
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch">
-			<div ng-include src="'${path}/contents/app/dispatch/detail.html'" />
-		</div><!-- 发文 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" ng-show="vm.show_dispatch">
+            <div ng-include src="'${path}/contents/app/dispatch/detail.html'" />
+        </div><!-- 发文 -->
 
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord">
-			<div ng-include src="'${path}/contents/app/fileRecord/detail.html'" />
-		</div><!-- 归档 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" ng-show="vm.show_filerecord">
+            <div ng-include src="'${path}/contents/app/fileRecord/detail.html'" />
+        </div><!-- 归档 -->
 	</div>
 </div>

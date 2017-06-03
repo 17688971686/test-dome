@@ -3,9 +3,9 @@
 	
 	angular.module('app').factory('signSvc', sign);
 	
-	sign.$inject = ['$http','$state'];
+	sign.$inject = ['$http','$state','flowSvc'];
 
-	function sign($http,$state) {
+	function sign($http,$state,flowSvc) {
 		var service = {
 			grid : grid,						//初始化项目列表
 			querySign : querySign,				//查询
@@ -13,47 +13,14 @@
 			initFillData : initFillData,		//初始化表单填写页面（可编辑）
 			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
-			deleteSign :　deleteSign,			//删除收文		
-			startFlow : startFlow,				//发起流程
+			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			regNumber:regNumber,				//输入资料分数数字校验
 			add:add,							//s_项目建设书阶段(一)
 			addCopy:addCopy,
 			sugFileDealOriginal:sugFileDealOriginal,
 			sugFileDealCopy:sugFileDealCopy,
-			sugOrgApplyOriginal:sugOrgApplyOriginal,
-			sugOrgApplyCopy:sugOrgApplyCopy,
-			sugOrgReqOriginal:sugOrgReqOriginal,
-			sugOrgReqCopy:sugOrgReqCopy,
-			sugProAdviseOriginal:sugProAdviseOriginal,
-			sugProAdviseCopy:sugProAdviseCopy,
-			proSugEledocOriginal:proSugEledocOriginal,
-			proSugEledocCopy:proSugEledocCopy,
-			sugMeetOriginal:sugMeetOriginal,
-			sugMeetCopy:sugMeetCopy,       //e_项目建设书阶段(一)
-			studyPealOriginal:studyPealOriginal,//s #项目可研究性阶段(二)
-			studyProDealCopy:studyProDealCopy,
-			studyFileDealOriginal:studyFileDealOriginal,
-			studyFileDealCopy:studyFileDealCopy,
-			studyOrgApplyOriginal: studyOrgApplyOriginal,
-			studyOrgApplyCopy:studyOrgApplyCopy,
-			studyOrgReqOriginal:studyOrgReqOriginal,
-			studyOrgReqCopy:studyOrgReqCopy,
-			studyProSugOriginal:studyProSugOriginal,
-			studyProSugCopy:studyProSugCopy,
-			studyMeetOriginal:studyMeetOriginal,
-			studyMeetCopy:studyMeetCopy,
-			envproReplyOriginal:envproReplyOriginal,//右
-			envproReplyCopy:envproReplyCopy,
-			planAddrOriginal:planAddrOriginal,
-			planAddrCopy:planAddrCopy,
-			reportOrigin:reportOrigin,
-			reportCopy:reportCopy,
-			eledocOriginal:eledocOriginal,
-			eledocCopy:eledocCopy,
-			energyOriginal:energyOriginal,
-			energyCopy:energyCopy,				 //s #项目可研究性阶段(二)
+			
 			
 		};
 		return service;	
@@ -85,6 +52,7 @@
 			vm.model.sugFileDealCount=1;
 			}
 		}
+		
 		function sugFileDealCopy(vm){
 			if(vm.model.sugFileDealCopy==null){
 				vm.model.sugFileDealCount=1;
@@ -94,324 +62,7 @@
 				vm.model.sugFileDealCount=1;
 			}
 		}
-<<<<<<< Updated upstream
-		function sugOrgApplyOriginal(vm){
-			if(vm.model.sugOrgApplyOriginal==null){
-				vm.model.sugOrgApplyCount=1;
-			}if(vm.model.sugOrgApplyOriginal==9){
-				vm.model.sugOrgApplyCount="";
-			}if(vm.model.sugOrgApplyOriginal==0){
-				vm.model.sugOrgApplyCount=1;
-			}
-		}
-		function sugOrgApplyCopy(vm){
-			if(vm.model.sugOrgApplyCopy==null){
-				vm.model.sugOrgApplyCount=1;
-			}if(vm.model.sugOrgApplyCopy==9){
-				vm.model.sugOrgApplyCount="";
-			}if(vm.model.sugOrgApplyCopy==0){
-				vm.model.sugOrgApplyCount=1;
-			}
-		}
-		function sugOrgReqOriginal(vm){
-			if(vm.model.sugOrgReqOriginal==null){
-				vm.model.sugOrgReqCount=1;
-			}if(vm.model.sugOrgReqOriginal==9){
-				vm.model.sugOrgReqCount="";
-			}if(vm.model.sugOrgReqOriginal==0){
-				vm.model.sugOrgReqCount=1;
-			}
-		}
-		function sugOrgReqCopy(vm){
-			if(vm.model.sugOrgReqCopy==null){
-				vm.model.sugOrgReqCount=1;
-			}if(vm.model.sugOrgReqCopy==9){
-				vm.model.sugOrgReqCount="";
-			}if(vm.model.sugOrgReqCopy==0){
-				vm.model.sugOrgReqCount=1;
-			}
-		}
-		function sugProAdviseOriginal(vm){
-			if(vm.model.sugProAdviseOriginal==null){
-				vm.model.sugProAdviseCount=1;
-			}if(vm.model.sugProAdviseOriginal==9){
-				vm.model.sugProAdviseCount="";
-			}if(vm.model.sugProAdviseOriginal==0){
-				vm.model.sugProAdviseCount=1;
-			}
-		}
-		function sugProAdviseCopy(vm){
-			if(vm.model.sugProAdviseCopy==null){
-				vm.model.sugProAdviseCount=1;
-			}if(vm.model.sugProAdviseCopy==9){
-				vm.model.sugProAdviseCount="";
-			}if(vm.model.sugProAdviseCopy==0){
-				vm.model.sugProAdviseCount=1;
-			}
-		}
-		function proSugEledocOriginal(vm){
-			if(vm.model.proSugEledocOriginal==null){
-				vm.model.proSugEledocCount=1;
-			}if(vm.model.proSugEledocOriginal==9){
-				vm.model.proSugEledocCount="";
-			}if(vm.model.proSugEledocOriginal==0){
-				vm.model.proSugEledocCount=1;
-			}
-		}
-		function proSugEledocCopy(vm){
-			if(vm.model.proSugEledocCopy==null){
-				vm.model.proSugEledocCount=1;
-			}if(vm.model.proSugEledocCopy==9){
-				vm.model.proSugEledocCount="";
-			}if(vm.model.proSugEledocCopy==0){
-				vm.model.proSugEledocCount=1;
-			}
-		}
-		function sugMeetOriginal(vm){
-			if(vm.model.sugMeetOriginal==null){
-				vm.model.sugMeetCount=1;
-			}if(vm.model.sugMeetOriginal==9){
-				vm.model.sugMeetCount="";
-			}if(vm.model.sugMeetOriginal==0){
-				vm.model.sugMeetCount=1;
-			}
-		}
-		function sugMeetCopy(vm){
-			if(vm.model.sugMeetCopy==null){
-				vm.model.sugMeetCount=1;
-			}if(vm.model.sugMeetCopy==9){
-				vm.model.sugMeetCount="";
-			}if(vm.model.sugMeetCopy==0){
-				vm.model.sugMeetCount=1;
-			}
-		}
-		//e_项目建设书阶段(一)
-		
-		//s_项目可研究性阶段(二)
-		function studyPealOriginal(vm){
-			if(vm.model.studyPealOriginal==null){
-				vm.model.studyProDealCount=1;
-			}if(vm.model.studyPealOriginal==9){
-				vm.model.studyProDealCount="";
-			}if(vm.model.studyPealOriginal==0){
-				vm.model.studyProDealCount=1;
-			}
-		}
-		function studyProDealCopy(vm){
-			if(vm.model.studyProDealCopy==null){
-				vm.model.studyProDealCount=1;
-			}if(vm.model.studyProDealCopy==9){
-				vm.model.studyProDealCount="";
-			}if(vm.model.studyProDealCopy==0){
-				vm.model.studyProDealCount=1;
-			}
-		}
-		function studyFileDealOriginal(vm){
-			if(vm.model.studyFileDealOriginal==null){
-				vm.model.studyFileDealCount=1;
-			}if(vm.model.studyFileDealOriginal==9){
-				vm.model.studyFileDealCount="";
-			}if(vm.model.studyFileDealOriginal==0){
-				vm.model.studyFileDealCount=1;
-			}
-		}
-		function studyFileDealCopy(vm){
-			if(vm.model.studyFileDealCopy==null){
-				vm.model.studyFileDealCount=1;
-			}if(vm.model.studyFileDealCopy==9){
-				vm.model.studyFileDealCount="";
-			}if(vm.model.studyFileDealCopy==0){
-				vm.model.studyFileDealCount=1;
-			}
-		}
-		function  studyOrgApplyOriginal(vm){
-			if(vm.model.studyOrgApplyOriginal==null){
-				vm.model.studyOrgApplyCount=1;
-			}if(vm.model.studyOrgApplyOriginal==9){
-				vm.model.studyOrgApplyCount="";
-			}if(vm.model.studyOrgApplyOriginal==0){
-				vm.model.studyOrgApplyCount=1;
-			}
-		}
-		function  studyOrgApplyCopy(vm){
-			if(vm.model.studyOrgApplyCopy==null){
-				vm.model.studyOrgApplyCount=1;
-			}if(vm.model.studyOrgApplyCopy==9){
-				vm.model.studyOrgApplyCount="";
-			}if(vm.model.studyOrgApplyCopy==0){
-				vm.model.studyOrgApplyCount=1;
-			}
-		}
-		function studyOrgReqOriginal(vm){
-			if(vm.model.studyOrgReqOriginal==null){
-				vm.model.studyOrgReqCount=1;
-			}if(vm.model.studyOrgReqOriginal==9){
-				vm.model.studyOrgReqCount="";
-			}if(vm.model.studyOrgReqOriginal==0){
-				vm.model.studyOrgReqCount=1;
-			}
-		}
-		function studyOrgReqCopy(vm){
-			if(vm.model.studyOrgReqCopy==null){
-				vm.model.studyOrgReqCount=1;
-			}if(vm.model.studyOrgReqCopy==9){
-				vm.model.studyOrgReqCount="";
-			}if(vm.model.studyOrgReqCopy==0){
-				vm.model.studyOrgReqCount=1;
-			}
-		}
-		function studyProSugOriginal(vm){
-			if(vm.model.studyProSugOriginal==null){
-				vm.model.studyProSugCount=1;
-			}if(vm.model.studyProSugOriginal==9){
-				vm.model.studyProSugCount="";
-			}if(vm.model.studyProSugOriginal==0){
-				vm.model.studyProSugCount=1;
-			}
-		}
-		function studyProSugCopy(vm){
-			if(vm.model.studyProSugCopy==null){
-				vm.model.studyProSugCount=1;
-			}if(vm.model.studyProSugCopy==9){
-				vm.model.studyProSugCount="";
-			}if(vm.model.studyProSugCopy==0){
-				vm.model.studyProSugCount=1;
-			}
-		}
-		function studyMeetOriginal(vm){
-			if(vm.model.studyMeetOriginal==null){
-				vm.model.studyMeetCount=1;
-			}if(vm.model.studyMeetOriginal==9){
-				vm.model.studyMeetCount="";
-			}if(vm.model.studyMeetOriginal==0){
-				vm.model.studyMeetCount=1;
-			}
-		}
-		function studyMeetCopy(vm){
-			if(vm.model.studyMeetCopy==null){
-				vm.model.studyMeetCount=1;
-			}if(vm.model.studyMeetCopy==9){
-				vm.model.studyMeetCount="";
-			}if(vm.model.studyMeetCopy==0){
-				vm.model.studyMeetCount=1;
-			}
-		}
-		function envproReplyOriginal(vm){
-			if(vm.model.envproReplyOriginal==null){
-				vm.model.envproReplyCount=1;
-			}if(vm.model.envproReplyOriginal==9){
-				vm.model.envproReplyCount="";
-			}if(vm.model.envproReplyOriginal==0){
-				vm.model.envproReplyCount=1;
-			}
-		}
-		function envproReplyCopy(vm){
-			if(vm.model.envproReplyCopy==null){
-				vm.model.envproReplyCount=1;
-			}if(vm.model.envproReplyCopy==9){
-				vm.model.envproReplyCount="";
-			}if(vm.model.envproReplyCopy==0){
-				vm.model.envproReplyCount=1;
-			}
-		}
-		function planAddrOriginal(vm){
-			if(vm.model.planAddrOriginal==null){
-				vm.model.planAddrCount=1;
-			}if(vm.model.planAddrOriginal==9){
-				vm.model.planAddrCount="";
-			}if(vm.model.planAddrOriginal==0){
-				vm.model.planAddrCount=1;
-			}
-		}
-		function planAddrCopy(vm){
-			if(vm.model.planAddrCopy==null){
-				vm.model.planAddrCount=1;
-			}if(vm.model.planAddrCopy==9){
-				vm.model.planAddrCount="";
-			}if(vm.model.planAddrCopy==0){
-				vm.model.planAddrCount=1;
-			}
-		}
-		function reportOrigin(vm){
-			if(vm.model.reportOrigin==null){
-				vm.model.reportCount=1;
-			}if(vm.model.reportOrigin==9){
-				vm.model.reportCount="";
-			}if(vm.model.reportOrigin==0){
-				vm.model.reportCount=1;
-			}
-		}
-		function reportCopy(vm){
-			if(vm.model.reportCopy==null){
-				vm.model.reportCount=1;
-			}if(vm.model.reportCopy==9){
-				vm.model.reportCount="";
-			}if(vm.model.reportCopy==0){
-				vm.model.reportCount=1;
-			}
-		}
-		function eledocOriginal(vm){
-			if(vm.model.eledocOriginal==null){
-				vm.model.eledocCount=1;
-			}if(vm.model.eledocOriginal==9){
-				vm.model.eledocCount="";
-			}if(vm.model.eledocOriginal==0){
-				vm.model.eledocCount=1;
-			}
-		}
-		function eledocCopy(vm){
-			if(vm.model.eledocCopy==null){
-				vm.model.eledocCount=1;
-			}if(vm.model.eledocCopy==9){
-				vm.model.eledocCount="";
-			}if(vm.model.eledocCopy==0){
-				vm.model.eledocCount=1;
-			}
-		}
-		
-		function energyOriginal(vm){
-			if(vm.model.energyOriginal==null){
-				vm.model.energyCount=1;
-			}if(vm.model.energyOriginal==9){
-				vm.model.energyCount="";
-			}if(vm.model.energyOriginal==0){
-				vm.model.energyCount=1;
-			}
-		}
-		function energyCopy(vm){
-			if(vm.model.energyCopy==null){
-				vm.model.energyCount=1;
-			}if(vm.model.energyCopy==9){
-				vm.model.energyCount="";
-			}if(vm.model.energyCopy==0){
-				vm.model.energyCount=1;
-			}
-		}
-		
-		//e_项目可研究性阶段(二)
-		
-		//S_输入资料分数数字校验
-		var reg =true;
-		function regNumber(vm){
-			var numbers = new RegExp("^[0-9]*$");
-			if(!vm.model.sugProDealCount){
-				$("#regNumber").hide();
-				reg = true;
-				return ;
-			}
-			if(!numbers.test(vm.model.sugProDealCount)){
-				$("#regNumber").show();
-				reg = false;
-			}else{
-				$("#regNumber").hide();
-				reg = true;
-			}
-		}
-		//E_输入资料分数数字校验
-=======
-		
 		//E_项目建设书阶段(一)
->>>>>>> Stashed changes
 		
 		//S_初始化grid
 		function grid(vm){
@@ -457,45 +108,31 @@
 					},
 					{
 						field : "projectcode",
-<<<<<<< Updated upstream
-						title : "项目编号",
-						width : 160,
-						filterable : false,
-					},
-					{
-						field : "maindeptName",
-						title : "主办事处名称",
-						width : 100,
-						filterable : false,
-					},
-					{
-						field : "mainDeptUserName",
-						title : "主办事处联系人",
-						width : 100,
-=======
 						title : "收文编号",
 						width : 160,
 						filterable : false,
 					},
-					
 					{
-
+						field : "designcompanyName",
+						title : "项目单位",
+						width : 160,
+						filterable : false,
+					},
+					{
 						field : "reviewstage",
 						title : "项目阶段",
 						width : 160,
 						filterable : false,
 					},
 					{
-
 						field : "projectcode",
 						title : "项目代码",
 						width : 160,
->>>>>>> Stashed changes
 						filterable : false,
 					},
 					{
-						field : "createdDate",
-						title : "创建时间",
+						field : "receivedate",
+						title : "收文时间",
 						width : 160,
 						filterable : false,
 						format : "{0:yyyy/MM/dd HH:mm:ss}"
@@ -600,7 +237,6 @@
 		
 		//start  根据协办部门查询用户
 		function findOfficeUsersByDeptId(vm,status){
-//			/alert(vm.model.maindepetid);
 			var param = {};
 			if("main" == status){
 				param.deptId = vm.model.maindepetid;
@@ -608,10 +244,9 @@
 				param.deptId = vm.model.assistdeptid;
 			}
 			var httpOptions = {
-					method : 'post',
+					method : 'get',
 					url : rootPath+"/officeUser/findOfficeUserByDeptId",
-					params:{deptId:param.deptId}	
-//					params :param
+					params:param					
 				};
 				
 			var httpSuccess = function success(response) {
@@ -622,11 +257,9 @@
 						if("main" == status){
 							vm.mainOfficeList = {};
 							vm.mainOfficeList = response.data;
-							console.log(vm.mainOfficeList);
 						}else{
 							vm.assistOfficeList = {};
 							vm.assistOfficeList = response.data;
-							console.log(vm.assistOfficeList);
 						}
 					}
 				});
@@ -726,7 +359,6 @@
 						
 						if(response.data.mainOfficeList){
 							vm.mainOfficeList=response.data.mainOfficeList;
-							console.log(vm.mainOfficeList);
 						}
 						if(response.data.assistOfficeList){
 							vm.assistOfficeList=response.data.assistOfficeList;
@@ -772,43 +404,14 @@
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
-		}//E_初始化详情数据						
-				
-		//S_发起流程
-		function startFlow(vm,signid){
-			var httpOptions = {
-					method : 'post',
-					url : rootPath+"/sign/html/startFlow",
-					params : {signid:signid}
-				}
-				
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.gridOptions.dataSource.read();
-						common.alert({
-							vm : vm,
-							msg : "操作成功"								
-						})
-					}
-				});
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}//E_发起流程				
+		}//E_初始化详情数据
 						
 		//S_初始化流程页面
 		function initFlowPageData(vm){
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/sign/html/initFlowPageData",
-					params : {signid:vm.model.signid}
+					params : {signid:vm.model.signid,queryAll:true}
 				}
 				
 			var httpSuccess = function success(response) {
@@ -816,7 +419,34 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.model = response.data;	
+						vm.model = response.data;
+                        if(vm.model.workProgramDtoList){
+                            vm.mainwork = {};
+                            vm.show_workprogram = true;
+                            if(vm.model.workProgramDtoList.length > 0){
+                                vm.showAssistwork = true;
+                                vm.assistwork = {};
+                                if(vm.model.workProgramDtoList[0].isMain == 9){
+                                    vm.mainwork = vm.model.workProgramDtoList[0];
+                                    vm.assistwork = vm.model.workProgramDtoList[1];
+                                } else{
+                                    vm.assistwork = vm.model.workProgramDtoList[0];
+                                    vm.mainwork = vm.model.workProgramDtoList[1]
+                                }
+                            }else{
+                                vm.mainwork = vm.model.workProgramDtoList[0];
+                            }
+                        }
+                        if(vm.model.dispatchDocDto){
+                            vm.show_dispatch = true;
+                            vm.dispatchDoc = vm.model.dispatchDocDto;
+                        }
+                        if(vm.model.fileRecordDto){
+                            vm.show_filerecord = true;
+                            vm.fileRecord = vm.model.fileRecordDto;
+                        }	
+                        //先加载完业务数据，再加载流程业务数据
+                    	flowSvc.getFlowInfo(vm);
 					}
 				});
 			}

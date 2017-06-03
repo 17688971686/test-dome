@@ -27,20 +27,36 @@
 			<tr ng-show="vm.businessTr">
 		      <td width="10%" class="text-center">业务处理</td>
 		      <td >
+		      		<!-- 选择副主任 -->
+		      		<div ng-show="vm.ZHB_SP_SW">
+			      		分管副主任：
+			      		<select id="viceDirector" style="width:100px;">
+			      			<option ng-repeat="x in vm.viceDirectors" value="{{x.loginName}}">{{x.displayName}}</option>
+			      		</select>		      		
+		      		</div>
+		      		
 		      		<!-- 选择分管部门 -->
-		      		<div ng-show="vm.FGLD_SP_SW" style="width:300px;">
+		      		<div ng-show="vm.FGLD_SP_SW" style="width:400px;">
 		      			<table class="table table-bordered seleteTable" >
 		      				<caption class="text-center">部门分办(主办、协办各只能选一个)</caption>  
 		      				<tr>		      				
 						    	<td width="40%" align="center">部门名称</td>
-						    	<td width="30%" align="center">主办部门</td>
-						    	<td width="30%" align="center">协办部门</td>	
+						    	<td width="20%" align="center">主办部门</td>
+						    	<td width="20%" align="center">协办部门</td>	
+						    	<td width="20%" align="center">分管部门</td>
 						    </tr>
-							<tr ng-repeat="x in vm.orgs">
+							<tr ng-repeat="x in vm.orgs|filter:{charge:true}">
 							    <td align="center">{{x.name}}</td>
 							    <td align="center"><input type="checkbox" selectType="main" id="main_{{x.id}}" ng-click="vm.checkBox($event,'main','assist')" value="{{x.id}}"/></td>
 							    <td align="center"><input type="checkbox" selectType="assist" id="assist_{{x.id}}" ng-click="vm.checkBox($event,'assist','main')" value="{{x.id}}"/></td>
-							</tr>	
+							    <td align="center"><span >是</span> </td>
+							</tr>
+							<tr ng-repeat="x in vm.orgs|filter:{charge:false}">
+							    <td align="center">{{x.name}}</td>
+							    <td align="center"><input type="checkbox" selectType="main" id="main_{{x.id}}" ng-click="vm.checkBox($event,'main','assist')" value="{{x.id}}"/></td>
+							    <td align="center"><input type="checkbox" selectType="assist" id="assist_{{x.id}}" ng-click="vm.checkBox($event,'assist','main')" value="{{x.id}}"/></td>
+							    <td align="center"><span >否</span> </td>
+							</tr>		
 						</table>
 		      		</div>
 		      		

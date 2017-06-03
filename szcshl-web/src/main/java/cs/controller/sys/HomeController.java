@@ -9,6 +9,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,10 +30,11 @@ public class HomeController {
 
 	//初始化流程
 	@RequestMapping(name = "项目签收流程",path = "initProjectFlow",method = RequestMethod.GET)
+	@Transactional
 	public @ResponseBody String initProccess(){	
 		//部署下一个版本
 		logger.info("开始部署项目签收流程...");
-		InputStream in=this.getClass().getClassLoader().getResourceAsStream("");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/finalsignflow.zip");
 		ZipInputStream zipIn=new ZipInputStream(in);
 		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目签收流程").deploy();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();

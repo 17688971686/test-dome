@@ -126,11 +126,11 @@ text-align: left;
 }
 
 .k-icon{	
-	background-image: url('/contents/libs/kendoui/BlueOpal/sprite2.png');
+	background-image: url('../libs/kendoui/BlueOpal/sprite2.png');
 }
 .k-i-arrow-e,.k-i-seek-e,.k-i-arrow-w,.k-i-seek-w{
 	
-	background-image: url('/contents/libs/kendoui/BlueOpal/sprite.png');
+	background-image: url('../libs/kendoui/BlueOpal/sprite.png');
 }
 .k-header{
 	background: none;

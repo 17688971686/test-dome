@@ -12,9 +12,9 @@
 			initBusinessParams:initBusinessParams,	//初始化业务参数
 			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
 			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
-			getChargeDispatch : getChargeDispatch,		//获取发文
-			getChargeFilerecord : getChargeFilerecord,	//获取归档信息
-            endSignDetail:endSignDetail                 //已办结的签收信息
+			getChargeDispatch : getChargeDispatch,		//获取发文	（停用）
+			getChargeFilerecord : getChargeFilerecord,	//获取归档信息（停用）
+            endSignDetail:endSignDetail                 //已办结的签收信息（停用）
 		};
 		return service;		
 		
@@ -116,12 +116,35 @@
 		
 		//S_initBusinessParams
 		function initBusinessParams(vm){	
-			if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){//部门分办
+			if(vm.flow.curNode.activitiId == "ZHB_SP_SW"){//综合部拟办				
+				vm.businessTr = true;
+				vm.ZHB_SP_SW = true;
+				var httpOptions = {
+						method : 'get',
+						url : rootPath+"/user/getViceDirector"
+					}					
+				var httpSuccess = function success(response) {
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							vm.viceDirectors = response.data;
+						}
+					});
+				}
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+				
+			}else if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){//部门分办
 				vm.businessTr = true;
 				vm.FGLD_SP_SW = true;
 				var httpOptions = {
 						method : 'get',
-						url : rootPath+"/org/findUserChargeOrg"
+						url : rootPath+"/org/listAll"
 					}					
 				var httpSuccess = function success(response) {
 					common.requestSuccess({
@@ -163,50 +186,48 @@
 				});
 			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
 				vm.businessTr = true;
-				vm.XMFZR_SP_GZFA = true;
-				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted >= 0){ //如果填报完成，则显示
+				vm.XMFZR_SP_GZFA = true;	
+				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
 					vm.show_workprogram = true;
-					getChargeWorkProgram(vm,true);
-				}								
+					$("#show_workprogram_a").click();					
+				}										
 			}else if( vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
 				vm.businessTr = true;
 				vm.XMFZR_SP_GZFA = true; 
-				if(vm.model.isreviewACompleted && vm.model.isreviewACompleted >= 0){ //如果填报完成，则显示
+				if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9){ //如果填报完成，则显示
 					vm.show_workprogram = true;
-					getChargeWorkProgram(vm,false);
+					$("#show_workprogram_a").click();
 				}	
 			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1" ){ //部长审批,分管副主任审批
 				vm.show_workprogram = true;
-				getChargeWorkProgram(vm,true);
-				
+				$("#show_workprogram_a").click();				
 			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
 				vm.show_workprogram = true;
-				getChargeWorkProgram(vm,false);
-				
+				$("#show_workprogram_a").click();				
 			}else if(vm.flow.curNode.activitiId == "FW_SQ" ){ //发文
 				vm.businessTr = true;
 				vm.FW_SQ = true;		
 				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted >= 0){
 					vm.show_dispatch = true;
-					getChargeDispatch(vm);
+					$("#show_dispatch_a").click();
 				}	
 			
 			}//审核发文	
 			else if(vm.flow.curNode.activitiId == "BZ_SP_FW" || vm.flow.curNode.activitiId == "FGLD_SP_FW" || vm.flow.curNode.activitiId == "ZR_SP_FW"){ 
 				vm.show_dispatch = true;
-				getChargeDispatch(vm);
+				$("#show_dispatch_a").click();
 				
 			}else if(vm.flow.curNode.activitiId == "MFZR_GD" ){ //归档
 				vm.businessTr = true;
 				vm.MFZR_GD = true;
 				if(vm.model.filenum){
 					vm.show_filerecord = true;
-					getChargeFilerecord(vm)
+					$("#show_filerecord_a").click();
 				}
 			}
 			else if(vm.flow.curNode.activitiId == "AZFR_SP_GD" || vm.flow.curNode.activitiId == "BMLD_QR_GD"){ //归档
 				vm.show_filerecord = true;
-				getChargeFilerecord(vm)								
+				$("#show_filerecord_a").click();							
 			}
 						
 		}//E_initBusinessParams
@@ -215,7 +236,13 @@
 		function checkBusinessFill(vm){
 			vm.flow.businessMap = {};
 			var seleteCount = 0;			
-			if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){	//部门分办，要选择主办部门						
+			if(vm.flow.curNode.activitiId == "ZHB_SP_SW"){//综合部拟办
+				if($("#viceDirector").val()){
+					vm.flow.businessMap.FGLD = $("#viceDirector").val();
+					return true;
+				}
+				return false;				
+			}else if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){	//部门分办，要选择主办部门						
 				$('.seleteTable input[selectType="main"]:checked').each(function(){ 
 					vm.flow.businessMap.hostdept = $(this).val();
 					seleteCount++;					
@@ -255,11 +282,11 @@
 				}
 			}
 			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1"){
-				vm.flow.businessMap.M_WP_ID = vm.work.id;
+				vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
 				return true;
 			}
 			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
-				vm.flow.businessMap.A_WP_ID = vm.work.id;
+				vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
 				return true; 
 			}			
 			else if(vm.flow.curNode.activitiId == "FW_SQ"){

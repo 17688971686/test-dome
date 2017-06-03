@@ -31,9 +31,7 @@
         	})
 
         	//先初始化流程信息        
-        	flowSvc.initFlowData(vm);
-        	flowSvc.getFlowInfo(vm);
-       	
+        	flowSvc.initFlowData(vm);     	
         	//再初始化业务信息
         	signSvc.initFlowPageData(vm);
         }

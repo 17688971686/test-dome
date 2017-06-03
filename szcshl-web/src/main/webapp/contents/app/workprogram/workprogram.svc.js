@@ -9,16 +9,14 @@
 		var url_company = rootPath + "/company";
 		var url_work = rootPath + "/workprogram";
 		var service = {
-			initPage : initPage,		//初始化页面参数
-			createWP : createWP,		//新增操作
+			initPage : initPage,				//初始化页面参数
+			createWP : createWP,				//新增操作
 			findCompanys : findCompanys,		//查找主管部门
 			findUsersByOrgId : findUsersByOrgId,//查询评估部门
-			selectExpert:selectExpert,	//选择专家
-			findAllMeeting:findAllMeeting,//查找会议室地点
-			saveRoom:saveRoom,//添加会议预定
-			addTimeStage:addTimeStage,//添加会议预定弹窗
-			ministerSugges:ministerSugges,//部长处理意见弹窗
-			findAllUsers:findAllUsers,//查询所有用户
+			selectExpert:selectExpert,			//选择专家
+			saveRoom:saveRoom,					//添加会议预定
+			ministerSugges:ministerSugges,		//部长处理意见弹窗						
+            findAllMeeting:findAllMeeting,      //查找会议室地点
 			gotoProjcet:gotoProjcet,//项目关联
 			waitProjects:waitProjects,//待选项目列表
 			selectedProject:selectedProject,//已选项目列表
@@ -177,49 +175,10 @@
 			getsign(vm);
 			
 		}
-		//S_关联项目弹窗
-		
-		//S_查询所有用户
-		function findAllUsers(vm){
-			var httpOptions = {
-	                method: 'get',
-	                url: common.format(rootPath + "/user/findAllUsers")
-	            }
-	            var httpSuccess = function success(response) {
-	                vm.users = {};
-	                vm.users = response.data;
-	            }
-	            common.http({
-	                vm: vm,
-	                $http: $http,
-	                httpOptions: httpOptions,
-	                success: httpSuccess
-	            });
-		}
-		//E_查询所有用户
-		
-	
-		
-		//S_会议预定添加弹窗
-		function addTimeStage(vm){
-			var WorkeWindow = $("#stageWindow");
-			// WorkeWindow.show();
-			WorkeWindow.kendoWindow({
-				width : "660px",
-				height : "550px",
-				title : "会议预定添加",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();
-		}
-		//E_会议预定添加弹窗
+		//S_关联项目弹窗			
 		
 		//S_部长处理意见弹窗
 		function ministerSugges(vm){
-			
-			//var ministerWindow = $("#ministerSug");
 			// WorkeWindow.show();
 			$("#ministerSug").kendoWindow({
 				width : "700px",
@@ -243,30 +202,32 @@
 		}
 		
 		//S_会议预定添加
-		function saveRoom(vm){
-		
+		function saveRoom(vm){	
 			common.initJqValidation($('#stageForm'));
 			var isValid = $('#stageForm').valid();
 			if (isValid) {
-				vm.model.workProgramId = vm.work.id;
-				vm.model.stageOrg = vm.work.reviewOrgName;
+				vm.roombook.workProgramId = vm.work.id;
+                vm.roombook.stageOrg = vm.work.reviewOrgName;
+                vm.roombook.stageProject = "项目名称:"+vm.work.projectName+":"+vm.work.buildCompany+":"+vm.work.reviewOrgName;
+                vm.roombook.beginTimeStr = $("#beginTime").val();
+                vm.roombook.endTimeStr = $("#endTime").val();
+                vm.roombook.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
+                vm.roombook.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/room/saveRoom",
-					data : vm.model
+					data : vm.roombook
 				}
 				var httpSuccess = function success(response) {
 					common.requestSuccess({
 						vm : vm,
 						response : response,
 						fn : function() {
-							cleanValue();
 							window.parent.$("#stageWindow").data("kendoWindow").close();
 							common.alert({
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
-									vm.showWorkHistory = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
 								}
@@ -287,7 +248,7 @@
 			
 		}
 		//E_会议预定添加
-		
+
 		//S_查找所有会议室地点
 		function findAllMeeting(vm){
 			var httpOptions = {
@@ -295,8 +256,8 @@
 	                url: common.format(rootPath + "/room/meeting")
 	            }
 	            var httpSuccess = function success(response) {
-	                vm.meetings = {};
-	                vm.meetings = response.data;
+	                vm.roombookings = {};
+	                vm.roombookings = response.data;
 	            }
 	            common.http({
 	                vm: vm,

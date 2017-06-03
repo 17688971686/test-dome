@@ -2,10 +2,6 @@ package cs.model.sys;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
-import org.hibernate.annotations.Formula;
-
 import cs.model.BaseDto;
 
 public class OrgDto extends BaseDto {
@@ -35,6 +31,8 @@ public class OrgDto extends BaseDto {
 	private String orgContactName; //联络人名称
 	private String orgCompanyName; //所属单位名称
     private String orgDtID;//钉钉ID
+    private Integer sort;	//部门排序
+    private boolean isCharge;	//是否是自己掌管
     
 	private String orgIdentity;
 	
@@ -194,4 +192,17 @@ public class OrgDto extends BaseDto {
 	public void setOrgIdentity(String orgIdentity) {
 		this.orgIdentity = orgIdentity;
 	}
+	public Integer getSort() {
+		return sort;
+	}
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+	public boolean isCharge() {
+		return isCharge;
+	}
+	public void setCharge(boolean isCharge) {
+		this.isCharge = isCharge;
+	}
+		
 }

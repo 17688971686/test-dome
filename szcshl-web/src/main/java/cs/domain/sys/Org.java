@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Formula;
-
 import cs.domain.DomainBase;
 
 @Entity
@@ -65,15 +63,12 @@ public class Org extends DomainBase {
 	private String orgFirstName; //上级部门名称
 	
 	@Column(columnDefinition="varchar(255)")
-	@Formula("(select u.loginName from cs_user u where u.id = orgDirector)")
 	private String orgDirectorName; //科长名称
 	
 	@Column(columnDefinition="varchar(255)")
-	@Formula("(select u.loginName from cs_user u where u.id = orgAssistant)")
 	private String orgAssistantName; //副科长名称
 	
 	@Column(columnDefinition="varchar(255)")
-	@Formula("(select u.loginName from cs_user u where u.id = orgMLeader)")
 	private String orgMLeaderName; //署长名称
 	
 	@Column(columnDefinition="varchar(255)")
@@ -90,6 +85,9 @@ public class Org extends DomainBase {
     
 	@Column(columnDefinition="varchar(255)")
 	private String orgIdentity;
+	
+	@Column(columnDefinition="integer")
+	private Integer sort;		//排序
 	
 	@OneToMany(mappedBy="org")
 	private List<User> users;
@@ -295,7 +293,13 @@ public class Org extends DomainBase {
 	public void setOrgIdentity(String orgIdentity) {
 		this.orgIdentity = orgIdentity;
 	}
-	
-	
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}		
 	
 }

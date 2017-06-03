@@ -501,7 +501,7 @@
        		method : 'get',
 			url : rootPath+'/flow/html/tasksCount'
         }).then(function(response){
-        	$('#GtasksCount').html(format($('#GtasksCount').html(),response.data));
+        	$('#GtasksCount').html(response.data);
         });
     }//E_获取待办总数
     

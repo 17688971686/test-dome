@@ -123,34 +123,19 @@ public class SignController {
 		List<OrgDto> orgDto =	signService.selectSign(odataObj);
 		return orgDto;
 	}
-
-	/***************************************  S 流程处理的方法  （停用）   *******************************************/
-	/*@RequiresPermissions("sign#html/flow#get")
-	@RequestMapping(name = "流程待处理", path = "html/flow", method = RequestMethod.GET)
-	public String flow(){
-		return ctrlName + "/flow";
-	}
-
-	@RequiresPermissions("sign#html/startFlow#post")
-	@RequestMapping(name = "发起流程", path = "html/startFlow", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void startFlow(@RequestParam(required = true)String signid) throws Exception{
-		signService.startFlow(signid);
-	}	*/
-	/***************************************  E 流程处理的方法     *******************************************/
 	
 	/***************************************  S 新流程处理的方法     *******************************************/
 
 	@RequestMapping(name = "初始化流程处理页面", path = "html/initFlowPageData",method=RequestMethod.GET)
 	@Transactional
 	public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true)String signid){
-		return signService.findById(signid,false);
+		return signService.findById(signid,true);
 	}
 
 	@RequiresPermissions("sign#html/startNewFlow#post")
 	@RequestMapping(name = "发起流程", path = "html/startNewFlow", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void startNewFlow(@RequestParam(required = true)String signid) throws Exception{
+	public void startNewFlow(@RequestParam(required = true)String signid){
 		signService.startNewFlow(signid);
 	}
 	

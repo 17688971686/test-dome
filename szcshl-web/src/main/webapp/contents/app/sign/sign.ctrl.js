@@ -91,7 +91,7 @@
         	 common.confirm({
               	 vm:vm,
               	 title:"",
-              	 msg:"发起流程后，将不能对信息进行修改，确认发起流程么？",
+              	 msg:"确认签收完成了么？",
               	 fn:function () {
                     	$('.confirmDialog').modal('hide');             	
                     	signFlowSvc.startFlow(vm,signid);

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.ICurrentUser;
 import cs.domain.sys.User;
@@ -109,6 +110,12 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody UserDto userDto) {
         userService.updateUser(userDto);
+    }
+    
+    @RequestMapping(name = "获取副主任信息", path = "getViceDirector", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> getViceDirector() {
+        return userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
     }
 
     // begin#html

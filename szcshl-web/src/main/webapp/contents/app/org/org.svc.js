@@ -44,8 +44,8 @@
 				serverFiltering : true,			
 				pageSize: 10,
 				sort : {
-					field : "createdDate",
-					dir : "desc"
+					field : "sort",
+					dir : "asc"
 				}
 			});
 
@@ -100,19 +100,6 @@
 						filterable : false
 					},
 					{
-						field : "orgPhone",
-						title : "电话",
-						width : 130,						
-						filterable : false
-					},
-					
-					{
-						field : "orgAddress",
-						title : "地址",
-						width : 130,						
-						filterable : false
-					},
-					{
 						field : "orgFunction",
 						title : "职能",
 						width :130,						
@@ -120,22 +107,28 @@
 					},
 					{
 						field : "orgDirectorName",
-						title : "科长",
+						title : "部门负责人",
 						width : 100,						
 						filterable : false
 					},
 					{
-						field : "orgAssistantName",
-						title : "副科长",
+						field : "orgSLeaderName",
+						title : "分管领导",
 						width : 100,						
 						filterable : false
 					},
 					{
-						field : "orgCompanyName",
-						title : "单位名称",
+						field : "orgPhone",
+						title : "电话",
 						width : 130,						
 						filterable : false
-					},
+					},					
+					{
+						field : "orgAddress",
+						title : "地址",
+						width : 130,						
+						filterable : false
+					},										
 					{
 						field : "remark",
 						title : "描述",
@@ -153,40 +146,49 @@
 						title : "操作",
 						width : 200,
 						template:function(item){							
-							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-							
-						}
-						
-
+							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);							
+						}						
 					}
-
 			];
 			// End:column
 		
 			vm.gridOptions={
-					dataSource : common.gridDataSource(dataSource),
-				
-					filterable : common.kendoGridConfig().filterable,
-					pageable : common.kendoGridConfig().pageable,
-					noRecords:common.kendoGridConfig().noRecordMessage,
-					columns : columns,
-					dataBound:dataBound,
-					resizable: true
-				};
+				dataSource : common.gridDataSource(dataSource),			
+				filterable : common.kendoGridConfig().filterable,
+				pageable : common.kendoGridConfig().pageable,
+				noRecords:common.kendoGridConfig().noRecordMessage,
+				columns : columns,
+				dataBound:dataBound,
+				resizable: true
+			};
 			
 		}// end fun grid
 
 		function createOrg(vm) {
 			common.initJqValidation();
 			var isValid = $('form').valid();
-			if (isValid && vm.isorgExist == false) {
+			if (isValid && vm.isorgExist == false) {				
 				vm.isSubmit = true;
 				var httpOptions = {
 					method : 'post',
 					url : url_org,
 					data : vm.model
 				}
-
+				vm.OrgDirectorUsers.forEach(function (u, number) {
+                    if(u.id == vm.model.orgDirector){
+                    	vm.model.orgDirectorName = u.displayName;
+                    }
+                });
+				vm.orgMLeaderUsers.forEach(function (u, number) {
+                    if(u.id == vm.model.orgMLeader){
+                    	vm.model.orgMLeaderName = u.displayName;
+                    }
+                });
+				vm.orgSLeaderUser.forEach(function (u, number) {
+                    if(u.id == vm.model.orgSLeader){
+                    	vm.model.orgSLeaderName = u.displayName;
+                    }
+                });
 				var httpSuccess = function success(response) {									
 					common.requestSuccess({
 						vm:vm,
@@ -216,8 +218,7 @@
 		}// end fun createorg
 		
 		//获取单位信息
-		function getCompany(vm){
-			
+		function getCompany(vm){			
 			var httpOptions = {
 					method : 'get',
 					url : common.format(url_org + "/getCompany")
@@ -258,8 +259,23 @@
 			var isValid = $('form').valid();
 			if (isValid && vm.isorgExist == false) {
 				vm.isSubmit = true;
-				vm.model.id=vm.id;// id
-							              
+				vm.model.id=vm.id;
+				vm.OrgDirectorUsers.forEach(function (u, number) {
+                    if(u.id == vm.model.orgDirector){
+                    	vm.model.orgDirectorName = u.displayName;
+                    }
+                });
+				vm.orgMLeaderUsers.forEach(function (u, number) {
+                    if(u.id == vm.model.orgMLeader){
+                    	vm.model.orgMLeaderName = u.displayName;
+                    }
+                });
+				vm.orgSLeaderUser.forEach(function (u, number) {
+                    if(u.id == vm.model.orgSLeader){
+                    	vm.model.orgSLeaderName = u.displayName;
+                    }
+                });
+				
 				var httpOptions = {
 					method : 'put',
 					url : url_org,

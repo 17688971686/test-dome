@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,11 +73,13 @@ public class OrgServiceImpl implements OrgService {
 	@Transactional
 	public void createOrg(OrgDto orgDto) {
 		// 判断部门是否已经存在
-		Criteria criteria = orgRepo.getExecutableCriteria();
+		Criteria criteria = orgRepo.getExecutableCriteria();		
+		criteria.setProjection(Projections.rowCount());  
 		criteria.add(Restrictions.eq(Org_.orgIdentity.getName(), orgDto.getOrgIdentity()));
-		List<Org> orgs = criteria.list();
+		
+		int orgCount = Integer.parseInt(criteria.uniqueResult().toString());
 		// 部门不存在
-		if (orgs.isEmpty()) {
+		if (orgCount < 1) {
 			Org org = new Org();						
 			BeanCopierUtils.copyProperties(orgDto, org);
 			Date now = new Date();
@@ -290,6 +294,25 @@ public class OrgServiceImpl implements OrgService {
 			orgList.forEach( o ->{
 				OrgDto orgDto = new OrgDto();
 				BeanCopierUtils.copyProperties(o, orgDto);
+				orgDtoList.add(orgDto);
+			});
+			return orgDtoList;
+		}
+		return null;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<OrgDto> listAll() {
+		Criteria criteria = orgRepo.getExecutableCriteria();
+		criteria.addOrder(Order.asc(Org_.sort.getName()));		
+		List<Org> orgList = criteria.list();
+		if(orgList != null){
+			List<OrgDto> orgDtoList = new ArrayList<OrgDto>(orgList.size());
+			orgList.forEach( o ->{
+				OrgDto orgDto = new OrgDto();
+				BeanCopierUtils.copyProperties(o, orgDto);
+				orgDto.setCharge((currentUser.getLoginUser().getId().equals(o.getOrgSLeader()))?true:false);				
 				orgDtoList.add(orgDto);
 			});
 			return orgDtoList;

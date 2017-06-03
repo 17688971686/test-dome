@@ -17,8 +17,6 @@
 			fileNum : fileNum,                           //生成文件字号
 			getselectedSign : getselectedSign,
 			getSeleSignBysId : getSeleSignBysId,
-			
-			
 		};
 		return service;			
 		
