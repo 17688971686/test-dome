@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import cs.common.ICurrentUser;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.domain.sys.Dict;
+import cs.domain.sys.Dict_;
 import cs.model.PageModelDto;
 import cs.model.sys.DictDto;
 import cs.repository.odata.ODataObj;
@@ -207,16 +210,15 @@ public class DictServiceImpl implements DictService {
 		List<DictDto> dictDtos = new ArrayList<>();
 		
 		if(dictCode != null&&!dictCode.isEmpty()){
-			dictDtos = (List<DictDto>)cache.get("DICT_ITEMS".concat(dictCode));
+//			dictDtos = (List<DictDto>)cache.get("DICT_ITEMS".concat(dictCode));
 			
-			if(dictDtos == null){
+			if(dictDtos.size() == 0){
 				Dict pDict = dictRepo.findByCode(dictCode, null);
 				if(pDict != null){
 					//List<Dict> dicts = dictRepo.findDictItemByCode(dictCode);
 					List<Dict> dicts = dictRepo.findByPdictId(pDict.getParentId());
 					dictDtos = new ArrayList<DictDto>();
 					if(dicts != null){
-						
 						for(Dict dict:dicts){
 							DictDto dictDto = new DictDto();
 							
@@ -236,10 +238,11 @@ public class DictServiceImpl implements DictService {
 				
 			}
 		}else{
-			dictDtos = (List<DictDto>)cache.get("DICT_ALL_ITEMS");
-			if(dictDtos == null){
-				List<Dict> dicts = dictRepo.findAll();
-				
+//			dictDtos = (List<DictDto>)cache.get("DICT_ALL_ITEMS");
+			if(dictDtos.size() == 0){
+				Criteria criteria = dictRepo.getExecutableCriteria();
+				criteria.addOrder(Order.asc(Dict_.dictSort.getName()));
+				List<Dict> dicts = criteria.list();
 				if(dicts != null){
 					dictDtos = new ArrayList<DictDto>();
 					//begin dict foreach
@@ -256,7 +259,6 @@ public class DictServiceImpl implements DictService {
 				}
 			}
 		}
-		
 		
 		return dictDtos;
 	}

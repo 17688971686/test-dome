@@ -65,7 +65,7 @@
                 <td colspan="3">
                     <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="请选择项目阶段" >
 						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 					
 					<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.ispresign" name="ispresign"  ng-true-value="9" ng-false-value="0"> 项目预签收

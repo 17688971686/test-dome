@@ -13,17 +13,18 @@ public class DictDto extends BaseDto{
 	private String dictKey;
 
 	private String dictName;
-	
 
+	private Integer dictSort;
+	
 	private String dictDesc;
 
 	private String isUsed;
 
 	private String dictType = "0";
-	
+
 
 	private String isSysDict;
-	
+
 	public String getDictId() {
 		return dictId;
 	}
@@ -78,5 +79,13 @@ public class DictDto extends BaseDto{
 	public void setIsSysDict(String isSysDict) {
 		this.isSysDict = isSysDict;
 	}
-	
+	public Integer getDictSort() {
+		return dictSort;
+	}
+	public void setDictSort(Integer dictSort) {
+		this.dictSort = dictSort;
+	}
+
+
+
 }

@@ -21,8 +21,6 @@
 
         return service;
         
-       
-        
         // begin#updateUser
         function updateUser(vm) {
             common.initJqValidation();
@@ -273,7 +271,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user+"/fingByOData",$("#usersform")),
+                transport: common.kendoGridConfig().transport(url_user+"/fingByOData?$orderby=userSort",$("#usersform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

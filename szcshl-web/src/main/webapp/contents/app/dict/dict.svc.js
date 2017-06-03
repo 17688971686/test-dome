@@ -245,7 +245,7 @@
 		function initDictTree(vm) {
 			var httpOptions = {
 				method : 'get',
-				url : url_dictgroup
+				url : url_dictgroup + "?$orderby=dictSort"
 			}
 
 			var httpSuccess = function success(response) {
@@ -340,7 +340,7 @@
 		function initpZtreeClient(vm) {
 			var httpOptions = {
 				method : 'get',
-				url : url_dictgroup
+				url : url_dictgroup + "?$orderby=dictSort"
 			}
 			var httpSuccess = function success(response) {
 

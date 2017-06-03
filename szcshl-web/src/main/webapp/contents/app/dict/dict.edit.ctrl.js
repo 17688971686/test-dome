@@ -17,7 +17,7 @@
             vm.isUpdate = true;
             vm.title = '编辑字典';
         }
-        
+        vm.model.dictSort=0;//默认排序序号为0
  
         vm.createDict = function(){
         	dictSvc.createDict(vm);

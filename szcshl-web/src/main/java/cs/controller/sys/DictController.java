@@ -36,7 +36,7 @@ public class DictController {
 	public @ResponseBody PageModelDto<DictDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<DictDto> dictDtos = dictService.get(odataObj);
-		List<DictDto> dtos = dictService.getDictItemByCode("DICT_SEX");		
+//		List<DictDto> dtos = dictService.getDictItemByCode("DICT_SEX");		
 		return dictDtos;
 	}
 	

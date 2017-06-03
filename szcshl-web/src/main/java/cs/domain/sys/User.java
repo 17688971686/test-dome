@@ -74,6 +74,10 @@ public class User extends DomainBase {
 	@Column(columnDefinition="date")
 	private Date lastLoginDate;
 	
+	//用户排序
+	@Column(columnDefinition="INTEGER")
+	private Integer userSort;
+	
 
 	@ManyToMany
 	private List<Role> roles=new ArrayList<>();
@@ -215,8 +219,12 @@ public class User extends DomainBase {
 	public void setUserDtID(String userDtID) {
 		this.userDtID = userDtID;
 	}
-	
-	
+	public Integer getUserSort() {
+		return userSort;
+	}
+	public void setUserSort(Integer userSort) {
+		this.userSort = userSort;
+	}
 	
 	
 	

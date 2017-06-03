@@ -33,7 +33,11 @@ public class Dict extends DomainBase{
 	@Column(columnDefinition="VARCHAR(100)")
 	private String dictName;
 	
-	//排序
+	//字典的排序
+	@Column(columnDefinition="INTEGER")
+	private Integer dictSort;
+	
+	//字典描述
 	@Column(columnDefinition="VARCHAR(100)")
 	private String dictDesc;
 	//是否在用,0表示在用，1表示禁用，默认0
@@ -113,6 +117,12 @@ public class Dict extends DomainBase{
 	}
 	public void setIsSysDict(String isSysDict) {
 		this.isSysDict = isSysDict;
+	}
+	public Integer getDictSort() {
+		return dictSort;
+	}
+	public void setDictSort(Integer dictSort) {
+		this.dictSort = dictSort;
 	}
 
 	

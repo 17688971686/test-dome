@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.sys;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -107,6 +108,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 	public List<Dict> findByPdictId(String parentId) {
 		Criteria criteria = this.getSession().createCriteria(Dict.class);	
 		criteria.add(Restrictions.eqOrIsNull(Dict_.parentId.getName(), parentId));	
+//		criteria.addOrder((Order.asc(Dict_.dictSort.getName())));
 		return criteria.list();
 		
 	}

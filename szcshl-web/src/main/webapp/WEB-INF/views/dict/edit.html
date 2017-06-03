@@ -40,13 +40,7 @@
                     <span class="errors" ng-show="vm.isDictNameExist">分组名称已存在</span></td>
             </tr>
            
-            <tr>
-                <td class="formAlignRight">父级： </td>
-                <td>
-                 <ul id="pzTree" class="ztree" ng-hide="vm.isUpdate"></ul>
-                 <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"  ng-show="vm.isUpdate" ng-model="vm.model.parentDictName">                 
-                </td>
-            </tr>
+           
              <tr>
                 <td class="formAlignRight">字典编码： <span class="required">*</span> </td>
                 <td>
@@ -54,7 +48,16 @@
                 </td>
                 <td><span data-valmsg-for="dictCode" data-valmsg-replace="true" class="errors"></span>
                  <span class="errors" ng-show="vm.isDictCodeExist">字典编码已存在</span></td>
-            </tr>                                  
+            </tr>    
+              <tr>
+                <td class="formAlignRight">字典排序序号： </td>
+                <td>
+                    <input  type="number" maxlength="200" class="form-control input-sm "   ng-model="vm.model.dictSort" id="dictSort" name="dictSort" >
+                </td>
+                <td>
+                 <span >&nbsp;</span></td>
+            </tr> 
+             
             <tr>
                 <td class="formAlignRight">描述： </td>
                 <td>
@@ -62,7 +65,13 @@
                 </td>
                 <td><span data-valmsg-for="description" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
-
+ 			<tr>
+                <td class="formAlignRight">父级： </td>
+                <td>
+                 <ul id="pzTree" class="ztree" ng-hide="vm.isUpdate"></ul>
+                 <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"  ng-show="vm.isUpdate" ng-model="vm.model.parentDictName">                 
+                </td>
+            </tr>
         </table>
     </form>
 </div>

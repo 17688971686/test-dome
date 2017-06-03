@@ -28,6 +28,7 @@ public class UserDto extends BaseDto {
 	private Long userOrder; //用户序号	
 	private String orgId;	//关联部门ID	
 	private int loginFailCount;
+	private Integer userSort;
 	
 	//角色
 	private List<RoleDto> roles=new ArrayList<>();
@@ -181,6 +182,15 @@ public class UserDto extends BaseDto {
 
 	public void setLastLoginDate(Date lastLoginDate) {
 		this.lastLoginDate = lastLoginDate;
+	}
+
+	public Integer getUserSort() {
+		return userSort;
+	}
+
+	public void setUserSort(Integer userSort) {
+		this.userSort = userSort;
 	}		
 		
+	
 }
