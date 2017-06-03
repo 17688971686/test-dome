@@ -46,11 +46,13 @@
         
         //选主项目
         vm.ischecked=function(){
+        		vm.dispatchDoc.isRelated="是";
     			vm.isHide2=false;
         }
         
       //选次项目
         vm.ischecked2=function(){
+        	vm.dispatchDoc.isRelated="否";
         	vm.isHide2=true;
         }
         //打开合并页面

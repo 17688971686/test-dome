@@ -3,6 +3,8 @@ package cs.model.project;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
+
 import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.model.BaseDto;
@@ -137,6 +139,28 @@ private String id;
 	
 	public SignDto getSignDto() {
 		return signDto;
+	}
+	
+	//第一负责人意见
+	private String mianChargeSuggest;
+		
+	//第二负责人意见
+	private String secondChargeSuggest;
+	
+	public String getMianChargeSuggest() {
+		return mianChargeSuggest;
+	}
+
+	public void setMianChargeSuggest(String mianChargeSuggest) {
+		this.mianChargeSuggest = mianChargeSuggest;
+	}
+
+	public String getSecondChargeSuggest() {
+		return secondChargeSuggest;
+	}
+
+	public void setSecondChargeSuggest(String secondChargeSuggest) {
+		this.secondChargeSuggest = secondChargeSuggest;
 	}
 
 	public void setSignDto(SignDto signDto) {

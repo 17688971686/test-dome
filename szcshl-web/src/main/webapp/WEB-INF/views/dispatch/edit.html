@@ -4,8 +4,8 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()"  ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
-    <button class="btn btn-sm btn-success" ng-click="vm.fileNum()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>生成字号</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.fileNum()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>生成发文号</button>
     <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
         
@@ -16,21 +16,23 @@
 		<table class="table table-bordered">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
 		  <caption style="width:100%;">
-		  	<span style="float:left;">发文方式：
+		  	<span style="float:left;">发文方式：<span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
 					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.dispatchWay">{{x.dictName}}</option>
 				</select>
-			</span> &nbsp;&nbsp;
-			<span id="mergeOptions" ng-hide="vm.isHide">
+			</span> 
+			<span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>
+			&nbsp;&nbsp;<span id="mergeOptions" ng-hide="vm.isHide">
 			<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9" ng-checked="vm.dispatchDoc.isMainProject =='9'" ng-click="vm.ischecked()">主项目 &nbsp;&nbsp; 
-			<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="vm.dispatchDoc.isMainProject =='0'" ng-click="vm.ischecked2()">次项目  &nbsp;&nbsp;
+			<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="true" ng-click="vm.ischecked2()">次项目  &nbsp;&nbsp;
 			<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-hide="vm.isHide2">关联项目</button></span>
 			
-		  	<span style="float:right;">发文类型：
+		  	<span style="float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType">
 					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.dispatchType">{{x.dictName}}</option>
 				</select>
 			</span>
+			 <span data-valmsg-for="dispatchType" data-valmsg-replace="true" class="errors"></span>	
 		  </caption>
 		  <tbody>
 		  
@@ -39,15 +41,16 @@
 		      <td style="width:150px;" class="text-center">发文部门</td>
 		      <td>
 		      	<select ng-model="vm.dispatchDoc.orgName"  name="orgName" id="orgName" class="form-control input-sm " >
-					<option ng-repeat="x in vm.org" value="{{x.name}}" ng-selected="x.name == vm.dispatchDoc.orgName">{{x.name}}</option>
+					<option ng-repeat="x in vm.org | orderBy:'orgOrder':false" value="{{x.name}}" ng-selected="x.name == vm.dispatchDoc.orgName">{{x.name}}</option>
 				</select>			
 			  </td>
 			  
-			  <td rowspan="2" style="width:150px;" class="text-center">校对人</td>
+			  <td rowspan="2" style="width:150px;" class="text-center">校对人<span class="required">*</span></td>
 		      <td rowspan="2">
-		      	<select ng-model="vm.dispatchDoc.proofreadName"  name="proofreadName" id="proofreadName" class="form-control input-sm " >
+		      	<select ng-model="vm.dispatchDoc.proofreadName"  name="proofreadName" id="proofreadName" class="form-control input-sm " data-val="true" data-val-required="必填">
 					<option ng-repeat="x in vm.proofread" value="{{x.loginName}}" ng-selected="x.loginName == vm.dispatchDoc.proofreadName">{{x.loginName}}</option>
-				</select>			
+				</select>	
+				<span data-valmsg-for="proofreadName" data-valmsg-replace="true" class="errors"></span>			
 			  </td>
 			   
 			  <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>
@@ -74,47 +77,40 @@
 			  
 			  <td style="width:150px;" class="text-center">年度计划</td>
 		      <td >
-		      	<select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm "  data-val="true" data-val-required="必填">
+		      	<select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm ">
 					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="x.dictName == vm.dispatchDoc.yearPlan">{{x.dictName}}</option>
 				</select>
-			    <span data-valmsg-for="yearPlan" data-valmsg-replace="true" class="errors"></span>
 			  </td>
 			  
 			  <td style="width:150px;" class="text-center">紧急程度</td>
 		      <td >
-		      	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel" data-val="true" data-val-required="必填">
+		      	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel">
 					<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="x.dictName">{{x.dictName}}</option>
 				</select>				
-			    <span data-valmsg-for="urgentLevel" data-valmsg-replace="true" class="errors"></span>		      
 			  </td>
 		    </tr>
 		    
 		    
 		    <tr>
 		      <td style="width:150px;" class="text-center">发文日期</td>
-		      <td >
-		      	<input type="text" name="dispatchDate" id="dispatchDate" style="width: 210px;"
-					 class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  kendo-date-picker k-format="'yyyy-MM-dd'"
-					  data-val-date="必须为日期"> 		
-			    <span data-valmsg-for="dispatchDate" data-valmsg-replace="true" class="errors"></span>
-			  </td>
+		      <td >{{vm.dispatchDoc.dispatchDate}}</td>
 			  
 			  <td style="width:150px;" class="text-center">文件字号</td>
 		      <td >{{vm.dispatchDoc.fileNum}}</td>
 			  
-			  <td style="width:150px;" class="text-center">是否有其他关联</td>
-		      <td >
-		      	<select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm " name="isRelated" id="isRelated" data-val="true" data-val-required="必填">
+			  <td style="width:150px;" class="text-center">是否有其他关联 <span class="required">*</span></td>
+		      <td >{{vm.dispatchDoc.isRelated}}
+		      	<!-- <select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm " name="isRelated" id="isRelated" data-val="true" data-val-required="必填">
 					<option value="">请选择</option>
 					<option ng-repeat="x in DICT.ISRELATED.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>			
-		      	<span data-valmsg-for="isRelated" data-valmsg-replace="true" class="errors"></span>
+		      	<span data-valmsg-for="isRelated" data-valmsg-replace="true" class="errors"></span> -->
 			  </td>
 		    </tr>
 		    
 		    
 		    <tr>
-		      <td style="width:150px;" class="text-center">文件标题</td>
+		      <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
 		      <td colspan="5">
 		      	<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true" data-val-required="必填">		
 			    <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>		     
@@ -123,9 +119,9 @@
 		    
 		    
 		    <tr>
-		      <td style="width:150px;" class="text-center">发行范围</td>
+		      <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
 		      <td colspan="5">
-		      	<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope" data-val="true" data-val-required="必填">		
+		      	<input  type="text" maxlength="200" class="form-control input-sm " rows="3" ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope" data-val="true" data-val-required="必填">		
 			   	<span data-valmsg-for="dispatchScope" data-valmsg-replace="true" class="errors"></span>			     
 			  </td>
 		    </tr>
@@ -134,14 +130,25 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">相关说明</td>
 		      <td colspan="5">
-		      	<textarea  maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.description" id="description" name="description"/>		
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="3"  ng-model="vm.dispatchDoc.description" id="description" name="description"/>		
 			  </td>
 		    </tr>
 		      
 		      		 
 		   	<tr>
+		      <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
+		      <td colspan="3">
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest" name="mianChargeSuggest" placeholder="第一负责人"/>
+			  </td>
+		      <td colspan="2">
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.sign.workProgram.secondChargeSuggest" id="mianChargeSuggest" name="mianChargeSuggest" placeholder="第二负责人"/>
+			  </td>
+		    </tr>
+		    
+		   	<tr>
 		      <td style="width:150px;" class="text-center">评审意见摘要</td>
 		      <td colspan="5">
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
 			  </td>
 		    </tr>
 		     
@@ -149,6 +156,7 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">部长审核意见</td>
 		      <td colspan="5">
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion" name="ministerSuggesttion"/>	
 			  </td>
 		    </tr>
 		     
@@ -156,6 +164,7 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">分管副主任意见</td>
 		      <td colspan="5">
+		      	<textarea  maxlength="200" class="form-control input-sm "  rows="5" ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion" name="viceDirectorSuggesttion"/>
 			  </td>
 		    </tr>
 		     
@@ -163,6 +172,7 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">主任签发</td>
 		      <td colspan="5">
+		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.DirectorIssue" id="DirectorIssue" name="DirectorIssue"/>
 			  </td>
 		    </tr>
 		    
@@ -170,17 +180,16 @@
 		    <tr>
 		      <td style="width:150px;" class="text-center">项目概况</td>
 		      <td colspan="5">
-		      	<table class="table table-bordered">
+		      	<table class="table table-bordered" style="text-align: center;">
 		      	
 		      		<tr>
-		      			<td>项目建议书</td><td>申报</td><td>审定</td><td>核减（增）</td><td>核减（增）率</td><td>批复金额</td><td>备注</td>
+		      			<td>项目建议书</td><td>申报</td><td>审定<span class="required">*</span></td><td>核减（增）</td><td>核减（增）率</td><td>批复金额</td><td>备注</td>
 		      		</tr>
 		      		
 		      		<tr>
 		      			<td>投资额（万元）</td>
 		      			<td>
 		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.declareValue" ng-blur="vm.count()" id="declareValue" name="declareValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
-		      				<span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors"></span>
 		      			</td>
 		      			<td>
 		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.authorizeValue" ng-blur="vm.count()" id="authorizeValue" name="authorizeValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
@@ -193,8 +202,7 @@
 		      				{{vm.dispatchDoc.extraRate}}<span>%</span>
 		      			</td>
 		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
-		      				<span data-valmsg-for="approveValue" data-valmsg-replace="true" class="errors"></span>
+		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue">
 		      			</td>
 		      			<td>
 		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.remark" id="remark" name="remark">
@@ -202,7 +210,7 @@
 		      		</tr>
 		      		
 		      		<tr>
-		      			<td>项目建设必要性</td>
+		      			<td>项目建设必要性<span class="required">*</span></td>
 		      			<td colspan="6">
 		      				<textarea  maxlength="200" class="form-control input-sm " rows="3" ng-model="vm.dispatchDoc.projectBuildNecess" id="projectBuildNecess" name="projectBuildNecess" data-val="true" data-val-required="必填"/>
 		      				<span data-valmsg-for="projectBuildNecess" data-valmsg-replace="true" class="errors"></span>
@@ -210,7 +218,7 @@
 		      		</tr>
 		      		
 		      		<tr>
-		      			<td>审定建设规模及内容</td>
+		      			<td>审定建设规模及内容<span class="required">*</span></td>
 		      			<td colspan="6">
 		      				<textarea  maxlength="200" class="form-control input-sm " rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent" name="buildSizeContent" data-val="true" data-val-required="必填"/>
 		      				<span data-valmsg-for="buildSizeContent" data-valmsg-replace="true" class="errors"></span>
@@ -218,7 +226,7 @@
 		      		</tr>
 		      		
 		      		<tr>
-		      			<td>投资匡算及资金来源</td>
+		      			<td>投资匡算及资金来源<span class="required">*</span></td>
 		      			<td colspan="6">
 		      				<textarea  maxlength="200" class="form-control input-sm " rows="3"  ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin" name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
 		      				<span data-valmsg-for="fundTotalOrigin" data-valmsg-replace="true" class="errors"></span>
@@ -226,7 +234,7 @@
 		      		</tr>
 		      		
 		      		<tr>
-		      			<td>下一阶段工作要求</td>
+		      			<td>下一阶段工作要求<span class="required">*</span></td>
 		      			<td colspan="6">
 		      				<textarea  maxlength="200" class="form-control input-sm " rows="3"  ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan" name="nextWorkPlan" data-val="true" data-val-required="必填"/>
 		      				<span data-valmsg-for="nextWorkPlan" data-valmsg-replace="true" class="errors"></span>
@@ -243,7 +251,7 @@
 	<div class="toolbar">
 	    <button class="btn btn-sm btn-success" ng-click="vm.search()"><span class="glyphicon glyphicon-search"></span>查询</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
-		 <button class="btn btn-sm btn-success" ng-click="vm.mergeDispa()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>确定</button>
+		 <button class="btn btn-sm btn-success" ng-click="vm.mergeDispa()"><span class="glyphicon glyphicon-ok"></span>确定</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.onClose()" ><span class="glyphicon glyphicon-chevron-left"></span>关闭</button>
 	</div>
 	<ol class="breadcrumb"> 

@@ -164,10 +164,19 @@ public class DispatchDoc extends DomainBase{
 	@Column(columnDefinition="VARCHAR(30)")
 	private String isRelated;
 	
+	//第一负责人意见
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String mianChargeSuggest;
+	
+	//第二负责人意见
+	@Column(columnDefinition="VARCHAR(2000)")
+	private String secondChargeSuggest;
+	
 	//收文，一对一
 	@OneToOne
 	@JoinColumn(name="signId")
 	private Sign sign;
+	
 	
 	//编号对应的字段
 	//拟稿人名称
@@ -187,6 +196,23 @@ public class DispatchDoc extends DomainBase{
 	//是否为主项目
 	private String isMainProject;//(3：主项目，4：次项目)
 	
+	
+	public String getMianChargeSuggest() {
+		return mianChargeSuggest;
+	}
+
+	public void setMianChargeSuggest(String mianChargeSuggest) {
+		this.mianChargeSuggest = mianChargeSuggest;
+	}
+
+	public String getSecondChargeSuggest() {
+		return secondChargeSuggest;
+	}
+
+	public void setSecondChargeSuggest(String secondChargeSuggest) {
+		this.secondChargeSuggest = secondChargeSuggest;
+	}
+
 	public String getIsRelated() {
 		return isRelated;
 	}

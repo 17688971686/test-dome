@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.sql.SelectValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import cs.domain.project.DispatchDoc_;
 import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.Org;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
@@ -33,6 +35,7 @@ import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.service.sys.UserService;
 
@@ -51,7 +54,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	private OrgRepo orgRepo;
 	@Autowired
 	private MergeDispaRepo mergeDispaRepo;
-
+	@Autowired
+	private WorkProgramRepo workProgramRepo;
 	// 初始化页面获取已选项目
 	@Override
 	public Map<String, Object> getSeleSignBysId(String bussnessId) {
@@ -177,9 +181,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Override
 	@Transactional
 	public String fileNum(String dispaId) {
+		Date now=new Date();
 		String fileNum = NumIncreaseUtils.getFileNo();
 		DispatchDoc dispa = dispatchDocRepo.findById(dispaId);
 		dispa.setFileNum(fileNum);
+		dispa.setDispatchDate(now);
 		dispatchDocRepo.save(dispa);
 		dispa.getSign().setDocnum(fileNum);
 		return fileNum;
@@ -212,6 +218,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			
 			sign.setIsDispatchCompleted(EnumState.YES.getValue());
 			sign.setDispatchDoc(dispatchDoc);
+			List<WorkProgram> workProgrmList=sign.getWorkProgramList();
+			for (WorkProgram workProgram : workProgrmList) {
+				workProgram.setAppalyInvestment(dispatchDocDto.getDeclareValue());
+			}
+			sign.setWorkProgramList(workProgrmList);
 			signRepo.save(sign);
 		} else {
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
@@ -238,10 +249,14 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		DispatchDocDto dispatchDto = new DispatchDocDto();
 		Sign sign = signRepo.findById(signId);
 		DispatchDoc dispatch  = sign.getDispatchDoc();
-		if (dispatch == null) {
+		//设置默认关联项目值
+		dispatch.setIsRelated("否");
+		if (dispatch==null||StringUtils.isBlank(dispatch.getId())) {
 			dispatch = new DispatchDoc();
 			dispatch.setDraftDate(now);
+			dispatch.setYearPlan(sign.getYearplantype());
 			dispatch.setSecretLevel(sign.getSecrectlevel());
+			dispatch.setUrgentLevel(sign.getUrgencydegree());
 			// 获取当前用户信息
 			dispatch.setUserName(currentUser.getLoginUser().getLoginName());
 			dispatch.setUserId(currentUser.getLoginUser().getId());
@@ -255,9 +270,13 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			if(mergeDispa != null && Validate.isString(mergeDispa.getBusinessId())){
 				linkSignId = mergeDispa.getLinkSignId();
 			}
+			
+			if((dispatch.getIsMainProject()).equals(Constant.EnumState.YES.getValue())){
+				dispatch.setIsRelated("是");
+			}
 		}
+		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
-
 		dispatchDto.setSignId(signId);
 		
 		map.put("dispatch", dispatchDto);

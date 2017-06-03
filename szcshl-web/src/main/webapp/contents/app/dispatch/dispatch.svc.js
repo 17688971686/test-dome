@@ -21,7 +21,7 @@
 		return service;			
 		
 		function fileNum(vm){
-			vm.isSubmit = false;
+			vm.isSubmit = true;
 			if(!vm.dispatchDoc.id){
 				common.alert({
 					vm:vm,
@@ -58,7 +58,7 @@
 					response : response,
 					fn : function() {
 						vm.dispatchDoc.fileNum=response.data;	
-						vm.isSubmit = true;
+						vm.isSubmit = false;
 						common.alert({ 
 							vm : vm,
 							msg : "操作成功"
@@ -91,6 +91,19 @@
 				})	
 				return;
 			}
+			var selectValue=$("#isRelated").find("option:selected").text();
+			if(selectValue=="否"){
+				common.alert({
+					vm:vm,
+					msg:"你已选择未关联,请重新选择再进行关联！",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}
+			
 			var WorkeWindow = $("#mwindow");
 			WorkeWindow.kendoWindow({
 				width : "1200px",
@@ -126,7 +139,6 @@
 						//初始化获取合并发文关联的linkSignId
 						vm.linkSignId=response.data.linkSignId;
 						//console.log(vm.dispatchDoc.fileNum);
-						
 						//如果是合并发文则显示主次项目选项
 						if(vm.dispatchDoc.dispatchWay=="合并发文"){
 							vm.isHide=false;
@@ -172,7 +184,7 @@
 						window.parent.$("#mwindow").data("kendoWindow").close();
 						common.alert({
 							vm:vm,
-							msg:"操作成功,请继续处理流程！",
+							msg:"操作成功！",
 							fn:function() {
 								$('.alertDialog').modal('hide');
 								$('.modal-backdrop').remove();
@@ -196,21 +208,21 @@
 		function saveDispatch(vm){
 			common.initJqValidation($("#dispatch_form"));
 			var isValid = $("#dispatch_form").valid();
-			vm.saveProcess = false;
 			if(isValid){
 				//是否关联其它项目判断
 				if(vm.dispatchDoc.isMainProject =="9"){
-					if(vm.linkSignId==" "){
-						common.alert({
-							vm:vm,
-							msg:"请关联其它项目",
-							fn:function() {
-								$('.alertDialog').modal('hide');
-								$('.modal-backdrop').remove();
-							}
-						})	
-						return;
-					}
+						if(vm.linkSignId==" "){
+							common.alert({
+								vm:vm,
+								msg:"请关联其它项目",
+								fn:function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})	
+							return;
+						}
+					
 				}
 				var httpOptions = {
 						method : 'post',
@@ -224,9 +236,8 @@
 						fn:function(){		
 							common.alert({
 								vm:vm,
-								msg:"操作成功,请继续处理流程！",
+								msg:"操作成功！",
 								fn:function() {
-									vm.saveProcess = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
 									
