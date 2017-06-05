@@ -279,7 +279,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
 		dispatchDto.setSignId(signId);
-		
+		//每次加载发文日期为当天日期
+		dispatchDto.setDispatchDate(now);
 		map.put("dispatch", dispatchDto);
 
 		// 获取主办处联系人
