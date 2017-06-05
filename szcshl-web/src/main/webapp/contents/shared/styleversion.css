@@ -128,7 +128,8 @@ text-align: left;
 .k-icon{	
 	background-image: url('../libs/kendoui/BlueOpal/sprite2.png');
 }
-.k-i-arrow-e,.k-i-seek-e,.k-i-arrow-w,.k-i-seek-w{
+
+.k-i-close,.k-i-arrow-e,.k-i-seek-e,.k-i-arrow-w,.k-i-seek-w{
 	
 	background-image: url('../libs/kendoui/BlueOpal/sprite.png');
 }
@@ -237,7 +238,7 @@ text-align: left;
     color: #666;
 }
 
-.conttent_list .form-control.k-widget {
+.well-box span.k-timepicker,.well-box span.k-datepicker,.conttent_list .form-control.k-widget {
     padding: 0;
     border: 1px solid #ccc;
 }
@@ -267,3 +268,16 @@ text-align: left;
 .breadcrumb1,.breadcrumb2,.breadcrumb3{background:#F5F5F5;padding:10px;overflow:hidden;    border: 1px solid #ccc;border-top:0px;border-bottom:0px; }
 .breadcrumb1{border-top: 1px solid #ccc;}
 .breadcrumb3{border-bottom: 1px solid #ccc;}
+
+/* loginpage */
+   .loginbg{position: absolute;z-index:-1; width:100%; height:100%;top:0px;}
+   .loginbg img{left:-36%;position: absolute;z-index:-1;}
+   .mask{position: absolute;width:100%; height:100%;top:0px;}
+   .mask{  
+  -webkit-box-shadow:inset 0 -50px 150px #000;  
+  -moz-box-shadow:inset 0 -50px 150px #000;  
+  box-shadow:inset 0 -50px 150px #000;  
+ 
+  
+  
+} 

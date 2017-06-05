@@ -37,20 +37,28 @@
 <link href="${path}/contents/libs/kendoui/kendo.blueopal.min.css"
 	rel="stylesheet" />
 <link href="${path}/contents/shared/css.css" rel="stylesheet" />
+<link href="${path}/contents/shared/styleversion.css" rel="stylesheet" />
+<script src="${path}/contents/libs/jquery/jquery.js"></script>
 
 <!--Begin:自定义css-->
 
 <!--End:自定义css -->
 <style>
     body{
-        background:#d2d6de;
+        /* background:url(${path}/contents/images/loginbg.jpg); */
     }
     .login-box-body{
-        background:#fff;
+        background:none;
         width:480px;
+        margin-left: -56px;
+        padding: 20px 90px;
     }
     .login-logo{
    		 width:480px;
+   		 line-height: 40px;
+   		 margin-top: 240px;
+   		 margin-left:  -136px;
+
     }
     .vcode{
         cursor:pointer;
@@ -62,17 +70,37 @@
         list-style:none;
         color:red;
     }
-    
+    .has-feedback .form-control {
+    border-radius: 30px;
+}
+.btn.btn-flat {
+    border-radius: 30px;
+}
+footer{    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    /* background-color: rgba(60, 141, 188, 1); */
+    line-height: 40px;
+    color: #fff;}
+header{
+    height:60px; padding:5px;
+    background:rgba(0,0,0,0.05)
+}    
 </style>
 
-
+<div class="loginbg">
+<img src="${path}/contents/images/loginbg.jpg" height="100%"/>
+<div class="mask"></div>
+</div>
+<header><img src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50px"></header>
 <div class="login-box" ng-app="loginApp" ng-controller="LoginCtrl as vm">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
     <div class="login-logo">
-        深圳市政府投资项目评审中心
-        项目评审管理信息系统
+        <img src="${path}/contents/images/loglogo.png"/>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body" >
@@ -114,6 +142,7 @@
     <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
+<footer>        深圳市政府投资项目评审中心版权所有  </footer>
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
 	<script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
 	<script src="${path}/contents/libs/angular/angular.js"></script>
