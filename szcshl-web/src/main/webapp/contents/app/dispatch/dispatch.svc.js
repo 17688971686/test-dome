@@ -138,7 +138,7 @@
 						vm.org = response.data.orgList;
 						//初始化获取合并发文关联的linkSignId
 						vm.linkSignId=response.data.linkSignId;
-						console.log(vm.dispatchDoc);
+						//console.log(vm.dispatchDoc);
 						//如果是合并发文则显示主次项目选项
 						if(vm.dispatchDoc.dispatchWay=="合并发文"){
 							vm.isHide=false;
@@ -210,7 +210,7 @@
 			var isValid = $("#dispatch_form").valid();
 			if(isValid){
 				//是否关联其它项目判断
-				if(vm.dispatchDoc.isMainProject =="9"){
+				if(vm.dispatchDoc.isMainProject =="9"&&vm.dispatchDoc.id){
 						if(vm.linkSignId==" "){
 							common.alert({
 								vm:vm,
@@ -264,9 +264,8 @@
 		function chooseProject(vm){
 			var idStr=vm.linkSignId;
 			var linkSignId=$("input[name='checksign']:checked");
-			
 			var ids=[];
-			if(linkSignId){
+			if(linkSignId.length!=0){
 				 $.each(linkSignId, function(i, obj) {
 					ids.push(obj.value);
 				 });
@@ -286,7 +285,7 @@
 		function cancelProject(vm){
 			var idStr=vm.linkSignId;
 			var linkSignId=$("input[name='checkss']:checked");
-			if(linkSignId){
+			if(linkSignId.lenght!=0){
 				$.each(linkSignId, function(i, obj) {
 					if(idStr.lastIndexOf(obj.value)==0){
 						idStr=idStr.replace(obj.value,"");
