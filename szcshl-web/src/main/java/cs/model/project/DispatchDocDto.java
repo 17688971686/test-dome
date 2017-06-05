@@ -126,7 +126,7 @@ private String id;
 	private String signId;
 	
 	//主任签发
-	private String DirectorIssue;
+	private String directorIssue;
 	
 	//是否与其他表关联
 	private String isRelated;
@@ -454,7 +454,15 @@ private String id;
 
 	public void setDirectorSuggesttion(String directorSuggesttion) {
 		this.directorSuggesttion = directorSuggesttion;
-	}	
+	}
+	
+	public String getDirectorIssue() {
+		return directorIssue;
+	}
+
+	public void setDirectorIssue(String directorIssue) {
+		this.directorIssue = directorIssue;
+	}
 
 	public String getDirectorDate() {
 		return directorDate;
@@ -462,14 +470,6 @@ private String id;
 
 	public void setDirectorDate(String directorDate) {
 		this.directorDate = directorDate;
-	}
-
-	public String getDirectorIssue() {
-		return DirectorIssue;
-	}
-
-	public void setDirectorIssue(String directorIssue) {
-		DirectorIssue = directorIssue;
 	}
 
 	public String getIsRelated() {

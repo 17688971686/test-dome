@@ -114,7 +114,7 @@ public class DispatchDoc extends DomainBase{
 	
 	//主任签发
 	@Column(columnDefinition="VARCHAR(2000)")
-	private String DirectorIssue;
+	private String directorIssue;
 	
 	//局长核稿日期
 	@Column(columnDefinition="DATE")
@@ -197,6 +197,15 @@ public class DispatchDoc extends DomainBase{
 	private String isMainProject;//(3：主项目，4：次项目)
 	
 	
+	
+	public String getDirectorIssue() {
+		return directorIssue;
+	}
+
+	public void setDirectorIssue(String directorIssue) {
+		this.directorIssue = directorIssue;
+	}
+
 	public String getMianChargeSuggest() {
 		return mianChargeSuggest;
 	}
@@ -219,14 +228,6 @@ public class DispatchDoc extends DomainBase{
 
 	public void setIsRelated(String isRelated) {
 		this.isRelated = isRelated;
-	}
-
-	public String getDirectorIssue() {
-		return DirectorIssue;
-	}
-
-	public void setDirectorIssue(String directorIssue) {
-		DirectorIssue = directorIssue;
 	}
 
 	public BigDecimal getDeclareValue() {

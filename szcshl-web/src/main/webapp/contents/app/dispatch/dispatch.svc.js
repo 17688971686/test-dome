@@ -138,7 +138,7 @@
 						vm.org = response.data.orgList;
 						//初始化获取合并发文关联的linkSignId
 						vm.linkSignId=response.data.linkSignId;
-						//console.log(vm.dispatchDoc.fileNum);
+						console.log(vm.dispatchDoc);
 						//如果是合并发文则显示主次项目选项
 						if(vm.dispatchDoc.dispatchWay=="合并发文"){
 							vm.isHide=false;

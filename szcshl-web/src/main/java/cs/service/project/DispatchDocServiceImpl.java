@@ -256,6 +256,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			dispatch.setYearPlan(sign.getYearplantype());
 			dispatch.setSecretLevel(sign.getSecrectlevel());
 			dispatch.setUrgentLevel(sign.getUrgencydegree());
+			dispatch.setIsRelated("否");
 			// 获取当前用户信息
 			dispatch.setUserName(currentUser.getLoginUser().getLoginName());
 			dispatch.setUserId(currentUser.getLoginUser().getId());
@@ -265,6 +266,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			dispatch.setOrgId(
 					currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getId());
 		}else{
+			 dispatch.setIsRelated("否");
 			 MergeDispa mergeDispa = mergeDispaRepo.getById(dispatch.getId());
 			if(mergeDispa != null && Validate.isString(mergeDispa.getBusinessId())){
 				linkSignId = mergeDispa.getLinkSignId();
@@ -274,8 +276,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				dispatch.setIsRelated("是");
 			}
 		}
-        //设置默认关联项目值
-        dispatch.setIsRelated("否");
 		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
 		dispatchDto.setSignId(signId);

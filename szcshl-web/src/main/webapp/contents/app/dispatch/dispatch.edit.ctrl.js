@@ -27,7 +27,8 @@
         	var authorizeValue=vm.dispatchDoc.authorizeValue;
         	if(declareValue&&authorizeValue){
         		var dvalue=declareValue-authorizeValue;
-        		var extraRate=(dvalue/declareValue).toFixed(4)*100;
+        		console.log((dvalue/declareValue).toFixed(4));
+        		var extraRate=((dvalue/declareValue).toFixed(4))*100;
         		vm.dispatchDoc.extraRate=extraRate;
         		vm.dispatchDoc.extraValue=dvalue;
         	}
