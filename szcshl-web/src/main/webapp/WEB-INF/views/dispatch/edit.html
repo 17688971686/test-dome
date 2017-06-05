@@ -18,11 +18,10 @@
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：<span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
-					<option  ng-value="1" ng-selected="vm.dispatchDoc.dispatchWay == '1'">单个发文</option>
+					<option  ng-value="1" ng-selected="true" >单个发文</option>
 					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == '2'">合并发文</option>
 				</select>
 			</span> 
-			<span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>
 			<span id="mergeOptions" style="float: left; margin-left: 10px;">
 				<div  ng-show="vm.dispatchDoc.dispatchWay==2">
 					<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9"  >主项目 &nbsp;&nbsp; 
@@ -32,8 +31,8 @@
 			</span>
 			
 		  	<span style="float:right;">发文类型： <span class="required">*</span>
-		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType">
-					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.dispatchType">{{x.dictName}}</option>
+		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true" data-val-required="必填">
+					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
 				</select>
 			</span>
 			 <span data-valmsg-for="dispatchType" data-valmsg-replace="true" class="errors"></span>	
@@ -46,7 +45,7 @@
 		      <td style="width:150px;" class="text-center">发文部门</td>
 		      <td>
 		      	<select ng-model="vm.dispatchDoc.orgName"  name="orgName" id="orgName" class="form-control input-sm " >
-					<option ng-repeat="x in vm.org | orderBy:'orgOrder':false" value="{{x.name}}" ng-selected="x.name == vm.dispatchDoc.orgName">{{x.name}}</option>
+					<option ng-repeat="x in vm.org | orderBy:'sort':false" value="{{x.name}}" ng-selected="x.name == vm.dispatchDoc.orgName">{{x.name}}</option>
 				</select>			
 			  </td>
 			  

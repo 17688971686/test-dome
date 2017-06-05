@@ -181,8 +181,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	@Override
 	@Transactional
 	public void deleteMergeDispa(String dispathId) {
-		MergeDispa mergeDispa = mergeDispaRepo.findById(dispathId);
-		if(mergeDispa!=null&&!Validate.isBlank(mergeDispa.getBusinessId())){
+		MergeDispa mergeDispa = mergeDispaRepo.getById(dispathId);
+		if(mergeDispa!=null && !Validate.isBlank(mergeDispa.getBusinessId())){
 			mergeDispaRepo.delete(mergeDispa);
 		}
 	}
