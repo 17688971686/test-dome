@@ -159,7 +159,6 @@
 					}		
 				})
 			}
-
 			common.http({
 				vm:vm,
 				$http:$http,

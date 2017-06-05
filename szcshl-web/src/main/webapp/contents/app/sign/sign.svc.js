@@ -16,54 +16,23 @@
 			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			add:add,							//s_项目建设书阶段(一)
-			addCopy:addCopy,
-			sugFileDealOriginal:sugFileDealOriginal,
-			sugFileDealCopy:sugFileDealCopy,
-			
+			//checkboxAdd:checkboxAdd,//点击输入框默认输入 1
 			
 		};
 		return service;	
-		//s_项目建设书阶段(一)
-		function add(vm){
-			if(vm.model.sugProDealOriginal==null){
-				vm.model.sugProDealCount=1;
-			}if(vm.model.sugProDealOriginal==9){
-				vm.model.sugProDealCount="";
-			}if(vm.model.sugProDealOriginal==0){
-				vm.model.sugProDealCount=1;
-			}
-		}
-		function addCopy(vm){
-			if(vm.model.sugProDealCopy==null){
-			vm.model.sugProDealCount=1;
-			}if(vm.model.sugProDealCopy==9){
-			vm.model.sugProDealCount="";
-			}if(vm.model.sugProDealCopy==0){
-			vm.model.sugProDealCount=1;
-			}
-		}
-		function sugFileDealOriginal(vm){
+		
+		//S_点击输入框默认输入1
+		/*function checkboxAdd(vm){
 			if(vm.model.sugFileDealOriginal==null){
-			vm.model.sugFileDealCount=1;
-			}if(vm.model.sugFileDealOriginal==9){
-			vm.model.sugFileDealCount="";
-			}if(vm.model.sugFileDealOriginal==0){
-			vm.model.sugFileDealCount=1;
-			}
-		}
-		
-		function sugFileDealCopy(vm){
-			if(vm.model.sugFileDealCopy==null){
 				vm.model.sugFileDealCount=1;
-				}if(vm.model.sugFileDealCopy==9){
+				}if(vm.model.sugFileDealOriginal==9){
 				vm.model.sugFileDealCount="";
-				}if(vm.model.sugFileDealCopy==0){
+				}if(vm.model.sugFileDealOriginal==0){
 				vm.model.sugFileDealCount=1;
 			}
-		}
-		//E_项目建设书阶段(一)
-		
+		}*/
+		//E_点击输入框默认输入1
+
 		//S_初始化grid
 		function grid(vm){
 			// Begin:dataSource
@@ -115,6 +84,11 @@
 					{
 						field : "designcompanyName",
 						title : "项目单位",
+						width : 100,
+						filterable : false,
+					},
+					{
+						title : "收文编号",
 						width : 160,
 						filterable : false,
 					},
@@ -237,6 +211,7 @@
 		
 		//start  根据协办部门查询用户
 		function findOfficeUsersByDeptId(vm,status){
+			
 			var param = {};
 			if("main" == status){
 				param.deptId = vm.model.maindepetid;
@@ -246,7 +221,9 @@
 			var httpOptions = {
 					method : 'post',
 					url : rootPath+"/officeUser/findOfficeUserByDeptId",
-					params:param					
+					data:vm.model,
+//					params:param,
+					
 				};
 				
 			var httpSuccess = function success(response) {
@@ -257,6 +234,7 @@
 						if("main" == status){
 							vm.mainOfficeList = {};
 							vm.mainOfficeList = response.data;
+							console.log(vm.mainOfficeList);
 						}else{
 							vm.assistOfficeList = {};
 							vm.assistOfficeList = response.data;
@@ -359,6 +337,7 @@
 						
 						if(response.data.mainOfficeList){
 							vm.mainOfficeList=response.data.mainOfficeList;
+							console.log(vm.mainOfficeList+"2010");
 						}
 						if(response.data.assistOfficeList){
 							vm.assistOfficeList=response.data.assistOfficeList;

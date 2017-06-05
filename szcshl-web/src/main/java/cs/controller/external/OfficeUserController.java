@@ -1,9 +1,9 @@
 package cs.controller.external;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.text.ParseException;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
+import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.external.OfficeUserService;
  
@@ -65,9 +66,9 @@ public class OfficeUserController {
 	@RequiresPermissions("officeUser#findOfficeUserByDeptId#post")
 	@RequestMapping(name = "根据ID获取办事处信息", path = "findOfficeUserByDeptId", method = RequestMethod.POST)
     @ResponseBody
-	public List<OfficeUserDto> findOfficeUserDeptId(@RequestParam(required = true) String deptId ,HttpServletRequest req ){
-		String name	=req.getParameter(deptId);
-		System.out.println(name);
+	public List<OfficeUserDto> findOfficeUserDeptId(@RequestBody SignDto signDto ){
+		String deptId = Validate.isString(signDto.getMaindepetid())?signDto.getMaindepetid():signDto.getAssistdeptid();
+		
 		List<OfficeUserDto> officeDto =officeUserService.findOfficeUserByDeptId(deptId);
 		return officeDto;
 	}
