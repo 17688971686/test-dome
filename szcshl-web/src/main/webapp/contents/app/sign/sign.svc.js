@@ -14,7 +14,7 @@
 			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
 			deleteSign :　deleteSign,			//删除收文
-			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
+			findOfficeUsersByDeptName :findOfficeUsersByDeptName,//根据协办部门名称查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
 			//checkboxAdd:checkboxAdd,//点击输入框默认输入 1
 			
@@ -210,16 +210,16 @@
 		}//E_创建收文	
 		
 		//start  根据协办部门查询用户
-		function findOfficeUsersByDeptId(vm,status){
+		function findOfficeUsersByDeptName(vm,status){
 			var param = {};
 			if("main" == status){
-                param.maindepetid = vm.model.maindepetid;
+                param.maindeptName = vm.model.maindeptName;
 			}else{
-				param.assistdeptid = vm.model.assistdeptid;
+				param.assistdeptName = vm.model.assistdeptName;
 			}
 			var httpOptions = {
 					method : 'post',
-					url  : rootPath+"/officeUser/findOfficeUserByDeptId",
+					url  : rootPath+"/officeUser/findOfficeUsersByDeptName",
 					data:param
 				};
 				
@@ -333,7 +333,6 @@
 						
 						if(response.data.mainOfficeList){
 							vm.mainOfficeList=response.data.mainOfficeList;
-							console.log(vm.mainOfficeList+"2010");
 						}
 						if(response.data.assistOfficeList){
 							vm.assistOfficeList=response.data.assistOfficeList;

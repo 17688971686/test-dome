@@ -196,13 +196,13 @@ public class SignServiceImpl implements SignService {
 			map.put("deptlist", deptDtolist);
 		}
 		//主办事处
-		if(Validate.isString(sign.getMaindepetid())){
-			List<OfficeUserDto> officeList =officeUserService.findOfficeUserByDeptId(sign.getMaindepetid());
+		if(Validate.isString(sign.getMaindeptName())){
+			List<OfficeUserDto> officeList =officeUserService.findOfficeUserByDeptId(sign.getMaindeptName());
 			map.put("mainOfficeList", officeList);
 		}
 		//协办事处
-		if(Validate.isString(sign.getAssistdeptid())){
-			List<OfficeUserDto> officeList =officeUserService.findOfficeUserByDeptId(sign.getAssistdeptid());
+		if(Validate.isString(sign.getAssistdeptName())){
+			List<OfficeUserDto> officeList =officeUserService.findOfficeUserByDeptId(sign.getAssistdeptName());
 			map.put("assistOfficeList", officeList);
 		}
 		//编制单位查询

@@ -21,8 +21,8 @@
         }                  
        
        //根据协办部门查询用户
-       vm.findOfficeUsersByDeptId =function(status){
-    	   signSvc.findOfficeUsersByDeptId(vm,status);
+       vm.findOfficeUsersByDeptName =function(status){
+    	   signSvc.findOfficeUsersByDeptName(vm,status);
        }
 //       $("input").click(function(){
 //    	   signSvc.checkboxAdd(vm);

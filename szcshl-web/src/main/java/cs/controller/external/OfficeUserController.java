@@ -63,12 +63,12 @@ public class OfficeUserController {
 		return officeUserService.findById(officeID);
 	}
 	
-	@RequiresPermissions("officeUser#findOfficeUserByDeptId#post")
-	@RequestMapping(name = "根据ID获取办事处信息", path = "findOfficeUserByDeptId", method = RequestMethod.POST)
+	@RequiresPermissions("officeUser#findOfficeUsersByDeptName#post")
+	@RequestMapping(name = "根据部门名称获取处室信息", path = "findOfficeUsersByDeptName", method = RequestMethod.POST)
     @ResponseBody
 	public List<OfficeUserDto> findOfficeUserDeptId(@RequestBody SignDto signDto ){
-		String deptId = Validate.isString(signDto.getMaindepetid())?signDto.getMaindepetid():signDto.getAssistdeptid();
-		List<OfficeUserDto> officeDto =officeUserService.findOfficeUserByDeptId(deptId);
+		String deptName = Validate.isString(signDto.getMaindeptName())?signDto.getMaindeptName():signDto.getAssistdeptName();
+		List<OfficeUserDto> officeDto =officeUserService.findOfficeUserByDeptId(deptName);
 		return officeDto;
 	}
 	
