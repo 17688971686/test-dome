@@ -3063,6 +3063,480 @@
 	}
 })();
 (function () {
+    'dispatch strict';
+
+    angular.module('app').controller('dispatchEditCtrl', dispatch);
+
+    dispatch.$inject = ['$location','dispatchSvc','$state']; 
+
+    function dispatch($location, dispatchSvc, $state) {     
+        var vm = this;
+        vm.title = '项目发文编辑';
+        vm.isHide=true;
+        vm.isHide2=true;
+        vm.isSubmit = false;
+        vm.saveProcess=false;
+        vm.sign={};
+        vm.dispatchDoc = {};
+        vm.dispatchDoc.signId = $state.params.signid;
+        //创建发文
+        vm.linkSignId=" ";
+        vm.create = function(){
+        	dispatchSvc.saveDispatch(vm);
+        }
+        
+        //核减（增）/核减率（增）计算
+        vm.count=function(){
+        	var declareValue=vm.dispatchDoc.declareValue;
+        	var authorizeValue=vm.dispatchDoc.authorizeValue;
+        	if(declareValue&&authorizeValue){
+        		var dvalue=declareValue-authorizeValue;
+        		console.log((dvalue/declareValue).toFixed(4));
+        		var extraRate=((dvalue/declareValue).toFixed(4))*100;
+        		vm.dispatchDoc.extraRate=extraRate;
+        		vm.dispatchDoc.extraValue=dvalue;
+        	}
+        }
+        
+        //选择发文方式
+        vm.isSelect=function(){
+        	//var selectValue=$("#dispatchWay").find("option:selected").text();
+        	if(vm.dispatchDoc.dispatchWay=="合并发文"){
+        		vm.isHide=false;
+        	}else{
+        		vm.isHide=true;
+        		
+        	}
+        }
+        
+        //选主项目
+        vm.ischecked=function(){
+        		vm.dispatchDoc.isRelated="是";
+    			vm.isHide2=false;
+        }
+        
+      //选次项目
+        vm.ischecked2=function(){
+        	vm.dispatchDoc.isRelated="否";
+        	vm.isHide2=true;
+        }
+        //打开合并页面
+        vm.gotoMergePage=function(){
+        	dispatchSvc.gotoMergePage(vm);
+        }
+        
+        vm.search=function(){
+        	dispatchSvc.getSign(vm);
+        }
+        //选择待选项目
+        vm.chooseProject=function(){
+        	dispatchSvc.chooseProject(vm);
+        }
+        
+        //取消选择
+        vm.cancelProject=function(){
+        	dispatchSvc.cancelProject(vm);
+        }
+        
+        //关闭窗口
+        vm.onClose=function(){
+        	window.parent.$("#mwindow").data("kendoWindow").close();
+        }
+        
+        //确定合并
+        vm.mergeDispa=function(){
+        	dispatchSvc.mergeDispa(vm);
+        }
+        
+        vm.formReset=function(){
+        	var values=$("#searchform").find("input,select");
+        	values.val("");
+        }
+        
+        vm.search=function(){
+        	dispatchSvc.getsign(vm);
+        }
+        //生成文件字号
+        vm.fileNum=function(){
+        	dispatchSvc.fileNum(vm);
+        }
+        activate();
+        function activate() {
+             dispatchSvc.initDispatchData(vm);
+        }
+    }
+})();
+
+(function() {
+	'dispatch strict';
+	
+	angular.module('app').factory('dispatchSvc', dispatch);
+	
+	dispatch.$inject = ['$rootScope','$http'];
+
+	function dispatch($rootScope,$http) {
+		var service = {
+			initDispatchData : initDispatchData,		//初始化流程数据	
+			saveDispatch : saveDispatch,				//保存
+			gotoMergePage : gotoMergePage,               //打开合并发文页面
+			chooseProject : chooseProject,			     //选择待选项目
+			getsign : getsign,							 //显示待选项目
+			cancelProject : cancelProject,				 //取消选择
+			mergeDispa : mergeDispa,					 //合并发文
+			fileNum : fileNum,                           //生成文件字号
+			getselectedSign : getselectedSign,
+			getSeleSignBysId : getSeleSignBysId,
+		};
+		return service;			
+		
+		function fileNum(vm){
+			vm.isSubmit = true;
+			if(!vm.dispatchDoc.id){
+				common.alert({
+					vm:vm,
+					msg:"请先保存再生成文件字号",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}
+			
+			/*if(vm.dispatchDoc.fileNum){
+				common.alert({
+					vm:vm,
+					msg:"已生成文件字号",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}*/
+			
+			var httpOptions = {
+					method : 'post',
+					url : rootPath+"/dispatch/fileNum",
+					params:{dispaId:vm.dispatchDoc.id}
+				}
+			
+			var httpSuccess = function success(response) {	
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.dispatchDoc.fileNum=response.data;	
+						vm.isSubmit = false;
+						common.alert({ 
+							vm : vm,
+							msg : "操作成功"
+						})							
+					}
+				
+				});
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess,
+				//onError: function(response){vm.isSubmit = true;}
+			});
+		}
+		
+		
+		// begin#gotoWPage
+		function gotoMergePage(vm) {
+			if(!vm.dispatchDoc.id){
+				common.alert({
+					vm:vm,
+					msg:"请先保存再进行关联！",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}
+			var selectValue=$("#isRelated").find("option:selected").text();
+			if(selectValue=="否"){
+				common.alert({
+					vm:vm,
+					msg:"你已选择未关联,请重新选择再进行关联！",
+					fn:function() {
+						$('.alertDialog').modal('hide');
+						$('.modal-backdrop').remove();
+					}
+				})	
+				return;
+			}
+			
+			var WorkeWindow = $("#mwindow");
+			WorkeWindow.kendoWindow({
+				width : "1200px",
+				height : "630px",
+				title : "合并发文",
+				visible : false,
+				modal : true,
+				closable : true,
+				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+			}).data("kendoWindow").center().open();
+			getSeleSignBysId(vm);
+			getsign(vm);
+			
+		}
+		// end#gotoWPage
+		
+		//S_初始化
+		function initDispatchData(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/dispatch/initData",
+					params : {signid : vm.dispatchDoc.signId}						
+				}
+			
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function() {
+						vm.dispatchDoc=response.data.dispatch;
+						vm.proofread = response.data.mainUserList;
+						vm.org = response.data.orgList;
+						//初始化获取合并发文关联的linkSignId
+						vm.linkSignId=response.data.linkSignId;
+						//console.log(vm.dispatchDoc);
+						//如果是合并发文则显示主次项目选项
+						if(vm.dispatchDoc.dispatchWay=="合并发文"){
+							vm.isHide=false;
+		        		}else{
+		        			vm.isHide=true;
+		        		}
+						//如果是主项目则显示关联项目
+						if (vm.dispatchDoc.isMainProject=="9") {
+			    			vm.isHide2=false;
+			    		}else{
+			    			vm.isHide2=true;
+			    		}
+						
+						if(vm.dispatchDoc.fileNum){
+							vm.isSubmit = true;
+						}
+						
+					}		
+				})
+			}
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		
+		}//E_初始化
+		
+		function mergeDispa(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/dispatch/mergeDispa",
+					params : {signId : vm.dispatchDoc.signId,linkSignId : vm.linkSignId}						
+				}
+			
+			var httpSuccess = function success(response) {					
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function(){		
+						window.parent.$("#mwindow").data("kendoWindow").close();
+						common.alert({
+							vm:vm,
+							msg:"操作成功！",
+							fn:function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})								
+					}						
+				});
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		
+		}
+		
+		
+		//S_保存
+		function saveDispatch(vm){
+			common.initJqValidation($("#dispatch_form"));
+			var isValid = $("#dispatch_form").valid();
+			if(isValid){
+				//是否关联其它项目判断
+				if(vm.dispatchDoc.isMainProject =="9"&&vm.dispatchDoc.id){
+						if(vm.linkSignId==" "){
+							common.alert({
+								vm:vm,
+								msg:"请关联其它项目",
+								fn:function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})	
+							return;
+						}
+					
+				}
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/dispatch",
+						data : vm.dispatchDoc
+					}
+				var httpSuccess = function success(response) {									
+					common.requestSuccess({
+						vm:vm,
+						response:response,
+						fn:function(){		
+							common.alert({
+								vm:vm,
+								msg:"操作成功！",
+								fn:function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+									
+									//初始化数据获得保存后的数据
+									initDispatchData(vm);
+									//$rootScope.back();	//返回到流程页面
+								}
+							})								
+						}						
+					});
+				}
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess,
+					//onError: function(response){vm.saveProcess = false;}
+				});
+				
+			}
+		}//E_保存
+		
+		//begin##chooseProject
+		function chooseProject(vm){
+			var idStr=vm.linkSignId;
+			var linkSignId=$("input[name='checksign']:checked");
+			var ids=[];
+			if(linkSignId.length!=0){
+				 $.each(linkSignId, function(i, obj) {
+					ids.push(obj.value);
+				 });
+				 if(idStr){
+					 idStr+=","+ids.join(',');
+				 }else{
+					 idStr=ids.join(',');
+				 }
+				 vm.linkSignId=idStr;
+				 getselectedSign(vm);
+				 getsign(vm);
+			}
+		}
+		//end##chooseProject
+		
+		//begin##chooseProject
+		function cancelProject(vm){
+			var idStr=vm.linkSignId;
+			var linkSignId=$("input[name='checkss']:checked");
+			if(linkSignId.lenght!=0){
+				$.each(linkSignId, function(i, obj) {
+					if(idStr.lastIndexOf(obj.value)==0){
+						idStr=idStr.replace(obj.value,"");
+					}else{
+						idStr=idStr.replace(","+obj.value,"");
+					}
+				});
+				vm.linkSignId=idStr
+				console.log(vm.linkSignId);
+				getselectedSign(vm);
+				getsign(vm);
+			}
+		}
+		//end##chooseProject
+		
+		//begin##getSeleSignBysId
+		function getSeleSignBysId(vm){
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/dispatch/getSignByDId",
+					params:{
+						bussnessId:vm.dispatchDoc.id
+					}
+				}
+			var httpSuccess = function success(response) {
+				vm.selectedSign=response.data.signDtoList;
+				vm.linkSignId=response.data.linkSignId;
+			} 
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		//end##getSeleSignBysId
+		
+		//获取已选项目
+		//begin##getselectedSign
+		function getselectedSign(vm){
+			
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/dispatch/getSelectedSign",
+					params:{
+						linkSignIds:vm.linkSignId
+					}
+				}
+			var httpSuccess = function success(response) {
+				vm.selectedSign=response.data;
+			} 
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		
+		//begin##getsign
+		function getsign(vm){
+				vm.sign.signid=vm.linkSignId;
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/dispatch/getSign",
+						data : vm.sign
+					}
+				var httpSuccess = function success(response) {	
+					vm.signs=response.data;
+				}
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess,
+					onError: function(response){}
+				});
+				
+		}//end##getsign
+		
+	}
+})();
+(function () {
     'use strict';
 
     angular.module('app').controller('expertAuditCtrl', expert);
@@ -4467,481 +4941,6 @@
 		}
 	}
 
-})();
-(function () {
-    'dispatch strict';
-
-    angular.module('app').controller('dispatchEditCtrl', dispatch);
-
-    dispatch.$inject = ['$location','dispatchSvc','$state']; 
-
-    function dispatch($location, dispatchSvc, $state) {     
-        var vm = this;
-        vm.title = '项目发文编辑';
-        vm.isHide=true;
-        vm.isHide2=true;
-        vm.isSubmit = false;
-        vm.saveProcess=false;
-        vm.sign={};
-        vm.dispatchDoc = {};
-        vm.dispatchDoc.signId = $state.params.signid;
-        //创建发文
-        vm.linkSignId=" ";
-        vm.create = function(){
-        	dispatchSvc.saveDispatch(vm);
-        }
-        
-        //核减（增）/核减率（增）计算
-        vm.count=function(){
-        	var declareValue=vm.dispatchDoc.declareValue;
-        	var authorizeValue=vm.dispatchDoc.authorizeValue;
-        	if(declareValue&&authorizeValue){
-        		var dvalue=declareValue-authorizeValue;
-        		var extraRate=(dvalue/declareValue).toFixed(4)*100;
-        		vm.dispatchDoc.extraRate=extraRate;
-        		vm.dispatchDoc.extraValue=dvalue;
-        	}
-        }
-        
-        //选择发文方式
-        vm.isSelect=function(){
-        	//var selectValue=$("#dispatchWay").find("option:selected").text();
-        	if(vm.dispatchDoc.dispatchWay=="合并发文"){
-        		vm.isHide=false;
-        	}else{
-        		vm.isHide=true;
-        		
-        	}
-        }
-        
-        //选主项目
-        vm.ischecked=function(){
-        		vm.dispatchDoc.isRelated="是";
-    			vm.isHide2=false;
-        }
-        
-      //选次项目
-        vm.ischecked2=function(){
-        	vm.dispatchDoc.isRelated="否";
-        	vm.isHide2=true;
-        }
-        //打开合并页面
-        vm.gotoMergePage=function(){
-        	dispatchSvc.gotoMergePage(vm);
-        }
-        
-        vm.search=function(){
-        	dispatchSvc.getSign(vm);
-        }
-        //选择待选项目
-        vm.chooseProject=function(){
-        	dispatchSvc.chooseProject(vm);
-        }
-        
-        //取消选择
-        vm.cancelProject=function(){
-        	dispatchSvc.cancelProject(vm);
-        }
-        
-        //关闭窗口
-        vm.onClose=function(){
-        	window.parent.$("#mwindow").data("kendoWindow").close();
-        }
-        
-        //确定合并
-        vm.mergeDispa=function(){
-        	dispatchSvc.mergeDispa(vm);
-        }
-        
-        vm.formReset=function(){
-        	var values=$("#searchform").find("input,select");
-        	values.val("");
-        }
-        
-        vm.search=function(){
-        	dispatchSvc.getsign(vm);
-        }
-        //生成文件字号
-        vm.fileNum=function(){
-        	dispatchSvc.fileNum(vm);
-        }
-        activate();
-        function activate() {
-             dispatchSvc.initDispatchData(vm);
-        }
-    }
-})();
-
-(function() {
-	'dispatch strict';
-	
-	angular.module('app').factory('dispatchSvc', dispatch);
-	
-	dispatch.$inject = ['$rootScope','$http'];
-
-	function dispatch($rootScope,$http) {
-		var service = {
-			initDispatchData : initDispatchData,		//初始化流程数据	
-			saveDispatch : saveDispatch,				//保存
-			gotoMergePage : gotoMergePage,               //打开合并发文页面
-			chooseProject : chooseProject,			     //选择待选项目
-			getsign : getsign,							 //显示待选项目
-			cancelProject : cancelProject,				 //取消选择
-			mergeDispa : mergeDispa,					 //合并发文
-			fileNum : fileNum,                           //生成文件字号
-			getselectedSign : getselectedSign,
-			getSeleSignBysId : getSeleSignBysId,
-		};
-		return service;			
-		
-		function fileNum(vm){
-			vm.isSubmit = true;
-			if(!vm.dispatchDoc.id){
-				common.alert({
-					vm:vm,
-					msg:"请先保存再生成文件字号",
-					fn:function() {
-						$('.alertDialog').modal('hide');
-						$('.modal-backdrop').remove();
-					}
-				})	
-				return;
-			}
-			
-			/*if(vm.dispatchDoc.fileNum){
-				common.alert({
-					vm:vm,
-					msg:"已生成文件字号",
-					fn:function() {
-						$('.alertDialog').modal('hide');
-						$('.modal-backdrop').remove();
-					}
-				})	
-				return;
-			}*/
-			
-			var httpOptions = {
-					method : 'post',
-					url : rootPath+"/dispatch/fileNum",
-					params:{dispaId:vm.dispatchDoc.id}
-				}
-			
-			var httpSuccess = function success(response) {	
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.dispatchDoc.fileNum=response.data;	
-						vm.isSubmit = false;
-						common.alert({ 
-							vm : vm,
-							msg : "操作成功"
-						})							
-					}
-				
-				});
-			}
-
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess,
-				//onError: function(response){vm.isSubmit = true;}
-			});
-		}
-		
-		
-		// begin#gotoWPage
-		function gotoMergePage(vm) {
-			if(!vm.dispatchDoc.id){
-				common.alert({
-					vm:vm,
-					msg:"请先保存再进行关联！",
-					fn:function() {
-						$('.alertDialog').modal('hide');
-						$('.modal-backdrop').remove();
-					}
-				})	
-				return;
-			}
-			var selectValue=$("#isRelated").find("option:selected").text();
-			if(selectValue=="否"){
-				common.alert({
-					vm:vm,
-					msg:"你已选择未关联,请重新选择再进行关联！",
-					fn:function() {
-						$('.alertDialog').modal('hide');
-						$('.modal-backdrop').remove();
-					}
-				})	
-				return;
-			}
-			
-			var WorkeWindow = $("#mwindow");
-			WorkeWindow.kendoWindow({
-				width : "1200px",
-				height : "630px",
-				title : "合并发文",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();
-			getSeleSignBysId(vm);
-			getsign(vm);
-			
-		}
-		// end#gotoWPage
-		
-		//S_初始化
-		function initDispatchData(vm){
-			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/dispatch/initData",
-					params : {signid : vm.dispatchDoc.signId}						
-				}
-			
-			var httpSuccess = function success(response) {					
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function() {
-						vm.dispatchDoc=response.data.dispatch;
-						vm.proofread = response.data.mainUserList;
-						vm.org = response.data.orgList;
-						//初始化获取合并发文关联的linkSignId
-						vm.linkSignId=response.data.linkSignId;
-						//console.log(vm.dispatchDoc.fileNum);
-						//如果是合并发文则显示主次项目选项
-						if(vm.dispatchDoc.dispatchWay=="合并发文"){
-							vm.isHide=false;
-		        		}else{
-		        			vm.isHide=true;
-		        		}
-						//如果是主项目则显示关联项目
-						if (vm.dispatchDoc.isMainProject=="9") {
-			    			vm.isHide2=false;
-			    		}else{
-			    			vm.isHide2=true;
-			    		}
-						
-						if(vm.dispatchDoc.fileNum){
-							vm.isSubmit = true;
-						}
-						
-					}		
-				})
-			}
-
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-		
-		}//E_初始化
-		
-		function mergeDispa(vm){
-			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/dispatch/mergeDispa",
-					params : {signId : vm.dispatchDoc.signId,linkSignId : vm.linkSignId}						
-				}
-			
-			var httpSuccess = function success(response) {					
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function(){		
-						window.parent.$("#mwindow").data("kendoWindow").close();
-						common.alert({
-							vm:vm,
-							msg:"操作成功！",
-							fn:function() {
-								$('.alertDialog').modal('hide');
-								$('.modal-backdrop').remove();
-							}
-						})								
-					}						
-				});
-			}
-
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-		
-		}
-		
-		
-		//S_保存
-		function saveDispatch(vm){
-			common.initJqValidation($("#dispatch_form"));
-			var isValid = $("#dispatch_form").valid();
-			if(isValid){
-				//是否关联其它项目判断
-				if(vm.dispatchDoc.isMainProject =="9"){
-						if(vm.linkSignId==" "){
-							common.alert({
-								vm:vm,
-								msg:"请关联其它项目",
-								fn:function() {
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})	
-							return;
-						}
-					
-				}
-				var httpOptions = {
-						method : 'post',
-						url : rootPath+"/dispatch",
-						data : vm.dispatchDoc
-					}
-				var httpSuccess = function success(response) {									
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function(){		
-							common.alert({
-								vm:vm,
-								msg:"操作成功！",
-								fn:function() {
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									
-									//初始化数据获得保存后的数据
-									initDispatchData(vm);
-									//$rootScope.back();	//返回到流程页面
-								}
-							})								
-						}						
-					});
-				}
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess,
-					//onError: function(response){vm.saveProcess = false;}
-				});
-				
-			}
-		}//E_保存
-		
-		//begin##chooseProject
-		function chooseProject(vm){
-			var idStr=vm.linkSignId;
-			var linkSignId=$("input[name='checksign']:checked");
-			
-			var ids=[];
-			if(linkSignId){
-				 $.each(linkSignId, function(i, obj) {
-					ids.push(obj.value);
-				 });
-				 if(idStr){
-					 idStr+=","+ids.join(',');
-				 }else{
-					 idStr=ids.join(',');
-				 }
-				 vm.linkSignId=idStr;
-				 getselectedSign(vm);
-				 getsign(vm);
-			}
-		}
-		//end##chooseProject
-		
-		//begin##chooseProject
-		function cancelProject(vm){
-			var idStr=vm.linkSignId;
-			var linkSignId=$("input[name='checkss']:checked");
-			if(linkSignId){
-				$.each(linkSignId, function(i, obj) {
-					if(idStr.lastIndexOf(obj.value)==0){
-						idStr=idStr.replace(obj.value,"");
-					}else{
-						idStr=idStr.replace(","+obj.value,"");
-					}
-				});
-				vm.linkSignId=idStr
-				console.log(vm.linkSignId);
-				getselectedSign(vm);
-				getsign(vm);
-			}
-		}
-		//end##chooseProject
-		
-		//begin##getSeleSignBysId
-		function getSeleSignBysId(vm){
-			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/dispatch/getSignByDId",
-					params:{
-						bussnessId:vm.dispatchDoc.id
-					}
-				}
-			var httpSuccess = function success(response) {
-				vm.selectedSign=response.data.signDtoList;
-				vm.linkSignId=response.data.linkSignId;
-			} 
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-		//end##getSeleSignBysId
-		
-		//获取已选项目
-		//begin##getselectedSign
-		function getselectedSign(vm){
-			
-			var httpOptions = {
-					method : 'get',
-					url : rootPath+"/dispatch/getSelectedSign",
-					params:{
-						linkSignIds:vm.linkSignId
-					}
-				}
-			var httpSuccess = function success(response) {
-				vm.selectedSign=response.data;
-			} 
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-		
-		//begin##getsign
-		function getsign(vm){
-				vm.sign.signid=vm.linkSignId;
-				var httpOptions = {
-						method : 'post',
-						url : rootPath+"/dispatch/getSign",
-						data : vm.sign
-					}
-				var httpSuccess = function success(response) {	
-					vm.signs=response.data;
-				}
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess,
-					onError: function(response){}
-				});
-				
-		}//end##getsign
-		
-	}
 })();
 (function () {
     'use strict';
@@ -9789,133 +9788,10 @@
        vm.findOfficeUsersByDeptId =function(status){
     	   signSvc.findOfficeUsersByDeptId(vm,status);
        }
-       //输入资料分数数字校验
-       vm.regNumber = function(){
-    	   signSvc.regNumber(vm);
-       }
+//       $("input").click(function(){
+//    	   signSvc.checkboxAdd(vm);
+//       })
        
-       //s_项目建设书阶段(一)
-       $("#addOriginal").click(function(){
-    	   signSvc.add(vm);
-       })
-       $("#addCopy").click(function(){
-    	   signSvc.add(vm);
-       })
-       
-       $("#sugFileDealOriginal").click(function(){
-    	   signSvc.sugFileDealOriginal(vm);
-       })
-       $("#sugFileDealCopy").click(function(){
-    	   signSvc.sugFileDealCopy(vm);
-       })
-       
-       $("#sugOrgApplyOriginal").click(function(){
-    	   signSvc.sugOrgApplyOriginal(vm);
-       })
-       $("#sugOrgApplyCopy").click(function(){
-    	   signSvc.sugOrgApplyCopy(vm);
-       })
-       
-       $("#sugOrgReqOriginal").click(function(){
-    	   signSvc.sugOrgReqOriginal(vm);
-       })
-       $("#sugOrgReqCopy").click(function(){
-    	   signSvc.sugOrgReqCopy(vm);
-       })
-       
-       $("#sugProAdviseOriginal").click(function(){
-    	   signSvc.sugProAdviseOriginal(vm);
-       })
-       $("#sugProAdviseCopy").click(function(){
-    	   signSvc.sugProAdviseCopy(vm);
-       })
-       
-       $("#proSugEledocOriginal").click(function(){
-    	   signSvc.proSugEledocOriginal(vm);
-       })
-       $("#proSugEledocCopy").click(function(){
-    	   signSvc.proSugEledocCopy(vm);
-       })
-       
-       $("#sugMeetOriginal").click(function(){
-    	   signSvc.sugMeetOriginal(vm);
-       })
-       $("#sugMeetCopy").click(function(){
-    	   signSvc.sugMeetCopy(vm);
-       })
-       //e_项目建设书阶段(一)
-       
-       //s_项目可研究性阶段(二)
-       $("#studyPealOriginal").click(function(){
-    	   signSvc.studyPealOriginal(vm);
-       })
-       $("#studyProDealCopy").click(function(){
-    	   signSvc.studyProDealCopy(vm);
-       })
-       $("#studyFileDealOriginal").click(function(){
-    	   signSvc.studyFileDealOriginal(vm);
-       })
-       $("#studyFileDealCopy").click(function(){
-    	   signSvc.studyFileDealCopy(vm);
-       })
-       $("#studyOrgApplyOriginal").click(function(){
-    	   signSvc.studyOrgApplyOriginal(vm);
-       })
-        $("#studyOrgApplyCopy").click(function(){
-    	   signSvc.studyOrgApplyCopy(vm);
-       })
-       $("#studyOrgReqOriginal").click(function(){
-    	   signSvc.studyOrgReqOriginal(vm);
-       })
-       $("#studyOrgReqCopy").click(function(){
-    	   signSvc.studyOrgReqCopy(vm);
-       })
-        $("#studyProSugOriginal").click(function(){
-    	   signSvc.studyProSugOriginal(vm);
-       })
-        $("#studyProSugCopy").click(function(){
-    	   signSvc.studyProSugCopy(vm);
-       })
-       $("#studyMeetOriginal").click(function(){
-    	   signSvc.studyMeetOriginal(vm);
-       })
-        $("#studyMeetCopy").click(function(){
-    	   signSvc.studyMeetCopy(vm);
-       })
-      //右
-      
-       $("#envproReplyOriginal").click(function(){
-    	   signSvc.envproReplyOriginal(vm);
-       })
-       $("#envproReplyCopy").click(function(){
-    	   signSvc.envproReplyCopy(vm);
-       })
-       $("#planAddrOriginal").click(function(){
-    	   signSvc.planAddrOriginal(vm);
-       })
-       $("#planAddrCopy").click(function(){
-    	   signSvc.planAddrCopy(vm);
-       })
-       $("#reportOrigin").click(function(){
-    	   signSvc.reportOrigin(vm);
-       })
-       $("#reportCopy").click(function(){
-    	   signSvc.reportCopy(vm);
-       })
-       $("#eledocOriginal").click(function(){
-    	   signSvc.eledocOriginal(vm);
-       })
-       $("#eledocCopy").click(function(){
-    	   signSvc.eledocCopy(vm);
-       })
-        $("#energyOriginal").click(function(){
-    	   signSvc.energyOriginal(vm);
-       })
-       $("#energyCopy").click(function(){
-    	   signSvc.energyCopy(vm);
-       })
-       
-     //e_项目可研究性阶段(二)
     	   
     }
 })();
@@ -10553,54 +10429,23 @@
 			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			add:add,							//s_项目建设书阶段(一)
-			addCopy:addCopy,
-			sugFileDealOriginal:sugFileDealOriginal,
-			sugFileDealCopy:sugFileDealCopy,
-			
+			//checkboxAdd:checkboxAdd,//点击输入框默认输入 1
 			
 		};
 		return service;	
-		//s_项目建设书阶段(一)
-		function add(vm){
-			if(vm.model.sugProDealOriginal==null){
-				vm.model.sugProDealCount=1;
-			}if(vm.model.sugProDealOriginal==9){
-				vm.model.sugProDealCount="";
-			}if(vm.model.sugProDealOriginal==0){
-				vm.model.sugProDealCount=1;
-			}
-		}
-		function addCopy(vm){
-			if(vm.model.sugProDealCopy==null){
-			vm.model.sugProDealCount=1;
-			}if(vm.model.sugProDealCopy==9){
-			vm.model.sugProDealCount="";
-			}if(vm.model.sugProDealCopy==0){
-			vm.model.sugProDealCount=1;
-			}
-		}
-		function sugFileDealOriginal(vm){
+		
+		//S_点击输入框默认输入1
+		/*function checkboxAdd(vm){
 			if(vm.model.sugFileDealOriginal==null){
-			vm.model.sugFileDealCount=1;
-			}if(vm.model.sugFileDealOriginal==9){
-			vm.model.sugFileDealCount="";
-			}if(vm.model.sugFileDealOriginal==0){
-			vm.model.sugFileDealCount=1;
-			}
-		}
-		
-		function sugFileDealCopy(vm){
-			if(vm.model.sugFileDealCopy==null){
 				vm.model.sugFileDealCount=1;
-				}if(vm.model.sugFileDealCopy==9){
+				}if(vm.model.sugFileDealOriginal==9){
 				vm.model.sugFileDealCount="";
-				}if(vm.model.sugFileDealCopy==0){
+				}if(vm.model.sugFileDealOriginal==0){
 				vm.model.sugFileDealCount=1;
 			}
-		}
-		//E_项目建设书阶段(一)
-		
+		}*/
+		//E_点击输入框默认输入1
+
 		//S_初始化grid
 		function grid(vm){
 			// Begin:dataSource
@@ -10652,6 +10497,11 @@
 					{
 						field : "designcompanyName",
 						title : "项目单位",
+						width : 100,
+						filterable : false,
+					},
+					{
+						title : "收文编号",
 						width : 160,
 						filterable : false,
 					},
@@ -10774,6 +10624,7 @@
 		
 		//start  根据协办部门查询用户
 		function findOfficeUsersByDeptId(vm,status){
+			
 			var param = {};
 			if("main" == status){
 				param.deptId = vm.model.maindepetid;
@@ -10783,7 +10634,9 @@
 			var httpOptions = {
 					method : 'post',
 					url : rootPath+"/officeUser/findOfficeUserByDeptId",
-					params:param					
+					data:vm.model,
+//					params:param,
+					
 				};
 				
 			var httpSuccess = function success(response) {
@@ -10794,6 +10647,7 @@
 						if("main" == status){
 							vm.mainOfficeList = {};
 							vm.mainOfficeList = response.data;
+							console.log(vm.mainOfficeList);
 						}else{
 							vm.assistOfficeList = {};
 							vm.assistOfficeList = response.data;
@@ -10896,6 +10750,7 @@
 						
 						if(response.data.mainOfficeList){
 							vm.mainOfficeList=response.data.mainOfficeList;
+							console.log(vm.mainOfficeList+"2010");
 						}
 						if(response.data.assistOfficeList){
 							vm.assistOfficeList=response.data.assistOfficeList;
