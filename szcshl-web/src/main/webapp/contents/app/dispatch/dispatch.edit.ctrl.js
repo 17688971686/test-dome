@@ -35,8 +35,20 @@
         	}
         }
         
+       /* if(vm.dispatchDoc.dispatchWay=="1"||vm.dispatchDoc.isMainProject=="0"){
+        	vm.dispatchDoc.isRelated="否";
+        }*/
+        
+        
+        vm.isSelect=function(){
+        	console.log(vm.dispatchDoc.dispatchWay);
+        	if(vm.dispatchDoc.dispatchWay=="1"){
+        		vm.dispatchDoc.isRelated="否";
+        	}
+        }
+        
         vm.isrelated=function(){
-        		vm.dispatchDoc.isRelated="是";
+        	vm.dispatchDoc.isRelated="是";
         }
         
         vm.isrelated2=function(){
