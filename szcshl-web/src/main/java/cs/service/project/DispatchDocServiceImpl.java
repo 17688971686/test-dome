@@ -176,7 +176,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
 		// mergeDispaServiceImpl.mergeProject(dispatchDocDto);
 	}
-
+    
+	//删除关联信息
+	@Override
+	@Transactional
+	public void deleteMergeDispa(String dispathId) {
+		MergeDispa mergeDispa = mergeDispaRepo.findById(dispathId);
+		if(mergeDispa!=null&&!Validate.isBlank(mergeDispa.getBusinessId())){
+			mergeDispaRepo.delete(mergeDispa);
+		}
+	}
+	
 	// 生成文件字号
 	@Override
 	@Transactional
@@ -198,7 +208,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		if (Validate.isString(dispatchDocDto.getSignId())) {
 			Date now=new Date();
 			DispatchDoc dispatchDoc = null;													
-			if (!Validate.isString(dispatchDocDto.getId())) {
+			if (dispatchDocDto!=null&&!Validate.isString(dispatchDocDto.getId())) {
 				dispatchDoc = new DispatchDoc();
 				BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
 				dispatchDoc.setId(UUID.randomUUID().toString());
@@ -207,7 +217,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 				dispatchDoc.setCreatedDate(now);
 			}else{				
 				dispatchDoc = dispatchDocRepo.findById(dispatchDocDto.getId());
-				BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);				
+				BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);
+				//如果是单个发文和次项目，则删除关联信息
+				if(dispatchDocDto.getDispatchWay().equals(Constant.EnumState.PROCESS.getValue())||dispatchDocDto.getIsMainProject().equals(Constant.EnumState.NO.getValue())){
+					this.deleteMergeDispa(dispatchDoc.getId());
+				}
 			}
 			dispatchDoc.setModifiedBy(currentUser.getLoginName());			
 			dispatchDoc.setModifiedDate(now);

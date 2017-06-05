@@ -34,18 +34,6 @@
 				return;
 			}
 			
-			/*if(vm.dispatchDoc.fileNum){
-				common.alert({
-					vm:vm,
-					msg:"已生成文件字号",
-					fn:function() {
-						$('.alertDialog').modal('hide');
-						$('.modal-backdrop').remove();
-					}
-				})	
-				return;
-			}*/
-			
 			var httpOptions = {
 					method : 'post',
 					url : rootPath+"/dispatch/fileNum",
@@ -57,12 +45,13 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.dispatchDoc.fileNum=response.data;	
+						vm.showFileNum=false;
 						vm.isSubmit = false;
+						vm.dispatchDoc.fileNum=response.data;	
 						common.alert({ 
 							vm : vm,
 							msg : "操作成功"
-						})							
+						})	
 					}
 				
 				});
@@ -73,13 +62,14 @@
 				$http:$http,
 				httpOptions:httpOptions,
 				success:httpSuccess,
-				//onError: function(response){vm.isSubmit = true;}
+				onError: function(response){vm.isSubmit = false;}
 			});
 		}
 		
 		
 		// begin#gotoWPage
 		function gotoMergePage(vm) {
+			vm.mwindowHide=false;
 			if(!vm.dispatchDoc.id){
 				common.alert({
 					vm:vm,
@@ -136,25 +126,14 @@
 						vm.dispatchDoc=response.data.dispatch;
 						vm.proofread = response.data.mainUserList;
 						vm.org = response.data.orgList;
+						 vm.showCreate=true;
 						//初始化获取合并发文关联的linkSignId
 						vm.linkSignId=response.data.linkSignId;
 						//console.log(vm.dispatchDoc);
-						//如果是合并发文则显示主次项目选项
-						if(vm.dispatchDoc.dispatchWay=="合并发文"){
-							vm.isHide=false;
-		        		}else{
-		        			vm.isHide=true;
-		        		}
-						//如果是主项目则显示关联项目
-						if (vm.dispatchDoc.isMainProject=="9") {
-			    			vm.isHide2=false;
-			    		}else{
-			    			vm.isHide2=true;
-			    		}
 						
-						if(vm.dispatchDoc.fileNum){
-							vm.isSubmit = true;
-						}
+						if( vm.dispatchDoc.id&&!vm.dispatchDoc.fileNum){
+				        	 vm.showFileNum=true;
+				        }
 						
 					}		
 				})
@@ -239,6 +218,7 @@
 								fn:function() {
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();
+									 //vm.showFileNum=true;
 									
 									//初始化数据获得保存后的数据
 									initDispatchData(vm);

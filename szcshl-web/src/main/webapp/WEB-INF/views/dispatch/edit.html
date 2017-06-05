@@ -4,8 +4,8 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()"><span class="glyphicon glyphicon-ok"></span>保存</button>
-    <button class="btn btn-sm btn-success" ng-click="vm.fileNum()" ng-disabled="vm.isSubmit" ng-show="vm.dispatchDoc.id"><span class="glyphicon glyphicon-ok"></span>生成发文号</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-show="vm.showCreate"><span class="glyphicon glyphicon-ok"></span>保存</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.fileNum()" ng-disabled="vm.isSubmit" ng-show="vm.showFileNum"><span class="glyphicon glyphicon-ok"></span>生成发文号</button>
     <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
 </div>
         
@@ -18,14 +18,18 @@
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：<span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
-					<option ng-repeat="x in DICT.DISPATCH_WAY.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.dispatchWay">{{x.dictName}}</option>
+					<option  ng-value="1" ng-selected="vm.dispatchDoc.dispatchWay == '1'">单个发文</option>
+					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == '2'">合并发文</option>
 				</select>
 			</span> 
 			<span data-valmsg-for="dispatchWay" data-valmsg-replace="true" class="errors"></span>
-			&nbsp;&nbsp;<span id="mergeOptions" ng-hide="vm.isHide">
-			<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9" ng-checked="vm.dispatchDoc.isMainProject =='9'" ng-click="vm.ischecked()">主项目 &nbsp;&nbsp; 
-			<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="true" ng-click="vm.ischecked2()">次项目  &nbsp;&nbsp;
-			<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-hide="vm.isHide2">关联项目</button></span>
+			<span id="mergeOptions" style="float: left; margin-left: 10px;">
+				<div  ng-show="vm.dispatchDoc.dispatchWay==2">
+					<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9"  >主项目 &nbsp;&nbsp; 
+					<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="true" ng-show="vm.dispatchDoc.dispatchWay=='2'">次项目  &nbsp;&nbsp;
+					<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-show=" vm.dispatchDoc.isMainProject==9 ">关联项目</button>
+				</div>
+			</span>
 			
 		  	<span style="float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType">
@@ -33,6 +37,7 @@
 				</select>
 			</span>
 			 <span data-valmsg-for="dispatchType" data-valmsg-replace="true" class="errors"></span>	
+			 
 		  </caption>
 		  <tbody>
 		  
@@ -247,7 +252,7 @@
 		  </tbody>		  
 		</table>	<!-- end table -->
 	</form> <!-- end form -->
-	<div id="mwindow" style="display: none;">
+	<div id="mwindow" ng-hide="vm.mwindowHide">
 	<div class="toolbar">
 	    <button class="btn btn-sm btn-success" ng-click="vm.search()"><span class="glyphicon glyphicon-search"></span>查询</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>

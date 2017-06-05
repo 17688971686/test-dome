@@ -19,4 +19,5 @@ public interface DispatchDocService {
 	 String fileNum(String dispaId);
 
 	 DispatchDocDto initDispatchBySignId(String signId);
+	 void deleteMergeDispa(String dispathId);
 }
