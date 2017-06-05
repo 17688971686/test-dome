@@ -35,6 +35,13 @@
         	}
         }
         
+        vm.isrelated=function(){
+        		vm.dispatchDoc.isRelated="是";
+        }
+        
+        vm.isrelated2=function(){
+        	vm.dispatchDoc.isRelated="否";
+        }
         
         //打开合并页面
         vm.gotoMergePage=function(){

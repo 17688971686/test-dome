@@ -19,13 +19,13 @@
 		  	<span style="float:left;">发文方式：<span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
 					<option  ng-value="1" ng-selected="true" >单个发文</option>
-					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == '2'">合并发文</option>
+					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == 2">合并发文</option>
 				</select>
 			</span> 
 			<span id="mergeOptions" style="float: left; margin-left: 10px;">
 				<div  ng-show="vm.dispatchDoc.dispatchWay==2">
-					<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9"  >主项目 &nbsp;&nbsp; 
-					<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="true" ng-show="vm.dispatchDoc.dispatchWay=='2'">次项目  &nbsp;&nbsp;
+					<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9" ng-click="vm.isrelated()" >主项目 &nbsp;&nbsp; 
+					<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-checked="true" ng-show="vm.dispatchDoc.dispatchWay==2" ng-click="vm.isrelated2()">次项目  &nbsp;&nbsp;
 					<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-show=" vm.dispatchDoc.isMainProject==9 ">关联项目</button>
 				</div>
 			</span>
