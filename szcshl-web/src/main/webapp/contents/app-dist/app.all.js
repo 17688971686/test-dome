@@ -461,18 +461,11 @@
                      filterable : false,
                  },
                  {
-                     field: "",
-                     title: "开始时间",
+                     field: "createDate",
+                     title: "接收时间",
                      width: 150,
                      filterable : false,
-                     template: function(item) {
- 						if(item.createDate){
- 							return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
- 						}
- 						else{
- 							return " ";
- 						}
- 					}	
+                     format: "{0: yyyy-MM-dd HH:mm:ss}"
                  },
                  {
                      field: "",
@@ -564,31 +557,18 @@
                     width:180
                 },
                 {
-                    field: "",
+                    field: "createDate",
                     title: "开始时间",
                     width: 150,
                     filterable : false,
-                    template: function(item) {
-                        if(item.createDate){
-                            return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
-                        }
-                        else{
-                            return " ";
-                        }
-                    }
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
-                    field: "",
+                    field: "endDate",
                     title: "结束时间",
                     width: 150,
                     filterable : false,
-                    template: function(item) {
-                        if(item.endDate){
-                            return kendo.toString(new Date(item.endDate), 'yyyy-MM-dd HH:mm:ss');
-                        }else{
-                            return " ";
-                        }
-                    }
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
                     field: "",
@@ -3091,7 +3071,6 @@
         	var authorizeValue=vm.dispatchDoc.authorizeValue;
         	if(declareValue&&authorizeValue){
         		var dvalue=declareValue-authorizeValue;
-        		console.log((dvalue/declareValue).toFixed(4));
         		var extraRate=((dvalue/declareValue).toFixed(4))*100;
         		vm.dispatchDoc.extraRate=extraRate;
         		vm.dispatchDoc.extraValue=dvalue;
@@ -3328,6 +3307,7 @@
 					}		
 				})
 			}
+
 			common.http({
 				vm:vm,
 				$http:$http,
@@ -3462,7 +3442,6 @@
 					}
 				});
 				vm.linkSignId=idStr
-				console.log(vm.linkSignId);
 				getselectedSign(vm);
 				getsign(vm);
 			}
@@ -5989,6 +5968,100 @@
 		
 	}
 })();
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('homeCtrl', home);
+
+    home.$inject = ['$location','homeSvc']; 
+
+    function home($location, homeSvc) {
+        /* jshint validthis:true */
+    	var vm = this;
+        vm.title = '';
+        
+
+        vm.changePwd = function () {        	
+        	 homeSvc.changePwd(vm);
+          
+        }
+       
+        activate();
+        function activate() {
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('homeSvc', home);
+
+	home.$inject = [ '$http' ];
+
+	function home($http) {
+		var url_account_password = "/account/password";
+		
+		var service = {			
+			changePwd : changePwd
+		};
+
+		return service;
+
+		// begin#updatehome
+		function changePwd(vm) {
+			common.initJqValidation();
+			var isValid = $('form').valid();
+			if (isValid) {
+				vm.isSubmit = true;
+				
+
+				var httpOptions = {
+					method : 'put',
+					url : url_account_password,
+					data : vm.model.password
+				}
+
+				var httpSuccess = function success(response) {
+
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.isSubmit = false;
+									$('.alertDialog').modal('hide');
+								}
+							})
+						}
+
+					})
+				}
+
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+
+			} else {
+				// common.alert({
+				// vm:vm,
+				// msg:"您填写的信息不正确,请核对后提交!"
+				// })
+			}
+
+		}
+
+	}
+})();
 (function() {
 	'use strict';
 	
@@ -6052,21 +6125,14 @@
 					title : "开始时间",
 					width : 120,
 					filterable : false,
-					template: "#=  (startTime == null)? '' : kendo.toString(new Date(startTime), 'yyyy-MM-dd HH:mm:ss') #"	
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
 				},											
 				{
-					field : "",
+					field : "endTime",
 					title : "结束时间",
 					width : 120,
 					filterable : false,
-					template: function(item) {
-						if(item.endTime){
-							return kendo.toString(new Date(item.endTime), 'yyyy-MM-dd HH:mm:ss');
-						}
-						else{
-							return " ";
-						}
-					}	
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
 				},
 				{
 					field : "duration",
@@ -6117,6 +6183,23 @@
 					response:response,
 					fn:function() {		
 						vm.flow = response.data;
+						if(vm.flow.businessMap){
+                            if(vm.flow.businessMap.viceDirectors){
+                                vm.businessTr = true;
+                                vm.ZHB_SP_SW = true;
+                                vm.viceDirectors = vm.flow.businessMap.viceDirectors;
+                            }
+                            if(vm.flow.businessMap.orgs){
+                                vm.businessTr = true;
+                                vm.FGLD_SP_SW = true;
+                                vm.orgs = vm.flow.businessMap.orgs;
+                            }
+                            if(vm.flow.businessMap.users){
+                                vm.businessTr = true;
+                                vm.BM_FB = true;
+                                vm.users = vm.flow.businessMap.users;
+                            }
+                        }
 						signFlowSvc.initBusinessParams(vm);
 					}
 					
@@ -6363,100 +6446,6 @@
 				
 	}
 	
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('homeCtrl', home);
-
-    home.$inject = ['$location','homeSvc']; 
-
-    function home($location, homeSvc) {
-        /* jshint validthis:true */
-    	var vm = this;
-        vm.title = '';
-        
-
-        vm.changePwd = function () {        	
-        	 homeSvc.changePwd(vm);
-          
-        }
-       
-        activate();
-        function activate() {
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('homeSvc', home);
-
-	home.$inject = [ '$http' ];
-
-	function home($http) {
-		var url_account_password = "/account/password";
-		
-		var service = {			
-			changePwd : changePwd
-		};
-
-		return service;
-
-		// begin#updatehome
-		function changePwd(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid) {
-				vm.isSubmit = true;
-				
-
-				var httpOptions = {
-					method : 'put',
-					url : url_account_password,
-					data : vm.model.password
-				}
-
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-								}
-							})
-						}
-
-					})
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-
-			} else {
-				// common.alert({
-				// vm:vm,
-				// msg:"您填写的信息不正确,请核对后提交!"
-				// })
-			}
-
-		}
-
-	}
 })();
 (function () {
     'use strict';
@@ -8652,7 +8641,7 @@
 						title : "创建时间",
 						width : 180,
 						filterable : false,
-						format : "{0:yyyy/MM/dd HH:mm:ss}"
+						format : "{0:yyyy-MM-dd HH:mm:ss}"
 
 					},  {
 						field : "",
@@ -8660,12 +8649,8 @@
 						width : 180,
 						template:function(item){							
 							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-							
 						}
-						
-
 					}
-
 			];
 			// End:column
 		
@@ -8703,8 +8688,7 @@
 					common.requestSuccess({
 						vm:vm,
 						response:response,
-						fn:function() {							
-							
+						fn:function() {
 							common.alert({
 								vm:vm,
 								msg:"操作成功",
@@ -9084,17 +9068,17 @@
 						filterable : false
 					},
 					{
-						field : "beginTime",
+						field : "beginTimeStr",
 						title : "会议开始时间",
 						width : 160,						
-						filterable : false
+						filterable : false,
 					},
 					{
-						field : "endTime",
+						field : "endTimeStr",
 						title : "会议结束时间",
 						type : "date",
 						width : 160,						
-						filterable : false
+						filterable : false,
 					},
 					{
 						field : "rbType",
@@ -9404,7 +9388,7 @@
                           if(vm.workProgramId){
                               model.workProgramId = vm.workProgramId;
 						  }
-                          if(model.endTime < model.beginTime){
+                          if(new Date(model.endTime) < new Date(model.beginTime)){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
                           }
@@ -9449,7 +9433,7 @@
                           model.endTimeStr = $("#endTime").val();
                           model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
                           model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
-                          if(model.endTime < model.beginTime){
+                          if(new Date(model.endTime) < new Date(model.beginTime)){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
                           }
@@ -9788,10 +9772,133 @@
        vm.findOfficeUsersByDeptId =function(status){
     	   signSvc.findOfficeUsersByDeptId(vm,status);
        }
-//       $("input").click(function(){
-//    	   signSvc.checkboxAdd(vm);
-//       })
+       //输入资料分数数字校验
+       vm.regNumber = function(){
+    	   signSvc.regNumber(vm);
+       }
        
+       //s_项目建设书阶段(一)
+       $("#addOriginal").click(function(){
+    	   signSvc.add(vm);
+       })
+       $("#addCopy").click(function(){
+    	   signSvc.add(vm);
+       })
+       
+       $("#sugFileDealOriginal").click(function(){
+    	   signSvc.sugFileDealOriginal(vm);
+       })
+       $("#sugFileDealCopy").click(function(){
+    	   signSvc.sugFileDealCopy(vm);
+       })
+       
+       $("#sugOrgApplyOriginal").click(function(){
+    	   signSvc.sugOrgApplyOriginal(vm);
+       })
+       $("#sugOrgApplyCopy").click(function(){
+    	   signSvc.sugOrgApplyCopy(vm);
+       })
+       
+       $("#sugOrgReqOriginal").click(function(){
+    	   signSvc.sugOrgReqOriginal(vm);
+       })
+       $("#sugOrgReqCopy").click(function(){
+    	   signSvc.sugOrgReqCopy(vm);
+       })
+       
+       $("#sugProAdviseOriginal").click(function(){
+    	   signSvc.sugProAdviseOriginal(vm);
+       })
+       $("#sugProAdviseCopy").click(function(){
+    	   signSvc.sugProAdviseCopy(vm);
+       })
+       
+       $("#proSugEledocOriginal").click(function(){
+    	   signSvc.proSugEledocOriginal(vm);
+       })
+       $("#proSugEledocCopy").click(function(){
+    	   signSvc.proSugEledocCopy(vm);
+       })
+       
+       $("#sugMeetOriginal").click(function(){
+    	   signSvc.sugMeetOriginal(vm);
+       })
+       $("#sugMeetCopy").click(function(){
+    	   signSvc.sugMeetCopy(vm);
+       })
+       //e_项目建设书阶段(一)
+       
+       //s_项目可研究性阶段(二)
+       $("#studyPealOriginal").click(function(){
+    	   signSvc.studyPealOriginal(vm);
+       })
+       $("#studyProDealCopy").click(function(){
+    	   signSvc.studyProDealCopy(vm);
+       })
+       $("#studyFileDealOriginal").click(function(){
+    	   signSvc.studyFileDealOriginal(vm);
+       })
+       $("#studyFileDealCopy").click(function(){
+    	   signSvc.studyFileDealCopy(vm);
+       })
+       $("#studyOrgApplyOriginal").click(function(){
+    	   signSvc.studyOrgApplyOriginal(vm);
+       })
+        $("#studyOrgApplyCopy").click(function(){
+    	   signSvc.studyOrgApplyCopy(vm);
+       })
+       $("#studyOrgReqOriginal").click(function(){
+    	   signSvc.studyOrgReqOriginal(vm);
+       })
+       $("#studyOrgReqCopy").click(function(){
+    	   signSvc.studyOrgReqCopy(vm);
+       })
+        $("#studyProSugOriginal").click(function(){
+    	   signSvc.studyProSugOriginal(vm);
+       })
+        $("#studyProSugCopy").click(function(){
+    	   signSvc.studyProSugCopy(vm);
+       })
+       $("#studyMeetOriginal").click(function(){
+    	   signSvc.studyMeetOriginal(vm);
+       })
+        $("#studyMeetCopy").click(function(){
+    	   signSvc.studyMeetCopy(vm);
+       })
+      //右
+      
+       $("#envproReplyOriginal").click(function(){
+    	   signSvc.envproReplyOriginal(vm);
+       })
+       $("#envproReplyCopy").click(function(){
+    	   signSvc.envproReplyCopy(vm);
+       })
+       $("#planAddrOriginal").click(function(){
+    	   signSvc.planAddrOriginal(vm);
+       })
+       $("#planAddrCopy").click(function(){
+    	   signSvc.planAddrCopy(vm);
+       })
+       $("#reportOrigin").click(function(){
+    	   signSvc.reportOrigin(vm);
+       })
+       $("#reportCopy").click(function(){
+    	   signSvc.reportCopy(vm);
+       })
+       $("#eledocOriginal").click(function(){
+    	   signSvc.eledocOriginal(vm);
+       })
+       $("#eledocCopy").click(function(){
+    	   signSvc.eledocCopy(vm);
+       })
+        $("#energyOriginal").click(function(){
+    	   signSvc.energyOriginal(vm);
+       })
+       $("#energyCopy").click(function(){
+    	   signSvc.energyCopy(vm);
+       })
+       
+     //e_项目可研究性阶段(二)
     	   
     }
 })();
@@ -9962,75 +10069,7 @@
 		
 		//S_initBusinessParams
 		function initBusinessParams(vm){	
-			if(vm.flow.curNode.activitiId == "ZHB_SP_SW"){//综合部拟办				
-				vm.businessTr = true;
-				vm.ZHB_SP_SW = true;
-				var httpOptions = {
-						method : 'get',
-						url : rootPath+"/user/getViceDirector"
-					}					
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.viceDirectors = response.data;
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-				
-			}else if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){//部门分办
-				vm.businessTr = true;
-				vm.FGLD_SP_SW = true;
-				var httpOptions = {
-						method : 'get',
-						url : rootPath+"/org/listAll"
-					}					
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.orgs = response.data;
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			
-			}else if(vm.flow.curNode.activitiId == "BM_FB1" || vm.flow.curNode.activitiId == "BM_FB2"){//选择项目负责人	
-				vm.businessTr = true;
-				vm.BM_FB = true;
-				var httpOptions = {
-					method : 'get',
-					url : rootPath+"/user/findChargeUsers"
-				}					
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.users = response.data;
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
+			if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
 				vm.businessTr = true;
 				vm.XMFZR_SP_GZFA = true;	
 				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
@@ -10316,7 +10355,7 @@
         	})
 
         	//先初始化流程信息        
-        	flowSvc.initFlowData(vm);     	
+        	flowSvc.initFlowData(vm);
         	//再初始化业务信息
         	signSvc.initFlowPageData(vm);
         }
@@ -10429,23 +10468,54 @@
 			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			//checkboxAdd:checkboxAdd,//点击输入框默认输入 1
+			add:add,							//s_项目建设书阶段(一)
+			addCopy:addCopy,
+			sugFileDealOriginal:sugFileDealOriginal,
+			sugFileDealCopy:sugFileDealCopy,
+			
 			
 		};
 		return service;	
-		
-		//S_点击输入框默认输入1
-		/*function checkboxAdd(vm){
+		//s_项目建设书阶段(一)
+		function add(vm){
+			if(vm.model.sugProDealOriginal==null){
+				vm.model.sugProDealCount=1;
+			}if(vm.model.sugProDealOriginal==9){
+				vm.model.sugProDealCount="";
+			}if(vm.model.sugProDealOriginal==0){
+				vm.model.sugProDealCount=1;
+			}
+		}
+		function addCopy(vm){
+			if(vm.model.sugProDealCopy==null){
+			vm.model.sugProDealCount=1;
+			}if(vm.model.sugProDealCopy==9){
+			vm.model.sugProDealCount="";
+			}if(vm.model.sugProDealCopy==0){
+			vm.model.sugProDealCount=1;
+			}
+		}
+		function sugFileDealOriginal(vm){
 			if(vm.model.sugFileDealOriginal==null){
+			vm.model.sugFileDealCount=1;
+			}if(vm.model.sugFileDealOriginal==9){
+			vm.model.sugFileDealCount="";
+			}if(vm.model.sugFileDealOriginal==0){
+			vm.model.sugFileDealCount=1;
+			}
+		}
+		
+		function sugFileDealCopy(vm){
+			if(vm.model.sugFileDealCopy==null){
 				vm.model.sugFileDealCount=1;
-				}if(vm.model.sugFileDealOriginal==9){
+				}if(vm.model.sugFileDealCopy==9){
 				vm.model.sugFileDealCount="";
-				}if(vm.model.sugFileDealOriginal==0){
+				}if(vm.model.sugFileDealCopy==0){
 				vm.model.sugFileDealCount=1;
 			}
-		}*/
-		//E_点击输入框默认输入1
-
+		}
+		//E_项目建设书阶段(一)
+		
 		//S_初始化grid
 		function grid(vm){
 			// Begin:dataSource
@@ -10497,11 +10567,6 @@
 					{
 						field : "designcompanyName",
 						title : "项目单位",
-						width : 100,
-						filterable : false,
-					},
-					{
-						title : "收文编号",
 						width : 160,
 						filterable : false,
 					},
@@ -10624,7 +10689,6 @@
 		
 		//start  根据协办部门查询用户
 		function findOfficeUsersByDeptId(vm,status){
-			
 			var param = {};
 			if("main" == status){
 				param.deptId = vm.model.maindepetid;
@@ -10634,9 +10698,7 @@
 			var httpOptions = {
 					method : 'post',
 					url : rootPath+"/officeUser/findOfficeUserByDeptId",
-					data:vm.model,
-//					params:param,
-					
+					params:param					
 				};
 				
 			var httpSuccess = function success(response) {
@@ -10647,7 +10709,6 @@
 						if("main" == status){
 							vm.mainOfficeList = {};
 							vm.mainOfficeList = response.data;
-							console.log(vm.mainOfficeList);
 						}else{
 							vm.assistOfficeList = {};
 							vm.assistOfficeList = response.data;
@@ -10750,7 +10811,6 @@
 						
 						if(response.data.mainOfficeList){
 							vm.mainOfficeList=response.data.mainOfficeList;
-							console.log(vm.mainOfficeList+"2010");
 						}
 						if(response.data.assistOfficeList){
 							vm.assistOfficeList=response.data.assistOfficeList;
@@ -10812,22 +10872,19 @@
 					response : response,
 					fn : function() {
 						vm.model = response.data;
-                        if(vm.model.workProgramDtoList){
-                            vm.mainwork = {};
+                        if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
                             vm.show_workprogram = true;
-                            if(vm.model.workProgramDtoList.length > 1){
-                                vm.showAssistwork = true;
-                                vm.assistwork = {};
-                                if(vm.model.workProgramDtoList[0].isMain == 9){
-                                    vm.mainwork = vm.model.workProgramDtoList[0];
-                                    vm.assistwork = vm.model.workProgramDtoList[1];
-                                } else{
-                                    vm.assistwork = vm.model.workProgramDtoList[0];
-                                    vm.mainwork = vm.model.workProgramDtoList[1]
-                                }
-                            }else{
-                                vm.mainwork = vm.model.workProgramDtoList[0];
-                            }
+                            vm.model.workProgramDtoList.forEach(function(w,index){
+                            	if(w.isMain == 9){
+                                    vm.showMainwork = true;
+                                    vm.mainwork = {};
+                                    vm.mainwork = w;
+								}else if(w.isMain == 0){
+                                    vm.showAssistwork = true;
+                                    vm.assistwork = {};
+                                    vm.assistwork = w;
+								}
+							});
                         }
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;
@@ -11463,7 +11520,7 @@
                 }else{
                     common.alert({
                         vm:vm,
-                        msg:"正在加载数据，请耐心等待...！"
+                        msg:"请先保存，再选择评审会日期！"
                     })
                 }
             }
@@ -11891,10 +11948,10 @@
 						if(response.data != null && response.data != ""){
 							vm.work = response.data;
 							vm.work.signId = $state.params.signid
-							if(response.data.roomBookings && response.data.roomBookings.length > 0){
+							if(response.data.roomBookingDtos && response.data.roomBookingDtos.length > 0){
                                 vm.isRoomBook = true;
                                 vm.RoomBookings = {};
-                                vm.RoomBookings = response.data.roomBookings;
+                                vm.RoomBookings = response.data.roomBookingDtos;
                                 vm.roombook = vm.RoomBookings[0];
                                 if(vm.RoomBookings.length > 1){
                                     vm.isHaveNext = true;

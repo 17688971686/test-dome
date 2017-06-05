@@ -293,7 +293,6 @@
 					}
 				});
 				vm.linkSignId=idStr
-				console.log(vm.linkSignId);
 				getselectedSign(vm);
 				getsign(vm);
 			}

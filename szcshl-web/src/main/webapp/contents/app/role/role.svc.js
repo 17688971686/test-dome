@@ -115,7 +115,7 @@
 						title : "创建时间",
 						width : 180,
 						filterable : false,
-						format : "{0:yyyy/MM/dd HH:mm:ss}"
+						format : "{0:yyyy-MM-dd HH:mm:ss}"
 
 					},  {
 						field : "",
@@ -123,12 +123,8 @@
 						width : 180,
 						template:function(item){							
 							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-							
 						}
-						
-
 					}
-
 			];
 			// End:column
 		
@@ -166,8 +162,7 @@
 					common.requestSuccess({
 						vm:vm,
 						response:response,
-						fn:function() {							
-							
+						fn:function() {
 							common.alert({
 								vm:vm,
 								msg:"操作成功",

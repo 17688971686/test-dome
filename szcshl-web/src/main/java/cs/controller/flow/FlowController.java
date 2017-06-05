@@ -2,11 +2,18 @@ package cs.controller.flow;
 
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.domain.sys.User;
+import cs.model.sys.UserDto;
+import cs.service.sys.OrgService;
+import cs.service.sys.UserService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -69,6 +76,10 @@ public class FlowController {
 	private TaskService taskService;
 	@Autowired
 	private ICurrentUser currentUser;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private OrgService orgService;
 	
 	@RequiresPermissions("flow#html/tasks#post")
 	@RequestMapping(name = "个人待办流程", path = "html/tasks",method=RequestMethod.POST)
@@ -155,9 +166,30 @@ public class FlowController {
 			if(Constant.FLOW_BMLD_QR_GD.equals(task.getTaskDefinitionKey())){
 				flowDto.setEnd(true);
 			}
-		}			
-				
-		return flowDto;
+		}
+		//加载环节业务数据
+		if(Validate.isString(flowDto.getCurNode().getActivitiId())){
+            Map<String,Object> businessMap = new HashMap<>();
+		    switch (flowDto.getCurNode().getActivitiId()){
+                case Constant.FLOW_ZHB_SP_SW://综合部拟办
+                    businessMap.put("viceDirectors",userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
+                    break;
+                case Constant.FLOW_FGLD_SP_SW://综合部拟办
+                    businessMap.put("orgs",orgService.listAll());
+                    break;
+                case Constant.FLOW_BM_FB1://选择项目负责人
+                    businessMap.put("users",userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
+                    break;
+                case Constant.FLOW_BM_FB2://选择项目负责人
+                    businessMap.put("users",userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
+                    break;
+                default:
+            }
+            flowDto.setBusinessMap(businessMap);
+        }
+
+
+        return flowDto;
 	}
 		
 	

@@ -336,10 +336,10 @@
 						if(response.data != null && response.data != ""){
 							vm.work = response.data;
 							vm.work.signId = $state.params.signid
-							if(response.data.roomBookings && response.data.roomBookings.length > 0){
+							if(response.data.roomBookingDtos && response.data.roomBookingDtos.length > 0){
                                 vm.isRoomBook = true;
                                 vm.RoomBookings = {};
-                                vm.RoomBookings = response.data.roomBookings;
+                                vm.RoomBookings = response.data.roomBookingDtos;
                                 vm.roombook = vm.RoomBookings[0];
                                 if(vm.RoomBookings.length > 1){
                                     vm.isHaveNext = true;

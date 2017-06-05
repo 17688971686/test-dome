@@ -61,21 +61,14 @@
 					title : "开始时间",
 					width : 120,
 					filterable : false,
-					template: "#=  (startTime == null)? '' : kendo.toString(new Date(startTime), 'yyyy-MM-dd HH:mm:ss') #"	
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
 				},											
 				{
-					field : "",
+					field : "endTime",
 					title : "结束时间",
 					width : 120,
 					filterable : false,
-					template: function(item) {
-						if(item.endTime){
-							return kendo.toString(new Date(item.endTime), 'yyyy-MM-dd HH:mm:ss');
-						}
-						else{
-							return " ";
-						}
-					}	
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
 				},
 				{
 					field : "duration",
@@ -126,6 +119,23 @@
 					response:response,
 					fn:function() {		
 						vm.flow = response.data;
+						if(vm.flow.businessMap){
+                            if(vm.flow.businessMap.viceDirectors){
+                                vm.businessTr = true;
+                                vm.ZHB_SP_SW = true;
+                                vm.viceDirectors = vm.flow.businessMap.viceDirectors;
+                            }
+                            if(vm.flow.businessMap.orgs){
+                                vm.businessTr = true;
+                                vm.FGLD_SP_SW = true;
+                                vm.orgs = vm.flow.businessMap.orgs;
+                            }
+                            if(vm.flow.businessMap.users){
+                                vm.businessTr = true;
+                                vm.BM_FB = true;
+                                vm.users = vm.flow.businessMap.users;
+                            }
+                        }
 						signFlowSvc.initBusinessParams(vm);
 					}
 					

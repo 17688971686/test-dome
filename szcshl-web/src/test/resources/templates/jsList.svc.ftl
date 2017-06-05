@@ -207,14 +207,7 @@
                     title: "<#if f.comment??>${f.comment}<#else>${f.name!''}</#if>",
                     width: 100,
                     filterable: true<#if f.type='Date'>,
-                    template: function(item) {
-                        if(!item.${f.name}){
-                            return " ";
-                        }
-                        else{
-                            return kendo.toString(new Date(item.${f.name}), 'yyyy-MM-dd hh:mm:ss');
-                        }
-                    }</#if>
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"</#if>
                 },
 </#list>
                 {

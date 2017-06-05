@@ -389,7 +389,7 @@ public class FlowServiceImpl implements FlowService{
 		PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
 
 		HistoryService historyService = processEngine.getHistoryService();
-		HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().variableValueEquals(currentUser.getLoginUser().getLoginName()).finished();
+		HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().finished();
 
 		int total = Integer.valueOf(String.valueOf(hq.count()));
         pageModelDto.setCount(total);

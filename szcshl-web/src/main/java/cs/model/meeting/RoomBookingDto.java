@@ -27,13 +27,14 @@ public class RoomBookingDto extends BaseDto{
 	private String rbType;//会议类型
 	private String content;//主要内容
 	private String remark;//备注
-	private String workProgramId;//工作方案Id
+
 	private String stageOrg;//评审部门
 	private String stageProject;//评审项目
 	//开始结束时间段字符串
 	private String beginTimeStr;
 	private String endTimeStr;
 
+	private String workProgramId;//工作方案Id
 	private WorkProgram workProgram;
 
 	public WorkProgram getWorkProgram() {

@@ -383,13 +383,10 @@ public class UserServiceImpl implements UserService {
 	public List<UserDto> findUserByOrgId(String orgId) {
 		List<User> userList = userRepo.findUserByOrgId(orgId);
 		List<UserDto> userDtolist = new ArrayList<>();
-		
 		if(userList != null && userList.size() > 0){
 			userList.forEach(x->{
 				UserDto userDto = new UserDto();
 				BeanCopierUtils.copyProperties(x, userDto);
-				userDto.setCreatedDate(x.getCreatedDate());
-				userDto.setModifiedDate(x.getModifiedDate());
 				userDtolist.add(userDto);
 			});						
 		}		

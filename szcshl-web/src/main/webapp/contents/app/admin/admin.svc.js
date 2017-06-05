@@ -72,18 +72,11 @@
                      filterable : false,
                  },
                  {
-                     field: "",
-                     title: "开始时间",
+                     field: "createDate",
+                     title: "接收时间",
                      width: 150,
                      filterable : false,
-                     template: function(item) {
- 						if(item.createDate){
- 							return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
- 						}
- 						else{
- 							return " ";
- 						}
- 					}	
+                     format: "{0: yyyy-MM-dd HH:mm:ss}"
                  },
                  {
                      field: "",
@@ -175,31 +168,18 @@
                     width:180
                 },
                 {
-                    field: "",
+                    field: "createDate",
                     title: "开始时间",
                     width: 150,
                     filterable : false,
-                    template: function(item) {
-                        if(item.createDate){
-                            return kendo.toString(new Date(item.createDate), 'yyyy-MM-dd HH:mm:ss');
-                        }
-                        else{
-                            return " ";
-                        }
-                    }
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
-                    field: "",
+                    field: "endDate",
                     title: "结束时间",
                     width: 150,
                     filterable : false,
-                    template: function(item) {
-                        if(item.endDate){
-                            return kendo.toString(new Date(item.endDate), 'yyyy-MM-dd HH:mm:ss');
-                        }else{
-                            return " ";
-                        }
-                    }
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
                     field: "",

@@ -50,12 +50,11 @@
                  <span class="errors" ng-show="vm.isDictCodeExist">字典编码已存在</span></td>
             </tr>    
               <tr>
-                <td class="formAlignRight">字典排序序号： </td>
+                <td class="formAlignRight">排序序号： </td>
                 <td>
-                    <input  type="number" maxlength="200" class="form-control input-sm "   ng-model="vm.model.dictSort" id="dictSort" name="dictSort" >
+                    <input  type="number" maxlength="200" class="form-control input-sm "  ng-model="vm.model.dictSort" id="dictSort" name="dictSort" data-val="true" data-val-required="必填">
                 </td>
-                <td>
-                 <span >&nbsp;</span></td>
+                <td> <span data-valmsg-for="dictSort" data-valmsg-replace="true" class="errors"></span></td>
             </tr> 
              
             <tr>

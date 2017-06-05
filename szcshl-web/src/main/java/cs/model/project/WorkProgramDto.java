@@ -9,6 +9,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.expert.ExpertReview;
 import cs.domain.meeting.RoomBooking;
 import cs.model.BaseDto;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.meeting.RoomBookingDto;
 
 /**	
@@ -140,18 +141,11 @@ public class WorkProgramDto extends BaseDto{
     private Integer selCount;       //专家抽取次数
 
 	//评审专家
-	private List<ExpertReview> expertReviews;
+	private List<ExpertReviewDto> expertReviewDtos;
 
 	//会议室预定
-	private List<RoomBookingDto> roomBookings;
+	private List<RoomBookingDto> roomBookingDtos;
 
-    public List<RoomBookingDto> getRoomBookings() {
-        return roomBookings;
-    }
-
-    public void setRoomBookings(List<RoomBookingDto> roomBookings) {
-        this.roomBookings = roomBookings;
-    }
 
     public String getId() {
 		return id;
@@ -449,15 +443,23 @@ public class WorkProgramDto extends BaseDto{
 		this.isMain = isMain;
 	}
 
-	public List<ExpertReview> getExpertReviews() {
-		return expertReviews;
-	}
+    public List<ExpertReviewDto> getExpertReviewDtos() {
+        return expertReviewDtos;
+    }
 
-	public void setExpertReviews(List<ExpertReview> expertReviews) {
-		this.expertReviews = expertReviews;
-	}
+    public void setExpertReviewDtos(List<ExpertReviewDto> expertReviewDtos) {
+        this.expertReviewDtos = expertReviewDtos;
+    }
 
-	public Date getSuppLetterDate() {
+    public List<RoomBookingDto> getRoomBookingDtos() {
+        return roomBookingDtos;
+    }
+
+    public void setRoomBookingDtos(List<RoomBookingDto> roomBookingDtos) {
+        this.roomBookingDtos = roomBookingDtos;
+    }
+
+    public Date getSuppLetterDate() {
 		return suppLetterDate;
 	}
 

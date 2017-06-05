@@ -619,10 +619,10 @@ public class SignServiceImpl implements SignService {
 				
 				//获取主流程负责人
 				sign = signRepo.findById(signid);
-				dealUser = userService.findById(sign.getmFlowMainUserId());
+				dealUser = userService.findById(sign.getaFlowMainUserId());
 				assigneeValue = dealUser.getLoginName();
-				if(Validate.isString(sign.getmFlowAssistUserId())){
-					dealUser = userService.findById(sign.getmFlowAssistUserId());
+				if(Validate.isString(sign.getaFlowAssistUserId())){
+					dealUser = userService.findById(sign.getaFlowAssistUserId());
 					assigneeValue += ","+dealUser.getLoginName();
 				}
 				variables.put("users", assigneeValue);

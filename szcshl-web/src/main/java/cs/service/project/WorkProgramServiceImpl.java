@@ -148,7 +148,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                             rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(),"HH:mm"));
 							roomBookingDtos.add(rbDto);
 						});
-						workProgramDto.setRoomBookings(roomBookingDtos);
+						workProgramDto.setRoomBookingDtos(roomBookingDtos);
 					}
 					break;
 				}				

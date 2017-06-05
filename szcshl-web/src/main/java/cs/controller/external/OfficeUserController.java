@@ -68,7 +68,6 @@ public class OfficeUserController {
     @ResponseBody
 	public List<OfficeUserDto> findOfficeUserDeptId(@RequestBody SignDto signDto ){
 		String deptId = Validate.isString(signDto.getMaindepetid())?signDto.getMaindepetid():signDto.getAssistdeptid();
-		
 		List<OfficeUserDto> officeDto =officeUserService.findOfficeUserByDeptId(deptId);
 		return officeDto;
 	}

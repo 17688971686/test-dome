@@ -139,17 +139,19 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	protected  int checkRootBook(RoomBookingDto roomBookingDto){
         //判断会议时间是否冲突
         HqlBuilder sqlBuilder= HqlBuilder.create();
-        sqlBuilder.append(" select count(ID) from CS_ROOM_BOOKING where ("+RoomBooking_.beginTime.getName());
+        sqlBuilder.append(" select count(ID) from CS_ROOM_BOOKING where " + RoomBooking_.mrID.getName()+" =:mrId");
+		sqlBuilder.setParam("mrId",roomBookingDto.getMrID()) ;
+        //排除本身
+        if(Validate.isString(roomBookingDto.getId())){
+            sqlBuilder.append(" and ID <> :id").setParam("id",roomBookingDto.getId());
+        }
+		sqlBuilder.append(" and("+RoomBooking_.beginTime.getName());
         sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
         sqlBuilder.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
         sqlBuilder.append(" or "+RoomBooking_.endTime.getName());
         sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
         sqlBuilder.append(" and :endTime )").setParam("endTime", roomBookingDto.getEndTime());
-        sqlBuilder.append(" and "+RoomBooking_.mrID.getName()+" =:mrId").setParam("mrId",roomBookingDto.getMrID());
-        //排除本身
-        if(Validate.isString(roomBookingDto.getId())){
-            sqlBuilder.append(" and ID <> :id").setParam("id",roomBookingDto.getId());
-        }
+
         return roomBookingRepo.countBySql(sqlBuilder);
     }
 
@@ -174,6 +176,9 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 
 			if(Validate.isString(roomBookingDto.getWorkProgramId())){
 				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
+                wp.setWorkStageTime(strdate+"("+day+")"+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
+                wp.setMeetingId(roomBookingDto.getMrID());
+                wp.setMeetingAddress(roomBookingDto.getAddressName());
                 rb.setWorkProgram(wp);
 			}
 			roomBookingRepo.save(rb);
@@ -191,6 +196,14 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			BeanCopierUtils.copyPropertiesIgnoreNull(roomBookingDto, room);
 			room.setModifiedBy(currentUser.getLoginName());
 			room.setModifiedDate(new Date());
+
+            if(Validate.isString(roomBookingDto.getWorkProgramId())){
+                WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
+                wp.setWorkStageTime(room.getRbDate()+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
+                wp.setMeetingId(roomBookingDto.getMrID());
+                wp.setMeetingAddress(roomBookingDto.getAddressName());
+                room.setWorkProgram(wp);
+            }
 			roomBookingRepo.save(room);
 			logger.info(String.format("更新会议室预定,会议名称:%s", roomBookingDto.getRbName()));
 		}

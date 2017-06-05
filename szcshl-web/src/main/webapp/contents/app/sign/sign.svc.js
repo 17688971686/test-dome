@@ -211,30 +211,26 @@
 		
 		//start  根据协办部门查询用户
 		function findOfficeUsersByDeptId(vm,status){
-			
 			var param = {};
 			if("main" == status){
-				param.deptId = vm.model.maindepetid;
+                param.maindepetid = vm.model.maindepetid;
 			}else{
-				param.deptId = vm.model.assistdeptid;
+				param.assistdeptid = vm.model.assistdeptid;
 			}
 			var httpOptions = {
 					method : 'post',
-					url : rootPath+"/officeUser/findOfficeUserByDeptId",
-					data:vm.model,
-//					params:param,
-					
+					url  : rootPath+"/officeUser/findOfficeUserByDeptId",
+					data:param
 				};
 				
 			var httpSuccess = function success(response) {
 				common.requestSuccess({
 					vm : vm,
 					response : response,
-					fn : function() {		
+					fn : function() {
 						if("main" == status){
 							vm.mainOfficeList = {};
 							vm.mainOfficeList = response.data;
-							console.log(vm.mainOfficeList);
 						}else{
 							vm.assistOfficeList = {};
 							vm.assistOfficeList = response.data;
@@ -399,22 +395,19 @@
 					response : response,
 					fn : function() {
 						vm.model = response.data;
-                        if(vm.model.workProgramDtoList){
-                            vm.mainwork = {};
+                        if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
                             vm.show_workprogram = true;
-                            if(vm.model.workProgramDtoList.length > 1){
-                                vm.showAssistwork = true;
-                                vm.assistwork = {};
-                                if(vm.model.workProgramDtoList[0].isMain == 9){
-                                    vm.mainwork = vm.model.workProgramDtoList[0];
-                                    vm.assistwork = vm.model.workProgramDtoList[1];
-                                } else{
-                                    vm.assistwork = vm.model.workProgramDtoList[0];
-                                    vm.mainwork = vm.model.workProgramDtoList[1]
-                                }
-                            }else{
-                                vm.mainwork = vm.model.workProgramDtoList[0];
-                            }
+                            vm.model.workProgramDtoList.forEach(function(w,index){
+                            	if(w.isMain == 9){
+                                    vm.showMainwork = true;
+                                    vm.mainwork = {};
+                                    vm.mainwork = w;
+								}else if(w.isMain == 0){
+                                    vm.showAssistwork = true;
+                                    vm.assistwork = {};
+                                    vm.assistwork = w;
+								}
+							});
                         }
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;

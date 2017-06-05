@@ -132,17 +132,17 @@
 						filterable : false
 					},
 					{
-						field : "beginTime",
+						field : "beginTimeStr",
 						title : "会议开始时间",
 						width : 160,						
-						filterable : false
+						filterable : false,
 					},
 					{
-						field : "endTime",
+						field : "endTimeStr",
 						title : "会议结束时间",
 						type : "date",
 						width : 160,						
-						filterable : false
+						filterable : false,
 					},
 					{
 						field : "rbType",

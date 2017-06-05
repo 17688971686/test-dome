@@ -155,7 +155,7 @@
                           if(vm.workProgramId){
                               model.workProgramId = vm.workProgramId;
 						  }
-                          if(model.endTime < model.beginTime){
+                          if(new Date(model.endTime) < new Date(model.beginTime)){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
                           }
@@ -200,7 +200,7 @@
                           model.endTimeStr = $("#endTime").val();
                           model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
                           model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
-                          if(model.endTime < model.beginTime){
+                          if(new Date(model.endTime) < new Date(model.beginTime)){
                               $("#errorTime").html("开始时间不能大于结束时间!");
                               return ;
                           }

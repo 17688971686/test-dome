@@ -116,75 +116,7 @@
 		
 		//S_initBusinessParams
 		function initBusinessParams(vm){	
-			if(vm.flow.curNode.activitiId == "ZHB_SP_SW"){//综合部拟办				
-				vm.businessTr = true;
-				vm.ZHB_SP_SW = true;
-				var httpOptions = {
-						method : 'get',
-						url : rootPath+"/user/getViceDirector"
-					}					
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.viceDirectors = response.data;
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-				
-			}else if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){//部门分办
-				vm.businessTr = true;
-				vm.FGLD_SP_SW = true;
-				var httpOptions = {
-						method : 'get',
-						url : rootPath+"/org/listAll"
-					}					
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.orgs = response.data;
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			
-			}else if(vm.flow.curNode.activitiId == "BM_FB1" || vm.flow.curNode.activitiId == "BM_FB2"){//选择项目负责人	
-				vm.businessTr = true;
-				vm.BM_FB = true;
-				var httpOptions = {
-					method : 'get',
-					url : rootPath+"/user/findChargeUsers"
-				}					
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.users = response.data;
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
+			if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
 				vm.businessTr = true;
 				vm.XMFZR_SP_GZFA = true;	
 				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
