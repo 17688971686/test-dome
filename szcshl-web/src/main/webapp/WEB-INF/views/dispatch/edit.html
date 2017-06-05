@@ -45,14 +45,14 @@
 		      <td style="width:150px;" class="text-center">发文部门</td>
 		      <td>
 		      	<select ng-model="vm.dispatchDoc.orgName"  name="orgName" id="orgName" class="form-control input-sm " >
-					<option ng-repeat="x in vm.org | orderBy:'sort':false" value="{{x.name}}" ng-selected="x.name == vm.dispatchDoc.orgName">{{x.name}}</option>
+					<option ng-repeat="x in vm.org | orderBy:'sort':false" value="{{x.name}}" ng-selected="true">{{x.name}}</option>
 				</select>			
 			  </td>
 			  
 			  <td rowspan="2" style="width:150px;" class="text-center">校对人<span class="required">*</span></td>
 		      <td rowspan="2">
 		      	<select ng-model="vm.dispatchDoc.proofreadName"  name="proofreadName" id="proofreadName" class="form-control input-sm " data-val="true" data-val-required="必填">
-					<option ng-repeat="x in vm.proofread" value="{{x.loginName}}" ng-selected="x.loginName == vm.dispatchDoc.proofreadName">{{x.loginName}}</option>
+					<option ng-repeat="x in vm.proofread" value="{{x.loginName}}" ng-selected="true">{{x.loginName}}</option>
 				</select>	
 				<span data-valmsg-for="proofreadName" data-valmsg-replace="true" class="errors"></span>			
 			  </td>
@@ -75,21 +75,21 @@
 		      <td style="width:150px;" class="text-center">秘密等级</td>
 		      <td >
 		      <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
-					<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.dispatchDoc.secretLevel">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
 				</select>
 			  </td>
 			  
 			  <td style="width:150px;" class="text-center">年度计划</td>
 		      <td >
 		      	<select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm ">
-					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="x.dictName == vm.dispatchDoc.yearPlan">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="true">{{x.dictName}}</option>
 				</select>
 			  </td>
 			  
 			  <td style="width:150px;" class="text-center">紧急程度</td>
 		      <td >
 		      	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel">
-					<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="x.dictName">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
 				</select>				
 			  </td>
 		    </tr>
