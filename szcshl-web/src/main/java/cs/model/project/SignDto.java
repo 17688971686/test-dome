@@ -1,13 +1,16 @@
 package cs.model.project;
 
 
-import com.alibaba.fastjson.annotation.JSONField;
-import cs.model.BaseDto;
-import cs.model.sys.OrgDto;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
+import cs.domain.project.FileRecord;
+import cs.model.BaseDto;
+import cs.model.sys.OrgDto;
 
 public class SignDto extends BaseDto {
 	
@@ -92,7 +95,7 @@ public class SignDto extends BaseDto {
 	
 	private String ispause;
 	
-	private Float pausedays;
+	private BigDecimal pausedays;
 	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date pausetime;
@@ -151,7 +154,8 @@ public class SignDto extends BaseDto {
 		
 	//项目建议书电子文档是否有复印件
 	private String proSugEledocCopy;
-
+	
+	
 	//建议书相关会议纪要份数
 	private Integer sugMeetCount;
 		
@@ -660,7 +664,14 @@ public class SignDto extends BaseDto {
 	public void setIspause(String ispause){
 		this.ispause = ispause;
 	}
-
+	
+	public BigDecimal getPausedays(){
+		return pausedays;
+	}
+	
+	public void setPausedays(BigDecimal pausedays){
+		this.pausedays = pausedays;
+	}
 	
 	public Date getPausetime(){
 		return pausetime;
@@ -1267,13 +1278,5 @@ public class SignDto extends BaseDto {
 
 	public void setIschangeEstimate(String ischangeEstimate) {
 		this.ischangeEstimate = ischangeEstimate;
-	}
-
-	public Float getPausedays() {
-		return pausedays;
-	}
-
-	public void setPausedays(Float pausedays) {
-		this.pausedays = pausedays;
 	}
 }

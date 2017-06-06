@@ -139,7 +139,14 @@ public class SignController {
 		signService.startNewFlow(signid);
 	}
 	
-
+	@RequiresPermissions("sign#html/pendingSign#post")
+	@RequestMapping(name = "签收待处理", path = "html/pendingSign",method=RequestMethod.POST)	
+	public @ResponseBody PageModelDto<SignDto> pendingSign(HttpServletRequest request) throws ParseException {			
+		ODataObj odataObj = new ODataObj(request);
+		PageModelDto<SignDto> signDtos = signService.getPendingSign(odataObj);		
+		return signDtos;
+	}
+	
 	@RequiresPermissions("sign#html/flowDeal#get")
 	@RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
 	public String flowDeal(){
