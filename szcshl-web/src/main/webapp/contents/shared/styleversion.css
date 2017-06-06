@@ -47,30 +47,51 @@ table {/*border-collapse: collapse;*/border-spacing: 0px;cellspacing:0px; cellpa
 input,textarea{ outline:none;}
 
 /****************基础样式结束**************/
-
-/* 页面主色调/布局 */
-.main-header .navbar {
-    margin-left: 430px;
-}
-
-.main-header .logo {
-    width: 430px;
-text-align: left;
-}
-
+/* 头部 */
 .skin-green .main-header .logo {
-    background: none !important;
+    background-color:  #00A65A;
+    color: #000;
+    overflow: visible; 
 }
-
+.skin-green .main-header .logo:hover {
+    background-color:   #00A65A;
+}
+.skin-green .main-header .navbar {
+    background: none;
+   /*  border-bottom: 1px solid #ccc; */
+}
 .skin-green .main-header .navbar {
     background: none;
 }
 
-.main-header {
-    background-color: #00A65A;
-    height:55px;
+.skin-green .main-header .navbar .sidebar-toggle {
+    color: #fff;
+}
+.skin-green .main-header .navbar .nav>li>a {
+    color: #0A0A0A;
+}
+.content-wrapper, .right-side {
+    min-height: 100%;
+    background-color: #FFFFFF;
+    z-index: 800;
 }
 
+.main-header {
+    position: relative;
+    max-height: 100px;
+    z-index: 1030;
+    background: #00A65A;
+}
+
+.main-header .logo .logo-mini {
+    padding-left: 15px;
+}
+.main-header .sidebar-toggle {
+	margin-left: -49px;
+    position: fixed;
+    top: 50px;
+    padding: 15px 19px;
+}
 
 /* 表格 */
 
