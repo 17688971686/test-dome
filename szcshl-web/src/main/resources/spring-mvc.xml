@@ -85,6 +85,7 @@
 	        <map>
 	           <!--  <entry key="xml_escape" value-ref="fmXmlEscape" /> -->
 	            <!-- <entry key="dict" value-ref="dictUtil" /> -->
+	            <entry key="rowspan" value-ref="rowspanDirective"></entry>
 	       </map>
 	    </property>
 	    <property name="defaultEncoding">

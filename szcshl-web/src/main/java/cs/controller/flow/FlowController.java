@@ -168,7 +168,10 @@ public class FlowController {
 			}
 		}
 		//加载环节业务数据
-		if(Validate.isString(flowDto.getCurNode().getActivitiId())){
+		if((Constant.EnumFlow.FINAL_SIGN.getValue().equals(processInstance.getProcessDefinitionKey())
+              || Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(processInstance.getProcessDefinitionKey()))
+                && Validate.isString(flowDto.getCurNode().getActivitiId())){
+
             Map<String,Object> businessMap = new HashMap<>();
 		    switch (flowDto.getCurNode().getActivitiId()){
                 case Constant.FLOW_ZHB_SP_SW://综合部拟办
@@ -199,7 +202,9 @@ public class FlowController {
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();	
 		if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())){
 			resultMsg = signService.dealFlow(processInstance, flowDto);			
-		}		
+		}else if(processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN_XS_FLOW.getValue())){
+            resultMsg = signService.dealXSFlow(processInstance, flowDto);
+        }
 		return resultMsg;
 	}
 

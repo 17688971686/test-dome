@@ -226,11 +226,6 @@
                 templateUrl: rootPath + '/sign/html/list.html',
                 controller: 'signCtrl',
                 controllerAs: 'vm'
-            }).state('flowSign', {
-                url: '/flowSign',
-                templateUrl: rootPath + '/sign/html/flow.html',
-                controller: 'signFlowCtrl',
-                controllerAs: 'vm'
             }).state('signFlowDeal', {
                 url: '/signFlowDeal/:signid/:taskId/:processInstanceId',
                 templateUrl: rootPath + '/sign/html/flowDeal.html',

@@ -8,7 +8,6 @@
 	function signFlow($http,$state) {
 		var service = {
 			startFlow : startFlow,			//启动流程
-			pendingSign:pendingSign,		//签收待处理
 			initBusinessParams:initBusinessParams,	//初始化业务参数
 			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
 			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
@@ -46,74 +45,7 @@
 				success : httpSuccess
 			});
 		}//E_startFlow
-		
-		//S_pendingSign
-		function pendingSign(vm){
-			// Begin:dataSource
-			var dataSource = common.kendoGridDataSource(rootPath+"/sign/html/pendingSign");				
-						
-			var columns = [
-				 {
-                     field: "",
-                     title: "序号",
-                     template: "<span class='row-number'></span>",
-                     width:30
-                 },
-				{
-					field : "projectname",
-					title : "项目名称",
-					width : 200,
-					filterable : true
-				},
-				{
-					field : "projectcode",
-					title : "项目编号",
-					width : 200,
-					filterable : true
-				},
-				{
-					field : "createdDate",
-					title : "创建时间",
-					width : 180,
-					filterable : false,
-					format : "{0:yyyy/MM/dd HH:mm:ss}"
 
-				},
-				{
-					field : "",
-					title : "操作",
-					width : 180,
-					template:function(item){
-						//如果项目已暂停，则停止对流程操作
-						var hideDealButton = false;
-						if(item.folwState && item.folwState == 2){
-							hideDealButton = true;
-						}
-						return common.format($('#columnBtns').html(),item.signid,item.taskId,item.processInstanceId,hideDealButton);
-					}	
-				}
-			];
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				resizable : true,
-				dataBound: function () {  
-                    var rows = this.items();  
-                    var page = this.pager.page() - 1;  
-                    var pagesize = this.pager.pageSize();  
-                    $(rows).each(function () {  
-                        var index = $(this).index() + 1 + page * pagesize;  
-                        var rowLabel = $(this).find(".row-number");  
-                        $(rowLabel).html(index);  
-                    });  
-                } 
-			};					
-		}//E_pendingSign
-		
 		//S_initBusinessParams
 		function initBusinessParams(vm){	
 			if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
@@ -330,22 +262,19 @@
                     response:response,
                     fn:function() {
                         vm.model = response.data;
-                        if(vm.model.workProgramDtoList){
-                            vm.mainwork = {};
+                        if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
                             vm.show_workprogram = true;
-                            if(vm.model.workProgramDtoList.length > 0){
-                                vm.showAssistwork = true;
-                                vm.assistwork = {};
-                                if(vm.model.workProgramDtoList[0].isMain == 9){
-                                    vm.mainwork = vm.model.workProgramDtoList[0];
-                                    vm.assistwork = vm.model.workProgramDtoList[1];
-                                } else{
-                                    vm.assistwork = vm.model.workProgramDtoList[0];
-                                    vm.mainwork = vm.model.workProgramDtoList[1]
-                                }
-                            }else{
-                                vm.mainwork = vm.model.workProgramDtoList[0];
-                            }
+                            vm.model.workProgramDtoList.forEach(function(w,index){
+                            	if(w.isMain == 9){
+                                    vm.showMainwork = true;
+                                    vm.mainwork = {};
+                                    vm.mainwork = w;
+								}else if(w.isMain == 0){
+                                    vm.showAssistwork = true;
+                                    vm.assistwork = {};
+                                    vm.assistwork = w;
+								}
+							});
                         }
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;

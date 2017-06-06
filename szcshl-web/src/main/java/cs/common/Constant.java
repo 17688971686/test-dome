@@ -14,7 +14,7 @@ public class Constant {
 	public static final String FLOW_LINK_SYMBOL = "$";	//流程业务ID和名称关联符号
 	
 	/**
-	 * 流程环节名称
+	 * 项目签收流程环节名称
 	 * @author Administrator
 	 *
 	 */
@@ -37,6 +37,24 @@ public class Constant {
 	public static final String FLOW_MFZR_GD = "MFZR_GD";//第一负责人归档
 	public static final String FLOW_AZFR_SP_GD = "AZFR_SP_GD";//第二负责人审批归档
 	public static final String FLOW_BMLD_QR_GD = "BMLD_QR_GD";//确认归档
+
+	//项目协审流程环节名称
+	public static final String FLOW_XS_ZR = "XS_ZR";// 主任
+	public static final String FLOW_XS_XMQS = "XS_XMQS";// 项目签收
+	public static final String FLOW_XS_ZHBBL = "XS_ZHBBL";// 综合部审批
+	public static final String FLOW_XS_FGLD_SP = "XS_FGLD_SP";// 分管副主任审批
+	public static final String FLOW_XS_BMFB = "XS_BMFB";// 部门分办
+	public static final String FLOW_XS_XMFZR_GZFA = "XS_XMFZR_GZFA";// 项目负责人承办
+	public static final String FLOW_XS_BZSP_GZFA = "XS_BZSP_GZFA";// 部长审批
+	public static final String FLOW_XS_FGLDSP_GZFA = "XS_FGLDSP_GZFA";// 分管副主任审批
+	public static final String FLOW_XS_FW = "XS_FW";// //发文申请
+	public static final String FLOW_XS_BZSP_FW = "XS_BZSP_FW";// 部长审批发文
+	public static final String FLOW_XS_FGLDSP_FW = "XS_FGLDSP_FW";// 分管领导审批发文
+	public static final String FLOW_XS_ZRSP_FW = "XS_ZRSP_FW";// 主任审批发文
+	public static final String FLOW_XS_FZR_GD = "XS_FZR_GD";// 第一负责人归档
+	public static final String FLOW_XS_FZR_SP = "XS_FZR_SP";// 第二负责人审批归档
+	public static final String FLOW_XS_QRGD = "XS_QRGD";// 确认归档
+
 	/**
 	 * 定义一个业务状态
 	 * "0" 表示否或者草稿
@@ -109,7 +127,9 @@ public class Constant {
 	 *
 	 */
 	public static enum EnumFlow{
-	    SIGN("signflow"),NEW_SIGN("newsignflow"),FINAL_SIGN("FINAL_SIGN_FLOW");
+		FINAL_SIGN("FINAL_SIGN_FLOW"),		//项目签收流程
+		SIGN_XS_FLOW("SIGN_XS_FLOW"),		//项目协审流程
+		SIGN("newsignflow");
 
 	    private String value;
 
