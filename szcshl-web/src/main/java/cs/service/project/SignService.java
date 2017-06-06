@@ -30,7 +30,6 @@ public interface SignService{
 
 	public void deleteSigns(String[] signids);
 
-	void startFlow(String signid) throws Exception;
 
 	void stopFlow(String signid);
 
@@ -44,7 +43,7 @@ public interface SignService{
 	//以下是新流程处理
 	void startNewFlow(String signid);
 
-	PageModelDto<SignDto> getPendingSign(ODataObj odataObj);
+	ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception;
 
-	ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception;	
+    ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception;
 }

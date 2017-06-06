@@ -200,7 +200,7 @@ public class Sign extends DomainBase{
 	
 	//暂停工作日
 	@Column(columnDefinition="NUMBER")
-	private BigDecimal pausedays;
+	private Float pausedays;
 	
 	//暂停时间
 	@Column(columnDefinition="DATE")
@@ -783,11 +783,11 @@ public class Sign extends DomainBase{
 		this.ispause = ispause;
 	}
 
-	public BigDecimal getPausedays() {
+	public Float getPausedays() {
 		return pausedays;
 	}
 
-	public void setPausedays(BigDecimal pausedays) {
+	public void setPausedays(Float pausedays) {
 		this.pausedays = pausedays;
 	}
 

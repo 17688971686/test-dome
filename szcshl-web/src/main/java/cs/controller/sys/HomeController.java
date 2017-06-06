@@ -29,16 +29,16 @@ public class HomeController {
 	}
 
 	//初始化流程
-	@RequestMapping(name = "项目签收流程",path = "initProjectFlow",method = RequestMethod.GET)
+	@RequestMapping(name = "流程部署",path = "initProjectFlow",method = RequestMethod.GET)
 	@Transactional
 	public @ResponseBody String initProccess(){	
 		//部署下一个版本
-		logger.info("开始部署项目签收流程...");
-		InputStream in=this.getClass().getClassLoader().getResourceAsStream("");
+		logger.info("开始部署项目协审流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/xieshen.zip");
 		ZipInputStream zipIn=new ZipInputStream(in);
-		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目签收流程").deploy();
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目协审流程").deploy();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
-		logger.info("项目签收流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+		logger.info("项目协审流程成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
 		
 		return "init Project Flow success";
 	}
