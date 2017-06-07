@@ -116,11 +116,14 @@ public class WorkProgramDto extends BaseDto{
 	//部长处理意见
 	private String ministerSuggesttion;
 	
+	private String ministerName;//部长名字
+	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date ministerDate;
 	
 	//中心领导处理意见
 	private String leaderSuggesttion;
+	private String leaderName;//中心领导名字
 	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date leaderDate;
@@ -556,5 +559,23 @@ public class WorkProgramDto extends BaseDto{
 	public void setTitleName(String titleName) {
 		this.titleName = titleName;
 	}
+
+	public String getMinisterName() {
+		return ministerName;
+	}
+
+	public void setMinisterName(String ministerName) {
+		this.ministerName = ministerName;
+	}
+
+	public String getLeaderName() {
+		return leaderName;
+	}
+
+	public void setLeaderName(String leaderName) {
+		this.leaderName = leaderName;
+	}
+	
+	
     
 }

@@ -98,7 +98,18 @@
     <tr>
       <td style="width:150px;" class="text-center">部长审核意见</td>
       <td colspan="5">
-      	{{vm.dispatchDoc.ministerSuggesttion}}
+      <table style="width: 80%;">
+					<tr>
+						<td>{{vm.dispatchDoc.ministerSuggesttion}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.dispatchDoc.ministerName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.dispatchDoc.ministerDate}}</td>
+					</tr>
+				</table>
 	  </td>
     </tr>
      
@@ -106,7 +117,18 @@
     <tr>
       <td style="width:150px;" class="text-center">分管副主任意见</td>
       <td colspan="5">
-      	{{vm.dispatchDoc.viceDirectorSuggesttion}}
+       <table style="width: 80%;">
+					<tr>
+						<td>{{vm.dispatchDoc.viceDirectorSuggesttion}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.dispatchDoc.viceDirectorName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.dispatchDoc.viceDirectorDate}}</td>
+					</tr>
+				</table>
 	  </td>
     </tr>
      
@@ -114,7 +136,18 @@
     <tr>
       <td style="width:150px;" class="text-center">主任签发</td>
       <td colspan="5">
-      	{{vm.dispatchDoc.DirectorIssue}}		
+       <table style="width: 80%;">
+					<tr>
+						<td>{{vm.dispatchDoc.DirectorIssue}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.dispatchDoc.DirectorName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.dispatchDoc.DirectorDate}}</td>
+					</tr>
+				</table>
 	  </td>
     </tr>
     

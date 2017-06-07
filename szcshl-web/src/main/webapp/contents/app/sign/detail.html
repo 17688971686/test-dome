@@ -242,19 +242,53 @@
      <tr>
 	      <td width="15%" class="text-center">综合部拟办意见</td>
 	      <td colspan="3">
-	      {{vm.model.comprehensivehandlesug}}
+	   	    <table style="width: 80%;">
+					<tr>
+						<td> {{vm.model.comprehensivehandlesug}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.model.comprehensiveName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.model.comprehensiveDate}}</td>
+					</tr>
+				</table>
+	     
 		  </td>		      
 	    </tr>
 	    <tr>
 	      <td width="15%" class="text-center">中心领导签批意见</td>
 	      <td colspan="3">
-		  	{{vm.model.leaderhandlesug}}
+	        <table style="width: 80%;">
+					<tr>
+						<td>{{vm.model.leaderhandlesug}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.model.leaderName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.model.leaderDate}}</td>
+					</tr>
+				</table>
 		  </td>		      
 	    </tr>
 	    <tr>
 	      <td width="15%" class="text-center">部长处理意见</td>
 	      <td colspan="3">
-		  	{{vm.model.ministerhandlesug}}
+	       <table style="width: 80%;">
+					<tr>
+						<td>{{vm.model.ministerhandlesug}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.model.ministerName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.model.ministerDate}}</td>
+					</tr>
+				</table>
 		  </td>		      
 	    </tr>
   </tbody>		  

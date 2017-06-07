@@ -69,6 +69,8 @@ private String id;
 	@JSONField(format = "yyyy-MM-dd")
 	private Date ministerDate;
 	
+	private String ministerName;//部长名称
+	
 	//分管副局长核稿意见
 	private String viceDirectorSuggesttion;
 	
@@ -76,11 +78,16 @@ private String id;
 	@JSONField(format = "yyyy-MM-dd")
 	private Date viceDirectorDate;
 	
+	private String viceDirectorName;//分管副局长名称
+	 
+	
 	//局长核稿意见
 	private String directorSuggesttion;
 	
 	//局长核稿日期
 	private String directorDate;
+	
+	private String directorName;//局长名称
 
 	//申报金额
 	private BigDecimal declareValue;
@@ -487,5 +494,31 @@ private String id;
 	public void setIsMainProject(String isMainProject) {
 		this.isMainProject = isMainProject;
 	}
+
+	public String getMinisterName() {
+		return ministerName;
+	}
+
+	public void setMinisterName(String ministerName) {
+		this.ministerName = ministerName;
+	}
+
+	public String getViceDirectorName() {
+		return viceDirectorName;
+	}
+
+	public void setViceDirectorName(String viceDirectorName) {
+		this.viceDirectorName = viceDirectorName;
+	}
+
+	public String getDirectorName() {
+		return directorName;
+	}
+
+	public void setDirectorName(String directorName) {
+		this.directorName = directorName;
+	}
+	
+	
 			
 }

@@ -130,13 +130,31 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(255)")
 	private String comprehensivehandlesug;
 	
+	@Column(columnDefinition="VARCHAR(100)")
+	private String comprehensiveName;//综合部拟办人名称
+	
+	@Column(columnDefinition="DATE")
+	private Date comprehensiveDate;//综合部拟办日期
+	
 	//中心领导审批意见
 	@Column(columnDefinition="VARCHAR(255)")
 	private String leaderhandlesug;
 	
+	@Column(columnDefinition="VARCHAR(100)")
+	private String leaderName;//中心领导名称
+	
+	@Column(columnDefinition="DATE")
+	private Date leaderDate;//中心领导审批日期
+	
 	//部长处理意见
 	@Column(columnDefinition="VARCHAR(255)")
 	private String ministerhandlesug;
+	
+	@Column(columnDefinition="VARCHAR(100)")
+	private String ministerName;//部长名称
+	
+	@Column(columnDefinition="DATE")
+	private Date ministerDate;//部长处理日期
 	
 	//送件人签名
 	@Column(columnDefinition="VARCHAR(16)")
@@ -1400,4 +1418,54 @@ public class Sign extends DomainBase{
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
+
+	public String getComprehensiveName() {
+		return comprehensiveName;
+	}
+
+	public void setComprehensiveName(String comprehensiveName) {
+		this.comprehensiveName = comprehensiveName;
+	}
+
+	public Date getComprehensiveDate() {
+		return comprehensiveDate;
+	}
+
+	public void setComprehensiveDate(Date comprehensiveDate) {
+		this.comprehensiveDate = comprehensiveDate;
+	}
+
+	public String getLeaderName() {
+		return leaderName;
+	}
+
+	public void setLeaderName(String leaderName) {
+		this.leaderName = leaderName;
+	}
+
+	public Date getLeaderDate() {
+		return leaderDate;
+	}
+
+	public void setLeaderDate(Date leaderDate) {
+		this.leaderDate = leaderDate;
+	}
+
+	public String getMinisterName() {
+		return ministerName;
+	}
+
+	public void setMinisterName(String ministerName) {
+		this.ministerName = ministerName;
+	}
+
+	public Date getMinisterDate() {
+		return ministerDate;
+	}
+
+	public void setMinisterDate(Date ministerDate) {
+		this.ministerDate = ministerDate;
+	}
+	
+	
 }

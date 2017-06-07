@@ -178,13 +178,36 @@
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
         <td colspan="5">
-            {{vm.mainwork.ministerSuggesttion}}
-        </td>
+				<table style="width: 80%;">
+					<tr>
+						<td>{{vm.mainwork.ministerSuggesttion}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：{{vm.mainwork.ministerName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.mainwork.ministerDate}}</td>
+					</tr>
+				</table>
+
+			</td>
+        
     </tr>
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
         <td colspan="5">
-            {{vm.mainwork.leaderSuggesttion}}
+     	   <table style="width: 80%;">
+					<tr>
+						<td>{{vm.mainwork.leaderSuggesttion}} </td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.mainwork.leaderName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.mainwork.leaderDate}}</td>
+					</tr>
+				</table>
         </td>
     </tr>
     </tbody>
@@ -369,13 +392,35 @@
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
         <td colspan="5">
-            {{vm.assistwork.ministerSuggesttion}}
+      	  <table style="width: 80%;">
+					<tr>
+						<td>{{vm.assistwork.ministerSuggesttion}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.assistwork.ministerName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.assistwork.ministerDate}}</td>
+					</tr>
+				</table>
         </td>
     </tr>
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
         <td colspan="5">
-            {{vm.assistwork.leaderSuggesttion}}
+           <table style="width: 80%;">
+					<tr>
+						<td>{{vm.assistwork.leaderSuggesttion}} </td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.assistwork.leaderName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.assistwork.leaderDate}}</td>
+					</tr>
+				</table>
         </td>
     </tr>
     </tbody>

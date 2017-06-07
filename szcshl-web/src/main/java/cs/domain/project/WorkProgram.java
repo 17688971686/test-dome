@@ -24,123 +24,123 @@ public class WorkProgram extends DomainBase{
 
 	@Id
 	private String id;
-	
+
 	//标题
 	@Column(columnDefinition="VARCHAR(64)")
 	private String titleName;
-	
+
 	//评审方式
 	@Column(columnDefinition="VARCHAR(20)")
 	private String reviewType;
-	
+
 	//是否单个评审  0:表示合并评审,9:表示单个评审
 	@Column(columnDefinition="VARCHAR(20)")
 	private String isSigle;
-	
+
 	//项目名称
 	@Column(columnDefinition="VARCHAR(256)")
 	private String projectName;
-	
+
 	//来文单位
 	@Column(columnDefinition="VARCHAR(100)")
 	private String sendFileUnit;
-	
+
 	//来文单位联系人
 	@Column(columnDefinition="VARCHAR(20)")
 	private String sendFileUser;
-	
+
 	//建设单位
 	@Column(columnDefinition="VARCHAR(200)")
 	private String buildCompany;
-	
+
 	//编制单位
 	@Column(columnDefinition="VARCHAR(200)")
 	private String designCompany;
-	
+
 	//主管部门ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String mainDeptId;
-	
+
 	//是否有环评
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isHaveEIA;
-	
+
 	//项目类别
 	@Column(columnDefinition="VARCHAR(40)")
 	private String projectType;
-	
+
 	//小类
 	@Column(columnDefinition="VARCHAR(40)")
 	private String projectSubType;
-	
+
 	//行业类别
 	@Column(columnDefinition="VARCHAR(40)")
 	private String industryType;
-	
+
 	//联系人
 	@Column(columnDefinition="VARCHAR(10)")
 	private String contactPerson;
-	
+
 	//联系人手机
 	@Column(columnDefinition="VARCHAR(12)")
 	private String contactPersonPhone;
-	
+
 	//联系人电话
 	@Column(columnDefinition="VARCHAR(12)")
 	private String contactPersonTel;
-	
+
 	//联系人传真
 	@Column(columnDefinition="VARCHAR(12)")
 	private String contactPersonFax;
-	
+
 	//申报建设规模
 	@Column(columnDefinition="VARCHAR(1024)")
 	private String buildSize;
-	
+
 	//申报投资
 	@Column(columnDefinition="NUMBER")
 	private BigDecimal appalyInvestment;
-	
+
 	//申报建设内容
 	@Column(columnDefinition="VARCHAR(2048)")
 	private String buildContent;
-	
+
 	//项目背景
 	@Column(columnDefinition="VARCHAR(2048)")
 	private String projectBackGround;
-	
+
 	//评估部门
 	@Column(columnDefinition="VARCHAR(64)")
 	private String reviewOrgId;
-	
+
 	@Column(columnDefinition="VARCHAR(128)")
 	private String reviewOrgName;
-	
+
 	//第一负责人
 	@Column(columnDefinition="VARCHAR(64)")
 	private String mianChargeUserId;
-	
+
 	@Column(columnDefinition="VARCHAR(64)")
 	private String mianChargeUserName;
-	
+
 	//第二负责人
 	@Column(columnDefinition="VARCHAR(64)")
 	private String secondChargeUserId;
-	
+
 	@Column(columnDefinition="VARCHAR(64)")
 	private String secondChargeUserName;
-	
+
 	//是否有补充函
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isHaveSuppLetter;
-	
+
 	//补充资料函发文日期
 	@Column(columnDefinition="DATE")
 	private Date suppLetterDate;
 	//评审会时间
 	@Column(columnDefinition="DATE")
 	private Date stageTime;
-	
+
 	//评审时间
 	@Column(columnDefinition="VARCHAR(128)")
 	private String workStageTime;
@@ -148,40 +148,48 @@ public class WorkProgram extends DomainBase{
 	//会议地点
 	@Formula("(select m.addr from cs_meeting_room m where m.id = meetingId)")
 	private String meetingAddress;
-	
+
 	@Column(columnDefinition="VARCHAR(128)")
 	private String meetingId;
 	//调研开始时间
 	@Column(columnDefinition="DATE")
 	private Date studyBeginTime;
-	
+
 	//调研结束时间
 	@Column(columnDefinition="DATE")
 	private Date studyEndTime;
-	
+
 	//专家费用
 	@Column(columnDefinition="NUMBER")
 	private BigDecimal expertCost;
-	
+
 	//拟评审重点问题
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String mainPoint;
-	
+
 	//部长处理意见
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String ministerSuggesttion;
-	
+
 	//部长处理日期
 	@Column(columnDefinition="DATE")
 	private Date ministerDate;
-	
+
+	//部长名
+	@Column(columnDefinition="varchar(100)")
+	private String ministerName;
+
 	//中心领导处理意见
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String leaderSuggesttion;
-	
+
 	//中心领导处理日期
 	@Column(columnDefinition="DATE")
 	private Date leaderDate;
+
+	//中心领导名
+	@Column(columnDefinition="varchar(100)")
+	private String leaderName;
 	
 	//标题日期
 	@Column(columnDefinition="DATE")
@@ -191,24 +199,24 @@ public class WorkProgram extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isMain;
 
-    @Column(columnDefinition="varchar(2) ")
-    private String isSelete;    //是否已经抽取专家
+	@Column(columnDefinition="varchar(2) ")
+	private String isSelete;    //是否已经抽取专家
 
-    @Column(columnDefinition="varchar(2) ")
-    private String isComfireResult; //抽取结果是否已经确认
+	@Column(columnDefinition="varchar(2) ")
+	private String isComfireResult; //抽取结果是否已经确认
 
-    @Column(columnDefinition="Integer")
-    private Integer selCount;       //专家抽取次数
+	@Column(columnDefinition="Integer")
+	private Integer selCount;       //专家抽取次数
 	//收文，一对一
 	@ManyToOne
 	@JoinColumn(name="signId")
 	private Sign sign;
 
-    //专家评审方案
+	//专家评审方案
 	@OneToMany(mappedBy="workProgram")
 	private List<ExpertReview> expertReviews;
 
-    //专家抽取条件
+	//专家抽取条件
 	@OneToMany(mappedBy="workProgram")
 	private List<ExpertSelCondition> epSelConditions;
 
@@ -575,39 +583,39 @@ public class WorkProgram extends DomainBase{
 	public void setWorkStageTime(String workStageTime) {
 		this.workStageTime = workStageTime;
 	}
-	
-    public List<ExpertSelCondition> getEpSelConditions() {
-        return epSelConditions;
-    }
 
-    public void setEpSelConditions(List<ExpertSelCondition> epSelConditions) {
-        this.epSelConditions = epSelConditions;
-    }
+	public List<ExpertSelCondition> getEpSelConditions() {
+		return epSelConditions;
+	}
+
+	public void setEpSelConditions(List<ExpertSelCondition> epSelConditions) {
+		this.epSelConditions = epSelConditions;
+	}
 
 
-    public String getIsSelete() {
-        return isSelete;
-    }
+	public String getIsSelete() {
+		return isSelete;
+	}
 
-    public void setIsSelete(String isSelete) {
-        this.isSelete = isSelete;
-    }
+	public void setIsSelete(String isSelete) {
+		this.isSelete = isSelete;
+	}
 
-    public String getIsComfireResult() {
-        return isComfireResult;
-    }
+	public String getIsComfireResult() {
+		return isComfireResult;
+	}
 
-    public void setIsComfireResult(String isComfireResult) {
-        this.isComfireResult = isComfireResult;
-    }
+	public void setIsComfireResult(String isComfireResult) {
+		this.isComfireResult = isComfireResult;
+	}
 
-    public Integer getSelCount() {
-        return selCount;
-    }
+	public Integer getSelCount() {
+		return selCount;
+	}
 
-    public void setSelCount(Integer selCount) {
-        this.selCount = selCount;
-    }
+	public void setSelCount(Integer selCount) {
+		this.selCount = selCount;
+	}
 
 	public String getTitleName() {
 		return titleName;
@@ -617,11 +625,29 @@ public class WorkProgram extends DomainBase{
 		this.titleName = titleName;
 	}
 
-    public List<RoomBooking> getRoomBookings() {
-        return roomBookings;
-    }
+	public List<RoomBooking> getRoomBookings() {
+		return roomBookings;
+	}
 
-    public void setRoomBookings(List<RoomBooking> roomBookings) {
-        this.roomBookings = roomBookings;
-    }
+	public void setRoomBookings(List<RoomBooking> roomBookings) {
+		this.roomBookings = roomBookings;
+	}
+
+	public String getMinisterName() {
+		return ministerName;
+	}
+
+	public void setMinisterName(String ministerName) {
+		this.ministerName = ministerName;
+	}
+
+	public String getLeaderName() {
+		return leaderName;
+	}
+
+	public void setLeaderName(String leaderName) {
+		this.leaderName = leaderName;
+	}
+	
+	
 }

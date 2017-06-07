@@ -14,6 +14,21 @@ import cs.model.sys.OrgDto;
 
 public class SignDto extends BaseDto {
 	
+	private String comprehensiveName;//综合部拟办人名称
+	
+	@JSONField(format = "yyyy-MM-dd")
+	private Date comprehensiveDate;//综合部拟办日期
+	
+	private String leaderName;//中心领导名称
+	
+	@JSONField(format = "yyyy-MM-dd")
+	private Date leaderDate;//中心领导审批日期
+	
+	private String ministerName;//部长名称
+	
+	@JSONField(format = "yyyy-MM-dd")
+	private Date ministerDate;//部长处理日期
+	
 	private String signid;
 	
 	private String filecode;
@@ -1279,4 +1294,54 @@ public class SignDto extends BaseDto {
 	public void setIschangeEstimate(String ischangeEstimate) {
 		this.ischangeEstimate = ischangeEstimate;
 	}
+
+	public String getComprehensiveName() {
+		return comprehensiveName;
+	}
+
+	public void setComprehensiveName(String comprehensiveName) {
+		this.comprehensiveName = comprehensiveName;
+	}
+
+	public Date getComprehensiveDate() {
+		return comprehensiveDate;
+	}
+
+	public void setComprehensiveDate(Date comprehensiveDate) {
+		this.comprehensiveDate = comprehensiveDate;
+	}
+
+	public String getLeaderName() {
+		return leaderName;
+	}
+
+	public void setLeaderName(String leaderName) {
+		this.leaderName = leaderName;
+	}
+
+	public Date getLeaderDate() {
+		return leaderDate;
+	}
+
+	public void setLeaderDate(Date leaderDate) {
+		this.leaderDate = leaderDate;
+	}
+
+	public String getMinisterName() {
+		return ministerName;
+	}
+
+	public void setMinisterName(String ministerName) {
+		this.ministerName = ministerName;
+	}
+
+	public Date getMinisterDate() {
+		return ministerDate;
+	}
+
+	public void setMinisterDate(Date ministerDate) {
+		this.ministerDate = ministerDate;
+	}
+	
+	
 }
