@@ -1,84 +1,96 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/static/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/static/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background: white;">
-	<ol class="breadcrumb">
-		<li><a href="#/">系统管理</a></li>
-		<li class="active">Demo</li>
-	</ol>
-	<div class="well well-sm ">
-		<p class="text-danger ">样式:</p>
-		BootStrap,请参考官方网站
-	</div>
+    <ol class="breadcrumb">
+        <li><a href="#/">系统管理</a></li>
+        <li class="active">Demo</li>
+    </ol>
+    <div class="well well-sm ">
+        <p class="text-danger ">样式:</p>
+        <a class="btn btn-info" href="//v3.bootcss.com/" target="_blank">BootStrap3中文文档</a>
+        <a class="btn btn-info" href="//fontawesome.io/" target="_blank">fontawesome图标</a>
+    </div>
 
-	<div class="well well-sm ">
-		<p class="text-danger ">日期选择：（请参考kendoui）</p>
-		<div style="width: 400px;">
-			<input id="datepicker" />
-		</div>
+    <div class="well well-sm ">
+        <p class="text-danger ">KendoUI:</p>
+        <a class="btn btn-info" href="//www.kendoui.io/kendo-ui/introduction" target="_blank">官方文档</a>
+        <a class="btn btn-info" href="//www.kendoui.io/examples/index.html" target="_blank">官方示例</a>
+    </div>
 
-	</div>
+    <div class="well well-sm ">
+        <p class="text-danger ">日期选择：（请参考kendoui）</p>
+        <div>
+            <input id="datepicker" kendo-date-picker k-format="'yyyy-MM-dd'"/>
+            <input id="datetiempicker" kendo-date-time-picker k-format="'yyyy-MM-dd HH:mm:ss'" />
+        </div>
 
-	<div class="well well-sm">
-		<p class="text-danger ">弹出窗口：（请参考bootstrap）</p>
+    </div>
 
-		<button class="btn btn-sm btn-primary" ng-click="vm.showDialog()">点击</button>
+    <div class="well well-sm">
+        <p class="text-danger ">弹出窗口：（请参考bootstrap）</p>
 
-		<div class="myDialog modal fade" tabindex="-1" role="dialog">
-			<div class="modal-dialog"
-				style="margin: 80px auto; width: 80%; max-width: 400px;">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h4 class="modal-title text-info">提示</h4>
-					</div>
-					<div class="modal-body text-danger">你的内容</div>
-					<div class="modal-footer">
-						<button type="button" ng-click="vm.dialogConfirmSubmit()" class="btn btn-info">确认</button>
-						<button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
-					</div>
-				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-		<!-- /.modal -->
 
-	</div>
+        <button class="btn btn-sm btn-primary" ng-click="vm.showDialog()">点击</button>
 
-	<div class="well well-sm ">
-		<p class="text-danger ">上传：（请参考kendoui）</p>
+        <div class="myDialog modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog"
+                 style="margin: 80px auto; width: 80%; max-width: 400px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title text-info">提示</h4>
+                    </div>
+                    <div class="modal-body text-danger">你的内容</div>
+                    <div class="modal-footer">
+                        <button type="button" ng-click="vm.dialogConfirmSubmit()"
+                                class="btn btn-info">确认
+                        </button>
+                        <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
 
-		<div class="demo-section k-content">
-			<input name="files" id="files" type="file" />
-		</div>
+    </div>
 
-	</div>
-	<div class="well well-sm ">
-		<p class="text-danger ">表单验证：</p>
-		<a href="/contents/libs/jquery-validation/formValidate.png" target="_blank">点击查看</a>
-	</div>
-	<div class="well well-sm">
-		<p class="text-danger ">目前支持的Odata语法(后续会逐步更新)：</p>
-		<div>
-		相等:                 http://localhost/Products?$filter=Category ne 'Toys' <br />
-不相等:               http://localhost/Products?$filter=Category eq 'Toys'<br />
-小于：                http://localhost/Products?$filter=Price lt 10<br />
-大于等于和小于等于：  http://localhost/Products?$filter=Price ge 5 and Price le 15<br />
-包含：                http://localhost/Products?$filter=substringof('zz',Name)<br />
-分页：http://localhost/Products?$skip=20&$top=10 （从20条数据开始，取10条）<br />
-orderby:        http://localhost/Products?$orderby=Price <br />
-orderby desc:   http://localhost/Products?$orderby=Price desc
-		</div>
-	</div>
-	
-	<div class="well well-sm ">
-		<p class="text-danger ">相关技术：</p>
-		hibernate,shiro, activiti 请参考官方文档
-	</div>
+    <div class="well well-sm ">
+        <p class="text-danger ">上传：（请参考kendoui）</p>
+
+        <div class="demo-section k-content">
+            <input name="files" id="files" type="file"/>
+        </div>
+
+    </div>
+    <div class="well well-sm ">
+        <p class="text-danger ">表单验证：</p>
+        <a href="${path}/static/plugin/jquery-validation/formValidate.png" target="_blank">点击查看</a>
+    </div>
+    <div class="well well-sm">
+        <p class="text-danger ">目前支持的Odata语法(后续会逐步更新)：</p>
+        <div>
+            相等: http://localhost/Products?$filter=Category ne 'Toys' <br/>
+            不相等: http://localhost/Products?$filter=Category eq 'Toys'<br/>
+            小于： http://localhost/Products?$filter=Price lt 10<br/>
+            大于等于和小于等于： http://localhost/Products?$filter=Price ge 5 and Price le 15<br/>
+            包含： http://localhost/Products?$filter=substringof('zz',Name)<br/>
+            分页：http://localhost/Products?$skip=20&$top=10 （从20条数据开始，取10条）<br/>
+            orderby: http://localhost/Products?$orderby=Price <br/>
+            orderby desc: http://localhost/Products?$orderby=Price desc
+        </div>
+    </div>
+
+    <div class="well well-sm ">
+        <p class="text-danger ">相关技术：</p>
+        hibernate,shiro, activiti 请参考官方文档
+    </div>
+
 </div>
