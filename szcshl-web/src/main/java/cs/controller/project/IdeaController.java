@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -43,6 +44,14 @@ public class IdeaController {
 			
 			ideaService.createIdea(ideaDto);
 		}
+		System.out.println("删除成功");
+	}
+	
+	@RequiresPermissions("idea##delete")
+	@RequestMapping(name="删除意见", path="", method=RequestMethod.DELETE)
+	@ResponseStatus(value=HttpStatus.NO_CONTENT)
+	public void delete(@RequestParam(required=true) String ideas){
+			ideaService.deleteIdea(ideas);
 	}
 
 }

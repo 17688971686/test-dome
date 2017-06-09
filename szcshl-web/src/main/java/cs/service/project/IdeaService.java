@@ -9,5 +9,7 @@ public interface IdeaService {
 	
 	public List<IdeaDto> get(ODataObj odataObj);
 	public void createIdea(IdeaDto ideaDto);
+	
+	public void deleteIdea(String ideaId);
 
 }
