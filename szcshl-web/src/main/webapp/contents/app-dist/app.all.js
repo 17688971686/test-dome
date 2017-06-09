@@ -19,6 +19,12 @@
                 controller: 'adminCtrl',
                 controllerAs: 'vm'
             })
+            .state('dtasks', {
+                url: '/dtasks',
+                templateUrl: rootPath + '/admin/dtasks.html',
+                controller: 'adminDoingCtrl',
+                controllerAs: 'vm'
+            })
             .state('etasks', {
                 url: '/etasks',
                 templateUrl: rootPath + '/admin/etasks.html',
@@ -226,18 +232,18 @@
                 templateUrl: rootPath + '/sign/html/list.html',
                 controller: 'signCtrl',
                 controllerAs: 'vm'
-            }).state('flowSign', {
-                url: '/flowSign',
-                templateUrl: rootPath + '/sign/html/flow.html',
-                controller: 'signFlowCtrl',
-                controllerAs: 'vm'
             }).state('signFlowDeal', {
                 url: '/signFlowDeal/:signid/:taskId/:processInstanceId',
                 templateUrl: rootPath + '/sign/html/flowDeal.html',
                 controller: 'signFlowDealCtrl',
                 controllerAs: 'vm'
+            }).state('signFlowDetail', {
+                url: '/signFlowDetail/:signid/:taskId/:processInstanceId',
+                templateUrl: rootPath + '/sign/html/signFlowDetail.html',
+                controller: 'signFlowDetailCtrl',
+                controllerAs: 'vm'
             }).state('signDetails', {//详细信息
-                url: '/signDetails/:signid',
+                url: '/signDetails/:signid/:processInstanceId',
                 templateUrl: rootPath + '/sign/html/signDetails.html',
                 controller: 'signDetailsCtrl',
                 controllerAs: 'vm'
@@ -273,7 +279,15 @@
             	controllerAs: 'vm'
         	})
         	//end#fileRecord
-        	
+            //begin#assistMng
+            .state('assistPlan', {
+                url: '/assistPlan',
+                templateUrl: rootPath + '/assistPlan/html/manager.html',
+                controller: 'assistPlanCtrl',
+                controllerAs: 'vm'
+            })
+            //begin#assistMng
+
         	//start #officeUser
         	.state('officeUserList', {
                 url: '/officeUserList',
@@ -372,6 +386,24 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('adminDoingCtrl', admin);
+
+    admin.$inject = ['$location','adminSvc']; 
+
+    function admin($location, adminSvc) {
+        var vm = this;
+        vm.title = '在办任务';
+             
+        activate();
+        function activate() {
+        	adminSvc.dtasksGrid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
     angular.module('app').controller('adminEndCtrl', admin);
 
     admin.$inject = ['$location','adminSvc']; 
@@ -398,7 +430,8 @@
 		
 		var service = {
 			gtasksGrid : gtasksGrid,		//个人待办
-            etasksGrid : etasksGrid			//个人办结
+            etasksGrid : etasksGrid,		//个人办结
+            dtasksGrid : dtasksGrid,        //在办任务
 		}
 		return service;	
 
@@ -486,7 +519,7 @@
 					width : 180,
 					template:function(item){
 						//项目签收流程，则跳转到项目签收流程处理野人
-						if(item.flowKey=="FINAL_SIGN_FLOW"){
+						if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
 							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
 						}else{
 							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
@@ -623,8 +656,701 @@
                 }
             };
         }//E_etasksGrid
+
+        //S_dtasksGrid
+        function dtasksGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type : 'odata',
+                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/doingtasks"),
+                schema : {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model:{
+                        id : "id"
+                    }
+                },
+                serverPaging : true,
+                serverSorting : true,
+                serverFiltering : true,
+                pageSize : 10,
+                sort : {
+                    field : "createdDate",
+                    dir : "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width:30
+                },
+                {
+                    field: "businessName",
+                    title: "任务名称",
+                    filterable : false,
+                    width:180
+                },
+                {
+                    field: "flowName",
+                    title: "所属流程",
+                    width: 180,
+                    filterable : false,
+                },
+                {
+                    field: "taskName",
+                    title: "当前环节",
+                    width: 180,
+                    filterable : false,
+                },
+                {
+                    field: "createDate",
+                    title: "接收时间",
+                    width: 150,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: 80,
+                    filterable : false,
+                    template:function(item){
+                        if(item.isSuspended){
+                            return '<span style="color:orange;">已暂停</span>';
+                        }else{
+                            return '<span style="color:green;">进行中</span>';
+                        }
+                    }
+                },
+                {
+                    field : "",
+                    title : "操作",
+                    width : 180,
+                    template:function(item){
+                        //项目签收流程，则跳转到项目签收流程处理野人
+                        if(item.flowKey=="FINAL_SIGN_FLOW"){
+                            return common.format($('#columnBtns').html(),"signFlowDetail",item.businessKey,item.taskId,item.processInstanceId);
+                        }else{
+                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+                        }
+                    }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource : common.gridDataSource(dataSource),
+                filterable : common.kendoGridConfig().filterable,
+                pageable : common.kendoGridConfig().pageable,
+                noRecords : common.kendoGridConfig().noRecordMessage,
+                columns : columns,
+                resizable : true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+        }//E_dtasksGrid
+
 	}
-			
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('assistPlanCtrl', assistPlan);
+
+    assistPlan.$inject = ['$location','$state','assistSvc'];
+
+    function assistPlan($location,$state,assistSvc) {
+        var vm = this;
+        vm.model = {};							//创建一个form对象
+        vm.filterModel = {};                    //filter对象
+        vm.title = '协审计划管理';        		//标题
+        vm.splitNumArr = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        vm.planSign = {};                       //计划收文关联对象
+        vm.assistSign = new Array();
+
+        active();
+        function active(){
+            assistSvc.initPlanPage(vm);
+
+        }
+
+        //数据过滤
+        vm.filterSign = function(item){
+            var isMatch = true;
+            if(!angular.isUndefined(item)){
+                if(!angular.isUndefined(vm.filterModel.filterFilecode)){
+                     if((item.filecode).indexOf(vm.filterModel.filterFilecode) == -1){
+                         isMatch = false;
+                     }
+                }
+                if(isMatch){
+                    if(!angular.isUndefined(vm.filterModel.filterProjectCode)){
+                        if((item.projectcode).indexOf(vm.filterModel.filterProjectCode) == -1){
+                            isMatch = false;
+                        }
+                    }
+                }
+                if(isMatch){
+                    if(!angular.isUndefined(vm.filterModel.filterProjectName)){
+                        if((item.projectname).indexOf(vm.filterModel.filterProjectName) == -1){
+                            isMatch = false;
+                        }
+                    }
+                }
+                if(isMatch){
+                    if(!angular.isUndefined(vm.filterModel.filterBuiltName)){
+                        if(angular.isUndefined(item.builtcompanyName)){
+                            isMatch = false;
+                        }
+                        if(isMatch && (item.builtcompanyName).indexOf(vm.filterModel.filterBuiltName) == -1){
+                            isMatch = false;
+                        }
+                    }
+                }
+                if(isMatch){
+                    return item;
+                }
+            }
+        }
+
+        //重置拆分值
+        vm.initSplit = function(typeName){
+            if(vm.planSign.assistType == typeName){
+                if(!angular.isUndefined(vm.planSign.spliNum)){
+                    vm.planSign.spliNum = 0;
+                }
+            }
+        }
+
+        //挑选项目
+        vm.affirmSign = function () {
+            var isCheckSign = $("input[name='selASTSign']:checked");
+            if (isCheckSign.length < 1) {
+                common.alert({
+                    vm : vm,
+                    msg : "请选择要挑选的项目"
+                })
+            }else{
+                if(isCheckSign.length > 1){
+                    if(vm.planSign.assistType == '合并项目'){
+                        common.alert({
+                            vm : vm,
+                            msg : "合并项目要先挑选一个主项目，再挑选次项目！"
+                        })
+                    }else{
+                        common.alert({
+                            vm : vm,
+                            msg : "独立项目，每次只能选择一个！"
+                        })
+                    }
+                    return ;
+                }else{
+                    vm.model.signId = isCheckSign[0].value;
+                    vm.model.assistType = vm.planSign.assistType;
+                    vm.model.isSignle = vm.planSign.assistType == '合并项目'?false:true;
+                    vm.model.splitNum = vm.planSign.spliNum;
+                    vm.assistSign.forEach(function (st,index) {
+                        if(st.signid == vm.model.signId){
+                            vm.model.projectName = st.projectname;
+                        }
+                    });
+                    assistSvc.saveAssistPlan(vm);
+                }
+            }
+        }
+
+        //删除操作
+        vm.doDelete  = function(){
+            alert("功能在开发中");
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('assistUnitUserCtrl', assistUnitUser);
+
+    assistUnitUser.$inject = ['$location', 'assistUnitUserSvc'];
+
+    function assistUnitUser($location, assistUnitUserSvc) {
+        var vm = this;
+        vm.title = '协审单位用户';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    assistUnitUserSvc.deleteAssistUnitUser(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        activate();
+        function activate() {
+            assistUnitUserSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('assistUnitUserEditCtrl', assistUnitUser);
+
+    assistUnitUser.$inject = ['$location', 'assistUnitUserSvc', '$state'];
+
+    function assistUnitUser($location, assistUnitUserSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加协审单位用户';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新协审单位用户';
+        }
+
+        vm.create = function () {
+            assistUnitUserSvc.createAssistUnitUser(vm);
+        };
+        vm.update = function () {
+            assistUnitUserSvc.updateAssistUnitUser(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                assistUnitUserSvc.getAssistUnitUserById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('assistUnitUserSvc', assistUnitUser);
+
+    assistUnitUser.$inject = ['$http'];
+
+    function assistUnitUser($http) {
+        var url_assistUnitUser = rootPath + "/assistUnitUser", url_back = '#/assistUnitUserList';
+        var service = {
+            grid: grid,
+            getAssistUnitUserById: getAssistUnitUserById,
+            createAssistUnitUser: createAssistUnitUser,
+            deleteAssistUnitUser: deleteAssistUnitUser,
+            updateAssistUnitUser: updateAssistUnitUser
+        };
+
+        return service;
+
+        // begin#updateAssistUnitUser
+        function updateAssistUnitUser(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_assistUnitUser,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteAssistUnitUser
+        function deleteAssistUnitUser(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_assistUnitUser,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createAssistUnitUser
+        function createAssistUnitUser(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_assistUnitUser,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getAssistUnitUserById
+        function getAssistUnitUserById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/assistUnitUser/html/findById",
+                params:{id:vm.id}
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        // begin#grid
+        function grid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_assistUnitUser),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "id",
+                    title: "id",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "userName",
+                    title: "userName",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "phoneNum",
+                    title: "phoneNum",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "position",
+                    title: "position",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "assistUnit",
+                    title: "assistUnit",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.id + "')", item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }// end fun grid
+
+    }
+})();
+(function() {
+	'use strict';
+	
+	angular.module('app').factory('assistSvc', assist);
+
+    assist.$inject = ['$http','$state'];
+
+	function assist($http,$state) {
+		var service = {
+            initPlanPage : initPlanPage,						//初始化计划方案表
+            saveAssistPlan : saveAssistPlan,                    //保存协审计划
+		};
+		return service;
+
+        function getPlanColumns(){
+            var columns = [
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field : "planName",
+                    title : "协审计划名称",
+                    width : 100,
+                    filterable : false
+                },
+                {
+                    field : "reportTime",
+                    title : "报审时间",
+                    width : 50,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field : "drawTime",
+                    title : "抽签时间",
+                    width : 100,
+                    filterable : false
+                },
+                {
+                    field : "createdBy",
+                    title : "创建人员",
+                    width : 100,
+                    filterable : false
+                },
+                {
+                    field : "createdDate",
+                    title : "记录生成时间",
+                    width : 100,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                }
+            ];
+            return columns;
+        }
+		//S_initPlanPage
+		function initPlanPage(vm){
+            //1、查找正在办理的项目概算流程
+            var httpOptions = {
+                method : 'get',
+                url : rootPath+"/sign/findAssistSign",
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.assistSign = response.data;
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+            //2、初始化grid
+            var  dataSource = common.kendoGridDataSource(rootPath+"/assistPlan/findByOData",$("#searchform"));
+            var  dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+
+            // End:column
+            vm.gridOptions = {
+                dataSource : common.gridDataSource(dataSource),
+                filterable : common.kendoGridConfig().filterable,
+                pageable : common.kendoGridConfig().pageable,
+                noRecords : common.kendoGridConfig().noRecordMessage,
+                columns : getPlanColumns(),
+                dataBound:dataBound,
+                resizable : true
+            };
+
+		}//E_initPlanPage
+
+        //S_saveAssistPlan
+        function saveAssistPlan(vm){
+            var url = rootPath+"/assistPlan";
+            if(vm.model.id){
+                url += "/addSignInfo";
+            }
+            var httpOptions = {
+                method : 'post',
+                url : url,
+                data : vm.model
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.iscommit = false;
+                        common.alert({
+                            vm:vm,
+                            msg:"操作成功！",
+                            closeDialog:true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+        }//E_saveAssistPlan
+	}		
 })();
 (function () {
 	'use strict';
@@ -1562,51 +2288,46 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('demoCtrl', demo);
+    angular.module('app').controller('demoCtrl', demo);
 
-    demo.$inject = ['$location','demoSvc']; 
+    demo.$inject = ['$location', 'demoSvc'];
 
     function demo($location, demoSvc) {
         /* jshint validthis:true */
-    	var vm = this;
+        var vm = this;
         vm.title = '';
-        
-        
-        vm.showDialog=function(){
-        	
-        	 $('.myDialog').modal({
-                 backdrop: 'static',
-                 keyboard:false
-             });
+
+        vm.showDialog = function () {
+
+            $('.myDialog').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
         }
-        
-        function datetimePicker(){
-        	$("#datepicker").kendoDatePicker({
-        		culture:'zh-CN'
-        	});
+
+        // function datetimePicker() {
+            // $("#datepicker").kendoDatePicker();
+            // $("#datetiempicker").kendoDateTimePicker();
+        // }
+
+        function upload() {
+            $("#files").kendoUpload({
+                async: {
+                    saveUrl: rootPath + "/demo/save",
+                    removeUrl: rootPath + "/demo/remove",
+                    autoUpload: true
+                }
+            });
         }
-        
-        function upload(){
-        	 $("#files").kendoUpload({
-                 async: {
-                     saveUrl: "/demo/save",
-                     removeUrl: "/demo/remove",
-                     autoUpload: true
-                 }
-             });
-        }
-       
-       
+
+
         activate();
         function activate() {
-        	datetimePicker();
-        	upload();
+            // datetimePicker();
+            upload();
         }
     }
 })();
-<<<<<<< Updated upstream
 
 (function() {
 	'use strict';
@@ -1675,6 +2396,829 @@
 		}
 
 	}
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('deptCtrl', dept);
+
+    dept.$inject = ['$location', 'deptSvc'];
+
+    function dept($location, deptSvc) {
+        var vm = this;
+        vm.title = '处室管理';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    deptSvc.deleteDept(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+        
+        vm.queryDept = function(){
+        	deptSvc.queryDept(vm);
+        }
+        activate();
+        function activate() {
+            deptSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('deptEditCtrl', dept);
+
+    dept.$inject = ['$location', 'deptSvc', '$state'];
+
+    function dept($location, deptSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '编辑处室';
+        vm.isuserExist = false;
+        vm.deptId = $state.params.deptId;
+        if (vm.deptId) {
+            vm.isUpdate = true;
+            vm.title = '更新处室';
+        }
+
+        vm.create = function () {
+            deptSvc.createDept(vm);
+        };
+        vm.update = function () {
+            deptSvc.updateDept(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                deptSvc.getDeptById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('deptSvc', dept);
+
+    dept.$inject = ['$http'];
+
+    function dept($http) {
+        var url_dept = rootPath + "/dept", url_back = '#/listDept';
+        var service = {
+            grid: grid,
+            getDeptById: getDeptById,
+            createDept: createDept,
+            deleteDept: deleteDept,
+            updateDept: updateDept,
+            queryDept:queryDept,
+        };
+
+        return service;
+        function queryDept(vm){
+        	vm.gridOptions.dataSource.read();	
+        }
+        // begin#updateDept
+        function updateDept(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                var httpOptions = {
+                    method: 'put',
+                    url: url_dept,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } 
+        }
+
+        // begin#deleteDept
+        function deleteDept(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_dept,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createDept
+        function createDept(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_dept,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getDeptById
+        function getDeptById(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/dept/html/findById",
+                params:{deptId:vm.deptId}
+            };
+            var httpSuccess = function success(response) {
+                if(response.data.offices){
+                	vm.offices ={};
+                	vm.offiecs = response.data.offices;
+                }
+                vm.model = response.data;
+               // console.log(vm.model);
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        
+        
+        // begin#grid
+        function grid(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_dept+"/fingByOData",$("#formDept")),
+                schema: common.kendoGridConfig().schema({
+                    id: "deptId",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            
+            //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
+            
+            // Begin:column
+            var columns = [
+            	
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.deptId)
+                    },
+                    filterable: false,
+                    width: 20,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {  
+ 				    field: "rowNumber",  
+ 				    title: "序号",  
+ 				    width: 30,
+ 				    filterable : false,
+ 				    template: "<span class='row-number'></span>"  
+ 				 }
+ 				,
+                {
+                    field: "deptName",
+                    title: "处室名称",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "deptUserName",
+                    title: "联系人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "address",
+                    title: "地址",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "deptType",
+                    title: "类型",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "状态",
+                    width: 100,
+                    filterable: false,
+                    template : function(item) {
+						if(item.status){
+							if(item.status == 5){
+								return "正常"
+							}else if(item.status == 7){
+								return "已删除"
+							}
+						}else{
+							return " "
+						}
+					}
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.deptId + "')", item.deptId,item.deptId);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+            	dataBound :dataBound,
+                resizable: true
+            };
+
+        }// end fun grid
+
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('deptOfficeUserCtrl', deptOfficeUser);
+
+    deptOfficeUser.$inject = ['$location','$state','deptSvc','deptOfficeUserSvc'];
+
+    function deptOfficeUser($location,$state,deptSvc, deptOfficeUserSvc) {
+        var vm = this;
+        vm.title = '办事处人员列表';
+        vm.id=$state.params.deptId;
+        vm.showAddUserDialog = function (){
+        	$('.addUser').modal({
+                backdrop: 'static',
+                keyboard:false
+            });
+        	 vm.deptOfficeGrid.dataSource.read();
+        }
+        vm.closeAddUserDialog=function(){
+        	$('.addUser').modal('hide');		
+        	
+        }
+        vm.addOfficeUser = function(officeId){
+        	deptOfficeUserSvc.addOfficeUser(vm,officeId);
+        }
+        
+        vm.remove = function (officeId) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    deptOfficeUserSvc.deletedeptOfficeUser(vm, officeId);
+                }
+            });
+        }
+        vm.removes = function () {
+            var selectIds = common.getKendoCheckId('.deptOfficeGrid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.remove(idStr);
+            }
+        };
+        
+      
+        activate();
+        function activate() {
+            deptOfficeUserSvc.grid(vm);
+            deptOfficeUserSvc.deptOfficeGrid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('deptOfficeUserSvc', dept);
+
+    dept.$inject = ['$http'];
+
+    function dept($http) {
+        var url_dept = rootPath + "/dept", url_back = '#/deptList';
+        var url_deptOfficeUsers =rootPath+"/dept/getDeptOfficeUsers";		//在办事处成员
+        var url_deptNotInOfficeUser =rootPath+"/dept/NotInoDeptfficeUsers";	//不在办事处成员
+        var service = {
+            grid: grid,									//办事处列表
+            getdeptById: getdeptById,
+            createdept: createdept,
+            deletedeptOfficeUser: deletedeptOfficeUser,  //移除成员
+            updatedept: updatedept,
+            getDepts:getDepts,						     //获取所有办事处
+            deptOfficeGrid :deptOfficeGrid,              //办事处人员列表
+            addOfficeUser:addOfficeUser,					     //添加成员
+        };
+
+        return service;
+        //start# 继续添加成员
+        function addOfficeUser(vm,officeId){
+        	 var httpOptions = {
+                     method: 'post',
+                     url:rootPath+"/dept/addOfficeUser",
+                     params:{
+                     	deptId:vm.id,
+                     	officeId: officeId
+                     }                
+                 }
+                 
+                 var httpSuccess = function success(response) {              
+                     common.requestSuccess({
+     					vm:vm,
+     					response:response,
+     					fn:function () {
+     						vm.deptOfficeGrid.dataSource.read();
+     	                    vm.gridOptions.dataSource.read();	                   
+     	                }					
+     				});
+                 }
+                 common.http({
+     				vm:vm,
+     				$http:$http,
+     				httpOptions:httpOptions,
+     				success:httpSuccess
+     			});
+        }
+        //end# 添加成员
+        
+        //start 获取所有办事处
+        function getDepts(vm){
+        	var httpOptions = {
+                    method: 'get',
+                    url: common.format(url_dept + "/getDepts")
+                }
+                var httpSuccess = function success(response) {
+                    vm.depts = {};
+                    vm.depts = response.data;
+//                    console.log(vm.depts);
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        	
+        }
+        //end 获取所有办事处
+        
+        // begin#updatedept
+        function updatedept(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_dept,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deletedeptOfficeUser
+        function deletedeptOfficeUser(vm, officeId) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url:rootPath+"/dept/deleteOfficeUsers",
+               params:{
+            	   deptId:vm.id,
+            	   officeId:officeId
+            
+               }
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createdept
+        function createdept(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_dept,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getdeptById
+        function getdeptById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/dept/html/findById",
+                params:{officeID:vm.officeID}
+            };
+            var httpSuccess = function success(response) {
+            	if(response.data.dept){
+					vm.depts = {}
+					//vm.depts = response.data.depts;
+					//console.log(vm.depts);
+					
+				}
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        // begin#查看人员列表
+        function deptOfficeGrid(vm) {
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_deptNotInOfficeUser+"?deptId="+vm.id),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.officeID)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                
+                {
+                    field: "officeUserName",
+                    title: "办事处联系人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "officePhone",
+                    title: "电话",
+                    width: 100,
+                    filterable: false
+                },
+               
+                {
+                    field: "officeDesc",
+                    title: "描述",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#allUserGridBtns').html(),
+                            "vm.addOfficeUser('" + item.officeID + "')", item.officeID);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.deptOfficeGrid = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }// end fun 查看人员列表
+        
+        //start 办事处列表
+        function grid(vm) {
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_deptOfficeUsers+"?deptId="+vm.id),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.officeID)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+               
+                {
+                    field: "officeUserName",
+                    title: "办事处联系人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "officePhone",
+                    title: "电话",
+                    width: 100,
+                    filterable: false
+                },
+               
+                {
+                    field: "officeDesc",
+                    title: "描述",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.remove('" + item.officeID + "')", item.officeID);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }// end 办事处列表
+
+    }
 })();
 (function () {
     'use strict';
@@ -1784,8 +3328,6 @@
     
     
 })();
-=======
->>>>>>> Stashed changes
 
 (function() {
 	'use strict';
@@ -2259,6 +3801,25 @@
         	}
         }
         
+       /* if(vm.dispatchDoc.dispatchWay=="1"||vm.dispatchDoc.isMainProject=="0"){
+        	vm.dispatchDoc.isRelated="否";
+        }*/
+        
+        
+        vm.isSelect=function(){
+        	console.log(vm.dispatchDoc.dispatchWay);
+        	if(vm.dispatchDoc.dispatchWay=="1"){
+        		vm.dispatchDoc.isRelated="否";
+        	}
+        }
+        
+        vm.isrelated=function(){
+        	vm.dispatchDoc.isRelated="是";
+        }
+        
+        vm.isrelated2=function(){
+        	vm.dispatchDoc.isRelated="否";
+        }
         
         //打开合并页面
         vm.gotoMergePage=function(){
@@ -2780,16 +4341,38 @@
         vm.title = '专家信息录入';
         vm.isuserExist=false;
         vm.isHide=true;
-        vm.id = $state.params.expertID;     
-        
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新专家';
-            vm.isHide=false;
-            vm.expertID=vm.id;
-            expertSvc.getExpertById(vm);
+        vm.expertID = $state.params.expertID;
+
+        activice();
+        function activice(){
+            if (vm.expertID) {
+                vm.isUpdate = true;
+                vm.title = '更新专家';
+                vm.isHide=false;
+                expertSvc.getExpertById(vm);
+            }
         }
-        
+
+        vm.showUploadWin = function(){
+            if(vm.model.expertID){
+                $("#uploadWin").kendoWindow({
+                    width : "660px",
+                    height : "360px",
+                    title : "上传头像",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+            }else{
+                common.alert({
+                    vm : vm,
+                    msg : "先保存数据在执行操作！"
+                })
+            }
+
+        }
+
         vm.create=function(){
         	expertSvc.createExpert(vm);
         }
@@ -2887,7 +4470,8 @@
 			repeatGrid : repeatGrid,		//重复专家查询
 			updateAudit : updateAudit,		//专家评审
 			toAudit : toAudit,				//由个状态回到审核状态
-			auditTo : auditTo				//由审核状态去到各个状态
+			auditTo : auditTo,				//由审核状态去到各个状态
+            initUpload : initUpload,        //初始化附件上传
 		};
 		return service;				
 		
@@ -2982,7 +4566,7 @@
 						vm : vm,
 						response : response,
 						fn : function() {
-							vm.model.expertID=response.data.expertID;						
+							vm.model.expertID = response.data.expertID;
 							vm.isUpdate=true;
 							vm.showBt=true;	
 							vm.isSubmit = false;	
@@ -3010,7 +4594,7 @@
 				method : 'get',
 				url : url_expert+"/findById",
 				params:{
-					id:vm.id
+					id:vm.expertID
 				}
 			}
 			var httpSuccess = function success(response) {
@@ -3023,7 +4607,9 @@
 				if(response.data.project && response.data.project.length > 0){
 					vm.projectkHistory = true;
 					vm.project=response.data.project;					
-				}											
+				}
+                initUpload(vm);
+                $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
 			} 
 			common.http({
 				vm : vm,
@@ -3478,7 +5064,28 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//end updateAudit				
+		}//end updateAudit
+
+        //S_initUpload
+        function initUpload(vm){
+            var projectfileoptions = {
+                language : 'zh',
+                allowedPreviewTypes : ['image'],
+                allowedFileExtensions : [ 'jpg', 'png', 'gif' ],
+                maxFileSize : 2000,
+                showRemove: false,
+                uploadUrl:rootPath + "/expert/uploadPhoto",
+                uploadExtraData:{expertId:vm.model.expertID}
+            };
+            $("#expertphotofile").fileinput(projectfileoptions).on("filebatchselected", function(event, files){
+
+            }).on("fileuploaded", function(event, data) {
+                $("#expertPhotoSrc").removeAttr("src");
+                $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
+            });
+        }//E_initUpload
+
+
 	}
 })();
 (function() {
@@ -5245,6 +6852,12 @@
                                 vm.BM_FB = true;
                                 vm.users = vm.flow.businessMap.users;
                             }
+                            //协审分管领导审批
+                            if(vm.flow.businessMap.xsOrgs){
+                                vm.businessTr = true;
+                                vm.XS_FGLD_SP_SW = true;
+                                vm.xsOrgs = vm.flow.businessMap.xsOrgs;
+                            }
                         }
 						signFlowSvc.initBusinessParams(vm);
 					}
@@ -5707,9 +7320,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('meetingCtrl', meeting);
+    angular.module('app').controller('meetingCtrl', meeting);
 
     meeting.$inject = ['$location','meetingSvc']; 
 
@@ -5717,10 +7328,8 @@
         /* jshint validthis:true */
     	var vm = this;
         vm.title = '会议室列表';
-        
 
-        vm.del = function (id) {        	
-        	
+        vm.del = function (id) {
              common.confirm({
             	 vm:vm,
             	 title:"",
@@ -5733,7 +7342,6 @@
         }
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
-        	
             if (selectIds.length == 0) {
             	common.alert({
                 	vm:vm,
@@ -5753,6 +7361,7 @@
         vm.queryMeeting = function(){
         	meetingSvc.queryMeeting(vm);
         }
+
         activate();
         function activate() {
             meetingSvc.grid(vm);
@@ -8493,7 +10102,6 @@
 		}
 		//E_添加会议室预定
 		
-<<<<<<< Updated upstream
 		//start 初始化会议预定页面
 		function initRoom(vm){
 			var dataSource = new kendo.data.SchedulerDataSource({
@@ -8512,7 +10120,8 @@
 					  	url
 					  ).success(function(data) {  
 						  options.success(data.value);
-					  }).error(function(data) {  
+					  }).error(function(data) {
+					  		console.log(data);
 						  console.log("查询数据失败！");
 					  });  
 				  },
@@ -8765,6 +10374,98 @@
 })();
 
 
+(function() {
+	'use strict';
+
+	angular.module('app').factory('ideaSvc', idea);
+
+	idea.$inject = [ '$http','$compile' ];	
+	function idea($http,$compile) {	
+			
+		var service = {
+				getIdea:getIdea,	//获取常用意见
+				ideaEditWindow:ideaEditWindow, //弹出审批意见编辑框
+				saveCommonIdea:saveCommonIdea, //保存常用意见
+				deleteCommonIdea:deleteCommonIdea  //删除常用意见
+				
+		};		
+		return service;	
+		
+		//begin getIdea
+		
+		function getIdea(vm){
+			var httpOptions={
+					method:'get',
+					url:rootPath+"/idea"
+			}
+			
+			var httpSuccess=function success(response){
+				vm.commonIdeas=response.data;
+			}
+			
+			common.http({
+	              vm:vm,
+	              $http:$http,
+	              httpOptions:httpOptions,
+	              success:httpSuccess
+	          });
+			
+		}
+		//end  getIdea
+		
+		 //begin ideaEditWindow
+        function ideaEditWindow(vm){
+        	var ideaEditWindow=$("#ideaWindow");
+        	ideaEditWindow.kendoWindow({
+        		width:"50%",
+        		height:"80%",
+        		title:"意见选择",
+        		visible:false,
+        		modal:true,
+        		closable:true,
+        		actions:["Pin","Minimize","Maximize","close"]
+        	}).data("kendoWindow").center().open();
+        	
+        }//end  ideaEditWindow
+        
+        
+        //begin  saveCommonIdea
+      function saveCommonIdea(vm){
+    	  
+    	  var httpOptions={
+    			  method:'post',
+    			  url:rootPath+"/idea",
+    			  headers:{
+                      "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                   },
+    			  dataType : "json",
+    			  data:angular.toJson(vm.commonIdeas)
+    	  }
+    	  var httpSuccess=function success(response){
+    		  
+    	  }
+    	  
+    	  common.http({
+              vm:vm,
+              $http:$http,
+              httpOptions:httpOptions,
+              success:httpSuccess
+          });
+    	  
+        	
+        }//end  saveCommonIdea
+      
+      //begin  deleteCommonIdea
+      function deleteCommonIdea(vm){
+    	  var isCheck=$("input[name='ideaCheck']")
+      }
+      //end   deleteCommonIdea
+		
+	}
+	
+	
+	
+})();
 (function () {
     'use strict';
 
@@ -8884,344 +10585,12 @@
               })
          }
          //************************** S 以下是新流程处理js **************************//
-=======
-		
-		
-		
-		
-
-	}
-	
-	
-	
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('roomCountCtrl', roomCount);
-
-    roomCount.$inject = ['$location','roomCountSvc']; 
-
-    function roomCount($location, roomCountSvc) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '预定会议统计列表';
-        
-        vm.queryRoomCount = function(){
-        	roomCountSvc.queryRoomCount(vm);
-        }
-        vm.del = function (id) {        	
-        	
-             common.confirm({
-            	 vm:vm,
-            	 title:"",
-            	 msg:"确认删除数据吗？",
-            	 fn:function () {
-                  	$('.confirmDialog').modal('hide');             	
-                    roomCountSvc.deleteroomCount(vm,id);
-                 }
-             })
-        }
-        vm.dels = function () {     
-        	var selectIds = common.getKendoCheckId('.grid');
-        	//alert(selectIds.length);
-            if (selectIds.length == 0) {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                	
-                });
-            } else {
-            	var ids=[];
-                for (var i = 0; i < selectIds.length; i++) {
-                	ids.push(selectIds[i].value);
-				}  
-                var idStr=ids.join(',');
-                vm.del(idStr);
-            }   
-       }
-        activate();
-        function activate() {
-            roomCountSvc.grid(vm);
-            roomCountSvc.roomList(vm);
-            roomCountSvc.findAllOrg(vm);
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('roomCountSvc', roomCount);
-
-	roomCount.$inject = [ '$http','$compile' ];	
-	function roomCount($http,$compile) {	
-		var url_roomCount = rootPath +"/roomCount";
-		var url_room = rootPath + "/room";
-		var url_user = rootPath + "/user";
-		var url_back = '#/roomCount';
-		var url_user=rootPath +'/user';
-			
-		var service = {
-			grid : grid,
-			queryRoomCount:queryRoomCount,//查询
-			roomList : roomList,
-			findAllOrg:findAllOrg,//查询部门列表
-			
-		};		
-		return service;	
-		
-		function queryRoomCount(vm){
-			vm.gridOptions.dataSource.read();
-		}
-		
-		//S_查询部门列表
-		function findAllOrg(vm){
-			var httpOptions = {
-					method: 'get',
-					url: common.format(url_user + "/getOrg")
-			}
-			var httpSuccess = function success(response) {
-				vm.orglist = {};
-				vm.orglist = response.data;
-			}
-			common.http({
-				vm: vm,
-				$http: $http,
-				httpOptions: httpOptions,
-				success: httpSuccess
-			});
-		}
-		//E_查询部门列表
-		
-		//S_查询所有会议室名称
-		function roomList(vm){
-			
-			var httpOptions = {
-					method: 'get',
-					url: common.format(url_room + "/roomNamelist")
-			}
-			var httpSuccess = function success(response) {
-				vm.roomlists = {};
-				vm.roomlists = response.data;
-			}
-			common.http({
-				vm: vm,
-				$http: $http,
-				httpOptions: httpOptions,
-				success: httpSuccess
-			});
-			
-		}
-		//E_查询所有会议室名称
-		
-		//S_giid
-		function grid(vm) {
-			
-			// Begin:dataSource
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_room+"/fingByOData",$("#roomCountform")),
-				schema : common.kendoGridConfig().schema({
-					id : "id",
-					fields : {
-						createdDate : {
-							type : "date"
-						}
-					},
-					
-				}),
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,			
-				pageSize: 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				},
-			
-			});
-
-			// End:dataSource
-			var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
-			// Begin:column
-			var columns = [
-					
-					{  
-					    field: "rowNumber",  
-					    title: "序号",  
-					    width: 40,
-					    filterable : false,
-					    template: "<span class='row-number'></span>"  
-					 }
-					,
-					{
-						field : "rbName",
-						title : "会议名称",
-						width : 120,						
-						filterable : false
-					},
-					{
-						field : "addressName",
-						title : "会议地点",
-						width : 120,						
-						filterable : false
-					},
-					{
-						field : "rbDay",
-						title : "会议日期",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "beginTime",
-						title : "会议开始时间",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "endTime",
-						title : "会议结束时间",
-						type : "date",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "rbType",
-						title : "会议类型",
-						width : 100,						
-						filterable : false
-					},
-					{
-						field : "dueToPeople",
-						title : "会议预定人",
-						width : 100,						
-						filterable : false
-					},
-
-			];
-			// End:column
-		
-			vm.gridOptions={
-					dataSource : common.gridDataSource(dataSource),
-					filterable : common.kendoGridConfig().filterable,
-					pageable : common.kendoGridConfig().pageable,
-					noRecords:common.kendoGridConfig().noRecordMessage,
-					columns : columns,
-					dataBound :dataBound,
-					resizable: true
-				};
-			
-		}// end fun grid
-
-	}
-	
-	
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('roomCtrl', room);
-
-    room.$inject = ['$location','roomSvc','$scope','$state']; 
-
-    function room($location, roomSvc,$scope,$state) {
-        /* jshint validthis:true */
-    	var vm = this;
-        vm.title = '会议室预定列表';
-        vm.id = $state.params.id;
-        vm.workProgramId = $state.params.workProgramId;     //工作方案ID
-      
-        vm.startDateTime = new Date("2006/6/1 08:00");
-        vm.endDateTime = new Date("2030/6/1 21:00");
-
-        //预定会议编辑
-       vm.editRoom = function(){
-        	roomSvc.editRoom(vm);
-        }
-        //预定会议室添加
-        vm.addRoom = function(){
-        	roomSvc.addRoom(vm);
-        }
-
-        //导出本周评审会议安排
-        vm.exportWeek = function(){
-        	roomSvc.exportWeek();
-        }
-        //导出本周全部会议安排
-        vm.exportThisWeek = function(){
-        	
-        	roomSvc.exportThisWeek();
-        }
-        //导出下周全部会议安排
-        vm.exportNextWeek = function(){
-        	
-        	roomSvc.exportNextWeek();
-        }
-        //导出下周评审会议安排
-        vm.stageNextWeek = function(){
-        	
-        	roomSvc.stageNextWeek();
-        }
-        //会议室查询
-        vm.findMeeting = function(){
-        	roomSvc.findMeeting(vm);
-        }
-        
-        vm.del = function (id) {
-             common.confirm({
-            	 vm:vm,
-            	 title:"",
-            	 msg:"确认删除数据吗？",
-            	 fn:function () {
-                  	$('.confirmDialog').modal('hide');             	
-                    roomSvc.deleteRoom(vm,id);
-                 }
-             })
-        }
-        
-        vm.dels = function () {     
-        	var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                	
-                });
-            } else {
-            	var ids=[];
-                for (var i = 0; i < selectIds.length; i++) {
-                	ids.push(selectIds[i].value);
-				}  
-                var idStr=ids.join(',');
-                vm.del(idStr);
-            }   
-       }
-
-        activate();
-        function activate() {
-           roomSvc.initRoom(vm);
-           roomSvc.showMeeting(vm);
-        }
->>>>>>> Stashed changes
     }
 })();
 
 (function () {
     'use strict';
 
-<<<<<<< Updated upstream
     angular.module('app').controller('signFillinCtrl', sign);
 
     sign.$inject = ['$location','signSvc','$state']; 
@@ -9242,28 +10611,14 @@
         }                  
        
        //根据协办部门查询用户
-       vm.findOfficeUsersByDeptId =function(status){
-    	   signSvc.findOfficeUsersByDeptId(vm,status);
+       vm.findOfficeUsersByDeptName =function(status){
+    	   signSvc.findOfficeUsersByDeptName(vm,status);
        }
 //       $("input").click(function(){
 //    	   signSvc.checkboxAdd(vm);
 //       })
        
     	   
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('signFlowCtrl', sign);
-
-    sign.$inject = ['$location','signFlowSvc','$state']; 
-
-    function sign($location,signFlowSvc,$state) {        
-        var vm = this;
-        vm.title = "项目待处理";
-        signFlowSvc.pendingSign(vm);        
     }
 })();
 
@@ -9311,7 +10666,6 @@
 	function signFlow($http,$state) {
 		var service = {
 			startFlow : startFlow,			//启动流程
-			pendingSign:pendingSign,		//签收待处理
 			initBusinessParams:initBusinessParams,	//初始化业务参数
 			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
 			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
@@ -9349,198 +10703,230 @@
 				success : httpSuccess
 			});
 		}//E_startFlow
-		
-		//S_pendingSign
-		function pendingSign(vm){
-			// Begin:dataSource
-			var dataSource = common.kendoGridDataSource(rootPath+"/sign/html/pendingSign");				
-						
-			var columns = [
-				 {
-                     field: "",
-                     title: "序号",
-                     template: "<span class='row-number'></span>",
-                     width:30
-                 },
-				{
-					field : "projectname",
-					title : "项目名称",
-					width : 200,
-					filterable : true
-				},
-				{
-					field : "projectcode",
-					title : "项目编号",
-					width : 200,
-					filterable : true
-				},
-				{
-					field : "createdDate",
-					title : "创建时间",
-					width : 180,
-					filterable : false,
-					format : "{0:yyyy/MM/dd HH:mm:ss}"
 
-				},
-				{
-					field : "",
-					title : "操作",
-					width : 180,
-					template:function(item){
-						//如果项目已暂停，则停止对流程操作
-						var hideDealButton = false;
-						if(item.folwState && item.folwState == 2){
-							hideDealButton = true;
-						}
-						return common.format($('#columnBtns').html(),item.signid,item.taskId,item.processInstanceId,hideDealButton);
-					}	
-				}
-			];
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				resizable : true,
-				dataBound: function () {  
-                    var rows = this.items();  
-                    var page = this.pager.page() - 1;  
-                    var pagesize = this.pager.pageSize();  
-                    $(rows).each(function () {  
-                        var index = $(this).index() + 1 + page * pagesize;  
-                        var rowLabel = $(this).find(".row-number");  
-                        $(rowLabel).html(index);  
-                    });  
-                } 
-			};					
-		}//E_pendingSign
-		
 		//S_initBusinessParams
-		function initBusinessParams(vm){	
-			if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1" ){ //项目负责人承办
-				vm.businessTr = true;
-				vm.XMFZR_SP_GZFA = true;	
-				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
-					vm.show_workprogram = true;
-					$("#show_workprogram_a").click();					
-				}										
-			}else if( vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
-				vm.businessTr = true;
-				vm.XMFZR_SP_GZFA = true; 
-				if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9){ //如果填报完成，则显示
-					vm.show_workprogram = true;
-					$("#show_workprogram_a").click();
-				}	
-			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1" ){ //部长审批,分管副主任审批
-				vm.show_workprogram = true;
-				$("#show_workprogram_a").click();				
-			}else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
-				vm.show_workprogram = true;
-				$("#show_workprogram_a").click();				
-			}else if(vm.flow.curNode.activitiId == "FW_SQ" ){ //发文
-				vm.businessTr = true;
-				vm.FW_SQ = true;		
-				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted >= 0){
-					vm.show_dispatch = true;
-					$("#show_dispatch_a").click();
-				}	
-			
-			}//审核发文	
-			else if(vm.flow.curNode.activitiId == "BZ_SP_FW" || vm.flow.curNode.activitiId == "FGLD_SP_FW" || vm.flow.curNode.activitiId == "ZR_SP_FW"){ 
-				vm.show_dispatch = true;
-				$("#show_dispatch_a").click();
-				
-			}else if(vm.flow.curNode.activitiId == "MFZR_GD" ){ //归档
-				vm.businessTr = true;
-				vm.MFZR_GD = true;
-				if(vm.model.filenum){
-					vm.show_filerecord = true;
-					$("#show_filerecord_a").click();
-				}
-			}
-			else if(vm.flow.curNode.activitiId == "AZFR_SP_GD" || vm.flow.curNode.activitiId == "BMLD_QR_GD"){ //归档
-				vm.show_filerecord = true;
-				$("#show_filerecord_a").click();							
-			}
-						
+		function initBusinessParams(vm){
+
+            switch (vm.flow.curNode.activitiId)
+            {
+                case "XMFZR_SP_GZFA1":  //项目负责人承办
+                    vm.businessTr = true;
+                    vm.XMFZR_SP_GZFA = true;
+                    if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
+                        vm.show_workprogram = true;
+                        $("#show_workprogram_a").click();
+                    }
+                    break;
+                case "XMFZR_SP_GZFA2":
+                    vm.businessTr = true;
+                    vm.XMFZR_SP_GZFA = true;
+                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9){ //如果填报完成，则显示
+                        vm.show_workprogram = true;
+                        $("#show_workprogram_a").click();
+                    };
+                    break;
+                case "BZ_SP_GZAN1":
+                    vm.show_workprogram = true;
+                    $("#show_workprogram_a").click();
+                    break;
+                case "FGLD_SP_GZFA1":
+                    vm.show_workprogram = true;
+                    $("#show_workprogram_a").click();
+                    break;
+                case "BZ_SP_GZAN2":
+                    vm.show_workprogram = true;
+                    $("#show_workprogram_a").click();
+                    break;
+                case "FGLD_SP_GZFA2":
+                    vm.show_workprogram = true;
+                    $("#show_workprogram_a").click();
+                    break;
+                case "FW_SQ":
+                    vm.businessTr = true;
+                    vm.FW_SQ = true;
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted >= 0){
+                        vm.show_dispatch = true;
+                        $("#show_dispatch_a").click();
+                    };
+                    break;
+                case "BZ_SP_FW":
+                    vm.show_dispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
+                case "FGLD_SP_FW":
+                    vm.show_dispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
+                case "ZR_SP_FW":
+                    vm.show_dispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
+                case "MFZR_GD":
+                    vm.businessTr = true;
+                    vm.MFZR_GD = true;
+                    if(vm.model.filenum){
+                        vm.show_filerecord = true;
+                        $("#show_filerecord_a").click();
+                    }
+                    break;
+                case "AZFR_SP_GD":
+                    vm.show_filerecord = true;
+                    $("#show_filerecord_a").click();
+                    break;
+                case "BMLD_QR_GD":
+                    vm.show_filerecord = true;
+                    $("#show_filerecord_a").click();
+                    break;
+                //以下为协审流程
+                case "XS_XMFZR_GZFA":
+                    vm.businessTr = true;
+                    vm.XS_XMFZR_GZFA = true;
+                    if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
+                        vm.show_workprogram = true;
+                        $("#show_workprogram_a").click();
+                    }
+                    break;
+                default:
+                    ;
+            }
 		}//E_initBusinessParams
 		
 		//S_checkBusinessFill
 		function checkBusinessFill(vm){
 			vm.flow.businessMap = {};
-			var seleteCount = 0;			
-			if(vm.flow.curNode.activitiId == "ZHB_SP_SW"){//综合部拟办
-				if($("#viceDirector").val()){
-					vm.flow.businessMap.FGLD = $("#viceDirector").val();
-					return true;
-				}
-				return false;				
-			}else if(vm.flow.curNode.activitiId == "FGLD_SP_SW"){	//部门分办，要选择主办部门						
-				$('.seleteTable input[selectType="main"]:checked').each(function(){ 
-					vm.flow.businessMap.hostdept = $(this).val();
-					seleteCount++;					
-				}); 				 
-				if(seleteCount == 0){
-					return false;
-				}
-				$('.seleteTable input[selectType="assist"]:checked').each(function(){ 
-					vm.flow.businessMap.assistdept = $(this).val();				
-				});
-				return true;
-				
-			}else if(vm.flow.curNode.activitiId == "BM_FB1" || vm.flow.curNode.activitiId == "BM_FB2"){
-				$('.seleteTable input[selectType="main"]:checked').each(function(){ 
-					vm.flow.businessMap.M_USER_ID = $(this).val();
-					seleteCount++;					
-				}); 				 
-				if(seleteCount == 0){
-					return false;
-				}
-				$('.seleteTable input[selectType="assist"]:checked').each(function(){ 
-					vm.flow.businessMap.A_USER_ID = $(this).val();				
-				});
-				return true;
-				
-			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA1"){
-				if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
-					return true;
-				}else{
-					return false;
-				}
-			}else if(vm.flow.curNode.activitiId == "XMFZR_SP_GZFA2"){
-				if(vm.model.isreviewACompleted && vm.model.isreviewACompleted==9){
-					return true;
-				}else{
-					return false;
-				}
-			}
-			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN1" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA1"){
-				vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
-				return true;
-			}
-			else if(vm.flow.curNode.activitiId == "BZ_SP_GZAN2" || vm.flow.curNode.activitiId == "FGLD_SP_GZFA2"){
-				vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
-				return true; 
-			}			
-			else if(vm.flow.curNode.activitiId == "FW_SQ"){
-				if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
-					return true;
-				}else{
-					return false;
-				}
-			}else if(vm.flow.curNode.activitiId == "BZ_SP_FW" || vm.flow.curNode.activitiId == "FGLD_SP_FW" || vm.flow.curNode.activitiId == "ZR_SP_FW" ){ //审核发文
-				vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
-				return true;				
-			}else if(vm.flow.curNode.activitiId == "MFZR_GD"){
-				if(vm.model.filenum){
-					return true;
-				}else{
-					return false;
-				}
-			}			
-			return true;
+			var seleteCount = 0;
+			var resultTag = true;
+			switch (vm.flow.curNode.activitiId){
+                case "ZHB_SP_SW":       //综合部拟办
+                    if($("#viceDirector").val()){
+                        vm.flow.businessMap.FGLD = $("#viceDirector").val();
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "FGLD_SP_SW":      //分管领导审批，要选择主办部门
+                    $('.seleteTable input[selectType="main"]:checked').each(function(){
+                        vm.flow.businessMap.hostdept = $(this).val();
+                        seleteCount++;
+                    });
+                    if(seleteCount == 0){
+                        resultTag = false;
+                        break;
+                    }
+                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
+                        vm.flow.businessMap.assistdept = $(this).val();
+                    });
+                    break;
+                case "BM_FB1":      //部门分办，要选择主办部门
+                    $('.seleteTable input[selectType="main"]:checked').each(function(){
+                        vm.flow.businessMap.M_USER_ID = $(this).val();
+                        seleteCount++;
+                    });
+                    if(seleteCount == 0){
+                        resultTag = false;
+                        break;
+                    }
+                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
+                        vm.flow.businessMap.A_USER_ID = $(this).val();
+                    });
+                    break;
+                case "BM_FB2":      //部门分办，要选择主办部门
+                    $('.seleteTable input[selectType="main"]:checked').each(function(){
+                        vm.flow.businessMap.M_USER_ID = $(this).val();
+                        seleteCount++;
+                    });
+                    if(seleteCount == 0){
+                        resultTag = false;
+                        break;
+                    }
+                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
+                        vm.flow.businessMap.A_USER_ID = $(this).val();
+                    });
+                    break;
+                case "XMFZR_SP_GZFA1":
+                    if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "XMFZR_SP_GZFA2":
+                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted==9){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "BZ_SP_GZAN1":
+                    vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
+                    break;
+                case "BZ_SP_GZAN2":
+                    vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
+                    break;
+                case "FGLD_SP_GZFA1":
+                    vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
+                    break;
+                case "FGLD_SP_GZFA2":
+                    vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
+                    break;
+                case "FW_SQ":
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "BZ_SP_FW":
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+                    break;
+                case "FGLD_SP_FW":
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+                    break;
+                case "ZR_SP_FW":
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+                    break;
+                case "MFZR_GD":
+                    if(vm.model.filenum){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+
+                 //以下是协审流程环节
+                case "XS_ZHBBL":            //综合部办理
+                    if($("#viceDirector").val()){
+                        vm.flow.businessMap.FGLD = $("#viceDirector").val();
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "XS_FGLD_SP":          //分管领导审批
+                    $('#xs_table input[selectType="xs_main"]:checked').each(function(){
+                        vm.flow.businessMap.deptid = $(this).val();
+                    });
+                    if(!vm.flow.businessMap.deptid){
+                        resultTag = false;
+                    }
+                    break;
+                case "XS_BMFB":          //部门分办
+                    $('.seleteTable input[selectType="main"]:checked').each(function(){
+                        vm.flow.businessMap.M_USER_ID = $(this).val();
+                        seleteCount++;
+                    });
+                    if(seleteCount == 0){
+                        resultTag = false;
+                        break;
+                    }
+                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
+                        vm.flow.businessMap.A_USER_ID = $(this).val();
+                    });
+                    break;
+                default:
+                    ;
+            }
+
+            return resultTag;
 		}//E_checkBusinessFill
 		
 		//S_getChargeWorkProgram
@@ -9633,22 +11019,19 @@
                     response:response,
                     fn:function() {
                         vm.model = response.data;
-                        if(vm.model.workProgramDtoList){
-                            vm.mainwork = {};
+                        if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
                             vm.show_workprogram = true;
-                            if(vm.model.workProgramDtoList.length > 0){
-                                vm.showAssistwork = true;
-                                vm.assistwork = {};
-                                if(vm.model.workProgramDtoList[0].isMain == 9){
-                                    vm.mainwork = vm.model.workProgramDtoList[0];
-                                    vm.assistwork = vm.model.workProgramDtoList[1];
-                                } else{
-                                    vm.assistwork = vm.model.workProgramDtoList[0];
-                                    vm.mainwork = vm.model.workProgramDtoList[1]
-                                }
-                            }else{
-                                vm.mainwork = vm.model.workProgramDtoList[0];
-                            }
+                            vm.model.workProgramDtoList.forEach(function(w,index){
+                            	if(w.isMain == 9){
+                                    vm.showMainwork = true;
+                                    vm.mainwork = {};
+                                    vm.mainwork = w;
+								}else if(w.isMain == 0){
+                                    vm.showAssistwork = true;
+                                    vm.assistwork = {};
+                                    vm.assistwork = w;
+								}
+							});
                         }
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;
@@ -9669,6 +11052,8 @@
                 success:httpSuccess
             });
         }//E_endSignDetail
+        
+      
 
 	}//E_signFlow		
 })();
@@ -9677,17 +11062,21 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc']; 
+    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc','ideaSvc']; 
 
-    function sign($location,signSvc,$state,flowSvc,signFlowSvc) {        
+    function sign($location,signSvc,$state,flowSvc,signFlowSvc,ideaSvc) {        
         var vm = this;
-        vm.title = "项目流程处理";       
+        vm.title = "项目流程处理";
+        vm.dealFlow = true;
         vm.model = {};
         vm.flow = {};					
         vm.work = {};
         vm.dispatchDoc = {};
         vm.fileRecord = {};
-        
+//        vm.idea={};//意见对象
+        vm.ideaContent='';//当前意见内容
+        vm.commonIdeas=new Array();//常用意见对象
+        vm.i=0;
         vm.model.signid = $state.params.signid;	
         vm.flow.taskId = $state.params.taskId;			//流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
@@ -9708,7 +11097,44 @@
         	flowSvc.initFlowData(vm);
         	//再初始化业务信息
         	signSvc.initFlowPageData(vm);
+        	
+        	ideaSvc.getIdea(vm);//初始化个人常用意见
         }
+        
+        // begin 添加审批意见
+        vm.ideaEdit=function(){
+        	ideaSvc.ideaEditWindow(vm);
+        }
+        
+        vm.addCorrentIdea=function(ideaContent){ //添加当前意见
+        	vm.ideaContent=vm.ideaContent+ideaContent;
+        }
+        
+        vm.addCommonIdea=function(){  //添加常用意见
+        	vm.commonIdea={};
+        	vm.commonIdea.ideaType="个人常用意见";
+        	vm.commonIdeas.push(vm.commonIdea);
+        	vm.i++;
+        }
+        
+        vm.deleteCommonIdea=function(){  //删除常用意见
+        	ideaSvc.deleteCommonIdea(vm);
+        	
+        }
+        
+        vm.saveCommonIdea=function(){ //保存常用意见
+        	ideaSvc.saveCommonIdea(vm);
+        }
+        
+        
+        vm.saveCurrentIdea=function(){//保存当前意见
+        	
+        	vm.flow.dealOption=vm.ideaContent;
+        	window.parent.$("#ideaWindow").data("kendoWindow").close();
+        	
+        }
+        // end 添加审批意见
+        
         
         vm.commitNextStep = function (){
         	if(signFlowSvc.checkBusinessFill(vm)){
@@ -9769,17 +11195,74 @@
             	$('.seleteTable input[selectType=\"'+type+'\"]').each(function () {
             		var id = $(this).attr("id");            	
             		var value = $(this).attr("value");           		          		
-            		if(id != (type+"_"+checkboxValue)){ 
-            			$("#"+disabletype+"_"+value).removeAttr("disabled");  
+            		if(value != checkboxValue){
+            			$("#"+disabletype+"_"+value).removeAttr("disabled");
             			$(this).removeAttr("checked");           			
-            		}else{            			
-            			$("#"+disabletype+"_"+checkboxValue).attr("disabled","disabled");  
+            		}else{
+            			$("#"+disabletype+"_"+checkboxValue).attr("disabled","disabled");
             		}
             	});                 
-            }else{  
-            	$("#"+disabletype+"_"+checkboxValue).removeAttr("disabled");  
+            }else{
+            	$("#"+disabletype+"_"+checkboxValue).removeAttr("disabled");
             }  
         }
+
+        //checkbox 单选
+        vm.checkBoxSingle = function($event,type){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            var checkboxValue = checkbox.value;
+            if(checked){
+                $('#xs_table input[selectType=\"'+type+'\"]').each(function () {
+                    var id = $(this).attr("id");
+                    var value = $(this).attr("value");
+                    if(value != checkboxValue){
+                        $(this).removeAttr("checked");
+                    }
+                });
+            }
+        }
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('signFlowDetailCtrl', sign);
+
+    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc']; 
+
+    function sign($location,signSvc,$state,flowSvc,signFlowSvc) {        
+        var vm = this;
+        vm.title = "项目流程信息";
+        vm.model = {};
+        vm.flow = {};					
+        vm.work = {};
+        vm.dispatchDoc = {};
+        vm.fileRecord = {};
+        
+        vm.model.signid = $state.params.signid;	
+        vm.flow.taskId = $state.params.taskId;			//流程任务ID
+        vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
+        
+        active();
+        function active(){
+        	$('#myTab li').click(function (e) {
+        		var aObj = $("a",this);        		
+        		e.preventDefault();       		  
+        		aObj.tab('show');      		
+        		var showDiv = aObj.attr("for-div");   		
+        		$(".tab-pane").removeClass("active").removeClass("in");
+        		$("#"+showDiv).addClass("active").addClass("in").show(500);
+        	})
+
+        	//先初始化流程信息        
+        	flowSvc.initFlowData(vm);
+        	//再初始化业务信息
+        	signSvc.initFlowPageData(vm);
+        }
+
     }
 })();
 
@@ -9788,15 +11271,34 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state']; 
+    sign.$inject = ['$location','signSvc','$state','flowSvc'];
 
-    function sign($location, signSvc,$state) {        
+    function sign($location, signSvc,$state,flowSvc) {
         var vm = this;
     	vm.model = {};							//创建一个form对象   	
         vm.title = '查看详情信息';        		//标题
         vm.model.signid = $state.params.signid;	//收文ID
-              
-        signSvc.initDetailData(vm);     	                        
+
+        active();
+        function active(){
+            $('#myTab li').click(function (e) {
+                var aObj = $("a",this);
+                e.preventDefault();
+                aObj.tab('show');
+                var showDiv = aObj.attr("for-div");
+                $(".tab-pane").removeClass("active").removeClass("in");
+                $("#"+showDiv).addClass("active").addClass("in").show(500);
+            })
+
+            signSvc.initFlowPageData(vm);
+
+            if($state.params.processInstanceId){
+                vm.flow = {}
+                vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
+                flowSvc.initFlowData(vm);
+            }
+        }
+
     }
 })();
 
@@ -9816,24 +11318,10 @@
 			initDetailData : initDetailData,	//初始化详情页（不可编辑）
 			updateFillin : updateFillin,		//申报编辑
 			deleteSign :　deleteSign,			//删除收文
-			findOfficeUsersByDeptId :findOfficeUsersByDeptId,//根据协办部门ID查询用户
+			findOfficeUsersByDeptName :findOfficeUsersByDeptName,//根据协办部门名称查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			//checkboxAdd:checkboxAdd,//点击输入框默认输入 1
-			
 		};
-		return service;	
-		
-		//S_点击输入框默认输入1
-		/*function checkboxAdd(vm){
-			if(vm.model.sugFileDealOriginal==null){
-				vm.model.sugFileDealCount=1;
-				}if(vm.model.sugFileDealOriginal==9){
-				vm.model.sugFileDealCount="";
-				}if(vm.model.sugFileDealOriginal==0){
-				vm.model.sugFileDealCount=1;
-			}
-		}*/
-		//E_点击输入框默认输入1
+		return service;
 
 		//S_初始化grid
 		function grid(vm){
@@ -9886,12 +11374,7 @@
 					{
 						field : "designcompanyName",
 						title : "项目单位",
-						width : 100,
-						filterable : false,
-					},
-					{
-						title : "收文编号",
-						width : 160,
+						width : 200,
 						filterable : false,
 					},
 					{
@@ -9950,9 +11433,9 @@
 								if(item.folwState == 2){
 									hideRestartButton = false;
 								}																								
-							}						
+							}
 							return common.format($('#columnBtns').html(), item.signid, item.folwState,
-									item.signid,"vm.del('" + item.signid + "')",isFlowStart,
+                                    item.signid+"/"+ item.processInstanceId,"vm.del('" + item.signid + "')",isFlowStart,
 									"vm.startNewFlow('" + item.signid + "')", isFlowStart,
 									"vm.stopFlow('" + item.signid + "')", hideStopButton,
 									"vm.restartFlow('" + item.signid + "')", hideRestartButton);
@@ -10012,7 +11495,7 @@
 		}//E_创建收文	
 		
 		//start  根据协办部门查询用户
-		function findOfficeUsersByDeptId(vm,status){
+		function findOfficeUsersByDeptName(vm,status){
 			var param = {};
 			if("main" == status){
                 param.maindeptName = vm.model.maindeptName;
@@ -10021,7 +11504,7 @@
 			}
 			var httpOptions = {
 					method : 'post',
-					url  : rootPath+"/officeUser/findOfficeUserByDeptId",
+					url  : rootPath+"/officeUser/findOfficeUsersByDeptName",
 					data:param
 				};
 				
@@ -10059,81 +11542,6 @@
 					method : 'put',
 					url : rootPath+"/sign",
 					data : vm.model,
-=======
-    angular
-        .module('app')
-        .controller('roomEditCtrl', room);
-
-    room.$inject = ['$location','roomSvc','$state']; 
-
-    function room($location, roomSvc,$state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加会议室预定';
-        vm.isuserExist=false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新会议室';
-        }
-        
-        activate();
-        function activate() {
-        	if (vm.isUpdate) {
-        		roomSvc.getroomById(vm);
-            } else {
-            	//roomSvc.initZtreeClient(vm);
-            }
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('roomSvc', room);
-
-	room.$inject = [ '$http' ];
-
-	function room($http) {
-		var url_room = rootPath + "/room";
-		var url_back = '#/room';
-		
-		var service = {
-			initRoom : initRoom,
-			showMeeting : showMeeting,
-			findMeeting : findMeeting,
-			exportWeek : exportWeek,
-			exportThisWeek : exportThisWeek,
-			exportNextWeek : exportNextWeek,
-			stageNextWeek : stageNextWeek,
-			addRoom : addRoom,  //添加会议室预定
-			editRoom : editRoom,//编辑
-		};
-
-		return service;
-		
-		//S_会议预定编辑
-		function editRoom(vm){	
-			vm.model.id = $("#id").val();
-			vm.model.rbName = $("#rbName").val();
-			vm.model.mrID = $("#mrID").val();
-			vm.model.rbType = $("#rbType").val();
-			vm.model.host = $("#host").val();
-			vm.model.dueToPeople = $("#dueToPeople").val();
-			vm.model.rbDay = $("#rbDay").val();
-			vm.model.beginTime = $("#beginTime").val(); 
-			vm.model.endTime = $("#endTime").val();
-			vm.model.content = $("#content").val();
-			vm.model.content = $("#remark").val();
-			common.initJqValidation($('#formRoom'));
-			var isValid = $('#formRoom').valid();
-			if (isValid) {
-			vm.iscommit = true;
-				var httpOptions = {
-					method : 'put',
-					url : rootPath + "/room/updateRoom",
-					data : vm.model
 				}
 				var httpSuccess = function success(response) {
 					common.requestSuccess({
@@ -10141,609 +11549,6 @@
 						response : response,
 						fn : function() {
 							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})
-						}
-					})
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}
-		}
-		//E_会议预定编辑
-		
-		// 清空页面数据
-		// begin#cleanValue
-		function cleanValue() {
-			var tab = $("#stageWindow").find('input');
-			$.each(tab, function(i, obj) {
-				obj.value = "";
-			});
-		}
-		// end#cleanValue
-		
-		//S_添加会议室预定(停用)
-		function addRoom(vm){
-            common.initJqValidation($('#formRoom'));
-            var isValid = $('#formRoom').valid();
-            if (isValid) {
-                var httpOptions = {
-                    method : 'post',
-                    url : rootPath + "/room/addRoom",
-                    data : vm.model
-                }
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm : vm,
-                        response : response,
-                        fn : function() {
-                            common.alert({
-                                vm : vm,
-                                msg : "操作成功",
-                                fn : function() {
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                }
-                            })
-                        }
-
-                    });
-
-                }
-                common.http({
-                    vm : vm,
-                    $http : $http,
-                    httpOptions : httpOptions,
-                    success : httpSuccess
-                });
-
-            }
-		}
-		//E_添加会议室预定
-		
-		//start 初始化会议预定页面
-		function initRoom(vm){
-			var dataSource = new kendo.data.SchedulerDataSource({
-				batch: true,
-				sync: function() {
-					this.read();
-				},
-	           transport: {
-				  read:function(options){
-					  var mrID = options.data.mrID;
-					  var url =  rootPath + "/room" ;
-					  if(mrID){
-						  url += "?"+mrID;
-					  }
-					  $http.get(
-					  	url
-					  ).success(function(data) {  
-						  options.success(data.value);
-					  }).error(function(data) {  
-						  console.log("查询数据失败！");
-					  });  
-				  },
-				  create:function(options){
-                      common.initJqValidation($('#formRoom'));
-                      var isValid = $('#formRoom').valid();
-                      if (isValid) {
-                          var model = options.data.models[0];
-                          model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTime").val();
-                          model.endTimeStr = $("#endTime").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
-                          if(vm.workProgramId){
-                              model.workProgramId = vm.workProgramId;
-						  }
-                          if(model.endTime < model.beginTime){
-                              $("#errorTime").html("开始时间不能大于结束时间!");
-                              return ;
-                          }
-                          var httpOptions = {
-                              method : 'post',
-                              url : rootPath + "/room/addRoom",
-                              data : model
-                          }
-                          var httpSuccess = function success(response) {
-                              common.requestSuccess({
-                                  vm : vm,
-                                  response : response,
-                                  fn : function() {
-                                      common.alert({
-                                          vm : vm,
-                                          msg : "操作成功",
-                                          fn : function() {
-                                              findMeeting(vm);
-                                              $('.alertDialog').modal('hide');
-                                              $('.modal-backdrop').remove();
-                                              vm.schedulerOptions.cancelEvent();
-                                          }
-                                      })
-                                  }
-                              });
-                          }
-                          common.http({
-                              vm : vm,
-                              $http : $http,
-                              httpOptions : httpOptions,
-                              success : httpSuccess
-                          });
-                      }
-				  },
-				  update:function(options){
-                      common.initJqValidation($('#formRoom'));
-                      var isValid = $('#formRoom').valid();
-                      if (isValid) {
-                          var model = options.data.models[0];
-                          model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTime").val();
-                          model.endTimeStr = $("#endTime").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
-                          if(model.endTime < model.beginTime){
-                              $("#errorTime").html("开始时间不能大于结束时间!");
-                              return ;
-                          }
-                          var httpOptions = {
-                              method : 'put',
-                              url : rootPath + "/room/updateRoom",
-                              data : model
-                          }
-                          var httpSuccess = function success(response) {
-                              common.requestSuccess({
-                                  vm : vm,
-                                  response : response,
-                                  fn : function() {
-                                      common.alert({
-                                          vm : vm,
-                                          msg : "操作成功",
-                                          fn : function() {
-                                              findMeeting(vm);
-                                              $('.alertDialog').modal('hide');
-                                              $('.modal-backdrop').remove();
-                                              vm.schedulerOptions.cancelEvent();
-                                          }
-                                      })
-                                  }
-                              });
-                          }
-                          common.http({
-                              vm : vm,
-                              $http : $http,
-                              httpOptions : httpOptions,
-                              success : httpSuccess
-                          });
-                      }
-				  },
-				  destroy:function(options){
-                      var id = options.data.models[0].id;
-                      var httpOptions = {
-                          method : 'delete',
-                          url : url_room,
-                          data : id
-                      }
-                      var httpSuccess = function success(response) {
-                          common.requestSuccess({
-                              vm : vm,
-                              response : response,
-                              fn : function() {
-                                  common.alert({
-                                      vm : vm,
-                                      msg : "删除成功",
-                                      closeDialog:true
-                                  })
-                              }
-
-                          });
-
-                      }
-                      common.http({
-                          vm : vm,
-                          $http : $http,
-                          httpOptions : httpOptions,
-                          success : httpSuccess
-                      });
-				  },
-				  parameterMap: function(options, operation) {
-				      console.log(operation);
-	                if (operation !== "read" && options.models) {
-	                  return { models: kendo.stringify(options.models)};
-	                }
-	              }
-	           },
-	           serverPaging : true,
-               serverSorting : true,
-               serverFiltering : true,
-			   pageSize : 10,
-	           schema: {
-	              model: {
-	              	id: "taskId", 
-	                fields: {
-	                    taskId: {from: "id"},
-	                    title: { from: "addressName", defaultValue: "会议室" },
-                        start: { type: "date", from: "beginTime" },
-                        end: { type: "date", from: "endTime" }
-                    }
-				  }
-	            },
-	          });
-		
-			vm.schedulerOptions = {
-                date: new Date(),
-                startTime:vm.startDateTime,
-                endTime:vm.endDateTime,
-                height: 600,
-                views: [
-                    "day",
-                    "workWeek",
-                    {type: "week", selected: true },
-                    "month"
-                ],
-                editable: {
-                    template: $("#customEditorTemplate").html(),
-                },
-                eventTemplate: $("#event-template").html(),
-                timezone: "Etc/UTC",
-                dataSource :dataSource,
-                footer: false,
-            };
-		}
-		//end 初始化会议预定页面
-		
-		//start#会议室地点查询
-		function showMeeting(vm){
-			 $http.get(
-				  url_room+"/meeting" 
-			  ).success(function(data) {  
-				  vm.meetings ={};
-				  vm.meetings=data;
-			  }).error(function(data) {  
-				  //alert("查询会议室失败");
-			  }); 
-		}
-		//end #会议室地点查询
-		
-		//查询会议室
-		function findMeeting(vm){
-			if(vm.mrID){
-                vm.schedulerOptions.dataSource.read({"mrID":common.format("$filter=mrID eq '{0}'", vm.mrID)});
-			}else{
-                vm.schedulerOptions.dataSource.read();
-			}
-		}
-		//start#deleteRoom
-		function deleteRoom(vm){
-			var model = vm.data.models[0];
-			var id = model.id;
-			var httpOptions = {
-					method : 'delete',
-					url : url_room,
-					data : id
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						common.alert({
-							vm : vm,
-							msg : "删除成功",
-							fn : function() {
-							$('.alertDialog').modal('show');
-							$('.modal-backdrop').remove();
-							}
-						})
-					}
-
-				});
-
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-			
-		}
-		//end#deleteRoom
-		
-		//start#exportWeek
-		//本周评审会议
-		function exportWeek(){
-			window.open(url_room+"/exports");
-		}
-		//本周全部会议
-		function exportThisWeek(){
-			window.open(url_room+"/exportWeek");
-		}
-		//下周全部会议
-		function exportNextWeek(){
-			window.open(url_room+"/exportNextWeek");
-		}
-		//下周评审会议
-		function stageNextWeek(){
-			window.open(url_room+"/stageNextWeek");
-		}
-		//end#exportWeek
-		
-	}
-})();
-
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('roleCtrl', role);
-
-    role.$inject = ['$location','roleSvc']; 
-
-    function role($location, roleSvc) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '角色列表';
-        
-
-        vm.del = function (id) {        	
-        	 
-             common.confirm({
-            	 vm:vm,
-            	 title:"",
-            	 msg:"确认删除数据吗？",
-            	 fn:function () {
-                  	$('.confirmDialog').modal('hide');             	
-                    roleSvc.deleteRole(vm,id);
-                 }
-             })
-        }
-        vm.dels = function () {     
-        	var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                	
-                });
-            } else {
-            	var ids=[];
-                for (var i = 0; i < selectIds.length; i++) {
-                	ids.push(selectIds[i].value);
-				}  
-                var idStr=ids.join(',');
-                vm.del(idStr);
-            }   
-       }
-        activate();
-        function activate() {
-            roleSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('roleEditCtrl', role);
-
-    role.$inject = ['$location','roleSvc','$state']; 
-
-    function role($location, roleSvc,$state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加角色';
-        vm.isRoleExist=false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新角色';
-        }
-        
-        vm.create = function () {
-        	roleSvc.createRole(vm);
-        };
-        vm.update = function () {
-        	roleSvc.updateRole(vm);
-        };
-        vm.checkRole = function () {
-        	roleSvc.checkRole(vm);
-        };
-
-        activate();
-        function activate() {
-        	if (vm.isUpdate) {
-        		roleSvc.getRoleById(vm);
-            } else {
-            	roleSvc.initZtreeClient(vm);
-            }
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('roleSvc', role);
-
-	role.$inject = [ '$http','$compile' ];	
-	function role($http,$compile) {	
-		var url_role =rootPath + "/role";
-		var url_back = '#/role';
-		var url_resource=rootPath +"/sys/resource"
-			
-		var service = {
-			grid : grid,
-			createRole : createRole,
-			checkRole : checkRole,
-			getRoleById : getRoleById,
-			updateRole:updateRole,
-			deleteRole:deleteRole,
-			initZtreeClient:initZtreeClient
-		};		
-		return service;	
-		
-		// begin common fun
-		function getZtreeChecked() {
-            var treeObj = $.fn.zTree.getZTreeObj("zTree");
-            var nodes = treeObj.getCheckedNodes(true);
-            return nodes;
-        }
-		
-		function updateZtree(vm) {
-            var treeObj = $.fn.zTree.getZTreeObj("zTree");
-            var checkedNodes = $linq(vm.model.resources).select(function (x) { return x.path; }).toArray();
-            var allNodes = treeObj.getNodesByParam("level", 1, null);
-
-            var nodes = $linq(allNodes).where(function (x) { return $linq(checkedNodes).contains(x.path); }).toArray();
-            
-            for (var i = 0, l = nodes.length; i < l; i++) {
-                treeObj.checkNode(nodes[i], true, true);
-            }
-        }
-		// end common fun
-		
-		function grid(vm) {
-
-			// Begin:dataSource
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_role+"/fingByOData"),
-				schema : common.kendoGridConfig().schema({
-					id : "id",
-					fields : {
-						createdDate : {
-							type : "date"
-						}
-					}
-				}),
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,			
-				pageSize: 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
-
-			// End:dataSource
-			
-			 //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
-            //S_序号
-
-			// Begin:column
-			var columns = [
-					{
-						template : function(item) {
-							return kendo
-									.format(
-											"<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-											item.id)
-						},
-						filterable : false,
-						width : 40,
-						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-						
-					}, 
-					 {  
-					    field: "rowNumber",  
-					    title: "序号",  
-					    width: 70,
-					    filterable : false,
-					    template: "<span class='row-number'></span>"  
-					 }
-					,
-					{
-						field : "roleName",
-						title : "角色名称",
-						width : 200,						
-						filterable : false
-					}, {
-						field : "remark",
-						title : "描述",
-						filterable : false
-					}, {
-						field : "createdDate",
-						title : "创建时间",
-						width : 180,
-						filterable : false,
-						format : "{0:yyyy/MM/dd HH:mm:ss}"
-
-					},  {
-						field : "",
-						title : "操作",
-						width : 180,
-						template:function(item){							
-							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-							
-						}
-						
-
-					}
-
-			];
-			// End:column
-		
-			vm.gridOptions={
-					dataSource : common.gridDataSource(dataSource),
-					filterable : common.kendoGridConfig().filterable,
-					pageable : common.kendoGridConfig().pageable,
-					noRecords:common.kendoGridConfig().noRecordMessage,
-					columns : columns,
-					dataBound:dataBound,
-					resizable: true
-				};
-			
-		}// end fun grid
-
-		function createRole(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid && vm.isRoleExist == false) {
-				vm.isSubmit = true;
-				
-				// zTree
-				var nodes = getZtreeChecked();
-               var nodes_role = $linq(nodes).where(function (x) { return x.isParent == false; }).select(function (x) { return { id: x.id, name: x.name,path:x.path,method:x.method }; }).toArray();
-               vm.model.resources = nodes_role;   
-	               
-				var httpOptions = {
-					method : 'post',
-					url : url_role,
-					data : vm.model
->>>>>>> Stashed changes
-				}
-
-				var httpSuccess = function success(response) {				
-					
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {							
-							
-							common.alert({
-<<<<<<< Updated upstream
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
@@ -10846,7 +11651,6 @@
 					vm:vm,
 					response:response,
 					fn:function() {
-					    console.log(response.data);
 						vm.model = response.data;													
 					}					
 				})
@@ -10897,7 +11701,9 @@
                             vm.fileRecord = vm.model.fileRecordDto;
                         }	
                         //先加载完业务数据，再加载流程业务数据
-                    	flowSvc.getFlowInfo(vm);
+						if(vm.dealFlow){
+                            flowSvc.getFlowInfo(vm);
+						}
 					}
 				});
 			}
@@ -11047,290 +11853,6 @@
                     url: url_user,
                     data: vm.model
                 }
-=======
-								vm:vm,
-								msg:"操作成功",
-								fn:function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									location.href = url_back;
-								}
-							})
-						}
-						
-					});
-
-				}
-
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-
-			} else {				
-//				common.alert({
-//					vm:vm,
-//					msg:"您填写的信息不正确,请核对后提交!"
-//				})
-			}
-		}// end fun createRole
-
-		function checkRole(vm) {
-
-		}// end fun checkRole
-
-		//begin getRoleById
-		function getRoleById(vm) {
-			var httpOptions = {
-				method : 'post',
-				url : rootPath + "/role/findById",
-				params:{
-					roleId:vm.id
-				}
-			}
-			var httpSuccess = function success(response) {
-				vm.model = response.data;
-				if (vm.isUpdate) {
-					initZtreeClient(vm);
-				}
-			}
-			
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-		}//end  getRoleById
-		
-		function updateRole(vm){
-			common.initJqValidation();			
-			var isValid = $('form').valid();
-			if (isValid && vm.isRoleExist == false) {
-				vm.isSubmit = true;
-				vm.model.id=vm.id;// id
-				//console.log(vm.model);
-				//return ;
-				// zTree
-				var nodes = getZtreeChecked();
-               var nodes_role = $linq(nodes).where(function (x) { return x.isParent == false; }).select(function (x) { return { id: x.id, name: x.name,path:x.path,method:x.method }; }).toArray();
-               vm.model.resources = nodes_role; 
-               vm.model.createdDate = "2017-04-07 12:00:00";
-				var httpOptions = {
-					method : 'put',
-					url : url_role,
-					data : vm.model
-				}
-
-				var httpSuccess = function success(response) {
-					
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {
-							
-							common.alert({
-								vm:vm,
-								msg:"操作成功",
-								fn:function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');							
-								}
-							})
-						}
-						
-					})
-				}
-
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-
-			} else {
-//				common.alert({
-//				vm:vm,
-//				msg:"您填写的信息不正确,请核对后提交!"
-//			})
-			}
-		}// end fun updateRole
-		
-		function deleteRole(vm,id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url:url_role,
-                data:id
-                
-            }
-            var httpSuccess = function success(response) {
-                
-                common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function () {
-	                    vm.isSubmit = false;
-	                    vm.gridOptions.dataSource.read();
-	                }
-					
-				});
-
-            }
-            common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-        }// end fun deleteRole
-		
-		function initZtreeClient(vm){
-			var httpOptions = {
-	                method: 'get',
-	                url: url_resource
-	            }
-	            var httpSuccess = function success(response) {
-	              
-	                
-	                common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function () {
-		                    var zTreeObj;
-		                    var setting = {
-		                        check: {
-		                            chkboxType: { "Y": "ps", "N": "ps" },
-		                            enable: true
-		                        }
-		                    };
-		                    var zNodes = response.data;
-		                    
-		                    zTreeObj = $.fn.zTree.init($("#zTree"), setting, zNodes);
-		                    if (vm.isUpdate) {
-		                         updateZtree(vm);
-
-		                    }
-		                }
-						
-					});
-	                
-
-	            }
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-		}// end fun initZtreeClient
-		
-		
-
-	}
-	
-	
-	
-})();
-(function() {
-	'use strict';
-
-	angular.module('app').factory('ideaSvc', idea);
-
-	idea.$inject = [ '$http','$compile' ];	
-	function idea($http,$compile) {	
-			
-		var service = {
-				getIdea:getIdea,	//获取常用意见
-				ideaEditWindow:ideaEditWindow, //弹出审批意见编辑框
-				saveCommonIdea:saveCommonIdea, //保存常用意见
-				deleteCommonIdea:deleteCommonIdea  //删除常用意见
-				
-		};		
-		return service;	
-		
-		//begin getIdea
-		
-		function getIdea(vm){
-			var httpOptions={
-					method:'get',
-					url:rootPath+"/idea"
-			}
-			
-			var httpSuccess=function success(response){
-				vm.commonIdeas=response.data;
-			}
-			
-			common.http({
-	              vm:vm,
-	              $http:$http,
-	              httpOptions:httpOptions,
-	              success:httpSuccess
-	          });
-			
-		}
-		//end  getIdea
-		
-		 //begin ideaEditWindow
-        function ideaEditWindow(vm){
-        	var ideaEditWindow=$("#ideaWindow");
-        	ideaEditWindow.kendoWindow({
-        		width:"50%",
-        		height:"80%",
-        		title:"意见选择",
-        		visible:false,
-        		modal:true,
-        		closable:true,
-        		actions:["Pin","Minimize","Maximize","close"]
-        	}).data("kendoWindow").center().open();
-        	
-        }//end  ideaEditWindow
-        
-        
-        //begin  saveCommonIdea
-      function saveCommonIdea(vm){
-    	  
-    	  var httpOptions={
-    			  method:'post',
-    			  url:rootPath+"/idea",
-    			  headers:{
-                      "contentType":"application/json;charset=utf-8"  //设置请求头信息
-                   },
-    			  dataType : "json",
-    			  data:angular.toJson(vm.commonIdeas)
-    	  }
-    	  var httpSuccess=function success(response){
-    		  
-    	  }
-    	  
-    	  common.http({
-              vm:vm,
-              $http:$http,
-              httpOptions:httpOptions,
-              success:httpSuccess
-          });
-    	  
-        	
-        }//end  saveCommonIdea
-      
-      //begin  deleteCommonIdea
-      function deleteCommonIdea(vm){
-    	  var isCheck=$("input[name='ideaCheck']")
-      }
-      //end   deleteCommonIdea
-		
-	}
-	
-	
-	
-})();
-(function () {
-    'use strict';
->>>>>>> Stashed changes
 
                 var httpSuccess = function success(response) {
 
@@ -11709,24 +12231,12 @@
             return nodes;
         }
 
-<<<<<<< Updated upstream
         function updateZtree(vm) {
             var treeObj = $.fn.zTree.getZTreeObj("zTree");
             var checkedNodes = $linq(vm.model.roles).select(function (x) {
                 return x.roleName;
             }).toArray();
             var allNodes = treeObj.getNodesByParam("level", 1, null);
-=======
-            common.http({
-                vm:vm,
-                $http:$http,
-                httpOptions:httpOptions,
-                success:httpSuccess
-            });
-        }//E_endSignDetail
-        
-      
->>>>>>> Stashed changes
 
             var nodes = $linq(allNodes).where(function (x) {
                 return $linq(checkedNodes).contains(x.name);
@@ -11746,7 +12256,6 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-<<<<<<< Updated upstream
     workprogram.$inject = ['$location','workprogramSvc','$state']; 
 
     function workprogram($location,workprogramSvc,$state) {        
@@ -11758,14 +12267,14 @@
         vm.work.signId = $state.params.signid;		//这个是收文ID
         vm.isRoomBook = false;              //是否已经预定了会议时间
         vm.isHavePre = false;               //预定多个会议室的时候，查看上一个
-        vm.isHaveNext = false;              //预定多个会议室 的时候，查看下一个
+        vm.isHaveNext = false;              //预定多个会议室的时候，查看下一个
                        	
         activate();
         function activate() {
         	workprogramSvc.initPage(vm);
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
             workprogramSvc.findCompanys(vm);//查找主管部门
-            workprogramSvc.waitProjects(vm);//待选项目列表
+            //workprogramSvc.waitProjects(vm);//待选项目列表
         }
         //保存合并评审
         vm.mergeAddWork = function(vm){
@@ -11775,89 +12284,6 @@
         vm.reviewType = function(){
         	if(vm.work.isSigle=="合并评审"){
         		var isHide=false;
-=======
-    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc','ideaSvc']; 
-
-    function sign($location,signSvc,$state,flowSvc,signFlowSvc,ideaSvc) {        
-        var vm = this;
-        vm.title = "项目流程处理";       
-        vm.model = {};
-        vm.flow = {};					
-        vm.work = {};
-        vm.dispatchDoc = {};
-        vm.fileRecord = {};
-//        vm.idea={};//意见对象
-        vm.ideaContent='';//当前意见内容
-        vm.commonIdeas=new Array();//常用意见对象
-        vm.i=0;
-        vm.model.signid = $state.params.signid;	
-        vm.flow.taskId = $state.params.taskId;			//流程任务ID
-        vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
-        
-        active();
-        
-        function active(){
-        	$('#myTab li').click(function (e) {
-        		var aObj = $("a",this);        		
-        		e.preventDefault();       		  
-        		aObj.tab('show');      		
-        		var showDiv = aObj.attr("for-div");   		
-        		$(".tab-pane").removeClass("active").removeClass("in");
-        		$("#"+showDiv).addClass("active").addClass("in").show(500);
-        	})
-
-        	//先初始化流程信息        
-        	flowSvc.initFlowData(vm);     	
-        	//再初始化业务信息
-        	signSvc.initFlowPageData(vm);
-        	
-        	ideaSvc.getIdea(vm);//初始化个人常用意见
-        }
-        
-        // begin 添加审批意见
-        vm.ideaEdit=function(){
-        	ideaSvc.ideaEditWindow(vm);
-        }
-        
-        vm.addCorrentIdea=function(ideaContent){ //添加当前意见
-        	vm.ideaContent=vm.ideaContent+ideaContent;
-        }
-        
-        vm.addCommonIdea=function(){  //添加常用意见
-        	vm.commonIdea={};
-        	vm.commonIdea.ideaType="个人常用意见";
-        	vm.commonIdeas.push(vm.commonIdea);
-        	vm.i++;
-        }
-        
-        vm.deleteCommonIdea=function(){  //删除常用意见
-        	ideaSvc.deleteCommonIdea(vm);
-        	
-        }
-        
-        vm.saveCommonIdea=function(){ //保存常用意见
-        	ideaSvc.saveCommonIdea(vm);
-        }
-        
-        
-        vm.saveCurrentIdea=function(){//保存当前意见
-        	
-        	vm.flow.dealOption=vm.ideaContent;
-        	window.parent.$("#ideaWindow").data("kendoWindow").close();
-        	
-        }
-        // end 添加审批意见
-        
-        
-        vm.commitNextStep = function (){
-//        	if(vm.str.lenght!=0){
-//        		
-//        		vm.flow.dealOption=vm.str.substr(0,vm.str.length-1);
-//        	}
-//        	vm.flow.dealOption=vm.str;
-        	if(signFlowSvc.checkBusinessFill(vm)){
-        		flowSvc.commit(vm);
->>>>>>> Stashed changes
         	}else{
         		var isHide = true;
         	}
@@ -12017,39 +12443,14 @@
 			selectworkProject:selectworkProject,//选择项目
 			cancelworkProject:cancelworkProject,//取消项目
 			mergeAddWork:mergeAddWork,//保存合并评审
-			getInitSeleSignBysId:getInitSeleSignBysId,//初始化已选项目列表
 		};
 		return service;
-		
-		//S_初始化已选项目列表
-		function getInitSeleSignBysId(vm){
-		/*	
-			var httpOptions = {
-					method : 'post',
-					url : rootPath+"/workprogram/getInitSeleSignBysIdS",
-					params:{
-						bussnessId:vm.work.id
-					}
-				}
-			var httpSuccess = function success(response) {
-				vm.selectedSign=response.data.signDtoList;
-				console.log(vm.selectedSign);
-				vm.linkSignId=response.data.linkSignId;
-			} 
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});*/
-		}
-		//E_初始化已选项目列表
 		
 		//S_保存合并评审
 		function mergeAddWork(vm){
 			var httpOptions = {
 					method : 'get',
-					url : rootPath+"/workprogram/mergeAddWork",
+					url : rootPath+"/workprogram/workAddDispa",
 					params : {signId : vm.dispatchDoc.signId,linkSignId : vm.linkSignId}						
 				}
 			
@@ -12426,827 +12827,4 @@
 		}//E_selectExpert
 		
 	}		
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('deptCtrl', dept);
-
-    dept.$inject = ['$location', 'deptSvc'];
-
-    function dept($location, deptSvc) {
-        var vm = this;
-        vm.title = '处室管理';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    deptSvc.deleteDept(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-        
-        vm.queryDept = function(){
-        	deptSvc.queryDept(vm);
-        }
-        activate();
-        function activate() {
-            deptSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('deptEditCtrl', dept);
-
-    dept.$inject = ['$location', 'deptSvc', '$state'];
-
-    function dept($location, deptSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '编辑处室';
-        vm.isuserExist = false;
-        vm.deptId = $state.params.deptId;
-        if (vm.deptId) {
-            vm.isUpdate = true;
-            vm.title = '更新处室';
-        }
-
-        vm.create = function () {
-            deptSvc.createDept(vm);
-        };
-        vm.update = function () {
-            deptSvc.updateDept(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                deptSvc.getDeptById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('deptSvc', dept);
-
-    dept.$inject = ['$http'];
-
-    function dept($http) {
-        var url_dept = rootPath + "/dept", url_back = '#/listDept';
-        var service = {
-            grid: grid,
-            getDeptById: getDeptById,
-            createDept: createDept,
-            deleteDept: deleteDept,
-            updateDept: updateDept,
-            queryDept:queryDept,
-        };
-
-        return service;
-        function queryDept(vm){
-        	vm.gridOptions.dataSource.read();	
-        }
-        // begin#updateDept
-        function updateDept(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                var httpOptions = {
-                    method: 'put',
-                    url: url_dept,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } 
-        }
-
-        // begin#deleteDept
-        function deleteDept(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_dept,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createDept
-        function createDept(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_dept,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getDeptById
-        function getDeptById(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/dept/html/findById",
-                params:{deptId:vm.deptId}
-            };
-            var httpSuccess = function success(response) {
-                if(response.data.offices){
-                	vm.offices ={};
-                	vm.offiecs = response.data.offices;
-                }
-                vm.model = response.data;
-               // console.log(vm.model);
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        
-        
-        // begin#grid
-        function grid(vm) {
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_dept+"/fingByOData",$("#formDept")),
-                schema: common.kendoGridConfig().schema({
-                    id: "deptId",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-            // End:dataSource
-            
-            //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
-            //S_序号
-            
-            // Begin:column
-            var columns = [
-            	
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.deptId)
-                    },
-                    filterable: false,
-                    width: 20,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {  
- 				    field: "rowNumber",  
- 				    title: "序号",  
- 				    width: 30,
- 				    filterable : false,
- 				    template: "<span class='row-number'></span>"  
- 				 }
- 				,
-                {
-                    field: "deptName",
-                    title: "处室名称",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "deptUserName",
-                    title: "联系人",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "address",
-                    title: "地址",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "deptType",
-                    title: "类型",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "状态",
-                    width: 100,
-                    filterable: false,
-                    template : function(item) {
-						if(item.status){
-							if(item.status == 5){
-								return "正常"
-							}else if(item.status == 7){
-								return "已删除"
-							}
-						}else{
-							return " "
-						}
-					}
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.deptId + "')", item.deptId,item.deptId);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-            	dataBound :dataBound,
-                resizable: true
-            };
-
-        }// end fun grid
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('deptOfficeUserCtrl', deptOfficeUser);
-
-    deptOfficeUser.$inject = ['$location','$state','deptSvc','deptOfficeUserSvc'];
-
-    function deptOfficeUser($location,$state,deptSvc, deptOfficeUserSvc) {
-        var vm = this;
-        vm.title = '办事处人员列表';
-        vm.id=$state.params.deptId;
-        vm.showAddUserDialog = function (){
-        	$('.addUser').modal({
-                backdrop: 'static',
-                keyboard:false
-            });
-        	 vm.deptOfficeGrid.dataSource.read();
-        }
-        vm.closeAddUserDialog=function(){
-        	$('.addUser').modal('hide');		
-        	
-        }
-        vm.addOfficeUser = function(officeId){
-        	deptOfficeUserSvc.addOfficeUser(vm,officeId);
-        }
-        
-        vm.remove = function (officeId) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    deptOfficeUserSvc.deletedeptOfficeUser(vm, officeId);
-                }
-            });
-        }
-        vm.removes = function () {
-            var selectIds = common.getKendoCheckId('.deptOfficeGrid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.remove(idStr);
-            }
-        };
-        
-      
-        activate();
-        function activate() {
-            deptOfficeUserSvc.grid(vm);
-            deptOfficeUserSvc.deptOfficeGrid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('deptOfficeUserSvc', dept);
-
-    dept.$inject = ['$http'];
-
-    function dept($http) {
-        var url_dept = rootPath + "/dept", url_back = '#/deptList';
-        var url_deptOfficeUsers =rootPath+"/dept/getDeptOfficeUsers";		//在办事处成员
-        var url_deptNotInOfficeUser =rootPath+"/dept/NotInoDeptfficeUsers";	//不在办事处成员
-        var service = {
-            grid: grid,									//办事处列表
-            getdeptById: getdeptById,
-            createdept: createdept,
-            deletedeptOfficeUser: deletedeptOfficeUser,  //移除成员
-            updatedept: updatedept,
-            getDepts:getDepts,						     //获取所有办事处
-            deptOfficeGrid :deptOfficeGrid,              //办事处人员列表
-            addOfficeUser:addOfficeUser,					     //添加成员
-        };
-
-        return service;
-        //start# 继续添加成员
-        function addOfficeUser(vm,officeId){
-        	 var httpOptions = {
-                     method: 'post',
-                     url:rootPath+"/dept/addOfficeUser",
-                     params:{
-                     	deptId:vm.id,
-                     	officeId: officeId
-                     }                
-                 }
-                 
-                 var httpSuccess = function success(response) {              
-                     common.requestSuccess({
-     					vm:vm,
-     					response:response,
-     					fn:function () {
-     						vm.deptOfficeGrid.dataSource.read();
-     	                    vm.gridOptions.dataSource.read();	                   
-     	                }					
-     				});
-                 }
-                 common.http({
-     				vm:vm,
-     				$http:$http,
-     				httpOptions:httpOptions,
-     				success:httpSuccess
-     			});
-        }
-        //end# 添加成员
-        
-        //start 获取所有办事处
-        function getDepts(vm){
-        	var httpOptions = {
-                    method: 'get',
-                    url: common.format(url_dept + "/getDepts")
-                }
-                var httpSuccess = function success(response) {
-                    vm.depts = {};
-                    vm.depts = response.data;
-//                    console.log(vm.depts);
-                }
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-        	
-        }
-        //end 获取所有办事处
-        
-        // begin#updatedept
-        function updatedept(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_dept,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deletedeptOfficeUser
-        function deletedeptOfficeUser(vm, officeId) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url:rootPath+"/dept/deleteOfficeUsers",
-               params:{
-            	   deptId:vm.id,
-            	   officeId:officeId
-            
-               }
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createdept
-        function createdept(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_dept,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getdeptById
-        function getdeptById(vm) {
-        	var httpOptions = {
-                method: 'get',
-                url: rootPath + "/dept/html/findById",
-                params:{officeID:vm.officeID}
-            };
-            var httpSuccess = function success(response) {
-            	if(response.data.dept){
-					vm.depts = {}
-					//vm.depts = response.data.depts;
-					//console.log(vm.depts);
-					
-				}
-                vm.model = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });                       
-        }
-
-        // begin#查看人员列表
-        function deptOfficeGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_deptNotInOfficeUser+"?deptId="+vm.id),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.officeID)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                
-                {
-                    field: "officeUserName",
-                    title: "办事处联系人",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "officePhone",
-                    title: "电话",
-                    width: 100,
-                    filterable: false
-                },
-               
-                {
-                    field: "officeDesc",
-                    title: "描述",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#allUserGridBtns').html(),
-                            "vm.addOfficeUser('" + item.officeID + "')", item.officeID);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.deptOfficeGrid = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
-
-        }// end fun 查看人员列表
-        
-        //start 办事处列表
-        function grid(vm) {
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_deptOfficeUsers+"?deptId="+vm.id),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.officeID)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-               
-                {
-                    field: "officeUserName",
-                    title: "办事处联系人",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "officePhone",
-                    title: "电话",
-                    width: 100,
-                    filterable: false
-                },
-               
-                {
-                    field: "officeDesc",
-                    title: "描述",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.remove('" + item.officeID + "')", item.officeID);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
-
-        }// end 办事处列表
-
-    }
 })();

@@ -1,7 +1,7 @@
 <#if layer??>package ${layer};</#if>
 
 import ${info.beanPackage}.${info.beanName};
-import cs.repo.IRepository;
+import cs.repository.IRepository;
 
 /**
  * Description: ${info.comment!''} 数据操作实现接口

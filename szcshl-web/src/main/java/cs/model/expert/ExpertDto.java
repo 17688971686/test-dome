@@ -43,6 +43,7 @@ public class ExpertDto extends BaseDto {
 	private String state;//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
 	private String openingBank;
 	private String bankAccount;
+	public byte[] photo;    //专家照片
 	
 	private List<WorkExpeDto> work;
 	private List<ProjectExpeDto> project;
@@ -242,5 +243,13 @@ public class ExpertDto extends BaseDto {
 	}
 	public void setGraduateDate(Date graduateDate) {
 		this.graduateDate = graduateDate;
-	}		
+	}
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
 }

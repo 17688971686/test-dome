@@ -11,16 +11,38 @@
         vm.title = '专家信息录入';
         vm.isuserExist=false;
         vm.isHide=true;
-        vm.id = $state.params.expertID;     
-        
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新专家';
-            vm.isHide=false;
-            vm.expertID=vm.id;
-            expertSvc.getExpertById(vm);
+        vm.expertID = $state.params.expertID;
+
+        activice();
+        function activice(){
+            if (vm.expertID) {
+                vm.isUpdate = true;
+                vm.title = '更新专家';
+                vm.isHide=false;
+                expertSvc.getExpertById(vm);
+            }
         }
-        
+
+        vm.showUploadWin = function(){
+            if(vm.model.expertID){
+                $("#uploadWin").kendoWindow({
+                    width : "660px",
+                    height : "360px",
+                    title : "上传头像",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+            }else{
+                common.alert({
+                    vm : vm,
+                    msg : "先保存数据在执行操作！"
+                })
+            }
+
+        }
+
         vm.create=function(){
         	expertSvc.createExpert(vm);
         }

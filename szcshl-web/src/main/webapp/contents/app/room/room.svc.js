@@ -138,7 +138,8 @@
 					  	url
 					  ).success(function(data) {  
 						  options.success(data.value);
-					  }).error(function(data) {  
+					  }).error(function(data) {
+					  		console.log(data);
 						  console.log("查询数据失败！");
 					  });  
 				  },

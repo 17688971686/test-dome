@@ -1,9 +1,6 @@
 <#assign path=request.contextPath />
 <meta charset="UTF-8">
-<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
-<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-
 <div class="well well-sm conttent_list" style="background: white;min-height:960px;">
 	<ol class="breadcrumb">	 
 		<li><a href="#/expertList">专家管理</a></li>
@@ -45,7 +42,10 @@
 				<span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td width="121" colspan="2" rowspan="4" style="text-align: center;">
-				<img name="" src="" width="121" height="148" alt="" />
+                <div style="width: 100%">
+				    <img ng-show="vm.model.expertID"  id="expertPhotoSrc"  src=""  width="121" height="148" alt="" />
+                </div>
+                <button class="btn btn-xs btn-primary"  ng-click="vm.showUploadWin()" >选择图片</button>
 			</td>
 		</tr>
 		<tr>
@@ -165,51 +165,25 @@
 				<span data-valmsg-for="majorWork" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
-		<tr>		
-			<td class="formAlignRight">突出专业（大类）<span class="required">*</span></td>
-			<td >
-				<select ng-model="vm.model.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.model.maJorBig,DICT.MAJOR.dicts,'code')" class="form-control input-sm " name="maJorBig"  data-val-required="必填" data-val="true">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.MAJOR.dicts" value="{{x.dictCode}}" ng-selected="vm.model.maJorBig == x.dictCode">{{x.dictName}}</option>
-				</select> 
-				<span data-valmsg-for="maJorBig" data-valmsg-replace="true" class="errors"></span> 										
-			</td>
-			<td class="formAlignRight">突出专业（小类）<span class="required">*</span></td>
-			<td >
-				<select ng-model="vm.model.maJorSmall" class="form-control input-sm " name="maJorSmall"  data-val-required="必填" data-val="true">
-					<option value="">请选择</option>
-					<option ng-repeat="x in vm.majobSmallDicts" value="{{x.dictCode}}" ng-selected="vm.model.maJorSmall == x.dictCode">{{x.dictName}}</option>
-				</select> 
-				<span data-valmsg-for="maJorSmall" data-valmsg-replace="true" class="errors"></span> 
-			</td>
-			<td class="formAlignRight">专家类别<span class="required">*</span></td>
-			<td >
-				<select ng-model="vm.model.expeRttype" class="form-control input-sm "  name="expeRttype" width="10%" data-val="true" data-val-required="必填">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.EXPERT_TYPE.dicts" ng-selected="vm.model.expeRttype == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select>
-				<span data-valmsg-for="expeRttype" data-valmsg-replace="true" class="errors"></span> 
-			</td>
-			<td class="formAlignRight">区域类别<span class="required">*</span></td>
-			<td>
-				<select ng-model="vm.model.procoSttype" class="form-control input-sm"  data-val="true" data-val-required="必填" name="procoSttype">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.PROCOST_TYPE.dicts" ng-selected="vm.model.procoSttype == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select>
-					<span data-valmsg-for="procoSttype" data-valmsg-replace="true" class="errors"></span> 
-			</td>
-		</tr>
 		<tr>	
 			<td class="formAlignRight">开户行<span class="required">*</span></td>
-			<td colspan="3">
+			<td colspan="2">
 				<input type="text" name="openingBank" id="openingBank" class="form-control input-sm " ng-model="vm.model.openingBank" data-val="true" data-val-required="必填"> 
 				<span data-valmsg-for="openingBank" data-valmsg-replace="true" class="errors"></span> 
 			</td>	
 			<td class="formAlignRight">银行账号<span class="required">*</span></td>
-			<td colspan="3">
+			<td colspan="2">
 				<input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm " ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填"> 
 				<span data-valmsg-for="bankAccount" data-valmsg-replace="true" class="errors"></span> 
 			</td>
+            <td class="formAlignRight">区域类别<span class="required">*</span></td>
+            <td>
+                <select ng-model="vm.model.procoSttype" class="form-control input-sm"  data-val="true" data-val-required="必填" name="procoSttype">
+                    <option value="">请选择</option>
+                    <option ng-repeat="x in DICT.PROCOST_TYPE.dicts" ng-selected="vm.model.procoSttype == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+                </select>
+                <span data-valmsg-for="procoSttype" data-valmsg-replace="true" class="errors"></span>
+            </td>
 		</tr>		
 		<tr>
 			<td height="97" class="formAlignRight">备注</td>
@@ -229,7 +203,7 @@
 	<p class="pro_title_1" style="margin:10px;margin-left:0px;">工作经历</p>		
 	<table class="table table-bordered" id="workTab">
 	  	<tr>
-		  	<td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="pjallChecked" id="pjallChecked"/> </td>
+		  	<td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="workChecked" id="workChecked"/> </td>
 		    <td width="10%" align="center" bgcolor="#eeeeee">开始时间</td>
 		    <td width="10%" align="center" bgcolor="#eeeeee">结束时间</td>
 		    <td width="20%" align="center" bgcolor="#eeeeee">工作单位</td>
@@ -373,4 +347,10 @@
     </form>
 	</div>
 	<!-- E 项目经历弹窗 -->
+
+    <!-- S 专家头像上传  -->
+    <div id="uploadWin" class="well well-sm" style="background:white;display:none;">
+        <input type="file" id="expertphotofile" name="file" id="file" />
+    </div>
+	<!-- E 专家头像上传  -->
 </div>

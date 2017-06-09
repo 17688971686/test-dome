@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -13,6 +14,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import cs.domain.DomainBase;
 
@@ -183,10 +187,9 @@ public class DispatchDoc extends DomainBase{
 	private String secondChargeSuggest;
 	
 	//收文，一对一
-	@OneToOne
-	@JoinColumn(name="signId")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="signId",unique = true)
 	private Sign sign;
-	
 	
 	//编号对应的字段
 	//拟稿人名称

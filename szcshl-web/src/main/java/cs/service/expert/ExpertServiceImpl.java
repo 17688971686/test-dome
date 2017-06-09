@@ -355,4 +355,18 @@ public class ExpertServiceImpl implements ExpertService {
 		return expertRepo.countBySql(hqlBuilder);
 	}
 
+	@Override
+    @Transactional
+	public void savePhone(byte[] bytes, String expertId) {
+		Expert expert = expertRepo.findById(expertId);
+		expert.setPhoto(bytes);
+		expertRepo.save(expert);
+	}
+
+    @Override
+    public byte[] findExpertPhoto(String expertId) {
+        Expert expert = expertRepo.findByIds(Expert_.expertID.getName(),expertId,null).get(0);
+        return expert.getPhoto();
+    }
+
 }

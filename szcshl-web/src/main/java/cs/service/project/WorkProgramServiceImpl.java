@@ -82,7 +82,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 				workProgram.setIsMain(Constant.EnumState.NO.getValue());
 				sign.setIsreviewACompleted(EnumState.YES.getValue());
 			}
-						
+
+			//判断是否是协审流程
+            if(Validate.isString(sign.getIsassistflow()) && EnumState.YES.getValue().equals(sign.getIsassistflow())){
+                sign.setIsNeedWrokPrograml(EnumState.YES.getValue());
+            }
 			workProgram.setSign(sign);			
 			workProgramRepo.save(workProgram);
 						

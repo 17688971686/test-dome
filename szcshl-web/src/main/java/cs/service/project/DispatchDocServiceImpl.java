@@ -1,19 +1,5 @@
 package cs.service.project;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.sql.SelectValues;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
@@ -21,12 +7,7 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.DispatchDoc_;
-import cs.domain.project.MergeDispa;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
+import cs.domain.project.*;
 import cs.domain.sys.Org;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
@@ -38,6 +19,13 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.service.sys.UserService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 public class DispatchDocServiceImpl implements DispatchDocService {

@@ -416,4 +416,47 @@ public class FlowServiceImpl implements FlowService{
 
 		return pageModelDto;
 	}
+
+	@Override
+	public PageModelDto<TaskDto> queryDoingTasks(ODataObj odataObj) {
+		CacheFactory cacheFactory = new DefaultCacheFactory();
+		ICache cache = cacheFactory.getCache();
+
+		PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
+
+		TaskQuery taskQuery = taskService.createTaskQuery();
+		int total = Integer.valueOf(String.valueOf(taskQuery.count()));
+		List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
+		if(tasks != null && tasks.size() > 0){
+			List<TaskDto> list = new ArrayList<TaskDto>(tasks.size());
+			tasks.forEach(t -> {
+				ProcessInstance pi = (ProcessInstance) cache.get(t.getProcessInstanceId());
+				if(pi == null || !Validate.isString(pi.getId())){
+					pi= runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
+					cache.put(t.getProcessInstanceId(), pi);
+				}
+				TaskDto taskDto = new TaskDto();
+				taskDto.setBusinessKey(pi.getBusinessKey());
+				taskDto.setBusinessName(pi.getName());
+				taskDto.setFlowKey(pi.getProcessDefinitionKey());
+				taskDto.setFlowName(pi.getProcessDefinitionName());
+				taskDto.setTaskId(t.getId());
+				taskDto.setTaskName(t.getName());
+				taskDto.setFormKey(t.getFormKey());
+				taskDto.setParentTaskId(t.getParentTaskId());
+				taskDto.setProcessInstanceId(t.getProcessInstanceId());
+				taskDto.setProcessDefinitionId(t.getProcessDefinitionId());
+				taskDto.setProcessVariables(t.getProcessVariables());
+				taskDto.setCreateDate(t.getCreateTime());
+				taskDto.setSuspended(t.isSuspended());
+				taskDto.setTaskDefinitionKey(t.getTaskDefinitionKey());
+				taskDto.setAssignee(t.getAssignee());
+				list.add(taskDto);
+			});
+			pageModelDto.setValue(list);
+		}
+		pageModelDto.setCount(total);
+
+		return pageModelDto;
+	}
 }

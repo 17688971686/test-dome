@@ -65,8 +65,8 @@ public class ExpertReview extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String selectType;
 	
-	@OneToOne
-	@JoinColumn(name="expertId")
+	@ManyToOne
+	@JoinColumn(name="expertId",nullable = false)
 	private Expert expert;
 		
 	@ManyToOne

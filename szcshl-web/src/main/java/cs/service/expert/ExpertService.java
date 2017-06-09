@@ -28,4 +28,8 @@ public interface ExpertService{
 	List<ExpertDto> findExpert(ExpertSelConditionDto[] epSelCondition);
 
     Integer countExpert(ExpertSelConditionDto epSelCondition);
+
+    void savePhone(byte[] bytes, String expertId);
+
+	byte[] findExpertPhoto(String expertId);
 }

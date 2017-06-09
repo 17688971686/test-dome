@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('meetingCtrl', meeting);
+    angular.module('app').controller('meetingCtrl', meeting);
 
     meeting.$inject = ['$location','meetingSvc']; 
 
@@ -11,10 +9,8 @@
         /* jshint validthis:true */
     	var vm = this;
         vm.title = '会议室列表';
-        
 
-        vm.del = function (id) {        	
-        	
+        vm.del = function (id) {
              common.confirm({
             	 vm:vm,
             	 title:"",
@@ -27,7 +23,6 @@
         }
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
-        	
             if (selectIds.length == 0) {
             	common.alert({
                 	vm:vm,
@@ -47,6 +42,7 @@
         vm.queryMeeting = function(){
         	meetingSvc.queryMeeting(vm);
         }
+
         activate();
         function activate() {
             meetingSvc.grid(vm);

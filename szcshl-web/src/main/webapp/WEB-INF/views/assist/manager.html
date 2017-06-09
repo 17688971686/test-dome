@@ -1,0 +1,112 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/sign">项目签收管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar" >
+        1、编制协审项目计划
+    </div>
+    <div class="well well-sm" style="background:white;">
+        修改已有的项目计划审批包：<select ></select> <button class="btn btn-xs btn-danger"  ng-click="vm.doDelete()"><i class="fa fa-times" aria-hidden="true"></i>删除计划审批包</button>
+        <table class="table table-bordered" style="margin-top:10px;">
+            <tr>
+                <td class="formAlignRight">收文编号</td>
+                <td><input ng-model="vm.filterModel.filterFilecode"></td>
+                <td class="formAlignRight">项目代码</td>
+                <td><input ng-model="vm.filterModel.filterProjectCode"></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">项目名称</td>
+                <td><input ng-model="vm.filterModel.filterProjectName" ></td>
+                <td class="formAlignRight">建设单位</td>
+                <td><input ng-model="vm.filterModel.filterBuiltName" ></td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered" style="margin-top:10px;" >
+            <tr >
+                <td >
+                    <p>中心在办核算项目</p>
+                    <table class="table table-bordered scrolltable" width="43%">
+                        <thead style="display:block;">
+                        <tr>
+                            <th style="width: 60px;">选择</th>
+                            <th style="width: 60px;">序号</th>
+                            <th style="width: 180px;">项目名称</th>
+                            <th style="width: 180px;">收文编号</th>
+                            <th style="width: 180px;">建设单位</th>
+                        </tr>
+                        </thead>
+                        <tbody style="display:block; max-height:300px;overflow-y: auto;">
+                        <tr ng-repeat="ss in vm.assistSign | filter:vm.filterSign">
+                            <td style="width: 60px;"><input type="checkbox" name="selASTSign"  value="{{ss.signid}}"/></td>
+                            <td style="width: 60px;">{{ $index + 1}}</td>
+                            <td style="width: 180px;">{{ss.projectname}}</td>
+                            <td style="width: 180px;">{{ss.filecode}}</td>
+                            <td style="width: 180px;">{{ss.builtcompanyName}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td width="14%;" style="text-align:center;vertical-align:middle;">
+                    <p>
+                        <input type="radio" ng-model="vm.planSign.assistType" name="selAssistType" value="独立项目" >独立项目
+                        <span ng-show="vm.planSign.assistType=='独立项目'">
+                            <select ng-model="vm.planSign.spliNum" >
+                                <option ng-repeat="i in vm.splitNumArr" value="{{i}}">{{i}}</option>
+                            </select>
+                            拆分个数
+                        </span>
+                    </p>
+                    <p><input type="radio" ng-model="vm.planSign.assistType" value="合并项目" ng-change="vm.initSplit('合并项目');">合并项目</p>
+                    <p ><button class="btn btn-xs btn-default"  ng-click="vm.affirmSign()"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
+                    <p ><button class="btn btn-xs btn-default"  ng-click="vm.cancelSign()"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
+                </td>
+                <td width="43%">
+                    <p>计划已挑选的项目情况</p>
+                    <table class="table table-bordered scrolltable" width="43%">
+                        <thead style="display:block;">
+                        <tr>
+                            <th style="width: 60px;">选择</th>
+                            <th style="width: 60px;">序号</th>
+                            <th style="width: 180px;">项目名称</th>
+                            <th style="width: 180px;">收文编号</th>
+                            <th style="width: 180px;">建设单位</th>
+                        </tr>
+                        </thead>
+                        <tbody style="display:block; max-height:300px;overflow-y: auto;">
+                        <tr ng-repeat="ss in vm.selAssistSign">
+                            <td style="width: 60px;"><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
+                            <td style="width: 60px;">{{ $index + 1}}</td>
+                            <td style="width: 180px;">{{sas.projectname}}</td>
+                            <td style="width: 180px;">{{sas.filecode}}</td>
+                            <td style="width: 180px;">{{sas.builtcompanyName}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="toolbar" >
+        2、编制协审计划审批表
+    </div>
+    <div class="well well-sm" style="background:white;">
+        <form id="searchform" name="searchform">
+            <span class="help-inline">协审计划名称：</span>
+            <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
+
+            <span class="help-inline" style="margin-left:10px;">办理人员：</span>
+            <input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+
+            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</button>
+        </form>
+        <div id="grid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+    </div>
+</div>

@@ -3,13 +3,10 @@ package cs.domain.project;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.hibernate.annotations.DynamicUpdate;
 
 import cs.domain.DomainBase;
@@ -316,8 +313,8 @@ public class FileRecord extends DomainBase{
 	private Date fileDate;
 
 	//收文，一对一
-	@OneToOne
-	@JoinColumn(name="signId")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="signId",unique = true)
 	private Sign sign;
 		
 	public Sign getSign() {

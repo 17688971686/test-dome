@@ -60,8 +60,8 @@ public class FileController {
 		
 		return sysFileDto;
 	}
-	
-	
+
+
 	@RequestMapping(name = "文件删除", path = "delete",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(@RequestParam(required = true)String sysFileId) throws IOException{

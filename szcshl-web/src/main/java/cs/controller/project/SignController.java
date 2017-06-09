@@ -147,6 +147,13 @@ public class SignController {
 		return ctrlName + "/flowDeal";
 	}
 
+	@RequiresPermissions("sign#html/signFlowDetail#get")
+	@RequestMapping(name = "项目流程详情", path = "html/signFlowDetail", method = RequestMethod.GET)
+	public String signFlowDetail(){
+
+		return ctrlName + "/flowDetail";
+	}
+
     @RequiresPermissions("sign#html/signEndDetails#get")
     @RequestMapping(name = "项目流程处理", path = "html/signEndDetails", method = RequestMethod.GET)
     public String signEndDetails(){
@@ -154,4 +161,11 @@ public class SignController {
         return ctrlName + "/signEndDetails";
     }
 	/***************************************  E 新流程处理的方法     *******************************************/
+
+
+    @RequestMapping(name = "查找项目概算", path = "findAssistSign",method=RequestMethod.GET)
+    public @ResponseBody List<SignDto> findAssistSign()  {
+
+        return signService.findAssistSign();
+    }
 }

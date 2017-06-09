@@ -19,6 +19,12 @@
                 controller: 'adminCtrl',
                 controllerAs: 'vm'
             })
+            .state('dtasks', {
+                url: '/dtasks',
+                templateUrl: rootPath + '/admin/dtasks.html',
+                controller: 'adminDoingCtrl',
+                controllerAs: 'vm'
+            })
             .state('etasks', {
                 url: '/etasks',
                 templateUrl: rootPath + '/admin/etasks.html',
@@ -231,8 +237,13 @@
                 templateUrl: rootPath + '/sign/html/flowDeal.html',
                 controller: 'signFlowDealCtrl',
                 controllerAs: 'vm'
+            }).state('signFlowDetail', {
+                url: '/signFlowDetail/:signid/:taskId/:processInstanceId',
+                templateUrl: rootPath + '/sign/html/signFlowDetail.html',
+                controller: 'signFlowDetailCtrl',
+                controllerAs: 'vm'
             }).state('signDetails', {//详细信息
-                url: '/signDetails/:signid',
+                url: '/signDetails/:signid/:processInstanceId',
                 templateUrl: rootPath + '/sign/html/signDetails.html',
                 controller: 'signDetailsCtrl',
                 controllerAs: 'vm'
@@ -268,7 +279,15 @@
             	controllerAs: 'vm'
         	})
         	//end#fileRecord
-        	
+            //begin#assistMng
+            .state('assistPlan', {
+                url: '/assistPlan',
+                templateUrl: rootPath + '/assistPlan/html/manager.html',
+                controller: 'assistPlanCtrl',
+                controllerAs: 'vm'
+            })
+            //begin#assistMng
+
         	//start #officeUser
         	.state('officeUserList', {
                 url: '/officeUserList',

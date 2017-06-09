@@ -1,31 +1,26 @@
 package cs.controller.expert;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cs.model.expert.ExpertReviewDto;
+import com.google.gson.JsonObject;
+import cs.model.PageModelDto;
+import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
+import cs.repository.odata.ODataObj;
+import cs.service.expert.ExpertService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.JsonObject;
-
-import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.repository.odata.ODataObj;
-import cs.service.expert.ExpertService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.util.List;
 
 @Controller
 @RequestMapping(name = "专家", path = "expert")
@@ -90,6 +85,36 @@ public class ExpertController {
 			expertService.deleteExpert(id);	
 		}		
 	}
+
+    @RequestMapping(name = "头像上传", path = "uploadPhoto",method=RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void uploadPhoto(HttpServletRequest request, @RequestParam("file")MultipartFile multipartFile,
+                           @RequestParam(required = true)String expertId) throws IOException{
+        expertService.savePhone(multipartFile.getBytes(),expertId);
+    }
+
+    @RequestMapping(name = "显示头像", path = "transportImg",method=RequestMethod.GET)
+    public void transportImg(@RequestParam(required = true)String expertId,HttpServletRequest request,HttpServletResponse response) throws IOException{
+        byte[] photos = expertService.findExpertPhoto(expertId);
+        if(photos != null){
+            OutputStream outputStream = response.getOutputStream();
+            InputStream in = new ByteArrayInputStream(photos);
+            response.setContentType("img/jpeg");
+            response.setCharacterEncoding("utf-8");
+            try {
+                int len = 0;
+                byte[] buf=new byte[1024];
+                while((len = in.read(buf,0,1024))!=-1){
+                    outputStream.write(buf, 0, len);
+                }
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 	
 	@RequiresPermissions("expert#findById#post")
 	@RequestMapping(name = "初始化详情页面", path = "findById",method=RequestMethod.GET)	
@@ -117,34 +142,35 @@ public class ExpertController {
 	public String list() {
 		return ctrlName + "/queryReList";
 	}
+
 	@RequiresPermissions("expert#html/edit#get")
 	@RequestMapping(name = "编辑专家页面", path = "html/edit", method = RequestMethod.GET)
 	public String edit() {
-		//userService.createUser(userDto);
+
 		return ctrlName + "/edit";
 	}
 	@RequiresPermissions("expert#html/queryAllList#get")
 	@RequestMapping(name = "专家综合查询页面", path = "html/queryAllList", method = RequestMethod.GET)
 	public String query() {
-		//userService.createUser(userDto);
+
 		return ctrlName + "/queryAllList";
 	}
 	@RequiresPermissions("expert#html/audit#get")
 	@RequestMapping(name = "专家审核页面", path = "html/audit", method = RequestMethod.GET)
 	public String audit() {
-		//userService.createUser(userDto);
+
 		return ctrlName + "/audit";
 	}
 	@RequiresPermissions("expert#html/workExpe#get")
 	@RequestMapping(name = "工作经验", path = "html/workExpe", method = RequestMethod.GET)
 	public String workExpe() {
-		//userService.createUser(userDto);
+
 		return ctrlName + "/workExpe";
 	}
 	@RequiresPermissions("expert#html/projectExpe#get")
 	@RequestMapping(name = "项目经验", path = "html/projectExpe", method = RequestMethod.GET)
 	public String projectExpe() {
-		//userService.createUser(userDto);
+
 		return ctrlName + "/projectExpe";
 	}
 }

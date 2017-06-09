@@ -5,7 +5,7 @@ import cs.model.PageModelDto;
 <#if info.Dto??>
 import ${info.DtoLayer}.${info.Dto};
 </#if>
-import cs.repo.odata.ODataObj;
+import cs.repository.odata.ODataObj;
 
 /**
  * Description: ${info.comment!''} 业务操作接口

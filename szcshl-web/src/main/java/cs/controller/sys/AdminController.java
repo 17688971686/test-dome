@@ -50,6 +50,14 @@ public class AdminController {
 		return ctrlName + "/gtasks";
 	}
 
+
+	@RequiresPermissions("admin#dtasks#get")
+	@RequestMapping(name = "办结事项", path = "dtasks")
+	public String dtasks(Model model) {
+
+		return ctrlName + "/dtasks";
+	}
+
 	@RequiresPermissions("admin#etasks#get")
 	@RequestMapping(name = "办结事项", path = "etasks")
 	public String etasks(Model model) {

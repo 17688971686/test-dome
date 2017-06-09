@@ -82,10 +82,18 @@ public class FlowController {
     private OrgService orgService;
 	
 	@RequiresPermissions("flow#html/tasks#post")
-	@RequestMapping(name = "个人待办流程", path = "html/tasks",method=RequestMethod.POST)
+	@RequestMapping(name = "待办任务", path = "html/tasks",method=RequestMethod.POST)
 	public @ResponseBody PageModelDto<TaskDto> tasks(HttpServletRequest request) throws ParseException  {	
 		ODataObj odataObj = new ODataObj(request);				
 		PageModelDto<TaskDto> pageModelDto = flowService.queryGTasks(odataObj);				
+		return pageModelDto;
+	}
+
+	@RequiresPermissions("flow#html/doingtasks#post")
+	@RequestMapping(name = "在办任务", path = "html/doingtasks",method=RequestMethod.POST)
+	public @ResponseBody PageModelDto<TaskDto> doingtasks(HttpServletRequest request) throws ParseException  {
+		ODataObj odataObj = new ODataObj(request);
+		PageModelDto<TaskDto> pageModelDto = flowService.queryDoingTasks(odataObj);
 		return pageModelDto;
 	}
 	
@@ -98,7 +106,7 @@ public class FlowController {
 	}
 
 	@RequiresPermissions("flow#html/endTasks#post")
-	@RequestMapping(name = "已办结流程", path = "html/endTasks",method=RequestMethod.POST)
+	@RequestMapping(name = "办结任务", path = "html/endTasks",method=RequestMethod.POST)
 	public @ResponseBody PageModelDto<TaskDto> endTasks(HttpServletRequest request) throws ParseException  {
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<TaskDto> pageModelDto = flowService.queryETasks(odataObj);
@@ -174,10 +182,11 @@ public class FlowController {
 
             Map<String,Object> businessMap = new HashMap<>();
 		    switch (flowDto.getCurNode().getActivitiId()){
+		        /**************************   S 项目签收流程  ****************************/
                 case Constant.FLOW_ZHB_SP_SW://综合部拟办
                     businessMap.put("viceDirectors",userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
                     break;
-                case Constant.FLOW_FGLD_SP_SW://综合部拟办
+                case Constant.FLOW_FGLD_SP_SW://分管领导分办
                     businessMap.put("orgs",orgService.listAll());
                     break;
                 case Constant.FLOW_BM_FB1://选择项目负责人
@@ -186,6 +195,19 @@ public class FlowController {
                 case Constant.FLOW_BM_FB2://选择项目负责人
                     businessMap.put("users",userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
                     break;
+                /**************************   E 项目签收流程  ****************************/
+
+                /**************************   S 协审流程环节信息(大部分和项目签收流程一致)  ****************************/
+                case Constant.FLOW_XS_ZHBBL://综合部拟办
+                    businessMap.put("viceDirectors",userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
+                    break;
+                case Constant.FLOW_XS_FGLD_SP://分管领导审批
+                    businessMap.put("xsOrgs",orgService.listAll());
+                    break;
+                case Constant.FLOW_XS_BMFB://选择项目负责人
+                    businessMap.put("users",userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
+                    break;
+                /**************************   E 协审流程环节信息  ****************************/
                 default:
             }
             flowDto.setBusinessMap(businessMap);

@@ -36,7 +36,7 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 		List<${info.beanName}Dto> resultDtoList = new ArrayList<${info.beanName}Dto>(resultList.size());
 		
 		if(resultList != null && resultList.size() > 0){
-			${info.beanName}List.forEach(x->{
+            resultDtoList.forEach(x->{
 				${info.beanName}Dto modelDto = new ${info.beanName}Dto();
 				BeanCopierUtils.copyProperties(x, modelDto);
 				//cannot copy 
@@ -61,8 +61,6 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 		domain.setModifiedBy(currentUser.getLoginName());
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
-		domain.setDeptId(UUID.randomUUID().toString());
-		domain.setStatus(EnumState.NORMAL.getValue());
 		${info.beanName?uncap_first}Repo.save(domain);
 	}
 
@@ -90,21 +88,7 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 	@Override
 	@Transactional
 	public void delete(String id) {
-		String[] ids = id.split(",");
-        if (ids.length > 1) {
-        	int l = ids.length;
-        	List<${info.beanName}> deleteList = new ArrayList<${info.beanName}>(l);
-        	for(int i=0;i<l;i++){
-        		${info.beanName} domain = ${info.beanName?uncap_first}Repo.findById(ids[i]);
-        		domain.setStatus(EnumState.DELETE.getValue());
-        		deleteList.add(domain);
-        	}
-        	${info.beanName?uncap_first}Repo.bathUpdate(deleteList);
-        } else {
-        	${info.beanName} domain = ${info.beanName?uncap_first}Repo.findById(id);
-        	domain.setStatus(EnumState.DELETE.getValue());
-        	${info.beanName?uncap_first}Repo.save(domain);
-        }	
+
 	}
 	
 }

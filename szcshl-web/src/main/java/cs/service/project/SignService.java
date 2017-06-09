@@ -46,4 +46,6 @@ public interface SignService{
 	ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception;
 
     ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto)throws Exception;
+
+    List<SignDto> findAssistSign();
 }

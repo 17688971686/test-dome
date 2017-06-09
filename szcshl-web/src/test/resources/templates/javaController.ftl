@@ -32,8 +32,8 @@ public class ${fileName!''} {
     @Autowired
     private ${info.beanName!''}Service ${info.beanName?uncap_first}Service;
 
-    @RequiresPermissions("${info.beanName?uncap_first}##get")
-    @RequestMapping(name = "获取数据", path = "", method = RequestMethod.GET)
+    @RequiresPermissions("${info.beanName?uncap_first}#findByOData#post")
+    @RequestMapping(name = "获取数据", path = "", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<${info.beanName}Dto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -45,11 +45,10 @@ public class ${fileName!''} {
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody ${info.beanName}Dto record) {
-        ${info.beanName?uncap_first}Service.create(record);
+        ${info.beanName?uncap_first}Service.save(record);
     }
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
-	@Transactional
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody ${info.beanName}Dto findById(@RequestParam(required = true)String id){		
 		return ${info.beanName?uncap_first}Service.findById(id);
 	}

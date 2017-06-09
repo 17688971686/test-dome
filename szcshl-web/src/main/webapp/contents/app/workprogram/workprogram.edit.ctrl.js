@@ -21,7 +21,7 @@
         	workprogramSvc.initPage(vm);
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
             workprogramSvc.findCompanys(vm);//查找主管部门
-            workprogramSvc.waitProjects(vm);//待选项目列表
+            //workprogramSvc.waitProjects(vm);//待选项目列表
         }
         //保存合并评审
         vm.mergeAddWork = function(vm){

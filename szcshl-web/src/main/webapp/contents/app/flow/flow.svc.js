@@ -135,6 +135,12 @@
                                 vm.BM_FB = true;
                                 vm.users = vm.flow.businessMap.users;
                             }
+                            //协审分管领导审批
+                            if(vm.flow.businessMap.xsOrgs){
+                                vm.businessTr = true;
+                                vm.XS_FGLD_SP_SW = true;
+                                vm.xsOrgs = vm.flow.businessMap.xsOrgs;
+                            }
                         }
 						signFlowSvc.initBusinessParams(vm);
 					}

@@ -38,4 +38,6 @@ public interface FlowService {
 	PageModelDto<TaskDto> queryGTasks(ODataObj odataObj);
 
     PageModelDto<TaskDto> queryETasks(ODataObj odataObj);
+
+    PageModelDto<TaskDto> queryDoingTasks(ODataObj odataObj);
 }

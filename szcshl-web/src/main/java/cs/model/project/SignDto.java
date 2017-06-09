@@ -2,13 +2,11 @@ package cs.model.project;
 
 
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-import cs.domain.project.FileRecord;
 import cs.model.BaseDto;
 import cs.model.sys.OrgDto;
 
@@ -85,12 +83,14 @@ public class SignDto extends BaseDto {
 	
 	private String issign;
 	
+	private String isassistflow;
+	
 	private String ishasreviewcost;
 	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date signdate;
 	
-	private BigDecimal surplusdays;
+	private Float surplusdays;
 	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date expectdispatchdate;
@@ -98,9 +98,9 @@ public class SignDto extends BaseDto {
 	@JSONField(format = "yyyy-MM-dd")
 	private Date receivedate;
 	
-	private BigDecimal daysafterdispatch;
+	private Float daysafterdispatch;
 	
-	private BigDecimal reviewdays;
+	private Float reviewdays;
 	
 	private String isassistproc;
 	
@@ -110,7 +110,7 @@ public class SignDto extends BaseDto {
 	
 	private String ispause;
 	
-	private BigDecimal pausedays;
+	private Float pausedays;
 	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date pausetime;
@@ -336,6 +336,8 @@ public class SignDto extends BaseDto {
 	//结束时间
 	@JSONField(format = "yyyy-MM-dd")
 	private Date endTime;
+
+	private String isNeedWrokPrograml;
 
 	public Date getStartTime() {
 		return startTime;
@@ -592,14 +594,14 @@ public class SignDto extends BaseDto {
 		this.signdate = signdate;
 	}
 	
-	public BigDecimal getSurplusdays(){
+	public Float getSurplusdays() {
 		return surplusdays;
 	}
-	
-	public void setSurplusdays(BigDecimal surplusdays){
+
+	public void setSurplusdays(Float surplusdays) {
 		this.surplusdays = surplusdays;
 	}
-	
+
 	public Date getExpectdispatchdate(){
 		return expectdispatchdate;
 	}
@@ -615,23 +617,31 @@ public class SignDto extends BaseDto {
 	public void setReceivedate(Date receivedate){
 		this.receivedate = receivedate;
 	}
-	
-	public BigDecimal getDaysafterdispatch(){
+
+	public Float getDaysafterdispatch() {
 		return daysafterdispatch;
 	}
-	
-	public void setDaysafterdispatch(BigDecimal daysafterdispatch){
+
+	public void setDaysafterdispatch(Float daysafterdispatch) {
 		this.daysafterdispatch = daysafterdispatch;
 	}
-	
-	public BigDecimal getReviewdays(){
+
+	public Float getReviewdays() {
 		return reviewdays;
 	}
-	
-	public void setReviewdays(BigDecimal reviewdays){
+
+	public void setReviewdays(Float reviewdays) {
 		this.reviewdays = reviewdays;
 	}
-	
+
+	public Float getPausedays() {
+		return pausedays;
+	}
+
+	public void setPausedays(Float pausedays) {
+		this.pausedays = pausedays;
+	}
+
 	public String getIsassistproc(){
 		return isassistproc;
 	}
@@ -639,22 +649,6 @@ public class SignDto extends BaseDto {
 	public void setIsassistproc(String isassistproc){
 		this.isassistproc = isassistproc;
 	}
-	
-	/*public String getMainchargeuserid(){
-		return mainchargeuserid;
-	}
-	
-	public void setMainchargeuserid(String mainchargeuserid){
-		this.mainchargeuserid = mainchargeuserid;
-	}
-	
-	public String getReviewdeptid(){
-		return reviewdeptid;
-	}
-	
-	public void setReviewdeptid(String reviewdeptid){
-		this.reviewdeptid = reviewdeptid;
-	}*/
 	
 	public String getFilenum(){
 		return filenum;
@@ -679,14 +673,7 @@ public class SignDto extends BaseDto {
 	public void setIspause(String ispause){
 		this.ispause = ispause;
 	}
-	
-	public BigDecimal getPausedays(){
-		return pausedays;
-	}
-	
-	public void setPausedays(BigDecimal pausedays){
-		this.pausedays = pausedays;
-	}
+
 	
 	public Date getPausetime(){
 		return pausetime;
@@ -1343,5 +1330,19 @@ public class SignDto extends BaseDto {
 		this.ministerDate = ministerDate;
 	}
 	
-	
+    public String getIsassistflow() {
+        return isassistflow;
+    }
+
+    public void setIsassistflow(String isassistflow) {
+        this.isassistflow = isassistflow;
+    }
+
+    public String getIsNeedWrokPrograml() {
+        return isNeedWrokPrograml;
+    }
+
+    public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
+        this.isNeedWrokPrograml = isNeedWrokPrograml;
+    }
 }

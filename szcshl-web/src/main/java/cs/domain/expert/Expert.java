@@ -109,6 +109,9 @@ public class Expert extends DomainBase {
 	@Column(columnDefinition="varchar(30) ")
 	private String state;	//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
 
+    @Column(columnDefinition = "BLOB")
+    public byte[] photo;    //专家照片
+
 	@OneToMany(mappedBy="expert")
 	private List<WorkExpe> work;
 	
@@ -309,5 +312,12 @@ public class Expert extends DomainBase {
 	public void setExpertNo(String expertNo) {
 		this.expertNo = expertNo;
 	}
-	
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
 }

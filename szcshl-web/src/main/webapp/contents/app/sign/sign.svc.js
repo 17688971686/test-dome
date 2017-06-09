@@ -16,22 +16,8 @@
 			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptName :findOfficeUsersByDeptName,//根据协办部门名称查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			//checkboxAdd:checkboxAdd,//点击输入框默认输入 1
-			
 		};
-		return service;	
-		
-		//S_点击输入框默认输入1
-		/*function checkboxAdd(vm){
-			if(vm.model.sugFileDealOriginal==null){
-				vm.model.sugFileDealCount=1;
-				}if(vm.model.sugFileDealOriginal==9){
-				vm.model.sugFileDealCount="";
-				}if(vm.model.sugFileDealOriginal==0){
-				vm.model.sugFileDealCount=1;
-			}
-		}*/
-		//E_点击输入框默认输入1
+		return service;
 
 		//S_初始化grid
 		function grid(vm){
@@ -84,12 +70,7 @@
 					{
 						field : "designcompanyName",
 						title : "项目单位",
-						width : 100,
-						filterable : false,
-					},
-					{
-						title : "收文编号",
-						width : 160,
+						width : 200,
 						filterable : false,
 					},
 					{
@@ -148,9 +129,9 @@
 								if(item.folwState == 2){
 									hideRestartButton = false;
 								}																								
-							}						
+							}
 							return common.format($('#columnBtns').html(), item.signid, item.folwState,
-									item.signid,"vm.del('" + item.signid + "')",isFlowStart,
+                                    item.signid+"/"+ item.processInstanceId,"vm.del('" + item.signid + "')",isFlowStart,
 									"vm.startNewFlow('" + item.signid + "')", isFlowStart,
 									"vm.stopFlow('" + item.signid + "')", hideStopButton,
 									"vm.restartFlow('" + item.signid + "')", hideRestartButton);
@@ -366,7 +347,6 @@
 					vm:vm,
 					response:response,
 					fn:function() {
-					    console.log(response.data);
 						vm.model = response.data;													
 					}					
 				})
@@ -417,7 +397,9 @@
                             vm.fileRecord = vm.model.fileRecordDto;
                         }	
                         //先加载完业务数据，再加载流程业务数据
-                    	flowSvc.getFlowInfo(vm);
+						if(vm.dealFlow){
+                            flowSvc.getFlowInfo(vm);
+						}
 					}
 				});
 			}

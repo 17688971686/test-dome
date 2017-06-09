@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import cs.domain.project.WorkProgram;
 import org.hibernate.annotations.Formula;
 
@@ -61,7 +63,7 @@ public class RoomBooking extends DomainBase{
 	private String remark;//备注
 
 	//工作方案Id
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="workProgramId")
 	private WorkProgram workProgram;
 

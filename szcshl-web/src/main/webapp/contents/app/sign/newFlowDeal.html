@@ -19,11 +19,7 @@
 			</tr>				
 		    <tr>
 		      <td width="10%" class="text-center">审批意见</td>
-		      <td>
-		    
-		     <!--  <span ng-repeat="x in DICT.REVIEW_IDEA.dicts" class="check">
-		    	  <input type="checkbox" value="{{x.dictName}}"  name="{{x.dictName}}" id="{{x.dictName}}" ng-checked="vm.selected(x.dictName)" ng-click="vm.updateSelect($event,x.dictName)" >{{x.dictName}}
-		      </span> -->
+		      <td>		    
 		      		<textarea rows="3" ng-model="vm.flow.dealOption"  name="dealOption" id="dealOption" style="width:100%" data-val="true" data-val-required="处理意见不能为空！" data-val-length-max="2000" ></textarea> 
 			  		<span data-valmsg-for="dealOption" data-valmsg-replace="true" class="errors"></span> 
 			  		<button class="btn btn-sm btn-primary" ng-click="vm.ideaEdit({targetId:'dealOption'})" >编辑</button>
@@ -88,6 +84,58 @@
 					<button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit" ng-show="vm.FW_SQ" ><span class="glyphicon glyphicon-edit"></span>发文</button>	
 					<!-- 归档 -->
 					<button class="btn btn-xs btn-primary" ng-click="vm.addDoFile()" ng-disabled="vm.isCommit" ng-show="vm.MFZR_GD" ><span class="glyphicon glyphicon-edit"></span>归档</button>
+
+                    <!--*********  以下是协审流程 *******-->
+                    <!--协审选择部门-->
+                    <div ng-show="vm.XS_FGLD_SP_SW" style="width:300px;">
+                          <table class="table table-bordered" id="xs_table">
+                              <caption class="text-center">选择主办部门</caption>
+                              <tr>
+                                  <td width="40%" align="center">部门名称</td>
+                                  <td width="20%" align="center">主办部门</td>
+                                  <td width="20%" align="center">分管部门</td>
+                              </tr>
+                              <tr ng-repeat="x in vm.xsOrgs|filter:{charge:true}">
+                                  <td align="center">{{x.name}}</td>
+                                  <td align="center"><input type="checkbox" selectType="xs_main" id="xs_main_{{x.id}}" ng-click="vm.checkBoxSingle($event,'xs_main')" value="{{x.id}}"/></td>
+                                  <td align="center"><span >是</span> </td>
+                              </tr>
+                              <tr ng-repeat="x in vm.xsOrgs|filter:{charge:false}">
+                                  <td align="center">{{x.name}}</td>
+                                  <td align="center"><input type="checkbox" selectType="xs_main" id="xs_main_{{x.id}}" ng-click="vm.checkBoxSingle($event,'xs_main')" value="{{x.id}}"/></td>
+                                  <td align="center"><span >否</span> </td>
+                              </tr>
+                          </table>
+                    </div>
+                    <!-- 协审工作方案 -->
+                    <div ng-show="vm.XS_XMFZR_GZFA">
+                        <p>
+                            是否需要项目评审：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isNeedWrokPrograml" name="isNeedWrokPrograml"  ng-true-value="9" ng-false-value="0" >
+                            <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit" ng-show="vm.model.isNeedWrokPrograml == 9" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
+                        </p>
+                        <p>
+                            是否协审项目：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isassistproc" name="isassistproc" ng-checked="vm.model.isassistproc == 9" ng-disabled="true" >
+                            <table class="table table-bordered" >
+                                <tr>
+                                    <td width="5%" align="center">序号</td>
+                                    <td width="50%" align="center">项目名称</td>
+                                    <td width="15%" align="center">协审单位</td>
+                                    <td width="15%" align="center">协审金额</td>
+                                    <td width="10%" align="center">协审时间</td>
+                                    <td width="5%" align="center">类型</td>
+                                </tr>
+                                <tr ng-repeat="x in vm.assistInfo">
+                                    <td align="center">{{x.name}}</td>
+                                    <td align="center">{{}}</td>
+                                    <td align="center">{{}}</td>
+                                    <td align="center">{{x.assistCost}}</td>
+                                    <td align="center">{{x.assistDays}}</td>
+                                    <td align="center">{{x.assistType}}</td>
+                                </tr>
+                            </table>
+                        </p>
+                    </div>
+
 			  </td>
 			</tr>											
 		</tbody>

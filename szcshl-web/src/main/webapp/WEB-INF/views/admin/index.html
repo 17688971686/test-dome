@@ -146,6 +146,11 @@ desired effect
 	                        	<span class="label label-danger" id="GtasksCount">0</span>
 	                        </a>
                         </li>
+                        <li>
+                            <a href="javascript:void(0)"  ui-sref="dtasks">
+                                <i class="glyphicon glyphicon-tasks"></i>在办任务
+                            </a>
+                        </li>
                          <li>
                          	<a href="javascript:void(0)" ui-sref="listSign">
                          		<i class="glyphicon glyphicon-list"></i>项目列表
@@ -178,7 +183,7 @@ desired effect
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
-                        <!-- <li><a href="javascript:void(0)" ui-sref="flowSign">项目待处理</a></li> -->
+                        <li><a href="javascript:void(0)" ui-sref="assistPlan">协审计划管理</a></li>
                     </ul>
                 </li>
                 <!-- end 项目签收-->
@@ -344,6 +349,10 @@ desired effect
 <script src="${path}/contents/libs/jsLinq/jslinq.min.js"></script>
 <!-- AdminLTE App -->
 <script src="${path}/contents/libs/adminLTE/dist/js/app.js"></script>
+<!--upload-->
+<script src="${path}/contents/libs/fileinput/fileinput.js"></script>
+<script src="${path}/contents/libs/fileinput/zh.js"></script>
+<link rel="stylesheet" href="${path}/contents/libs/fileinput/fileinput.css">
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
@@ -395,7 +404,7 @@ desired effect
 <!--&lt;!&ndash; flow &ndash;&gt;-->
 <!--<script src="${path}/contents/app/flow/flow.svc.js?version = ${.now}"></script>-->
 <!--&lt;!&ndash; sign &ndash;&gt;-->
-<!--<script src="${path}/contents/app/sign/sign.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/assit.svc.js?version = ${.now}"></script>-->
 <!--<script src="${path}/contents/app/sign/sign.ctrl.js?version = ${.now}"></script>-->
 <!--<script src="${path}/contents/app/sign/sign.create.ctrl.js?version = ${.now}"></script>-->
 <!--<script src="${path}/contents/app/sign/sign.fillin.ctrl.js?version = ${.now}"></script>-->

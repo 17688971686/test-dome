@@ -20,7 +20,8 @@
 			repeatGrid : repeatGrid,		//重复专家查询
 			updateAudit : updateAudit,		//专家评审
 			toAudit : toAudit,				//由个状态回到审核状态
-			auditTo : auditTo				//由审核状态去到各个状态
+			auditTo : auditTo,				//由审核状态去到各个状态
+            initUpload : initUpload,        //初始化附件上传
 		};
 		return service;				
 		
@@ -115,7 +116,7 @@
 						vm : vm,
 						response : response,
 						fn : function() {
-							vm.model.expertID=response.data.expertID;						
+							vm.model.expertID = response.data.expertID;
 							vm.isUpdate=true;
 							vm.showBt=true;	
 							vm.isSubmit = false;	
@@ -143,7 +144,7 @@
 				method : 'get',
 				url : url_expert+"/findById",
 				params:{
-					id:vm.id
+					id:vm.expertID
 				}
 			}
 			var httpSuccess = function success(response) {
@@ -156,7 +157,9 @@
 				if(response.data.project && response.data.project.length > 0){
 					vm.projectkHistory = true;
 					vm.project=response.data.project;					
-				}											
+				}
+                initUpload(vm);
+                $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
 			} 
 			common.http({
 				vm : vm,
@@ -611,6 +614,27 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//end updateAudit				
+		}//end updateAudit
+
+        //S_initUpload
+        function initUpload(vm){
+            var projectfileoptions = {
+                language : 'zh',
+                allowedPreviewTypes : ['image'],
+                allowedFileExtensions : [ 'jpg', 'png', 'gif' ],
+                maxFileSize : 2000,
+                showRemove: false,
+                uploadUrl:rootPath + "/expert/uploadPhoto",
+                uploadExtraData:{expertId:vm.model.expertID}
+            };
+            $("#expertphotofile").fileinput(projectfileoptions).on("filebatchselected", function(event, files){
+
+            }).on("fileuploaded", function(event, data) {
+                $("#expertPhotoSrc").removeAttr("src");
+                $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
+            });
+        }//E_initUpload
+
+
 	}
 })();

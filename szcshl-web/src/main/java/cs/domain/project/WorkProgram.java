@@ -1,5 +1,7 @@
 package cs.domain.project;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import cs.domain.DomainBase;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelCondition;
@@ -208,20 +210,20 @@ public class WorkProgram extends DomainBase{
 	@Column(columnDefinition="Integer")
 	private Integer selCount;       //专家抽取次数
 	//收文，一对一
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="signId")
 	private Sign sign;
 
 	//专家评审方案
-	@OneToMany(mappedBy="workProgram")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="workProgram")
 	private List<ExpertReview> expertReviews;
 
 	//专家抽取条件
-	@OneToMany(mappedBy="workProgram")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="workProgram")
 	private List<ExpertSelCondition> epSelConditions;
 
 	//会议预定信息
-	@OneToMany(mappedBy="workProgram")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="workProgram")
 	private List<RoomBooking> roomBookings;
 
 	public Sign getSign() {

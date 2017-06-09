@@ -1,21 +1,13 @@
 package cs.domain.project;
 
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
+import cs.domain.DomainBase;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
-import cs.domain.DomainBase;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 设置为动态更新，只更新有修改的字段
@@ -174,7 +166,7 @@ public class Sign extends DomainBase{
 	
 	//剩余工作日
 	@Column(columnDefinition="NUMBER")
-	private BigDecimal surplusdays;
+	private Float surplusdays;
 	
 	//预计发文时间
 	@Column(columnDefinition="DATE")
@@ -186,24 +178,20 @@ public class Sign extends DomainBase{
 	
 	//发文后工作日
 	@Column(columnDefinition="NUMBER")
-	private BigDecimal daysafterdispatch;
+	private Float daysafterdispatch;
 	
 	//评审天数
 	@Column(columnDefinition="NUMBER")
-	private BigDecimal reviewdays;
+	private Float reviewdays;
 	
 	//是否协审
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isassistproc;
-	
-	//项目主负责人
-	//@Column(columnDefinition="VARCHAR(64)")
-	//private String mainchargeuserid;
-	
-	//评审部门
-	//@Column(columnDefinition="VARCHAR(64)")
-	//private String reviewdeptid;
-	
+
+    //是否协审流程
+    @Column(columnDefinition="VARCHAR(2)")
+	private String isassistflow;
+
 	//归档编号
 	@Column(columnDefinition="VARCHAR(100)")
 	private String filenum;
@@ -218,7 +206,7 @@ public class Sign extends DomainBase{
 	
 	//暂停工作日
 	@Column(columnDefinition="NUMBER")
-	private BigDecimal pausedays;
+	private Float pausedays;
 	
 	//暂停时间
 	@Column(columnDefinition="DATE")
@@ -469,15 +457,15 @@ public class Sign extends DomainBase{
 	private String isDispatchCompleted;
 	
 	//工作方案
-	@OneToMany(mappedBy="sign")  
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="sign")
 	private List<WorkProgram> workProgramList;
 	
 	//发文
-	@OneToOne(mappedBy="sign")  
+	@OneToOne(fetch = FetchType.LAZY,mappedBy="sign")
 	private DispatchDoc dispatchDoc;
 	
 	//归档
-	@OneToOne(mappedBy="sign")  
+    @OneToOne(fetch = FetchType.LAZY,mappedBy="sign")
 	private FileRecord fileRecord;
 	
 	//主流程第一负责人ID
@@ -507,7 +495,10 @@ public class Sign extends DomainBase{
 	//流程实例ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String processInstanceId;
-	
+
+	//是否需要项目评审
+	@Column(columnDefinition="VARCHAR(2)")
+	private String isNeedWrokPrograml;
 
 	public String getIschangeEstimate() {
 		return ischangeEstimate;
@@ -713,11 +704,11 @@ public class Sign extends DomainBase{
 		this.signdate = signdate;
 	}
 
-	public BigDecimal getSurplusdays() {
+	public Float getSurplusdays() {
 		return surplusdays;
 	}
 
-	public void setSurplusdays(BigDecimal surplusdays) {
+	public void setSurplusdays(Float surplusdays) {
 		this.surplusdays = surplusdays;
 	}
 
@@ -737,19 +728,19 @@ public class Sign extends DomainBase{
 		this.receivedate = receivedate;
 	}
 
-	public BigDecimal getDaysafterdispatch() {
+	public Float getDaysafterdispatch() {
 		return daysafterdispatch;
 	}
 
-	public void setDaysafterdispatch(BigDecimal daysafterdispatch) {
+	public void setDaysafterdispatch(Float daysafterdispatch) {
 		this.daysafterdispatch = daysafterdispatch;
 	}
 
-	public BigDecimal getReviewdays() {
+	public Float getReviewdays() {
 		return reviewdays;
 	}
 
-	public void setReviewdays(BigDecimal reviewdays) {
+	public void setReviewdays(Float reviewdays) {
 		this.reviewdays = reviewdays;
 	}
 
@@ -801,11 +792,11 @@ public class Sign extends DomainBase{
 		this.ispause = ispause;
 	}
 
-	public BigDecimal getPausedays() {
+	public Float getPausedays() {
 		return pausedays;
 	}
 
-	public void setPausedays(BigDecimal pausedays) {
+	public void setPausedays(Float pausedays) {
 		this.pausedays = pausedays;
 	}
 
@@ -1467,5 +1458,19 @@ public class Sign extends DomainBase{
 		this.ministerDate = ministerDate;
 	}
 	
-	
+	 public String getIsassistflow() {
+        return isassistflow;
+    }
+
+    public void setIsassistflow(String isassistflow) {
+        this.isassistflow = isassistflow;
+    }
+
+	public String getIsNeedWrokPrograml() {
+		return isNeedWrokPrograml;
+	}
+
+	public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
+		this.isNeedWrokPrograml = isNeedWrokPrograml;
+	}
 }
