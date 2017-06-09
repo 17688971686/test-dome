@@ -48,7 +48,6 @@
 
 		//S_initBusinessParams
 		function initBusinessParams(vm){
-
             switch (vm.flow.curNode.activitiId)
             {
                 case "XMFZR_SP_GZFA1":  //项目负责人承办

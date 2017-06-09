@@ -1,6 +1,7 @@
 package cs.controller.project;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class WorkProgramController {
 		workProgramService.save(workProgramDto);
 		return workProgramDto;
 	}
-	
+
 	@RequiresPermissions("workprogram#initWorkBySignId#get")
 	@RequestMapping(name = "工作方案编辑", path = "html/initWorkBySignId",method=RequestMethod.GET)	
 	public @ResponseBody WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId,String isMain){
@@ -44,24 +45,37 @@ public class WorkProgramController {
 	
 	@RequiresPermissions("workprogram#waitProjects#post")
 	@RequestMapping(name = "待选项目列表", path = "waitProjects",method=RequestMethod.POST)	
-	@ResponseBody
-	public List<SignDto> waitProjects(SignDto signDto){
+	public @ResponseBody List<SignDto> waitProjects(@RequestBody SignDto signDto){
 		List<SignDto>	sign = workProgramService.waitProjects(signDto);
 		return sign;
 	}
 	
 	@RequiresPermissions("workprogram#selectedProject#post")
 	@RequestMapping(name = "已选项目列表", path = "selectedProject",method=RequestMethod.POST)
-	public @ResponseBody List<SignDto> selectedProject(@RequestParam(required = true)String linkSignIds){
+	public @ResponseBody List<SignDto> selectedProject(@RequestParam String linkSignIds){
 		String [] ids=linkSignIds.split(",");
 		List<SignDto> signList =workProgramService.selectedProject(ids);
 		return signList;
 	}
 	
-	@RequiresPermissions("workprogram#mergeAddWork#post")
-	@RequestMapping(name = "生成关联信息", path = "mergeAddWork",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void mergeAddWork(@RequestParam String signId,String linkSignId){
+	@RequiresPermissions("workprogram#getInitSeleSignBysId#get")
+	@RequestMapping(name = "初始化已选项目列表", path = "getInitSeleSignBysId",method=RequestMethod.GET)
+	public @ResponseBody Map<String,Object> getInitSeleSignBysId(@RequestParam(required = true) String bussnessId)throws Exception{
+		Map<String,Object> map = workProgramService.getInitSeleSignByIds(bussnessId);
+		return map;
+	}
+	
+	@RequiresPermissions("workprogram#getInitRelateData#post")
+	@RequestMapping(name = "初始化页面获取关联数据", path = "getInitRelateData",method=RequestMethod.POST)
+	public @ResponseBody Map<String,Object> getInitRelateData(@RequestParam(required = true) String signid){
+		 Map<String,Object> map = workProgramService.getInitRelateData(signid);
+		 return map;
+	}
+	
+	@RequiresPermissions("workprogram#mergeAddWork#get")
+	@RequestMapping(name = "保存合并评审", path = "mergeAddWork",method=RequestMethod.GET)	
+	@ResponseBody
+	public  void mergeAddWork(@RequestParam(required = true)  String signId,String linkSignId){
 		
 		workProgramService.mergeAddWork(signId,linkSignId);
 	}

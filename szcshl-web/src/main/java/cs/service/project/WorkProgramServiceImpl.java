@@ -2,12 +2,12 @@ package cs.service.project;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import cs.common.utils.DateUtils;
-import cs.domain.meeting.RoomBooking;
-import cs.model.meeting.RoomBookingDto;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +18,20 @@ import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
+import cs.domain.meeting.RoomBooking;
 import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.domain.sys.User;
+import cs.model.meeting.RoomBookingDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.UserDto;
+import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.sys.UserService;
@@ -43,6 +47,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	private SignRepo signRepo;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private MergeDispaRepo mergeDispaRepo;
 	
 	@Override
 	@Transactional
@@ -59,7 +65,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 				workProgram.setCreatedDate(now);
 			}else{
 				workProgram = workProgramRepo.findById(workProgramDto.getId());
-				BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);					
+				BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);	
+				//判断是否是单个评审和次项目,删除关联项目
+				if(workProgramDto.getIsSigle().equals(Constant.EnumState.PROCESS.getValue()) ||workProgramDto.getIsMainProject().equals(Constant.EnumState.NO.getValue()) ){
+					this.deleteMegreWokr(workProgram.getId());
+				}
 			}
 
 			workProgram.setModifiedBy(currentUser.getLoginUser().getId());
@@ -98,6 +108,18 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 			log.info("工作方案添加操作：无法获取收文ID（SignId）信息");
 			throw new Exception(Constant.ERROR_MSG);
 		}
+	}
+	
+	/**
+	 * 删除项目关联
+	 */
+	@Transactional
+	public void deleteMegreWokr(String workId){
+		MergeDispa merge = mergeDispaRepo.getById(workId);
+		if(merge !=null){
+			mergeDispaRepo.delete(merge);
+		}
+		
 	}
 
 	/**
@@ -216,21 +238,61 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 		return (curUser.getId()).equals(sign.getaFlowAssistUserId()) || (curUser.getId()).equals(sign.getaFlowMainUserId());
 	}
 
+	//待选项目列表
 	@Override
 	public List<SignDto> waitProjects(SignDto signDto) {
-		List<Sign> signlist= signRepo.findAll();
-		List<SignDto> signDtolist = new ArrayList<>();
-		if(signlist != null && signlist.size() > 0){
-			signlist.forEach(x->{
-				SignDto signdto = new SignDto();
-				BeanCopierUtils.copyProperties(x, signdto);
-				signdto.setCreatedDate(x.getCreatedDate());
-				signdto.setModifiedDate(x.getModifiedDate());
-				signDtolist.add(signdto);
-			});
+		
+		HqlBuilder hqlBuilder = HqlBuilder.create(" from " + Sign.class.getSimpleName()).append(" where ");
+		if (StringUtils.isNotBlank(signDto.getSignid())) {
+			String[] linkSids = signDto.getSignid().split(",");
+			hqlBuilder.append(Sign_.signid.getName()).append(" not in( ");
+			for (int i = 0, j = 0; i < linkSids.length; i++) {
+				if (StringUtils.isNotBlank(linkSids[i])) {
+					if (j != 0) {
+						hqlBuilder.append(",");
+					}
+					hqlBuilder.append(":linkSids" + i).setParam("linkSids" + i, linkSids[i]);
+					j++;
+				}
+			}
+			hqlBuilder.append(")");
+			hqlBuilder.append(" and ");
 			
 		}
-		return signDtolist;
+		//是否完成发文
+		hqlBuilder.append(Sign_.isDispatchCompleted.getName())
+			.append(" not in(:isDispatchCompleted,:isDispatchCompleted1)").setParam("isDispatchCompleted", Constant.EnumState.NO.getValue())
+			.setParam("isDispatchCompleted1", "null");
+		//是否发起流程
+		hqlBuilder.append(" and " + Sign_.folwState.getName()).append(" not in(:folwState,:folwState1,:folwState2)")
+			.setParam("folwState", Constant.EnumState.STOP.getValue()).setParam("folwState1", Constant.EnumState.DELETE.getValue()).setParam("folwState2", Constant.EnumState.NO.getValue());
+		//收文状态
+		hqlBuilder.append(" and " + Sign_.signState.getName()).append(" not in(:signState,:signState1,:signState2)")
+			.setParam("signState", Constant.EnumState.STOP.getValue()).setParam("signState1", Constant.EnumState.DELETE.getValue()).setParam("signState2", Constant.EnumState.NO.getValue());
+		
+		if(StringUtils.isNotBlank(signDto.getProjectname())){
+			hqlBuilder.append(" and "+Sign_.projectname.getName()).append("=:projectname").setParam("projectname", signDto.getProjectname());
+		}
+		if(StringUtils.isNoneBlank(signDto.getBuiltcompanyName())){
+			hqlBuilder.append(" and "+Sign_.builtcompanyName.getName()).append("=:builtcompanyName").setParam("builtcompanyName", signDto.getBuiltcompanyName());
+		}
+		if(StringUtils.isNotBlank(signDto.getReviewstage())){
+			hqlBuilder.append(" and "+Sign_.reviewstage.getName()).append("=:reviewstage").setParam("reviewstage", signDto.getReviewstage());	
+		}
+		if(signDto.getStartTime()!=null&&signDto.getEndTime()!=null){
+			hqlBuilder.append(" and " + Sign_.signdate.getName()).append(" between ").append(":startTime") .append(" and ").append(":endTime").setParam("startTime", signDto.getStartTime()).setParam("endTime", signDto.getEndTime());
+		}
+		List<Sign> list = signRepo.findByHql(hqlBuilder);
+		List<SignDto> signDtoList = new ArrayList<>();
+		if (list != null && list.size() >0) {
+			list.forEach(x ->{
+				SignDto sDto = new SignDto();
+				BeanCopierUtils.copyProperties(x, sDto);
+				signDtoList.add(sDto);
+			});
+		}
+		
+		return signDtoList;
 	}
 
 	@Override
@@ -241,8 +303,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 				SignDto signDto = new SignDto();
 				Sign s=signRepo.findById(id);
 				BeanCopierUtils.copyProperties(s, signDto);
-				signDto.setCreatedDate(s.getCreatedDate());
-				signDto.setModifiedDate(s.getModifiedDate());
 				signDtos.add(signDto);
 			}
 		}
@@ -266,6 +326,53 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 		merge.setModifiedBy(currentUser.getLoginName());
 		merge.setCreatedDate(now);
 		merge.setModifiedDate(now);
+		mergeDispaRepo.save(merge);
 	}
+
+	@Override
+	public Map<String, Object> getInitSeleSignByIds(String bussnessId) {
+		Map<String,Object> map = new HashMap<>();
+		MergeDispa merge=mergeDispaRepo.getById(bussnessId);
+		List<SignDto> signDtos = null;
+		String linkSignId = "";
+		if(merge!=null && Validate.isString(merge.getBusinessId())){
+			linkSignId= merge.getLinkSignId();
+			signDtos = new ArrayList<>();
+			String [] ids =linkSignId.split(",");
+			if(ids!=null){
+				for(String id :ids){
+					if(Validate.isString(id)){
+						SignDto signDto = new SignDto();
+						Sign sign = signRepo.findById(id);
+						BeanCopierUtils.copyProperties(sign, signDto);
+						signDto.setCreatedDate(sign.getCreatedDate());
+						signDto.setModifiedDate(sign.getModifiedDate());
+						signDtos.add(signDto);
+					}
+				}
+			}
+		}
+		map.put("signDtoList", signDtos);
+		map.put("linkSignId", linkSignId);
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> getInitRelateData(String signId) {
+		Map<String, Object> map =new HashMap<String,Object>();
+		 String linkSignId ="";
+		Sign sign=	signRepo.findById(signId);
+		List<WorkProgram> work=	sign.getWorkProgramList();
+		for(WorkProgram wp :work){
+			String workId = wp.getId();
+			MergeDispa merge = mergeDispaRepo.getById(workId);
+			if(merge!=null&& Validate.isString(merge.getBusinessId())){
+				linkSignId=merge.getLinkSignId();
+			}
+		}
+		map.put("linkSignId", linkSignId);
+		return map;
+	}
+
 
 }

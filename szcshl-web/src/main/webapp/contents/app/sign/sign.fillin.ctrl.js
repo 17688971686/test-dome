@@ -24,9 +24,9 @@
        vm.findOfficeUsersByDeptName =function(status){
     	   signSvc.findOfficeUsersByDeptName(vm,status);
        }
-//       $("input").click(function(){
-//    	   signSvc.checkboxAdd(vm);
-//       })
+       $("input").click(function(){
+    	   signSvc.checkboxAdd(vm);
+       })
        
     	   
     }

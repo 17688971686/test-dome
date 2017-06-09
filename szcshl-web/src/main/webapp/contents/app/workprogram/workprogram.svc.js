@@ -15,34 +15,84 @@
 			findUsersByOrgId : findUsersByOrgId,//查询评估部门
 			selectExpert:selectExpert,			//选择专家
 			saveRoom:saveRoom,					//添加会议预定
-			ministerSugges:ministerSugges,		//部长处理意见弹窗						
             findAllMeeting:findAllMeeting,      //查找会议室地点
-			gotoProjcet:gotoProjcet,//项目关联
-			waitProjects:waitProjects,//待选项目列表
-			selectedProject:selectedProject,//已选项目列表
+			gotoProjcet:gotoProjcet,			//项目关联弹窗
+			waitProjects:waitProjects,			//待选项目列表
+			selectedProject:selectedProject,	//已选项目列表
 			selectworkProject:selectworkProject,//选择项目
 			cancelworkProject:cancelworkProject,//取消项目
-			mergeAddWork:mergeAddWork,//保存合并评审
+			mergeAddWork:mergeAddWork,			//保存合并评审
+			getInitSeleSignBysId:getInitSeleSignBysId,//初始化已选项目列表
+			getInitRelateData:getInitRelateData,	//初始化关联数据
 		};
 		return service;
+		
+		
+		
+		//S_初始化已选项目列表
+		function getInitSeleSignBysId(vm){
+			 var bussnessId = vm.work.id;
+			var httpOptions = {
+					method : 'get',
+					url : rootPath+"/workprogram/getInitSeleSignBysId",
+					params:{
+						bussnessId: bussnessId
+					}
+				}
+			var httpSuccess = function success(response) {
+				vm.selectedSign=response.data.signDtoList;
+				console.log(vm.selectedSign);
+				vm.linkSignId=response.data.linkSignId;
+				console.log(vm.linkSignId);
+			} 
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		//E_初始化已选项目列表
+		
+		//S_初始化关联数据
+		function getInitRelateData(vm){
+			 var signid = vm.work.signId;
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/workprogram/getInitRelateData",
+						params:{
+							signid: signid
+						}
+					}
+				var httpSuccess = function success(response) {
+					vm.linkSignId=response.data.linkSignId;
+					console.log(vm.linkSignId);
+				} 
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+		
+		}//E_初始化关联数据
 		
 		//S_保存合并评审
 		function mergeAddWork(vm){
 			var httpOptions = {
 					method : 'get',
-					url : rootPath+"/workprogram/workAddDispa",
-					params : {signId : vm.dispatchDoc.signId,linkSignId : vm.linkSignId}						
-				}
-			
+					url : rootPath+"/workprogram/mergeAddWork",
+					params : {signId : vm.work.signId,linkSignId :vm.linkSignId }						
+			}
 			var httpSuccess = function success(response) {					
 				common.requestSuccess({
 					vm:vm,
 					response:response,
 					fn:function(){		
-						window.parent.$("#stageWorkWindow").data("kendoWindow").close();
+						window.parent.$(".workPro").data("kendoWindow").close();
 						common.alert({
 							vm:vm,
-							msg:"操作成功,请继续处理流程！!!",
+							msg:"操作成功",
 							fn:function() {
 								$('.alertDialog').modal('hide');
 								$('.modal-backdrop').remove();
@@ -70,9 +120,10 @@
 					params:{
 						linkSignIds:vm.linkSignId
 					}
-				}
+			}
 			var httpSuccess = function success(response) {
 				vm.selectedSign=response.data;
+				console.log(vm.selectedSign);
 			} 
 			common.http({
 				vm : vm,
@@ -83,9 +134,31 @@
 		}
 		//E_已选项目列表
 		
+		//S_待选项目列表
+		function waitProjects(vm){
+			vm.sign.signid = vm.linkSignId;
+			
+			var httpOptions = {
+	                method: 'post',
+	                url: common.format(url_work + "/waitProjects"),
+	                data:vm.sign
+	            }
+	            var httpSuccess = function success(response) {
+	                vm.signs = {};
+	                vm.signs = response.data;
+	                console.log(vm.signs);
+	            }
+	            common.http({
+	                vm: vm,
+	                $http: $http,
+	                httpOptions: httpOptions,
+	                success: httpSuccess
+	            });
+		}
+		//E_待选项目列表
+		
 		//S_选择取消
 		function cancelworkProject(vm){
-		
 			var idStr=vm.linkSignId;
 			var linkSignId=$("input[name='checkcancel']:checked");
 			if(linkSignId){
@@ -97,16 +170,18 @@
 					}
 				});
 				vm.linkSignId=idStr
-				selectedProject(vm);
-				waitProjects(vm);
+				selectedProject(vm);//已选
+				waitProjects(vm);//待选
 			}
 		}
 		//S_选择取消
 		
 		//S_选择项目
 		function selectworkProject(vm){
+			
 			var idStr=vm.linkSignId;
 			var linkSignId=$("input[name='checkwork']:checked");
+			
 			var ids=[];
 			if(linkSignId){
 				 $.each(linkSignId, function(i, obj) {
@@ -118,35 +193,14 @@
 					 idStr=ids.join(',');
 				 }
 				 vm.linkSignId=idStr;
-				 selectedProject(vm);
-				 waitProjects(vm);
+				 selectedProject(vm);//已选
+				 waitProjects(vm);//待选
 			}
 		}
 		
-		//S_待选项目列表
-		function waitProjects(vm){
-			var httpOptions = {
-	                method: 'post',
-	                url: common.format(url_work + "/waitProjects")
-	            }
-	            var httpSuccess = function success(response) {
-	                vm.signs = {};
-	                vm.signs = response.data;
-	            }
-
-	            common.http({
-	                vm: vm,
-	                $http: $http,
-	                httpOptions: httpOptions,
-	                success: httpSuccess
-	            });
-		}
-		//E_待选项目列表
-
-		
-		//S_关联项目
+		//S_关联项目弹窗
 		function gotoProjcet(vm) {
-			/*if(!vm.dispatchDoc.id){
+			if(!vm.work.id){
 				common.alert({
 					vm:vm,
 					msg:"请先保存再进行关联！",
@@ -156,37 +210,21 @@
 					}
 				})	
 				return;
-			}*/
-			var WorkeWindow = $("#stageWorkWindow");
-			WorkeWindow.kendoWindow({
-				width : "1200px",
-				height : "630px",
-				title : "合并评审",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();
-			getSeleSignBysId(vm);
-			getsign(vm);
+			}
+			 $(".workPro").kendoWindow({
+                 width : "1200px",
+                 height : "630px",
+                 title : "合并评审",
+                 visible : false,
+                 modal : true,
+                 closable : true,
+                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+             }).data("kendoWindow").center().open();
+			 getInitSeleSignBysId(vm);//初始化
+			 waitProjects(vm);//待选
 			
 		}
 		//S_关联项目弹窗			
-		
-		//S_部长处理意见弹窗
-		function ministerSugges(vm){
-			// WorkeWindow.show();
-			$("#ministerSug").kendoWindow({
-				width : "700px",
-				height : "400px",
-				title : "部长处理意见",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();
-		}
-		//E_部长处理意见弹窗
 		
 		// 清空页面数据
 		// begin#cleanValue

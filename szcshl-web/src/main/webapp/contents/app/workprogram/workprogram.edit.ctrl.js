@@ -12,40 +12,76 @@
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00"); 
         vm.work.signId = $state.params.signid;		//这个是收文ID
+        vm.linkSignId=" ";
+        vm.sign = {};						//创建收文对象
         vm.isRoomBook = false;              //是否已经预定了会议时间
         vm.isHavePre = false;               //预定多个会议室的时候，查看上一个
-        vm.isHaveNext = false;              //预定多个会议室的时候，查看下一个
-                       	
+        vm.isHaveNext = false;              //预定多个会议室 的时候，查看下一个
+        
+        vm.isHideProject = true;
+        vm.isHideProject2 = true;
+                	
+        
         activate();
         function activate() {
+//        	workprogramSvc.getInitSeleSignBysId(vm);//初始化已选项目列表
+//        	workprogramSvc.getInitRelateData(vm);
         	workprogramSvc.initPage(vm);
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
             workprogramSvc.findCompanys(vm);//查找主管部门
-            //workprogramSvc.waitProjects(vm);//待选项目列表
+          
+        }
+        //重置
+        vm.formResetWork=function(){
+        	var values=$("#searchformi").find("input,select");
+        	values.val("");
+        }
+        //查询
+        vm.searchWorkSign = function(){
+        	workprogramSvc.waitProjects(vm);
+        }
+        
+        //关闭窗口
+        vm.onWorkClose=function(){
+        	window.parent.$(".workPro").data("kendoWindow").close();
         }
         //保存合并评审
-        vm.mergeAddWork = function(vm){
+        vm.mergeAddWork = function(){
         	workprogramSvc.mergeAddWork(vm);
         }
         //合并评审
         vm.reviewType = function(){
-        	if(vm.work.isSigle=="合并评审"){
-        		var isHide=false;
-        	}else{
-        		var isHide = true;
+       	if(vm.work.isSigle=="1"){
+      		var isHideProject=false;
+       	}
+        if(vm.work.isSigle == vm.work.isMainProject){
+       		common.confirm({
+    	           	 vm:vm,
+    	           	 title:"",
+    	           	 msg:"该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+    	           	 fn:function () {
+   	               	$('.confirmDialog').modal('hide');             	
+    	              }
+    	         })
+       
+        		var isHideProject=false;
         	}
+        	
         }
+        
         //主项目
         vm.mainIschecked = function(){
-        	vm.isHideProject = false;
+        	vm.isHideProject2 = false;
         }
         //次项目
         vm.subIschecked = function(){
-        	vm.isHideProject = true;
+//        	vm.isHideProject2 = true;
+//        	workprogramSvc.subIschecked(vm);
         }
         //项目关联页面
         vm.gotoProjcet = function(){
         	workprogramSvc.gotoProjcet(vm);
+        
         }
         //选择项目
         vm.selectworkProject = function(){
@@ -55,10 +91,12 @@
         vm.cancelworkProject = function(){
         	workprogramSvc.cancelworkProject(vm);
         }
+     
         //会议预定添加弹窗
         vm.addTimeStage = function(){
             //如果已经预定了会议室，则显示
             if(vm.isRoomBook){
+            	console.log($("#stageWindow"));
                 $("#stageWindow").kendoWindow({
                     width : "660px",
                     height : "550px",
@@ -80,11 +118,6 @@
                 }
             }
 
-        }
-        
-        //部长处理意见
-        vm.ministerSugges = function(vm){
-        	workprogramSvc.ministerSugges(vm);
         }
         
         //会议预定添加

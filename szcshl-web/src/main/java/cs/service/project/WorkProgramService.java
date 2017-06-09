@@ -1,6 +1,7 @@
 package cs.service.project;
 
 import java.util.List;
+import java.util.Map;
 
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
@@ -16,5 +17,10 @@ public interface WorkProgramService {
 	List<SignDto> selectedProject(String[] ids);
 
 	void mergeAddWork(String signId, String linkSignId);
+
+	Map<String, Object> getInitSeleSignByIds(String bussnessId);
+
+	Map<String, Object> getInitRelateData(String signId);
+
 
 }

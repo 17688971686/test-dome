@@ -26,6 +26,8 @@ public class WorkProgramDto extends BaseDto{
 	private String titleName;
 	//评审方式
 	private String reviewType;
+	//是否主项目
+	private String isMainProject;
 	//是否单个评审
 	private String isSigle;
 	//项目名称
@@ -577,5 +579,11 @@ public class WorkProgramDto extends BaseDto{
 	}
 	
 	
-    
+    public String getIsMainProject() {
+		return isMainProject;
+	}
+
+	public void setIsMainProject(String isMainProject) {
+		this.isMainProject = isMainProject;
+	}
 }

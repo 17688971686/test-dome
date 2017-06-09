@@ -18,6 +18,7 @@
 		vm.model.signid = $state.params.signid;	
 		vm.flow.taskId = $state.params.taskId;			//流程任务ID
 		vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
+		vm.dealFlow = true;
 
 		active();
 
