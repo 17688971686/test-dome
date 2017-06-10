@@ -2,6 +2,7 @@ package cs.controller.expert;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -111,6 +112,43 @@ public class ExpertReviewController {
 		return expertReviewService.initByWorkProgramId(workProgramId);
 	}
     
+    @RequiresPermissions("expertReview#getReviewList#get")
+    @RequestMapping(name = "查询专家评分", path = "html/getReviewList",method=RequestMethod.GET)	
+    public @ResponseBody Map<String,Object> getReviewList(){
+    	return expertReviewService.getReviewList(" ","2017","1");
+    }
+    
+    @RequiresPermissions("expertReview#getSelectExpert#get")
+    @RequestMapping(name = "获取已选专家", path = "html/getSelectExpert",method=RequestMethod.POST)	
+    public @ResponseBody PageModelDto<ExpertDto> getSelectExpert() throws ParseException{
+    	 List<ExpertDto> ExpertDtoList=expertReviewService.getSelectExpert();
+    	 PageModelDto<ExpertDto> pageModelDto = new PageModelDto<>();
+    	 pageModelDto.setCount(ExpertDtoList.size());
+ 		 pageModelDto.setValue(ExpertDtoList);	
+    	return pageModelDto;
+    }
+    
+    @RequiresPermissions("expertReview#getSelectExpertById#get")
+    @RequestMapping(name = "获取已选专家", path = "html/getSelectExpertById",method=RequestMethod.GET)	
+    public @ResponseBody ExpertReviewDto getSelectExpertById(String expertId) throws ParseException{
+    	ExpertReviewDto expertReviewDto=expertReviewService.getSelectExpertById(expertId);
+    	return expertReviewDto;
+    }
+    
+    @RequiresPermissions("expertReview#expertMark#get")
+    @RequestMapping(name = "编辑专家评分", path = "html/expertMark",method=RequestMethod.POST)	
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void expertMark(@RequestParam String expertId,String expertMark,String expertDecride) throws ParseException{
+    	expertReviewService.expertMark(expertId, expertMark, expertDecride);
+    }
+    
+    @RequiresPermissions("expertReview#savePayment#get")
+    @RequestMapping(name = "编辑专家费用", path = "html/savePayment",method=RequestMethod.POST)	
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void savePayment(@RequestBody ExpertReviewDto expertReviewDto) throws Exception{
+    	expertReviewService.savePayment(expertReviewDto);
+    }
+    
     // begin#html
     @RequiresPermissions("expertReview#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
@@ -129,6 +167,13 @@ public class ExpertReviewController {
     public String selectExpert() {
     	
         return ctrlName+"/selectExpert";
+    } 
+    
+    @RequiresPermissions("expertReview#html/reviewList#get")
+    @RequestMapping(name = "专家评分", path = "html/reviewList", method = RequestMethod.GET)
+    public String reviewList() {
+    	
+    	return ctrlName+"/reviewList";
     } 
     // end#html
 

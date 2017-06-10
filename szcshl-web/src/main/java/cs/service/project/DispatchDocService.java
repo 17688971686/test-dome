@@ -11,13 +11,22 @@ import cs.repository.odata.ODataObj;
 public interface DispatchDocService {
 
 	 void save(DispatchDocDto dispatchDocDto) throws Exception;
+	 
 	 Map<String, Object> initDispatchData(String signId);
+	 
 	 List<SignDto> getSign(SignDto signDto);
+	 
 	 List<SignDto> getSignbyIds(String[] ids);
+	 
 	 void mergeDispa(String signId,String linkSignId);
+	 
 	 Map<String,Object> getSeleSignBysId(String bussnessId);
+	 
 	 String fileNum(String dispaId);
 
 	 DispatchDocDto initDispatchBySignId(String signId);
+	 
 	 void deleteMergeDispa(String dispathId);
+	 
+	 String getRelatedFileNum(String dispaId);
 }

@@ -47,6 +47,7 @@ public class ExpertDto extends BaseDto {
 	
 	private List<WorkExpeDto> work;
 	private List<ProjectExpeDto> project;
+	private ExpertReviewDto expertReviewDto;
 	
 	public String getIdCard() {
 		return idCard;
@@ -252,4 +253,10 @@ public class ExpertDto extends BaseDto {
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
+	public ExpertReviewDto getExpertReviewDto() {
+		return expertReviewDto;
+	}
+	public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
+		this.expertReviewDto = expertReviewDto;
+	}
 }

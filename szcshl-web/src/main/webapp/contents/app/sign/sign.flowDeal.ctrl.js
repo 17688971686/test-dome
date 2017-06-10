@@ -13,12 +13,16 @@
 		vm.work = {};
 		vm.dispatchDoc = {};
 		vm.fileRecord = {};
+		vm.expertReview={};
 //		vm.flow.dealOption='';
 		vm.i=0;
 		vm.model.signid = $state.params.signid;	
 		vm.flow.taskId = $state.params.taskId;			//流程任务ID
 		vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
 		vm.dealFlow = true;
+		vm.showExpertRemark = false;//专家评分弹窗内容显示
+		vm.showExpertpayment=false;//专家费用弹窗内容显示
+		vm.MarkAndPay=true;//专家评分费用编辑权限
 
 		active();
 
@@ -36,9 +40,44 @@
 			flowSvc.initFlowData(vm);
 			//再初始化业务信息
 			signSvc.initFlowPageData(vm);
+			
+			//初始化专家评分费用
+			flowSvc.markGrid(vm);
+			flowSvc.paymentGrid(vm);
 
 		}
-
+         
+         //编辑专家评分
+		vm.editSelectExpert=function(id){
+			vm.expertReview.expertId=id;
+			flowSvc.gotoExpertmark(vm);
+		}
+		//关闭专家评分
+		vm.closeEditMark=function(){
+			window.parent.$("#expertmark").data("kendoWindow").close();
+		}
+		
+		//保存专家评分
+		vm.saveMark=function(){
+			flowSvc.saveMark(vm);
+		}
+		
+		vm.editpayment=function(id){
+			vm.expertReview.expertId=id;
+			flowSvc.gotopayment(vm);
+		}
+		//计算应纳税额
+		vm.countTaxes=function(){
+			flowSvc.countTaxes(vm);
+		}
+		//关闭专家费用
+		vm.closeEditPay=function(){
+			window.parent.$("#payment").data("kendoWindow").close();
+		}
+		//保存专家费用
+		vm.savePayment=function(){
+			flowSvc.savePayment(vm);
+		}
 		// begin 添加审批意见
 		vm.ideaEdit=function(options){
 			common.initIdeaData(vm,$http,options);
@@ -57,7 +96,7 @@
 			}else{
 				common.alert({
 					vm:vm,
-					msg: "请先完成相应的业务操作才能提交",					
+					msg: "请先完成相应的业务操作才能提交"					
 				})
 			}      	
 		}

@@ -19,6 +19,7 @@
             saveOutExpert : saveOutExpert,           //保存选择的境外专家
             deleteAutoSelExpert : deleteAutoSelExpert,	//删除随机抽取的专家
             countMatchExperts : countMatchExperts,      //计算符合条件的专家
+            getReviewList :  getReviewList              //查询专家评分
         };
         return service;
                 
@@ -463,5 +464,23 @@
                 success:httpSuccess
             });
         }//E_countMatchExperts
+        //begin##getReviewList
+        function getReviewList(vm){
+        	 var httpOptions = {
+                     method : 'get',
+                     url : rootPath+"/expertReview/html/getReviewList"
+                 }
+        	 var httpSuccess = function success(response) {
+        		 vm.reviewList=response.data;
+             }
+        	 common.http({
+                 vm:vm,
+                 $http:$http,
+                 httpOptions:httpOptions,
+                 success:httpSuccess,
+                 onError: function(response){vm.iscommit = false;}
+             });
+        }//end##getReviewList
+        
     }
 })();

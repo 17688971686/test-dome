@@ -146,6 +146,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	}
 
 	// 生成发文关联
+	// TODO HHHHHHHHH
 	@Override
 	@Transactional
 	public void mergeDispa(String signId, String linkSignId) {
@@ -188,6 +189,29 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		dispa.getSign().setDocnum(fileNum);
 		return fileNum;
 	}
+	
+	// 获取关联文件字号
+	@Override
+	public String getRelatedFileNum(String dispaId) {
+		//String fileNum = NumIncreaseUtils.getFileNo();
+		List<MergeDispa> MergeDispaList=mergeDispaRepo.findAll();
+		DispatchDoc dispa=null;
+		String fileNum="";
+		if(Validate.isList(MergeDispaList)){
+			for (MergeDispa mergeDispa : MergeDispaList) {
+				String linkSignId=mergeDispa.getLinkSignId();
+				if(dispaId.indexOf(linkSignId)>0){
+					dispa=dispatchDocRepo.getById(mergeDispa.getBusinessId());
+					if(dispa!=null){
+						fileNum=dispa.getFileNum();
+					}
+				}
+			}
+		}
+		//dispa.setFileNum(fileNum);
+		//dispa.getSign().setDocnum(fileNum);
+		return fileNum;
+	}
 
 	// 保存发文拟稿
 	@Override
@@ -206,26 +230,29 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 			}else{				
 				dispatchDoc = dispatchDocRepo.findById(dispatchDocDto.getId());
 				BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);
-				//如果是单个发文和次项目，则删除关联信息
+				/*//如果是单个发文和次项目，则删除关联信息
 				if(dispatchDocDto.getDispatchWay().equals(Constant.EnumState.PROCESS.getValue())||dispatchDocDto.getIsMainProject().equals(Constant.EnumState.NO.getValue())){
 					this.deleteMergeDispa(dispatchDoc.getId());
-				}
+				}*/
 			}
 			dispatchDoc.setModifiedBy(currentUser.getLoginName());			
 			dispatchDoc.setModifiedDate(now);
 			
-			Sign sign = signRepo.getById(dispatchDocDto.getSignId());			
-			dispatchDoc.setSign(sign);
-			dispatchDocRepo.save(dispatchDoc);
-			
+			Sign sign = signRepo.getById(dispatchDocDto.getSignId());	
 			sign.setIsDispatchCompleted(EnumState.YES.getValue());
 			sign.setDispatchDoc(dispatchDoc);
 			List<WorkProgram> workProgrmList=sign.getWorkProgramList();
-			for (WorkProgram workProgram : workProgrmList) {
-				workProgram.setAppalyInvestment(dispatchDocDto.getDeclareValue());
+			if(Validate.isList(workProgrmList)){
+				for (WorkProgram workProgram : workProgrmList) {
+					workProgram.setAppalyInvestment(dispatchDocDto.getDeclareValue());
+				}
 			}
 			sign.setWorkProgramList(workProgrmList);
-			signRepo.save(sign);
+			dispatchDoc.setSign(sign);
+			dispatchDocRepo.save(dispatchDoc);
+			
+			
+			//signRepo.save(sign);
 		} else {
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
 			throw new Exception(Constant.ERROR_MSG);

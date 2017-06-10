@@ -1,6 +1,7 @@
 package cs.service.expert;
 
 import java.util.List;
+import java.util.Map;
 
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
@@ -33,4 +34,14 @@ public interface ExpertReviewService {
 	void updateExpertState(String workProgramId, String expertIds, String state);
 
 	void deleteExpert(String workProgramId, String expertIds,String seleType,String expertSelConditionId);
+	
+	Map<String,Object> getReviewList(String orgName,String year,String quarter);
+	
+	List<ExpertDto> getSelectExpert();
+	
+	void expertMark(String expertId,String expertMark,String expertDecride );
+	
+	void savePayment(ExpertReviewDto expertReviewDto)throws Exception;
+	
+	ExpertReviewDto getSelectExpertById(String expertId);
 }

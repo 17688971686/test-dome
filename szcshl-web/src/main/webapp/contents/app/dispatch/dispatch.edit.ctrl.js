@@ -41,18 +41,26 @@
         
         
         vm.isSelect=function(){
-        	console.log(vm.dispatchDoc.dispatchWay);
         	if(vm.dispatchDoc.dispatchWay=="1"){
         		vm.dispatchDoc.isRelated="否";
         	}
         }
         
+        vm.sigleProject=function(){
+        	if(vm.dispatchDoc.dispatchWay=="1"){
+        		vm.dispatchDoc.isRelated="否";
+        		dispatchSvc.deletemerge(vm);
+        	}
+        }
+        
         vm.isrelated=function(){
         	vm.dispatchDoc.isRelated="是";
+        	
         }
         
         vm.isrelated2=function(){
         	vm.dispatchDoc.isRelated="否";
+        	dispatchSvc.deletemerge(vm);
         }
         
         //打开合并页面
@@ -63,6 +71,7 @@
         vm.search=function(){
         	dispatchSvc.getSign(vm);
         }
+        
         //选择待选项目
         vm.chooseProject=function(){
         	dispatchSvc.chooseProject(vm);

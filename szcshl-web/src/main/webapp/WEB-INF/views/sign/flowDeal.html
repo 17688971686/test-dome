@@ -19,8 +19,10 @@
 		<li ng-show="vm.show_dispatch" ><a id="show_dispatch_a"  data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
 		<li ng-show="vm.show_filerecord" ><a id="show_filerecord_a"  data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
 
-		<li><a  data-toggle="tab" for-div="sign_diagram">流程图</a></li>
-		<li><a  data-toggle="tab" for-div="sign_history">处理记录</a></li>
+		<li><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
+		<li><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
+		<li><a data-toggle="tab" for-div="sign_remark" >专家评分</a></li>
+		<li><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
 	</ul>
 
 	<div class="tab-content" style="background:white;">
@@ -38,7 +40,130 @@
 
 		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
 			<div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
-		</div><!-- end tab3 -->
+		</div>
+		<!-- end tab3 -->
+
+		<!-- start 专家评分 -->
+		<div class="well well-sm tab-pane fade" style="background: white;" id="sign_remark">
+			<div id="expertRemarkGrid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+			<!-- start 专家评分弹窗-->	
+			<div id="expertmark" ng-show="vm.showExpertRemark">
+				<div class="toolbar">
+					<button class="btn btn-sm btn-success" ng-click="vm.saveMark()"
+						ng-disabled="vm.isCommit" ng-hide="btnHide">
+						<span class="glyphicon glyphicon-ok"></span>保存
+					</button>
+					<button class="btn btn-sm btn-success" ng-click="vm.closeEditMark()" ng-disabled="vm.isCommit" ng-hide="btnHide">
+						<span class="glyphicon glyphicon-ok"></span>返回
+					</button>
+				</div>
+				<div>
+					<form id="markform" name="markform">
+						<span>专家星级: <span class="required">*</span>
+							<select name="score" id="score"ng-model="vm.expertReview.score" data-val="true" data-val-required="必填">
+								<option ng-repeat="x in DICT.EXPERT_MARK.dicts | orderBy:'dictSort':false" ng-value="{{x.dictKey}}" ng-selected="x.dictKey==vm.expertReview.score">{{x.dictName}}</option>
+							</select>
+							 
+							<span data-valmsg-for="expertMark" data-valmsg-replace="true" class="errors"></span>
+						</span>
+						<br><br> 
+						<span style="text-align: center;">评级描述: 
+							<textarea rows="7" cols="100" ng-model="vm.expertReview.describes"></textarea>
+						</span>
+					</form>
+				</div>
+			</div>
+			<!-- end 专家评分弹窗-->	
+		</div>
+		<!-- end 专家评分 -->
+
+		<!-- start 专家费用 -->
+		<div class="well well-sm tab-pane fade" style="background: white;"id="sign_payment" >
+			<!-- <div id="expertPaymentGrid" kendo-grid="grid" k-options="vm.gridOptions2"></div> -->
+				
+				<div style="margin-top: 10px" class="grid" kendo-grid="grid" k-options="vm.paymentgrid"></div>
+				<div id="payment" ng-show="vm.showExpertpayment">
+				
+				<div class="toolbar">
+					<button class="btn btn-sm btn-success" ng-click="vm.countTaxes()"ng-disabled="vm.isCommit" ng-hide="btnHide">
+						<span class="glyphicon glyphicon-ok"></span>计算应纳税额
+				    </button>
+					<button class="btn btn-sm btn-success" ng-click="vm.savePayment()"ng-disabled="vm.isCommit" ng-hide="btnHide">
+						<span class="glyphicon glyphicon-ok"></span>保存
+					</button>
+					
+					<button class="btn btn-sm btn-success" ng-click="vm.closeEditPay()" ng-disabled="vm.isCommit" ng-hide="btnHide">
+						<span class="glyphicon glyphicon-ok"></span>返回
+					</button>
+				</div>
+				
+				<form id="payform" name="payform">
+					<table class="table table-bordered">
+						<tr>
+							<td style="width:100px;" class="text-center">评审费发放日期: <span class="required">*</span></td>
+							<td>
+								<input type="text" name="payDate" id="payDate" style="width: 200px;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expertReview.payDate" 
+					 			data-val-date="必须为日期"  > 
+					 			<span data-valmsg-for="payDate" data-valmsg-replace="true" class="errors"></span>
+							</td>
+							<td style="width:100px;" class="text-center">评审/函评日期:</td>
+							<td>
+							{{vm.expertReview.reviewDate}}
+								<!-- <input type="text" name="reviewDate" id="reviewDate" style="width: 200px;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expertReview.reviewDate" 
+					 			data-val-date="必须为日期"  >  -->
+							</td>
+						</tr>
+						<tr>
+							
+							<td style="width:100px;" class="text-center">评审费发放表标题：<span class="required">*</span> </td>
+							<td colspan="3">
+								<input type="text" name="reviewTitle" id="reviewTitle" style="width: 600px;" class="form-control input-sm "   ng-model="vm.expertReview.reviewTitle"  data-val="true" data-val-required="必填"> 			 
+								<span data-valmsg-for="reviewTitle" data-valmsg-replace="true" class="errors"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="width:100px;" class="text-center">姓名：</td>
+							<td style="width:150px;" class="text-center">
+								{{vm.expertReview.expertDto.name}}
+							</td>
+							<td style="width:100px;" class="text-center">身份证号码：</td>
+							<td style="width:150px;" class="text-center">
+								{{vm.expertReview.expertDto.idCard}}
+							</td>
+						</tr>
+						<tr>
+							<td style="width:100px;" class="text-center">开户行：</td>
+							<td style="width:150px;" class="text-center">
+								{{vm.expertReview.expertDto.openingBank}}
+							</td>
+							<td style="width:100px;" class="text-center">银行账号：</td>
+							<td style="width:150px;" class="text-center">
+								{{vm.expertReview.expertDto.bankAccount}}
+							</td>
+						</tr>
+						<tr>
+							<td style="width:100px;" class="text-center">评审费:</td>
+							<td style="width:150px;" class="text-center">
+								<input type="text" name="reviewCost" id="reviewCost" style="width: 210px;" class="form-control input-sm "   ng-model="vm.expertReview.reviewCost">
+							</td>
+							<td style="width:100px;" class="text-center">应纳税额：</td>
+							<td style="width:150px;" class="text-center">
+								{{vm.expertReview.reviewTaxes}}
+							</td>
+						</tr>
+						<tr>
+							<td style="width:100px;" class="text-center">合计：</td>
+							<td style="width:150px;" class="text-center" colspan="3">
+								{{vm.expertReview.totalCost}}
+							</td>
+						</tr>
+					</table>
+				<form>
+				</div>
+				</div>
+		</div>
+		<!-- end tab3 -->
+		<!-- start 专家费用 -->
 
 		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" ng-show="vm.show_workprogram">
             <div ng-include src="'${path}/contents/app/workprogram/all_detail.html'" />
@@ -53,3 +178,13 @@
         </div><!-- 归档 -->
 	</div>
 </div>
+<script type="text/template" id="columnBtns">
+	<@shiro.hasPermission name="expert##put">
+		<button class="btn btn-xs btn-primary"  ng-click="{0}" ng-disabled="vm.MarkAndPay" ><span class="glyphicon glyphicon-pencil" ></span>编辑</button>
+	</@shiro.hasPermission>
+</script>
+<script type="text/template" id="columnBtn">
+	<@shiro.hasPermission name="expert##put">
+		<button class="btn btn-xs btn-primary"  ng-click="{0}" ng-disabled="vm.MarkAndPay" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+	</@shiro.hasPermission>
+</script>

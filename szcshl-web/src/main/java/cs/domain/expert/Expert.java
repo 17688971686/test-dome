@@ -7,7 +7,9 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import cs.domain.DomainBase;
@@ -118,6 +120,16 @@ public class Expert extends DomainBase {
 	@OneToMany(mappedBy="expert")
 	private List<ProjectExpe> project;
 	
+	@OneToOne(mappedBy="expert")  
+	private ExpertReview expertReview;
+	
+	
+	public ExpertReview getExpertReview() {
+		return expertReview;
+	}
+	public void setExpertReview(ExpertReview expertReview) {
+		this.expertReview = expertReview;
+	}
 	public Date getBirthDay() {
 		return birthDay;
 	}

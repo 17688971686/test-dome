@@ -3,7 +3,12 @@ package cs.model.expert;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.project.WorkProgram;
 import cs.model.BaseDto;
@@ -19,11 +24,13 @@ public class ExpertReviewDto extends BaseDto {
     private String id;
     private Integer expretCount;
     private Double score;
+	@JSONField(format = "yyyy-MM-dd")
     private Date reviewDate;
     private BigDecimal reviewCost;
     private BigDecimal reviewTaxes;
     private String reviewTitle;
     private String selectType;
+	@JSONField(format = "yyyy-MM-dd")
 	private Date payDate;
 	private String state;
 	
@@ -34,6 +41,8 @@ public class ExpertReviewDto extends BaseDto {
     private ExpertDto expertDto;
     private WorkProgramDto workProgramDto;
 	private ExpertSelCondition epSelCondition;
+	private BigDecimal totalCost;
+	private String describes;
 
     public ExpertReviewDto() {
     }
@@ -133,7 +142,7 @@ public class ExpertReviewDto extends BaseDto {
 	public String getExpertId() {
 		return expertId;
 	}
-
+   
 	public void setExpertId(String expertId) {
 		this.expertId = expertId;
 	}
@@ -161,4 +170,21 @@ public class ExpertReviewDto extends BaseDto {
     public void setEpSelCondition(ExpertSelCondition epSelCondition) {
         this.epSelCondition = epSelCondition;
     }
+
+	public BigDecimal getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(BigDecimal totalCost) {
+		this.totalCost = totalCost;
+	}
+
+	public String getDescribes() {
+		return describes;
+	}
+
+	public void setDescribes(String describes) {
+		this.describes = describes;
+	}
+
 }

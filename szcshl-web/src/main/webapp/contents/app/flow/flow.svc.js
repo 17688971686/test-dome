@@ -16,7 +16,16 @@
 				initDealUerByAcitiviId : initDealUerByAcitiviId,
 				suspendFlow : suspendFlow,			//流程挂起
 				activeFlow : activeFlow,			//重启流程
-				deleteFlow : deleteFlow			//流程终止
+				deleteFlow : deleteFlow,			//流程终止
+	            markGrid : markGrid,             //评分列表
+	            gotoExpertmark : gotoExpertmark,   //打开专家评分弹窗
+	            saveMark : saveMark,               //专家评分
+	            paymentGrid : paymentGrid,           //专家费用列表
+	            savePayment : savePayment,         //保存专家费用 
+	            countTaxes : countTaxes,           //计算应纳税额
+	            gotopayment : gotopayment,
+	            getselectExpertById : getselectExpertById
+	             
 		};
 		return service;			
 		
@@ -34,7 +43,7 @@
 					id : "id"
 				}),
 				rowNumber: true,  
-	            headerCenter: true,  
+	            headerCenter: true
 			});
 						
 			var columns = [	
@@ -385,7 +394,412 @@
 				success:httpSuccess
 			});
 		}//E_终止流程
+		
+		// begin#markGrid
+		function markGrid(vm) {
+			var  dataSource = common.kendoGridDataSource(rootPath+"/expertReview/html/getSelectExpert");
+			var  dataBound = function () {  					
+	                var rows = this.items(); 	               
+	                $(rows).each(function (i) {	
+	                	 if(i == rows.length -1 ){
+	                		 initBackNode(vm);
+	                	 }
+	                     $(this).find(".row-number").html(i+1);                
+	                });  
+	            } 
+						
+			// End:column
+			vm.gridOptions={
+				dataSource : common.gridDataSource(dataSource),
+				filterable : common.kendoGridConfig().filterable,
+				noRecords : common.kendoGridConfig().noRecordMessage,
+				columns : getExpertColumns(),
+				dataBound:dataBound,
+				resizable : true
+			};
+		}// end fun grid
+		
+		function getExpertColumns(){
+			var columns = [
+				/*{
+					template : function(item) {
+						return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.expertID)
+					},
+					filterable : false,
+					width : 40,
+					title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+				},*/
+				{  
+				    field: "rowNumber",  
+				    title: "序号",  
+				    width: 50,
+				    template: "<span class='row-number'></span>"  
+			    },
+				{
+					field : "name",
+					title : "姓名",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "comPany",
+					title : "工作单位",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "",
+					title : "职位/职称",
+					width : 150,
+					filterable : true,
+					template : function(item) {
+						if(!item.job){
+							item.job="";
+						}
+						if(!item.post){
+							item.post="";
+						}
+						return item.job+"/"+item.post ;
+					}
+				},
+				{
+					field : "majorStudy",
+					title : "专业",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "",
+					title : "联系电话/办公电话",
+					width : 150,
+					filterable : true,
+					template : function(item) {
+						
+						if(!item.phone){
+							item.phone="";
+						}
+						if(!item.userPhone){
+							item.userPhone="";
+						}
+						return item.userPhone+"/"+item.phone;
+					}
+				},
 				
-	}
+				{
+					field : "remark",
+					title : "备注",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "expertReviewDto.score",
+					title : "评分",
+					width : 100
+				},
+				{
+					field : "",
+					title : "操作",
+					width : 100,
+					template : function(item) {
+						return common.format($('#columnBtns').html(), "vm.editSelectExpert('" + item.expertID + "')", item.expertID);
+					}
+				}
+			];			
+			return columns;
+		}
+		
+		//S_gotoExpertmark
+		function gotoExpertmark(vm){
+			vm.showExpertRemark=true;
+			var WorkeWindow = $("#expertmark");
+			WorkeWindow.kendoWindow({
+				width : "1000px",
+				height : "630px",
+				title : "编辑-专家星级",
+				visible : false,
+				modal : true,
+				closable : true,
+				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+			}).data("kendoWindow").center().open();
+			getselectExpertById(vm);
+		}//E_gotoExpertmark
+		
+		//S_saveMark
+		function saveMark(vm){
+			common.initJqValidation($('#markform'));
+			var isValid = $('#markform').valid();
+			if (isValid) {
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/expertReview/html/expertMark",
+						params : {
+							expertId: vm.expertReview.expertId,
+							expertMark:vm.expertReview.score,					
+							expertDecride:vm.expertReview.describes					
+						}
+					}
 	
-})();
+				var httpSuccess = function success(response) {					
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							window.parent.$("#expertmark").data("kendoWindow").close();
+							vm.gridOptions.dataSource.read();
+							vm.isSubmit = false;
+							common.alert({
+								vm : vm,
+								msg : "操作成功"
+							})	
+						}
+		
+					});
+				}
+	
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
+			}
+		}//E_saveMark
+		
+		//S_getpaymentColumns
+		function getpaymentColumns(){
+			var columns = [
+				{  
+				    field: "rowNumber",  
+				    title: "序号",  
+				    width: 50,
+				    template: "<span class='row-number'></span>"  
+			    },
+				{
+					field : "name",
+					title : "姓名",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "idCard",
+					title : "身份证号码",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "openingBank",
+					title : "开户行",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "bankAccount",
+					title : "银行账号",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "expertReviewDto.reviewCost",
+					title : "评审费",
+					width : 100,
+					filterable : true
+				},
+				
+				{
+					field : "expertReviewDto.reviewTaxes",
+					title : "应纳税额",
+					width : 100,
+					filterable : true
+				},
+				{
+					field : "expertReviewDto.totalCost",
+					title : "合计（元）",
+					width : 100
+				},
+				{
+					field : "",
+					title : "操作",
+					width : 100,
+					template : function(item) {
+						return common.format($('#columnBtn').html(), "vm.editpayment('" + item.expertID + "')", item.expertID);
+					}
+				}
+			];			
+			return columns;
+		}//E_getpaymentColumns
+		
+		// begin#remarkGrid
+		function paymentGrid(vm) {
+			var  dataSource = common.kendoGridDataSource(rootPath+"/expertReview/html/getSelectExpert");
+			var  dataBound = function () {  					
+	                var rows = this.items(); 	               
+	                $(rows).each(function (i) {	
+	                	 if(i == rows.length -1 ){
+	                		 initBackNode(vm);
+	                	 }
+	                     $(this).find(".row-number").html(i+1);                
+	                });  
+	            } 
+						
+			// End:column
+			vm.paymentgrid={
+				dataSource : common.gridDataSource(dataSource),
+				filterable : common.kendoGridConfig().filterable,
+				noRecords : common.kendoGridConfig().noRecordMessage,
+				columns : getpaymentColumns(),
+				dataBound:dataBound,
+				resizable : true
+			};
+			
+		}// end fun grid
+		
+		// S_savePayment
+		function savePayment(vm){
+			common.initJqValidation($('#payform'));
+			var isValid = $('#payform').valid();
+			if (isValid) {
+			if(!validateNum(vm)){
+				window.parent.$("#payment").data("kendoWindow").close();
+				common.alert({
+								vm : vm,
+								msg : "应纳税额计算错误,保存失败！",
+								fn:function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})	
+				return;			
+			}
+			vm.isCommit=true;
+	    	var httpOptions = {
+					method : 'post',
+					url : rootPath+"/expertReview/html/savePayment",
+					data : vm.expertReview
+				}
+
+			var httpSuccess = function success(response) {	
+				vm.isCommit=false;
+				window.parent.$("#payment").data("kendoWindow").close();
+				vm.paymentgrid.dataSource.read();
+				common.alert({
+								vm : vm,
+								msg : "操作成功"
+							})	
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+			}
+		}// E_savePayment
+		
+		// S_countNum
+		function countNum(vm){
+			var XSum=vm.expertReview.reviewCost;
+			var Rate;
+		    var Balan;
+		    var TSum_7;
+		    if (XSum<=1500) 
+		      {Rate=3;
+		      Balan=0;
+		      }
+		    if ((1500<XSum) && (XSum<=4500)) 
+		      {Rate=10;
+		      Balan=105;
+		      }
+		    if ((4500<XSum) && (XSum<=9000))
+		      {Rate=20;
+		      Balan=555;
+		      }
+		    if ((9000<XSum) && (XSum<=35000))
+		      {Rate=25;
+		      Balan=1005;
+		      }
+		    if ((35000<XSum) && (XSum<=55000))
+		      {Rate=30;
+		      Balan=2755;
+		      }
+		    if ((55000<XSum) && (XSum<=80000))
+		      {Rate=35;
+		      Balan=5505;
+		      }
+		    if (XSum>80000) 
+		      {Rate=45;
+		      Balan=13505;
+		      }
+		      TSum_7=(XSum*Rate)/100-Balan
+	     	if (TSum_7<0) 
+	    	 {
+	       	 TSum_7=0
+	     	}
+	     	return TSum_7;
+		}// E_countNum
+		
+		//S_countTaxes
+		function countTaxes(vm){
+			var XSum=vm.expertReview.reviewCost;
+			var TSum_7=countNum(vm);
+	     	vm.expertReview.reviewTaxes=TSum_7.toFixed(2);
+	     	vm.expertReview.totalCost=XSum-TSum_7.toFixed(2);
+	     	console.log(vm.expertReview.reviewTaxes);
+	     	
+		}//E_countTaxes
+		
+		//S_validateNum
+		function validateNum(vm){
+			var is=true;
+			var XSum=vm.expertReview.reviewCost;
+			var TSum_7=countNum(vm);
+	     	var totalCost=XSum-TSum_7.toFixed(2);
+	     	var reviewTaxes=TSum_7.toFixed(2);
+	     	if(reviewTaxes!=vm.expertReview.reviewTaxes&&totalCost!=vm.expertReview.totalCost){
+	     		is=false;
+	     	}
+	     	return is;
+		}//E_validateNum
+		
+		//S_gotopayment
+		function gotopayment(vm){
+			vm.showExpertpayment=true;
+			var WorkeWindow = $("#payment");
+			WorkeWindow.kendoWindow({
+				width : "1000px",
+				height : "630px",
+				title : "编辑-专家费用",
+				visible : false,
+				modal : true,
+				closable : true,
+				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+			}).data("kendoWindow").center().open();
+			getselectExpertById(vm);
+		}//E_gotopayment
+		
+		//S_getselectExpertById
+		function getselectExpertById(vm){
+			vm.isCommit=true;
+	    	var httpOptions = {
+					method : 'get',
+					url : rootPath+"/expertReview/html/getSelectExpertById",
+					params:{expertId:vm.expertReview.expertId}
+						
+					}
+
+			var httpSuccess = function success(response) {	
+				vm.isCommit=false;
+				vm.expertReview=response.data;
+				vm.expertReview.expertId=vm.expertReview.expertDto.expertID;
+			}
+
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}//E_getselectExpertById
+	}
+		})();
+	

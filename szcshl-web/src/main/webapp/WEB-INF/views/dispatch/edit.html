@@ -17,8 +17,8 @@
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
 		  <caption style="width:100%;">
 		  	<span style="float:left;">发文方式：<span class="required" ng-click="vm.seleted()">*</span>
-		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()">
-					<option  ng-value="1" ng-selected="true" >单个发文</option>
+		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()"  ng-change="vm.sigleProject()">
+					<option  ng-value="1" >单个发文</option>
 					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == 2">合并发文</option>
 				</select>
 			</span> 
@@ -36,7 +36,6 @@
 				</select>
 			</span>
 			 <span data-valmsg-for="dispatchType" data-valmsg-replace="true" class="errors"></span>	
-			 
 		  </caption>
 		  <tbody>
 		  

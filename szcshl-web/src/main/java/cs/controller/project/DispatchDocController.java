@@ -36,6 +36,13 @@ public class DispatchDocController {
 	}
 	
 	@RequiresPermissions("dispatch##post")
+	@RequestMapping(name = "删除关联信息", path = "deleteMerge",method=RequestMethod.POST)	
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public void deletemerge(@RequestParam String dispatchId) throws Exception  {
+		dispatchDocService.deleteMergeDispa(dispatchId);
+	}
+	
+	@RequiresPermissions("dispatch##post")
 	@RequestMapping(name = "生成文件字号", path = "fileNum",method=RequestMethod.POST)	
 	public @ResponseBody String  getFileNum(@RequestParam String dispaId) throws Exception  {
 		String fileNum=dispatchDocService.fileNum(dispaId);
@@ -55,6 +62,13 @@ public class DispatchDocController {
 		String [] ids=linkSignIds.split(",");
 		List<SignDto> signList =dispatchDocService.getSignbyIds(ids);
 		return signList;
+	}
+	
+	@RequiresPermissions("dispatch##get")
+	@RequestMapping(name = "获取已选项目", path = "getRelatedFileNum",method=RequestMethod.GET)	
+	public @ResponseBody String getRelatedFileNum(@RequestParam String dispatchId) throws Exception  {
+		String fileNum =dispatchDocService.getRelatedFileNum(dispatchId);
+		return fileNum;
 	}
 	
 	@RequiresPermissions("dispatch##getSeleSignByDId")

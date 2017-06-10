@@ -17,6 +17,8 @@
 			fileNum : fileNum,                           //生成文件字号
 			getselectedSign : getselectedSign,
 			getSeleSignBysId : getSeleSignBysId,
+			deletemerge : deletemerge,                   //删除关联信息
+			getRelatedFileNum : getRelatedFileNum        //获取关联文件字号
 		};
 		return service;			
 		
@@ -104,6 +106,7 @@
 				closable : true,
 				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
 			}).data("kendoWindow").center().open();
+			
 			getSeleSignBysId(vm);
 			getsign(vm);
 			
@@ -112,6 +115,9 @@
 		
 		//S_初始化
 		function initDispatchData(vm){
+			if(vm.dispatchDoc.id!=null){
+			  getRelatedFileNum(vm);
+			}
 			var httpOptions = {
 					method : 'get',
 					url : rootPath+"/dispatch/initData",
@@ -232,7 +238,7 @@
 					vm:vm,
 					$http:$http,
 					httpOptions:httpOptions,
-					success:httpSuccess,
+					success:httpSuccess
 					//onError: function(response){vm.saveProcess = false;}
 				});
 				
@@ -344,5 +350,43 @@
 				
 		}//end##getsign
 		
+		
+		//begin##deletemerge
+		function deletemerge(vm){
+				var httpOptions = {
+						method : 'post',
+						url : rootPath+"/dispatch/deleteMerge",
+						params : {dispatchId:vm.dispatchDoc.id}
+					}
+				var httpSuccess = function success(response) {	
+				}
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess,
+					onError: function(response){}
+				});
+				
+		}//end##deletemerge
+		
+		
+		function getRelatedFileNum(vm){
+			var httpOptions = {
+						method : 'get',
+						url : rootPath+"/dispatch/getRelatedFileNum",
+						params : {dispatchId:vm.dispatchDoc.id}
+					}
+				var httpSuccess = function success(response) {	
+					vm.dispatchDoc.fileNum=response.data;
+				}
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess,
+					onError: function(response){}
+				});
+		}
 	}
 })();

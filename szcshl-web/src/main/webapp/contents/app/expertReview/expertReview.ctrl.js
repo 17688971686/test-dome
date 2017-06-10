@@ -39,7 +39,8 @@
 
         activate();
         function activate() {
-            expertReviewSvc.grid(vm);
+            expertReviewSvc.initExpertGrid(vm);
+            expertReviewSvc.getReviewList(vm);
         }
     }
 })();

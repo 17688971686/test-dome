@@ -194,12 +194,10 @@ public class DispatchDoc extends DomainBase{
 	//编号对应的字段
 	//拟稿人名称
 	@Column(columnDefinition="VARCHAR(225)")
-	@Formula("(select u.loginName from cs_user u where u.id = userId)")
 	private String userName;
 	
 	//发文部门名称
 	@Column(columnDefinition="VARCHAR(225)")
-	@Formula("(select o.name from cs_org o where o.id = orgId)")
 	private String orgName;
 	
 	//校对人名称

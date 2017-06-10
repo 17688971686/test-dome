@@ -56,6 +56,10 @@ public class ExpertReview extends DomainBase{
 	//缴税
 	@Column(columnDefinition="NUMBER")
 	private BigDecimal reviewTaxes;
+	
+	//费用合计
+	@Column(columnDefinition="NUMBER")
+	private BigDecimal totalCost;
 
 	//状态
 	@Column(columnDefinition="VARCHAR(2)")
@@ -64,6 +68,20 @@ public class ExpertReview extends DomainBase{
 	//选择类型
 	@Column(columnDefinition="VARCHAR(2)")
 	private String selectType;
+	
+
+	//是否参加【默认参加(9)】
+	@Column(columnDefinition="VARCHAR(2)")
+	private String isJoin;
+	
+	
+	//评级描述
+	@Column(columnDefinition="VARCHAR(200)")
+	private String describes;
+	
+	//综合评分
+	@Column(columnDefinition="VARCHAR(10)")
+	private String totalScore;
 	
 	@ManyToOne
 	@JoinColumn(name="expertId",nullable = false)
@@ -78,7 +96,41 @@ public class ExpertReview extends DomainBase{
     @JoinColumn(name="expertSelConditionId")
 	private ExpertSelCondition epSelCondition;
 
-    public ExpertSelCondition getEpSelCondition() {
+    
+    public BigDecimal getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(BigDecimal totalCost) {
+		this.totalCost = totalCost;
+	}
+
+	public String getDescribes() {
+		return describes;
+	}
+
+	public void setDescribes(String describes) {
+		this.describes = describes;
+	}
+
+	public String getTotalScore() {
+		return totalScore;
+	}
+
+	public void setTotalScore(String totalScore) {
+		this.totalScore = totalScore;
+	}
+
+	public String getIsJoin() {
+		return isJoin;
+	}
+
+	public void setIsJoin(String isJoin) {
+		this.isJoin = isJoin;
+	}
+
+
+	public ExpertSelCondition getEpSelCondition() {
         return epSelCondition;
     }
 
