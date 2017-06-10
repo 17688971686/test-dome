@@ -200,12 +200,15 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		if(Validate.isList(MergeDispaList)){
 			for (MergeDispa mergeDispa : MergeDispaList) {
 				String linkSignId=mergeDispa.getLinkSignId();
-				if(dispaId.indexOf(linkSignId)>0){
-					dispa=dispatchDocRepo.getById(mergeDispa.getBusinessId());
-					if(dispa!=null){
-						fileNum=dispa.getFileNum();
+				if(!Validate.isBlank(linkSignId)){
+					if(dispaId.indexOf(linkSignId)>0){
+						dispa=dispatchDocRepo.getById(mergeDispa.getBusinessId());
+						if(dispa!=null){
+							fileNum=dispa.getFileNum();
+						}
 					}
 				}
+				
 			}
 		}
 		//dispa.setFileNum(fileNum);
