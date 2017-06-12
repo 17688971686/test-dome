@@ -25,11 +25,40 @@
         activate();
         function activate() {
 //        	workprogramSvc.getInitSeleSignBysId(vm);//初始化已选项目列表
-//        	workprogramSvc.getInitRelateData(vm);
+        	workprogramSvc.getInitRelateData(vm);
         	workprogramSvc.initPage(vm);
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
             workprogramSvc.findCompanys(vm);//查找主管部门
           
+        }
+        
+        //删除系统文件
+        vm.delsWorkSysFile = function(id){
+        	workprogramSvc.delsWorkSysFile(vm,id);
+        }
+        //查看附件列表
+        vm.workJquery =function(){
+        	$("#workqueryWin").kendoWindow({
+                width : "800px",
+                height : "400px",
+                title : "查看附件列表",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+        //附件上传
+        vm.workUpload = function(){
+        	 $("#workUploadWin").kendoWindow({
+                 width : "660px",
+                 height : "400px",
+                 title : "附件上传",
+                 visible : false,
+                 modal : true,
+                 closable : true,
+                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+             }).data("kendoWindow").center().open();
         }
         //重置
         vm.formResetWork=function(){

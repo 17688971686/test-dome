@@ -54,9 +54,10 @@ public class FileController {
 	//@RequiresPermissions("file##post")
 	@RequestMapping(name = "文件上传", path = "fileUpload",method=RequestMethod.POST)	
 	public @ResponseBody SysFileDto upload(HttpServletRequest request,@RequestParam("file")MultipartFile multipartFile,
-			@RequestParam(required = true)String businessId,String fileType,String module,String processInstanceId) throws IOException{
+			@RequestParam(required = true)String businessId,String module,String processInstanceId) throws IOException{
 		SysFileDto sysFileDto = null;
 		String fileName = multipartFile.getOriginalFilename();	
+		String fileType=fileName.substring(fileName.lastIndexOf("."),fileName.length());
 		
 		if(!multipartFile.isEmpty()){
 			sysFileDto = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType,module,processInstanceId);

@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
+import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.SignDto;
@@ -34,6 +37,7 @@ import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.UserService;
 
 @Service
@@ -49,6 +53,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	private UserService userService;
 	@Autowired
 	private MergeDispaRepo mergeDispaRepo;
+	@Autowired
+	private SysFileRepo sysFileRepo;
 	
 	@Override
 	@Transactional
@@ -371,6 +377,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 			}
 		}
 		map.put("linkSignId", linkSignId);
+		//查询系统上传文件
+		Criteria file = sysFileRepo.getSession().createCriteria(SysFile.class);
+		file.add(Restrictions.eq("businessId", sign.getSignid()));
+		List<SysFile> sysFilelist = file.list();
+		if(sysFilelist !=null){
+			map.put("sysFilelist", sysFilelist);
+		}
 		return map;
 	}
 
