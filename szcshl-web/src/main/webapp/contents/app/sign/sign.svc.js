@@ -16,9 +16,69 @@
 			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptName :findOfficeUsersByDeptName,//根据协办部门名称查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
+			initUpload:initUpload,//初始化上传附件控件
+			deleteSysFile:deleteSysFile,//删除系统文件
 		};
 		return service;
+		
+		//S 删除系统文件
+		function deleteSysFile(vm,id){
+			var httpOptions = {
+				method : 'delete',
+				url : rootPath+"/file/deleteSysFile",
+				data : id
 
+			}
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn:function(){		
+						window.parent.$("#signAttachments").data("kendoWindow").close();
+						common.alert({
+							vm:vm,
+							msg:"删除成功",
+							fn:function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})								
+					}		
+
+				});
+
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		//E 删除系统文件
+		
+		//S_初始化上传附件控件
+        function initUpload(vm){
+        	var businessId = vm.model.signid;
+            var projectfileoptions = {
+                language : 'zh',
+                allowedPreviewTypes : ['image'],
+                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ],
+                maxFileSize : 2000,
+                showRemove: false,
+                uploadUrl:rootPath + "/file/fileUpload",
+                uploadExtraData:{businessId:businessId}
+            };
+            $("#signphotofile").fileinput(projectfileoptions).on("filebatchselected", function(event, files){
+
+            }).on("fileuploaded", function(event, data) {
+                $("#signPhotoSrc").removeAttr("src");
+                $("#signPhotoSrc").attr("src",rootPath+"/sign/transportImg?signid="+businessId+"&t="+Math.random());
+            });
+        }
+		//E_初始化上传附件控件
+        
+        
 		//S_初始化grid
 		function grid(vm){
 			// Begin:dataSource
@@ -322,6 +382,12 @@
 						vm.builtcomlist = response.data.builtcomlist;
 						//编制单位
 						vm.designcomlist = response.data.designcomlist;
+						 //系统文件
+		                vm.sysFilelist = response.data.sysFiles;
+//		                console.log(vm.sysFilelist);
+						initUpload(vm);
+		                $("#signPhotoSrc").attr("src",rootPath+"/sign/transportImg?signid="+vm.model.signid+"&t="+Math.random());
+		               
 					}					
 				})
 			}

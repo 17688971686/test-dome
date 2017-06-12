@@ -35,6 +35,7 @@ import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.Company;
 import cs.domain.sys.Org;
+import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
@@ -44,6 +45,7 @@ import cs.model.project.FileRecordDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.OrgDto;
+import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
@@ -53,7 +55,9 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.external.OfficeUserService;
+import cs.service.sys.SysFileService;
 import cs.service.sys.UserService;
 
 @Service
@@ -85,9 +89,13 @@ public class SignServiceImpl implements SignService {
     private ProcessEngine processEngine;
     @Autowired
     private OfficeUserService officeUserService;
-
     @Autowired
     private CompanyRepo companyRepo;
+	@Autowired
+	private SysFileRepo sysFileRepo;
+	@Autowired
+	private SysFileService fileService;	
+	
     @Override
     @Transactional
     public void createSign(SignDto signDto) {
@@ -190,6 +198,14 @@ public class SignServiceImpl implements SignService {
         List<Company> builtcomlist = c.list();
         if(builtcomlist!=null){
             map.put("builtcomlist", builtcomlist);
+        }
+        //查询系统上传文件
+//        List<SysFileDto> sysFiles= fileService.findBySignId(sign.getSignid());
+        Criteria file =  sysFileRepo.getSession().createCriteria(SysFile.class);
+        file.add(Restrictions.eq("businessId", sign.getSignid()));
+        List<SysFile> sysFiles = file.list();
+        if(sysFiles!=null){
+        	map.put("sysFiles", sysFiles);
         }
         return map;
     }
@@ -846,6 +862,16 @@ public class SignServiceImpl implements SignService {
             });
          }
          return resultList;
+	}
+
+	/**
+	 * 附件上传
+	 */
+	@Override
+	@Transactional
+	public void uploadAttachments(byte[] bytes, String signid) {
+		// TODO Auto-generated method stub
+		
 	}
 		
 	/************************************** E  新流程项目处理   *********************************************/

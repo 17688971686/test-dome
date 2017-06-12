@@ -135,7 +135,7 @@
 						 vm.showCreate=true;
 						//初始化获取合并发文关联的linkSignId
 						vm.linkSignId=response.data.linkSignId;
-						//console.log(vm.dispatchDoc);
+//						console.log(vm.dispatchDoc);
 						
 						if( vm.dispatchDoc.id&&!vm.dispatchDoc.fileNum){
 				        	 vm.showFileNum=true;
@@ -296,7 +296,9 @@
 				}
 			var httpSuccess = function success(response) {
 				vm.selectedSign=response.data.signDtoList;
+				console.log(vm.selectedSign);
 				vm.linkSignId=response.data.linkSignId;
+				console.log(vm.linkSignId);
 			} 
 			common.http({
 				vm : vm,
@@ -339,6 +341,7 @@
 					}
 				var httpSuccess = function success(response) {	
 					vm.signs=response.data;
+					console.log(vm.signs);
 				}
 				common.http({
 					vm:vm,

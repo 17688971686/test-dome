@@ -14,8 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SysFileUtil;
+import cs.common.utils.Validate;
+import cs.domain.project.Sign_;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
@@ -100,6 +104,27 @@ public class SysFileServiceImpl implements SysFileService{
 		if(sysFile != null && Validate.isString(sysFile.getSysFileId())){
 			sysFileRepo.delete(sysFile);
 		}*/		
+	}
+
+	@Override
+	public List<SysFileDto> findBySignId(String signid) {
+		  HqlBuilder hql = HqlBuilder.create();
+		  if(signid!=null){
+			  hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.businessId.getName()).append("=:businessId").setParam("businessId", signid);
+		  }
+		  List<SysFile> file = sysFileRepo.findByHql(hql);
+		  List<SysFileDto> sysFileDtoList= new ArrayList<SysFileDto>();
+		  for(SysFile item:file){
+			SysFileDto sysFileDto=new SysFileDto();
+			sysFileDto.setSysFileId(item.getSysFileId());
+			sysFileDto.setBusinessId(item.getBusinessId());
+			sysFileDto.setFileUrl(item.getFileUrl());
+			sysFileDto.setShowName(item.getShowName());
+			sysFileDto.setFileType(item.getFileType());
+			sysFileDtoList.add(sysFileDto);
+		}
+		logger.info("查询文件");
+		return sysFileDtoList;
 	}
 
 }

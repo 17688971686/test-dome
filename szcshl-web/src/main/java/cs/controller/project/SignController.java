@@ -1,5 +1,6 @@
 package cs.controller.project;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import cs.common.Constant;
 import cs.common.utils.Validate;
@@ -167,5 +169,11 @@ public class SignController {
     public @ResponseBody List<SignDto> findAssistSign()  {
 
         return signService.findAssistSign();
+    }
+    @RequestMapping(name = "附件上传", path = "uploadAttachments",method=RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void uploadAttachments(HttpServletRequest req,@RequestParam("file")MultipartFile multipartFile,
+    		@RequestParam(required=true)String signid)throws IOException{
+    	signService.uploadAttachments(multipartFile.getBytes(),signid);
     }
 }

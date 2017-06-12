@@ -48,4 +48,6 @@ public interface SignService{
     ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto)throws Exception;
 
     List<SignDto> findAssistSign();
+
+	void uploadAttachments(byte[] bytes, String signid);
 }

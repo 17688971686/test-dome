@@ -1,5 +1,8 @@
 package cs.service.sys;
 
+import java.util.List;
+
+import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
@@ -24,4 +27,8 @@ public interface SysFileService {
 	public void deleteById(String sysFileId);
 	
 	PageModelDto<SysFileDto> get(ODataObj odataObj);
+
+	public List<SysFileDto> findBySignId(String signid) ;
+		
+	
 }
