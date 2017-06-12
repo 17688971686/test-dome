@@ -1,6 +1,7 @@
 package cs.domain.project;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,6 +11,8 @@ import java.math.BigDecimal;
 @DynamicUpdate(true)
 public class AssistPlanSign {
     @Id
+    @GeneratedValue(generator= "plansignGenerator")
+    @GenericGenerator(name= "plansignGenerator",strategy = "uuid")
     private String id;
 
     @Column(columnDefinition="VARCHAR(64)")
@@ -18,7 +21,7 @@ public class AssistPlanSign {
     @Column(columnDefinition="VARCHAR(128)")
     private String projectName;                 //项目名称
 
-    @Column(columnDefinition="VARCHAR(10)")
+    @Column(columnDefinition="VARCHAR(32)")
     private String assistType;                  //协审类型
 
     @Column(columnDefinition="VARCHAR(64)")
@@ -30,7 +33,7 @@ public class AssistPlanSign {
     @Column(columnDefinition="NUMBER")
     private Float assistDays;                   //协审天数
 
-    @Column(columnDefinition="VARCHAR(10)")
+    @Column(columnDefinition="VARCHAR(2)")
     private String isMain;                      //是否主项目
 
     @Column(columnDefinition="INTEGER")

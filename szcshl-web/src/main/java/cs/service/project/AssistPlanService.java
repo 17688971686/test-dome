@@ -4,6 +4,8 @@ import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.Map;
+
 /**
  * Description: 协审方案 业务操作接口
  * author: ldm
@@ -21,4 +23,9 @@ public interface AssistPlanService {
 
 	void delete(String id);
 
+    Map<String,Object> initPlanManager();
+
+    void cancelPlanSign(String planId, String signIds,boolean isMain);
+
+	void saveLowPlanSign(AssistPlanDto assistPlanDto);
 }

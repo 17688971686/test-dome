@@ -12,12 +12,13 @@ public class AssistPlanSignDto {
     private String id;
     private String planId;                      //计划ID
     private String signId;                      //项目ID
+    private String projectName;                 //项目名称
     private String assistType;                  //协审类型
     private String mainSignId;                  //主项目ID
     private BigDecimal assistCost;              //协审费用
     private Float assistDays;                   //协审天数
     private String isMain;                      //是否主项目
-    private Integer splitNum;                   ////拆分项目个数（只有独立项目才有才分，默认是1）
+    private Integer splitNum;                   //拆分项目序号
 
     public AssistPlanSignDto() {
     }
@@ -92,5 +93,13 @@ public class AssistPlanSignDto {
 
     public void setSplitNum(Integer splitNum) {
         this.splitNum = splitNum;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }

@@ -185,6 +185,12 @@ public class AbstractRepository<T,ID extends Serializable> implements IRepositor
 		int total = q.executeUpdate();
 		return total;
 	}
+
+	@Override
+	public int executeSql(HqlBuilder hqlBuilder) {
+		NativeQuery<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),this.getPersistentClass());
+		return setParamsToQuery2(q,hqlBuilder).executeUpdate();
+	}
 	
 	protected Query<?> setParamsToQuery(Query<?> query,HqlBuilder hqlBuilder) {
 		List<String> params = hqlBuilder.getParams();

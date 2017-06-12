@@ -77,7 +77,12 @@ public class SignController {
 		signService.createSign(signDto);	
 		
 		return signDto;
-	}				
+	}
+
+    @RequestMapping(name = "根据协审计划查询收文信息", path = "findByPlanId",method=RequestMethod.GET)
+    public @ResponseBody List<SignDto> findByPlanId(@RequestParam(required = true)String planId)  {
+        return signService.findByPlanId(planId);
+    }
 	
 	@RequiresPermissions("sign#html/fillin#get")
 	@RequestMapping(name = "填写表格页面", path = "html/fillin", method = RequestMethod.GET)
@@ -170,10 +175,5 @@ public class SignController {
 
         return signService.findAssistSign();
     }
-    @RequestMapping(name = "附件上传", path = "uploadAttachments",method=RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void uploadAttachments(HttpServletRequest req,@RequestParam("file")MultipartFile multipartFile,
-    		@RequestParam(required=true)String signid)throws IOException{
-    	signService.uploadAttachments(multipartFile.getBytes(),signid);
-    }
+    
 }

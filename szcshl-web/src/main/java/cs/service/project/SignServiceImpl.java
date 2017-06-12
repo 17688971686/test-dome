@@ -22,6 +22,7 @@ import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
@@ -849,30 +850,50 @@ public class SignServiceImpl implements SignService {
     
 	@Override
 	public List<SignDto> findAssistSign() {
-		 Criteria criteria = signRepo.getExecutableCriteria();
-         criteria.add(Restrictions.eq(Sign_.isassistflow.getName(), EnumState.YES.getValue()));
-         criteria.add(Restrictions.eq(Sign_.folwState.getName(), EnumState.PROCESS.getValue()));
-         List<Sign> signList = criteria.list();
-         List<SignDto> resultList = new ArrayList<>(signList==null?0:signList.size());
-         if(signList != null && signList.size() > 0){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select sign.* from cs_sign sign left join cs_as_plansign plang on sign.signid = plang.signid ");
+        sqlBuilder.append(" where sign.isassistflow =:isassistflow");
+        sqlBuilder.setParam("isassistflow",EnumState.YES.getValue());
+        sqlBuilder.append(" and sign.folwstate  =:folwState");
+        sqlBuilder.setParam("folwState",EnumState.PROCESS.getValue());
+        //排除掉已经在选的项目
+        sqlBuilder.append(" and plang.signid is null ");
+        List<Sign> signList = signRepo.findBySql(sqlBuilder);
+
+        List<SignDto> resultList = new ArrayList<>(signList==null?0:signList.size());
+        if(signList != null && signList.size() > 0){
             signList.forEach( s ->{
                 SignDto signDto = new SignDto();
                 BeanCopierUtils.copyProperties(s,signDto);
                 resultList.add(signDto);
             });
-         }
-         return resultList;
+        }
+        return resultList;
 	}
 
-	/**
-	 * 附件上传
-	 */
-	@Override
-	@Transactional
-	public void uploadAttachments(byte[] bytes, String signid) {
-		// TODO Auto-generated method stub
-		
-	}
-		
-	/************************************** E  新流程项目处理   *********************************************/
+    /**
+     * 根据协审计划，查询收文信息
+     * @param planId
+     * @return
+     */
+    @Override
+    public List<SignDto> findByPlanId(String planId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select  distinct sign.* from cs_sign sign,cs_as_plansign psign where sign.signid = psign.signid ");
+        sqlBuilder.append(" and psign.planid =:planid");
+        sqlBuilder.setParam("planid",planId);
+
+        List<Sign> signList = signRepo.findBySql(sqlBuilder);
+        List<SignDto> resultList = new ArrayList<>(signList==null?0:signList.size());
+        if(signList != null && signList.size() > 0){
+            signList.forEach( s ->{
+                SignDto signDto = new SignDto();
+                BeanCopierUtils.copyProperties(s,signDto);
+                resultList.add(signDto);
+            });
+        }
+        return resultList;
+    }
+
+
 }

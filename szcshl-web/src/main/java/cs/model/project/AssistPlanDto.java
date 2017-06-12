@@ -1,6 +1,5 @@
 package cs.model.project;
 
-import cs.domain.project.AssistUnit;
 import cs.model.BaseDto;
 
 import java.math.BigDecimal;
@@ -26,11 +25,13 @@ public class AssistPlanDto extends BaseDto {
     private String directorOpinion;
     private String planState;
     private BigDecimal totalCost;
-    private AssistUnit assistUnit;
+    private List<AssistUnitDto> assistUnitDtoList;
+
+    private List<AssistPlanSignDto> assistPlanSignDtoList;
 
     //以下参数为传递参数用
     private String signId;          //收文ID
-    private boolean isSignle;       //是否单个项目
+    private boolean single;       //是否单个项目
     private Integer splitNum;       //拆分个数
     private String assistType;      //协审类型
     private String projectName;     //项目名称
@@ -77,10 +78,6 @@ public class AssistPlanDto extends BaseDto {
         return assistUnitList;
     }
 
-    public void setAssistUnitList(List assistUnitList) {
-        this.assistUnitList = assistUnitList;
-    }
-
     public String getMinisterOpinion() {
         return ministerOpinion;
     }
@@ -121,14 +118,6 @@ public class AssistPlanDto extends BaseDto {
         this.totalCost = totalCost;
     }
 
-    public AssistUnit getAssistUnit() {
-        return assistUnit;
-    }
-
-    public void setAssistUnit(AssistUnit assistUnit) {
-        this.assistUnit = assistUnit;
-    }
-
     public String getSignId() {
         return signId;
     }
@@ -137,12 +126,12 @@ public class AssistPlanDto extends BaseDto {
         this.signId = signId;
     }
 
-    public boolean isSignle() {
-        return isSignle;
+    public boolean isSingle() {
+        return single;
     }
 
-    public void setSignle(boolean signle) {
-        isSignle = signle;
+    public void setSingle(boolean single) {
+        this.single = single;
     }
 
     public Integer getSplitNum() {
@@ -167,5 +156,21 @@ public class AssistPlanDto extends BaseDto {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public List<AssistPlanSignDto> getAssistPlanSignDtoList() {
+        return assistPlanSignDtoList;
+    }
+
+    public void setAssistPlanSignDtoList(List<AssistPlanSignDto> assistPlanSignDtoList) {
+        this.assistPlanSignDtoList = assistPlanSignDtoList;
+    }
+
+    public List<AssistUnitDto> getAssistUnitDtoList() {
+        return assistUnitDtoList;
+    }
+
+    public void setAssistUnitDtoList(List<AssistUnitDto> assistUnitDtoList) {
+        this.assistUnitDtoList = assistUnitDtoList;
     }
 }

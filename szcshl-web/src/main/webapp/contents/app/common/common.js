@@ -371,7 +371,7 @@
 
 	//S_封装filer的参数
 	function buildOdataFilter(from){
-		var t = new Array();
+		/*var t = new Array();
 		var arrIndex = 0;
 		$(from).find('input,radio,select,textarea').each(function(index,obj){
 			if(obj.name && obj.value){
@@ -399,7 +399,34 @@
 				i++;
 			}		    	
 		});
-		return filterStr;		
+		return filterStr;*/
+
+        var manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
+            rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
+            rsubmittable = /^(?:input|select|textarea|keygen)/i;
+
+        return $(from).map(function () {
+            var elements = jQuery.prop(this, "elements");
+            return elements ? jQuery.makeArray(elements) : this;
+        }).filter(function () {
+            var type = this.type;
+            return this.value && this.name && !$(this).is(":disabled") &&
+                rsubmittable.test(this.nodeName) && !rsubmitterTypes.test(type) &&
+                ( this.checked || !manipulation_rcheckableType.test(type));
+        }).map(function (i, elem) {
+            var $me = $(this), val = $me.val();
+            if(!val) return false;
+            val = "'" + val + "'";
+            var operator = $me.attr("operator") || "eq",
+                dataRole = $me.attr("data-role") || "";   //data-role="datepicker"
+            if(dataRole == "datepicker") {
+                val = "date" + val;
+            } else if(dataRole == "datetimepicker") {
+                val = "datetime" + val;
+            }
+
+            return operator == "like" ? ("substringof(" + val + ", "+ elem.name + ")") : (elem.name + " " + operator + " " + val);
+        }).get().join(" and ");
 	}//E_封装filer的参数 
 
 	function initDictData(options){

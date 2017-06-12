@@ -52,13 +52,13 @@ public class AssistUnit extends DomainBase {
     /**
      * 评审计划
      */
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy="assistUnitList")
+    @ManyToMany(mappedBy="assistUnitList")
     private List<AssistPlan> assistPlanList;
 
     /**
      * 协审单位人员
      */
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="assistUnit")
+    @OneToMany(mappedBy="assistUnit")
     private List<AssistUnitUser> assistUnitUserList;
 
     public String getId() {

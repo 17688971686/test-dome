@@ -1,5 +1,7 @@
 package cs.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -12,7 +14,7 @@ import java.util.List;
  * @author ldm
  *
  */
-public class StringUtil {
+public class StringUtil extends StringUtils {
 
 	public static String getSubString(String str,int begin,int end){
 		return new String(str.substring(begin, end));
@@ -57,6 +59,35 @@ public class StringUtil {
             return "error";
         }
     }
+
+	/**
+	 * 首字母大写
+	 * @param str
+	 * @return
+	 */
+	public static String upperCaseFirst(String str) {
+		if (isBlank(str)) {
+			return str;
+		}
+		char f = str.charAt(0);
+		if(Character.isUpperCase(f))
+			return str;
+		else
+			return (new StringBuilder()).append(Character.toUpperCase(f)).append(str.substring(1)).toString();
+	}
+
+	public static String lowerCaseFirst(String str) {
+		if (isBlank(str)) {
+			return str;
+		}
+		char f = str.charAt(0);
+		if(Character.isUpperCase(f))
+			return str;
+		else
+			return (new StringBuilder()).append(Character.toLowerCase(f)).append(str.substring(1)).toString();
+	}
+
+
 	public static void main(String[] args){
 		String s="sdgdsagds,asdgasdgsd,asdgsadg,adsgadsg,sd";		
 		List<String> re = getSplit(s,",");

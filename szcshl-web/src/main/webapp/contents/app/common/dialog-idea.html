@@ -1,121 +1,113 @@
 
 <!-- 审批意见弹出框 -->
 <div id="ideaWindow" class="well well-sm" style="background:white;display:none;">
-			<form id="ideaForm" name="ideaForm">
-				<div>
-					<table class="table table-bordered seleteTable">
-						<tr>
-							<td>
-								<table cellspacing="5px" style="width: 100%;">
-									<tr>
-										<th>1、常用祁语</th>
-										<th>2、办理部门</th>
-										<th>3、办理用语</th>
-										<th>4、常用词语</th>
-										<th>5、标点符号</th>
-									</tr>
-									<tr>
-										<td>
-											<div
-												style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
-												<table class="table table-bordered seleteTable">
-													<tr ng-repeat="x in DICT.QI_LANGUAGE.dicts">
-														<td>{{$index+1}}</td>
-														<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
-													</tr>
-												</table>
-											</div>
-										</td>
-										<td>
-											<div
-												style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
-												<table class="table table-bordered seleteTable">
-													<tr ng-repeat="x in DICT.TRANSACT_DEPARTMENT.dicts">
-														<td>{{$index+1}}</td>
-														<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
-													</tr>
-												</table>
-											</div>
-										</td>
-										<td>
-											<div
-												style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
-												<table class="table table-bordered seleteTable">
-													<tr ng-repeat="x in DICT.TRANSACT_LANGUAGE.dicts">
-														<td>{{$index+1}}</td>
-														<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
-													</tr>
-												</table>
-											</div>
-										</td>
-										<td>
-											<div
-												style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
-												<table class="table table-bordered seleteTable">
-													<tr ng-repeat="x in DICT.COMMON_WORDS.dicts">
-														<td>{{$index+1}}</td>
-														<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
-													</tr>
-												</table>
-											</div>
-										</td>
-										<td>
-											<div
-												style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
-												<table class="table table-bordered seleteTable">
-													<tr ng-repeat="x in DICT.PUNCTUATION.dicts">
-														<td>{{$index+1}}</td>
-														<td $(targetID).val(>{{x.dictName}}</td>
-													</tr>
-												</table>
-											</div>
-										</td>
+		<form id="ideaForm" name="ideaForm">
+			<div>
+				<table class="table table-bordered seleteTable">
+					<tr>
+						<td>
+							<table cellspacing="5px" style="width: 100%;">
+								<tr>
+									<th>1、常用祁语</th>
+									<th>2、办理部门</th>
+									<th>3、办理用语</th>
+									<th>4、常用词语</th>
+									<th>5、标点符号</th>
+								</tr>
+								<tr>
+									<td>
+										<div
+											style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
+											<table class="table table-bordered seleteTable">
+												<tr ng-repeat="x in DICT.QI_LANGUAGE.dicts">
+													<td>{{$index+1}}</td>
+													<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+									<td>
+										<div
+											style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
+											<table class="table table-bordered seleteTable">
+												<tr ng-repeat="x in DICT.TRANSACT_DEPARTMENT.dicts">
+													<td>{{$index+1}}</td>
+													<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+									<td>
+										<div
+											style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
+											<table class="table table-bordered seleteTable">
+												<tr ng-repeat="x in DICT.TRANSACT_LANGUAGE.dicts">
+													<td>{{$index+1}}</td>
+													<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+									<td>
+										<div
+											style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
+											<table class="table table-bordered seleteTable">
+												<tr ng-repeat="x in DICT.COMMON_WORDS.dicts">
+													<td>{{$index+1}}</td>
+													<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+									<td>
+										<div
+											style="height: 200px; width: 150px; overflow: auto; border: 1 solid black;">
+											<table class="table table-bordered seleteTable">
+												<tr ng-repeat="x in DICT.PUNCTUATION.dicts">
+													<td>{{$index+1}}</td>
+													<td $(targetID).val(>{{x.dictName}}</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<span>个人常用意见</span>
+							<span>
+								<button ng-click="vm.addCommonIdea()"  value="addCommonIdea" class="btn btn-xs btn-success">添加常用意见</button>
+								<button ng-click="vm.deleteCommonIdea()" class="btn btn-xs btn-danger"  value="deleteCommonIdea">删除常用意见</button>
+								<button ng-click="vm.saveCommonIdea()" class="btn btn-xs btn-success"  value="saveCommonIdea">保存</button>
+							</span>
+							<div style="max-height:200px; overflow: auto; border: 1px solid black;">
+								<table class="table table-bordered seleteTable" id="commonIdeaTable">
+									<tr ng-repeat="x in vm.commonIdeas">
+										<td><input type="checkbox" ng-checked="ideaCheck" name="ideaCheck" value="{{vm.commonIdeas[$index].ideaID}}" /></td>
+										<td width="20">{{$index+1}}</td>
+										<td><input type="text" class="form-control input-sm " style="width: 800px;"
+											ng-model="vm.commonIdeas[$index].ideaContent" ng-dblclick="vm.addCorrentIdea(vm.commonIdeas[$index].ideaContent)" /></td>
 									</tr>
 								</table>
-							</td>
-						</tr>
-
-						<tr>
-							<td><span>个人常用意见</span> <span>
-									<button ng-click="vm.addCommonIdea()" id="myButton" value="addCommonIdea"
-										class="btn btn-xs btn-success">添加常用意见</button>
-									<button ng-click="vm.deleteCommonIdea()"
-										class="btn btn-xs btn-danger" id="myButton" value="deleteCommonIdea">删除常用意见</button>
-									<button ng-click="vm.saveCommonIdea()"
-										class="btn btn-xs btn-success" id="myButton" value="saveCommonIdea">保存</button>
-							</span>
-								<div
-									style="height: 250px; overflow: auto; border: 1 solid black;">
-									<table class="table table-bordered seleteTable"
-										id="commonIdeaTable">
-										<tr ng-repeat="x in vm.commonIdeas track by $index">
-											<td><input type="checkbox" ng-checked="ideaCheck"
-												name="ideaCheck" value="{{vm.commonIdeas[$index].ideaID}}" /></td>
-											<td width="20">{{$index+1}}</td>
-											<td><input type="text" class="form-control input-sm "
-												style="width: 800px;"
-												ng-model="vm.commonIdeas[$index].ideaContent" ng-dblclick="vm.addCorrentIdea(vm.commonIdeas[$index].ideaContent)" /></td>
-										</tr>
-									</table>
-								</div></td>
-						</tr>
-					</table>
-				</div>
-				<div>
-					<table class="table table-bordered seleteTable">
-						<tr>
-							<td><span><strong>当前意见内容</strong>（点击此处可保存当前意见为【个人常用意见】）</span>
-								<span> <textarea style="width: 100%; height: 5em"
-										ng-model="vm.ideaContent"></textarea>
-							</span></td>
-						</tr>
-					</table>
-				</div>
-				<div
-					style="padding-top: 11px; padding-bottom: 30px; text-align: center;">
-					<button class="btn btn-sm btn-success"
-						ng-click="vm.saveCurrentIdea()">确定</button>
-				</div>
-
-			</form>
+							</div></td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<table class="table table-bordered seleteTable">
+					<tr>
+						<td>
+							<span><strong>当前意见内容</strong>（点击此处可保存当前意见为【个人常用意见】）</span>
+							<textarea style="width: 100%; height: 5em" ng-model="vm.ideaContent"></textarea>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div style="text-align: center;">
+				<button class="btn btn-sm btn-success" ng-click="vm.saveCurrentIdea()">确定</button>
+			</div>
+		</form>
 </div>

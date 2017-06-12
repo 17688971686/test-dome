@@ -61,26 +61,20 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(64)")
 	private String maindepetcontactuserid;
 	
-	//主办事处联系人	
+	//主办事处联系人
+	@Column(columnDefinition="VARCHAR(64)")
 	private String mainDeptUserName;
 	
 	//主办事处联系电话	
-	@Formula("(select u.officePhone from es_office_user u where u.officeID = maindepetcontactuserid)")
+	@Column(columnDefinition="VARCHAR(64)")
 	private String mainDeptContactPhone;
-		
-	public String getMainDeptContactPhone() {
-		return mainDeptContactPhone;
-	}
-
-	public void setMainDeptContactPhone(String mainDeptContactPhone) {
-		this.mainDeptContactPhone = mainDeptContactPhone;
-	}
 
 	//协办处室ID
 	@Column(columnDefinition="VARCHAR(64)")
 	private String assistdeptid;
 	
 	//协办事处名称
+    @Column(columnDefinition="VARCHAR(64)")
 	private String assistdeptName;
 	
 	//协办处室联系人ID
@@ -457,15 +451,15 @@ public class Sign extends DomainBase{
 	private String isDispatchCompleted;
 	
 	//工作方案
-	@OneToMany(fetch = FetchType.LAZY,mappedBy="sign")
+	@OneToMany(mappedBy="sign")
 	private List<WorkProgram> workProgramList;
 	
 	//发文
-	@OneToOne(fetch = FetchType.LAZY,mappedBy="sign")
+	@OneToOne(mappedBy="sign")
 	private DispatchDoc dispatchDoc;
 	
 	//归档
-    @OneToOne(fetch = FetchType.LAZY,mappedBy="sign")
+    @OneToOne(mappedBy="sign")
 	private FileRecord fileRecord;
 	
 	//主流程第一负责人ID
@@ -514,10 +508,6 @@ public class Sign extends DomainBase{
 
 	public void setFileRecord(FileRecord fileRecord) {
 		this.fileRecord = fileRecord;
-	}
-
-	public Sign() {
-		super();
 	}
 
 	public String getSignid() {
@@ -751,22 +741,6 @@ public class Sign extends DomainBase{
 	public void setIsassistproc(String isassistproc) {
 		this.isassistproc = isassistproc;
 	}
-
-	/*public String getMainchargeuserid() {
-		return mainchargeuserid;
-	}
-
-	public void setMainchargeuserid(String mainchargeuserid) {
-		this.mainchargeuserid = mainchargeuserid;
-	}
-
-	public String getReviewdeptid() {
-		return reviewdeptid;
-	}
-
-	public void setReviewdeptid(String reviewdeptid) {
-		this.reviewdeptid = reviewdeptid;
-	}*/
 
 	public String getFilenum() {
 		return filenum;
@@ -1473,4 +1447,13 @@ public class Sign extends DomainBase{
 	public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
 		this.isNeedWrokPrograml = isNeedWrokPrograml;
 	}
+
+    public String getMainDeptContactPhone() {
+        return mainDeptContactPhone;
+    }
+
+    public void setMainDeptContactPhone(String mainDeptContactPhone) {
+        this.mainDeptContactPhone = mainDeptContactPhone;
+    }
+
 }

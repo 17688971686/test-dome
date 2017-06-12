@@ -142,44 +142,7 @@ public class Constant {
 	    }
 
 	}
-	
-	
-	/**
-	 * 流程环节名称
-	 * @author Administrator
-	 *
-	 */
-	/*public enum EnumFlowNodeName{
-		ZR_TB("ZR_TB"),							//填报
-		QS("QS"),								//签收	
-		ZHB_SP_SW("ZHB_SP_SW"),					//综合部审批	
-		FGLD_SP_SW("FGLD_SP_SW"),				//分管副主任审批	
-		BM_FB1("BM_FB1"),						//部门分办-主流程
-		BM_FB2("BM_FB2"),						//部门分办
-		XMFZR_SP_GZFA1("XMFZR_SP_GZFA1"),		//项目负责人承办	-主流程
-		XMFZR_SP_GZFA2("XMFZR_SP_GZFA2"),		//项目负责人承办	
-		BZ_SP_GZAN1("BZ_SP_GZAN1"),				//部长审批-主流程
-		BZ_SP_GZAN2("BZ_SP_GZAN2"),				//部长审批
-		FGLD_SP_GZFA1("FGLD_SP_GZFA1"),			//分管副主任审批-主流程	
-		FGLD_SP_GZFA2("FGLD_SP_GZFA2"),			//分管副主任审批	
-		FW_SQ("FW_SQ"),							//发文申请
-		BZ_SP_FW("BZ_SP_FW"),					//部长审批发文
-		FGLD_SP_FW("FGLD_SP_FW"),				//分管领导审批发文
-		ZR_SP_FW("ZR_SP_FW"),					//主任审批发文
-		MFZR_GD("MFZR_GD"),						//第一负责人归档
-		AZFR_SP_GD("AZFR_SP_GD"),				//第二负责人审批归档
-		BMLD_QR_GD("BMLD_QR_GD");				//确认归档
-		
-		private String value;
 
-		EnumFlowNodeName(String value){
-	        this.value = value;
-	    }
-
-	    public String getValue(){
-	        return value;
-	    }
-	}*/
 	/**
 	 * 流程环节 处理组名称
 	 * @author ldm

@@ -75,17 +75,16 @@ public class NumIncreaseUtils {
         String[] planStr = StringUtils.split(propertyUtil.readProperty(ASSIST_PLAN_NAME),"$");
         String dateName = planStr[0],sortName= planStr[1];
         String nowDate = DateUtils.converToString(new Date(),"yyyyMMdd");
-        if(dateName.equals(nowDate)){
-            propertyUtil.writeProperty(ASSIST_PLAN_NAME, nowDate+"$"+String.format("%02d", Integer.valueOf(sortName)+1));
-        }else{
-            propertyUtil.writeProperty(ASSIST_PLAN_NAME, nowDate+"$01");
+        if(!dateName.equals(nowDate)){
+            sortName = "01";
         }
+        propertyUtil.writeProperty(ASSIST_PLAN_NAME, nowDate+"$"+String.format("%02d", Integer.valueOf(sortName)+1));
 
         return nowDate+String.format("%02d", Integer.valueOf(sortName));
 	}
 	
 	public static void main(String[] args){
-	    System.out.println(getAssistPlanName());
+		System.out.println(getAssistPlanName());
 	}
 	
 	

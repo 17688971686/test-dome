@@ -1,7 +1,7 @@
 package cs.repository.odata;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.utils.ObjectUtils;
+import cs.common.utils.StringUtil;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -75,107 +78,118 @@ public class ODataObj {
 		String inlinecount = request.getParameter("$inlinecount");
 
 		BuildObj(filter, orderby, select, skip, top, inlinecount);
-
 	}
+
+	private final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
+			odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le)\\s+((datetime|date)?\\'[^\\']*\\'|\\d+))"),
+			patternField = Pattern.compile(",(.*?)\\)"),
+			patternValue = Pattern.compile("'(.*?)'");
 
 	@SuppressWarnings("rawtypes")
 	public void BuildObj(String filter, String orderby, String select, String skip, String top, String inlinecount)
 			throws ParseException {
-		// build odata object
-		// build orderby
-		if (orderby != null && !orderby.isEmpty()) {
-			String[] orderbyItems = orderby.trim().split(" ");
-			this.orderby = orderbyItems[0];
-			if (orderbyItems.length == 2 && orderbyItems[1].toLowerCase().equals("desc")) {
-				this.orderbyDesc = true;
-			}
-		}
-		// build select
-		if (select != null && !select.isEmpty()) {
-			this.select = select.split(",");
-			
-		}
-		// build skip,top,inlinecount
-		if (skip != null && !skip.isEmpty()) {
-			this.skip = Integer.parseInt(skip);
-		}
-		if (top != null && !top.isEmpty()) {
-			this.top = Integer.parseInt(top);
-		}
-		if (inlinecount != null && inlinecount.toLowerCase().equals("allpages")) {
-			this.isCount = true;
-		}
+		/// build odata object
+        // build orderby
+        if (ObjectUtils.isNotEmpty(orderby)) {
+            String[] orderbyItems = orderby.trim().split(" ");
+            this.orderby = orderbyItems[0];
+            if (orderbyItems.length == 2 && orderbyItems[1].toLowerCase().equals("desc")) {
+                this.orderbyDesc = true;
+            }
+        }
+        // build select
+        if (ObjectUtils.isNotEmpty(select)) {
+            this.select = select.split(",");
+        }
+        // build skip,top,inlinecount
+        if (ObjectUtils.isNotEmpty(skip)) {
+            this.skip = Integer.parseInt(skip);
+        }
+        if (ObjectUtils.isNotEmpty(top)) {
+            this.top = Integer.parseInt(top);
+        }
+        if (null != inlinecount && "allpages".equalsIgnoreCase(inlinecount)) {
+            this.isCount = true;
+        }
 
-		// build filter
-		if (filter != null && !filter.isEmpty()) {
-			List<ODataFilterItem> filterItemsList = new ArrayList<ODataFilterItem>();
-			String[] filters = filter.split("and");
-			for (String filterItem : filters) {
-				filterItem = filterItem.trim();
-				// handle like
-				if (filterItem.contains("substringof")) {
-					ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
-					Pattern patternField = Pattern.compile(",(.*?)\\)");
-					Pattern patternValue = Pattern.compile("'(.*?)'");
-					Matcher matcherField = patternField.matcher(filterItem);
-					Matcher matcherValue = patternValue.matcher(filterItem);
-					if (matcherField.find() && matcherValue.find()) {
-						oDataFilterItem.setField(matcherField.group(1));
-						oDataFilterItem.setValue(matcherValue.group(1));
-						oDataFilterItem.setOperator("like");
-						filterItemsList.add(oDataFilterItem);
-					}
+        // build filter
+        if (ObjectUtils.isNotEmpty(filter)) {
+            List<ODataFilterItem> filterItemsList = new ArrayList<ODataFilterItem>();
+            String[] filterItems;
+            Matcher odataMatcher, matcherField, matcherValue;
+            ODataFilterItem oDataFilterItem;
+            String filterItem, value;
+            // 解析like的查询方式
+            odataMatcher = odataLikePattern.matcher(filter);
+            while (odataMatcher.find()) {
+                filterItem = odataMatcher.group();
+                matcherField = patternField.matcher(filterItem);
+                matcherValue = patternValue.matcher(filterItem);
+                if (matcherField.find() && matcherValue.find()) {
+                    if (ObjectUtils.isEmpty(matcherValue.group(1))) {   // 避免空字符串的查询
+                        continue;
+                    }
+                    oDataFilterItem = new ODataFilterItem<String>();
+                    oDataFilterItem.setField(matcherField.group(1).trim());
+                    oDataFilterItem.setValue(matcherValue.group(1));
+                    oDataFilterItem.setOperator("like");
+                    filterItemsList.add(oDataFilterItem);
+                }
+            }
 
-				}
-				// handle eq,ne,gt,ge,lt,le
-				else {
+            // 解析非like的方式
+            odataMatcher = odataOtherPattern.matcher(filter);
+            while (odataMatcher.find()) {
+                filterItems = getFilterItems(odataMatcher.group());
+                if (ObjectUtils.isNoneEmpty(filterItems)) {
+                    value = filterItems[2];
+                    if (StringUtil.startsWithIgnoreCase(value, "datetime'") && value.endsWith("'")) {// 如果是datetime
+                        oDataFilterItem = new ODataFilterItem<Date>();
 
-					String[] filterItems = filterItem.split(" ");
-					if (filterItems.length == 3) {
-						if (filterItems[2].toLowerCase().contains("datetime")) {// 如果是datetime
-							ODataFilterItem<Date> oDataFilterItem = new ODataFilterItem<Date>();
+                        oDataFilterItem.setValue(DateUtils.parseDate(value.substring("datetime'".length(), value.length() - 1).replace("T", " "), "yyyy-MM-dd hh:mm:ss"));
+                    } else if (StringUtil.startsWithIgnoreCase(value, "date'") && value.endsWith("'")) {// 如果是datetime
+                        oDataFilterItem = new ODataFilterItem<Date>();
 
-							oDataFilterItem.setField(filterItems[0]);
-							oDataFilterItem.setOperator(filterItems[1]);
-							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-							String date = filterItems[2].toLowerCase().replaceAll("datetime", "").replaceAll("'", "");
-							oDataFilterItem.setValue(dateFormat.parse(date));
-							filterItemsList.add(oDataFilterItem);
-						} 
-						else if(filterItems[2].toLowerCase().contains("guid")){//如果是guid
-							ODataFilterItem<UUID> oDataFilterItem = new ODataFilterItem<UUID>();
+                        oDataFilterItem.setValue(DateUtils.parseDate(value.substring("date'".length(), value.length() - 1), "yyyy-MM-dd"));
+                    } else if (StringUtil.startsWithIgnoreCase(value, "guid'") && value.endsWith("'")) {// 如果是guid
+                        oDataFilterItem = new ODataFilterItem<UUID>();
 
-							oDataFilterItem.setField(filterItems[0]);
-							oDataFilterItem.setOperator(filterItems[1]);
-							
-							UUID id = UUID.fromString( filterItems[2].toLowerCase().replaceAll("guid", "").replaceAll("'", ""));
-							oDataFilterItem.setValue(id);
-							filterItemsList.add(oDataFilterItem);
-						}
-						else if (filterItems[2].contains("'")) {// 如果是string
-							ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
+                        oDataFilterItem.setValue(UUID.fromString(value.substring("guid'".length(), value.length() - 1)));
+                    } else if (value.startsWith("'") && value.endsWith("'")) {// 如果是string
+                        oDataFilterItem = new ODataFilterItem<String>();
+                        oDataFilterItem.setValue(value.substring(1, value.length() - 1));
+                    } else {// 其它为Number
+                        oDataFilterItem = new ODataFilterItem<Number>();
 
-							oDataFilterItem.setField(filterItems[0]);
-							oDataFilterItem.setOperator(filterItems[1]);
-							oDataFilterItem.setValue(filterItems[2].replaceAll("'", ""));
-							filterItemsList.add(oDataFilterItem);
-						} else {// 其它为int
-							ODataFilterItem<Integer> oDataFilterItem = new ODataFilterItem<Integer>();
+                        oDataFilterItem.setValue(NumberFormat.getInstance().parse(value));
+                    }
 
-							oDataFilterItem.setField(filterItems[0]);
-							oDataFilterItem.setOperator(filterItems[1]);
-							oDataFilterItem.setValue(Integer.parseInt(filterItems[2]));
-							filterItemsList.add(oDataFilterItem);
-						}
-
-					}
-
-				}
-
-			} // for
-			this.filter = filterItemsList;
-		} // if
+                    oDataFilterItem.setField(filterItems[0]);
+                    oDataFilterItem.setOperator(filterItems[1]);
+                    filterItemsList.add(oDataFilterItem);
+                }
+            }
+            this.filter = filterItemsList;
+        } // if
 	}
+
+    /**
+     * 获取过滤参数
+     *
+     * @param filterItem
+     * @return
+     */
+    private static String[] getFilterItems(String filterItem) {
+        String[] filterItems = new String[3];
+        int site1 = filterItem.indexOf(" "), site2 = site1 + 1;
+        if (site1 > 1) {
+            filterItems[0] = filterItem.substring(0, site1);
+            int site3 = filterItem.indexOf(" ", site2);
+            filterItems[1] = filterItem.substring(site2, site3).trim();
+            filterItems[2] = filterItem.substring(site3 + 1).trim();
+        }
+        return filterItems;
+    }
 
 	@SuppressWarnings("rawtypes")
 	public Criteria buildQuery(Criteria criteria) {

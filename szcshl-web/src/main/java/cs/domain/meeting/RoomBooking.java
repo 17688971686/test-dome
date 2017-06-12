@@ -63,7 +63,7 @@ public class RoomBooking extends DomainBase{
 	private String remark;//备注
 
 	//工作方案Id
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="workProgramId")
 	private WorkProgram workProgram;
 

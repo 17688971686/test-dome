@@ -3,7 +3,6 @@ package cs.domain.project;
 
 import cs.domain.DomainBase;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -74,13 +73,13 @@ public class AssistPlan extends DomainBase {
     /**
      * 参加抽签单位
      */
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     private List<AssistUnit> assistUnitList;
 
     /**
      * 协审项目信息
      */
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "assistPlan")
     private List<AssistPlanSign> assistPlanSignList;
 
     public String getPlanState() {

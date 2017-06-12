@@ -49,5 +49,5 @@ public interface SignService{
 
     List<SignDto> findAssistSign();
 
-	void uploadAttachments(byte[] bytes, String signid);
+    List<SignDto> findByPlanId(String planId);
 }

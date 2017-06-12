@@ -220,9 +220,8 @@ public class ExpertServiceImpl implements ExpertService {
             return null;
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        StringBuffer sql = new StringBuffer();
         //1、专家规避：与项目建设单位相同单位的专家需要规避，同本项目方案编制单位的专家需要规避
-        sql.append(" select ep.EXPERTID from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
+        hqlBuilder.append(" select ep.* from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
         hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
         hqlBuilder.setParam("workProgramId",workProgramId);
         //2、关联本周已抽取2次或者本月已抽取四次的专家

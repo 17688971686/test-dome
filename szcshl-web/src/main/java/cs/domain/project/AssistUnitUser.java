@@ -27,7 +27,7 @@ public class AssistUnitUser extends DomainBase {
     @Column(columnDefinition="VARCHAR(64)")
     private String position;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "assistUnitId")
     private AssistUnit assistUnit;
 

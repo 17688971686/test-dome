@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Description: 协审方案 控制层
@@ -40,23 +41,49 @@ public class AssistPlanController {
     }
 
     @RequiresPermissions("assistPlan##post")
-    @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
+    @RequestMapping(name = "新增计划信息", path = "", method = RequestMethod.POST)
     public @ResponseBody AssistPlanDto post(@RequestBody AssistPlanDto record) {
         assistPlanService.save(record);
         return record;
     }
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
-	@Transactional
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody AssistPlanDto findById(@RequestParam(required = true)String id){		
 		return assistPlanService.findById(id);
 	}
-	
+
+    /**
+     * 初始化协审计划信息
+     * @return
+     */
+    @RequestMapping(name = "初始化管理页面", path = "initPlanManager",method=RequestMethod.GET)
+    public @ResponseBody Map<String,Object> initPlanManager(){
+        return assistPlanService.initPlanManager();
+    }
+
+    @RequestMapping(name = "保存次项目信息", path = "saveLowPlanSign",method=RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void saveLowPlanSign(@RequestBody AssistPlanDto assistPlanDto){
+        assistPlanService.saveLowPlanSign(assistPlanDto);
+    }
+
     @RequiresPermissions("assistPlan##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	assistPlanService.delete(id);      
+        assistPlanService.delete(id);
+    }
+
+    @RequestMapping(name = "删除主项目", path = "cancelPlanSign", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void cancelPlanSign(@RequestParam(required = false) String planId,@RequestParam(required = true)String signIds) {
+        assistPlanService.cancelPlanSign(planId,signIds,true);
+    }
+
+    @RequestMapping(name = "删除次项目", path = "cancelLowPlanSign", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void cancelLowPlanSign(@RequestParam(required = false) String planId,@RequestParam(required = true)String signIds) {
+        assistPlanService.cancelPlanSign(planId,signIds,false);
     }
 
     @RequiresPermissions("assistPlan##put")

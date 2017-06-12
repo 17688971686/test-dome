@@ -36,7 +36,7 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 		List<${info.beanName}Dto> resultDtoList = new ArrayList<${info.beanName}Dto>(resultList.size());
 		
 		if(resultList != null && resultList.size() > 0){
-            resultDtoList.forEach(x->{
+            resultList.forEach(x->{
 				${info.beanName}Dto modelDto = new ${info.beanName}Dto();
 				BeanCopierUtils.copyProperties(x, modelDto);
 				//cannot copy 

@@ -12,20 +12,17 @@
 		vm.flow = {};					
 		vm.work = {};
 		vm.dispatchDoc = {};
-		vm.fileRecord = {};
-		vm.expertReview={};
-//		vm.flow.dealOption='';
-		vm.i=0;
+		vm.fileRecord = {};		
 		vm.model.signid = $state.params.signid;	
 		vm.flow.taskId = $state.params.taskId;			//流程任务ID
 		vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
 		vm.dealFlow = true;
+		vm.expertReview={};
 		vm.showExpertRemark = false;//专家评分弹窗内容显示
 		vm.showExpertpayment=false;//专家费用弹窗内容显示
 		vm.MarkAndPay=true;//专家评分费用编辑权限
 
 		active();
-
 		function active(){
 			$('#myTab li').click(function (e) {
 				var aObj = $("a",this);        		
@@ -86,11 +83,6 @@
 
 
 		vm.commitNextStep = function (){
-//			if(vm.str.lenght!=0){
-
-//			vm.flow.dealOption=vm.str.substr(0,vm.str.length-1);
-//			}
-//			vm.flow.dealOption=vm.str;
 			if(signFlowSvc.checkBusinessFill(vm)){
 				flowSvc.commit(vm);
 			}else{

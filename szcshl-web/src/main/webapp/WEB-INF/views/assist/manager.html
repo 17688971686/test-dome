@@ -12,7 +12,12 @@
         1、编制协审项目计划
     </div>
     <div class="well well-sm" style="background:white;">
-        修改已有的项目计划审批包：<select ></select> <button class="btn btn-xs btn-danger"  ng-click="vm.doDelete()"><i class="fa fa-times" aria-hidden="true"></i>删除计划审批包</button>
+        修改已有的项目计划审批包：
+        <select ng-model="vm.selectPlanId" ng-change = "vm.initSelPlan()">
+            <option value="">请选择</option>
+            <option ng-repeat="s in vm.planList" value="{{s.id}}" ng-selected="s.id == vm.selectPlanId">{{s.planName}}</option>
+        </select>
+        <button class="btn btn-xs btn-danger"  ng-click="vm.doDelete()"><i class="fa fa-times" aria-hidden="true"></i>删除计划审批包</button>
         <table class="table table-bordered" style="margin-top:10px;">
             <tr>
                 <td class="formAlignRight">收文编号</td>
@@ -55,17 +60,17 @@
                 </td>
                 <td width="14%;" style="text-align:center;vertical-align:middle;">
                     <p>
-                        <input type="radio" ng-model="vm.planSign.assistType" name="selAssistType" value="独立项目" >独立项目
-                        <span ng-show="vm.planSign.assistType=='独立项目'">
-                            <select ng-model="vm.planSign.spliNum" >
+                        <input type="radio" ng-model="vm.plan.assistType" name="selAssistType" value="独立项目" >独立项目
+                        <span ng-show="vm.plan.assistType=='独立项目'">
+                            <select ng-model="vm.plan.spliNum" >
                                 <option ng-repeat="i in vm.splitNumArr" value="{{i}}">{{i}}</option>
                             </select>
                             拆分个数
                         </span>
                     </p>
-                    <p><input type="radio" ng-model="vm.planSign.assistType" value="合并项目" ng-change="vm.initSplit('合并项目');">合并项目</p>
-                    <p ><button class="btn btn-xs btn-default"  ng-click="vm.affirmSign()"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
-                    <p ><button class="btn btn-xs btn-default"  ng-click="vm.cancelSign()"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
+                    <p><input type="radio" ng-model="vm.plan.assistType" value="合并项目" ng-change="vm.initSplit('合并项目');">合并项目</p>
+                    <p ><button class="btn btn-xs btn-default"  ng-click="vm.affirmSign()" ng-disabled="vm.iscommit"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
+                    <p ><button class="btn btn-xs btn-default"  ng-click="vm.cancelSign()" ng-disabled="vm.iscommit"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
                 </td>
                 <td width="43%">
                     <p>计划已挑选的项目情况</p>
@@ -80,10 +85,15 @@
                         </tr>
                         </thead>
                         <tbody style="display:block; max-height:300px;overflow-y: auto;">
-                        <tr ng-repeat="ss in vm.selAssistSign">
+                        <tr ng-repeat="sas in vm.pickMainSign">
                             <td style="width: 60px;"><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
                             <td style="width: 60px;">{{ $index + 1}}</td>
-                            <td style="width: 180px;">{{sas.projectname}}</td>
+                            <td style="width: 180px;" style="background-color: #0d6aad;" ng-show="sas.assistType == '合并项目'">
+                                <a ng-show="sas.assistType == '合并项目'" ng-dblclick="vm.showPickLowSign(sas.signid)">{{sas.projectname}}</a>
+                            </td>
+                            <td style="width: 180px;" ng-show="sas.assistType == '独立项目'">
+                                {{sas.projectname}}
+                            </td>
                             <td style="width: 180px;">{{sas.filecode}}</td>
                             <td style="width: 180px;">{{sas.builtcompanyName}}</td>
                         </tr>
@@ -100,13 +110,111 @@
     <div class="well well-sm" style="background:white;">
         <form id="searchform" name="searchform">
             <span class="help-inline">协审计划名称：</span>
-            <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
+            <input type="text" operator="like" name="planName" id="projectnam" placeholder="请输入">
 
             <span class="help-inline" style="margin-left:10px;">办理人员：</span>
-            <input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+            <input type="text"  operator="like" name="createdBy" id="projectcode" placeholder="请输入">
 
-            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</button>
+            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryPlan()">查询</button>
         </form>
         <div id="grid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
     </div>
 </div>
+
+<!-- S_DIV 次项目选择弹窗 -->
+<div id="lowerSignWin" style="display: none;">
+    <table class="table table-bordered" style="margin-top:10px;">
+        <tr>
+            <td class="formAlignRight">收文编号</td>
+            <td><input ng-model="vm.filterLow.filterFilecode"></td>
+            <td class="formAlignRight">项目代码</td>
+            <td><input ng-model="vm.filterLow.filterProjectCode"></td>
+        </tr>
+        <tr>
+            <td class="formAlignRight">项目名称</td>
+            <td><input ng-model="vm.filterLow.filterProjectName" ></td>
+            <td class="formAlignRight">建设单位</td>
+            <td><input ng-model="vm.filterLow.filterBuiltName" ></td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered" style="margin-top:10px;" >
+        <tr >
+            <td >
+                <p>中心在办核算项目</p>
+                <table class="table table-bordered" width="43%">
+                    <tr>
+                        <th style="width: 60px;">选择</th>
+                        <th style="width: 60px;">序号</th>
+                        <th style="width: 180px;">项目名称</th>
+                        <th style="width: 180px;">收文编号</th>
+                        <th style="width: 180px;">建设单位</th>
+                    </tr>
+                    <tr ng-repeat="ss in vm.assistSign | filter:vm.filterLowSign">
+                        <td style="width: 60px;"><input type="checkbox" name="selLowSign"  value="{{ss.signid}}"/></td>
+                        <td style="width: 60px;">{{ $index + 1}}</td>
+                        <td style="width: 180px;">{{ss.projectname}}</td>
+                        <td style="width: 180px;">{{ss.filecode}}</td>
+                        <td style="width: 180px;">{{ss.builtcompanyName}}</td>
+                    </tr>
+                </table>
+            </td>
+            <td width="14%;" style="text-align:center;vertical-align:middle;">
+                <p ><button class="btn btn-xs btn-default"  ng-click="vm.affirmLowerSign()" ng-disabled="vm.iscommit"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
+                <p ><button class="btn btn-xs btn-default"  ng-click="vm.cancelLowerSign()" ng-disabled="vm.iscommit"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
+            </td>
+            <td width="43%">
+                <p>计划已挑选的项目情况</p>
+                <table class="table table-bordered" width="43%">
+                    <tr>
+                        <th style="width: 60px;">选择</th>
+                        <th style="width: 60px;">序号</th>
+                        <th style="width: 180px;">项目名称</th>
+                        <th style="width: 180px;">收文编号</th>
+                        <th style="width: 180px;">建设单位</th>
+                    </tr>
+                    </thead>
+                    <tr ng-repeat="sas in vm.lowerSign ">
+                        <td style="width: 60px;"><input type="checkbox" name="checkLowSign"  value="{{sas.signid}}"/></td>
+                        <td style="width: 60px;">{{ $index + 1}}</td>
+                        <td style="width: 180px;">{{sas.projectname}}</td>
+                        <td style="width: 180px;">{{sas.filecode}}</td>
+                        <td style="width: 180px;">{{sas.builtcompanyName}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- E_DIV 次项目选择弹窗 -->
+
+<!--  S_DIV 协审计划div框 -->
+<div id="planInfo" class="well well-sm" style="background:white;display: none;">
+    <ul id="assistTab" class="nav nav-tabs">
+        <li class="active"><a  data-toggle="tab" for-div="assist_unitlist">协审单位</a></li>
+        <li><a data-toggle="tab" for-div="assist_plansign">项目计划审批表</a></li>
+        <li><a data-toggle="tab" for-div="assist_drawSignin">协审抽签签到表</a></li>
+        <li><a data-toggle="tab" for-div="assist_drawPro">协审项目抽签</a></li>
+        <li><a data-toggle="tab" for-div="assist_drawHis">项目抽签记录表</a></li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="well well-sm tab-pane fade in active" style="background:white;" id="assist_unitlist">
+            协审单位
+        </div><!-- end tab1 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="assist_plansign">
+            项目计划审批表
+        </div><!-- end tab2 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawSignin">
+            协审抽签签到表
+        </div><!-- end tab3 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawPro">
+            协审项目抽签
+        </div><!-- end tab4 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawHis">
+            项目抽签记录表
+        </div><!-- end tab5 -->
+    </div>
+</div>
+<!--  E_DIV 协审计划div框 -->
