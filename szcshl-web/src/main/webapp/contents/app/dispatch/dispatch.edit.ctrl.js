@@ -18,7 +18,36 @@
         vm.sign={};
         vm.dispatchDoc = {};
         vm.dispatchDoc.signId = $state.params.signid;
+       
+        //系统文件删除
+        vm.delDisptSysFile = function(id){
+        	dispatchSvc.delDisptSysFile(vm,id);
+        }
         
+        //查看附件列表
+        vm.dispatchQuery = function(){
+        	 $("#dispatchqueryWin").kendoWindow({
+                 width : "800px",
+                 height : "400px",
+                 title : "附件上传",
+                 visible : false,
+                 modal : true,
+                 closable : true,
+                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+             }).data("kendoWindow").center().open();
+        }
+        //上传附件弹窗
+        vm.dispatchUpload = function (){
+        	 $("#dispatchUploadWin").kendoWindow({
+                 width : "660px",
+                 height : "400px",
+                 title : "附件上传",
+                 visible : false,
+                 modal : true,
+                 closable : true,
+                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+             }).data("kendoWindow").center().open();
+        }
         //创建发文
         vm.create = function(){
         	dispatchSvc.saveDispatch(vm);

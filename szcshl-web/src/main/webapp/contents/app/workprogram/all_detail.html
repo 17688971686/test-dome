@@ -147,14 +147,24 @@
 		{{vm.mainwork.meetingAddress}}
         </td>
     </tr>
-    <tr>
-        <td colspan="2" style="width:150px;" class="text-center">调研时间</td>
+      <tr>
+        <td colspan="2" style="width:150px;" class="text-center">调研开始时间</td>
         <td colspan="3">
 		{{vm.mainwork.studyBeginTime}}
         </td>
-        <td style="width:150px;" class="text-center">专家费用</td>
+        <td style="width:150px;" class="text-center">调研结束时间</td>
         <td >
-	{{vm.mainwork.expertCost}}
+		{{vm.mainwork.studyEndTime}}
+        </td>
+    </tr>
+     <tr>
+        <td colspan="2" style="width:150px;" class="text-center">专家费用</td>
+        <td colspan="3">
+		{{vm.mainwork.expertCost}}
+        </td>
+        <td style="width:150px;" class="text-center"></td>
+        <td >
+	
         </td>
     </tr>
     <tr>
@@ -212,7 +222,7 @@
     </tr>
     </tbody>
 </table>	<!-- end table -->
-
+<!-- start2 table -->
 <table class="table table-bordered" ng-show="vm.showAssistwork">
     <caption class="text-center h3"><strong>{{vm.assistwork.titleName}}</strong></caption>
     <caption style="width:100%;">
@@ -249,7 +259,7 @@
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
         <td colspan="3">
-
+			{{vm.assistwork.mainDeptId}}
         </td>
         <td style="width:150px;" class="text-center">是否有环评</td>
         <td>
@@ -264,60 +274,60 @@
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">项目类别</td>
         <td>
-
+			{{vm.assistwork.projectType}}
         </td>
         <td style="width:50px;" class="text-center">小类</td>
         <td>
-
+			{{vm.assistwork.projectSubType}}
         </td>
         <td style="width:150px;" class="text-center">行业类别</td>
         <td>
-
+			{{vm.assistwork.industryType}}
         </td>
     </tr>
     <tr>
         <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
         <td rowspan="3" colspan="3">
-
+		{{vm.assistwork.contactPerson}}
         </td>
         <td style="width:150px;" class="text-center">手机</td>
         <td>
-
+		{{vm.assistwork.contactPersonPhone}}
         </td>
     </tr>
     <tr>
         <td style="width:150px;" class="text-center">电话</td>
         <td>
-
+		{{vm.assistwork.contactPersonTel}}
         </td>
     </tr>
     <tr>
         <td style="width:150px;" class="text-center">传真</td>
         <td>
-
+		{{vm.assistwork.contactPersonFax}}
         </td>
     </tr>
     <tr>
         <td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
         <td style="width:100px;" class="text-center">申报建设规模</td>
         <td colspan="3">
-
+			{{vm.assistwork.buildSize}}
         </td>
         <td style="width:150px;" class="text-center">申报投资</td>
         <td >
-
+			{{vm.assistwork.appalyInvestment}}
         </td>
     </tr>
     <tr>
         <td style="width:100px;" class="text-center">申报建设内容</td>
         <td colspan="5">
-
+		{{vm.assistwork.buildContent}}
         </td>
     </tr>
     <tr>
         <td style="width:100px;" class="text-center">项目背景</td>
         <td colspan="5">
-
+		{{vm.assistwork.projectBackGround}}
         </td>
     </tr>
     <tr>
@@ -354,21 +364,31 @@
     <tr>
         <td colspan="2" style="width:150px;" class="text-center">评审会时间</td>
         <td colspan="3">
-
+			{{vm.assistwork.workStageTime}}
         </td>
         <td style="width:150px;" class="text-center">会议地点</td>
         <td >
-
+			{{vm.assistwork.meetingAddress}}
         </td>
     </tr>
     <tr>
-        <td colspan="2" style="width:150px;" class="text-center">调研时间</td>
+        <td colspan="2" style="width:150px;" class="text-center">调研开始时间</td>
         <td colspan="3">
-
+		{{vm.assistwork.studyBeginTime}}
         </td>
-        <td style="width:150px;" class="text-center">专家费用</td>
+        <td style="width:150px;" class="text-center">调研结束时间</td>
         <td >
-
+		{{vm.assistwork.studyEndTime}}
+        </td>
+    </tr>
+     <tr>
+        <td colspan="2" style="width:150px;" class="text-center">专家费用</td>
+        <td colspan="3">
+		{{vm.assistwork.expertCost}}
+        </td>
+        <td style="width:150px;" class="text-center"></td>
+        <td >
+	
         </td>
     </tr>
     <tr>
@@ -424,4 +444,5 @@
         </td>
     </tr>
     </tbody>
-</table>	<!-- end table -->
+</table>	
+<!-- end2 table -->

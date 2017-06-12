@@ -9,6 +9,7 @@ import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.*;
 import cs.domain.sys.Org;
+import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
@@ -18,9 +19,12 @@ import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +48,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	private MergeDispaRepo mergeDispaRepo;
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
+	@Autowired
+	private SysFileRepo sysFileRepo;
 	// 初始化页面获取已选项目
 	@Override
 	public Map<String, Object> getSeleSignBysId(String bussnessId) {
@@ -317,6 +323,13 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
 		// 获取主办处联系人
 		List<UserDto> userList = userService.findUserByOrgId(sign.getmOrgId());
+		//查询系统上传附件
+		Criteria sysfile = sysFileRepo.getSession().createCriteria(SysFile.class);
+		sysfile.add(Restrictions.eq("businessId", sign.getSignid()));
+		List<SysFile> sysfilelist = sysfile.list();
+		if(sysfilelist !=null){
+			map.put("sysfilelist", sysfilelist);
+		}
 		map.put("mainUserList", userList);
 		map.put("orgList", orgDtoList);
 		map.put("linkSignId", linkSignId);

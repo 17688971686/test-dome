@@ -28,7 +28,7 @@
                   	$('.confirmDialog').modal('hide');             	
                  }
              })*/
-             signSvc.deleteSysFile(vm,id);
+           signSvc.deleteSysFile(vm,id);
         }
        
         //附件上传
