@@ -113,7 +113,7 @@ public class ExpertReviewController {
 	}
     
     @RequiresPermissions("expertReview#getReviewList#get")
-    @RequestMapping(name = "查询专家评分", path = "html/getReviewList",method=RequestMethod.GET)	
+    @RequestMapping(name = "查询专家评分一览表", path = "html/getReviewList",method=RequestMethod.GET)	
     public @ResponseBody Map<String,Object> getReviewList(){
     	return expertReviewService.getReviewList(" ","2017","1");
     }

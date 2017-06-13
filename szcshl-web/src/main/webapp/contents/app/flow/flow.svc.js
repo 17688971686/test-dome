@@ -416,6 +416,7 @@
 				columns : getExpertColumns(),
 				dataBound:dataBound,
 				resizable : true
+				//editable: "inline"
 			};
 		}// end fun grid
 		
@@ -430,22 +431,28 @@
 					title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 				},*/
 				{  
-				    field: "rowNumber",  
+				    field: "",  
 				    title: "序号",  
 				    width: 50,
 				    template: "<span class='row-number'></span>"  
 			    },
 				{
-					field : "name",
+					field : "",
 					title : "姓名",
 					width : 100,
-					filterable : true
+					filterable : true,
+					template : function(item) {
+						return item.name==null?"" : item.name;
+					}
 				},
 				{
-					field : "comPany",
+					field : "",
 					title : "工作单位",
 					width : 100,
-					filterable : true
+					filterable : true,
+					template : function(item) {
+						return item.comPany==null?"" : item.comPany;
+					}
 				},
 				{
 					field : "",
@@ -463,10 +470,13 @@
 					}
 				},
 				{
-					field : "majorStudy",
+					field : "",
 					title : "专业",
 					width : 100,
-					filterable : true
+					filterable : true,
+					template : function(item) {
+						return item.majorStudy==null?"" : item.majorStudy;
+					}
 				},
 				{
 					field : "",
@@ -486,15 +496,31 @@
 				},
 				
 				{
-					field : "remark",
+					field : "",
 					title : "备注",
 					width : 100,
-					filterable : true
+					filterable : true,
+					template : function(item) {
+						return item.remark==null?"":item.remark;
+					}
 				},
 				{
 					field : "expertReviewDto.score",
 					title : "评分",
-					width : 100
+					width : 100,
+					template :
+					 function(item){
+						var str="";
+						for(var i=0; i< item.expertReviewDto.score;i++){
+						str+="<span style='color: gold;'>☆</span>"
+						}
+						return str;
+					}
+				},
+				{
+					field : "describes",
+					title : "评级描述",
+					width : 200
 				},
 				{
 					field : "",
@@ -504,6 +530,7 @@
 						return common.format($('#columnBtns').html(), "vm.editSelectExpert('" + item.expertID + "')", item.expertID);
 					}
 				}
+				//{ command: ["edit"], title: "操作", width: "150px" }
 			];			
 			return columns;
 		}
@@ -631,6 +658,9 @@
 		// begin#remarkGrid
 		function paymentGrid(vm) {
 			var  dataSource = common.kendoGridDataSource(rootPath+"/expertReview/html/getSelectExpert");
+			dataSource.transport.destroy=function(){
+				console.log("dsdf");
+			}
 			var  dataBound = function () {  					
 	                var rows = this.items(); 	               
 	                $(rows).each(function (i) {	

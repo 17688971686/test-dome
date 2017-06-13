@@ -241,7 +241,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 		return null;
 	}
 	@Override
-	public List<ExpertDto> getSelectExpert() {		
+	public List<ExpertDto> getSelectExpert() {
+		
 		Criteria criteria = expertReviewRepo.getSession().createCriteria(ExpertReview.class);
 		criteria.add(Restrictions.eq(ExpertReview_.isJoin.getName(), EnumState.YES.getValue()));
 		// 查询已选专家
@@ -279,24 +280,23 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 		}
 		return expertReviewDto;
 	}
-	
+	//更新数据,保存分数
 	@Override
 	@Transactional
 	public void expertMark(String expertId,String expertMark,String expertDecride ) {
 		Date now=new Date();
 		Expert expert=expertRepo.getById(expertId);
 		ExpertReview expertReview=expert.getExpertReview();
-		if(expertReview == null){
-			expertReview=new ExpertReview();
-			expertReview.setId(UUID.randomUUID().toString());
+		if(expertReview != null){
+			expertReview.setScore(expertMark==null?0:Double.parseDouble(expertMark));
+			expertReview.setDescribes(expertDecride);
+			expertReview.setReviewDate(now);
+			expert.setExpertReview(expertReview);
+			expertRepo.save(expert);
 		}
-		expertReview.setScore(expertMark==null?0:Double.parseDouble(expertMark));
-		expertReview.setDescribes(expertDecride);
-		expertReview.setReviewDate(now);
-		expert.setExpertReview(expertReview);
-		expertRepo.save(expert);
 	}
 	
+	//更新数据,保存费用
 	@Override
 	@Transactional
 	public void savePayment(ExpertReviewDto expertReviewDto)throws Exception {
@@ -305,14 +305,12 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 			Expert expert=expertRepo.getById(expertReviewDto.getExpertId());
 			if(expert!=null && !Validate.isBlank(expert.getExpertID())){
 				ExpertReview expertReview=expert.getExpertReview();
-				if(expertReview == null){
-					expertReview=new ExpertReview();
-					expertReview.setId(UUID.randomUUID().toString());
+				if(expertReview != null){
+					BeanCopierUtils.copyPropertiesIgnoreNull(expertReviewDto,expertReview);
+					expertReview.setModifiedBy(currentUser.getLoginName());
+					expertReview.setModifiedDate(now);
+					expert.setExpertReview(expertReview);
 				}
-				BeanCopierUtils.copyPropertiesIgnoreNull(expertReviewDto,expertReview);
-				expertReview.setModifiedBy(currentUser.getLoginName());
-				expertReview.setModifiedDate(now);
-				expert.setExpertReview(expertReview);
 				expertRepo.save(expert);
 			}
 		} else {

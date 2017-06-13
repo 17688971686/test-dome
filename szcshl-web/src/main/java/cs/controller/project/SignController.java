@@ -50,7 +50,6 @@ public class SignController {
 	@RequestMapping(name = "更新收文", path = "",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void  update(@RequestBody SignDto signDto){	
-		
 		signService.updateSign(signDto);		
 	}
 	

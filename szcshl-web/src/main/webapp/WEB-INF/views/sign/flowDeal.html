@@ -3,7 +3,29 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div  ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
-
+<style>
+		.rating {
+		  unicode-bidi: bidi-override;
+		  direction: rtl;
+		  text-align: center;
+		}
+		.rating > span {
+		  display: inline-block;
+		  position: relative;
+		  width: 1.1em;
+		}
+		.rating > span:hover,
+		.rating > span:hover ~ span {
+		  color: transparent;
+		}
+		.rating > span:hover:before,
+		.rating > span:hover ~ span:before {
+		   content: "\2605";
+		   position: absolute;
+		   left: 0;
+		   color: gold;
+		}
+	</style>
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
 		<li><a href="#/listSign">项目签收管理</a></li>
@@ -59,13 +81,16 @@
 				</div>
 				<div>
 					<form id="markform" name="markform">
-						<span>专家星级: <span class="required">*</span>
-							<select name="score" id="score"ng-model="vm.expertReview.score" data-val="true" data-val-required="必填">
+						<div style="float: left;"><span class="required">*</span>专家星级: </div>
+							<!-- <select name="score" id="score"ng-model="vm.expertReview.score" data-val="true" data-val-required="必填">
 								<option ng-repeat="x in DICT.EXPERT_MARK.dicts | orderBy:'dictSort':false" ng-value="{{x.dictKey}}" ng-selected="x.dictKey==vm.expertReview.score">{{x.dictName}}</option>
-							</select>
-							 
-							<span data-valmsg-for="expertMark" data-valmsg-replace="true" class="errors"></span>
+							</select> -->
+								<div class="rating" style="float: left;margin-left: 10px">
+									<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+								</div>
+						   <span data-valmsg-for="expertMark" data-valmsg-replace="true" class="errors"></span>
 						</span>
+						
 						<br><br> 
 						<span style="text-align: center;">评级描述: 
 							<textarea rows="7" cols="100" ng-model="vm.expertReview.describes"></textarea>

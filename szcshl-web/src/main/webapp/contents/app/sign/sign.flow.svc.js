@@ -63,6 +63,7 @@
                 case "XMFZR_SP_GZFA2":
                     vm.businessTr = true;
                     vm.XMFZR_SP_GZFA = true;
+                    vm.MarkAndPay=false;//专家评分费用编辑权限
                     if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9){ //如果填报完成，则显示
                         vm.show_workprogram = true;
                         $("#show_workprogram_a").click();
