@@ -47,7 +47,7 @@ public class AssistUnit extends DomainBase {
      * 序号
      */
     @Column(columnDefinition="Integer")
-    private String unitSort;
+    private Integer unitSort;
 
     /**
      * 评审计划
@@ -101,11 +101,11 @@ public class AssistUnit extends DomainBase {
         this.address = address;
     }
 
-    public String getUnitSort() {
+    public Integer getUnitSort() {
         return unitSort;
     }
 
-    public void setUnitSort(String unitSort) {
+    public void setUnitSort(Integer unitSort) {
         this.unitSort = unitSort;
     }
 

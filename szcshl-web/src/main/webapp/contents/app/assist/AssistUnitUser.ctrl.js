@@ -7,7 +7,7 @@
 
     function assistUnitUser($location, assistUnitUserSvc) {
         var vm = this;
-        vm.title = '协审单位用户';
+        vm.title = '协审单位人员';
 
         vm.del = function (id) {
             common.confirm({
@@ -36,6 +36,10 @@
                 vm.del(idStr);
             }
         };
+        
+        vm.queryAssistUnitUser=function(){
+        	assistUnitUserSvc.queryAssistUnitUser(vm);
+        }
 
         activate();
         function activate() {

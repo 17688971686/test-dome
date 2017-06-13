@@ -9,7 +9,7 @@
         /* jshint validthis:true */
         var vm = this;
         vm.title = '添加协审单位用户';
-        vm.isuserExist = false;
+        vm.isUserExist = false;
         vm.id = $state.params.id;
         if (vm.id) {
             vm.isUpdate = true;
@@ -28,6 +28,8 @@
             if (vm.isUpdate) {
                 assistUnitUserSvc.getAssistUnitUserById(vm);
             }
+            
+            assistUnitUserSvc.getAssistUnit(vm);
         }
     }
 })();

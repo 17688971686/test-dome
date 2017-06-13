@@ -6,13 +6,15 @@
     assistUnitUser.$inject = ['$http'];
 
     function assistUnitUser($http) {
-        var url_assistUnitUser = rootPath + "/assistUnitUser", url_back = '#/assistUnitUserList';
+        var url_assistUnitUser = rootPath + "/assistUnitUser", url_back = '#/assistUnitUser';
         var service = {
             grid: grid,
             getAssistUnitUserById: getAssistUnitUserById,
             createAssistUnitUser: createAssistUnitUser,
             deleteAssistUnitUser: deleteAssistUnitUser,
-            updateAssistUnitUser: updateAssistUnitUser
+            updateAssistUnitUser: updateAssistUnitUser,
+            getAssistUnit: getAssistUnit,		//获取协审单位
+            queryAssistUnitUser:queryAssistUnitUser		//模糊查询
         };
 
         return service;
@@ -21,14 +23,14 @@
         function updateAssistUnitUser(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
-            if (isValid) {
+            if (isValid && vm.isUserExist==false) {
                 vm.isSubmit = true;
-                vm.model.id = vm.id;// id
+                vm.assistUnitUser.id = vm.id;// id
 
                 var httpOptions = {
                     method: 'put',
                     url: url_assistUnitUser,
-                    data: vm.model
+                    data: vm.assistUnitUser
                 }
 
                 var httpSuccess = function success(response) {
@@ -44,6 +46,7 @@
                                 fn: function () {
                                     vm.isSubmit = false;
                                     $('.alertDialog').modal('hide');
+                                    location.href=url_back;
                                 }
                             })
                         }
@@ -77,20 +80,14 @@
             };
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
+            	   common.requestSuccess({
                     vm: vm,
                     response: response,
                     fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
+                        vm.isSubmit = false;
+                        vm.gridOptions.dataSource.read();
                     }
+
                 });
             };
 
@@ -106,15 +103,14 @@
         function createAssistUnitUser(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
-            if (isValid) {
+            if (isValid && vm.isUserExist==false) {
                 vm.isSubmit = true;
 
                 var httpOptions = {
                     method: 'post',
                     url: url_assistUnitUser,
-                    data: vm.model
+                    data: vm.assistUnitUser
                 };
-
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
                         vm: vm,
@@ -151,7 +147,8 @@
                 params:{id:vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
+                vm.assistUnitUser = response.data;
+                vm.assistUnitDto=vm.assistUnitUser.assistUnitDto;
             };
 
             common.http({
@@ -161,19 +158,41 @@
                 success: httpSuccess
             });                       
         }
+        
+        function getAssistUnit(vm){
+        	var httpOptions={
+        		method: 'post',
+        		url: rootPath+"/assistUnitUser/getAssistUnit"
+        	}
+        	var httpSuccess=function success(response){
+	        	vm.assistUnit={},
+	        	vm.assistUnit=response.data;
+        	
+        	}
+        	
+        	common.http({
+        		vm:vm,
+	        	$http:$http,
+	        	httpOptions:httpOptions,
+	        	success:httpSuccess
+        	});
+        }
 
-        // begin#grid
+             // begin#grid
         function grid(vm) {
 
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_assistUnitUser),
+                transport: common.kendoGridConfig().transport(url_assistUnitUser+"/findByOData",$("#assistUnitUserform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
                         createdDate: {
                             type: "date"
+                        },
+                        modifiedDate: {
+                        	type: "date"
                         }
                     }
                 }),
@@ -188,6 +207,19 @@
             });
 
             // End:dataSource
+            
+            //序号
+            var dataBound=function(){
+            var rows=this.items();
+            var page=this.pager.page() - 1;
+            var pagesize=this.pager.pageSize();
+            $(rows).each(function(){
+            var index=$(this).index() + 1 + page * pagesize;
+            var rowLabel=$(this).find(".row-number");
+            $(rowLabel).html(index);
+            });
+            
+            }//end 序号
 
             // Begin:column
             var columns = [
@@ -197,39 +229,41 @@
                             item.id)
                     },
                     filterable: false,
-                    width: 40,
+                    width: 10,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
                 {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 20,
+                    filterable: false,
+                    template:"<span class='row-number'></span>"
                 },
                 {
                     field: "userName",
-                    title: "userName",
+                    title: "名称",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "phoneNum",
-                    title: "phoneNum",
+                    title: "电话号码",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "position",
-                    title: "position",
+                    title: "职位",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
-                    field: "assistUnit",
-                    title: "assistUnit",
+                    field: "assistUnit.unitName",
+                    title: "协审单位",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
+                
                 {
                     field: "",
                     title: "操作",
@@ -247,11 +281,15 @@
                 filterable: common.kendoGridConfig().filterable,
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
+                dataBound:dataBound,
                 columns: columns,
                 resizable: true
             };
 
         }// end fun grid
-
+        
+        function queryAssistUnitUser(vm){
+        	 vm.gridOptions.dataSource.read();
+        }
     }
 })();

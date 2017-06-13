@@ -17,7 +17,7 @@ public class AssistUnitDto extends BaseDto {
     private String unitShortName;
     private String phoneNum;
     private String address;
-    private String unitSort;
+    private Integer unitSort;
     private List assistPlanList;
 
     public AssistUnitDto() {
@@ -58,11 +58,11 @@ public class AssistUnitDto extends BaseDto {
     public void setAddress(String address) {
         this.address = address;
     }
-    public String getUnitSort() {
+    public Integer getUnitSort() {
         return unitSort;
     }
 
-    public void setUnitSort(String unitSort) {
+    public void setUnitSort(Integer unitSort) {
         this.unitSort = unitSort;
     }
     public List getAssistPlanList() {

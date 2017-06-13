@@ -1,6 +1,10 @@
 package cs.service.project;
 
+import java.util.List;
+
+import cs.domain.project.AssistUnitUser;
 import cs.model.PageModelDto;
+import cs.model.project.AssistUnitDto;
 import cs.model.project.AssistUnitUserDto;
 import cs.repository.odata.ODataObj;
 
@@ -18,8 +22,11 @@ public interface AssistUnitUserService {
 
 	void update(AssistUnitUserDto record);
 
-	AssistUnitUserDto findById(String deptId);
+	AssistUnitUserDto findById(String id);
 
 	void delete(String id);
+	
+	List<AssistUnitDto> getAssistUnit(ODataObj odataObj);
+	
 
 }

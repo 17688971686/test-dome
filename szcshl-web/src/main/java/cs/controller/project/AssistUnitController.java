@@ -1,17 +1,25 @@
 package cs.controller.project;
 
-import cs.model.PageModelDto;
-import cs.model.project.AssistUnitDto;
-import cs.repository.odata.ODataObj;
-import cs.service.project.AssistUnitService;
+import java.text.ParseException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
+import cs.model.PageModelDto;
+import cs.model.project.AssistUnitDto;
+import cs.model.project.AssistUnitUserDto;
+import cs.repository.odata.ODataObj;
+import cs.service.project.AssistUnitService;
 
 /**
  * Description: 协审单位 控制层
@@ -22,12 +30,12 @@ import java.text.ParseException;
 @RequestMapping(name = "协审单位", path = "assistUnit")
 public class AssistUnitController {
 
-	String ctrlName = "assistUnit";
+	String ctrlName = "assist";
     @Autowired
     private AssistUnitService assistUnitService;
 
-    @RequiresPermissions("assistUnit##get")
-    @RequestMapping(name = "获取数据", path = "", method = RequestMethod.GET)
+    @RequiresPermissions("assistUnit#fingByOData#post")
+    @RequestMapping(name = "获取数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AssistUnitDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -35,6 +43,13 @@ public class AssistUnitController {
         return assistUnitDtos;
     }
 
+    @RequiresPermissions("assistUnit#getAssistUnitById#get")
+    @RequestMapping(name="根据ID获取协审单位数据",path="getAssistUnitById",method=RequestMethod.GET)
+    public  @ResponseBody AssistUnitDto getAssistUnitById(@RequestParam String id){
+    	AssistUnitDto assistUnitDto=assistUnitService.findById(id);
+    	return assistUnitDto;
+    }
+    
     @RequiresPermissions("assistUnit##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -51,7 +66,10 @@ public class AssistUnitController {
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	assistUnitService.delete(id);      
+    	String[] ids=id.split(",");
+    	for(String unitId:ids){
+    		assistUnitService.delete(unitId);      
+    	}
     }
 
     @RequiresPermissions("assistUnit##put")
@@ -61,17 +79,65 @@ public class AssistUnitController {
         assistUnitService.update(record);
     }
 
+    @RequiresPermissions("assistUnit#unitUser#post")
+    @RequestMapping(name = "获取单位成员数据", path = "unitUser", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<AssistUnitUserDto>  getUnitAndUser(@RequestParam String assistUnitID){
+    	
+    	return assistUnitService.getUnitAndUser(assistUnitID);
+    	
+    }
+    
+    @RequiresPermissions("assistUnit#userNotIn#post")
+    @RequestMapping(name = "获取非单位成员数据", path = "userNotIn", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<AssistUnitUserDto> getUserNotIn(HttpServletRequest request,@RequestParam String assistUnitID) throws ParseException{
+    	ODataObj odataObj=new ODataObj(request);
+    	
+    	return assistUnitService.getUserNotIn(odataObj, assistUnitID);
+    }
+    
+    @RequiresPermissions("assistUnit#addUser#post")
+    @RequestMapping(name="添加成员",path="addUser",method=RequestMethod.POST)
+    @ResponseStatus(value=HttpStatus.CREATED)
+    public void postAddUser(@RequestParam String unitId,@RequestParam String userId){
+    	
+    	assistUnitService.addUser(unitId, userId);
+    	
+    }
+    
+    @RequiresPermissions("assistUnit#removeUser#delete")
+    @RequestMapping(name="移除单位下的人员",path="removeUser",method=RequestMethod.DELETE)
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void removeUser(@RequestParam String unitId,@RequestParam String userId){
+    	
+    	String[] ids=userId.split(",");
+    	if(ids.length>1){
+    		assistUnitService.removeUsers(unitId, ids);
+    	}else{
+    		
+    		assistUnitService.removeUser(unitId, userId);
+    	}
+    	
+    }
+    
     // begin#html
-    @RequiresPermissions("assistUnit#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequiresPermissions("assistUnit#html/assistUnitList#get")
+    @RequestMapping(name = "列表页面", path = "html/assistUnitList", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/assistUnitList"; 
     }
 
-    @RequiresPermissions("assistUnit#html/edit#get")
-    @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
+    @RequiresPermissions("assistUnit#html/assistUnitEdit#get")
+    @RequestMapping(name = "编辑页面", path = "html/assistUnitEdit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return ctrlName+"/assistUnitEdit";
+    }
+    
+    @RequiresPermissions("assistUnit#html/unitUser#get")
+    @RequestMapping(name = "人员列表页面", path = "html/unitUser", method = RequestMethod.GET)
+    public String unitUserlist() {
+        return ctrlName+"/unit_user_List"; 
     }
     // end#html
 

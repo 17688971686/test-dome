@@ -22,7 +22,9 @@ public class AssistUnitUserDto extends BaseDto {
     private String userName;
     private String phoneNum;
     private String position;
-    private AssistUnit assistUnit;
+    private String assistUnitID;
+    
+    private AssistUnitDto assistUnit;
 
     public AssistUnitUserDto() {
     }
@@ -55,12 +57,23 @@ public class AssistUnitUserDto extends BaseDto {
     public void setPosition(String position) {
         this.position = position;
     }
-    public AssistUnit getAssistUnit() {
-        return assistUnit;
+    public String getAssistUnitID() {
+        return assistUnitID;
     }
 
-    public void setAssistUnit(AssistUnit assistUnit) {
-        this.assistUnit = assistUnit;
+    public void setAssistUnitID(String assistUnitID) {
+        this.assistUnitID = assistUnitID;
     }
+
+	public AssistUnitDto getAssistUnit() {
+		return assistUnit;
+	}
+
+	public void setAssistUnit(AssistUnitDto assistUnit) {
+		this.assistUnit = assistUnit;
+	}
+
+	
+    
 
 }

@@ -322,6 +322,36 @@
                 controllerAs: 'vm'
             })
         	//end#dept
+            .state('assistUnit', {
+                url: '/assistUnit',
+                templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
+                controller: 'assistUnitCtrl',
+                controllerAs: 'vm'
+            }).state('assistUnitEdit', {
+                url: '/assistUnitEdit/:id',
+                templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
+                controller: 'assistUnitEditCtrl',
+                controllerAs: 'vm'
+            }).state('UnitAndUser', { //单位成员
+                url: '/UnitAndUser/:id',
+                templateUrl: rootPath + '/assistUnit/html/unitUser.html',
+                controller: 'unitAndUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end##assistUnit
+             .state('assistUnitUser', {
+                url: '/assistUnitUser',
+                templateUrl: rootPath + '/assistUnitUser/html/assistUnitUserList.html',
+                controller: 'assistUnitUserCtrl',
+                controllerAs: 'vm'
+            }).state('assistUnitUserEdit', {
+                url: '/assistUnitUserEdit/:id',
+                templateUrl: rootPath + '/assistUnitUser/html/assistUnitUserEdit.html',
+                controller: 'assistUnitUserEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+            
         	
         	
         ;
