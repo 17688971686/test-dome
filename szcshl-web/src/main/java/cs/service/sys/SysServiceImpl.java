@@ -26,125 +26,125 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 
 @Service
 public class SysServiceImpl implements SysService {
-	private static Logger logger = Logger.getLogger(SysServiceImpl.class);
+    private static Logger logger = Logger.getLogger(SysServiceImpl.class);
 
-	@Autowired
-	private RoleRepo roleRepo;
-	
-	@Autowired
-	private UserRepo userRepo;
-	
-	@Autowired
-	private SysConfigRepo sysConfigRepo;
+    @Autowired
+    private RoleRepo roleRepo;
 
-	@Override
-	public List<SysResourceDto> get() {
+    @Autowired
+    private UserRepo userRepo;
 
-		List<SysResourceDto> resources = new ArrayList<SysResourceDto>();
-		List<Class<?>> classes = ClassFinder.find("cs.controller");
-		for (Class<?> obj : classes) {
+    @Autowired
+    private SysConfigRepo sysConfigRepo;
 
-			if (obj.isAnnotationPresent(RequestMapping.class)) {
-				SysResourceDto resource = new SysResourceDto();
+    @Override
+    public List<SysResourceDto> get() {
 
-				Annotation classAnnotation = obj.getAnnotation(RequestMapping.class);
-				RequestMapping classAnnotationInfo = (RequestMapping) classAnnotation;
+        List<SysResourceDto> resources = new ArrayList<SysResourceDto>();
+        List<Class<?>> classes = ClassFinder.find("cs.controller");
+        for (Class<?> obj : classes) {
 
-				resource.setName(classAnnotationInfo.name());
-				resource.setPath(classAnnotationInfo.path()[0]);
+            if (obj.isAnnotationPresent(RequestMapping.class)) {
+                SysResourceDto resource = new SysResourceDto();
 
-				List<SysResourceDto> operations = new ArrayList<SysResourceDto>();
+                Annotation classAnnotation = obj.getAnnotation(RequestMapping.class);
+                RequestMapping classAnnotationInfo = (RequestMapping) classAnnotation;
 
-				for (Method method : obj.getDeclaredMethods()) {
+                resource.setName(classAnnotationInfo.name());
+                resource.setPath(classAnnotationInfo.path()[0]);
 
-					if (method.isAnnotationPresent(RequestMapping.class)) {
-						SysResourceDto operation = new SysResourceDto();
+                List<SysResourceDto> operations = new ArrayList<SysResourceDto>();
 
-						Annotation methodAnnotation = method.getAnnotation(RequestMapping.class);
-						RequestMapping methodAnnotationInfo = (RequestMapping) methodAnnotation;
+                for (Method method : obj.getDeclaredMethods()) {
 
-						String httpMethod = methodAnnotationInfo.method().length == 0 ? "GET"
-								: methodAnnotationInfo.method()[0].name();
-						operation.setPath(String.format("%s#%s#%s", resource.getPath(), methodAnnotationInfo.path()[0].replace("{", "").replace("}", ""),
-								httpMethod));
-						operation.setName(String.format("%s(%s)", methodAnnotationInfo.name(), operation.getPath()));
-						operation.setMethod(httpMethod);
-						operations.add(operation);
+                    if (method.isAnnotationPresent(RequestMapping.class)) {
+                        SysResourceDto operation = new SysResourceDto();
 
-					}
-				}
-				resource.setChildren(operations);
-				resources.add(resource);
-			}
+                        Annotation methodAnnotation = method.getAnnotation(RequestMapping.class);
+                        RequestMapping methodAnnotationInfo = (RequestMapping) methodAnnotation;
 
-		}
-		return resources;
-	}
+                        String httpMethod = methodAnnotationInfo.method().length == 0 ? "GET"
+                                : methodAnnotationInfo.method()[0].name();
+                        operation.setPath(String.format("%s#%s#%s", resource.getPath(), methodAnnotationInfo.path()[0].replace("{", "").replace("}", ""),
+                                httpMethod));
+                        operation.setName(String.format("%s(%s)", methodAnnotationInfo.name(), operation.getPath()));
+                        operation.setMethod(httpMethod);
+                        operations.add(operation);
 
-	@Override
-	@Transactional
-	public Response SysInit() {
-		Response response = new Response();
-		List<SysConfig> sysConfigs = sysConfigRepo.findAll();
-		SysConfig sysConfig;
-		// 更新sysConfig
+                    }
+                }
+                resource.setChildren(operations);
+                resources.add(resource);
+            }
 
-		if (sysConfigs.size() > 0) {// 已经被初始化
-			response.setMessage("已经存在初始化数据，此次操作无效");
-			logger.warn("已经存在初始化数据，此次操作无效");
+        }
+        return resources;
+    }
 
-		} else {
+    /**
+     * 系统初始化，这个要修改
+     * @return
+     */
+    @Override
+    @Transactional
+    public Response SysInit() {
+        Response response = new Response();
+        List<SysConfig> sysConfigs = sysConfigRepo.findAll();
+        SysConfig sysConfig;
+        // 更新sysConfig
 
-			//初始化角色
-			Role role = new Role();
-			role.setRoleName("超级管理员");
-			role.setId(UUID.randomUUID().toString());
-			role.setRemark("系统初始化创建,不可删除");
-			role.setCreatedBy("root");
-			role.setModifiedBy("root");
-			
-			List<SysResourceDto> resourceDtos = this.get();
-			List<Resource> resources = new ArrayList<>();
-			resourceDtos.forEach(x -> {
-				x.getChildren().forEach(y -> {
-					Resource resource = new Resource();
-					resource.setMethod(y.getMethod());
-					resource.setName(y.getName());
-					resource.setPath(y.getPath());
-					resources.add(resource);
+        if (sysConfigs.size() > 0) {// 已经被初始化
+            response.setMessage("已经存在初始化数据，此次操作无效");
+            logger.warn("已经存在初始化数据，此次操作无效");
+        } else {
+            //初始化角色
+            Role role = new Role();
+            role.setRoleName("超级管理员");
+            role.setId(UUID.randomUUID().toString());
+            role.setRemark("系统初始化创建,不可删除");
+            role.setCreatedBy("root");
+            role.setModifiedBy("root");
 
-				});
+            List<SysResourceDto> resourceDtos = this.get();
+            List<Resource> resources = new ArrayList<>();
+            resourceDtos.forEach(x -> {
+                x.getChildren().forEach(y -> {
+                    Resource resource = new Resource();
+                    resource.setMethod(y.getMethod());
+                    resource.setName(y.getName());
+                    resource.setPath(y.getPath());
+                    resources.add(resource);
 
-			});
-			role.setResources(resources);
+                });
 
-			roleRepo.save(role);
+            });
+            role.setResources(resources);
 
-			// 初始化用户
-			User user = new User();
-			user.setLoginName("admin");
-			user.setId(UUID.randomUUID().toString());
-			user.setPassword("admin");
-			user.setRemark("系统初始化创建,不可删除");
-			user.setDisplayName("超级管理员");
-			user.getRoles().add(role);
-			user.setCreatedBy("root");
-			user.setModifiedBy("root");
-			userRepo.save(user);
+            roleRepo.save(role);
 
-			// 更新sysConfig
-			sysConfig = new SysConfig();
-			sysConfig.setInit(true);
-			sysConfig.setId(UUID.randomUUID().toString());
-			sysConfigRepo.save(sysConfig);
+            // 初始化用户
+            User user = new User();
+            user.setLoginName("admin");
+            user.setId(UUID.randomUUID().toString());
+            user.setPassword("admin");
+            user.setRemark("系统初始化创建,不可删除");
+            user.setDisplayName("超级管理员");
+            user.getRoles().add(role);
+            user.setCreatedBy("root");
+            user.setModifiedBy("root");
+            userRepo.save(user);
 
-			response.setMessage("初始化成功");
-			response.setIsSuccess(true);
-			
-			logger.info("系统初始化成功!");
+            // 更新sysConfig
+            sysConfig = new SysConfig();
+            sysConfigRepo.save(sysConfig);
 
-		}
-		return response;
+            response.setMessage("初始化成功");
+            response.setIsSuccess(true);
 
-	}
+            logger.info("系统初始化成功!");
+
+        }
+        return response;
+
+    }
 }

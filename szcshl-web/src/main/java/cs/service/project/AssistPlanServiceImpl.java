@@ -296,7 +296,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
     @Override
     public void saveLowPlanSign(AssistPlanDto assistPlanDto) {
         AssistPlan assistPlan = new AssistPlan();
-        String signIds = "";
+        StringBuffer signIds = new StringBuffer();
         BeanCopierUtils.copyProperties(assistPlanDto,assistPlan);
         if(Validate.isString(assistPlan.getId())){
             BeanCopierUtils.copyProperties(assistPlanDto,assistPlan);
@@ -309,7 +309,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
                     assistPlanSign.setAssistPlan(assistPlan);
                     saveList.add(assistPlanSign);
                     //拼接项目ID
-                    signIds += assistPlanSign.getSignId()+",";
+                    signIds.append(assistPlanSign.getSignId()+",");
                 }
             }
             if(saveList.size() > 0){
@@ -318,7 +318,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
         }
 
         //更新项目协审状态
-        signService.updateAssistState(signIds, Constant.EnumState.YES.getValue(),false);
+        signService.updateAssistState(signIds.toString(), Constant.EnumState.YES.getValue(),false);
     }
 
     /**

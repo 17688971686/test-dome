@@ -22,43 +22,50 @@ public class AssistUnit extends DomainBase {
     /**
      * 单位名称
      */
-    @Column(columnDefinition="VARCHAR(64)")
+    @Column(columnDefinition = "VARCHAR(64)")
     private String unitName;
 
     /**
      * 单位简称
      */
-    @Column(columnDefinition="VARCHAR(30)")
+    @Column(columnDefinition = "VARCHAR(30)")
     private String unitShortName;
 
     /**
      * 电话号码
      */
-    @Column(columnDefinition="VARCHAR(30)")
+    @Column(columnDefinition = "VARCHAR(30)")
     private String phoneNum;
 
     /**
      * 企业地址
      */
-    @Column(columnDefinition="VARCHAR(30)")
+    @Column(columnDefinition = "VARCHAR(30)")
     private String address;
 
     /**
      * 序号
      */
-    @Column(columnDefinition="Integer")
+    @Column(columnDefinition = "Integer")
     private Integer unitSort;
 
     /**
      * 评审计划
      */
-    @ManyToMany(mappedBy="assistUnitList")
+    @ManyToMany(mappedBy = "assistUnitList")
     private List<AssistPlan> assistPlanList;
+
+
+    /**
+     * 是否上轮轮空
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isLastUnSelected;
 
     /**
      * 协审单位人员
      */
-    @OneToMany(mappedBy="assistUnit")
+    @OneToMany(mappedBy = "assistUnit")
     private List<AssistUnitUser> assistUnitUserList;
 
     public String getId() {
@@ -123,5 +130,13 @@ public class AssistUnit extends DomainBase {
 
     public void setAssistUnitUserList(List<AssistUnitUser> assistUnitUserList) {
         this.assistUnitUserList = assistUnitUserList;
+    }
+
+    public String getIsLastUnSelected() {
+        return isLastUnSelected;
+    }
+
+    public void setIsLastUnSelected(String isLastUnSelected) {
+        this.isLastUnSelected = isLastUnSelected;
     }
 }

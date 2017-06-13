@@ -1,0 +1,99 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a>系统管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.addConfig()"><span class="glyphicon glyphicon-plus"></span>新增
+        </button>
+        <button class="btn btn-sm btn-danger" ng-click="vm.del()" ng-disabled="vm.isSubmit"><span
+                class="glyphicon glyphicon-remove"></span>批量删除
+        </button>
+    </div>
+
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 60px;">选择</th>
+            <th style="width: 60px;">序号</th>
+            <th style="width: 180px;">参数名</th>
+            <th style="width: 180px;">参数Key</th>
+            <th style="width: 180px;">参数值</th>
+            <th style="">描述</th>
+            <th style="width: 260px;">操作</th>
+        </tr>
+        <tr ng-repeat="c in vm.configList">
+            <td><input type="checkbox" name="configid" value="{{c.id}}"/></td>
+            <td>{{ $index + 1}}</td>
+            <td>{{c.configName}}</td>
+            <td>{{c.configKey}}</td>
+            <td>{{c.configValue}}</td>
+            <td>{{c.descInfo}}</td>
+            <td>
+                <button class="btn btn-xs btn-primary" ng-click="vm.editConfig(c.id)"><span
+                        class="glyphicon glyphicon-plus"></span>编辑
+                </button>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<!--  S_DIV 系统参数修改框 -->
+<div id="configdiv" class="well well-sm" style="background:white;display: none;">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.doCommit()" ng-disabled="vm.iscommit"><span
+                class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.closeWin()"><span
+                class="glyphicon glyphicon-chevron-left"></span>关闭
+        </button>
+    </div>
+
+    <form id="configForm">
+        <table class="table table-bordered">
+            <!-- 隐藏字段-->
+            <input ng-show="vm.model.id" name="id" ng-hide="true" style="display: none;">
+            <tr>
+                <td class="formAlignRight" width="25%">参数名称： <span class="required">*</span></td>
+                <td width="60%">
+                    <input maxlength="32" class="form-control input-sm " ng-model="vm.model.configName" id="configName"
+                           name="configName" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="configName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">参数Key： <span class="required">*</span></td>
+                <td>
+                    <input maxlength="32" class="form-control input-sm " ng-model="vm.model.configKey " id="configKey"
+                           name="configKey" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                    <span data-valmsg-for="configKey" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">参数值： <span class="required">*</span></td>
+                <td>
+                    <input maxlength="32" class="form-control input-sm " ng-model="vm.model.configValue "
+                           id="configValue" name="configValue" data-val="true" data-val-required="必填">
+                </td>
+                <td>
+                    <span data-valmsg-for="configValue" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">备注：</td>
+                <td>
+                    <textarea class="form-control" maxlength="200" name="descInfo" id="descInfo"
+                              ng-model="vm.model.descInfo" style="height:120px;"></textarea>
+                </td>
+                <td><span data-valmsg-for="descInfo" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!--  E_DIV 系统参数修改框 -->

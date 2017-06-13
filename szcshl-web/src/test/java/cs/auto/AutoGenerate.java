@@ -9,6 +9,7 @@ import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistUnit;
 import cs.domain.project.AssistUnitUser;
+import cs.domain.sys.SysConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(AssistUnitUser.class, "协审单位用户");
+        CRUDGanConfig config = new CRUDGanConfig(SysConfig.class, "系统参数");
         config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AssistUnitUser");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\SysConfig");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());
@@ -45,11 +46,11 @@ public class AutoGenerate {
         fileConfs.add(new FileConfig(FileConst.serviceImplCls));
         fileConfs.add(new FileConfig(FileConst.controllerCls));
 
-        fileConfs.add(new FileConfig(FileConst.listHtml));
+       /* fileConfs.add(new FileConfig(FileConst.listHtml));
         fileConfs.add(new FileConfig(FileConst.listCtrlJs));
         fileConfs.add(new FileConfig(FileConst.listSvcJs));
         fileConfs.add(new FileConfig(FileConst.editHtml));
-        fileConfs.add(new FileConfig(FileConst.editCtrJs));
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));*/
         return fileConfs;
     }
 

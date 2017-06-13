@@ -115,11 +115,11 @@
 		//$('.alertDialog').modal('hide');//bug:backdrop:static会失效
 		options.vm.alertDialogMessage = options.msg;
 		options.vm.alertDialogFn = function () {
+            if(options.closeDialog && options.closeDialog == true){
+                $('.alertDialog').modal('hide');
+                $('.modal-backdrop').remove();
+            }
 			if (options.fn) {
-				if(options.closeDialog && options.closeDialog == true){
-					$('.alertDialog').modal('hide'); 
-					$('.modal-backdrop').remove();
-				}
 				options.fn();               
 			} else {
 				$('.alertDialog').modal('hide');                

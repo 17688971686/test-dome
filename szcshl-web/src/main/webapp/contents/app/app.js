@@ -87,6 +87,15 @@
                 controllerAs: 'vm'
             })
             //end#log
+
+            //begin#config
+            .state('config', {
+                url: '/config',
+                templateUrl: rootPath + '/sysConfig/html/list.html',
+                controller: 'sysConfigCtrl',
+                controllerAs: 'vm'
+            })
+            //end#config
             
             //begin#upload
         	.state('upload', {

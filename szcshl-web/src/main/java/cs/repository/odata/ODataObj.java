@@ -21,74 +21,75 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
 public class ODataObj {
-	private String orderby;
-	private boolean orderbyDesc;
-	private String[] select;
-	private int skip;
-	private int top;
-	private boolean isCount;
-	private int count;
-	
+    private String orderby;
+    private boolean orderbyDesc;
+    private String[] select;
+    private int skip;
+    private int top;
+    private boolean isCount;
+    private int count;
 
-	@SuppressWarnings("rawtypes")
-	private List<ODataFilterItem> filter;
 
-	public String getOrderby() {
-		return orderby;
-	}
+    @SuppressWarnings("rawtypes")
+    private List<ODataFilterItem> filter;
 
-	public boolean isOrderbyDesc() {
-		return orderbyDesc;
-	}
+    public String getOrderby() {
+        return orderby;
+    }
 
-	public String[] getSelect() {
-		return select;
-	}
+    public boolean isOrderbyDesc() {
+        return orderbyDesc;
+    }
 
-	public int getSkip() {
-		return skip;
-	}
+    public String[] getSelect() {
+        return select;
+    }
 
-	public int getTop() {
-		return top;
-	}
+    public int getSkip() {
+        return skip;
+    }
 
-	public boolean getIsCount() {
-		return isCount;
-	}
-	public int getCount() {
-		return count;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public List<ODataFilterItem> getFilter() {
-		return filter;
-	}
+    public int getTop() {
+        return top;
+    }
 
-	private static Logger logger = Logger.getLogger(ODataObj.class);
+    public boolean getIsCount() {
+        return isCount;
+    }
 
-	// method
-	public ODataObj(HttpServletRequest request) throws ParseException {
-		// get parameter
-		String filter = request.getParameter("$filter");
-		String orderby = request.getParameter("$orderby");
-		String select = request.getParameter("$select");
-		String skip = request.getParameter("$skip");
-		String top = request.getParameter("$top");
-		String inlinecount = request.getParameter("$inlinecount");
+    public int getCount() {
+        return count;
+    }
 
-		BuildObj(filter, orderby, select, skip, top, inlinecount);
-	}
+    @SuppressWarnings("rawtypes")
+    public List<ODataFilterItem> getFilter() {
+        return filter;
+    }
 
-	private final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
-			odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le)\\s+((datetime|date)?\\'[^\\']*\\'|\\d+))"),
-			patternField = Pattern.compile(",(.*?)\\)"),
-			patternValue = Pattern.compile("'(.*?)'");
+    private static Logger logger = Logger.getLogger(ODataObj.class);
 
-	@SuppressWarnings("rawtypes")
-	public void BuildObj(String filter, String orderby, String select, String skip, String top, String inlinecount)
-			throws ParseException {
-		/// build odata object
+    // method
+    public ODataObj(HttpServletRequest request) throws ParseException {
+        // get parameter
+        String filter = request.getParameter("$filter");
+        String orderby = request.getParameter("$orderby");
+        String select = request.getParameter("$select");
+        String skip = request.getParameter("$skip");
+        String top = request.getParameter("$top");
+        String inlinecount = request.getParameter("$inlinecount");
+
+        BuildObj(filter, orderby, select, skip, top, inlinecount);
+    }
+
+    private final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
+            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le)\\s+((datetime|date)?\\'[^\\']*\\'|\\d+))"),
+            patternField = Pattern.compile(",(.*?)\\)"),
+            patternValue = Pattern.compile("'(.*?)'");
+
+    @SuppressWarnings("rawtypes")
+    public void BuildObj(String filter, String orderby, String select, String skip, String top, String inlinecount)
+            throws ParseException {
+        /// build odata object
         // build orderby
         if (ObjectUtils.isNotEmpty(orderby)) {
             String[] orderbyItems = orderby.trim().split(" ");
@@ -171,7 +172,7 @@ public class ODataObj {
             }
             this.filter = filterItemsList;
         } // if
-	}
+    }
 
     /**
      * 获取过滤参数
@@ -191,88 +192,87 @@ public class ODataObj {
         return filterItems;
     }
 
-	@SuppressWarnings("rawtypes")
-	public Criteria buildQuery(Criteria criteria) {
-		logger.debug("begin:buildQuery");
-		
-		// 处理filter
-		if (filter != null) {
-			for (ODataFilterItem oDataFilterItem : filter) {
-				String field = oDataFilterItem.getField();
-				String operator = oDataFilterItem.getOperator();
-				Object value = oDataFilterItem.getValue();
-				logger.debug(String.format("fitler:field:%s,operator:%s,value:%s", field,operator,value));
-				switch (operator) {
-				case "like":
-					criteria.add(Restrictions.like(field, "%" + value + "%"));
-					break;
-				case "eq":
-					criteria.add(Restrictions.eq(field, value));
-					break;
-				case "ne":
-					criteria.add(Restrictions.ne(field, value));
-					break;
-				case "gt":
-					criteria.add(Restrictions.gt(field, value));
-					break;
-				case "ge":
-					criteria.add(Restrictions.ge(field, value));
-					break;
-				case "lt":
-					criteria.add(Restrictions.lt(field, value));
-					break;
-				case "le":
-					criteria.add(Restrictions.le(field, value));
-					break;
-				case "ni":	//not in
-					Object[] notInObjValues = splitObj(value,",");
-					criteria.add(Restrictions.not(Restrictions.in(field, notInObjValues)));
-					break;
-				case "in":	//in
-					Object[] inObjValues = splitObj(value,",");
-					criteria.add(Restrictions.in(field, inObjValues));
-					break;	
-				default:
-					break;
-				}
-			}
-		}
-		//统计总数
-		if(this.isCount){		
-			
-			Integer totalResult = ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-			this.count=totalResult;
-			criteria.setProjection(null);
-			logger.debug("count:"+totalResult);
-		}
-		// 处理分页
-		if (this.top != 0) {
-			criteria.setFirstResult(this.skip);
-			criteria.setMaxResults(this.top);
-		}
-		// 处理orderby
-		if (this.orderby != null && !this.orderby.isEmpty()) {
-			if (this.isOrderbyDesc()) {
-				criteria.addOrder(Property.forName(this.orderby).desc());
-			} else {
-				criteria.addOrder(Property.forName(this.orderby).asc());
-			}
-		}
-		logger.debug("end:buildQuery");
-		return criteria;
-	}
+    @SuppressWarnings("rawtypes")
+    public Criteria buildQuery(Criteria criteria) {
+        logger.debug("begin:buildQuery");
 
-	private Object[] splitObj(Object value, String splitOperate) {		
-		if (value instanceof String) {
-			String s = value.toString();
-			String[] sArr = s.split(splitOperate);
-			Object[] resultObj = new Object[sArr.length];
-			for(int i=0,l=sArr.length;i<l;i++){
-				resultObj[i] = sArr[i];
-			}
-			return resultObj;
-		}
-		return null;
-	}
+        // 处理filter
+        if (filter != null) {
+            for (ODataFilterItem oDataFilterItem : filter) {
+                String field = oDataFilterItem.getField();
+                String operator = oDataFilterItem.getOperator();
+                Object value = oDataFilterItem.getValue();
+                logger.debug(String.format("fitler:field:%s,operator:%s,value:%s", field, operator, value));
+                switch (operator) {
+                    case "like":
+                        criteria.add(Restrictions.like(field, "%" + value + "%"));
+                        break;
+                    case "eq":
+                        criteria.add(Restrictions.eq(field, value));
+                        break;
+                    case "ne":
+                        criteria.add(Restrictions.ne(field, value));
+                        break;
+                    case "gt":
+                        criteria.add(Restrictions.gt(field, value));
+                        break;
+                    case "ge":
+                        criteria.add(Restrictions.ge(field, value));
+                        break;
+                    case "lt":
+                        criteria.add(Restrictions.lt(field, value));
+                        break;
+                    case "le":
+                        criteria.add(Restrictions.le(field, value));
+                        break;
+                    case "ni":    //not in
+                        Object[] notInObjValues = splitObj(value, ",");
+                        criteria.add(Restrictions.not(Restrictions.in(field, notInObjValues)));
+                        break;
+                    case "in":    //in
+                        Object[] inObjValues = splitObj(value, ",");
+                        criteria.add(Restrictions.in(field, inObjValues));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        //统计总数
+        if (this.isCount) {
+            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            this.count = totalResult;
+            criteria.setProjection(null);
+            logger.debug("count:" + totalResult);
+        }
+        // 处理分页
+        if (this.top != 0) {
+            criteria.setFirstResult(this.skip);
+            criteria.setMaxResults(this.top);
+        }
+        // 处理orderby
+        if (this.orderby != null && !this.orderby.isEmpty()) {
+            if (this.isOrderbyDesc()) {
+                criteria.addOrder(Property.forName(this.orderby).desc());
+            } else {
+                criteria.addOrder(Property.forName(this.orderby).asc());
+            }
+        }
+        logger.debug("end:buildQuery");
+        return criteria;
+    }
+
+    private Object[] splitObj(Object value, String splitOperate) {
+        if (value instanceof String) {
+            String s = value.toString();
+            String[] sArr = s.split(splitOperate);
+            Object[] resultObj = new Object[sArr.length];
+            for (int i = 0, l = sArr.length; i < l; i++) {
+                resultObj[i] = sArr[i];
+            }
+            return resultObj;
+        }
+        return null;
+    }
 
 }

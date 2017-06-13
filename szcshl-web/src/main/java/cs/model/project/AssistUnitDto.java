@@ -18,11 +18,12 @@ public class AssistUnitDto extends BaseDto {
     private String phoneNum;
     private String address;
     private Integer unitSort;
+    private String isLastUnSelected;
     private List assistPlanList;
 
     public AssistUnitDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -30,6 +31,7 @@ public class AssistUnitDto extends BaseDto {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getUnitName() {
         return unitName;
     }
@@ -37,6 +39,7 @@ public class AssistUnitDto extends BaseDto {
     public void setUnitName(String unitName) {
         this.unitName = unitName;
     }
+
     public String getUnitShortName() {
         return unitShortName;
     }
@@ -44,6 +47,7 @@ public class AssistUnitDto extends BaseDto {
     public void setUnitShortName(String unitShortName) {
         this.unitShortName = unitShortName;
     }
+
     public String getPhoneNum() {
         return phoneNum;
     }
@@ -51,6 +55,7 @@ public class AssistUnitDto extends BaseDto {
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
     }
+
     public String getAddress() {
         return address;
     }
@@ -58,6 +63,7 @@ public class AssistUnitDto extends BaseDto {
     public void setAddress(String address) {
         this.address = address;
     }
+
     public Integer getUnitSort() {
         return unitSort;
     }
@@ -65,6 +71,7 @@ public class AssistUnitDto extends BaseDto {
     public void setUnitSort(Integer unitSort) {
         this.unitSort = unitSort;
     }
+
     public List getAssistPlanList() {
         return assistPlanList;
     }
@@ -73,4 +80,11 @@ public class AssistUnitDto extends BaseDto {
         this.assistPlanList = assistPlanList;
     }
 
+    public String getIsLastUnSelected() {
+        return isLastUnSelected;
+    }
+
+    public void setIsLastUnSelected(String isLastUnSelected) {
+        this.isLastUnSelected = isLastUnSelected;
+    }
 }

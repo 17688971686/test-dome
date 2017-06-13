@@ -1,9 +1,6 @@
 package cs.model;
 
-import cs.common.Util;
 import org.springframework.beans.BeanUtils;
-
-import java.util.Date;
 
 /**
  * 基础页面数据映射模型

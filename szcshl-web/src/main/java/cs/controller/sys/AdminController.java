@@ -1,5 +1,6 @@
 package cs.controller.sys;
 
+import cs.common.utils.DateUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,60 +9,59 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import cs.common.ICurrentUser;
-import cs.common.Util;
 import cs.model.sys.UserDto;
 import cs.service.sys.UserService;
 
 @Controller
 @RequestMapping(name = "管理界面", path = "admin")
 public class AdminController {
-	private String ctrlName = "admin";
-	private static Logger logger = Logger.getLogger(AdminController.class.getName());
-	@Autowired
-	private ICurrentUser currentUser;
-	@Autowired
-	private UserService userService;
-	
-
-	@RequiresPermissions("admin#index#get")
-	@RequestMapping(name = "首页", path = "index")
-	public String index(Model model) {
-
-		model.addAttribute("user", currentUser.getLoginName());
-		return ctrlName + "/index";
-	}
-
-	@RequiresPermissions("admin#welcome#get")
-	@RequestMapping(name = "欢迎页", path = "welcome")
-	public String welcome(Model model) {
-		UserDto user=userService.findUserByName( currentUser.getLoginName());
-		if(user!=null){
-			model.addAttribute("user", user.getLoginName());
-			model.addAttribute("lastLoginDate", Util.formatDate( user.getLastLoginDate()));
-		}
-		
-		return ctrlName + "/welcome";
-	}
-	
-	@RequiresPermissions("admin#gtasks#get")
-	@RequestMapping(name = "待办事项", path = "gtasks")
-	public String gtasks(Model model) {		
-		
-		return ctrlName + "/gtasks";
-	}
+    private String ctrlName = "admin";
+    private static Logger logger = Logger.getLogger(AdminController.class.getName());
+    @Autowired
+    private ICurrentUser currentUser;
+    @Autowired
+    private UserService userService;
 
 
-	@RequiresPermissions("admin#dtasks#get")
-	@RequestMapping(name = "办结事项", path = "dtasks")
-	public String dtasks(Model model) {
+    @RequiresPermissions("admin#index#get")
+    @RequestMapping(name = "首页", path = "index")
+    public String index(Model model) {
 
-		return ctrlName + "/dtasks";
-	}
+        model.addAttribute("user", currentUser.getLoginName());
+        return ctrlName + "/index";
+    }
 
-	@RequiresPermissions("admin#etasks#get")
-	@RequestMapping(name = "办结事项", path = "etasks")
-	public String etasks(Model model) {
+    @RequiresPermissions("admin#welcome#get")
+    @RequestMapping(name = "欢迎页", path = "welcome")
+    public String welcome(Model model) {
+        UserDto user = userService.findUserByName(currentUser.getLoginName());
+        if (user != null) {
+            model.addAttribute("user", user.getLoginName());
+            model.addAttribute("lastLoginDate", DateUtils.toStringDay(user.getLastLoginDate()));
+        }
 
-		return ctrlName + "/etasks";
-	}
+        return ctrlName + "/welcome";
+    }
+
+    @RequiresPermissions("admin#gtasks#get")
+    @RequestMapping(name = "待办事项", path = "gtasks")
+    public String gtasks(Model model) {
+
+        return ctrlName + "/gtasks";
+    }
+
+
+    @RequiresPermissions("admin#dtasks#get")
+    @RequestMapping(name = "办结事项", path = "dtasks")
+    public String dtasks(Model model) {
+
+        return ctrlName + "/dtasks";
+    }
+
+    @RequiresPermissions("admin#etasks#get")
+    @RequestMapping(name = "办结事项", path = "etasks")
+    public String etasks(Model model) {
+
+        return ctrlName + "/etasks";
+    }
 }
