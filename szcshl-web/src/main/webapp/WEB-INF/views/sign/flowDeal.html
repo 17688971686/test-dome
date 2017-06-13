@@ -81,14 +81,8 @@
 				</div>
 				<div>
 					<form id="markform" name="markform">
-						<div style="float: left;"><span class="required">*</span>专家星级: </div>
-							<!-- <select name="score" id="score"ng-model="vm.expertReview.score" data-val="true" data-val-required="必填">
-								<option ng-repeat="x in DICT.EXPERT_MARK.dicts | orderBy:'dictSort':false" ng-value="{{x.dictKey}}" ng-selected="x.dictKey==vm.expertReview.score">{{x.dictName}}</option>
-							</select> -->
-								<div class="rating" style="float: left;margin-left: 10px">
-									<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-								</div>
-						   <span data-valmsg-for="expertMark" data-valmsg-replace="true" class="errors"></span>
+						<div style="float: left;">专家星级: </div>
+								<div style="margin-left:20px;" id="star"  data-num=""></div>
 						</span>
 						
 						<br><br> 
@@ -104,7 +98,6 @@
 
 		<!-- start 专家费用 -->
 		<div class="well well-sm tab-pane fade" style="background: white;"id="sign_payment" >
-			<!-- <div id="expertPaymentGrid" kendo-grid="grid" k-options="vm.gridOptions2"></div> -->
 				
 				<div style="margin-top: 10px" class="grid" kendo-grid="grid" k-options="vm.paymentgrid"></div>
 				<div id="payment" ng-show="vm.showExpertpayment">
@@ -134,8 +127,6 @@
 							<td style="width:100px;" class="text-center">评审/函评日期:</td>
 							<td>
 							{{vm.expertReview.reviewDate}}
-								<!-- <input type="text" name="reviewDate" id="reviewDate" style="width: 200px;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expertReview.reviewDate" 
-					 			data-val-date="必须为日期"  >  -->
 							</td>
 						</tr>
 						<tr>
@@ -212,3 +203,4 @@
 		<button class="btn btn-xs btn-primary"  ng-click="{0}" ng-disabled="vm.MarkAndPay" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>
 	</@shiro.hasPermission>
 </script>
+

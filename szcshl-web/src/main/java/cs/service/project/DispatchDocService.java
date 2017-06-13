@@ -26,7 +26,7 @@ public interface DispatchDocService {
 
 	 DispatchDocDto initDispatchBySignId(String signId);
 	 
-	 void deleteMergeDispa(String dispathId);
+	 void deleteMergeDispa(String dispathId) throws Exception;
 	 
 	 String getRelatedFileNum(String dispaId);
 }

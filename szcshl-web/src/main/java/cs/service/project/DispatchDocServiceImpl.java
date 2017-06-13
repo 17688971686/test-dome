@@ -175,10 +175,15 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	//删除关联信息
 	@Override
 	@Transactional
-	public void deleteMergeDispa(String dispathId) {
+	public void deleteMergeDispa(String dispathId) throws Exception {
+		if(Validate.isString(dispathId)){
 		MergeDispa mergeDispa = mergeDispaRepo.getById(dispathId);
 		if(mergeDispa!=null && !Validate.isBlank(mergeDispa.getBusinessId())){
 			mergeDispaRepo.delete(mergeDispa);
+		}
+		}else{
+			log.info("提交收文信息异常：无法获取发文ID（dispathId）信息");
+			throw new Exception(Constant.ERROR_MSG);
 		}
 	}
 	

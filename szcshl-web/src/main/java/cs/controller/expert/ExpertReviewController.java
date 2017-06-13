@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -119,9 +120,9 @@ public class ExpertReviewController {
     }
     
     @RequiresPermissions("expertReview#getSelectExpert#get")
-    @RequestMapping(name = "获取已选专家", path = "html/getSelectExpert",method=RequestMethod.POST)	
-    public @ResponseBody PageModelDto<ExpertDto> getSelectExpert() throws ParseException{
-    	 List<ExpertDto> ExpertDtoList=expertReviewService.getSelectExpert();
+    @RequestMapping(name = "获取已选专家", path = "html/getSelectExpert/{signId}",method=RequestMethod.POST)	
+    public @ResponseBody PageModelDto<ExpertDto> getSelectExpert(@PathVariable("signId") String signId) throws ParseException{
+    	 List<ExpertDto> ExpertDtoList=expertReviewService.getSelectExpert(signId);
     	 PageModelDto<ExpertDto> pageModelDto = new PageModelDto<>();
     	 pageModelDto.setCount(ExpertDtoList.size());
  		 pageModelDto.setValue(ExpertDtoList);	
@@ -138,8 +139,8 @@ public class ExpertReviewController {
     @RequiresPermissions("expertReview#expertMark#get")
     @RequestMapping(name = "编辑专家评分", path = "html/expertMark",method=RequestMethod.POST)	
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void expertMark(@RequestParam String expertId,String expertMark,String expertDecride) throws ParseException{
-    	expertReviewService.expertMark(expertId, expertMark, expertDecride);
+    public void expertMark(@RequestBody ExpertReviewDto expertReviewDto) throws ParseException{
+    	expertReviewService.expertMark(expertReviewDto);
     }
     
     @RequiresPermissions("expertReview#savePayment#get")

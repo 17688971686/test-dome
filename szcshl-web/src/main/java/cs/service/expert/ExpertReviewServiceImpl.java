@@ -34,6 +34,7 @@ import cs.common.Constant.EnumState;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
@@ -45,6 +46,7 @@ import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 
 /**
@@ -61,6 +63,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 	private ExpertRepo expertRepo;
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
+	@Autowired
+	private SignRepo signRepo;
 
 	@Override
 	public PageModelDto<ExpertReviewDto> get(ODataObj odataObj) {
@@ -240,14 +244,18 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 		*/
 		return null;
 	}
+	
+	//todo
+	//查詢評分和費用（待修改）
 	@Override
-	public List<ExpertDto> getSelectExpert() {
-		
-		Criteria criteria = expertReviewRepo.getSession().createCriteria(ExpertReview.class);
-		criteria.add(Restrictions.eq(ExpertReview_.isJoin.getName(), EnumState.YES.getValue()));
-		// 查询已选专家
-		List<ExpertReview> expertReviewList = criteria.list();
+	public List<ExpertDto> getSelectExpert(String signId) {
+		Sign sign=signRepo.getById(signId);
 		List<ExpertDto> expertDtoList=new ArrayList<ExpertDto>();
+		if(sign!=null){
+			List<WorkProgram> workList=sign.getWorkProgramList();
+			if(Validate.isList(workList)){
+				for (WorkProgram workProgram : workList) {
+					List<ExpertReview> expertReviewList=workProgram.getExpertReviews();
 				if(Validate.isList(expertReviewList)){					
 					for (ExpertReview expertReview : expertReviewList) {
 							ExpertDto expertDto=new ExpertDto();
@@ -258,7 +266,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 							expertDtoList.add(expertDto);
 					}
 				}
-			
+				}
+			}
+		}
 		return expertDtoList;
 	}
 	
@@ -283,13 +293,13 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 	//更新数据,保存分数
 	@Override
 	@Transactional
-	public void expertMark(String expertId,String expertMark,String expertDecride ) {
+	public void expertMark(ExpertReviewDto expertReviewDto ) {
 		Date now=new Date();
-		Expert expert=expertRepo.getById(expertId);
+		Expert expert=expertRepo.getById(expertReviewDto.getExpertId());
 		ExpertReview expertReview=expert.getExpertReview();
 		if(expertReview != null){
-			expertReview.setScore(expertMark==null?0:Double.parseDouble(expertMark));
-			expertReview.setDescribes(expertDecride);
+			expertReview.setScore(expertReviewDto.getScore()==null?0:expertReviewDto.getScore());
+			expertReview.setDescribes(expertReviewDto.getDescribes());
 			expertReview.setReviewDate(now);
 			expert.setExpertReview(expertReview);
 			expertRepo.save(expert);

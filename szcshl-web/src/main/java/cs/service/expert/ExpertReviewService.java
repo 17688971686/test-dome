@@ -37,9 +37,9 @@ public interface ExpertReviewService {
 	
 	Map<String,Object> getReviewList(String orgName,String year,String quarter);
 	
-	List<ExpertDto> getSelectExpert();
+	List<ExpertDto> getSelectExpert(String signId);
 	
-	void expertMark(String expertId,String expertMark,String expertDecride );
+	 void expertMark(ExpertReviewDto expertReviewDto );
 	
 	void savePayment(ExpertReviewDto expertReviewDto)throws Exception;
 	
