@@ -86,6 +86,13 @@ public class AssistPlanController {
         assistPlanService.cancelPlanSign(planId,signIds,false);
     }
 
+    @RequestMapping(name = "根据项目ID查询", path = "getAssistPlanBySignId", method = RequestMethod.GET)
+    @ResponseBody
+    public AssistPlanDto getAssistPlanBySignId(@RequestParam(required = true)String signId) {
+       return assistPlanService.getAssistPlanBySignId(signId);
+    }
+
+
     @RequiresPermissions("assistPlan##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

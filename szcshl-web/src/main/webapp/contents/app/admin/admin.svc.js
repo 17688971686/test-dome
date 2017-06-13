@@ -310,7 +310,7 @@
                     width : 180,
                     template:function(item){
                         //项目签收流程，则跳转到项目签收流程处理野人
-                        if(item.flowKey=="FINAL_SIGN_FLOW"){
+                        if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
                             return common.format($('#columnBtns').html(),"signFlowDetail",item.businessKey,item.taskId,item.processInstanceId);
                         }else{
                             return '<a class="btn btn-xs btn-danger" >流程已停用</a>';

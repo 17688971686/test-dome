@@ -135,6 +135,13 @@
 		options.vm.dialogConfirmMessage = options.msg;
 		$('.confirmDialog').modal({ backdrop: 'static' });
 		options.vm.dialogConfirmSubmit = options.fn;
+		if(options.cancel){
+            options.vm.dialogConfirmCancel = options.cancel;
+		}else{
+            options.vm.dialogConfirmCancel = function(){
+                $('.confirmDialog').modal('hide');
+            }
+        }
 
 	}
 	function getQuerystring(key, default_) {

@@ -387,5 +387,17 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 		return map;
 	}
 
+	/**
+	 * 根据项目ID删除工作方案
+	 * @param signId
+	 */
+	@Override
+	public void deleteBySignId(String signId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" delete from cs_work_program where signid =:signid");
+        sqlBuilder.setParam("signid",signId);
+        workProgramRepo.executeSql(sqlBuilder);
+	}
+
 
 }

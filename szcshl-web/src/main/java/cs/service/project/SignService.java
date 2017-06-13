@@ -50,4 +50,6 @@ public interface SignService{
     List<SignDto> findAssistSign();
 
     List<SignDto> findByPlanId(String planId);
+
+    void updateAssistState(String signIds,String status,boolean isSingle);
 }

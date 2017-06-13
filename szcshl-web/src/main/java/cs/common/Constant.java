@@ -47,7 +47,7 @@ public class Constant {
 	public static final String FLOW_XS_XMFZR_GZFA = "XS_XMFZR_GZFA";// 项目负责人承办
 	public static final String FLOW_XS_BZSP_GZFA = "XS_BZSP_GZFA";// 部长审批
 	public static final String FLOW_XS_FGLDSP_GZFA = "XS_FGLDSP_GZFA";// 分管副主任审批
-	public static final String FLOW_XS_FW = "XS_FW";// //发文申请
+	public static final String FLOW_XS_FW = "XS_FW"; //发文申请
 	public static final String FLOW_XS_BZSP_FW = "XS_BZSP_FW";// 部长审批发文
 	public static final String FLOW_XS_FGLDSP_FW = "XS_FGLDSP_FW";// 分管领导审批发文
 	public static final String FLOW_XS_ZRSP_FW = "XS_ZRSP_FW";// 主任审批发文

@@ -81,7 +81,7 @@
 		}
 		// end 添加审批意见
 
-
+		//流程提交
 		vm.commitNextStep = function (){
 			if(signFlowSvc.checkBusinessFill(vm)){
 				flowSvc.commit(vm);
@@ -168,5 +168,34 @@
                 });
             }
         }
+
+        //协审项目负责人环节，确认是否要填写工作方案
+        vm.checkNeedWP = function($event){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            if(checked){
+                vm.model.isNeedWrokPrograml = '9'
+            }else{
+                //如果有发文信息，询问是否删除
+                if(vm.mainwork && vm.mainwork.id){
+                    common.confirm({
+                        vm:vm,
+                        title:"",
+                        msg:"取消会对填报的工作方案进行删除，确认删除么？",
+                        fn:function () {
+                            $('.confirmDialog').modal('hide');
+                            signSvc.removeWP(vm);
+                        },
+                        cancel:function(){
+                            checkbox.checked = !checked;
+                            vm.model.isNeedWrokPrograml = '9'
+                            $('.confirmDialog').modal('hide');
+                        }
+                    })
+                }
+            }
+
+		}
+
 	}
 })();

@@ -79,7 +79,13 @@ public class WorkProgramController {
 		
 		workProgramService.mergeAddWork(signId,linkSignId);
 	}
-	
+
+	@RequestMapping(name = "删除工作方案", path = "deleteBySignId",method=RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public  void deleteBySignId(@RequestParam(required = true)String signId){
+		workProgramService.deleteBySignId(signId);
+	}
+
 	@RequiresPermissions("workprogram#html/edit#get")
 	@RequestMapping(name = "工作方案编辑", path = "html/edit" ,method = RequestMethod.GET)
 	public String edit(){

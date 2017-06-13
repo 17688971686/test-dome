@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import cs.domain.project.AssistPlan;
 import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;
 import cs.repository.odata.ODataObj;
@@ -28,4 +29,6 @@ public interface AssistPlanService {
     void cancelPlanSign(String planId, String signIds,boolean isMain);
 
 	void saveLowPlanSign(AssistPlanDto assistPlanDto);
+
+    AssistPlanDto getAssistPlanBySignId(String signId);
 }

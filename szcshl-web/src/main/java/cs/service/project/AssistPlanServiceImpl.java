@@ -16,6 +16,7 @@ import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Restrictions;
@@ -42,6 +43,8 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 	private ICurrentUser currentUser;
     @Autowired
     private SignService signService;
+    @Autowired
+    private SignRepo signRepo;
 
 	@Override
 	public PageModelDto<AssistPlanDto> get(ODataObj odataObj) {
@@ -113,6 +116,8 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
             assistPlanSignRepo.save(assistPlanSign);
         }
 
+        //更新项目协审状态
+        signService.updateAssistState(record.getSignId(), Constant.EnumState.YES.getValue(),true);
 	}
 
 	@Override
@@ -159,7 +164,14 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 	@Override
 	@Transactional
 	public void delete(String id) {
-	    //1、先删除协审项目信息
+	    //1、更新项目协审状态
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE cs_sign set isassistproc = '0' where signid in ( ");
+        sqlBuilder.append(" SELECT distinct signid FROM cs_as_plansign WHERE planid = :planid)");
+        sqlBuilder.setParam("planid",id);
+        signRepo.executeSql(sqlBuilder);
+
+	    //2、先删除协审项目信息
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" delete from " +AssistPlanSign.class.getSimpleName());
         String[] idArr = id.split(",");
@@ -179,7 +191,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
             hqlBuilder.setParam("id", id);
         }
         assistPlanSignRepo.executeHql(hqlBuilder);
-        //2、再删协审计划信息
+        //3、再删协审计划信息
 		assistPlanRepo.deleteById(AssistPlan_.id.getName(),id);
 	}
 
@@ -272,6 +284,9 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
             sqlBuilder.append(" ) ");
         }
         assistPlanRepo.executeSql(sqlBuilder);
+
+        //更新项目协审状态
+        signService.updateAssistState(signIds, Constant.EnumState.NO.getValue(),false);
     }
 
     /**
@@ -281,23 +296,51 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
     @Override
     public void saveLowPlanSign(AssistPlanDto assistPlanDto) {
         AssistPlan assistPlan = new AssistPlan();
+        String signIds = "";
         BeanCopierUtils.copyProperties(assistPlanDto,assistPlan);
         if(Validate.isString(assistPlan.getId())){
             BeanCopierUtils.copyProperties(assistPlanDto,assistPlan);
             List<AssistPlanSign> saveList = new ArrayList<>(assistPlanDto.getAssistPlanSignDtoList()==null?0:assistPlanDto.getAssistPlanSignDtoList().size());
             if(assistPlanDto.getAssistPlanSignDtoList() != null && assistPlanDto.getAssistPlanSignDtoList().size() > 0){
-                assistPlanDto.getAssistPlanSignDtoList().forEach(apDto ->{
+                for(int i=0,l=assistPlanDto.getAssistPlanSignDtoList().size();i<l;i++){
+                    AssistPlanSignDto apDto = assistPlanDto.getAssistPlanSignDtoList().get(i);
                     AssistPlanSign assistPlanSign = new AssistPlanSign();
                     BeanCopierUtils.copyProperties(apDto,assistPlanSign);
                     assistPlanSign.setAssistPlan(assistPlan);
                     saveList.add(assistPlanSign);
-                });
+                    //拼接项目ID
+                    signIds += assistPlanSign.getSignId()+",";
+                }
             }
             if(saveList.size() > 0){
                 assistPlanSignRepo.bathUpdate(saveList);
             }
         }
 
+        //更新项目协审状态
+        signService.updateAssistState(signIds, Constant.EnumState.YES.getValue(),false);
     }
+
+    /**
+     * 根据项目ID查找协审计划信息
+     * @param signId
+     * @return
+     */
+    @Override
+    public AssistPlanDto getAssistPlanBySignId(String signId) {
+        AssistPlanDto asPlanDto = null;
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("SELECT * FROM cs_as_plan WHERE id = ( ");
+        sqlBuilder.append(" SELECT distinct planid FROM cs_as_plansign WHERE signid = :signid ) ");
+        sqlBuilder.setParam("signid",signId);
+        List<AssistPlan> assistPlanList = assistPlanRepo.findBySql(sqlBuilder);
+        if(assistPlanList != null){
+            AssistPlan assistPlan = assistPlanList.get(0);
+            asPlanDto = new AssistPlanDto();
+            BeanCopierUtils.copyProperties(assistPlan,asPlanDto);
+        }
+        return asPlanDto;
+    }
+
 
 }

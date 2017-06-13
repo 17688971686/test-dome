@@ -87,7 +87,7 @@
                 case "FW_SQ":
                     vm.businessTr = true;
                     vm.FW_SQ = true;
-                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted >= 0){
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted == 0){
                         vm.show_dispatch = true;
                         $("#show_dispatch_a").click();
                     };
@@ -121,13 +121,55 @@
                     $("#show_filerecord_a").click();
                     break;
                 //以下为协审流程
-                case "XS_XMFZR_GZFA":
+                case "XS_XMFZR_GZFA":       //项目负责人承办
                     vm.businessTr = true;
                     vm.XS_XMFZR_GZFA = true;
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
                         vm.show_workprogram = true;
                         $("#show_workprogram_a").click();
                     }
+                    break;
+                case "XS_BZSP_GZFA":             //部长审批工作方案
+                    vm.show_workprogram = true;
+                    $("#show_workprogram_a").click();
+                    break;
+                case "XS_FGLDSP_GZFA":           //分管审批工作方案
+                    vm.show_workprogram = true;
+                    $("#show_workprogram_a").click();
+                    break;
+                case "XS_FW":                    //发文申请
+                    vm.businessTr = true;
+                    vm.FW_SQ = true;
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted == 9){
+                        vm.show_dispatch = true;
+                        $("#show_dispatch_a").click();
+                    };
+                    break;
+                case "XS_BZSP_FW":               //部长审批发文
+                    vm.show_dispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
+                case "XS_FGLDSP_FW":             //分管领导审批发文
+                    vm.show_dispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
+                case "XS_ZRSP_FW":               //主任审批发文
+                    vm.show_dispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
+                case "XS_FZR_GD":                //第一负责人归档
+                    vm.businessTr = true;
+                    vm.MFZR_GD = true;
+                    if(vm.model.filenum){
+                        vm.show_filerecord = true;
+                        $("#show_filerecord_a").click();
+                    }
+                    break;
+                case "XS_FZR_SP":                //第二负责人审批归档
+
+                    break;
+                case "XS_QRGD":                  //确认归档
+
                     break;
                 default:
                     ;
@@ -264,6 +306,48 @@
                     $('.seleteTable input[selectType="assist"]:checked').each(function(){
                         vm.flow.businessMap.A_USER_ID = $(this).val();
                     });
+                    break;
+                case "XS_XMFZR_GZFA":           //项目负责人承办
+                    vm.flow.businessMap.PSFA == vm.model.isNeedWrokPrograml
+                    //选择了工作方案没填写的，不给通过
+                    if(vm.model.isNeedWrokPrograml == '9' && (!vm.mainwork || !vm.mainwork.id)){
+                        resultTag = false;
+                    }
+                    break;
+                case "XS_BZSP_GZFA":             //部长审批工作方案
+                    vm.flow.businessMap.WP_ID = vm.mainwork.id;
+                    break;
+                case "XS_FGLDSP_GZFA":           //分管领导审批
+                    vm.flow.businessMap.WP_ID = vm.mainwork.id;
+                    break;
+                case "XS_FW":                    //发文申请
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "XS_BZSP_FW":               //部长审批发文
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+                    break;
+                case "XS_FGLDSP_FW":             //分管领导审批发文
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+                    break;
+                case "XS_ZRSP_FW":               //主任审批发文
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
+                    break;
+                case "XS_FZR_GD":                //第一负责人归档
+                    if(vm.model.filenum){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
+                    break;
+                case "XS_FZR_SP":                //第二负责人审批归档
+
+                    break;
+                case "XS_QRGD":                  //确认归档
+
                     break;
                 default:
                     ;

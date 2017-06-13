@@ -18,6 +18,7 @@
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
 			initUpload:initUpload,//初始化上传附件控件
 			deleteSysFile:deleteSysFile,//删除系统文件
+            removeWP : removeWP             //删除工作方案
 		};
 		return service;
 		
@@ -461,7 +462,8 @@
                         if(vm.model.fileRecordDto){
                             vm.show_filerecord = true;
                             vm.fileRecord = vm.model.fileRecordDto;
-                        }	
+                        }
+
                         //先加载完业务数据，再加载流程业务数据
 						if(vm.dealFlow){
                             flowSvc.getFlowInfo(vm);
@@ -475,6 +477,40 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-		}//E_初始化流程页面				
+		}//E_初始化流程页面
+
+        //S_removeWP
+        function removeWP(vm){
+            var httpOptions = {
+                method : 'delete',
+                url : rootPath+"/workprogram/deleteBySignId",
+                params : {signId:vm.model.signid}
+            }
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm : vm,
+                    response : response,
+                    fn : function() {
+                        common.alert({
+                            vm : vm,
+                            msg : "操作成功",
+                            fn : function() {
+                                vm.isSubmit = false;
+                                $('.alertDialog').modal('hide');
+                            }
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm : vm,
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }//E_removeWP
+
+
 	}		
 })();

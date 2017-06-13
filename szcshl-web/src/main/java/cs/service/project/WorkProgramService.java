@@ -23,4 +23,5 @@ public interface WorkProgramService {
 	Map<String, Object> getInitRelateData(String signId);
 
 
+    void deleteBySignId(String signId);
 }

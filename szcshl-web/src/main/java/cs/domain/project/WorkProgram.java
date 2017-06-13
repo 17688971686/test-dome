@@ -1,7 +1,5 @@
 package cs.domain.project;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import cs.domain.DomainBase;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelCondition;
@@ -150,11 +148,12 @@ public class WorkProgram extends DomainBase{
 	private String workStageTime;
 
 	//会议地点
-	@Formula("(select m.addr from cs_meeting_room m where m.id = meetingId)")
+	@Column(columnDefinition="VARCHAR(128)")
 	private String meetingAddress;
 
 	@Column(columnDefinition="VARCHAR(128)")
 	private String meetingId;
+
 	//调研开始时间
 	@Column(columnDefinition="DATE")
 	private Date studyBeginTime;

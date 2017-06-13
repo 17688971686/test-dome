@@ -358,13 +358,22 @@ public class SignDto extends BaseDto {
 	public OrgDto getOrgDto() {
 		return orgDto;
 	}
-	
-		
+
+	//工作方案
 	private List<WorkProgramDto> workProgramDtoList;
-	
+
+	//发文
 	private DispatchDocDto dispatchDocDto;
-	
+
+	//归档
 	private FileRecordDto fileRecordDto;
+
+	//协审计划信息
+	private AssistPlanDto assistPlanDto;
+
+	//协审项目信息
+	private List<AssistPlanSignDto> planSignDtoList;
+
 
 	public FileRecordDto getFileRecordDto() {
 		return fileRecordDto;
@@ -1344,5 +1353,21 @@ public class SignDto extends BaseDto {
 
     public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
         this.isNeedWrokPrograml = isNeedWrokPrograml;
+    }
+
+    public AssistPlanDto getAssistPlanDto() {
+        return assistPlanDto;
+    }
+
+    public void setAssistPlanDto(AssistPlanDto assistPlanDto) {
+        this.assistPlanDto = assistPlanDto;
+    }
+
+    public List<AssistPlanSignDto> getPlanSignDtoList() {
+        return planSignDtoList;
+    }
+
+    public void setPlanSignDtoList(List<AssistPlanSignDto> planSignDtoList) {
+        this.planSignDtoList = planSignDtoList;
     }
 }
