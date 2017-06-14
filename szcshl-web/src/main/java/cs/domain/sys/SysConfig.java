@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cs_sysonfig")
+@Table(name = "cs_sysconfig")
 public class SysConfig extends DomainBase {
     @Id
     @GeneratedValue(generator = "plansignGenerator")

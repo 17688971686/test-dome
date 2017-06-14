@@ -1,6 +1,7 @@
 package cs.controller.project;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -119,6 +120,18 @@ public class AssistUnitController {
     		assistUnitService.removeUser(unitId, userId);
     	}
     	
+    }
+
+    /**
+     * 获取协审单位
+     * @param planId
+     * @return
+     */
+    @RequiresPermissions("assistUnit#findPlanAssistUnit#get")
+    @RequestMapping(name="获取协审计划的协审单位",path="findPlanAssistUnit",method=RequestMethod.GET)
+    @ResponseBody
+    public List<AssistUnitDto> findPlanAssistUnit(@RequestParam String planId,@RequestParam Integer number){
+        return assistUnitService.findDrawUnit(planId,number);
     }
     
     // begin#html

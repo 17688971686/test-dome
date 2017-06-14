@@ -231,16 +231,5 @@
 
         }
 
-       /* if (checked) {
-            $('#xs_table input[selectType=\"' + type + '\"]').each(
-                function () {
-                    var id = $(this).attr("id");
-                    var value = $(this).attr("value");
-                    if (value != checkboxValue) {
-                        $(this).removeAttr("checked");
-                    }
-                });
-        }*/
-
     }
 })();

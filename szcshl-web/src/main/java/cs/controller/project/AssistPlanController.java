@@ -92,7 +92,6 @@ public class AssistPlanController {
        return assistPlanService.getAssistPlanBySignId(signId);
     }
 
-
     @RequiresPermissions("assistPlan##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

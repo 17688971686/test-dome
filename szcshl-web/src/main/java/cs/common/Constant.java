@@ -11,6 +11,7 @@ public class Constant {
     public static final String SEND_FILE_UNIT = "深圳市发展和改革委员会";
     public static final String SEND_SIGN_NAME = "魏俊辉";
     public static final String WORKPROGRAM_NAME = "评审工作方案";
+    public static final String DRAW_ASSIST_UNITNAME = "系统协审单位抽签最大序号值";
     public static final String FLOW_LINK_SYMBOL = "$";    //流程业务ID和名称关联符号
 
     /**
@@ -59,7 +60,9 @@ public class Constant {
      * 以下是缓存参数
      */
     public static enum EnumConfigKey{
-        CONFIG_LIST("CONFIG_LIST");
+        CONFIG_LIST("CONFIG_LIST"),                 //所有数据参数缓存
+        LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),     //上一个抽签单位的最大序号
+        ;
 
         private String value;
 

@@ -38,6 +38,18 @@ public class AssistUnit extends DomainBase {
     private String phoneNum;
 
     /**
+     * 传真
+     */
+    @Column(columnDefinition = "VARCHAR(30)")
+    private String fax;
+
+    /**
+     * 抽中次数
+     */
+    @Column(columnDefinition = "Integer")
+    private Integer drawCount;
+
+    /**
      * 企业地址
      */
     @Column(columnDefinition = "VARCHAR(30)")
@@ -138,5 +150,21 @@ public class AssistUnit extends DomainBase {
 
     public void setIsLastUnSelected(String isLastUnSelected) {
         this.isLastUnSelected = isLastUnSelected;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public Integer getDrawCount() {
+        return drawCount;
+    }
+
+    public void setDrawCount(Integer drawCount) {
+        this.drawCount = drawCount;
     }
 }

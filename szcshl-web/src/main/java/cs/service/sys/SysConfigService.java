@@ -17,9 +17,11 @@ public interface SysConfigService {
 
     void save(SysConfigDto record);
 
-    SysConfigDto findById(String deptId);
+    SysConfigDto findById(String id);
 
     void delete(String id);
 
     List<SysConfigDto> queryAll();
+
+    SysConfigDto findByKey(String key);
 }

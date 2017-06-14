@@ -2,6 +2,7 @@ package cs.model.expert;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 
@@ -38,7 +39,7 @@ public class ExpertReviewDto extends BaseDto {
 	private String workProgramId;
 	private String expertSelConditionId;
 
-    private ExpertDto expertDto;
+	private List<ExpertDto> expertDtoList;
     private WorkProgramDto workProgramDto;
 	private ExpertSelCondition epSelCondition;
 	private BigDecimal totalCost;
@@ -81,15 +82,7 @@ public class ExpertReviewDto extends BaseDto {
 
     public void setReviewTaxes(BigDecimal reviewTaxes) {
         this.reviewTaxes = reviewTaxes;
-    }  
-
-	public ExpertDto getExpertDto() {
-		return expertDto;
-	}
-
-	public void setExpertDto(ExpertDto expertDto) {
-		this.expertDto = expertDto;
-	}
+    }
 
 	public WorkProgramDto getWorkProgramDto() {
 		return workProgramDto;
@@ -187,4 +180,11 @@ public class ExpertReviewDto extends BaseDto {
 		this.describes = describes;
 	}
 
+    public List<ExpertDto> getExpertDtoList() {
+        return expertDtoList;
+    }
+
+    public void setExpertDtoList(List<ExpertDto> expertDtoList) {
+        this.expertDtoList = expertDtoList;
+    }
 }

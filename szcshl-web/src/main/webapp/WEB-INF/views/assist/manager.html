@@ -201,7 +201,41 @@
 
     <div class="tab-content" style="background:white;">
         <div class="well well-sm tab-pane fade in active" style="background:white;" id="assist_unitlist">
-            协审单位
+            <p>
+                <span>抽签方式</span>
+                <label class="checkbox-inline">
+                    <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked>轮空一家单位
+                </label>
+                <label class="checkbox-inline">
+                    <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="option2">全部抽中
+                </label>
+            </p>
+            <p>共2个评审单位，3个单位进行抽签</p>
+            <table class="table table-bordered" width="43%">
+                <tr>
+                    <th style="width: 60px;">序号</th>
+                    <th style="width: 180px;">公司名称</th>
+                    <th style="width: 180px;">抽中次数</th>
+                    <th style="width: 180px;">联系人</th>
+                    <th style="width: 180px;">电话</th>
+                    <th style="width: 180px;">手机</th>
+                    <th style="width: 180px;">传真</th>
+                    <th style="width: 180px;">序号</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="au in vm.unitList ">
+                    <td style="width: 60px;">{{ $index + 1}}</td>
+                    <td style="width: 180px;">{{au.unitName}}</td>
+                    <td style="width: 180px;">{{au.drawCount}}</td>
+                    <td style="width: 180px;"></td>
+                    <td style="width: 180px;">{{au.phoneNum}}</td>
+                    <td style="width: 180px;"></td>
+                    <td style="width: 180px;">{{au.fax}}</td>
+                    <td style="width: 180px;">{{au.unitSort}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>共2个评审单位，3个单位进行抽签</p>
         </div><!-- end tab1 -->
         <div class="well well-sm tab-pane fade" style="background:white;" id="assist_plansign">
             项目计划审批表

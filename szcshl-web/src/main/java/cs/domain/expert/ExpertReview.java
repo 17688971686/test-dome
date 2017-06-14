@@ -2,14 +2,9 @@ package cs.domain.expert;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -83,9 +78,8 @@ public class ExpertReview extends DomainBase{
 	@Column(columnDefinition="VARCHAR(10)")
 	private String totalScore;
 	
-	@ManyToOne
-	@JoinColumn(name="expertId",nullable = false)
-	private Expert expert;
+	@ManyToMany
+	private List<Expert> expertList;
 		
 	@ManyToOne
 	@JoinColumn(name="workProgramId")
@@ -177,14 +171,6 @@ public class ExpertReview extends DomainBase{
 	public void setReviewTaxes(BigDecimal reviewTaxes) {
 		this.reviewTaxes = reviewTaxes;
 	}
-
-	public Expert getExpert() {
-		return expert;
-	}
-
-	public void setExpert(Expert expert) {
-		this.expert = expert;
-	}
 	
 	public WorkProgram getWorkProgram() {
 		return workProgram;
@@ -232,7 +218,13 @@ public class ExpertReview extends DomainBase{
 
 	public void setSelectType(String selectType) {
 		this.selectType = selectType;
-	}	
-	
-	
+	}
+
+	public List<Expert> getExpertList() {
+		return expertList;
+	}
+
+	public void setExpertList(List<Expert> expertList) {
+		this.expertList = expertList;
+	}
 }

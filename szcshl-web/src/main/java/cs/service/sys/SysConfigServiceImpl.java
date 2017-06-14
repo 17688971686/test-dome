@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Description: 系统参数 业务操作实现类
@@ -59,15 +60,20 @@ public class SysConfigServiceImpl implements SysConfigService {
     @Transactional
     public void save(SysConfigDto record) {
         SysConfig domain = new SysConfig();
-        BeanCopierUtils.copyProperties(record, domain);
+
         Date now = new Date();
         if (!Validate.isString(record.getId())) {
-            domain.setCreatedBy(currentUser.getLoginName());
-            domain.setCreatedDate(now);
+            record.setCreatedBy(currentUser.getLoginName());
+            record.setCreatedDate(now);
         }
-        domain.setIsShow(Constant.EnumState.YES.getValue());
-        domain.setModifiedBy(currentUser.getLoginName());
-        domain.setModifiedDate(now);
+
+        if(!Validate.isString(record.getIsShow())){
+            record.setIsShow(Constant.EnumState.YES.getValue());
+        }
+        record.setModifiedBy(currentUser.getLoginName());
+        record.setModifiedDate(now);
+
+        BeanCopierUtils.copyProperties(record, domain);
         sysConfigRepo.save(domain);
 
         //清除缓存
@@ -83,16 +89,12 @@ public class SysConfigServiceImpl implements SysConfigService {
         ICache cache = cacheFactory.getCache();
         List<SysConfigDto> resultList = (List<SysConfigDto>) cache.get(Constant.EnumConfigKey.CONFIG_LIST.getValue());
         if (resultList == null || resultList.size() == 0) {
-            if (Validate.isString(id)) {
-                SysConfig domain = sysConfigRepo.findById(id);
-                BeanCopierUtils.copyProperties(domain, modelDto);
-            }
-        } else {
-            for (SysConfigDto sc : resultList) {
-                if (sc.getId().equals(id)) {
-                    modelDto = sc;
-                    break;
-                }
+            resultList = queryAll();
+        }
+        for (SysConfigDto sc : resultList) {
+            if (sc.getId().equals(id)) {
+                modelDto = sc;
+                break;
             }
         }
         return modelDto;
@@ -133,6 +135,24 @@ public class SysConfigServiceImpl implements SysConfigService {
             cache.put(Constant.EnumConfigKey.CONFIG_LIST.getValue(), resultList);
         }
         return resultList;
+    }
+
+    @Override
+    public SysConfigDto findByKey(String key) {
+        SysConfigDto modelDto = new SysConfigDto();
+        CacheFactory cacheFactory = new DefaultCacheFactory();
+        ICache cache = cacheFactory.getCache();
+        List<SysConfigDto> resultList = (List<SysConfigDto>) cache.get(Constant.EnumConfigKey.CONFIG_LIST.getValue());
+        if (resultList == null || resultList.size() == 0) {
+            resultList = queryAll();
+        }
+        for (SysConfigDto sc : resultList) {
+            if (sc.getConfigKey().equals(key)) {
+                modelDto = sc;
+                break;
+            }
+        }
+        return modelDto;
     }
 
 }

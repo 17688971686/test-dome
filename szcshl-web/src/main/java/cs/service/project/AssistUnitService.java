@@ -5,6 +5,8 @@ import cs.model.project.AssistUnitDto;
 import cs.model.project.AssistUnitUserDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.List;
+
 
 /**
  * Description: 协审单位 业务操作接口
@@ -32,5 +34,7 @@ public interface AssistUnitService {
 	void removeUser(String unitId,String userId);
 	
 	void removeUsers(String unitId,String[] userIds);
+
+	List<AssistUnitDto> findDrawUnit(String planId,Integer number);
 
 }

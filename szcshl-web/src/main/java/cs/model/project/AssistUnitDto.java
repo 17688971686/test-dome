@@ -2,6 +2,7 @@ package cs.model.project;
 
 import cs.model.BaseDto;
 
+import javax.persistence.Column;
 import java.util.List;
 
 
@@ -19,6 +20,9 @@ public class AssistUnitDto extends BaseDto {
     private String address;
     private Integer unitSort;
     private String isLastUnSelected;
+    private String fax;
+    private Integer drawCount;
+
     private List assistPlanList;
 
     public AssistUnitDto() {
@@ -86,5 +90,21 @@ public class AssistUnitDto extends BaseDto {
 
     public void setIsLastUnSelected(String isLastUnSelected) {
         this.isLastUnSelected = isLastUnSelected;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public Integer getDrawCount() {
+        return drawCount;
+    }
+
+    public void setDrawCount(Integer drawCount) {
+        this.drawCount = drawCount;
     }
 }

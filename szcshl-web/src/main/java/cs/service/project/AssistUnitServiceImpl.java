@@ -5,7 +5,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.cache.CacheFactory;
+import cs.common.cache.DefaultCacheFactory;
+import cs.common.cache.ICache;
+import cs.domain.project.AssistPlan;
+import cs.domain.sys.SysConfig;
+import cs.model.sys.SysConfigDto;
+import cs.repository.repositoryImpl.project.AssistPlanRepo;
+import cs.service.sys.SysConfigService;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +55,12 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Autowired
 	private ICurrentUser currentUser;
 
+    @Autowired
+    private SysConfigService sysConfigService;
+
+    @Autowired
+    private AssistPlanRepo assistPlanRepo;
+
 	@Override
 	public PageModelDto<AssistUnitDto> get(ODataObj odataObj) {
 		PageModelDto<AssistUnitDto> pageModelDto = new PageModelDto<AssistUnitDto>();
@@ -66,7 +83,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Override
 	@Transactional
 	public void save(AssistUnitDto record) {
-		
 		boolean isUnitExist=assistUnitRepo.isUnitExist(record.getUnitName());
 		if(!isUnitExist){//单位不存在
 			AssistUnit domain = new AssistUnit(); 
@@ -109,7 +125,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Override
 	@Transactional
 	public void delete(String id) {
-		
 		assistUnitRepo.deleteById(AssistUnit_.id.getName(),id);
 	}
 
@@ -160,7 +175,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Override
 	@Transactional
 	public void addUser(String unitId, String userId) {
-		
 		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
 		if(assistUnit!=null){
 			AssistUnitUser assistUnitUser=assistUnitUserRepo.findById(userId);
@@ -174,7 +188,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Override
 	@Transactional
 	public void removeUser(String unitId, String userId) {
-		
 		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
 		if(assistUnit!=null){
 			AssistUnitUser assistUnitUser=assistUnitUserRepo.findById(userId);
@@ -189,7 +202,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Override
 	@Transactional
 	public void removeUsers(String unitId, String[] userIds) {
-		
 		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
 		if(assistUnit!=null){
 			for(String userId:userIds){
@@ -198,5 +210,82 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 		}
 		
 	}
-	
+
+	/**
+	 * 查询抽签单位
+     * @param planId
+	 * @param number
+	 * @return
+	 */
+	@Override
+	public List<AssistUnitDto> findDrawUnit(String planId,Integer number) {
+	    List<AssistUnitDto> resultList = new ArrayList<>();
+        List<AssistUnit> saveList =  new ArrayList<>();
+		SysConfigDto sysConfig = null;
+        Integer maxSort = 0;
+		//1、先查询轮空的单位
+        AssistUnitDto assistUnitDto = new AssistUnitDto();
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from "+AssistUnit.class.getSimpleName()+" where "+AssistUnit_.isLastUnSelected+" =:isLastUnSelected");
+        hqlBuilder.setParam("isLastUnSelected", Constant.EnumState.YES.getValue());
+        List<AssistUnit> list = assistUnitRepo.findByHql(hqlBuilder);
+        if(list == null || list.size() == 0){
+        }else{
+            BeanCopierUtils.copyProperties(list.get(0),assistUnitDto);
+            saveList.add(list.get(0));
+            resultList.add(assistUnitDto);
+            number = number - 1;
+        }
+
+        /**
+         * 如果已满足条件，则不用查询
+         */
+        if(number > 0){
+            //2、取出前一次抽签的最大序号
+			sysConfig = sysConfigService.findByKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
+			if(sysConfig == null ){
+                sysConfig = new SysConfigDto();
+                sysConfig.setConfigName(Constant.DRAW_ASSIST_UNITNAME);
+                sysConfig.setConfigKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
+                sysConfig.setConfigValue(String.valueOf(number));
+                sysConfig.setIsShow(Constant.EnumState.NO.getValue());
+            }else{
+                maxSort = Integer.valueOf(sysConfig.getConfigValue());
+            }
+
+            //3、按照序号轮流抽签
+            HqlBuilder sqlBuilder = HqlBuilder.create();
+            sqlBuilder.append(" SELECT nUnit.* FROM ( ");
+            sqlBuilder.append(" SELECT cu.*,CASE WHEN  unitsort < :maxSort then (1000+unitsort) else unitsort end newSort FROM CS_AS_UNIT cu");
+            sqlBuilder.setParam("maxSort",(maxSort+1));
+            if(Validate.isString(assistUnitDto.getId())){
+                sqlBuilder.append(" WHERE  WHERE id != :id").setParam("id",assistUnitDto.getId()).append(" ORDER BY newSort) nUnit ");
+            }
+            sqlBuilder.append(" WHERE ROWNUM < :number ").setParam("number",number);
+            list = assistUnitRepo.findBySql(sqlBuilder);
+            saveList.addAll(list);
+            if(list != null && list.size() > 0){
+                list.forEach(l ->{
+                    AssistUnitDto unitDto = new AssistUnitDto();
+                    BeanCopierUtils.copyProperties(l,unitDto);
+                    resultList.add(unitDto);
+                });
+            }
+        }
+
+        //4、添加关联和更新最大值缓存
+        if(saveList != null && saveList.size() > 0){
+            AssistPlan assistPlan = assistPlanRepo.findById(planId);
+            if(assistPlan != null){
+                assistPlan.setAssistUnitList(saveList);
+            }
+            assistPlanRepo.save(assistPlan);
+
+            sysConfig.setConfigValue(String.valueOf(saveList.get(saveList.size()-1).getUnitSort()));
+            sysConfigService.save(sysConfig);
+        }
+
+		return resultList;
+	}
+
 }
