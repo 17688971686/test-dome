@@ -494,6 +494,18 @@ public class Sign extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String isNeedWrokPrograml;
 
+	//项目是否已关联,0未关联，1已关联，默认未关联
+	@Column(columnDefinition = "INTEGER")
+	private Integer isAssociate;
+
+	//关联下一阶段的项目
+	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "cs_associate_sign",
+			joinColumns = @JoinColumn(name = "signid"),
+			inverseJoinColumns = @JoinColumn(name = "associate_signid"))
+	private Sign associateSign;
+
 	public String getIschangeEstimate() {
 		return ischangeEstimate;
 	}
@@ -1456,4 +1468,18 @@ public class Sign extends DomainBase{
         this.mainDeptContactPhone = mainDeptContactPhone;
     }
 
+	public Integer getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(Integer isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+
+	public Sign getAssociateSign() {
+		return associateSign;
+	}
+	public void setAssociateSign(Sign associateSign) {
+		this.associateSign = associateSign;
+	}
 }

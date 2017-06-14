@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
+<#include "/sign/signAssociate.html"/>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/listSign">项目签收管理</a></li>
@@ -38,7 +38,11 @@
 	<@shiro.hasPermission name="sign##delete">
 		<button class="btn btn-xs btn-danger"  ng-click="{3}" ng-hide="{4}"><span class="glyphicon glyphicon-remove"></span>删除</button>
 	</@shiro.hasPermission>
-			
+	<@shiro.hasPermission name="sign##delete">
+		<!--项目关联-->
+		<button ng-if="!{11}" class="btn btn-xs" ng-click="{12}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>项目关联</button>
+		<button ng-if="{11}" class="btn btn-xs" ng-click="{13}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-full"></span>解除关联</button>
+	</@shiro.hasPermission>
 	<!-- 发起流程 -->
 	<button class="btn btn-xs btn-success"  ng-click="{5}" ng-hide="{6}"><span class="glyphicon glyphicon-share-alt"></span>签收完毕</button>
 
@@ -47,4 +51,7 @@
 
 	<!-- 启动流程 -->
 	<button class="btn btn-xs btn-success"  ng-click="{9}" ng-hide="{10}"><span class="glyphicon glyphicon-play-circle"></span>启动流程</button>
-</script>		
+</script>
+<script type="text/template" id="associateColumnBtns">
+	<button class="btn btn-xs" ng-click="{0}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>关联</button>
+</script>

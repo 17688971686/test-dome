@@ -7,8 +7,11 @@ import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import cs.domain.project.Sign;
 import cs.model.BaseDto;
 import cs.model.sys.OrgDto;
+
+import javax.persistence.*;
 
 public class SignDto extends BaseDto {
 	
@@ -338,6 +341,12 @@ public class SignDto extends BaseDto {
 	private Date endTime;
 
 	private String isNeedWrokPrograml;
+
+	//项目是否已关联,0未关联，1已关联，默认未关联
+	private Integer isAssociate = 0;
+
+	//关联阶段的项目
+	private SignDto associateSign;
 
 	public Date getStartTime() {
 		return startTime;
@@ -1370,4 +1379,20 @@ public class SignDto extends BaseDto {
     public void setPlanSignDtoList(List<AssistPlanSignDto> planSignDtoList) {
         this.planSignDtoList = planSignDtoList;
     }
+
+	public Integer getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(Integer isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+
+	public SignDto getAssociateSign() {
+		return associateSign;
+	}
+
+	public void setAssociateSign(SignDto associateSign) {
+		this.associateSign = associateSign;
+	}
 }

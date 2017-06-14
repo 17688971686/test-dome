@@ -80,6 +80,7 @@
         }
         // begin 添加审批意见
         vm.ideaEdit = function (options) {
+            console.log(options);
             common.initIdeaData(vm, $http, options);
         }
         // end 添加审批意见

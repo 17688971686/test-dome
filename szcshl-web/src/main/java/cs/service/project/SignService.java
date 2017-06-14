@@ -52,4 +52,8 @@ public interface SignService{
     List<SignDto> findByPlanId(String planId);
 
     void updateAssistState(String signIds,String status,boolean isSingle);
+
+    void associate(String signId, String associateId);
+
+	List<SignDto> getAssociate(String signId);
 }

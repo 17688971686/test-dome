@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import cs.common.utils.StringUtil;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -1040,5 +1041,72 @@ public class SignServiceImpl implements SignService {
         signRepo.executeHql(hqlBuilder);
     }
 
+    @Override
+    public List<SignDto> getAssociate(String signId) {
 
+        List<SignDto> signDtos = new ArrayList<SignDto>();
+        SignDto signDto = new SignDto();
+        Sign sign = signRepo.getById(signId);
+        if(Validate.isString(sign.getProjectcode())){
+            BeanCopierUtils.copyProperties(sign,signDto);
+            signDtos.add(signDto);
+            getPreAssociate(sign.getAssociateSign(),signDtos);
+        }else {
+            signDto = null;
+        }
+
+        return signDtos;
+    }
+
+    /**
+     * 递归查找项目关联
+     * */
+    private void getPreAssociate(Sign associateSign, List<SignDto> signDtos) {
+
+        //递归条件，没有关联项目的时候，停止递归
+        if(associateSign == null||!Validate.isString(associateSign.getProjectcode())){
+            return ;
+        }
+
+        SignDto associateSignDto = new SignDto();
+        BeanCopierUtils.copyProperties(associateSign,associateSignDto);
+        signDtos.add(associateSignDto);
+
+        getPreAssociate(associateSign.getAssociateSign(),signDtos);
+
+    }
+
+    /**
+     * 项目关联
+     * @param signId 项目ID
+     * @param associateId 关联到的项目ID
+     * */
+    @Override
+    @Transactional
+    public void associate(String signId, String associateId) {
+
+        if(signId.equals(associateId)){
+            throw new IllegalArgumentException("不能关联自身项目");
+        }
+        Sign sign = signRepo.getById(signId);
+        if(sign == null){
+            throw new IllegalArgumentException("项目不存在");
+        }
+
+        //如果associateId为空，解除关联
+        if(!Validate.isString(associateId)){
+            sign.setIsAssociate(0);
+            sign.setAssociateSign(null);
+        }else{
+            Sign associateSign = signRepo.getById(associateId);
+            if(associateSign == null){
+                throw new IllegalArgumentException("关联项目不存在");
+            }
+            sign.setAssociateSign(associateSign);
+            sign.setIsAssociate(1);
+        }
+
+        signRepo.save(sign);
+
+    }
 }

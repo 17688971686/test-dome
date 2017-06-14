@@ -78,6 +78,31 @@ public class SignController {
 		return signDto;
 	}
 
+	/**
+	 * 获取项目关联
+	 * @param signId 项目ID
+	 * @param associateId 关联到的项目ID
+	 * */
+	@RequiresPermissions("sign#associate#get")
+	@RequestMapping(name = "项目关联", path = "associate",method=RequestMethod.GET)
+	public @ResponseBody List<SignDto> associateGet(@RequestParam(required = true) String signId)  {
+		return signService.getAssociate(signId);
+
+	}
+
+	/**
+	 * 项目关联
+	 * @param signId 项目ID
+	 * @param associateId 关联到的项目ID
+	 * */
+	@RequiresPermissions("sign#associate#post")
+	@RequestMapping(name = "项目关联", path = "associate",method=RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public @ResponseBody void associatePost(@RequestParam(required = true) String signId, String associateId)  {
+		signService.associate(signId,associateId);
+
+	}
+
     @RequestMapping(name = "根据协审计划查询收文信息", path = "findByPlanId",method=RequestMethod.GET)
     public @ResponseBody List<SignDto> findByPlanId(@RequestParam(required = true)String planId)  {
         return signService.findByPlanId(planId);
@@ -96,8 +121,8 @@ public class SignController {
 	public String signDetails(){
 		
 		return ctrlName +"/signDetails";
-	}	
-	
+	}
+
 	@RequiresPermissions("sign##delete")
 	@RequestMapping(name = "删除收文" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)

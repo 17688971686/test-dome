@@ -18,8 +18,13 @@
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
 			initUpload:initUpload,//初始化上传附件控件
 			deleteSysFile:deleteSysFile,//删除系统文件
+
             removeWP : removeWP,             //删除工作方案
-            signDownload:signDownload	//附件下载
+            signDownload:signDownload,	//附件下载
+            associateGrid:associateGrid,//项目关联列表
+            saveAssociateSign:saveAssociateSign,//保存项目关联
+            initAssociateSigns:initAssociateSigns//初始化项目关联信息
+
 		};
 		return service;
 		
@@ -94,7 +99,7 @@
 				type : 'odata', 
 				transport :common.kendoGridConfig().transport(rootPath+"/sign/fingByOData",$("#searchform")),
 				schema : common.kendoGridConfig().schema({
-					id : "id",
+					id : "signid",
 					fields : {
 						createdDate : {
 							type : "date"
@@ -188,7 +193,7 @@
 						width : 180,
 						template : function(item) {
 							//如果已经发起流程，则只能查看
-							var isFlowStart = false,hideStopButton = true,hideRestartButton=true;
+							var isFlowStart = false,hideStopButton = true,hideRestartButton=true,isAlreadyAssociate = false;
 							if(item.folwState && item.folwState > 0){
 								isFlowStart = true;
 								if(item.folwState == 1){
@@ -196,13 +201,18 @@
 								}
 								if(item.folwState == 2){
 									hideRestartButton = false;
-								}																								
+								}
+								if(item.isAssociate == 1){
+								    isAlreadyAssociate = true;
+								}
 							}
 							return common.format($('#columnBtns').html(), item.signid, item.folwState,
                                     item.signid+"/"+ item.processInstanceId,"vm.del('" + item.signid + "')",isFlowStart,
 									"vm.startNewFlow('" + item.signid + "')", isFlowStart,
 									"vm.stopFlow('" + item.signid + "')", hideStopButton,
-									"vm.restartFlow('" + item.signid + "')", hideRestartButton);
+									"vm.restartFlow('" + item.signid + "')", hideRestartButton,
+									isAlreadyAssociate,"vm.associateSign('" + item.signid + "')","vm.disAssociateSign('" + item.signid + "')"
+									);
 						}
 					}				
 			];
@@ -515,6 +525,169 @@
             });
         }//E_removeWP
 
+        //associateGrid
+        function associateGrid(vm){
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type : 'odata',
+                transport :common.kendoGridConfig().transport(rootPath+"/sign/fingByOData",$("#searchform")),
+                schema : common.kendoGridConfig().schema({
+                    id : "id",
+                    fields : {
+                        createdDate : {
+                            type : "date"
+                        }
+                    }
+                }),
+                serverPaging : true,
+                serverSorting : true,
+                serverFiltering : true,
+                pageSize : 10,
+                sort : {
+                    field : "createdDate",
+                    dir : "desc"
+                }
+            });
+            // End:dataSource
 
+            // Begin:column
+            var columns = [
+                    {
+                        field : "projectname",
+                        title : "项目名称",
+                        width : 160,
+                        filterable : false
+                    },
+                    {
+                        field : "projectcode",
+                        title : "收文编号",
+                        width : 140,
+                        filterable : false,
+                    },
+                    {
+                        field : "designcompanyName",
+                        title : "项目单位",
+                        width : 200,
+                        filterable : false,
+                    },
+                    {
+                        field : "reviewstage",
+                        title : "项目阶段",
+                        width : 160,
+                        filterable : false,
+                    },
+                    {
+                        field : "projectcode",
+                        title : "项目代码",
+                        width : 140,
+                        filterable : false,
+                    }/*,
+                    {
+                        field : "",
+                        title : "流程状态",
+                        width : 160,
+                        filterable : false,
+                        template : function(item) {
+                            if(item.folwState){
+                                if(item.folwState == 1){
+                                    return '<span style="color:green;">进行中</span>';
+                                }else if(item.folwState == 2){
+                                    return '<span style="color:orange;">已暂停</span>';
+                                }else if(item.folwState == 8){
+                                    return '<span style="color:red;">强制结束</span>';
+                                }else if(item.folwState == 9){
+                                    return '<span style="color:blue;">已完成</span>';
+                                }
+                            }else{
+                                return "未发起"
+                            }
+                        }
+                    }*/,
+                    {
+                        field : "",
+                        title : "操作",
+                        width : 180,
+                        template : function(item) {
+                            return common.format($('#associateColumnBtns').html(),"vm.saveAssociateSign('" + item.signid + "')");
+                        }
+                    }
+            ];
+            // End:column
+
+            vm.associateGridOptions = {
+                dataSource : common.gridDataSource(dataSource),
+                filterable : common.kendoGridConfig().filterable,
+                pageable : common.kendoGridConfig().pageable,
+                noRecords : common.kendoGridConfig().noRecordMessage,
+                columns : columns,
+                resizable : true
+            };
+            vm.associateGridOptions.dataSource.read();
+        }//E_初始化associateGrid
+
+        //start saveAssociateSign
+        //如果associateSignId为空，解除关联
+        function saveAssociateSign(vm,signId,associateSignId){
+            var httpOptions = {
+                method : 'post',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                url : rootPath+"/sign/associate",
+                data : $.param({signId:signId,associateId:associateSignId},true),
+
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        common.alert({
+                            vm:vm,
+                            msg:associateSignId != undefined?"项目关联成功":"项目解除关联成功",
+                            closeDialog:true,
+                            fn:function() {
+                                //关闭项目关联窗口
+                                vm.gridOptions.dataSource.read();
+                            }
+                        });
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+        }
+        //end saveAssociateSign
+
+        //start initAssociateSigns
+        function initAssociateSigns(vm,singid,callBack){
+
+            var httpOptions = {
+                method : 'get',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                url : rootPath+"/sign/associate?signId="+singid,
+
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        if(callBack != undefined&&typeof callBack == "function"){
+                            callBack(response);
+                        }
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+        }
+        //end initAssociateSigns
 	}		
 })();
