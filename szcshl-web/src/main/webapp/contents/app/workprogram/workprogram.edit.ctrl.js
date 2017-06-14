@@ -31,7 +31,10 @@
             workprogramSvc.findCompanys(vm);//查找主管部门
           
         }
-        
+        //文件下载
+        vm.workDownload = function(id){
+        	workprogramSvc.workDownload(vm,id);
+        }
         //删除系统文件
         vm.delsWorkSysFile = function(id){
         	workprogramSvc.delsWorkSysFile(vm,id);
@@ -47,6 +50,7 @@
                 closable : true,
                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
+        	workprogramSvc.getInitRelateData(vm);
         }
         //附件上传
         vm.workUpload = function(){

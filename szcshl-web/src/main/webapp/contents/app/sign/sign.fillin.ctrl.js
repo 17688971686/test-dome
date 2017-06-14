@@ -15,8 +15,9 @@
         
         signSvc.initFillData(vm);
         
-        vm.signDownload = function(){
-        	window.open("ss");
+       //附件下载
+        vm.signDownload = function(id){
+        	signSvc.signDownload(vm,id);
         }
         //删除系统文件
         vm.delsSysFile = function(id){
@@ -54,7 +55,7 @@
                 closable : true,
                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
-        	window.location.Reload();
+        	signSvc.initFillData(vm);
         }
         //申报登记编辑
         vm.updateFillin = function (){   	   

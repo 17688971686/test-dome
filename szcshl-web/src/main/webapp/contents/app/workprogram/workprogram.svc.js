@@ -26,9 +26,14 @@
 			getInitRelateData:getInitRelateData,	//初始化关联数据
 			initWorkUpload:initWorkUpload,//初始上传附件控件
 			delsWorkSysFile:delsWorkSysFile,//删除系统文件
+			workDownload:workDownload,//文件下载
 		};
 		return service;
 		
+		function workDownload(vm,id){
+			var sysfileId = id;
+			window.open(rootPath+"/file/fileDownload?sysfileId="+id);
+		}
 		//S_删除系统文件
 		function delsWorkSysFile(vm,id){
 			var httpOptions = {
@@ -426,7 +431,6 @@
 							
 						}
 						initWorkUpload(vm);
-		                $("#workPhotoSrc").attr("src",rootPath+"/sign/transportImg?signId="+vm.work.signId+"&t="+Math.random());
 					}						
 				});
 			}
@@ -444,7 +448,7 @@
             var projectfileoptions = {
                 language : 'zh',
                 allowedPreviewTypes : ['image'],
-                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ,"pdf"],
+                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ,"pdf","doc","xls"],
                 maxFileSize : 2000,
                 showRemove: false,
                 uploadUrl:rootPath + "/file/fileUpload",

@@ -64,7 +64,7 @@
             var projectfileoptions = {
                 language : 'zh',
                 allowedPreviewTypes : ['image'],
-                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ,"pdf"],
+                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ,"pdf","doc","xls"],
                 maxFileSize : 2000,
                 showRemove: false,
                 uploadUrl:rootPath + "/file/fileUpload",

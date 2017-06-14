@@ -18,9 +18,16 @@
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
 			initUpload:initUpload,//初始化上传附件控件
 			deleteSysFile:deleteSysFile,//删除系统文件
-            removeWP : removeWP             //删除工作方案
+            removeWP : removeWP,             //删除工作方案
+            signDownload:signDownload	//附件下载
 		};
 		return service;
+		
+		//附件下载
+		function signDownload(vm,id){
+			var sysfileId = id;
+			window.open(rootPath+"/file/fileDownload?sysfileId="+id);
+		}
 		
 		//S 删除系统文件
 		function deleteSysFile(vm,id){
@@ -64,7 +71,7 @@
             var projectfileoptions = {
                 language : 'zh',
                 allowedPreviewTypes : ['image'],
-                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ],
+                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx","doc","xls","pdf" ],
                 maxFileSize : 2000,
                 showRemove: false,
                 uploadUrl:rootPath + "/file/fileUpload",
@@ -385,10 +392,7 @@
 						vm.designcomlist = response.data.designcomlist;
 						 //系统文件
 		                vm.sysFilelist = response.data.sysFiles;
-//		                console.log(vm.sysFilelist);
 						initUpload(vm);
-		                $("#signPhotoSrc").attr("src",rootPath+"/sign/transportImg?signid="+vm.model.signid+"&t="+Math.random());
-		               
 					}					
 				})
 			}

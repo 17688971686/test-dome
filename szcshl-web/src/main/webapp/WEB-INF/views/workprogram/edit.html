@@ -248,10 +248,7 @@
 			 <tr>
 		      <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
 		      <td colspan="5">
-			     <!--  <div  style="width: 200px; height:30px; border:0px solid #00F;float:right;">
-			     		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				  	  	 <a class="btn btn-xs btn-primary" href=""><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-				 </div> -->
+			   
 			  </td>		      
 		    </tr>   
 			<tr>
@@ -265,17 +262,7 @@
 		      <td colspan="5">
 			 
 			  		{{vm.work.ministerSuggesttion}}
-			  		 	<!--	部长处理意见：
-				 <div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
-				<br>
-				签名：周京阴
-				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				   <button class="btn btn-xs btn-primary" ng-click="vm.ministerSugges();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
-				<br>
-				<br>
-				</div>
-				日期：{{vm.work.ministerDate}}			  		
-				 -->
+			  		
 			  </td>		      
 		    </tr>
 		    <tr>
@@ -283,16 +270,7 @@
 		      <td colspan="5">
 		  
 		      {{vm.work.leaderSuggesttion}}
-		         <!--  中心领导签批意见:
-			  	<div  style="width: 200px; height:80px; border:0px solid #00F;float:right;">
-				<br>
-				签名：周京阴
-				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				  <a class="btn btn-xs btn-primary" href=""><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-				<br>
-				<br>
-				</div>
-				日期：{{vm.work.leaderDate}} -->
+		       
 			  </td>		      
 		    </tr>		      
 		  </tbody>		  
@@ -326,11 +304,11 @@
 							<i class="fa fa-file-word-o" aria-hidden="true"  ng-show="x.fileType =='.docx'"></i>
 							<i class="fa fa-file-excel-o" aria-hidden="true"  ng-show="x.fileType =='.xlsx'"></i>
 							<i class="fa fa-file-pdf-o"  aria-hidden="true"  ng-show="x.fileType =='.pdf'"></i>
-							<a   ng-click="vm.signDownload()">{{ x.showName }}</a>
+							<a  ng-click="vm.workDownload(x.sysFileId)" >{{ x.showName }}</a>
 						    </td>
 						    <td style="text-align: center;">{{ x.createdDate }}</td>
 						    <td style="text-align: center;">
-						   <button ng-click="vm.signDownloads()" class="fa fa-arrow-circle-down" aria-hidden="true"></button>
+						   <button ng-click="vm.workDownload(x.sysFileId)" id="linksbtn" class="btn btn-sm btn-primary">附件下载</button>
 						 	&nbsp;&nbsp;&nbsp;&nbsp;
 						 	<button class="btn btn-sm btn-danger" ng-click="vm.delsWorkSysFile(x.sysFileId)" ><span class="glyphicon glyphicon-remove"></span>删除</button>
 					</td>

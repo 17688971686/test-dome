@@ -119,8 +119,14 @@ public class FileController {
 			else if(fileType.equals(".docx")){
 				response.setHeader("Content-type", "application/.docx");
 			}
+			else if(fileType.equals(".doc")){
+				response.setHeader("Content-type", "application/.doc");
+			}
 			else if(fileType.equals(".xlsx")){
 				response.setHeader("Content-type", "application/.xlsx");
+			}
+			else if(fileType.equals(".xls")){
+				response.setHeader("Content-type", "application/.xls");
 			}
 			else if(fileType.equals(".pdf")){
 				response.setHeader("Content-type", "application/.pdf");
