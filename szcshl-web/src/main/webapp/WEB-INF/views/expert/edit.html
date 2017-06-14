@@ -196,7 +196,7 @@
 	<!-- S 工作经历DIV -->
 	<div ng-show="vm.showWorkHistory">
 	<div class="toolbar">   	
-	 	<button class="btn btn-sm btn-success" ng-click="vm.updateWork()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
+	 	<button class="btn btn-sm btn-success" ng-click="vm.updateWorkPage()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
 	 	<button class="btn btn-sm btn-success" ng-click="vm.deleteWork()" ><span class="glyphicon glyphicon-ok"></span>删除</button>		
 	</div>	
 	<p class="pro_title_1" style="margin:10px;margin-left:0px;">工作经历</p>		
@@ -213,7 +213,7 @@
 		    <td style="text-align: center;">{{ x.beginTime }}</td>
 		    <td style="text-align: center;">{{ x.endTime }}</td>
 		    <td style="text-align: center;">{{ x.companyName }}</td>
-		    <td style="text-align: center;">{{ x.job }}</td>
+		    <td style="text-align: center;">{{ x.workJob }}</td>
 		</tr>	
 	</table>
  	</div>	
@@ -222,7 +222,7 @@
  	<!-- S 项目经历DIV -->
  	<div ng-show="vm.projectkHistory">
  	<div class="toolbar">  	
-     	<button class="btn btn-sm btn-success"  ng-click="vm.updateProject()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
+     	<button class="btn btn-sm btn-success"  ng-click="vm.updateProjectPage()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
      	<button class="btn btn-sm btn-success"  ng-click="vm.delertProject()" ><span class="glyphicon glyphicon-ok"></span>删除</button>		
 	</div>	
  	<p class="pro_title_1" style="margin:10px;margin-left: 0px;">项目经验</p>
@@ -249,8 +249,8 @@
 	<div id="wrwindow" class="well well-sm" style="background:white;display:none;">
     <form id="workForm" name="workForm">
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.createWork()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-ok"></span>保存</button>
-            <button class="btn btn-sm btn-success" ng-click="vm.saveWork()" ng-disabled="vm.isSubmit" ng-show="updateWork"><span class="glyphicon glyphicon-ok"></span>更新</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.createWork()" ng-disabled="vm.isSubmit" ng-show="vm.createWork"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.updateWork()" ng-disabled="vm.isSubmit" ng-hide="vm.createWork"><span class="glyphicon glyphicon-ok"></span>更新</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.onWClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
          </div>
         <table style="width:100%">
@@ -287,9 +287,9 @@
               <tr >
                 <td class="formAlignRight">职务： <span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.job " id="job" name="job" data-val="true" data-val-required="必填">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.workJob " id="workJob" name="workJob" data-val="true" data-val-required="必填">
                 </td>
-                <td><span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span></td>
+                <td><span data-valmsg-for="workJob" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
         </table>
     </form>
@@ -300,8 +300,8 @@
 	<div id="pjwindow" class="well well-sm" style="background:white;display:none;">
     <form id="ProjectForm" name="ProjectForm">
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.createProject()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-ok"></span>保存</button>
-            <button class="btn btn-sm btn-success" ng-click="vm.saveProject()"  ng-disabled="vm.isSubmit" ng-show="updateProject"><span class="glyphicon glyphicon-ok"></span>更新</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.createProject()" ng-disabled="vm.isSubmit" ng-show="vm.createProject" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.updateProject()"  ng-disabled="vm.isSubmit" ng-hide="vm.createProject"><span class="glyphicon glyphicon-ok"></span>更新</button>
              <button class="btn btn-sm btn-primary" ng-click="vm.onPClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
          </div>
         <table style="width:100%">

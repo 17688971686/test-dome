@@ -16,27 +16,31 @@
 	  <input type="text" ng-model="vm.model.rbName" operator="like" name="rbName" id="rbName" placeholder="请输入">
 	 
 	 <span class="help-inline" style="margin-left:10px;">会议日期：</span>
-	 <input name="rbDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.rbDay" value="" type="text" />
+	 <input name="rbDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.rbDay" value="" type="text" operator="eq"/>
 	至
-	<input name="rbDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.rbDay" value="" type="text" />
+	<input name="rbDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.rbDay" value="" type="text" operator="eq" />
 	    <br>
 	    <span class="help-inline" style="margin-left:10px;">会议地点：</span>
-	    	 <select ng-model="vm.model.addressName" name="addressName" id="addressName">
+	    	 <select ng-model="vm.model.addressName" name="addressName" id="addressName" operator="eq">
+	    	    <option value="">请选择</option>
 				<option ng-repeat="x in vm.roomlists" value="{{x.addressName}}">{{x.addressName}}</option>
 			</select>	
 		
 	    <span class="help-inline" style="margin-left:10px;">会议类型：</span>
-	    	 <select ng-model="vm.model.rbType" name="rbType" id="rbType">
+	    	 <select ng-model="vm.model.rbType" name="rbType" id="rbType" operator="eq">
+	    	    <option value="">请选择</option>
 				<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 			</select>
 			
 		 <span class="help-inline" style="margin-left:10px;">评审部门：</span>
-	    	 <select ng-model="vm.model.stageOrg" name="stageOrg" id="stageOrg">
+	    	 <select ng-model="vm.model.stageOrg" name="stageOrg" id="stageOrg" operator="eq">
+	    	    <option value="">请选择</option>
 				<option ng-repeat="o in vm.orglist" value="{{o.name}}" >{{o.name}}</option>
 			</select>
 			
 		 <span class="help-inline" style="margin-left:10px;">预定人：</span>
-	    	 <select ng-model="vm.model.dueToPeople" name="dueToPeople" id="dueToPeople">
+	    	 <select ng-model="vm.model.dueToPeople" name="dueToPeople" id="dueToPeople" operator="eq">
+	    	    <option value="">请选择</option>
 				<option ng-repeat="r in vm.roomlists" value="{{r.dueToPeople}}">{{r.dueToPeople}}</option>
 		</select>
 	

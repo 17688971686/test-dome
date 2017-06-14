@@ -19,7 +19,7 @@ public class WorkExpeDto extends BaseDto {
 	@JSONField(format = "yyyy-MM-dd")
     private Date endTime; //结束时间
     private String companyName; //单位名称
-    private String job; //职位
+    private String workJob; //职位
     private String  expertID; //专家编号
     private ExpertDto expertDto;
 
@@ -34,12 +34,6 @@ public class WorkExpeDto extends BaseDto {
 	}
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
-	}
-	public String getJob() {
-		return job;
-	}
-	public void setJob(String job) {
-		this.job = job;
 	}
 	public String getWeID() {
 		return weID;
@@ -64,5 +58,11 @@ public class WorkExpeDto extends BaseDto {
 	}
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	public String getWorkJob() {
+		return workJob;
+	}
+	public void setWorkJob(String workJob) {
+		this.workJob = workJob;
 	}     	
 }

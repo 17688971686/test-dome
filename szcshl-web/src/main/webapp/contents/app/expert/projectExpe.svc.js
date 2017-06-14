@@ -7,13 +7,14 @@
 	
 	function projectExpe($http) {
 		var service = {
-				getProject:getProject,
-				createProject:createProject,
-				updateProject:updateProject,
-				saveProject:saveProject,
-				getProjectById:getProjectById,
-				delertProject:delertProject,
-				gotoJPage:gotoJPage
+				getProject : getProject,
+				createProject : createProject,
+				updateProject : updateProject,
+				updateProjectPage : updateProjectPage,
+				getProjectById : getProjectById,
+				delertProject : delertProject,
+				gotoJPage : gotoJPage,
+				cleanValue : cleanValue
 		};
 		return service;
 		
@@ -80,8 +81,11 @@
 				//vm.model = response.data[0];
 				vm.model.projectName=response.data[0].projectName;
 				vm.model.projectType=response.data[0].projectType;
-				$('#projectbeginTime').val(response.data[0].projectbeginTime);
-				$('#projectendTime').val(response.data[0].projectendTime);
+				vm.model.projectbeginTime=response.data[0].projectbeginTime;
+				vm.model.projectendTime=response.data[0].projectendTime;
+				
+				//$('#projectbeginTime').val(response.data[0].projectbeginTime);
+				//$('#projectendTime').val(response.data[0].projectendTime);
 				if (vm.isUpdate) {
 					//initZtreeClient(vm);
 				}
@@ -97,8 +101,8 @@
 		}
 		
 		
-		//begin#saveProject
-		function saveProject(vm){
+		//begin#updateProject
+		function updateProject(vm){
 			common.initJqValidation($('#ProjectForm'));
 			var isValid = $('#ProjectForm').valid();
 			if (isValid) {
@@ -182,7 +186,7 @@
 		}
 		
 		//begin#updateProject
-		function updateProject(vm){
+		function updateProjectPage(vm){
 			var isCheck=$("input[name='checkpj']:checked");
 			if(isCheck.length<1){
 				common.alert({

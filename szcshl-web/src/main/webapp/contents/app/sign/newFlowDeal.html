@@ -51,7 +51,7 @@
 							    <td align="center">{{x.name}}</td>
 							    <td align="center"><input type="checkbox" selectType="main" id="main_{{x.id}}" ng-click="vm.checkBox($event,'main','assist')" value="{{x.id}}"/></td>
 							    <td align="center"><input type="checkbox" selectType="assist" id="assist_{{x.id}}" ng-click="vm.checkBox($event,'assist','main')" value="{{x.id}}"/></td>
-							    <td align="center"><span >是</span> </td>
+							    <td align="center"><span >是</span></td>
 							</tr>
 							<tr ng-repeat="x in vm.orgs|filter:{charge:false}">
 							    <td align="center">{{x.name}}</td>
@@ -99,12 +99,12 @@
                               <tr ng-repeat="x in vm.xsOrgs|filter:{charge:true}">
                                   <td align="center">{{x.name}}</td>
                                   <td align="center"><input type="checkbox" selectType="xs_main" id="xs_main_{{x.id}}" ng-click="vm.checkBoxSingle($event,'xs_main')" value="{{x.id}}"/></td>
-                                  <td align="center"><span >是</span> </td>
+                                  <td align="center"><span >是</span></td>
                               </tr>
                               <tr ng-repeat="x in vm.xsOrgs|filter:{charge:false}">
                                   <td align="center">{{x.name}}</td>
                                   <td align="center"><input type="checkbox" selectType="xs_main" id="xs_main_{{x.id}}" ng-click="vm.checkBoxSingle($event,'xs_main')" value="{{x.id}}"/></td>
-                                  <td align="center"><span >否</span> </td>
+                                  <td align="center"><span >否</span></td>
                               </tr>
                           </table>
                     </div>

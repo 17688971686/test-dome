@@ -18,7 +18,7 @@ public interface DispatchDocService {
 	 
 	 List<SignDto> getSignbyIds(String[] ids);
 	 
-	 void mergeDispa(String signId,String linkSignId);
+	 void mergeDispa(String signId, String linkSignId) throws Exception;
 	 
 	 Map<String,Object> getSeleSignBysId(String bussnessId);
 	 

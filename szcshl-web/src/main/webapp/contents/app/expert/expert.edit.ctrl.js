@@ -11,14 +11,14 @@
         vm.title = '专家信息录入';
         vm.isuserExist=false;
         vm.isHide=true;
+        vm.isUpdate=false;
         vm.expertID = $state.params.expertID;
-
         activice();
         function activice(){
             if (vm.expertID) {
-                vm.isUpdate = true;
                 vm.title = '更新专家';
                 vm.isHide=false;
+                vm.isUpdate=true;
                 expertSvc.getExpertById(vm);
             }
         }
@@ -52,19 +52,21 @@
         }
         
         vm.gotoWPage=function(){
+        	vm.createWork=true;
         	workExpeSvc.gotoWPage(vm);
         }
         
-        vm.updateWork=function(){
-        	workExpeSvc.updateWork(vm);
+        vm.updateWorkPage=function(){
+        	vm.createWork=false;
+        	workExpeSvc.updateWorkPage(vm);
         }
         
         vm.createWork=function(){
         	workExpeSvc.createWork(vm);
         }
         
-        vm.saveWork=function(){
-        	workExpeSvc.saveWork(vm);
+        vm.updateWork=function(){
+        	workExpeSvc.updateWork(vm);
         }
         
         vm.deleteWork=function(){
@@ -72,10 +74,12 @@
         }
         
         vm.onWClose=function(){
+        	workExpeSvc.cleanValue();
         	window.parent.$("#wrwindow").data("kendoWindow").close();
         }
         
         vm.onPClose=function(){
+        	projectExpeSvc.cleanValue();
         	window.parent.$("#pjwindow").data("kendoWindow").close();
         }
         
@@ -88,11 +92,13 @@
         }
         
         vm.createProject=function(){
+        	vm.createProject=true;
         	projectExpeSvc.createProject(vm);
         }
         
-        vm.saveProject=function(){
-        	projectExpeSvc.saveProject(vm);
+        vm.updateProjectPage=function(){
+        	vm.createProject=false;
+        	projectExpeSvc.updateProjectPage(vm);
         }
         
         vm.delertProject=function(){

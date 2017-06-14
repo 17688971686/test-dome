@@ -21,7 +21,7 @@
 			updateAudit : updateAudit,		//专家评审
 			toAudit : toAudit,				//由个状态回到审核状态
 			auditTo : auditTo,				//由审核状态去到各个状态
-            initUpload : initUpload,        //初始化附件上传
+            initUpload : initUpload        //初始化附件上传
 		};
 		return service;				
 		
@@ -150,13 +150,14 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
-				if(response.data.work && response.data.work.length > 0){
+				if(response.data.workDto && response.data.workDto.length > 0){
 					vm.showWorkHistory = true;
-					vm.work=response.data.work;
+					vm.work=response.data.workDto;
+					
 				}
-				if(response.data.project && response.data.project.length > 0){
+				if(response.data.projectDto && response.data.projectDto.length > 0){
 					vm.projectkHistory = true;
-					vm.project=response.data.project;					
+					vm.project=response.data.projectDto;					
 				}
                 initUpload(vm);
                 $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());

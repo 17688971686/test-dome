@@ -153,6 +153,29 @@ public class ExpertServiceImpl implements ExpertService {
 	@Transactional
 	public void updateExpert(ExpertDto expertDto) {
 		Expert expert = expertRepo.findById(expertDto.getExpertID());
+		
+		/*List<WorkExpeDto> workDtoList=expertDto.getWorkDto();
+		List<WorkExpe> workList=new ArrayList<>();
+		if(Validate.isList(workDtoList)){
+			for (WorkExpeDto workExpeDto : workDtoList) {
+				WorkExpe workExpe=new WorkExpe();
+				BeanCopierUtils.copyPropertiesIgnoreNull(workExpeDto, workExpe);
+				workList.add(workExpe);
+			}
+		}
+		expert.setWork(workList);
+		
+		List<ProjectExpeDto> projectExpeDtoList=expertDto.getProjectDto();
+		List<ProjectExpe> projectExpeList=new ArrayList<>();
+		if(Validate.isList(projectExpeDtoList)){
+			for (ProjectExpeDto projectExpeDto : projectExpeDtoList) {
+				ProjectExpe projectExpe=new ProjectExpe();
+				BeanCopierUtils.copyPropertiesIgnoreNull(projectExpeDto, projectExpe);
+				projectExpeList.add(projectExpe);
+			}
+		}
+		expert.setProject(projectExpeList);*/
+		
 		BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
 		
 		expert.setModifiedDate(new Date());
@@ -175,7 +198,7 @@ public class ExpertServiceImpl implements ExpertService {
 					BeanCopierUtils.copyProperties(ew, workDto);				
 					workDtoList.add(workDto);
 				});
-				expertDto.setWork(workDtoList);
+				expertDto.setWorkDto(workDtoList);
 			}
 			//项目经验
 			if(expert.getProject() != null && expert.getProject().size() > 0){
@@ -185,7 +208,7 @@ public class ExpertServiceImpl implements ExpertService {
 					BeanCopierUtils.copyProperties(ep, projectDto);							
 					projectDtoList.add(projectDto);
 				});
-				expertDto.setProject(projectDtoList);
+				expertDto.setProjectDto(projectDtoList);
 			}			 			
 		}
 		return expertDto;

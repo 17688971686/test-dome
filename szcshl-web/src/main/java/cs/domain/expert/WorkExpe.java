@@ -37,10 +37,16 @@ public class WorkExpe extends DomainBase {
     @Column(name = "companyName", nullable = true, length = 128)
     private String companyName; //单位名称
     
-    @Column(name = "job", nullable = true, length = 128)
-    private String job; //职位
+    @Column(name = "workJob", nullable = true, length = 128)
+    private String workJob; //职位
     
-    @ManyToOne
+    public String getWorkJob() {
+		return workJob;
+	}
+	public void setWorkJob(String workJob) {
+		this.workJob = workJob;
+	}
+	@ManyToOne
     @JoinColumn(name="expertID")
     private Expert expert;
     
@@ -68,12 +74,7 @@ public class WorkExpe extends DomainBase {
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
-	public String getJob() {
-		return job;
-	}
-	public void setJob(String job) {
-		this.job = job;
-	}
+	
 	public Expert getExpert() {
 		return expert;
 	}

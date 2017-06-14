@@ -8,12 +8,13 @@
 	function workExpe($http) {
 		var service = {
 			createWork : createWork,
-			saveWork : saveWork,
-			deleteWork : deleteWork,
 			updateWork : updateWork,
+			deleteWork : deleteWork,
+			updateWorkPage : updateWorkPage,
 			gotoWPage : gotoWPage,
 			getWorkById : getWorkById,
-			getWork : getWork
+			getWork : getWork,
+			cleanValue : cleanValue
 
 		};
 
@@ -30,6 +31,7 @@
 					response : response,
 					fn : function() {
 						vm.work = response.data;
+						console.log(vm.work);
 					}
 				});
 			}
@@ -87,7 +89,7 @@
 		// end#delertWork
 
 		// begin#updateWork
-		function updateWork(vm) {
+		function updateWorkPage(vm) {
 			var isCheck = $("input[name='checkwr']:checked");
 			if (isCheck.length < 1) {
 				common.alert({
@@ -127,11 +129,12 @@
 			var httpSuccess = function success(response) {
 				// vm.model = response.data[0];
 				vm.model.companyName = response.data[0].companyName;
-				vm.model.job = response.data[0].job;
-				$('#beginTime').val(response.data[0].beginTime);
-				$('#endTime').val(response.data[0].endTime);
-				if (vm.isUpdate) {
-				}
+				vm.model.workJob = response.data[0].workJob;
+				vm.model.beginTime = response.data[0].beginTime;
+				vm.model.endTime = response.data[0].endTime;
+				console.log(response.data[0]);
+				//$('#beginTime').val(response.data[0].beginTime);
+				//$('#endTime').val(response.data[0].endTime);
 			}
 			common.http({
 				vm : vm,
@@ -237,8 +240,8 @@
 			}
 		}
 
-		// begin#saveWork
-		function saveWork(vm) {
+		// begin#updateWork
+		function updateWork(vm) {
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid) {
@@ -257,14 +260,14 @@
 					common.requestSuccess({
 						vm : vm,
 						response : response,
-						fn : function() {							
+						fn : function() {
+							window.parent.$("#wrwindow").data("kendoWindow").close();
 							getWork(vm);
 							cleanValue();
 							common.alert({
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
-									window.parent.$("#wrwindow").data("kendoWindow").close();
 									vm.showWorkHistory = true;
 									$('.alertDialog').modal('hide');
 								}

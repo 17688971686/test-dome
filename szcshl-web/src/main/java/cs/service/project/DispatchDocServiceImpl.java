@@ -155,19 +155,24 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	// TODO HHHHHHHHH
 	@Override
 	@Transactional
-	public void mergeDispa(String signId, String linkSignId) {
-		Date now = new Date();
-		Sign sign = signRepo.findById(signId);
-		MergeDispa mergeDispa = new MergeDispa();
-		mergeDispa.setBusinessId(sign.getDispatchDoc().getId());
-		mergeDispa.setType(sign.getDispatchDoc().getDispatchType());
-		mergeDispa.setSignId(signId);
-		mergeDispa.setLinkSignId(linkSignId);
-		mergeDispa.setCreatedBy(currentUser.getLoginName());
-		mergeDispa.setModifiedBy(currentUser.getLoginName());
-		mergeDispa.setCreatedDate(now);
-		mergeDispa.setModifiedDate(now);
-		mergeDispaRepo.save(mergeDispa);
+	public void mergeDispa(String signId, String linkSignId) throws Exception {
+		if(Validate.isString(signId)||Validate.isString(linkSignId)){
+			Date now = new Date();
+			Sign sign = signRepo.findById(signId);
+			MergeDispa mergeDispa = new MergeDispa();
+			mergeDispa.setBusinessId(sign.getDispatchDoc().getId());
+			mergeDispa.setType(sign.getDispatchDoc().getDispatchType());
+			mergeDispa.setSignId(signId);
+			mergeDispa.setLinkSignId(linkSignId);
+			mergeDispa.setCreatedBy(currentUser.getLoginName());
+			mergeDispa.setModifiedBy(currentUser.getLoginName());
+			mergeDispa.setCreatedDate(now);
+			mergeDispa.setModifiedDate(now);
+			mergeDispaRepo.save(mergeDispa);
+		}else{
+			log.info("提交收文信息异常：无法获取收文ID和关联ID（signId,linkSignId）信息");
+			throw new Exception(Constant.ERROR_MSG);
+		}
 
 		// mergeDispaServiceImpl.mergeProject(dispatchDocDto);
 	}

@@ -25,8 +25,12 @@
 			getInitSeleSignBysId:getInitSeleSignBysId,//初始化已选项目列表
 			getInitRelateData:getInitRelateData,	//初始化关联数据
 			initWorkUpload:initWorkUpload,//初始上传附件控件
+<<<<<<< Updated upstream
 			delsWorkSysFile:delsWorkSysFile,//删除系统文件
 			workDownload:workDownload,//文件下载
+=======
+			delsWorkSysFile:delsWorkSysFile//删除系统文件
+>>>>>>> Stashed changes
 		};
 		return service;
 		

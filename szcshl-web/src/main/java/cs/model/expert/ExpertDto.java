@@ -49,9 +49,9 @@ public class ExpertDto extends BaseDto {
     private String bankAccount;
     public byte[] photo;    //专家照片
 
-    private List<WorkExpeDto> work;
-    private List<ProjectExpeDto> project;
-    private List<ExpertSelectedDto> expertSelectedDtoList;
+    private List<WorkExpeDto> workDto;
+    private List<ProjectExpeDto> projectDto;
+    private List<ExpertReviewDto> expertReviewDtoList;
 
     public String getIdCard() {
         return idCard;
@@ -237,22 +237,6 @@ public class ExpertDto extends BaseDto {
         this.state = state;
     }
 
-    public List<WorkExpeDto> getWork() {
-        return work;
-    }
-
-    public void setWork(List<WorkExpeDto> work) {
-        this.work = work;
-    }
-
-    public List<ProjectExpeDto> getProject() {
-        return project;
-    }
-
-    public void setProject(List<ProjectExpeDto> project) {
-        this.project = project;
-    }
-
     public String getMajorStudy() {
         return majorStudy;
     }
@@ -317,11 +301,27 @@ public class ExpertDto extends BaseDto {
         this.photo = photo;
     }
 
-    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
-        return expertSelectedDtoList;
+    public List<ExpertReviewDto> getExpertReviewDtoList() {
+        return expertReviewDtoList;
     }
 
-    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
-        this.expertSelectedDtoList = expertSelectedDtoList;
+    public void setExpertReviewDtoList(List<ExpertReviewDto> expertReviewDtoList) {
+        this.expertReviewDtoList = expertReviewDtoList;
     }
+
+	public List<ProjectExpeDto> getProjectDto() {
+		return projectDto;
+	}
+
+	public void setProjectDto(List<ProjectExpeDto> projectDto) {
+		this.projectDto = projectDto;
+	}
+
+	public List<WorkExpeDto> getWorkDto() {
+		return workDto;
+	}
+
+	public void setWorkDto(List<WorkExpeDto> workDto) {
+		this.workDto = workDto;
+	}
 }

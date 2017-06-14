@@ -18,10 +18,10 @@
 		<table class="table table-bordered">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
 		  <caption style="width:100%;">
-		  	<span style="float:left;">发文方式：<span class="required" ng-click="vm.seleted()">*</span>
-		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-click="vm.isSelect()"  ng-change="vm.sigleProject()">
+		  	<span style="float:left;">发文方式：<span class="required">*</span>
+		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
 					<option  ng-value="1" >单个发文</option>
-					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == 2">合并发文</option>
+					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == 2" >合并发文</option>
 				</select>
 			</span> 
 			<span id="mergeOptions" style="float: left; margin-left: 10px;">
@@ -303,6 +303,7 @@
 		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
 		 <button class="btn btn-sm btn-success" ng-click="vm.mergeDispa()"><span class="glyphicon glyphicon-ok"></span>确定</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.onClose()" ><span class="glyphicon glyphicon-chevron-left"></span>关闭</button>
+		 <span style="color: red">{{vm.message}}</span>
 	</div>
 	<ol class="breadcrumb"> 
 	<form id="searchform" name="searchform">

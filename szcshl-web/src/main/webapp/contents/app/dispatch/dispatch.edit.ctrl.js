@@ -35,48 +35,46 @@
 			}
 		}
 
-		/*
-		 * if(vm.dispatchDoc.dispatchWay=="1"||vm.dispatchDoc.isMainProject=="0"){
-		 * vm.dispatchDoc.isRelated="否"; }
-		 */
-
-		vm.isSelect = function() {
-			if (vm.dispatchDoc.dispatchWay == "1") {
-				vm.dispatchDoc.isRelated = "否";
-			}
-		}
 
 		vm.sigleProject = function() {
-			common.confirm({
-				title : "删除提示",
-				vm : vm,
-				msg : "你确定删除关联信息?",
-				fn : function() {
-					if (vm.dispatchDoc.dispatchWay == "1" && vm.dispatchDoc.id) {
-						vm.dispatchDoc.isRelated = "否";
-						dispatchSvc.deletemerge(vm);
-					}
+			if (vm.dispatchDoc.dispatchWay == "1" && vm.dispatchDoc.id &&　vm.linkSignId!=" ") {
+					common.confirm({
+					title : "删除提示",
+					vm : vm,
+					msg : "你确定删除关联信息?",
+					fn : function() {
+						$('.confirmDialog').modal('hide'); 
+							dispatchSvc.deletemerge(vm);
+							vm.dispatchDoc.isRelated = "否";
+						
+						}
+					});
 				}
-			});
+				//console.log(vm.dispatchDoc.isRelated);
 		}
 
 		vm.isrelated = function() {
-			vm.dispatchDoc.isRelated = "是";
+			//选择主项目
+			if (vm.dispatchDoc.id　&&　vm.linkSignId!=" ") {
+				vm.dispatchDoc.isRelated = "是";
+				console.log(vm.dispatchDoc.isRelated);
+			}
 
 		}
-
+        //选择次项目
 		vm.isrelated2 = function() {
+			if (vm.dispatchDoc.id　&&　vm.linkSignId!=" ") {
 			common.confirm({
 				title : "删除提示",
 				vm : vm,
 				msg : "你确定删除关联信息?",
 				fn : function() {
-					if (vm.dispatchDoc.id) {
+					$('.confirmDialog').modal('hide'); 
 						vm.dispatchDoc.isRelated = "否";
 						dispatchSvc.deletemerge(vm);
-			}
 				}
 			});
+			}
 			
 		}
 
