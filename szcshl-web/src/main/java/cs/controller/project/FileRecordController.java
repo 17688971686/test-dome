@@ -1,6 +1,7 @@
 package cs.controller.project;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.domain.sys.SysFile;
 import cs.model.project.FileRecordDto;
 import cs.service.project.FileRecordService;
 import cs.service.sys.UserService;
@@ -47,6 +49,8 @@ private  String ctrlName = "fileRecord";
 	@RequestMapping(name = "初始归档编辑页面", path = "html/initFillPage",method=RequestMethod.GET)	
 	public @ResponseBody Map<String,Object> initFillPage(@RequestParam(required = true)String signId){		
 		Map<String,Object> resultMap = new HashMap<String,Object>();
+		List<SysFile> sysFilelist = fileRecordService.sysFileByIds(signId);
+		resultMap.put("sysFilelist", sysFilelist);
 		resultMap.put("file_record", fileRecordService.initBySignId(signId));
 		resultMap.put("sign_user_List", userService.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue()));
 		return resultMap;	

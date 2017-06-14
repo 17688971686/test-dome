@@ -19,9 +19,12 @@ import cs.domain.project.FileRecord;
 import cs.domain.project.FileRecord_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
 import cs.model.project.FileRecordDto;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 
 @Service
@@ -35,6 +38,8 @@ public class FileRecordServiceImpl implements FileRecordService {
 	private SignRepo signRepo;
 	@Autowired
 	private UserRepo userRepo;
+	@Autowired
+	private SysFileRepo sysFileRepo;
 	
 	@Override
 	@Transactional
@@ -80,11 +85,9 @@ public class FileRecordServiceImpl implements FileRecordService {
 	@Override
 	public FileRecordDto initBySignId(String signid) {
 		FileRecordDto fileRecordDto = new FileRecordDto();
-		
 		HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from "+FileRecord.class.getSimpleName()+" where "+FileRecord_.sign.getName()+"."+Sign_.signid.getName()+" = :signId ");
         hqlBuilder.setParam("signId", signid);               
-        
         List<FileRecord> list = fileRecordRepo.findByHql(hqlBuilder);
         if(list != null && list.size() > 0){
         	FileRecord  fileRecord = list.get(0);
@@ -100,7 +103,15 @@ public class FileRecordServiceImpl implements FileRecordService {
         	fileRecordDto.setFileNumber("");//文号
         }
 		return fileRecordDto;
+	}
 
+	@Override
+	public List<SysFile> sysFileByIds(String signid) {
+		Sign sign = signRepo.findById(signid);
+		HqlBuilder hql = HqlBuilder.create();
+		hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.businessId.getName()).append("=:businessId").setParam("businessId", sign.getSignid());
+		List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
+		return sysFiles;
 	}
 
 }

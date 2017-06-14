@@ -1,16 +1,29 @@
 package cs.controller.sys;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +33,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import cs.common.Constant;
+import cs.common.utils.SysFileUtil;
+import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
@@ -67,6 +82,72 @@ public class FileController {
 		}
 		
 		return sysFileDto;
+	}
+	@RequestMapping(name = "文件下载", path = "fileDownload",method=RequestMethod.GET)
+	public @ResponseBody  void fileDownload(@RequestParam(required = true) String sysfileId,HttpServletResponse response) throws IOException{
+		
+		try {
+			logger.debug("==================下载模板文件==================");
+			SysFile  file = fileService.findFileById(sysfileId);
+			String path = SysFileUtil.getUploadPath();
+			String url = file.getFileUrl();
+			String fileType = file.getFileType();
+			String filename = file.getShowName();
+			filename = URLDecoder.decode(filename, "UTF-8");
+			//获取文件保存路径
+			String pathUrl = path+url;
+			String reg = ".*\\\\(.*)";
+			//文件名
+			String fileNames = pathUrl.replaceAll(reg, "$1");
+			if(fileNames == null||fileNames.equals(" ")){
+				return;
+			}
+			//调用输出流
+			File f = new File(pathUrl);
+			if(!f.exists()){
+				logger.info("附件信息不存在!!!");
+			}
+			if (fileType.equals(".jpg")) {
+				response.setHeader("Content-type", "application/.jpg");
+			}
+			else if (fileType.equals(".png")) {
+				response.setHeader("Content-type", "application/.png");
+			} 
+			else if(fileType.equals(".gif")){
+				response.setHeader("Content-type", "application/.gif");
+			}
+			else if(fileType.equals(".docx")){
+				response.setHeader("Content-type", "application/.docx");
+			}
+			else if(fileType.equals(".xlsx")){
+				response.setHeader("Content-type", "application/.xlsx");
+			}
+			else if(fileType.equals(".pdf")){
+				response.setHeader("Content-type", "application/.pdf");
+			}
+			else if (fileType.equals("xls")) {
+				response.setContentType("applicationnd.ms-excel;charset=GBK");
+				response.setHeader("Content-type", "application/x-msexcel");
+			} else {
+				response.setContentType("application/octet-stream");
+			}
+			response.setHeader("Content-Disposition", "attachment; filename="
+					+ new String(filename.getBytes("GB2312"), "ISO8859-1"));
+				
+			FileInputStream in = new FileInputStream(f);
+			OutputStream out = response.getOutputStream();
+			byte b[] = new byte[1024];
+			int len = -1;
+			while((len=in.read(b))!=-1){
+				out.write(b, 0, len);
+			}
+			in.close();
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+		
+		}
 	}
 	
 	@RequiresPermissions("file#deleteSysFile#delete")

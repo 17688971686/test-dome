@@ -127,4 +127,10 @@ public class SysFileServiceImpl implements SysFileService{
 		return sysFileDtoList;
 	}
 
+	@Override
+	public SysFile findFileById(String sysfileId) {
+		SysFile sysFile= sysFileRepo.findById(sysfileId);
+		return sysFile;
+	}
+
 }

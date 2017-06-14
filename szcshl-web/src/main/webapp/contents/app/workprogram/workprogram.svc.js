@@ -65,8 +65,6 @@
 		}
 		//E_删除系统文件
 		
-		
-		
 		//S_初始化已选项目列表
 		function getInitSeleSignBysId(vm){
 			 var bussnessId = vm.work.id;
