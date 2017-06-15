@@ -8,11 +8,8 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import cs.common.utils.StringUtil;
-<<<<<<< HEAD
 import cs.model.expert.ExpertSelectedDto;
-=======
 import cs.domain.project.*;
->>>>>>> 解决协审计划管理报错的问题
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
