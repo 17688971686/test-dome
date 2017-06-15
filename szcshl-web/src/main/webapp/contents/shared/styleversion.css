@@ -52,6 +52,7 @@ input,textarea{ outline:none;}
     background-color:  #00A65A;
     color: #000;
     overflow: visible; 
+    height:55px;
 }
 .skin-green .main-header .logo:hover {
     background-color:   #00A65A;
