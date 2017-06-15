@@ -9,7 +9,7 @@
         /* jshint validthis:true */
     	var vm = this;
         vm.title = '会议室列表';
-
+        vm.model={};
         vm.del = function (id) {
              common.confirm({
             	 vm:vm,
@@ -20,6 +20,20 @@
                     meetingSvc.deleteMeeting(vm,id);
                  }
              })
+        }
+        vm.used=function(id){
+        	vm.model.id=id;
+        	vm.model.mrStatus="1";
+        	meetingSvc.roomUseState(vm);
+        	//vm.isUse=false;
+        }
+        
+        vm.stoped=function(id){
+        	vm.model.id=id;
+        	vm.model.mrStatus="2";
+        	meetingSvc.roomUseState(vm);
+        	//vm.isUse=true;
+        	
         }
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');

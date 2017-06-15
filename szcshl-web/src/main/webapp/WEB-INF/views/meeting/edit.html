@@ -65,7 +65,7 @@
                 <td>
                     <select class="form-control input-sm " ng-model="vm.model.mrStatus " id="mrStatus" name="mrStatus" data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.USERSTATE.dicts" ng-selected="vm.model.mrStatus == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+                        <option ng-repeat="x in DICT.USERSTATE.dicts" ng-selected="vm.model.mrStatus == x.dictKey" value="{{x.dictKey}}">{{x.dictName}}</option>
                     </select>
                 </td>
                 <td><span data-valmsg-for="mrStatus" data-valmsg-replace="true" class="errors"></span></td>

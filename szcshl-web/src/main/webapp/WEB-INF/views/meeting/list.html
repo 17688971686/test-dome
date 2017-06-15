@@ -31,10 +31,20 @@
         
         <script type="text/template" id="columnBtns">
 		<@shiro.hasPermission name="meeting##delete">
-			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+
+			<!-- 停用會議室 -->
+			<button class="btn btn-xs btn-warning"  ng-click="{0}"  ng-hide="{1}"><span class="glyphicon glyphicon-off"></span>停用</button>
+
+			<!-- 启用會議室 -->
+			<button class="btn btn-xs btn-success"  ng-click="{2}"  ng-show="{3}"><span class="glyphicon glyphicon-play-circle"></span>启用</button>
+			
 		</@shiro.hasPermission>
 		<@shiro.hasPermission name="meeting##put">
-	        <a class="btn btn-xs btn-primary" href="#/meetingEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+	        <a class="btn btn-xs btn-primary" href="#/meetingEdit/{4}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+		</@shiro.hasPermission>
+
+		<@shiro.hasPermission name="meeting##delete">
+	       <button class="btn btn-xs btn-danger"  ng-click="{5}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
 		</@shiro.hasPermission>
 		</script>
         

@@ -14,7 +14,8 @@
 			createMeeting : createMeeting,
 			deleteMeeting : deleteMeeting,
 			updateMeeting : updateMeeting,
-			queryMeeting : queryMeeting		//会议室查询
+			queryMeeting : queryMeeting,		//会议室查询
+			roomUseState : roomUseState
 		};
 
 		return service;
@@ -88,6 +89,33 @@
 					response : response,
 					fn : function() {
 						vm.isSubmit = false;
+						vm.gridOptions.dataSource.read();
+					}
+
+				});
+
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		
+		function roomUseState(vm) {
+			console.log(vm.model);
+			var httpOptions = {
+				method : 'put',
+				url : url_meeting+"/roomUseState",
+				data : vm.model
+
+			}
+			var httpSuccess = function success(response) {
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
 						vm.gridOptions.dataSource.read();
 					}
 
@@ -228,44 +256,49 @@
 					{
 						field : "num",
 						title : "会议室编号",
-						width : 200,
+						width : 100,
 						filterable : false
 					},
 					{
 						field : "mrName",
 						title : "会议室名称",
-						width : 200,
+						width : 180,
 						filterable : false
 					},
                     {
                         field : "mrType",
                         title : "会议室类型",
                         width : 180,
-                        filterable : false,
+                        filterable : false
                     },
 					{
 						field : "addr",
 						title : "会议室地点",
+						  width : 200,
 						filterable : false
 					},
 					{
 						field : "mrStatus",
 						title : "会议室状态",
+						 width : 100,
 						filterable : false
 					},
 					{
 						field : "capacity",
 						title : "会议室容量",
+						 width : 100,
 						filterable : false
 					},
 					{
 						field : "userName",
 						title : "会议室负责人",
+						width : 100,
 						filterable : false
 					},
 					{
 						field : "userPhone",
 						title : "负责人电话",
+						width : 150,
 						filterable : false
 					},
 					{
@@ -273,7 +306,13 @@
 						title : "操作",
 						width : 180,
 						template : function(item) {
-							return common.format($('#columnBtns').html(),"vm.del('" + item.id + "')", item.id);
+							var isUse=false;
+							if (item.mrStatus=="2"){
+								isUse=true;
+							}else{
+								isUse=false;
+							}
+							return common.format($('#columnBtns').html(),"vm.stoped('" + item.id + "')",isUse,"vm.used('" + item.id + "')",isUse, item.id,"vm.del('" + item.id + "')");
 						}
 					}
 			];

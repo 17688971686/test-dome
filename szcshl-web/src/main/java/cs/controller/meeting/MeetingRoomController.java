@@ -69,6 +69,13 @@ public class MeetingRoomController {
 		meetingRoomService.updateMeeting(meetingDto);
 	}
 	
+	@RequiresPermissions("meeting##post")
+	@RequestMapping(name = "更新会议室使用状态" ,path = "roomUseState" ,method =RequestMethod.PUT)
+	@ResponseStatus( value =HttpStatus.NO_CONTENT)
+	public void roomUseState(@RequestBody MeetingRoomDto meetingDto){
+		meetingRoomService.roomUseState(meetingDto);
+	}
+	
 	@RequiresPermissions("meeting##delete")
 	@RequestMapping(name = "删除会议室" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)

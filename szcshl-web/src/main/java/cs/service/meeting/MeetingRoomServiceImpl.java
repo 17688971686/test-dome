@@ -134,6 +134,19 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 		meetingRoomRepo.save(meeting);
 		logger.info(String.format("更新会议室,会议室名:%s", meetingDto.getMrName()));
 	}
+	
+	//更新会议室使用状态
+	@Override
+	@Transactional
+	public void roomUseState(MeetingRoomDto meetingDto) {
+		Date now=new Date();
+		MeetingRoom  meeting =  meetingRoomRepo.findById(meetingDto.getId());
+		meeting.setMrStatus(meetingDto.getMrStatus());
+		meeting.setModifiedBy(currentUser.getLoginName());
+		meeting.setModifiedDate(now);
+		meetingRoomRepo.save(meeting);
+		logger.info(String.format("更新会议室使用状态,会议室名:%s", meetingDto.getMrName()));
+	}
 
 	@Override
 	public MeetingRoomDto findByIdMeeting(String id) {

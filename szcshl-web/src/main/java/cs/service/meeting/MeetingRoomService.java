@@ -16,4 +16,6 @@ public interface MeetingRoomService {
 	void updateMeeting(MeetingRoomDto meetingDto);
 
 	MeetingRoomDto findByIdMeeting(String id);
+	
+	void roomUseState(MeetingRoomDto meetingDto);
 }
