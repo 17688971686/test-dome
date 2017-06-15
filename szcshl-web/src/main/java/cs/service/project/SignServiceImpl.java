@@ -8,7 +8,11 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import cs.common.utils.StringUtil;
+<<<<<<< HEAD
 import cs.model.expert.ExpertSelectedDto;
+=======
+import cs.domain.project.*;
+>>>>>>> 解决协审计划管理报错的问题
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -32,11 +36,6 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.FileRecord;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
 import cs.domain.sys.Company;
 import cs.domain.sys.Org;
 import cs.domain.sys.SysFile;
@@ -966,14 +965,17 @@ public class SignServiceImpl implements SignService {
     @Override
     public List<SignDto> findAssistSign() {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select sign.* from cs_sign sign left join cs_as_plansign plang on sign.signid = plang.signid ");
-        sqlBuilder.append(" where sign.isassistflow =:isassistflow");
-        sqlBuilder.setParam("isassistflow", EnumState.YES.getValue());
-        sqlBuilder.append(" and sign.folwstate  =:folwState");
-        sqlBuilder.setParam("folwState", EnumState.PROCESS.getValue());
+        /*sqlBuilder.append(" select sign.* from cs_sign sign left join cs_as_plansign plang on sign.signid = plang.signid ");
+        sqlBuilder.append(" where sign.isassistflow =:isassistflow");*/
+        sqlBuilder.append(" select sign from "+Sign.class.getSimpleName()+" sign left join "+AssistPlanSign.class.getSimpleName()+
+                " plang on sign."+Sign_.signid.getName()+" = plang."+ AssistPlanSign_.signId.getName());
+        sqlBuilder.append(" where sign."+Sign_.isassistflow.getName()+" =:isassistflow");
+        sqlBuilder.setParam("isassistflow",EnumState.YES.getValue());
+        sqlBuilder.append(" and sign."+Sign_.folwState.getName() +"  =:folwState");
+        sqlBuilder.setParam("folwState",EnumState.PROCESS.getValue());
         //排除掉已经在选的项目
-        sqlBuilder.append(" and plang.signid is null ");
-        List<Sign> signList = signRepo.findBySql(sqlBuilder);
+        sqlBuilder.append(" and plang."+AssistPlanSign_.signId.getName()+" is null ");
+        List<Sign> signList = signRepo.findByHql(sqlBuilder);
 
         List<SignDto> resultList = new ArrayList<>(signList == null ? 0 : signList.size());
         if (signList != null && signList.size() > 0) {
@@ -995,14 +997,15 @@ public class SignServiceImpl implements SignService {
     @Override
     public List<SignDto> findByPlanId(String planId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select  distinct sign.* from cs_sign sign,cs_as_plansign psign where sign.signid = psign.signid ");
-        sqlBuilder.append(" and psign.planid =:planid");
-        sqlBuilder.setParam("planid", planId);
 
-        List<Sign> signList = signRepo.findBySql(sqlBuilder);
-        List<SignDto> resultList = new ArrayList<>(signList == null ? 0 : signList.size());
-        if (signList != null && signList.size() > 0) {
-            signList.forEach(s -> {
+        sqlBuilder.append(" select  distinct sign from "+Sign.class.getSimpleName()+" as sign,AssistPlanSign as psign where sign."+Sign_.signid.getName()+" = psign."+AssistPlanSign_.signId.getName());
+        sqlBuilder.append(" and psign.assistPlan.id =:planid");
+        sqlBuilder.setParam("planid",planId);
+
+        List<Sign> signList = signRepo.findByHql(sqlBuilder);
+        List<SignDto> resultList = new ArrayList<>(signList==null?0:signList.size());
+        if(signList != null && signList.size() > 0){
+            signList.forEach( s ->{
                 SignDto signDto = new SignDto();
                 BeanCopierUtils.copyProperties(s, signDto);
                 resultList.add(signDto);
@@ -1021,7 +1024,7 @@ public class SignServiceImpl implements SignService {
     public void updateAssistState(String signIds, String status, boolean isSingle) {
         //更新项目状态
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" update " + Sign.class.getSimpleName() + " set " + Sign_.isassistproc.getName() + " =:isassistproc");
+        hqlBuilder.append(" update "+Sign.class.getSimpleName()+" set "+ Sign_.isassistproc.getName() +" =:isassistproc");
         hqlBuilder.setParam("isassistproc", status);
         if (isSingle) {
             hqlBuilder.append(" where " + Sign_.signid.getName() + " =:signid").setParam("signid", signIds);
