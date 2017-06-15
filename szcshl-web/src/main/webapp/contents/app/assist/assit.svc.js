@@ -23,7 +23,8 @@
             savePlan : savePlan,									//保存协审计划
             initPlanByPlanId : initPlanByPlanId,					//初始化协审计划
             chooseAssistUnit : chooseAssistUnit,							//选择协审单位
-            initAssistUnit : initAssistUnit
+            initAssistUnit : initAssistUnit,
+            saveDrawAssistUnit:saveDrawAssistUnit               //保存协审计划抽签
             
 		};
 		return service;
@@ -524,7 +525,6 @@
         	
         	var httpSuccess=function success(response){
         		vm.unitList=response.data;
-        		console.log(vm.unitList);
 //        		vm.isChoose=true;
         	}
         	
@@ -563,6 +563,61 @@
         	
         }
         //end initAssistUnit
+
+        //begin saveDrawAssistUnit
+        function saveDrawAssistUnit(){
+            var ids = '';
+            var length = vm.assistPlanSign.length;
+            vm.assistPlanSign.forEach(function(t,n){
+                //格式,AssistPlanSign.id|AssistUnit.id,,,
+                ids += (t.id+'|'+t.assistUnit.id);
+                if(n != (length-1)){
+                    ids += ',';
+                }
+            });
+
+            var unSelectedIds = '';
+            if(vm.drawAssistUnits.length>0){
+                var dauLength = vm.drawAssistUnits.length;
+                vm.drawAssistUnits.forEach(function(t,n){
+                    //格式,AssistPlanSign.id|AssistUnit.id,,,
+                    unSelectedIds += t.id;
+                    if(n != (dauLength-1)){
+                        unSelectedIds += ',';
+                    }
+                });
+            }
+
+            vm.iscommit = true;
+            var httpOptions = {
+                method : 'put',
+                url : rootPath+"/assistPlan/saveDrawAssistUnit",
+                params : {planId:vm.planId,drawAssitUnitIds:ids,unSelectedIds:unSelectedIds}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm:vm,
+                    response:response,
+                    fn:function() {
+                        vm.iscommit = false;
+                        vm.isCommited = ture;
+                        common.alert({
+                            vm:vm,
+                            msg:"操作成功！",
+                            closeDialog:true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess,
+                onError: function(response){vm.iscommit = false;}
+            });
+        }
+        //end saveDrawAssistUnit
 
 	}		
 })();

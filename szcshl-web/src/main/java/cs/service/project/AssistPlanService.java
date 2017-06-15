@@ -31,4 +31,6 @@ public interface AssistPlanService {
 	void saveLowPlanSign(AssistPlanDto assistPlanDto);
 
     AssistPlanDto getAssistPlanBySignId(String signId);
+
+    void saveDrawAssistUnit(String planId,String drawAssitUnitIds, String unSelectedIds);
 }

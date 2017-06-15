@@ -16,6 +16,7 @@ import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
+import cs.repository.repositoryImpl.project.AssistUnitRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projection;
@@ -45,6 +46,8 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
     private SignService signService;
     @Autowired
     private SignRepo signRepo;
+    @Autowired
+    private AssistUnitRepo assistUnitRepo;
 
 	@Override
 	public PageModelDto<AssistPlanDto> get(ODataObj odataObj) {
@@ -342,5 +345,57 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
         return asPlanDto;
     }
 
+    @Override
+    @Transactional
+    public void saveDrawAssistUnit(String planId,String drawAssitUnitIds, String unSelectedIds) {
 
+        AssistPlan assistPlan = assistPlanRepo.findById(planId);
+        String isDraw = assistPlan.getIsDrawed();
+        if(assistPlan == null){
+            throw new IllegalArgumentException("该协审计划不存在");
+        }
+        if(isDraw != null&&assistPlan.getIsDrawed().equals(Constant.EnumState.YES.getValue())){
+            throw new IllegalArgumentException("该协审计划已抽签");
+        }
+
+        String[] planSignAndUnitIds = drawAssitUnitIds.split(",");
+
+        if(planSignAndUnitIds.length > 0){
+            for(int i = 0;i < planSignAndUnitIds.length;i++){
+                String[] planSignAndUnitId = planSignAndUnitIds[i].split("\\|");
+                if(planSignAndUnitId.length != 2){
+                    throw new IllegalArgumentException("协审项目抽签数据格式不正确");
+                }
+                String planSignId = planSignAndUnitId[0];
+                String assistUnitId = planSignAndUnitId[1];
+
+                AssistPlanSign assistPlanSign = assistPlanSignRepo.findById(planSignId);
+                assistPlanSign.getAssistPlan().getId();
+                AssistUnit assistUnit = assistUnitRepo.findById(assistUnitId);
+                Integer drawCount = assistUnit.getDrawCount() == null?1:assistUnit.getDrawCount() + 1;
+                assistUnit.setDrawCount(drawCount);
+                assistUnit.setIsLastUnSelected(Constant.EnumState.NO.getValue());
+                assistPlanSign.setAssistUnit(assistUnit);
+                assistPlanSignRepo.save(assistPlanSign);
+            }
+
+            //轮空的单位
+            if(Validate.isString(unSelectedIds)){
+                String[] unSelectedAssistUnitIds = unSelectedIds.split(",");
+                for(int i = 0;i<unSelectedAssistUnitIds.length;i++){
+                    AssistUnit assistUnit = assistUnitRepo.findById(unSelectedAssistUnitIds[i]);
+                    if(assistUnit != null){
+                        assistUnit.setIsLastUnSelected(Constant.EnumState.YES.getValue());
+                        assistUnitRepo.save(assistUnit);
+                    }
+                }
+            }
+
+            assistPlan.setIsDrawed(Constant.EnumState.YES.getValue());
+            assistPlanRepo.save(assistPlan);
+
+        }
+
+
+    }
 }

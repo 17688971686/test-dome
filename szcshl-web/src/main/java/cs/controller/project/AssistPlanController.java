@@ -92,6 +92,19 @@ public class AssistPlanController {
        return assistPlanService.getAssistPlanBySignId(signId);
     }
 
+    /**
+     * @param drawAssitUnitIds 协审项目抽签，格式AssistPlanSign.id|AssistUnit.id,,,
+     * @param unSelectedIds 轮空的单位
+     * */
+    @RequiresPermissions("assistPlan#saveDrawAssistUnit#put")
+    @RequestMapping(name = "保存协审项目抽签结果", path = "saveDrawAssistUnit", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void saveDrawAssistUnit(@RequestParam(required = true)String planId,@RequestParam(required = true) String drawAssitUnitIds,String unSelectedIds) {
+        assistPlanService.saveDrawAssistUnit(planId,drawAssitUnitIds,unSelectedIds);
+        System.out.println(drawAssitUnitIds);
+       // assistPlanService.update(record);
+    }
+
     @RequiresPermissions("assistPlan##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

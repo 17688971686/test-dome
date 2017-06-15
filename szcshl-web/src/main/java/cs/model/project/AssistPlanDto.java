@@ -25,6 +25,7 @@ public class AssistPlanDto extends BaseDto {
     private String viceDirectorOpinion;
     private String directorOpinion;
     private String planState;
+    private String isDrawed;
     private BigDecimal totalCost;
     private List<AssistUnitDto> assistUnitDtoList;
 
@@ -109,6 +110,14 @@ public class AssistPlanDto extends BaseDto {
 
     public void setPlanState(String planState) {
         this.planState = planState;
+    }
+
+    public String getIsDrawed() {
+        return isDrawed;
+    }
+
+    public void setIsDrawed(String isDrawed) {
+        this.isDrawed = isDrawed;
     }
 
     public BigDecimal getTotalCost() {

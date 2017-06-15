@@ -3,9 +3,9 @@
 
     angular.module('app').controller('assistPlanCtrl', assistPlan);
 
-    assistPlan.$inject = ['$location','$state','assistSvc','$http'];
+    assistPlan.$inject = ['$location','$state','assistSvc','$http','$interval'];
 
-    function assistPlan($location,$state,assistSvc,$http) {
+    function assistPlan($location,$state,assistSvc,$http,$interval) {
         var vm = this;
         vm.model = {};							//创建一个form对象
         vm.filterModel = {};                    //filter对象
@@ -324,6 +324,59 @@
         	}
         	assistSvc.chooseAssistUnit(vm);
         
+        }
+
+        //协审项目抽签
+        vm.drawAssistUnit = function(){
+
+            if(vm.assistPlanSign != undefined&&vm.assistPlanSign.length>0){
+                vm.assistPlanSign.forEach(function(t,n){
+                    t.assistUnit = null;
+                });
+            }else{
+                return ;
+            }
+            //待被抽取的协审单位
+            vm.drawAssistUnits = vm.unitList.slice(0);
+            var drawAssistPlanSign
+            var drawPlanSignIndex = 0;
+            //当前抽取第一个项目的协审单位
+            vm.drawPlanSign = vm.assistPlanSign[drawPlanSignIndex];
+            var timeCount = 0;
+            vm.isStartDraw = true;
+            vm.isDrawDone = false;
+            vm.t = $interval(function() {
+                vm.drawPlanSign = vm.assistPlanSign[drawPlanSignIndex];
+                var selscope = Math.floor(Math.random()*(vm.drawAssistUnits.length));
+
+                var selAssistUnit = vm.drawAssistUnits[selscope];
+                vm.showAssitUnitName = selAssistUnit.unitName;
+                timeCount++;
+                //一秒后，选中协审单位
+                if(timeCount % 20 == 0){
+                    //选中协审单位
+                    vm.assistPlanSign[drawPlanSignIndex].assistUnit = selAssistUnit;
+                    drawPlanSignIndex ++;
+
+                    if(drawPlanSignIndex == vm.assistPlanSign.length){
+                        //抽签完毕
+                        $interval.cancel(vm.t);
+                        vm.isDrawDone = true;
+                    }
+
+                    vm.drawAssistUnits.forEach(function (t,n){
+                        if(t.id == selAssistUnit.id){
+                            vm.drawAssistUnits.splice(n,1);
+                        }
+                    });
+
+                }
+            }, 50);
+        }
+
+
+        vm.saveDrawAssistUnit = function(){
+            assistSvc.saveDrawAssistUnit();
         }
 
     }

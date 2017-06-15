@@ -75,6 +75,12 @@ public class AssistPlan extends DomainBase {
     private String planState;
 
     /**
+     * 是否已抽签,9是已抽签
+     *
+     * */
+    private String isDrawed;
+
+    /**
      * 参加抽签单位
      */
     @ManyToMany
@@ -92,6 +98,14 @@ public class AssistPlan extends DomainBase {
 
     public void setPlanState(String planState) {
         this.planState = planState;
+    }
+
+    public String getIsDrawed() {
+        return isDrawed;
+    }
+
+    public void setIsDrawed(String isDrawed) {
+        this.isDrawed = isDrawed;
     }
 
     public String getId() {
