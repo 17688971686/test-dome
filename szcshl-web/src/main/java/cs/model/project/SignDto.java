@@ -9,6 +9,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.domain.project.Sign;
 import cs.model.BaseDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.model.sys.OrgDto;
 
 import javax.persistence.*;
@@ -383,6 +384,8 @@ public class SignDto extends BaseDto {
 	//协审项目信息
 	private List<AssistPlanSignDto> planSignDtoList;
 
+	//抽取专家
+	private List<ExpertSelectedDto> expertSelectedDtoList;
 
 	public FileRecordDto getFileRecordDto() {
 		return fileRecordDto;
@@ -1395,4 +1398,14 @@ public class SignDto extends BaseDto {
 	public void setAssociateSign(SignDto associateSign) {
 		this.associateSign = associateSign;
 	}
+
+	public List<ExpertSelectedDto> getExpertSelectedDtoList() {
+		return expertSelectedDtoList;
+	}
+
+	public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
+		this.expertSelectedDtoList = expertSelectedDtoList;
+	}
+	
+	
 }

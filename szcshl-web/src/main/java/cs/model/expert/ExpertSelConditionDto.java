@@ -1,6 +1,9 @@
 package cs.model.expert;
 
+import cs.domain.expert.ExpertReview;
 import cs.domain.project.WorkProgram;
+
+import java.util.List;
 
 /**
  * Description: 专家抽取条件 页面数据模型
@@ -19,10 +22,12 @@ public class ExpertSelConditionDto {
     private WorkProgram workProgram;
     private String signId;
     private Integer sort;
-
+    private String selectType;
+    private List<ExpertSelectedDto> expertSelectedDtoList;
+    private ExpertReviewDto expertReviewDto;
     public ExpertSelConditionDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -31,6 +36,7 @@ public class ExpertSelConditionDto {
 
         this.id = id;
     }
+
     public String getMaJorBig() {
 
         return maJorBig;
@@ -40,8 +46,8 @@ public class ExpertSelConditionDto {
 
         this.maJorBig = maJorBig;
     }
-    public String getMaJorSmall()
-    {
+
+    public String getMaJorSmall() {
         return maJorSmall;
     }
 
@@ -49,8 +55,8 @@ public class ExpertSelConditionDto {
 
         this.maJorSmall = maJorSmall;
     }
-    public String getExpeRttype()
-    {
+
+    public String getExpeRttype() {
         return expeRttype;
     }
 
@@ -58,6 +64,7 @@ public class ExpertSelConditionDto {
 
         this.expeRttype = expeRttype;
     }
+
     public Integer getOfficialNum() {
 
         return officialNum;
@@ -67,6 +74,7 @@ public class ExpertSelConditionDto {
 
         this.officialNum = officialNum;
     }
+
     public Integer getAlternativeNum() {
 
         return alternativeNum;
@@ -76,6 +84,7 @@ public class ExpertSelConditionDto {
 
         this.alternativeNum = alternativeNum;
     }
+
     public WorkProgram getWorkProgram() {
         return workProgram;
     }
@@ -107,5 +116,29 @@ public class ExpertSelConditionDto {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
+        return expertSelectedDtoList;
+    }
+
+    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
+        this.expertSelectedDtoList = expertSelectedDtoList;
+    }
+
+    public String getSelectType() {
+        return selectType;
+    }
+
+    public void setSelectType(String selectType) {
+        this.selectType = selectType;
+    }
+
+    public ExpertReviewDto getExpertReviewDto() {
+        return expertReviewDto;
+    }
+
+    public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
+        this.expertReviewDto = expertReviewDto;
     }
 }

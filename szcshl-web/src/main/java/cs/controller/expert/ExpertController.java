@@ -47,7 +47,7 @@ public class ExpertController {
 		return pageModelDto;
 	}
 
-	@RequestMapping(name = "专家统计", path = "countReviewExpert", method = RequestMethod.POST)
+	@RequestMapping(name = "统计符合条件的专家", path = "countReviewExpert", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer countReviewExpert(@RequestBody ExpertSelConditionDto epSelCondition) {
 		return expertService.countExpert(epSelCondition);

@@ -1,19 +1,13 @@
 package cs.model.expert;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.domain.expert.ExpertSelCondition;
+import cs.model.BaseDto;
+import cs.model.project.WorkProgramDto;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.project.WorkProgram;
-import cs.model.BaseDto;
-import cs.model.project.WorkProgramDto;
 
 /**
  * Description: 专家评审 页面数据模型
@@ -25,29 +19,23 @@ public class ExpertReviewDto extends BaseDto {
     private String id;
     private Integer expretCount;
     private Double score;
-	@JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd")
     private Date reviewDate;
-    private BigDecimal reviewCost;
-    private BigDecimal reviewTaxes;
     private String reviewTitle;
     private String selectType;
-	@JSONField(format = "yyyy-MM-dd")
-	private Date payDate;
-	private String state;
-	
-	private String expertId;
-	private String workProgramId;
-	private String expertSelConditionId;
+    @JSONField(format = "yyyy-MM-dd")
+    private Date payDate;
+    private String state;
+    private BigDecimal totalCost;
 
-	private List<ExpertDto> expertDtoList;
-    private WorkProgramDto workProgramDto;
-	private ExpertSelCondition epSelCondition;
-	private BigDecimal totalCost;
-	private String describes;
+    //工作方案【与工作方案一对多关系（合并评审）】
+    private List<WorkProgramDto> workProgramDtoList;
+    //抽取条件【与工作方案一对多关系（合并评审）】
+    private List<ExpertSelConditionDto> expertSelConditionDtoList;
 
     public ExpertReviewDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -55,6 +43,7 @@ public class ExpertReviewDto extends BaseDto {
     public void setId(String id) {
         this.id = id;
     }
+
     public Double getScore() {
         return score;
     }
@@ -62,129 +51,76 @@ public class ExpertReviewDto extends BaseDto {
     public void setScore(Double score) {
         this.score = score;
     }
+
     public Date getReviewDate() {
         return reviewDate;
+    }
+
+    public String getReviewTitle() {
+        return reviewTitle;
+    }
+
+    public void setReviewTitle(String reviewTitle) {
+        this.reviewTitle = reviewTitle;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public Integer getExpretCount() {
+        return expretCount;
+    }
+
+    public void setExpretCount(Integer expretCount) {
+        this.expretCount = expretCount;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getSelectType() {
+        return selectType;
+    }
+
+    public void setSelectType(String selectType) {
+        this.selectType = selectType;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 
     public void setReviewDate(Date reviewDate) {
         this.reviewDate = reviewDate;
     }
-    public BigDecimal getReviewCost() {
-        return reviewCost;
+
+    public List<WorkProgramDto> getWorkProgramDtoList() {
+        return workProgramDtoList;
     }
 
-    public void setReviewCost(BigDecimal reviewCost) {
-        this.reviewCost = reviewCost;
-    }
-    public BigDecimal getReviewTaxes() {
-        return reviewTaxes;
+    public void setWorkProgramDtoList(List<WorkProgramDto> workProgramDtoList) {
+        this.workProgramDtoList = workProgramDtoList;
     }
 
-    public void setReviewTaxes(BigDecimal reviewTaxes) {
-        this.reviewTaxes = reviewTaxes;
+    public List<ExpertSelConditionDto> getExpertSelConditionDtoList() {
+        return expertSelConditionDtoList;
     }
 
-	public WorkProgramDto getWorkProgramDto() {
-		return workProgramDto;
-	}
-
-	public void setWorkProgramDto(WorkProgramDto workProgramDto) {
-		this.workProgramDto = workProgramDto;
-	}
-
-	public String getReviewTitle() {
-		return reviewTitle;
-	}
-
-	public void setReviewTitle(String reviewTitle) {
-		this.reviewTitle = reviewTitle;
-	}
-
-	public Date getPayDate() {
-		return payDate;
-	}
-
-	public void setPayDate(Date payDate) {
-		this.payDate = payDate;
-	}
-
-	public Integer getExpretCount() {
-		return expretCount;
-	}
-
-	public void setExpretCount(Integer expretCount) {
-		this.expretCount = expretCount;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getSelectType() {
-		return selectType;
-	}
-
-	public void setSelectType(String selectType) {
-		this.selectType = selectType;
-	}
-
-	public String getExpertId() {
-		return expertId;
-	}
-   
-	public void setExpertId(String expertId) {
-		this.expertId = expertId;
-	}
-
-	public String getWorkProgramId() {
-		return workProgramId;
-	}
-
-	public void setWorkProgramId(String workProgramId) {
-		this.workProgramId = workProgramId;
-	}
-
-    public String getExpertSelConditionId() {
-        return expertSelConditionId;
-    }
-
-    public void setExpertSelConditionId(String expertSelConditionId) {
-        this.expertSelConditionId = expertSelConditionId;
-    }
-
-    public ExpertSelCondition getEpSelCondition() {
-        return epSelCondition;
-    }
-
-    public void setEpSelCondition(ExpertSelCondition epSelCondition) {
-        this.epSelCondition = epSelCondition;
-    }
-
-	public BigDecimal getTotalCost() {
-		return totalCost;
-	}
-
-	public void setTotalCost(BigDecimal totalCost) {
-		this.totalCost = totalCost;
-	}
-
-	public String getDescribes() {
-		return describes;
-	}
-
-	public void setDescribes(String describes) {
-		this.describes = describes;
-	}
-
-    public List<ExpertDto> getExpertDtoList() {
-        return expertDtoList;
-    }
-
-    public void setExpertDtoList(List<ExpertDto> expertDtoList) {
-        this.expertDtoList = expertDtoList;
+    public void setExpertSelConditionDtoList(List<ExpertSelConditionDto> expertSelConditionDtoList) {
+        this.expertSelConditionDtoList = expertSelConditionDtoList;
     }
 }

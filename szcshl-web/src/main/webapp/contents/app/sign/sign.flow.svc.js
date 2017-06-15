@@ -13,7 +13,7 @@
 			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
 			getChargeDispatch : getChargeDispatch,		//获取发文	（停用）
 			getChargeFilerecord : getChargeFilerecord,	//获取归档信息（停用）
-            endSignDetail:endSignDetail                 //已办结的签收信息（停用）
+            endSignDetail:endSignDetail,                 //已办结的签收信息（停用）
 		};
 		return service;		
 		

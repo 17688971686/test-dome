@@ -2,6 +2,7 @@ package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertSelected;
 import cs.model.BaseDto;
 
 import javax.persistence.ManyToMany;
@@ -50,7 +51,7 @@ public class ExpertDto extends BaseDto {
 
     private List<WorkExpeDto> work;
     private List<ProjectExpeDto> project;
-    private List<ExpertReviewDto> expertReviewDtoList;
+    private List<ExpertSelectedDto> expertSelectedDtoList;
 
     public String getIdCard() {
         return idCard;
@@ -316,11 +317,11 @@ public class ExpertDto extends BaseDto {
         this.photo = photo;
     }
 
-    public List<ExpertReviewDto> getExpertReviewDtoList() {
-        return expertReviewDtoList;
+    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
+        return expertSelectedDtoList;
     }
 
-    public void setExpertReviewDtoList(List<ExpertReviewDto> expertReviewDtoList) {
-        this.expertReviewDtoList = expertReviewDtoList;
+    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
+        this.expertSelectedDtoList = expertSelectedDtoList;
     }
 }

@@ -23,7 +23,7 @@ public interface ExpertSelConditionService {
 
 	ExpertSelConditionDto findById(String deptId);
 
-	void delete(String id, String workProId, boolean deleteEP);
+	void delete(String id, String reviewId, boolean deleteEP);
 
 	List<ExpertSelConditionDto> saveConditionList(ExpertSelConditionDto[] recordList) throws Exception;
 

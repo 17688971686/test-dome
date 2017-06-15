@@ -17,11 +17,9 @@
 			suspendFlow : suspendFlow, // 流程挂起
 			activeFlow : activeFlow, // 重启流程
 			deleteFlow : deleteFlow, // 流程终止
-			
-			markGrid : markGrid, // 评分列表
+
 			gotoExpertmark : gotoExpertmark, // 打开专家评分弹窗
 			saveMark : saveMark, // 保存专家评分
-			paymentGrid : paymentGrid, // 专家费用列表
 			savePayment : savePayment, // 保存专家费用
 			countTaxes : countTaxes, // 计算应纳税额
 			gotopayment : gotopayment,
@@ -398,137 +396,6 @@
 					});
 		}// E_终止流程
 
-		// begin#markGrid
-		function markGrid(vm) {
-			var signId = vm.model.signid;
-			var dataSource = common.kendoGridDataSource(rootPath+ "/expertReview/html/getSelectExpert/" + signId);
-			var dataBound = function() {
-				var rows = this.items();
-				$(rows).each(function(i) {
-							if (i == rows.length - 1) {
-								initBackNode(vm);
-							}
-							$(this).find(".row-number").html(i + 1);
-						});
-			}
-
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getExpertColumns(),
-				dataBound : dataBound,
-				resizable : true
-				// editable: "inline"
-			};
-		}// end fun grid
-
-		function getExpertColumns() {
-			var columns = [
-					/*
-					 * { template : function(item) { return kendo.format("<input
-					 * type='checkbox' relId='{0}' name='checkbox'
-					 * class='checkbox' />",item.expertID) }, filterable :
-					 * false, width : 40, title : "<input id='checkboxAll'
-					 * type='checkbox' class='checkbox' />" },
-					 */
-					{
-				field : "",
-				title : "序号",
-				width : 50,
-				template : "<span class='row-number'></span>"
-			}, {
-				field : "",
-				title : "姓名",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.name == null ? "" : item.name;
-				}
-			}, {
-				field : "",
-				title : "工作单位",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.comPany == null ? "" : item.comPany;
-				}
-			}, {
-				field : "",
-				title : "职位/职称",
-				width : 150,
-				filterable : true,
-				template : function(item) {
-					if (!item.job) {
-						item.job = "";
-					}
-					if (!item.post) {
-						item.post = "";
-					}
-					return item.job + "/" + item.post;
-				}
-			}, {
-				field : "",
-				title : "专业",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.majorStudy == null ? "" : item.majorStudy;
-				}
-			}, {
-				field : "",
-				title : "联系电话/办公电话",
-				width : 150,
-				filterable : true,
-				template : function(item) {
-
-					if (!item.phone) {
-						item.phone = "";
-					}
-					if (!item.userPhone) {
-						item.userPhone = "";
-					}
-					return item.userPhone + "/" + item.phone;
-				}
-			},
-
-			{
-				field : "",
-				title : "备注",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.remark == null ? "" : item.remark;
-				}
-			}, {
-				field : "expertReviewDto.score",
-				title : "评分",
-				width : 200,
-				template : function(item) {
-					var str="";
-					for(var i=0;i<item.expertReviewDto.score;i++){
-						str+="<span style='color:gold;font-size:20px;' >☆</span>";
-					}
-					
-					return str;
-				}
-			}, {
-				field : "expertReviewDto.describes",
-				title : "评级描述",
-				width : 200
-			}, {
-				field : "",
-				title : "操作",
-				width : 100,
-				template : function(item) {
-
-					return common.format($('#columnBtns').html(),"vm.editSelectExpert('" + item.expertID + "','"+item.expertReviewDto.score+"')",item.expertID,item.expertReviewDto.score);
-				}
-			}
-			];
-			return columns;
-		}
 
 		// S_gotoExpertmark
 		function gotoExpertmark(vm) {
@@ -656,36 +523,9 @@
 			return columns;
 		}// E_getpaymentColumns
 
-		// begin#remarkGrid
-		function paymentGrid(vm) {
-			var signId = vm.model.signid;
-			var dataSource = common.kendoGridDataSource(rootPath
-					+ "/expertReview/html/getSelectExpert/" + signId);
-			var dataBound = function() {
-				var rows = this.items();
-				$(rows).each(function(i) {
-							if (i == rows.length - 1) {
-								initBackNode(vm);
-							}
-							$(this).find(".row-number").html(i + 1);
-						});
-			}
-
-			// End:column
-			vm.paymentgrid = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getpaymentColumns(),
-				dataBound : dataBound,
-				resizable : true
-			};
-
-		}// end fun grid
-
 		// S_savePayment
 		function savePayment(vm) {
-			common.initJqValidation($('#payform'));
+			common.initJqValidation($('#payform'));getSelectExpert
 			var isValid = $('#payform').valid();
 			if (isValid) {
 				if (!validateNum(vm)) {

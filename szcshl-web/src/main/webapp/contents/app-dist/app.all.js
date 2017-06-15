@@ -3234,6 +3234,118 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('demoCtrl', demo);
+
+    demo.$inject = ['$location', 'demoSvc'];
+
+    function demo($location, demoSvc) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '';
+
+        vm.showDialog = function () {
+
+            $('.myDialog').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+
+        // function datetimePicker() {
+            // $("#datepicker").kendoDatePicker();
+            // $("#datetiempicker").kendoDateTimePicker();
+        // }
+
+        function upload() {
+            $("#files").kendoUpload({
+                async: {
+                    saveUrl: rootPath + "/demo/save",
+                    removeUrl: rootPath + "/demo/remove",
+                    autoUpload: true
+                }
+            });
+        }
+
+
+        activate();
+        function activate() {
+            // datetimePicker();
+            upload();
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('demoSvc', demo);
+
+	demo.$inject = [ '$http' ];
+
+	function demo($http) {
+		var url_account_password = "/account/password";
+		
+		var service = {			
+			upload : upload
+		};
+
+		return service;
+
+		// begin#updatedemo
+		function upload(vm) {
+			common.initJqValidation();
+			var isValid = $('form').valid();
+			if (isValid) {
+				vm.isSubmit = true;
+				
+
+				var httpOptions = {
+					method : 'put',
+					url : url_account_password,
+					data : vm.model.password
+				}
+
+				var httpSuccess = function success(response) {
+
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.isSubmit = false;
+									$('.alertDialog').modal('hide');
+								}
+							})
+						}
+
+					})
+				}
+
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+
+			} else {
+				// common.alert({
+				// vm:vm,
+				// msg:"您填写的信息不正确,请核对后提交!"
+				// })
+			}
+
+		}
+
+	}
+})();
+(function () {
+    'use strict';
+
     angular
         .module('app')
         .controller('companyCtrl', company);
@@ -3631,118 +3743,6 @@
 	
 	
 	
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('demoCtrl', demo);
-
-    demo.$inject = ['$location', 'demoSvc'];
-
-    function demo($location, demoSvc) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '';
-
-        vm.showDialog = function () {
-
-            $('.myDialog').modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-        }
-
-        // function datetimePicker() {
-            // $("#datepicker").kendoDatePicker();
-            // $("#datetiempicker").kendoDateTimePicker();
-        // }
-
-        function upload() {
-            $("#files").kendoUpload({
-                async: {
-                    saveUrl: rootPath + "/demo/save",
-                    removeUrl: rootPath + "/demo/remove",
-                    autoUpload: true
-                }
-            });
-        }
-
-
-        activate();
-        function activate() {
-            // datetimePicker();
-            upload();
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('demoSvc', demo);
-
-	demo.$inject = [ '$http' ];
-
-	function demo($http) {
-		var url_account_password = "/account/password";
-		
-		var service = {			
-			upload : upload
-		};
-
-		return service;
-
-		// begin#updatedemo
-		function upload(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid) {
-				vm.isSubmit = true;
-				
-
-				var httpOptions = {
-					method : 'put',
-					url : url_account_password,
-					data : vm.model.password
-				}
-
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-								}
-							})
-						}
-
-					})
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-
-			} else {
-				// common.alert({
-				// vm:vm,
-				// msg:"您填写的信息不正确,请核对后提交!"
-				// })
-			}
-
-		}
-
-	}
 })();
 (function () {
     'use strict';
@@ -7236,20 +7236,17 @@
     function expertReview($location, expertReviewSvc,expertConditionSvc,$state) {
         var vm = this;
         vm.title = '选择专家';
-        vm.isAutoSelectExpert = true;       //专家是否已经抽取
-        vm.selExpertConfirm = false;        //抽取的专家是否已经确认
-        vm.conditionIndex = 1;              //条件号
-        vm.conditions = new Array();        //条件对象
-        vm.autoExpertMap = {};              //随机抽取专家
-        vm.expertReview = {};
-        vm.workProgram = {};
-        vm.expertReview.workProgramId = $state.params.workProgramId;		//这个是收文ID
+        vm.isAutoSelectExpert = false;       //专家是否已经抽取
+        vm.selExpertConfirm = false;         //抽取的专家是否已经确认
+        vm.conditionIndex = 1;                //条件号
+        vm.conditions = new Array();          //条件列表
+        vm.expertReview = {};                 //评审方案对象
+        vm.workProgramId = $state.params.workProgramId;
         
         activate();
         function activate() {
-            expertConditionSvc.initConditionAndWP(vm);
+            expertReviewSvc.initReview(vm);
         	expertReviewSvc.initExpertGrid(vm);
-            expertReviewSvc.initSelect(vm);
         }
 
         //弹出自选专家框
@@ -7306,9 +7303,16 @@
             expertReviewSvc.saveOutExpert(vm);
         }
 
-        //计算符合条件的专家，并缓存数据
+        //计算符合条件的专家
         vm.countMatchExperts = function(sortIndex){
-            expertReviewSvc.countMatchExperts(vm,sortIndex);
+            if(vm.expertReview.id){
+                expertReviewSvc.countMatchExperts(vm,sortIndex);
+            }else{
+                common.alert({
+                    vm:vm,
+                    msg:"请保存整体抽取方案再计算"
+                });
+            }
         }
 
         vm.checkIntegerValue = function(checkValue,idStr,idSort){
@@ -7332,7 +7336,10 @@
             }else{
                 vm.condition = {};
                 vm.condition.sort = vm.conditionIndex;
-                vm.condition.workProgramId = vm.expertReview.workProgramId;
+                if(vm.expertReview.id){
+                    vm.condition.expertReviewDto = {};
+                    vm.condition.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
+                }
                 vm.conditions.push(vm.condition);
                 vm.conditionIndex++;
             }
@@ -7375,6 +7382,57 @@
             }
         }
 
+        //检查是否为正整数
+        function isUnsignedInteger(value){
+            if((/^(\+|-)?\d+$/.test(value)) && value>0 ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        /******************************  以下是专家抽取方法 ***********************************/
+        //封装专家抽取条件信息
+        function buildCondition(checkId){
+            if(vm.conditions.length > 0){
+                var validateResult = true;
+                vm.conditions.forEach(function (t, number) {
+                    if(checkId){
+                        if(angular.isUndefined(t.id) || t.id == ""){
+                            validateResult = false;
+                        }
+                    }
+                    if(vm.expertReview.id){
+                        t.expertReviewDto = {};
+                        t.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
+                    }
+                    t.workProgramId = vm.expertReview.workProgramId;
+                    t.maJorBig = $("#maJorBig"+t.sort).val();
+                    t.maJorSmall = $("#maJorSmall"+t.sort).val();
+                    t.expeRttype = $("#expeRttype"+t.sort).val();
+                    if($("#officialNum"+t.sort).val() && isUnsignedInteger($("#officialNum"+t.sort).val())){
+                        t.officialNum = $("#officialNum"+t.sort).val();
+                    }else{
+                        $("#errorsOfficialNum"+t.sort).html("必填，且为数字");
+                        validateResult = false;
+                    }
+                    if($("#alternativeNum"+t.sort).val() && isUnsignedInteger($("#alternativeNum"+t.sort).val())){
+                        t.alternativeNum = $("#alternativeNum"+t.sort).val();
+                    }else{
+                        $("#errorsAlternativeNum"+t.sort).html("必填，且为数字");
+                        validateResult = false;
+                    }
+                    if(validateResult){
+                        $("#errorsOfficialNum"+t.sort).html("");
+                        $("#errorsAlternativeNum"+t.sort).html("");
+                    }
+                });
+                return validateResult;
+            }else{
+                return false;
+            }
+        }
+
         //保存专家抽取条件
         vm.saveCondition = function(){
             if(vm.isAutoSelectExpert){
@@ -7383,30 +7441,48 @@
                     msg : "当前项目已经进行整体专家方案的抽取，不能再修改方案！"
                 })
             }else{
-                expertConditionSvc.saveCondition(vm);
+                if(buildCondition(false)){
+                    expertConditionSvc.saveCondition(vm);
+                }else{
+                    common.alert({
+                        vm: vm,
+                        msg: "请先设置好条件再保存！",
+                        closeDialog: true
+                    })
+                }
             }
         }
 
-        //显示随机抽取页面
-        vm.showAutoExpertWin = function(){
-            var pass = true;
-            //遍历抽取条件，如果有未保存的，提示先保存
-            vm.conditions.forEach(function (t, number) {
-                if(angular.isUndefined(t.id) || t.id == ""){
-                    pass = false;
+        //开始随机抽取
+        vm.startAutoExpertWin = function(){
+            if(buildCondition(true)){
+                if(vm.isAutoSelectExpert){
+                    common.alert({
+                        vm : vm,
+                        msg : "该方案已经进行整体专家方案的抽取，不能在继续抽取！"
+                    })
+                }else{
+                    expertReviewSvc.queryAutoExpert(vm);
                 }
-            });
-            if(pass){
+            }else {
                 common.alert({
-                    vm : vm,
-                    msg : "功能正在开发中！"
-                })
-            }else{
-                common.alert({
-                    vm : vm,
-                    msg : "请先保存编辑的抽取方案！"
+                    vm: vm,
+                    msg: "请先保存编辑的抽取方案！"
                 })
             }
+        }
+
+        //显示随机抽取结果
+        vm.showAutoExpertWin = function(){
+            $("#aotuExpertDiv").kendoWindow({
+                width : "800px",
+                height : "600px",
+                title : "专家抽取",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
         }
 
         //再次抽取专家
@@ -7415,6 +7491,62 @@
                 vm : vm,
                 msg : "功能待开发！"
             })
+        }
+
+        //确认已抽取的专家
+        vm.affirmAutoExpert = function(){
+            var updteIdArr = new Array();
+            vm.autoSelExperts.forEach(function (t, number) {
+                updteIdArr.push(t.id);
+            });
+            expertReviewSvc.affirmAutoExpert(vm,updteIdArr.join(","))
+        }
+
+        //确定实际参加会议的专家
+        vm.affirmJoinExpert = function(){
+            $("#confirmJoinExpert").kendoWindow({
+                width : "960px",
+                height : "600px",
+                title : "参加评审会专家确认",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+
+        //未参加改为参加
+        vm.updateToJoin = function(){
+            var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
+            if (isCheck.length < 1) {
+                common.alert({
+                    vm : vm,
+                    msg : "请选择操作对象"
+                })
+            }else{
+                var ids=[];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState(vm,ids.join(','),'9');
+            }
+        }
+
+        //参加改为未参加
+        vm.updateToNotJoin = function(){
+            var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
+            if (isCheck.length < 1) {
+                common.alert({
+                    vm : vm,
+                    msg : "请选择操作对象"
+                })
+            }else{
+                var ids=[];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState(vm,ids.join(','),'0');
+            }
         }
 
         //确认已选的专家
@@ -7446,98 +7578,70 @@
 
     function expertReview($http) {
         var url_expertReview = rootPath + "/expertReview", url_back = '#/expertReviewList';
-        var service = {      
-        	initExpertGrid:initExpertGrid,	    //初始化表格
-            initSelect : initSelect,		    //初始化专家选择页面
-            initSelfExpert : initSelfExpert,	//初始化自选专家页面
-            saveSelfExpert : saveSelfExpert,		//保存自选专家
-            delertExpert : delertExpert,	        //删除已选专家
-            refleshExpert : refleshExpert,	        //刷新已选专家信息
-            updateExpertState : updateExpertState,	//更改专家状态
-            showOutExpertGrid : showOutExpertGrid,  //境外专家选择框
-            saveOutExpert : saveOutExpert,           //保存选择的境外专家
-            deleteAutoSelExpert : deleteAutoSelExpert,	//删除随机抽取的专家
-            countMatchExperts : countMatchExperts,      //计算符合条件的专家
-            getReviewList :  getReviewList              //查询专家评分
+        var service = {
+            initExpertGrid: initExpertGrid,	            //初始化待抽取专家列表
+            initSelfExpert: initSelfExpert,	            //初始化自选专家页面
+            saveSelfExpert: saveSelfExpert,		        //保存自选专家
+            delertExpert: delertExpert,	                //删除已选专家
+            refleshExpert: refleshExpert,	            //刷新已选专家信息
+            updateExpertState: updateExpertState,	    //更改专家状态
+            showOutExpertGrid: showOutExpertGrid,       //境外专家选择框
+            saveOutExpert: saveOutExpert,               //保存选择的境外专家
+            deleteAutoSelExpert: deleteAutoSelExpert,	//删除随机抽取的专家
+            countMatchExperts: countMatchExperts,       //计算符合条件的专家
+            getReviewList: getReviewList,               //查询专家评分
+
+            //以下为新方法
+            initReview: initReview,                      //初始化评审方案信息
+            queryAutoExpert : queryAutoExpert,           //查询符合抽取条件的专家
+            validateAutoExpert : validateAutoExpert,     //验证查询的专家是否符合条件
+            affirmAutoExpert : affirmAutoExpert,	     //确认已经抽取的专家
+            updateJoinState : updateJoinState,           //更改是否参加状态
         };
         return service;
-                
-        function getMinColumns(){
-			var columns = [
-				{
-					template : function(item) {
-						return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.expertID)
-					},
-					filterable : false,
-					width : 25,
-					title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-				},
-				{
-					field : "name",
-					title : "姓名",
-					width : 100,
-					filterable : false
-				},
-				{
-					field : "degRee",
-					title : "学位",
-					width : 100,
-					filterable : false
-				},
-				{
-					field : "sex",
-					title : "性别",
-					width : 50,
-					filterable : true
-				},
-				{
-					field : "comPany",
-					title : "工作单位",
-					width : 100,
-					filterable : false
-				},
-				{
-					field : "degRee",
-					title : "职务",
-					width : 100,
-					filterable : false
-				},{
-					field : "expeRttype",
-					title : "专家类别",
-					width : 100,
-					filterable : false
-				}
-			];			
-			return columns;
-		}
-        
-        //begin initSelect
-        function initSelect(vm){
-        	var httpOptions = {
+
+        //S_initReview
+        function initReview(vm) {
+            vm.iscommit = true;
+            var httpOptions = {
                 method: 'get',
                 url: rootPath + "/expertReview/html/initByWorkProgramId",
-                params:{workProgramId:vm.expertReview.workProgramId}
+                params: {workProgramId: vm.workProgramId}
             };
-            var httpSuccess = function success(response) {           	
-            	vm.selfExperts = [],vm.selectExperts = [],vm.selectIds=[],vm.autoExperts = [],vm.outsideExperts = [];
-            	if(response.data && response.data.length > 0){             		
-            		for(var i=0,l=response.data.length;i<l;i++){
-            			vm.selectIds.push(response.data[i].expertDto.expertID);
-            			vm.selectExperts.push(response.data[i].expertDto);
-            			if(response.data[i].selectType == "1"){
-                            vm.autoExperts.push(response.data[i].expertDto);
-                        }else if(response.data[i].selectType == "2"){
-            				vm.selfExperts.push(response.data[i].expertDto);
-            			}else if(response.data[i].selectType == "3"){
-                            vm.outsideExperts.push(response.data[i].expertDto);
+            var httpSuccess = function success(response) {
+                console.log(response);
+                vm.iscommit = false;
+                vm.expertReview = response.data;
+                //专家抽取条件
+                if(vm.expertReview.expertSelConditionDtoList && vm.expertReview.expertSelConditionDtoList.length > 0 ){
+                    vm.conditionIndex = vm.expertReview.expertSelConditionDtoList.length+1;   //下标值
+                    vm.conditions = vm.expertReview.expertSelConditionDtoList;
+
+                    vm.selfExperts = [],vm.selectExperts = [],vm.selectIds=[],vm.autoExperts = [],vm.outsideExperts = [];
+                    //获取已经抽取的专家
+                    vm.conditions.forEach(function(cd,index){
+                        if(cd.expertSelectedDtoList && cd.expertSelectedDtoList.length > 0){
+                            cd.expertSelectedDtoList.forEach(function(sep,number){
+                                vm.selectIds.push(sep.expertDto.expertID);
+                                vm.selectExperts.push(sep.expertDto);
+
+                                if(cd.selectType == '1'){   //抽取专家
+                                    vm.autoExperts.push(sep.expertDto);
+                                }else if(cd.selectType == '2'){ //自选专家
+                                    vm.selfExperts.push(sep.expertDto);
+
+                                }else if(cd.selectType == '3'){ //境外专家
+                                    vm.outsideExperts.push(sep.expertDto);
+                                }
+                            });
                         }
-            		}
-            	} 
-            	if(vm.selectIds.length > 0){
-            		vm.excludeIds = vm.selectIds.join(',');                
-            	}else{
-            		vm.excludeIds = '';       
-            	}
+                    });
+                    if(vm.selectIds.length > 0){
+                        vm.excludeIds = vm.selectIds.join(',');
+                    }else{
+                        vm.excludeIds = '';
+                    }
+                }
             };
             common.http({
                 vm: vm,
@@ -7545,243 +7649,303 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }//end initSelect
-        
-        function initExpertGrid(vm){
-        	var  dataBound = function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
+        }//E_initReview
+
+
+        function getMinColumns() {
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.expertID)
+                    },
+                    filterable: false,
+                    width: 25,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "name",
+                    title: "姓名",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "degRee",
+                    title: "学位",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "sex",
+                    title: "性别",
+                    width: 50,
+                    filterable: true
+                },
+                {
+                    field: "comPany",
+                    title: "工作单位",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "degRee",
+                    title: "职务",
+                    width: 100,
+                    filterable: false
+                }, {
+                    field: "expeRttype",
+                    title: "专家类别",
+                    width: 100,
+                    filterable: false
+                }
+            ];
+            return columns;
+        }
+
+        function initExpertGrid(vm) {
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
             }
 
             //S_专家自选
             var dataSource2 = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#selfSelExpertForm")),
-				schema : common.kendoGridConfig().schema({
-					id : "id",
-					fields : {
-						createdDate : {
-							type : "date"
-						}
-					}
-				}),
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,
-				pageSize : 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
-        	
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#selfSelExpertForm")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
             vm.selfExpertOptions = {
-				dataSource : common.gridDataSource(dataSource2),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getMinColumns(),
-				dataBound:dataBound,
-				resizable : true
-			};//E_专家自选
+                dataSource: common.gridDataSource(dataSource2),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: getMinColumns(),
+                dataBound: dataBound,
+                resizable: true
+            };//E_专家自选
 
 
             //S_市外专家
             var dataSource3 = new kendo.data.DataSource({
-                type : 'odata',
-                transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#outSelExpertForm"),{filter:"state eq '3'"}),
-                schema : common.kendoGridConfig().schema({
-                    id : "id",
-                    fields : {
-                        createdDate : {
-                            type : "date"
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#outSelExpertForm"), {filter: "state eq '3'"}),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
                         }
                     }
                 }),
-                serverPaging : true,
-                serverSorting : true,
-                serverFiltering : true,
-                pageSize : 10,
-                sort : {
-                    field : "createdDate",
-                    dir : "desc"
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
                 }
             });
 
             vm.outExpertOptions = {
-                dataSource : common.gridDataSource(dataSource3),
-                filterable : common.kendoGridConfig().filterable,
-                pageable : common.kendoGridConfig().pageable,
-                noRecords : common.kendoGridConfig().noRecordMessage,
-                columns : getMinColumns(),
-                dataBound:dataBound,
-                resizable : true
+                dataSource: common.gridDataSource(dataSource3),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: getMinColumns(),
+                dataBound: dataBound,
+                resizable: true
             };//E_市外专家
         }
-        
+
         //S initSelfExpert
-        function initSelfExpert(vm){    
-        	vm.selfExpertOptions.dataSource.read();
-        	$("#selfExpertDiv").kendoWindow({
-				width : "860px",
-				height : "500px",
-				title : "自选评审专家",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();       	      	
+        function initSelfExpert(vm) {
+            vm.selfExpertOptions.dataSource.read();
+            $("#selfExpertDiv").kendoWindow({
+                width: "860px",
+                height: "500px",
+                title: "自选评审专家",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
         }//E initSelfExpert
-        
+
         //S_saveSelfExpert
-        function saveSelfExpert(vm){
-        	var selectIds = common.getKendoCheckId('#selfExpertGrid');
-        	if (selectIds.length == 0) {
-        		$("#selfExpertError").html("请选择一条专家数据才能保存！");          	
-            }else if (selectIds.length > 1) {
-            	$("#selfExpertError").html("自选专家最多只能选择一个！");     
-            }  else {
-            	$("#selfExpertError").html("");            	
-            	window.parent.$("#selfExpertDiv").data("kendoWindow").close();           	
-            	vm.iscommit = true;
-				var httpOptions = {
-					method : 'post',
-					url : rootPath+"/expertReview/saveExpertReview",
-					params : {expertIds:selectIds[0].value,workProgramId:vm.expertReview.workProgramId,selectType:"2"}
-				}
-				var httpSuccess = function success(response) {	
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {		
-							vm.iscommit = false;
-							initSelect(vm);
-							common.alert({
-								vm:vm,
-								msg:"操作成功！",
-								closeDialog:true
-							})								
-						}						
-					});
-				}
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess,
-					onError: function(response){vm.iscommit = false;}
-				});			
-            }  
-        	
+        function saveSelfExpert(vm) {
+            var selectIds = common.getKendoCheckId('#selfExpertGrid');
+            if (selectIds.length == 0) {
+                $("#selfExpertError").html("请选择一条专家数据才能保存！");
+            } else if (selectIds.length > 1) {
+                $("#selfExpertError").html("自选专家最多只能选择一个！");
+            } else {
+                $("#selfExpertError").html("");
+                window.parent.$("#selfExpertDiv").data("kendoWindow").close();
+                vm.iscommit = true;
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/expertReview/saveExpertReview",
+                    params: {
+                        expertIds: selectIds[0].value,
+                        reviewId: vm.workProgramId,
+                        selectType: "2"
+                    }
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            vm.iscommit = false;
+                            initSelect(vm);
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功！",
+                                closeDialog: true
+                            })
+                        }
+                    });
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess,
+                    onError: function (response) {
+                        vm.iscommit = false;
+                    }
+                });
+            }
+
         }//E_saveSelfExpert
-        
-        
+
+
         //S_refleshExpert
-        function refleshExpert(vm,workProgramId,type){
-        	var httpOptions = {
-				method : 'get',
-				url : rootPath+"/expertReview/refleshExpert",
-				params : {workProgramId:workProgramId,selectType:type}
-			}
-			var httpSuccess = function success(response) {	
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function() {		
-						if(type == "2"){
-							vm.selfExperts = response.data;
-						}							
-					}						
-				});
-			}
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});			           
+        function refleshExpert(vm, workProgramId, type) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/expertReview/refleshExpert",
+                params: {workProgramId: workProgramId, selectType: type}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        if (type == "2") {
+                            vm.selfExperts = response.data;
+                        }
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }//E_refleshExpert
-        
+
         //S_updateExpertState
-        function updateExpertState(vm,expertIds,state){
-        	vm.iscommit = true;
-        	var httpOptions = {
-				method : 'post',
-				url : rootPath+"/expertReview/updateExpertState",
-				params : {workProgramId:vm.expertReview.workProgramId,expertIds:expertIds,state:state}
-			}
-			var httpSuccess = function success(response) {	
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function() {		
-						vm.iscommit = false;
-						common.alert({
-							vm:vm,
-							msg:"操作成功！",
-							closeDialog:true
-						})							
-					}						
-				});
-			}
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess,
-				onError: function(response){vm.iscommit = false;}
-			});	
+        function updateExpertState(vm, expertIds, state) {
+            vm.iscommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/updateExpertState",
+                params: {workProgramId: vm.workProgramId, expertIds: expertIds, state: state}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.iscommit = false;
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功！",
+                            closeDialog: true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    vm.iscommit = false;
+                }
+            });
         }//E_updateExpertState
-        
+
         //S_delertExpert
-        function delertExpert(vm,expertIds){
-        	vm.iscommit = true;
-        	var httpOptions = {
-				method : 'post',
-				url : rootPath+"/expertReview/deleteExpert",
-				params : {workProgramId:vm.expertReview.workProgramId,expertIds:expertIds}
-			}
-			var httpSuccess = function success(response) {	
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function() {		
-						vm.iscommit = false;
-						initSelect(vm);
-						common.alert({
-							vm:vm,
-							msg:"操作成功！",
-							closeDialog:true
-						})							
-					}						
-				});
-			}
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess,
-				onError: function(response){vm.iscommit = false;}
-			});	
+        function delertExpert(vm, expertIds) {
+            vm.iscommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/deleteExpert",
+                params: {workProgramId: vm.workProgramId, expertIds: expertIds}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.iscommit = false;
+                        initSelect(vm);
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功！",
+                            closeDialog: true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    vm.iscommit = false;
+                }
+            });
         }//E_delertExpert
 
         //S_showOutExpertGrid
         function showOutExpertGrid(vm) {
             vm.outExpertOptions.dataSource.read();
             $("#outExpertDiv").kendoWindow({
-                width : "860px",
-                height : "500px",
-                title : "自选新专家、市外、境外专家",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                width: "860px",
+                height: "500px",
+                title: "自选新专家、市外、境外专家",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
             }).data("kendoWindow").center().open();
         }//E_showOutExpertGrid
 
@@ -7795,11 +7959,11 @@
                 window.parent.$("#outExpertDiv").data("kendoWindow").close();
                 vm.iscommit = true;
                 var selExpertIds = "";
-                $.each( selectIds, function(i,obj){
-                    if(i==0){
+                $.each(selectIds, function (i, obj) {
+                    if (i == 0) {
                         selExpertIds += obj.value;
-                    }else{
-                        selExpertIds += ","+obj.value;
+                    } else {
+                        selExpertIds += "," + obj.value;
                     }
                 });
 
@@ -7808,7 +7972,7 @@
                     url: rootPath + "/expertReview/saveExpertReview",
                     params: {
                         expertIds: selExpertIds,
-                        workProgramId: vm.expertReview.workProgramId,
+                        workProgramId: vm.workProgramId,
                         selectType: "3"
                     }
                 }
@@ -7840,12 +8004,225 @@
         }//E_saveOutExpert
 
         //S_deleteAutoSelExpert
-        function  deleteAutoSelExpert(vm,conditionId) {
+        function deleteAutoSelExpert(vm, conditionId) {
+            vm.iscommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/deleteExpert",
+                params: {workProgramId: vm.workProgramId, expertSelConditionId: conditionId}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.iscommit = false;
+                        initSelect(vm);
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功！",
+                            closeDialog: true
+                        })
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    vm.iscommit = false;
+                }
+            });
+        }//E_deleteAutoSelExpert
+
+        //S_countMatchExperts
+        function countMatchExperts(vm, sortIndex) {
+            var data = {};
+            vm.conditions.forEach(function (t, number) {
+                if (t.sort == sortIndex) {
+                    data = t;
+                    data.maJorBig = $("#maJorBig" + t.sort).val();
+                    data.maJorSmall = $("#maJorSmall" + t.sort).val();
+                    data.expeRttype = $("#expeRttype" + t.sort).val();
+                }
+            });
+            data.expertReviewDto = {};
+            data.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expert/countReviewExpert",
+                data: data
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        $("#expertCount" + sortIndex).html(response.data);
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_countMatchExperts
+
+        //begin##getReviewList
+        function getReviewList(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/expertReview/html/getReviewList"
+            }
+            var httpSuccess = function success(response) {
+                vm.reviewList = response.data;
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    vm.iscommit = false;
+                }
+            });
+        }//end##getReviewList
+
+        //S_queryAutoExpert
+        function queryAutoExpert(vm){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expert/findReviewExpert",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(vm.conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm : vm,
+                    response : response,
+                    fn : function() {
+                        if(response.data){
+                            vm.autoExpertList = response.data;
+                            validateAutoExpert(vm);
+                        }
+                    }
+                });
+            }
+            common.http({
+                vm : vm,
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }//E_queryAutoExpert
+
+
+        //S_validateAutoExpert
+        function validateAutoExpert(vm){
+            //重置参数
+            var totalExpertCount = 0;
+            var officeExperts = new Array();
+            var nativeExperts = new Array();
+
+            vm.autoExpertList.forEach(function (e, number) {
+                if(e.state == '2' || e.state == 2){
+                    officeExperts.push(e);
+                }else{
+                    nativeExperts.push(e);
+                }
+            });
+            vm.conditions.forEach(function (c, number) {
+                totalExpertCount += parseInt(c.officialNum);
+            });
+            if(totalExpertCount > officeExperts.length){
+                common.alert({
+                    vm: vm,
+                    msg: "本次被抽取的正选专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！"
+                })
+            }else if(totalExpertCount > nativeExperts.length){
+                common.alert({
+                    vm: vm,
+                    msg: "本次被抽取的备选专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！"
+                })
+            }else{
+                vm.showAutoExpertWin();
+                //随机抽取
+                var timeCount = 0;
+                var selAutoExpertIds = "" ;
+                vm.t = $interval(function() {
+                    var selscope = Math.floor(Math.random()*(vm.autoExpertList.length));
+                    vm.showAutoExpertName = vm.autoExpertList[selscope].name;
+                    timeCount++;
+                    if(timeCount % 10 == 0){
+                        var selskey = Math.floor(Math.random()*(officeExperts.length));
+                        vm.autoSelExperts.push(officeExperts[selskey]);
+                        selAutoExpertIds += officeExperts[selskey].expertID+",";
+                        officeExperts.forEach(function (t, number) {
+                            if(officeExperts[selskey].expertID == t.expertID){
+                                officeExperts.splice(number,1);
+                            }
+                        });
+                        selskey = Math.floor(Math.random()*(nativeExperts.length));
+                        vm.autoSelExperts.push(nativeExperts[selskey]);
+                        selAutoExpertIds += nativeExperts[selskey].expertID+",";
+                        nativeExperts.forEach(function (t, number) {
+                            if(nativeExperts[selskey].expertID == t.expertID){
+                                nativeExperts.splice(number,1);
+                            }
+                        });
+                        totalExpertCount--;
+                        if(totalExpertCount == 0){
+                            $interval.cancel(vm.t);
+                            //保存抽取的专家
+                            vm.iscommit = true;
+                            var httpOptions = {
+                                method : 'post',
+                                url : rootPath+"/expertReview/saveExpertReview",
+                                params : {expertIds:selAutoExpertIds,workProgramId:vm.expertReview.workProgramId,selectType:"1"}
+                            }
+                            var httpSuccess = function success(response) {
+                                common.requestSuccess({
+                                    vm:vm,
+                                    response:response,
+                                    fn:function() {
+                                        vm.iscommit = false;
+                                        initSelect(vm);
+                                        common.alert({
+                                            vm:vm,
+                                            msg:"操作成功！",
+                                            closeDialog:true
+                                        })
+                                    }
+                                });
+                            }
+                            common.http({
+                                vm:vm,
+                                $http:$http,
+                                httpOptions:httpOptions,
+                                success:httpSuccess,
+                                onError: function(response){vm.iscommit = false;}
+                            });
+                        }
+                    }
+                }, 200);
+            }
+        }//E_validateAutoExpert
+
+        //S_updateJoinState
+        function updateJoinState(vm,ids,joinState){
             vm.iscommit = true;
             var httpOptions = {
                 method : 'post',
-                url : rootPath+"/expertReview/deleteExpert",
-                params : {workProgramId:vm.expertReview.workProgramId,expertSelConditionId:conditionId}
+                url : rootPath+"/expertReview/updateJoinState",
+                params : {ids:ids,joinState:joinState}
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({
@@ -7853,7 +8230,11 @@
                     response:response,
                     fn:function() {
                         vm.iscommit = false;
-                        initSelect(vm);
+                        vm.selectExperts.forEach(function(e, number){
+                            if(ids.indexOf(e.id) >= 0){
+                                e.isJoin = joinState;
+                            }
+                        });
                         common.alert({
                             vm:vm,
                             msg:"操作成功！",
@@ -7869,30 +8250,28 @@
                 success:httpSuccess,
                 onError: function(response){vm.iscommit = false;}
             });
-        }//E_deleteAutoSelExpert
+        }//E_updateJoinState
 
-        //S_countMatchExperts
-        function countMatchExperts(vm,sortIndex){
-            var data = {};
-            vm.conditions.forEach(function (t, number) {
-                if(t.sort == sortIndex){
-                    data = t;
-                    data.maJorBig = $("#maJorBig"+t.sort).val();
-                    data.maJorSmall = $("#maJorSmall"+t.sort).val();
-                    data.expeRttype = $("#expeRttype"+t.sort).val();
-                }
-            });
+        //S_affirmAutoExpert
+        function affirmAutoExpert(vm,expertIds){
+            vm.iscommit = true;
             var httpOptions = {
                 method : 'post',
-                url : rootPath+"/expert/countReviewExpert",
-                data : data
+                url : rootPath+"/expertReview/affirmAutoExpert",
+                params : {workProgramId:vm.expertReview.workProgramId,expertIds:expertIds}
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm:vm,
                     response:response,
                     fn:function() {
-                        $("#expertCount"+sortIndex).html(response.data);
+                        vm.iscommit = false;
+                        window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
+                        common.alert({
+                            vm:vm,
+                            msg:"操作成功！",
+                            closeDialog:true
+                        })
                     }
                 });
             }
@@ -7900,27 +8279,11 @@
                 vm:vm,
                 $http:$http,
                 httpOptions:httpOptions,
-                success:httpSuccess
+                success:httpSuccess,
+                onError: function(response){vm.iscommit = false;}
             });
-        }//E_countMatchExperts
-        //begin##getReviewList
-        function getReviewList(vm){
-        	 var httpOptions = {
-                     method : 'get',
-                     url : rootPath+"/expertReview/html/getReviewList"
-                 }
-        	 var httpSuccess = function success(response) {
-        		 vm.reviewList=response.data;
-             }
-        	 common.http({
-                 vm:vm,
-                 $http:$http,
-                 httpOptions:httpOptions,
-                 success:httpSuccess,
-                 onError: function(response){vm.iscommit = false;}
-             });
-        }//end##getReviewList
-        
+        }//E_affirmAutoExpert
+
     }
 })();
 (function () {
@@ -7932,51 +8295,35 @@
 
     function expertCondition($http) {
         var service = {
-            initConditionAndWP : initConditionAndWP,      //初始化选择条件和评审方案信息
         	saveCondition:saveCondition,	    //保存抽取条件
             deleteSelConditions:deleteSelConditions,    //删除抽取条件
             isUnsignedInteger : isUnsignedInteger,  //验证是否是正整数
         };
         return service;
 
-        //S_initCondition
-        function initConditionAndWP(vm){
+        //S_saveCondition
+		function saveCondition(vm) {
             var httpOptions = {
-                method : 'get',
-                url : rootPath + "/expertSelCondition/html/findByWorkProId",
-                params:{
-                    workProId : vm.expertReview.workProgramId
-                }
+                method : 'post',
+                url : rootPath + "/expertSelCondition/saveConditionList",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(vm.conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm : vm,
                     response : response,
                     fn : function() {
-                        if(response.data.conditionList){
-                            vm.conditions = response.data.conditionList;
-                            if(vm.conditions.length > 0){
-                                vm.conditions.forEach(function (t, number) {
-                                    if(t.sort > vm.conditionIndex){
-                                        vm.conditionIndex = t.sort;
-                                    }
-                                });
-                                vm.conditionIndex++;
-                            }
-                        }
-                        if(response.data.workProgram){
-                            vm.workProgram = response.data.workProgram;
-                            if(vm.workProgram.isSelete && vm.workProgram.isSelete == 9){
-                                vm.isAutoSelectExpert = true;
-                            }else{
-                                vm.isAutoSelectExpert = false;
-                            }
-                            if(vm.workProgram.isComfireResult && vm.workProgram.isComfireResult == 9){
-                                vm.isComfireResult = true;
-                            }else{
-                                vm.isComfireResult = false;
-                            }
-                        }
+                        vm.conditions = response.data;
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功！",
+                            closeDialog: true
+                        })
                     }
                 });
             }
@@ -7986,78 +8333,6 @@
                 httpOptions : httpOptions,
                 success : httpSuccess
             });
-        }//E_initCondition
-
-        //S_saveCondition
-		function saveCondition(vm) {
-			if(vm.conditions.length > 0){
-			    var validateResult = true;
-                vm.conditions.forEach(function (t, number) {
-                    t.workProgramId = vm.expertReview.workProgramId;
-                    t.maJorBig = $("#maJorBig"+t.sort).val();
-                    t.maJorSmall = $("#maJorSmall"+t.sort).val();
-                    t.expeRttype = $("#expeRttype"+t.sort).val();
-                    if($("#officialNum"+t.sort).val() && isUnsignedInteger($("#officialNum"+t.sort).val())){
-                        t.officialNum = $("#officialNum"+t.sort).val();
-                    }else{
-                        $("#errorsOfficialNum"+t.sort).html("必填，且为数字");
-                        validateResult = false;
-                    }
-                    if($("#alternativeNum"+t.sort).val() && isUnsignedInteger($("#alternativeNum"+t.sort).val())){
-                        t.alternativeNum = $("#alternativeNum"+t.sort).val();
-                    }else{
-                        $("#errorsAlternativeNum"+t.sort).html("必填，且为数字");
-                        validateResult = false;
-                    }
-                    if(validateResult){
-                        $("#errorsOfficialNum"+t.sort).html("");
-                        $("#errorsAlternativeNum"+t.sort).html("");
-                    }
-                });
-
-                //commit
-               if(validateResult){
-                   var httpOptions = {
-                       method : 'post',
-                       url : rootPath + "/expertSelCondition/saveConditionList",
-                       headers:{
-                           "contentType":"application/json;charset=utf-8"  //设置请求头信息
-                        },
-                       traditional: true,
-                       dataType : "json",
-                       data : angular.toJson(vm.conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-                   }
-                   var httpSuccess = function success(response) {
-                       common.requestSuccess({
-                           vm : vm,
-                           response : response,
-                           fn : function() {
-                               vm.conditions = response.data;
-                               vm.conditions.forEach(function (t, number) {
-                                    t.workProgramId = vm.expertReview.workProgramId;
-                               });
-                               common.alert({
-                                   vm: vm,
-                                   msg: "操作成功！",
-                                   closeDialog: true
-                               })
-                           }
-                       });
-                   }
-                   common.http({
-                       vm : vm,
-                       $http : $http,
-                       httpOptions : httpOptions,
-                       success : httpSuccess
-                   });
-               }
-            }else{
-                common.alert({
-                    vm: vm,
-                    msg: "请先设置条件再保存！",
-                    closeDialog: true
-                })
-            }
         }//E_saveCondition
 
         //检查是否为正整数
@@ -8077,7 +8352,7 @@
                 url : rootPath + "/expertSelCondition",
                 params:{
                     id : delIds,
-                    workProId : vm.expertReview.workProgramId,
+                    reviewId : vm.expertReview.id,
                     deleteEP : false
                 }
             }
@@ -8232,11 +8507,9 @@
 			suspendFlow : suspendFlow, // 流程挂起
 			activeFlow : activeFlow, // 重启流程
 			deleteFlow : deleteFlow, // 流程终止
-			
-			markGrid : markGrid, // 评分列表
+
 			gotoExpertmark : gotoExpertmark, // 打开专家评分弹窗
 			saveMark : saveMark, // 保存专家评分
-			paymentGrid : paymentGrid, // 专家费用列表
 			savePayment : savePayment, // 保存专家费用
 			countTaxes : countTaxes, // 计算应纳税额
 			gotopayment : gotopayment,
@@ -8613,137 +8886,6 @@
 					});
 		}// E_终止流程
 
-		// begin#markGrid
-		function markGrid(vm) {
-			var signId = vm.model.signid;
-			var dataSource = common.kendoGridDataSource(rootPath+ "/expertReview/html/getSelectExpert/" + signId);
-			var dataBound = function() {
-				var rows = this.items();
-				$(rows).each(function(i) {
-							if (i == rows.length - 1) {
-								initBackNode(vm);
-							}
-							$(this).find(".row-number").html(i + 1);
-						});
-			}
-
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getExpertColumns(),
-				dataBound : dataBound,
-				resizable : true
-				// editable: "inline"
-			};
-		}// end fun grid
-
-		function getExpertColumns() {
-			var columns = [
-					/*
-					 * { template : function(item) { return kendo.format("<input
-					 * type='checkbox' relId='{0}' name='checkbox'
-					 * class='checkbox' />",item.expertID) }, filterable :
-					 * false, width : 40, title : "<input id='checkboxAll'
-					 * type='checkbox' class='checkbox' />" },
-					 */
-					{
-				field : "",
-				title : "序号",
-				width : 50,
-				template : "<span class='row-number'></span>"
-			}, {
-				field : "",
-				title : "姓名",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.name == null ? "" : item.name;
-				}
-			}, {
-				field : "",
-				title : "工作单位",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.comPany == null ? "" : item.comPany;
-				}
-			}, {
-				field : "",
-				title : "职位/职称",
-				width : 150,
-				filterable : true,
-				template : function(item) {
-					if (!item.job) {
-						item.job = "";
-					}
-					if (!item.post) {
-						item.post = "";
-					}
-					return item.job + "/" + item.post;
-				}
-			}, {
-				field : "",
-				title : "专业",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.majorStudy == null ? "" : item.majorStudy;
-				}
-			}, {
-				field : "",
-				title : "联系电话/办公电话",
-				width : 150,
-				filterable : true,
-				template : function(item) {
-
-					if (!item.phone) {
-						item.phone = "";
-					}
-					if (!item.userPhone) {
-						item.userPhone = "";
-					}
-					return item.userPhone + "/" + item.phone;
-				}
-			},
-
-			{
-				field : "",
-				title : "备注",
-				width : 100,
-				filterable : true,
-				template : function(item) {
-					return item.remark == null ? "" : item.remark;
-				}
-			}, {
-				field : "expertReviewDto.score",
-				title : "评分",
-				width : 200,
-				template : function(item) {
-					var str="";
-					for(var i=0;i<item.expertReviewDto.score;i++){
-						str+="<span style='color:gold;font-size:20px;' >☆</span>";
-					}
-					
-					return str;
-				}
-			}, {
-				field : "expertReviewDto.describes",
-				title : "评级描述",
-				width : 200
-			}, {
-				field : "",
-				title : "操作",
-				width : 100,
-				template : function(item) {
-
-					return common.format($('#columnBtns').html(),"vm.editSelectExpert('" + item.expertID + "','"+item.expertReviewDto.score+"')",item.expertID,item.expertReviewDto.score);
-				}
-			}
-			];
-			return columns;
-		}
 
 		// S_gotoExpertmark
 		function gotoExpertmark(vm) {
@@ -8871,36 +9013,9 @@
 			return columns;
 		}// E_getpaymentColumns
 
-		// begin#remarkGrid
-		function paymentGrid(vm) {
-			var signId = vm.model.signid;
-			var dataSource = common.kendoGridDataSource(rootPath
-					+ "/expertReview/html/getSelectExpert/" + signId);
-			var dataBound = function() {
-				var rows = this.items();
-				$(rows).each(function(i) {
-							if (i == rows.length - 1) {
-								initBackNode(vm);
-							}
-							$(this).find(".row-number").html(i + 1);
-						});
-			}
-
-			// End:column
-			vm.paymentgrid = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getpaymentColumns(),
-				dataBound : dataBound,
-				resizable : true
-			};
-
-		}// end fun grid
-
 		// S_savePayment
 		function savePayment(vm) {
-			common.initJqValidation($('#payform'));
+			common.initJqValidation($('#payform'));getSelectExpert
 			var isValid = $('#payform').valid();
 			if (isValid) {
 				if (!validateNum(vm)) {
@@ -12563,7 +12678,7 @@
 			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
 			getChargeDispatch : getChargeDispatch,		//获取发文	（停用）
 			getChargeFilerecord : getChargeFilerecord,	//获取归档信息（停用）
-            endSignDetail:endSignDetail                 //已办结的签收信息（停用）
+            endSignDetail:endSignDetail,                 //已办结的签收信息（停用）
 		};
 		return service;		
 		
@@ -13076,9 +13191,8 @@
             signSvc.initFlowPageData(vm);
 
             // 初始化专家评分费用
-            flowSvc.markGrid(vm);
-            flowSvc.paymentGrid(vm);
-
+            //flowSvc.markGrid(vm);
+            //flowSvc.paymentGrid(vm);
         }
 
         // 编辑专家评分
@@ -13788,6 +13902,7 @@
 					response : response,
 					fn : function() {
 						vm.model = response.data;
+                        //工作方案
                         if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
                             vm.show_workprogram = true;
                             vm.model.workProgramDtoList.forEach(function(w,index){
@@ -13802,15 +13917,20 @@
 								}
 							});
                         }
+                        //发文
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;
                             vm.dispatchDoc = vm.model.dispatchDocDto;
                         }
+                        //归档
                         if(vm.model.fileRecordDto){
                             vm.show_filerecord = true;
                             vm.fileRecord = vm.model.fileRecordDto;
                         }
-
+                        //抽取专家
+						if(vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0){
+                            vm.show_expert = true;
+						}
                         //先加载完业务数据，再加载流程业务数据
 						if(vm.dealFlow){
                             flowSvc.getFlowInfo(vm);

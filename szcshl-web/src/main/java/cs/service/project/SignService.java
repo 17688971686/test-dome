@@ -3,6 +3,7 @@ package cs.service.project;
 import java.util.List;
 import java.util.Map;
 
+import cs.domain.project.Sign;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import cs.common.ResultMsg;
@@ -56,4 +57,5 @@ public interface SignService{
     void associate(String signId, String associateId);
 
 	List<SignDto> getAssociate(String signId);
+
 }

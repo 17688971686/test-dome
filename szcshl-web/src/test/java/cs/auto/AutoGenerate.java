@@ -5,6 +5,7 @@ import cs.auto.core.config.CRUDGanConfig;
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
 import cs.domain.expert.ExpertSelCondition;
+import cs.domain.expert.ExpertSelected;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistUnit;
@@ -23,7 +24,7 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(SysConfig.class, "系统参数");
+        CRUDGanConfig config = new CRUDGanConfig(ExpertSelected.class, "抽取专家");
         config.setAuthor("ldm");
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\SysConfig");
         config.setFileOverride(true);

@@ -25,9 +25,9 @@ public interface ExpertReviewService {
 
 	void delete(String id);
 
-	List<ExpertReviewDto> initByWorkProgramId(String workProgramId);
+	ExpertReviewDto initByWorkProgramId(String workProgramId);
 
-	void save(String workProgramId, String expertIds, String selectType);
+	void save(String reviewId, String expertIds, String selectType);
 
 	List<ExpertDto> refleshExpert(String workProgramId, String selectType);
 
@@ -37,11 +37,8 @@ public interface ExpertReviewService {
 	
 	Map<String,Object> getReviewList(String orgName,String year,String quarter);
 	
-	List<ExpertDto> getSelectExpert(String signId);
-	
 	 void expertMark(ExpertReviewDto expertReviewDto );
 	
 	void savePayment(ExpertReviewDto expertReviewDto)throws Exception;
-	
-	ExpertReviewDto getSelectExpertById(String expertId);
+
 }

@@ -41,9 +41,8 @@
             signSvc.initFlowPageData(vm);
 
             // 初始化专家评分费用
-            flowSvc.markGrid(vm);
-            flowSvc.paymentGrid(vm);
-
+            //flowSvc.markGrid(vm);
+            //flowSvc.paymentGrid(vm);
         }
 
         // 编辑专家评分

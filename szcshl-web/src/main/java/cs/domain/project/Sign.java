@@ -2,6 +2,7 @@ package cs.domain.project;
 
 
 import cs.domain.DomainBase;
+import cs.domain.expert.ExpertSelected;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
@@ -11,176 +12,176 @@ import java.util.List;
 
 /**
  * 设置为动态更新，只更新有修改的字段
- * @author ldm
  *
+ * @author ldm
  */
 @Entity
 @Table(name = "cs_sign")
-@DynamicUpdate(true)	
-public class Sign extends DomainBase{
+@DynamicUpdate(true)
+public class Sign extends DomainBase {
 
-	/**
-	 * 收文ID
-	 */
-	@Id
-	private String signid;
-	
-	//委内收文编号
-	@Column(columnDefinition="VARCHAR(30)")
-	private String filecode;
-	
-	//项目代码
-	@Column(columnDefinition="VARCHAR(20)")
-	private String projectcode;
-	
-	//评审阶段
-	@Column(columnDefinition="VARCHAR(64)")
-	private String reviewstage;
-	
-	//是否项目预签收
-	@Column(columnDefinition="VARCHAR(1)")
-	private String ispresign;
-	
-	//项目名称
-	@Column(columnDefinition="VARCHAR(200)")
-	private String projectname;
-	
-	//是否登记完毕
-	@Column(columnDefinition="VARCHAR(2)")
-	private String isregisteredcompleted;
-	
-	//主办处室ID
-	@Column(columnDefinition="VARCHAR(64)")
-	private String maindepetid;
-	
-	//主办事处名称
-	@Column(columnDefinition="VARCHAR(128)")
-	private String maindeptName;
+    /**
+     * 收文ID
+     */
+    @Id
+    private String signid;
 
-	//主办处室联系人ID
-	@Column(columnDefinition="VARCHAR(64)")
-	private String maindepetcontactuserid;
-	
-	//主办事处联系人
-	@Column(columnDefinition="VARCHAR(64)")
-	private String mainDeptUserName;
-	
-	//主办事处联系电话	
-	@Column(columnDefinition="VARCHAR(64)")
-	private String mainDeptContactPhone;
+    //委内收文编号
+    @Column(columnDefinition = "VARCHAR(30)")
+    private String filecode;
 
-	//协办处室ID
-	@Column(columnDefinition="VARCHAR(64)")
-	private String assistdeptid;
-	
-	//协办事处名称
-    @Column(columnDefinition="VARCHAR(64)")
-	private String assistdeptName;
-	
-	//协办处室联系人ID
-	@Column(columnDefinition="VARCHAR(64)")
-	private String assistdeptcontactuserid;
-	
-	//协办事处联系人
-	private String assistDeptUserName;
-	
-	//编制单位ID
-	@Column(columnDefinition="VARCHAR(64)")
-	private String designcompanyid;
-	
-	//编制单位名称
-	@Column(columnDefinition="VARCHAR(100)")
-	private String designcompanyName;
+    //项目代码
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String projectcode;
 
-	//建设单位ID
-	@Column(columnDefinition="VARCHAR(64)")
-	private String builtcompanyid;
-	
-	//建设单位名称
-	@Column(columnDefinition="VARCHAR(100)")
-	private String builtcompanyName;
-	
-	//缓急程度
-	@Column(columnDefinition="VARCHAR(16)")
-	private String urgencydegree;
-	
-	//年度计划类别
-	@Column(columnDefinition="VARCHAR(16)")
-	private String yearplantype;
-	
-	//秘密登记
-	@Column(columnDefinition="VARCHAR(16)")
-	private String secrectlevel;
-	
-	//综合部拟办意见
-	@Column(columnDefinition="VARCHAR(255)")
-	private String comprehensivehandlesug;
-	
-	@Column(columnDefinition="VARCHAR(100)")
-	private String comprehensiveName;//综合部拟办人名称
-	
-	@Column(columnDefinition="DATE")
-	private Date comprehensiveDate;//综合部拟办日期
-	
-	//中心领导审批意见
-	@Column(columnDefinition="VARCHAR(255)")
-	private String leaderhandlesug;
-	
-	@Column(columnDefinition="VARCHAR(100)")
-	private String leaderName;//中心领导名称
-	
-	@Column(columnDefinition="DATE")
-	private Date leaderDate;//中心领导审批日期
-	
-	//部长处理意见
-	@Column(columnDefinition="VARCHAR(255)")
-	private String ministerhandlesug;
-	
-	@Column(columnDefinition="VARCHAR(100)")
-	private String ministerName;//部长名称
-	
-	@Column(columnDefinition="DATE")
-	private Date ministerDate;//部长处理日期
-	
-	//送件人签名
-	@Column(columnDefinition="VARCHAR(16)")
-	private String sendusersign;
-	
-	//是否确认签收
-	@Column(columnDefinition="VARCHAR(2)")
-	private String issign;
-	
-	//是否有评审费用
-	@Column(columnDefinition="VARCHAR(2)")
-	private String ishasreviewcost;
-	
-	//项目签收时间
-	@Column(columnDefinition="DATE")
-	private Date signdate;
-	
-	//剩余工作日
-	@Column(columnDefinition="NUMBER")
-	private Float surplusdays;
-	
-	//预计发文时间
-	@Column(columnDefinition="DATE")
-	private Date expectdispatchdate;
-	
-	//送来时间
-	@Column(columnDefinition="DATE")
-	private Date receivedate;
-	
-	//发文后工作日
-	@Column(columnDefinition="NUMBER")
-	private Float daysafterdispatch;
-	
-	//评审天数
-	@Column(columnDefinition="NUMBER")
-	private Float reviewdays;
-	
-	//是否协审
-	@Column(columnDefinition="VARCHAR(2)")
-	private String isassistproc;
+    //评审阶段
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String reviewstage;
+
+    //是否项目预签收
+    @Column(columnDefinition = "VARCHAR(1)")
+    private String ispresign;
+
+    //项目名称
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String projectname;
+
+    //是否登记完毕
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isregisteredcompleted;
+
+    //主办处室ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String maindepetid;
+
+    //主办事处名称
+    @Column(columnDefinition = "VARCHAR(128)")
+    private String maindeptName;
+
+    //主办处室联系人ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String maindepetcontactuserid;
+
+    //主办事处联系人
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mainDeptUserName;
+
+    //主办事处联系电话
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mainDeptContactPhone;
+
+    //协办处室ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String assistdeptid;
+
+    //协办事处名称
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String assistdeptName;
+
+    //协办处室联系人ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String assistdeptcontactuserid;
+
+    //协办事处联系人
+    private String assistDeptUserName;
+
+    //编制单位ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String designcompanyid;
+
+    //编制单位名称
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String designcompanyName;
+
+    //建设单位ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String builtcompanyid;
+
+    //建设单位名称
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String builtcompanyName;
+
+    //缓急程度
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String urgencydegree;
+
+    //年度计划类别
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String yearplantype;
+
+    //秘密登记
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String secrectlevel;
+
+    //综合部拟办意见
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String comprehensivehandlesug;
+
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String comprehensiveName;//综合部拟办人名称
+
+    @Column(columnDefinition = "DATE")
+    private Date comprehensiveDate;//综合部拟办日期
+
+    //中心领导审批意见
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String leaderhandlesug;
+
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String leaderName;//中心领导名称
+
+    @Column(columnDefinition = "DATE")
+    private Date leaderDate;//中心领导审批日期
+
+    //部长处理意见
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String ministerhandlesug;
+
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String ministerName;//部长名称
+
+    @Column(columnDefinition = "DATE")
+    private Date ministerDate;//部长处理日期
+
+    //送件人签名
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String sendusersign;
+
+    //是否确认签收
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String issign;
+
+    //是否有评审费用
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ishasreviewcost;
+
+    //项目签收时间
+    @Column(columnDefinition = "DATE")
+    private Date signdate;
+
+    //剩余工作日
+    @Column(columnDefinition = "NUMBER")
+    private Float surplusdays;
+
+    //预计发文时间
+    @Column(columnDefinition = "DATE")
+    private Date expectdispatchdate;
+
+    //送来时间
+    @Column(columnDefinition = "DATE")
+    private Date receivedate;
+
+    //发文后工作日
+    @Column(columnDefinition = "NUMBER")
+    private Float daysafterdispatch;
+
+    //评审天数
+    @Column(columnDefinition = "NUMBER")
+    private Float reviewdays;
+
+    //是否协审
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isassistproc;
 
     //是否协审流程
     @Column(columnDefinition="VARCHAR(2)")
@@ -506,22 +507,6 @@ public class Sign extends DomainBase{
 			inverseJoinColumns = @JoinColumn(name = "associate_signid"))
 	private Sign associateSign;
 
-	public String getIschangeEstimate() {
-		return ischangeEstimate;
-	}
-
-	public void setIschangeEstimate(String ischangeEstimate) {
-		this.ischangeEstimate = ischangeEstimate;
-	}
-
-	public FileRecord getFileRecord() {
-		return fileRecord;
-	}
-
-	public void setFileRecord(FileRecord fileRecord) {
-		this.fileRecord = fileRecord;
-	}
-
 	public String getSignid() {
 		return signid;
 	}
@@ -586,12 +571,36 @@ public class Sign extends DomainBase{
 		this.maindepetid = maindepetid;
 	}
 
+	public String getMaindeptName() {
+		return maindeptName;
+	}
+
+	public void setMaindeptName(String maindeptName) {
+		this.maindeptName = maindeptName;
+	}
+
 	public String getMaindepetcontactuserid() {
 		return maindepetcontactuserid;
 	}
 
 	public void setMaindepetcontactuserid(String maindepetcontactuserid) {
 		this.maindepetcontactuserid = maindepetcontactuserid;
+	}
+
+	public String getMainDeptUserName() {
+		return mainDeptUserName;
+	}
+
+	public void setMainDeptUserName(String mainDeptUserName) {
+		this.mainDeptUserName = mainDeptUserName;
+	}
+
+	public String getMainDeptContactPhone() {
+		return mainDeptContactPhone;
+	}
+
+	public void setMainDeptContactPhone(String mainDeptContactPhone) {
+		this.mainDeptContactPhone = mainDeptContactPhone;
 	}
 
 	public String getAssistdeptid() {
@@ -602,12 +611,28 @@ public class Sign extends DomainBase{
 		this.assistdeptid = assistdeptid;
 	}
 
+	public String getAssistdeptName() {
+		return assistdeptName;
+	}
+
+	public void setAssistdeptName(String assistdeptName) {
+		this.assistdeptName = assistdeptName;
+	}
+
 	public String getAssistdeptcontactuserid() {
 		return assistdeptcontactuserid;
 	}
 
 	public void setAssistdeptcontactuserid(String assistdeptcontactuserid) {
 		this.assistdeptcontactuserid = assistdeptcontactuserid;
+	}
+
+	public String getAssistDeptUserName() {
+		return assistDeptUserName;
+	}
+
+	public void setAssistDeptUserName(String assistDeptUserName) {
+		this.assistDeptUserName = assistDeptUserName;
 	}
 
 	public String getDesigncompanyid() {
@@ -618,12 +643,28 @@ public class Sign extends DomainBase{
 		this.designcompanyid = designcompanyid;
 	}
 
+	public String getDesigncompanyName() {
+		return designcompanyName;
+	}
+
+	public void setDesigncompanyName(String designcompanyName) {
+		this.designcompanyName = designcompanyName;
+	}
+
 	public String getBuiltcompanyid() {
 		return builtcompanyid;
 	}
 
 	public void setBuiltcompanyid(String builtcompanyid) {
 		this.builtcompanyid = builtcompanyid;
+	}
+
+	public String getBuiltcompanyName() {
+		return builtcompanyName;
+	}
+
+	public void setBuiltcompanyName(String builtcompanyName) {
+		this.builtcompanyName = builtcompanyName;
 	}
 
 	public String getUrgencydegree() {
@@ -658,6 +699,22 @@ public class Sign extends DomainBase{
 		this.comprehensivehandlesug = comprehensivehandlesug;
 	}
 
+	public String getComprehensiveName() {
+		return comprehensiveName;
+	}
+
+	public void setComprehensiveName(String comprehensiveName) {
+		this.comprehensiveName = comprehensiveName;
+	}
+
+	public Date getComprehensiveDate() {
+		return comprehensiveDate;
+	}
+
+	public void setComprehensiveDate(Date comprehensiveDate) {
+		this.comprehensiveDate = comprehensiveDate;
+	}
+
 	public String getLeaderhandlesug() {
 		return leaderhandlesug;
 	}
@@ -666,12 +723,44 @@ public class Sign extends DomainBase{
 		this.leaderhandlesug = leaderhandlesug;
 	}
 
+	public String getLeaderName() {
+		return leaderName;
+	}
+
+	public void setLeaderName(String leaderName) {
+		this.leaderName = leaderName;
+	}
+
+	public Date getLeaderDate() {
+		return leaderDate;
+	}
+
+	public void setLeaderDate(Date leaderDate) {
+		this.leaderDate = leaderDate;
+	}
+
 	public String getMinisterhandlesug() {
 		return ministerhandlesug;
 	}
 
 	public void setMinisterhandlesug(String ministerhandlesug) {
 		this.ministerhandlesug = ministerhandlesug;
+	}
+
+	public String getMinisterName() {
+		return ministerName;
+	}
+
+	public void setMinisterName(String ministerName) {
+		this.ministerName = ministerName;
+	}
+
+	public Date getMinisterDate() {
+		return ministerDate;
+	}
+
+	public void setMinisterDate(Date ministerDate) {
+		this.ministerDate = ministerDate;
 	}
 
 	public String getSendusersign() {
@@ -754,6 +843,14 @@ public class Sign extends DomainBase{
 		this.isassistproc = isassistproc;
 	}
 
+	public String getIsassistflow() {
+		return isassistflow;
+	}
+
+	public void setIsassistflow(String isassistflow) {
+		this.isassistflow = isassistflow;
+	}
+
 	public String getFilenum() {
 		return filenum;
 	}
@@ -800,6 +897,30 @@ public class Sign extends DomainBase{
 
 	public void setPasedescription(String pasedescription) {
 		this.pasedescription = pasedescription;
+	}
+
+	public String getIschangeEstimate() {
+		return ischangeEstimate;
+	}
+
+	public void setIschangeEstimate(String ischangeEstimate) {
+		this.ischangeEstimate = ischangeEstimate;
+	}
+
+	public String getIsreviewCompleted() {
+		return isreviewCompleted;
+	}
+
+	public void setIsreviewCompleted(String isreviewCompleted) {
+		this.isreviewCompleted = isreviewCompleted;
+	}
+
+	public String getIsreviewACompleted() {
+		return isreviewACompleted;
+	}
+
+	public void setIsreviewACompleted(String isreviewACompleted) {
+		this.isreviewACompleted = isreviewACompleted;
 	}
 
 	public Integer getSugProDealCount() {
@@ -1234,22 +1355,6 @@ public class Sign extends DomainBase{
 		this.energyCopy = energyCopy;
 	}
 
-	public String getIsreviewCompleted() {
-		return isreviewCompleted;
-	}
-
-	public void setIsreviewCompleted(String isreviewCompleted) {
-		this.isreviewCompleted = isreviewCompleted;
-	}
-
-	public String getIsreviewACompleted() {
-		return isreviewACompleted;
-	}
-
-	public void setIsreviewACompleted(String isreviewACompleted) {
-		this.isreviewACompleted = isreviewACompleted;
-	}
-
 	public String getFolwState() {
 		return folwState;
 	}
@@ -1257,14 +1362,22 @@ public class Sign extends DomainBase{
 	public void setFolwState(String folwState) {
 		this.folwState = folwState;
 	}
-	
+
 	public String getSignState() {
 		return signState;
 	}
 
 	public void setSignState(String signState) {
 		this.signState = signState;
-	}	
+	}
+
+	public String getIsDispatchCompleted() {
+		return isDispatchCompleted;
+	}
+
+	public void setIsDispatchCompleted(String isDispatchCompleted) {
+		this.isDispatchCompleted = isDispatchCompleted;
+	}
 
 	public List<WorkProgram> getWorkProgramList() {
 		return workProgramList;
@@ -1274,40 +1387,6 @@ public class Sign extends DomainBase{
 		this.workProgramList = workProgramList;
 	}
 
-	public String getMaindeptName() {
-		return maindeptName;
-	}
-
-	public void setMaindeptName(String maindeptName) {
-		this.maindeptName = maindeptName;
-	}
-
-	public String getMainDeptUserName() {
-		return mainDeptUserName;
-	}
-
-	public void setMainDeptUserName(String mainDeptUserName) {
-		this.mainDeptUserName = mainDeptUserName;
-	}
-
-
-	public String getAssistdeptName() {
-		return assistdeptName;
-	}
-
-	public void setAssistdeptName(String assistdeptName) {
-		this.assistdeptName = assistdeptName;
-	}
-
-	public String getAssistDeptUserName() {
-		return assistDeptUserName;
-	}
-
-	public void setAssistDeptUserName(String assistDeptUserName) {
-		this.assistDeptUserName = assistDeptUserName;
-	}
-
-	
 	public DispatchDoc getDispatchDoc() {
 		return dispatchDoc;
 	}
@@ -1315,13 +1394,13 @@ public class Sign extends DomainBase{
 	public void setDispatchDoc(DispatchDoc dispatchDoc) {
 		this.dispatchDoc = dispatchDoc;
 	}
-	
-	public String getIsDispatchCompleted() {
-		return isDispatchCompleted;
+
+	public FileRecord getFileRecord() {
+		return fileRecord;
 	}
 
-	public void setIsDispatchCompleted(String isDispatchCompleted) {
-		this.isDispatchCompleted = isDispatchCompleted;
+	public void setFileRecord(FileRecord fileRecord) {
+		this.fileRecord = fileRecord;
 	}
 
 	public String getmFlowMainUserId() {
@@ -1372,22 +1451,6 @@ public class Sign extends DomainBase{
 		this.aOrgId = aOrgId;
 	}
 
-	public String getDesigncompanyName() {
-		return designcompanyName;
-	}
-
-	public void setDesigncompanyName(String designcompanyName) {
-		this.designcompanyName = designcompanyName;
-	}
-
-	public String getBuiltcompanyName() {
-		return builtcompanyName;
-	}
-
-	public void setBuiltcompanyName(String builtcompanyName) {
-		this.builtcompanyName = builtcompanyName;
-	}
-
 	public String getProcessInstanceId() {
 		return processInstanceId;
 	}
@@ -1396,62 +1459,6 @@ public class Sign extends DomainBase{
 		this.processInstanceId = processInstanceId;
 	}
 
-	public String getComprehensiveName() {
-		return comprehensiveName;
-	}
-
-	public void setComprehensiveName(String comprehensiveName) {
-		this.comprehensiveName = comprehensiveName;
-	}
-
-	public Date getComprehensiveDate() {
-		return comprehensiveDate;
-	}
-
-	public void setComprehensiveDate(Date comprehensiveDate) {
-		this.comprehensiveDate = comprehensiveDate;
-	}
-
-	public String getLeaderName() {
-		return leaderName;
-	}
-
-	public void setLeaderName(String leaderName) {
-		this.leaderName = leaderName;
-	}
-
-	public Date getLeaderDate() {
-		return leaderDate;
-	}
-
-	public void setLeaderDate(Date leaderDate) {
-		this.leaderDate = leaderDate;
-	}
-
-	public String getMinisterName() {
-		return ministerName;
-	}
-
-	public void setMinisterName(String ministerName) {
-		this.ministerName = ministerName;
-	}
-
-	public Date getMinisterDate() {
-		return ministerDate;
-	}
-
-	public void setMinisterDate(Date ministerDate) {
-		this.ministerDate = ministerDate;
-	}
-	
-	 public String getIsassistflow() {
-        return isassistflow;
-    }
-
-    public void setIsassistflow(String isassistflow) {
-        this.isassistflow = isassistflow;
-    }
-
 	public String getIsNeedWrokPrograml() {
 		return isNeedWrokPrograml;
 	}
@@ -1459,14 +1466,6 @@ public class Sign extends DomainBase{
 	public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
 		this.isNeedWrokPrograml = isNeedWrokPrograml;
 	}
-
-    public String getMainDeptContactPhone() {
-        return mainDeptContactPhone;
-    }
-
-    public void setMainDeptContactPhone(String mainDeptContactPhone) {
-        this.mainDeptContactPhone = mainDeptContactPhone;
-    }
 
 	public Integer getIsAssociate() {
 		return isAssociate;
@@ -1479,7 +1478,9 @@ public class Sign extends DomainBase{
 	public Sign getAssociateSign() {
 		return associateSign;
 	}
+
 	public void setAssociateSign(Sign associateSign) {
 		this.associateSign = associateSign;
-	}
+	}	
+	
 }

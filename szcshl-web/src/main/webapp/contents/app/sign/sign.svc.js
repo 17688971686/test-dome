@@ -455,6 +455,7 @@
 					response : response,
 					fn : function() {
 						vm.model = response.data;
+                        //工作方案
                         if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
                             vm.show_workprogram = true;
                             vm.model.workProgramDtoList.forEach(function(w,index){
@@ -469,15 +470,20 @@
 								}
 							});
                         }
+                        //发文
                         if(vm.model.dispatchDocDto){
                             vm.show_dispatch = true;
                             vm.dispatchDoc = vm.model.dispatchDocDto;
                         }
+                        //归档
                         if(vm.model.fileRecordDto){
                             vm.show_filerecord = true;
                             vm.fileRecord = vm.model.fileRecordDto;
                         }
-
+                        //抽取专家
+						if(vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0){
+                            vm.show_expert = true;
+						}
                         //先加载完业务数据，再加载流程业务数据
 						if(vm.dealFlow){
                             flowSvc.getFlowInfo(vm);

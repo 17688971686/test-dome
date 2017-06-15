@@ -115,8 +115,8 @@ public class Expert extends DomainBase {
     @OneToMany(mappedBy = "expert")
     private List<ProjectExpe> project;
 
-    @ManyToMany(mappedBy = "expertList")
-    private List<ExpertReview> expertReviewList;
+    @OneToMany(mappedBy = "expert")
+    private List<ExpertSelected> expertSelectedList;
 
     public Date getBirthDay() {
         return birthDay;
@@ -382,11 +382,11 @@ public class Expert extends DomainBase {
         this.photo = photo;
     }
 
-    public List<ExpertReview> getExpertReviewList() {
-        return expertReviewList;
+    public List<ExpertSelected> getExpertSelectedList() {
+        return expertSelectedList;
     }
 
-    public void setExpertReviewList(List<ExpertReview> expertReviewList) {
-        this.expertReviewList = expertReviewList;
+    public void setExpertSelectedList(List<ExpertSelected> expertSelectedList) {
+        this.expertSelectedList = expertSelectedList;
     }
 }

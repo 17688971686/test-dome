@@ -324,13 +324,16 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.setParam("workProgramId",epSelCondition.getWorkProgramId());
         //2、关联本周已抽取2次或者本月已抽取四次的专家
         hqlBuilder.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
-        hqlBuilder.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,EXPERTID");
-        hqlBuilder.append(" FROM CS_EXPERT_REVIEW er GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), EXPERTID ");
+        hqlBuilder.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,cde.EXPERTID as EXPERTID");
+        hqlBuilder.append(" FROM CS_EXPERT_REVIEW er ,(SELECT CD.EXPERTREVIEWID, ES.EXPERTID  FROM CS_EXPERT_CONDITION cd, CS_EXPERT_SELECTED es ");
+		hqlBuilder.append(" WHERE CD.ID = ES.CONDITIONID ) cde  WHERE cde.EXPERTREVIEWID = er.id ");
+		hqlBuilder.append(" GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), cde.EXPERTID ");
         hqlBuilder.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
         hqlBuilder.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
         //3、排除本次已经选择的专家
-        hqlBuilder.append(" left join CS_EXPERT_REVIEW erm on erm.EXPERTID = ep.EXPERTID and erm.WORKPROGRAMID = :workProgramId2 ");
-        hqlBuilder.setParam("workProgramId2",epSelCondition.getWorkProgramId());
+        hqlBuilder.append(" left join (SELECT CD.EXPERTREVIEWID, ES.EXPERTID FROM CS_EXPERT_CONDITION cd, CS_EXPERT_SELECTED es WHERE CD.ID = ES.CONDITIONID and CD.EXPERTREVIEWID =:reviewId )");
+        hqlBuilder.append(" ERM ON ERM.EXPERTID = EP.EXPERTID ");
+        hqlBuilder.setParam("reviewId",epSelCondition.getExpertReviewDto().getId());
 
         hqlBuilder.append(" where (ep.STATE = :state1 or ep.STATE = :state2 ) ");
         hqlBuilder.setParam("state1",EnumExpertState.OFFICIAL.getValue()).setParam("state2",EnumExpertState.ALTERNATIVE.getValue());

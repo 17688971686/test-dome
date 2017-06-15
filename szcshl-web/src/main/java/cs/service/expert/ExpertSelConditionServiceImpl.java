@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.domain.expert.ExpertReview;
+import cs.model.expert.ExpertReviewDto;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,13 +38,12 @@ import cs.repository.repositoryImpl.project.WorkProgramRepo;
 @Service
 public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService {
     private static Logger log = Logger.getLogger(ExpertSelConditionServiceImpl.class);
-
     @Autowired
 	private ExpertSelConditionRepo expertSelConditionRepo;
     @Autowired
     private ExpertReviewService expertReviewService;
     @Autowired
-    private WorkProgramRepo workProgramRepo;
+    private ExpertReviewRepo expertReviewRepo;
 	
 	@Override
 	public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
@@ -87,40 +89,44 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
 		return modelDto;
 	}
 
+    /**
+     * 删除专家抽取条件
+     * @param id
+     * @param reviewId
+     * @param deleteEP
+     */
 	@Override
 	@Transactional
-	public void delete(String id, String workProId, boolean deleteEP) {
+	public void delete(String id, String reviewId, boolean deleteEP) {
         expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(),id);
-        //判断删除掉根据此条件抽取的专家
-        List<String> idList = StringUtil.getSplit(id, ",");
-        if(deleteEP && (idList != null && idList.size() > 0)){
-            idList.forEach(idStr -> {
-                expertReviewService.deleteExpert(workProId,null,null,idStr);
-            });
-        }
 	}
 
+    /**
+     * 保存专家抽取条件信息
+     * @param recordList
+     * @return
+     * @throws Exception
+     */
 	@Override
 	@Transactional
 	public List<ExpertSelConditionDto> saveConditionList(ExpertSelConditionDto[] recordList) throws Exception{
 		List<ExpertSelConditionDto> resultList = new ArrayList<>();
 	    if(recordList != null && recordList.length > 0){
-            WorkProgram wp = workProgramRepo.findById(recordList[0].getWorkProgramId());
-	        if(wp == null || !Validate.isString(wp.getId())){
+            ExpertReview reviewObj = expertReviewRepo.findById(recordList[0].getExpertReviewDto().getId());
+	        if(reviewObj == null || !Validate.isString(reviewObj.getId())){
                 log.info("保存专家收取条件失败：无法获取评审方案信息" );
 	            throw  new Exception(Constant.ERROR_MSG);
             }
             for(int i=0,l=recordList.length;i<l;i++){
 				ExpertSelCondition domain = new ExpertSelCondition();
 				ExpertSelConditionDto rl = recordList[i];
-				if(!Validate.isString(rl.getId())){
-					rl.setId(UUID.randomUUID().toString());
-					domain.setId(rl.getId());
-				}
+                domain.setExpertReview(reviewObj);
 				BeanCopierUtils.copyProperties(rl, domain);
-
-                domain.setWorkProgram(wp);
+				if(!Validate.isString(domain.getSelectType())){
+                    domain.setSelectType(Constant.EnumExpertSelectType.AUTO.getValue());
+                }
 				expertSelConditionRepo.save(domain);
+                rl.setId(domain.getId());
 				resultList.add(rl);
 			}
         }
@@ -129,7 +135,7 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
 
     @Override
     public Map<String,Object> findByWorkProId(String workProId) {
-        Map<String,Object> resultMap = new HashMap<String,Object>();
+       /* Map<String,Object> resultMap = new HashMap<String,Object>();
         List<ExpertSelConditionDto> resultList = new ArrayList<>();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from "+ExpertSelCondition.class.getSimpleName()+" where "+ExpertSelCondition_.workProgram.getName()+"."+ WorkProgram_.id.getName()  +" =:workProId");
@@ -151,7 +157,8 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
         BeanCopierUtils.copyProperties(workProgram, wpDto);
         resultMap.put("workProgram",wpDto);
 
-        return resultMap;
+        return resultMap;*/
+       return null;
     }
 
 }

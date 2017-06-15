@@ -34,8 +34,8 @@ import cs.service.expert.ExpertReviewService;
 @RequestMapping(name = "专家评审", path = "expertReview")
 public class ExpertReviewController {
 
-	String ctrlName = "expertReview";
-	
+    String ctrlName = "expertReview";
+
     @Autowired
     private ExpertReviewService expertReviewService;
 
@@ -44,60 +44,61 @@ public class ExpertReviewController {
     @ResponseBody
     public PageModelDto<ExpertReviewDto> findByOData(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<ExpertReviewDto> expertReviewDtos = expertReviewService.get(odataObj);	
+        PageModelDto<ExpertReviewDto> expertReviewDtos = expertReviewService.get(odataObj);
         return expertReviewDtos;
     }
 
     @RequiresPermissions("expertReview#refleshExpert#get")
     @RequestMapping(name = "刷新已选专家信息", path = "refleshExpert", method = RequestMethod.GET)
     @ResponseBody
-    public List<ExpertDto> refleshExpert(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String selectType) {      
-        return expertReviewService.refleshExpert(workProgramId,selectType);
-    }      
-    
+    public List<ExpertDto> refleshExpert(@RequestParam(required = true) String workProgramId, @RequestParam(required = true) String selectType) {
+        return expertReviewService.refleshExpert(workProgramId, selectType);
+    }
+
     @RequiresPermissions("expertReview#updateExpertState#post")
     @RequestMapping(name = "更改专家状态", path = "updateExpertState", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String expertIds,
-    		@RequestParam(required=true)String state){
+    public void updateExpertState(@RequestParam(required = true) String workProgramId, @RequestParam(required = true) String expertIds,
+                                  @RequestParam(required = true) String state) {
         expertReviewService.updateExpertState(workProgramId, expertIds, state);
     }
-    
-    
+
+
     @RequiresPermissions("expertReview#deleteExpert#post")
     @RequestMapping(name = "删除已选专家", path = "deleteExpert", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteExpert(@RequestParam(required=true)String workProgramId,String expertIds,String seleType,String expertSelConditionId){
-        expertReviewService.deleteExpert(workProgramId,expertIds,seleType,expertSelConditionId);
-    } 
-    
+    public void deleteExpert(@RequestParam(required = true) String workProgramId, String expertIds, String seleType, String expertSelConditionId) {
+        expertReviewService.deleteExpert(workProgramId, expertIds, seleType, expertSelConditionId);
+    }
+
     @RequiresPermissions("expertReview##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody ExpertReviewDto record) throws Exception{
+    public void post(@RequestBody ExpertReviewDto record) throws Exception {
         expertReviewService.save(record);
     }
-    
+
     @RequiresPermissions("expertReview#saveExpertReview#post")
     @RequestMapping(name = "保存记录", path = "saveExpertReview", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveExpertReview(@RequestParam(required=true)String workProgramId,@RequestParam(required=true)String selectType,
-    		@RequestParam(required=true)String expertIds) {
-        expertReviewService.save(workProgramId,expertIds,selectType);
+    public void saveExpertReview(@RequestParam(required = true) String reviewId, @RequestParam(required = true) String selectType,
+                                 @RequestParam(required = true) String expertIds) {
+        expertReviewService.save(reviewId, expertIds, selectType);
     }
-    
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
-	@Transactional
-	public @ResponseBody ExpertReviewDto findById(@RequestParam(required = true)String id){		
-		return expertReviewService.findById(id);
-	}
-	
+
+    @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
+    @Transactional
+    public @ResponseBody
+    ExpertReviewDto findById(@RequestParam(required = true) String id) {
+        return expertReviewService.findById(id);
+    }
+
     @RequiresPermissions("expertReview##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	expertReviewService.delete(id);      
+        expertReviewService.delete(id);
     }
 
     @RequiresPermissions("expertReview##put")
@@ -108,74 +109,59 @@ public class ExpertReviewController {
     }
 
     @RequiresPermissions("expertReview#initByWorkProgramId#get")
-	@RequestMapping(name = "专家选择", path = "html/initByWorkProgramId",method=RequestMethod.GET)	
-	public @ResponseBody List<ExpertReviewDto> initByWorkProgramId(@RequestParam(required = true) String workProgramId){
-		return expertReviewService.initByWorkProgramId(workProgramId);
-	}
-    
+    @RequestMapping(name = "专家选择", path = "html/initByWorkProgramId", method = RequestMethod.GET)
+    public @ResponseBody
+    ExpertReviewDto initByWorkProgramId(@RequestParam(required = true) String workProgramId) {
+        return expertReviewService.initByWorkProgramId(workProgramId);
+    }
+
     @RequiresPermissions("expertReview#getReviewList#get")
-    @RequestMapping(name = "查询专家评分一览表", path = "html/getReviewList",method=RequestMethod.GET)	
-    public @ResponseBody Map<String,Object> getReviewList(){
-    	return expertReviewService.getReviewList(" ","2017","1");
+    @RequestMapping(name = "查询专家评分一览表", path = "html/getReviewList", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> getReviewList() {
+        return expertReviewService.getReviewList(" ", "2017", "1");
     }
-    
-    @RequiresPermissions("expertReview#getSelectExpert#get")
-    @RequestMapping(name = "获取已选专家", path = "html/getSelectExpert/{signId}",method=RequestMethod.POST)	
-    public @ResponseBody PageModelDto<ExpertDto> getSelectExpert(@PathVariable("signId") String signId) throws ParseException{
-    	 List<ExpertDto> ExpertDtoList=expertReviewService.getSelectExpert(signId);
-    	 PageModelDto<ExpertDto> pageModelDto = new PageModelDto<>();
-    	 pageModelDto.setCount(ExpertDtoList.size());
- 		 pageModelDto.setValue(ExpertDtoList);	
-    	return pageModelDto;
-    }
-    
-    @RequiresPermissions("expertReview#getSelectExpertById#get")
-    @RequestMapping(name = "获取已选专家", path = "html/getSelectExpertById",method=RequestMethod.GET)	
-    public @ResponseBody ExpertReviewDto getSelectExpertById(String expertId) throws ParseException{
-    	ExpertReviewDto expertReviewDto=expertReviewService.getSelectExpertById(expertId);
-    	return expertReviewDto;
-    }
-    
+
     @RequiresPermissions("expertReview#expertMark#get")
-    @RequestMapping(name = "编辑专家评分", path = "html/expertMark",method=RequestMethod.POST)	
+    @RequestMapping(name = "编辑专家评分", path = "html/expertMark", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void expertMark(@RequestBody ExpertReviewDto expertReviewDto) throws ParseException{
-    	expertReviewService.expertMark(expertReviewDto);
+    public void expertMark(@RequestBody ExpertReviewDto expertReviewDto) throws ParseException {
+        expertReviewService.expertMark(expertReviewDto);
     }
-    
+
     @RequiresPermissions("expertReview#savePayment#get")
-    @RequestMapping(name = "编辑专家费用", path = "html/savePayment",method=RequestMethod.POST)	
+    @RequestMapping(name = "编辑专家费用", path = "html/savePayment", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void savePayment(@RequestBody ExpertReviewDto expertReviewDto) throws Exception{
-    	expertReviewService.savePayment(expertReviewDto);
+    public void savePayment(@RequestBody ExpertReviewDto expertReviewDto) throws Exception {
+        expertReviewService.savePayment(expertReviewDto);
     }
-    
+
     // begin#html
     @RequiresPermissions("expertReview#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName + "/list";
     }
 
     @RequiresPermissions("expertReview#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return ctrlName + "/edit";
     }
-    
+
     @RequiresPermissions("expertReview#html/selectExpert#get")
     @RequestMapping(name = "选择专家", path = "html/selectExpert", method = RequestMethod.GET)
     public String selectExpert() {
-    	
-        return ctrlName+"/selectExpert";
-    } 
-    
+
+        return ctrlName + "/selectExpert";
+    }
+
     @RequiresPermissions("expertReview#html/reviewList#get")
     @RequestMapping(name = "专家评分", path = "html/reviewList", method = RequestMethod.GET)
     public String reviewList() {
-    	
-    	return ctrlName+"/reviewList";
-    } 
+
+        return ctrlName + "/reviewList";
+    }
     // end#html
 
 }

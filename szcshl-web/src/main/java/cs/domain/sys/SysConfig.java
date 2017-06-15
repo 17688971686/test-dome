@@ -13,7 +13,7 @@ public class SysConfig extends DomainBase {
     @GenericGenerator(name = "plansignGenerator", strategy = "uuid")
     private String id;
 
-    @Column(columnDefinition = "VARCHAR(32)")
+    @Column(columnDefinition = "VARCHAR(64)")
     private String configName;
 
     @Column(columnDefinition = "VARCHAR(32)")

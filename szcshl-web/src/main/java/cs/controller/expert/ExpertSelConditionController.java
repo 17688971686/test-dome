@@ -64,8 +64,8 @@ public class ExpertSelConditionController {
     @RequiresPermissions("expertSelCondition##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam(required = true)String id,@RequestParam(required = true)String workProId,@RequestParam(required =true ,defaultValue = "false")boolean deleteEP) {
-        expertSelConditionService.delete(id,workProId,deleteEP);
+    public void delete(@RequestParam(required = true)String id,@RequestParam(required = true)String reviewId,@RequestParam(required =true ,defaultValue = "false")boolean deleteEP) {
+        expertSelConditionService.delete(id,reviewId,deleteEP);
     }
 
     @RequiresPermissions("expertSelCondition##put")

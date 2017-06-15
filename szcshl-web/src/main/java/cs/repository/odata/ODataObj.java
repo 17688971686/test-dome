@@ -82,15 +82,13 @@ public class ODataObj {
     }
 
     private final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
-            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le)\\s+((datetime|date)?\\'[^\\']*\\'|\\d+))"),
+            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+((datetime|date)?\\'[^\\']*\\'|\\d+))"),
             patternField = Pattern.compile(",(.*?)\\)"),
             patternValue = Pattern.compile("'(.*?)'");
 
     @SuppressWarnings("rawtypes")
     public void BuildObj(String filter, String orderby, String select, String skip, String top, String inlinecount)
             throws ParseException {
-        /// build odata object
-        // build orderby
         if (ObjectUtils.isNotEmpty(orderby)) {
             String[] orderbyItems = orderby.trim().split(" ");
             this.orderby = orderbyItems[0];

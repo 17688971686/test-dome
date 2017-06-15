@@ -73,7 +73,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 				workProgram = workProgramRepo.findById(workProgramDto.getId());
 				BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);	
 				//判断是否是单个评审和次项目,删除关联项目
-				if(workProgramDto.getIsSigle().equals(Constant.EnumState.PROCESS.getValue()) ||workProgramDto.getIsMainProject().equals(Constant.EnumState.NO.getValue()) ){
+				if(workProgramDto.getIsSigle().equals(Constant.EnumState.PROCESS.getValue()) || workProgramDto.getIsMainProject().equals(Constant.EnumState.NO.getValue()) ){
 					this.deleteMegreWokr(workProgram.getId());
 				}
 			}
