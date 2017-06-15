@@ -14,7 +14,7 @@
 		vm.showFileNum = false;
 		vm.mwindowHide = true;
 		vm.showCreate = false;
-		vm.linkSignId = " ";
+		vm.linkSignId = "";
 		vm.sign = {};
 		vm.dispatchDoc = {};
 		vm.dispatchDoc.signId = $state.params.signid;
@@ -35,9 +35,38 @@
 			}
 		}
 
-
+ 	    vm.dispatchUpload =function(){
+        	$("#dispatchUploadWin").kendoWindow({
+                width : "800px",
+                height : "400px",
+                title : "上传附件列表",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+        
+ 	    vm.dispatchQuery =function(){
+        	$("#dispatchqueryWin").kendoWindow({
+                width : "800px",
+                height : "400px",
+                title : "查看附件列表",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+		
+		vm.delDisptSysFile=function(sysFileId){
+			
+			dispatchSvc.delDisptSysFile(vm,sysFileId);
+		}
+		
 		vm.sigleProject = function() {
-			if (vm.dispatchDoc.dispatchWay == "1" && vm.dispatchDoc.id &&　vm.linkSignId!=" ") {
+			console.log(vm.linkSignId);
+			if (vm.dispatchDoc.dispatchWay == "1" && vm.dispatchDoc.id &&　vm.linkSignId) {
 					common.confirm({
 					title : "删除提示",
 					vm : vm,
@@ -55,7 +84,7 @@
 
 		vm.isrelated = function() {
 			//选择主项目
-			if (vm.dispatchDoc.id　&&　vm.linkSignId!=" ") {
+			if (vm.dispatchDoc.id　&&　vm.linkSignId) {
 				vm.dispatchDoc.isRelated = "是";
 				console.log(vm.dispatchDoc.isRelated);
 			}
@@ -63,7 +92,7 @@
 		}
         //选择次项目
 		vm.isrelated2 = function() {
-			if (vm.dispatchDoc.id　&&　vm.linkSignId!=" ") {
+			if (vm.dispatchDoc.id　&&　vm.linkSignId) {
 			common.confirm({
 				title : "删除提示",
 				vm : vm,

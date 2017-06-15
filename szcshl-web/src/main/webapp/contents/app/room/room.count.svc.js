@@ -16,9 +16,17 @@
 			queryRoomCount:queryRoomCount,//查询
 			roomList : roomList,
 			findAllOrg:findAllOrg,//查询部门列表
+			cleanValue : cleanValue
 			
 		};		
 		return service;	
+		
+		function cleanValue() {
+			var tab = $("#roomCountform").find('input,select');
+			$.each(tab, function(i, obj) {
+				obj.value = "";
+			});
+		}
 		
 		function queryRoomCount(vm){
 			vm.gridOptions.dataSource.read();

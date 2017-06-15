@@ -56,7 +56,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		Map<String, Object> map = new HashMap<>();
 		MergeDispa mergeDispa = mergeDispaRepo.getById(bussnessId);
 		List<SignDto> signDtoList = null;
-		String linkSignId = " ";
+		String linkSignId = "";
 
 		if (mergeDispa != null&& Validate.isString(mergeDispa.getBusinessId())) {
 			linkSignId = mergeDispa.getLinkSignId();
@@ -284,7 +284,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		//String dispatype=sign.get
 		Date now=new Date();
 		Map<String, Object> map = new HashMap<String, Object>();
-		String linkSignId=" ";
+		String linkSignId="";
 		//获取所有部门信息
 		List<Org> orgList=orgRepo.findAll();
 		List<OrgDto> orgDtoList=new ArrayList<>();

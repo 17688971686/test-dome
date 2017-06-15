@@ -139,7 +139,6 @@
 
 		// begin#gotoWPage
 		function gotoMergePage(vm) {
-			vm.mwindowHide = false;
 			if (!vm.dispatchDoc.id) {
 				common.alert({
 							vm : vm,
@@ -149,41 +148,29 @@
 								$('.modal-backdrop').remove();
 							}
 						})
-				return;
+			}else{
+				vm.mwindowHide = false;
+				var WorkeWindow = $("#mwindow");
+				WorkeWindow.kendoWindow({
+							width : "1200px",
+							height : "630px",
+							title : "合并发文",
+							visible : false,
+							modal : true,
+							closable : true,
+							actions : ["Pin", "Minimize", "Maximize", "Close"]
+						}).data("kendoWindow").center().open();
+	
+				getSeleSignBysId(vm);
+				getsign(vm);
 			}
-			var selectValue = $("#isRelated").find("option:selected").text();
-			if (selectValue == "否") {
-				common.alert({
-							vm : vm,
-							msg : "你已选择未关联,请重新选择再进行关联！",
-							fn : function() {
-								$('.alertDialog').modal('hide');
-								$('.modal-backdrop').remove();
-							}
-						})
-				return;
-			}
-
-			var WorkeWindow = $("#mwindow");
-			WorkeWindow.kendoWindow({
-						width : "1200px",
-						height : "630px",
-						title : "合并发文",
-						visible : false,
-						modal : true,
-						closable : true,
-						actions : ["Pin", "Minimize", "Maximize", "Close"]
-					}).data("kendoWindow").center().open();
-
-			getSeleSignBysId(vm);
-			getsign(vm);
 
 		}
 		// end#gotoWPage
 
 		// S_初始化
 		function initDispatchData(vm) {
-			if (vm.dispatchDoc.id != null) {
+			if (vm.dispatchDoc.id) {
 				getRelatedFileNum(vm);
 			}
 			var httpOptions = {
@@ -205,8 +192,6 @@
 								vm.showCreate = true;
 								// 初始化获取合并发文关联的linkSignId
 								vm.linkSignId = response.data.linkSignId;
-								// console.log(vm.dispatchDoc);
-
 								if (vm.dispatchDoc.id
 										&& !vm.dispatchDoc.fileNum) {
 									vm.showFileNum = true;
@@ -231,7 +216,8 @@
 		}// E_初始化
 
 		function mergeDispa(vm) {
-			if (vm.linkSignId == " ") {
+			console.log("dfdf"+vm.linkSignId);
+			if (vm.linkSignId=="") {
 				vm.message = "(您未关联任何信息，请重新选择！)";
 			} else {
 				vm.message = "";
@@ -284,7 +270,7 @@
 			if (isValid) {
 				// 是否关联其它项目判断
 				if (vm.dispatchDoc.isMainProject == "9" && vm.dispatchDoc.id) {
-					if (vm.linkSignId == " ") {
+					if (!vm.linkSignId) {
 						common.alert({
 									vm : vm,
 									msg : "请关联其它项目",
@@ -456,6 +442,7 @@
 				}
 			}
 			var httpSuccess = function success(response) {
+				vm.linkSignId="";
 			}
 			common.http({
 						vm : vm,

@@ -50,7 +50,9 @@ public class ExpertDto extends BaseDto {
     public byte[] photo;    //专家照片
 
     private List<WorkExpeDto> workDto;
+    
     private List<ProjectExpeDto> projectDto;
+    
     private List<ExpertReviewDto> expertReviewDtoList;
 
     public String getIdCard() {

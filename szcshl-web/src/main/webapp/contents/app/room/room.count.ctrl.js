@@ -27,6 +27,10 @@
                  }
              })
         }
+        vm.ResetRoomCount=function(){
+        	console.log("ddfdf");
+        	roomCountSvc.cleanValue();
+        }
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
         	//alert(selectIds.length);
