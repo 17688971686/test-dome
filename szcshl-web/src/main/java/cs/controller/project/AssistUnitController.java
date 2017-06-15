@@ -134,6 +134,25 @@ public class AssistUnitController {
         return assistUnitService.findDrawUnit(planId,number);
     }
     
+    @RequiresPermissions("assistUnit#chooseAssistUnit#get")
+    @RequestMapping(name="添加抽签协审单位",path="chooseAssistUnit",method=RequestMethod.GET)
+    @ResponseBody
+    public List<AssistUnitDto> chooseAssistUnit(@RequestParam String planId,@RequestParam Integer number){
+    	List<AssistUnitDto> assistUnitDtoList=assistUnitService.findDrawUnit(planId, number);
+    	for(AssistUnitDto assistUnitDto:assistUnitDtoList){
+    		assistUnitService.update(assistUnitDto);
+    	}
+    	return assistUnitDtoList;
+    }
+    
+    @RequiresPermissions("assistUnit#getAssistUnitByPlanId#get")
+    @RequestMapping(name="通过planId获取协审单位",path="getAssistUnitByPlanId",method=RequestMethod.GET)
+    @ResponseBody
+    public List<AssistUnitDto> getAssistUnitByPlanId(@RequestParam String planId){
+    	
+    	return assistUnitService.getAssistUnitByPlanId(planId);
+    }
+    
     // begin#html
     @RequiresPermissions("assistUnit#html/assistUnitList#get")
     @RequestMapping(name = "列表页面", path = "html/assistUnitList", method = RequestMethod.GET)

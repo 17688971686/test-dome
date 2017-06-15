@@ -1,6 +1,9 @@
 package cs.repository.repositoryImpl.project;
 
+import java.util.List;
+
 import cs.domain.project.AssistUnit;
+import cs.model.project.AssistUnitDto;
 import cs.repository.IRepository;
 
 
@@ -14,4 +17,5 @@ public interface AssistUnitRepo extends IRepository<AssistUnit, String> {
 	int getUnitSortMax();
 	
 	boolean isUnitExist(String unitName);
+	public List<AssistUnit> getAssistUnitByPlanId(String planId);
 }

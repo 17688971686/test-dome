@@ -649,7 +649,7 @@
     function addCommonIdea(options){
     	options.commonIdea={};
     	options.commonIdea.ideaType="个人常用意见";
-    	options.commonIdeas.push(options.scope.commonIdea);
+    	options.commonIdeas.push(options.commonIdea);
     	options.i++;
     }//end 
     

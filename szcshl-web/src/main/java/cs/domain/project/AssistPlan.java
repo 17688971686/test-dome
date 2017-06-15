@@ -31,6 +31,10 @@ public class AssistPlan extends DomainBase {
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date reportTime;
+    
+    //报批时间
+    @Column(columnDefinition="VARCHAR(20)")
+    private String approvalTime;
 
     /**
      * 抽签时间
@@ -177,4 +181,14 @@ public class AssistPlan extends DomainBase {
     public void setAssistPlanSignList(List<AssistPlanSign> assistPlanSignList) {
         this.assistPlanSignList = assistPlanSignList;
     }
+
+	public String getApprovalTime() {
+		return approvalTime;
+	}
+
+	public void setApprovalTime(String approvalTime) {
+		this.approvalTime = approvalTime;
+	}
+    
+    
 }

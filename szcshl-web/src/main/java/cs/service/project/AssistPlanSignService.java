@@ -10,6 +10,8 @@ import java.util.List;
  * Date: 2017-6-6 14:50:37
  */
 public interface AssistPlanSignService {
+	List<AssistPlanSignDto> getPlanSignByPlanId(String planId);
 
-    List<AssistPlanSignDto> findBySignId(String signId);
+	void savePlanSign(AssistPlanSignDto[] planSigns);
+	List<AssistPlanSignDto> findBySignId(String signId);
 }

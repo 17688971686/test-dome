@@ -3,9 +3,9 @@
 
     angular.module('app').controller('assistPlanCtrl', assistPlan);
 
-    assistPlan.$inject = ['$location','$state','assistSvc'];
+    assistPlan.$inject = ['$location','$state','assistSvc','$http'];
 
-    function assistPlan($location,$state,assistSvc) {
+    function assistPlan($location,$state,assistSvc,$http) {
         var vm = this;
         vm.model = {};							//创建一个form对象
         vm.filterModel = {};                    //filter对象
@@ -269,7 +269,11 @@
         vm.queryPlan = function () {
             assistSvc.queryPlan(vm);
         }
-
+        
+        var assistPlanId='';//协审计划Id
+        vm.planId=''; //
+        vm.reviewNum=''; //几个评审单位
+       
         //查看协审计划的详情信息
         vm.showPlanDetail = function(planId){
             $("#planInfo").kendoWindow({
@@ -281,6 +285,45 @@
                 closable : true,
                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
+           assistPlanId=planId;
+           vm.planId=planId;
+           assistSvc.getPlanSignByPlanId(vm,planId);
+           assistSvc.initPlanByPlanId(vm,planId);
+           assistSvc.initAssistUnit(vm,planId);
+        }
+        
+        vm.ministerOpinionEdit=function (ministerOpinion){	//部长意见
+        	common.initIdeaData(vm,$http,ministerOpinion);
+        }
+        
+        vm.viceDirectorOpinionEdit=function(viceDirectorOpinion){	//副主任意见
+        	common.initIdeaData(vm,$http,viceDirectorOpinion);
+        }
+        
+        vm.directorOpinionEdit=function (directorOpinion){	//主任意见
+        	common.initIdeaData(vm,$http,directorOpinion);
+        }
+        
+        vm.assistPlan={};
+        vm.savePlanSign=function(){//保存协审项目信息
+	       	assistSvc.savePlanSign(vm);
+	        vm.assistPlan.id=assistPlanId;
+	       	assistSvc.savePlan(vm);
+        }
+        
+        
+        vm.checked='';
+        vm.chooseAssistUnit=function(){
+        	vm.number='';
+        	if(vm.checked=='option1'){
+        	
+        		vm.number=vm.assistPlanSign.length+1;
+        	}
+        	if(vm.checked=='option2'){
+        		vm.number=vm.assistPlanSign.length;
+        	}
+        	assistSvc.chooseAssistUnit(vm);
+        
         }
 
     }

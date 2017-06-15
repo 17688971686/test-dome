@@ -17,6 +17,7 @@ public class AssistPlanDto extends BaseDto {
     private String id;
     private String planName;
     private Date reportTime;
+    private String approvalTime;
     private String drawTime;
     private String drawType;
     private List assistUnitList;
@@ -173,4 +174,14 @@ public class AssistPlanDto extends BaseDto {
     public void setAssistUnitDtoList(List<AssistUnitDto> assistUnitDtoList) {
         this.assistUnitDtoList = assistUnitDtoList;
     }
+
+	public String getApprovalTime() {
+		return approvalTime;
+	}
+
+	public void setApprovalTime(String approvalTime) {
+		this.approvalTime = approvalTime;
+	}
+    
+    
 }

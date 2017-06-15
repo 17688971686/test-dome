@@ -83,7 +83,7 @@
 								<button ng-click="vm.deleteCommonIdea()" class="btn btn-xs btn-danger"  value="deleteCommonIdea">删除常用意见</button>
 								<button ng-click="vm.saveCommonIdea()" class="btn btn-xs btn-success"  value="saveCommonIdea">保存</button>
 							</span>
-							<div style="max-height:200px; overflow: auto; border: 1px solid black;">
+							<div style="max-height:200px; overflow: auto; ">
 								<table class="table table-bordered seleteTable" id="commonIdeaTable">
 									<tr ng-repeat="x in vm.commonIdeas">
 										<td><input type="checkbox" ng-checked="ideaCheck" name="ideaCheck" value="{{vm.commonIdeas[$index].ideaID}}" /></td>

@@ -44,7 +44,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 
 	private static Logger logger=Logger.getLogger(AssistUnitServiceImpl.class);
 	
-	private static Integer unitSort=1;
 	
 	@Autowired
 	private AssistUnitRepo assistUnitRepo;
@@ -105,6 +104,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Transactional
 	public void update(AssistUnitDto record) {
 		AssistUnit domain = assistUnitRepo.findById(record.getId());
+		
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
 		domain.setModifiedBy(currentUser.getLoginName());
 		domain.setModifiedDate(new Date());
@@ -226,7 +226,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 		//1、先查询轮空的单位
         AssistUnitDto assistUnitDto = new AssistUnitDto();
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from "+AssistUnit.class.getSimpleName()+" where "+AssistUnit_.isLastUnSelected+" =:isLastUnSelected");
+        hqlBuilder.append(" from "+AssistUnit.class.getSimpleName()+" where "+AssistUnit_.isLastUnSelected.getName()+" =:isLastUnSelected");
         hqlBuilder.setParam("isLastUnSelected", Constant.EnumState.YES.getValue());
         List<AssistUnit> list = assistUnitRepo.findByHql(hqlBuilder);
         if(list == null || list.size() == 0){
@@ -243,7 +243,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
         if(number > 0){
             //2、取出前一次抽签的最大序号
 			sysConfig = sysConfigService.findByKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
-			if(sysConfig == null ){
+			if(sysConfig == null || !Validate.isString(sysConfig.getId())){
                 sysConfig = new SysConfigDto();
                 sysConfig.setConfigName(Constant.DRAW_ASSIST_UNITNAME);
                 sysConfig.setConfigKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
@@ -256,12 +256,12 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
             //3、按照序号轮流抽签
             HqlBuilder sqlBuilder = HqlBuilder.create();
             sqlBuilder.append(" SELECT nUnit.* FROM ( ");
-            sqlBuilder.append(" SELECT cu.*,CASE WHEN  unitsort < :maxSort then (1000+unitsort) else unitsort end newSort FROM CS_AS_UNIT cu");
+            sqlBuilder.append(" SELECT cu.*,CASE WHEN  unitsort < :maxSort then (10000+unitsort) else unitsort end newSort FROM CS_AS_UNIT cu");
             sqlBuilder.setParam("maxSort",(maxSort+1));
             if(Validate.isString(assistUnitDto.getId())){
                 sqlBuilder.append(" WHERE  WHERE id != :id").setParam("id",assistUnitDto.getId()).append(" ORDER BY newSort) nUnit ");
             }
-            sqlBuilder.append(" WHERE ROWNUM < :number ").setParam("number",number);
+            sqlBuilder.append(" ) nUnit WHERE ROWNUM < :number ").setParam("number",number+1);
             list = assistUnitRepo.findBySql(sqlBuilder);
             saveList.addAll(list);
             if(list != null && list.size() > 0){
@@ -286,6 +286,23 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
         }
 
 		return resultList;
+	}
+
+	@Override
+	@Transactional
+	public List<AssistUnitDto> getAssistUnitByPlanId(String planId) {
+		List<AssistUnit> assistUnitList=assistUnitRepo.getAssistUnitByPlanId(planId);
+		
+		List<AssistUnitDto> assistUnitDtoList=new ArrayList<>();
+		
+		for(AssistUnit assistUnit:assistUnitList){
+			
+			AssistUnitDto assistUnitDto =new AssistUnitDto();
+			BeanCopierUtils.copyProperties(assistUnit, assistUnitDto);
+			assistUnitDtoList.add(assistUnitDto);
+		}
+		
+		return assistUnitDtoList;
 	}
 
 }

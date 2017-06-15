@@ -36,5 +36,7 @@ public interface AssistUnitService {
 	void removeUsers(String unitId,String[] userIds);
 
 	List<AssistUnitDto> findDrawUnit(String planId,Integer number);
+	
+	List<AssistUnitDto> getAssistUnitByPlanId(String planId);
 
 }

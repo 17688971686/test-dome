@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import cs.domain.project.AssistUnit;
 import cs.domain.project.AssistUnit_;
+import cs.model.project.AssistUnitDto;
 import cs.repository.AbstractRepository;
 
 /**
@@ -40,6 +41,14 @@ public class AssistUnitRepoImpl extends AbstractRepository<AssistUnit, String> i
 		
 		List<AssistUnit> assistUnitList=criteria.list();
 		return !assistUnitList.isEmpty();
+	}
+
+	@Override
+	public List<AssistUnit> getAssistUnitByPlanId(String planId) {
+		
+		Criteria criteria=this.getSession().createCriteria(AssistUnit.class);
+		criteria.createAlias("assistPlanList", "assistPlanList").add(Restrictions.eq("assistPlanList.id", planId));
+		return criteria.list();
 	}
 
 }

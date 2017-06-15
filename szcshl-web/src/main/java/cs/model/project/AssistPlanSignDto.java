@@ -19,6 +19,8 @@ public class AssistPlanSignDto {
     private Float assistDays;                   //协审天数
     private String isMain;                      //是否主项目
     private Integer splitNum;                   //拆分项目序号
+    private BigDecimal estimateCost;			//报审概算
+    private BigDecimal jiananCost;				//建安费
 
     public AssistPlanSignDto() {
     }
@@ -102,4 +104,22 @@ public class AssistPlanSignDto {
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+
+	public BigDecimal getEstimateCost() {
+		return estimateCost;
+	}
+
+	public void setEstimateCost(BigDecimal estimateCost) {
+		this.estimateCost = estimateCost;
+	}
+
+	public BigDecimal getJiananCost() {
+		return jiananCost;
+	}
+
+	public void setJiananCost(BigDecimal jiananCost) {
+		this.jiananCost = jiananCost;
+	}
+    
+    
 }

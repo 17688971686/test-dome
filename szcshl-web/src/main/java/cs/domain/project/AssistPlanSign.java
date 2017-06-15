@@ -29,6 +29,12 @@ public class AssistPlanSign {
 
     @Column(columnDefinition="NUMBER")
     private BigDecimal assistCost;              //协审费用
+    
+    @Column(columnDefinition="NUMBER")
+    private BigDecimal estimateCost;			//报审概算
+    
+    @Column(columnDefinition="NUMBER")
+    private BigDecimal jiananCost;				//建安费
 
     @Column(columnDefinition="NUMBER")
     private Float assistDays;                   //协审天数
@@ -134,4 +140,22 @@ public class AssistPlanSign {
     public void setAssistPlan(AssistPlan assistPlan) {
         this.assistPlan = assistPlan;
     }
+
+	public BigDecimal getEstimateCost() {
+		return estimateCost;
+	}
+
+	public void setEstimateCost(BigDecimal estimateCost) {
+		this.estimateCost = estimateCost;
+	}
+
+	public BigDecimal getJiananCost() {
+		return jiananCost;
+	}
+
+	public void setJiananCost(BigDecimal jiananCost) {
+		this.jiananCost = jiananCost;
+	}
+    
+    
 }

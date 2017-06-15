@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
+<div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sign">项目签收管理</a></li>
@@ -201,16 +201,19 @@
 
     <div class="tab-content" style="background:white;">
         <div class="well well-sm tab-pane fade in active" style="background:white;" id="assist_unitlist">
-            <p>
+            <p id="chooseType">
                 <span>抽签方式</span>
                 <label class="checkbox-inline">
-                    <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked>轮空一家单位
+                    <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" ng-model="vm.checked" checked>轮空一家单位
                 </label>
                 <label class="checkbox-inline">
-                    <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="option2">全部抽中
+                    <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="option2" ng-model="vm.checked">全部抽中
                 </label>
             </p>
-            <p>共2个评审单位，3个单位进行抽签</p>
+            <p >
+            <button class="btn btn-sm btn-success" ng-click="vm.chooseAssistUnit()" ng-disabled="vm.isChoose">选择协审单位</button>
+            </p>
+            <p>共{{vm.review}}个评审单位，{{vm.signNum}}个单位进行抽签</p>
             <table class="table table-bordered" width="43%">
                 <tr>
                     <th style="width: 60px;">序号</th>
@@ -237,7 +240,7 @@
             </table>
             <p>共2个评审单位，3个单位进行抽签</p>
         </div><!-- end tab1 -->
-        <div class="well well-sm tab-pane fade" style="background:white;" id="assist_plansign">
+        <div class="well well-sm tab-pane fade" style="background:white;" id="assist_plansign" ng-include src="'${path}/contents/app/assist/approve.html'">
             项目计划审批表
         </div><!-- end tab2 -->
         <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawSignin">
