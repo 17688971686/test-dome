@@ -3,9 +3,9 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['$location','workprogramSvc','$state']; 
+    workprogram.$inject = ['$location','workprogramSvc','$state',"$http"]; 
 
-    function workprogram($location,workprogramSvc,$state) {        
+    function workprogram($location,workprogramSvc,$state,$http) {        
         var vm = this;
     	vm.work = {};						//创建一个form对象
         vm.title = '创建评审方案';        	//标题
@@ -31,39 +31,29 @@
             workprogramSvc.findCompanys(vm);//查找主管部门
           
         }
-        //文件下载
-        vm.workDownload = function(id){
-        	workprogramSvc.workDownload(vm,id);
-        }
-        //删除系统文件
-        vm.delsWorkSysFile = function(id){
-        	workprogramSvc.delsWorkSysFile(vm,id);
-        }
+  
+        
         //查看附件列表
         vm.workJquery =function(){
-        	$("#workqueryWin").kendoWindow({
-                width : "800px",
-                height : "400px",
-                title : "查看附件列表",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-            }).data("kendoWindow").center().open();
-        	workprogramSvc.getInitRelateData(vm);
+        	common.initcommonQueryWin(vm);
+        	vm.sysSignId=vm.work.id;
+        	common.commonSysFilelist(vm,$http);
         }
+        
         //附件上传
-        vm.workUpload = function(){
-        	 $("#workUploadWin").kendoWindow({
-                 width : "660px",
-                 height : "400px",
-                 title : "附件上传",
-                 visible : false,
-                 modal : true,
-                 closable : true,
-                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-             }).data("kendoWindow").center().open();
+        vm.workUpload = function(options){
+        	common.initcommonUploadWin({businessId:vm.work.id});
         }
+        
+        //删除系统文件
+        vm.commonDelSysFile = function(id){
+        	common.commonDelSysFile(vm,id,$http);
+        }
+        //附件下载
+        vm.commonDownloadSysFile = function(id){
+        	common.commonDownloadFile(vm,id);
+        }
+        
         //重置
         vm.formResetWork=function(){
         	var values=$("#searchformi").find("input,select");

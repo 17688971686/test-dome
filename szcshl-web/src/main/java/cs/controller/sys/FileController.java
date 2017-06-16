@@ -61,9 +61,9 @@ public class FileController {
     	return sysFileDtos;
     }
 	
-	@RequestMapping(name="获取上传收文附件数据",path="getfileSigns",method=RequestMethod.POST)
-	public @ResponseBody List<SysFileDto> getfileSigns(@RequestParam(required = true)String businessId){
-		List<SysFileDto>  sysfileDto = fileService.findBySignId(businessId);
+	@RequestMapping(name="根据收文ID获取上传数据",path="findBySysFileSignId",method=RequestMethod.GET)
+	public @ResponseBody List<SysFileDto> findByFileSignId(@RequestParam(required = true)String signid){
+		List<SysFileDto>  sysfileDto = fileService.findBySysFileSignId(signid);
 		return sysfileDto;
 	}
 	//@RequiresPermissions("file##post")

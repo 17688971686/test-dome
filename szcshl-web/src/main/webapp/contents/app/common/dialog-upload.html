@@ -1,0 +1,47 @@
+
+<meta charset="UTF-8">
+
+	<!--S 上传附件弹窗 -->
+	<div id="commonuploadWindow" class="well well-sm" style="background:white;display:none;">
+  		   <input type="file" id="commonphotofile" name="file" multiple="multiple" id="file" /> 
+	</div>
+	<!--E 上传附件弹窗 -->
+	
+	<!-- S 附件上传列表 -->
+	<div id="commonQueryWindow" class="well well-sm" style="background:white;display:none;" >
+ 	 <table style="width:100%;">
+		<tr >
+			<td rowspan="4" valign="top" padding:2px 10px;" class="breadcrumb" nowrap="nowrap">
+			<p class="label label-success">附件上传列表</p>
+				<div style="width:800px; height:400px;overflow: auto;">
+					<table class="table table-bordered" id="workTab"  style="width: 800px;" >
+					  	<tr >
+						    <td width="10%" align="center" bgcolor="#eeeeee">文件名称</td>
+						    <td width="10%" align="center" bgcolor="#eeeeee">时间</td> 
+						    <td width="10%" align="center" bgcolor="#eeeeee">操作</td>
+						</tr>
+						<tr ng-repeat="x in vm.sysFilelists ">
+						    <td style="text-align: center;">						   					   
+							<i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.png'"></i>
+							<i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.jpg'"></i>
+							<i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.gif'"></i>
+							<i class="fa fa-file-word-o" aria-hidden="true"  ng-show="x.fileType =='.docx'"></i>
+							<i class="fa fa-file-excel-o" aria-hidden="true"  ng-show="x.fileType =='.xlsx'"></i>
+							<i class="fa fa-file-pdf-o"  aria-hidden="true"  ng-show="x.fileType =='.pdf'"></i>
+						    <a  ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+						    </td>
+						   <td style="text-align: center;">{{ x.createdDate }}</td> 
+						    <td style="text-align: center;">
+						     <button ng-click="vm.commonDownloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-sm btn-primary">附件下载</button>
+						    &nbsp;&nbsp;&nbsp;&nbsp;
+						 <button class="btn btn-sm btn-danger" ng-click="vm.commonDelSysFile(x.sysFileId)" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+					</td>
+						</tr>
+					</table>
+					
+				</div>
+			</td>
+		</tr>
+	</table> 
+ 	</div>
+ <!-- E 附件上传列表 -->

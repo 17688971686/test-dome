@@ -24,52 +24,11 @@
 			mergeAddWork:mergeAddWork,			//保存合并评审
 			getInitSeleSignBysId:getInitSeleSignBysId,//初始化已选项目列表
 			getInitRelateData:getInitRelateData,	//初始化关联数据
-			initWorkUpload:initWorkUpload,//初始上传附件控件
-			delsWorkSysFile:delsWorkSysFile,//删除系统文件
-			workDownload:workDownload,//文件下载
-			delsWorkSysFile:delsWorkSysFile//删除系统文件
+
+
 		};
 		return service;
 		
-		function workDownload(vm,id){
-			var sysfileId = id;
-			window.open(rootPath+"/file/fileDownload?sysfileId="+id);
-		}
-		//S_删除系统文件
-		function delsWorkSysFile(vm,id){
-			var httpOptions = {
-					method : 'delete',
-					url : rootPath+"/file/deleteSysFile",
-					data : id
-
-				}
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn:function(){		
-							window.parent.$("#workqueryWin").data("kendoWindow").close();
-							common.alert({
-								vm:vm,
-								msg:"删除成功",
-								fn:function() {
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})								
-						}		
-
-					});
-
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-		}
-		//E_删除系统文件
 		
 		//S_初始化已选项目列表
 		function getInitSeleSignBysId(vm){
@@ -431,7 +390,7 @@
 							}
 							
 						}
-						initWorkUpload(vm);
+						
 					}						
 				});
 			}
@@ -443,26 +402,6 @@
 			});
 		}//S_初始化页面参数	
 		
-		//S_初始化上传附件控件
-        function initWorkUpload(vm){
-        	var businessId = vm.work.signId;
-            var projectfileoptions = {
-                language : 'zh',
-                allowedPreviewTypes : ['image'],
-                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx" ,"pdf","doc","xls"],
-                maxFileSize : 2000,
-                showRemove: false,
-                uploadUrl:rootPath + "/file/fileUpload",
-                uploadExtraData:{businessId:businessId}
-            };
-            $("#workphotofile").fileinput(projectfileoptions).on("filebatchselected", function(event, files){
-
-            }).on("fileuploaded", function(event, data) {
-                $("#workPhotoSrc").removeAttr("src");
-                $("#workPhotoSrc").attr("src",rootPath+"/sign/transportImg?signid="+businessId+"&t="+Math.random());
-            });
-        }
-		//E_初始化上传附件控件
 		
 		//S_保存操作
 		function createWP(vm){

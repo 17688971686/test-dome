@@ -16,11 +16,7 @@
 			deleteSign :　deleteSign,			//删除收文
 			findOfficeUsersByDeptName :findOfficeUsersByDeptName,//根据协办部门名称查询用户
 			initFlowPageData : initFlowPageData, //初始化流程收文信息
-			initUpload:initUpload,//初始化上传附件控件
-			deleteSysFile:deleteSysFile,//删除系统文件
-
             removeWP : removeWP,             //删除工作方案
-            signDownload:signDownload,	//附件下载
             associateGrid:associateGrid,//项目关联列表
             saveAssociateSign:saveAssociateSign,//保存项目关联
             initAssociateSigns:initAssociateSigns//初始化项目关联信息
@@ -28,70 +24,6 @@
 		};
 		return service;
 		
-		//附件下载
-		function signDownload(vm,id){
-			var sysfileId = id;
-			window.open(rootPath+"/file/fileDownload?sysfileId="+id);
-		}
-		
-		//S 删除系统文件
-		function deleteSysFile(vm,id){
-			var httpOptions = {
-				method : 'delete',
-				url : rootPath+"/file/deleteSysFile",
-				data : id
-
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn:function(){		
-						window.parent.$("#signAttachments").data("kendoWindow").close();
-						common.alert({
-							vm:vm,
-							msg:"删除成功",
-							fn:function() {
-								$('.alertDialog').modal('hide');
-								$('.modal-backdrop').remove();
-							}
-						})								
-					}		
-
-				});
-
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-		//E 删除系统文件
-		
-		//S_初始化上传附件控件
-        function initUpload(vm){
-        	var businessId = vm.model.signid;
-            var projectfileoptions = {
-                language : 'zh',
-                allowedPreviewTypes : ['image'],
-                allowedFileExtensions : [ 'jpg', 'png', 'gif',"xlsx","docx","doc","xls","pdf" ],
-                maxFileSize : 2000,
-                showRemove: false,
-                uploadUrl:rootPath + "/file/fileUpload",
-                uploadExtraData:{businessId:businessId}
-            };
-            $("#signphotofile").fileinput(projectfileoptions).on("filebatchselected", function(event, files){
-
-            }).on("fileuploaded", function(event, data) {
-                $("#signPhotoSrc").removeAttr("src");
-                $("#signPhotoSrc").attr("src",rootPath+"/sign/transportImg?signid="+businessId+"&t="+Math.random());
-            });
-        }
-		//E_初始化上传附件控件
-        
-        
 		//S_初始化grid
 		function grid(vm){
 			// Begin:dataSource
@@ -400,9 +332,7 @@
 						vm.builtcomlist = response.data.builtcomlist;
 						//编制单位
 						vm.designcomlist = response.data.designcomlist;
-						 //系统文件
-		                vm.sysFilelist = response.data.sysFiles;
-						initUpload(vm);
+					
 					}					
 				})
 			}

@@ -28,9 +28,9 @@ public interface SysFileService {
 	
 	PageModelDto<SysFileDto> get(ODataObj odataObj);
 
-	public List<SysFileDto> findBySignId(String signid) ;
-
 	public SysFile findFileById(String sysfileId);
+
+	public List<SysFileDto> findBySysFileSignId(String signid);
 		
 	
 }

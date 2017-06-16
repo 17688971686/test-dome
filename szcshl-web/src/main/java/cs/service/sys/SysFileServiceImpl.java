@@ -19,12 +19,14 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SysFileUtil;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 
 @Service
@@ -32,6 +34,9 @@ public class SysFileServiceImpl implements SysFileService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);	
 	@Autowired
 	private SysFileRepo sysFileRepo;	
+	
+	@Autowired
+	private SignRepo signRepo;
 	
 	@Autowired
 	private ICurrentUser currentUser;
@@ -106,31 +111,33 @@ public class SysFileServiceImpl implements SysFileService{
 		}*/		
 	}
 
+
 	@Override
-	public List<SysFileDto> findBySignId(String signid) {
-		  HqlBuilder hql = HqlBuilder.create();
-		  if(signid!=null){
-			  hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.businessId.getName()).append("=:businessId").setParam("businessId", signid);
-		  }
-		  List<SysFile> file = sysFileRepo.findByHql(hql);
-		  List<SysFileDto> sysFileDtoList= new ArrayList<SysFileDto>();
-		  for(SysFile item:file){
+	public SysFile findFileById(String sysfileId) {
+		SysFile sysFile= sysFileRepo.findById(sysfileId);
+		return sysFile;
+	}
+
+	@Override
+	public List<SysFileDto> findBySysFileSignId(String signid) {
+		
+//		Sign sign = signRepo.findById(signid);
+		HqlBuilder hql = HqlBuilder.create();
+		hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.businessId.getName()).append("=:businessId").setParam("businessId", signid);
+		List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
+		List<SysFileDto> sysFileDtoList= new ArrayList<SysFileDto>();
+		for(SysFile item : sysFiles){
 			SysFileDto sysFileDto=new SysFileDto();
 			sysFileDto.setSysFileId(item.getSysFileId());
 			sysFileDto.setBusinessId(item.getBusinessId());
 			sysFileDto.setFileUrl(item.getFileUrl());
 			sysFileDto.setShowName(item.getShowName());
 			sysFileDto.setFileType(item.getFileType());
+			sysFileDto.setCreatedDate(item.getCreatedDate());
 			sysFileDtoList.add(sysFileDto);
 		}
-		logger.info("查询文件");
-		return sysFileDtoList;
-	}
 
-	@Override
-	public SysFile findFileById(String sysfileId) {
-		SysFile sysFile= sysFileRepo.findById(sysfileId);
-		return sysFile;
+		return sysFileDtoList;
 	}
 
 }
