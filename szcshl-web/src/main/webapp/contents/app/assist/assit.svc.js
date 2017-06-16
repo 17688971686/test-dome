@@ -621,7 +621,7 @@
         //end  getAllUnit
 
         //begin saveDrawAssistUnit
-        function saveDrawAssistUnit(){
+        function saveDrawAssistUnit(vm){
             var ids = '';
             var length = vm.assistPlanSign.length;
             vm.assistPlanSign.forEach(function(t,n){
@@ -656,7 +656,7 @@
                     response:response,
                     fn:function() {
                         vm.iscommit = false;
-                        vm.isCommited = ture;
+                        vm.isCommited = true;
                         common.alert({
                             vm:vm,
                             msg:"操作成功！",

@@ -341,7 +341,6 @@
 
         //协审项目抽签
         vm.drawAssistUnit = function(){
-
             if(vm.assistPlanSign != undefined&&vm.assistPlanSign.length>0){
                 vm.assistPlanSign.forEach(function(t,n){
                     t.assistUnit = null;
@@ -389,7 +388,7 @@
 
 
         vm.saveDrawAssistUnit = function(){
-            assistSvc.saveDrawAssistUnit();
+            assistSvc.saveDrawAssistUnit(vm);
         }
 
     }
