@@ -6,10 +6,29 @@ package cs.common;
  * @author ldm
  */
 public class Constant {
+    /**
+     * 企业名称
+     */
+    public static final String COMPANY_NAME = "深圳市政府投资项目评审中心";
+    /**
+     * 默认错误信息
+     */
     public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
+    /**
+     * 系统业务属性文件名
+     */
     public static final String businessPropertiesName = "business.properties";
+    /**
+     * 默认来文单位
+     */
     public static final String SEND_FILE_UNIT = "深圳市发展和改革委员会";
+    /**
+     * 默认送件人
+     */
     public static final String SEND_SIGN_NAME = "魏俊辉";
+    /**
+     * 工作方案表抬头
+     */
     public static final String WORKPROGRAM_NAME = "评审工作方案";
     public static final String DRAW_ASSIST_UNITNAME = "系统协审单位抽签最大序号值";
     public static final String FLOW_LINK_SYMBOL = "$";    //流程业务ID和名称关联符号

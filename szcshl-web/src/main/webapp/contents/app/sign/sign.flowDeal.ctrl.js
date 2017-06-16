@@ -123,10 +123,13 @@
 
         // S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function () {
-            $state.go('workprogramEdit', {
-                signid: vm.model.signid
-            });
+            $state.go('workprogramEdit', {signid: vm.model.signid });
         }// E_跳转到 工作方案 编辑页面
+
+        //S_跳转到 工作方案 基本信息
+        vm.addBaseWP = function(){
+            $state.go('workprogramBaseEdit', {signid: vm.model.signid });
+        }
 
         // S_跳转到 发文 编辑页面
         vm.addDisPatch = function () {
@@ -203,33 +206,6 @@
             }
         }
 
-        //协审项目负责人环节，确认是否要填写工作方案
-        vm.checkNeedWP = function ($event) {
-            var checkbox = $event.target;
-            var checked = checkbox.checked;
-            if (checked) {
-                vm.model.isNeedWrokPrograml = '9'
-            } else {
-                //如果有发文信息，询问是否删除
-                if (vm.mainwork && vm.mainwork.id) {
-                    common.confirm({
-                        vm: vm,
-                        title: "",
-                        msg: "取消会对填报的工作方案进行删除，确认删除么？",
-                        fn: function () {
-                            $('.confirmDialog').modal('hide');
-                            signSvc.removeWP(vm);
-                        },
-                        cancel: function () {
-                            checkbox.checked = !checked;
-                            vm.model.isNeedWrokPrograml = '9'
-                            $('.confirmDialog').modal('hide');
-                        }
-                    })
-                }
-            }
-
-        }
 
     }
 })();

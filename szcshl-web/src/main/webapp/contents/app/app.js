@@ -233,6 +233,7 @@
                 controllerAs: 'vm'
             }).state('fillSign', {
                 url: '/fillSign/:signid',
+                cache:'false',
                 templateUrl: rootPath + '/sign/html/fillin.html',
                 controller: 'signFillinCtrl',
                 controllerAs: 'vm'
@@ -268,6 +269,12 @@
                 url: '/workprogramEdit/:signid',
                 templateUrl: rootPath + '/workprogram/html/edit.html',
                 controller: 'workprogramEditCtrl',
+                controllerAs: 'vm'
+            })
+            .state('workprogramBaseEdit', {
+                url: '/workprogramBaseEdit/:signid',
+                templateUrl: rootPath + '/workprogram/html/baseEdit.html',
+                controller: 'workprogramBaseEditCtrl',
                 controllerAs: 'vm'
             })
             //end#workprogram
@@ -359,19 +366,35 @@
                 controller: 'assistUnitUserEditCtrl',
                 controllerAs: 'vm'
             })
-            
-            
-        	
-        	
+
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
+        //获取表头名称
+        $rootScope.getTBHeadName = function(stageName,isAdvanced,type){
+            //项目建议书、可行性  提前介入称为评估论证
+            if(isAdvanced && isAdvanced == '9' && (stageName == '项目建议书' || stageName == '可行性研究报告')){
+                return "评估论证" + type;
+            }else{
+                if(stageName){
+                    if(stageName == '项目概算'){
+                        return "概算审核"+type;
+                    }
+                    return stageName + type;
+                }else{
+                    return type;
+                }
+
+            }
+        }
+
+        //实现返回的函数
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
         });
-        //实现返回的函数
+
         $rootScope.back = function () {
         	if($rootScope.previousState_name ){
         		$state.go($rootScope.previousState_name, $rootScope.previousState_params);

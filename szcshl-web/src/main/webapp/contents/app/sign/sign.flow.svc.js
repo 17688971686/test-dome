@@ -64,26 +64,34 @@
                     vm.businessTr = true;
                     vm.XMFZR_SP_GZFA = true;
                     vm.MarkAndPay=false;//专家评分费用编辑权限
-                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9){ //如果填报完成，则显示
+                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         vm.show_workprogram = true;
                         $("#show_workprogram_a").click();
                     };
                     break;
                 case "BZ_SP_GZAN1":
                     vm.show_workprogram = true;
-                    $("#show_workprogram_a").click();
+                    if(vm.model.isNeedWrokPrograml == '9'){
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 case "FGLD_SP_GZFA1":
                     vm.show_workprogram = true;
-                    $("#show_workprogram_a").click();
+                    if(vm.model.isNeedWrokPrograml == '9'){
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 case "BZ_SP_GZAN2":
                     vm.show_workprogram = true;
-                    $("#show_workprogram_a").click();
+                    if(vm.model.isNeedWrokPrograml == '9'){
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 case "FGLD_SP_GZFA2":
                     vm.show_workprogram = true;
-                    $("#show_workprogram_a").click();
+                    if(vm.model.isNeedWrokPrograml == '9'){
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 case "FW_SQ":
                     vm.businessTr = true;
@@ -125,18 +133,19 @@
                 case "XS_XMFZR_GZFA":       //项目负责人承办
                     vm.businessTr = true;
                     vm.XS_XMFZR_GZFA = true;
-                    if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
-                        vm.show_workprogram = true;
+                    if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "XS_BZSP_GZFA":             //部长审批工作方案
-                    vm.show_workprogram = true;
-                    $("#show_workprogram_a").click();
+                    if(vm.model.isNeedWrokPrograml == '9'){
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 case "XS_FGLDSP_GZFA":           //分管审批工作方案
-                    vm.show_workprogram = true;
-                    $("#show_workprogram_a").click();
+                    if(vm.model.isNeedWrokPrograml == '9'){
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 case "XS_FW":                    //发文申请
                     vm.businessTr = true;
@@ -230,17 +239,22 @@
                     });
                     break;
                 case "XMFZR_SP_GZFA1":
-                    if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
-                        resultTag = true;
-                    }else{
-                        resultTag = false;
+                    if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9'){
+                        if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
+                            resultTag = true;
+                        }else{
+                            resultTag = false;
+                        }
                     }
+
                     break;
                 case "XMFZR_SP_GZFA2":
-                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted==9){
-                        resultTag = true;
-                    }else{
-                        resultTag = false;
+                    if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9') {
+                        if (vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9) {
+                            resultTag = true;
+                        } else {
+                            resultTag = false;
+                        }
                     }
                     break;
                 case "BZ_SP_GZAN1":
@@ -311,7 +325,7 @@
                 case "XS_XMFZR_GZFA":           //项目负责人承办
                     vm.flow.businessMap.PSFA == vm.model.isNeedWrokPrograml
                     //选择了工作方案没填写的，不给通过
-                    if(vm.model.isNeedWrokPrograml == '9' && (!vm.mainwork || !vm.mainwork.id)){
+                    if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9' && (!vm.mainwork || !vm.mainwork.id)) {
                         resultTag = false;
                     }
                     break;

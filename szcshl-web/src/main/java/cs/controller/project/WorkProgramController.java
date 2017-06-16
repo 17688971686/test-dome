@@ -22,75 +22,87 @@ import cs.service.project.WorkProgramService;
 @RequestMapping(name = "工作方案", path = "workprogram")
 public class WorkProgramController {
 
-	private String ctrlName = "workprogram";
-	
-	@Autowired
-	private WorkProgramService workProgramService;
-	
+    private String ctrlName = "workprogram";
 
-	@RequiresPermissions("workprogram#addWork#post")
-	@RequestMapping(name = "工作方案提交", path = "addWork",method=RequestMethod.POST)
-	@ResponseBody
-	public WorkProgramDto post(@RequestBody  WorkProgramDto workProgramDto) throws Exception  {
-		workProgramService.save(workProgramDto);
-		return workProgramDto;
-	}
+    @Autowired
+    private WorkProgramService workProgramService;
 
-	@RequiresPermissions("workprogram#initWorkBySignId#get")
-	@RequestMapping(name = "工作方案编辑", path = "html/initWorkBySignId",method=RequestMethod.GET)	
-	public @ResponseBody WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId,String isMain){
-		WorkProgramDto workDto =workProgramService.initWorkBySignId(signId,isMain);
-		return workDto;
-	}
-	
-	@RequiresPermissions("workprogram#waitProjects#post")
-	@RequestMapping(name = "待选项目列表", path = "waitProjects",method=RequestMethod.POST)	
-	public @ResponseBody List<SignDto> waitProjects(@RequestBody SignDto signDto){
-		List<SignDto>	sign = workProgramService.waitProjects(signDto);
-		return sign;
-	}
-	
-	@RequiresPermissions("workprogram#selectedProject#post")
-	@RequestMapping(name = "已选项目列表", path = "selectedProject",method=RequestMethod.POST)
-	public @ResponseBody List<SignDto> selectedProject(@RequestParam String linkSignIds){
-		String [] ids=linkSignIds.split(",");
-		List<SignDto> signList =workProgramService.selectedProject(ids);
-		return signList;
-	}
-	
-	@RequiresPermissions("workprogram#getInitSeleSignBysId#get")
-	@RequestMapping(name = "初始化已选项目列表", path = "getInitSeleSignBysId",method=RequestMethod.GET)
-	public @ResponseBody Map<String,Object> getInitSeleSignBysId(@RequestParam(required = true) String bussnessId)throws Exception{
-		Map<String,Object> map = workProgramService.getInitSeleSignByIds(bussnessId);
-		return map;
-	}
-	
-	@RequiresPermissions("workprogram#getInitRelateData#post")
-	@RequestMapping(name = "初始化页面获取关联数据", path = "getInitRelateData",method=RequestMethod.POST)
-	public @ResponseBody Map<String,Object> getInitRelateData(@RequestParam(required = true) String signid){
-		 Map<String,Object> map = workProgramService.getInitRelateData(signid);
-		 return map;
-	}
-	
-	@RequiresPermissions("workprogram#mergeAddWork#get")
-	@RequestMapping(name = "保存合并评审", path = "mergeAddWork",method=RequestMethod.GET)	
-	@ResponseBody
-	public  void mergeAddWork(@RequestParam(required = true)  String signId,String linkSignId){
-		
-		workProgramService.mergeAddWork(signId,linkSignId);
-	}
 
-	@RequestMapping(name = "删除工作方案", path = "deleteBySignId",method=RequestMethod.DELETE)
+    @RequiresPermissions("workprogram#addWork#post")
+    @RequestMapping(name = "工作方案提交", path = "addWork", method = RequestMethod.POST)
+    @ResponseBody
+    public WorkProgramDto post(@RequestBody WorkProgramDto workProgramDto,Boolean isNeedWorkProgram) throws Exception {
+        workProgramService.save(workProgramDto,isNeedWorkProgram);
+        return workProgramDto;
+    }
+
+    @RequiresPermissions("workprogram#initWorkBySignId#get")
+    @RequestMapping(name = "工作方案编辑", path = "html/initWorkBySignId", method = RequestMethod.GET)
+    public @ResponseBody
+    WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId, String isMain) {
+        WorkProgramDto workDto = workProgramService.initWorkBySignId(signId, isMain);
+        return workDto;
+    }
+
+    @RequiresPermissions("workprogram#waitProjects#post")
+    @RequestMapping(name = "待选项目列表", path = "waitProjects", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDto> waitProjects(@RequestBody SignDto signDto) {
+        List<SignDto> sign = workProgramService.waitProjects(signDto);
+        return sign;
+    }
+
+    @RequiresPermissions("workprogram#selectedProject#post")
+    @RequestMapping(name = "已选项目列表", path = "selectedProject", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDto> selectedProject(@RequestParam String linkSignIds) {
+        String[] ids = linkSignIds.split(",");
+        List<SignDto> signList = workProgramService.selectedProject(ids);
+        return signList;
+    }
+
+    @RequiresPermissions("workprogram#getInitSeleSignBysId#get")
+    @RequestMapping(name = "初始化已选项目列表", path = "getInitSeleSignBysId", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> getInitSeleSignBysId(@RequestParam(required = true) String bussnessId) throws Exception {
+        Map<String, Object> map = workProgramService.getInitSeleSignByIds(bussnessId);
+        return map;
+    }
+
+    @RequiresPermissions("workprogram#getInitRelateData#post")
+    @RequestMapping(name = "初始化页面获取关联数据", path = "getInitRelateData", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> getInitRelateData(@RequestParam(required = true) String signid) {
+        Map<String, Object> map = workProgramService.getInitRelateData(signid);
+        return map;
+    }
+
+    @RequiresPermissions("workprogram#mergeAddWork#get")
+    @RequestMapping(name = "保存合并评审", path = "mergeAddWork", method = RequestMethod.GET)
+    @ResponseBody
+    public void mergeAddWork(@RequestParam(required = true) String signId, String linkSignId) {
+
+        workProgramService.mergeAddWork(signId, linkSignId);
+    }
+
+    @RequestMapping(name = "删除工作方案", path = "deleteBySignId", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public  void deleteBySignId(@RequestParam(required = true)String signId){
-		workProgramService.deleteBySignId(signId);
-	}
+    public void deleteBySignId(@RequestParam(required = true) String signId) {
+        workProgramService.deleteBySignId(signId);
+    }
 
-	@RequiresPermissions("workprogram#html/edit#get")
-	@RequestMapping(name = "工作方案编辑", path = "html/edit" ,method = RequestMethod.GET)
-	public String edit(){
-			
-		return ctrlName + "/edit";
-	}
-			
+    @RequiresPermissions("workprogram#html/edit#get")
+    @RequestMapping(name = "工作方案编辑", path = "html/edit", method = RequestMethod.GET)
+    public String edit() {
+
+        return ctrlName + "/edit";
+    }
+
+    @RequiresPermissions("workprogram#html/baseEdit#get")
+    @RequestMapping(name = "项目基本信息", path = "html/baseEdit", method = RequestMethod.GET)
+    public String baseEdit() {
+
+        return ctrlName + "/baseEdit";
+    }
+
 }

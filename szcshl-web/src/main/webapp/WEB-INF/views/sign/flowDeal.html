@@ -40,7 +40,8 @@
 
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-        <li ng-show="vm.show_workprogram"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+        <li ng-show="vm.model.isNeedWrokPrograml == '9'"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+        <li ng-show="angular.isUndefined(vm.model.isNeedWrokPrograml) || vm.model.isNeedWrokPrograml == '0'"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
         <li ng-show="vm.show_dispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
         <li ng-show="vm.show_filerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
         <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
@@ -190,17 +191,19 @@
         <!-- end tab3 -->
         <!-- end 专家费用 -->
 
-        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram"
-             ng-show="vm.show_workprogram">
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
             <div ng-include src="'${path}/contents/app/workprogram/all_detail.html'"/>
         </div><!-- 工作方案 -->
 
-        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" ng-show="vm.show_dispatch">
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_basewp" >
+            <div ng-include src="'${path}/contents/app/workprogram/base_detail.html'"/>
+        </div><!-- 工作方案 【项目基本信息 协审流程才有】-->
+
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" >
             <div ng-include src="'${path}/contents/app/dispatch/detail.html'"/>
         </div><!-- 发文 -->
 
-        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord"
-             ng-show="vm.show_filerecord">
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
             <div ng-include src="'${path}/contents/app/fileRecord/detail.html'"/>
         </div><!-- 归档 -->
     </div>

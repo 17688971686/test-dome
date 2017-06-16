@@ -110,8 +110,11 @@
                     </div>
                     <!-- 协审工作方案 -->
                     <div ng-show="vm.XS_XMFZR_GZFA">
+						<p>
+							<button class="btn btn-xs btn-primary" ng-click="vm.addBaseWP()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>项目基本信息</button>
+						</p>
                         <p>
-                            是否需要项目评审：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isNeedWrokPrograml" name="isNeedWrokPrograml" ng-click="vm.checkNeedWP($event)" ng-true-value="9" ng-false-value="0" >
+                            是否需要项目评审：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isNeedWrokPrograml" name="isNeedWrokPrograml" ng-true-value="9" ng-false-value="0" >
                             <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit" ng-show="vm.model.isNeedWrokPrograml == 9" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
                         </p>
                     </div>
@@ -146,6 +149,3 @@
 	</table>
 	</form>		    
 </div>
-
-
-

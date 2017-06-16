@@ -100,7 +100,7 @@
 		      <td colspan="2" style="width:150px;" class="text-center">项目类别<span class="required">*</span></td>
 		      <td>
 		      <select ng-model="vm.work.projectType"  name="projectType" id="projectType" data-val="true" data-val-required="必填">
-					<option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectType == x.dictKey">{{x.dictName}}</option>
 			</select>
 				<span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>	
 			  </td>
@@ -108,14 +108,14 @@
 		      <td>
 		    	 
 		    	<select ng-model="vm.work.projectSubType"  name="projectSubType" id="projectSubType" data-val="true" data-val-required="必填">
-					<option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectSubType == x.dictKey">{{x.dictName}}</option>
 				</select>
 				<span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>	
 			  </td>
 			  <td style="width:150px;" class="text-center">行业类别<span class="required">*</span></td>
 		      <td>
 		     	 <select ng-model="vm.work.industryType"  name="industryType" id="industryType" data-val="true" data-val-required="必填">
-					<option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}"  ng-selected="vm.work.industryType == x.dictKey">{{x.dictName}}</option>
 				</select>
 				<span data-valmsg-for="industryType" data-valmsg-replace="true" class="errors"></span>
 		      </td>

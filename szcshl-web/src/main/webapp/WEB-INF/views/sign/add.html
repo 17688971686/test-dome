@@ -64,6 +64,9 @@
                     <span ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'||vm.model.reviewstage=='项目概算'" >
                         <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.ispresign" name="ispresign"  ng-true-value="9" ng-false-value="0" > 项目预签收
                     </span>
+                    <span ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'||vm.model.reviewstage=='项目概算'" >
+                        <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isAdvanced" name="isAdvanced"  ng-true-value="9" ng-false-value="0" > 提前介入
+                    </span>
                     <span ng-show="vm.model.reviewstage=='项目概算'" style="margin-left: 20px;">
                         <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.ischangeEstimate" name="ischangeEstimate"  ng-true-value="9" ng-false-value="0" > 是否调概
                     </span>

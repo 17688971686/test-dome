@@ -8,7 +8,7 @@ import cs.model.project.WorkProgramDto;
 
 public interface WorkProgramService {
 
-	void save(WorkProgramDto workProgramDto) throws Exception ;
+	void save(WorkProgramDto workProgramDto,Boolean isNeedWorkProgram) throws Exception ;
 
 	WorkProgramDto initWorkBySignId(String signId,String isMain);
 

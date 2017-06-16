@@ -2,6 +2,7 @@ package cs.model.project;
 
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -173,8 +174,10 @@ public class SignDto extends BaseDto {
 		
 	//项目建议书电子文档是否有复印件
 	private String proSugEledocCopy;
-	
-	
+
+	//申报投资
+    private BigDecimal appalyInvestment;
+
 	//建议书相关会议纪要份数
 	private Integer sugMeetCount;
 		
@@ -346,6 +349,8 @@ public class SignDto extends BaseDto {
 	//项目是否已关联,0未关联，1已关联，默认未关联
 	private Integer isAssociate = 0;
 
+	//是否提前介入
+	private String isAdvanced;
 	//关联阶段的项目
 	private SignDto associateSign;
 
@@ -1406,6 +1411,20 @@ public class SignDto extends BaseDto {
 	public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
 		this.expertSelectedDtoList = expertSelectedDtoList;
 	}
-	
-	
+
+    public String getIsAdvanced() {
+        return isAdvanced;
+    }
+
+    public void setIsAdvanced(String isAdvanced) {
+        this.isAdvanced = isAdvanced;
+    }
+
+    public BigDecimal getAppalyInvestment() {
+        return appalyInvestment;
+    }
+
+    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+        this.appalyInvestment = appalyInvestment;
+    }
 }

@@ -1,8 +1,13 @@
 <meta charset="UTF-8">
 <!-- s table -->
 <table class="table table-bordered">
-  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>评估论证项目报审登记表</strong></caption>
-  <caption class="text-right">收文日期:2017年4月24日</caption>
+  <caption class="text-center h3">
+	  <strong>
+		  深圳市政府投资项目评审中心 <br>
+		  {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
+	  </strong>
+  </caption>
+  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
   <tbody>
     <tr>
       <td width="15%" class="text-center">主办处室</td>
@@ -29,21 +34,43 @@
       <td>{{vm.model.filecode}}</td>
       <td width="15%" class="text-center">项目代码</td>
       <td>{{vm.model.projectcode}}</td>
-    </tr>	    
-    <tr>
-      <td width="15%" rowspan="2" class="text-center">项目名称</td>
-      <td rowspan="2">{{vm.model.projectname}}</td>
-      <td width="15%" class="text-center">建设单位</td>
-      <td>
-			{{vm.model.builtcompanyName}}
-	  </td>
     </tr>
-    <tr>		     
-      <td width="15%" class="text-center">编制单位</td>
-      <td>
-			{{vm.model.designcompanyName}}
-	  </td>
-    </tr> 
+
+    <!--S 普通收文 和 概算收文 不同的地方-->
+    <tr ng-hide="vm.model.isassistflow == '9'">
+        <td width="15%" rowspan="2" class="text-center">项目名称</td>
+        <td rowspan="2">{{vm.model.projectname}}</td>
+        <td width="15%" class="text-center">建设单位</td>
+        <td>
+            {{vm.model.builtcompanyName}}
+        </td>
+    </tr>
+    <tr ng-hide="vm.model.isassistflow == '9'">
+        <td width="15%" class="text-center">编制单位</td>
+        <td>
+            {{vm.model.designcompanyName}}
+        </td>
+    </tr>
+
+    <tr ng-show="vm.model.isassistflow == '9'">
+        <td width="15%"  class="text-center">项目名称</td>
+        <td >{{vm.model.projectname}}</td>
+        <td width="15%" class="text-center">建设单位</td>
+        <td>
+            {{vm.model.builtcompanyName}}
+        </td>
+    </tr>
+    <tr ng-show="vm.model.isassistflow == '9'">
+        <td width="15%" class="text-center">编制单位</td>
+        <td>
+            {{vm.model.designcompanyName}}
+        </td>
+        <td width="15%" class="text-center">报审概算</td>
+        <td>
+            {{vm.model.appalyInvestment}}万
+        </td>
+    </tr>
+    <!--E 普通收文 和 概算收文 不同的地方-->
     <tr>
       <td width="15%" class="text-center" rowspan="2">缓急程度</td>
       <td rowspan="2">
