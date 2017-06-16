@@ -49,14 +49,14 @@ public class ExpertController {
 
 	@RequestMapping(name = "统计符合条件的专家", path = "countReviewExpert", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer countReviewExpert(@RequestBody ExpertSelConditionDto epSelCondition) {
-		return expertService.countExpert(epSelCondition);
+	public Integer countReviewExpert(@RequestParam String workprogramId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto epSelCondition) {
+		return expertService.countExpert(workprogramId,reviewId,epSelCondition);
 	}
 
     @RequestMapping(name = "专家抽取", path = "findReviewExpert", method = RequestMethod.POST)
     @ResponseBody
-    public List<ExpertDto> findReviewExpert(@RequestBody ExpertSelConditionDto[] paramArrary) {
-		List<ExpertDto> pageModelDto = expertService.findExpert(paramArrary);
+    public List<ExpertDto> findReviewExpert(@RequestParam String workprogramId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto[] paramArrary) {
+		List<ExpertDto> pageModelDto = expertService.findExpert(workprogramId,reviewId,paramArrary);
         return pageModelDto;
     }
 

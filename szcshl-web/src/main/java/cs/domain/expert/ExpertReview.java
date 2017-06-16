@@ -75,6 +75,13 @@ public class ExpertReview extends DomainBase {
     @OneToMany(mappedBy = "expertReview")
     private List<ExpertSelCondition> expertSelConditionList;
 
+    /**
+     * 抽取的专家信息（一对多）
+     */
+    @OneToMany(mappedBy = "expertReview",cascade=CascadeType.REMOVE)
+    private List<ExpertSelected> expertSelectedList;
+
+
     public BigDecimal getTotalCost() {
         return totalCost;
     }
@@ -146,5 +153,37 @@ public class ExpertReview extends DomainBase {
 
     public void setExpertSelConditionList(List<ExpertSelCondition> expertSelConditionList) {
         this.expertSelConditionList = expertSelConditionList;
+    }
+
+    public String getIsSelete() {
+        return isSelete;
+    }
+
+    public void setIsSelete(String isSelete) {
+        this.isSelete = isSelete;
+    }
+
+    public String getIsComfireResult() {
+        return isComfireResult;
+    }
+
+    public void setIsComfireResult(String isComfireResult) {
+        this.isComfireResult = isComfireResult;
+    }
+
+    public Integer getSelCount() {
+        return selCount;
+    }
+
+    public void setSelCount(Integer selCount) {
+        this.selCount = selCount;
+    }
+
+    public List<ExpertSelected> getExpertSelectedList() {
+        return expertSelectedList;
+    }
+
+    public void setExpertSelectedList(List<ExpertSelected> expertSelectedList) {
+        this.expertSelectedList = expertSelectedList;
     }
 }

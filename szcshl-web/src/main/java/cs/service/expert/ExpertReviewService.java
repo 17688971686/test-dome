@@ -1,10 +1,8 @@
 package cs.service.expert;
 
-import java.util.List;
 import java.util.Map;
 
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.repository.odata.ODataObj;
 
@@ -27,13 +25,9 @@ public interface ExpertReviewService {
 
 	ExpertReviewDto initByWorkProgramId(String workProgramId);
 
-	void save(String reviewId, String expertIds, String selectType);
+	void save(String reviewId,String expertIds, String selectType,boolean isDraw);
 
-	List<ExpertDto> refleshExpert(String workProgramId, String selectType);
-
-	void updateExpertState(String workProgramId, String expertIds, String state);
-
-	void deleteExpert(String workProgramId, String expertIds,String seleType,String expertSelConditionId);
+	void updateExpertState(String reviewId,String expertIds,String state,boolean isConfirm);
 	
 	Map<String,Object> getReviewList(String orgName,String year,String quarter);
 	
@@ -41,4 +35,5 @@ public interface ExpertReviewService {
 	
 	void savePayment(ExpertReviewDto expertReviewDto)throws Exception;
 
+	void affirmAutoExpert(String reviewId, String state);
 }

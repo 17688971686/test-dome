@@ -44,8 +44,8 @@ public class ExpertSelectedController {
     @RequiresPermissions("expertSelected##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-        expertSelectedService.delete(id);
+    public void delete(@RequestParam(required = true)String reviewId,@RequestParam(required = true) String id,boolean deleteAll) {
+        expertSelectedService.delete(reviewId,id,deleteAll);
     }
 
     @RequiresPermissions("expertSelected##put")

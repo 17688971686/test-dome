@@ -90,15 +90,18 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
 	}
 
     /**
-     * 删除专家抽取条件
-     * @param id
-     * @param reviewId
-     * @param deleteEP
+     * 删除专家抽取条件(同时删除已经抽取的专家)
+     * @param ids
      */
 	@Override
 	@Transactional
-	public void delete(String id, String reviewId, boolean deleteEP) {
-        expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(),id);
+	public void delete(String ids) {
+		List<String> idArr = StringUtil.getSplit(ids,",");
+		for(String id : idArr){
+			ExpertSelCondition condition = expertSelConditionRepo.findById(id);
+			expertSelConditionRepo.delete(condition);
+		}
+
 	}
 
     /**
@@ -122,9 +125,6 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
 				ExpertSelConditionDto rl = recordList[i];
                 domain.setExpertReview(reviewObj);
 				BeanCopierUtils.copyProperties(rl, domain);
-				if(!Validate.isString(domain.getSelectType())){
-                    domain.setSelectType(Constant.EnumExpertSelectType.AUTO.getValue());
-                }
 				expertSelConditionRepo.save(domain);
                 rl.setId(domain.getId());
 				resultList.add(rl);
@@ -132,33 +132,5 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
         }
         return resultList;
 	}
-
-    @Override
-    public Map<String,Object> findByWorkProId(String workProId) {
-       /* Map<String,Object> resultMap = new HashMap<String,Object>();
-        List<ExpertSelConditionDto> resultList = new ArrayList<>();
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from "+ExpertSelCondition.class.getSimpleName()+" where "+ExpertSelCondition_.workProgram.getName()+"."+ WorkProgram_.id.getName()  +" =:workProId");
-        hqlBuilder.setParam("workProId",workProId);
-        hqlBuilder.append(" order by " + ExpertSelCondition_.sort.getName());
-        List<ExpertSelCondition> queryList = expertSelConditionRepo.findByHql(hqlBuilder);
-
-        if(queryList != null && queryList.size() > 0){
-            queryList.forEach(ql -> {
-                ExpertSelConditionDto eDto = new ExpertSelConditionDto();
-                BeanCopierUtils.copyProperties(ql, eDto);
-                resultList.add(eDto);
-            });
-        }
-        resultMap.put("conditionList",resultList);
-        //添加工作方案信息
-        WorkProgram workProgram = workProgramRepo.findById(workProId);
-        WorkProgramDto wpDto = new WorkProgramDto();
-        BeanCopierUtils.copyProperties(workProgram, wpDto);
-        resultMap.put("workProgram",wpDto);
-
-        return resultMap;*/
-       return null;
-    }
 
 }

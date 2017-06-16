@@ -33,10 +33,15 @@ public class StringUtil extends StringUtils {
 			while(true){
 				int index = splitStr.indexOf(splitChars);
 				if(index < 0){
-					resultArray.add(splitStr);
+                    if(Validate.isString(splitStr)){
+                        resultArray.add(splitStr);
+                    }
 					break;
 				}
-				resultArray.add(splitStr.substring(0, index));
+				String subString = splitStr.substring(0, index);
+				if(Validate.isString(subString)){
+                    resultArray.add(subString);
+                }
 				splitStr = splitStr.substring(index+1);
 			}
 		}

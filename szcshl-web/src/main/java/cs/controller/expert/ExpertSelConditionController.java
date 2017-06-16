@@ -56,16 +56,11 @@ public class ExpertSelConditionController {
 		return expertSelConditionService.findById(id);
 	}
 
-    @RequestMapping(name = "通过评审方案查询", path = "html/findByWorkProId",method=RequestMethod.GET)
-    public @ResponseBody Map<String,Object> findByWorkProId(@RequestParam(required = true)String workProId){
-        return expertSelConditionService.findByWorkProId(workProId);
-    }
-
     @RequiresPermissions("expertSelCondition##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam(required = true)String id,@RequestParam(required = true)String reviewId,@RequestParam(required =true ,defaultValue = "false")boolean deleteEP) {
-        expertSelConditionService.delete(id,reviewId,deleteEP);
+    public void delete(@RequestParam(required = true)String ids) {
+        expertSelConditionService.delete(ids);
     }
 
     @RequiresPermissions("expertSelCondition##put")

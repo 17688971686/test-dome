@@ -25,9 +25,9 @@ public interface ExpertService{
 
 	public List<ExpertDto> findAllRepeat();
 
-	List<ExpertDto> findExpert(ExpertSelConditionDto[] epSelCondition);
+	List<ExpertDto> findExpert(String workprogramId,String reviewId,ExpertSelConditionDto[] epSelCondition);
 
-    Integer countExpert(ExpertSelConditionDto epSelCondition);
+    Integer countExpert(String workprogramId, String reviewId,ExpertSelConditionDto epSelCondition);
 
     void savePhone(byte[] bytes, String expertId);
 

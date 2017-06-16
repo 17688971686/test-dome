@@ -1,12 +1,26 @@
 package cs.service.expert;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cs.common.Constant;
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.*;
-import cs.domain.project.Sign;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertReview_;
+import cs.domain.expert.ExpertSelCondition;
+import cs.domain.expert.ExpertSelected;
+import cs.domain.expert.ExpertSelected_;
 import cs.domain.project.WorkProgram;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
@@ -21,14 +35,6 @@ import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.project.SignService;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static cs.domain.meeting.RoomBooking_.workProgram;
 
 /**
  * Description: 专家评审 业务操作实现类 author: ldm Date: 2017-5-17 14:02:25
@@ -48,10 +54,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 	private WorkProgramRepo workProgramRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
-	@Autowired
-	private SignRepo signRepo;
-    @Autowired
-    private SignService signService;
 
 	@Override
 	public PageModelDto<ExpertReviewDto> get(ODataObj odataObj) {
@@ -133,7 +135,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         WorkProgram workProgram = workProgramRepo.findById(workProgramId);
         //1、获取抽取方案
         ExpertReview expertReview = workProgram.getExpertReview();
-        if(expertReview == null|| !Validate.isString(expertReview.getId())) {
+        if (expertReview == null || !Validate.isString(expertReview.getId())) {
             //初始化
             expertReview = new ExpertReview();
             Date now = new Date();
@@ -148,36 +150,36 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             workProgram.setExpertReview(expertReview);
             workProgramRepo.save(workProgram);
         }
-        BeanCopierUtils.copyProperties(expertReview,expertReviewDto);
+        BeanCopierUtils.copyProperties(expertReview, expertReviewDto);
         //2、专家抽取条件信息
-        if(expertReview.getExpertSelConditionList() != null && expertReview.getExpertSelConditionList().size() > 0){
+        if (expertReview.getExpertSelConditionList() != null && expertReview.getExpertSelConditionList().size() > 0) {
             List<ExpertSelConditionDto> conditionDtoList = new ArrayList<>();
-            for(ExpertSelCondition condition :expertReview.getExpertSelConditionList()){
+            for (ExpertSelCondition condition : expertReview.getExpertSelConditionList()) {
                 ExpertSelConditionDto conditionDto = new ExpertSelConditionDto();
-                BeanCopierUtils.copyProperties(condition,conditionDto);
-                //3、抽取专家
-                if(condition.getExpertSelectedList() != null && condition.getExpertSelectedList().size() > 0){
-                    List<ExpertSelectedDto> selDtoList = new ArrayList<>();
-                    for(ExpertSelected epSelted : condition.getExpertSelectedList()){
-                        ExpertSelectedDto selDto = new ExpertSelectedDto();
-                        BeanCopierUtils.copyProperties(epSelted,selDto);
-                        //4、专家信息
-                        if(epSelted.getExpert() != null && Validate.isString(epSelted.getExpert().getExpertID())){
-                            ExpertDto expertDto = new ExpertDto();
-                            BeanCopierUtils.copyProperties(epSelted.getExpert(),expertDto);
-                            selDto.setExpertDto(expertDto);//设置专家信息Dto
-                        }
-                        selDtoList.add(selDto);//设置抽取专家Dto
-                    }
-                    conditionDto.setExpertSelectedDtoList(selDtoList);//设置抽取专家列表Dto
-                }
+                BeanCopierUtils.copyProperties(condition, conditionDto);
                 conditionDtoList.add(conditionDto);//设置抽取条件Dto
             }
             expertReviewDto.setExpertSelConditionDtoList(conditionDtoList); //设置抽取条件列表Dto
         }
+        //3、抽取专家
+        if (expertReview.getExpertSelectedList() != null && expertReview.getExpertSelectedList().size() > 0) {
+            List<ExpertSelectedDto> selDtoList = new ArrayList<>();
+            for (ExpertSelected epSelted : expertReview.getExpertSelectedList()) {
+                ExpertSelectedDto selDto = new ExpertSelectedDto();
+                BeanCopierUtils.copyProperties(epSelted, selDto);
+                //4、专家信息
+                if (epSelted.getExpert() != null && Validate.isString(epSelted.getExpert().getExpertID())) {
+                    ExpertDto expertDto = new ExpertDto();
+                    BeanCopierUtils.copyProperties(epSelted.getExpert(), expertDto);
+                    selDto.setExpertDto(expertDto);//设置专家信息Dto
+                }
+                selDtoList.add(selDto);//设置抽取专家Dto
+            }
+            expertReviewDto.setExpertSelectedDtoList(selDtoList);//设置抽取专家列表Dto
+        }
 
         return expertReviewDto;
-	}
+    }
 
 	@Override
 	public Map<String, Object> getReviewList(String orgName, String year, String quarter) {
@@ -198,12 +200,12 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 			expert.setExpertReview(expertReview);
 			expertRepo.save(expert);
 		}*/
-	}
+    }
 
-	//更新数据,保存费用
-	@Override
-	@Transactional
-	public void savePayment(ExpertReviewDto expertReviewDto)throws Exception {
+    //更新数据,保存费用
+    @Override
+    @Transactional
+    public void savePayment(ExpertReviewDto expertReviewDto) throws Exception {
 		/*if(Validate.isString(expertReviewDto.getExpertId())){
 			Date now=new Date();
 			Expert expert=expertRepo.getById(expertReviewDto.getExpertId());
@@ -221,134 +223,100 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 			log.info("提交收文信息异常：无法获取收文ID（SignId）信息");
 			throw new Exception(Constant.ERROR_MSG);
 		}*/
-	}
+    }
+
+    /**
+     * 确认抽取结果信息
+     * @param reviewId
+     * @param state
+     */
+    @Override
+    public void affirmAutoExpert(String reviewId, String state) {
+        ExpertReview expertReview = expertReviewRepo.findById(reviewId);
+        expertReview.setIsComfireResult(state);
+        expertReviewRepo.save(expertReview);
+    }
 
     /**
      * 保存自选或者境外专家
+     *
      * @param reviewId
      * @param expertIds
      * @param selectType
      */
-	@Override
-	@Transactional
-	public void save(String reviewId, String expertIds, String selectType) {
-	    //评审方案
+    @Override
+    @Transactional
+    public void save(String reviewId, String expertIds, String selectType,boolean isDraw) {
         ExpertReview expertReview = expertReviewRepo.findById(reviewId);
-        //保存抽取条件
-        ExpertSelCondition newCondition = new ExpertSelCondition();
-        newCondition.setSelectType(selectType);
-        newCondition.setExpertReview(expertReview);
-        expertSelConditionRepo.save(newCondition);
         //保存抽取专家
-		List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
-		for (int i = 0, l = expertIdArr.size(); i < l; i++) {
+        List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
+        for (int i = 0, l = expertIdArr.size(); i < l; i++) {
+            //如果是专家自选，则要删除之前选择的专家信息
+            if (Constant.EnumExpertSelectType.SELF.getValue().equals(selectType)) {
+                for (ExpertSelected epSelected : expertReview.getExpertSelectedList()) {
+                    if (Constant.EnumExpertSelectType.SELF.getValue().equals(epSelected.getSelectType())) {
+                        expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), epSelected.getId());
+                    }
+                }
+            }
             ExpertSelected expertSelected = new ExpertSelected();
             expertSelected.setIsJoin(Constant.EnumState.YES.getValue());
+            expertSelected.setSelectType(selectType);
             //保存专家映射
             expertSelected.setExpert(expertRepo.findById(expertIdArr.get(i)));
             //保存抽取条件映射
-            expertSelected.setExpertSelCondition(newCondition);
+            expertSelected.setExpertReview(expertReview);
             expertSelectedRepo.save(expertSelected);
-		}
-	}
+        }
 
-	@Override
-	public List<ExpertDto> refleshExpert(String workProgramId, String selectType) {
-		/*List<ExpertDto> resultList = new ArrayList<ExpertDto>();
+        //如果已经抽签，则更改评审方案状态
+        if (isDraw) {
+            expertReview.setIsSelete(Constant.EnumState.YES.getValue());
+            expertReview.setSelCount(expertReview.getSelCount() == null ? 1 : expertReview.getSelCount() + 1);
+            expertReviewRepo.save(expertReview);
+        }
+    }
 
-		HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append(" from " + ExpertReview.class.getSimpleName() + " where "
-				+ ExpertReview_.workProgram.getName() + "." + WorkProgram_.id.getName() + " = :workProgramId ");
-		hqlBuilder.setParam("workProgramId", workProgramId);
-		hqlBuilder.append(" and " + ExpertReview_.selectType.getName() + " = :selectType ");
-		hqlBuilder.setParam("selectType", selectType);
 
-		List<ExpertReview> list = expertReviewRepo.findByHql(hqlBuilder);
-		if (list != null && list.size() > 0) {
-			list.forEach(l -> {
-				ExpertDto expertDto = new ExpertDto();
-				Expert expert = l.getExpert();
-				if (expert != null) {
-					BeanCopierUtils.copyProperties(expert, expertDto);
-					resultList.add(expertDto);
-				}
-			});
-		}
-		return resultList;*/
-		return null;
-	}
+    /**
+     * 更改抽取专家状态(直接用sql更新)
+     *
+     * @param reviewId  抽取方案ID
+     * @param expertIds 专家ID
+     * @param state     状态值
+     * @param isConfirm  是否已经确认
+     */
+    @Override
+    @Transactional
+    public void updateExpertState(String reviewId, String expertIds, String state, boolean isConfirm) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_expert_selected set " + ExpertSelected_.isJoin.getName() + " =:state ");
+        sqlBuilder.setParam("state", state);
 
-	@Override
-	@Transactional
-	public void updateExpertState(String workProgramId, String expertIds, String state) {
-		/*HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append(" update " + ExpertReview.class.getSimpleName() + " set " + ExpertReview_.state.getName()
-				+ " = :state ");
-		hqlBuilder.setParam("state", state);
-		hqlBuilder.append(" where " + ExpertReview_.workProgram.getName() + "." + WorkProgram_.id.getName()
-				+ " = :workProgramId ");
-		hqlBuilder.setParam("workProgramId", workProgramId);
+        String[] idArr = expertIds.split(",");
+        if (idArr.length > 1) {
+            sqlBuilder.append(" where expertid in ( ");
+            int totalL = idArr.length;
+            for (int i = 0; i < totalL; i++) {
+                if (i == totalL - 1) {
+                    sqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
+                } else {
+                    sqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
+                }
+            }
+            sqlBuilder.append(" ) ");
+        } else {
+            sqlBuilder.append(" where expertid = :expertId ");
+            sqlBuilder.setParam("expertId", expertIds);
+        }
+        expertReviewRepo.executeSql(sqlBuilder);
 
-		String[] idArr = expertIds.split(",");
-		if (idArr.length > 1) {
-			hqlBuilder.append(" and " + ExpertReview_.expert.getName() + "." + Expert_.expertID.getName() + " in ( ");
-			int totalL = idArr.length;
-			for (int i = 0; i < totalL; i++) {
-				if (i == totalL - 1) {
-					hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-				} else {
-					hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-				}
-			}
-			hqlBuilder.append(" ) ");
-		} else {
-			hqlBuilder.append(
-					" and " + ExpertReview_.expert.getName() + "." + Expert_.expertID.getName() + " = :expertId ");
-			hqlBuilder.setParam("expertId", expertIds);
-		}
-		expertReviewRepo.executeHql(hqlBuilder);*/
-	}
-
-	@Override
-	@Transactional
-	public void deleteExpert(String workProgramId, String expertIds, String seleType, String expertSelConditionId) {
-		/*HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append(" delete from " + ExpertReview.class.getSimpleName());
-		hqlBuilder.append(" where " + ExpertReview_.workProgram.getName() + "." + WorkProgram_.id.getName()
-				+ " = :workProgramId ");
-		hqlBuilder.setParam("workProgramId", workProgramId);
-
-		if (Validate.isString(expertIds)) {
-			String[] idArr = expertIds.split(",");
-			if (idArr.length > 1) {
-				hqlBuilder
-						.append(" and " + ExpertReview_.expert.getName() + "." + Expert_.expertID.getName() + " in ( ");
-				int totalL = idArr.length;
-				for (int i = 0; i < totalL; i++) {
-					if (i == totalL - 1) {
-						hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-					} else {
-						hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-					}
-				}
-				hqlBuilder.append(" ) ");
-			} else {
-				hqlBuilder.append(
-						" and " + ExpertReview_.expert.getName() + "." + Expert_.expertID.getName() + " = :expertId ");
-				hqlBuilder.setParam("expertId", expertIds);
-			}
-		}
-
-		if (Validate.isString(seleType)) {
-			hqlBuilder.append(" and " + ExpertReview_.selectType.getName() + " =:seleType").setParam("seleType",
-					seleType);
-		}
-
-		if (Validate.isString(expertSelConditionId)) {
-			hqlBuilder.append(" and " + ExpertReview_.epSelCondition.getName() + "." + ExpertSelCondition_.id.getName()
-					+ " =:expertSelConditionId").setParam("expertSelConditionId", expertSelConditionId);
-		}
-		expertReviewRepo.executeHql(hqlBuilder);*/
-	}
+        //如果已经确认，则修改状态
+        if(isConfirm){
+            ExpertReview expertReview = expertReviewRepo.findById(reviewId);
+            expertReview.setIsComfireResult(Constant.EnumState.YES.getValue());
+            expertReviewRepo.save(expertReview);
+        }
+    }
 
 }

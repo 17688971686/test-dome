@@ -18,13 +18,11 @@ public class ExpertSelConditionDto {
     private String expeRttype;
     private Integer officialNum;
     private Integer alternativeNum;
-    private String workProgramId;
-    private WorkProgram workProgram;
     private String signId;
     private Integer sort;
     private String selectType;
-    private List<ExpertSelectedDto> expertSelectedDtoList;
     private ExpertReviewDto expertReviewDto;
+
     public ExpertSelConditionDto() {
     }
 
@@ -85,23 +83,6 @@ public class ExpertSelConditionDto {
         this.alternativeNum = alternativeNum;
     }
 
-    public WorkProgram getWorkProgram() {
-        return workProgram;
-    }
-
-    public void setWorkProgram(WorkProgram workProgram) {
-
-        this.workProgram = workProgram;
-    }
-
-    public String getWorkProgramId() {
-        return workProgramId;
-    }
-
-    public void setWorkProgramId(String workProgramId) {
-        this.workProgramId = workProgramId;
-    }
-
     public String getSignId() {
         return signId;
     }
@@ -116,14 +97,6 @@ public class ExpertSelConditionDto {
 
     public void setSort(Integer sort) {
         this.sort = sort;
-    }
-
-    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
-        return expertSelectedDtoList;
-    }
-
-    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
-        this.expertSelectedDtoList = expertSelectedDtoList;
     }
 
     public String getSelectType() {

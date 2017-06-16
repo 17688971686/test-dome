@@ -63,9 +63,7 @@
                 method : 'delete',
                 url : rootPath + "/expertSelCondition",
                 params:{
-                    id : delIds,
-                    reviewId : vm.expertReview.id,
-                    deleteEP : false
+                    ids : delIds
                 }
             }
             var httpSuccess = function success(response) {

@@ -207,7 +207,7 @@ public class WorkProgram extends DomainBase {
     @JoinColumn(name = "signId")
     private Sign sign;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="expertReviewId")
     private ExpertReview expertReview;
 

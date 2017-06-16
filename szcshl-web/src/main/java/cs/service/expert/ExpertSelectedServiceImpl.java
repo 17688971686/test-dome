@@ -1,18 +1,19 @@
 package cs.service.expert;
 
-import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertSelected;
-import cs.model.expert.ExpertDto;
+import cs.domain.expert.*;
 import cs.model.expert.ExpertSelectedDto;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,8 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 	@Autowired
 	private ExpertSelectedRepo expertSelectedRepo;
+	@Autowired
+	private ExpertReviewRepo expertReviewRepo;
 	@Autowired
 	private ICurrentUser currentUser;
 
@@ -56,10 +59,20 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return modelDto;
 	}
 
+    /**
+     * 删除已经抽取的专家（主要针对自选和境外专家）
+     * @param reviewId
+     * @param ids
+     */
 	@Override
 	@Transactional
-	public void delete(String id) {
-
+	public void delete(String reviewId,String ids,boolean deleteAll) {
+		ExpertReview expertReview = expertReviewRepo.findById(reviewId);
+		if(deleteAll){
+			expertReviewRepo.delete(expertReview);
+        }else{
+            expertSelectedRepo.deleteById(ExpertSelected_.id.getName(),ids);
+        }
 	}
 
 }

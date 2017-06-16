@@ -1,7 +1,5 @@
 package cs.model.expert;
 
-import cs.model.project.SignDto;
-
 import java.math.BigDecimal;
 
 public class ExpertSelectedDto {
@@ -13,7 +11,7 @@ public class ExpertSelectedDto {
     private String selectType;
     private String describes;
     private String isJoin;
-    private ExpertSelConditionDto expertSelConditionDto;
+    private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;
 
     public String getId() {
@@ -72,19 +70,19 @@ public class ExpertSelectedDto {
         this.isJoin = isJoin;
     }
 
-    public ExpertSelConditionDto getExpertSelConditionDto() {
-        return expertSelConditionDto;
-    }
-
-    public void setExpertSelConditionDto(ExpertSelConditionDto expertSelConditionDto) {
-        this.expertSelConditionDto = expertSelConditionDto;
-    }
-
     public ExpertDto getExpertDto() {
         return expertDto;
     }
 
     public void setExpertDto(ExpertDto expertDto) {
         this.expertDto = expertDto;
+    }
+
+    public ExpertReviewDto getExpertReviewDto() {
+        return expertReviewDto;
+    }
+
+    public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
+        this.expertReviewDto = expertReviewDto;
     }
 }

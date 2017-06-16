@@ -20,5 +20,5 @@ public interface ExpertSelectedService {
 
 	ExpertSelectedDto findById(String deptId);
 
-	void delete(String id);
+	void delete(String conditionId,String id,boolean deleteAll);
 }

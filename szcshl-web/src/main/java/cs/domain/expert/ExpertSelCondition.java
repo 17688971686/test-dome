@@ -1,5 +1,6 @@
 package cs.domain.expert;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -33,15 +34,6 @@ public class ExpertSelCondition {
 
     @Column(columnDefinition = "integer")
     private Integer sort;
-
-    //抽取类型（随机、自选、境外专家3种）
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String selectType;
-    /**
-     * 抽取的专家信息
-     */
-    @OneToMany(mappedBy = "expertSelCondition")
-    private List<ExpertSelected> expertSelectedList;
 
     /**
      * 专家评审方案
@@ -104,22 +96,6 @@ public class ExpertSelCondition {
 
     public void setSort(Integer sort) {
         this.sort = sort;
-    }
-
-    public List<ExpertSelected> getExpertSelectedList() {
-        return expertSelectedList;
-    }
-
-    public void setExpertSelectedList(List<ExpertSelected> expertSelectedList) {
-        this.expertSelectedList = expertSelectedList;
-    }
-
-    public String getSelectType() {
-        return selectType;
-    }
-
-    public void setSelectType(String selectType) {
-        this.selectType = selectType;
     }
 
     public ExpertReview getExpertReview() {

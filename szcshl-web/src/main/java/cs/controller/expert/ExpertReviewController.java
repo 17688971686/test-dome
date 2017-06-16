@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.Constant;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,27 +49,16 @@ public class ExpertReviewController {
         return expertReviewDtos;
     }
 
-    @RequiresPermissions("expertReview#refleshExpert#get")
-    @RequestMapping(name = "刷新已选专家信息", path = "refleshExpert", method = RequestMethod.GET)
-    @ResponseBody
-    public List<ExpertDto> refleshExpert(@RequestParam(required = true) String workProgramId, @RequestParam(required = true) String selectType) {
-        return expertReviewService.refleshExpert(workProgramId, selectType);
-    }
-
-    @RequiresPermissions("expertReview#updateExpertState#post")
-    @RequestMapping(name = "更改专家状态", path = "updateExpertState", method = RequestMethod.POST)
+    /**
+     * 更改抽取专家状态
+     * @param expertIds
+     * @param state
+     */
+    @RequiresPermissions("expertReview#updateJoinState#post")
+    @RequestMapping(name = "更改专家状态", path = "updateJoinState", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState(@RequestParam(required = true) String workProgramId, @RequestParam(required = true) String expertIds,
-                                  @RequestParam(required = true) String state) {
-        expertReviewService.updateExpertState(workProgramId, expertIds, state);
-    }
-
-
-    @RequiresPermissions("expertReview#deleteExpert#post")
-    @RequestMapping(name = "删除已选专家", path = "deleteExpert", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteExpert(@RequestParam(required = true) String workProgramId, String expertIds, String seleType, String expertSelConditionId) {
-        expertReviewService.deleteExpert(workProgramId, expertIds, seleType, expertSelConditionId);
+    public void updateExpertState( @RequestParam(required = true) String expertIds,@RequestParam(required = true) String state) {
+        expertReviewService.updateExpertState(null,expertIds, state,false);
     }
 
     @RequiresPermissions("expertReview##post")
@@ -79,11 +69,13 @@ public class ExpertReviewController {
     }
 
     @RequiresPermissions("expertReview#saveExpertReview#post")
-    @RequestMapping(name = "保存记录", path = "saveExpertReview", method = RequestMethod.POST)
+    @RequestMapping(name = "保存抽取专家信息", path = "saveExpertReview", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveExpertReview(@RequestParam(required = true) String reviewId, @RequestParam(required = true) String selectType,
-                                 @RequestParam(required = true) String expertIds) {
-        expertReviewService.save(reviewId, expertIds, selectType);
+    public void saveExpertReview(@RequestParam(required = true) String reviewId,
+                                 @RequestParam(required = true) String selectType,
+                                 @RequestParam(required = true) String expertIds,
+                                 boolean isDraw) {
+        expertReviewService.save(reviewId,expertIds,selectType,isDraw);
     }
 
 
@@ -113,6 +105,13 @@ public class ExpertReviewController {
     public @ResponseBody
     ExpertReviewDto initByWorkProgramId(@RequestParam(required = true) String workProgramId) {
         return expertReviewService.initByWorkProgramId(workProgramId);
+    }
+
+    @RequiresPermissions("expertReview#affirmAutoExpert#post")
+    @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void affirmAutoExpert(@RequestParam(required=true)String reviewId){
+        expertReviewService.affirmAutoExpert(reviewId,Constant.EnumState.YES.getValue());
     }
 
     @RequiresPermissions("expertReview#getReviewList#get")

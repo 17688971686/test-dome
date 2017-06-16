@@ -40,10 +40,14 @@ public class ExpertSelected {
     @Column(columnDefinition = "VARCHAR(2)")
     private String isJoin;
 
-    //专家抽取条件关系（多对一）
+    //抽取类型（随机、自选、境外专家3种）
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String selectType;
+
+    //抽取评审方案（多对一）
     @ManyToOne
-    @JoinColumn(name = "conditionId")
-    private ExpertSelCondition expertSelCondition;
+    @JoinColumn(name = "expertReviewId")
+    private ExpertReview expertReview;
 
     //抽取专家关系（多对一）
     @ManyToOne
@@ -98,19 +102,27 @@ public class ExpertSelected {
         this.isJoin = isJoin;
     }
 
-    public ExpertSelCondition getExpertSelCondition() {
-        return expertSelCondition;
-    }
-
-    public void setExpertSelCondition(ExpertSelCondition expertSelCondition) {
-        this.expertSelCondition = expertSelCondition;
-    }
-
     public Expert getExpert() {
         return expert;
     }
 
     public void setExpert(Expert expert) {
         this.expert = expert;
+    }
+
+    public String getSelectType() {
+        return selectType;
+    }
+
+    public void setSelectType(String selectType) {
+        this.selectType = selectType;
+    }
+
+    public ExpertReview getExpertReview() {
+        return expertReview;
+    }
+
+    public void setExpertReview(ExpertReview expertReview) {
+        this.expertReview = expertReview;
     }
 }
