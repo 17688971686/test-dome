@@ -186,9 +186,12 @@
 							vm : vm,
 							response : response,
 							fn : function() {
-								vm.dispatchDoc = response.data.dispatch;
-								vm.proofread = response.data.mainUserList;
-								vm.org = response.data.orgList;
+							    var data = response.data;
+							    vm.sign = data.sign;
+								vm.dispatchDoc = data.dispatch;
+								vm.associateDispatchs = data.associateDispatchs;
+								vm.proofread = data.mainUserList;
+								vm.org = data.orgList;
 								vm.showCreate = true;
 								// 初始化获取合并发文关联的linkSignId
 								vm.linkSignId = response.data.linkSignId;

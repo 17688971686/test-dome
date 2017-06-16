@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 	private UserService userService;
 	@Autowired
 	private SignRepo signRepo;
+	@Autowired
+	private SignService signService;
 	@Autowired
 	private OrgRepo orgRepo;
 	@Autowired
@@ -296,6 +299,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		
 		DispatchDocDto dispatchDto = new DispatchDocDto();
 		Sign sign = signRepo.findById(signId);
+
 		DispatchDoc dispatch  = sign.getDispatchDoc();
 
 		if (dispatch==null||StringUtils.isBlank(dispatch.getId())) {
@@ -331,8 +335,40 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		dispatchDto.setDispatchDate(now);
 		map.put("dispatch", dispatchDto);
 
+		//如果评审阶段是可研和概算的，才关联到前一阶段
+		String reviewStage = sign.getReviewstage();
+		if(reviewStage != null&&(reviewStage.equals("可行性研究报告")||reviewStage.equals("项目概算"))){
+			List<Sign> associateSigns = signService.getAssociates(sign.getAssociateSign().getSignid());
+			if(associateSigns != null&&associateSigns.size()>0){
+				List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());
+				associateSigns.forEach(associateSign->{
+					System.out.println(associateSign.getSignid() + "-" +associateSign.getProjectname());
+					Sign asSign = signRepo.getById(associateSign.getSignid());
+					DispatchDoc associateDispatch = asSign.getDispatchDoc();
+					if(associateDispatch != null&&associateDispatch.getId() != null){
+						//关联发文
+						DispatchDocDto associateDis = new DispatchDocDto();
+						BeanCopierUtils.copyProperties(associateDispatch, associateDis);
+						SignDto signDto = new SignDto();
+						signDto.setReviewstage(asSign.getReviewstage());
+						associateDis.setSignDto(signDto);
+						associateDispatchDtos.add(associateDis);
+					}
+				});
+
+				map.put("associateDispatchs", associateDispatchDtos);
+			}
+		}
+
+
 		// 获取主办处联系人
 		List<UserDto> userList = userService.findUserByOrgId(sign.getmOrgId());
+		if(userList != null){
+			userList.forEach(user -> {
+				user.setRoles(null);
+				user.setOrgDto(null);
+			});
+		}
 		//查询系统上传附件
 		Criteria sysfile = sysFileRepo.getSession().createCriteria(SysFile.class);
 		sysfile.add(Restrictions.eq("businessId", sign.getSignid()));
@@ -343,6 +379,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		map.put("mainUserList", userList);
 		map.put("orgList", orgDtoList);
 		map.put("linkSignId", linkSignId);
+		SignDto signDto = new SignDto();
+		BeanUtils.copyProperties(sign,signDto,new String[]{Sign_.workProgramList.getName(),
+				Sign_.dispatchDoc.getName(),Sign_.fileRecord.getName(),Sign_.associateSign.getName()});
+		map.put("sign",signDto);
 		return map;
 	}
 

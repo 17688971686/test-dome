@@ -56,6 +56,8 @@ public interface SignService{
 
     void associate(String signId, String associateId);
 
-	List<SignDto> getAssociate(String signId);
+	List<SignDto> getAssociateDtos(String signId);
+
+	List<Sign> getAssociates(String signId);
 
 }

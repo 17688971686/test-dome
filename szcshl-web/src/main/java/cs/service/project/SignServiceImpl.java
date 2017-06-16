@@ -1059,7 +1059,7 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public List<SignDto> getAssociate(String signId) {
+    public List<SignDto> getAssociateDtos(String signId) {
 
         List<SignDto> signDtos = new ArrayList<SignDto>();
         SignDto signDto = new SignDto();
@@ -1067,18 +1067,22 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(sign.getProjectcode())) {
             BeanCopierUtils.copyProperties(sign, signDto);
             signDtos.add(signDto);
-            getPreAssociate(sign.getAssociateSign(), signDtos);
-        } else {
+
+            getPreAssociateDto(sign.getAssociateSign(),signDtos);
+        }else {
             signDto = null;
         }
 
         return signDtos;
     }
 
+
+
     /**
      * 递归查找项目关联
-     */
-    private void getPreAssociate(Sign associateSign, List<SignDto> signDtos) {
+
+     * */
+    private void getPreAssociateDto(Sign associateSign, List<SignDto> signDtos) {
 
         //递归条件，没有关联项目的时候，停止递归
         if (associateSign == null || !Validate.isString(associateSign.getProjectcode())) {
@@ -1089,7 +1093,38 @@ public class SignServiceImpl implements SignService {
         BeanCopierUtils.copyProperties(associateSign, associateSignDto);
         signDtos.add(associateSignDto);
 
-        getPreAssociate(associateSign.getAssociateSign(), signDtos);
+
+        getPreAssociateDto(associateSign.getAssociateSign(),signDtos);
+
+    }
+
+    @Override
+    public List<Sign> getAssociates(String signId) {
+
+        List<Sign> signs = new ArrayList<Sign>();
+        Sign sign = signRepo.getById(signId);
+        if(Validate.isString(sign.getProjectcode())){
+            signs.add(sign);
+            getPreAssociate(sign.getAssociateSign(),signs);
+        }
+
+        return signs;
+    }
+
+
+
+    /**
+     * 递归查找项目关联
+     * */
+    private void getPreAssociate(Sign associateSign, List<Sign> signs) {
+
+        //递归条件，没有关联项目的时候，停止递归
+        if(associateSign == null||!Validate.isString(associateSign.getProjectcode())){
+            return ;
+        }
+
+        signs.add(associateSign);
+        getPreAssociate(associateSign.getAssociateSign(),signs);
 
     }
 

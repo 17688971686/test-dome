@@ -1,6 +1,5 @@
 package cs.controller.project;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +85,7 @@ public class SignController {
 	@RequiresPermissions("sign#associate#get")
 	@RequestMapping(name = "项目关联", path = "associate",method=RequestMethod.GET)
 	public @ResponseBody List<SignDto> associateGet(@RequestParam(required = true) String signId)  {
-		return signService.getAssociate(signId);
+		return signService.getAssociateDtos(signId);
 
 	}
 
