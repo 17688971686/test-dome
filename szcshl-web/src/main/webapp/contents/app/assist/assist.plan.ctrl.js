@@ -270,9 +270,9 @@
             assistSvc.queryPlan(vm);
         }
         
+         
         var assistPlanId='';//协审计划Id
         vm.planId=''; //
-        vm.reviewNum=''; //几个评审单位
        
         //查看协审计划的详情信息
         vm.showPlanDetail = function(planId){
@@ -285,11 +285,10 @@
                 closable : true,
                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
-           assistPlanId=planId;
+           	vm.signNum=0;//抽取单位个数
+            assistPlanId=planId;
            vm.planId=planId;
            assistSvc.getPlanSignByPlanId(vm,planId);
-           assistSvc.initPlanByPlanId(vm,planId);
-           assistSvc.initAssistUnit(vm,planId);
         }
         
         vm.ministerOpinionEdit=function (ministerOpinion){	//部长意见
@@ -312,9 +311,9 @@
         }
         
         
-        vm.checked='';
+       vm.checked='option1';
         vm.chooseAssistUnit=function(){
-        	vm.number='';
+        	vm.number=0;
         	if(vm.checked=='option1'){
         	
         		vm.number=vm.assistPlanSign.length+1;
@@ -324,6 +323,20 @@
         	}
         	assistSvc.chooseAssistUnit(vm);
         
+        }
+        
+         vm.againChooleAssistUnit=function(){
+        	$("#againChooleAssistUnit").kendoWindow({
+	        	title:"选择参加协审单位",
+	        	width:"30%",
+    			height:"50%",
+	        	visible : false,
+	            modal : true,
+	            closable : true,
+	            actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+            
+            assistSvc.getAllUnit(vm);
         }
 
         //协审项目抽签

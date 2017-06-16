@@ -24,7 +24,10 @@
             initPlanByPlanId : initPlanByPlanId,					//初始化协审计划
             chooseAssistUnit : chooseAssistUnit,							//选择协审单位
             initAssistUnit : initAssistUnit,
-            saveDrawAssistUnit:saveDrawAssistUnit               //保存协审计划抽签
+            saveDrawAssistUnit:saveDrawAssistUnit,               //保存协审计划抽签
+              initAssistUnit : initAssistUnit,						//初始化协审单位
+            getUnitUser : getUnitUser,
+            getAllUnit : getAllUnit			//获取所有的协审单位
             
 		};
 		return service;
@@ -426,6 +429,8 @@
         
         //begin getPlanSignByPlan
         function getPlanSignByPlanId(vm,planId){
+        	vm.reviewNum=''; //几个评审单位
+//        	vm.assistPlanSign={};
 	        var httpOptions={
 	        	method:'get',
 	        	url:rootPath+'/assistPlanSign/getPlanSignByPlanId',
@@ -433,8 +438,13 @@
 	        }
 	        var httpSuccess=function success(response){
 	        	vm.assistPlanSign=response.data;
-	        	vm.review=vm.assistPlanSign.length;
-	        	console.log(vm.review);
+	        	console.log(vm.assistPlanSign);
+	        	vm.reviewNum=vm.assistPlanSign.length;
+	        	 if(vm.assistPlanSign.length > 0){
+			           initPlanByPlanId(vm,planId);//初始化协审计划
+			           initAssistUnit(vm,planId);//初始化协审单位
+			           getUnitUser(vm);
+           		}
 	        }
 	        
 	        common.http({
@@ -517,6 +527,7 @@
 
         //begin chooseAssistUnit
         function chooseAssistUnit(vm){
+//        	vm.signNum='';//抽取单位个数
         	var httpOptions={
         		method:"get",
         		url:rootPath+'/assistUnit/chooseAssistUnit',
@@ -525,7 +536,8 @@
         	
         	var httpSuccess=function success(response){
         		vm.unitList=response.data;
-//        		vm.isChoose=true;
+        		vm.signNum=vm.unitList.length;
+        		vm.isChoose=true;
         	}
         	
         	common.http({
@@ -538,7 +550,7 @@
         
         //begin initAssistUnit
         function initAssistUnit(vm,planId){
-        	
+        
         	var httpOptions={
         		method:"get",
         		url:rootPath+'/assistUnit/getAssistUnitByPlanId',
@@ -549,7 +561,7 @@
         		vm.unitList=response.data;
         		vm.signNum=vm.unitList.length;
         		if(vm.unitList.length>0){
-//        			vm.isChoose=true;
+        			vm.isChoose=true;
         		}
         		
         	}
@@ -563,6 +575,50 @@
         	
         }
         //end initAssistUnit
+        
+         // begin  getUnitUser
+        function getUnitUser(vm){
+        	var httpOptions={
+        		method:"post",
+        		url:rootPath+'/assistUnitUser/findByOData'
+        	}
+        	
+        	var httpSuccess=function success(response){
+        		vm.unitUserList=response.data.value;
+//        		console.log(vm.unitUserList);
+        		
+        	}
+        	
+        	common.http({
+        		vm: vm,
+        		$http: $http,
+        		httpOptions: httpOptions,
+        		success: httpSuccess
+        	});
+        	
+        }
+        //end getUnitUser
+        
+        //begin getAllUnit
+        function getAllUnit(vm){
+        	var httpOptions={
+        		method:"post",
+        		url:rootPath+'/assistUnit/fingByOData'
+        	}
+        	
+        	var httpSuccess=function success(response){
+        		vm.allUnitList=response.data.value;
+        		
+        	}
+        	
+        	common.http({
+        		vm: vm,
+        		$http: $http,
+        		httpOptions: httpOptions,
+        		success: httpSuccess
+        	});
+        }
+        //end  getAllUnit
 
         //begin saveDrawAssistUnit
         function saveDrawAssistUnit(){

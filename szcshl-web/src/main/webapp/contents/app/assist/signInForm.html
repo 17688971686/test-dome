@@ -1,0 +1,28 @@
+<div>
+	<div align="center">
+		<h3>深圳市政府投资项目评审中心概算协审抽签签到表</h3>
+	</div>
+	
+	
+	<div align="center" style="width:100%;">
+		<table class="table table-bordered"  style="width:100%;height:100%; text-align: center; font-size: 4px;">
+			<tr style="height: 5px;">
+				<td style="width: 40px;">序号</td>
+				<td style="width: 300px;">单位名称</td>
+				<td style="width: 100px;">联系人</td>
+				<td style="width: 100px;">电话</td>
+				<td style="width: 100px;">签名</td>
+			</tr>
+			<tr style="height: 5px;" ng-repeat="au in vm.unitList|filter:{isLastUnSelected:'0'}">
+			<td>{{$index + 1}}</td>
+			<td>{{au.unitName}}</td>
+			<td></td>
+			<td>{{au.phoneNum}}</td>
+			<td></td>
+			</tr>
+		
+		</table>
+	</div>
+
+
+</div>
