@@ -63,16 +63,18 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
 		if (mergeDispa != null&& Validate.isString(mergeDispa.getBusinessId())) {
 			linkSignId = mergeDispa.getLinkSignId();
-			signDtoList = new ArrayList<>();
-			String[] ids = linkSignId.split(",");
-			for (String id : ids) {
-				if (Validate.isString(id)) {
-					SignDto signDto = new SignDto();
-					Sign sign = signRepo.findById(id);
-					BeanCopierUtils.copyProperties(sign, signDto);
-					signDto.setCreatedDate(sign.getCreatedDate());
-					signDto.setModifiedDate(sign.getModifiedDate());
-					signDtoList.add(signDto);
+			if(Validate.isString(linkSignId)){
+				signDtoList = new ArrayList<>();
+				String[] ids = linkSignId.split(",");
+				for (String id : ids) {
+					if (Validate.isString(id)) {
+						SignDto signDto = new SignDto();
+						Sign sign = signRepo.findById(id);
+						BeanCopierUtils.copyProperties(sign, signDto);
+						signDto.setCreatedDate(sign.getCreatedDate());
+						signDto.setModifiedDate(sign.getModifiedDate());
+						signDtoList.add(signDto);
+					}
 				}
 			}
 		}
@@ -288,6 +290,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		Date now=new Date();
 		Map<String, Object> map = new HashMap<String, Object>();
 		String linkSignId="";
+		String businessId="";
 		//获取所有部门信息
 		List<Org> orgList=orgRepo.findAll();
 		List<OrgDto> orgDtoList=new ArrayList<>();
@@ -298,51 +301,63 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		}
 		
 		DispatchDocDto dispatchDto = new DispatchDocDto();
-		Sign sign = signRepo.findById(signId);
+		Sign sign = signRepo.getById(signId);
 
 		DispatchDoc dispatch  = sign.getDispatchDoc();
 
 		if (dispatch==null||StringUtils.isBlank(dispatch.getId())) {
 			dispatch = new DispatchDoc();
 			dispatch.setDraftDate(now);
-			dispatch.setYearPlan(sign.getYearplantype());
-			dispatch.setSecretLevel(sign.getSecrectlevel());
-			dispatch.setUrgentLevel(sign.getUrgencydegree());
 			dispatch.setIsRelated("否");
+			//设置默认文件标题
+			String fileTitle="《";
+			fileTitle+=sign.getProjectname()==null?"":sign.getProjectname();
+			fileTitle+=(sign.getReviewstage()==null?"":sign.getReviewstage());
+			fileTitle+="》";
+			fileTitle+=(sign.getIsAdvanced()==null?"":sign.getIsAdvanced());
+			
+			
+			dispatch.setFileTitle(fileTitle);
 			// 获取当前用户信息
 			dispatch.setUserName(currentUser.getLoginUser().getLoginName());
 			dispatch.setUserId(currentUser.getLoginUser().getId());
-			// 获取当前部门信息
-			dispatch.setOrgName(
-					currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getName());
-			dispatch.setOrgId(
-					currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getId());
 		}else{
 			 dispatch.setIsRelated("否");
 			 MergeDispa mergeDispa = mergeDispaRepo.getById(dispatch.getId());
 			if(mergeDispa != null && Validate.isString(mergeDispa.getBusinessId())){
 				linkSignId = mergeDispa.getLinkSignId();
+				businessId=mergeDispa.getBusinessId();
 			}
 			
 			if(Validate.isString(dispatch.getIsMainProject()) && dispatch.getIsMainProject().equals(Constant.EnumState.YES.getValue())){
 				dispatch.setIsRelated("是");
 			}
+			
+			if(dispatch.getFileNum()!=null){
+				//每次加载发文日期为当天日期
+				dispatchDto.setDispatchDate(now);
+			}
 		}
+		// 获取当前部门信息
+		dispatch.setOrgName(
+			currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getName());
+		dispatch.setOrgId(
+			currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getId());
+		dispatch.setYearPlan(sign.getYearplantype());
+		dispatch.setSecretLevel(sign.getSecrectlevel());
+		dispatch.setUrgentLevel(sign.getUrgencydegree());
 		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
 		dispatchDto.setSignId(signId);
-		//每次加载发文日期为当天日期
-		dispatchDto.setDispatchDate(now);
 		map.put("dispatch", dispatchDto);
 
 		//如果评审阶段是可研和概算的，才关联到前一阶段
 		String reviewStage = sign.getReviewstage();
-		if(reviewStage != null&&(reviewStage.equals("可行性研究报告")||reviewStage.equals("项目概算"))){
+		if(reviewStage != null&&(reviewStage.equals("可行性研究报告")||reviewStage.equals("项目概算"))&&sign.getAssociateSign() != null){
 			List<Sign> associateSigns = signService.getAssociates(sign.getAssociateSign().getSignid());
 			if(associateSigns != null&&associateSigns.size()>0){
 				List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());
 				associateSigns.forEach(associateSign->{
-					System.out.println(associateSign.getSignid() + "-" +associateSign.getProjectname());
 					Sign asSign = signRepo.getById(associateSign.getSignid());
 					DispatchDoc associateDispatch = asSign.getDispatchDoc();
 					if(associateDispatch != null&&associateDispatch.getId() != null){
@@ -379,6 +394,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		map.put("mainUserList", userList);
 		map.put("orgList", orgDtoList);
 		map.put("linkSignId", linkSignId);
+		map.put("businessId", businessId);
 		SignDto signDto = new SignDto();
 		BeanUtils.copyProperties(sign,signDto,new String[]{Sign_.workProgramList.getName(),
 				Sign_.dispatchDoc.getName(),Sign_.fileRecord.getName(),Sign_.associateSign.getName()});

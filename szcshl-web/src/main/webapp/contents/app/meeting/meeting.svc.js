@@ -277,12 +277,12 @@
 						  width : 200,
 						filterable : false
 					},
-					{
+					/*{
 						field : "mrStatus",
 						title : "会议室状态",
 						 width : 100,
 						filterable : false
-					},
+					},*/
 					{
 						field : "capacity",
 						title : "会议室容量",

@@ -67,7 +67,36 @@
             common.commonDownloadFile(vm, id);
         }
 
-
+       
+        //选主办处联系人判断
+        vm.selecedMDUN=function(){
+        	if(!vm.model.maindeptName){
+        		common.alert({
+                            vm : vm,
+                            msg : "请先填写主办处室",
+                            fn : function() {
+                                vm.isSubmit = false;
+                                $('.alertDialog').modal('hide');
+                            }
+                        })
+        	}
+        }
+        
+        //选协办处联系人判断
+        vm.selectADUN=function(){
+        	if(!vm.model.assistdeptName){
+        		common.alert({
+                            vm : vm,
+                            msg : "请先填写主办处室",
+                            fn : function() {
+                                vm.isSubmit = false;
+                                $('.alertDialog').modal('hide');
+                            }
+                        })
+        	}
+        }
+        
+        
         //附件上传
         vm.signUpload = function () {
             $("#signUploadWin").kendoWindow({

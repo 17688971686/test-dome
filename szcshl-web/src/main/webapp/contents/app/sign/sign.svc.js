@@ -309,6 +309,10 @@
 
         //S_初始化填报页面数据
         function initFillData(vm) {
+        	/*vm.ProjectAdvice=true;
+        	vm.importDeviceList=true;
+        	vm.exportDeviceList=true;*/
+        	
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/sign/html/initFillPageData",

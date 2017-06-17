@@ -270,11 +270,16 @@
                     vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
                     break;
                 case "FW_SQ":
-                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9){
-                        resultTag = true;
-                    }else{
-                        resultTag = false;
-                    }
+                		/*common.initJqValidation($("#dispatch_form"));
+						var isValid = $("#dispatch_form").valid();
+						if (isValid) {
+							resultTag = false;
+						}*/
+	                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9 && vm.model.docnum){
+	                        resultTag = true;
+	                    }else{
+	                        resultTag = false;
+	                    }
                     break;
                 case "BZ_SP_FW":
                     vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id

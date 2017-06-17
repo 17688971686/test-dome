@@ -17,6 +17,7 @@
 		vm.linkSignId = "";
 		vm.sign = {};
 		vm.dispatchDoc = {};
+		
 		vm.dispatchDoc.signId = $state.params.signid;
 
 		// 创建发文
@@ -29,7 +30,8 @@
 			var authorizeValue = vm.dispatchDoc.authorizeValue;
 			if (declareValue && authorizeValue) {
 				var dvalue = declareValue - authorizeValue;
-				var extraRate = ((dvalue / declareValue).toFixed(4)) * 100;
+				//console.log((dvalue / declareValue).toFixed(4));
+				var extraRate = ((dvalue / declareValue)* 100).toFixed(2);
 				vm.dispatchDoc.extraRate = extraRate;
 				vm.dispatchDoc.extraValue = dvalue;
 			}
@@ -64,8 +66,27 @@
 			dispatchSvc.delDisptSysFile(vm,sysFileId);
 		}
 		
+		vm.relateHandle=function(){
+			if(vm.dispatchDoc.isRelated=="是" && !vm.linkSignId){
+				
+				common.alert({
+							vm : vm,
+							msg : "请关联它信息！",
+							fn : function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})
+			   vm.isnotEdit=true;
+			}else if(vm.dispatchDoc.isRelated=="否" && vm.linkSignId){
+				dispatchSvc.deletemerge(vm);
+				vm.isnotEdit=false;
+			}else{
+			    vm.isnotEdit=false;
+			}
+		}
+		
 		vm.sigleProject = function() {
-			console.log(vm.linkSignId);
 			if (vm.dispatchDoc.dispatchWay == "1" && vm.dispatchDoc.id &&　vm.linkSignId) {
 					common.confirm({
 					title : "删除提示",
@@ -84,14 +105,15 @@
 
 		vm.isrelated = function() {
 			//选择主项目
-			if (vm.dispatchDoc.id　&&　vm.linkSignId) {
 				vm.dispatchDoc.isRelated = "是";
+			/*if (vm.dispatchDoc.id　&&　vm.linkSignId) {
 				console.log(vm.dispatchDoc.isRelated);
-			}
+			}*/
 
 		}
         //选择次项目
 		vm.isrelated2 = function() {
+			vm.dispatchDoc.isRelated = "否";
 			if (vm.dispatchDoc.id　&&　vm.linkSignId) {
 			common.confirm({
 				title : "删除提示",
@@ -99,7 +121,6 @@
 				msg : "你确定删除关联信息?",
 				fn : function() {
 					$('.confirmDialog').modal('hide'); 
-						vm.dispatchDoc.isRelated = "否";
 						dispatchSvc.deletemerge(vm);
 				}
 			});
