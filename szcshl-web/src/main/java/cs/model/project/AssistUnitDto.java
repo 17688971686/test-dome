@@ -22,6 +22,11 @@ public class AssistUnitDto extends BaseDto {
     private String isLastUnSelected;
     private String fax;
     private Integer drawCount;
+    
+    private String contactName;//联系人名称
+    private String contactPhone;//联系人手机号
+    private String principalName;//负责人名称
+    private String principalPhone;//负责人手机号
 
     private List assistPlanList;
 
@@ -107,4 +112,39 @@ public class AssistUnitDto extends BaseDto {
     public void setDrawCount(Integer drawCount) {
         this.drawCount = drawCount;
     }
+
+	public String getContactName() {
+		return contactName;
+	}
+
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+
+	public String getPrincipalName() {
+		return principalName;
+	}
+
+	public void setPrincipalName(String principalName) {
+		this.principalName = principalName;
+	}
+
+	public String getContactPhone() {
+		return contactPhone;
+	}
+
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
+	}
+
+	public String getPrincipalPhone() {
+		return principalPhone;
+	}
+
+	public void setPrincipalPhone(String principalPhone) {
+		this.principalPhone = principalPhone;
+	}
+    
+	
+    
 }

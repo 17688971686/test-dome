@@ -34,9 +34,6 @@
             <a class="btn btn-xs btn-primary" href="#/assistUnitEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
             </@shiro.hasPermission>
 
-  			<@shiro.hasPermission name="assistUnit##put">
-            <a class="btn btn-xs btn-primary" href="#/UnitAndUser/{1}"><span class="glyphicon glyphicon-pencil"></span>成员</a>
-            </@shiro.hasPermission>
         </script>
 
         <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>

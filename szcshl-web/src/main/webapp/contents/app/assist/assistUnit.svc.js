@@ -14,8 +14,7 @@
             createAssistUnit : createAssistUnit,		//新增协审单位
             updateAssistUnit : updateAssistUnit,		//更新协审单位
             getAssistUnitById : getAssistUnitById,		//通过id查询协审单位
-            queryAssistUnit : queryAssistUnit,			//模糊查询
-            getUnitUser : getUnitUser
+            queryAssistUnit : queryAssistUnit			//模糊查询
             
         };
 
@@ -99,7 +98,12 @@
         	var httpOptions={
         		method:"put",
         		url:url_assistUnit,
-        		data:vm.assistUnit
+        		headers:{
+                 "contentType":"application/json;charset=utf-8"  //设置请求头信息
+              },
+			  dataType : "json",
+			  data:angular.toJson(vm.assistUnit)
+//        		data:vm.assistUnit
         	}
         	
         	var httpSuccess=function success(response){
@@ -154,27 +158,7 @@
         	 vm.gridOptions.dataSource.read();
         }
 
-        
-        function getUnitUser(vm, fn){
-        	var httpOptions={
-        		method:'post',
-        		url: rootPath+ '/assistUnit/unitUser',
-        		params:{assistUnitID:vm.id}
-        	}
-        	
-        	var httpSuccess=function success(response){
-        		vm.resource.count=response.data.count;
-        	
-        		fn && fn.apply(vm);
-        	}
-        	common.http({
-        		vm:vm,
-        		$http:$http,
-        		httpOptions:httpOptions,
-        		success:httpSuccess
-        	});
-        
-        }
+     
         // begin#grid
         function grid(vm) {
 
@@ -237,6 +221,36 @@
                 {
                     field: "phoneNum",
                     title: "电话号码",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "phoneNum",
+                    title: "传真",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "principalName",
+                    title: "负责人名称",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "principalPhone",
+                    title: "负责人手机号",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "contactName",
+                    title: "联系人名称",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "contactPhone",
+                    title: "联系人手机号",
                     width: 100,
                     filterable: false
                 },

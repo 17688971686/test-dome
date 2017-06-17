@@ -287,8 +287,8 @@
             }).data("kendoWindow").center().open();
            	vm.signNum=0;//抽取单位个数
             assistPlanId=planId;
-           vm.planId=planId;
-           assistSvc.getPlanSignByPlanId(vm,planId);
+            vm.planId=planId;
+            assistSvc.getPlanSignByPlanId(vm,planId);
         }
         
         vm.ministerOpinionEdit=function (ministerOpinion){	//部长意见
@@ -329,7 +329,7 @@
         	$("#againChooleAssistUnit").kendoWindow({
 	        	title:"选择参加协审单位",
 	        	width:"30%",
-    			height:"50%",
+    			height:"60%",
 	        	visible : false,
 	            modal : true,
 	            closable : true,
@@ -350,8 +350,22 @@
             }
             //待被抽取的协审单位
             vm.drawAssistUnits = vm.unitList.slice(0);
-            var drawAssistPlanSign
+//            var drawAssistPlanSign
             var drawPlanSignIndex = 0;
+            var unitIndex=-1,signIndex=-1;//记录被抽取的协审计划下标和协审单位下标
+            //先让上次轮空的协审单位进行抽取项目
+	            for(var i=0;i<vm.drawAssistUnits.length;i++){ //遍历协审单位，判断是否为空，9表示为空，如果为空，则进行抽签协审计划，分配协审单位
+	            	if(vm.drawAssistUnits[i].isLastUnSelected=='9'){
+	            		unitIndex=i;
+	            		var selscope = Math.floor(Math.random()*(vm.assistPlanSign.length));//产生随机数
+	            		signIndex=selscope;
+	            		vm.assistPlanSign[selscope].assistUnit=vm.drawAssistUnits[i];//将协审单位分配给协审计划
+	            		vm.drawPlanSign = vm.assistPlanSign[selscope];
+	            		vm.drawAssistUnits.splice(i,1);//将上轮轮空的协审单位移除
+	            	}
+	            	
+	            }
+            
             //当前抽取第一个项目的协审单位
             vm.drawPlanSign = vm.assistPlanSign[drawPlanSignIndex];
             var timeCount = 0;
@@ -359,15 +373,17 @@
             vm.isDrawDone = false;
             vm.t = $interval(function() {
                 vm.drawPlanSign = vm.assistPlanSign[drawPlanSignIndex];
-                var selscope = Math.floor(Math.random()*(vm.drawAssistUnits.length));
-
-                var selAssistUnit = vm.drawAssistUnits[selscope];
+               var selscope = Math.floor(Math.random()*(vm.drawAssistUnits.length));
+              	var selAssistUnit = vm.drawAssistUnits[selscope];
                 vm.showAssitUnitName = selAssistUnit.unitName;
                 timeCount++;
                 //一秒后，选中协审单位
                 if(timeCount % 20 == 0){
                     //选中协审单位
+                	if(drawPlanSignIndex!=signIndex){
+                	
                     vm.assistPlanSign[drawPlanSignIndex].assistUnit = selAssistUnit;
+                	}
                     drawPlanSignIndex ++;
 
                     if(drawPlanSignIndex == vm.assistPlanSign.length){
@@ -381,7 +397,7 @@
                             vm.drawAssistUnits.splice(n,1);
                         }
                     });
-
+                    
                 }
             }, 50);
         }

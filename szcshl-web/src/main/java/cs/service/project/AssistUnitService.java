@@ -2,7 +2,6 @@ package cs.service.project;
 
 import cs.model.PageModelDto;
 import cs.model.project.AssistUnitDto;
-import cs.model.project.AssistUnitUserDto;
 import cs.repository.odata.ODataObj;
 
 import java.util.List;
@@ -25,15 +24,6 @@ public interface AssistUnitService {
 
 	void delete(String id);
 	
-	PageModelDto<AssistUnitUserDto> getUnitAndUser(String id);
-	
-	PageModelDto<AssistUnitUserDto> getUserNotIn(ODataObj odataObj,String id);
-	
-	void addUser(String unitId,String userId);
-	
-	void removeUser(String unitId,String userId);
-	
-	void removeUsers(String unitId,String[] userIds);
 
 	List<AssistUnitDto> findDrawUnit(String planId,Integer number);
 	

@@ -7,16 +7,11 @@ import java.util.UUID;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.cache.CacheFactory;
-import cs.common.cache.DefaultCacheFactory;
-import cs.common.cache.ICache;
 import cs.domain.project.AssistPlan;
-import cs.domain.sys.SysConfig;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.service.sys.SysConfigService;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +20,11 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.AssistUnit;
-import cs.domain.project.AssistUnitUser;
 import cs.domain.project.AssistUnit_;
 import cs.model.PageModelDto;
 import cs.model.project.AssistUnitDto;
-import cs.model.project.AssistUnitUserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.AssistUnitRepo;
-import cs.repository.repositoryImpl.project.AssistUnitUserRepo;
 
 /**
  * Description: 协审单位 业务操作实现类
@@ -48,8 +40,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Autowired
 	private AssistUnitRepo assistUnitRepo;
 	
-	@Autowired
-	private AssistUnitUserRepo assistUnitUserRepo;
 	
 	@Autowired
 	private ICurrentUser currentUser;
@@ -109,6 +99,10 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 		domain.setModifiedBy(currentUser.getLoginName());
 		domain.setModifiedDate(new Date());
 		
+		domain.getAssistPlanList().clear();
+//		List<>
+//		for()
+		
 		assistUnitRepo.save(domain);
 	}
 
@@ -128,88 +122,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 		assistUnitRepo.deleteById(AssistUnit_.id.getName(),id);
 	}
 
-	@Override
-	@Transactional
-	public PageModelDto<AssistUnitUserDto> getUnitAndUser(String id) {
-		
-		PageModelDto<AssistUnitUserDto> pageModelDto=new PageModelDto<>();
-		List<AssistUnitUserDto> assistUnitUserDtoList=new ArrayList<>();
-		AssistUnit assistUnit=assistUnitRepo.findById(id);
-		if(assistUnit!=null){
-			assistUnit.getAssistUnitUserList().forEach(x -> {
-				AssistUnitUserDto assistUnitUserDto=new AssistUnitUserDto();
-				BeanCopierUtils.copyProperties(x, assistUnitUserDto);
-				assistUnitUserDtoList.add(assistUnitUserDto);
-				
-			});
-			
-			pageModelDto.setCount(assistUnitUserDtoList.size());
-			pageModelDto.setValue(assistUnitUserDtoList);
-		}
-		
-		return pageModelDto;
-	}
 
-	@Override
-	@Transactional
-	public PageModelDto<AssistUnitUserDto> getUserNotIn(ODataObj odataObj, String id) {
-		PageModelDto<AssistUnitUserDto> pageModelDto=new PageModelDto<>();
-		List<AssistUnitUserDto> assistUnitUserDtoList=new ArrayList<>();
-		AssistUnit assistUnit=assistUnitRepo.findById(id);
-		List<String> assistUnitUserIdList=new ArrayList<>();
-		if(assistUnit!=null){
-			List<AssistUnitUser> assistUnitUserList=assistUnitUserRepo.getUserNotIn(odataObj, assistUnitUserIdList);
-			assistUnitUserList.forEach(x ->{
-				AssistUnitUserDto assistUnitUserDto=new AssistUnitUserDto();
-				BeanCopierUtils.copyProperties(x, assistUnitUserDto);
-				assistUnitUserDtoList.add(assistUnitUserDto);
-			});
-			
-			pageModelDto.setCount(assistUnitUserDtoList.size());
-			pageModelDto.setValue(assistUnitUserDtoList);
-		}
-		
-		return pageModelDto;
-	}
-
-	@Override
-	@Transactional
-	public void addUser(String unitId, String userId) {
-		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
-		if(assistUnit!=null){
-			AssistUnitUser assistUnitUser=assistUnitUserRepo.findById(userId);
-			if(assistUnitUser!=null){
-				assistUnitUser.setAssistUnit(assistUnit);
-			}
-			assistUnitUserRepo.save(assistUnitUser);
-		}
-	}
-
-	@Override
-	@Transactional
-	public void removeUser(String unitId, String userId) {
-		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
-		if(assistUnit!=null){
-			AssistUnitUser assistUnitUser=assistUnitUserRepo.findById(userId);
-			if(assistUnitUser!=null){
-				assistUnitUser.setAssistUnit(null);
-			}
-			assistUnitUserRepo.save(assistUnitUser);
-		}
-		
-	}
-
-	@Override
-	@Transactional
-	public void removeUsers(String unitId, String[] userIds) {
-		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
-		if(assistUnit!=null){
-			for(String userId:userIds){
-				this.removeUser(unitId, userId);
-			}
-		}
-		
-	}
 
 	/**
 	 * 查询抽签单位

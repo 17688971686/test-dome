@@ -430,7 +430,6 @@
         //begin getPlanSignByPlan
         function getPlanSignByPlanId(vm,planId){
         	vm.reviewNum=''; //几个评审单位
-//        	vm.assistPlanSign={};
 	        var httpOptions={
 	        	method:'get',
 	        	url:rootPath+'/assistPlanSign/getPlanSignByPlanId',
@@ -438,12 +437,11 @@
 	        }
 	        var httpSuccess=function success(response){
 	        	vm.assistPlanSign=response.data;
-	        	console.log(vm.assistPlanSign);
 	        	vm.reviewNum=vm.assistPlanSign.length;
 	        	 if(vm.assistPlanSign.length > 0){
 			           initPlanByPlanId(vm,planId);//初始化协审计划
 			           initAssistUnit(vm,planId);//初始化协审单位
-			           getUnitUser(vm);
+//			           getUnitUser(vm);
            		}
 	        }
 	        
@@ -469,7 +467,6 @@
 			  data:angular.toJson(vm.assistPlanSign)
         	}
         	
-        	console.log(vm.assistPlanSign);
         	 var httpSuccess=function success(response){
         	 	}
 	        
@@ -658,9 +655,9 @@
                         vm.iscommit = false;
                         vm.isCommited = true;
                         common.alert({
+                            closeDialog:true,
                             vm:vm,
-                            msg:"操作成功！",
-                            closeDialog:true
+                            msg:"操作成功！"
                         })
                     }
                 });

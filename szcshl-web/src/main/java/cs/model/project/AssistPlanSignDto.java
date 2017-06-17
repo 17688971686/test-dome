@@ -2,12 +2,19 @@ package cs.model.project;
 
 import java.math.BigDecimal;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import cs.domain.project.AssistPlan;
+import cs.domain.project.AssistUnit;
+import cs.domain.project.Sign;
+
 /**
  * Description: 协审项目 页面数据模型
  * author: ldm
  * Date: 2017-6-6 14:50:37
  */
-public class AssistPlanSignDto {
+public class AssistPlanSignDto{
 
     private String id;
     private String planId;                      //计划ID
@@ -21,6 +28,13 @@ public class AssistPlanSignDto {
     private Integer splitNum;                   //拆分项目序号
     private BigDecimal estimateCost;			//报审概算
     private BigDecimal jiananCost;				//建安费
+    private String userName; 
+   
+    @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
+    private AssistUnit assistUnit;
+    
+    @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
+    private AssistPlan assistPlan;
 
     public AssistPlanSignDto() {
     }
@@ -120,6 +134,31 @@ public class AssistPlanSignDto {
 	public void setJiananCost(BigDecimal jiananCost) {
 		this.jiananCost = jiananCost;
 	}
-    
+
+	public AssistUnit getAssistUnit() {
+		return assistUnit;
+	}
+
+	public void setAssistUnit(AssistUnit assistUnit) {
+		this.assistUnit = assistUnit;
+	}
+
+	public AssistPlan getAssistPlan() {
+		return assistPlan;
+	}
+
+	public void setAssistPlan(AssistPlan assistPlan) {
+		this.assistPlan = assistPlan;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+
     
 }

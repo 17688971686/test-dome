@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.model.PageModelDto;
 import cs.model.project.AssistUnitDto;
-import cs.model.project.AssistUnitUserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AssistUnitService;
 
@@ -78,48 +77,6 @@ public class AssistUnitController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody AssistUnitDto record) {
         assistUnitService.update(record);
-    }
-
-    @RequiresPermissions("assistUnit#unitUser#post")
-    @RequestMapping(name = "获取单位成员数据", path = "unitUser", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<AssistUnitUserDto>  getUnitAndUser(@RequestParam String assistUnitID){
-    	
-    	return assistUnitService.getUnitAndUser(assistUnitID);
-    	
-    }
-    
-    @RequiresPermissions("assistUnit#userNotIn#post")
-    @RequestMapping(name = "获取非单位成员数据", path = "userNotIn", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<AssistUnitUserDto> getUserNotIn(HttpServletRequest request,@RequestParam String assistUnitID) throws ParseException{
-    	ODataObj odataObj=new ODataObj(request);
-    	
-    	return assistUnitService.getUserNotIn(odataObj, assistUnitID);
-    }
-    
-    @RequiresPermissions("assistUnit#addUser#post")
-    @RequestMapping(name="添加成员",path="addUser",method=RequestMethod.POST)
-    @ResponseStatus(value=HttpStatus.CREATED)
-    public void postAddUser(@RequestParam String unitId,@RequestParam String userId){
-    	
-    	assistUnitService.addUser(unitId, userId);
-    	
-    }
-    
-    @RequiresPermissions("assistUnit#removeUser#delete")
-    @RequestMapping(name="移除单位下的人员",path="removeUser",method=RequestMethod.DELETE)
-    @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public void removeUser(@RequestParam String unitId,@RequestParam String userId){
-    	
-    	String[] ids=userId.split(",");
-    	if(ids.length>1){
-    		assistUnitService.removeUsers(unitId, ids);
-    	}else{
-    		
-    		assistUnitService.removeUser(unitId, userId);
-    	}
-    	
     }
 
     /**

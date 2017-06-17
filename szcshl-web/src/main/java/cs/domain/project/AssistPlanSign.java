@@ -1,10 +1,20 @@
 package cs.domain.project;
 
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 @Entity
 @Table(name = "cs_as_plansign")
@@ -47,10 +57,12 @@ public class AssistPlanSign {
 
     @ManyToOne
     @JoinColumn(name = "assistUnitId")
+//    @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
     private AssistUnit assistUnit;              //协审单位
 
     @ManyToOne
     @JoinColumn(name = "planId")
+//    @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
     private AssistPlan assistPlan;              //协审计划
 
     public String getId() {

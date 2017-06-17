@@ -1,0 +1,41 @@
+<div >
+
+	<div align="center">
+		<h3>深圳市政府投资项目评审中心概算协审抽签记录表</h3>
+	</div>
+	<div style="margin-left: 70%; padding-top: 20px;">
+		<span >抽签日期：{{vm.assistPlan.drawTime}}</span>
+	</div>
+	<div style="padding-top: 10px; max-width:100%; height: 70%; overflow-x :auto;">
+		<table class="table table-bordered" style=" text-align: center; width: 2000px;">
+			<tr>
+				<td style="width: 80px;">序号</td>
+				<td style="width: 400px;">协审项目</td>
+				<td style="width: 100px;">报审概算（万元）</td>
+				<td style="width: 100px;">协审费用（元）</td>
+				<td style="width: 100px;">协审天数（天）</td>
+				<td style="width: 400px;">中标单位</td>
+				<td style="width: 100px;">抽签人</td>
+				<td style="width: 100px;">签号</td>
+				<td style="width: 100px;">项目负责人</td>
+				<td style="width: 400px;">备注</td>
+			</tr>
+			<tr ng-repeat="x in vm.assistPlanSign">
+				<td style="width: 80px;">{{$index + 1}}</td>
+				<td style="width: 400px;">{{x.projectName}}</td>
+				<td style="width: 100px;">{{x.estimateCost}}</td>
+				<td style="width: 100px;">{{x.assistCost}}</td>
+				<td style="width: 100px;">{{x.assistDays}}</td>
+				<td style="width: 400px;">{{x.assistUnit.unitName}}</td>
+				<td style="width: 100px;">{{x.assistUnit.contactName}}</td>
+				<td style="width: 100px;">{{$index + 1}}</td>
+				<td style="width: 100px;">{{x.userName}}</td>
+				<td style="width: 400px;"></td>
+			</tr>
+		
+		</table>
+	
+	</div>
+
+
+</div>

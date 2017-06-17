@@ -15,11 +15,14 @@ import cs.common.utils.BeanCopierUtils;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
-import cs.domain.project.WorkProgram;
+import cs.domain.project.Sign;
+import cs.domain.sys.User;
 import cs.model.project.AssistPlanSignDto;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 
 /**
  * Description: 协审项目 业务操作实现类
@@ -37,6 +40,12 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 	
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
+	
+	@Autowired
+	private UserRepo userRepo;
+	
+	@Autowired
+	private SignRepo signRepo;
 	@Autowired
 	private ICurrentUser currentUser;
 	
@@ -50,12 +59,16 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 		hqlBuilder.append("select wp.appalyinvestment from CS_WORK_PROGRAM wp where wp.signid = t.signid)");
 		hqlBuilder.append("else t.estimateCost end estimateCost from CS_AS_PLANSIGN t where t.planId=:planId");
 		hqlBuilder.setParam("planId", planId);
-		
 		List<AssistPlanSign> list=assistPlanSignRepo.findBySql(hqlBuilder);
 		List<AssistPlanSignDto> dtoList=new ArrayList<>();
 		for(AssistPlanSign assistPlanSign:list){
 			AssistPlanSignDto assistPlanSignDto=new AssistPlanSignDto();
 			BeanCopierUtils.copyProperties(assistPlanSign, assistPlanSignDto);
+			Sign sign=signRepo.findById(assistPlanSign.getSignId());
+			if(sign.getmFlowMainUserId()!=null){
+				User user=userRepo.findById(sign.getmFlowMainUserId());
+				assistPlanSignDto.setUserName(user.getDisplayName());
+			}
 			assistPlanSignDto.setPlanId(planId);
 			dtoList.add(assistPlanSignDto);
 		}
