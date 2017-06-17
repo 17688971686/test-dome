@@ -24,4 +24,6 @@ public interface WorkProgramService {
 
 
     void deleteBySignId(String signId);
+
+    void delete(String id);
 }

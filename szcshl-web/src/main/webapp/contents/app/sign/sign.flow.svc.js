@@ -53,11 +53,16 @@
             {
                 case "XMFZR_SP_GZFA1":  //项目负责人承办
                     vm.businessTr = true;
+                    vm.MFLOW_XMFZR_SP_GZFA = true ;     //显示是否直接发文
                     vm.XMFZR_SP_GZFA = true;
                     vm.MarkAndPay=false;//专家评分费用编辑权限
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
                         vm.show_workprogram = true;
                         $("#show_workprogram_a").click();
+
+                        vm.directDisPatch = false;          //是否直接发文
+                    }else{
+                        vm.directDisPatch = true;
                     }
                     break;
                 case "XMFZR_SP_GZFA2":
@@ -130,6 +135,9 @@
                     $("#show_filerecord_a").click();
                     break;
                 //以下为协审流程
+                case "XS_BMFB":       //部门分办
+                    vm.principalUsers = [];    //部门负责人数组
+                    break;
                 case "XS_XMFZR_GZFA":       //项目负责人承办
                     vm.businessTr = true;
                     vm.XS_XMFZR_GZFA = true;
@@ -176,7 +184,7 @@
                     }
                     break;
                 case "XS_FZR_SP":                //第二负责人审批归档
-
+                    $("#show_filerecord_a").click();
                     break;
                 case "XS_QRGD":                  //确认归档
 
@@ -239,14 +247,17 @@
                     });
                     break;
                 case "XMFZR_SP_GZFA1":
-                    if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9'){
-                        if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
-                            resultTag = true;
-                        }else{
-                            resultTag = false;
+                    if(vm.directDisPatch){
+                        vm.flow.businessMap.ZJFW = 9;
+                    }else{
+                        if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9'){
+                            if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
+                                resultTag = true;
+                            }else{
+                                resultTag = false;
+                            }
                         }
                     }
-
                     break;
                 case "XMFZR_SP_GZFA2":
                     if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9') {
@@ -315,20 +326,26 @@
                     }
                     break;
                 case "XS_BMFB":          //部门分办
-                    $('.seleteTable input[selectType="main"]:checked').each(function(){
-                        vm.flow.businessMap.M_USER_ID = $(this).val();
-                        seleteCount++;
-                    });
-                    if(seleteCount == 0){
+                    if(angular.isUndefined(vm.principalUsers) || vm.principalUsers.length == 0){
                         resultTag = false;
-                        break;
+                    }else{
+                        var mainPriUserCount = 0;
+                        vm.principalUsers.forEach(function(pu,index){
+                            if(pu.isMainUser == 9){
+                                mainPriUserCount ++;
+                            }
+                        });
+                        //选择的总负责人不对
+                        if(mainPriUserCount == 0 || mainPriUserCount > 1){
+                            resultTag = false;
+                        }else{
+                            vm.flow.businessMap.PRINCIPAL = vm.principalUsers;
+                        }
                     }
-                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
-                        vm.flow.businessMap.A_USER_ID = $(this).val();
-                    });
+
                     break;
                 case "XS_XMFZR_GZFA":           //项目负责人承办
-                    vm.flow.businessMap.PSFA == vm.model.isNeedWrokPrograml
+                    vm.flow.businessMap.PSFA = vm.model.isNeedWrokPrograml;
                     //选择了工作方案没填写的，不给通过
                     if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9' && (!vm.mainwork || !vm.mainwork.id)) {
                         resultTag = false;

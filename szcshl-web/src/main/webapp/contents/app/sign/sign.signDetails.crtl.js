@@ -29,6 +29,7 @@
             if($state.params.processInstanceId){
                 vm.flow = {}
                 vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
+                //判断是否加载流程图
                 flowSvc.initFlowData(vm);
             }
         }

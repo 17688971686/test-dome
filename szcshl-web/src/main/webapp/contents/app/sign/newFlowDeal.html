@@ -80,7 +80,11 @@
 		      		</div>	
 
 		      		<!-- 工作方案 -->
-					<button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit" ng-show="vm.XMFZR_SP_GZFA" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
+                    <p ng-show="vm.MFLOW_XMFZR_SP_GZFA"><!--主流程工作方案环节才显示-->
+                        是否直接发文：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.directDisPatch" ng-click="vm.checkNeedWP($event)">
+                    </p>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit" ng-show="vm.XMFZR_SP_GZFA" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
+
  		      		<!-- 发文 -->
 					<button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit" ng-show="vm.FW_SQ" ><span class="glyphicon glyphicon-edit"></span>发文</button>	
 					<!-- 归档 -->
@@ -108,7 +112,69 @@
                               </tr>
                           </table>
                     </div>
-                    <!-- 协审工作方案 -->
+				  <!-- 协审部门分办 -->
+				  <div ng-show="vm.XS_BM_FB" id="xs_bmfb">
+					  <table class="table" style="width:80%;">
+                          <caption class="text-center">*必须要选择1个总负责人，最多只能选3个负责人</caption>
+						  <tr>
+                              <td style="width: 25%">
+                                  <table class="table table-bordered seleteTable" >
+                                      <tr>
+                                          <td width="30%" align="center">选择</td>
+                                          <td width="70%" align="center">人员</td>
+                                      </tr>
+                                      <tr ng-repeat="u in vm.xsusers | filter:{isSelected:false}">
+                                          <td align="center"><input type="checkbox" name="unSelPriUser"  value="{{u.id}}"/></td>
+                                          <td align="center">{{u.displayName}}</td>
+                                      </tr>
+                                  </table>
+                              </td>
+                              <td  style="text-align:center;vertical-align:middle;width: 15%">
+                                  <p style="text-align:center;">
+                                      负责分工:
+                                      <select name="userType" id="userType">
+                                          <option value="土建">土建</option>
+                                          <option value="安装">安装</option>
+                                          <option value="所有">所有</option>
+                                      </select>
+                                  </p>
+                                  <p style="text-align:center;">
+                                      是否总负责人：<input ng-model="vm.isMainPriUser" type="checkbox" ng-true-value="9" ng-false-value="0" id="isMainPriUser" ng-checked="vm.isMainPriUser==9"/>
+                                  </p>
+                                  <p style="text-align:center;">
+                                      <button class="btn btn-sm btn-default" ng-click="vm.addPriUser()" ng-disabled="vm.iscommit"><span
+                                              class="glyphicon glyphicon-arrow-right"></span>添加
+                                      </button>
+                                  </p>
+                                  <p style="text-align:center;">
+                                      <button class="btn btn-sm btn-default" ng-click="vm.delPriUser()" ng-disabled="vm.iscommit"><span
+                                              class="glyphicon glyphicon-arrow-left"></span>删除
+                                      </button>
+                                  </p>
+                              </td>
+                              <td style="width:60%">
+                                  <table class="table table-bordered">
+                                      <tr>
+                                          <td width="10%" align="center">选择</td>
+                                          <td width="30%" align="center">人员</td>
+                                          <td width="30%" align="center">负责分工</td>
+                                          <td width="30%" align="center">总负责人</td>
+                                      </tr>
+                                      <tr ng-repeat="x in vm.principalUsers">
+                                          <td align="center">
+                                              <input type="checkbox" name="selPriUser" value="{{x.userId}}"/>
+                                          </td>
+                                          <td align="center">{{x.userName}}</td>
+                                          <td align="center">{{x.userType}}</td>
+                                          <td align="center">{{x.isMainUser == 9?'是':'否'}}</td>
+                                      </tr>
+                                  </table>
+                              </td>
+						  </tr>
+					  </table>
+
+				  </div>
+				  <!-- 协审工作方案 -->
                     <div ng-show="vm.XS_XMFZR_GZFA">
 						<p>
 							<button class="btn btn-xs btn-primary" ng-click="vm.addBaseWP()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>项目基本信息</button>

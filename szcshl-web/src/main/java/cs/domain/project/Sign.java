@@ -464,7 +464,7 @@ public class Sign extends DomainBase {
     @OneToOne(mappedBy = "sign")
     private FileRecord fileRecord;
 
-    //主流程第一负责人ID
+    /*//主流程第一负责人ID
     @Column(columnDefinition = "VARCHAR(64)")
     private String mFlowMainUserId;
 
@@ -478,7 +478,7 @@ public class Sign extends DomainBase {
 
     //次流程第二负责人ID
     @Column(columnDefinition = "VARCHAR(64)")
-    private String aFlowAssistUserId;
+    private String aFlowAssistUserId;*/
 
     //主办部门
     @Column(columnDefinition = "VARCHAR(64)")
@@ -1410,38 +1410,6 @@ public class Sign extends DomainBase {
 
     public void setFileRecord(FileRecord fileRecord) {
         this.fileRecord = fileRecord;
-    }
-
-    public String getmFlowMainUserId() {
-        return mFlowMainUserId;
-    }
-
-    public void setmFlowMainUserId(String mFlowMainUserId) {
-        this.mFlowMainUserId = mFlowMainUserId;
-    }
-
-    public String getmFlowAssistUserId() {
-        return mFlowAssistUserId;
-    }
-
-    public void setmFlowAssistUserId(String mFlowAssistUserId) {
-        this.mFlowAssistUserId = mFlowAssistUserId;
-    }
-
-    public String getaFlowMainUserId() {
-        return aFlowMainUserId;
-    }
-
-    public void setaFlowMainUserId(String aFlowMainUserId) {
-        this.aFlowMainUserId = aFlowMainUserId;
-    }
-
-    public String getaFlowAssistUserId() {
-        return aFlowAssistUserId;
-    }
-
-    public void setaFlowAssistUserId(String aFlowAssistUserId) {
-        this.aFlowAssistUserId = aFlowAssistUserId;
     }
 
     public String getmOrgId() {

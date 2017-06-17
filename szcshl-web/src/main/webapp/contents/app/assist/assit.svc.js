@@ -18,16 +18,15 @@
             initSelPlan : initSelPlan,                          //初始化选择的计划信息
             showPickLowSign : showPickLowSign,                  //初始化选择的次项目信息
             queryPlan : queryPlan,                              //查询协审计划信息
-            getPlanSignByPlanId : getPlanSignByPlanId,				//通过协审计划id或取协审项目信息
+            getPlanSignByPlanId : getPlanSignByPlanId,			//通过协审计划id或取协审项目信息
             savePlanSign : savePlanSign,						//保存协审项目信息
-            savePlan : savePlan,									//保存协审计划
-            initPlanByPlanId : initPlanByPlanId,					//初始化协审计划
-            chooseAssistUnit : chooseAssistUnit,							//选择协审单位
-            initAssistUnit : initAssistUnit,
-            saveDrawAssistUnit:saveDrawAssistUnit,               //保存协审计划抽签
-              initAssistUnit : initAssistUnit,						//初始化协审单位
+            savePlan : savePlan,								//保存协审计划
+            initPlanByPlanId : initPlanByPlanId,				//初始化协审计划
+            chooseAssistUnit : chooseAssistUnit,				//选择协审单位
+            saveDrawAssistUnit:saveDrawAssistUnit,              //保存协审计划抽签
+            initAssistUnit : initAssistUnit,					//初始化协审单位
             getUnitUser : getUnitUser,
-            getAllUnit : getAllUnit			//获取所有的协审单位
+            getAllUnit : getAllUnit			                    //获取所有的协审单位
             
 		};
 		return service;

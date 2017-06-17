@@ -85,6 +85,13 @@ public class WorkProgramController {
         workProgramService.mergeAddWork(signId, linkSignId);
     }
 
+    @RequiresPermissions("assistPlan##delete")
+    @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@RequestBody String id) {
+        workProgramService.delete(id);
+    }
+
     @RequestMapping(name = "删除工作方案", path = "deleteBySignId", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteBySignId(@RequestParam(required = true) String signId) {

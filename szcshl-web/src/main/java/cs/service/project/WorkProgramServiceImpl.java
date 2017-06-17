@@ -55,6 +55,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private MergeDispaRepo mergeDispaRepo;
     @Autowired
     private SysFileRepo sysFileRepo;
+    @Autowired
+    private SignPrincipalService signPrincipalService;
 
     @Override
     @Transactional
@@ -89,7 +91,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //判断是否是主流程
             boolean isMainFlow = false;
             if ((Validate.isString(workProgramDto.getIsMain()) && workProgramDto.getIsMain().equals(EnumState.YES.getValue()))
-                    || isMainSignChange(sign)) {
+                    || signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), sign.getSignid(), EnumState.YES.getValue())) {
                 isMainFlow = true;
             }
             if (isMainFlow) {
@@ -129,7 +131,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (merge != null) {
             mergeDispaRepo.delete(merge);
         }
-
     }
 
     /**
@@ -137,31 +138,30 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      */
     @Override
     public WorkProgramDto initWorkBySignId(String signId, String isMain) {
+        //是否为项目负责人标识,如果两者都不是，则是审核领导
         boolean isMainUser = false, isAssistUser = false;
-        Sign sign = signRepo.findById(signId);
-        WorkProgramDto workProgramDto = new WorkProgramDto();
 
+        WorkProgramDto workProgramDto = new WorkProgramDto();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + WorkProgram.class.getSimpleName() + " where " + WorkProgram_.sign.getName() + "." + Sign_.signid.getName() + " = :signId ");
         hqlBuilder.setParam("signId", signId);
 
-        //如果有传入的参数，则优先按传入的参数查询，没有则根据当前用户判断
+        //如果有传入的参数，则优先按传入的参数查询
         if (Validate.isString(isMain)) {
             hqlBuilder.append(" and " + WorkProgram_.isMain.getName() + " = :isMain ").setParam("isMain", isMain);
-        } else {
-            isMainUser = isMainSignChange(sign);
+        }else{
+            isMainUser = signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), signId, EnumState.YES.getValue());
             if (isMainUser) {
                 isMain = EnumState.YES.getValue();
             } else {
-                isAssistUser = isAssistSignChange(sign);
+                isAssistUser = signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), signId, EnumState.NO.getValue());
                 if (isAssistUser) {
                     isMain = EnumState.NO.getValue();
                 }
             }
-        }
-
-        if (Validate.isString(isMain)) {
-            hqlBuilder.append(" and " + WorkProgram_.isMain.getName() + " = :isMain ").setParam("isMain", isMain);
+            if (Validate.isString(isMain)) {
+                hqlBuilder.append(" and " + WorkProgram_.isMain.getName() + " = :isMain ").setParam("isMain", isMain);
+            }
         }
         List<WorkProgram> list = workProgramRepo.findByHql(hqlBuilder);
 
@@ -189,9 +189,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     break;
                 }
             }
-        }
 
-        if (!Validate.isString(workProgramDto.getId())) {
+        //如果没有查到数据，则初始化
+        }else{
+            Sign sign = signRepo.findById(signId);
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
@@ -202,56 +203,29 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
             workProgramDto.setSendFileUser(sign.getMainDeptUserName());
 
-            //主流程
-            if (isMainUser) {
-                UserDto dealUser = userService.findById(sign.getmFlowMainUserId());
-                workProgramDto.setMianChargeUserId(dealUser.getId());
-                workProgramDto.setMianChargeUserName(dealUser.getDisplayName());
-                workProgramDto.setReviewOrgId(dealUser.getOrgDto().getId());
-                workProgramDto.setReviewOrgName(dealUser.getOrgDto().getName());
-                workProgramDto.setIsMain(Constant.EnumState.YES.getValue());
+            //查询项目的第一第二负责人
+            User mainUser = signPrincipalService.getMainPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue()),
+             secondUser = signPrincipalService.getSecondPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
 
-                if (Validate.isString(sign.getmFlowAssistUserId())) {
-                    dealUser = userService.findById(sign.getmFlowAssistUserId());
-                    workProgramDto.setSecondChargeUserId(dealUser.getId());
-                    workProgramDto.setSecondChargeUserName(dealUser.getDisplayName());
-                }
-                //协办流程
-            } else {
-                UserDto dealUser = userService.findById(sign.getaFlowMainUserId());
-                workProgramDto.setMianChargeUserId(dealUser.getId());
-                workProgramDto.setMianChargeUserName(dealUser.getDisplayName());
-                workProgramDto.setReviewOrgId(dealUser.getOrgDto().getId());
-                workProgramDto.setReviewOrgName(dealUser.getOrgDto().getName());
-                workProgramDto.setIsMain(Constant.EnumState.NO.getValue());
-
-                if (Validate.isString(sign.getaFlowAssistUserId())) {
-                    dealUser = userService.findById(sign.getmFlowAssistUserId());
-                    workProgramDto.setSecondChargeUserId(dealUser.getId());
-                    workProgramDto.setSecondChargeUserName(dealUser.getDisplayName());
-                }
+            if(mainUser != null && Validate.isString(mainUser.getId())){
+                workProgramDto.setMianChargeUserId(mainUser.getId());
+                workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
+                workProgramDto.setReviewOrgId(mainUser.getOrg().getId());
+                workProgramDto.setReviewOrgName(mainUser.getOrg().getName());
+                workProgramDto.setIsMain(isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+            }
+            if (secondUser != null && Validate.isString(secondUser.getId())) {
+                workProgramDto.setSecondChargeUserId(secondUser.getId());
+                workProgramDto.setSecondChargeUserName(secondUser.getDisplayName());
             }
         }
 
         return workProgramDto;
     }
 
-    //判断当前用户是否是主流程的处理人
-    protected boolean isMainSignChange(Sign sign) {
-        User curUser = currentUser.getLoginUser();
-        return (curUser.getId()).equals(sign.getmFlowAssistUserId()) || (curUser.getId()).equals(sign.getmFlowMainUserId());
-    }
-
-    //判断当前用户是否是协流程处理人
-    protected boolean isAssistSignChange(Sign sign) {
-        User curUser = currentUser.getLoginUser();
-        return (curUser.getId()).equals(sign.getaFlowAssistUserId()) || (curUser.getId()).equals(sign.getaFlowMainUserId());
-    }
-
     //待选项目列表
     @Override
     public List<SignDto> waitProjects(SignDto signDto) {
-
         HqlBuilder hqlBuilder = HqlBuilder.create(" from " + Sign.class.getSimpleName()).append(" where ");
         if (StringUtils.isNotBlank(signDto.getSignid())) {
             String[] linkSids = signDto.getSignid().split(",");
@@ -402,6 +376,22 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         sqlBuilder.append(" delete from cs_work_program where signid =:signid");
         sqlBuilder.setParam("signid", signId);
         workProgramRepo.executeSql(sqlBuilder);
+        //更改收文状态
+        Sign sign = signRepo.findById(signId);
+        sign.setIsNeedWrokPrograml(EnumState.NO.getValue());
+        sign.setIsreviewCompleted(EnumState.NO.getValue());
+        sign.setIsreviewACompleted(EnumState.NO.getValue());
+
+        signRepo.save(sign);
+    }
+
+    /**
+     * 删除工作方案信息
+     * @param id
+     */
+    @Override
+    public void delete(String id) {
+        workProgramRepo.deleteById(WorkProgram_.id.getName(),id);
     }
 
 

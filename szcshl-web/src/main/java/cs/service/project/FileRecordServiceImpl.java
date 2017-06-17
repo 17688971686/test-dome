@@ -1,14 +1,5 @@
 package cs.service.project;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
@@ -21,11 +12,20 @@ import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
+import cs.domain.sys.User;
 import cs.model.project.FileRecordDto;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FileRecordServiceImpl implements FileRecordService {
@@ -40,7 +40,9 @@ public class FileRecordServiceImpl implements FileRecordService {
 	private UserRepo userRepo;
 	@Autowired
 	private SysFileRepo sysFileRepo;
-	
+	@Autowired
+	private SignPrincipalService signPrincipalService;
+
 	@Override
 	@Transactional
 	public void save(FileRecordDto fileRecordDto) throws Exception{
@@ -82,6 +84,11 @@ public class FileRecordServiceImpl implements FileRecordService {
 		
 	}
 
+    /**
+     * 根据收文ID初始化归档信息
+     * @param signid
+     * @return
+     */
 	@Override
 	public FileRecordDto initBySignId(String signid) {
 		FileRecordDto fileRecordDto = new FileRecordDto();
@@ -94,12 +101,13 @@ public class FileRecordServiceImpl implements FileRecordService {
         	BeanCopierUtils.copyProperties(fileRecord,fileRecordDto);
         }else{
         	//如果是新增，则要初始化
+            User priUser = signPrincipalService.getMainPriUser(signid, Constant.EnumState.YES.getValue());
         	Sign sign = signRepo.findByIds(Sign_.signid.getName(),signid,"").get(0);
         	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectCode(sign.getProjectcode());
         	fileRecordDto.setProjectCompany(sign.getBuiltcompanyid());	//建设单位名称
-        	fileRecordDto.setProjectChargeUser(userRepo.findById(sign.getmFlowMainUserId()).getDisplayName());
+        	fileRecordDto.setProjectChargeUser(priUser==null?"":priUser.getDisplayName());
         	fileRecordDto.setFileNumber("");//文号
         }
 		return fileRecordDto;

@@ -25,12 +25,12 @@
         };
         return service;
 
-        //S_初始化grid
+        //S_初始化grid(过滤掉已经签收的项目)
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter:"issign eq '9'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -439,9 +439,10 @@
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/workprogram/deleteBySignId",
-                params: {signId: vm.model.signid}
+                params: {
+                    signId: vm.model.signid
+                }
             }
-
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm: vm,
@@ -452,7 +453,9 @@
                             msg: "操作成功",
                             fn: function () {
                                 vm.isSubmit = false;
+                                vm.model.isNeedWrokPrograml = '0'
                                 $('.alertDialog').modal('hide');
+                                initFlowPageData(vm);
                             }
                         })
                     }

@@ -209,7 +209,7 @@
                     title : "操作",
                     width : 80,
                     template:function(item){
-                        if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0){
+                        if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0 || (item.processDefinitionId).indexOf("SIGN_XS_FLOW") >= 0){
                             return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
                         }
                      }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
@@ -48,12 +49,12 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 	private SignRepo signRepo;
 	@Autowired
 	private ICurrentUser currentUser;
+	@Autowired
+    private SignPrincipalService signPrincipalService;
 	
 	@Override
 	@Transactional
 	public List<AssistPlanSignDto> getPlanSignByPlanId(String planId) {
-
-		AssistPlanSignDto planSignDto=new AssistPlanSignDto();
 		HqlBuilder hqlBuilder=HqlBuilder.create();
 		hqlBuilder.append("select id,signId,projectName,assistType,mainSignId,assistCost,jiananCost,assistDays,isMain,splitNum,assistUnitId,planId,case when t.estimateCost is null then (");
 		hqlBuilder.append("select wp.appalyinvestment from CS_WORK_PROGRAM wp where wp.signid = t.signid)");
@@ -64,11 +65,8 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 		for(AssistPlanSign assistPlanSign:list){
 			AssistPlanSignDto assistPlanSignDto=new AssistPlanSignDto();
 			BeanCopierUtils.copyProperties(assistPlanSign, assistPlanSignDto);
-			Sign sign=signRepo.findById(assistPlanSign.getSignId());
-			if(sign.getmFlowMainUserId()!=null){
-				User user=userRepo.findById(sign.getmFlowMainUserId());
-				assistPlanSignDto.setUserName(user.getDisplayName());
-			}
+			User user = signPrincipalService.getMainPriUser(assistPlanSign.getSignId(), EnumState.YES.getValue());
+			assistPlanSignDto.setUserName(user == null?"":user.getDisplayName());
 			assistPlanSignDto.setPlanId(planId);
 			dtoList.add(assistPlanSignDto);
 		}
