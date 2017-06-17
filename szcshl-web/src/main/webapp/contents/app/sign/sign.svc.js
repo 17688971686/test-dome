@@ -19,7 +19,8 @@
             removeWP: removeWP,             //删除工作方案
             associateGrid: associateGrid,//项目关联列表
             saveAssociateSign: saveAssociateSign,//保存项目关联
-            initAssociateSigns: initAssociateSigns//初始化项目关联信息
+            initAssociateSigns: initAssociateSigns,//初始化项目关联信息
+            showAssociateSign:showAssociateSign     //项目关联弹窗
 
         };
         return service;
@@ -135,17 +136,12 @@
                             if (item.folwState == 2) {
                                 hideRestartButton = false;
                             }
-                            if (item.isAssociate == 1) {
-                                isAlreadyAssociate = true;
-                            }
                         }
                         return common.format($('#columnBtns').html(), item.signid, item.folwState,
                             item.signid + "/" + item.processInstanceId, "vm.del('" + item.signid + "')", isFlowStart,
                             "vm.startNewFlow('" + item.signid + "')", isFlowStart,
                             "vm.stopFlow('" + item.signid + "')", hideStopButton,
-                            "vm.restartFlow('" + item.signid + "')", hideRestartButton,
-                            isAlreadyAssociate, "vm.associateSign('" + item.signid + "')", "vm.disAssociateSign('" + item.signid + "')"
-                        );
+                            "vm.restartFlow('" + item.signid + "')", hideRestartButton);
                     }
                 }
             ];
@@ -568,7 +564,9 @@
 
         //start saveAssociateSign
         //如果associateSignId为空，解除关联
-        function saveAssociateSign(vm, signId, associateSignId) {
+        function saveAssociateSign(vm, signId, associateSignId,callBack) {
+
+            associateSignId = associateSignId == 'undefined'?null:associateSignId;
             var httpOptions = {
                 method: 'post',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -587,7 +585,10 @@
                             closeDialog: true,
                             fn: function () {
                                 //关闭项目关联窗口
-                                vm.gridOptions.dataSource.read();
+                                //vm.gridOptions.dataSource.read();
+                                if(callBack != undefined&&typeof callBack == 'function'){
+                                    callBack();
+                                }
                             }
                         });
                     }
@@ -603,8 +604,9 @@
 
         //end saveAssociateSign
 
+        //显示关联信息
         //start initAssociateSigns
-        function initAssociateSigns(vm, singid, callBack) {
+        function initAssociateSigns(vm, singid) {
 
             var httpOptions = {
                 method: 'get',
@@ -617,8 +619,36 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                        if (callBack != undefined && typeof callBack == "function") {
-                            callBack(response);
+                         if(response.data != undefined){
+                            vm.associateSign = response.data;
+                            var signs = response.data;
+                           // console.log(signs);
+                            var steps = [];
+                            var html_ = '';
+                            for(var i = (signs.length-1);i>=0;i--){
+                                var s = signs[i];
+                                var signdate = s.signdate||'';
+                                html_ += '<div class="intro-list">'+
+                                            '<div class="intro-list-left">'+
+                                                '项目阶段：'+s.reviewstage+"<br/>签收时间："+signdate+
+                                            '</div>'+
+                                            '<div class="intro-list-right">'+
+                                                '<span></span>'+
+                                                '<div class="intro-list-content">'+
+                                                    '名称：<span style="color:red;">'+s.projectname+'</span><br/>'+
+                                                    '送件人：<span style="color:red;">'+s.sendusersign+'</span><br/>'+
+                                                '</div>'+
+                                            '</div>'+
+                                         '</div>';
+
+                            }
+                            $('#introFlow').html(html_);
+                            var step= $("#myStep").step({
+                                    animate:true,
+                                    initStep:1,
+                                    speed:1000
+                            });
+
                         }
                     }
                 });
@@ -630,7 +660,27 @@
                 success: httpSuccess
             });
         }
-
         //end initAssociateSigns
+
+
+
+         //start 项目关联弹框
+         function showAssociateSign(){
+            //选中要关联的项目
+            var signAssociateWindow=$("#associateWindow");
+            signAssociateWindow.kendoWindow({
+                width:"50%",
+                height:"80%",
+                title:"项目关联",
+                visible:false,
+                modal:true,
+                closable:true,
+                actions:["Pin","Minimize","Maximize","close"]
+            }).data("kendoWindow").center().open();
+
+            //初始化associateGrid
+
+         }
+         //end 项目关联
     }
 })();

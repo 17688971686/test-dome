@@ -100,46 +100,5 @@
          }
          //************************** S 以下是新流程处理js **************************//
 
-         signSvc.associateGrid(vm);
-         //start 项目关联
-         vm.associateSign = function(signId){
-            vm.currentSignId = signId;
-            //选中要关联的项目
-            vm.currentAssociateSign = vm.gridOptions.dataSource.get(signId);
-            var signAssociateWindow=$("#associateWindow");
-            signAssociateWindow.kendoWindow({
-                width:"50%",
-                height:"80%",
-                title:"项目关联",
-                visible:false,
-                modal:true,
-                closable:true,
-                actions:["Pin","Minimize","Maximize","close"]
-            }).data("kendoWindow").center().open();
-
-            //初始化associateGrid
-
-         }
-         //end 项目关联
-
-         //start 解除项目关联
-         vm.disAssociateSign = function(signId){
-             signSvc.saveAssociateSign(vm,signId);
-         }
-         //end 项目关联
-
-         vm.saveAssociateSign = function(associateSignId){
-            if(vm.currentSignId == associateSignId){
-                common.alert({
-                    vm:vm,
-                    msg:"不能关联自身项目",
-                    closeDialog:true,
-                    fn:function() {
-                    }
-                });
-                return ;
-            }
-            signSvc.saveAssociateSign(vm,vm.currentSignId,associateSignId);
-         }
     }
 })();

@@ -39,10 +39,12 @@
             flowSvc.initFlowData(vm);
             // 再初始化业务信息
             signSvc.initFlowPageData(vm);
-
+            signSvc.initAssociateSigns(vm,vm.model.signid);
             // 初始化专家评分费用
             //flowSvc.markGrid(vm);
             //flowSvc.paymentGrid(vm);
+            //初始化项目关联弹窗
+             signSvc.associateGrid(vm);
         }
 
         // 编辑专家评分
@@ -206,6 +208,40 @@
             }
         }
 
+        //项目关联弹窗
+        vm.showAssociate = function(){
+            vm.currentAssociateSign = vm.model;
+            signSvc.showAssociateSign();
+        }
+
+        //start 保存项目关联
+        vm.saveAssociateSign = function(associateSignId){
+            var signid = vm.model.signid;
+            if(signid == associateSignId){
+                common.alert({
+                    vm:vm,
+                    msg:"不能关联自身项目",
+                    closeDialog:true,
+                    fn:function() {
+                    }
+                });
+                return ;
+            }
+            signSvc.saveAssociateSign(vm,signid,associateSignId,function(){
+                //回调
+                $state.reload();
+            });
+        }
+        //end 保存项目关联
+
+        //start 解除项目关联
+        vm.disAssociateSign = function(){
+            signSvc.saveAssociateSign(vm,vm.model.signid,null,function(){
+                 //回调
+                 $state.reload();
+            });
+        }
+        //end 解除项目关联
 
     }
 })();

@@ -38,11 +38,6 @@
 	<@shiro.hasPermission name="sign##delete">
 		<button class="btn btn-xs btn-danger"  ng-click="{3}" ng-hide="{4}"><span class="glyphicon glyphicon-remove"></span>删除</button>
 	</@shiro.hasPermission>
-	<@shiro.hasPermission name="sign##delete">
-		<!--项目关联-->
-		<button ng-if="!{11}" class="btn btn-xs" ng-click="{12}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>项目关联</button>
-		<button ng-if="{11}" class="btn btn-xs" ng-click="{13}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-full"></span>解除关联</button>
-	</@shiro.hasPermission>
 	<!-- 发起流程 -->
 	<button class="btn btn-xs btn-success"  ng-click="{5}" ng-hide="{6}"><span class="glyphicon glyphicon-share-alt"></span>签收完毕</button>
 
