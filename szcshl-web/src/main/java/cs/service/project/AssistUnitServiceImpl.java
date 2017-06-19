@@ -77,6 +77,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 			AssistUnit domain = new AssistUnit(); 
 			BeanCopierUtils.copyProperties(record, domain); 
 			domain.setId(UUID.randomUUID().toString());
+			domain.setIsUse("1");//默认是在用
 			int unitSort=assistUnitRepo.getUnitSortMax();
 			domain.setUnitSort(++unitSort);
 			Date now = new Date();
@@ -100,8 +101,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 		domain.setModifiedDate(new Date());
 		
 		domain.getAssistPlanList().clear();
-//		List<>
-//		for()
 		
 		assistUnitRepo.save(domain);
 	}
@@ -118,8 +117,25 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 
 	@Override
 	@Transactional
-	public void delete(String id) {
-		assistUnitRepo.deleteById(AssistUnit_.id.getName(),id);
+	public void delete(String ids) {
+		String[] idss=ids.split(",");
+		if(idss.length>0){
+			for(String id:idss){
+				AssistUnit assistUnit=assistUnitRepo.findById(id);
+				if(assistUnit!=null){
+					
+					HqlBuilder hqlBuilder=HqlBuilder.create();
+					
+					hqlBuilder.append("update "+AssistUnit.class.getSimpleName()+" set "+AssistUnit_.isUse.getName()+"='0'"+" where "+AssistUnit_.id.getName()+"=:id");
+					
+					hqlBuilder.setParam("id", id);
+					
+					assistUnitRepo.executeHql(hqlBuilder);
+				}
+			}
+		}
+		
+//		assistUnitRepo.deleteById(AssistUnit_.id.getName(),id);
 	}
 
 
@@ -140,6 +156,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
         AssistUnitDto assistUnitDto = new AssistUnitDto();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from "+AssistUnit.class.getSimpleName()+" where "+AssistUnit_.isLastUnSelected.getName()+" =:isLastUnSelected");
+        hqlBuilder.append(" "+AssistUnit_.isUse.getName()+"='1'");
         hqlBuilder.setParam("isLastUnSelected", Constant.EnumState.YES.getValue());
         List<AssistUnit> list = assistUnitRepo.findByHql(hqlBuilder);
         if(list == null || list.size() == 0){
@@ -175,6 +192,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
                 sqlBuilder.append(" WHERE  WHERE id != :id").setParam("id",assistUnitDto.getId()).append(" ORDER BY newSort) nUnit ");
             }
             sqlBuilder.append(" ) nUnit WHERE ROWNUM < :number ").setParam("number",number+1);
+            hqlBuilder.append(" "+AssistUnit_.isUse.getName()+"='1'");
             list = assistUnitRepo.findBySql(sqlBuilder);
             saveList.addAll(list);
             if(list != null && list.size() > 0){

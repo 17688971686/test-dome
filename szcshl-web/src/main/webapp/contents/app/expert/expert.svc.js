@@ -267,10 +267,27 @@
 					filterable : true
 				},
 				{
-					field : "expeRttype",
+					field : "",
 					title : "专家类别",
 					width : 100,
-					filterable : true
+					filterable : true,
+					template:function(item){
+						if(item.expertTypeDtoList){
+							var resultStr='';
+							for(var i=0;i<item.expertTypeDtoList.length;i++){
+								if(i==0){
+									resultStr += item.expertTypeDtoList[i].expertType;
+								}else{
+									
+									resultStr += "、"+item.expertTypeDtoList[i].expertType;
+								}
+							}
+							return resultStr;
+						}else{
+						 return "";
+						}
+					}
+					
 				},
 				{
 					field : "",
@@ -324,10 +341,26 @@
 					width : 100,
 					filterable : false
 				},{
-					field : "expeRttype",
+					field : "",
 					title : "专家类别",
 					width : 100,
-					filterable : false
+					filterable : false,
+					template:function(item){
+						if(item.expertTypeDtoList){
+							var resultStr='';
+							for(var i=0;i<item.expertTypeDtoList.length;i++){
+								if(i==0){
+									resultStr += item.expertTypeDtoList[i].expertType;
+								}else{
+									
+									resultStr += "、"+item.expertTypeDtoList[i].expertType;
+								}
+							}
+							return resultStr;
+						}else{
+						 return "";
+						}
+					}
 				}
 			];
 			

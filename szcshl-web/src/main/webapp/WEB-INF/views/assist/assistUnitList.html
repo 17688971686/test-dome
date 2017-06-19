@@ -21,17 +21,20 @@
         <@shiro.hasPermission name="assistUnit##post">
             <a class="btn btn-sm btn-primary" href="#/assistUnitEdit/"><span class="glyphicon glyphicon-plus"></span>新增单位</a>
         </@shiro.hasPermission>
-        <!-- <@shiro.hasPermission name="assistUnit##delete">
+        <@shiro.hasPermission name="assistUnit##delete">
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        </@shiro.hasPermission> -->
+        </@shiro.hasPermission>
         </div>
          </form>
         <script type="text/template" id="columnBtns">
             <@shiro.hasPermission name="assistUnit##delete">
-            <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+            <button class="btn btn-xs btn-danger"  ng-click="{0}" ng-if="{2} == '1'"><span class="glyphicon glyphicon-remove"></span>删除</button>
             </@shiro.hasPermission>
             <@shiro.hasPermission name="assistUnit##put">
-            <a class="btn btn-xs btn-primary" href="#/assistUnitEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+            <a class="btn btn-xs btn-primary" href="#/assistUnitEdit/{1}" ng-if="{2} == '1'"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+            </@shiro.hasPermission>
+			<@shiro.hasPermission name="assistUnit##put">
+            <button class="btn btn-xs btn-danger" ng-if="{2} == '0'">已停用</button>
             </@shiro.hasPermission>
 
         </script>

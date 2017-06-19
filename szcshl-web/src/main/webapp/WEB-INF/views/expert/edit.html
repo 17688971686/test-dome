@@ -183,6 +183,10 @@
                 </select>
                 <span data-valmsg-for="procoSttype" data-valmsg-replace="true" class="errors"></span>
             </td>
+		</tr>
+		<tr>
+			<td height="97" class="formAlignRight">专家类型</td>
+			<td colspan="7" id="expertType"><span ng-repeat="x in DICT.EXPERT_TYPE.dicts"><input type="checkbox" ng-click="vm.choole(x.dictName,$index)" ng-checked="typeCheck" name="typeCheck" value="{{x.dictName}}" ng-model="vm.expertTypes[$index]" />{{x.dictName}}&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
 		</tr>		
 		<tr>
 			<td height="97" class="formAlignRight">备注</td>
@@ -352,4 +356,31 @@
         <input type="file" id="expertphotofile" name="file" id="file" />
     </div>
 	<!-- E 专家头像上传  -->
+	
+	<!-- 弹出突出专业选项 -->
+	<div id="jor" class="well well-sm" style="background:white;display:none;">
+		<table class="table table-bordered"  style="width: 100%;">
+			<tr>
+			<td style="width: 80px; height: 80px;">突出专业（大类）</td>
+				<td>
+					<span ng-repeat="x in DICT.WIDE_MAJOR.dicts">
+					<input type="radio" name="wide" value="{{x.dictName}}" ng-model="vm.type.maJorBig"/>{{x.dictName}}&nbsp;&nbsp;&nbsp;&nbsp;
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 80px; height: 80px;">突出专业（小类）</td>
+				<td>
+					<span ng-repeat="x in DICT.SMALL_MAJOR.dicts">
+						<input type="radio" name="small" value="{{x.dictName}}" ng-model="vm.type.maJorSmall"/>{{x.dictName}}&nbsp;&nbsp;&nbsp;&nbsp;
+					</span>
+				</td>
+			</tr>
+		
+		</table>
+		<div style="text-align: center;">
+			<button class="btn btn-sm btn-success" ng-click="vm.saveChooleMajor(vm.index)">确定</button>
+		</div>
+	
+	</div>
 </div>

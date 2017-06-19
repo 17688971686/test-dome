@@ -79,14 +79,6 @@ public class Expert extends DomainBase {
     @Column(columnDefinition = "varchar(64) ")
     private String majorWork;    //从事专业
 
-    @Column(columnDefinition = "varchar(128) ")
-    private String maJorBig;//突出专业(大类)
-
-    @Column(columnDefinition = "varchar(128) ")
-    private String maJorSmall;//突出专业(小类)
-
-    @Column(columnDefinition = "varchar(30) ")
-    private String expeRttype;//专家类别
 
     @Column(columnDefinition = "varchar(30) ")
     private String procoSttype;//工程造价类
@@ -117,6 +109,9 @@ public class Expert extends DomainBase {
 
     @OneToMany(mappedBy = "expert")
     private List<ExpertSelected> expertSelectedList;
+    
+    @OneToMany(mappedBy="expert")
+    private List<ExpertType> expertTypeList;//专家类型
 
     public Date getBirthDay() {
         return birthDay;
@@ -274,33 +269,11 @@ public class Expert extends DomainBase {
         this.zipCode = zipCode;
     }
 
-    public String getMaJorBig() {
-        return maJorBig;
-    }
-
-    public void setMaJorBig(String maJorBig) {
-        this.maJorBig = maJorBig;
-    }
-
-    public String getMaJorSmall() {
-        return maJorSmall;
-    }
-
-    public void setMaJorSmall(String maJorSmall) {
-        this.maJorSmall = maJorSmall;
-    }
 
     public String getQualifiCations() {
         return qualifiCations;
     }
 
-    public String getExpeRttype() {
-        return expeRttype;
-    }
-
-    public void setExpeRttype(String expeRttype) {
-        this.expeRttype = expeRttype;
-    }
 
     public String getProcoSttype() {
         return procoSttype;
@@ -389,4 +362,14 @@ public class Expert extends DomainBase {
     public void setExpertSelectedList(List<ExpertSelected> expertSelectedList) {
         this.expertSelectedList = expertSelectedList;
     }
+
+	public List<ExpertType> getExpertTypeList() {
+		return expertTypeList;
+	}
+
+	public void setExpertTypeList(List<ExpertType> expertTypeList) {
+		this.expertTypeList = expertTypeList;
+	}
+    
+    
 }

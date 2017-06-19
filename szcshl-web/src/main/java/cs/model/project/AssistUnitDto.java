@@ -23,6 +23,8 @@ public class AssistUnitDto extends BaseDto {
     private String fax;
     private Integer drawCount;
     
+    private String isUse;//是否在用
+    
     private String contactName;//联系人名称
     private String contactPhone;//联系人手机号
     private String principalName;//负责人名称
@@ -144,7 +146,13 @@ public class AssistUnitDto extends BaseDto {
 	public void setPrincipalPhone(String principalPhone) {
 		this.principalPhone = principalPhone;
 	}
-    
-	
+
+	public String getIsUse() {
+		return isUse;
+	}
+
+	public void setIsUse(String isUse) {
+		this.isUse = isUse;
+	}
     
 }

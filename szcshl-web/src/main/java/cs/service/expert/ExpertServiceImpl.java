@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +17,14 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertType;
 import cs.domain.expert.Expert_;
 import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
+import cs.model.expert.ExpertTypeDto;
 import cs.model.expert.ProjectExpeDto;
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
@@ -51,7 +51,10 @@ public class ExpertServiceImpl implements ExpertService {
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private SignRepo signRepo;
-	
+    
+    @Autowired
+    private ExpertTypeService expertTypeService;
+		
 	@Override
 	public PageModelDto<ExpertDto> get(ODataObj odataObj) {
 		List<Expert> listExpert = expertRepo.findByOdata(odataObj);
@@ -60,6 +63,17 @@ public class ExpertServiceImpl implements ExpertService {
 		for (Expert item : listExpert) {
 			ExpertDto expertDto = new ExpertDto();
 			BeanCopierUtils.copyProperties(item, expertDto);	
+			
+			List<ExpertTypeDto> expertTypes=new ArrayList<>();
+			
+			for(ExpertType expertType:item.getExpertTypeList()){
+				
+				ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+				BeanCopierUtils.copyProperties(expertType, expertTypeDto);
+				expertTypes.add(expertTypeDto);
+				
+			}
+			expertDto.setExpertTypeDtoList(expertTypes);
 			listExpertDto.add(expertDto);
 		}
 		pageModelDto.setCount(odataObj.getCount());
@@ -84,6 +98,9 @@ public class ExpertServiceImpl implements ExpertService {
 			expert.setCreatedBy(currentUser.getLoginName());
 			expert.setModifiedBy(currentUser.getLoginName());
 			expert.setModifiedDate(now);
+			
+			expertTypeService.saveExpertType(expertDto.getExpertTypeDtoList(), expert.getExpertID());
+			
 			//设置返回值
 			expertDto.setExpertID(expert.getExpertID());
 			expertRepo.save(expert);
@@ -99,7 +116,12 @@ public class ExpertServiceImpl implements ExpertService {
 	public void deleteExpert(String id) {		
 		Expert expert = expertRepo.findById(id);
 		if (expert != null) {
-			List<WorkExpe> workList = expert.getWork();
+			HqlBuilder hqlBuilder=HqlBuilder.create();
+			
+			hqlBuilder.append("update " + Expert.class.getSimpleName()+" set "+ Expert_.state.getName()+ "='5' where " +Expert_.expertID.getName()+"=:id");
+			hqlBuilder.setParam("id", id);
+			expertRepo.executeHql(hqlBuilder);
+			/*List<WorkExpe> workList = expert.getWork();
 			for (WorkExpe workExpe : workList) {
 				workExpeRepo.delete(workExpe);
 			}
@@ -108,7 +130,7 @@ public class ExpertServiceImpl implements ExpertService {
 				projectExpeRepo.delete(projectExpe);
 			}
 			expertRepo.delete(expert);
-			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));
+			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));*/
 		}			
 	}
 	

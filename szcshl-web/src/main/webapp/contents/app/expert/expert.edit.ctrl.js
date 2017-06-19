@@ -42,8 +42,47 @@
             }
 
         }
-
+        
+        vm.model={};
+        vm.model.expertType='';
+        vm.expertTypes=[];
+		vm.expertTypeList=[];
+        vm.choole=function(typeName,index){
+        	vm.expertType={};
+        	vm.expertType.expertType='';
+        	vm.expertType.maJorBig='';
+        	vm.expertType.maJorSmall='';
+        	vm.index=index;
+        	if(!vm.expertTypes[index]){
+        	var isCheck=$("#expertType input[name='typeCheck']" );
+        	vm.expertType.expertType=isCheck[index].value;
+        	 $("#jor").kendoWindow({
+                    width : "660px",
+                    height : "360px",
+                    title : typeName+"的突出专业",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+        	}else{
+        		vm.expertTypeList.splice(index,1);
+        	}
+        	
+        }
+        
+        vm.saveChooleMajor=function(index){
+        	vm.expertType.maJorBig=vm.type.maJorBig;
+        	vm.expertType.maJorSmall=vm.type.maJorBig;
+        	vm.expertTypeList[index]=vm.expertType;
+        	window.parent.$("#jor").data("kendoWindow").close();
+        	
+        
+        }
         vm.create=function(){
+        	console.log(vm.expertTypeList);
+        	vm.model.expertTypeDtoList=vm.expertTypeList;
+        	console.log(vm.model);
         	expertSvc.createExpert(vm);
         }
         

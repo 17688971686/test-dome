@@ -74,8 +74,16 @@
         			vm:vm,
         			response:response,
         			fn:function(){
-        			 vm.isSubmit=false;
-        			 vm.gridOptions.dataSource.read();
+        			 common.alert({
+        			 	vm:vm,
+	        				msg:"操作成功",
+	        				fn:function(){
+			        			 vm.isSubmit=false;
+			        			 $('.alertDialog').modal('hide');
+	        					$('.modal-backdrop').remove();
+			        			 vm.gridOptions.dataSource.read();
+	        				}
+        			 });
         			}
         		});
         	
@@ -266,7 +274,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                            "vm.del('" + item.id + "')", item.id,item.isUse);
                     }
                 }
             ];

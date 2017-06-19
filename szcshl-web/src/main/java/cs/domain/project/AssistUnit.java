@@ -24,6 +24,9 @@ public class AssistUnit extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(64)")
     private String unitName;
+    
+    @Column(columnDefinition="VARCHAR(10)")
+    private String isUse; //是否在用("0":表示停用  ，"1":表示在用)
 
     /**
      * 单位简称
@@ -201,7 +204,14 @@ public class AssistUnit extends DomainBase {
 	public void setPrincipalPhone(String principalPhone) {
 		this.principalPhone = principalPhone;
 	}
+
+	public String getIsUse() {
+		return isUse;
+	}
+
+	public void setIsUse(String isUse) {
+		this.isUse = isUse;
+	}
     
-	
     
 }

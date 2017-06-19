@@ -336,7 +336,7 @@
 	            actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
             
-            assistSvc.getAllUnit(vm);
+            assistSvc.getPlanSignByPlanId(vm,vm.planId);
         }
 
         //协审项目抽签

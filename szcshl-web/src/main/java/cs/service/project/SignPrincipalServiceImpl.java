@@ -108,7 +108,13 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         hqlBuilder.append(" and pu." + SignPrincipal_.isMainFlow.getName() + " =:isMainFolw ").setParam("isMainFolw", isMainFolw);
         hqlBuilder.append(" and pu." + SignPrincipal_.isMainUser.getName() + " =:isMainUser ").setParam("isMainUser", Constant.EnumState.YES.getValue());
         hqlBuilder.append(" )");
-        return userRepo.findByHql(hqlBuilder).get(0);
+        List<User> userList=userRepo.findByHql(hqlBuilder);
+        if(!userList.isEmpty()){
+        	
+        	return userRepo.findByHql(hqlBuilder).get(0);
+        }else{
+        	return null;
+        }
     }
 
     /**

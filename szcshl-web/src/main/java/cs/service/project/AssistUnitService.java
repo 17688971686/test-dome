@@ -22,7 +22,7 @@ public interface AssistUnitService {
 
 	AssistUnitDto findById(String deptId);
 
-	void delete(String id);
+	void delete(String ids);
 	
 
 	List<AssistUnitDto> findDrawUnit(String planId,Integer number);

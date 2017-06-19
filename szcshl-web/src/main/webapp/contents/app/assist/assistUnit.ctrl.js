@@ -12,32 +12,17 @@
 
 		vm.del = function(id) {
 			vm.id = id;
-			assistUnitSvc.getUnitUser(vm, function() {
-						if (vm.resource.count == 0) {
-							common.confirm({
-										vm : vm,
-										title : "",
-										msg : "确认要删除数据吗？",
-										fn : function() {
-											$('.confirmDialog').modal('hide');
-											vm.resource = {};
-											assistUnitSvc.deleteAssistUnit(vm, id);
-										}
-									});
-						} else {
-							common.confirm({
-										vm : vm,
-										title : "",
-										msg : "必须先删除单位下的所有成员！",
-										fn : function() {
-											$('.confirmDialog').modal('hide');
+			common.confirm({
+				vm : vm,
+				title : "",
+				msg : "确认要删除数据吗？",
+				fn : function() {
+				$('.confirmDialog').modal('hide');
+				vm.resource = {};
+				assistUnitSvc.deleteAssistUnit(vm, id);
+				}
 
-										}
-									});
-
-						}
-					});
-
+		});
 		}
 
 		vm.dels = function() {
@@ -45,7 +30,7 @@
 			if (selectIds.length == 0) {
 				common.alert({
 							vm : vm,
-							mag : "请选择数据"
+							msg : "请选择数据"
 						});
 			} else {
 				var ids = [];

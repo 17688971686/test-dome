@@ -38,9 +38,6 @@ public class ExpertDto extends BaseDto {
     private String zipCode;//邮编
     private String majorStudy;//所学专业
     private String majorWork;//从事专业
-    private String maJorBig;//突出专业(大类)
-    private String maJorSmall;//突出专业(小类)
-    private String expeRttype;//专家类别
     private String procoSttype;//工程造价类
     private String proteChtype;//项目类型
     private String remark;//备注
@@ -54,6 +51,8 @@ public class ExpertDto extends BaseDto {
     private List<ProjectExpeDto> projectDto;
     
     private List<ExpertReviewDto> expertReviewDtoList;
+    
+    private List<ExpertTypeDto> expertTypeDtoList;
 
     public String getIdCard() {
         return idCard;
@@ -175,29 +174,6 @@ public class ExpertDto extends BaseDto {
         this.zipCode = zipCode;
     }
 
-    public String getMaJorBig() {
-        return maJorBig;
-    }
-
-    public void setMaJorBig(String maJorBig) {
-        this.maJorBig = maJorBig;
-    }
-
-    public String getMaJorSmall() {
-        return maJorSmall;
-    }
-
-    public void setMaJorSmall(String maJorSmall) {
-        this.maJorSmall = maJorSmall;
-    }
-
-    public String getExpeRttype() {
-        return expeRttype;
-    }
-
-    public void setExpeRttype(String expeRttype) {
-        this.expeRttype = expeRttype;
-    }
 
     public String getProcoSttype() {
         return procoSttype;
@@ -326,4 +302,14 @@ public class ExpertDto extends BaseDto {
 	public void setWorkDto(List<WorkExpeDto> workDto) {
 		this.workDto = workDto;
 	}
+
+	public List<ExpertTypeDto> getExpertTypeDtoList() {
+		return expertTypeDtoList;
+	}
+
+	public void setExpertTypeDtoList(List<ExpertTypeDto> expertTypeDtoList) {
+		this.expertTypeDtoList = expertTypeDtoList;
+	}
+	
+	
 }
