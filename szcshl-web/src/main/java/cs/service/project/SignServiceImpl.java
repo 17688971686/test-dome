@@ -110,6 +110,7 @@ public class SignServiceImpl implements SignService {
         sign.setModifiedDate(now);
         sign.setCreatedBy(currentUser.getLoginName());
         sign.setModifiedBy(currentUser.getLoginName());
+        sign.setIssign(EnumState.NO.getValue());    //默认为未签收
         //判断是否为协审
         if (Validate.isString(sign.getIschangeEstimate())) {
             sign.setIsassistflow(EnumState.YES.getValue());

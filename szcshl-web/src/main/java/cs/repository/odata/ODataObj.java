@@ -157,9 +157,9 @@ public class ODataObj {
                     } else if (value.startsWith("'") && value.endsWith("'")) {// 如果是string
                         oDataFilterItem = new ODataFilterItem<String>();
                         oDataFilterItem.setValue(value.substring(1, value.length() - 1));
-                    } else if (value.startsWith("(") && value.endsWith(")")) {// 如果是string
+                    } else if (value.startsWith("(") && value.endsWith(")")) {// 如果是string[]
                         oDataFilterItem = new ODataFilterItem<String[]>();
-                        oDataFilterItem.setValue(value.substring(1, value.length() - 1).split(","));
+                        oDataFilterItem.setValue(value.replace("'","").substring(1, value.length() - 1).split(","));
                     } else {// 其它为Number
                         oDataFilterItem = new ODataFilterItem<Number>();
 
@@ -305,11 +305,20 @@ public class ODataObj {
             int i = 0, len = values.length;
             Criterion[] criterias = new Criterion[len];
             for (; i < len; i++) {
-                myRestrictions.toRestrictions(field, values[i]);
+                if("isNull".equals(values[i].toString())){
+                    criterias[i] = Restrictions.isNull(field);
+                }else{
+                    criterias[i] = myRestrictions.toRestrictions(field, values[i]);
+                }
+
             }
             return Restrictions.or(criterias);
         } else {
-            return myRestrictions.toRestrictions(field, value);
+            if("isNull".equals(value.toString())){
+               return Restrictions.isNull(field);
+            }else {
+                return myRestrictions.toRestrictions(field, value);
+            }
         }
     }
 

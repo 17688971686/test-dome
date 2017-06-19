@@ -30,7 +30,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter:"issign eq '9'"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter:"issign eq (isNull,0)"}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {

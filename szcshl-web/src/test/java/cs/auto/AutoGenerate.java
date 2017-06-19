@@ -6,10 +6,7 @@ import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
-import cs.domain.project.AssistPlan;
-import cs.domain.project.AssistPlanSign;
-import cs.domain.project.AssistUnit;
-import cs.domain.project.AssistUnitUser;
+import cs.domain.project.*;
 import cs.domain.sys.SysConfig;
 
 import java.util.ArrayList;
@@ -24,9 +21,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(ExpertSelected.class, "抽取专家");
+        CRUDGanConfig config = new CRUDGanConfig(SignPrincipal.class, "项目-负责人中间表");
         config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\SysConfig");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\SignPrincipal");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());

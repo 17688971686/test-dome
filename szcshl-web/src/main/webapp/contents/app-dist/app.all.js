@@ -414,6 +414,403 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('adminCtrl', admin);
+
+    admin.$inject = ['$location','adminSvc']; 
+
+    function admin($location, adminSvc) {
+        var vm = this;
+        vm.title = '待办事项';
+             
+        activate();
+        function activate() {
+        	adminSvc.gtasksGrid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('adminDoingCtrl', admin);
+
+    admin.$inject = ['$location','adminSvc']; 
+
+    function admin($location, adminSvc) {
+        var vm = this;
+        vm.title = '在办任务';
+             
+        activate();
+        function activate() {
+        	adminSvc.dtasksGrid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('adminEndCtrl', admin);
+
+    admin.$inject = ['$location','adminSvc']; 
+
+    function admin($location, adminSvc) {
+        var vm = this;
+        vm.title = '办结事项';
+             
+        activate();
+        function activate() {
+        	adminSvc.etasksGrid(vm);
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('adminSvc', admin);
+
+	admin.$inject = ['$rootScope', '$http'];	
+	
+	function admin($rootScope,$http) {
+		
+		var service = {
+			gtasksGrid : gtasksGrid,		//个人待办
+            etasksGrid : etasksGrid,		//个人办结
+            dtasksGrid : dtasksGrid,        //在办任务
+		}
+		return service;	
+
+		//S_gtasksGrid
+		function gtasksGrid(vm){
+			var dataSource = new kendo.data.DataSource({
+				type : 'odata',
+				transport : common.kendoGridConfig().transport(rootPath+"/flow/html/tasks"),
+				schema : {
+					data: "value",
+                    total: function (data) {
+					    if(data['count']){
+                            $('#GtasksCount').html(data['count']);
+                        }else{
+                            $('#GtasksCount').html(0);
+                        }
+                    	return data['count']; 
+                    },
+                    model:{
+                    	id : "id",                 
+						fields : {
+							createdDate : {
+								type : "date"
+							}
+						}
+                    }
+				},
+				serverPaging : true,
+				serverSorting : true,
+				serverFiltering : true,
+				pageSize : 10,
+				sort : {
+					field : "createdDate",
+					dir : "desc"
+				}
+			});
+			var columns = [
+				 {
+                     field: "",
+                     title: "序号",
+                     template: "<span class='row-number'></span>",
+                     width:30
+                 },
+                 {
+                     field: "businessName",
+                     title: "任务名称",
+                     filterable : false,
+                     width:180
+                 },
+                 {
+                     field: "flowName",
+                     title: "所属流程",
+                     width: 180,
+                     filterable : false,
+                 },                 
+                 {
+                     field: "taskName",
+                     title: "当前环节",
+                     width: 180,
+                     filterable : false,
+                 },
+                 {
+                     field: "createDate",
+                     title: "接收时间",
+                     width: 150,
+                     filterable : false,
+                     format: "{0: yyyy-MM-dd HH:mm:ss}"
+                 },
+                 {
+                     field: "",
+                     title: "流程状态",
+                     width: 80,
+                     filterable : false,
+                     template:function(item){
+ 						if(item.isSuspended){
+ 							return '<span style="color:orange;">已暂停</span>';
+ 						}else{
+ 							return '<span style="color:green;">进行中</span>';
+ 						}
+ 					}
+                 },
+				{
+					field : "",
+					title : "操作",
+					width : 180,
+					template:function(item){
+						//项目签收流程，则跳转到项目签收流程处理野人
+						if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
+							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
+						}else{
+							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+						}						
+					}	
+				}
+			];
+			// End:column
+			vm.gridOptions = {
+				dataSource : common.gridDataSource(dataSource),
+				filterable : common.kendoGridConfig().filterable,
+				pageable : common.kendoGridConfig().pageable,
+				noRecords : common.kendoGridConfig().noRecordMessage,
+				columns : columns,
+				resizable : true,
+				dataBound: function () {  
+                    var rows = this.items();  
+                    var page = this.pager.page() - 1;  
+                    var pagesize = this.pager.pageSize();  
+                    $(rows).each(function () {  
+                        var index = $(this).index() + 1 + page * pagesize;  
+                        var rowLabel = $(this).find(".row-number");  
+                        $(rowLabel).html(index);  
+                    });  
+                } 
+			};					
+		}//E_gtasksGrid
+
+        //S_etasksGrid
+		function etasksGrid(vm) {
+            var dataSource = new kendo.data.DataSource({
+                type : 'odata',
+                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/endTasks"),
+                schema : {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model:{
+                        id : "id",
+                        fields : {
+                            createdDate : {
+                                type : "date"
+                            }
+                        }
+                    }
+                },
+                serverPaging : true,
+                serverSorting : true,
+                serverFiltering : true,
+                pageSize : 10,
+                sort : {
+                    field : "createdDate",
+                    dir : "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width:30
+                },
+                {
+                    field: "businessName",
+                    title: "任务名称",
+                    filterable : false,
+                    width:180
+                },
+                {
+                    field: "createDate",
+                    title: "开始时间",
+                    width: 150,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                },
+                {
+                    field: "endDate",
+                    title: "结束时间",
+                    width: 150,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "用时",
+                    width: 180,
+                    filterable : false,
+                    template:function(item){
+                        if(item.durationTime){
+                            return item.durationTime;
+                        }else{
+                            return '<span style="color:orangered;">已办结</span>';
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: 120,
+                    filterable : false,
+                    template:function(item){
+                        return '<span style="color:orangered;">已办结</span>';
+                    }
+                },
+                {
+                    field : "",
+                    title : "操作",
+                    width : 80,
+                    template:function(item){
+                        if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0 || (item.processDefinitionId).indexOf("SIGN_XS_FLOW") >= 0){
+                            return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
+                        }
+                     }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource : common.gridDataSource(dataSource),
+                filterable : common.kendoGridConfig().filterable,
+                pageable : common.kendoGridConfig().pageable,
+                noRecords : common.kendoGridConfig().noRecordMessage,
+                columns : columns,
+                resizable : true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+        }//E_etasksGrid
+
+        //S_dtasksGrid
+        function dtasksGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type : 'odata',
+                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/doingtasks"),
+                schema : {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model:{
+                        id : "id"
+                    }
+                },
+                serverPaging : true,
+                serverSorting : true,
+                serverFiltering : true,
+                pageSize : 10,
+                sort : {
+                    field : "createdDate",
+                    dir : "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width:30
+                },
+                {
+                    field: "businessName",
+                    title: "任务名称",
+                    filterable : false,
+                    width:180
+                },
+                {
+                    field: "flowName",
+                    title: "所属流程",
+                    width: 180,
+                    filterable : false,
+                },
+                {
+                    field: "taskName",
+                    title: "当前环节",
+                    width: 180,
+                    filterable : false,
+                },
+                {
+                    field: "createDate",
+                    title: "接收时间",
+                    width: 150,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: 80,
+                    filterable : false,
+                    template:function(item){
+                        if(item.isSuspended){
+                            return '<span style="color:orange;">已暂停</span>';
+                        }else{
+                            return '<span style="color:green;">进行中</span>';
+                        }
+                    }
+                },
+                {
+                    field : "",
+                    title : "操作",
+                    width : 180,
+                    template:function(item){
+                        //项目签收流程，则跳转到项目签收流程处理野人
+                        if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
+                            return common.format($('#columnBtns').html(),"signFlowDetail",item.businessKey,item.taskId,item.processInstanceId);
+                        }else{
+                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+                        }
+                    }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource : common.gridDataSource(dataSource),
+                filterable : common.kendoGridConfig().filterable,
+                pageable : common.kendoGridConfig().pageable,
+                noRecords : common.kendoGridConfig().noRecordMessage,
+                columns : columns,
+                resizable : true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+        }//E_dtasksGrid
+
+	}
+})();
+(function () {
+    'use strict';
+
     angular.module('app').controller('assistPlanCtrl', assistPlan);
 
     assistPlan.$inject = ['$location','$state','assistSvc','$http','$interval'];
@@ -3239,947 +3636,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('adminCtrl', admin);
-
-    admin.$inject = ['$location','adminSvc']; 
-
-    function admin($location, adminSvc) {
-        var vm = this;
-        vm.title = '待办事项';
-             
-        activate();
-        function activate() {
-        	adminSvc.gtasksGrid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('adminDoingCtrl', admin);
-
-    admin.$inject = ['$location','adminSvc']; 
-
-    function admin($location, adminSvc) {
-        var vm = this;
-        vm.title = '在办任务';
-             
-        activate();
-        function activate() {
-        	adminSvc.dtasksGrid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('adminEndCtrl', admin);
-
-    admin.$inject = ['$location','adminSvc']; 
-
-    function admin($location, adminSvc) {
-        var vm = this;
-        vm.title = '办结事项';
-             
-        activate();
-        function activate() {
-        	adminSvc.etasksGrid(vm);
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('adminSvc', admin);
-
-	admin.$inject = ['$rootScope', '$http'];	
-	
-	function admin($rootScope,$http) {
-		
-		var service = {
-			gtasksGrid : gtasksGrid,		//个人待办
-            etasksGrid : etasksGrid,		//个人办结
-            dtasksGrid : dtasksGrid,        //在办任务
-		}
-		return service;	
-
-		//S_gtasksGrid
-		function gtasksGrid(vm){
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/flow/html/tasks"),
-				schema : {
-					data: "value",
-                    total: function (data) {
-					    if(data['count']){
-                            $('#GtasksCount').html(data['count']);
-                        }else{
-                            $('#GtasksCount').html(0);
-                        }
-                    	return data['count']; 
-                    },
-                    model:{
-                    	id : "id",                 
-						fields : {
-							createdDate : {
-								type : "date"
-							}
-						}
-                    }
-				},
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,
-				pageSize : 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
-			var columns = [
-				 {
-                     field: "",
-                     title: "序号",
-                     template: "<span class='row-number'></span>",
-                     width:30
-                 },
-                 {
-                     field: "businessName",
-                     title: "任务名称",
-                     filterable : false,
-                     width:180
-                 },
-                 {
-                     field: "flowName",
-                     title: "所属流程",
-                     width: 180,
-                     filterable : false,
-                 },                 
-                 {
-                     field: "taskName",
-                     title: "当前环节",
-                     width: 180,
-                     filterable : false,
-                 },
-                 {
-                     field: "createDate",
-                     title: "接收时间",
-                     width: 150,
-                     filterable : false,
-                     format: "{0: yyyy-MM-dd HH:mm:ss}"
-                 },
-                 {
-                     field: "",
-                     title: "流程状态",
-                     width: 80,
-                     filterable : false,
-                     template:function(item){
- 						if(item.isSuspended){
- 							return '<span style="color:orange;">已暂停</span>';
- 						}else{
- 							return '<span style="color:green;">进行中</span>';
- 						}
- 					}
-                 },
-				{
-					field : "",
-					title : "操作",
-					width : 180,
-					template:function(item){
-						//项目签收流程，则跳转到项目签收流程处理野人
-						if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
-							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
-						}else{
-							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
-						}						
-					}	
-				}
-			];
-			// End:column
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				resizable : true,
-				dataBound: function () {  
-                    var rows = this.items();  
-                    var page = this.pager.page() - 1;  
-                    var pagesize = this.pager.pageSize();  
-                    $(rows).each(function () {  
-                        var index = $(this).index() + 1 + page * pagesize;  
-                        var rowLabel = $(this).find(".row-number");  
-                        $(rowLabel).html(index);  
-                    });  
-                } 
-			};					
-		}//E_gtasksGrid
-
-        //S_etasksGrid
-		function etasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
-                type : 'odata',
-                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/endTasks"),
-                schema : {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model:{
-                        id : "id",
-                        fields : {
-                            createdDate : {
-                                type : "date"
-                            }
-                        }
-                    }
-                },
-                serverPaging : true,
-                serverSorting : true,
-                serverFiltering : true,
-                pageSize : 10,
-                sort : {
-                    field : "createdDate",
-                    dir : "desc"
-                }
-            });
-            var columns = [
-                {
-                    field: "",
-                    title: "序号",
-                    template: "<span class='row-number'></span>",
-                    width:30
-                },
-                {
-                    field: "businessName",
-                    title: "任务名称",
-                    filterable : false,
-                    width:180
-                },
-                {
-                    field: "createDate",
-                    title: "开始时间",
-                    width: 150,
-                    filterable : false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "endDate",
-                    title: "结束时间",
-                    width: 150,
-                    filterable : false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "",
-                    title: "用时",
-                    width: 180,
-                    filterable : false,
-                    template:function(item){
-                        if(item.durationTime){
-                            return item.durationTime;
-                        }else{
-                            return '<span style="color:orangered;">已办结</span>';
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "流程状态",
-                    width: 120,
-                    filterable : false,
-                    template:function(item){
-                        return '<span style="color:orangered;">已办结</span>';
-                    }
-                },
-                {
-                    field : "",
-                    title : "操作",
-                    width : 80,
-                    template:function(item){
-                        if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0 || (item.processDefinitionId).indexOf("SIGN_XS_FLOW") >= 0){
-                            return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
-                        }
-                     }
-                }
-            ];
-            // End:column
-            vm.gridOptions = {
-                dataSource : common.gridDataSource(dataSource),
-                filterable : common.kendoGridConfig().filterable,
-                pageable : common.kendoGridConfig().pageable,
-                noRecords : common.kendoGridConfig().noRecordMessage,
-                columns : columns,
-                resizable : true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-            };
-        }//E_etasksGrid
-
-        //S_dtasksGrid
-        function dtasksGrid(vm){
-            var dataSource = new kendo.data.DataSource({
-                type : 'odata',
-                transport : common.kendoGridConfig().transport(rootPath+"/flow/html/doingtasks"),
-                schema : {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model:{
-                        id : "id"
-                    }
-                },
-                serverPaging : true,
-                serverSorting : true,
-                serverFiltering : true,
-                pageSize : 10,
-                sort : {
-                    field : "createdDate",
-                    dir : "desc"
-                }
-            });
-            var columns = [
-                {
-                    field: "",
-                    title: "序号",
-                    template: "<span class='row-number'></span>",
-                    width:30
-                },
-                {
-                    field: "businessName",
-                    title: "任务名称",
-                    filterable : false,
-                    width:180
-                },
-                {
-                    field: "flowName",
-                    title: "所属流程",
-                    width: 180,
-                    filterable : false,
-                },
-                {
-                    field: "taskName",
-                    title: "当前环节",
-                    width: 180,
-                    filterable : false,
-                },
-                {
-                    field: "createDate",
-                    title: "接收时间",
-                    width: 150,
-                    filterable : false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "",
-                    title: "流程状态",
-                    width: 80,
-                    filterable : false,
-                    template:function(item){
-                        if(item.isSuspended){
-                            return '<span style="color:orange;">已暂停</span>';
-                        }else{
-                            return '<span style="color:green;">进行中</span>';
-                        }
-                    }
-                },
-                {
-                    field : "",
-                    title : "操作",
-                    width : 180,
-                    template:function(item){
-                        //项目签收流程，则跳转到项目签收流程处理野人
-                        if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
-                            return common.format($('#columnBtns').html(),"signFlowDetail",item.businessKey,item.taskId,item.processInstanceId);
-                        }else{
-                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
-                        }
-                    }
-                }
-            ];
-            // End:column
-            vm.gridOptions = {
-                dataSource : common.gridDataSource(dataSource),
-                filterable : common.kendoGridConfig().filterable,
-                pageable : common.kendoGridConfig().pageable,
-                noRecords : common.kendoGridConfig().noRecordMessage,
-                columns : columns,
-                resizable : true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-            };
-        }//E_dtasksGrid
-
-	}
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('dictCtrl', dict);
-
-    dict.$inject = ['$location','dictSvc','$scope']; 
-
-    function dict($location, dictSvc,$scope) {
-    	  /* jshint validthis:true */
-    	var vm = this;
-        vm.title = '字典';
-        
-        vm.model = {};
-        vm.del = function (id) {        	
-        	 
-             common.confirm({
-            	 vm:vm,
-            	 title:"",
-            	 msg:"删除字典将会连下级字典一起删除，确认删除数据吗？",
-            	 fn:function () {
-                  	$('.confirmDialog').modal('hide');             	
-                  	dictSvc.deleteDict(vm,id);
-                 }
-             })
-        }
-        vm.dels = function () {     
-
-            var nodes = vm.dictsTree.getSelectedNodes();
-            
-            if (nodes&&nodes.length >0) {
-            	 vm.del(nodes[0].id)
-            } else {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                	
-                });
-            }   
-       }
-        
-        activate();
-        function activate() {
-            dictSvc.initDictTree(vm);
-        }
-               
-        
-    }
-    
-   
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('dictEditCtrl', dict);
-
-    dict.$inject = ['$scope','$location','dictSvc','$state']; 
-    function dict($scope,$location, dictSvc,$state) {
-
-    	var vm = this;
-        vm.title = '增加字典';
-        vm.model = {};
-      
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '编辑字典';
-        }
-        vm.model.dictSort=0;//默认排序序号为0
- 
-        vm.createDict = function(){
-        	dictSvc.createDict(vm);
-        };
-        
-        vm.updateDict = function(){
-        	dictSvc.updateDict(vm);
-        }
-    	vm.dictTypeChange = function(){
-    		if(vm.model.dictType){
-    			vm.model.dictKey = '';
-    		}
-    		
-    	};
-    	
-    	vm.apply = function(){
-    		$scope.$apply();
-    	}
-    	
-        activate();
-        function activate() {
-        	
-        	if (vm.isUpdate) {
-        		dictSvc.getDictById(vm)
-            } else {
-            	vm.model.dictCode = '';
-            	dictSvc.initpZtreeClient(vm);
-            }
-        }
-          
-    }
-    
-    
-    
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('dictSvc', dict);
-
-	dict.$inject = [ '$http' ,'$state','$location'];
-
-	function dict($http,$state,$location) {
-		var url_back = '#/dict';
-		var url_dictgroup = rootPath + "/dict";
-		var url_dictitems = rootPath + "/dict/dictNameData";
-		var service = {
-			initDictTree:initDictTree,
-			createDict:createDict,
-			getDictById:getDictById,
-			updateDict:updateDict,
-			deleteDict:deleteDict,
-			initpZtreeClient:initpZtreeClient,
-			getTreeData:getTreeData,
-			getdictItems:getdictItems
-		};
-
-		return service;
-
-		function getdictItems(vm){
-			var dictCode = 'DICT_SEX';
-			
-			
-			var httpOptions = {
-					method : 'get',
-					url : common.format(url_dictitems + "?dictCode={0}", dictCode)
-			};
-			
-			var httpSuccess = function success(response) {
-			
-				
-			}
-
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-			
-		}
-		
-		function getTreeData(vm){
-			
-			var httpOptions = {
-					method : 'get',
-					url : url_dictgroup
-			};
-			
-			var httpSuccess = function success(response) {
-
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						
-						vm.treeData = {};
-						vm.treeData = response.data.value;
-					
-						if(vm.isUpdate&&vm.treeData&&vm.model.parentId){
-							for(var i = 0;i<vm.treeData.length;i++){
-								if(vm.treeData[i].dictId == vm.model.parentId){
-									vm.model.parentDictName = vm.treeData[i].dictName;
-									break;
-								}
-							}
-						}
-						
-					}
-
-				});
-
-			};
-			
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-			
-		}
-		
-		
-
-		
-		//beginDeleteGroup
-		function deleteDict(vm,id){
-		
-           
-			vm.isSubmit = true;
-			var httpOptions = {
-				method : 'delete',
-				url : url_dictgroup,
-				data : id
-
-			}
-			var httpSuccess = function success(response) {
-
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.isSubmit = false;	
-						location.href = url_back;
-						common.alert({
-							vm : vm,
-							msg : "操作成功",
-							fn : function() {	
-								$('.alertDialog').modal('hide');
-								$('.modal-backdrop').remove();
-								$state.go('dict',{},{reload:true});
-							}
-						});
-						
-						
-					}
-
-				});
-
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		
-		}
-
-		//begin#createDict
-		function createDict(vm){
-			common.initJqValidation();
-		
-			var isValid = $('form').valid();
-			
-		
-			var nodes = vm.zpTree.getCheckedNodes(true);
-			if(nodes&&nodes.length>0){
-				vm.model.parentId = nodes[0].id;
-			}
-			
-			if(isValid){
-				vm.isSubmit = true;
-				
-				var httpOptions = {
-					method : 'post',
-					url : url_dictgroup,
-					data : vm.model
-				}
-				
-				
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {	
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									$state.go('dict',{},{reload:true});
-								}
-							});
-						}
-
-					});
-
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-				
-				
-			}
-			
-			
-				
-		}
-		
-		//updateDict
-		function updateDict(vm){
-			common.initJqValidation();
-			
-			var isValid = $('form').valid();
-			
-			if(isValid){
-				vm.isSubmit = true;
-		
-				var httpOptions = {
-					method : 'put',
-					url : url_dictgroup,
-					data : vm.model
-				}
-
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {	
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();	
-									$state.go('dict.edit', { id: vm.model.dictId},{reload:true});
-								}
-							})
-						}
-
-					});
-
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-				
-				
-			}
-			
-		}
-		
-		// begin#initZtreeClient
-		function initDictTree(vm) {
-			var httpOptions = {
-				method : 'get',
-				url : url_dictgroup + "?$orderby=dictSort"
-			}
-
-			var httpSuccess = function success(response) {
-
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						var zTreeObj;
-						var setting = {
-							/*check : {
-								chkboxType : {
-									"Y" : "s",
-									"N" : "s"
-								},
-								enable : true
-							},*/
-							callback: {
-								onClick: zTreeOnClick
-								//onCheck: zTreeOnCheck
-							},
-							data: {
-								simpleData: {
-									enable: true,
-									idKey: "id",
-									pIdKey: "pId"
-								}
-							}
-						};
-						
-						function zTreeOnClick(event, treeId, treeNode) {
-						   $state.go('dict.edit', { id: treeNode.id});
-						};
-						function zTreeOnCheck(event, treeId, treeNode) {
-							var selId = treeNode.id;
-							if(!vm.model.dels){
-								vm.model.dels = [];
-							}
-							var delIds = vm.model.dels;
-							if(treeNode.checked){
-								delIds.push(selId);
-							}else{
-								for(var i =0;i<delIds.length;i++){
-									if(delIds[i] == selId){
-										delIds.splice(i);
-										break;
-									}
-								}
-							}
-							
-						};
-						var zNodes = $linq(response.data.value).select(
-								function(x) {
-									var isParent = false;
-									var pId = null;
-									if(x.parentId){										
-										pId = x.parentId;
-									}
-									return {
-										id : x.dictId,
-										name : x.dictName,
-										pId:pId
-									};
-									
-								}).toArray();
-						var rootNode = {
-							id : '0',
-							name : '字典集合',
-							'chkDisabled':true,
-							children : zNodes
-						};
-								
-						zTreeObj = $.fn.zTree.init($("#zTree"), setting,zNodes);
-						vm.dictsTree = zTreeObj;
-			
-					}
-
-				});
-
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-
-		
-		
-		// begin#initpZtreeClient
-		function initpZtreeClient(vm) {
-			var httpOptions = {
-				method : 'get',
-				url : url_dictgroup + "?$orderby=dictSort"
-			}
-			var httpSuccess = function success(response) {
-
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						
-						var zpTreeObj;
-						var setting = {
-							check: {enable: true,chkStyle: "radio",radioType: "all"},
-							callback: {
-								//onCheck: zTreeOnCheck,
-								//onClick: zTreeOnClick
-							},
-							data: {
-								simpleData: {
-									enable: true,
-									idKey: "id",
-									pIdKey: "pId"//,
-									//rootPId: 0
-								}
-							}
-						};
-						
-						
-						function zTreeOnCheck(event, treeId, treeNode) {
-							
-						
-						};
-						
-						function zTreeOnClick(event, treeId, treeNode,clickFlag) {
-							
-						};
-						var zNodes = $linq(response.data.value).select(
-								function(x) {
-									var pId;
-									if(x.parentId){										
-										pId = x.parentId;
-									}
-									return {
-										id : x.dictId,
-										name : x.dictName,
-										pId:pId
-									};
-									
-								}).toArray();
-						var rootNode = {
-								id : '',
-								name : '字典集合',
-								'chkDisabled':true,
-								children : zNodes
-							};
-						vm.zpTree = $.fn.zTree.init($("#pzTree"), setting,zNodes);						
-					}
-
-				});
-
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-
-		
-		
-		//begin#getDictGroupByCode
-		function getDictById(vm){
-			var httpOptions = {
-					method : 'get',
-					url : common.format(url_dictgroup + "?$filter=dictId eq '{0}'", vm.id)
-			};
-			
-			var httpSuccess = function success(response) {
-				vm.model = response.data.value[0];
-				getTreeData(vm);
-			}
-
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-		
-	
-	}
-})();
-(function () {
-    'use strict';
-
     angular.module('app').controller('deptCtrl', dept);
 
     dept.$inject = ['$location', 'deptSvc'];
@@ -4999,6 +4455,550 @@
         }// end 办事处列表
 
     }
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('dictCtrl', dict);
+
+    dict.$inject = ['$location','dictSvc','$scope']; 
+
+    function dict($location, dictSvc,$scope) {
+    	  /* jshint validthis:true */
+    	var vm = this;
+        vm.title = '字典';
+        
+        vm.model = {};
+        vm.del = function (id) {        	
+        	 
+             common.confirm({
+            	 vm:vm,
+            	 title:"",
+            	 msg:"删除字典将会连下级字典一起删除，确认删除数据吗？",
+            	 fn:function () {
+                  	$('.confirmDialog').modal('hide');             	
+                  	dictSvc.deleteDict(vm,id);
+                 }
+             })
+        }
+        vm.dels = function () {     
+
+            var nodes = vm.dictsTree.getSelectedNodes();
+            
+            if (nodes&&nodes.length >0) {
+            	 vm.del(nodes[0].id)
+            } else {
+            	common.alert({
+                	vm:vm,
+                	msg:'请选择数据'
+                	
+                });
+            }   
+       }
+        
+        activate();
+        function activate() {
+            dictSvc.initDictTree(vm);
+        }
+               
+        
+    }
+    
+   
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('dictEditCtrl', dict);
+
+    dict.$inject = ['$scope','$location','dictSvc','$state']; 
+    function dict($scope,$location, dictSvc,$state) {
+
+    	var vm = this;
+        vm.title = '增加字典';
+        vm.model = {};
+      
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '编辑字典';
+        }
+        vm.model.dictSort=0;//默认排序序号为0
+ 
+        vm.createDict = function(){
+        	dictSvc.createDict(vm);
+        };
+        
+        vm.updateDict = function(){
+        	dictSvc.updateDict(vm);
+        }
+    	vm.dictTypeChange = function(){
+    		if(vm.model.dictType){
+    			vm.model.dictKey = '';
+    		}
+    		
+    	};
+    	
+    	vm.apply = function(){
+    		$scope.$apply();
+    	}
+    	
+        activate();
+        function activate() {
+        	
+        	if (vm.isUpdate) {
+        		dictSvc.getDictById(vm)
+            } else {
+            	vm.model.dictCode = '';
+            	dictSvc.initpZtreeClient(vm);
+            }
+        }
+          
+    }
+    
+    
+    
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('dictSvc', dict);
+
+	dict.$inject = [ '$http' ,'$state','$location'];
+
+	function dict($http,$state,$location) {
+		var url_back = '#/dict';
+		var url_dictgroup = rootPath + "/dict";
+		var url_dictitems = rootPath + "/dict/dictNameData";
+		var service = {
+			initDictTree:initDictTree,
+			createDict:createDict,
+			getDictById:getDictById,
+			updateDict:updateDict,
+			deleteDict:deleteDict,
+			initpZtreeClient:initpZtreeClient,
+			getTreeData:getTreeData,
+			getdictItems:getdictItems
+		};
+
+		return service;
+
+		function getdictItems(vm){
+			var dictCode = 'DICT_SEX';
+			
+			
+			var httpOptions = {
+					method : 'get',
+					url : common.format(url_dictitems + "?dictCode={0}", dictCode)
+			};
+			
+			var httpSuccess = function success(response) {
+			
+				
+			}
+
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+			
+		}
+		
+		function getTreeData(vm){
+			
+			var httpOptions = {
+					method : 'get',
+					url : url_dictgroup
+			};
+			
+			var httpSuccess = function success(response) {
+
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						
+						vm.treeData = {};
+						vm.treeData = response.data.value;
+					
+						if(vm.isUpdate&&vm.treeData&&vm.model.parentId){
+							for(var i = 0;i<vm.treeData.length;i++){
+								if(vm.treeData[i].dictId == vm.model.parentId){
+									vm.model.parentDictName = vm.treeData[i].dictName;
+									break;
+								}
+							}
+						}
+						
+					}
+
+				});
+
+			};
+			
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+			
+		}
+		
+		
+
+		
+		//beginDeleteGroup
+		function deleteDict(vm,id){
+		
+           
+			vm.isSubmit = true;
+			var httpOptions = {
+				method : 'delete',
+				url : url_dictgroup,
+				data : id
+
+			}
+			var httpSuccess = function success(response) {
+
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						vm.isSubmit = false;	
+						location.href = url_back;
+						common.alert({
+							vm : vm,
+							msg : "操作成功",
+							fn : function() {	
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+								$state.go('dict',{},{reload:true});
+							}
+						});
+						
+						
+					}
+
+				});
+
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		
+		}
+
+		//begin#createDict
+		function createDict(vm){
+			common.initJqValidation();
+		
+			var isValid = $('form').valid();
+			
+		
+			var nodes = vm.zpTree.getCheckedNodes(true);
+			if(nodes&&nodes.length>0){
+				vm.model.parentId = nodes[0].id;
+			}
+			
+			if(isValid){
+				vm.isSubmit = true;
+				
+				var httpOptions = {
+					method : 'post',
+					url : url_dictgroup,
+					data : vm.model
+				}
+				
+				
+				var httpSuccess = function success(response) {
+
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {	
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+									$state.go('dict',{},{reload:true});
+								}
+							});
+						}
+
+					});
+
+				}
+
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+				
+				
+			}
+			
+			
+				
+		}
+		
+		//updateDict
+		function updateDict(vm){
+			common.initJqValidation();
+			
+			var isValid = $('form').valid();
+			
+			if(isValid){
+				vm.isSubmit = true;
+		
+				var httpOptions = {
+					method : 'put',
+					url : url_dictgroup,
+					data : vm.model
+				}
+
+				var httpSuccess = function success(response) {
+
+					common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {	
+									vm.isSubmit = false;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();	
+									$state.go('dict.edit', { id: vm.model.dictId},{reload:true});
+								}
+							})
+						}
+
+					});
+
+				}
+
+				common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+				
+				
+			}
+			
+		}
+		
+		// begin#initZtreeClient
+		function initDictTree(vm) {
+			var httpOptions = {
+				method : 'get',
+				url : url_dictgroup + "?$orderby=dictSort"
+			}
+
+			var httpSuccess = function success(response) {
+
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						var zTreeObj;
+						var setting = {
+							/*check : {
+								chkboxType : {
+									"Y" : "s",
+									"N" : "s"
+								},
+								enable : true
+							},*/
+							callback: {
+								onClick: zTreeOnClick
+								//onCheck: zTreeOnCheck
+							},
+							data: {
+								simpleData: {
+									enable: true,
+									idKey: "id",
+									pIdKey: "pId"
+								}
+							}
+						};
+						
+						function zTreeOnClick(event, treeId, treeNode) {
+						   $state.go('dict.edit', { id: treeNode.id});
+						};
+						function zTreeOnCheck(event, treeId, treeNode) {
+							var selId = treeNode.id;
+							if(!vm.model.dels){
+								vm.model.dels = [];
+							}
+							var delIds = vm.model.dels;
+							if(treeNode.checked){
+								delIds.push(selId);
+							}else{
+								for(var i =0;i<delIds.length;i++){
+									if(delIds[i] == selId){
+										delIds.splice(i);
+										break;
+									}
+								}
+							}
+							
+						};
+						var zNodes = $linq(response.data.value).select(
+								function(x) {
+									var isParent = false;
+									var pId = null;
+									if(x.parentId){										
+										pId = x.parentId;
+									}
+									return {
+										id : x.dictId,
+										name : x.dictName,
+										pId:pId
+									};
+									
+								}).toArray();
+						var rootNode = {
+							id : '0',
+							name : '字典集合',
+							'chkDisabled':true,
+							children : zNodes
+						};
+								
+						zTreeObj = $.fn.zTree.init($("#zTree"), setting,zNodes);
+						vm.dictsTree = zTreeObj;
+			
+					}
+
+				});
+
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+
+		
+		
+		// begin#initpZtreeClient
+		function initpZtreeClient(vm) {
+			var httpOptions = {
+				method : 'get',
+				url : url_dictgroup + "?$orderby=dictSort"
+			}
+			var httpSuccess = function success(response) {
+
+				common.requestSuccess({
+					vm : vm,
+					response : response,
+					fn : function() {
+						
+						var zpTreeObj;
+						var setting = {
+							check: {enable: true,chkStyle: "radio",radioType: "all"},
+							callback: {
+								//onCheck: zTreeOnCheck,
+								//onClick: zTreeOnClick
+							},
+							data: {
+								simpleData: {
+									enable: true,
+									idKey: "id",
+									pIdKey: "pId"//,
+									//rootPId: 0
+								}
+							}
+						};
+						
+						
+						function zTreeOnCheck(event, treeId, treeNode) {
+							
+						
+						};
+						
+						function zTreeOnClick(event, treeId, treeNode,clickFlag) {
+							
+						};
+						var zNodes = $linq(response.data.value).select(
+								function(x) {
+									var pId;
+									if(x.parentId){										
+										pId = x.parentId;
+									}
+									return {
+										id : x.dictId,
+										name : x.dictName,
+										pId:pId
+									};
+									
+								}).toArray();
+						var rootNode = {
+								id : '',
+								name : '字典集合',
+								'chkDisabled':true,
+								children : zNodes
+							};
+						vm.zpTree = $.fn.zTree.init($("#pzTree"), setting,zNodes);						
+					}
+
+				});
+
+			}
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+
+		
+		
+		//begin#getDictGroupByCode
+		function getDictById(vm){
+			var httpOptions = {
+					method : 'get',
+					url : common.format(url_dictgroup + "?$filter=dictId eq '{0}'", vm.id)
+			};
+			
+			var httpSuccess = function success(response) {
+				vm.model = response.data.value[0];
+				getTreeData(vm);
+			}
+
+			common.http({
+				vm : vm,
+				$http : $http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		}
+		
+	
+	}
 })();
 (function() {
 	'dispatch strict';
@@ -13834,7 +13834,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter:"issign eq '9'"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter:"issign eq (isNull,0)"}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
