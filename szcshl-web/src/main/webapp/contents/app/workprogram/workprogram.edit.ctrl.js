@@ -74,7 +74,7 @@
         }
         //合并评审
         vm.reviewType = function(){
-       	if(vm.work.isSigle=="1"){
+       	if(vm.work.isSigle=="单个评审"){
       		var isHideProject=false;
        	}
         if(vm.work.isSigle == vm.work.isMainProject){

@@ -346,7 +346,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 		dispatch.setYearPlan(sign.getYearplantype());
 		dispatch.setSecretLevel(sign.getSecrectlevel());
 		dispatch.setUrgentLevel(sign.getUrgencydegree());
-		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
+//		dispatch.setDeclareValue(sign.getWorkProgramList().get(0).getAppalyInvestment());
 		BeanCopierUtils.copyProperties(dispatch, dispatchDto);
 		dispatchDto.setSignId(signId);
 		map.put("dispatch", dispatchDto);

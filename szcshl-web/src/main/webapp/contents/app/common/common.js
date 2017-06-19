@@ -98,12 +98,11 @@
 	}
 	// E 初始化上传附件窗口
 
-	// initUpload({businessId:vm.work.id});
 
 	// S 初始化上传附件控件
 	function initUpload(options) {
 		var businessId = options.businessId;
-
+		
 		var projectfileoptions = {
 			language : 'zh',
 			allowedPreviewTypes : [ 'image' ],

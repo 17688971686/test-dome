@@ -18,14 +18,14 @@
             </button>
             <a class="btn btn-sm btn-primary" href="#/listSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 
-            <!-- <button id="linksbtn" class="btn btn-sm btn-primary"  ng-click="vm.signPreview()" >打印预览</button>
-            <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印" onclick="javascript:window.print();" /> -->
+            <button id="linksbtn" class="btn btn-sm btn-primary"  ng-click="vm.signPreview()" >打印预览</button>
+            <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印" onclick="javascript:window.print();" />
             <button class="btn btn-sm btn-primary" ng-click="vm.otherPrintln()">其他资料打印</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.commonUploadWin()">上传附件</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.signQuery()">查看附件</button>
         </div>
 
-         <!--S_ 项目建议书/可行性研究报告 -->
+       <!--S_ 项目建议书/可行性研究报告 -->
        <!-- s table -->
 		<table class="table table-bordered" ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'">
 
@@ -423,13 +423,14 @@
 		
         
     
- <!-- S_设备清单（国产） -->
+		 <!-- S_设备清单（国产） -->
     	 <table class="table table-bordered" ng-show="vm.model.reviewstage=='设备清单（国产）'">
 
 			 <caption class="text-center h3">
                 <strong>
                   	  深圳市政府投资项目评审中心 <br>
                     {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
+                   
                 </strong>
             </caption>
             <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
@@ -593,20 +594,20 @@
                                         <td style="border-top:none;text-align:right;">项目申报表</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.sugOrgApplyCount"
-                                                                            name="sugOrgApplyCount"
-                                                                            id="sugOrgApplyCount" data-val="true"
+                                                                            ng-model="vm.model.projectDeclareCount"
+                                                                            name="projectDeclareCount"
+                                                                            id="projectDeclareCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgApplyOriginal"
-                                                                            id="sugOrgApplyOriginal"
+                                                                            ng-model="vm.model.projectDeclareOriginal"
+                                                                            id="projectDeclareOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgApplyCopy"
-                                                                            id="sugOrgApplyCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.projectDeclareCopy"
+                                                                            id="projectDeclareCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugOrgApplyCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="projectDeclareCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -614,19 +615,19 @@
                                         <td style="border-top:none;text-align:right;">项目申请报告</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.sugOrgReqCount"
-                                                                            name="sugOrgReqCount"
-                                                                            id="sugOrgReqCount" data-val="true"
+                                                                            ng-model="vm.model.projectApplyReportCount"
+                                                                            name="projectApplyReportCount"
+                                                                            id="projectApplyReportCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgReqOriginal"
-                                                                            id="sugOrgReqOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.projectApplyReportOriginal"
+                                                                            id="projectApplyReportOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgReqCopy"
-                                                                            id="sugOrgReqCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.projectApplyReportCopy"
+                                                                            id="projectApplyReportCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugOrgReqCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="projectApplyReportCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -634,20 +635,20 @@
                                         <td style="border-top:none;text-align:right;">采购设备清单</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.studyOrgApplyCount"
-                                                                            name="studyOrgApplyCount"
-                                                                            id="studyOrgApplyCount" data-val="true"
+                                                                            ng-model="vm.model.purchasDeviceCount"
+                                                                            name="purchasDeviceCount"
+                                                                            id="purchasDeviceCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyOrgApplyOriginal"
-                                                                            id="studyOrgApplyOriginal"
+                                                                            ng-model="vm.model.purchasDeviceOriginal"
+                                                                            id="purchasDeviceOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyOrgApplyCopy"
-                                                                            id="studyOrgApplyCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.purchasDeviceCopy"
+                                                                            id="purchasDeviceCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="studyOrgApplyCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="purchasDeviceCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -655,20 +656,20 @@
                                         <td style="border-top:none;text-align:right;">电子文档</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.studyProSugCount"
-                                                                            name="studyProSugCount"
-                                                                            id="studyProSugCount" data-val="true"
+                                                                            ng-model="vm.model.electronicDocumentCount"
+                                                                            name="electronicDocumentCount"
+                                                                            id="electronicDocumentCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyProSugOriginal"
-                                                                            id="studyProSugOriginal"
+                                                                            ng-model="vm.model.electronicDocumentOriginal"
+                                                                            id="electronicDocumentOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyProSugCopy"
-                                                                            id="studyProSugCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.electronicDocumentCopy"
+                                                                            id="electronicDocumentCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="studyProSugCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="electronicDocumentCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -676,19 +677,19 @@
                                         <td style="border-top:none;text-align:right;">其它</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.ortherProjectCount"
+                                                                            name="ortherProjectCount"
+                                                                            id="ortherProjectCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.ortherProjectOriginal"
+                                                                            id="ortherProjectOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.ortherProjectCopy"
+                                                                            id="ortherProjectCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="ortherProjectCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -708,25 +709,105 @@
                                         <td style="border-top:none;text-align:right;">设备说明书</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.sprcialDevicesCount"
+                                                                            name="sprcialDevicesCount"
+                                                                            id="sprcialDevicesCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.sprcialDevicesOriginal"
+                                                                            id="sprcialDevicesOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.sprcialDevicesCopy"
+                                                                            id="sprcialDevicesCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="sprcialDevicesCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
                                     
                                     <tr>
                                         <td style="border-top:none;text-align:right;">采购合同书</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.purchasDevicePactCount"
+                                                                            name="purchasDevicePactCount"
+                                                                            id="purchasDevicePactCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.purchasDevicePactOriginal"
+                                                                            id="purchasDevicePactOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.purchasDevicePactCopy"
+                                                                            id="purchasDevicePactCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="purchasDevicePactCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">项目核准文件</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.projectApproveFileCount"
+                                                                            name="projectApproveFileCount"
+                                                                            id="projectApproveFileCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.projectApproveFileOriginal"
+                                                                            id="projectApproveFileOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.projectApproveFileCopy"
+                                                                            id="projectApproveFileCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="projectApproveFileCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">营业执照</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.businessLicenseCount"
+                                                                            name="businessLicenseCount"
+                                                                            id="businessLicenseCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.businessLicenseOriginal"
+                                                                            id="businessLicenseOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.businessLicenseCopy"
+                                                                            id="businessLicenseCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="businessLicenseCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">法人身份证</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.legalPersoncCardCount"
+                                                                            name="legalPersoncCardCount"
+                                                                            id="legalPersoncCardCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.legalPersoncCardOriginal"
+                                                                            id="legalPersoncCardOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.legalPersoncCardCopy"
+                                                                            id="legalPersoncCardCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="legalPersoncCardCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">可研报告</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
                                                                             ng-model="vm.model.reportCount"
@@ -742,86 +823,6 @@
                                                                             id="reportCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="reportCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">项目核准文件</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">营业执照</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">法人身份证</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">可研报告</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -870,13 +871,14 @@
 		</table>
         <!-- E_设备清单（国产） --> 
         
- <!-- S_设备清单（进口） -->
+		 <!-- S_设备清单（进口） -->
     	 <table class="table table-bordered" ng-show="vm.model.reviewstage=='设备清单（进口）'">
 
 			 <caption class="text-center h3">
                 <strong>
                   	  深圳市政府投资项目评审中心 <br>
                     {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
+                   
                 </strong>
             </caption>
             <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
@@ -1040,20 +1042,20 @@
                                         <td style="border-top:none;text-align:right;">项目申报表</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.sugOrgApplyCount"
-                                                                            name="sugOrgApplyCount"
-                                                                            id="sugOrgApplyCount" data-val="true"
+                                                                            ng-model="vm.model.projectDeclareCount"
+                                                                            name="projectDeclareCount"
+                                                                            id="projectDeclareCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgApplyOriginal"
-                                                                            id="sugOrgApplyOriginal"
+                                                                            ng-model="vm.model.projectDeclareOriginal"
+                                                                            id="projectDeclareOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgApplyCopy"
-                                                                            id="sugOrgApplyCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.projectDeclareCopy"
+                                                                            id="projectDeclareCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugOrgApplyCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="projectDeclareCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1061,19 +1063,19 @@
                                         <td style="border-top:none;text-align:right;">项目申请报告</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.sugOrgReqCount"
-                                                                            name="sugOrgReqCount"
-                                                                            id="sugOrgReqCount" data-val="true"
+                                                                            ng-model="vm.model.projectApplyReportCount"
+                                                                            name="projectApplyReportCount"
+                                                                            id="projectApplyReportCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgReqOriginal"
-                                                                            id="sugOrgReqOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.projectApplyReportOriginal"
+                                                                            id="projectApplyReportOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgReqCopy"
-                                                                            id="sugOrgReqCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.projectApplyReportCopy"
+                                                                            id="projectApplyReportCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugOrgReqCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="projectApplyReportCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1081,20 +1083,20 @@
                                         <td style="border-top:none;text-align:right;">采购设备清单</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.studyOrgApplyCount"
-                                                                            name="studyOrgApplyCount"
-                                                                            id="studyOrgApplyCount" data-val="true"
+                                                                            ng-model="vm.model.purchasDeviceCount"
+                                                                            name="purchasDeviceCount"
+                                                                            id="purchasDeviceCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyOrgApplyOriginal"
-                                                                            id="studyOrgApplyOriginal"
+                                                                            ng-model="vm.model.purchasDeviceOriginal"
+                                                                            id="purchasDeviceOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyOrgApplyCopy"
-                                                                            id="studyOrgApplyCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.purchasDeviceCopy"
+                                                                            id="purchasDeviceCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="studyOrgApplyCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="purchasDeviceCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1102,20 +1104,20 @@
                                         <td style="border-top:none;text-align:right;">电子文档</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.studyProSugCount"
-                                                                            name="studyProSugCount"
-                                                                            id="studyProSugCount" data-val="true"
+                                                                            ng-model="vm.model.electronicDocumentCount"
+                                                                            name="electronicDocumentCount"
+                                                                            id="electronicDocumentCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyProSugOriginal"
-                                                                            id="studyProSugOriginal"
+                                                                            ng-model="vm.model.electronicDocumentOriginal"
+                                                                            id="electronicDocumentOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyProSugCopy"
-                                                                            id="studyProSugCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.electronicDocumentCopy"
+                                                                            id="electronicDocumentCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="studyProSugCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="electronicDocumentCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1123,19 +1125,19 @@
                                         <td style="border-top:none;text-align:right;">其它</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.ortherProjectCount"
+                                                                            name="ortherProjectCount"
+                                                                            id="ortherProjectCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.ortherProjectOriginal"
+                                                                            id="ortherProjectOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.ortherProjectCopy"
+                                                                            id="ortherProjectCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="ortherProjectCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1155,25 +1157,105 @@
                                         <td style="border-top:none;text-align:right;">设备说明书</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.sprcialDevicesCount"
+                                                                            name="sprcialDevicesCount"
+                                                                            id="sprcialDevicesCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.sprcialDevicesOriginal"
+                                                                            id="sprcialDevicesOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.sprcialDevicesCopy"
+                                                                            id="sprcialDevicesCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="sprcialDevicesCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
                                     
                                     <tr>
                                         <td style="border-top:none;text-align:right;">采购合同书</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.purchasDevicePactCount"
+                                                                            name="purchasDevicePactCount"
+                                                                            id="purchasDevicePactCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.purchasDevicePactOriginal"
+                                                                            id="purchasDevicePactOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.purchasDevicePactCopy"
+                                                                            id="purchasDevicePactCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="purchasDevicePactCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">项目核准文件</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.projectApproveFileCount"
+                                                                            name="projectApproveFileCount"
+                                                                            id="projectApproveFileCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.projectApproveFileOriginal"
+                                                                            id="projectApproveFileOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.projectApproveFileCopy"
+                                                                            id="projectApproveFileCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="projectApproveFileCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">营业执照</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.businessLicenseCount"
+                                                                            name="businessLicenseCount"
+                                                                            id="businessLicenseCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.businessLicenseOriginal"
+                                                                            id="businessLicenseOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.businessLicenseCopy"
+                                                                            id="businessLicenseCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="businessLicenseCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">法人身份证</td>
+                                        <td style="border-top:none;"><input type="text" style="width:50px;"
+                                                                            class="form-control input-sm "
+                                                                            ng-model="vm.model.legalPersoncCardCount"
+                                                                            name="legalPersoncCardCount"
+                                                                            id="legalPersoncCardCount" data-val="true"
+                                                                            data-val-digits="只能输入数字"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.legalPersoncCardOriginal"
+                                                                            id="legalPersoncCardOriginal" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
+                                                                            ng-model="vm.model.legalPersoncCardCopy"
+                                                                            id="legalPersoncCardCopy" ng-true-value="9"
+                                                                            ng-false-value="0"></td>
+                                        <td style="border-top:none;"><span data-valmsg-for="legalPersoncCardCount"
+                                                                           data-valmsg-replace="true"
+                                                                           class="errors"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border-top:none;text-align:right;">可研报告</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
                                                                             ng-model="vm.model.reportCount"
@@ -1189,86 +1271,6 @@
                                                                             id="reportCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="reportCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">项目核准文件</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">营业执照</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">法人身份证</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
-                                                                           data-valmsg-replace="true"
-                                                                           class="errors"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-top:none;text-align:right;">可研报告</td>
-                                        <td style="border-top:none;"><input type="text" style="width:50px;"
-                                                                            class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
-                                                                            data-val-digits="只能输入数字"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
-                                                                            ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1318,11 +1320,8 @@
         <!-- E_设备清单（进口） --> 
         
         
-             
-        
-        
-        <!-- S_进口设备 -->
-        	<table class="table table-bordered" ng-show="vm.model.reviewstage=='进口设备'">
+        <!-- S 进口设备项目申报登记表 -->
+      	 <table class="table table-bordered" ng-show="vm.model.reviewstage=='进口设备'">
 
 			 <caption class="text-center h3">
                 <strong>
@@ -1470,21 +1469,21 @@
                                         </td>
                                         <td style="border-top:none;">
                                             <input type="text" style="width:50px;" class="form-control input-sm"
-                                                   ng-model="vm.model.sugFileDealCount" id="sugFileDealCount"
-                                                   name="sugFileDealCount"
+                                                   ng-model="vm.model.governmentPurchasCount" id="governmentPurchasCount"
+                                                   name="governmentPurchasCount"
                                                    data-val="true" data-val-digits="只能输入数字">
                                         </td>
 
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugFileDealOriginal"
-                                                                            id="sugFileDealOriginal"
+                                                                            ng-model="vm.model.governmentPurchasOriginal"
+                                                                            id="governmentPurchasOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugFileDealCopy"
-                                                                            id="sugFileDealCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.governmentPurchasCopy"
+                                                                            id="governmentPurchasCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugFileDealCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="governmentPurchasOriginal"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
 
@@ -1493,20 +1492,20 @@
                                         <td style="border-top:none;text-align:right;">专家论证意见</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.sugOrgApplyCount"
-                                                                            name="sugOrgApplyCount"
-                                                                            id="sugOrgApplyCount" data-val="true"
+                                                                            ng-model="vm.model.expertArgumentCount"
+                                                                            name="expertArgumentCount"
+                                                                            id="expertArgumentCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgApplyOriginal"
-                                                                            id="sugOrgApplyOriginal"
+                                                                            ng-model="vm.model.expertArgumentOriginal"
+                                                                            id="expertArgumentOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgApplyCopy"
-                                                                            id="sugOrgApplyCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.expertArgumentCopy"
+                                                                            id="expertArgumentCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugOrgApplyCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="expertArgumentCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1514,19 +1513,19 @@
                                         <td style="border-top:none;text-align:right;">发改委意见</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.sugOrgReqCount"
-                                                                            name="sugOrgReqCount"
-                                                                            id="sugOrgReqCount" data-val="true"
+                                                                            ng-model="vm.model.developmentCount"
+                                                                            name="developmentCount"
+                                                                            id="developmentCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgReqOriginal"
-                                                                            id="sugOrgReqOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.developementOriginal"
+                                                                            id="developementOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugOrgReqCopy"
-                                                                            id="sugOrgReqCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.developementCopy"
+                                                                            id="developementCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="sugOrgReqCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="developmentCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1534,20 +1533,20 @@
                                         <td style="border-top:none;text-align:right;">其它</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.studyOrgApplyCount"
-                                                                            name="studyOrgApplyCount"
-                                                                            id="studyOrgApplyCount" data-val="true"
+                                                                            ng-model="vm.model.ortherProjectCount"
+                                                                            name="ortherProjectCount"
+                                                                            id="ortherProjectCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyOrgApplyOriginal"
-                                                                            id="studyOrgApplyOriginal"
+                                                                            ng-model="vm.model.ortherProjectOriginal"
+                                                                            id="ortherProjectOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.studyOrgApplyCopy"
-                                                                            id="studyOrgApplyCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.ortherProjectCopy"
+                                                                            id="ortherProjectCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="studyOrgApplyCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="ortherProjectCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1567,19 +1566,19 @@
                                         <td style="border-top:none;text-align:right;">文件处理表</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.officialDisposeCount"
+                                                                            name="officialDisposeCount"
+                                                                            id="officialDisposeCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.officialDisposeOriginal"
+                                                                            id="officialDisposeOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.officialDisposeCopy"
+                                                                            id="officialDisposeCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="officialDisposeCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1587,19 +1586,19 @@
                                         <td style="border-top:none;text-align:right;">主管部门意见</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.managerDeptCount"
+                                                                            name="managerDeptCount"
+                                                                            id="managerDeptCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.managerDeptOriginal"
+                                                                            id="managerDeptOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.managerDeptCopy"
+                                                                            id="managerDeptCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="managerDeptCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1608,19 +1607,19 @@
                                         <td style="border-top:none;text-align:right;">进品产品目录</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.reportCount"
-                                                                            name="reportCount"
-                                                                            id="reportCount" data-val="true"
+                                                                            ng-model="vm.model.importProductCount"
+                                                                            name="importProductCount"
+                                                                            id="importProductCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.reportOrigin"
-                                                                            id="reportOrigin" ng-true-value="9"
+                                                                            ng-model="vm.model.importProductOriginal"
+                                                                            id="importProductOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.reportCopy"
-                                                                            id="reportCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.importProductCopy"
+                                                                            id="importProductCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="reportCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="importProductCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1628,19 +1627,19 @@
                                         <td style="border-top:none;text-align:right;">设备说明书</td>
                                         <td style="border-top:none;"><input type="text" style="width:50px;"
                                                                             class="form-control input-sm "
-                                                                            ng-model="vm.model.eledocCount"
-                                                                            name="eledocCount"
-                                                                            id="eledocCount" data-val="true"
+                                                                            ng-model="vm.model.sprcialDevicesCount"
+                                                                            name="sprcialDevicesCount"
+                                                                            id="sprcialDevicesCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocOriginal"
-                                                                            id="eledocOriginal" ng-true-value="9"
+                                                                            ng-model="vm.model.sprcialDevicesOriginal"
+                                                                            id="sprcialDevicesOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.eledocCopy"
-                                                                            id="eledocCopy" ng-true-value="9"
+                                                                            ng-model="vm.model.sprcialDevicesCopy"
+                                                                            id="sprcialDevicesCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
-                                        <td style="border-top:none;"><span data-valmsg-for="eledocCount"
+                                        <td style="border-top:none;"><span data-valmsg-for="sprcialDevicesCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
@@ -1687,9 +1686,7 @@
 			
 			</tbody>
 		</table> 
-         <!-- E_进口设备 -->
-        
-        
+        <!-- E 进口设备项目申报登记表 -->
 
     </form> <!-- end form -->
 

@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import cs.domain.meeting.RoomBooking;
 
@@ -31,25 +32,20 @@ public class ExcelUtils {
 		Sheet sheet=wb.createSheet();
 		 //创建行
 		Row row=sheet.createRow(rowIndex++);
+		
 		//遍历头信息
 		for(int i=0;i<headers.length;i++){
 			row.createCell(i).setCellValue(headers[i]);
 		}
-	
-		//遍历集合所有值
-		
+		//遍历行
 		for (RoomBooking rb :foom) {
 			row=sheet.createRow(rowIndex++);
-//			int i=0;
 					//创建行并且给行添加数据
-					row.createCell(0).setCellValue(rb.getRbName().toString());
-					row.createCell(1).setCellValue(rb.getRbDay().toString());
-					row.createCell(2).setCellValue(rb.getBeginTime().toString());
-					row.createCell(3).setCellValue(rb.getEndTime().toString());
-					row.createCell(4).setCellValue(rb.getDueToPeople().toString());
-					row.createCell(5).setCellValue(rb.getHost().toString());
-					//row.createCell(6).setCellValue(rb.getAddressName().toString());
-//					i++;
+					row.createCell(0).setCellValue(rb.getRbDate().toString());
+					row.createCell(1).setCellValue(rb.getBeginTime().toString());
+					row.createCell(2).setCellValue(rb.getEndTime().toString());
+					row.createCell(3).setCellValue(rb.getDueToPeople().toString());
+					row.createCell(4).setCellValue(rb.getHost().toString());
 			}
 	}
 	//导出本周全部会议安排

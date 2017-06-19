@@ -32,6 +32,10 @@ public class WorkProgram extends DomainBase {
     //评审方式
     @Column(columnDefinition = "VARCHAR(20)")
     private String reviewType;
+    
+    //评审阶段
+    @Column(columnDefinition = "VARCHAR(50)")
+    private String workreviveStage;
 
     //是否单个评审  0:表示合并评审,9:表示单个评审
     @Column(columnDefinition = "VARCHAR(20)")
@@ -201,6 +205,21 @@ public class WorkProgram extends DomainBase {
     //是否主流程的工作方案
     @Column(columnDefinition = "VARCHAR(2)")
     private String isMain;
+    
+    //S 设备清单（进口）
+    //项目概况
+    @Column(columnDefinition = "varchar(100)")
+    private String projectSurvey;
+    
+    //评审重点
+    @Column(columnDefinition = "varchar(100)")
+    private String stageEmphasis;
+    
+    //申报总额
+    @Column(columnDefinition = "varchar(40)")
+    private String declareCount; 
+    
+    //E 设备清单（进口）
 
     //收文，一对一
     @ManyToOne(fetch = FetchType.LAZY)
@@ -614,4 +633,39 @@ public class WorkProgram extends DomainBase {
     public void setExpertReview(ExpertReview expertReview) {
         this.expertReview = expertReview;
     }
+
+	public String getProjectSurvey() {
+		return projectSurvey;
+	}
+
+	public void setProjectSurvey(String projectSurvey) {
+		this.projectSurvey = projectSurvey;
+	}
+
+	public String getStageEmphasis() {
+		return stageEmphasis;
+	}
+
+	public void setStageEmphasis(String stageEmphasis) {
+		this.stageEmphasis = stageEmphasis;
+	}
+
+	public String getDeclareCount() {
+		return declareCount;
+	}
+
+	public void setDeclareCount(String declareCount) {
+		this.declareCount = declareCount;
+	}
+
+	public String getWorkreviveStage() {
+		return workreviveStage;
+	}
+
+	public void setWorkreviveStage(String workreviveStage) {
+		this.workreviveStage = workreviveStage;
+	}
+    
+	
+    
 }

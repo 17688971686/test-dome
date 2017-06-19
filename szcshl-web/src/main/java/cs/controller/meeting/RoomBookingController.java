@@ -1,6 +1,9 @@
 package cs.controller.meeting;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -94,7 +97,25 @@ public class RoomBookingController {
 	public void exports(HttpServletRequest req,HttpServletResponse resp){
 		try {
 			Workbook wb=new HSSFWorkbook();
-			String headers[]={"会议名称","会议日期","会议开始时间","会议结束时间","会议预定人","会议主持人","会议地点"};
+			Calendar cal =Calendar.getInstance();
+	        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	        //获取本周一的日期
+	        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	        Date  monday=cal.getTime();
+	        String MONDAY =df.format(monday);
+	        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+	        Date tuseday = cal.getTime();
+	        String TUESDAY = df.format(tuseday);
+	        cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+	        Date wednesday =cal.getTime();
+	        String WEDNESDAY = df.format(wednesday);
+	        cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+	        Date thursday = cal.getTime();
+	        String THURSDAY = df.format(thursday);
+	        cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+	        Date friday = cal.getTime();
+	        String FRIDAT = df.format(friday);
+			String headers[]={MONDAY+"(星期一)",TUESDAY+"(星期二)",WEDNESDAY+"星期三",THURSDAY+"星期四",FRIDAT+"星期五"};
 			List<RoomBooking> foom=roomBookingSerivce.findAll();
 			ExcelUtils.fillExcelData(foom,wb, headers);
 			ExcelUtils.exports(resp, wb, "本周评审会会议安排.xls");

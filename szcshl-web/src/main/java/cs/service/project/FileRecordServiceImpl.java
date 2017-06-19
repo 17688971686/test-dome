@@ -106,6 +106,7 @@ public class FileRecordServiceImpl implements FileRecordService {
         	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectCode(sign.getProjectcode());
+        	fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
         	fileRecordDto.setProjectCompany(sign.getBuiltcompanyid());	//建设单位名称
         	fileRecordDto.setProjectChargeUser(priUser==null?"":priUser.getDisplayName());
         	fileRecordDto.setFileNumber("");//文号

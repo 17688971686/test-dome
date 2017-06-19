@@ -3,6 +3,8 @@ package cs.model.project;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+
 import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.model.BaseDto;
@@ -14,6 +16,9 @@ public class FileRecordDto extends BaseDto{
 	private String signId;
 	
 	private String projectName;
+	
+	//评审阶段
+	private String fileReviewstage;
 	
 	private String fileNo;
 	
@@ -30,6 +35,8 @@ public class FileRecordDto extends BaseDto{
 	private String recordFormCopy;
 	
 	private String recordFormCopyScan;
+	
+	private Integer sugproHandleFormCount;
 	
 	private String sugproHandleFormOriginal;
 	
@@ -92,7 +99,9 @@ public class FileRecordDto extends BaseDto{
 	private String meetingSummaryOriginal;
 		 
 	private String meetingSummaryScan;
-		 
+	
+	private String otherImportFileCount;
+	
 	private String otherImportFileOriginal;
 		 
 	private String otherImportFileCopy;
@@ -157,9 +166,167 @@ public class FileRecordDto extends BaseDto{
 	private String signUserid;
 	
 	private String signUserName;
-	
+
 	@JSONField(format = "yyyy-MM-dd")
 	private Date fileDate;
+
+	//S 政府采购进口产品申报份数
+	private Integer governmentPurchasCount;
+
+	//政府采购进口产品申报是否有原件
+	private String governmentPurchasOriginal;
+
+	//政府采购进口产品申报是否有复印件
+	private String governmentPurchasCopy;
+
+	//专家论证意见份数
+	private Integer expertArgumentCount;
+
+	//专家论证意见是否有原件
+	private String expertArgumentOriginal;
+
+	//专家论证意见是否有复印件
+	private String expertArgumentCopy;
+
+	//发改委意见份数
+	private Integer developmentCount;
+
+	//发改委意见是否有原件
+	private String developementOriginal;
+
+	//发改委意见是否复印件
+	private String developementCopy;
+
+	//文件处理表份数
+	private Integer officialDisposeCount;
+
+	//文件处理表是否有原件
+	private String officialDisposeOriginal;
+
+	//文件处理表是否复印件
+	private String officialDisposeCopy;
+
+	//主管部门意见分数
+	private Integer managerDeptCount;
+
+	//主管部门意见是否有原件
+	private String managerDeptOriginal;
+
+	//主管部门意见是否复印件
+	private String managerDeptCopy;
+
+	//进口产品目录分数
+	private Integer importProductCount;
+
+	//进口产品目录原件
+	private String importProductOriginal;
+
+	//进口产品目录是否复印件
+	private String importProductCopy;
+
+	//设备说明书分数
+	private Integer sprcialDevicesCount;
+
+	//设备说明书是否有原件
+	private String sprcialDevicesOriginal;
+
+	//E 设备说明书是否有复印件
+	private String sprcialDevicesCopy;
+
+	//S 设备清单（国产）
+	//项目申报表是否有分数
+	private Integer projectDeclareCount;
+
+	//项目申报表是否有原件
+	private String projectDeclareOriginal;
+
+	//项目申报表是否有复印件
+	private String projectDeclareCopy;
+
+	//可研报告分数
+	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityReportCount;
+
+	//可研报告是否有原件
+	private String feasibilityReportOriginal;
+
+	//可研报告是否有复印件
+	private String feasibilityReportCopy;
+
+	//电子文档分数
+	private Integer electronicDocumentCount;
+
+	//电子文档是否有原件
+	private String electronicDocumentOriginal;
+
+	//电子文档是否有复印件
+	private String electronicDocumentCopy;
+
+	//项目申请报告分数
+	private Integer projectApplyReportCount;
+
+	//项目申请报告是否有原件
+	private String projectApplyReportOriginal;
+
+	//项目申请报告是否有复印件
+	private String projectApplyReportCopy;
+
+	//申报登记表分数
+	private Integer declareRegisterCount;
+
+	//申报登记表是否有原件
+	private String declareRegisterOriginal;
+
+	//申报登记表是否有复印件
+	private String declareRegisterCopy;
+
+	//采购设备清单分数
+	private Integer purchasDeviceCount;
+
+	//采购设备清单是否有原件
+	private String purchasDeviceOriginal;
+
+	//采购设备清单是否有复印件
+	private String purchasDeviceCopy;
+
+	//采购合同书分数
+	private Integer purchasDevicePactCount;
+
+	//采购合同书是否有原件
+	private String purchasDevicePactOriginal;
+
+	//采购合同书是否有复印件
+	private String purchasDevicePactCopy;
+
+	//项目核准文件份数
+	private Integer projectApproveFileCount;
+
+	//项目核准文件是否有原件
+	private String projectApproveFileOriginal;
+
+	//项目核准文件是否有复印件
+	private String projectApproveFileCopy;
+
+	//营业执照分数
+	private Integer businessLicenseCount;
+
+	//营业执照是否有原件
+	private String businessLicenseOriginal;
+
+	//营业执照是否有复印件
+	private String businessLicenseCopy;
+
+	//法人身份证分数
+	private Integer legalPersoncCardCount;
+
+	//法人身份证是否有原件
+	private String legalPersoncCardOriginal;
+
+	//法人身份证复印件
+	private String legalPersoncCardCopy;
+
+	//E 设备清单（国产）
+	
 
 	public String getFileRecordId() {
 		return fileRecordId;
@@ -761,5 +928,439 @@ public class FileRecordDto extends BaseDto{
 
 	public void setFileDate(Date fileDate) {
 		this.fileDate = fileDate;
-	}		
+	}
+
+	public Integer getGovernmentPurchasCount() {
+		return governmentPurchasCount;
+	}
+
+	public void setGovernmentPurchasCount(Integer governmentPurchasCount) {
+		this.governmentPurchasCount = governmentPurchasCount;
+	}
+
+	public String getGovernmentPurchasOriginal() {
+		return governmentPurchasOriginal;
+	}
+
+	public void setGovernmentPurchasOriginal(String governmentPurchasOriginal) {
+		this.governmentPurchasOriginal = governmentPurchasOriginal;
+	}
+
+	public String getGovernmentPurchasCopy() {
+		return governmentPurchasCopy;
+	}
+
+	public void setGovernmentPurchasCopy(String governmentPurchasCopy) {
+		this.governmentPurchasCopy = governmentPurchasCopy;
+	}
+
+	public Integer getExpertArgumentCount() {
+		return expertArgumentCount;
+	}
+
+	public void setExpertArgumentCount(Integer expertArgumentCount) {
+		this.expertArgumentCount = expertArgumentCount;
+	}
+
+	public String getExpertArgumentOriginal() {
+		return expertArgumentOriginal;
+	}
+
+	public void setExpertArgumentOriginal(String expertArgumentOriginal) {
+		this.expertArgumentOriginal = expertArgumentOriginal;
+	}
+
+	public String getExpertArgumentCopy() {
+		return expertArgumentCopy;
+	}
+
+	public void setExpertArgumentCopy(String expertArgumentCopy) {
+		this.expertArgumentCopy = expertArgumentCopy;
+	}
+
+	public Integer getDevelopmentCount() {
+		return developmentCount;
+	}
+
+	public void setDevelopmentCount(Integer developmentCount) {
+		this.developmentCount = developmentCount;
+	}
+
+	public String getDevelopementOriginal() {
+		return developementOriginal;
+	}
+
+	public void setDevelopementOriginal(String developementOriginal) {
+		this.developementOriginal = developementOriginal;
+	}
+
+	public String getDevelopementCopy() {
+		return developementCopy;
+	}
+
+	public void setDevelopementCopy(String developementCopy) {
+		this.developementCopy = developementCopy;
+	}
+
+	public Integer getOfficialDisposeCount() {
+		return officialDisposeCount;
+	}
+
+	public void setOfficialDisposeCount(Integer officialDisposeCount) {
+		this.officialDisposeCount = officialDisposeCount;
+	}
+
+	public String getOfficialDisposeOriginal() {
+		return officialDisposeOriginal;
+	}
+
+	public void setOfficialDisposeOriginal(String officialDisposeOriginal) {
+		this.officialDisposeOriginal = officialDisposeOriginal;
+	}
+
+	public String getOfficialDisposeCopy() {
+		return officialDisposeCopy;
+	}
+
+	public void setOfficialDisposeCopy(String officialDisposeCopy) {
+		this.officialDisposeCopy = officialDisposeCopy;
+	}
+
+	public Integer getManagerDeptCount() {
+		return managerDeptCount;
+	}
+
+	public void setManagerDeptCount(Integer managerDeptCount) {
+		this.managerDeptCount = managerDeptCount;
+	}
+
+	public String getManagerDeptOriginal() {
+		return managerDeptOriginal;
+	}
+
+	public void setManagerDeptOriginal(String managerDeptOriginal) {
+		this.managerDeptOriginal = managerDeptOriginal;
+	}
+
+	public String getManagerDeptCopy() {
+		return managerDeptCopy;
+	}
+
+	public void setManagerDeptCopy(String managerDeptCopy) {
+		this.managerDeptCopy = managerDeptCopy;
+	}
+
+	public Integer getImportProductCount() {
+		return importProductCount;
+	}
+
+	public void setImportProductCount(Integer importProductCount) {
+		this.importProductCount = importProductCount;
+	}
+
+	public String getImportProductOriginal() {
+		return importProductOriginal;
+	}
+
+	public void setImportProductOriginal(String importProductOriginal) {
+		this.importProductOriginal = importProductOriginal;
+	}
+
+	public String getImportProductCopy() {
+		return importProductCopy;
+	}
+
+	public void setImportProductCopy(String importProductCopy) {
+		this.importProductCopy = importProductCopy;
+	}
+
+	public Integer getSprcialDevicesCount() {
+		return sprcialDevicesCount;
+	}
+
+	public void setSprcialDevicesCount(Integer sprcialDevicesCount) {
+		this.sprcialDevicesCount = sprcialDevicesCount;
+	}
+
+	public String getSprcialDevicesOriginal() {
+		return sprcialDevicesOriginal;
+	}
+
+	public void setSprcialDevicesOriginal(String sprcialDevicesOriginal) {
+		this.sprcialDevicesOriginal = sprcialDevicesOriginal;
+	}
+
+	public String getSprcialDevicesCopy() {
+		return sprcialDevicesCopy;
+	}
+
+	public void setSprcialDevicesCopy(String sprcialDevicesCopy) {
+		this.sprcialDevicesCopy = sprcialDevicesCopy;
+	}
+
+	public Integer getSugproHandleFormCount() {
+		return sugproHandleFormCount;
+	}
+
+	public void setSugproHandleFormCount(Integer sugproHandleFormCount) {
+		this.sugproHandleFormCount = sugproHandleFormCount;
+	}
+
+	public String getOtherImportFileCount() {
+		return otherImportFileCount;
+	}
+
+	public void setOtherImportFileCount(String otherImportFileCount) {
+		this.otherImportFileCount = otherImportFileCount;
+	}
+
+	public String getFileReviewstage() {
+		return fileReviewstage;
+	}
+
+	public void setFileReviewstage(String fileReviewstage) {
+		this.fileReviewstage = fileReviewstage;
+	}
+
+	public Integer getProjectDeclareCount() {
+		return projectDeclareCount;
+	}
+
+	public void setProjectDeclareCount(Integer projectDeclareCount) {
+		this.projectDeclareCount = projectDeclareCount;
+	}
+
+	public String getProjectDeclareOriginal() {
+		return projectDeclareOriginal;
+	}
+
+	public void setProjectDeclareOriginal(String projectDeclareOriginal) {
+		this.projectDeclareOriginal = projectDeclareOriginal;
+	}
+
+	public String getProjectDeclareCopy() {
+		return projectDeclareCopy;
+	}
+
+	public void setProjectDeclareCopy(String projectDeclareCopy) {
+		this.projectDeclareCopy = projectDeclareCopy;
+	}
+
+	public Integer getFeasibilityReportCount() {
+		return feasibilityReportCount;
+	}
+
+	public void setFeasibilityReportCount(Integer feasibilityReportCount) {
+		this.feasibilityReportCount = feasibilityReportCount;
+	}
+
+	public String getFeasibilityReportOriginal() {
+		return feasibilityReportOriginal;
+	}
+
+	public void setFeasibilityReportOriginal(String feasibilityReportOriginal) {
+		this.feasibilityReportOriginal = feasibilityReportOriginal;
+	}
+
+	public String getFeasibilityReportCopy() {
+		return feasibilityReportCopy;
+	}
+
+	public void setFeasibilityReportCopy(String feasibilityReportCopy) {
+		this.feasibilityReportCopy = feasibilityReportCopy;
+	}
+
+	public Integer getElectronicDocumentCount() {
+		return electronicDocumentCount;
+	}
+
+	public void setElectronicDocumentCount(Integer electronicDocumentCount) {
+		this.electronicDocumentCount = electronicDocumentCount;
+	}
+
+	public String getElectronicDocumentOriginal() {
+		return electronicDocumentOriginal;
+	}
+
+	public void setElectronicDocumentOriginal(String electronicDocumentOriginal) {
+		this.electronicDocumentOriginal = electronicDocumentOriginal;
+	}
+
+	public String getElectronicDocumentCopy() {
+		return electronicDocumentCopy;
+	}
+
+	public void setElectronicDocumentCopy(String electronicDocumentCopy) {
+		this.electronicDocumentCopy = electronicDocumentCopy;
+	}
+
+	public Integer getProjectApplyReportCount() {
+		return projectApplyReportCount;
+	}
+
+	public void setProjectApplyReportCount(Integer projectApplyReportCount) {
+		this.projectApplyReportCount = projectApplyReportCount;
+	}
+
+	public String getProjectApplyReportOriginal() {
+		return projectApplyReportOriginal;
+	}
+
+	public void setProjectApplyReportOriginal(String projectApplyReportOriginal) {
+		this.projectApplyReportOriginal = projectApplyReportOriginal;
+	}
+
+	public String getProjectApplyReportCopy() {
+		return projectApplyReportCopy;
+	}
+
+	public void setProjectApplyReportCopy(String projectApplyReportCopy) {
+		this.projectApplyReportCopy = projectApplyReportCopy;
+	}
+
+	public Integer getDeclareRegisterCount() {
+		return declareRegisterCount;
+	}
+
+	public void setDeclareRegisterCount(Integer declareRegisterCount) {
+		this.declareRegisterCount = declareRegisterCount;
+	}
+
+	public String getDeclareRegisterOriginal() {
+		return declareRegisterOriginal;
+	}
+
+	public void setDeclareRegisterOriginal(String declareRegisterOriginal) {
+		this.declareRegisterOriginal = declareRegisterOriginal;
+	}
+
+	public String getDeclareRegisterCopy() {
+		return declareRegisterCopy;
+	}
+
+	public void setDeclareRegisterCopy(String declareRegisterCopy) {
+		this.declareRegisterCopy = declareRegisterCopy;
+	}
+
+	public Integer getPurchasDeviceCount() {
+		return purchasDeviceCount;
+	}
+
+	public void setPurchasDeviceCount(Integer purchasDeviceCount) {
+		this.purchasDeviceCount = purchasDeviceCount;
+	}
+
+	public String getPurchasDeviceOriginal() {
+		return purchasDeviceOriginal;
+	}
+
+	public void setPurchasDeviceOriginal(String purchasDeviceOriginal) {
+		this.purchasDeviceOriginal = purchasDeviceOriginal;
+	}
+
+	public String getPurchasDeviceCopy() {
+		return purchasDeviceCopy;
+	}
+
+	public void setPurchasDeviceCopy(String purchasDeviceCopy) {
+		this.purchasDeviceCopy = purchasDeviceCopy;
+	}
+
+	public Integer getPurchasDevicePactCount() {
+		return purchasDevicePactCount;
+	}
+
+	public void setPurchasDevicePactCount(Integer purchasDevicePactCount) {
+		this.purchasDevicePactCount = purchasDevicePactCount;
+	}
+
+	public String getPurchasDevicePactOriginal() {
+		return purchasDevicePactOriginal;
+	}
+
+	public void setPurchasDevicePactOriginal(String purchasDevicePactOriginal) {
+		this.purchasDevicePactOriginal = purchasDevicePactOriginal;
+	}
+
+	public String getPurchasDevicePactCopy() {
+		return purchasDevicePactCopy;
+	}
+
+	public void setPurchasDevicePactCopy(String purchasDevicePactCopy) {
+		this.purchasDevicePactCopy = purchasDevicePactCopy;
+	}
+
+	public Integer getProjectApproveFileCount() {
+		return projectApproveFileCount;
+	}
+
+	public void setProjectApproveFileCount(Integer projectApproveFileCount) {
+		this.projectApproveFileCount = projectApproveFileCount;
+	}
+
+	public String getProjectApproveFileOriginal() {
+		return projectApproveFileOriginal;
+	}
+
+	public void setProjectApproveFileOriginal(String projectApproveFileOriginal) {
+		this.projectApproveFileOriginal = projectApproveFileOriginal;
+	}
+
+	public String getProjectApproveFileCopy() {
+		return projectApproveFileCopy;
+	}
+
+	public void setProjectApproveFileCopy(String projectApproveFileCopy) {
+		this.projectApproveFileCopy = projectApproveFileCopy;
+	}
+
+	public Integer getBusinessLicenseCount() {
+		return businessLicenseCount;
+	}
+
+	public void setBusinessLicenseCount(Integer businessLicenseCount) {
+		this.businessLicenseCount = businessLicenseCount;
+	}
+
+	public String getBusinessLicenseOriginal() {
+		return businessLicenseOriginal;
+	}
+
+	public void setBusinessLicenseOriginal(String businessLicenseOriginal) {
+		this.businessLicenseOriginal = businessLicenseOriginal;
+	}
+
+	public String getBusinessLicenseCopy() {
+		return businessLicenseCopy;
+	}
+
+	public void setBusinessLicenseCopy(String businessLicenseCopy) {
+		this.businessLicenseCopy = businessLicenseCopy;
+	}
+
+	public Integer getLegalPersoncCardCount() {
+		return legalPersoncCardCount;
+	}
+
+	public void setLegalPersoncCardCount(Integer legalPersoncCardCount) {
+		this.legalPersoncCardCount = legalPersoncCardCount;
+	}
+
+	public String getLegalPersoncCardOriginal() {
+		return legalPersoncCardOriginal;
+	}
+
+	public void setLegalPersoncCardOriginal(String legalPersoncCardOriginal) {
+		this.legalPersoncCardOriginal = legalPersoncCardOriginal;
+	}
+
+	public String getLegalPersoncCardCopy() {
+		return legalPersoncCardCopy;
+	}
+
+	public void setLegalPersoncCardCopy(String legalPersoncCardCopy) {
+		this.legalPersoncCardCopy = legalPersoncCardCopy;
+	}	
+	
+	
 }

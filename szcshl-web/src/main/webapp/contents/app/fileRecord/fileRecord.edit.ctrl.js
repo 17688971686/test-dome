@@ -16,8 +16,8 @@
         $("input").click(function(){
         	
         })
+        
         //文件下载
-        	
         vm.commonDownloadSysFile = function(id){
         	common.commonDownloadFile(vm,id);
         }

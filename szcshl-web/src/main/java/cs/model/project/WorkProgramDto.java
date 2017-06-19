@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.domain.expert.ExpertReview;
@@ -28,6 +30,9 @@ public class WorkProgramDto extends BaseDto {
     private String isMainProject;
     //评审方式
     private String reviewType;
+    //评审阶段
+    private String workreviveStage;
+    
     //是否单个评审
     private String isSigle;
     //项目名称
@@ -138,6 +143,18 @@ public class WorkProgramDto extends BaseDto {
 
     //是否主流程
     private String isMain;
+    
+    //S 设备清单（进口）
+    //项目概况
+    private String projectSurvey;
+    
+    //评审重点
+    private String stageEmphasis;
+    
+    //申报总额
+    private String declareCount; 
+    
+    //E 设备清单（进口）
 
     //专家评审方案
     private ExpertReview expertReview;
@@ -554,4 +571,38 @@ public class WorkProgramDto extends BaseDto {
     public void setIsMainProject(String isMainProject) {
         this.isMainProject = isMainProject;
     }
+
+	public String getProjectSurvey() {
+		return projectSurvey;
+	}
+
+	public void setProjectSurvey(String projectSurvey) {
+		this.projectSurvey = projectSurvey;
+	}
+
+	public String getStageEmphasis() {
+		return stageEmphasis;
+	}
+
+	public void setStageEmphasis(String stageEmphasis) {
+		this.stageEmphasis = stageEmphasis;
+	}
+
+	public String getDeclareCount() {
+		return declareCount;
+	}
+
+	public void setDeclareCount(String declareCount) {
+		this.declareCount = declareCount;
+	}
+
+	public String getWorkreviveStage() {
+		return workreviveStage;
+	}
+
+	public void setWorkreviveStage(String workreviveStage) {
+		this.workreviveStage = workreviveStage;
+	}
+	
+    
 }
