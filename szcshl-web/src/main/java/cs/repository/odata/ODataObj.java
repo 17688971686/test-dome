@@ -1,5 +1,16 @@
 package cs.repository.odata;
 
+import cs.common.utils.ObjectUtils;
+import cs.common.utils.StringUtil;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
+
+import javax.servlet.http.HttpServletRequest;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -8,17 +19,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
-import cs.common.utils.ObjectUtils;
-import cs.common.utils.StringUtil;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 
 public class ODataObj {
     private String orderby;
@@ -81,8 +81,8 @@ public class ODataObj {
         BuildObj(filter, orderby, select, skip, top, inlinecount);
     }
 
-    private final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
-            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+((datetime|date)?\\'[^\\']*\\'|\\d+))"),
+    public final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
+            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
             patternField = Pattern.compile(",(.*?)\\)"),
             patternValue = Pattern.compile("'(.*?)'");
 
@@ -157,6 +157,9 @@ public class ODataObj {
                     } else if (value.startsWith("'") && value.endsWith("'")) {// 如果是string
                         oDataFilterItem = new ODataFilterItem<String>();
                         oDataFilterItem.setValue(value.substring(1, value.length() - 1));
+                    } else if (value.startsWith("(") && value.endsWith(")")) {// 如果是string
+                        oDataFilterItem = new ODataFilterItem<String[]>();
+                        oDataFilterItem.setValue(value.substring(1, value.length() - 1).split(","));
                     } else {// 其它为Number
                         oDataFilterItem = new ODataFilterItem<Number>();
 
@@ -206,22 +209,52 @@ public class ODataObj {
                         criteria.add(Restrictions.like(field, "%" + value + "%"));
                         break;
                     case "eq":
-                        criteria.add(Restrictions.eq(field, value));
+                            criteria.add(getCriterions(field, value, new MyRestrictions() {
+                                @Override
+                                public Criterion toRestrictions(String field, Object val) {
+                                    return Restrictions.eq(field, val);
+                                }
+                            }));
                         break;
                     case "ne":
-                        criteria.add(Restrictions.ne(field, value));
+                        criteria.add(getCriterions(field, value, new MyRestrictions() {
+                            @Override
+                            public Criterion toRestrictions(String field, Object val) {
+                                return Restrictions.ne(field, val);
+                            }
+                        }));
                         break;
                     case "gt":
-                        criteria.add(Restrictions.gt(field, value));
+                        criteria.add(getCriterions(field, value, new MyRestrictions() {
+                            @Override
+                            public Criterion toRestrictions(String field, Object val) {
+                                return Restrictions.gt(field, val);
+                            }
+                        }));
                         break;
                     case "ge":
-                        criteria.add(Restrictions.ge(field, value));
+                        criteria.add(getCriterions(field, value, new MyRestrictions() {
+                            @Override
+                            public Criterion toRestrictions(String field, Object val) {
+                                return Restrictions.ge(field, val);
+                            }
+                        }));
                         break;
                     case "lt":
-                        criteria.add(Restrictions.lt(field, value));
+                        criteria.add(getCriterions(field, value, new MyRestrictions() {
+                            @Override
+                            public Criterion toRestrictions(String field, Object val) {
+                                return Restrictions.lt(field, val);
+                            }
+                        }));
                         break;
                     case "le":
-                        criteria.add(Restrictions.le(field, value));
+                        criteria.add(getCriterions(field, value, new MyRestrictions() {
+                            @Override
+                            public Criterion toRestrictions(String field, Object val) {
+                                return Restrictions.le(field, val);
+                            }
+                        }));
                         break;
                     case "ni":    //not in
                         Object[] notInObjValues = splitObj(value, ",");
@@ -258,6 +291,26 @@ public class ODataObj {
         }
         logger.debug("end:buildQuery");
         return criteria;
+    }
+
+    public interface MyRestrictions {
+
+        Criterion toRestrictions(String field, Object value);
+
+    }
+
+    public Criterion getCriterions(String field, Object value, MyRestrictions myRestrictions) {
+        if (value.getClass().isArray()) {
+            Object[] values = (Object[]) value;
+            int i = 0, len = values.length;
+            Criterion[] criterias = new Criterion[len];
+            for (; i < len; i++) {
+                myRestrictions.toRestrictions(field, values[i]);
+            }
+            return Restrictions.or(criterias);
+        } else {
+            return myRestrictions.toRestrictions(field, value);
+        }
     }
 
     private Object[] splitObj(Object value, String splitOperate) {
