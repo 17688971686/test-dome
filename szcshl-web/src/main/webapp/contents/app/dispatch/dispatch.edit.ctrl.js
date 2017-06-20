@@ -3,9 +3,9 @@
 
 	angular.module('app').controller('dispatchEditCtrl', dispatch);
 
-	dispatch.$inject = ['$location', 'dispatchSvc', '$state'];
+	dispatch.$inject = ['$location', 'dispatchSvc', '$state',"$http"];
 
-	function dispatch($location, dispatchSvc, $state) {
+	function dispatch($location, dispatchSvc, $state,$http) {
 		var vm = this;
 		vm.title = '项目发文编辑';
 		vm.isHide = true;
@@ -19,7 +19,7 @@
 		vm.dispatchDoc = {};
 		
 		vm.dispatchDoc.signId = $state.params.signid;
-
+		
 		// 创建发文
 		vm.create = function() {
 			dispatchSvc.saveDispatch(vm);
@@ -36,36 +36,29 @@
 				vm.dispatchDoc.extraValue = dvalue;
 			}
 		}
-
- 	    vm.dispatchUpload =function(){
-        	$("#dispatchUploadWin").kendoWindow({
-                width : "800px",
-                height : "400px",
-                title : "上传附件列表",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-            }).data("kendoWindow").center().open();
+		
+		//上传附件窗口
+ 	    vm.dispatchUpload =function(options){
+ 	    	common.initcommonUploadWin({businessId:vm.dispatchDoc.id});
         }
         
+ 	    //查看上传附件列表
  	    vm.dispatchQuery =function(){
-        	$("#dispatchqueryWin").kendoWindow({
-                width : "800px",
-                height : "400px",
-                title : "查看附件列表",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-            }).data("kendoWindow").center().open();
+ 	    	common.initcommonQueryWin(vm);
+        	vm.sysSignId=vm.dispatchDoc.id;
+        	common.commonSysFilelist(vm,$http);
+        	
         }
 		
-		vm.delDisptSysFile=function(sysFileId){
-			
-			dispatchSvc.delDisptSysFile(vm,sysFileId);
-		}
-		
+ 	   //删除系统文件
+        vm.commonDelSysFile = function(id){
+        	common.commonDelSysFile(vm,id,$http);
+        }
+        //附件下载
+        vm.commonDownloadSysFile = function(id){
+        	common.commonDownloadFile(vm,id);
+        }
+        
 		vm.relateHandle=function(){
 			if(vm.dispatchDoc.isRelated=="是" && !vm.linkSignId){
 				

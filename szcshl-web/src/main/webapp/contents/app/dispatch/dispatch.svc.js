@@ -19,73 +19,10 @@
 			getSeleSignBysId : getSeleSignBysId,
 			deletemerge : deletemerge, // 删除关联信息
 			getRelatedFileNum : getRelatedFileNum, // 获取关联文件字号
-			initDisptUpload : initDisptUpload, // 初始化上传附件
-			delDisptSysFile : delDisptSysFile
-			// 系统文件删除
+		
 		};
 		return service;
 
-		function delDisptSysFile(vm, id) {
-			var httpOptions = {
-				method : 'delete',
-				url : rootPath + "/file/deleteSysFile",
-				data : id
-
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-							vm : vm,
-							response : response,
-							fn : function() {
-								window.parent.$("#dispatchqueryWin")
-										.data("kendoWindow").close();
-								common.alert({
-											vm : vm,
-											msg : "删除成功",
-											fn : function() {
-												$('.alertDialog').modal('hide');
-												$('.modal-backdrop').remove();
-											}
-										})
-							}
-
-						});
-
-			}
-			common.http({
-						vm : vm,
-						$http : $http,
-						httpOptions : httpOptions,
-						success : httpSuccess
-					});
-		}
-		// S_初始化上传附件
-		function initDisptUpload(vm) {
-			var businessId = vm.dispatchDoc.signId;
-			var projectfileoptions = {
-				language : 'zh',
-				allowedPreviewTypes : ['image'],
-				allowedFileExtensions : ['jpg', 'png', 'gif', "xlsx", "docx",
-						"pdf"],
-				maxFileSize : 2000,
-				showRemove : false,
-				uploadUrl : rootPath + "/file/fileUpload",
-				uploadExtraData : {
-					businessId : businessId
-				}
-			};
-			$("#dispatchphotofile").fileinput(projectfileoptions).on(
-					"filebatchselected", function(event, files) {
-
-					}).on("fileuploaded", function(event, data) {
-				$("#dispatchPhotoSrc").removeAttr("src");
-				$("#dispatchPhotoSrc").attr(
-						"src",
-						rootPath + "/sign/transportImg?signid=" + businessId
-								+ "&t=" + Math.random());
-			});
-		}
-		// E 初始化上传附件
 
 		function fileNum(vm) {
 			vm.isSubmit = true;
@@ -201,14 +138,7 @@
 										&& !vm.dispatchDoc.fileNum) {
 									vm.showFileNum = true;
 								}
-								
-								vm.sysfilelist = response.data.sysfilelist;
-								initDisptUpload(vm);
-								$("#dispatchPhotoSrc").attr(
-										"src",
-										rootPath + "/sign/transportImg?signId="
-												+ vm.dispatchDoc.signId + "&t="
-												+ Math.random());
+							
 							}
 						})
 			}

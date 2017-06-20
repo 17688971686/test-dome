@@ -4,6 +4,9 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
+<div class="well well-sm" style="background:white;" >
+<!--  s form -->
+<form id="fileRecord_form" name="fileRecord_form" >	
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
 	 <a  class="btn btn-sm btn-danger" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
@@ -11,13 +14,10 @@
 	<button id="linksbtn" class="btn btn-sm btn-primary"  ng-click="vm.fileRecordJquery()" >查看附件</button> 
 </div>
         
-<div class="well well-sm" style="background:white;" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.reviewstage=='可行性研究报告'">
-	<!--  s form -->
-	<form id="fileRecord_form" name="fileRecord_form" >	
 		<!--  hidden input -->
 		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
 		<!--  s table -->
-		<table class="table table-bordered">
+		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.reviewstage=='可行性研究报告'">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目归档审批表</strong></caption>		 
 		
 		    <tbody>
@@ -356,20 +356,13 @@
 		    </tr>	   
 		  </tbody>			  		  	  
 		</table>	<!--  end table		-->		
-	</form> <!--  end form -->
 	
-</div>
-
+<!-- E 项目建议书/可行性研究 报告-->
  
 <!--S 进口设备项目存档表 -->
 
-<div class="well well-sm" style="background:white;" ng-show="vm.fileRecord.fileReviewstage=='进口设备'" >
-	<!-- s form -->
-	<form id="fileRecord_form" name="fileRecord_form"  >	
-		<!-- hidden input -->
-		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
-		<!-- s table -->
-		<table class="table table-bordered">
+
+		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='进口设备'">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>({{vm.fileRecord.fileReviewstage}})项目存档表</strong></caption>		 
 		
 		    <tbody>
@@ -651,20 +644,13 @@
 		    </tr>	   
 		  </tbody>			  		  	  
 		</table>	<!-- end table -->				
-	</form> <!-- end form -->
 	
-</div>
 
 <!-- E 进口设备存档表 -->
 
 <!-- S 设备清单（国产） 存档表 -->
-<div class="well well-sm" style="background:white;" ng-show="vm.fileRecord.fileReviewstage=='设备清单（国产）'" >
-	<!-- s form -->
-	<form id="fileRecord_form" name="fileRecord_form"  >	
-		<!-- hidden input -->
-		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
-		<!-- s table -->
-		<table class="table table-bordered">
+
+		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='设备清单（国产）'">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>({{vm.fileRecord.fileReviewstage}})项目存档表</strong></caption>		 
 		
 		    <tbody>
@@ -982,20 +968,13 @@
 		    </tr>	   
 		  </tbody>			  		  	  
 		</table>	<!-- end table -->				
-	</form> <!-- end form -->
-	
-</div>
+
 
 <!-- E 设备清单（国产） 存档表 -->
 
 <!-- S 设备清单（进口）  存档表 -->
-<div class="well well-sm" style="background:white;" ng-show="vm.fileRecord.fileReviewstage=='设备清单（进口）'" >
-	<!-- s form -->
-	<form id="fileRecord_form" name="fileRecord_form"  >	
-		<!-- hidden input -->
-		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
 		<!-- s table -->
-		<table class="table table-bordered">
+		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='设备清单（进口）'">
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>({{vm.fileRecord.fileReviewstage}})项目存档表</strong></caption>		 
 		
 		    <tbody>
@@ -1313,9 +1292,10 @@
 		    </tr>	   
 		  </tbody>			  		  	  
 		</table>	<!-- end table -->				
-	</form> <!-- end form -->
+	
+<!-- E 设备清单（进口） 存档表-->
+
+</form> <!--  end form -->
 	
 </div>
-
-<!-- E 设备清单（进口） 存档表-->
 
