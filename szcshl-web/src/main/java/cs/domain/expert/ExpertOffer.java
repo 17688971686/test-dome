@@ -16,8 +16,8 @@ import java.util.Date;
 public class ExpertOffer extends DomainBase {
 
     @Id
-    @GeneratedValue(generator= "plansignGenerator")
-    @GenericGenerator(name= "plansignGenerator",strategy = "uuid")
+    @GeneratedValue(generator= "OfferGenerator")
+    @GenericGenerator(name= "OfferGenerator",strategy = "uuid")
     private String id;
 
     /**

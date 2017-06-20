@@ -1,0 +1,72 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/quartz">定时器配置</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.addQuartz()"><span class="glyphicon glyphicon-plus"></span>新增定时器</button>
+    </div>
+
+    <script type="text/template" id="columnBtns">
+        <@shiro.hasPermission name="quartz##delete">
+        <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="quartz##put">
+        <button class="btn btn-xs btn-primary" href="#/quartzEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        </@shiro.hasPermission>
+    </script>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+
+
+<!-- S_新增定时器弹窗DIV -->
+<div class="well well-sm" style="background:white;display: none;" id="quartz_edit_div">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveQuartz()" ng-disabled="vm.isSubmit"
+                ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-danger" ng-click="vm.colseQuartz()" ng-disabled="vm.isSubmit"
+                ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>关闭
+        </button>
+    </div>
+    <form id="quartz_form" name="form">
+        <table class="table table-bordered">
+            <tr>
+                <td class="formAlignRight" width="20%">定时器名称：<span class="required">*</span></td>
+                <td>
+                    <input class="form-control input-sm " ng-model="vm.model.quartzName" id="quartzName" name="quartzName" style="width:80%;"/>
+                    <span data-valmsg-for="quartzName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" >类名：<span class="required">*</span></td>
+                <td>
+                    <input class="form-control input-sm " ng-model="vm.model.className" id="className" name="className"  style="width:80%;"/>
+                    <span data-valmsg-for="className" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">表达式：<span class="required">*</span></td>
+                <td>
+                    <input class="form-control input-sm " ng-model="vm.model.cronExpression" id="cronExpression" name="cronExpression"  style="width:80%;"/>
+                    <span data-valmsg-for="cronExpression" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">描述：</td>
+                <td>
+                    <input class="form-control input-sm " ng-model="vm.model.descInfo" id="descInfo" name="descInfo"  style="width:80%;"/>
+                    <span data-valmsg-for="descInfo" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!-- E_新增定时器弹窗DIV -->

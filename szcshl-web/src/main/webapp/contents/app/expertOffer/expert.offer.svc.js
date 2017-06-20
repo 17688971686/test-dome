@@ -3,9 +3,9 @@
 
     angular.module('app').factory('expertOfferSvc', expertOffer);
 
-    expertOffer.$inject = ['$http'];
+    expertOffer.$inject = ['$http','expertSvc'];
 
-    function expertOffer($http) {
+    function expertOffer($http,expertSvc) {
         var service = {
             saveOffer: saveOffer,	            //保存专家聘书
 
@@ -28,6 +28,7 @@
                         vm : vm,
                         response : response,
                         fn : function() {
+                            expertSvc.getExpertById(vm);
                             common.alert({
                                 vm : vm,
                                 msg : "操作成功"

@@ -1,0 +1,77 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/quartzList">定时器配置</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/quartz"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit"
+                    ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建
+            </button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
+                    ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
+            </button>
+        </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">quartzName：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.quartzName"
+                           id="quartzName" name="quartzName"  />
+                </td>
+                <td><span data-valmsg-for="quartzName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">className：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.className"
+                           id="className" name="className"  />
+                </td>
+                <td><span data-valmsg-for="className" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">methodName：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.methodName"
+                           id="methodName" name="methodName"  />
+                </td>
+                <td><span data-valmsg-for="methodName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">cronExpression：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.cronExpression"
+                           id="cronExpression" name="cronExpression"  />
+                </td>
+                <td><span data-valmsg-for="cronExpression" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">curState：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.curState"
+                           id="curState" name="curState"  />
+                </td>
+                <td><span data-valmsg-for="curState" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">isEnable：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.isEnable"
+                           id="isEnable" name="isEnable"  />
+                </td>
+                <td><span data-valmsg-for="isEnable" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>

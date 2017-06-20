@@ -338,6 +338,7 @@
                 controllerAs: 'vm'
             })
         	//end#dept
+            //begin#assistUnit
             .state('assistUnit', {
                 url: '/assistUnit',
                 templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
@@ -347,6 +348,14 @@
                 url: '/assistUnitEdit/:id',
                 templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
                 controller: 'assistUnitEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#assistUnit
+            //begin#assistUnit
+            .state('quartz', {
+                url: '/quartz',
+                templateUrl: rootPath + '/quartz/html/list.html',
+                controller: 'quartzCtrl',
                 controllerAs: 'vm'
             })
 

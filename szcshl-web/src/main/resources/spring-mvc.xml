@@ -128,4 +128,8 @@
 	<!-- 开启shiro注解 AOP代理-->
 	<aop:config proxy-target-class="true"/>
 
+
+	<!-- 定时器配置 The quartz scheduler configuration -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"/>
+
 </beans>

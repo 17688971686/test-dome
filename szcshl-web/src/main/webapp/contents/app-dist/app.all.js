@@ -338,6 +338,7 @@
                 controllerAs: 'vm'
             })
         	//end#dept
+            //begin#assistUnit
             .state('assistUnit', {
                 url: '/assistUnit',
                 templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
@@ -347,6 +348,14 @@
                 url: '/assistUnitEdit/:id',
                 templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
                 controller: 'assistUnitEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#assistUnit
+            //begin#assistUnit
+            .state('quartz', {
+                url: '/quartz',
+                templateUrl: rootPath + '/quartz/html/list.html',
+                controller: 'quartzCtrl',
                 controllerAs: 'vm'
             })
 
@@ -515,6 +524,29 @@
 				}
 			});
 			var columns = [
+                {
+                    field: "",
+                    title: "",
+                    width:30,
+                    template:function(item){
+                        /**
+                         * TODO:目前先做样式，具体实现后面再处理
+                         */
+                        if(item.isSuspended && item.isSuspended == '9'){    //暂停
+                            return $('#span1').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-01")){
+                            return $('#span5').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-10")){
+                            return $('#span4').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-15")){
+                            return $('#span3').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-20")){
+                            return $('#span2').html();
+                        }else{
+                            return "";
+                        }
+                    }
+                },
 				 {
                      field: "",
                      title: "序号",
@@ -727,6 +759,29 @@
                 }
             });
             var columns = [
+                {
+                    field: "",
+                    title: "",
+                    width:30,
+                    template:function(item){
+                        /**
+                         * TODO:目前先做样式，具体实现后面再处理
+                         */
+                        if(item.isSuspended && item.isSuspended == '9'){    //暂停
+                            return $('#span1').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-01")){
+                            return $('#span5').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-10")){
+                            return $('#span4').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-15")){
+                            return $('#span3').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-20")){
+                            return $('#span2').html();
+                        }else{
+                            return "";
+                        }
+                    }
+                },
                 {
                     field: "",
                     title: "序号",
@@ -2382,12 +2437,11 @@
 	}
 	// E 初始化上传附件窗口
 
-	// initUpload({businessId:vm.work.id});
 
 	// S 初始化上传附件控件
 	function initUpload(options) {
 		var businessId = options.businessId;
-
+		
 		var projectfileoptions = {
 			language : 'zh',
 			allowedPreviewTypes : [ 'image' ],
@@ -5677,55 +5731,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('expertOfferSvc', expertOffer);
-
-    expertOffer.$inject = ['$http'];
-
-    function expertOffer($http) {
-        var service = {
-            saveOffer: saveOffer,	            //保存专家聘书
-
-        };
-        return service;
-
-        //S_saveOffer
-        function saveOffer(vm) {
-            common.initJqValidation($("#expert_offer_form"));
-            var isValid = $('#expert_offer_form').valid();
-            if (isValid) {
-                vm.expertOffer.expertId = vm.model.expertID
-                var httpOptions = {
-                    method : 'post',
-                    url : rootPath + "/expertOffer",
-                    data : vm.expertOffer
-                }
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm : vm,
-                        response : response,
-                        fn : function() {
-                            common.alert({
-                                vm : vm,
-                                msg : "操作成功"
-                            })
-                        }
-
-                    });
-                }
-                common.http({
-                    vm : vm,
-                    $http : $http,
-                    httpOptions : httpOptions,
-                    success : httpSuccess
-                });
-            }
-        }//E_saveOffer
-
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').controller('expertAuditCtrl', expert);
 
     expert.$inject = ['$location', 'expertSvc'];
@@ -6059,16 +6064,16 @@
 			grid : grid,						//初始化综合查询grid
 			auditGrid : auditGrid,				//初始化审核页面的所有grid
 			getExpertById : getExpertById,		//通过ID查询专家信息详情
-			createExpert : createExpert,
-			deleteExpert : deleteExpert,
-			updateExpert : updateExpert,
-			searchMuti : searchMuti,		//综合查询
-			searchAudit : searchAudit,		//审核查询
-			repeatGrid : repeatGrid,		//重复专家查询
-			updateAudit : updateAudit,		//专家评审
-			toAudit : toAudit,				//由个状态回到审核状态
-			auditTo : auditTo,				//由审核状态去到各个状态
-            initUpload : initUpload        //初始化附件上传
+			createExpert : createExpert,        //创建专家信息
+			deleteExpert : deleteExpert,        //删除专家信息
+			updateExpert : updateExpert,        //更新专辑信息
+			searchMuti : searchMuti,		    //综合查询
+			searchAudit : searchAudit,		    //审核查询
+			repeatGrid : repeatGrid,		    //重复专家查询
+			updateAudit : updateAudit,		    //专家评审
+			toAudit : toAudit,				    //由个状态回到审核状态
+			auditTo : auditTo,				    //由审核状态去到各个状态
+            initUpload : initUpload             //初始化附件上传
 		};
 		return service;				
 		
@@ -7312,6 +7317,56 @@
 		}
 	}
 
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').factory('expertOfferSvc', expertOffer);
+
+    expertOffer.$inject = ['$http','expertSvc'];
+
+    function expertOffer($http,expertSvc) {
+        var service = {
+            saveOffer: saveOffer,	            //保存专家聘书
+
+        };
+        return service;
+
+        //S_saveOffer
+        function saveOffer(vm) {
+            common.initJqValidation($("#expert_offer_form"));
+            var isValid = $('#expert_offer_form').valid();
+            if (isValid) {
+                vm.expertOffer.expertId = vm.model.expertID
+                var httpOptions = {
+                    method : 'post',
+                    url : rootPath + "/expertOffer",
+                    data : vm.expertOffer
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm : vm,
+                        response : response,
+                        fn : function() {
+                            expertSvc.getExpertById(vm);
+                            common.alert({
+                                vm : vm,
+                                msg : "操作成功"
+                            })
+                        }
+
+                    });
+                }
+                common.http({
+                    vm : vm,
+                    $http : $http,
+                    httpOptions : httpOptions,
+                    success : httpSuccess
+                });
+            }
+        }//E_saveOffer
+
+    }
 })();
 (function () {
     'use strict';
@@ -8566,8 +8621,8 @@
         $("input").click(function(){
         	
         })
+        
         //文件下载
-        	
         vm.commonDownloadSysFile = function(id){
         	common.commonDownloadFile(vm,id);
         }
@@ -11515,6 +11570,366 @@
 	
 	
 	
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('quartzCtrl', quartz);
+
+    quartz.$inject = ['$location', 'quartzSvc'];
+
+    function quartz($location, quartzSvc) {
+        var vm = this;
+        vm.title = '定时器配置';
+
+        activate();
+        function activate() {
+            quartzSvc.grid(vm);
+        }
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    quartzSvc.deleteQuartz(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        //新增定时器
+        vm.addQuartz = function () {
+            $("#quartz_edit_div").kendoWindow({
+                width : "600px",
+                height : "400px",
+                title : "定时器编辑",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+
+        //关闭弹窗
+        vm.colseQuartz = function(){
+            window.parent.$("#quartz_edit_div").data("kendoWindow").close();
+        }
+
+        //保存定时器
+        vm.saveQuartz = function(){
+            quartzSvc.saveQuartz(vm);
+        }
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('quartzEditCtrl', quartz);
+
+    quartz.$inject = ['$location', 'quartzSvc', '$state'];
+
+    function quartz($location, quartzSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加定时器配置';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新定时器配置';
+        }
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                quartzSvc.getQuartzById(vm);
+            }
+        }
+
+        vm.create = function () {
+            quartzSvc.createQuartz(vm);
+        };
+        vm.update = function () {
+            quartzSvc.updateQuartz(vm);
+        };
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('quartzSvc', quartz);
+
+    quartz.$inject = ['$http'];
+
+    function quartz($http) {
+        var url_quartz = rootPath + "/quartz", url_back = '#/quartzList';
+        var service = {
+            grid: grid,
+            getQuartzById: getQuartzById,
+            saveQuartz: saveQuartz,
+            deleteQuartz: deleteQuartz,
+            updateQuartz: updateQuartz
+        };
+
+        return service;
+
+        // begin#updateQuartz
+        function updateQuartz(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_quartz,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteQuartz
+        function deleteQuartz(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_quartz,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog: true,
+                            fn: function () {
+                                vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createQuartz
+        function saveQuartz(vm) {
+            common.initJqValidation($("#quartz_form"));
+            var isValid = $("#quartz_form").valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/quartz",
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog: true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    grid(vm);
+                                }
+                            });
+                        }
+                    });
+                };
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getQuartzById
+        function getQuartzById(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/quartz/html/findById",
+                params: {id: vm.id}
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#grid
+        function grid(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/quartz/findByOData"),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "quartzName",
+                    title: "定时器名称",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "className",
+                    title: "类名",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "cronExpression",
+                    title: "表达式",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "curState",
+                    title: "执行状态",
+                    width: 80,
+                    filterable: true
+                },
+                {
+                    field: "isEnable",
+                    title: "是否可用",
+                    width: 80,
+                    filterable: true
+                },
+                {
+                    field: "descInfo",
+                    title: "描述",
+                    width: 180,
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.id + "')", item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+        }// end fun grid
+
+    }
 })();
 (function () {
     'use strict';
@@ -15526,7 +15941,7 @@
         }
         //合并评审
         vm.reviewType = function(){
-       	if(vm.work.isSigle=="1"){
+       	if(vm.work.isSigle=="单个评审"){
       		var isHideProject=false;
        	}
         if(vm.work.isSigle == vm.work.isMainProject){

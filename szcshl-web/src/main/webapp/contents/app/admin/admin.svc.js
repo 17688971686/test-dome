@@ -48,6 +48,29 @@
 				}
 			});
 			var columns = [
+                {
+                    field: "",
+                    title: "",
+                    width:30,
+                    template:function(item){
+                        /**
+                         * TODO:目前先做样式，具体实现后面再处理
+                         */
+                        if(item.isSuspended && item.isSuspended == '9'){    //暂停
+                            return $('#span1').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-01")){
+                            return $('#span5').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-10")){
+                            return $('#span4').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-15")){
+                            return $('#span3').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-20")){
+                            return $('#span2').html();
+                        }else{
+                            return "";
+                        }
+                    }
+                },
 				 {
                      field: "",
                      title: "序号",
@@ -260,6 +283,29 @@
                 }
             });
             var columns = [
+                {
+                    field: "",
+                    title: "",
+                    width:30,
+                    template:function(item){
+                        /**
+                         * TODO:目前先做样式，具体实现后面再处理
+                         */
+                        if(item.isSuspended && item.isSuspended == '9'){    //暂停
+                            return $('#span1').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-01")){
+                            return $('#span5').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-10")){
+                            return $('#span4').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-15")){
+                            return $('#span3').html();
+                        }else if(new Date(item.createDate) < new Date("2017-06-20")){
+                            return $('#span2').html();
+                        }else{
+                            return "";
+                        }
+                    }
+                },
                 {
                     field: "",
                     title: "序号",
