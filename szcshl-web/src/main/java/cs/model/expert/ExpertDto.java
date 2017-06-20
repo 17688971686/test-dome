@@ -54,6 +54,8 @@ public class ExpertDto extends BaseDto {
     
     private List<ExpertTypeDto> expertTypeDtoList;
 
+    private List<ExpertOfferDto> expertOfferDtoList;    //专家聘书
+
     public String getIdCard() {
         return idCard;
     }
@@ -310,6 +312,12 @@ public class ExpertDto extends BaseDto {
 	public void setExpertTypeDtoList(List<ExpertTypeDto> expertTypeDtoList) {
 		this.expertTypeDtoList = expertTypeDtoList;
 	}
-	
-	
+
+    public List<ExpertOfferDto> getExpertOfferDtoList() {
+        return expertOfferDtoList;
+    }
+
+    public void setExpertOfferDtoList(List<ExpertOfferDto> expertOfferDtoList) {
+        this.expertOfferDtoList = expertOfferDtoList;
+    }
 }

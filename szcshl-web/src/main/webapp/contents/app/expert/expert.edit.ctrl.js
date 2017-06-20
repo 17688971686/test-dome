@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertEditCtrl', expert);
 
-    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','$state']; 
+    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','expertOfferSvc','$state'];
 
-    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,$state) {
+    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,expertOfferSvc,$state) {
         var vm = this;
         vm.model = {};
         vm.title = '专家信息录入';
@@ -13,6 +13,9 @@
         vm.isHide=true;
         vm.isUpdate=false;
         vm.expertID = $state.params.expertID;
+        vm.expertOfferList = {};    //专家聘书列表
+        vm.expertOffer = {};        //专家聘书
+
         activice();
         function activice(){
             if (vm.expertID) {
@@ -143,5 +146,46 @@
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
         }
+
+        //专家聘书弹窗
+        vm.gotoOfferPage = function(){
+            $("#ep_offer_div").kendoWindow({
+                width : "800px",
+                height : "600px",
+                title : "专家聘书",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+
+        //保存聘书信息
+        vm.saveOffer = function () {
+            if(vm.model.expertID){
+                expertOfferSvc.saveOffer(vm);
+            }else{
+                common.alert({
+                    vm : vm,
+                    msg : "先保存专家信息！"
+                })
+            }
+        }
+        //关闭窗口信息
+        vm.closeOffer=function(){
+            window.parent.$("#ep_offer_div").data("kendoWindow").close();
+        }
+        //查看专家聘书
+        vm.showOffer = function(id){
+            vm.expertOffer = {};        //专家聘书
+            vm.expertOfferList.forEach(function(o,index){
+                if(o.id == id){
+                   vm.expertOffer = o;
+                   return ;
+               }
+            });
+            vm.gotoOfferPage();
+        }
+
     }
 })();

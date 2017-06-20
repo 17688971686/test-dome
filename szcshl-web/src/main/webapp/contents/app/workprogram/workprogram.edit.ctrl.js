@@ -119,7 +119,6 @@
         vm.addTimeStage = function(){
             //如果已经预定了会议室，则显示
             if(vm.isRoomBook){
-            	console.log($("#stageWindow"));
                 $("#stageWindow").kendoWindow({
                     width : "660px",
                     height : "550px",

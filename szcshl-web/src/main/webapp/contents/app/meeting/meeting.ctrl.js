@@ -27,14 +27,22 @@
         	meetingSvc.roomUseState(vm);
         	//vm.isUse=false;
         }
-        
+
+        //停用会议室
         vm.stoped=function(id){
-        	vm.model.id=id;
-        	vm.model.mrStatus="2";
-        	meetingSvc.roomUseState(vm);
-        	//vm.isUse=true;
-        	
+            common.confirm({
+                vm:vm,
+                title:"",
+                msg:"确定停用会议室么？",
+                fn:function () {
+                    $('.confirmDialog').modal('hide');
+                    vm.model.id=id;
+                    vm.model.mrStatus="0";
+                    meetingSvc.roomUseState(vm);;
+                }
+            })
         }
+
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {

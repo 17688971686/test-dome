@@ -13,9 +13,10 @@
     	<a class="btn btn-sm btn-primary" ui-sref="expertEdit({id:null})"><span class="glyphicon glyphicon-plus"></span>新增</a> 
 	    <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
 		<button class="btn btn-sm btn-primary" ng-click="formReset()" >重置</button>
-		<@shiro.hasPermission name="expert##delete">           
-  	 		<button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-		</@shiro.hasPermission> 		
+		<!--
+		 	隐藏批量删除
+			<button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit" ng-hide="true"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
+		-->
 	</div>
 	<ol class="breadcrumb"> 
 	<form id="searchform" name="searchform">

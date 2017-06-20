@@ -10,9 +10,10 @@
 	<div class="toolbar">
     	<button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit"  ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>新增专家信息</button>
         <button class="btn btn-sm btn-success" ng-click="vm.update()"  ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更改专家信息</button>
-		<button class="btn btn-sm btn-success" ng-click="vm.gotoWPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加工作经验</button>
+		<button class="btn btn-sm btn-success" ng-click="vm.gotoWPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加工作简历</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.gotoJPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加项目经验</button>
-	</div>
+        <button class="btn btn-sm btn-success" ng-click="vm.gotoOfferPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt" ><span class="glyphicon glyphicon-ok"></span>添加专家聘书</button>
+    </div>
 	<p class="pro_title_1" style="margin:10px;margin-left:0px;">专家信息</p>
 	<h2 style="text-align: center; width:595px;margin: auto;">深圳市政府投资项目评审中心</h2>
 	<h4 style="text-align: center; width:595px;margin:10px auto;">专家信息录入表</h4>
@@ -88,26 +89,17 @@
 		</tr>
 		<tr>
 			<td class="formAlignRight">工作单位<span class="required">*</span></td>
-			<td >
+			<td colspan="3">
 				<input type="text" name="comPany" id="comPany" class="form-control input-sm " ng-model="vm.model.comPany"  data-val="true" data-val-required="必填"> 
 				 <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
 			</td>	 				 
-			<td class="formAlignRight" >现任职位<span class="required">*</span></td>
+			<td class="formAlignRight" >现任职务<span class="required">*</span></td>
 			<td>
 				<select ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true" data-val-required="必填">
 					<option value="">请选择</option>
 					<option ng-repeat="x in DICT.JOY.dicts" ng-selected="vm.model.job == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 				<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
-			</td>
-			
-			<td class="formAlignRight">职称<span class="required">*</span></td>
-			<td>
-				<select ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true" data-val-required="必填">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.POST.dicts" ng-selected="vm.model.post == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select>
-				<span data-valmsg-for="post" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
 		<tr>
@@ -118,7 +110,11 @@
 				 data-val-regex="手机号码格式不正确" data-val-regex-pattern="1[34578]\d{9}"  class="form-control input-sm "> 
 				<span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
 			</td>
-			
+            <td class="formAlignRight">职称<span class="required">*</span></td>
+            <td>
+                <input ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="post" data-valmsg-replace="true" class="errors"></span>
+            </td>
 			<td class="formAlignRight">电子邮箱</td>
 			<td>
 				<input type="text" name="email" id="email" class="form-control input-sm "  ng-model="vm.model.email"  data-val="true" data-val-email="必须为Email格式" > 
@@ -130,18 +126,17 @@
 				data-val="true"  data-val-regex="手办公电话格式不正确" data-val-regex-pattern="(0[0-9]{2,3}/-)?([2-9][0-9]{6,7})+(/-[0-9]{1,4})?">  
 				<span data-valmsg-for="phone" data-valmsg-replace="true" class="errors"></span> 
 			</td>
-			<td class="formAlignRight" width="60">传真</td>
-			<td>
-				<input type="text" name="fax" id="fax" class="form-control input-sm " ng-model="vm.model.fax" ng-maxlength="20" data-val="true" >
-				 <span data-valmsg-for="fax" data-valmsg-replace="true" class="errors" ></span> 
-			</td>
-			
 		</tr>
 		<tr>
 			<td class="formAlignRight">通讯地址</td>
-			<td colspan="5">
+			<td colspan="3">
 				<input type="text" name="addRess" id="addRess" class="form-control input-sm " ng-model="vm.model.addRess" data-val="true" > 
 				<span data-valmsg-for="addRess" data-valmsg-replace="true" class="errors"></span> 			
+			</td>
+			<td class="formAlignRight" width="60">传真</td>
+			<td>
+				<input type="text" name="fax" id="fax" class="form-control input-sm " ng-model="vm.model.fax" ng-maxlength="20" data-val="true" >
+				<span data-valmsg-for="fax" data-valmsg-replace="true" class="errors" ></span>
 			</td>
 			<td class="formAlignRight">邮编</td>
 			<td>
@@ -203,13 +198,13 @@
 	 	<button class="btn btn-sm btn-success" ng-click="vm.updateWorkPage()" ><span class="glyphicon glyphicon-ok"></span>更新</button>
 	 	<button class="btn btn-sm btn-success" ng-click="vm.deleteWork()" ><span class="glyphicon glyphicon-ok"></span>删除</button>		
 	</div>	
-	<p class="pro_title_1" style="margin:10px;margin-left:0px;">工作经历</p>		
+	<p class="pro_title_1" style="margin:10px;margin-left:0px;">工作简历</p>
 	<table class="table table-bordered" id="workTab">
 	  	<tr>
-		  	<td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="workChecked" id="workChecked"/> </td>
+		  	<td style="width: 60px;" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork" name="workChecked" id="workChecked"/> </td>
 		    <td width="10%" align="center" bgcolor="#eeeeee">开始时间</td>
 		    <td width="10%" align="center" bgcolor="#eeeeee">结束时间</td>
-		    <td width="20%" align="center" bgcolor="#eeeeee">工作单位</td>
+		    <td align="center" bgcolor="#eeeeee">工作单位</td>
 		    <td width="20%" align="center" bgcolor="#eeeeee">职务</td>
 		</tr>	
 		<tr ng-repeat="x in vm.work">
@@ -232,10 +227,10 @@
  	<p class="pro_title_1" style="margin:10px;margin-left: 0px;">项目经验</p>
 	<table class="table table-bordered">
 	  <tr>
-	  	<td width="10%" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addProject" name="pjallChecked" id="pjallChecked"/> </td>
+	  	<td style="width: 60px;" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addProject" name="pjallChecked" id="pjallChecked"/> </td>
 	    <td width="10%" align="center" bgcolor="#eeeeee">开始时间</td>
 	    <td width="10%" align="center" bgcolor="#eeeeee">结束时间</td>
-	    <td width="20%" align="center" bgcolor="#eeeeee">项目名称</td>
+	    <td align="center" bgcolor="#eeeeee">项目名称</td>
 	    <td width="20%" align="center" bgcolor="#eeeeee">项目类别</td>
 	    </tr>
 	  <tr ng-repeat="x in vm.project">
@@ -248,7 +243,38 @@
 	</table>
 	</div>
 	<!-- E 项目经历DIV -->
-	
+
+    <!-- S 专家聘书DIV -->
+    <div ng-show="vm.showExpertOffer">
+        <p class="pro_title_1" style="margin:10px;margin-left:0px;">聘书列表</p>
+        <table class="table table-bordered" id="offerTab">
+            <tr>
+                <td style="width: 60px;" align="center" bgcolor="#eeeeee">序号</td>
+                <td width="12%" align="center" bgcolor="#eeeeee">是否发证</td>
+                <td width="12%" align="center" bgcolor="#eeeeee">发证日期</td>
+                <td width="12%" align="center" bgcolor="#eeeeee">有效期</td>
+                <td width="12%" align="center" bgcolor="#eeeeee">有效期至</td>
+                <td width="12%" align="center" bgcolor="#eeeeee">是否作废</td>
+                <td align="center" bgcolor="#eeeeee">备注</td>
+                <td style="width: 80px;" align="center" bgcolor="#eeeeee">操作</td>
+            </tr>
+            <tr ng-repeat="o in vm.expertOfferList">
+                <td style="text-align: center;">{{$index + 1}}</td>
+                <td style="text-align: center;">{{ o.isSendCcie == 9?'是':'否'}}</td>
+                <td style="text-align: center;">{{ o.sendCcieDate }}</td>
+                <td style="text-align: center;">{{ o.period }}</td>
+                <td style="text-align: center;">{{ o.periodDate }}</td>
+                <td style="text-align: center;">{{ o.isInvalid == 9?'是':'否'}}</td>
+                <td style="text-align: center;">{{ o.descInfo }}</td>
+                <td style="text-align: center;">
+                    <button class="btn btn-xs btn-default" ng-click="vm.showOffer(o.id)" ng-disabled="vm.isSubmit">查看</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- E 专家聘书DIV -->
+
+    <!-- 以下我弹窗部分div-->
 	<!-- S 工作经历弹窗 -->
 	<div id="wrwindow" class="well well-sm" style="background:white;display:none;">
     <form id="workForm" name="workForm">
@@ -381,6 +407,117 @@
 		<div style="text-align: center;">
 			<button class="btn btn-sm btn-success" ng-click="vm.saveChooleMajor(vm.index)">确定</button>
 		</div>
-	
 	</div>
+
+
+    <!--   S_专家聘书 div   -->
+    <div id="ep_offer_div" class="well well-sm" style="background:white;display:none;">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveOffer()" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-danger" ng-click="vm.closeOffer()" ><span class="glyphicon glyphicon-ok"></span>关闭</button>
+        </div>
+
+        <form id="expert_offer_form">
+        <table class="table table-bordered">
+            <caption class="text-center"><strong><h3>深圳市政府投资项目评审专家聘书</h3></strong></caption>
+            <tr>
+                <td class="formAlignRight" width="10%">姓名 <span class="required">*</span></td>
+                <td width="15%">
+                    {{vm.model.name}}
+                </td>
+
+                <td class="formAlignRight" width="10%">性别<span class="required">*</span></td>
+                <td width="15%">
+					{{vm.model.sex}}
+                </td>
+
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">出生年月<span class="required">*</span></td>
+                <td width="15%">
+					{{vm.model.birthDay}}
+                </td>
+
+                <td class="formAlignRight" width="10%">身份证号<span class="required">*</span></td>
+                <td width="15%">
+					{{vm.model.idCard}}
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">学历<span class="required">*</span></td>
+                <td width="15%">
+					{{vm.model.qualifiCations}}
+                </td>
+
+                <td class="formAlignRight" width="10%">职称<span class="required">*</span></td>
+                <td width="15%">
+					{{vm.model.post}}
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">发证日期<span class="required">*</span></td>
+                <td width="15%">
+					<input type="text" name="sendCcieDate" id="sendCcieDate" style="width: 100%;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+						   ng-model="vm.expertOffer.sendCcieDate" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+					<span data-valmsg-for="sendCcieDate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+
+                <td class="formAlignRight" width="10%">有效期<span class="required">*</span></td>
+                <td width="15%">
+					<select nam="period" ng-model="vm.expertOffer.period" id="period">
+                        <option value="">请选择</option>
+						<option value="一年">一年</option>
+						<option value="二年">二年</option>
+						<option value="三年">三年</option>
+						<option value="四年">四年</option>
+						<option value="五年">五年</option>
+					</select>
+                    <span data-valmsg-for="period" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">档案编号<span class="required">*</span></td>
+                <td width="15%">
+					{{vm.model.expertNo}}
+                </td>
+
+                <td class="formAlignRight" width="10%">有效期至<span class="required">*</span></td>
+                <td width="15%">
+					<input type="text" name="periodDate" id="periodDate" style="width: 100%;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+						   ng-model="vm.expertOffer.periodDate" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+					<span data-valmsg-for="periodDate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">是否发证<span class="required">*</span></td>
+                <td width="15%">
+                    <label class="checkbox-inline">
+                        <input type="radio" name="isSendCcie"  ng-model="vm.expertOffer.isSendCcie" value="9" checked>是
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" name="isSendCcie" ng-model="vm.expertOffer.isSendCcie" value="0">否
+                    </label>
+                </td>
+
+                <td class="formAlignRight" width="10%">是否作废<span class="required">*</span></td>
+                <td width="15%">
+                    <label class="checkbox-inline">
+                        <input type="radio" name="isInvalid"  ng-model="vm.expertOffer.isInvalid" value="9" checked>是
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" name="isInvalid" ng-model="vm.expertOffer.isInvalid" value="0">否
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">备注<span class="required">*</span></td>
+                <td width="15%" colspan="3">
+                    <textarea rows="3" cols="80" name="descInfo" id="descInfo" ng-model="vm.expertOffer.descInfo" data-val="true" data-val-length-max="256" data-val-length="不能超过256个字">{{vm.expertOffer.descInfo}}</textarea>
+                    <span data-valmsg-for="descInfo" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+        </table>
+        </form>
+    </div>
+    <!--   E_专家聘书 div   -->
 </div>
