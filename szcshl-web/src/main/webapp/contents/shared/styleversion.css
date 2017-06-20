@@ -20,7 +20,7 @@ table{
     font-size:14px;
 }
 table div{
-    width:100%;
+   /* width:100%;*/
     font-size:14px;
 }
 a{
@@ -88,10 +88,10 @@ input,textarea{ outline:none;}
     padding-left: 15px;
 }
 .main-header .sidebar-toggle {
-	margin-left: -49px;
+	margin-left: -41px;
     position: fixed;
-    top: 50px;
-    padding: 15px 19px;
+    top: 55px;
+    padding: 10px 15px;
 }
 
 /* 表格 */
@@ -115,7 +115,6 @@ input,textarea{ outline:none;}
     background-image: none,linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%); 
     background-position: 50% 50%;
     background-color: #00A0E9;
-    border-color: #FFFFFF;
     color:#fff;.
 }
 
@@ -152,7 +151,6 @@ input,textarea{ outline:none;}
 }
 
 .k-i-close,.k-i-arrow-e,.k-i-seek-e,.k-i-arrow-w,.k-i-seek-w{
-	
 	background-image: url('../libs/kendoui/BlueOpal/sprite.png');
 }
 .k-header{
@@ -260,14 +258,12 @@ input,textarea{ outline:none;}
     color: #666;
 }
 
-.well-box span.k-timepicker,.well-box span.k-datepicker,.conttent_list .form-control.k-widget {
-    padding: 0;
-    border: 1px solid #ccc;
-}
-
 /* 表单结束 */
 
-
+/*提示框优先*/
+.modal {
+    z-index: 20000;
+}
 /* audit */
 .btn_add{
 	background: #00A0E9;
