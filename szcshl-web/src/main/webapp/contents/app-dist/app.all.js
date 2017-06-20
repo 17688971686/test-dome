@@ -5052,9 +5052,9 @@
 
 	angular.module('app').controller('dispatchEditCtrl', dispatch);
 
-	dispatch.$inject = ['$location', 'dispatchSvc', '$state'];
+	dispatch.$inject = ['$location', 'dispatchSvc', '$state',"$http"];
 
-	function dispatch($location, dispatchSvc, $state) {
+	function dispatch($location, dispatchSvc, $state,$http) {
 		var vm = this;
 		vm.title = '项目发文编辑';
 		vm.isHide = true;
@@ -5068,7 +5068,7 @@
 		vm.dispatchDoc = {};
 		
 		vm.dispatchDoc.signId = $state.params.signid;
-
+		
 		// 创建发文
 		vm.create = function() {
 			dispatchSvc.saveDispatch(vm);
@@ -5085,36 +5085,29 @@
 				vm.dispatchDoc.extraValue = dvalue;
 			}
 		}
-
- 	    vm.dispatchUpload =function(){
-        	$("#dispatchUploadWin").kendoWindow({
-                width : "800px",
-                height : "400px",
-                title : "上传附件列表",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-            }).data("kendoWindow").center().open();
+		
+		//上传附件窗口
+ 	    vm.dispatchUpload =function(options){
+ 	    	common.initcommonUploadWin({businessId:vm.dispatchDoc.id});
         }
         
+ 	    //查看上传附件列表
  	    vm.dispatchQuery =function(){
-        	$("#dispatchqueryWin").kendoWindow({
-                width : "800px",
-                height : "400px",
-                title : "查看附件列表",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-            }).data("kendoWindow").center().open();
+ 	    	common.initcommonQueryWin(vm);
+        	vm.sysSignId=vm.dispatchDoc.id;
+        	common.commonSysFilelist(vm,$http);
+        	
         }
 		
-		vm.delDisptSysFile=function(sysFileId){
-			
-			dispatchSvc.delDisptSysFile(vm,sysFileId);
-		}
-		
+ 	   //删除系统文件
+        vm.commonDelSysFile = function(id){
+        	common.commonDelSysFile(vm,id,$http);
+        }
+        //附件下载
+        vm.commonDownloadSysFile = function(id){
+        	common.commonDownloadFile(vm,id);
+        }
+        
 		vm.relateHandle=function(){
 			if(vm.dispatchDoc.isRelated=="是" && !vm.linkSignId){
 				
@@ -5246,73 +5239,10 @@
 			getSeleSignBysId : getSeleSignBysId,
 			deletemerge : deletemerge, // 删除关联信息
 			getRelatedFileNum : getRelatedFileNum, // 获取关联文件字号
-			initDisptUpload : initDisptUpload, // 初始化上传附件
-			delDisptSysFile : delDisptSysFile
-			// 系统文件删除
+		
 		};
 		return service;
 
-		function delDisptSysFile(vm, id) {
-			var httpOptions = {
-				method : 'delete',
-				url : rootPath + "/file/deleteSysFile",
-				data : id
-
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-							vm : vm,
-							response : response,
-							fn : function() {
-								window.parent.$("#dispatchqueryWin")
-										.data("kendoWindow").close();
-								common.alert({
-											vm : vm,
-											msg : "删除成功",
-											fn : function() {
-												$('.alertDialog').modal('hide');
-												$('.modal-backdrop').remove();
-											}
-										})
-							}
-
-						});
-
-			}
-			common.http({
-						vm : vm,
-						$http : $http,
-						httpOptions : httpOptions,
-						success : httpSuccess
-					});
-		}
-		// S_初始化上传附件
-		function initDisptUpload(vm) {
-			var businessId = vm.dispatchDoc.signId;
-			var projectfileoptions = {
-				language : 'zh',
-				allowedPreviewTypes : ['image'],
-				allowedFileExtensions : ['jpg', 'png', 'gif', "xlsx", "docx",
-						"pdf"],
-				maxFileSize : 2000,
-				showRemove : false,
-				uploadUrl : rootPath + "/file/fileUpload",
-				uploadExtraData : {
-					businessId : businessId
-				}
-			};
-			$("#dispatchphotofile").fileinput(projectfileoptions).on(
-					"filebatchselected", function(event, files) {
-
-					}).on("fileuploaded", function(event, data) {
-				$("#dispatchPhotoSrc").removeAttr("src");
-				$("#dispatchPhotoSrc").attr(
-						"src",
-						rootPath + "/sign/transportImg?signid=" + businessId
-								+ "&t=" + Math.random());
-			});
-		}
-		// E 初始化上传附件
 
 		function fileNum(vm) {
 			vm.isSubmit = true;
@@ -5428,14 +5358,7 @@
 										&& !vm.dispatchDoc.fileNum) {
 									vm.showFileNum = true;
 								}
-								
-								vm.sysfilelist = response.data.sysfilelist;
-								initDisptUpload(vm);
-								$("#dispatchPhotoSrc").attr(
-										"src",
-										rootPath + "/sign/transportImg?signId="
-												+ vm.dispatchDoc.signId + "&t="
-												+ Math.random());
+							
 							}
 						})
 			}
@@ -9644,6 +9567,330 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('myTestCtrl', myTest);
+
+    myTest.$inject = ['$location', 'myTestSvc'];
+
+    function myTest($location, myTestSvc) {
+        var vm = this;
+        vm.title = 'My test';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    myTestSvc.deleteMytest(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        activate();
+        function activate() {
+            myTestSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('myTestEditCtrl', myTest);
+
+    myTest.$inject = ['$location', 'myTestSvc', '$state'];
+
+    function myTest($location, myTestSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加My test';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新My test';
+        }
+
+        vm.create = function () {
+            myTestSvc.createMyTest(vm);
+        };
+        vm.update = function () {
+            myTestSvc.updateMyTest(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                myTestSvc.getMyTestById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('myTestSvc', myTest);
+
+    myTest.$inject = ['$http'];
+
+    function myTest($http) {
+        var url_myTest = rootPath + "/myTest", url_back = '#/myTest';
+        var service = {
+            grid: grid,
+            getMyTestById: getMyTestById,
+            createMyTest: createMyTest,
+            deleteMyTest: deleteMyTest,
+            updateMyTest: updateMyTest
+        };
+
+        return service;
+
+        // begin#updateMyTest
+        function updateMyTest(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_myTest,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteMyTest
+        function deleteMyTest(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_myTest,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.isSubmit = false;
+                        vm.gridOptions.dataSource.read();
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createMyTest
+        function createMyTest(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_myTest,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getMyTestById
+        function getMyTestById(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: common.format(url_myTest + "?$filter=id eq '{0}'", vm.id)
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data.value[0];
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#grid
+        function grid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_myTest),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "id",
+                    title: "id",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "testName",
+                    title: "测试名",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "test01",
+                    title: "测试01",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "test02",
+                    title: "测试02",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.id + "')", item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }// end fun grid
+
+    }
+})();
+(function () {
+    'use strict';
+
     angular.module('app').controller('meetingCtrl', meeting);
 
     meeting.$inject = ['$location','meetingSvc']; 
@@ -10088,330 +10335,6 @@
             };
         }// end fun grid
 
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('myTestCtrl', myTest);
-
-    myTest.$inject = ['$location', 'myTestSvc'];
-
-    function myTest($location, myTestSvc) {
-        var vm = this;
-        vm.title = 'My test';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    myTestSvc.deleteMytest(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
-        activate();
-        function activate() {
-            myTestSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('myTestEditCtrl', myTest);
-
-    myTest.$inject = ['$location', 'myTestSvc', '$state'];
-
-    function myTest($location, myTestSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加My test';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新My test';
-        }
-
-        vm.create = function () {
-            myTestSvc.createMyTest(vm);
-        };
-        vm.update = function () {
-            myTestSvc.updateMyTest(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                myTestSvc.getMyTestById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('myTestSvc', myTest);
-
-    myTest.$inject = ['$http'];
-
-    function myTest($http) {
-        var url_myTest = rootPath + "/myTest", url_back = '#/myTest';
-        var service = {
-            grid: grid,
-            getMyTestById: getMyTestById,
-            createMyTest: createMyTest,
-            deleteMyTest: deleteMyTest,
-            updateMyTest: updateMyTest
-        };
-
-        return service;
-
-        // begin#updateMyTest
-        function updateMyTest(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_myTest,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deleteMyTest
-        function deleteMyTest(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_myTest,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isSubmit = false;
-                        vm.gridOptions.dataSource.read();
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createMyTest
-        function createMyTest(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_myTest,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getMyTestById
-        function getMyTestById(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: common.format(url_myTest + "?$filter=id eq '{0}'", vm.id)
-            };
-            var httpSuccess = function success(response) {
-                vm.model = response.data.value[0];
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#grid
-        function grid(vm) {
-
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_myTest),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "testName",
-                    title: "测试名",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "test01",
-                    title: "测试01",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "test02",
-                    title: "测试02",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
-
-        }// end fun grid
 
     }
 })();
@@ -15944,7 +15867,7 @@
        	if(vm.work.isSigle=="单个评审"){
       		var isHideProject=false;
        	}
-        if(vm.work.isSigle == vm.work.isMainProject){
+      /*  if(vm.work.isSigle == vm.work.isMainProject){
        		common.confirm({
     	           	 vm:vm,
     	           	 title:"",
@@ -15955,7 +15878,7 @@
     	         })
        
         		var isHideProject=false;
-        	}
+        	}*/
         	
         }
         
@@ -15965,7 +15888,7 @@
         }
         //次项目
         vm.subIschecked = function(){
-//        	vm.isHideProject2 = true;
+        	vm.isHideProject2 = true;
 //        	workprogramSvc.subIschecked(vm);
         }
         //项目关联页面

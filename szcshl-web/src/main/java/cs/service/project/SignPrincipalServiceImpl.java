@@ -126,7 +126,12 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
      */
     @Override
     public User getSecondPriUser(String signId, String isMainFolw) {
-        return getAllSecondPriUser(signId,isMainFolw).get(0);
+        List<User> secondUserList = getAllSecondPriUser(signId,isMainFolw);
+        if(secondUserList != null && secondUserList.size() > 0){
+            return getAllSecondPriUser(signId,isMainFolw).get(0);
+        }else{
+            return null;
+        }
     }
 
     /**

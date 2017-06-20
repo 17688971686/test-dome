@@ -35,12 +35,12 @@
 				</select>
 				
 				<!-- <select ng-model="vm.work.isSigle"  name="isSigle" ng-change="vm.reviewType()" id="isSigle">
-					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == 单个评审">单个评审</option>
-					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == 合并评审">合并评审</option>
+					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == '单个评审'">单个评审</option>
+					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == '合并评审'">合并评审</option>
 				</select> -->
 			</span> &nbsp;&nbsp;
 			<span id="mergeOptions" ng-hide="isHideProject" style="float: left; margin-left: 10px;">
-			<div  ng-show="vm.work.isSigle==合并评审">
+			<div  ng-show="vm.work.isSigle=='合并评审'">
 			<input type="radio" id="isMainProject"  name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"  ng-click="vm.mainIschecked()">主项目 &nbsp;&nbsp; 
 			<input type="radio" id="isMainProject" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="0" ng-checked="true" ng-click="vm.subIschecked()">次项目  &nbsp;&nbsp;
 			<button id="linkbtn" ng-click="vm.gotoProjcet()" ng-hide="vm.isHideProject2">关联项目</button></span>
@@ -295,12 +295,12 @@
 					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts"  ng-selected="x.dictName == vm.work.reviewType"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 				<select ng-model="vm.work.isSigle"  name="isSigle" ng-change="vm.reviewType()" id="isSigle">
-					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == 单个评审">单个评审</option>
-					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == 合并评审">合并评审</option>
+					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == '单个评审'">单个评审</option>
+					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == '合并评审'">合并评审</option>
 				</select>
 			</span> &nbsp;&nbsp;
 			<span id="mergeOptions" ng-hide="isHideProject" style="float: left; margin-left: 10px;">
-			<div  ng-show="vm.work.isSigle==合并评审">
+			<div  ng-show="vm.work.isSigle=='合并评审'">
 			<input type="radio" id="isMainProject"  name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"  ng-click="vm.mainIschecked()">主项目 &nbsp;&nbsp; 
 			<input type="radio" id="isMainProject" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="0" ng-checked="true" ng-click="vm.subIschecked()">次项目  &nbsp;&nbsp;
 			<button id="linkbtn" ng-click="vm.gotoProjcet()" ng-hide="vm.isHideProject2">关联项目</button></span>
@@ -482,12 +482,12 @@
 					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts"  ng-selected="x.dictName == vm.work.reviewType"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 				<select ng-model="vm.work.isSigle"  name="isSigle" ng-change="vm.reviewType()" id="isSigle">
-					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == 单个评审">单个评审</option>
-					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == 合并评审">合并评审</option>
+					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == '单个评审'">单个评审</option>
+					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == '合并评审'">合并评审</option>
 				</select>
 			</span> &nbsp;&nbsp;
 			<span id="mergeOptions" ng-hide="isHideProject" style="float: left; margin-left: 10px;">
-			<div  ng-show="vm.work.isSigle==合并评审">
+			<div  ng-show="vm.work.isSigle=='合并评审'">
 			<input type="radio" id="isMainProject"  name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"  ng-click="vm.mainIschecked()">主项目 &nbsp;&nbsp; 
 			<input type="radio" id="isMainProject" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="0" ng-checked="true" ng-click="vm.subIschecked()">次项目  &nbsp;&nbsp;
 			<button id="linkbtn" ng-click="vm.gotoProjcet()" ng-hide="vm.isHideProject2">关联项目</button></span>
