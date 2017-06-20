@@ -77,7 +77,7 @@
        	if(vm.work.isSigle=="单个评审"){
       		var isHideProject=false;
        	}
-        if(vm.work.isSigle == vm.work.isMainProject){
+      /*  if(vm.work.isSigle == vm.work.isMainProject){
        		common.confirm({
     	           	 vm:vm,
     	           	 title:"",
@@ -88,7 +88,7 @@
     	         })
        
         		var isHideProject=false;
-        	}
+        	}*/
         	
         }
         
@@ -98,7 +98,7 @@
         }
         //次项目
         vm.subIschecked = function(){
-//        	vm.isHideProject2 = true;
+        	vm.isHideProject2 = true;
 //        	workprogramSvc.subIschecked(vm);
         }
         //项目关联页面
