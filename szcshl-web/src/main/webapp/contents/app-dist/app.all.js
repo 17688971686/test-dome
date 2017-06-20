@@ -1146,7 +1146,7 @@
 	            actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
             
-            assistSvc.getAllUnit(vm);
+            assistSvc.getPlanSignByPlanId(vm,vm.planId);
         }
 
         //协审项目抽签
@@ -1234,32 +1234,17 @@
 
 		vm.del = function(id) {
 			vm.id = id;
-			assistUnitSvc.getUnitUser(vm, function() {
-						if (vm.resource.count == 0) {
-							common.confirm({
-										vm : vm,
-										title : "",
-										msg : "确认要删除数据吗？",
-										fn : function() {
-											$('.confirmDialog').modal('hide');
-											vm.resource = {};
-											assistUnitSvc.deleteAssistUnit(vm, id);
-										}
-									});
-						} else {
-							common.confirm({
-										vm : vm,
-										title : "",
-										msg : "必须先删除单位下的所有成员！",
-										fn : function() {
-											$('.confirmDialog').modal('hide');
+			common.confirm({
+				vm : vm,
+				title : "",
+				msg : "确认要删除数据吗？",
+				fn : function() {
+				$('.confirmDialog').modal('hide');
+				vm.resource = {};
+				assistUnitSvc.deleteAssistUnit(vm, id);
+				}
 
-										}
-									});
-
-						}
-					});
-
+		});
 		}
 
 		vm.dels = function() {
@@ -1267,7 +1252,7 @@
 			if (selectIds.length == 0) {
 				common.alert({
 							vm : vm,
-							mag : "请选择数据"
+							msg : "请选择数据"
 						});
 			} else {
 				var ids = [];
@@ -1367,8 +1352,16 @@
         			vm:vm,
         			response:response,
         			fn:function(){
-        			 vm.isSubmit=false;
-        			 vm.gridOptions.dataSource.read();
+        			 common.alert({
+        			 	vm:vm,
+	        				msg:"操作成功",
+	        				fn:function(){
+			        			 vm.isSubmit=false;
+			        			 $('.alertDialog').modal('hide');
+	        					$('.modal-backdrop').remove();
+			        			 vm.gridOptions.dataSource.read();
+	        				}
+        			 });
         			}
         		});
         	
@@ -1559,7 +1552,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                            "vm.del('" + item.id + "')", item.id,item.isUse);
                     }
                 }
             ];
@@ -5684,6 +5677,55 @@
 (function () {
     'use strict';
 
+    angular.module('app').factory('expertOfferSvc', expertOffer);
+
+    expertOffer.$inject = ['$http'];
+
+    function expertOffer($http) {
+        var service = {
+            saveOffer: saveOffer,	            //保存专家聘书
+
+        };
+        return service;
+
+        //S_saveOffer
+        function saveOffer(vm) {
+            common.initJqValidation($("#expert_offer_form"));
+            var isValid = $('#expert_offer_form').valid();
+            if (isValid) {
+                vm.expertOffer.expertId = vm.model.expertID
+                var httpOptions = {
+                    method : 'post',
+                    url : rootPath + "/expertOffer",
+                    data : vm.expertOffer
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm : vm,
+                        response : response,
+                        fn : function() {
+                            common.alert({
+                                vm : vm,
+                                msg : "操作成功"
+                            })
+                        }
+
+                    });
+                }
+                common.http({
+                    vm : vm,
+                    $http : $http,
+                    httpOptions : httpOptions,
+                    success : httpSuccess
+                });
+            }
+        }//E_saveOffer
+
+    }
+})();
+(function () {
+    'use strict';
+
     angular.module('app').controller('expertAuditCtrl', expert);
 
     expert.$inject = ['$location', 'expertSvc'];
@@ -5747,7 +5789,12 @@
     	var vm = this;
     	vm.data={};
     	vm.title = '专家列表';
-        
+
+        activate();
+        function activate() {
+            expertSvc.grid(vm);
+        }
+
         vm.search = function () {
         	expertSvc.searchMuti(vm);
         };
@@ -5785,11 +5832,7 @@
                 vm.del(idStr);
             }   
        };
-                    
-        activate();
-        function activate() {
-        	expertSvc.grid(vm);       	
-        }
+
     }
 })();
 
@@ -5798,9 +5841,9 @@
 
     angular.module('app').controller('expertEditCtrl', expert);
 
-    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','$state']; 
+    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','expertOfferSvc','$state'];
 
-    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,$state) {
+    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,expertOfferSvc,$state) {
         var vm = this;
         vm.model = {};
         vm.title = '专家信息录入';
@@ -5808,6 +5851,9 @@
         vm.isHide=true;
         vm.isUpdate=false;
         vm.expertID = $state.params.expertID;
+        vm.expertOfferList = {};    //专家聘书列表
+        vm.expertOffer = {};        //专家聘书
+
         activice();
         function activice(){
             if (vm.expertID) {
@@ -5837,8 +5883,47 @@
             }
 
         }
-
+        
+        vm.model={};
+        vm.model.expertType='';
+        vm.expertTypes=[];
+		vm.expertTypeList=[];
+        vm.choole=function(typeName,index){
+        	vm.expertType={};
+        	vm.expertType.expertType='';
+        	vm.expertType.maJorBig='';
+        	vm.expertType.maJorSmall='';
+        	vm.index=index;
+        	if(!vm.expertTypes[index]){
+        	var isCheck=$("#expertType input[name='typeCheck']" );
+        	vm.expertType.expertType=isCheck[index].value;
+        	 $("#jor").kendoWindow({
+                    width : "660px",
+                    height : "360px",
+                    title : typeName+"的突出专业",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+        	}else{
+        		vm.expertTypeList.splice(index,1);
+        	}
+        	
+        }
+        
+        vm.saveChooleMajor=function(index){
+        	vm.expertType.maJorBig=vm.type.maJorBig;
+        	vm.expertType.maJorSmall=vm.type.maJorBig;
+        	vm.expertTypeList[index]=vm.expertType;
+        	window.parent.$("#jor").data("kendoWindow").close();
+        	
+        
+        }
         vm.create=function(){
+        	console.log(vm.expertTypeList);
+        	vm.model.expertTypeDtoList=vm.expertTypeList;
+        	console.log(vm.model);
         	expertSvc.createExpert(vm);
         }
         
@@ -5899,6 +5984,47 @@
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
         }
+
+        //专家聘书弹窗
+        vm.gotoOfferPage = function(){
+            $("#ep_offer_div").kendoWindow({
+                width : "800px",
+                height : "600px",
+                title : "专家聘书",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
+
+        //保存聘书信息
+        vm.saveOffer = function () {
+            if(vm.model.expertID){
+                expertOfferSvc.saveOffer(vm);
+            }else{
+                common.alert({
+                    vm : vm,
+                    msg : "先保存专家信息！"
+                })
+            }
+        }
+        //关闭窗口信息
+        vm.closeOffer=function(){
+            window.parent.$("#ep_offer_div").data("kendoWindow").close();
+        }
+        //查看专家聘书
+        vm.showOffer = function(id){
+            vm.expertOffer = {};        //专家聘书
+            vm.expertOfferList.forEach(function(o,index){
+                if(o.id == id){
+                   vm.expertOffer = o;
+                   return ;
+               }
+            });
+            vm.gotoOfferPage();
+        }
+
     }
 })();
 
@@ -5932,7 +6058,7 @@
 		var service = {
 			grid : grid,						//初始化综合查询grid
 			auditGrid : auditGrid,				//初始化审核页面的所有grid
-			getExpertById : getExpertById,
+			getExpertById : getExpertById,		//通过ID查询专家信息详情
 			createExpert : createExpert,
 			deleteExpert : deleteExpert,
 			updateExpert : updateExpert,
@@ -6071,15 +6197,22 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
+				//工作简历
 				if(response.data.workDto && response.data.workDto.length > 0){
 					vm.showWorkHistory = true;
 					vm.work=response.data.workDto;
 					
 				}
+				//项目经验
 				if(response.data.projectDto && response.data.projectDto.length > 0){
 					vm.projectkHistory = true;
 					vm.project=response.data.projectDto;					
 				}
+				//专家聘书
+				if(response.data.expertOfferDtoList && response.data.expertOfferDtoList.length > 0){
+                    vm.showExpertOffer = true;
+                    vm.expertOfferList = response.data.expertOfferDtoList;
+                }
                 initUpload(vm);
                 $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
 			} 
@@ -6188,10 +6321,27 @@
 					filterable : true
 				},
 				{
-					field : "expeRttype",
+					field : "",
 					title : "专家类别",
 					width : 100,
-					filterable : true
+					filterable : true,
+					template:function(item){
+						if(item.expertTypeDtoList){
+							var resultStr='';
+							for(var i=0;i<item.expertTypeDtoList.length;i++){
+								if(i==0){
+									resultStr += item.expertTypeDtoList[i].expertType;
+								}else{
+									
+									resultStr += "、"+item.expertTypeDtoList[i].expertType;
+								}
+							}
+							return resultStr;
+						}else{
+						 return "";
+						}
+					}
+					
 				},
 				{
 					field : "",
@@ -6245,10 +6395,26 @@
 					width : 100,
 					filterable : false
 				},{
-					field : "expeRttype",
+					field : "",
 					title : "专家类别",
 					width : 100,
-					filterable : false
+					filterable : false,
+					template:function(item){
+						if(item.expertTypeDtoList){
+							var resultStr='';
+							for(var i=0;i<item.expertTypeDtoList.length;i++){
+								if(i==0){
+									resultStr += item.expertTypeDtoList[i].expertType;
+								}else{
+									
+									resultStr += "、"+item.expertTypeDtoList[i].expertType;
+								}
+							}
+							return resultStr;
+						}else{
+						 return "";
+						}
+					}
 				}
 			];
 			
@@ -9449,14 +9615,22 @@
         	meetingSvc.roomUseState(vm);
         	//vm.isUse=false;
         }
-        
+
+        //停用会议室
         vm.stoped=function(id){
-        	vm.model.id=id;
-        	vm.model.mrStatus="2";
-        	meetingSvc.roomUseState(vm);
-        	//vm.isUse=true;
-        	
+            common.confirm({
+                vm:vm,
+                title:"",
+                msg:"确定停用会议室么？",
+                fn:function () {
+                    $('.confirmDialog').modal('hide');
+                    vm.model.id=id;
+                    vm.model.mrStatus="0";
+                    meetingSvc.roomUseState(vm);;
+                }
+            })
         }
+
         vm.dels = function () {     
         	var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
@@ -9525,339 +9699,342 @@
     }
 })();
 
-(function() {
-	'use strict';
+(function () {
+    'use strict';
 
-	angular.module('app').factory('meetingSvc', meeting);
+    angular.module('app').factory('meetingSvc', meeting);
 
-	meeting.$inject = [ '$http' ];
+    meeting.$inject = ['$http'];
 
-	function meeting($http) {
-		var url_meeting = rootPath + "/meeting";
-		var url_back = '#/meeting';
-		var service = {
-			grid : grid,
-			getMeetingById : getMeetingById,
-			createMeeting : createMeeting,
-			deleteMeeting : deleteMeeting,
-			updateMeeting : updateMeeting,
-			queryMeeting : queryMeeting,		//会议室查询
-			roomUseState : roomUseState
-		};
+    function meeting($http) {
+        var url_meeting = rootPath + "/meeting";
+        var url_back = '#/meeting';
+        var service = {
+            grid: grid,
+            getMeetingById: getMeetingById,
+            createMeeting: createMeeting,
+            deleteMeeting: deleteMeeting,
+            updateMeeting: updateMeeting,
+            queryMeeting: queryMeeting,		//会议室查询
+            roomUseState: roomUseState
+        };
 
-		return service;
-		
-		//会议室查询
-		function queryMeeting(vm){
-			vm.gridOptions.dataSource.read();	
-		}
-		
-		// begin#updateUser
-		function updateMeeting(vm) {
-			
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid) {
-				vm.isSubmit = true;
-				vm.model.id = vm.id;// id
-				var httpOptions = {
-					method : 'put',
-					url : url_meeting,
-					data : vm.model
-				}
+        return service;
 
-				var httpSuccess = function success(response) {
+        //会议室查询
+        function queryMeeting(vm) {
+            vm.gridOptions.dataSource.read();
+        }
 
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-								}
-							})
-						}
+        // begin#updateUser
+        function updateMeeting(vm) {
 
-					})
-				}
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+                var httpOptions = {
+                    method: 'put',
+                    url: url_meeting,
+                    data: vm.model
+                }
 
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
+                var httpSuccess = function success(response) {
 
-			} else {
-				// common.alert({
-				// vm:vm,
-				// msg:"您填写的信息不正确,请核对后提交!"
-				// })
-			}
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
 
-		}
+                    })
+                }
 
-		// begin#deleteUser
-		function deleteMeeting(vm, id) {
-			vm.isSubmit = true;
-			var httpOptions = {
-				method : 'delete',
-				url : url_meeting,
-				data : id
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
 
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.isSubmit = false;
-						vm.gridOptions.dataSource.read();
-					}
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
 
-				});
+        }
 
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
-		
-		function roomUseState(vm) {
-			console.log(vm.model);
-			var httpOptions = {
-				method : 'put',
-				url : url_meeting+"/roomUseState",
-				data : vm.model
+        // begin#deleteUser
+        function deleteMeeting(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_meeting,
+                data: id
 
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.gridOptions.dataSource.read();
-					}
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.isSubmit = false;
+                        vm.gridOptions.dataSource.read();
+                    }
 
-				});
+                });
 
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-		}
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
-		// begin#createUser
-		function createMeeting(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid) {
-				vm.isSubmit = true;
-				var httpOptions = {
-					method : 'post',
-					url : url_meeting,
-					data : vm.model
-				}
+        function roomUseState(vm) {
+            var httpOptions = {
+                method: 'put',
+                url: url_meeting + "/roomUseState",
+                data: vm.model
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.gridOptions.dataSource.read();
+                    }
 
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									location.href = url_back;
-								}
-							})
-						}
-					});
+                });
 
-				}
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess,
-                    onError: function(response){vm.iscommit = false;}
-				});
+        // begin#createUser
+        function createMeeting(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                var httpOptions = {
+                    method: 'post',
+                    url: url_meeting,
+                    data: vm.model
+                }
 
-			}
-		}
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    location.href = url_back;
+                                }
+                            })
+                        }
+                    });
 
-		// begin#getUserById
-		function getMeetingById(vm) {
-			var httpOptions = {
-					method : 'get',
-					url : url_meeting +"/html/findByIdMeeting",
-					params:{id:vm.id}
-				}
-				var httpSuccess = function success(response) {
-					vm.model=response.data;
-					console.log(vm.model);
-				}
-				
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-		}
-		// begin#grid
-		function grid(vm) {
-			// Begin:dataSource
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_meeting+"/fingByOData",$("#meetingFrom")),
-				schema : common.kendoGridConfig().schema({
-					id : "id",
-					fields : {
-						createdDate : {
-							type : "date"
-						}
-					}
-				}),
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,
-				pageSize : 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
+                }
 
-			// End:dataSourc
-			
-			 //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess,
+                    onError: function (response) {
+                        vm.iscommit = false;
+                    }
+                });
+
+            }
+        }
+
+        // begin#getUserById
+        function getMeetingById(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: url_meeting + "/html/findByIdMeeting",
+                params: {id: vm.id}
+            }
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#grid
+        function grid(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_meeting + "/fingByOData", $("#meetingFrom")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSourc
+
+            //S_序号
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
             //S_序号
 
-			// Begin:column
-			var columns = [
-					{
-						template : function(item) {
-							return kendo
-									.format(
-											"<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-											item.id)
-						},
-						filterable : false,
-						width : 40,
-						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-					},
-					{  
-					    field: "rowNumber",  
-					    title: "序号",  
-					    width: 70,
-					    filterable : false,
-					    template: "<span class='row-number'></span>"  
-					 }
-					,
-					{
-						field : "num",
-						title : "会议室编号",
-						width : 100,
-						filterable : false
-					},
-					{
-						field : "mrName",
-						title : "会议室名称",
-						width : 180,
-						filterable : false
-					},
-                    {
-                        field : "mrType",
-                        title : "会议室类型",
-                        width : 180,
-                        filterable : false
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
-					{
-						field : "addr",
-						title : "会议室地点",
-						  width : 200,
-						filterable : false
-					},
-					/*{
-						field : "mrStatus",
-						title : "会议室状态",
-						 width : 100,
-						filterable : false
-					},*/
-					{
-						field : "capacity",
-						title : "会议室容量",
-						 width : 100,
-						filterable : false
-					},
-					{
-						field : "userName",
-						title : "会议室负责人",
-						width : 100,
-						filterable : false
-					},
-					{
-						field : "userPhone",
-						title : "负责人电话",
-						width : 150,
-						filterable : false
-					},
-					{
-						field : "",
-						title : "操作",
-						width : 180,
-						template : function(item) {
-							var isUse=false;
-							if (item.mrStatus=="2"){
-								isUse=true;
-							}else{
-								isUse=false;
-							}
-							return common.format($('#columnBtns').html(),"vm.stoped('" + item.id + "')",isUse,"vm.used('" + item.id + "')",isUse, item.id,"vm.del('" + item.id + "')");
-						}
-					}
-			];
-			// End:column
+                    filterable: false,
+                    width: 30,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 40,
+                    filterable: false,
+                    template: "<span class='row-number'></span>"
+                }
+                ,
+                {
+                    field: "num",
+                    title: "会议室编号",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "mrName",
+                    title: "会议室名称",
+                    width: 180,
+                    filterable: false
+                },
+                {
+                    field: "mrType",
+                    title: "会议室类型",
+                    width: 180,
+                    filterable: false
+                },
+                {
+                    field: "addr",
+                    title: "会议室地点",
+                    width: 200,
+                    filterable: false
+                },
+                {
+                    field: "capacity",
+                    title: "会议室容量",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "userName",
+                    title: "会议室负责人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "userPhone",
+                    title: "负责人电话",
+                    width: 150,
+                    filterable: false
+                },
+                {
+                    field : "",
+                    title : "状态",
+                    width : 100,
+                    template: function (item) {
+                       if(item.mrStatus == "2"){
+                            return "停用";
+                       }else{
+                           return "正常";
+                       }
+                    }
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 180,
+                    template: function (item) {
+                        var isUse = false;
+                        if (item.mrStatus == "2") {
+                            isUse = true;
+                        } else {
+                            isUse = false;
+                        }
+                        //return common.format($('#columnBtns').html(),"vm.stoped('" + item.id + "')",isUse,"vm.used('" + item.id + "')",isUse, item.id,"vm.del('" + item.id + "')");
+                        return common.format($('#columnBtns').html(), "vm.stoped('" + item.id + "')", isUse, "vm.used('" + item.id + "')", isUse, item.id);
+                    }
+                }
+            ];
+            // End:column
 
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				dataBound:dataBound,
-				resizable : true
-			};
-		}// end fun grid
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound: dataBound,
+                resizable: true
+            };
+        }// end fun grid
 
-		
-	}
+
+    }
 })();
 (function () {
     'use strict';
@@ -12111,8 +12288,8 @@
 
         activate();
         function activate() {
-           roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
+            roomSvc.initRoom(vm);
         }
     }
 })();
@@ -12148,108 +12325,110 @@
     }
 })();
 
-(function() {
-	'use strict';
+(function () {
+    'use strict';
 
-	angular.module('app').factory('roomSvc', room);
+    angular.module('app').factory('roomSvc', room);
 
-	room.$inject = [ '$http' ];
+    room.$inject = ['$http'];
 
-	function room($http) {
-		var url_room = rootPath + "/room";
-		var url_back = '#/room';
-		
-		var service = {
-			initRoom : initRoom,
-			showMeeting : showMeeting,
-			findMeeting : findMeeting,
-			exportWeek : exportWeek,
-			exportThisWeek : exportThisWeek,
-			exportNextWeek : exportNextWeek,
-			stageNextWeek : stageNextWeek,
-			addRoom : addRoom,  //添加会议室预定
-			editRoom : editRoom,//编辑
-		};
+    function room($http) {
+        var url_room = rootPath + "/room";
+        var url_back = '#/room';
 
-		return service;
-		
-		//S_会议预定编辑
-		function editRoom(vm){	
-			vm.model.id = $("#id").val();
-			vm.model.rbName = $("#rbName").val();
-			vm.model.mrID = $("#mrID").val();
-			vm.model.rbType = $("#rbType").val();
-			vm.model.host = $("#host").val();
-			vm.model.dueToPeople = $("#dueToPeople").val();
-			vm.model.rbDay = $("#rbDay").val();
-			vm.model.beginTime = $("#beginTime").val(); 
-			vm.model.endTime = $("#endTime").val();
-			vm.model.content = $("#content").val();
-			vm.model.content = $("#remark").val();
-			common.initJqValidation($('#formRoom'));
-			var isValid = $('#formRoom').valid();
-			if (isValid) {
-			vm.iscommit = true;
-				var httpOptions = {
-					method : 'put',
-					url : rootPath + "/room/updateRoom",
-					data : vm.model
-				}
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})
-						}
-					})
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}
-		}
-		//E_会议预定编辑
-		
-		// 清空页面数据
-		// begin#cleanValue
-		function cleanValue() {
-			var tab = $("#stageWindow").find('input');
-			$.each(tab, function(i, obj) {
-				obj.value = "";
-			});
-		}
-		// end#cleanValue
-		
-		//S_添加会议室预定(停用)
-		function addRoom(vm){
+        var service = {
+            initRoom: initRoom,
+            showMeeting: showMeeting,
+            findMeeting: findMeeting,
+            exportWeek: exportWeek,
+            exportThisWeek: exportThisWeek,
+            exportNextWeek: exportNextWeek,
+            stageNextWeek: stageNextWeek,
+            addRoom: addRoom,  //添加会议室预定
+            editRoom: editRoom,//编辑
+        };
+
+        return service;
+
+        //S_会议预定编辑
+        function editRoom(vm) {
+            vm.model.id = $("#id").val();
+            vm.model.rbName = $("#rbName").val();
+            vm.model.mrID = $("#mrID").val();
+            vm.model.rbType = $("#rbType").val();
+            vm.model.host = $("#host").val();
+            vm.model.dueToPeople = $("#dueToPeople").val();
+            vm.model.rbDay = $("#rbDay").val();
+            vm.model.beginTime = $("#beginTime").val();
+            vm.model.endTime = $("#endTime").val();
+            vm.model.content = $("#content").val();
+            vm.model.content = $("#remark").val();
+            common.initJqValidation($('#formRoom'));
+            var isValid = $('#formRoom').valid();
+            if (isValid) {
+                vm.iscommit = true;
+                var httpOptions = {
+                    method: 'put',
+                    url: rootPath + "/room/updateRoom",
+                    data: vm.model
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                }
+                            })
+                        }
+                    })
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+        }
+
+        //E_会议预定编辑
+
+        // 清空页面数据
+        // begin#cleanValue
+        function cleanValue() {
+            var tab = $("#stageWindow").find('input');
+            $.each(tab, function (i, obj) {
+                obj.value = "";
+            });
+        }
+
+        // end#cleanValue
+
+        //S_添加会议室预定(停用)
+        function addRoom(vm) {
             common.initJqValidation($('#formRoom'));
             var isValid = $('#formRoom').valid();
             if (isValid) {
                 var httpOptions = {
-                    method : 'post',
-                    url : rootPath + "/room/addRoom",
-                    data : vm.model
+                    method: 'post',
+                    url: rootPath + "/room/addRoom",
+                    data: vm.model
                 }
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
-                        vm : vm,
-                        response : response,
-                        fn : function() {
+                        vm: vm,
+                        response: response,
+                        fn: function () {
                             common.alert({
-                                vm : vm,
-                                msg : "操作成功",
-                                fn : function() {
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
                                     $('.alertDialog').modal('hide');
                                     $('.modal-backdrop').remove();
                                 }
@@ -12260,285 +12439,298 @@
 
                 }
                 common.http({
-                    vm : vm,
-                    $http : $http,
-                    httpOptions : httpOptions,
-                    success : httpSuccess
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
                 });
 
             }
-		}
-		//E_添加会议室预定
-		
-		//start 初始化会议预定页面
-		function initRoom(vm){
-			var dataSource = new kendo.data.SchedulerDataSource({
-				batch: true,
-				sync: function() {
-					this.read();
-				},
-	           transport: {
-				  read:function(options){
-					  var mrID = options.data.mrID;
-					  var url =  rootPath + "/room" ;
-					  if(mrID){
-						  url += "?"+mrID;
-					  }
-					  $http.get(
-					  	url
-					  ).success(function(data) {  
-						  options.success(data.value);
-					  }).error(function(data) {
-					  		console.log(data);
-						  console.log("查询数据失败！");
-					  });  
-				  },
-				  create:function(options){
-                      common.initJqValidation($('#formRoom'));
-                      var isValid = $('#formRoom').valid();
-                      if (isValid) {
-                          var model = options.data.models[0];
-                          model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTime").val();
-                          model.endTimeStr = $("#endTime").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
-                          if(vm.workProgramId){
-                              model.workProgramId = vm.workProgramId;
-						  }
-                          if(new Date(model.endTime) < new Date(model.beginTime)){
-                              $("#errorTime").html("开始时间不能大于结束时间!");
-                              return ;
-                          }
-                          var httpOptions = {
-                              method : 'post',
-                              url : rootPath + "/room/addRoom",
-                              data : model
-                          }
-                          var httpSuccess = function success(response) {
-                              common.requestSuccess({
-                                  vm : vm,
-                                  response : response,
-                                  fn : function() {
-                                      common.alert({
-                                          vm : vm,
-                                          msg : "操作成功",
-                                          fn : function() {
-                                              findMeeting(vm);
-                                              $('.alertDialog').modal('hide');
-                                              $('.modal-backdrop').remove();
-                                              vm.schedulerOptions.cancelEvent();
-                                          }
-                                      })
-                                  }
-                              });
-                          }
-                          common.http({
-                              vm : vm,
-                              $http : $http,
-                              httpOptions : httpOptions,
-                              success : httpSuccess
-                          });
-                      }
-				  },
-				  update:function(options){
-                      common.initJqValidation($('#formRoom'));
-                      var isValid = $('#formRoom').valid();
-                      if (isValid) {
-                          var model = options.data.models[0];
-                          model.rbDay = $("#rbDay").val();
-                          model.beginTimeStr = $("#beginTime").val();
-                          model.endTimeStr = $("#endTime").val();
-                          model.beginTime = $("#rbDay").val()+" "+$("#beginTime").val()+":00";
-                          model.endTime = $("#rbDay").val()+" "+$("#endTime").val()+":00";
-                          if(new Date(model.endTime) < new Date(model.beginTime)){
-                              $("#errorTime").html("开始时间不能大于结束时间!");
-                              return ;
-                          }
-                          var httpOptions = {
-                              method : 'put',
-                              url : rootPath + "/room/updateRoom",
-                              data : model
-                          }
-                          var httpSuccess = function success(response) {
-                              common.requestSuccess({
-                                  vm : vm,
-                                  response : response,
-                                  fn : function() {
-                                      common.alert({
-                                          vm : vm,
-                                          msg : "操作成功",
-                                          fn : function() {
-                                              findMeeting(vm);
-                                              $('.alertDialog').modal('hide');
-                                              $('.modal-backdrop').remove();
-                                              vm.schedulerOptions.cancelEvent();
-                                          }
-                                      })
-                                  }
-                              });
-                          }
-                          common.http({
-                              vm : vm,
-                              $http : $http,
-                              httpOptions : httpOptions,
-                              success : httpSuccess
-                          });
-                      }
-				  },
-				  destroy:function(options){
-                      var id = options.data.models[0].id;
-                      var httpOptions = {
-                          method : 'delete',
-                          url : url_room,
-                          data : id
-                      }
-                      var httpSuccess = function success(response) {
-                          common.requestSuccess({
-                              vm : vm,
-                              response : response,
-                              fn : function() {
-                                  common.alert({
-                                      vm : vm,
-                                      msg : "删除成功",
-                                      closeDialog:true
-                                  })
-                              }
+        }
 
-                          });
+        //E_添加会议室预定
 
-                      }
-                      common.http({
-                          vm : vm,
-                          $http : $http,
-                          httpOptions : httpOptions,
-                          success : httpSuccess
-                      });
-				  },
-				  parameterMap: function(options, operation) {
-				      console.log(operation);
-	                if (operation !== "read" && options.models) {
-	                  return { models: kendo.stringify(options.models)};
-	                }
-	              }
-	           },
-	           serverPaging : true,
-               serverSorting : true,
-               serverFiltering : true,
-			   pageSize : 10,
-	           schema: {
-	              model: {
-	              	id: "taskId", 
-	                fields: {
-	                    taskId: {from: "id"},
-	                    title: { from: "addressName", defaultValue: "会议室" },
-                        start: { type: "date", from: "beginTime" },
-                        end: { type: "date", from: "endTime" }
+        //start 初始化会议预定页面
+        function initRoom(vm) {
+            var dataSource = new kendo.data.SchedulerDataSource({
+                batch: true,
+                sync: function () {
+                    this.read();
+                },
+                transport: {
+                    read: function (options) {
+                        var mrID = options.data.mrID;
+                        var url = rootPath + "/room";
+                        if (mrID) {
+                            url += "?" + mrID;
+                        }
+                        $http.get(
+                            url
+                        ).success(function (data) {
+                            options.success(data.value);
+                        }).error(function (data) {
+                            console.log("查询数据失败！");
+                        });
+                    },
+                    create: function (options) {
+                        common.initJqValidation($('#formRoom'));
+                        var isValid = $('#formRoom').valid();
+                        if (isValid) {
+                            var model = options.data.models[0];
+                            model.rbDay = $("#rbDay").val();
+                            model.beginTimeStr = $("#beginTime").val();
+                            model.endTimeStr = $("#endTime").val();
+                            model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
+                            model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
+                            if (vm.workProgramId) {
+                                model.workProgramId = vm.workProgramId;
+                            }
+                            if (new Date(model.endTime) < new Date(model.beginTime)) {
+                                $("#errorTime").html("开始时间不能大于结束时间!");
+                                return;
+                            }
+                            var httpOptions = {
+                                method: 'post',
+                                url: rootPath + "/room/addRoom",
+                                data: model
+                            }
+                            var httpSuccess = function success(response) {
+                                common.requestSuccess({
+                                    vm: vm,
+                                    response: response,
+                                    fn: function () {
+                                        common.alert({
+                                            vm: vm,
+                                            msg: "操作成功",
+                                            fn: function () {
+                                                findMeeting(vm);
+                                                $('.alertDialog').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                                vm.schedulerOptions.cancelEvent();
+                                            }
+                                        })
+                                    }
+                                });
+                            }
+                            common.http({
+                                vm: vm,
+                                $http: $http,
+                                httpOptions: httpOptions,
+                                success: httpSuccess
+                            });
+                        }
+                    },
+                    update: function (options) {
+                        common.initJqValidation($('#formRoom'));
+                        var isValid = $('#formRoom').valid();
+                        if (isValid) {
+                            var model = options.data.models[0];
+                            model.rbDay = $("#rbDay").val();
+                            model.beginTimeStr = $("#beginTime").val();
+                            model.endTimeStr = $("#endTime").val();
+                            model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
+                            model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
+                            if (new Date(model.endTime) < new Date(model.beginTime)) {
+                                $("#errorTime").html("开始时间不能大于结束时间!");
+                                return;
+                            }
+                            var httpOptions = {
+                                method: 'put',
+                                url: rootPath + "/room/updateRoom",
+                                data: model
+                            }
+                            var httpSuccess = function success(response) {
+                                common.requestSuccess({
+                                    vm: vm,
+                                    response: response,
+                                    fn: function () {
+                                        common.alert({
+                                            vm: vm,
+                                            msg: "操作成功",
+                                            fn: function () {
+                                                findMeeting(vm);
+                                                $('.alertDialog').modal('hide');
+                                                $('.modal-backdrop').remove();
+                                                vm.schedulerOptions.cancelEvent();
+                                            }
+                                        })
+                                    }
+                                });
+                            }
+                            common.http({
+                                vm: vm,
+                                $http: $http,
+                                httpOptions: httpOptions,
+                                success: httpSuccess
+                            });
+                        }
+                    },
+                    destroy: function (options) {
+                        var id = options.data.models[0].id;
+                        var httpOptions = {
+                            method: 'delete',
+                            url: url_room,
+                            data: id
+                        }
+                        var httpSuccess = function success(response) {
+                            common.requestSuccess({
+                                vm: vm,
+                                response: response,
+                                fn: function () {
+                                    common.alert({
+                                        vm: vm,
+                                        msg: "删除成功",
+                                        closeDialog: true
+                                    })
+                                }
+
+                            });
+
+                        }
+                        common.http({
+                            vm: vm,
+                            $http: $http,
+                            httpOptions: httpOptions,
+                            success: httpSuccess
+                        });
+                    },
+                    parameterMap: function (options, operation) {
+                        console.log(operation);
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
                     }
-				  }
-	            },
-	          });
-		
-			vm.schedulerOptions = {
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                schema: {
+                    model: {
+                        id: "taskId",
+                        fields: {
+                            taskId: {from: "id"},
+                            title: {from: "addressName", defaultValue: "会议室"},
+                            start: {type: "date", from: "beginTime"},
+                            end: {type: "date", from: "endTime"}
+                        }
+                    }
+                },
+            });
+
+            vm.schedulerOptions = {
                 date: new Date(),
-                startTime:vm.startDateTime,
-                endTime:vm.endDateTime,
+                startTime: vm.startDateTime,
+                endTime: vm.endDateTime,
                 height: 600,
                 views: [
                     "day",
                     "workWeek",
-                    {type: "week", selected: true },
-                    "month"
+                    {type: "week", selected: true},
+                    "month",
+                    "agenda",
                 ],
                 editable: {
                     template: $("#customEditorTemplate").html(),
                 },
                 eventTemplate: $("#event-template").html(),
                 timezone: "Etc/UTC",
-                dataSource :dataSource,
+                dataSource: dataSource,
                 footer: false,
             };
-		}
-		//end 初始化会议预定页面
-		
-		//start#会议室地点查询
-		function showMeeting(vm){
-			 $http.get(
-				  url_room+"/meeting" 
-			  ).success(function(data) {  
-				  vm.meetings ={};
-				  vm.meetings=data;
-			  }).error(function(data) {  
-				  //alert("查询会议室失败");
-			  }); 
-		}
-		//end #会议室地点查询
-		
-		//查询会议室
-		function findMeeting(vm){
-			if(vm.mrID){
-                vm.schedulerOptions.dataSource.read({"mrID":common.format("$filter=mrID eq '{0}'", vm.mrID)});
-			}else{
+        }
+
+        //end 初始化会议预定页面
+
+        //start#会议室地点查询
+        function showMeeting(vm) {
+            $http.get(
+                url_room + "/meeting"
+            ).success(function (data) {
+                vm.meetings = {};
+                vm.meetings = data;
+                if(vm.meetings && vm.meetings.length > 0){
+                    vm.mrID = vm.meetings[0].id;
+                    findMeeting(vm)
+                }
+            }).error(function (data) {
+                //alert("查询会议室失败");
+            });
+        }
+
+        //end #会议室地点查询
+
+        //查询会议室
+        function findMeeting(vm) {
+            if (vm.mrID) {
+                vm.schedulerOptions.dataSource.read({"mrID": common.format("$filter=mrID eq '{0}'", vm.mrID)});
+            } else {
                 vm.schedulerOptions.dataSource.read();
-			}
-		}
-		//start#deleteRoom
-		function deleteRoom(vm){
-			var model = vm.data.models[0];
-			var id = model.id;
-			var httpOptions = {
-					method : 'delete',
-					url : url_room,
-					data : id
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						common.alert({
-							vm : vm,
-							msg : "删除成功",
-							fn : function() {
-							$('.alertDialog').modal('show');
-							$('.modal-backdrop').remove();
-							}
-						})
-					}
+            }
+        }
 
-				});
+        //start#deleteRoom
+        function deleteRoom(vm) {
+            var model = vm.data.models[0];
+            var id = model.id;
+            var httpOptions = {
+                method: 'delete',
+                url: url_room,
+                data: id
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
+                            vm: vm,
+                            msg: "删除成功",
+                            fn: function () {
+                                $('.alertDialog').modal('show');
+                                $('.modal-backdrop').remove();
+                            }
+                        })
+                    }
 
-			}
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-			
-		}
-		//end#deleteRoom
-		
-		//start#exportWeek
-		//本周评审会议
-		function exportWeek(){
-			window.open(url_room+"/exports");
-		}
-		//本周全部会议
-		function exportThisWeek(){
-			window.open(url_room+"/exportWeek");
-		}
-		//下周全部会议
-		function exportNextWeek(){
-			window.open(url_room+"/exportNextWeek");
-		}
-		//下周评审会议
-		function stageNextWeek(){
-			window.open(url_room+"/stageNextWeek");
-		}
-		//end#exportWeek
-		
-	}
+                });
+
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+        }
+
+        //end#deleteRoom
+
+        //start#exportWeek
+        //本周评审会议
+        function exportWeek() {
+            window.open(url_room + "/exports");
+        }
+
+        //本周全部会议
+        function exportThisWeek() {
+            window.open(url_room + "/exportWeek");
+        }
+
+        //下周全部会议
+        function exportNextWeek() {
+            window.open(url_room + "/exportNextWeek");
+        }
+
+        //下周评审会议
+        function stageNextWeek() {
+            window.open(url_room + "/stageNextWeek");
+        }
+
+        //end#exportWeek
+
+    }
 })();
 
 
@@ -15379,7 +15571,6 @@
         vm.addTimeStage = function(){
             //如果已经预定了会议室，则显示
             if(vm.isRoomBook){
-            	console.log($("#stageWindow"));
                 $("#stageWindow").kendoWindow({
                     width : "660px",
                     height : "550px",
@@ -15524,10 +15715,8 @@
                 }
             }
             var httpSuccess = function success(response) {
-                vm.selectedSign = response.data.signDtoList;
-                console.log(vm.selectedSign);
+                vm.selectedSign = response.data.signDtoList
                 vm.linkSignId = response.data.linkSignId;
-                console.log(vm.linkSignId);
             }
             common.http({
                 vm: vm,
@@ -15612,7 +15801,6 @@
             }
             var httpSuccess = function success(response) {
                 vm.selectedSign = response.data;
-                console.log(vm.selectedSign);
             }
             common.http({
                 vm: vm,

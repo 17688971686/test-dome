@@ -41,10 +41,8 @@
                 }
             }
             var httpSuccess = function success(response) {
-                vm.selectedSign = response.data.signDtoList;
-                console.log(vm.selectedSign);
+                vm.selectedSign = response.data.signDtoList
                 vm.linkSignId = response.data.linkSignId;
-                console.log(vm.linkSignId);
             }
             common.http({
                 vm: vm,
@@ -129,7 +127,6 @@
             }
             var httpSuccess = function success(response) {
                 vm.selectedSign = response.data;
-                console.log(vm.selectedSign);
             }
             common.http({
                 vm: vm,

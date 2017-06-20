@@ -11,17 +11,17 @@
 		var service = {
 			grid : grid,						//初始化综合查询grid
 			auditGrid : auditGrid,				//初始化审核页面的所有grid
-			getExpertById : getExpertById,
-			createExpert : createExpert,
-			deleteExpert : deleteExpert,
-			updateExpert : updateExpert,
-			searchMuti : searchMuti,		//综合查询
-			searchAudit : searchAudit,		//审核查询
-			repeatGrid : repeatGrid,		//重复专家查询
-			updateAudit : updateAudit,		//专家评审
-			toAudit : toAudit,				//由个状态回到审核状态
-			auditTo : auditTo,				//由审核状态去到各个状态
-            initUpload : initUpload        //初始化附件上传
+			getExpertById : getExpertById,		//通过ID查询专家信息详情
+			createExpert : createExpert,        //创建专家信息
+			deleteExpert : deleteExpert,        //删除专家信息
+			updateExpert : updateExpert,        //更新专辑信息
+			searchMuti : searchMuti,		    //综合查询
+			searchAudit : searchAudit,		    //审核查询
+			repeatGrid : repeatGrid,		    //重复专家查询
+			updateAudit : updateAudit,		    //专家评审
+			toAudit : toAudit,				    //由个状态回到审核状态
+			auditTo : auditTo,				    //由审核状态去到各个状态
+            initUpload : initUpload             //初始化附件上传
 		};
 		return service;				
 		
@@ -150,15 +150,22 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
+				//工作简历
 				if(response.data.workDto && response.data.workDto.length > 0){
 					vm.showWorkHistory = true;
 					vm.work=response.data.workDto;
 					
 				}
+				//项目经验
 				if(response.data.projectDto && response.data.projectDto.length > 0){
 					vm.projectkHistory = true;
 					vm.project=response.data.projectDto;					
 				}
+				//专家聘书
+				if(response.data.expertOfferDtoList && response.data.expertOfferDtoList.length > 0){
+                    vm.showExpertOffer = true;
+                    vm.expertOfferList = response.data.expertOfferDtoList;
+                }
                 initUpload(vm);
                 $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
 			} 

@@ -79,7 +79,6 @@ public class Expert extends DomainBase {
     @Column(columnDefinition = "varchar(64) ")
     private String majorWork;    //从事专业
 
-
     @Column(columnDefinition = "varchar(30) ")
     private String procoSttype;//工程造价类
 
@@ -102,16 +101,19 @@ public class Expert extends DomainBase {
     public byte[] photo;    //专家照片
 
     @OneToMany(mappedBy = "expert")
-    private List<WorkExpe> work;
+    private List<WorkExpe> work;                        //专家工作经验
 
     @OneToMany(mappedBy = "expert")
-    private List<ProjectExpe> project;
+    private List<ProjectExpe> project;                  //专家项目经验
 
     @OneToMany(mappedBy = "expert")
-    private List<ExpertSelected> expertSelectedList;
-    
-    @OneToMany(mappedBy="expert")
+    private List<ExpertSelected> expertSelectedList;    //专家抽取条件
+
+    @OneToMany(mappedBy = "expert")
     private List<ExpertType> expertTypeList;//专家类型
+
+    @OneToMany(mappedBy = "expert")
+    private List<ExpertOffer> expertOfferList;//专家聘书
 
     public Date getBirthDay() {
         return birthDay;
@@ -363,13 +365,19 @@ public class Expert extends DomainBase {
         this.expertSelectedList = expertSelectedList;
     }
 
-	public List<ExpertType> getExpertTypeList() {
-		return expertTypeList;
-	}
+    public List<ExpertType> getExpertTypeList() {
+        return expertTypeList;
+    }
 
-	public void setExpertTypeList(List<ExpertType> expertTypeList) {
-		this.expertTypeList = expertTypeList;
-	}
-    
-    
+    public void setExpertTypeList(List<ExpertType> expertTypeList) {
+        this.expertTypeList = expertTypeList;
+    }
+
+    public List<ExpertOffer> getExpertOfferList() {
+        return expertOfferList;
+    }
+
+    public void setExpertOfferList(List<ExpertOffer> expertOfferList) {
+        this.expertOfferList = expertOfferList;
+    }
 }

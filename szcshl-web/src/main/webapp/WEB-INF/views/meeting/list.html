@@ -9,46 +9,50 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="meetingFrom" name="meetingFrom">
-     <div class="well">
-	    	<span class="help-inline">会议室名称：</span>
-	    	<input type="text" ng-model="vm.model.mrName" operator="like" name="mrName" id="mrName" placeholder="请输入">
-	    	
-	    	<span class="help-inline" style="margin-left:10px;">会议室编号：</span>
-	    	<input type="text" ng-model="vm.model.num" operator="eq" name="num" id="num" placeholder="请输入">	    		
-	    	
-	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryMeeting()">查询</a>   	   	    		    		  	
-	 		
-	 		<@shiro.hasPermission name="meeting##post"> 
-            	<a class="btn btn-sm btn-primary" href="#/meetingEdit/"><span class="glyphicon glyphicon-plus"></span>新增会议室</a> 
+        <div class="well">
+            <span class="help-inline">会议室名称：</span>
+            <input type="text" ng-model="vm.model.mrName" operator="like" name="mrName" id="mrName" placeholder="请输入">
+
+            <span class="help-inline" style="margin-left:10px;">会议室编号：</span>
+            <input type="text" ng-model="vm.model.num" operator="eq" name="num" id="num" placeholder="请输入">
+
+            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryMeeting()">查询</a>
+
+            <@shiro.hasPermission name="meeting##post">
+                <a class="btn btn-sm btn-primary" href="#/meetingEdit/"><span class="glyphicon glyphicon-plus"></span>新增会议室</a>
             </@shiro.hasPermission>
-            
-            <@shiro.hasPermission name="meeting##delete">           
-            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        	</@shiro.hasPermission>
-        		 	 	 
-	</form>      
-	 </div> 
-        
-        <script type="text/template" id="columnBtns">
-		<@shiro.hasPermission name="meeting##delete">
 
-			<!-- 停用會議室 -->
-			<button class="btn btn-xs btn-warning"  ng-click="{0}"  ng-hide="{1}"><span class="glyphicon glyphicon-off"></span>停用</button>
-
-			<!-- 启用會議室 -->
-			<button class="btn btn-xs btn-success"  ng-click="{2}"  ng-show="{3}"><span class="glyphicon glyphicon-play-circle"></span>启用</button>
-			
-		</@shiro.hasPermission>
-		<@shiro.hasPermission name="meeting##put">
-	        <a class="btn btn-xs btn-primary" href="#/meetingEdit/{4}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-		</@shiro.hasPermission>
-
-		<@shiro.hasPermission name="meeting##delete">
-	       <button class="btn btn-xs btn-danger"  ng-click="{5}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
-		</@shiro.hasPermission>
-		</script>
-        
-         <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-   
+            <!--
+            <@shiro.hasPermission name="meeting##delete">
+                <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span
+                        class="glyphicon glyphicon-remove"></span>批量删除
+                </button>
+            </@shiro.hasPermission>
+            -->
+        </div>
+    </form>
 </div>
+
+<script type="text/template" id="columnBtns">
+    <!-- 停用會議室 -->
+    <button class="btn btn-xs btn-warning" ng-click="{0}" ng-hide="{1}"><span class="glyphicon glyphicon-off"></span>停用
+    </button>
+
+    <!-- 启用會議室 -->
+    <button class="btn btn-xs btn-success" ng-click="{2}" ng-show="{3}">
+        <span class="glyphicon glyphicon-play-circle"></span>启用
+    </button>
+
+    <@shiro.hasPermission name="meeting##put">
+    <a class="btn btn-xs btn-primary" href="#/meetingEdit/{4}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    </@shiro.hasPermission>
+
+    <!-- 不给删除
+    <@shiro.hasPermission name="meeting##delete">
+       <button class="btn btn-xs btn-danger"  ng-click="{5}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+    </@shiro.hasPermission>
+    -->
+</script>
+
+<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 

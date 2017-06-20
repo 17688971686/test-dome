@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.model.expert.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,6 @@ import cs.domain.expert.Expert_;
 import cs.domain.expert.ProjectExpe;
 import cs.domain.expert.WorkExpe;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertSelConditionDto;
-import cs.model.expert.ExpertTypeDto;
-import cs.model.expert.ProjectExpeDto;
-import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
@@ -111,6 +107,10 @@ public class ExpertServiceImpl implements ExpertService {
 		return expertDto.getExpertID();
 	}
 
+    /**
+     * 删除操作，实为更新专家状态为删除状态
+     * @param id
+     */
 	@Override
 	@Transactional
 	public void deleteExpert(String id) {		
@@ -118,9 +118,10 @@ public class ExpertServiceImpl implements ExpertService {
 		if (expert != null) {
 			HqlBuilder hqlBuilder=HqlBuilder.create();
 			
-			hqlBuilder.append("update " + Expert.class.getSimpleName()+" set "+ Expert_.state.getName()+ "='5' where " +Expert_.expertID.getName()+"=:id");
-			hqlBuilder.setParam("id", id);
+			hqlBuilder.append("update " + Expert.class.getSimpleName()+" set "+ Expert_.state.getName()+ "=:state where " +Expert_.expertID.getName()+"=:id");
+			hqlBuilder.setParam("state",EnumExpertState.REMOVE.getValue()).setParam("id", id);
 			expertRepo.executeHql(hqlBuilder);
+
 			/*List<WorkExpe> workList = expert.getWork();
 			for (WorkExpe workExpe : workList) {
 				workExpeRepo.delete(workExpe);
@@ -231,7 +232,17 @@ public class ExpertServiceImpl implements ExpertService {
 					projectDtoList.add(projectDto);
 				});
 				expertDto.setProjectDto(projectDtoList);
-			}			 			
+			}
+			//专家聘书
+            if(expert.getExpertOfferList() != null && expert.getExpertOfferList().size() > 0){
+                List<ExpertOfferDto> expertOfferList=new ArrayList<>(expert.getExpertOfferList().size());
+                (expert.getExpertOfferList()).forEach(epo ->{
+                    ExpertOfferDto expertOfferDto = new ExpertOfferDto();
+                    BeanCopierUtils.copyProperties(epo, expertOfferDto);
+                    expertOfferList.add(expertOfferDto);
+                });
+                expertDto.setExpertOfferDtoList(expertOfferList);
+            }
 		}
 		return expertDto;
 	}
@@ -260,12 +271,13 @@ public class ExpertServiceImpl implements ExpertService {
      */
     @Override
     public List<ExpertDto> findExpert(String workprogramId,String reviewId,ExpertSelConditionDto[] epSelConditions) {
-
-        if(!Validate.isString(workprogramId)){
+        if(!Validate.isString(workprogramId) || epSelConditions == null || epSelConditions.length < 1){
             return null;
         }
 		HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append("select ep.* from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
+		hqlBuilder.append("select ep.* from CS_EXPERT ep ");
+		//1、关联与工作方案相同单位的专家
+        hqlBuilder.append(" left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
 		hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
 		hqlBuilder.setParam("workProgramId",workprogramId);
 		//2、关联本周已抽取2次或者本月已抽取四次的专家
@@ -289,59 +301,22 @@ public class ExpertServiceImpl implements ExpertService {
 
         //拼接专家抽取条件
         int totalLength = epSelConditions.length;
-        List<String> jorBig = new ArrayList<>(totalLength),jorSmall = new ArrayList<>(totalLength),rttype =new ArrayList<>(totalLength);
-        for(ExpertSelConditionDto obj:epSelConditions){
-            if(Validate.isString(obj.getMaJorBig())){
-                jorBig.add(obj.getMaJorBig());
-            }
-            if(Validate.isString(obj.getMaJorSmall())){
-                jorSmall.add(obj.getMaJorSmall());
-            }
-            if(Validate.isString(obj.getExpeRttype())){
-                rttype.add(obj.getExpeRttype());
-            }
-        }
-        if(jorBig.size() == 1){
-            hqlBuilder.append(" and ep.MAJORBIG = :maJorBig ").setParam("maJorBig",jorBig.get(0));
-        }else if(jorBig.size() > 1){
-            hqlBuilder.append(" and ep.MAJORBIG in ( ");
-            for(int i=0,l=jorBig.size();i<l;i++){
-                if(i==0){
-                    hqlBuilder.append(" :jorBig"+i);
-                }else{
-                    hqlBuilder.append(", :jorBig"+i);
-                }
-                hqlBuilder.setParam("jorBig"+i, jorBig.get(i));
-            }
-            hqlBuilder.append(" ) ");
-        }
+        //1、只有一个抽取条件的时候
+        if(totalLength == 1){
+            hqlBuilder.append(" and (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
+            buildCondition(hqlBuilder,"ept",epSelConditions[0]);
+            hqlBuilder.append(" ) > 0");
 
-        if(jorSmall.size() == 1){
-            hqlBuilder.append(" and ep.MAJORSMALL = :maJorSmall ").setParam("maJorSmall",jorSmall.get(0));
-        }else if(jorSmall.size() > 1){
-            hqlBuilder.append(" and ep.MAJORSMALL in ( ");
-            for(int i=0,l=jorSmall.size();i<l;i++){
-                if(i==0){
-                    hqlBuilder.append(" :jorSamll"+i);
-                }else{
-                    hqlBuilder.append(", :jorSamll"+i);
+        //2、多个专家的抽取条件
+        }else{
+            hqlBuilder.append(" and ( ");
+            for(int i=0;i<totalLength;i++){
+                if(i > 0){
+                    hqlBuilder.append(" or");
                 }
-                hqlBuilder.setParam("jorSamll"+i, jorSmall.get(i));
-            }
-            hqlBuilder.append(" ) ");
-        }
-
-        if(rttype.size() == 1){
-            hqlBuilder.append(" and ep.EXPERTTYPE = :rttype ").setParam("rttype",rttype.get(0));
-        }else if(rttype.size() > 1){
-            hqlBuilder.append(" and ep.EXPERTTYPE in ( ");
-            for(int i=0,l=rttype.size();i<l;i++){
-                if(i==0){
-                    hqlBuilder.append(" :rttype"+i);
-                }else{
-                    hqlBuilder.append(", :rttype"+i);
-                }
-                hqlBuilder.setParam("rttype"+i, rttype.get(i));
+                hqlBuilder.append("(select count(ept"+i+".ID) from CS_EXPERT_TYPE ept"+i+" where ept"+i+".expertid = ep.expertid ");
+                buildCondition(hqlBuilder,"ept"+i,epSelConditions[i]);
+                hqlBuilder.append(" ) > 0");
             }
             hqlBuilder.append(" ) ");
         }
@@ -389,20 +364,35 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.append(" and ERM.EXPERTID is null  ");   //排除本次已经选择的专家
 
         //加上选择的条件
+		if(Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype())){
+            hqlBuilder.append(" and (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
+            buildCondition(hqlBuilder,"ept",epSelCondition);
+            hqlBuilder.append(" ) > 0");
+		}
+
+		return expertRepo.countBySql(hqlBuilder);
+	}
+
+    /**
+     * 查询条件封装
+     * @param hqlBuilder
+     * @param alias
+     * @param epSelCondition
+     */
+	private void buildCondition(HqlBuilder hqlBuilder,String alias,ExpertSelConditionDto epSelCondition){
         //突出专业，大类
         if(Validate.isString(epSelCondition.getMaJorBig())){
-            hqlBuilder.append(" and ep.MAJORBIG = :maJorBig ").setParam("maJorBig",epSelCondition.getMaJorBig());
+            hqlBuilder.append(" and "+alias+".maJorBig = :maJorBig ").setParam("maJorBig",epSelCondition.getMaJorBig());
         }
         //突出专业，小类
         if(Validate.isString(epSelCondition.getMaJorSmall())){
-            hqlBuilder.append(" and ep.MAJORSMALL = :maJorSmall ").setParam("maJorSmall",epSelCondition.getMaJorSmall());
+            hqlBuilder.append(" and "+alias+".maJorSmall = :maJorSmall ").setParam("maJorSmall",epSelCondition.getMaJorSmall());
         }
         //专家类型
         if(Validate.isString(epSelCondition.getExpeRttype())){
-            hqlBuilder.append(" and ep.EXPERTTYPE = :rttype ").setParam("rttype",epSelCondition.getExpeRttype());
+            hqlBuilder.append(" and "+alias+".expertType = :rttype ").setParam("rttype",epSelCondition.getExpeRttype());
         }
-		return expertRepo.countBySql(hqlBuilder);
-	}
+    }
 
 	@Override
     @Transactional

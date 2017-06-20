@@ -9,7 +9,12 @@
     	var vm = this;
     	vm.data={};
     	vm.title = '专家列表';
-        
+
+        activate();
+        function activate() {
+            expertSvc.grid(vm);
+        }
+
         vm.search = function () {
         	expertSvc.searchMuti(vm);
         };
@@ -47,10 +52,6 @@
                 vm.del(idStr);
             }   
        };
-                    
-        activate();
-        function activate() {
-        	expertSvc.grid(vm);       	
-        }
+
     }
 })();

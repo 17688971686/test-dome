@@ -80,8 +80,8 @@
 
         activate();
         function activate() {
-           roomSvc.initRoom(vm);
            roomSvc.showMeeting(vm);
+            roomSvc.initRoom(vm);
         }
     }
 })();

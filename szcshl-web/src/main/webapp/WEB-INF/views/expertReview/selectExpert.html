@@ -64,21 +64,21 @@
                 <td align="center">
                     <select ng-disabled="vm.expertReview.isSelete == 9" id="maJorBig{{x.sort}}"
                             ng-model="$parent.condition[$index].maJorBig" class="form-control input-sm "
-                            ng-change="$parent.condition[$index].majobSmallDicts = topSelectChange($parent.condition[$index].maJorBig,DICT.MAJOR.dicts,'code')">
+                            ng-change="$parent.condition[$index].majobSmallDicts = topSelectChange($parent.condition[$index].maJorBig,DICT.MAJOR.dicts)">
                         <option value="">请选择</option>
-                        <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictCode}}"
-                                ng-selected="x.maJorBig == d.dictCode">{{d.dictName}}
+                        <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
+                                ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
                         </option>
                     </select>
                 </td>
                 <td align="center">
                     <select ng-disabled="vm.expertReview.isSelete == 9" id="maJorSmall{{x.sort}}"
-                            ng-init="$parent.condition[$index].majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts,'code')"
+                            ng-init="$parent.condition[$index].majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts)"
                             ng-model="$parent.maJor[$index].maJorSamll" class="form-control input-sm "
                             data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
-                        <option ng-repeat="ds in $parent.condition[$index].majobSmallDicts" value="{{ds.dictCode}}"
-                                ng-selected="x.maJorSmall == ds.dictCode">{{ds.dictName}}
+                        <option ng-repeat="ds in $parent.condition[$index].majobSmallDicts" value="{{ds.dictName}}"
+                                ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
                         </option>
                     </select>
                 </td>
