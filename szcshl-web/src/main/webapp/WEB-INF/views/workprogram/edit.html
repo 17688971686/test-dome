@@ -34,10 +34,6 @@
 					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts"  ng-selected="x.dictName == vm.work.isSigle"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 				
-				<!-- <select ng-model="vm.work.isSigle"  name="isSigle" ng-change="vm.reviewType()" id="isSigle">
-					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == '单个评审'">单个评审</option>
-					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == '合并评审'">合并评审</option>
-				</select> -->
 			</span> &nbsp;&nbsp;
 			<span id="mergeOptions" ng-hide="isHideProject" style="float: left; margin-left: 10px;">
 			<div  ng-show="vm.work.isSigle=='合并评审'">
@@ -294,9 +290,9 @@
 		  		<select ng-model="vm.work.reviewType"  name="reviewType" ng-click="vm.reviewTypeWork()"id="reviewType">
 					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts"  ng-selected="x.dictName == vm.work.reviewType"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
-				<select ng-model="vm.work.isSigle"  name="isSigle" ng-change="vm.reviewType()" id="isSigle">
-					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == '单个评审'">单个评审</option>
-					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == '合并评审'">合并评审</option>
+			
+				<select ng-model="vm.work.isSigle"  name="isSigle" ng-click="vm.reviewType()"id="isSigle">
+					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts"  ng-selected="x.dictName == vm.work.isSigle"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 			</span> &nbsp;&nbsp;
 			<span id="mergeOptions" ng-hide="isHideProject" style="float: left; margin-left: 10px;">
@@ -481,9 +477,9 @@
 		  		<select ng-model="vm.work.reviewType"  name="reviewType" ng-click="vm.reviewTypeWork()"id="reviewType">
 					<option ng-repeat="x in DICT.REVIEW_TYPE.dicts"  ng-selected="x.dictName == vm.work.reviewType"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
-				<select ng-model="vm.work.isSigle"  name="isSigle" ng-change="vm.reviewType()" id="isSigle">
-					<option  ng-value="单个评审" ng-selected="vm.work.isSigle == '单个评审'">单个评审</option>
-					<option  ng-value="合并评审" ng-selected="vm.work.isSigle == '合并评审'">合并评审</option>
+				
+				<select ng-model="vm.work.isSigle"  name="isSigle" ng-click="vm.reviewType()"id="isSigle">
+					<option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts"  ng-selected="x.dictName == vm.work.isSigle"value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 			</span> &nbsp;&nbsp;
 			<span id="mergeOptions" ng-hide="isHideProject" style="float: left; margin-left: 10px;">
