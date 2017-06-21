@@ -45,8 +45,8 @@
         <li ng-show="(angular.isUndefined(vm.model.isNeedWrokPrograml) || vm.model.isNeedWrokPrograml == '0')&& vm.model.isassistproc == '9'"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
         <li ng-show="vm.show_dispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
         <li ng-show="vm.show_filerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
-        <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
-        <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
+        <li><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
+        <li><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
         <li><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
         <li><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
@@ -104,8 +104,101 @@
 
         <!-- start 专家费用 -->
         <div class="well well-sm tab-pane fade" style="background: white;" id="sign_payment">
-            <div style="margin-top: 10px" class="grid" kendo-grid="grid" k-options="vm.paymentgrid"></div>
-            <div id="payment" ng-show="vm.showExpertpayment">
+            <div class="toolbar">
+
+                <button class="btn btn-sm btn-success" ng-click="vm.savePayment()" ng-disabled="vm.isCommit"
+                        ng-hide="btnHide">
+                    <span class="glyphicon glyphicon-ok"></span>保存
+                </button>
+
+            </div>
+            <form id="payform" name="payform">
+           <table ng-repeat="expertReview in vm.expertReviews" class="table table-bordered">
+               <tbody>
+               <tr>
+                   <td colspan="4">
+                       <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(expertReview)" ng-disabled="vm.isCommit"
+                               ng-hide="btnHide">
+                           <span class="glyphicon glyphicon-ok"></span>计算应纳税额
+                       </button>
+
+                   </td>
+               </tr>
+               <tr>
+                   <td>评审费发放日期 <span class="required">*</span></td>
+                   <td>
+                       <input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
+                              class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                              ng-model="expertReview.payDate"
+                              data-val-date="必须为日期"><span class="required">{{expertReview.errorMsg}}</span>
+                       <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                   </td>
+                   <td>评审/函评日期</td>
+                   <td>{{expertReview.reviewDate}}</td>
+               </tr>
+               <tr>
+                   <td>评审费发放标题</td>
+                   <td colspan="3">
+                       <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
+                              class="form-control input-sm " ng-model="expertReview.reviewTitle">
+                      <!-- <span data-valmsg-for="reviewTitle_{{$index}}" data-valmsg-replace="true" class="errors"></span>-->
+                   </td>
+               </tr>
+               <tr>
+                   <td colspan="4">
+                       <div style="text-align:center;">
+                            <table class="table table-bordered">
+                                <caption class="text-center h3">
+                                    <strong>
+                                        {{expertReview.reviewTitle}}
+                                    </strong>
+                                </caption>
+                                <th>
+                                    <tr>
+                                        <td>序号</td>
+                                        <td>姓名</td>
+                                        <td>身份证号码</td>
+                                        <td>开户行/银行账号</td>
+                                        <td>评审费</td>
+                                        <td>应纳税额</td>
+                                        <td>合计（元）</td>
+                                    </tr>
+                                </th>
+                                <tbody>
+                                <tr ng-repeat="x in expertReview.expertSelectedDtoList">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{x.expertDto.name}}</td>
+                                    <td>{{x.expertDto.idCard}}</td>
+                                    <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
+                                    <td>
+                                        <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                               class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
+                                               data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
+                                                data-val="true" data-val-required="必填">
+                                        <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                    </td>
+                                    <td> {{x.reviewTaxes}}</td>
+                                    <td> {{x.totalCost}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td>{{expertReview.reviewCost}}</td>
+                                    <td>{{expertReview.reviewTaxes}}</td>
+                                    <td>{{expertReview.totalCost}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                       </div>
+                   </td>
+               </tr>
+               </tbody>
+           </table>
+            </form>
+
+
+
+           <!-- <div style="margin-top: 10px" class="grid" kendo-grid="grid" k-options="vm.paymentgrid"></div>-->
+           <!-- <div id="payment" ng-show="vm.showExpertpayment">
 
                 <div class="toolbar">
                     <button class="btn btn-sm btn-success" ng-click="vm.countTaxes()" ng-disabled="vm.isCommit"
@@ -188,7 +281,7 @@
                         </tr>
                     </table>
                     <form>
-            </div>
+            </div>-->
         </div>
         <!-- end tab3 -->
         <!-- end 专家费用 -->
@@ -208,6 +301,7 @@
         <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
             <div ng-include src="'${path}/contents/app/fileRecord/detail.html'"/>
         </div><!-- 归档 -->
+
         <div class="well well-sm tab-pane fade" style="background:white;" id="sign_associate">
             <div ng-if="vm.model.isAssociate!=1">
                 <button class="btn btn-sm btn-success" ng-click="vm.showAssociate()" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>关联项目</button>

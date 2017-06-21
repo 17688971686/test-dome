@@ -1,9 +1,13 @@
 package cs.service.expert;
 
+import java.util.List;
 import java.util.Map;
 
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
 
 /**
@@ -36,4 +40,12 @@ public interface ExpertReviewService {
 	void savePayment(ExpertReviewDto expertReviewDto)throws Exception;
 
 	void affirmAutoExpert(String reviewId, String state);
+
+    PageModelDto<ExpertSelectedDto> getSelectExpert(String signId);
+
+	PageModelDto<ExpertReviewDto> getBySignId(String signId);
+
+    List<Map<String,Object>> getExpertReviewCost(String expertIds, String month);
+
+    void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 }

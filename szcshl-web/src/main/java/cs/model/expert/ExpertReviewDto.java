@@ -37,6 +37,10 @@ public class ExpertReviewDto extends BaseDto {
     private String isComfireResult;
     //专家抽取次数
     private Integer selCount;
+    //评审费用
+    private BigDecimal reviewCost;
+    //税费
+    private BigDecimal reviewTaxes;
 
     //工作方案【与工作方案一对多关系（合并评审）】
     private List<WorkProgramDto> workProgramDtoList;
@@ -166,5 +170,21 @@ public class ExpertReviewDto extends BaseDto {
 
     public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
         this.expertSelectedDtoList = expertSelectedDtoList;
+    }
+
+    public BigDecimal getReviewCost() {
+        return reviewCost;
+    }
+
+    public void setReviewCost(BigDecimal reviewCost) {
+        this.reviewCost = reviewCost;
+    }
+
+    public BigDecimal getReviewTaxes() {
+        return reviewTaxes;
+    }
+
+    public void setReviewTaxes(BigDecimal reviewTaxes) {
+        this.reviewTaxes = reviewTaxes;
     }
 }

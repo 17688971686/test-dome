@@ -7,6 +7,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.common.Constant;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertSelected;
+import cs.model.expert.ExpertSelectedDto;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -133,6 +136,35 @@ public class ExpertReviewController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void savePayment(@RequestBody ExpertReviewDto expertReviewDto) throws Exception {
         expertReviewService.savePayment(expertReviewDto);
+    }
+
+    @RequestMapping(name = "获取数据", path = "html/getSelectExpert/{signId}", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<ExpertSelectedDto> getSelectExpert(@PathVariable("signId") String signId, HttpServletRequest request) throws ParseException {
+        PageModelDto<ExpertSelectedDto> expertSelectedPageModelDto = expertReviewService.getSelectExpert(signId);
+        return expertSelectedPageModelDto;
+    }
+
+    @RequestMapping(name = "查询评审方案", path = "html/getBySignId/{signId}", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<ExpertReviewDto> getBySignId(@PathVariable("signId") String signId, HttpServletRequest request) throws ParseException {
+        PageModelDto<ExpertReviewDto> expertReviewDtoPageModelDto = expertReviewService.getBySignId(signId);
+        return expertReviewDtoPageModelDto;
+    }
+
+    //查找专家当月的评审费用
+    @RequestMapping(name = "获取专家某月的评审费用", path = "html/getExpertReviewCost", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> getExpertReviewCost(@RequestParam(required = true) String expertIds,@RequestParam(required = true) String month,
+                                                             HttpServletRequest request) throws ParseException {
+        return expertReviewService.getExpertReviewCost(expertIds,month);
+    }
+
+    //保存评审费用
+    @RequestMapping(name = "保存评审费用", path = "html/saveExpertReviewCost", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void saveExpertReviewCost(@RequestBody ExpertReviewDto[] expertReviews) throws ParseException {
+        expertReviewService.saveExpertReviewCost(expertReviews);
     }
 
     // begin#html

@@ -41,11 +41,12 @@
             // 再初始化业务信息
             signSvc.initFlowPageData(vm);
             signSvc.initAssociateSigns(vm,vm.model.signid);
-            // 初始化专家评分费用
-            //flowSvc.markGrid(vm);
-            //flowSvc.paymentGrid(vm);
+            // 初始化专家评分
+            signSvc.markGrid(vm);
+            // 初始化专家评审费用
+            signSvc.paymentGrid(vm);
             //初始化项目关联弹窗
-             signSvc.associateGrid(vm);
+            signSvc.associateGrid(vm);
         }
 
         // 编辑专家评分
@@ -69,8 +70,29 @@
             flowSvc.gotopayment(vm);
         }
         // 计算应纳税额
-        vm.countTaxes = function () {
-            flowSvc.countTaxes(vm);
+        vm.countTaxes = function (expertReview) {
+            //console.log(expertReview.payDate);
+            if(expertReview == undefined){
+                return ;
+            }
+            if(expertReview.payDate == undefined){
+                expertReview.errorMsg = "请选择发放日期";
+                return ;
+            }
+            var reg = /^(\d{4}-\d{1,2}-\d{1,2})$/;
+            if(!reg.exec(expertReview.payDate)){
+                 expertReview.errorMsg = "请输入正确的日期格式";
+                 return ;
+            }
+            expertReview.errorMsg = "";
+            common.initJqValidation($('#payform'));
+            var isValid = $('#payform').valid();
+            if(isValid){
+
+                 flowSvc.countTaxes(vm,expertReview);
+            }
+
+
         }
         // 关闭专家费用
         vm.closeEditPay = function () {
@@ -78,11 +100,12 @@
         }
         // 保存专家费用
         vm.savePayment = function () {
-            flowSvc.savePayment(vm);
+            flowSvc.savePayment(vm,function(){
+                 signSvc.paymentGrid(vm);
+            });
         }
         // begin 添加审批意见
         vm.ideaEdit = function (options) {
-            console.log(options);
             common.initIdeaData(vm, $http, options);
         }
         // end 添加审批意见

@@ -9,6 +9,9 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import cs.common.utils.StringUtil;
 import cs.domain.sys.User;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertSelected;
+import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.domain.project.*;
 import cs.model.project.*;
@@ -21,6 +24,7 @@ import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -278,12 +282,16 @@ public class SignServiceImpl implements SignService {
         if (queryAll) {
             if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
                 List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>();
                 sign.getWorkProgramList().forEach(workProgram -> {
                     WorkProgramDto workProgramDto = new WorkProgramDto();
                     BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                     workProgramDtoList.add(workProgramDto);
+
+
                 });
                 signDto.setWorkProgramDtoList(workProgramDtoList);
+               // signDto.setExpertSelectedDtoList(expertSelectedDtos);
             }
 
             if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {

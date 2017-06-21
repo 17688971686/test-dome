@@ -47,6 +47,14 @@ public class ExpertReview extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private BigDecimal totalCost;
 
+    //评审费用
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal reviewCost;
+
+    //税费
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal reviewTaxes;
+
     //是否已经抽取专家
     @Column(columnDefinition = "varchar(2) ")
     private String isSelete;
@@ -185,5 +193,21 @@ public class ExpertReview extends DomainBase {
 
     public void setExpertSelectedList(List<ExpertSelected> expertSelectedList) {
         this.expertSelectedList = expertSelectedList;
+    }
+
+    public BigDecimal getReviewCost() {
+        return reviewCost;
+    }
+
+    public void setReviewCost(BigDecimal reviewCost) {
+        this.reviewCost = reviewCost;
+    }
+
+    public BigDecimal getReviewTaxes() {
+        return reviewTaxes;
+    }
+
+    public void setReviewTaxes(BigDecimal reviewTaxes) {
+        this.reviewTaxes = reviewTaxes;
     }
 }

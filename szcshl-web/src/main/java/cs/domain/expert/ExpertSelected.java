@@ -32,6 +32,10 @@ public class ExpertSelected {
     @Column(columnDefinition = "NUMBER")
     private BigDecimal reviewTaxes;
 
+    //总费用
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal totalCost;
+
     //评级描述
     @Column(columnDefinition = "VARCHAR(200)")
     private String describes;
@@ -124,5 +128,13 @@ public class ExpertSelected {
 
     public void setExpertReview(ExpertReview expertReview) {
         this.expertReview = expertReview;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 }

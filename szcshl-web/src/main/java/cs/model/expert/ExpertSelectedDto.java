@@ -8,6 +8,7 @@ public class ExpertSelectedDto {
     private Double score;
     private BigDecimal reviewCost;
     private BigDecimal reviewTaxes;
+    private BigDecimal totalCost;
     private String selectType;
     private String describes;
     private String isJoin;
@@ -44,6 +45,14 @@ public class ExpertSelectedDto {
 
     public void setReviewTaxes(BigDecimal reviewTaxes) {
         this.reviewTaxes = reviewTaxes;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 
     public String getSelectType() {

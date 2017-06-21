@@ -5,6 +5,7 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
+import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
@@ -54,7 +55,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		ExpertSelectedDto modelDto = new ExpertSelectedDto();
 		if(Validate.isString(id)){
 			ExpertSelected domain = expertSelectedRepo.findById(id);
+			modelDto.setExpertDto(new ExpertDto());
 			BeanCopierUtils.copyProperties(domain, modelDto);
+			BeanCopierUtils.copyProperties(domain.getExpert(),modelDto.getExpertDto());
 		}		
 		return modelDto;
 	}

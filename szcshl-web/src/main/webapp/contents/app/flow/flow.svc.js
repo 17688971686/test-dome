@@ -444,13 +444,13 @@
         // S_saveMark
         function saveMark(vm) {
             common.initJqValidation($('#markform'));
-            var isValid = $('#markform').valid();
-            if (isValid) {
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/expertReview/html/expertMark",
-                    data: vm.expertReview
-                }
+			var isValid = $('#markform').valid();
+			if (isValid) {
+				var httpOptions = {
+					method : 'put',
+					url : rootPath + "/expertSelected",
+					data : vm.expertReview
+				}
 
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
@@ -539,111 +539,218 @@
         // S_savePayment
         function savePayment(vm) {
             common.initJqValidation($('#payform'));
-            getSelectExpert
-            var isValid = $('#payform').valid();
-            if (isValid) {
-                if (!validateNum(vm)) {
-                    window.parent.$("#payment").data("kendoWindow").close();
-                    common.alert({
-                        vm: vm,
-                        msg: "应纳税额计算错误,保存失败！",
-                        fn: function () {
-                            $('.alertDialog').modal('hide');
-                            $('.modal-backdrop').remove();
+			var isValid = $('#payform').valid();
+			if (isValid) {
+				if (!validateNum(vm,vm.expertReviews)) {
+					//window.parent.$("#payment").data("kendoWindow").close();
+					common.alert({
+								vm : vm,
+								msg : "应纳税额计算错误,保存失败！",
+								fn : function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+					});
+					vm.isCommit = false;
+					return;
+				}
+				vm.isCommit = true;
+				var httpOptions = {
+					method : 'post',
+					//headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                    url : rootPath + "/expertReview/html/saveExpertReviewCost",
+					data : JSON.stringify(vm.expertReviews)
+				}
+
+
+				var httpSuccess = function success(response) {
+					vm.isCommit = false;
+					common.alert({
+                        vm : vm,
+                        msg : "操作成功",
+                        closeDialog : true,
+                        fn : function() {
+                           //重新初始化评审费发放数据
+                           if(callBack != undefined&&typeof callBack == "function"){
+                                callBack();
+                           }
                         }
-                    })
-                    return;
-                }
-                vm.isCommit = true;
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/expertReview/html/savePayment",
-                    data: vm.expertReview
-                }
+                    });
+				}
 
-                var httpSuccess = function success(response) {
-                    vm.isCommit = false;
-                    window.parent.$("#payment").data("kendoWindow").close();
-                    vm.paymentgrid.dataSource.read();
-                    common.alert({
-                        vm: vm,
-                        msg: "操作成功"
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-            }
+				common.http({
+							vm : vm,
+							$http : $http,
+							httpOptions : httpOptions,
+							success : httpSuccess
+						});
+			}
         }// E_savePayment
 
         // S_countNum
-        function countNum(vm) {
-            var XSum = vm.expertReview.reviewCost;
-            var Rate;
-            var Balan;
-            var TSum_7;
-            if (XSum <= 1500) {
-                Rate = 3;
-                Balan = 0;
-            }
-            if ((1500 < XSum) && (XSum <= 4500)) {
-                Rate = 10;
-                Balan = 105;
-            }
-            if ((4500 < XSum) && (XSum <= 9000)) {
-                Rate = 20;
-                Balan = 555;
-            }
-            if ((9000 < XSum) && (XSum <= 35000)) {
-                Rate = 25;
-                Balan = 1005;
-            }
-            if ((35000 < XSum) && (XSum <= 55000)) {
-                Rate = 30;
-                Balan = 2755;
-            }
-            if ((55000 < XSum) && (XSum <= 80000)) {
-                Rate = 35;
-                Balan = 5505;
-            }
-            if (XSum > 80000) {
-                Rate = 45;
-                Balan = 13505;
-            }
-            TSum_7 = (XSum * Rate) / 100 - Balan
-            if (TSum_7 < 0) {
-                TSum_7 = 0
-            }
-            return TSum_7;
+        function countNum(reviewCost) {
+            reviewCost = reviewCost == undefined?0:reviewCost;
+		   // console.log('评审费：'+reviewCost);
+			//var XSum = vm.expertReview.reviewCost;
+			var reviewTaxes = 0;
+			if(reviewCost > 800&&reviewCost <= 4000){
+                reviewTaxes =  (reviewCost - 800)*0.2;
+			}else if(reviewCost > 4000&&reviewCost <= 20000){
+                reviewTaxes = reviewCost*(1-0.2)*0.2
+			}else if(reviewCost > 20000&&reviewCost <= 50000){
+                reviewTaxes = reviewCost*(1-0.2)*0.3 - 2000;
+			}else if(reviewCost > 50000){
+			    //待确认
+			}
+			return reviewTaxes;
         }// E_countNum
 
         // S_countTaxes
-        function countTaxes(vm) {
-            var XSum = vm.expertReview.reviewCost;
-            var TSum_7 = countNum(vm);
-            vm.expertReview.reviewTaxes = TSum_7.toFixed(2);
-            vm.expertReview.totalCost = XSum - TSum_7.toFixed(2);
-            console.log(vm.expertReview.reviewTaxes);
+        function countTaxes(vm,expertReview) {
+             if(expertReview.expertSelectedDtoList == undefined||expertReview.expertSelectedDtoList.length == 0){
+                return ;
+            }
+
+            var expertSelectedDtoList = expertReview.expertSelectedDtoList;
+            var len = expertReview.expertSelectedDtoList.length,ids = '',month;
+            expertReview.expertSelectedDtoList.forEach(function(v,i){
+                ids += "'"+v.id +"'";
+                if(i != (len-1)){
+                    ids += ",";
+                }
+            });
+            var payDate =  expertReview.payDate
+
+            month = payDate.substring(0,payDate.lastIndexOf('-'));
+            var url = rootPath + "/expertReview/html/getExpertReviewCost?expertIds={0}&month={1}";
+
+		    //取得该评审方案评审专家在这个月的所有评审费用
+            var httpOptions = {
+				method : 'get',
+				headers:{'Content-Type':'application/x-www-form-urlencoded'},
+				url :common.format(url,ids,month)
+			}
+
+			var httpSuccess = function success(response) {
+                var allExpertCost = response.data;
+                expertReview.reviewCost = 0;
+                expertReview.reviewTaxes = 0;
+                expertReview.totalCost = 0;
+
+                expertSelectedDtoList.forEach(function(v,i){
+
+                    var expertDto = v.expertDto;
+                    var expertId = v.EXPERTID;
+                    var expertSelectedId = v.id;
+                    var totalCost = 0;
+                    //console.log("计算专家:"+expertDto.name);
+                    if(allExpertCost != undefined&&allExpertCost.length>0){
+
+                        //累加专家改月的评审费用
+                        allExpertCost.forEach(function(v,i){
+                            if(v.EXPERTID == expertId&&v.ESID != expertSelectedId){
+                                v.REVIEWCOST = v.REVIEWCOST == undefined?0:v.REVIEWCOST;
+                                v.REVIEWCOST = parseFloat(v.REVIEWCOST);
+                                totalCost = parseFloat(totalCost)+v.REVIEWCOST;
+                            }
+                        });
+                    }
+
+                     //console.log("专家当月累加:" + totalCost);
+
+                    //计算评审费用
+                    v.reviewCost = v.reviewCost == undefined?0:v.reviewCost;
+                    var reviewTaxesTotal = totalCost + parseFloat(v.reviewCost);
+                    //console.log("专家当月累加加上本次:" + reviewTaxesTotal);
+
+
+                    v.reviewTaxes = countNum(reviewTaxesTotal).toFixed(2);
+                    v.totalCost = (parseFloat(v.reviewCost) + parseFloat(v.reviewTaxes)).toFixed(2);
+                    expertReview.reviewCost = (parseFloat(expertReview.reviewCost) + parseFloat(v.reviewCost)).toFixed(2);
+                    expertReview.reviewTaxes = (parseFloat(expertReview.reviewTaxes) + parseFloat(v.reviewTaxes)).toFixed(2);
+                    expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
+                });
+
+                   //console.log(expertReview);
+
+			}
+
+
+			common.http({
+                vm : vm,
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+            
 
         }// E_countTaxes
 
         // S_validateNum
         function validateNum(vm) {
-            var is = true;
-            var XSum = vm.expertReview.reviewCost;
-            var TSum_7 = countNum(vm);
-            var totalCost = XSum - TSum_7.toFixed(2);
-            var reviewTaxes = TSum_7.toFixed(2);
-            if (reviewTaxes != vm.expertReview.reviewTaxes
-                && totalCost != vm.expertReview.totalCost) {
-                is = false;
-            }
+           var isVilad = true;
+		    //计算每个评审的评审费是否正确
+		    if(expertReviews != undefined &&expertReviews.length>0){
 
-            return is;
+                expertReviews.forEach(function(v,i){
+                    if(v.payDate == undefined){
+                        v.errorMsg = "请选择发放日期";
+                        isVilad = false;
+                        return ;
+                    }
+                    v.errorMsg = "";
+                    //总评审费
+                    var totalReviewCost = v.reviewCost == undefined?0:v.reviewCost;
+                    //总税额
+                    var totalReviwTaxes = v.reviewTaxes == undefined?0:v.reviewTaxes;
+                    //总合计
+                    var totalCost = v.totalCost == undefined?0:v.totalCost;
+
+                    //计算每个专家
+                    if(v.expertSelectedDtoList != undefined&&v.expertSelectedDtoList.length>0){
+
+                        var tempTotalReviewCost = 0;
+                        var tempTotalReviwTaxes = 0;
+                        var tempTotalCost = 0;
+
+                        v.expertSelectedDtoList.forEach(function(expertSelected,i){
+                            //评审费用
+                            var reviewCost = expertSelected.reviewCost == undefined?0:expertSelected.reviewCost;
+                            //税额
+                            var reviewTaxes = expertSelected.reviewTaxes == undefined?0:expertSelected.reviewTaxes;
+                            //合计
+                            var totalCost =  expertSelected.totalCost == undefined?0:expertSelected.totalCost;
+                            var tempCost = parseFloat(reviewCost) + parseFloat(reviewTaxes);
+                            if(tempCost.toFixed(2) != parseFloat(totalCost).toFixed(2)){
+                                isVilad = false;
+                                return;
+                            }
+                            tempTotalReviewCost = parseFloat(tempTotalReviewCost)+ parseFloat(reviewCost);
+                            tempTotalReviwTaxes = parseFloat(tempTotalReviwTaxes) + parseFloat(reviewTaxes);
+                            tempTotalCost = parseFloat(tempTotalCost) + parseFloat(totalCost);
+                        });
+
+
+                        if(parseFloat(tempTotalReviewCost).toFixed(2) != parseFloat(totalReviewCost).toFixed(2)){
+                            isVilad = false;
+                            return ;
+                        }
+                        if(parseFloat(tempTotalReviwTaxes).toFixed(2) != parseFloat(totalReviwTaxes).toFixed(2)){
+                            isVilad = false;
+                            return;
+                        }
+                        if(parseFloat(tempTotalCost).toFixed(2) != parseFloat(totalCost).toFixed(2)){
+                            isVilad = false;
+                            return;
+                        }
+
+                    }
+
+                });
+
+		    }
+
+		    return isVilad;
         }// E_validateNum
 
         // S_gotopayment
@@ -665,27 +772,28 @@
         // S_getselectExpertById
         function getselectExpertById(vm) {
             vm.isCommit = true;
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/expertReview/html/getSelectExpertById",
-                params: {
-                    expertId: vm.expertReview.expertId
-                }
+			var httpOptions = {
+				method : 'get',
+				url : rootPath + "/expertSelected/html/findById",
+				params : {
+					id : vm.expertReview.expertId
+				}
 
-            }
+			}
 
-            var httpSuccess = function success(response) {
-                vm.isCommit = false;
-                vm.expertReview = response.data;
-                vm.expertReview.expertId = vm.expertReview.expertDto.expertID;
-            }
+			var httpSuccess = function success(response) {
+				vm.isCommit = false;
+				vm.expertReview = response.data;
+				//console.log(vm.expertReview);
+				//vm.expertReview.expertId = vm.expertReview.expertDto.expertID;
+			}
 
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
+			common.http({
+						vm : vm,
+						$http : $http,
+						httpOptions : httpOptions,
+						success : httpSuccess
+			});
         }// E_getselectExpertById
     }
 })();

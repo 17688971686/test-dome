@@ -1,11 +1,12 @@
 package cs.service.expert;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import cs.domain.expert.*;
+import cs.domain.project.*;
 import org.apache.log4j.Logger;
+import org.hibernate.query.NativeQuery;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +17,6 @@ import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelected;
-import cs.domain.expert.ExpertSelected_;
-import cs.domain.project.WorkProgram;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
@@ -54,6 +49,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 	private WorkProgramRepo workProgramRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
+    @Autowired
+    private SignRepo signRepo;
 
 	@Override
 	public PageModelDto<ExpertReviewDto> get(ODataObj odataObj) {
@@ -319,4 +316,188 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
+    @Override
+    public PageModelDto<ExpertSelectedDto> getSelectExpert(String signId) {
+
+        PageModelDto<ExpertSelectedDto> pageModelDto = new PageModelDto<ExpertSelectedDto>();
+        Sign sign = signRepo.getById(signId);
+        if(sign.getWorkProgramList() != null&&sign.getWorkProgramList().size()>0){
+
+            List<WorkProgram> workPrograms = sign.getWorkProgramList();
+            List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>();
+
+
+            workPrograms.forEach(workProgram -> {
+
+                ExpertReview expertReview = workProgram.getExpertReview();
+                if(expertReview != null&&expertReview.getExpertSelectedList() != null
+                        &&expertReview.getExpertSelectedList().size()>0){
+                    List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
+                    expertSelecteds.forEach(expertSelected -> {
+                        ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                        BeanUtils.copyProperties(expertSelected,expertSelectedDto,new String[]{ExpertSelected_.expertReview.getName()});
+
+                        //评审专家设置
+                        expertSelectedDto.setExpertDto(new ExpertDto());
+                        BeanUtils.copyProperties(expertSelected.getExpert(),expertSelectedDto.getExpertDto(),
+                                new String[]{Expert_.photo.getName(),Expert_.work.getName(),
+                                        Expert_.project.getName(),Expert_.expertSelectedList.getName()});
+
+                        //评审方案设置
+                        expertSelectedDto.setExpertReviewDto(new ExpertReviewDto());
+                        BeanUtils.copyProperties(expertSelected.getExpertReview(),expertSelectedDto.getExpertReviewDto(),
+                                ExpertReview_.workProgramList.getName(),ExpertReview_.expertSelConditionList.getName(),
+                                ExpertReview_.expertSelectedList.getName());
+
+                        expertSelectedDtos.add(expertSelectedDto);
+
+                    });
+                }
+
+            });
+
+            pageModelDto.setValue(expertSelectedDtos);
+            pageModelDto.setCount(expertSelectedDtos.size());
+
+            return pageModelDto;
+        }
+
+
+
+        return null;
+    }
+
+    @Override
+    public PageModelDto<ExpertReviewDto> getBySignId(String signId) {
+        PageModelDto<ExpertReviewDto> expertReviewDtoPageModelDto = new PageModelDto<ExpertReviewDto>();
+        List<ExpertReviewDto> expertReviewDtos = new ArrayList<ExpertReviewDto>();
+        Sign sign = signRepo.getById(signId);
+
+        List<WorkProgram> workPrograms = sign.getWorkProgramList();
+        if(workPrograms != null&&workPrograms.size()>0){
+            Map<String,ExpertReview> expertReviewMap = new HashMap<String,ExpertReview>();
+            workPrograms.forEach(workProgram -> {
+                ExpertReview expertReview = workProgram.getExpertReview();
+                if(expertReview != null){
+                    expertReviewMap.put(expertReview.getId(),expertReview);
+                }
+
+            });
+
+            for (Map.Entry<String, ExpertReview> entry :  expertReviewMap.entrySet()) {
+                ExpertReview expertReview = entry.getValue();
+                ExpertReviewDto expertReviewDto = new ExpertReviewDto();
+                BeanUtils.copyProperties(expertReview,expertReviewDto,
+                        new String[]{ExpertReview_.expertSelConditionList.getName(),ExpertReview_.workProgramList.getName()});
+
+                //设置评审费发放默认标题 《项目名称+项目阶段》+评审费发放表
+                if(!Validate.isString(expertReview.getReviewTitle())){
+                    expertReviewDto.setReviewTitle("《"+sign.getProjectname()+sign.getReviewstage()+"》评审费发放表");
+                }
+
+
+                //设置评审方案的专家
+                List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
+                List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>();
+
+                if(expertSelecteds != null&&expertSelecteds.size()>0){
+                    expertSelecteds.forEach(expertSelected -> {
+                        ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                        BeanUtils.copyProperties(expertSelected,expertSelectedDto,
+                                new String[]{ExpertSelected_.expertReview.getName()});
+
+                        //======================设置专家======================================================
+                        expertSelectedDto.setExpertDto(new ExpertDto());
+                        BeanUtils.copyProperties(expertSelected.getExpert(),expertSelectedDto.getExpertDto(),
+                                new String[]{Expert_.photo.getName(),Expert_.work.getName(),
+                                        Expert_.project.getName(),Expert_.expertSelectedList.getName()});
+                        //===================================================================================
+
+                        expertSelectedDtos.add(expertSelectedDto);
+                    });
+
+                }
+                expertReviewDto.setExpertSelectedDtoList(expertSelectedDtos);
+                expertReviewDtos.add(expertReviewDto);
+            }
+
+
+        }
+
+
+
+
+        expertReviewDtoPageModelDto.setValue(expertReviewDtos);
+        expertReviewDtoPageModelDto.setCount(expertReviewDtos.size());
+
+        return expertReviewDtoPageModelDto;
+    }
+
+    /**
+     *
+     * 获取指定专家，指定月份的评审费用
+     * */
+    @Override
+    public List<Map<String, Object>> getExpertReviewCost(String expertIds, String month) {
+        List<Map<String, Object>> experReviewCosts = null;
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select * from V_EXPERT_PAY_HIS t where t.expertid in ("+expertIds+") and t.paydate='"+month+"'");
+        //hqlBuilder.setParam("ids",expertIds);
+        //hqlBuilder.setParam("m",month);
+        NativeQuery nativeQuery = expertReviewRepo.getSession().createNativeQuery(hqlBuilder.getHqlString());
+        experReviewCosts = nativeQuery.list();
+        return experReviewCosts;
+    }
+
+    @Override
+    @Transactional
+    public void saveExpertReviewCost(ExpertReviewDto[]  expertReviews) {
+
+        if(expertReviews != null &&expertReviews.length>0){
+            for(int i = 0;i<expertReviews.length;i++){
+
+                ExpertReviewDto expertReviewDto = expertReviews[i];
+                List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
+                //保存评审费用
+                String experReviewId = expertReviewDto.getId();
+                if(Validate.isString(experReviewId)){
+                    ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
+                    if(expertReview != null){
+                        //设置评审方案的评审费用、税费和合计
+                        expertReview.setReviewCost(expertReviewDto.getReviewCost());
+                        expertReview.setReviewTaxes(expertReviewDto.getReviewTaxes());
+                        expertReview.setTotalCost(expertReviewDto.getTotalCost());
+                        //设置标题
+                        expertReview.setReviewTitle(expertReviewDto.getReviewTitle());
+                        //设置评审费发放日期
+                        expertReview.setPayDate(expertReviewDto.getPayDate());
+                        //设置该评审方案所有专家的评审费用、税费和合计
+                        List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
+                        if(expertSelecteds != null&&expertSelecteds.size()>0
+                                &&expertSelectedDtos != null&&expertSelectedDtos.size()>0){
+                            expertSelecteds.forEach(expertSelected -> {
+
+                                expertSelectedDtos.forEach(expertSelectedDto -> {
+                                    if(expertSelectedDto.getId().equals(expertSelected.getId())){
+                                        expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
+                                        expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
+                                        expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
+                                        return ;
+                                    }
+
+                                });
+
+                            });
+                        }
+                        //设置专家评审费用结束s
+
+                        expertReviewRepo.save(expertReview);
+                    }
+
+                }
+                //保存评审费用
+
+            }
+        }
+    }
 }
