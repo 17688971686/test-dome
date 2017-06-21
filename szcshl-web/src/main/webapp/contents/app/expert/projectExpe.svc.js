@@ -79,10 +79,11 @@
 			}
 			var httpSuccess = function success(response) {
 				//vm.model = response.data[0];
-				vm.model.projectName=response.data[0].projectName;
-				vm.model.projectType=response.data[0].projectType;
-				vm.model.projectbeginTime=response.data[0].projectbeginTime;
-				vm.model.projectendTime=response.data[0].projectendTime;
+				vm.project={};
+				vm.project.projectName=response.data[0].projectName;
+				vm.project.projectType=response.data[0].projectType;
+				vm.project.projectbeginTime=response.data[0].projectbeginTime;
+				vm.project.projectendTime=response.data[0].projectendTime;
 				
 				//$('#projectbeginTime').val(response.data[0].projectbeginTime);
 				//$('#projectendTime').val(response.data[0].projectendTime);
@@ -107,15 +108,15 @@
 			var isValid = $('#ProjectForm').valid();
 			if (isValid) {
 			vm.isSubmit = true;
-			vm.model.peID=vm.peID;
-			vm.model.expertID = vm.expertID;
-			vm.model.projectbeginTime=$('#projectbeginTime').val();
-			vm.model.projectendTime=$('#projectendTime').val();
+			vm.project.peID=vm.peID;
+			vm.project.expertID = vm.expertID;
+			vm.project.projectbeginTime=$('#projectbeginTime').val();
+			vm.project.projectendTime=$('#projectendTime').val();
 			//alert(vm.model.projectendTime);
 			var httpOptions = {
 					method : 'put',
 					url : rootPath + "/projectExpe/updateProject",
-					data : vm.model
+					data : vm.project
 			}
 			
 			var httpSuccess = function success(response) {
@@ -170,7 +171,7 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.project=response.data;
+						vm.projectList=response.data;
 					}
 				
 				});
@@ -253,12 +254,12 @@
 			common.initJqValidation($('#ProjectForm'));
 			var isValid = $('#ProjectForm').valid();
 			if (isValid) {
-				vm.model.projectbeginTime=$('#projectbeginTime').val();
-				vm.model.projectendTime=$('#projectendTime').val();
+				vm.project.projectbeginTime=$('#projectbeginTime').val();
+				vm.project.projectendTime=$('#projectendTime').val();
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/projectExpe/projectExpe",
-					data : vm.model
+					data : vm.project
 				}
 				var httpSuccess = function success(response) {
 					common.requestSuccess({

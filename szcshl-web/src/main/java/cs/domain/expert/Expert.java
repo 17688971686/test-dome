@@ -110,7 +110,7 @@ public class Expert extends DomainBase {
     private List<ExpertSelected> expertSelectedList;    //专家抽取条件
 
     @OneToMany(mappedBy = "expert")
-    private List<ExpertType> expertTypeList;//专家类型
+    private List<ExpertType> expertType;//专家类型
 
     @OneToMany(mappedBy = "expert")
     private List<ExpertOffer> expertOfferList;//专家聘书
@@ -365,13 +365,13 @@ public class Expert extends DomainBase {
         this.expertSelectedList = expertSelectedList;
     }
 
-    public List<ExpertType> getExpertTypeList() {
-        return expertTypeList;
-    }
+   public List<ExpertType> getExpertType() {
+		return expertType;
+	}
 
-    public void setExpertTypeList(List<ExpertType> expertTypeList) {
-        this.expertTypeList = expertTypeList;
-    }
+	public void setExpertType(List<ExpertType> expertType) {
+		this.expertType = expertType;
+	}
 
     public List<ExpertOffer> getExpertOfferList() {
         return expertOfferList;

@@ -584,7 +584,7 @@
 			options.scope.dictMetaData = response.data;
 			var dictsObj = {};
 			reduceDict(dictsObj, response.data);
-			options.scope.DICT = dictsObj;
+			options.scope.DICT = dictsObj;			
 		}, function(response) {
 			alert('初始化数据字典失败');
 		});

@@ -3,9 +3,9 @@
 
 	angular.module('app').factory('workExpeSvc', workExpe);
 
-	workExpe.$inject = [ '$http' ];
+	workExpe.$inject = [ '$http','expertSvc' ];
 
-	function workExpe($http) {
+	function workExpe($http,expertSvc) {
 		var service = {
 			createWork : createWork,
 			updateWork : updateWork,
@@ -30,8 +30,8 @@
 					vm : vm,
 					response : response,
 					fn : function() {
-						vm.work = response.data;
-						console.log(vm.work);
+						vm.workList = response.data;
+//						console.log(vm.work);
 					}
 				});
 			}
@@ -74,6 +74,7 @@
 						response : response,
 						fn : function() {
 							vm.isSubmit = false;
+//							expertSvc.getExpertById(vm);
 							getWork(vm);
 						}
 					});
@@ -127,14 +128,11 @@
 				url : common.format(rootPath + "/workExpe/getWork?$filter=weID eq '{0}'", vm.weID)
 			}
 			var httpSuccess = function success(response) {
-				// vm.model = response.data[0];
-				vm.model.companyName = response.data[0].companyName;
-				vm.model.workJob = response.data[0].workJob;
-				vm.model.beginTime = response.data[0].beginTime;
-				vm.model.endTime = response.data[0].endTime;
-				console.log(response.data[0]);
-				//$('#beginTime').val(response.data[0].beginTime);
-				//$('#endTime').val(response.data[0].endTime);
+				vm.work={};
+				vm.work.companyName = response.data[0].companyName;
+				vm.work.workJob = response.data[0].workJob;
+				vm.work.beginTime = response.data[0].beginTime;
+				vm.work.endTime = response.data[0].endTime;
 			}
 			common.http({
 				vm : vm,
@@ -157,7 +155,6 @@
 		// begin#gotoWPage
 		function gotoWPage(vm) {
 			var WorkeWindow = $("#wrwindow");
-			// WorkeWindow.show();
 			WorkeWindow.kendoWindow({
 				width : "690px",
 				height : "330px",
@@ -171,7 +168,7 @@
 		// end#gotoWPage
 
 		// begin#getWork
-		function getWork(vm) {
+		/*function getWork(vm) {
 			var httpOptions = {
 				method : 'GET',
 				url : rootPath+ "/workExpe/getWork?$filter=expert.expertID eq '"+ vm.model.expertID + "'"
@@ -194,19 +191,19 @@
 				success : httpSuccess
 			});
 
-		}
+		}*/
 		// begin#createWork
 		function createWork(vm) {
 			common.initJqValidation($('#workForm'));
 			var isValid = $('#workForm').valid();
 			if (isValid) {
-				vm.model.beginTime = $('#beginTime').val();
-				vm.model.endTime = $('#endTime').val();
+				vm.work.beginTime = $('#beginTime').val();
+				vm.work.endTime = $('#endTime').val();
 				
 				var httpOptions = {
 					method : 'post',
 					url : rootPath + "/workExpe/workExpe",
-					data : vm.model
+					data : vm.work
 				}
 				var httpSuccess = function success(response) {
 					common.requestSuccess({
@@ -245,15 +242,15 @@
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if (isValid) {
-				vm.model.weID = vm.weID;
-				vm.model.expertID = vm.expertID;
-				vm.model.beginTime = $('#beginTime').val();
-				vm.model.endTime = $('#endTime').val();
+				vm.work.weID = vm.weID;
+				vm.work.expertID = vm.expertID;
+				vm.work.beginTime = $('#beginTime').val();
+				vm.work.endTime = $('#endTime').val();
 
 				var httpOptions = {
 					method : 'put',
 					url : rootPath + "/workExpe/updateWork",
-					data : vm.model
+					data : vm.work
 				}
 
 				var httpSuccess = function success(response) {

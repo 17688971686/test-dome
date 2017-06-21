@@ -4,5 +4,7 @@ import cs.domain.expert.ExpertType;
 import cs.repository.IRepository;
 
 public interface ExpertTypeRepo extends IRepository<ExpertType, String>{
+	
+	boolean isExpertTypeExist(String expertType);
 
 }

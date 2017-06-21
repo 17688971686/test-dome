@@ -46,55 +46,13 @@
 
         }
         
-        vm.model={};
-        vm.model.expertType='';
-        vm.expertTypes=[];
-		vm.expertTypeList=[];
-        vm.choole=function(typeName,index){
-        	vm.expertType={};
-        	vm.expertType.expertType='';
-        	vm.expertType.maJorBig='';
-        	vm.expertType.maJorSmall='';
-        	vm.index=index;
-        	if(!vm.expertTypes[index]){
-        	var isCheck=$("#expertType input[name='typeCheck']" );
-        	vm.expertType.expertType=isCheck[index].value;
-        	 $("#jor").kendoWindow({
-                    width : "660px",
-                    height : "360px",
-                    title : typeName+"的突出专业",
-                    visible : false,
-                    modal : true,
-                    closable : true,
-                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-                }).data("kendoWindow").center().open();
-        	}else{
-        		vm.expertTypeList.splice(index,1);
-        	}
-        	
-        }
-        
-        vm.saveChooleMajor=function(index){
-        	vm.expertType.maJorBig=vm.type.maJorBig;
-        	vm.expertType.maJorSmall=vm.type.maJorBig;
-        	vm.expertTypeList[index]=vm.expertType;
-        	window.parent.$("#jor").data("kendoWindow").close();
-        	
-        
-        }
-        vm.create=function(){
-        	console.log(vm.expertTypeList);
-        	vm.model.expertTypeDtoList=vm.expertTypeList;
-        	console.log(vm.model);
-        	expertSvc.createExpert(vm);
-        }
+  
         
         vm.update=function(){
         	expertSvc.updateExpert(vm);
         }
         
         vm.gotoWPage=function(){
-        	vm.createWork=true;
         	workExpeSvc.gotoWPage(vm);
         }
         
@@ -104,6 +62,8 @@
         }
         
         vm.createWork=function(){
+        	vm.createWork=true;
+        	vm.work.expertID=vm.model.expertID;
         	workExpeSvc.createWork(vm);
         }
         
@@ -135,6 +95,7 @@
         
         vm.createProject=function(){
         	vm.createProject=true;
+        	vm.project.expertID=vm.model.expertID;
         	projectExpeSvc.createProject(vm);
         }
         
@@ -145,6 +106,37 @@
         
         vm.delertProject=function(){
         	projectExpeSvc.delertProject(vm);
+        }
+
+//专家类型-业务处理
+        vm.gotoExpertType=function(expertID){
+        	vm.isUpdate=false;
+        	expertTypeSvc.gotoExpertType(vm);
+        }
+        
+         vm.onETlose=function(){
+        	expertTypeSvc.cleanValue();
+        	window.parent.$("#addExpertType").data("kendoWindow").close();
+        }
+        
+        vm.createExpertType=function(){
+        	vm.createExpertType=true;
+        	vm.expertType.expertID=vm.model.expertID;
+        	expertTypeSvc.createExpertType(vm)
+        }
+        
+        vm.updateProjectType=function(){
+        	vm.isUpdate=true;
+        	vm.createExpertType=false;
+        	expertTypeSvc.updateExpertType(vm);
+        }
+        
+        vm.saveUpdateExpertType=function(){
+        	expertTypeSvc.saveUpdate(vm);
+        }
+        
+        vm.delertProjectType=function(){
+        	expertTypeSvc.deleteExpertType(vm);
         }
 
         //专家聘书弹窗

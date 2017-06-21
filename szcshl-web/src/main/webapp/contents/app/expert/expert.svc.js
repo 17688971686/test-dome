@@ -139,7 +139,7 @@
 		// end#createExpert
 						
 		// begin#getExpertById
-		function getExpertById(vm) {
+		function getExpertById(vm,expert) {
 			var httpOptions = {
 				method : 'get',
 				url : url_expert+"/findById",
@@ -153,13 +153,18 @@
 				//工作简历
 				if(response.data.workDto && response.data.workDto.length > 0){
 					vm.showWorkHistory = true;
-					vm.work=response.data.workDto;
+					vm.workList=response.data.workDto;
 					
 				}
 				//项目经验
 				if(response.data.projectDto && response.data.projectDto.length > 0){
 					vm.projectkHistory = true;
-					vm.project=response.data.projectDto;					
+					vm.projectList=response.data.projectDto;					
+				}
+				
+				if(response.data.expertTypeDtoList && response.data.expertTypeDtoList.length > 0){
+					vm.expertTypeList = true;
+					vm.expertTypeList=response.data.expertTypeDtoList;		
 				}
 				//专家聘书
 				if(response.data.expertOfferDtoList && response.data.expertOfferDtoList.length > 0){

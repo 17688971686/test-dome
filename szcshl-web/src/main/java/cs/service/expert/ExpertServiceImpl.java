@@ -62,7 +62,7 @@ public class ExpertServiceImpl implements ExpertService {
 			
 			List<ExpertTypeDto> expertTypes=new ArrayList<>();
 			
-			for(ExpertType expertType:item.getExpertTypeList()){
+			for(ExpertType expertType:item.getExpertType()){
 				
 				ExpertTypeDto expertTypeDto=new ExpertTypeDto();
 				BeanCopierUtils.copyProperties(expertType, expertTypeDto);
@@ -95,7 +95,7 @@ public class ExpertServiceImpl implements ExpertService {
 			expert.setModifiedBy(currentUser.getLoginName());
 			expert.setModifiedDate(now);
 			
-			expertTypeService.saveExpertType(expertDto.getExpertTypeDtoList(), expert.getExpertID());
+			
 			
 			//设置返回值
 			expertDto.setExpertID(expert.getExpertID());
@@ -233,6 +233,20 @@ public class ExpertServiceImpl implements ExpertService {
 				});
 				expertDto.setProjectDto(projectDtoList);
 			}
+			
+			//专家类型
+			if(expert.getExpertType()!=null && expert.getExpertType().size()>0){
+				
+				List<ExpertTypeDto> expertTypeDtoList=new ArrayList<>();
+				for(ExpertType expertType:expert.getExpertType()){
+					ExpertTypeDto expertTyprDto=new ExpertTypeDto();
+					
+					BeanCopierUtils.copyProperties(expertType, expertTyprDto);
+					expertTypeDtoList.add(expertTyprDto);
+				}
+				expertDto.setExpertTypeDtoList(expertTypeDtoList);
+			}
+			
 			//专家聘书
             if(expert.getExpertOfferList() != null && expert.getExpertOfferList().size() > 0){
                 List<ExpertOfferDto> expertOfferList=new ArrayList<>(expert.getExpertOfferList().size());

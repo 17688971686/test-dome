@@ -396,22 +396,25 @@
         };
         //kendo 语言
     	kendo.culture("zh-CN");
-    	   	    	
-        $rootScope.topSelectChange = function (dictKey, dicts , type) {       	
-            for (var i = 0; i < dicts.length; i++) {
-            	//根据code查询
-            	if(type && type == "code"){
-            		if (dicts[i].dictCode == dictKey) {
-                        return dicts[i].dicts;
-                    }
-            	//默认根据name查询	
-            	}else{
-            		if (dicts[i].dictName == dictKey) {
-                        return dicts[i].dicts;
-                    }
-            	}               
-            }
-        }
+    	
+        $rootScope.topSelectChange = function (dictKey, dicts , type) {            	
+        	if(dicts !=undefined){       		
+	            for (var i = 0; i < dicts.length; i++) {
+	            	//根据code查询
+	            	if(type && type == "code"){
+	            		
+	            		if (dicts[i].dictCode == dictKey) {
+	                        return dicts[i].dicts;
+	                    }
+	            	//默认根据name查询	
+	            	}else{
+	            		if (dicts[i].dictName == dictKey) {
+	                        return dicts[i].dicts;
+	                    }
+	            	}               
+	            }
+        	}
+        }      
 
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});

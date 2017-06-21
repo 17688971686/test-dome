@@ -66,7 +66,15 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
     @Override
 	@Transactional
 	public void deleteProject(String id) {	
-    	projectExpeRepo.deleteById(ProjectExpe_.peID.getName(), id);		
+    	
+    	String[] ids=id.split(",");
+    	for(String projectId:ids){
+    		ProjectExpe projectExp=projectExpeRepo.findById(projectId);
+    		if(projectExp!=null){
+    			projectExpeRepo.delete(projectExp);
+    		}
+    	}
+//    	projectExpeRepo.deleteById(ProjectExpe_.peID.getName(), id);		
 	}
 	
 	@Override

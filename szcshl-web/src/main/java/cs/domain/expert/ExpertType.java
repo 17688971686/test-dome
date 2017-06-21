@@ -32,7 +32,7 @@ public class ExpertType extends DomainBase{
 	
 	 //抽取专家关系（多对一）
     @ManyToOne
-    @JoinColumn(name = "expertId")
+    @JoinColumn(name = "expertID")
     private Expert expert;
 
 

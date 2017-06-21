@@ -373,7 +373,7 @@
             vm.isDrawDone = false;
             vm.t = $interval(function() {
                 vm.drawPlanSign = vm.assistPlanSign[drawPlanSignIndex];
-               var selscope = Math.floor(Math.random()*(vm.drawAssistUnits.length));
+                var selscope = Math.floor(Math.random()*(vm.drawAssistUnits.length));
               	var selAssistUnit = vm.drawAssistUnits[selscope];
                 vm.showAssitUnitName = selAssistUnit.unitName;
                 timeCount++;

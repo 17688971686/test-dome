@@ -7,7 +7,9 @@ public class ExpertTypeDto {
 	private String expertType;//专家类型
 	private String maJorBig;//突出专业（大类）
 	private String maJorSmall;//突出专业（小类）
-	private ExpertDto expertDto;
+	private ExpertDto expert;
+	
+	private String expertID;
 	
 	
 	public String getId() {
@@ -34,12 +36,19 @@ public class ExpertTypeDto {
 	public void setMaJorSmall(String maJorSmall) {
 		this.maJorSmall = maJorSmall;
 	}
-	public ExpertDto getExpertDto() {
-		return expertDto;
+	public ExpertDto getExpert() {
+		return expert;
 	}
-	public void setExpertDto(ExpertDto expertDto) {
-		this.expertDto = expertDto;
+	public void setExpert(ExpertDto expert) {
+		this.expert = expert;
 	}
+	public String getExpertID() {
+		return expertID;
+	}
+	public void setExpertID(String expertID) {
+		this.expertID = expertID;
+	}
+
 	
 	
 }
