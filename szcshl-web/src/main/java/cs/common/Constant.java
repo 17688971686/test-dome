@@ -245,4 +245,26 @@ public class Constant {
             return value;
         }
     }
+    
+    /**
+     * 系统文件类型
+     */
+    public static enum SysFileType{
+        SIGN("收文"),
+        WORKPROGRAM("工作方案"),
+        DISPATCH("发文"),
+        DOFILE("归档"),
+        MEETING("会前准备材料"),
+        SUPPLEMENT("补充函");
+
+        private String value;
+
+        SysFileType(String value){
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
+
 }

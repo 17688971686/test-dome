@@ -1,5 +1,7 @@
 package cs.model.sys;
 
+import javax.persistence.Column;
+
 import cs.model.BaseDto;
             
 /**
@@ -16,6 +18,9 @@ public class SysFileDto extends BaseDto {
     private Integer fileSize;
     private String fileType;
     private String processInstanceId;
+  	private String sysSingId;  //系统收文ID
+  	private String sysfileType;//系统文件类型
+  	private String sysMinType;	//小类
 
     public SysFileDto() {
     }
@@ -68,5 +73,31 @@ public class SysFileDto extends BaseDto {
 	}
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
+	}
+
+	public String getSysSingId() {
+		return sysSingId;
+	}
+
+	public void setSysSingId(String sysSingId) {
+		this.sysSingId = sysSingId;
+	}
+
+	public String getSysfileType() {
+		return sysfileType;
+	}
+
+	public void setSysfileType(String sysfileType) {
+		this.sysfileType = sysfileType;
+	}
+
+	public String getSysMinType() {
+		return sysMinType;
+	}
+
+	public void setSysMinType(String sysMinType) {
+		this.sysMinType = sysMinType;
 	}	
+	
+	
 }

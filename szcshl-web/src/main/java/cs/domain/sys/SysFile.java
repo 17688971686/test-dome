@@ -37,6 +37,18 @@ public class SysFile extends DomainBase{
 	@Column(columnDefinition = "varchar(64)")
 	private String processInstanceId;
 	
+	//系统收文ID
+	@Column(columnDefinition = "varchar(64)")
+	private String sysSingId;
+	
+	//系统文件类型
+	@Column(columnDefinition = "varchar(64)")
+	private String sysfileType;
+	
+	@Column(columnDefinition = "varchar(64)")
+	private String sysMinType;
+	
+	
 	public String getSysFileId() {
 		return sysFileId;
 	}
@@ -78,7 +90,27 @@ public class SysFile extends DomainBase{
 	}
 	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
-	}			
+	}
+	public String getSysSingId() {
+		return sysSingId;
+	}
+	public void setSysSingId(String sysSingId) {
+		this.sysSingId = sysSingId;
+	}
+	public String getSysfileType() {
+		return sysfileType;
+	}
+	public void setSysfileType(String sysfileType) {
+		this.sysfileType = sysfileType;
+	}
+	public String getSysMinType() {
+		return sysMinType;
+	}
+	public void setSysMinType(String sysMinType) {
+		this.sysMinType = sysMinType;
+	}
+	
+	
 
 	
 }
