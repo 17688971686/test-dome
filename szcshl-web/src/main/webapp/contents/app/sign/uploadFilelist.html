@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>上传附件列表</title>
+</head>
+<body>
+<!-- S 收文上传附件列表 -->
+ <table style="width:100%;">
+		<tr >
+			<td rowspan="2" valign="top" padding:2px 10px;" class="breadcrumb" nowrap="nowrap">
+			<p class="label label-success">收文附件列表</p>
+				<div style="width:100%; height:300px;overflow: auto;">
+					<table class="table table-bordered" id="workTab"  style="width: 98%;" >
+					  	<tr >
+						    <td width="20%" align="center" bgcolor="#eeeeee">文件名称</td>
+						    <td width="20%" align="center" bgcolor="#eeeeee">文件类型</td>
+						    <td width="20%" align="center" bgcolor="#eeeeee">附件上传人</td> 
+						    <td width="20%" align="center" bgcolor="#eeeeee">时间</td> 
+						    <td width="20%" align="center" bgcolor="#eeeeee">操作</td> 
+						</tr>
+						<tr ng-repeat="x in vm.sysFileDtoList ">
+						    <td style="text-align: center;">						   					   
+							<i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.png'"></i>
+							<i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.jpg'"></i>
+							<i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.gif'"></i>
+							<i class="fa fa-file-word-o" aria-hidden="true"  ng-show="x.fileType =='.docx'"></i>
+							<i class="fa fa-file-excel-o" aria-hidden="true"  ng-show="x.fileType =='.xlsx'"></i>
+							<i class="fa fa-file-pdf-o"  aria-hidden="true"  ng-show="x.fileType =='.pdf'"></i>
+						    <a  ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+						    </td>
+						    <td style="text-align: center;">{{ x.sysfileType }}</td>
+						    <td style="text-align: center;">{{ x.createdBy }}</td>
+						   <td style="text-align: center;">{{ x.createdDate }}</td>
+						    <td style="text-align: center;">
+						     <button ng-click="vm.commonDownloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-sm btn-primary">附件下载</button>
+						    &nbsp;&nbsp;&nbsp;&nbsp;
+						<!--  <button class="btn btn-sm btn-danger" ng-click="vm.commonDelSysFile(x.sysFileId)" ><span class="glyphicon glyphicon-remove"></span>删除</button> -->
+					</td>
+						</tr>
+					</table>
+					
+				</div>
+			</td>
+		</tr>
+</table> 
+<!-- E 收文上传附件列表 -->
+
+
+</body>
+</html>
