@@ -310,9 +310,9 @@
                     template: function (item) {
                         var isUse = false;
                         if (item.mrStatus == "2") {
-                            isUse = true;
+                            isUse = true;//会议室可用
                         } else {
-                            isUse = false;
+                            isUse = false;//会议室不可用
                         }
                         //return common.format($('#columnBtns').html(),"vm.stoped('" + item.id + "')",isUse,"vm.used('" + item.id + "')",isUse, item.id,"vm.del('" + item.id + "')");
                         return common.format($('#columnBtns').html(), "vm.stoped('" + item.id + "')", isUse, "vm.used('" + item.id + "')", isUse, item.id);

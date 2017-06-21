@@ -23,7 +23,7 @@
         }
         vm.used=function(id){
         	vm.model.id=id;
-        	vm.model.mrStatus="1";
+        	vm.model.mrStatus="1";//显示停用标志
         	meetingSvc.roomUseState(vm);
         	//vm.isUse=false;
         }
@@ -37,8 +37,8 @@
                 fn:function () {
                     $('.confirmDialog').modal('hide');
                     vm.model.id=id;
-                    vm.model.mrStatus="0";
-                    meetingSvc.roomUseState(vm);;
+                    vm.model.mrStatus="2";//显示启用标志
+                    meetingSvc.roomUseState(vm);
                 }
             })
         }

@@ -335,9 +335,7 @@
 			}
 			var httpSuccess = function success(response) {
 				vm.selectedSign = response.data.signDtoList;
-				console.log(vm.selectedSign);
 				vm.linkSignId = response.data.linkSignId;
-				console.log(vm.linkSignId);
 			}
 			common.http({
 						vm : vm,
@@ -380,7 +378,6 @@
 			}
 			var httpSuccess = function success(response) {
 				vm.signs = response.data;
-				console.log(vm.signs);
 			}
 			common.http({
 						vm : vm,
