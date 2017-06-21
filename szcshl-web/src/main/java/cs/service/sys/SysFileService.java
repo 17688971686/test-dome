@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import java.util.List;
+import java.util.Map;
 
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
@@ -22,7 +23,7 @@ public interface SysFileService {
 	 * @param fileType 文件类型
 	 * @param urlGenerator 文件url生成器
 	 * */
-	public SysFileDto save(byte[] bytes,String fileName,String businessId,String fileType,String module,String processInstanceId);
+	public SysFileDto save(byte[] bytes,String fileName,String businessId,String fileType,String sysSignId,String sysfileType);
 
 	public void deleteById(String sysFileId);
 	
@@ -31,6 +32,8 @@ public interface SysFileService {
 	public SysFile findFileById(String sysfileId);
 
 	public List<SysFileDto> findBySysFileSignId(String signid);
+
+	public Map<String, Object> initFileUploadlist(String signid);
 		
 	
 }

@@ -42,7 +42,10 @@
         
         //附件上传
         vm.workUpload = function(options){
-        	common.initcommonUploadWin({businessId:vm.work.id});
+        	
+        	var signid = vm.work.signId;
+        	var fileType = "工作方案"
+        	common.initcommonUploadWin({businessId:vm.work.id},signid,fileType);
         }
         
         //删除系统文件

@@ -4,7 +4,7 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
-<div class="well well-sm" style="background:white;" >
+<div class="well well-sm" style="background:white;" > 
 <!--  s form -->
 <form id="fileRecord_form" name="fileRecord_form" >	
 <div class="toolbar">
@@ -17,7 +17,7 @@
 		<!--  hidden input -->
 		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
 		<!--  s table -->
-		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.reviewstage=='可行性研究报告'">
+		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.fileReviewstage=='可行性研究报告'" >
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目归档审批表</strong></caption>		 
 		
 		    <tbody>
@@ -25,6 +25,7 @@
 		      <td width="15%" class="text-center">项目名称</td>
 		      <td>
 				 	{{vm.fileRecord.projectName}}
+				 	
 				
 			  </td>
 		       <td width="15%" class="text-center">档案编号</td>

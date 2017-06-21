@@ -39,7 +39,9 @@
 		
 		//上传附件窗口
  	    vm.dispatchUpload =function(options){
- 	    	common.initcommonUploadWin({businessId:vm.dispatchDoc.id});
+ 	    	var signid = vm.dispatchDoc.signId;
+ 	    	var fileType="发文";
+ 	    	common.initcommonUploadWin({businessId:vm.dispatchDoc.id},signid,fileType);
         }
         
  	    //查看上传附件列表

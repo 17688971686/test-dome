@@ -22,12 +22,41 @@
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             showAssociateSign:showAssociateSign,     //项目关联弹窗
             markGrid:markGrid,
-            paymentGrid:paymentGrid
+            paymentGrid:paymentGrid,
+            uploadFilelist:uploadFilelist		//上传附件列表
 
 
         };
         return service;
 
+    //S 上传附件列表
+        function uploadFilelist(vm){
+//        	alert( vm.model.signid);
+        	 var httpOptions = {
+                     method: 'get',
+                     url: rootPath + "/file/initFileUploadlist",
+                     params: {signid: vm.model.signid}
+                 }
+                 var httpSuccess = function success(response) {
+                     common.requestSuccess({
+                         vm: vm,
+                         response: response,
+                         fn: function () {
+                             vm.sysFileDtoList = response.data.sysFileDtoList;
+                            
+                            
+                         }
+                     })
+                 }
+
+                 common.http({
+                     vm: vm,
+                     $http: $http,
+                     httpOptions: httpOptions,
+                     success: httpSuccess
+                 });
+        }
+        //E 上传附件列表
         //S_初始化grid(过滤掉已经签收的项目)
         function grid(vm) {
             // Begin:dataSource

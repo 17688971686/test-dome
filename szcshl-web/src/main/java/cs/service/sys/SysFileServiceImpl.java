@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,17 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
-import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SysFileUtil;
-import cs.common.utils.Validate;
 import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 
 @Service
@@ -39,25 +42,29 @@ public class SysFileServiceImpl implements SysFileService{
 	private SignRepo signRepo;
 	
 	@Autowired
+	private WorkProgramRepo workProgramRepo;
+	
+	@Autowired
 	private ICurrentUser currentUser;
 	
 	@Override
 	@Transactional
-	public SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType, String module,String processInstanceId)  {
+	public SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType,String sysSignId,String sysfileType)  {
 		SysFileDto sysFileDto = new SysFileDto();
 		SysFile sysFile = new SysFile();
 		logger.debug("Begin save file "+fileName+"-"+businessId);
 		try{
 			String fileUploadPath = SysFileUtil.getUploadPath();
-			String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath,module,businessId,fileName);
+			String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath,sysSignId,businessId,fileName);
 						
 			sysFile.setSysFileId(UUID.randomUUID().toString());
 			sysFile.setBusinessId(businessId);
-			sysFile.setProcessInstanceId(processInstanceId);
 			sysFile.setFileSize(bytes.length);
 			sysFile.setShowName(fileName);
 			sysFile.setFileType(fileType);
 			sysFile.setFileUrl(relativeFileUrl);
+			sysFile.setSysSingId(sysSignId);
+			sysFile.setSysfileType(sysfileType);
 			
 			Date now = new Date();
 			sysFile.setCreatedBy(currentUser.getLoginName());
@@ -138,6 +145,38 @@ public class SysFileServiceImpl implements SysFileService{
 		}
 
 		return sysFileDtoList;
+	}
+
+	@Override
+	public Map<String, Object> initFileUploadlist(String signid) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		Sign sign = signRepo.findById(signid);
+	
+		HqlBuilder hql = HqlBuilder.create();
+		hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.sysSingId.getName()).append("=:sysSingId").setParam("sysSingId", sign.getSignid());
+		List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
+		List<SysFileDto> sysFileDtoList= new ArrayList<SysFileDto>();
+		for(SysFile item : sysFiles){
+			SysFileDto sysFileDto=new SysFileDto();
+			sysFileDto.setSysFileId(item.getSysFileId());
+			sysFileDto.setBusinessId(item.getBusinessId());
+			sysFileDto.setFileUrl(item.getFileUrl());
+			sysFileDto.setShowName(item.getShowName());
+			sysFileDto.setFileType(item.getFileType());
+			sysFileDto.setSysfileType(item.getSysfileType());
+			sysFileDto.setCreatedDate(item.getCreatedDate());
+			sysFileDto.setCreatedBy(currentUser.getLoginName());
+			sysFileDto.setModifiedBy(currentUser.getLoginName());
+			sysFileDtoList.add(sysFileDto);
+		}
+		
+        //收文
+       if(sysFileDtoList !=null){
+        	map.put("sysFileDtoList", sysFileDtoList);
+        }
+
+		return map;
 	}
 
 }

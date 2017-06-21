@@ -35,7 +35,9 @@
         
         //上传附件弹窗
         vm.fileRecordUpload = function(options){
-        	common.initcommonUploadWin({businessId:vm.fileRecord.fileRecordId});
+        	var signid =  vm.fileRecord.signId;
+        	var fileType="归档";
+        	common.initcommonUploadWin({businessId:vm.fileRecord.fileRecordId},signid,fileType);
         }
         
         activate();

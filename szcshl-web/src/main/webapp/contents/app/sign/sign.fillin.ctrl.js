@@ -11,6 +11,7 @@
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
         vm.model.signid = $state.params.signid;	//收文ID
+     
         vm.flowDeal = false;		//是否是流程处理标记
 
         signSvc.initFillData(vm);
@@ -32,25 +33,12 @@
             }
         }
 
-        //附件下载
-        vm.signDownload = function (id) {
-            signSvc.signDownload(vm, id);
-        }
-        //删除系统文件
-        vm.delsSysFile = function (id) {
-            /*	 common.confirm({
-                     vm:vm,
-                     title:"",
-                     msg:"确认删除数据吗？",
-                     fn:function () {
-                          $('.confirmDialog').modal('hide');
-                     }
-                 })*/
-            signSvc.deleteSysFile(vm, id);
-        }
+   
         //文件上传窗口
         vm.commonUploadWin = function () {
-            common.initcommonUploadWin({businessId: vm.model.signid});
+        	var signid =  vm.model.signid;
+        	var fileType="收文";
+            common.initcommonUploadWin({businessId: vm.model.signid},signid,fileType);
         }
         //查看附件
         vm.signQuery = function () {

@@ -84,7 +84,7 @@
 	// E 删除系统文件
 
 	// S 初始化上传附件窗口
-	function initcommonUploadWin(options) {
+	function initcommonUploadWin(options,signid,fileType) {
 		$("#commonuploadWindow").kendoWindow({
 			width : "660px",
 			height : "400px",
@@ -94,13 +94,15 @@
 			closable : true,
 			actions : [ "Pin", "Minimize", "Maximize", "Close" ]
 		}).data("kendoWindow").center().open();
-		initUpload(options);
+		initUpload(options,signid,fileType);
 	}
 	// E 初始化上传附件窗口
 
-
 	// S 初始化上传附件控件
-	function initUpload(options) {
+	function initUpload(options,signid,fileType) {
+		
+		var sysSignId = signid;
+		var sysfileType = fileType;
 		var businessId = options.businessId;
 		
 		var projectfileoptions = {
@@ -112,7 +114,7 @@
 			showRemove : false,
 			uploadUrl : rootPath + "/file/fileUpload",
 			uploadExtraData : {
-				businessId : businessId
+				businessId : businessId,sysSignId:sysSignId,sysfileType:fileType
 			}
 		};
 		$("#commonphotofile").fileinput(projectfileoptions).on(

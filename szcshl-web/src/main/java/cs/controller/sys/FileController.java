@@ -1,20 +1,14 @@
 package cs.controller.sys;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +17,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -61,21 +54,28 @@ public class FileController {
     	return sysFileDtos;
     }
 	
-	@RequestMapping(name="根据收文ID获取上传数据",path="findBySysFileSignId",method=RequestMethod.GET)
+	@RequestMapping(name="根据业务ID获取上传数据",path="findBySysFileSignId",method=RequestMethod.GET)
 	public @ResponseBody List<SysFileDto> findByFileSignId(@RequestParam(required = true)String signid){
 		List<SysFileDto>  sysfileDto = fileService.findBySysFileSignId(signid);
 		return sysfileDto;
 	}
-	//@RequiresPermissions("file##post")
+	
+	@RequestMapping(name="获取一个项目下的所有附件列表",path="initFileUploadlist",method=RequestMethod.GET)
+	public @ResponseBody Map<String, Object> initFileUploadlist(@RequestParam(required = true)String signid){
+//		
+		return fileService.initFileUploadlist(signid);
+	}
+	
+	
 	@RequestMapping(name = "文件上传", path = "fileUpload",method=RequestMethod.POST)	
 	public @ResponseBody SysFileDto upload(HttpServletRequest request,@RequestParam("file")MultipartFile multipartFile,
-			@RequestParam(required = true)String businessId,String module,String processInstanceId) throws IOException{
+			@RequestParam(required = true)String businessId,String sysSignId,String sysfileType ) throws IOException{
 		SysFileDto sysFileDto = null;
 		String fileName = multipartFile.getOriginalFilename();	
 		String fileType=fileName.substring(fileName.lastIndexOf("."),fileName.length());
 		
 		if(!multipartFile.isEmpty()){
-			sysFileDto = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType,module,processInstanceId);
+			sysFileDto = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType,sysSignId,sysfileType);
 		}else{
 			logger.info("文件上传失败，无法获取文件信息！");
 			throw new IOException(Constant.ERROR_MSG);

@@ -40,6 +40,8 @@
             flowSvc.initFlowData(vm);
             // 再初始化业务信息
             signSvc.initFlowPageData(vm);
+            //初始化上传附件
+            signSvc.uploadFilelist(vm);
             signSvc.initAssociateSigns(vm,vm.model.signid);
             // 初始化专家评分
             signSvc.markGrid(vm);

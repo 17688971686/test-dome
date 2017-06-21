@@ -11,7 +11,6 @@
         
         //initGrid
         signSvc.grid(vm);
-                
         vm.querySign = function(){
         	signSvc.querySign(vm);
         }       
