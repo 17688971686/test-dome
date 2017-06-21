@@ -1,11 +1,12 @@
 package cs.service.project;
 
-import cs.domain.project.AssistPlan;
+import java.util.List;
+import java.util.Map;
+
 import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;
+import cs.model.project.AssistUnitDto;
 import cs.repository.odata.ODataObj;
-
-import java.util.Map;
 
 /**
  * Description: 协审方案 业务操作接口
@@ -33,4 +34,10 @@ public interface AssistPlanService {
     AssistPlanDto getAssistPlanBySignId(String signId);
 
     void saveDrawAssistUnit(String planId,String drawAssitUnitIds, String unSelectedIds);
+    
+   void  updateDrawType(String id,String drawType);
+   
+   void addAssistUnit(String planId,String unitId);
+   
+   List<AssistUnitDto> getAssistUnit(String planId);
 }

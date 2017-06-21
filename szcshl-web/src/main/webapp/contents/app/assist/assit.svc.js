@@ -24,9 +24,10 @@
             initPlanByPlanId : initPlanByPlanId,				//初始化协审计划
             chooseAssistUnit : chooseAssistUnit,				//选择协审单位
             saveDrawAssistUnit:saveDrawAssistUnit,              //保存协审计划抽签
-            initAssistUnit : initAssistUnit,					//初始化协审单位
             getUnitUser : getUnitUser,
-            getAllUnit : getAllUnit			                    //获取所有的协审单位
+            getAllUnit : getAllUnit,			                    //获取所有的协审单位
+            saveAddChooleUnit : saveAddChooleUnit,		//保存手动选择的协审单位
+            initAssistUnitByPlanId : initAssistUnitByPlanId	//初始化计划项目的协审单位
             
 		};
 		return service;
@@ -439,7 +440,7 @@
 	        	vm.reviewNum=vm.assistPlanSign.length;
 	        	 if(vm.assistPlanSign.length > 0){
 			           initPlanByPlanId(vm,planId);//初始化协审计划
-			           initAssistUnit(vm,planId);//初始化协审单位
+			           initAssistUnitByPlanId(vm,planId);//初始化协审单位
 //			           getUnitUser(vm);
            		}
 	        }
@@ -523,11 +524,10 @@
 
         //begin chooseAssistUnit
         function chooseAssistUnit(vm){
-//        	vm.signNum='';//抽取单位个数
         	var httpOptions={
         		method:"get",
         		url:rootPath+'/assistUnit/chooseAssistUnit',
-        		params:{planId:vm.planId,number:vm.number}
+        		params:{planId:vm.planId,number:vm.number,drawType:vm.drawType}
         	}
         	
         	var httpSuccess=function success(response){
@@ -544,33 +544,6 @@
         	});
         }//end chooseAssistUnit
         
-        //begin initAssistUnit
-        function initAssistUnit(vm,planId){
-        
-        	var httpOptions={
-        		method:"get",
-        		url:rootPath+'/assistUnit/getAssistUnitByPlanId',
-        		params:{planId:planId}
-        	}
-        	
-        	var httpSuccess=function success(response){
-        		vm.unitList=response.data;
-        		vm.signNum=vm.unitList.length;
-        		if(vm.unitList.length>0){
-        			vm.isChoose=true;
-        		}
-        		
-        	}
-        	
-        	common.http({
-        		vm: vm,
-        		$http: $http,
-        		httpOptions: httpOptions,
-        		success: httpSuccess
-        	});
-        	
-        }
-        //end initAssistUnit
         
          // begin  getUnitUser
         function getUnitUser(vm){
@@ -670,6 +643,73 @@
             });
         }
         //end saveDrawAssistUnit
+        
+        //begin saveAddChooleUnit
+        function saveAddChooleUnit(vm,unitObject){
+        	if(vm.unitList.length<vm.num){
+	        	var i=0;
+	        	vm.unitList.forEach(function(x){
+	        		if(unitObject.id == x.id){
+	        			i=-1;
+	        			common.alert({
+	        				vm:vm,
+	        				msg:"该协审单位已被选中！"
+	        			});
+	        			return;
+	        		}
+	        	});
+	        	if(i!=-1){
+	        		var httpOptions={
+	        			method:"post",
+	        			url:rootPath+"/assistPlan/saveChooleUnit",
+	        			params:{planId:vm.showPlan.id,unitId:unitObject.id}
+	        		}
+	        		var httpSuccess=function success(response){
+		        		common.alert({
+		        			vm:vm,
+	        				msg:"添加成功！"
+	        			});
+	        		}
+	        		
+	        		common.http({
+		                vm:vm,
+		                $http:$http,
+		                httpOptions:httpOptions,
+		                success:httpSuccess
+	           		});
+	        	}
+        	}else{
+        		common.alert({
+        				vm:vm,
+        				msg:"当前只能"+vm.num+"家单位参与抽签"
+        			});
+        	}
+        }
+        //end saveAddChooleUnit
+        
+        //begin initAssistUnitByPlanId
+        function initAssistUnitByPlanId(vm){
+        	var httpOptions={
+        		method : "get",
+        		url : rootPath+"/assistPlan/initAssistUnit",
+        		params:{planId : vm.showPlan.id }
+        	}
+        	
+        	var httpSuccess=function success(response){
+		        	vm.unitList=response.data;	
+		        	vm.signNum=vm.unitList.length;
+		        	console.log(vm.unitList);
+	        }
+	        		
+	        common.http({
+		          vm:vm,
+		          $http:$http,
+		          httpOptions:httpOptions,
+		          success:httpSuccess
+	         });
+        	
+        }
+        //end  initAssistUnitByPlanId
 
 	}		
 })();

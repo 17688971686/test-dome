@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import cs.model.PageModelDto;
 import cs.model.project.AssistUnitDto;
 import cs.repository.odata.ODataObj;
+import cs.service.project.AssistPlanService;
 import cs.service.project.AssistUnitService;
 
 /**
@@ -33,6 +34,9 @@ public class AssistUnitController {
 	String ctrlName = "assist";
     @Autowired
     private AssistUnitService assistUnitService;
+    
+    @Autowired
+    private AssistPlanService assistPlanService;
 
     @RequiresPermissions("assistUnit#fingByOData#post")
     @RequestMapping(name = "获取数据", path = "fingByOData", method = RequestMethod.POST)
@@ -94,10 +98,12 @@ public class AssistUnitController {
     @RequiresPermissions("assistUnit#chooseAssistUnit#get")
     @RequestMapping(name="添加抽签协审单位",path="chooseAssistUnit",method=RequestMethod.GET)
     @ResponseBody
-    public List<AssistUnitDto> chooseAssistUnit(@RequestParam String planId,@RequestParam Integer number){
+    public List<AssistUnitDto> chooseAssistUnit(@RequestParam String planId,@RequestParam Integer number,@RequestParam String drawType){
     	List<AssistUnitDto> assistUnitDtoList=assistUnitService.findDrawUnit(planId, number);
+    	assistPlanService.updateDrawType(planId, drawType);
     	for(AssistUnitDto assistUnitDto:assistUnitDtoList){
-    		assistUnitService.update(assistUnitDto);
+    		assistPlanService.addAssistUnit(planId, assistUnitDto.getId());
+//    		assistUnitService.update(assistUnitDto);
     	}
     	return assistUnitDtoList;
     }

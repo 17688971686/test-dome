@@ -43,7 +43,7 @@ public class AssistPlan extends DomainBase {
     private String drawTime;
 
     /**
-     * 抽签方式
+     * 抽签方式: 1 :表示轮空   0：表示全部抽中
      */
     @Column(columnDefinition="VARCHAR(2)")
     private String drawType;

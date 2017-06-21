@@ -10,7 +10,7 @@
 
         </tr>
         <tr ng-repeat="x in vm.assistPlanSign" style="height: 5px;">
-            <td  style="width: 300px;"><span>{{x.projectName}}</span><span ng-if="x.splitNum!=null">({{x.splitNum}})</span></td>
+            <td  style="width: 300px;"><span>{{x.projectName}}</span><span ng-if="x.splitNum!=1">({{x.splitNum}})</span></td>
             <td style="width: 300px;">{{x.assistUnit.unitName}}</td>
 
         </tr>

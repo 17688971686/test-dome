@@ -16,7 +16,7 @@
 				</tr>
 				<tr ng-repeat="x in vm.assistPlanSign" style="height: 5px;">
 					<td style="width: 80px;">{{$index+1}}</td>
-					<td  style="width: 300px;"><span>{{x.projectName}}</span><span ng-if="x.splitNum!=null">({{x.splitNum}})</span></td>
+					<td  style="width: 300px;"><span>{{x.projectName}}</span><span ng-if="x.splitNum!=1">({{x.splitNum}})</span></td>
 					<td style="width: 300px;">{{x.estimateCost}}</td>
 					<td style="width: 300px; "> 
 						<input type="number" ng-model="vm.assistPlanSign[$index].jiananCost" name="jiananCost" id="jiananCost"  />
@@ -87,24 +87,24 @@
 </div>
 
 <div id="againChooleAssistUnit" style="background:white;display: none;">
-	<div style="height: 300px; width: 100%; overflow: auto; ">
-		<table class="table table-bordered" style="width:100%; ">
+	<div style="height: 300px; width: 100%; overflow: auto; border: 1px solid black; ">
+		<table class="table table-bordered" style="width:100%; text-align: center; ">
 			<tr>
-				<td>序号</td>
-				<td>项目名称</td>
+				<td style="width: 80px;">序号</td>
 				<td>单位名称</td>
+				<td style="width: 100px;">操作</td>
 			</tr>
-			<tr ng-repeat="x in vm.assistPlanSign">
+			<tr ng-repeat="x in vm.allUnitList |filter:{isUse:'1'}">
 				<td>{{$index+1}}</td>
-				<td>{{x.projectName}}</span><span ng-if="x.splitNum!=null">({{x.splitNum}})</span></td>
-				<td>{{x.assistUnit.unitName}}<span ng-if="x.assistUnit.unitName ==null"><button class="btn btn-sm btn-success" ng-click="vm.addUnit()">添加</button></span></td>
+				<td>{{x.unitName}}</td>
+				<td><span ><button class="btn btn-sm btn-success" ng-click="vm.saveAddChooleUnit(x)">添加</button></span></td>
 			</tr>
 		</table>
 	</div>
 <br/><br/>
-	<!-- <div style="width: 100%;height: 50px; border: 1px solid black;">
-		<span style="float: left;" ng-repeat="x in vm.unitList">{{x.unitName}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-	
-	</div> -->
+<h4>已选协审单位如下：</h5>
+	<div style="width: 100%;height: 80px; border: 1px solid black;">
+		<span style="float: left;" ng-repeat="x in vm.unitList">{{x.unitName}}<span ng-if="($index+1) < (vm.unitList).length">、</span>
+	</div>
 
 </div>

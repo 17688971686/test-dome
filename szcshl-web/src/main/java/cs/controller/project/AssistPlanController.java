@@ -1,21 +1,27 @@
 package cs.controller.project;
 
-import cs.model.PageModelDto;
-import cs.model.project.AssistPlanDto;
-import cs.repository.odata.ODataObj;
-import cs.service.project.AssistPlanService;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Map;
+import cs.model.PageModelDto;
+import cs.model.project.AssistPlanDto;
+import cs.model.project.AssistUnitDto;
+import cs.repository.odata.ODataObj;
+import cs.service.project.AssistPlanService;
 
 /**
  * Description: 协审方案 控制层
@@ -101,8 +107,24 @@ public class AssistPlanController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void saveDrawAssistUnit(@RequestParam(required = true)String planId,@RequestParam(required = true) String drawAssitUnitIds,String unSelectedIds) {
         assistPlanService.saveDrawAssistUnit(planId,drawAssitUnitIds,unSelectedIds);
-        System.out.println(drawAssitUnitIds);
+//        System.out.println(drawAssitUnitIds);
        // assistPlanService.update(record);
+    }
+    
+    @RequiresPermissions("assistPlan#initAssistUnit#get")
+    @RequestMapping(name="初始化项目的协审单位",path="initAssistUnit",method=RequestMethod.GET)
+    @ResponseBody
+    public List<AssistUnitDto> initAssistUnit(@RequestParam String planId){
+    	
+    	return assistPlanService.getAssistUnit(planId);
+    }
+    
+    @RequiresPermissions("assistPlan#saveChooleUnit#post")
+    @RequestMapping(name="保存手动选择的协审单位",path="saveChooleUnit",method=RequestMethod.POST)
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void saveChooleUnit(@RequestParam String unitId,@RequestParam String planId){
+    	
+    	assistPlanService.addAssistUnit(planId, unitId);
     }
 
     @RequiresPermissions("assistPlan##put")

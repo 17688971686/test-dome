@@ -1,5 +1,18 @@
 package cs.service.project;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
@@ -7,26 +20,20 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.project.*;
+import cs.domain.project.AssistPlan;
+import cs.domain.project.AssistPlanSign;
+import cs.domain.project.AssistPlanSign_;
+import cs.domain.project.AssistPlan_;
+import cs.domain.project.AssistUnit;
 import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;
 import cs.model.project.AssistPlanSignDto;
 import cs.model.project.AssistUnitDto;
-import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
 import cs.repository.repositoryImpl.project.AssistUnitRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.logging.Handler;
 
 /**
  * Description: 协审方案 业务操作实现类
@@ -398,4 +405,41 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 
 
     }
+
+	@Override
+	@Transactional
+	public void updateDrawType(String id, String drawType) {
+		
+		AssistPlan assistPlan=assistPlanRepo.findById(id);
+		if(assistPlan!=null){
+			assistPlan.setDrawType(drawType);
+			assistPlanRepo.save(assistPlan);
+		}
+		
+	}
+
+	@Override
+	@Transactional
+	public void addAssistUnit(String planId, String unitId) {
+		AssistPlan assistPlan=assistPlanRepo.findById(planId);
+		AssistUnit assistUnit=assistUnitRepo.findById(unitId);
+		List<AssistUnit> assistUnitList=assistPlan.getAssistUnitList();
+		assistUnitList.add(assistUnit);
+		assistPlan.setAssistUnitList(assistUnitList);
+		assistPlanRepo.save(assistPlan);
+	}
+
+	@Override
+	@Transactional
+	public List<AssistUnitDto> getAssistUnit(String planId) {
+		List<AssistUnit> assitUnitList=assistPlanRepo.findById(planId).getAssistUnitList();
+		List<AssistUnitDto> assitUnitDtoList=new ArrayList<>();
+		for(AssistUnit  assistUnit :assitUnitList){
+			AssistUnitDto assistUnitDto=new AssistUnitDto();
+			BeanCopierUtils.copyProperties(assistUnit, assistUnitDto);
+			assitUnitDtoList.add(assistUnitDto);
+			
+		}
+		return assitUnitDtoList;
+	}
 }

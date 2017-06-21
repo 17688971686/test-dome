@@ -314,11 +314,13 @@
        vm.checked='option1';
         vm.chooseAssistUnit=function(){
         	vm.number=0;
+        	vm.drawType="";
         	if(vm.checked=='option1'){
-        	
+        		vm.drawType="1";
         		vm.number=vm.assistPlanSign.length+1;
         	}
         	if(vm.checked=='option2'){
+        		vm.drawType="0";
         		vm.number=vm.assistPlanSign.length;
         	}
         	assistSvc.chooseAssistUnit(vm);
@@ -328,15 +330,27 @@
          vm.againChooleAssistUnit=function(){
         	$("#againChooleAssistUnit").kendoWindow({
 	        	title:"选择参加协审单位",
-	        	width:"30%",
-    			height:"60%",
+	        	width:"600px",
+    			height:"500px",
 	        	visible : false,
 	            modal : true,
 	            closable : true,
 	            actions : [ "Pin", "Minimize", "Maximize", "Close" ]
             }).data("kendoWindow").center().open();
             
-            assistSvc.getPlanSignByPlanId(vm,vm.planId);
+            assistSvc.getAllUnit(vm);
+            vm.num=0;
+        	if(vm.showPlan.drawType=="0"){
+        		vm.num=vm.assistPlanSign.length;
+        	}else {
+        		console.log(123);
+        		vm.num=vm.assistPlanSign.length+1;
+        	}
+        }
+        
+        vm.saveAddChooleUnit=function(unitObject){
+        	assistSvc.saveAddChooleUnit(vm,unitObject);
+        
         }
 
         //协审项目抽签
@@ -350,13 +364,16 @@
             }
             //待被抽取的协审单位
             vm.drawAssistUnits = vm.unitList.slice(0);
+            
+            //判断协审单位个数是否不少于协审计划个数，若少则先手动选择参与的协审单位，不少则可以直接抽签
+            if(vm.drawAssistUnits.length>=vm.assistPlanSign.length){
+            
 //            var drawAssistPlanSign
             var drawPlanSignIndex = 0;
-            var unitIndex=-1,signIndex=-1;//记录被抽取的协审计划下标和协审单位下标
+            var signIndex=-1;//记录被抽取的协审单位下标
             //先让上次轮空的协审单位进行抽取项目
 	            for(var i=0;i<vm.drawAssistUnits.length;i++){ //遍历协审单位，判断是否为空，9表示为空，如果为空，则进行抽签协审计划，分配协审单位
 	            	if(vm.drawAssistUnits[i].isLastUnSelected=='9'){
-	            		unitIndex=i;
 	            		var selscope = Math.floor(Math.random()*(vm.assistPlanSign.length));//产生随机数
 	            		signIndex=selscope;
 	            		vm.assistPlanSign[selscope].assistUnit=vm.drawAssistUnits[i];//将协审单位分配给协审计划
@@ -381,11 +398,17 @@
                 if(timeCount % 20 == 0){
                     //选中协审单位
                 	if(drawPlanSignIndex!=signIndex){
-                	
-                    vm.assistPlanSign[drawPlanSignIndex].assistUnit = selAssistUnit;
+                    	vm.assistPlanSign[drawPlanSignIndex].assistUnit = selAssistUnit;
+                	}else{
+                		if(drawPlanSignIndex!=vm.assistPlanSign.length-1){
+	                		vm.assistPlanSign[++drawPlanSignIndex].assistUnit = selAssistUnit;
+                		}
                 	}
                     drawPlanSignIndex ++;
-
+                    if(drawPlanSignIndex==signIndex && signIndex==vm.assistPlanSign.length-1){ //判断轮空抽签的是不是最后一个，并且协审计划轮抽到最后一个时，停止抽签
+                    	$interval.cancel(vm.t);
+                        vm.isDrawDone = true;
+                    }
                     if(drawPlanSignIndex == vm.assistPlanSign.length){
                         //抽签完毕
                         $interval.cancel(vm.t);
@@ -398,8 +421,14 @@
                         }
                     });
                     
-                }
+            	}
             }, 50);
+        }else{
+        	common.alert({
+        		vm:vm,
+        		msg:"当前协审单位少于项目计划数目，不能抽签！请先到项目计划表中选择参加的协审单位后再进行抽签！"
+        	});
+        }
         }
 
 
