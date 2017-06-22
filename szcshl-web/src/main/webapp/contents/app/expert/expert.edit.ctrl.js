@@ -46,7 +46,9 @@
 
         }
         
-  
+  		vm.create=function(){
+  			expertSvc.createExpert(vm);
+  		}
         
         vm.update=function(){
         	expertSvc.updateExpert(vm);
