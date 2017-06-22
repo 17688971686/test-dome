@@ -451,7 +451,6 @@
                         //抽取专家
                         if (vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0) {
                             vm.show_expert = true;
-
                         }
                         //先加载完业务数据，再加载流程业务数据
                         if (vm.dealFlow) {
@@ -841,7 +840,6 @@
                 width : 100,
                 filterable : true,
                 template : function(item) {
-                    console.log(item);
                     return item.expertDto.remark == null ? "" : item.expertDto.remark;
                 }
             },
@@ -946,7 +944,6 @@
 						title : "操作",
 						width : 100,
 						template : function(item) {
-                            console.log(item);
 							return common.format($('#columnBtn').html(),
 									"vm.editpayment('" + item.id + "')");
 									//item.expertID);
@@ -970,9 +967,10 @@
                     response: response,
                     fn: function () {
                          vm.expertReviews = response.data.value;
-                        // console.log(response.data.value);
-                         //vm.expertSelectedDtoList = expertReviews.expertSelectedDtoList;
-                        // console.log(vm.expertSelectedDtoList);
+                         var expertReviews = vm.expertReviews
+                         if(expertReviews != undefined&&expertReviews.length>0){
+                             vm.show_expert = true;
+                         }
 
                     }
                 })

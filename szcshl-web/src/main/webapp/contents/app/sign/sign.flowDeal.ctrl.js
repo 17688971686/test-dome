@@ -19,6 +19,7 @@
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
         vm.dealFlow = true;
         vm.expertReview = {};
+        vm.show_expert = false;
         vm.showExpertRemark = false;// 专家评分弹窗内容显示
         vm.showExpertpayment = false;// 专家费用弹窗内容显示
         vm.MarkAndPay = true;// 专家评分费用编辑权限
