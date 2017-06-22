@@ -93,13 +93,19 @@ public class Expert extends DomainBase {
 
     @Column(columnDefinition = "varchar(32) ")
     private String bankAccount;    //银行账号
+    
+    @Column(columnDefinition = "varchar(30) ")
+    private String expertSort;    //专家类别
+    
+    @Column(columnDefinition = "varchar(30) ")
+    private String expertField;    //专家区域
 
     @Column(columnDefinition = "varchar(30) ")
     private String state;    //专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
 
     @Column(columnDefinition = "BLOB")
     public byte[] photo;    //专家照片
-
+    
     @OneToMany(mappedBy = "expert")
     private List<WorkExpe> work;                        //专家工作经验
 
@@ -119,7 +125,28 @@ public class Expert extends DomainBase {
         return birthDay;
     }
 
-    public void setBirthDay(Date birthDay) {
+    
+    public String getExpertSort() {
+		return expertSort;
+	}
+
+
+	public void setExpertSort(String expertSort) {
+		this.expertSort = expertSort;
+	}
+
+
+	public String getExpertField() {
+		return expertField;
+	}
+
+
+	public void setExpertField(String expertField) {
+		this.expertField = expertField;
+	}
+
+
+	public void setBirthDay(Date birthDay) {
         this.birthDay = birthDay;
     }
 

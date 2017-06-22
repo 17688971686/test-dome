@@ -32,7 +32,7 @@
 			<td width="15%"> 
 				<select ng-model="vm.model.sex" class="form-control input-sm " name="sex" data-val-required="必填" data-val="true">
 					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.SEX.dicts" ng-selected="vm.model.sex == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+					<option ng-repeat="x in DICT.SEX.dicts" ng-selected="vm.model.sex == x.dictName|orderBy:'dictName'" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 				<span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
 			</td>
@@ -149,36 +149,51 @@
 		<tr>
 			<td class="formAlignRight">所学专业<span class="required">*</span></td>
 			<td colspan="7">
-				<input type="text" name="majorStudy" id="majorStudy" class="form-control input-sm " ng-model="vm.model.majorStudy" data-val="true" data-val-required="必填"> 
-				<span data-valmsg-for="majorStudy" data-valmsg-replace="true" class="errors"></span> 
+			<input type="text" name="majorStudy" id="majorStudy"  class="form-control input-sm " ng-model="vm.model.majorStudy"  data-val="true"  data-val-required="必填"  >
+			<button ng-click="vm.chooseMS()" >请选择</button>
 			</td>
 		</tr>
-		<tr>	
+		<tr>
 			<td class="formAlignRight">从事专业<span class="required">*</span></td>
-			<td colspan="7">
-				<input type="text" name="majorWork" id="majorWork" class="form-control input-sm " ng-model="vm.model.majorWork" data-val="true" data-val-required="必填"> 
-				<span data-valmsg-for="majorWork" data-valmsg-replace="true" class="errors"></span> 
+			<td class="formAlignRight" colspan="7">
+			 	<input type="text" name="majorWork" id="majorWork"  class="form-control input-sm " ng-model="vm.model.majorWork" data-val="true"  data-val-required="必填" >
+				<button ng-click="vm.chooseMW()">请选择</button>
+				<span data-valmsg-for="majorWork" data-valmsg-replace="true" class="errors"></span>
 			</td>
-		</tr>
-		<tr>	
-			<td class="formAlignRight">开户行<span class="required">*</span></td>
-			<td colspan="2">
-				<input type="text" name="openingBank" id="openingBank" class="form-control input-sm " ng-model="vm.model.openingBank" data-val="true" data-val-required="必填"> 
-				<span data-valmsg-for="openingBank" data-valmsg-replace="true" class="errors"></span> 
-			</td>	
-			<td class="formAlignRight">银行账号<span class="required">*</span></td>
-			<td colspan="2">
-				<input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm " ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填"> 
-				<span data-valmsg-for="bankAccount" data-valmsg-replace="true" class="errors"></span> 
+		</tr> 
+		
+		<tr>
+			<td class="formAlignRight">专家类别<span class="required">*</span></td>
+			<td colspan="3">
+				 <select ng-model="vm.model.expertSort" class="form-control input-sm " name="expertSort" data-val="true" data-val-required="必填">
+					<option value="">请选择</option>
+					<option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+				</select>
+				<span data-valmsg-for="expertType" data-valmsg-replace="true" class="errors"></span>
 			</td>
-            <td class="formAlignRight">区域类别<span class="required">*</span></td>
-            <td>
-                <select ng-model="vm.model.procoSttype" class="form-control input-sm"  data-val="true" data-val-required="必填" name="procoSttype">
+			
+			<td class="formAlignRight">区域类别<span class="required">*</span></td>
+            <td colspan="3">
+                <select ng-model="vm.model.expertField" class="form-control input-sm"  data-val="true" data-val-required="必填" name="expertField">
                     <option value="">请选择</option>
-                    <option ng-repeat="x in DICT.PROCOST_TYPE.dicts" ng-selected="vm.model.procoSttype == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+                    <option ng-repeat="x in DICT.EXPERT_FIELD.dicts" ng-selected="vm.model.expertField == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
                 <span data-valmsg-for="procoSttype" data-valmsg-replace="true" class="errors"></span>
             </td>
+		</tr>
+		
+		<tr>	
+			<td class="formAlignRight">开户行<span class="required">*</span></td>
+			<td colspan="3">
+				<input type="text" name="openingBank" id="openingBank" class="form-control input-sm " ng-model="vm.model.openingBank" data-val="true" data-val-required="必填"> 
+				<span data-valmsg-for="openingBank" data-valmsg-replace="true" class="errors"></span> 
+			</td>	
+			
+			<td class="formAlignRight">银行账号<span class="required">*</span></td>
+			<td colspan="3">
+				<input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm " ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填"> 
+				<span data-valmsg-for="bankAccount" data-valmsg-replace="true" class="errors"></span> 
+			</td>
 		</tr>
 				
 		<tr>

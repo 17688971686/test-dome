@@ -575,7 +575,7 @@
 					id : "id"
 				}),
 				rowNumber: true,  
-	            headerCenter: true,  
+	            headerCenter: true
 			});
 			
 			var  dataBound = function () {  
