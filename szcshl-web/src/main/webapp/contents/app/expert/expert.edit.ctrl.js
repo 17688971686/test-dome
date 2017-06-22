@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertEditCtrl', expert);
 
-    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','expertOfferSvc','$state'];
+    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','expertOfferSvc','expertTypeSvc','$state'];
 
-    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,expertOfferSvc,$state) {
+    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,expertOfferSvc,expertTypeSvc,$state) {
         var vm = this;
         vm.model = {};
         vm.title = '专家信息录入';
