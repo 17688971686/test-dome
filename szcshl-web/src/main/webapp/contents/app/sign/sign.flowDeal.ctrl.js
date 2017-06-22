@@ -3,10 +3,10 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['$location', 'signSvc', '$state', 'flowSvc', 'signFlowSvc',
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc',
         '$http'];
 
-    function sign($location, signSvc, $state, flowSvc, signFlowSvc, $http) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc, $http) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};
@@ -33,8 +33,7 @@
                 aObj.tab('show');
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
-                $("#" + showDiv).addClass("active").addClass("in")
-                    .show(500);
+                $("#" + showDiv).addClass("active").addClass("in").show(500);
             })
 
             // 先初始化流程信息
@@ -43,11 +42,12 @@
             signSvc.initFlowPageData(vm);
             //初始化上传附件
             signSvc.uploadFilelist(vm);
+            //关联项目
             signSvc.initAssociateSigns(vm,vm.model.signid);
-            // 初始化专家评分
-            signSvc.markGrid(vm);
-            // 初始化专家评审费用
-            signSvc.paymentGrid(vm);
+            // 初始化专家评分(在流程环节初始化)
+            //signSvc.markGrid(vm);
+            // 初始化专家评审费用(在流程环节初始化)
+            //signSvc.paymentGrid(vm);
             //初始化项目关联弹窗
             signSvc.associateGrid(vm);
         }
@@ -385,7 +385,24 @@
                 vm.model.isNeedWrokPrograml = '9'
             }
         }
-        
+
+        //生产会前准备材料
+        vm.meetingDoc = function(){
+            common.confirm({
+                vm:vm,
+                title:"",
+                msg:"如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
+                fn:function () {
+                    $('.confirmDialog').modal('hide');
+                    signSvc.meetingDoc(vm);
+                }
+            })
+        }
+
+        //附件下载
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.commonDownloadFile(vm,sysFileId);
+        }
 
     }
 })();

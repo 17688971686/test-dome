@@ -245,7 +245,34 @@ public class Constant {
             return value;
         }
     }
-    
+
+    /**
+     * 模板枚举
+     */
+    public static enum Template{
+        OUTPUT_SUFFIX(".doc","work文档"),        //生成work文档
+        COMPERE("compere","主持人"),
+        MEETING_AM("meetingAM","会议议程（上午）"),
+        MEETING_PM("meetingPM","会议议程（下午）"),
+        ASSIST("assist","协审协议书"),
+        SIGN_IN("signIn","签到表"),
+        INVITATION("invitation","邀请函"),
+        UNIT_NOTICE("notice","项目单位会议通知");
+
+        private String key;
+        private String value;
+
+        Template(String key,String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+        public String getKey(){return key;}
+    }
+
     /**
      * 系统文件类型
      */
@@ -266,5 +293,4 @@ public class Constant {
             return value;
         }
     }
-
 }

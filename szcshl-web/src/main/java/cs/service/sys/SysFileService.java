@@ -10,30 +10,23 @@ import cs.repository.odata.ODataObj;
 
 /**
  * @author lqs
- * 文件管理服务接口
- * 
- * */
+ *         文件管理服务接口
+ */
 public interface SysFileService {
 
-	/**
-	 * 保存文件
-	 * @param bytes 文件数据
-	 * @param fileName 文件名称
-	 * @param businessId 业务ID
-	 * @param fileType 文件类型
-	 * @param urlGenerator 文件url生成器
-	 * */
-	public SysFileDto save(byte[] bytes,String fileName,String businessId,String fileType,String sysSignId,String sysfileType);
+    SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType,
+                    String sysSignId, String sysfileType, String sysMinType);
 
-	public void deleteById(String sysFileId);
-	
-	PageModelDto<SysFileDto> get(ODataObj odataObj);
+    void deleteById(String sysFileId);
 
-	public SysFile findFileById(String sysfileId);
+    PageModelDto<SysFileDto> get(ODataObj odataObj);
 
-	public List<SysFileDto> findBySysFileSignId(String signid);
+    SysFile findFileById(String sysfileId);
 
-	public Map<String, Object> initFileUploadlist(String signid);
-		
-	
+    List<SysFileDto> findByBusinessId(String businessId);
+
+    List<SysFileDto> findBySysFileSignId(String signid);
+
+    Map<String, Object> initFileUploadlist(String signid);
+
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cs.domain.sys.User;
+import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
@@ -196,10 +197,26 @@ public class FlowController {
                     businessMap.put("orgs", orgService.listAll());
                     break;
                 case Constant.FLOW_BM_FB1://选择项目负责人
-                    businessMap.put("users", userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
+                    List<UserDto> userList = userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId());
+                    //排除项目负责人（这里是用户本身）
+                    for(UserDto userDto:userList){
+                        if(userDto.getId().equals(currentUser.getLoginUser().getId())){
+                            userList.remove(userDto);
+                            break;
+                        }
+                    }
+                    businessMap.put("users", userList);
                     break;
                 case Constant.FLOW_BM_FB2://选择项目负责人
-                    businessMap.put("users", userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
+                    List<UserDto> userList2 = userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId());
+                    //排除项目负责人（这里是用户本身）
+                    for(UserDto userDto:userList2){
+                        if(userDto.getId().equals(currentUser.getLoginUser().getId())){
+                            userList2.remove(userDto);
+                            break;
+                        }
+                    }
+                    businessMap.put("users", userList2);
                     break;
                 /**************************   E 项目签收流程  ****************************/
 
@@ -211,7 +228,15 @@ public class FlowController {
                     businessMap.put("xsOrgs", orgService.listAll());
                     break;
                 case Constant.FLOW_XS_BMFB://选择项目负责人
-                    businessMap.put("xsusers", userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId()));
+                    List<UserDto> userList3 = userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId());
+                    //排除项目负责人（这里是用户本身）
+                    for(UserDto userDto:userList3){
+                        if(userDto.getId().equals(currentUser.getLoginUser().getId())){
+                            userList3.remove(userDto);
+                            break;
+                        }
+                    }
+                    businessMap.put("xsusers",userList3);
                     break;
                 /**************************   E 协审流程环节信息  ****************************/
                 default:

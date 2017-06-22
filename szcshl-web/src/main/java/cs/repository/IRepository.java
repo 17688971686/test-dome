@@ -12,6 +12,8 @@ import cs.repository.odata.ODataObj;
 
 public interface IRepository<T, ID> {
 	public T findById(ID id);
+
+    public T findById(String idPropertyName,String idValue);
 	
 	public T getById(ID id);
 	

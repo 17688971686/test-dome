@@ -3,11 +3,9 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = ['$rootScope', '$http', '$state'];
-    function workprogram($rootScope, $http, $state) {
-        var url_user = rootPath + "/user";
+    workprogram.$inject = [ 'sysfileSvc','$http', '$state'];
+    function workprogram(sysfileSvc, $http, $state ) {
         var url_company = rootPath + "/company";
-        var url_work = rootPath + "/workprogram";
         var service = {
             initPage: initPage,				//初始化页面参数
             createWP: createWP,				//新增操作
@@ -24,8 +22,6 @@
             mergeAddWork: mergeAddWork,			//保存合并评审
             getInitSeleSignBysId: getInitSeleSignBysId,//初始化已选项目列表
             getInitRelateData: getInitRelateData,	//初始化关联数据
-
-
         };
         return service;
 
@@ -141,16 +137,14 @@
         //S_待选项目列表
         function waitProjects(vm) {
             vm.sign.signid = vm.linkSignId;
-
             var httpOptions = {
                 method: 'post',
-                url: common.format(url_work + "/waitProjects"),
+                url: rootPath + "/workprogram/waitProjects",
                 data: vm.sign
             }
             var httpSuccess = function success(response) {
                 vm.signs = {};
                 vm.signs = response.data;
-                console.log(vm.signs);
             }
             common.http({
                 vm: vm,
@@ -217,6 +211,8 @@
                 })
                 return;
             }
+            getInitSeleSignBysId(vm);//初始化
+            waitProjects(vm);//待选
             $(".workPro").kendoWindow({
                 width: "1200px",
                 height: "630px",
@@ -226,9 +222,6 @@
                 closable: true,
                 actions: ["Pin", "Minimize", "Maximize", "Close"]
             }).data("kendoWindow").center().open();
-            getInitSeleSignBysId(vm);//初始化
-            waitProjects(vm);//待选
-
         }
 
         //S_关联项目弹窗
@@ -394,6 +387,15 @@
                                     vm.isHaveNext = true;
                                 }
                             }
+                            //初始化附件上传
+                            sysfileSvc.initUploadOptions({
+                                businessId:vm.work.id,
+                                sysSignId :vm.work.signId,
+                                sysfileType:"工作方案",
+                                uploadBt:"upload_file_bt",
+                                detailBt:"detail_file_bt",
+                                vm:vm
+                            });
 
                         }
 

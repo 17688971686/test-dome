@@ -3,6 +3,7 @@ package cs.controller.project;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class WorkProgramController {
     @RequiresPermissions("workprogram#addWork#post")
     @RequestMapping(name = "工作方案提交", path = "addWork", method = RequestMethod.POST)
     @ResponseBody
-    public WorkProgramDto post(@RequestBody WorkProgramDto workProgramDto,Boolean isNeedWorkProgram) throws Exception {
-        workProgramService.save(workProgramDto,isNeedWorkProgram);
+    public WorkProgramDto post(@RequestBody WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) throws Exception {
+        workProgramService.save(workProgramDto, isNeedWorkProgram);
         return workProgramDto;
     }
 
@@ -85,7 +86,7 @@ public class WorkProgramController {
         workProgramService.mergeAddWork(signId, linkSignId);
     }
 
-    @RequiresPermissions("assistPlan##delete")
+    @RequiresPermissions("workprogram##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
@@ -96,6 +97,13 @@ public class WorkProgramController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteBySignId(@RequestParam(required = true) String signId) {
         workProgramService.deleteBySignId(signId);
+    }
+
+    @RequiresPermissions("workprogram#createMeetingDoc#get")
+    @RequestMapping(name = "生成会前准备材料", path = "createMeetingDoc", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultMsg createMeetingDoc(@RequestParam(required = true) String signId, @RequestParam(required = true) String workprogramId) {
+        return workProgramService.createMeetingDoc(signId, workprogramId);
     }
 
     @RequiresPermissions("workprogram#html/edit#get")

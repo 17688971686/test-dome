@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.ResultMsg;
+import cs.common.utils.*;
+import cs.domain.sys.SysFile_;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -19,9 +23,6 @@ import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
@@ -395,5 +396,107 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         workProgramRepo.deleteById(WorkProgram_.id.getName(),id);
     }
 
+    /**
+     * TODO:目前只是做一个简单的模板生成，后期再完善
+     * 生成会前准备材料
+     * @param signId
+     * @param workprogramId
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg createMeetingDoc(String signId, String workprogramId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+        if(sign == null || StringUtil.isEmpty(sign.getSignid())){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法收文信息");
+        }
+        WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(),workprogramId);
+        if(workProgram == null || StringUtil.isEmpty(workProgram.getId())){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取工作方案信息");
+        }
+        String path = SysFileUtil.getUploadPath();
+        //1、如果已经生成会前准备材料，则先删除之前的文件
+        if(EnumState.YES.getValue().equals(workProgram.getIsCreateDoc())){
+            HqlBuilder queryHql = HqlBuilder.create();
+            queryHql.append(" from "+SysFile.class.getSimpleName()+" where "+ SysFile_.sysSingId.getName()+" =:signId ");
+            queryHql.setParam("signId",signId);
+            queryHql.append(" and "+ SysFile_.businessId.getName()+" =:businessId ");
+            queryHql.setParam("businessId",workprogramId);
+            queryHql.append(" and "+ SysFile_.sysfileType.getName()+" =:sysfileType ");
+            queryHql.setParam("sysfileType",Constant.SysFileType.WORKPROGRAM.getValue());   //大类
+            queryHql.append(" and "+ SysFile_.sysMinType.getName()+" =:sysMinType ");
+            queryHql.setParam("sysMinType",Constant.SysFileType.MEETING.getValue());        //小类
+
+            List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
+            if(fileList != null && fileList.size() > 0){
+                fileList.forEach(f->{
+                    sysFileRepo.delete(f);
+                    SysFileUtil.deleteFile(path + f.getFileUrl());
+                });
+            }
+        }
+        //2、生成会前准备材料
+        List<SysFile> saveFile = new ArrayList<>();
+        String showName = "",relativeFileUrl="";
+        File docFile = null;
+        Map<String,Object> dataMap = new HashMap<>();
+        dataMap.put("projectName",sign.getProjectname());
+        dataMap.put("dateStr",DateUtils.toStringDay(new Date()));
+        //2.1 生成签到表
+        showName = Constant.Template.SIGN_IN.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.SIGN_IN.getKey(),path + File.separator +relativeFileUrl);
+        if(docFile != null){
+            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        }
+        //2.2 生成主持人表
+        dataMap.remove("dateStr");
+        showName = Constant.Template.COMPERE.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path,signId,workprogramId,showName);
+        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.COMPERE.getKey(),path + File.separator +relativeFileUrl);
+        if(docFile != null){
+            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        }
+        //2.3 生成会前准备材料（上午）
+        dataMap.put("reviewStage",sign.getReviewstage());
+        showName = Constant.Template.MEETING_AM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.MEETING_AM.getKey(),path + File.separator +relativeFileUrl);
+        if(docFile != null){
+            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        }
+        //2.4 邀请函
+        showName = Constant.Template.INVITATION.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.INVITATION.getKey(),path + File.separator +relativeFileUrl);
+        if(docFile != null){
+            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        }
+
+        //3、保存文件信息
+        if(saveFile.size() > 0){
+            Date now = new Date();
+            saveFile.forEach(sf->{
+                sf.setCreatedDate(now);
+                sf.setModifiedDate(now);
+                sf.setCreatedBy(currentUser.getLoginName());
+                sf.setModifiedBy(currentUser.getLoginName());
+            });
+            sysFileRepo.bathUpdate(saveFile);
+        }
+        //4、更改工作方案状态
+        workProgram.setIsCreateDoc(EnumState.YES.getValue());
+        workProgramRepo.save(workProgram);
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
+    }
 
 }

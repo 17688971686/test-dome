@@ -152,7 +152,10 @@ public class WorkProgramDto extends BaseDto {
     private String stageEmphasis;
     
     //申报总额
-    private String declareCount; 
+    private BigDecimal declareCount;
+
+    //是否已经生成会前准备材料
+    private String isCreateDoc;
     
     //E 设备清单（进口）
 
@@ -588,15 +591,23 @@ public class WorkProgramDto extends BaseDto {
 		this.stageEmphasis = stageEmphasis;
 	}
 
-	public String getDeclareCount() {
-		return declareCount;
-	}
+    public BigDecimal getDeclareCount() {
+        return declareCount;
+    }
 
-	public void setDeclareCount(String declareCount) {
-		this.declareCount = declareCount;
-	}
+    public void setDeclareCount(BigDecimal declareCount) {
+        this.declareCount = declareCount;
+    }
 
-	public String getWorkreviveStage() {
+    public String getIsCreateDoc() {
+        return isCreateDoc;
+    }
+
+    public void setIsCreateDoc(String isCreateDoc) {
+        this.isCreateDoc = isCreateDoc;
+    }
+
+    public String getWorkreviveStage() {
 		return workreviveStage;
 	}
 

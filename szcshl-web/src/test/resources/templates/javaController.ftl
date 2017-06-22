@@ -33,7 +33,7 @@ public class ${fileName!''} {
     private ${info.beanName!''}Service ${info.beanName?uncap_first}Service;
 
     @RequiresPermissions("${info.beanName?uncap_first}#findByOData#post")
-    @RequestMapping(name = "获取数据", path = "", method = RequestMethod.POST)
+    @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<${info.beanName}Dto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);

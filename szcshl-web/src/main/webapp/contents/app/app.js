@@ -394,6 +394,7 @@
         		window.history.back();
         	}           
         };
+
         //kendo 语言
     	kendo.culture("zh-CN");
     	

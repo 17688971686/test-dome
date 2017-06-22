@@ -3,6 +3,7 @@ package cs.service.project;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 
@@ -26,4 +27,6 @@ public interface WorkProgramService {
     void deleteBySignId(String signId);
 
     void delete(String id);
+
+    ResultMsg createMeetingDoc(String signId, String workprogramId);
 }

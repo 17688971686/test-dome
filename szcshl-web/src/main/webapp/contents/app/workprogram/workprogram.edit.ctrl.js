@@ -3,12 +3,12 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['$location','workprogramSvc','$state',"$http"]; 
+    workprogram.$inject = ['workprogramSvc','$state',"$http"];
 
-    function workprogram($location,workprogramSvc,$state,$http) {        
+    function workprogram(workprogramSvc,$state,$http) {
         var vm = this;
     	vm.work = {};						//创建一个form对象
-        vm.title = '创建评审方案';        	//标题
+        vm.title = '评审方案编辑';        	//标题
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00"); 
         vm.work.signId = $state.params.signid;		//这个是收文ID
@@ -20,8 +20,7 @@
         
         vm.isHideProject = true;
         vm.isHideProject2 = true;
-                	
-        
+
         activate();
         function activate() {
 //        	workprogramSvc.getInitSeleSignBysId(vm);//初始化已选项目列表
@@ -29,32 +28,6 @@
         	workprogramSvc.initPage(vm);
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
             workprogramSvc.findCompanys(vm);//查找主管部门
-          
-        }
-  
-        
-        //查看附件列表
-        vm.workJquery =function(){
-        	common.initcommonQueryWin(vm);
-        	vm.sysSignId=vm.work.id;
-        	common.commonSysFilelist(vm,$http);
-        }
-        
-        //附件上传
-        vm.workUpload = function(options){
-        	
-        	var signid = vm.work.signId;
-        	var fileType = "工作方案"
-        	common.initcommonUploadWin({businessId:vm.work.id},signid,fileType);
-        }
-        
-        //删除系统文件
-        vm.commonDelSysFile = function(id){
-        	common.commonDelSysFile(vm,id,$http);
-        }
-        //附件下载
-        vm.commonDownloadSysFile = function(id){
-        	common.commonDownloadFile(vm,id);
         }
         
         //重置

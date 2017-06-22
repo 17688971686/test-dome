@@ -3,9 +3,9 @@
 
 	angular.module('app').factory('dispatchSvc', dispatch);
 
-	dispatch.$inject = ['$rootScope', '$http'];
+	dispatch.$inject = ['sysfileSvc', '$http'];
 
-	function dispatch($rootScope, $http) {
+	function dispatch(sysfileSvc, $http) {
 		var service = {
 			initDispatchData : initDispatchData, // 初始化流程数据
 			saveDispatch : saveDispatch, // 保存
@@ -134,11 +134,18 @@
 								// 初始化获取合并发文关联的linkSignId
 								vm.linkSignId = response.data.linkSignId;
 								vm.mergeDispaId=response.data.businessId;
-								if (vm.dispatchDoc.id
-										&& !vm.dispatchDoc.fileNum) {
+								if (vm.dispatchDoc.id && !vm.dispatchDoc.fileNum) {
 									vm.showFileNum = true;
 								}
-							
+                                //初始化附件上传
+                                sysfileSvc.initUploadOptions({
+                                    businessId:vm.dispatchDoc.id,
+                                    sysSignId :vm.dispatchDoc.signId,
+                                    sysfileType:"发文",
+                                    uploadBt:"upload_file_bt",
+                                    detailBt:"detail_file_bt",
+                                    vm:vm
+                                });
 							}
 						})
 			}

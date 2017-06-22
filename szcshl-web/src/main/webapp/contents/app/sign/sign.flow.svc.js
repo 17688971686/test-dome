@@ -3,21 +3,20 @@
 	
 	angular.module('app').factory('signFlowSvc', signFlow);
 	
-	signFlow.$inject = ['$http','$state'];
+	signFlow.$inject = ['$http','$state',];
 
 	function signFlow($http,$state) {
 		var service = {
-			startFlow : startFlow,			//启动流程
-			initBusinessParams:initBusinessParams,	//初始化业务参数
-			checkBusinessFill : checkBusinessFill,	//检查相应的表单填写
-			getChargeWorkProgram:getChargeWorkProgram,//获取工作方案
+			startFlow : startFlow,			            //启动流程
+			initBusinessParams:initBusinessParams,	    //初始化业务参数
+			checkBusinessFill : checkBusinessFill,	    //检查相应的表单填写
+			getChargeWorkProgram:getChargeWorkProgram,  //获取工作方案
 			getChargeDispatch : getChargeDispatch,		//获取发文	（停用）
 			getChargeFilerecord : getChargeFilerecord,	//获取归档信息（停用）
             endSignDetail:endSignDetail,                 //已办结的签收信息（停用）
 		};
 		return service;		
-		
-		
+
 		//S_startFlow
 		function startFlow(vm,signid){
 			var httpOptions = {
@@ -508,7 +507,6 @@
                     }
                 })
             }
-
             common.http({
                 vm:vm,
                 $http:$http,

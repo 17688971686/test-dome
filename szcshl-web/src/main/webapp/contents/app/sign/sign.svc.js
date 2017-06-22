@@ -20,49 +20,50 @@
             associateGrid: associateGrid,//项目关联列表
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
-            showAssociateSign:showAssociateSign,     //项目关联弹窗
-            markGrid:markGrid,
-            paymentGrid:paymentGrid,
-            uploadFilelist:uploadFilelist		//上传附件列表
-
-
+            showAssociateSign: showAssociateSign,     //项目关联弹窗
+            markGrid: markGrid,
+            paymentGrid: paymentGrid,
+            uploadFilelist: uploadFilelist,		//上传附件列表
+            meetingDoc: meetingDoc,            //生成会前准备材料
         };
         return service;
 
-    //S 上传附件列表
-        function uploadFilelist(vm){
-//        	alert( vm.model.signid);
-        	 var httpOptions = {
-                     method: 'get',
-                     url: rootPath + "/file/initFileUploadlist",
-                     params: {signid: vm.model.signid}
-                 }
-                 var httpSuccess = function success(response) {
-                     common.requestSuccess({
-                         vm: vm,
-                         response: response,
-                         fn: function () {
-                             vm.sysFileDtoList = response.data.sysFileDtoList;
-                            
-                            
-                         }
-                     })
-                 }
-
-                 common.http({
-                     vm: vm,
-                     $http: $http,
-                     httpOptions: httpOptions,
-                     success: httpSuccess
-                 });
+        //S 上传附件列表
+        function uploadFilelist(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/file/findBySysFileSignId",
+                params: {
+                    signid: vm.model.signid
+                }
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        if (response.data && response.data.length > 0) {
+                            vm.sysFileDtoList = response.data;
+                            vm.show_sysfile = true;
+                        }
+                    }
+                })
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
+
         //E 上传附件列表
         //S_初始化grid(过滤掉已经签收的项目)
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter:"issign eq (isNull,0)"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0)"}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -341,10 +342,10 @@
 
         //S_初始化填报页面数据
         function initFillData(vm) {
-        	/*vm.ProjectAdvice=true;
-        	vm.importDeviceList=true;
-        	vm.exportDeviceList=true;*/
-        	
+            /*vm.ProjectAdvice=true;
+            vm.importDeviceList=true;
+            vm.exportDeviceList=true;*/
+
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/sign/html/initFillPageData",
@@ -448,10 +449,16 @@
                             vm.show_filerecord = true;
                             vm.fileRecord = vm.model.fileRecordDto;
                         }
-                        //抽取专家
-                        if (vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0) {
-                            vm.show_expert = true;
+                        //初始化专家评分
+                        if ((vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9') || vm.model.isNeedWrokPrograml == '9') {
+                           vm.show_expert = true;
+                          /* if (vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0) {
+                               vm.show_expert = true;
+                           }*/
+                            markGrid(vm);
+                            paymentGrid(vm);
                         }
+
                         //先加载完业务数据，再加载流程业务数据
                         if (vm.dealFlow) {
                             flowSvc.getFlowInfo(vm);
@@ -604,9 +611,9 @@
 
         //start saveAssociateSign
         //如果associateSignId为空，解除关联
-        function saveAssociateSign(vm, signId, associateSignId,callBack) {
+        function saveAssociateSign(vm, signId, associateSignId, callBack) {
 
-            associateSignId = associateSignId == 'undefined'?null:associateSignId;
+            associateSignId = associateSignId == 'undefined' ? null : associateSignId;
             var httpOptions = {
                 method: 'post',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -626,7 +633,7 @@
                             fn: function () {
                                 //关闭项目关联窗口
                                 //vm.gridOptions.dataSource.read();
-                                if(callBack != undefined&&typeof callBack == 'function'){
+                                if (callBack != undefined && typeof callBack == 'function') {
                                     callBack();
                                 }
                             }
@@ -659,34 +666,34 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                         if(response.data != undefined){
+                        if (response.data != undefined) {
                             vm.associateSign = response.data;
                             var signs = response.data;
-                           // console.log(signs);
+                            // console.log(signs);
                             var steps = [];
                             var html_ = '';
-                            for(var i = (signs.length-1);i>=0;i--){
+                            for (var i = (signs.length - 1); i >= 0; i--) {
                                 var s = signs[i];
-                                var signdate = s.signdate||'';
-                                html_ += '<div class="intro-list">'+
-                                            '<div class="intro-list-left">'+
-                                                '项目阶段：'+s.reviewstage+"<br/>签收时间："+signdate+
-                                            '</div>'+
-                                            '<div class="intro-list-right">'+
-                                                '<span></span>'+
-                                                '<div class="intro-list-content">'+
-                                                    '名称：<span style="color:red;">'+s.projectname+'</span><br/>'+
-                                                    '送件人：<span style="color:red;">'+s.sendusersign+'</span><br/>'+
-                                                '</div>'+
-                                            '</div>'+
-                                         '</div>';
+                                var signdate = s.signdate || '';
+                                html_ += '<div class="intro-list">' +
+                                    '<div class="intro-list-left">' +
+                                    '项目阶段：' + s.reviewstage + "<br/>签收时间：" + signdate +
+                                    '</div>' +
+                                    '<div class="intro-list-right">' +
+                                    '<span></span>' +
+                                    '<div class="intro-list-content">' +
+                                    '名称：<span style="color:red;">' + s.projectname + '</span><br/>' +
+                                    '送件人：<span style="color:red;">' + s.sendusersign + '</span><br/>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
 
                             }
                             $('#introFlow').html(html_);
-                            var step= $("#myStep").step({
-                                    animate:true,
-                                    initStep:1,
-                                    speed:1000
+                            var step = $("#myStep").step({
+                                animate: true,
+                                initStep: 1,
+                                speed: 1000
                             });
 
                         }
@@ -700,262 +707,251 @@
                 success: httpSuccess
             });
         }
+
         //end initAssociateSigns
 
 
-
-         //start 项目关联弹框
-         function showAssociateSign(){
+        //start 项目关联弹框
+        function showAssociateSign() {
             //选中要关联的项目
-            var signAssociateWindow=$("#associateWindow");
+            var signAssociateWindow = $("#associateWindow");
             signAssociateWindow.kendoWindow({
-                width:"50%",
-                height:"80%",
-                title:"项目关联",
-                visible:false,
-                modal:true,
-                closable:true,
-                actions:["Pin","Minimize","Maximize","close"]
+                width: "50%",
+                height: "80%",
+                title: "项目关联",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
             }).data("kendoWindow").center().open();
 
             //初始化associateGrid
 
-         }
-         //end 项目关联
+        }
+
+        //end 项目关联
 
 
-
-         // begin#markGrid
+        // begin#markGrid
         function markGrid(vm) {
             var signId = vm.model.signid;
-            var dataSource = common.kendoGridDataSource(rootPath+ "/expertReview/html/getSelectExpert/" + signId);
-            var dataBound = function() {
+            var dataSource = common.kendoGridDataSource(rootPath + "/expertReview/html/getSelectExpert/" + signId);
+            var dataBound = function () {
                 var rows = this.items();
-                $(rows).each(function(i) {
-                            if (i == rows.length - 1) {
-                                //initBackNode(vm);
-                            }
-                            $(this).find(".row-number").html(i + 1);
-                        });
+                $(rows).each(function (i) {
+                    if (i == rows.length - 1) {
+                        //initBackNode(vm);
+                    }
+                    $(this).find(".row-number").html(i + 1);
+                });
             }
 
             // End:column
             vm.gridOptions = {
-                dataSource : common.gridDataSource(dataSource),
-                filterable : common.kendoGridConfig().filterable,
-                noRecords : common.kendoGridConfig().noRecordMessage,
-                columns : getExpertColumns(),
-                dataBound : dataBound,
-                resizable : true
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: getExpertColumns(),
+                dataBound: dataBound,
+                resizable: true
                 // editable: "inline"
             };
         }// end fun grid
 
         function getExpertColumns() {
             var columns = [
-                    /*
-                     * { template : function(item) { return kendo.format("<input
-                     * type='checkbox' relId='{0}' name='checkbox'
-                     * class='checkbox' />",item.expertID) }, filterable :
-                     * false, width : 40, title : "<input id='checkboxAll'
-                     * type='checkbox' class='checkbox' />" },
-                     **/
-            {
-                field : "",
-                title : "序号",
-                width : 50,
-                template : "<span class='row-number'></span>"
-            }, {
-                field : "",
-                title : "姓名",
-                width : 100,
-                filterable : true,
-                template : function(item) {
-                    return item.expertDto.name == null ? "" : item.expertDto.name;
-                }
-            },
-             {
-                field : "",
-                title : "工作单位",
-                width : 100,
-                filterable : true,
-                template : function(item) {
-                    return item.expertDto.comPany == null ? "" : item.expertDto.comPany;
-                }
-            },
-            {
-                field : "",
-                title : "职位/职称",
-                width : 150,
-                filterable : true,
-                template : function(item) {
-                    var expertDto = item.expertDto;
-                    if (!expertDto.job) {
-                       expertDto.job = "";
+                {
+                    field: "",
+                    title: "序号",
+                    width: 50,
+                    template: "<span class='row-number'></span>"
+                }, {
+                    field: "",
+                    title: "姓名",
+                    width: 100,
+                    filterable: true,
+                    template: function (item) {
+                        return item.expertDto.name == null ? "" : item.expertDto.name;
                     }
-                    if (!expertDto.post) {
-                        expertDto.post = "";
+                },
+                {
+                    field: "",
+                    title: "工作单位",
+                    width: 100,
+                    filterable: true,
+                    template: function (item) {
+                        return item.expertDto.comPany == null ? "" : item.expertDto.comPany;
                     }
-                    return expertDto.job + "/" + expertDto.post;
-                }
-            },
-            {
-                field : "",
-                title : "专业",
-                width : 100,
-                filterable : true,
-                template : function(item) {
-                    return item.expertDto.majorStudy == null ? "" : item.expertDto.majorStudy;
-                }
-            },
-            {
-                field : "",
-                title : "联系电话/办公电话",
-                width : 150,
-                filterable : true,
-                template : function(item) {
-                    var expertDto = item.expertDto;
-                    if (!expertDto.phone) {
-                        expertDto.phone = "";
+                },
+                {
+                    field: "",
+                    title: "职位/职称",
+                    width: 150,
+                    filterable: true,
+                    template: function (item) {
+                        var expertDto = item.expertDto;
+                        if (!expertDto.job) {
+                            expertDto.job = "";
+                        }
+                        if (!expertDto.post) {
+                            expertDto.post = "";
+                        }
+                        return expertDto.job + "/" + expertDto.post;
                     }
-                    if (!expertDto.userPhone) {
-                        expertDto.userPhone = "";
+                },
+                {
+                    field: "",
+                    title: "专业",
+                    width: 100,
+                    filterable: true,
+                    template: function (item) {
+                        return item.expertDto.majorStudy == null ? "" : item.expertDto.majorStudy;
                     }
-                    return expertDto.userPhone + "/" + expertDto.phone;
-                }
-            },
+                },
+                {
+                    field: "",
+                    title: "联系电话/办公电话",
+                    width: 150,
+                    filterable: true,
+                    template: function (item) {
+                        var expertDto = item.expertDto;
+                        if (!expertDto.phone) {
+                            expertDto.phone = "";
+                        }
+                        if (!expertDto.userPhone) {
+                            expertDto.userPhone = "";
+                        }
+                        return expertDto.userPhone + "/" + expertDto.phone;
+                    }
+                },
 
-            {
-                field : "",
-                title : "备注",
-                width : 100,
-                filterable : true,
-                template : function(item) {
-                    return item.expertDto.remark == null ? "" : item.expertDto.remark;
-                }
-            },
-            {
-                field : "",
-                title : "评审方案",
-                width : 100,
-                filterable : true,
-                template : function(item) {
-                    return item.expertDto.remark == null ? "" : item.expertDto.remark;
-                }
-            },
-             {
-                field : "",
-                title : "评分",
-                width : 200,
-                template : function(item) {
-                    var str="";
-                    if(item.score != undefined){
-                       for(var i=0;i<item.score;i++){
-                           str+="<span style='color:gold;font-size:20px;' >☆</span>";
-                       }
+                {
+                    field: "",
+                    title: "备注",
+                    width: 100,
+                    filterable: true,
+                    template: function (item) {
+                        return item.expertDto.remark == null ? "" : item.expertDto.remark;
                     }
-                   /* for(var i=0;i<item.expertReviewDto.score;i++){
-                        str+="<span style='color:gold;font-size:20px;' >☆</span>";
-                    }*/
+                },
+                {
+                    field: "",
+                    title: "评审方案",
+                    width: 100,
+                    filterable: true,
+                    template: function (item) {
+                        return item.expertDto.remark == null ? "" : item.expertDto.remark;
+                    }
+                },
+                {
+                    field: "",
+                    title: "评分",
+                    width: 200,
+                    template: function (item) {
+                        var str = "";
+                        if (item.score != undefined) {
+                            for (var i = 0; i < item.score; i++) {
+                                str += "<span style='color:gold;font-size:20px;' >☆</span>";
+                            }
+                        }
+                        /* for(var i=0;i<item.expertReviewDto.score;i++){
+                             str+="<span style='color:gold;font-size:20px;' >☆</span>";
+                         }*/
 
-                    return str;
+                        return str;
+                    }
+                }, {
+                    field: "",
+                    title: "评级描述",
+                    width: 200,
+                    template: function (item) {
+                        return item.describes != undefined ? item.describes : "";
+                    }
+                }, {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        var score = item.score != undefined ? item.score : 0;
+                        return common.format($('#columnBtns').html(),
+                            "vm.editSelectExpert('" + item.id + "','" + score + "')");
+                        //item.expertDto.expertID,score);
+                    }
                 }
-            }, {
-                field : "",
-                title : "评级描述",
-                width : 200,
-                template:function(item){
-                    return item.describes != undefined?item.describes:"";
-                }
-            }, {
-                field : "",
-                title : "操作",
-                width : 100,
-                template : function(item) {
-                    var score = item.score != undefined?item.score:0;
-                    return common.format($('#columnBtns').html(),
-                    "vm.editSelectExpert('" + item.id + "','"+ score +"')");
-                    //item.expertDto.expertID,score);
-                }
-            }
             ];
             return columns;
         }
 
+        // S_getpaymentColumns
+        function getpaymentColumns() {
+            var columns = [{
+                field: "rowNumber",
+                title: "序号",
+                width: 50,
+                template: "<span class='row-number'></span>"
+            }, {
+                field: "",
+                title: "姓名",
+                width: 100,
+                filterable: true,
+                template: function (item) {
+                    return item.expertDto.name == null ? "" : item.expertDto.name;
+                }
+            }, {
+                field: "",
+                title: "身份证号码",
+                width: 100,
+                filterable: true,
+                template: function (item) {
+                    return item.expertDto.idCard == null ? "" : item.expertDto.idCard;
+                }
+            }, {
+                field: "",
+                title: "开户行",
+                width: 100,
+                filterable: true,
+                template: function (item) {
+                    return item.expertDto.openingBank == null ? "" : item.expertDto.openingBank;
+                }
+            }, {
+                field: "",
+                title: "银行账号",
+                width: 100,
+                filterable: true,
+                template: function (item) {
+                    return item.expertDto.bankAccount == null ? "" : item.expertDto.bankAccount;
+                }
+            }, {
+                field: "reviewCost",
+                title: "评审费",
+                width: 100,
+                filterable: true
+            },
+                {
+                    field: "reviewTaxes",
+                    title: "应纳税额",
+                    width: 100,
+                    filterable: true
+                }, {
+                    field: "totalCost",
+                    title: "合计（元）",
+                    width: 100
+                }, {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        return common.format($('#columnBtn').html(), "vm.editpayment('" + item.id + "')");
+                        //item.expertID);
+                    }
+                }];
+            return columns;
+        }// E_getpaymentColumns
 
-
-// S_getpaymentColumns
-		function getpaymentColumns() {
-			var columns = [{
-						field : "rowNumber",
-						title : "序号",
-						width : 50,
-						template : "<span class='row-number'></span>"
-					}, {
-						field : "",
-						title : "姓名",
-						width : 100,
-						filterable : true,
-						template : function(item) {
-                                return item.expertDto.name == null ? "" : item.expertDto.name;
-                        }
-					}, {
-						field : "",
-						title : "身份证号码",
-						width : 100,
-						filterable : true,
-						template : function(item) {
-                                return item.expertDto.idCard == null ? "" : item.expertDto.idCard;
-                        }
-					}, {
-						field : "",
-						title : "开户行",
-						width : 100,
-						filterable : true,
-						template : function(item) {
-                                return item.expertDto.openingBank == null ? "" : item.expertDto.openingBank;
-                        }
-					}, {
-						field : "",
-						title : "银行账号",
-						width : 100,
-						filterable : true,
-						template : function(item) {
-                                return item.expertDto.bankAccount == null ? "" : item.expertDto.bankAccount;
-                        }
-					}, {
-						field : "reviewCost",
-						title : "评审费",
-						width : 100,
-						filterable : true
-					},
-
-					{
-						field : "reviewTaxes",
-						title : "应纳税额",
-						width : 100,
-						filterable : true
-					}, {
-						field : "totalCost",
-						title : "合计（元）",
-						width : 100
-					}, {
-						field : "",
-						title : "操作",
-						width : 100,
-						template : function(item) {
-							return common.format($('#columnBtn').html(),
-									"vm.editpayment('" + item.id + "')");
-									//item.expertID);
-						}
-					}];
-			return columns;
-		}// E_getpaymentColumns
-
-         // begin#remarkGrid
+        // begin#remarkGrid
         function paymentGrid(vm) {
             var signId = vm.model.signid;
-            var url= rootPath+ "/expertReview/html/getBySignId/" + signId;
+            var url = rootPath + "/expertReview/html/getBySignId/" + signId;
             var httpOptions = {
                 method: 'post',
                 url: url
@@ -966,11 +962,11 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                         vm.expertReviews = response.data.value;
-                         var expertReviews = vm.expertReviews
-                         if(expertReviews != undefined&&expertReviews.length>0){
-                             vm.show_expert = true;
-                         }
+                        vm.expertReviews = response.data.value;
+                        var expertReviews = vm.expertReviews
+                        if (expertReviews != undefined && expertReviews.length > 0) {
+                            vm.show_expert = true;
+                        }
 
                     }
                 })
@@ -982,27 +978,66 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-           /* var dataSource = common.kendoGridDataSource(rootPath+ "/expertReview/html/getSelectExpert/" + signId);
-            var dataBound = function() {
-                var rows = this.items();
-                $(rows).each(function(i) {
-                            if (i == rows.length - 1) {
-                                //initBackNode(vm);
-                            }
-                            $(this).find(".row-number").html(i + 1);
-                        });
-            }
-
-            // End:column
-            vm.paymentgrid = {
-                dataSource : common.gridDataSource(dataSource),
-                filterable : common.kendoGridConfig().filterable,
-                noRecords : common.kendoGridConfig().noRecordMessage,
-                columns : getpaymentColumns(),
-                dataBound : dataBound,
-                resizable : true
-            };*/
-
         }// end fun grid
+
+        //S_meetingDoc
+        function meetingDoc(vm) {
+            var wpId = "";
+            switch (vm.flow.curNode.activitiId) {
+                case "XMFZR_SP_GZFA1":
+                    if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
+                        wpId = vm.mainwork.id;
+                    }
+                    break;
+                case "XMFZR_SP_GZFA2":
+                    if (!angular.isUndefined(vm.assistwork) && !angular.isUndefined(vm.assistwork.id) && vm.assistwork.id) {
+                        wpId = vm.assistwork.id;
+                    }
+                    break;
+            }
+            if (wpId) {
+                var httpOptions = {
+                    method: 'get',
+                    url: rootPath + "/workprogram/createMeetingDoc",
+                    params: {
+                        signId: vm.model.signid,
+                        workprogramId: wpId
+                    }
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: response.data.reMsg,
+                                closeDialog: true,
+                                fn: function () {
+                                    if (response.data.reCode == "error") {
+                                        vm.isCommit = false;
+                                    } else {
+                                        uploadFilelist(vm);
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            } else {
+                common.alert({
+                    vm: vm,
+                    msg: "请先填写工作方案信息！"
+                })
+            }
+        }//E_meetingDoc
+
+
     }
 })();

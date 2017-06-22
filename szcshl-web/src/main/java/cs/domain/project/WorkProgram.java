@@ -216,8 +216,11 @@ public class WorkProgram extends DomainBase {
     private String stageEmphasis;
     
     //申报总额
+    @Column(columnDefinition = "number")
+    private BigDecimal declareCount;
+
     @Column(columnDefinition = "varchar(40)")
-    private String declareCount; 
+    private String isCreateDoc;
     
     //E 设备清单（进口）
 
@@ -650,15 +653,23 @@ public class WorkProgram extends DomainBase {
 		this.stageEmphasis = stageEmphasis;
 	}
 
-	public String getDeclareCount() {
-		return declareCount;
-	}
+    public BigDecimal getDeclareCount() {
+        return declareCount;
+    }
 
-	public void setDeclareCount(String declareCount) {
-		this.declareCount = declareCount;
-	}
+    public void setDeclareCount(BigDecimal declareCount) {
+        this.declareCount = declareCount;
+    }
 
-	public String getWorkreviveStage() {
+    public String getIsCreateDoc() {
+        return isCreateDoc;
+    }
+
+    public void setIsCreateDoc(String isCreateDoc) {
+        this.isCreateDoc = isCreateDoc;
+    }
+
+    public String getWorkreviveStage() {
 		return workreviveStage;
 	}
 

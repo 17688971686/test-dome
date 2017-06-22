@@ -109,8 +109,34 @@ public class SysFile extends DomainBase{
 	public void setSysMinType(String sysMinType) {
 		this.sysMinType = sysMinType;
 	}
-	
-	
 
-	
+	/**
+	 * 全参数构造函数
+	 * @param sysFileId
+	 * @param businessId
+	 * @param fileUrl
+	 * @param showName
+	 * @param fileSize
+	 * @param fileType
+	 * @param processInstanceId
+	 * @param sysSingId
+	 * @param sysfileType
+	 * @param sysMinType
+	 */
+	public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType, String processInstanceId, String sysSingId, String sysfileType, String sysMinType) {
+		this.sysFileId = sysFileId;
+		this.businessId = businessId;
+		this.fileUrl = fileUrl;
+		this.showName = showName;
+		this.fileSize = fileSize;
+		this.fileType = fileType;
+		this.processInstanceId = processInstanceId;
+		this.sysSingId = sysSingId;
+		this.sysfileType = sysfileType;
+		this.sysMinType = sysMinType;
+	}
+
+    public SysFile() {
+        super();
+    }
 }

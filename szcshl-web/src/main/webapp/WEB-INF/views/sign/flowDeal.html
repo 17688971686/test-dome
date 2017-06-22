@@ -47,10 +47,10 @@
         <li ng-show="vm.show_filerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
         <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
         <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
+        <li ng-show="vm.show_sysfile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
+        <li><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
         <li><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
-        <li><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
-        <li><a data-toggle="tab" for-div="sign_upload">上传附件列表</a></li>
     </ul>
 
     <div class="tab-content" style="background:white;">
@@ -315,7 +315,7 @@
         </div><!--项目关联-->
         
          <div class="well well-sm tab-pane fade" style="background:white;" id="sign_upload" >
-            <div ng-include src="'${path}/contents/app/sign/uploadFilelist.html'"></div>
+            <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
         </div><!-- 上传附件列表 -->
         
     </div>

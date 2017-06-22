@@ -238,6 +238,17 @@
 			<artifactId>ehcache</artifactId>
 			<version>3.3.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.3.1_sn</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>szcshl-web</finalName>
