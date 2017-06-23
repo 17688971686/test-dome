@@ -1,163 +1,346 @@
 <meta charset="UTF-8">
-<style>
-	.content-wrapper{
-		background: url(/contents/images/welcome.jpg);
-	}
-	.invoice{ background:none;}
-</style>
-<div class="pad margin no-print">
-	<div class="callout callout-info" style="margin-bottom: 0!important;">
-		<h4><i class="fa fa-info"></i>欢迎您：<b>${user}</b></h4>
-		</span> <span>上次登录时间 ${lastLoginDate}</span>
-	</div>
+<#assign path=request.contextPath/>
+
+<div class="well well-sm" style="background:white;">
+    <div>
+        <span>欢迎您：<b class="text-danger">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}</span>
+    </div>
+</div>
+
+<div class="cared">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>150</h3>
+
+                    <p>项目待办</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-map-o"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    更多消息 <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>53</h3>
+
+                    <p>项目已办</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-map"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    更多消息 <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>44</h3>
+
+                    <p>公文待办</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-paper-plane"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    更多消息 <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>65</h3>
+
+                    <p>公文已办</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    更多消息 <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
 </div>
 
 
-<section class="invoice">
-<div class="row">
-	<div class="col-xs-6">
-		<div class="box box-solid">
-			<div class="box-header with-border">
-				<i class="fa fa-text-width"></i>
+<!-- <div class="container cared">
+   <div class="row card">
+      <div class="col-xs-2 b-red1"><span class="glyphicon glyphicon-dashboard"></span><br/><span class="i-text">个人待办</span><p class="mesfr">7</p></div>
+      <div class="col-xs-2 b-orange"><span class="glyphicon glyphicon-thumbs-up"></span><br/><span class="i-text">个人已办</span></div> 
+      <div class="col-xs-2 b-red"><span class="glyphicon glyphicon-share-alt"></span><br/><span class="i-text">主动办理</span><p class="mesfrs">0</p></div> 
+      <div class="col-xs-2 b-yellow"><span class="glyphicon glyphicon-tree-conifer"></span><br/><span class="i-text">综合办理</span></div> 
+      <div class="col-xs-2 b-green"><span class="glyphicon glyphicon-fire"></span><br/><span class="i-text">办理帮助</span></div>
+      <div class="col-xs-2 b-blue"><span class="glyphicon glyphicon-ok-sign"></span><br/><span class="i-text">计划已办</span></div>        
+   </div>
+</div> -->
 
-				<h3 class="box-title">待办事项</h3>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<dl>
-					<dt>南山区道路修整投资评估</dt>
-					<dd>第二届大学生运动会深圳站基础设施评估</dd>
-					<dt>引进德国工业技术学会DDE投资项目</dt>
-					<dd>深圳新设地铁线路投资管理</dd>
-					<dd>关于深圳国际贸易基础设施建设的评估办法</dd>
-					<dt>关于补贴各深圳实业企业的名单</dt>
-					<dd>我市残障儿童保障计划2017-2020年度计划会议</dd>
-				</dl>
-			</div>
-			<!-- /.box-body -->
-		</div>
-	</div>
-
-	<div class="col-xs-6">
-		<div class="box box-solid">
-			<div class="box-header with-border">
-				<i class="fa fa-text-width"></i>
-
-				<h3 class="box-title">已办事项</h3>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<dl>
-					<dt>美国A州商业合作事务洽谈会议</dt>
-					<dd>深圳高等学府建设资金项目计划</dd>
-					<dt>港深合作会议，关于进一步加强我市对港各企业的合作，引进，投资</dt>
-					<dd>评审中心人员调动表</dd>
-					<dd>临时委派人员表</dd>
-					<dt>关于我单位新近规划的职能明细工作</dt>
-					<dd>通报2016年违规投资建设的企业</dd>
-				</dl>
-			</div>
-			<!-- /.box-body -->
-		</div>
-	</div>
+<div class="cared">
+    <div class="row">    
+    <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">项目待办</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
+                            <th>最新已办</th>
+                            <th>发布单位</th>
+                            <th style="width: 100px" align="center">日期</th>
+                        </tr>
+                        <tr>
+                            <td>1.</td>
+                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
+                            <td>
+                                管委会
+                            </td>
+                            <td><span class="badge bg-red">2017-8-10</span></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td>关于居民安全消防检查的通知</td>
+                            <td>
+                                消防部
+                            </td>
+                            <td><span class="badge bg-yellow">2017-8-9</span></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>关于增设宝龙街道清洁岗位的通知</td>
+                            <td>
+                                市政部门
+                            </td>
+                            <td><span class="badge bg-light-blue">2017-5-12</span></td>
+                        </tr>                        
+                        <tr>
+                            <td>4.</td>
+                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
+                            <td>
+                                管委会
+                            </td>
+                            <td><span class="badge bg-green">2017-5-8</span></td>
+                        </tr>                       
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>  
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">项目已办</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
+                            <th>最新待办</th>
+                            <th>发布单位</th>
+                            <th style="width: 100px" align="center">日期</th>
+                        </tr>
+                        <tr>
+                            <td>1.</td>
+                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
+                            <td>
+                                管委会
+                            </td>
+                            <td><span class="badge bg-red">2017-8-10</span></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td>关于居民安全消防检查的通知</td>
+                            <td>
+                                消防部
+                            </td>
+                            <td><span class="badge bg-yellow">2017-8-9</span></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>关于增设宝龙街道清洁岗位的通知</td>
+                            <td>
+                                市政部门
+                            </td>
+                            <td><span class="badge bg-light-blue">2017-5-12</span></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
+                            <td>
+                                管委会
+                            </td>
+                            <td><span class="badge bg-green">2017-5-8</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
 
 </div>
 
-	<div class="row">
-		<div class="col-xs-6">
-			<div class="box box-solid">
-				<div class="box-header with-border">
-					<i class="fa fa-text-width"></i>
+<div class="cared">
+    <div class="row">
+        <div class="col-xs-6 ">
+            <div class="box box-widget widget-user-2">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header b-gray-blue">
+                    <div class="widget-user-image">
+                        <img class="img-circle" src="${path}/contents/libs/adminLTE/dist/img/user7-128x128.jpg"
+                             alt="User Avatar">
+                    </div>
+                    <!-- /.widget-user-image -->
+                    <h3 class="widget-user-username">我的业务统计</h3>
+                    <h5 class="widget-user-desc">（张小可 书记员）</h5>
+                </div>
+                <div class="box-footer no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa  fa-bar-chart"></span></th>
+                            <th>项目名称</th>
+                            <th></th>
+                            <th style="width: 80px">总任务比</th>
+                        </tr>
+                        <tr>
+                            <td>1.</td>
+                            <td>待办业务</td>
+                            <td>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-red">55%</span></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td>已办业务</td>
+                            <td>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-yellow">70%</span></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>主办业务</td>
+                            <td>
+                                <div class="progress progress-xs progress-striped active">
+                                    <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-light-blue">30%</span></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td>计划业务</td>
+                            <td>
+                                <div class="progress progress-xs progress-striped active">
+                                    <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-green">90%</span></td>
+                        </tr>
 
-					<h3 class="box-title">项目列表</h3>
-				</div>
-				<!-- /.box-header -->
-				<div class="box-body">
-					<dl>
-						<dt>南山区道路修整投资评估</dt>
-						<dd>第二届大学生运动会深圳站基础设施评估</dd>
-						<dt>引进德国工业技术学会DDE投资项目</dt>
-						<dd>深圳新设地铁线路投资管理</dd>
-						<dd>关于深圳国际贸易基础设施建设的评估办法</dd>
-						<dt>关于补贴各深圳实业企业的名单</dt>
-						<dd>我市残障儿童保障计划2017-2020年度计划会议</dd>
-					</dl>
-				</div>
-				<!-- /.box-body -->
-			</div>
-		</div>
-
-		<div class="col-xs-6">
-			<div class="box box-solid">
-				<div class="box-header with-border">
-					<i class="fa fa-text-width"></i>
-
-					<h3 class="box-title">办结事项</h3>
-				</div>
-				<!-- /.box-header -->
-				<div class="box-body">
-					<dl>
-						<dt>美国A州商业合作事务洽谈会议</dt>
-						<dd>深圳高等学府建设资金项目计划</dd>
-						<dt>港深合作会议，关于进一步加强我市对港各企业的合作，引进，投资</dt>
-						<dd>评审中心人员调动表</dd>
-						<dd>临时委派人员表</dd>
-						<dt>关于我单位新近规划的职能明细工作</dt>
-						<dd>通报2016年违规投资建设的企业</dd>
-					</dl>
-				</div>
-				<!-- /.box-body -->
-			</div>
-		</div>
-
-	</div>
-
-	<div class="row">
-		<div class="col-xs-6">
-			<div class="box box-solid">
-				<div class="box-header with-border">
-					<i class="fa fa-text-width"></i>
-
-					<h3 class="box-title">临时事项</h3>
-				</div>
-				<!-- /.box-header -->
-				<div class="box-body">
-					<dl>
-						<dt>南山区道路修整投资评估</dt>
-						<dd>第二届大学生运动会深圳站基础设施评估</dd>
-						<dt>引进德国工业技术学会DDE投资项目</dt>
-						<dd>深圳新设地铁线路投资管理</dd>
-						<dd>关于深圳国际贸易基础设施建设的评估办法</dd>
-						<dt>关于补贴各深圳实业企业的名单</dt>
-						<dd>我市残障儿童保障计划2017-2020年度计划会议</dd>
-					</dl>
-				</div>
-				<!-- /.box-body -->
-			</div>
-		</div>
-
-		<div class="col-xs-6">
-			<div class="box box-solid">
-				<div class="box-header with-border">
-					<i class="fa fa-text-width"></i>
-
-					<h3 class="box-title">其他事项</h3>
-				</div>
-				<!-- /.box-header -->
-				<div class="box-body">
-					<dl>
-						<dt>美国A州商业合作事务洽谈会议</dt>
-						<dd>深圳高等学府建设资金项目计划</dd>
-						<dt>港深合作会议，关于进一步加强我市对港各企业的合作，引进，投资</dt>
-						<dd>评审中心人员调动表</dd>
-						<dd>临时委派人员表</dd>
-						<dt>关于我单位新近规划的职能明细工作</dt>
-						<dd>通报2016年违规投资建设的企业</dd>
-					</dl>
-				</div>
-				<!-- /.box-body -->
-			</div>
-		</div>
-
-	</div>
-</section>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 ">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">公告通知</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa fa-commenting"></span></th>
+                            <th>最新通告</th>
+                            <th>发布单位</th>
+                            <th style="width: 100px" align="center">日期</th>
+                        </tr>
+                        <tr>
+                            <td>1.</td>
+                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
+                            <td>
+                                管委会
+                            </td>
+                            <td><span class="badge bg-red">2017-8-10</span></td>
+                        </tr>
+                        <tr>
+                            <td>2.</td>
+                            <td>关于居民安全消防检查的通知</td>
+                            <td>
+                                消防部
+                            </td>
+                            <td><span class="badge bg-yellow">2017-8-9</span></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>关于增设宝龙街道清洁岗位的通知</td>
+                            <td>
+                                市政部门
+                            </td>
+                            <td><span class="badge bg-light-blue">2017-5-12</span></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
+                            <td>
+                                管委会
+                            </td>
+                            <td><span class="badge bg-green">2017-5-8</span></td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td>关于项目签收通知</td>
+                            <td>
+                                	评审中心
+                            </td>
+                            <td><span class="badge bg-light-blue">2017-5-8</span></td>
+                        </tr>
+                        <tr>
+                            <td>6.</td>
+                            <td>关于发文通知</td>
+                            <td>
+                               	评审中心
+                            </td>
+                            <td><span class="badge bg-green">2017-5-8</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>        
+    </div>
+</div>

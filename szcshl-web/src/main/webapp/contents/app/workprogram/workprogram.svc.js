@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = [ 'sysfileSvc','$http', '$state','$rootScope'];
-    function workprogram(sysfileSvc, $http, $state ,$rootScope) {
+    workprogram.$inject = [ 'sysfileSvc','$http', '$state'];
+    function workprogram(sysfileSvc, $http, $state ) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				//初始化页面参数
@@ -387,18 +387,26 @@
                                     vm.isHaveNext = true;
                                 }
                             }
-//                            vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
-                            console.log(vm.work.projectTypeDicts);
-                            //初始化附件上传
-                            sysfileSvc.initUploadOptions({
-                                businessId:vm.work.id,
-                                sysSignId :vm.work.signId,
-                                sysfileType:"工作方案",
-                                uploadBt:"upload_file_bt",
-                                detailBt:"detail_file_bt",
-                                vm:vm
-                            });
 
+                            if(vm.work.id){
+                            	var sysfileType = "工作方案";
+                            	if(!angular.isUndefined(vm.work.isMain)){
+                            		if(vm.work.isMain == '9'){
+                            			sysfileType = "工作方案[主]"
+                            		}else{
+                            			sysfileType = "工作方案[协]"
+                            		}
+                            	}
+                            	//初始化附件上传
+                                sysfileSvc.initUploadOptions({
+                                    businessId:vm.work.id,
+                                    sysSignId :vm.work.signId,
+                                    sysfileType:sysfileType,
+                                    uploadBt:"upload_file_bt",
+                                    detailBt:"detail_file_bt",
+                                    vm:vm
+                                });
+                            }                           
                         }
 
                     }
@@ -433,6 +441,25 @@
                         fn: function () {
                             vm.iscommit = false;
                             vm.work.id = response.data.id;
+                            if(vm.work.id){
+                            	var sysfileType = "工作方案";
+                            	if(!angular.isUndefined(vm.work.isMain)){
+                            		if(vm.work.isMain == '9'){
+                            			sysfileType = "工作方案[主]"
+                            		}else{
+                            			sysfileType = "工作方案[协]"
+                            		}
+                            	}
+                            	//初始化附件上传
+                                sysfileSvc.initUploadOptions({
+                                    businessId:vm.work.id,
+                                    sysSignId :vm.work.signId,
+                                    sysfileType:sysfileType,
+                                    uploadBt:"upload_file_bt",
+                                    detailBt:"detail_file_bt",
+                                    vm:vm
+                                });
+                            }   
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功！",

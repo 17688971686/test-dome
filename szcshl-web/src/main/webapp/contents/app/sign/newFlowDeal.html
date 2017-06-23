@@ -81,7 +81,7 @@
 
 		      		<!-- 工作方案 -->
                     <p ng-show="vm.MFLOW_XMFZR_SP_GZFA"><!--主流程工作方案环节才显示-->
-                        是否直接发文：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.directDisPatch" ng-click="vm.checkNeedWP($event)">
+                       	 是否直接发文：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.directDisPatch" ng-click="vm.checkNeedWP($event)">
                     </p>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit" ng-show="vm.XMFZR_SP_GZFA" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="vm.show_workprogram" ><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>

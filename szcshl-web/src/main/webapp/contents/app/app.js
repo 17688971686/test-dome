@@ -11,10 +11,16 @@
         // 3rd Party Modules
 
     ]).config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/index');
+        $urlRouterProvider.otherwise('/welcome');
         $stateProvider
-            .state('index', {
-                url: '/index',
+            .state('welcome', {
+                url: '/welcome',
+                templateUrl: rootPath + '/admin/welcome.html',
+                controller: 'adminCtrl',
+                controllerAs: 'vm'
+            })
+            .state('gtasks', {
+                url: '/gtasks',
                 templateUrl: rootPath + '/admin/gtasks.html',
                 controller: 'adminCtrl',
                 controllerAs: 'vm'

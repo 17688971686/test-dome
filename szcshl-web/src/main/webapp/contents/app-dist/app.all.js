@@ -11,10 +11,16 @@
         // 3rd Party Modules
 
     ]).config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/index');
+        $urlRouterProvider.otherwise('/welcome');
         $stateProvider
-            .state('index', {
-                url: '/index',
+            .state('welcome', {
+                url: '/welcome',
+                templateUrl: rootPath + '/admin/welcome.html',
+                controller: 'adminCtrl',
+                controllerAs: 'vm'
+            })
+            .state('gtasks', {
+                url: '/gtasks',
                 templateUrl: rootPath + '/admin/gtasks.html',
                 controller: 'adminCtrl',
                 controllerAs: 'vm'
@@ -221,6 +227,12 @@
                 url: '/expertReview/:workProgramId',
                 templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                 controller: 'expertSelectCtrl',
+                controllerAs: 'vm'
+            })
+            .state('expertReviewList',{
+                url: '/expertReviewList',
+                templateUrl: rootPath + '/expert/html/reviewList.html',
+                controller: 'expertReviewListCtrl',
                 controllerAs: 'vm'
             })
             //end expert
@@ -2413,407 +2425,6 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('companyCtrl', company);
-
-    company.$inject = ['$location','companySvc']; 
-
-    function company($location, companySvc) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '单位列表';
-       
-        vm.del = function (id) {        	
-        	
-             common.confirm({
-            	 vm:vm,
-            	 title:"",
-            	 msg:"确认删除数据吗？",
-            	 fn:function () {
-                  	$('.confirmDialog').modal('hide');             	
-                    companySvc.deletecompany(vm,id);
-                 }
-             })
-        }
-        vm.dels = function () {     
-        	var selectIds = common.getKendoCheckId('.grid');
-        	//alert(selectIds.length);
-            if (selectIds.length == 0) {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                	
-                });
-            } else {
-            	var ids=[];
-                for (var i = 0; i < selectIds.length; i++) {
-                	ids.push(selectIds[i].value);
-				}  
-                var idStr=ids.join(',');
-                vm.del(idStr);
-            }   
-       }
-        vm.queryConpany =function(){
-        	companySvc.queryConpany(vm)
-        }
-        activate();
-        function activate() {
-            companySvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('companyEditCtrl', company);
-
-    company.$inject = ['$location','companySvc','$state']; 
-
-    function company($location, companySvc,$state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '新增单位';
-        vm.iscompanyExist=false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新单位';
-        }
-        
-        vm.create = function () {
-        	companySvc.createcompany(vm);
-        };
-        vm.update = function () {
-        	companySvc.updatecompany(vm);
-        };
-
-        activate();
-        function activate() {
-        	if (vm.isUpdate) {
-        		companySvc.getcompanyById(vm);
-            } 
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('companySvc', company);
-
-	company.$inject = [ '$http','$compile' ];	
-	function company($http,$compile) {	
-		var url_company = rootPath +"/company";
-		var url_back = '#/company';
-		var url_user=rootPath +'/user';
-			
-		var service = {
-			grid : grid,
-			createcompany : createcompany,			
-			getcompanyById : getcompanyById,
-			updatecompany:updatecompany,
-			deletecompany:deletecompany	,
-			queryConpany : queryConpany,//模糊查询
-		};		
-		return service;	
-		
-		function grid(vm) {
-
-			// Begin:dataSource
-			var dataSource = new kendo.data.DataSource({
-				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_company+"/fingByOData",$("#form")),
-				schema : common.kendoGridConfig().schema({
-					id : "id",
-					fields : {
-						createdDate : {
-							type : "date"
-						}
-					}
-				}),
-				serverPaging : true,
-				serverSorting : true,
-				serverFiltering : true,			
-				pageSize: 10,
-				sort : {
-					field : "createdDate",
-					dir : "desc"
-				}
-			});
-
-			// End:dataSource
-			
-			  //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
-            //S_序号
-
-			// Begin:column
-			var columns = [
-					{
-						template : function(item) {
-							return kendo
-									.format(
-											"<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-											item.id)
-						},
-						filterable : false,
-						width : 40,
-						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-						
-					},  
-					 {  
-					    field: "rowNumber",  
-					    title: "序号",  
-					    width: 70,
-					    filterable : false,
-					    template: "<span class='row-number'></span>"  
-					 }
-					,
-					{
-						field : "coName",
-						title : "单位名称",
-						width : 260,						
-						filterable : false
-					},
-					{
-						field : "coPhone",
-						title : "单位电话",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coPC",
-						title : "邮编",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coAddress",
-						title : "地址",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coSite",
-						title : "网站",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coSynopsis",
-						title : "单位简介",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coType",
-						title : "单位类型",
-						width : 160,						
-						filterable : false
-					},
-					 
-					{
-						field : "",
-						title : "操作",
-						width : 200,
-						template:function(item){							
-							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-							
-						}
-						
-
-					}
-
-			];
-			// End:column
-		
-			vm.gridOptions={
-					dataSource : common.gridDataSource(dataSource),
-					filterable : common.kendoGridConfig().filterable,
-					pageable : common.kendoGridConfig().pageable,
-					noRecords:common.kendoGridConfig().noRecordMessage,
-					columns : columns,
-					dataBound:dataBound,
-					resizable: true
-				};
-			
-		}// end fun grid
-		
-		//Start 模糊查询
-		function queryConpany(vm){
-			vm.gridOptions.dataSource.read();	
-		}
-		// end 模糊查询
-		function createcompany(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid && vm.iscompanyExist == false) {
-				vm.isSubmit = true;
-				var httpOptions = {
-					method : 'post',
-					url : url_company,
-					data : vm.model
-				}
-				
-				var httpSuccess = function success(response) {				
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {							
-							
-							common.alert({
-								vm:vm,
-								msg:"操作成功",
-								fn:function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									location.href = url_back;
-								}
-							})
-						}
-						
-					});
-
-				}
-
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-
-			} else {				
-//				common.alert({
-//					vm:vm,
-//					msg:"您填写的信息不正确,请核对后提交!"
-//				})
-			}
-		}// end fun createcompany
-		
-		//start  getcompanyById
-		function getcompanyById(vm) {
-			var httpOptions = {
-				method : 'get',
-				url : url_company +"/html/findByIdCompany",
-				params:{id:vm.id}
-			}
-			var httpSuccess = function success(response) {
-				vm.model=response.data;
-				console.log(vm.model);
-			}
-			
-			common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-		}// end  getcompanyById
-		
-		function updatecompany(vm){
-			common.initJqValidation();			
-			var isValid = $('form').valid();
-			if (isValid && vm.iscompanyExist == false) {
-				vm.isSubmit = true;
-				vm.model.id=vm.id;// id
-				var httpOptions = {
-					method : 'put',
-					url : url_company,
-					data : vm.model
-				}
-
-				var httpSuccess = function success(response) {
-					
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {
-							
-							common.alert({
-								vm:vm,
-								msg:"操作成功",
-								fn:function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');							
-								}
-							})
-						}
-						
-					})
-				}
-
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-
-			} else {
-//				common.alert({
-//				vm:vm,
-//				msg:"您填写的信息不正确,请核对后提交!"
-//			})
-			}
-		}// end fun updatecompany
-		
-		function deletecompany(vm,id) {
-		
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url:url_company,
-                data:id
-                
-            }
-            var httpSuccess = function success(response) {
-                
-                common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function () {
-	                    vm.isSubmit = false;
-	                    vm.gridOptions.dataSource.read();
-	                }
-					
-				});
-
-            }
-            common.http({
-				vm:vm,
-				$http:$http,
-				httpOptions:httpOptions,
-				success:httpSuccess
-			});
-        }// end fun deletecompany
-		
-		
-		
-		
-
-	}
-	
-	
-	
-})();
-(function () {
-    'use strict';
-
     var service = {
         initJqValidation: initJqValidation,// 重置form验证
         requestError: requestError,// 请求错误时执行
@@ -3521,6 +3132,407 @@
 
 })();
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('companyCtrl', company);
+
+    company.$inject = ['$location','companySvc']; 
+
+    function company($location, companySvc) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '单位列表';
+       
+        vm.del = function (id) {        	
+        	
+             common.confirm({
+            	 vm:vm,
+            	 title:"",
+            	 msg:"确认删除数据吗？",
+            	 fn:function () {
+                  	$('.confirmDialog').modal('hide');             	
+                    companySvc.deletecompany(vm,id);
+                 }
+             })
+        }
+        vm.dels = function () {     
+        	var selectIds = common.getKendoCheckId('.grid');
+        	//alert(selectIds.length);
+            if (selectIds.length == 0) {
+            	common.alert({
+                	vm:vm,
+                	msg:'请选择数据'
+                	
+                });
+            } else {
+            	var ids=[];
+                for (var i = 0; i < selectIds.length; i++) {
+                	ids.push(selectIds[i].value);
+				}  
+                var idStr=ids.join(',');
+                vm.del(idStr);
+            }   
+       }
+        vm.queryConpany =function(){
+        	companySvc.queryConpany(vm)
+        }
+        activate();
+        function activate() {
+            companySvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('companyEditCtrl', company);
+
+    company.$inject = ['$location','companySvc','$state']; 
+
+    function company($location, companySvc,$state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '新增单位';
+        vm.iscompanyExist=false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新单位';
+        }
+        
+        vm.create = function () {
+        	companySvc.createcompany(vm);
+        };
+        vm.update = function () {
+        	companySvc.updatecompany(vm);
+        };
+
+        activate();
+        function activate() {
+        	if (vm.isUpdate) {
+        		companySvc.getcompanyById(vm);
+            } 
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('companySvc', company);
+
+	company.$inject = [ '$http','$compile' ];	
+	function company($http,$compile) {	
+		var url_company = rootPath +"/company";
+		var url_back = '#/company';
+		var url_user=rootPath +'/user';
+			
+		var service = {
+			grid : grid,
+			createcompany : createcompany,			
+			getcompanyById : getcompanyById,
+			updatecompany:updatecompany,
+			deletecompany:deletecompany	,
+			queryConpany : queryConpany,//模糊查询
+		};		
+		return service;	
+		
+		function grid(vm) {
+
+			// Begin:dataSource
+			var dataSource = new kendo.data.DataSource({
+				type : 'odata',
+				transport : common.kendoGridConfig().transport(url_company+"/fingByOData",$("#form")),
+				schema : common.kendoGridConfig().schema({
+					id : "id",
+					fields : {
+						createdDate : {
+							type : "date"
+						}
+					}
+				}),
+				serverPaging : true,
+				serverSorting : true,
+				serverFiltering : true,			
+				pageSize: 10,
+				sort : {
+					field : "createdDate",
+					dir : "desc"
+				}
+			});
+
+			// End:dataSource
+			
+			  //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
+
+			// Begin:column
+			var columns = [
+					{
+						template : function(item) {
+							return kendo
+									.format(
+											"<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+											item.id)
+						},
+						filterable : false,
+						width : 40,
+						title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+						
+					},  
+					 {  
+					    field: "rowNumber",  
+					    title: "序号",  
+					    width: 70,
+					    filterable : false,
+					    template: "<span class='row-number'></span>"  
+					 }
+					,
+					{
+						field : "coName",
+						title : "单位名称",
+						width : 260,						
+						filterable : false
+					},
+					{
+						field : "coPhone",
+						title : "单位电话",
+						width : 160,						
+						filterable : false
+					},
+					{
+						field : "coPC",
+						title : "邮编",
+						width : 160,						
+						filterable : false
+					},
+					{
+						field : "coAddress",
+						title : "地址",
+						width : 160,						
+						filterable : false
+					},
+					{
+						field : "coSite",
+						title : "网站",
+						width : 160,						
+						filterable : false
+					},
+					{
+						field : "coSynopsis",
+						title : "单位简介",
+						width : 160,						
+						filterable : false
+					},
+					{
+						field : "coType",
+						title : "单位类型",
+						width : 160,						
+						filterable : false
+					},
+					 
+					{
+						field : "",
+						title : "操作",
+						width : 200,
+						template:function(item){							
+							return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
+							
+						}
+						
+
+					}
+
+			];
+			// End:column
+		
+			vm.gridOptions={
+					dataSource : common.gridDataSource(dataSource),
+					filterable : common.kendoGridConfig().filterable,
+					pageable : common.kendoGridConfig().pageable,
+					noRecords:common.kendoGridConfig().noRecordMessage,
+					columns : columns,
+					dataBound:dataBound,
+					resizable: true
+				};
+			
+		}// end fun grid
+		
+		//Start 模糊查询
+		function queryConpany(vm){
+			vm.gridOptions.dataSource.read();	
+		}
+		// end 模糊查询
+		function createcompany(vm) {
+			common.initJqValidation();
+			var isValid = $('form').valid();
+			if (isValid && vm.iscompanyExist == false) {
+				vm.isSubmit = true;
+				var httpOptions = {
+					method : 'post',
+					url : url_company,
+					data : vm.model
+				}
+				
+				var httpSuccess = function success(response) {				
+					common.requestSuccess({
+						vm:vm,
+						response:response,
+						fn:function() {							
+							
+							common.alert({
+								vm:vm,
+								msg:"操作成功",
+								fn:function() {
+									vm.isSubmit = false;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+									location.href = url_back;
+								}
+							})
+						}
+						
+					});
+
+				}
+
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
+
+			} else {				
+//				common.alert({
+//					vm:vm,
+//					msg:"您填写的信息不正确,请核对后提交!"
+//				})
+			}
+		}// end fun createcompany
+		
+		//start  getcompanyById
+		function getcompanyById(vm) {
+			var httpOptions = {
+				method : 'get',
+				url : url_company +"/html/findByIdCompany",
+				params:{id:vm.id}
+			}
+			var httpSuccess = function success(response) {
+				vm.model=response.data;
+				console.log(vm.model);
+			}
+			
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+		}// end  getcompanyById
+		
+		function updatecompany(vm){
+			common.initJqValidation();			
+			var isValid = $('form').valid();
+			if (isValid && vm.iscompanyExist == false) {
+				vm.isSubmit = true;
+				vm.model.id=vm.id;// id
+				var httpOptions = {
+					method : 'put',
+					url : url_company,
+					data : vm.model
+				}
+
+				var httpSuccess = function success(response) {
+					
+					common.requestSuccess({
+						vm:vm,
+						response:response,
+						fn:function() {
+							
+							common.alert({
+								vm:vm,
+								msg:"操作成功",
+								fn:function() {
+									vm.isSubmit = false;
+									$('.alertDialog').modal('hide');							
+								}
+							})
+						}
+						
+					})
+				}
+
+				common.http({
+					vm:vm,
+					$http:$http,
+					httpOptions:httpOptions,
+					success:httpSuccess
+				});
+
+			} else {
+//				common.alert({
+//				vm:vm,
+//				msg:"您填写的信息不正确,请核对后提交!"
+//			})
+			}
+		}// end fun updatecompany
+		
+		function deletecompany(vm,id) {
+		
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url:url_company,
+                data:id
+                
+            }
+            var httpSuccess = function success(response) {
+                
+                common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function () {
+	                    vm.isSubmit = false;
+	                    vm.gridOptions.dataSource.read();
+	                }
+					
+				});
+
+            }
+            common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions:httpOptions,
+				success:httpSuccess
+			});
+        }// end fun deletecompany
+		
+		
+		
+		
+
+	}
+	
+	
+	
+})();
 (function () {
     'use strict';
 
@@ -5487,9 +5499,7 @@
 			}
 			var httpSuccess = function success(response) {
 				vm.selectedSign = response.data.signDtoList;
-				console.log(vm.selectedSign);
 				vm.linkSignId = response.data.linkSignId;
-				console.log(vm.linkSignId);
 			}
 			common.http({
 						vm : vm,
@@ -5532,7 +5542,6 @@
 			}
 			var httpSuccess = function success(response) {
 				vm.signs = response.data;
-				console.log(vm.signs);
 			}
 			common.http({
 						vm : vm,
@@ -5670,6 +5679,10 @@
         	expertSvc.searchMAudit(vm);
         };
         
+        vm.formReset=function(){
+        	expertSvc.formReset(vm);
+        }
+        
         vm.del = function (id) {        	
              common.confirm({
             	 vm:vm,
@@ -5708,9 +5721,9 @@
 
     angular.module('app').controller('expertEditCtrl', expert);
 
-    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','expertOfferSvc','$state'];
+    expert.$inject = ['$location','projectExpeSvc','workExpeSvc','expertSvc','expertOfferSvc','expertTypeSvc','$state'];
 
-    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,expertOfferSvc,$state) {
+    function expert($location,projectExpeSvc,workExpeSvc,expertSvc,expertOfferSvc,expertTypeSvc,$state) {
         var vm = this;
         vm.model = {};
         vm.title = '专家信息录入';
@@ -5723,6 +5736,13 @@
 
         activice();
         function activice(){
+        	vm.showSS=true;
+        	vm.showSC=false;
+        	vm.showWS=true;
+        	vm.showWC=false;
+        	vm.MW=false;
+        	vm.MS=false;
+        	projectExpeSvc.initProjectType(vm);
             if (vm.expertID) {
                 vm.title = '更新专家';
                 vm.isHide=false;
@@ -5751,7 +5771,9 @@
 
         }
         
-  
+  		vm.create=function(){
+  			expertSvc.createExpert(vm);
+  		}
         
         vm.update=function(){
         	expertSvc.updateExpert(vm);
@@ -5883,7 +5905,61 @@
             });
             vm.gotoOfferPage();
         }
-
+        
+        vm.chooseMW=function(){
+        	vm.MW=true;
+        	vm.showWS=true;
+        	vm.showWC=false;
+        }
+        vm.cancelMW=function(){
+        	vm.showWS=false;
+        	vm.showWC=true;
+        }
+        vm.sureMW=function(){
+        	if(!vm.majorWork){
+        		common.alert({
+							vm : vm,
+							msg : "您未选择专业，请选择！",
+							fn : function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})
+        	}else{
+	        	vm.model.majorWork=vm.majorWork;
+	        	vm.showWS=false;
+	        	vm.showWC=true;
+        	}
+        }
+        vm.chooseMS=function(){
+        	vm.MS=true;
+        	vm.showSS=true;
+        	vm.showSC=false;
+        }
+        vm.cancelMS=function(){
+        	vm.showSS=false;
+        	vm.showSC=true;
+        }
+       vm.sureMS=function(){
+       	if(!vm.majorStudy){
+        		common.alert({
+							vm : vm,
+							msg : "您未选择专业，请选择！",
+							fn : function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})
+        	}else{
+	       		vm.model.majorStudy=vm.majorStudy;
+	        	vm.showSS=false;
+	        	vm.showSC=true;
+        	}
+       }
+        
+        
+        
+        
     }
 })();
 
@@ -5927,9 +6003,20 @@
 			updateAudit : updateAudit,		    //专家评审
 			toAudit : toAudit,				    //由个状态回到审核状态
 			auditTo : auditTo,				    //由审核状态去到各个状态
-            initUpload : initUpload             //初始化附件上传
+            initUpload : initUpload,             //初始化附件上传
+            formReset : formReset,		//重置页面
+            initUpload : initUpload,            //初始化附件上传
+            initUpload : initUpload            //初始化附件上传
 		};
-		return service;				
+		return service;	
+		
+		//begin formReset
+		function formReset(vm){
+			$("#searchform")[0].reset();
+			vm.gridOptions.dataSource.read();
+			
+		}
+		//end formReset
 		
 		// begin#updateExpert
 		function updateExpert(vm) {
@@ -6005,6 +6092,8 @@
 				
 		// begin#createExpert		
 		function createExpert(vm) {	
+			console.log(vm.model);
+			return;
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if(isValid){				
@@ -6056,6 +6145,17 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
+				 if(vm.model.majorWork){
+            		vm.showWS=false;
+        			vm.showWC=true;
+				 }
+        		
+	            if(vm.model.majorStudy){
+	            	//console.log("dfdf");
+	        		vm.showSC=true;
+	            	vm.showSS=false;
+	            }
+				
 				//工作简历
 				if(response.data.workDto && response.data.workDto.length > 0){
 					vm.showWorkHistory = true;
@@ -6472,7 +6572,7 @@
 					id : "id"
 				}),
 				rowNumber: true,  
-	            headerCenter: true,  
+	            headerCenter: true
 			});
 			
 			var  dataBound = function () {  
@@ -6567,7 +6667,8 @@
 				success : httpSuccess
 			});
 		}//end updateAudit
-
+		
+		
         //S_initUpload
         function initUpload(vm){
             var projectfileoptions = {
@@ -6590,6 +6691,26 @@
 
 	}
 })();
+(function () {
+    'expert strict';
+
+    angular.module('app').controller('expertReviewListCtrl', expertReviewList);
+
+    expertReviewList.$inject = ['$location','expertSvc'];
+
+    function expertReviewList($location, expertSvc) {
+    	var vm = this;
+    	vm.data={};
+    	vm.title = '专家评分一览表';
+
+        activate();
+        function activate() {
+        }
+
+
+    }
+})();
+
 (function() {
 	'expertType strict';
 
@@ -6883,9 +7004,30 @@
 				getProjectById : getProjectById,
 				delertProject : delertProject,
 				gotoJPage : gotoJPage,
-				cleanValue : cleanValue
+				cleanValue : cleanValue,
+				initProjectType : initProjectType
 		};
 		return service;
+		
+		//begin  initProjectType
+		function initProjectType(vm){
+			var code="PROJECTTYPE";
+			var httpOptions={
+				method: "get",
+				url: rootPath +"/dict/getAllDictByCode",
+				params:{dictCode :code}
+			}
+			var httpSuccess=function success(response){
+				vm.projectTypes=response.data;
+			}
+			
+			common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+		}//end initProjectType
 		
 		//begin#delertProject
 		function delertProject(vm){
@@ -7096,7 +7238,7 @@
 			 WorkeWindow.kendoWindow({
 	                width: "690px",
 	                height: "330px",
-	                title: "添加项目经历",
+	                title: "添加项目经验",
 	                visible: false,
 	                modal: true,
 	                closable: true,
@@ -7182,7 +7324,6 @@
 			getWorkById : getWorkById,
 			getWork : getWork,
 			cleanValue : cleanValue
-
 		};
 
 		return service;
@@ -7325,7 +7466,7 @@
 			WorkeWindow.kendoWindow({
 				width : "690px",
 				height : "330px",
-				title : "添加工作经历",
+				title : "添加工作简历",
 				visible : false,
 				modal : true,
 				closable : true,
@@ -7451,6 +7592,56 @@
 		}
 	}
 
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').factory('expertOfferSvc', expertOffer);
+
+    expertOffer.$inject = ['$http','expertSvc'];
+
+    function expertOffer($http,expertSvc) {
+        var service = {
+            saveOffer: saveOffer,	            //保存专家聘书
+
+        };
+        return service;
+
+        //S_saveOffer
+        function saveOffer(vm) {
+            common.initJqValidation($("#expert_offer_form"));
+            var isValid = $('#expert_offer_form').valid();
+            if (isValid) {
+                vm.expertOffer.expertId = vm.model.expertID
+                var httpOptions = {
+                    method : 'post',
+                    url : rootPath + "/expertOffer",
+                    data : vm.expertOffer
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm : vm,
+                        response : response,
+                        fn : function() {
+                            expertSvc.getExpertById(vm);
+                            common.alert({
+                                vm : vm,
+                                msg : "操作成功"
+                            })
+                        }
+
+                    });
+                }
+                common.http({
+                    vm : vm,
+                    $http : $http,
+                    httpOptions : httpOptions,
+                    success : httpSuccess
+                });
+            }
+        }//E_saveOffer
+
+    }
 })();
 (function () {
     'use strict';
@@ -8598,56 +8789,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('expertOfferSvc', expertOffer);
-
-    expertOffer.$inject = ['$http','expertSvc'];
-
-    function expertOffer($http,expertSvc) {
-        var service = {
-            saveOffer: saveOffer,	            //保存专家聘书
-
-        };
-        return service;
-
-        //S_saveOffer
-        function saveOffer(vm) {
-            common.initJqValidation($("#expert_offer_form"));
-            var isValid = $('#expert_offer_form').valid();
-            if (isValid) {
-                vm.expertOffer.expertId = vm.model.expertID
-                var httpOptions = {
-                    method : 'post',
-                    url : rootPath + "/expertOffer",
-                    data : vm.expertOffer
-                }
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm : vm,
-                        response : response,
-                        fn : function() {
-                            expertSvc.getExpertById(vm);
-                            common.alert({
-                                vm : vm,
-                                msg : "操作成功"
-                            })
-                        }
-
-                    });
-                }
-                common.http({
-                    vm : vm,
-                    $http : $http,
-                    httpOptions : httpOptions,
-                    success : httpSuccess
-                });
-            }
-        }//E_saveOffer
-
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').factory('expertConditionSvc', expertCondition);
 
     expertCondition.$inject = ['$http'];
@@ -8798,7 +8939,7 @@
 
                             //初始化附件上传
                             sysfileSvc.initUploadOptions({
-                                businessId: vm.fileRecord.id,
+                                businessId: vm.fileRecord.fileRecordId,
                                 sysSignId: vm.fileRecord.signId,
                                 sysfileType: "归档",
                                 uploadBt: "upload_file_bt",
@@ -9896,7 +10037,7 @@
         }
         vm.used=function(id){
         	vm.model.id=id;
-        	vm.model.mrStatus="1";
+        	vm.model.mrStatus="1";//显示停用标志
         	meetingSvc.roomUseState(vm);
         	//vm.isUse=false;
         }
@@ -9910,8 +10051,8 @@
                 fn:function () {
                     $('.confirmDialog').modal('hide');
                     vm.model.id=id;
-                    vm.model.mrStatus="0";
-                    meetingSvc.roomUseState(vm);;
+                    vm.model.mrStatus="2";//显示启用标志
+                    meetingSvc.roomUseState(vm);
                 }
             })
         }
@@ -10296,9 +10437,9 @@
                     template: function (item) {
                         var isUse = false;
                         if (item.mrStatus == "2") {
-                            isUse = true;
+                            isUse = true;//会议室可用
                         } else {
-                            isUse = false;
+                            isUse = false;//会议室不可用
                         }
                         //return common.format($('#columnBtns').html(),"vm.stoped('" + item.id + "')",isUse,"vm.used('" + item.id + "')",isUse, item.id,"vm.del('" + item.id + "')");
                         return common.format($('#columnBtns').html(), "vm.stoped('" + item.id + "')", isUse, "vm.used('" + item.id + "')", isUse, item.id);
@@ -10638,6 +10779,402 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                resizable: true
+            };
+
+        }// end fun grid
+
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('officeUserCtrl', officeUser);
+
+    officeUser.$inject = ['$location', 'officeUserSvc'];
+
+    function officeUser($location, officeUserSvc) {
+        var vm = this;
+        vm.title = '处室人员管理';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    officeUserSvc.deleteOfficeUser(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+        
+        vm.queryOffice = function(){
+        	officeUserSvc.queryOffice(vm);
+        }
+        activate();
+        function activate() {
+            officeUserSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('officeUserEditCtrl', officeUser);
+
+    officeUser.$inject = ['$location', 'officeUserSvc', '$state'];
+
+    function officeUser($location, officeUserSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加人员';
+        vm.isuserExist = false;
+        vm.officeID = $state.params.officeID;
+        if (vm.officeID) {
+            vm.isUpdate = true;
+            vm.title = '更新人员';
+        }
+
+        vm.create = function () {
+            officeUserSvc.createOfficeUser(vm);
+        };
+        vm.update = function () {
+            officeUserSvc.updateOfficeUser(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                officeUserSvc.getOfficeUserById(vm);
+            }
+            officeUserSvc.getDepts(vm);//获取所有办事处
+           
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('officeUserSvc', officeUser);
+
+    officeUser.$inject = ['$http'];
+
+    function officeUser($http) {
+        var url_officeUser = rootPath + "/officeUser", url_back = '#/officeUserList';
+        var service = {
+            grid: grid,
+            getOfficeUserById: getOfficeUserById,
+            createOfficeUser: createOfficeUser,
+            deleteOfficeUser: deleteOfficeUser,
+            updateOfficeUser: updateOfficeUser,
+            getDepts:getDepts,						//获取所有办事处
+            queryOffice:queryOffice,
+        };
+
+        return service;
+        
+        function queryOffice(vm){
+        	vm.gridOptions.dataSource.read();	
+        }
+        //start 获取所有办事处
+        function getDepts(vm){
+        	var httpOptions = {
+                    method: 'get',
+                    url: common.format(url_officeUser + "/getDepts")
+                }
+                var httpSuccess = function success(response) {
+                    vm.depts = {};
+                    vm.depts = response.data;
+                    
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        	
+        }
+        //end 获取所有办事处
+        
+        // begin#updateOfficeUser
+        function updateOfficeUser(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+                var httpOptions = {
+                    method: 'put',
+                    url: url_officeUser,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteOfficeUser
+        function deleteOfficeUser(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_officeUser,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createOfficeUser
+        function createOfficeUser(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_officeUser,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getOfficeUserById
+        function getOfficeUserById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/officeUser/html/findById",
+                params:{officeID:vm.officeID}
+            };
+            var httpSuccess = function success(response) {
+            	if(response.data.dept){
+					//vm.depts = {}
+					//vm.depts = response.data.depts;
+					//console.log(vm.depts);
+					
+				}
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        // begin#grid
+        function grid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_officeUser+"/fingByOData",$("#formOffice")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+            
+          //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.officeID)
+                    },
+                    filterable: false,
+                    width: 20,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {  
+ 				    field: "rowNumber",  
+ 				    title: "序号",  
+ 				    width: 30,
+ 				    filterable : false,
+ 				    template: "<span class='row-number'></span>"  
+ 				 }
+ 				,
+                {
+                    field: "officeUserName",
+                    title: "办事处联系人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "deptName",
+                    title: "所在办事处",
+                    width: 100,
+                    filterable: false
+                },
+               
+                {
+                    field: "officePhone",
+                    title: "电话",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "officeEmail",
+                    title: "邮件",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "officeDesc",
+                    title: "描述",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.officeID + "')", item.officeID);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
                 resizable: true
             };
 
@@ -11761,402 +12298,6 @@
                 columns: columns,
                 resizable: true
             };
-        }// end fun grid
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('officeUserCtrl', officeUser);
-
-    officeUser.$inject = ['$location', 'officeUserSvc'];
-
-    function officeUser($location, officeUserSvc) {
-        var vm = this;
-        vm.title = '处室人员管理';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    officeUserSvc.deleteOfficeUser(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-        
-        vm.queryOffice = function(){
-        	officeUserSvc.queryOffice(vm);
-        }
-        activate();
-        function activate() {
-            officeUserSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('officeUserEditCtrl', officeUser);
-
-    officeUser.$inject = ['$location', 'officeUserSvc', '$state'];
-
-    function officeUser($location, officeUserSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加人员';
-        vm.isuserExist = false;
-        vm.officeID = $state.params.officeID;
-        if (vm.officeID) {
-            vm.isUpdate = true;
-            vm.title = '更新人员';
-        }
-
-        vm.create = function () {
-            officeUserSvc.createOfficeUser(vm);
-        };
-        vm.update = function () {
-            officeUserSvc.updateOfficeUser(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                officeUserSvc.getOfficeUserById(vm);
-            }
-            officeUserSvc.getDepts(vm);//获取所有办事处
-           
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('officeUserSvc', officeUser);
-
-    officeUser.$inject = ['$http'];
-
-    function officeUser($http) {
-        var url_officeUser = rootPath + "/officeUser", url_back = '#/officeUserList';
-        var service = {
-            grid: grid,
-            getOfficeUserById: getOfficeUserById,
-            createOfficeUser: createOfficeUser,
-            deleteOfficeUser: deleteOfficeUser,
-            updateOfficeUser: updateOfficeUser,
-            getDepts:getDepts,						//获取所有办事处
-            queryOffice:queryOffice,
-        };
-
-        return service;
-        
-        function queryOffice(vm){
-        	vm.gridOptions.dataSource.read();	
-        }
-        //start 获取所有办事处
-        function getDepts(vm){
-        	var httpOptions = {
-                    method: 'get',
-                    url: common.format(url_officeUser + "/getDepts")
-                }
-                var httpSuccess = function success(response) {
-                    vm.depts = {};
-                    vm.depts = response.data;
-                    
-                }
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-        	
-        }
-        //end 获取所有办事处
-        
-        // begin#updateOfficeUser
-        function updateOfficeUser(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-                var httpOptions = {
-                    method: 'put',
-                    url: url_officeUser,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deleteOfficeUser
-        function deleteOfficeUser(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_officeUser,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createOfficeUser
-        function createOfficeUser(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_officeUser,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getOfficeUserById
-        function getOfficeUserById(vm) {
-        	var httpOptions = {
-                method: 'get',
-                url: rootPath + "/officeUser/html/findById",
-                params:{officeID:vm.officeID}
-            };
-            var httpSuccess = function success(response) {
-            	if(response.data.dept){
-					//vm.depts = {}
-					//vm.depts = response.data.depts;
-					//console.log(vm.depts);
-					
-				}
-                vm.model = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });                       
-        }
-
-        // begin#grid
-        function grid(vm) {
-
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_officeUser+"/fingByOData",$("#formOffice")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-            
-          //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
-            //S_序号
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.officeID)
-                    },
-                    filterable: false,
-                    width: 20,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {  
- 				    field: "rowNumber",  
- 				    title: "序号",  
- 				    width: 30,
- 				    filterable : false,
- 				    template: "<span class='row-number'></span>"  
- 				 }
- 				,
-                {
-                    field: "officeUserName",
-                    title: "办事处联系人",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "deptName",
-                    title: "所在办事处",
-                    width: 100,
-                    filterable: false
-                },
-               
-                {
-                    field: "officePhone",
-                    title: "电话",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "officeEmail",
-                    title: "邮件",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "officeDesc",
-                    title: "描述",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.officeID + "')", item.officeID);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                dataBound:dataBound,
-                resizable: true
-            };
-
         }// end fun grid
 
     }
@@ -14200,6 +14341,7 @@
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
         vm.dealFlow = true;
         vm.expertReview = {};
+        vm.show_expert = false;
         vm.showExpertRemark = false;// 专家评分弹窗内容显示
         vm.showExpertpayment = false;// 专家费用弹窗内容显示
         vm.MarkAndPay = true;// 专家评分费用编辑权限
@@ -14671,9 +14813,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['$http', '$state', 'flowSvc'];
+    sign.$inject = ['sysfileSvc','$http', '$state', 'flowSvc'];
 
-    function sign($http, $state, flowSvc) {
+    function sign(sysfileSvc,$http, $state, flowSvc) {
         var service = {
             grid: grid,						//初始化项目列表
             querySign: querySign,			//查询
@@ -14702,8 +14844,7 @@
                 method: 'get',
                 url: rootPath + "/file/findBySysFileSignId",
                 params: {
-                    signid:
-                    vm.model.signid
+                    signid: vm.model.signid
                 }
             }
             var httpSuccess = function success(response) {
@@ -14725,8 +14866,8 @@
                 success: httpSuccess
             });
         }
-        //E 上传附件列表
 
+        //E 上传附件列表
         //S_初始化grid(过滤掉已经签收的项目)
         function grid(vm) {
             // Begin:dataSource
@@ -14913,6 +15054,7 @@
                 url: rootPath + "/officeUser/findOfficeUsersByDeptName",
                 data: param
             };
+
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm: vm,
@@ -15038,7 +15180,15 @@
                         vm.builtcomlist = response.data.builtcomlist;
                         //编制单位
                         vm.designcomlist = response.data.designcomlist;
-
+                        //初始化附件上传
+                        sysfileSvc.initUploadOptions({
+                            businessId:vm.model.signid,
+                            sysSignId :vm.model.signid,
+                            sysfileType:"收文",
+                            uploadBt:"upload_file_bt",
+                            detailBt:"detail_file_bt",
+                            vm:vm
+                        });
                     }
                 })
             }
@@ -15117,10 +15267,12 @@
                             vm.show_filerecord = true;
                             vm.fileRecord = vm.model.fileRecordDto;
                         }
-
                         //初始化专家评分
-                        if((vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9') || vm.model.isNeedWrokPrograml == '9'){
-                            vm.show_expert_review = true;
+                        if ((vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9') || vm.model.isNeedWrokPrograml == '9') {
+                           vm.show_expert = true;
+                          /* if (vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0) {
+                               vm.show_expert = true;
+                           }*/
                             markGrid(vm);
                             paymentGrid(vm);
                         }
@@ -15426,13 +15578,6 @@
 
         function getExpertColumns() {
             var columns = [
-                /*
-                 * { template : function(item) { return kendo.format("<input
-                 * type='checkbox' relId='{0}' name='checkbox'
-                 * class='checkbox' />",item.expertID) }, filterable :
-                 * false, width : 40, title : "<input id='checkboxAll'
-                 * type='checkbox' class='checkbox' />" },
-                 **/
                 {
                     field: "",
                     title: "序号",
@@ -15513,7 +15658,6 @@
                     width: 100,
                     filterable: true,
                     template: function (item) {
-                        console.log(item);
                         return item.expertDto.remark == null ? "" : item.expertDto.remark;
                     }
                 },
@@ -15556,8 +15700,7 @@
             return columns;
         }
 
-
-// S_getpaymentColumns
+        // S_getpaymentColumns
         function getpaymentColumns() {
             var columns = [{
                 field: "rowNumber",
@@ -15602,7 +15745,6 @@
                 width: 100,
                 filterable: true
             },
-
                 {
                     field: "reviewTaxes",
                     title: "应纳税额",
@@ -15617,9 +15759,7 @@
                     title: "操作",
                     width: 100,
                     template: function (item) {
-                        console.log(item);
-                        return common.format($('#columnBtn').html(),
-                            "vm.editpayment('" + item.id + "')");
+                        return common.format($('#columnBtn').html(), "vm.editpayment('" + item.id + "')");
                         //item.expertID);
                     }
                 }];
@@ -15641,9 +15781,10 @@
                     response: response,
                     fn: function () {
                         vm.expertReviews = response.data.value;
-                        // console.log(response.data.value);
-                        //vm.expertSelectedDtoList = expertReviews.expertSelectedDtoList;
-                        // console.log(vm.expertSelectedDtoList);
+                        var expertReviews = vm.expertReviews
+                        if (expertReviews != undefined && expertReviews.length > 0) {
+                            vm.show_expert = true;
+                        }
 
                     }
                 })
@@ -15716,211 +15857,6 @@
         }//E_meetingDoc
 
 
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').factory('sysfileSvc', sysfile);
-
-    sysfile.$inject = ['$http'];
-    function sysfile($http) {
-        var service = {
-            initUploadOptions: initUploadOptions,       // 初始化上传附件控件
-            commonDelSysFile: commonDelSysFile,         // 删除系统文件
-            commonDownloadFile: commonDownloadFile,     // 系统文件下载
-        };
-        return service;
-
-
-        // 系统文件下载
-        function commonDownloadFile(vm, id) {
-            var sysfileId = id;
-            window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
-        }
-
-        // S 删除系统文件
-        function commonDelSysFile(vm, id) {
-            var httpOptions = {
-                method: 'delete',
-                url: rootPath + "/file/deleteSysFile",
-                params: {
-                    id: id
-                }
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        window.parent.$("#commonQueryWindow").data("kendoWindow").close();
-                        common.alert({
-                            vm: vm,
-                            msg: "删除成功",
-                            closeDialog : true
-                        })
-                    }
-
-                });
-
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        // E 删除系统文件
-
-        // S 初始化上传附件控件
-        /**
-         * options 属性
-         *  businessId: 业务ID    （必须）
-         *  sysSignId: 收文ID,
-         *  sysfileType: 模块,
-         *  sysMinType: 文件类型,
-         *  uploadBt : 上传按钮
-         *  detailBt : 查看按钮
-         * @param options
-         */
-        function initUploadOptions(options) {
-            var sysFileDefaults = {
-                width: "800px",
-                height: "600px",
-                sysMinType: "",
-                sysfileType: "",
-                sysSignId: "",
-                uploadBt : "upload_file_bt",
-                detailBt : "detail_file_bt",
-                vm  : options.vm,
-            };
-            if(options.businessId){
-                sysFileDefaults.businessId = options.businessId;
-            }
-            if (options.width) {
-                sysFileDefaults.width = options.width;
-            }
-            if (options.height) {
-                sysFileDefaults.height = options.height;
-            }
-            if (options.sysSignId) {
-                sysFileDefaults.sysSignId = options.sysSignId;
-            }
-            if (options.sysfileType) {
-                sysFileDefaults.sysfileType = options.sysfileType;
-            }
-            if (options.sysMinType) {
-                sysFileDefaults.sysMinType = options.sysMinType;
-            }
-            //附件下载方法
-            sysFileDefaults.vm.downloadSysFile = function(id){
-                window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
-            }
-            //附件删除方法
-            sysFileDefaults.vm.delSysFile = function(id){
-                var httpOptions = {
-                    method: 'delete',
-                    url: rootPath + "/file/deleteSysFile",
-                    params: {
-                        id: id
-                    }
-                }
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: sysFileDefaults.vm,
-                        response: response,
-                        fn: function () {
-                            window.parent.$("#commonQueryWindow").data("kendoWindow").close();
-                            common.alert({
-                                vm: sysFileDefaults.vm,
-                                msg: "删除成功",
-                                closeDialog : true
-                            })
-                        }
-                    });
-                }
-                common.http({
-                    vm: sysFileDefaults.vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-            }
-
-            if (options.uploadBt) {
-                sysFileDefaults.uploadBt = options.uploadBt;
-                $("#"+sysFileDefaults.uploadBt).click(function(){
-                    $("#commonuploadWindow").kendoWindow({
-                        width: sysFileDefaults.width,
-                        height: sysFileDefaults.height,
-                        title: "附件上传",
-                        visible: false,
-                        modal: true,
-                        closable: true,
-                        actions: ["Pin", "Minimize", "Maximize", "Close"]
-                    }).data("kendoWindow").center().open();
-                });
-            }
-            if (options.detailBt) {
-                sysFileDefaults.detailBt = options.detailBt;
-                $("#"+sysFileDefaults.detailBt).click(function(){
-                    var httpOptions = {
-                        method: 'get',
-                        url: rootPath + "/file/findByBusinessId",
-                        params: {
-                            businessId: sysFileDefaults.businessId
-                        }
-                    }
-                    var httpSuccess = function success(response) {
-                        sysFileDefaults.vm.sysFilelists = response.data;
-                        $("#commonQueryWindow").kendoWindow({
-                            width: "800px",
-                            height: "400px",
-                            title: "附件上传列表",
-                            visible: false,
-                            modal: true,
-                            closable: true,
-                            actions: ["Pin", "Minimize", "Maximize", "Close"]
-                        }).data("kendoWindow").center().open();
-                    }
-                    common.http({
-                        vm: sysFileDefaults.vm,
-                        $http: $http,
-                        httpOptions: httpOptions,
-                        success: httpSuccess
-                    });
-                });
-            }
-            var projectfileoptions = {
-                language: 'zh',
-                allowedPreviewTypes: ['image'],
-                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf"],
-                maxFileSize: 2000,
-                showRemove: false,
-                uploadUrl: rootPath + "/file/fileUpload",
-                uploadExtraData: {
-                    businessId: sysFileDefaults.businessId,
-                    sysSignId: sysFileDefaults.sysSignId,
-                    sysfileType: sysFileDefaults.sysfileType,
-                    sysMinType: sysFileDefaults.sysMinType
-                }
-            };
-            $("#sysfileinput").fileinput(projectfileoptions)
-                .on("filebatchselected", function (event, files) {
-                    if(!sysFileDefaults.businessId){
-                        common.alert({
-                            vm:vm,
-                            msg:"请先保存业务数据再上传附件！",
-                            closeDialog:true
-                        })
-                        return ;
-                    }
-                }).on("fileuploaded", function (event, data) {
-
-            });
-        }
-        // E 初始化上传附件控件
     }
 })();
 (function () {
@@ -16125,6 +16061,220 @@
 
     }//E_sysConfig
 
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').factory('sysfileSvc', sysfile);
+
+    sysfile.$inject = ['$http'];
+    function sysfile($http) {
+        var service = {
+            initUploadOptions: initUploadOptions,       // 初始化上传附件控件
+            commonDelSysFile: commonDelSysFile,         // 删除系统文件
+            commonDownloadFile: commonDownloadFile,     // 系统文件下载
+        };
+        return service;
+
+
+        // 系统文件下载
+        function commonDownloadFile(vm, id) {
+            var sysfileId = id;
+            window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
+        }
+
+        // S 删除系统文件
+        function commonDelSysFile(vm, id) {
+            var httpOptions = {
+                method: 'delete',
+                url: rootPath + "/file/deleteSysFile",
+                params: {
+                    id: id
+                }
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        window.parent.$("#commonQueryWindow").data("kendoWindow").close();
+                        common.alert({
+                            vm: vm,
+                            msg: "删除成功",
+                            closeDialog : true
+                        })
+                    }
+
+                });
+
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        // E 删除系统文件
+
+        // S 初始化上传附件控件
+        /**
+         * options 属性
+         *  businessId: 业务ID    （必须）
+         *  sysSignId: 收文ID,
+         *  sysfileType: 模块,
+         *  sysMinType: 文件类型,
+         *  uploadBt : 上传按钮
+         *  detailBt : 查看按钮
+         * @param options
+         */
+        function initUploadOptions(options) {
+            var sysFileDefaults = {
+                width: "800px",
+                height: "600px",
+                sysMinType: "",
+                sysfileType: "",
+                sysSignId: "",
+                uploadBt : "upload_file_bt",
+                detailBt : "detail_file_bt",
+                vm  : options.vm,
+            };
+            if(options.businessId){
+                sysFileDefaults.businessId = options.businessId;
+            }
+            if (options.width) {
+                sysFileDefaults.width = options.width;
+            }
+            if (options.height) {
+                sysFileDefaults.height = options.height;
+            }
+            if (options.sysSignId) {
+                sysFileDefaults.sysSignId = options.sysSignId;
+            }
+            if (options.sysfileType) {
+                sysFileDefaults.sysfileType = options.sysfileType;
+            }
+            if (options.sysMinType) {
+                sysFileDefaults.sysMinType = options.sysMinType;
+            }
+            //附件下载方法
+            sysFileDefaults.vm.downloadSysFile = function(id){
+                window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
+            }
+            //附件删除方法
+            sysFileDefaults.vm.delSysFile = function(id){
+                var httpOptions = {
+                    method: 'delete',
+                    url: rootPath + "/file/deleteSysFile",
+                    params: {
+                        id: id
+                    }
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: sysFileDefaults.vm,
+                        response: response,
+                        fn: function () {
+                            window.parent.$("#commonQueryWindow").data("kendoWindow").close();
+                            common.alert({
+                                vm: sysFileDefaults.vm,
+                                msg: "删除成功",
+                                closeDialog : true
+                            })
+                        }
+                    });
+                }
+                common.http({
+                    vm: sysFileDefaults.vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+
+            if (options.uploadBt) {
+                sysFileDefaults.uploadBt = options.uploadBt;
+                $("#"+sysFileDefaults.uploadBt).click(function(){
+                	if(angular.isUndefined(options.businessId)){
+                		common.alert({
+                            vm: sysFileDefaults.vm,
+                            msg: "请先保存业务数据！",
+                            closeDialog : true
+                        })
+                	}else{
+                		$("#commonuploadWindow").kendoWindow({
+                            width: sysFileDefaults.width,
+                            height: sysFileDefaults.height,
+                            title: "附件上传",
+                            visible: false,
+                            modal: true,
+                            closable: true,
+                            actions: ["Pin", "Minimize", "Maximize", "Close"]
+                        }).data("kendoWindow").center().open();
+                	}            
+                });
+            }
+            if (options.detailBt) {
+                sysFileDefaults.detailBt = options.detailBt;
+                $("#"+sysFileDefaults.detailBt).click(function(){
+                	if(angular.isUndefined(options.businessId)){
+                		common.alert({
+                            vm: sysFileDefaults.vm,
+                            msg: "请先保存业务数据！",
+                            closeDialog : true
+                        })
+                	}else{
+                		var httpOptions = {
+                            method: 'get',
+                            url: rootPath + "/file/findByBusinessId",
+                            params: {
+                                businessId: sysFileDefaults.businessId
+                            }
+                        }
+                        var httpSuccess = function success(response) {
+                            sysFileDefaults.vm.sysFilelists = response.data;
+                            $("#commonQueryWindow").kendoWindow({
+                                width: "800px",
+                                height: "400px",
+                                title: "附件上传列表",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                            }).data("kendoWindow").center().open();
+                        }
+                        common.http({
+                            vm: sysFileDefaults.vm,
+                            $http: $http,
+                            httpOptions: httpOptions,
+                            success: httpSuccess
+                        });
+                	}                   
+                });
+            }
+            var projectfileoptions = {
+                language: 'zh',
+                allowedPreviewTypes: ['image'],
+                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt"],
+                maxFileSize: 2000,
+                showRemove: false,
+                uploadUrl: rootPath + "/file/fileUpload",
+                uploadExtraData: {
+                    businessId: sysFileDefaults.businessId,
+                    sysSignId: sysFileDefaults.sysSignId,
+                    sysfileType: sysFileDefaults.sysfileType,
+                    sysMinType: sysFileDefaults.sysMinType
+                }
+            };
+            $("#sysfileinput").fileinput(projectfileoptions)
+                .on("filebatchselected", function (event, files) {
+                   
+                }).on("fileuploaded", function (event, data) {
+
+            });
+        }
+        // E 初始化上传附件控件
+    }
 })();
 (function () {
     'use strict';
@@ -17273,16 +17423,25 @@
                                     vm.isHaveNext = true;
                                 }
                             }
-                            //初始化附件上传
-                            sysfileSvc.initUploadOptions({
-                                businessId:vm.work.id,
-                                sysSignId :vm.work.signId,
-                                sysfileType:"工作方案",
-                                uploadBt:"upload_file_bt",
-                                detailBt:"detail_file_bt",
-                                vm:vm
-                            });
-
+                            if(vm.work.id){
+                            	var sysfileType = "工作方案";
+                            	if(!angular.isUndefined(vm.work.isMain)){
+                            		if(vm.work.isMain == '9'){
+                            			sysfileType = "工作方案[主]"
+                            		}else{
+                            			sysfileType = "工作方案[协]"
+                            		}
+                            	}
+                            	//初始化附件上传
+                                sysfileSvc.initUploadOptions({
+                                    businessId:vm.work.id,
+                                    sysSignId :vm.work.signId,
+                                    sysfileType:sysfileType,
+                                    uploadBt:"upload_file_bt",
+                                    detailBt:"detail_file_bt",
+                                    vm:vm
+                                });
+                            }                           
                         }
 
                     }
@@ -17317,6 +17476,25 @@
                         fn: function () {
                             vm.iscommit = false;
                             vm.work.id = response.data.id;
+                            if(vm.work.id){
+                            	var sysfileType = "工作方案";
+                            	if(!angular.isUndefined(vm.work.isMain)){
+                            		if(vm.work.isMain == '9'){
+                            			sysfileType = "工作方案[主]"
+                            		}else{
+                            			sysfileType = "工作方案[协]"
+                            		}
+                            	}
+                            	//初始化附件上传
+                                sysfileSvc.initUploadOptions({
+                                    businessId:vm.work.id,
+                                    sysSignId :vm.work.signId,
+                                    sysfileType:sysfileType,
+                                    uploadBt:"upload_file_bt",
+                                    detailBt:"detail_file_bt",
+                                    vm:vm
+                                });
+                            }   
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功！",

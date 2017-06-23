@@ -131,51 +131,67 @@
             if (options.uploadBt) {
                 sysFileDefaults.uploadBt = options.uploadBt;
                 $("#"+sysFileDefaults.uploadBt).click(function(){
-                    $("#commonuploadWindow").kendoWindow({
-                        width: sysFileDefaults.width,
-                        height: sysFileDefaults.height,
-                        title: "附件上传",
-                        visible: false,
-                        modal: true,
-                        closable: true,
-                        actions: ["Pin", "Minimize", "Maximize", "Close"]
-                    }).data("kendoWindow").center().open();
-                });
-            }
-            if (options.detailBt) {
-                sysFileDefaults.detailBt = options.detailBt;
-                $("#"+sysFileDefaults.detailBt).click(function(){
-                    var httpOptions = {
-                        method: 'get',
-                        url: rootPath + "/file/findByBusinessId",
-                        params: {
-                            businessId: sysFileDefaults.businessId
-                        }
-                    }
-                    var httpSuccess = function success(response) {
-                        sysFileDefaults.vm.sysFilelists = response.data;
-                        $("#commonQueryWindow").kendoWindow({
-                            width: "800px",
-                            height: "400px",
-                            title: "附件上传列表",
+                	if(angular.isUndefined(options.businessId)){
+                		common.alert({
+                            vm: sysFileDefaults.vm,
+                            msg: "请先保存业务数据！",
+                            closeDialog : true
+                        })
+                	}else{
+                		$("#commonuploadWindow").kendoWindow({
+                            width: sysFileDefaults.width,
+                            height: sysFileDefaults.height,
+                            title: "附件上传",
                             visible: false,
                             modal: true,
                             closable: true,
                             actions: ["Pin", "Minimize", "Maximize", "Close"]
                         }).data("kendoWindow").center().open();
-                    }
-                    common.http({
-                        vm: sysFileDefaults.vm,
-                        $http: $http,
-                        httpOptions: httpOptions,
-                        success: httpSuccess
-                    });
+                	}            
+                });
+            }
+            if (options.detailBt) {
+                sysFileDefaults.detailBt = options.detailBt;
+                $("#"+sysFileDefaults.detailBt).click(function(){
+                	if(angular.isUndefined(options.businessId)){
+                		common.alert({
+                            vm: sysFileDefaults.vm,
+                            msg: "请先保存业务数据！",
+                            closeDialog : true
+                        })
+                	}else{
+                		var httpOptions = {
+                            method: 'get',
+                            url: rootPath + "/file/findByBusinessId",
+                            params: {
+                                businessId: sysFileDefaults.businessId
+                            }
+                        }
+                        var httpSuccess = function success(response) {
+                            sysFileDefaults.vm.sysFilelists = response.data;
+                            $("#commonQueryWindow").kendoWindow({
+                                width: "800px",
+                                height: "400px",
+                                title: "附件上传列表",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                            }).data("kendoWindow").center().open();
+                        }
+                        common.http({
+                            vm: sysFileDefaults.vm,
+                            $http: $http,
+                            httpOptions: httpOptions,
+                            success: httpSuccess
+                        });
+                	}                   
                 });
             }
             var projectfileoptions = {
                 language: 'zh',
                 allowedPreviewTypes: ['image'],
-                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf"],
+                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt"],
                 maxFileSize: 2000,
                 showRemove: false,
                 uploadUrl: rootPath + "/file/fileUpload",
@@ -188,14 +204,7 @@
             };
             $("#sysfileinput").fileinput(projectfileoptions)
                 .on("filebatchselected", function (event, files) {
-                    if(!sysFileDefaults.businessId){
-                        common.alert({
-                            vm:vm,
-                            msg:"请先保存业务数据再上传附件！",
-                            closeDialog:true
-                        })
-                        return ;
-                    }
+                   
                 }).on("fileuploaded", function (event, data) {
 
             });

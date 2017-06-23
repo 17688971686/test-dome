@@ -15,7 +15,6 @@
 			getWorkById : getWorkById,
 			getWork : getWork,
 			cleanValue : cleanValue
-
 		};
 
 		return service;
