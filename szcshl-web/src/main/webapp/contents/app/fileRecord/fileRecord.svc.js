@@ -32,7 +32,7 @@
 
                             //初始化附件上传
                             sysfileSvc.initUploadOptions({
-                                businessId: vm.fileRecord.id,
+                                businessId: vm.fileRecord.fileRecordId,
                                 sysSignId: vm.fileRecord.signId,
                                 sysfileType: "归档",
                                 uploadBt: "upload_file_bt",

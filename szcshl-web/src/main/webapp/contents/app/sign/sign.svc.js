@@ -3,9 +3,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['$http', '$state', 'flowSvc'];
+    sign.$inject = ['sysfileSvc','$http', '$state', 'flowSvc'];
 
-    function sign($http, $state, flowSvc) {
+    function sign(sysfileSvc,$http, $state, flowSvc) {
         var service = {
             grid: grid,						//初始化项目列表
             querySign: querySign,			//查询
@@ -370,7 +370,15 @@
                         vm.builtcomlist = response.data.builtcomlist;
                         //编制单位
                         vm.designcomlist = response.data.designcomlist;
-
+                        //初始化附件上传
+                        sysfileSvc.initUploadOptions({
+                            businessId:vm.model.signid,
+                            sysSignId :vm.model.signid,
+                            sysfileType:"收文",
+                            uploadBt:"upload_file_bt",
+                            detailBt:"detail_file_bt",
+                            vm:vm
+                        });
                     }
                 })
             }
