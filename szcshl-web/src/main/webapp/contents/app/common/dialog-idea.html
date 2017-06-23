@@ -65,7 +65,7 @@
 											<table class="table table-bordered seleteTable">
 												<tr ng-repeat="x in DICT.PUNCTUATION.dicts">
 													<td>{{$index+1}}</td>
-													<td $(targetID).val(>{{x.dictName}}</td>
+													<td ng-dblclick="vm.addCorrentIdea(x.dictName)">{{x.dictName}}</td>
 												</tr>
 											</table>
 										</div>

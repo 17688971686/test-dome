@@ -704,6 +704,7 @@
         var targetObj = $("#" + options.targetId);
         targetObj.val(targetObj.val() + vm.ideaContent);
         window.parent.$("#ideaWindow").data("kendoWindow").close();
+        targetObj.focus();
     }// end
 
 })();

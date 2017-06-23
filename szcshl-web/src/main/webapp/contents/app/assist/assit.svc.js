@@ -456,7 +456,9 @@
         
         //begin savePlanSign
         function savePlanSign(vm){
-        	
+        	vm.assistPlan.ministerOpinion=$("#ministerOpinion").val();
+        	vm.assistPlan.viceDirectorOpinion=$("#viceDirectorOpinion").val();
+        	vm.assistPlan.directorOpinion=$("#directorOpinion").val();
         	var httpOptions={
         		method:"put",
         		url: rootPath +"/assistPlanSign/savePlanSign",
@@ -698,7 +700,6 @@
         	var httpSuccess=function success(response){
 		        	vm.unitList=response.data;	
 		        	vm.signNum=vm.unitList.length;
-		        	console.log(vm.unitList);
 	        }
 	        		
 	        common.http({
