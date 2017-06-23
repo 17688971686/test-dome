@@ -158,7 +158,7 @@
 			WorkeWindow.kendoWindow({
 				width : "690px",
 				height : "330px",
-				title : "添加工作经历",
+				title : "添加工作简历",
 				visible : false,
 				modal : true,
 				closable : true,

@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.sys.Dict;
 import cs.domain.sys.Dict_;
 import cs.model.PageModelDto;
@@ -298,6 +300,24 @@ public class DictServiceImpl implements DictService {
 		}
 		
 		return dictNameDataMap;
+	}
+	
+	@Override
+	@Transactional
+	public List<DictDto> getAllDictByCode(String dictCode) {
+		HqlBuilder hqlBuilder=HqlBuilder.create();
+		hqlBuilder.append("select *　from CS_DICT c where c.PARENTID in(");
+		hqlBuilder.append("select c1.dictId from CS_DICT c1 where c1.PARENTID in(");
+		hqlBuilder.append("select c2.dictId from CS_DICT c2 where c2.DICTCODE=:dictCode))");
+		hqlBuilder.setParam("dictCode", dictCode);
+		List<Dict> dictList=dictRepo.findBySql(hqlBuilder);
+		List<DictDto> dictDtoList=new ArrayList<>();
+		for(Dict dict:dictList){
+			DictDto dictDto=new DictDto();
+			BeanCopierUtils.copyProperties(dict, dictDto);
+			dictDtoList.add(dictDto);
+		}
+		return dictDtoList;
 	}
 	
 	

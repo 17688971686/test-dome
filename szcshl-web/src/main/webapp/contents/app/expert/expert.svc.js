@@ -21,9 +21,18 @@
 			updateAudit : updateAudit,		    //专家评审
 			toAudit : toAudit,				    //由个状态回到审核状态
 			auditTo : auditTo,				    //由审核状态去到各个状态
-            initUpload : initUpload             //初始化附件上传
+            initUpload : initUpload,             //初始化附件上传
+            formReset : formReset		//重置页面
 		};
-		return service;				
+		return service;	
+		
+		//begin formReset
+		function formReset(vm){
+			$("#searchform")[0].reset();
+			vm.gridOptions.dataSource.read();
+			
+		}
+		//end formReset
 		
 		// begin#updateExpert
 		function updateExpert(vm) {

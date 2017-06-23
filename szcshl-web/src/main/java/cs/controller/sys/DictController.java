@@ -53,6 +53,13 @@ public class DictController {
 		return dictService.getDictNameByCode(dictCode);				
 	}
 	
+	@RequiresPermissions("dict#getAllDictByCode#get")
+	@RequestMapping(name="通过编码获取父级后再获取子级",path="getAllDictByCode",method=RequestMethod.GET)
+	public @ResponseBody List<DictDto> getDictByCode(@RequestParam String dictCode){
+		
+		return dictService.getAllDictByCode(dictCode);
+	}
+	
 	@RequiresPermissions("dict##post")
 	@RequestMapping(name = "创建字典", path = "",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)

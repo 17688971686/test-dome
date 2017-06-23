@@ -14,9 +14,30 @@
 				getProjectById : getProjectById,
 				delertProject : delertProject,
 				gotoJPage : gotoJPage,
-				cleanValue : cleanValue
+				cleanValue : cleanValue,
+				initProjectType : initProjectType
 		};
 		return service;
+		
+		//begin  initProjectType
+		function initProjectType(vm){
+			var code="PROJECTTYPE";
+			var httpOptions={
+				method: "get",
+				url: rootPath +"/dict/getAllDictByCode",
+				params:{dictCode :code}
+			}
+			var httpSuccess=function success(response){
+				vm.projectTypes=response.data;
+			}
+			
+			common.http({
+					vm : vm,
+					$http : $http,
+					httpOptions : httpOptions,
+					success : httpSuccess
+				});
+		}//end initProjectType
 		
 		//begin#delertProject
 		function delertProject(vm){
@@ -227,7 +248,7 @@
 			 WorkeWindow.kendoWindow({
 	                width: "690px",
 	                height: "330px",
-	                title: "添加项目经历",
+	                title: "添加项目经验",
 	                visible: false,
 	                modal: true,
 	                closable: true,

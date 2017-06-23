@@ -77,6 +77,8 @@ public interface DictService {
 	 * @return Map类型，key的格式是dictCode-dictKey,value是dictName
 	 * */
 	public Map<String, String> getDictNameByCode(String dictCode);
+	
+	public List<DictDto> getAllDictByCode(String dictCode);
 
 
 }

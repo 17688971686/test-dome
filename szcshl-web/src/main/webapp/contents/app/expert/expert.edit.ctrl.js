@@ -18,6 +18,7 @@
 
         activice();
         function activice(){
+        	projectExpeSvc.initProjectType(vm);
             if (vm.expertID) {
                 vm.title = '更新专家';
                 vm.isHide=false;

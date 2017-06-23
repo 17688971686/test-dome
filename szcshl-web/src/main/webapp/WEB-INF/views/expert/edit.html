@@ -95,11 +95,11 @@
 				 <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
 			</td>	 				 
 			<td class="formAlignRight" >现任职务<span class="required">*</span></td>
-			<td>
-				<select ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true" data-val-required="必填">
+			<td><input type="text" name="job" ng-model="vm.model.job" class="form-control input-sm " data-val="true" data-val-required="必填"/>
+				<!-- <select ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true" data-val-required="必填">
 					<option value="">请选择</option>
 					<option ng-repeat="x in DICT.JOY.dicts" ng-selected="vm.model.job == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select>
+				</select> -->
 				<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
@@ -389,7 +389,11 @@
               <tr >
                 <td class="formAlignRight">项目类别： <span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.project.projectType" id="projectType" name="projectType" data-val="true" data-val-required="必填">
+                	<select class="form-control input-sm "  ng-model="vm.project.projectType" id="projectType" name="projectType" data-val="true" data-val-required="必填" >
+                		<option value="">请选择</option>
+                		<option ng-repeat="x in vm.projectTypes" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName">{{x.dictName}}</option>
+                	</select>
+                   <!--  <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.project.projectType" id="projectType" name="projectType" data-val="true" data-val-required="必填"> -->
                 </td>
                 <td><span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

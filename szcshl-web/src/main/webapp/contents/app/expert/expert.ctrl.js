@@ -23,6 +23,10 @@
         	expertSvc.searchMAudit(vm);
         };
         
+        vm.formReset=function(){
+        	expertSvc.formReset(vm);
+        }
+        
         vm.del = function (id) {        	
              common.confirm({
             	 vm:vm,
