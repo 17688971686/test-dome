@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = [ 'sysfileSvc','$http', '$state'];
-    function workprogram(sysfileSvc, $http, $state ) {
+    workprogram.$inject = [ 'sysfileSvc','$http', '$state','$rootScope'];
+    function workprogram(sysfileSvc, $http, $state ,$rootScope) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				//初始化页面参数
@@ -387,6 +387,8 @@
                                     vm.isHaveNext = true;
                                 }
                             }
+//                            vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
+                            console.log(vm.work.projectTypeDicts);
                             //初始化附件上传
                             sysfileSvc.initUploadOptions({
                                 businessId:vm.work.id,

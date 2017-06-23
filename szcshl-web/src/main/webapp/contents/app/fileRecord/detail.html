@@ -2,8 +2,10 @@
 
 <!--S 项目建议书/可行性研究报告 -->
 <!-- s table -->
-<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.reviewstage=='可行性研究报告'">
-  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目归档审批表</strong></caption>		 
+<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.fileReviewstage=='可行性研究报告'">
+  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>
+ {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
+  </strong></caption>		 
 
     <tbody>
     <tr>

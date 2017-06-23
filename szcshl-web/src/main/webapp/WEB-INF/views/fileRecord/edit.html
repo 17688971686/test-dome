@@ -18,7 +18,9 @@
 		<input type="hidden" ng-model="vm.fileRecord.fileRecordId" value="{{vm.fileRecord.fileRecordId}}" > 
 		<!--  s table -->
 		<table class="table table-bordered" ng-show="vm.fileRecord.fileReviewstage=='项目建议书'||vm.fileRecord.fileReviewstage=='可行性研究报告'" >
-		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目归档审批表</strong></caption>		 
+		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>
+		    {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
+		  </strong></caption>		 
 		
 		    <tbody>
 		    <tr>
@@ -47,8 +49,9 @@
 		    <tr>
 		      <td width="15%" class="text-center">文件标题</td>
 		      <td>
-		      		<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle" id="fileTitle" data-val="true"  data-val-required="必填">		      
-		      		<span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
+		      		<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle" id="fileTitle" data-val="true"  placeholder="《项目名称+阶段》+评审意见" data-val-required="必填">		      
+		      		<span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span> 
+		  
 		      </td>
 		       <td width="15%" class="text-center">文号</td>
 		      <td>
@@ -679,7 +682,7 @@
 		    <tr>
 		      <td width="15%" class="text-center">文件标题</td>
 		      <td>
-		      		<input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle" id="fileTitle" data-val="true"  data-val-required="必填">		      
+		      		<input type="text" style="width:80%;"class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle" id="fileTitle" data-val="true"  data-val-required="必填">		      
 		      		<span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
 		      </td>
 		       <td width="15%" class="text-center">文号</td>

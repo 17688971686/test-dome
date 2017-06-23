@@ -138,6 +138,7 @@
 									vm.showFileNum = true;
 								}
                                 //初始化附件上传
+								if(vm.dispatchDoc.id){
                                 sysfileSvc.initUploadOptions({
                                     businessId:vm.dispatchDoc.id,
                                     sysSignId :vm.dispatchDoc.signId,
@@ -146,6 +147,7 @@
                                     detailBt:"detail_file_bt",
                                     vm:vm
                                 });
+								}
 							}
 						})
 			}

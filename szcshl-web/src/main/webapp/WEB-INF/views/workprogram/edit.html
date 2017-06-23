@@ -98,17 +98,25 @@
 		    <tr>		     
 		      <td colspan="2" style="width:100px;" class="text-center">项目类别<span class="required">*</span></td>
 		      <td>
-		      <select ng-model="vm.work.projectType"  name="projectType" id="projectType" data-val="true" data-val-required="必填">
+		     <!--  <select ng-model="vm.work.projectType"  name="projectType" id="projectType" data-val="true" data-val-required="必填">
 					<option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectType == x.dictKey">{{x.dictName}}</option>
+			</select> -->
+			<select class="form-control input-sm " style="width: 60%; "  name="wide"
+					 ng-model="vm.work.projectType" 
+					 ng-change="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"  data-val-required="必选" data-val="true">
+						<option ng-repeat="x in DICT.PROJECTTYPE.dicts"  value="{{x.dictName}}" ng-selected="vm.work.projectType == x.dictName">{{x.dictName}}</option>
 			</select>
 				<span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>	
 			  </td>
 			  <td style="width:50px;" class="text-center">小类<span class="required">*</span></td>
 		      <td>
-		    	 
-		    	<select ng-model="vm.work.projectSubType"  name="projectSubType" id="projectSubType" data-val="true" data-val-required="必填">
-					<option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectSubType == x.dictKey">{{x.dictName}}</option>
+		    	 <select class="form-control input-sm " ng-model="vm.work.projectSubType" style="width: 60%;" name="projectSubType"
+					   data-val="true">
+						<option ng-repeat="x in vm.work.projectTypeDicts"  value="{{x.dictName}}" ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}</option>
 				</select>
+		    	<!-- <select ng-model="vm.work.projectSubType"  name="projectSubType" id="projectSubType" data-val="true" data-val-required="必填">
+					<option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectSubType == x.dictKey">{{x.dictName}}</option>
+				</select> -->
 				<span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>	
 			  </td>
 			  <td style="width:100px;" class="text-center">行业类别<span class="required">*</span></td>

@@ -27,18 +27,21 @@
                     fn: function () {
                         if (response.data != null && response.data != "") {
                             vm.fileRecord = response.data.file_record;
+                            
                             vm.fileRecord.signId = vm.signId;
                             vm.signUserList = response.data.sign_user_List;
 
                             //初始化附件上传
-                            sysfileSvc.initUploadOptions({
-                                businessId: vm.fileRecord.fileRecordId,
-                                sysSignId: vm.fileRecord.signId,
-                                sysfileType: "归档",
-                                uploadBt: "upload_file_bt",
-                                detailBt: "detail_file_bt",
-                                vm: vm
-                            });
+                            if(vm.fileRecord.fileRecordId){
+	                            sysfileSvc.initUploadOptions({
+	                                businessId: vm.fileRecord.fileRecordId,
+	                                sysSignId: vm.fileRecord.signId,
+	                                sysfileType: "归档",
+	                                uploadBt: "upload_file_bt",
+	                                detailBt: "detail_file_bt",
+	                                vm: vm
+	                            });
+                            }
                         }
                     }
 

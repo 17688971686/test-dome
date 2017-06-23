@@ -51,9 +51,10 @@ public class FileRecordServiceImpl implements FileRecordService {
 			
 			Date now = new Date();														
 			if(!Validate.isString(fileRecordDto.getFileRecordId())){
-				fileRecord = new FileRecord(); 	
+				fileRecord = new FileRecord(); 
+				
 				BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);		
-				fileRecord.setFileRecordId(UUID.randomUUID().toString());	
+				fileRecord.setFileRecordId(UUID.randomUUID().toString());
 				fileRecord.setCreatedBy(currentUser.getLoginName());	
 				fileRecord.setCreatedDate(now);
 			}else{
@@ -98,17 +99,26 @@ public class FileRecordServiceImpl implements FileRecordService {
         List<FileRecord> list = fileRecordRepo.findByHql(hqlBuilder);
         if(list != null && list.size() > 0){
         	FileRecord  fileRecord = list.get(0);
+        	
         	BeanCopierUtils.copyProperties(fileRecord,fileRecordDto);
         }else{
         	//如果是新增，则要初始化
             User priUser = signPrincipalService.getMainPriUser(signid, Constant.EnumState.YES.getValue());
         	Sign sign = signRepo.findByIds(Sign_.signid.getName(),signid,"").get(0);
         	fileRecordDto.setProjectName(sign.getProjectname());
-        	fileRecordDto.setProjectName(sign.getProjectname());
+//        	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectCode(sign.getProjectcode());
         	fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
-        	fileRecordDto.setProjectCompany(sign.getBuiltcompanyid());	//建设单位名称
+        	fileRecordDto.setProjectCompany(sign.getDesigncompanyName());//编制单位名称
         	fileRecordDto.setProjectChargeUser(priUser==null?"":priUser.getDisplayName());
+        	//设置默认文件标题
+			String fileTitle="《";
+			fileTitle+=sign.getProjectname()==null?"":sign.getProjectname();
+			fileTitle+=(sign.getReviewstage()==null?"":sign.getReviewstage());
+			fileTitle+="》";
+			fileTitle+=(sign.getIsAdvanced()==null?"":sign.getIsAdvanced());
+			fileRecordDto.setFileTitle(fileTitle);
+			
         	fileRecordDto.setFileNumber("");//文号
         }
 		return fileRecordDto;
