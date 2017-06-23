@@ -223,6 +223,12 @@
                 controller: 'expertSelectCtrl',
                 controllerAs: 'vm'
             })
+            .state('expertReviewList',{
+                url: '/expertReviewList',
+                templateUrl: rootPath + '/expert/html/reviewList.html',
+                controller: 'expertReviewListCtrl',
+                controllerAs: 'vm'
+            })
             //end expert
             
             //begin#sign

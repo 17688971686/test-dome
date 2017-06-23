@@ -173,4 +173,10 @@ public class ExpertController {
 
 		return ctrlName + "/projectExpe";
 	}
+	@RequiresPermissions("expert#html/reviewList#get")
+	@RequestMapping(name = "专家评分一览表", path = "html/reviewList", method = RequestMethod.GET)
+	public String reviewList() {
+
+		return ctrlName + "/reviewList";
+	}
 }
