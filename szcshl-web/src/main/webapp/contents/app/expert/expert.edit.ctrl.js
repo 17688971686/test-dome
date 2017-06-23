@@ -18,6 +18,12 @@
 
         activice();
         function activice(){
+        	vm.showSS=true;
+        	vm.showSC=false;
+        	vm.showWS=true;
+        	vm.showWC=false;
+        	vm.MW=false;
+        	vm.MS=false;
         	projectExpeSvc.initProjectType(vm);
             if (vm.expertID) {
                 vm.title = '更新专家';
@@ -183,6 +189,7 @@
         }
         
         vm.chooseMW=function(){
+        	vm.MW=true;
         	vm.showWS=true;
         	vm.showWC=false;
         }
@@ -207,6 +214,7 @@
         	}
         }
         vm.chooseMS=function(){
+        	vm.MS=true;
         	vm.showSS=true;
         	vm.showSC=false;
         }

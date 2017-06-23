@@ -167,7 +167,7 @@
 						<option ng-repeat="x in selectValue" ng-value="x.dictName" ng-selected="vm.model.majorStudy == x.dictName">{{x.dictName}}</option>
 					</select>
 					<button ng-click="vm.sureMS()">确定</button>
-					<button ng-click="vm.cancelMS()">取消</button>
+					<button ng-click="vm.cancelMS()" ng-show="vm.MS">取消</button>
 				</div>
 				<div style="float: left;" ng-show="vm.showSC">
 					<input type="text" name="majorStudy" id="majorStudy" ng-model="vm.model.majorStudy" data-val="true" ng-disabled="true"> 
@@ -197,7 +197,7 @@
 							<option ng-repeat="x in selectWValue" ng-value="x.dictName" ng-selected="x.dictName == vm.model.majorWork">{{x.dictName}}</option>
 						</select>
 						<button ng-click="vm.sureMW()">确定</button>
-						<button ng-click="vm.cancelMW()">取消</button>
+						<button ng-click="vm.cancelMW()" ng-show="vm.MW">取消</button>
 					</div>
 					<div style="float: left;" ng-show="vm.showWC">
 						<input type="text" name="majorWork" id="majorWork" ng-model="vm.model.majorWork" data-val="true" ng-disabled="true"> 

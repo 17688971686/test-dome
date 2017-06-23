@@ -163,22 +163,16 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
-				
 				 if(vm.model.majorWork){
             		vm.showWS=false;
         			vm.showWC=true;
-        		}else{
-        			vm.showWS=true;
-        			vm.showWC=false;
-        		}
+				 }
+        		
 	            if(vm.model.majorStudy){
 	            	//console.log("dfdf");
 	        		vm.showSC=true;
 	            	vm.showSS=false;
-	        	}else{
-	        		vm.showSC=false;
-	            	vm.showSS=true;
-	        	}
+	            }
 				
 				//工作简历
 				if(response.data.workDto && response.data.workDto.length > 0){
