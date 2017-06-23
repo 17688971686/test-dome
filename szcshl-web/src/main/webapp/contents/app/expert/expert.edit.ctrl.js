@@ -181,6 +181,58 @@
             });
             vm.gotoOfferPage();
         }
-
+        
+        vm.chooseMW=function(){
+        	vm.showWS=true;
+        	vm.showWC=false;
+        }
+        vm.cancelMW=function(){
+        	vm.showWS=false;
+        	vm.showWC=true;
+        }
+        vm.sureMW=function(){
+        	if(!vm.majorWork){
+        		common.alert({
+							vm : vm,
+							msg : "您未选择专业，请选择！",
+							fn : function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})
+        	}else{
+	        	vm.model.majorWork=vm.majorWork;
+	        	vm.showWS=false;
+	        	vm.showWC=true;
+        	}
+        }
+        vm.chooseMS=function(){
+        	vm.showSS=true;
+        	vm.showSC=false;
+        }
+        vm.cancelMS=function(){
+        	vm.showSS=false;
+        	vm.showSC=true;
+        }
+       vm.sureMS=function(){
+       	if(!vm.majorStudy){
+        		common.alert({
+							vm : vm,
+							msg : "您未选择专业，请选择！",
+							fn : function() {
+								$('.alertDialog').modal('hide');
+								$('.modal-backdrop').remove();
+							}
+						})
+        	}else{
+	       		vm.model.majorStudy=vm.majorStudy;
+	        	vm.showSS=false;
+	        	vm.showSC=true;
+        	}
+       }
+        
+        
+        
+        
     }
 })();

@@ -95,11 +95,8 @@
 				 <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
 			</td>	 				 
 			<td class="formAlignRight" >现任职务<span class="required">*</span></td>
-			<td><input type="text" name="job" ng-model="vm.model.job" class="form-control input-sm " data-val="true" data-val-required="必填"/>
-				<!-- <select ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true" data-val-required="必填">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.JOY.dicts" ng-selected="vm.model.job == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select> -->
+			<td>
+				<input ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true" data-val-required="必填">
 				<span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
@@ -113,7 +110,10 @@
 			</td>
             <td class="formAlignRight">职称<span class="required">*</span></td>
             <td>
-                <input ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true" data-val-required="必填">
+            	<select ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true" data-val-required="必填">
+					<option value="">请选择</option>
+					<option ng-repeat="x in DICT.POST.dicts" ng-selected="vm.model.post == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+				</select>
                 <span data-valmsg-for="post" data-valmsg-replace="true" class="errors"></span>
             </td>
 			<td class="formAlignRight">电子邮箱</td>
@@ -124,7 +124,7 @@
 			<td class="formAlignRight">办公电话</td>
 			<td >
 				<input type="text" name="phone" id="phone" class="form-control input-sm " ng-model="vm.model.phone" 
-				data-val="true"  data-val-regex="手办公电话格式不正确" data-val-regex-pattern="(0[0-9]{2,3}/-)?([2-9][0-9]{6,7})+(/-[0-9]{1,4})?">  
+				data-val="true"  data-val-regex="办公电话格式不正确" data-val-regex-pattern="(0[0-9]{2,3}/-)?([2-9][0-9]{6,7})+(/-[0-9]{1,4})?">  
 				<span data-valmsg-for="phone" data-valmsg-replace="true" class="errors"></span> 
 			</td>
 		</tr>
@@ -148,18 +148,62 @@
 		</tr>
 		<tr>
 			<td class="formAlignRight">所学专业<span class="required">*</span></td>
-			<td colspan="7">
-			<input type="text" name="majorStudy" id="majorStudy"  class="form-control input-sm " ng-model="vm.model.majorStudy"  data-val="true"  data-val-required="必填"  >
-			<button ng-click="vm.chooseMS()" >请选择</button>
+			<td class="formAlignRight"  colspan="7" style="text-align:left;">
+				<div  style="float: left;" ng-show="vm.showSS">
+					<span>专业门类：</span>
+					<select name="zyml" ng-model="vm.model.majorSSort" style="width: 100px;"
+					ng-change="majorbigSSort = topSelectChange(vm.model.majorSSort,DICT.MAJOR_SORT.dicts)">
+						<option value="">请选择</option>
+						<option ng-repeat="x in DICT.MAJOR_SORT.dicts"   ng-value="x.dictName">{{x.dictName}}</option>
+					</select>
+					<span style="margin-left:10px;">专业大类：</span>
+					<select  name="zyml" ng-model="vm.model.majorbigSSort" style="width: 200px;" ng-change="selectValue = topSelectChange(vm.model.majorbigSSort,majorbigSSort)">
+						<option value="">请选择</option>
+						<option ng-repeat="x in majorbigSSort" ng-value="x.dictName" ng-selected="vm.model.majorbigSSort == x.dictName" >{{x.dictName}}</option>
+					</select>
+					<span style="margin-left:10px;">专业：</span>
+					<select  name="zyml" ng-model="vm.majorStudy"  style="width: 100px;" name="majorStudy">
+						<option value="">请选择</option>
+						<option ng-repeat="x in selectValue" ng-value="x.dictName" ng-selected="vm.model.majorStudy == x.dictName">{{x.dictName}}</option>
+					</select>
+					<button ng-click="vm.sureMS()">确定</button>
+					<button ng-click="vm.cancelMS()">取消</button>
+				</div>
+				<div style="float: left;" ng-show="vm.showSC">
+					<input type="text" name="majorStudy" id="majorStudy" ng-model="vm.model.majorStudy" data-val="true" ng-disabled="true"> 
+					<button ng-click="vm.chooseMS()">修改</button>
+				</div>
+				</td>
 			</td>
 		</tr>
 		<tr>
 			<td class="formAlignRight">从事专业<span class="required">*</span></td>
-			<td class="formAlignRight" colspan="7">
-			 	<input type="text" name="majorWork" id="majorWork"  class="form-control input-sm " ng-model="vm.model.majorWork" data-val="true"  data-val-required="必填" >
-				<button ng-click="vm.chooseMW()">请选择</button>
-				<span data-valmsg-for="majorWork" data-valmsg-replace="true" class="errors"></span>
-			</td>
+				<td class="formAlignRight"  colspan="7" style="text-align:left;">
+					<div  style="float: left;" ng-show="vm.showWS">
+					 	<span>专业门类：</span>
+						<select name="zyml" ng-model="vm.model.majorWSort" style="width: 100px;"
+							ng-change="majorbigWSort = topSelectChange(vm.model.majorWSort,DICT.MAJOR_SORT.dicts)">
+							<option value="">请选择</option>
+							<option ng-repeat="x in DICT.MAJOR_SORT.dicts"  ng-value="x.dictName">{{x.dictName}}</option>
+						</select>
+						<span style="margin-left:10px;">专业大类：</span>
+						<select  name="zyml" ng-model="vm.model.majorbigWSort" style="width: 200px;" ng-change="selectWValue = topSelectChange(vm.model.majorbigWSort,majorbigWSort)">
+							<option value="">请选择</option>
+							<option ng-repeat="x in majorbigWSort" ng-value="x.dictName" >{{x.dictName}}</option>
+						</select>
+						<span style="margin-left:10px;">专业：</span>
+						<select  name="zyml" ng-model="vm.majorWork" style="width: 100px;"  >
+							<option value="">请选择</option>
+							<option ng-repeat="x in selectWValue" ng-value="x.dictName" ng-selected="x.dictName == vm.model.majorWork">{{x.dictName}}</option>
+						</select>
+						<button ng-click="vm.sureMW()">确定</button>
+						<button ng-click="vm.cancelMW()">取消</button>
+					</div>
+					<div style="float: left;" ng-show="vm.showWC">
+						<input type="text" name="majorWork" id="majorWork" ng-model="vm.model.majorWork" data-val="true" ng-disabled="true"> 
+						<button ng-click="vm.chooseMW()">修改</button>
+					</div>
+				</td>
 		</tr> 
 		
 		<tr>

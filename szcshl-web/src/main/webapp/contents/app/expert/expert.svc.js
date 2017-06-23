@@ -22,7 +22,9 @@
 			toAudit : toAudit,				    //由个状态回到审核状态
 			auditTo : auditTo,				    //由审核状态去到各个状态
             initUpload : initUpload,             //初始化附件上传
-            formReset : formReset		//重置页面
+            formReset : formReset,		//重置页面
+            initUpload : initUpload,            //初始化附件上传
+            initUpload : initUpload            //初始化附件上传
 		};
 		return service;	
 		
@@ -108,6 +110,8 @@
 				
 		// begin#createExpert		
 		function createExpert(vm) {	
+			console.log(vm.model);
+			return;
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if(isValid){				
@@ -159,6 +163,23 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
+				
+				 if(vm.model.majorWork){
+            		vm.showWS=false;
+        			vm.showWC=true;
+        		}else{
+        			vm.showWS=true;
+        			vm.showWC=false;
+        		}
+	            if(vm.model.majorStudy){
+	            	//console.log("dfdf");
+	        		vm.showSC=true;
+	            	vm.showSS=false;
+	        	}else{
+	        		vm.showSC=false;
+	            	vm.showSS=true;
+	        	}
+				
 				//工作简历
 				if(response.data.workDto && response.data.workDto.length > 0){
 					vm.showWorkHistory = true;
@@ -670,7 +691,8 @@
 				success : httpSuccess
 			});
 		}//end updateAudit
-
+		
+		
         //S_initUpload
         function initUpload(vm){
             var projectfileoptions = {
