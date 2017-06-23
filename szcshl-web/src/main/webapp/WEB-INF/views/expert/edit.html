@@ -162,16 +162,16 @@
 						<option ng-repeat="x in majorbigSSort" ng-value="x.dictName" ng-selected="vm.model.majorbigSSort == x.dictName" >{{x.dictName}}</option>
 					</select>
 					<span style="margin-left:10px;">专业：</span>
-					<select  name="zyml" ng-model="vm.majorStudy"  style="width: 100px;" name="majorStudy">
+					<select  name="zyml" ng-model="vm.majorStudy"  style="width: 200px;" name="majorStudy">
 						<option value="">请选择</option>
 						<option ng-repeat="x in selectValue" ng-value="x.dictName" ng-selected="vm.model.majorStudy == x.dictName">{{x.dictName}}</option>
 					</select>
-					<button ng-click="vm.sureMS()">确定</button>
-					<button ng-click="vm.cancelMS()" ng-show="vm.MS">取消</button>
+					<button ng-click="vm.sureMS()" class="btn btn-sm btn-success">确定</button>
+					<button ng-click="vm.cancelMS()" ng-show="vm.MS" class="btn btn-sm btn-primary">取消</button>
 				</div>
 				<div style="float: left;" ng-show="vm.showSC">
-					<input type="text" name="majorStudy" id="majorStudy" ng-model="vm.model.majorStudy" data-val="true" ng-disabled="true"> 
-					<button ng-click="vm.chooseMS()">修改</button>
+					<input type="text" name="majorStudy" id="majorStudy" ng-model="vm.model.majorStudy" data-val="true" ng-disabled="true" style="width: 600px;"> 
+					<button ng-click="vm.chooseMS()" class="btn btn-sm btn-success">修改</button>
 				</div>
 				</td>
 			</td>
@@ -192,16 +192,16 @@
 							<option ng-repeat="x in majorbigWSort" ng-value="x.dictName" >{{x.dictName}}</option>
 						</select>
 						<span style="margin-left:10px;">专业：</span>
-						<select  name="zyml" ng-model="vm.majorWork" style="width: 100px;"  >
+						<select  name="zyml" ng-model="vm.majorWork" style="width: 200px;" >
 							<option value="">请选择</option>
 							<option ng-repeat="x in selectWValue" ng-value="x.dictName" ng-selected="x.dictName == vm.model.majorWork">{{x.dictName}}</option>
 						</select>
-						<button ng-click="vm.sureMW()">确定</button>
-						<button ng-click="vm.cancelMW()" ng-show="vm.MW">取消</button>
+						<button ng-click="vm.sureMW()" class="btn btn-sm btn-success">确定</button>
+						<button ng-click="vm.cancelMW()" ng-show="vm.MW" class="btn btn-sm btn-primary">取消</button>
 					</div>
 					<div style="float: left;" ng-show="vm.showWC">
-						<input type="text" name="majorWork" id="majorWork" ng-model="vm.model.majorWork" data-val="true" ng-disabled="true"> 
-						<button ng-click="vm.chooseMW()">修改</button>
+						<input type="text" name="majorWork" id="majorWork" ng-model="vm.model.majorWork" data-val="true" ng-disabled="true" style="width: 600px;"> 
+						<button ng-click="vm.chooseMW()" class="btn btn-sm btn-success">修改</button>
 					</div>
 				</td>
 		</tr> 

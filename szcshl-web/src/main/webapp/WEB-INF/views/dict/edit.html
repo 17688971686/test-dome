@@ -26,7 +26,7 @@
              <tr>
                 <td class="formAlignRight">字典值： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm" ng-disabled="vm.model.dictType=='0'"  ng-model="vm.model.dictKey" id="dictKey" name="dictKey" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm"  ng-model="vm.model.dictKey" id="dictKey" name="dictKey" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="dictKey" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
@@ -44,7 +44,7 @@
              <tr>
                 <td class="formAlignRight">字典编码： <span class="required">*</span> </td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.isUpdate"  ng-model="vm.model.dictCode" id="dictCode" name="dictCode" data-val="true" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.dictCode" id="dictCode" name="dictCode" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="dictCode" data-valmsg-replace="true" class="errors"></span>
                  <span class="errors" ng-show="vm.isDictCodeExist">字典编码已存在</span></td>
@@ -60,7 +60,7 @@
             <tr>
                 <td class="formAlignRight">描述： </td>
                 <td>
-                <textarea class="form-control" maxlength="200" name="description" id="description" ng-model="vm.model.description" style="height:120px;"></textarea>
+                	<textarea class="form-control" maxlength="200" name="description" id="description" ng-model="vm.model.description" style="height:120px;"></textarea>
                 </td>
                 <td><span data-valmsg-for="description" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
@@ -68,7 +68,7 @@
                 <td class="formAlignRight">父级： </td>
                 <td>
                  <ul id="pzTree" class="ztree" ng-hide="vm.isUpdate"></ul>
-                 <input  type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"  ng-show="vm.isUpdate" ng-model="vm.model.parentDictName">                 
+                 <input  type="text" maxlength="200" class="form-control input-sm "  ng-show="vm.isUpdate" ng-model="vm.model.parentDictName">                 
                 </td>
             </tr>
         </table>
