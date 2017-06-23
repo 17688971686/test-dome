@@ -89,7 +89,7 @@ input,textarea{ outline:none;}
 }
 .main-header .sidebar-toggle {
 	margin-left: -41px;
-    position: fixed;
+    position: absolute;
     top: 55px;
     padding: 10px 15px;
 }
