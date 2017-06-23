@@ -81,6 +81,7 @@ public class Constant {
     public static enum EnumConfigKey{
         CONFIG_LIST("CONFIG_LIST"),                 //所有数据参数缓存
         LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),     //上一个抽签单位的最大序号
+        SYSINIT("SYSINIT"),                         //系统初始化
         ;
 
         private String value;

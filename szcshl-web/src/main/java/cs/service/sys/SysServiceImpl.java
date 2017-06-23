@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import cs.common.Constant;
+import cs.model.sys.SysConfigDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,7 @@ public class SysServiceImpl implements SysService {
     private UserRepo userRepo;
 
     @Autowired
-    private SysConfigRepo sysConfigRepo;
+    private SysConfigService sysConfigService;
 
     @Override
     public List<SysResourceDto> get() {
@@ -89,11 +91,9 @@ public class SysServiceImpl implements SysService {
     @Transactional
     public Response SysInit() {
         Response response = new Response();
-        List<SysConfig> sysConfigs = sysConfigRepo.findAll();
-        SysConfig sysConfig;
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(Constant.EnumConfigKey.SYSINIT.getValue());
         // 更新sysConfig
-
-        if (sysConfigs.size() > 0) {// 已经被初始化
+        if (sysConfigDto != null && (Constant.EnumState.YES.getValue()).equals(sysConfigDto.getConfigValue())) {// 已经被初始化
             response.setMessage("已经存在初始化数据，此次操作无效");
             logger.warn("已经存在初始化数据，此次操作无效");
         } else {
@@ -114,9 +114,7 @@ public class SysServiceImpl implements SysService {
                     resource.setName(y.getName());
                     resource.setPath(y.getPath());
                     resources.add(resource);
-
                 });
-
             });
             role.setResources(resources);
 
@@ -135,8 +133,12 @@ public class SysServiceImpl implements SysService {
             userRepo.save(user);
 
             // 更新sysConfig
-            sysConfig = new SysConfig();
-            sysConfigRepo.save(sysConfig);
+            sysConfigDto = new SysConfigDto();
+            sysConfigDto.setConfigName("系统初始化");
+            sysConfigDto.setConfigKey(Constant.EnumConfigKey.SYSINIT.getValue());
+            sysConfigDto.setConfigValue(Constant.EnumState.YES.getValue());
+            sysConfigDto.setIsShow(Constant.EnumState.NO.getValue());
+            sysConfigService.save(sysConfigDto);
 
             response.setMessage("初始化成功");
             response.setIsSuccess(true);

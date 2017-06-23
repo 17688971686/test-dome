@@ -9,4 +9,5 @@ import cs.repository.IRepository;
  * Date: 2017-6-13 14:28:16
  */
 public interface SysConfigRepo extends IRepository<SysConfig, String> {
+
 }

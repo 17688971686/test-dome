@@ -121,7 +121,7 @@ public class SysConfigServiceImpl implements SysConfigService {
         ICache cache = cacheFactory.getCache();
         List<SysConfigDto> resultList = (List<SysConfigDto>) cache.get(Constant.EnumConfigKey.CONFIG_LIST.getValue())
                 == null ? new ArrayList<>() : (List<SysConfigDto>) cache.get(Constant.EnumConfigKey.CONFIG_LIST.getValue());
-        if (resultList == null || resultList.size() == 0) {
+        if (resultList.size() == 0) {
             Criteria criteria = sysConfigRepo.getExecutableCriteria();
             criteria.add(Restrictions.eq(SysConfig_.isShow.getName(), Constant.EnumState.YES.getValue()));
             List<SysConfig> configList = criteria.list();
@@ -140,16 +140,13 @@ public class SysConfigServiceImpl implements SysConfigService {
     @Override
     public SysConfigDto findByKey(String key) {
         SysConfigDto modelDto = new SysConfigDto();
-        CacheFactory cacheFactory = new DefaultCacheFactory();
-        ICache cache = cacheFactory.getCache();
-        List<SysConfigDto> resultList = (List<SysConfigDto>) cache.get(Constant.EnumConfigKey.CONFIG_LIST.getValue());
-        if (resultList == null || resultList.size() == 0) {
-            resultList = queryAll();
-        }
-        for (SysConfigDto sc : resultList) {
-            if (sc.getConfigKey().equals(key)) {
-                modelDto = sc;
-                break;
+        List<SysConfigDto> resultList = queryAll();
+        if (resultList != null && resultList.size() >= 0) {
+            for (SysConfigDto sc : resultList) {
+                if (sc.getConfigKey().equals(key)) {
+                    modelDto = sc;
+                    break;
+                }
             }
         }
         return modelDto;

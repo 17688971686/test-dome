@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class SysConfigRepoImpl extends AbstractRepository<SysConfig, String> implements SysConfigRepo {
+
 }
