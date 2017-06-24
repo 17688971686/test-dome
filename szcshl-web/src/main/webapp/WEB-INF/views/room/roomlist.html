@@ -110,7 +110,7 @@
                         <select ng-model="vm.model.rbType" name="rbType" id="rbType" class="form-control input-sm "
                                 data-val="true" data-val-required="必填">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                            <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
                     </td>
                     <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>

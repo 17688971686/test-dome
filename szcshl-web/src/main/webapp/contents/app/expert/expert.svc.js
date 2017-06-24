@@ -279,7 +279,7 @@
 				},
 				{
 					field : "degRee",
-					title : "职务",
+					title : "职称",
 					width : 100,
 					filterable : true
 				},

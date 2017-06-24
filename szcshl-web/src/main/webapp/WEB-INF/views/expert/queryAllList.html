@@ -57,16 +57,13 @@
 
 				<td class="formAlignRight" style="width:150px;">职务</td>
 				<td>
-					<select  operator="eq" name="job" >
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.JOY.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
+					<input name="job"  type="text" operator="like" />
 				</td>
 				<td class="formAlignRight" style="width:150px;">职称</td>
 				<td>
 					<select operator="eq" name="title">
 						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.TITLE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
 				<td class="formAlignRight" style="width:150px;">毕业院校</td>
