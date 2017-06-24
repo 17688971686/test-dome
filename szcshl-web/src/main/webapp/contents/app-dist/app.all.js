@@ -579,13 +579,13 @@
                      field: "flowName",
                      title: "所属流程",
                      width: 180,
-                     filterable : false,
+                     filterable : false
                  },                 
                  {
                      field: "taskName",
                      title: "当前环节",
                      width: 180,
-                     filterable : false,
+                     filterable : false
                  },
                  {
                      field: "createDate",
@@ -616,7 +616,7 @@
 						if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
 							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
 						}else{
-							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+							return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
 						}						
 					}	
 				}
@@ -726,6 +726,8 @@
                     template:function(item){
                         if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0 || (item.processDefinitionId).indexOf("SIGN_XS_FLOW") >= 0){
                             return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
+                        }else{
+                        	return '';
                         }
                      }
                 }
@@ -1604,18 +1606,13 @@
                     width: 100,
                     filterable: true
                 },
-                {
+               /* {
                     field: "phoneNum",
                     title: "电话号码",
                     width: 100,
                     filterable: false
-                },
-                {
-                    field: "phoneNum",
-                    title: "传真",
-                    width: 100,
-                    filterable: false
-                },
+                },*/
+               
                 {
                     field: "principalName",
                     title: "负责人名称",
@@ -1624,10 +1621,17 @@
                 },
                 {
                     field: "principalPhone",
-                    title: "负责人手机号",
+                    title: "负责人电话",
                     width: 100,
                     filterable: false
                 },
+                {
+                    field: "fax",
+                    title: "负责人传真",
+                    width: 100,
+                    filterable: false
+                },
+               
                 {
                     field: "contactName",
                     title: "联系人名称",
@@ -1635,7 +1639,7 @@
                     filterable: false
                 },
                 {
-                    field: "contactPhone",
+                    field: "contactTell",
                     title: "联系人手机号",
                     width: 100,
                     filterable: false
@@ -2165,7 +2169,9 @@
         
         //begin savePlanSign
         function savePlanSign(vm){
-        	
+        	vm.assistPlan.ministerOpinion=$("#ministerOpinion").val();
+        	vm.assistPlan.viceDirectorOpinion=$("#viceDirectorOpinion").val();
+        	vm.assistPlan.directorOpinion=$("#directorOpinion").val();
         	var httpOptions={
         		method:"put",
         		url: rootPath +"/assistPlanSign/savePlanSign",
@@ -2407,7 +2413,6 @@
         	var httpSuccess=function success(response){
 		        	vm.unitList=response.data;	
 		        	vm.signNum=vm.unitList.length;
-		        	console.log(vm.unitList);
 	        }
 	        		
 	        common.http({
@@ -3128,6 +3133,7 @@
         var targetObj = $("#" + options.targetId);
         targetObj.val(targetObj.val() + vm.ideaContent);
         window.parent.$("#ideaWindow").data("kendoWindow").close();
+        targetObj.focus();
     }// end
 
 })();
@@ -3532,118 +3538,6 @@
 	
 	
 	
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('demoCtrl', demo);
-
-    demo.$inject = ['$location', 'demoSvc'];
-
-    function demo($location, demoSvc) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '';
-
-        vm.showDialog = function () {
-
-            $('.myDialog').modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-        }
-
-        // function datetimePicker() {
-            // $("#datepicker").kendoDatePicker();
-            // $("#datetiempicker").kendoDateTimePicker();
-        // }
-
-        function upload() {
-            $("#files").kendoUpload({
-                async: {
-                    saveUrl: rootPath + "/demo/save",
-                    removeUrl: rootPath + "/demo/remove",
-                    autoUpload: true
-                }
-            });
-        }
-
-
-        activate();
-        function activate() {
-            // datetimePicker();
-            upload();
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('demoSvc', demo);
-
-	demo.$inject = [ '$http' ];
-
-	function demo($http) {
-		var url_account_password = "/account/password";
-		
-		var service = {			
-			upload : upload
-		};
-
-		return service;
-
-		// begin#updatedemo
-		function upload(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid) {
-				vm.isSubmit = true;
-				
-
-				var httpOptions = {
-					method : 'put',
-					url : url_account_password,
-					data : vm.model.password
-				}
-
-				var httpSuccess = function success(response) {
-
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-								}
-							})
-						}
-
-					})
-				}
-
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-
-			} else {
-				// common.alert({
-				// vm:vm,
-				// msg:"您填写的信息不正确,请核对后提交!"
-				// })
-			}
-
-		}
-
-	}
 })();
 (function () {
     'use strict';
@@ -5302,6 +5196,7 @@
 									vm.showFileNum = true;
 								}
                                 //初始化附件上传
+								if(vm.dispatchDoc.id){
                                 sysfileSvc.initUploadOptions({
                                     businessId:vm.dispatchDoc.id,
                                     sysSignId :vm.dispatchDoc.signId,
@@ -5310,6 +5205,7 @@
                                     detailBt:"detail_file_bt",
                                     vm:vm
                                 });
+								}
 							}
 						})
 			}
@@ -5597,6 +5493,7 @@
 						}
 					});
 		}
+		
 	}
 })();
 (function () {
@@ -5780,6 +5677,7 @@
         }
         
         vm.gotoWPage=function(){
+        	vm.createWork=true;
         	workExpeSvc.gotoWPage(vm);
         }
         
@@ -5788,7 +5686,7 @@
         	workExpeSvc.updateWorkPage(vm);
         }
         
-        vm.createWork=function(){
+        vm.createWorks=function(){
         	vm.createWork=true;
         	vm.work.expertID=vm.model.expertID;
         	workExpeSvc.createWork(vm);
@@ -5813,6 +5711,7 @@
         }
         
         vm.gotoJPage=function(){
+        	vm.createProject=true;
         	projectExpeSvc.gotoJPage(vm);
         }
         
@@ -5820,7 +5719,7 @@
         	projectExpeSvc.updateProject(vm);
         }
         
-        vm.createProject=function(){
+        vm.createProjects=function(){
         	vm.createProject=true;
         	vm.project.expertID=vm.model.expertID;
         	projectExpeSvc.createProject(vm);
@@ -6092,8 +5991,6 @@
 				
 		// begin#createExpert		
 		function createExpert(vm) {	
-			console.log(vm.model);
-			return;
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if(isValid){				
@@ -6145,6 +6042,7 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
+				console.log(vm.model);
 				 if(vm.model.majorWork){
             		vm.showWS=false;
         			vm.showWC=true;
@@ -6273,7 +6171,7 @@
 					filterable : true
 				},
 				{
-					field : "maJor",
+					field : "majorWork",
 					title : "现从事专业",
 					width : 100,
 					filterable : true
@@ -6285,27 +6183,10 @@
 					filterable : true
 				},
 				{
-					field : "",
+					field : "expertSort",
 					title : "专家类别",
 					width : 100,
-					filterable : true,
-					template:function(item){
-						if(item.expertTypeDtoList){
-							var resultStr='';
-							for(var i=0;i<item.expertTypeDtoList.length;i++){
-								if(i==0){
-									resultStr += item.expertTypeDtoList[i].expertType;
-								}else{
-									
-									resultStr += "、"+item.expertTypeDtoList[i].expertType;
-								}
-							}
-							return resultStr;
-						}else{
-						 return "";
-						}
-					}
-					
+					filterable : true
 				},
 				{
 					field : "",
@@ -7505,8 +7386,8 @@
 			common.initJqValidation($('#workForm'));
 			var isValid = $('#workForm').valid();
 			if (isValid) {
-				vm.work.beginTime = $('#beginTime').val();
-				vm.work.endTime = $('#endTime').val();
+				/*vm.work.beginTime = $('#beginTime').val();
+				vm.work.endTime = $('#endTime').val();*/
 				
 				var httpOptions = {
 					method : 'post',
@@ -8934,18 +8815,21 @@
                     fn: function () {
                         if (response.data != null && response.data != "") {
                             vm.fileRecord = response.data.file_record;
+                            
                             vm.fileRecord.signId = vm.signId;
                             vm.signUserList = response.data.sign_user_List;
 
                             //初始化附件上传
-                            sysfileSvc.initUploadOptions({
-                                businessId: vm.fileRecord.fileRecordId,
-                                sysSignId: vm.fileRecord.signId,
-                                sysfileType: "归档",
-                                uploadBt: "upload_file_bt",
-                                detailBt: "detail_file_bt",
-                                vm: vm
-                            });
+                            if(vm.fileRecord.fileRecordId){
+	                            sysfileSvc.initUploadOptions({
+	                                businessId: vm.fileRecord.fileRecordId,
+	                                sysSignId: vm.fileRecord.signId,
+	                                sysfileType: "归档",
+	                                uploadBt: "upload_file_bt",
+	                                detailBt: "detail_file_bt",
+	                                vm: vm
+	                            });
+                            }
                         }
                     }
 
@@ -9177,6 +9061,7 @@
 
         // S_提交下一步
         function commit(vm) {
+        	vm.flow.dealOption=$("#dealOption").val();
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
             if (isValid) {
@@ -9186,7 +9071,6 @@
                     url: rootPath + "/flow/commit",
                     data: vm.flow
                 }
-
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
                         vm: vm,
@@ -17423,6 +17307,7 @@
                                     vm.isHaveNext = true;
                                 }
                             }
+
                             if(vm.work.id){
                             	var sysfileType = "工作方案";
                             	if(!angular.isUndefined(vm.work.isMain)){
