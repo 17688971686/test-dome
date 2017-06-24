@@ -226,18 +226,13 @@
                     width: 100,
                     filterable: true
                 },
-                {
+               /* {
                     field: "phoneNum",
                     title: "电话号码",
                     width: 100,
                     filterable: false
-                },
-                {
-                    field: "phoneNum",
-                    title: "传真",
-                    width: 100,
-                    filterable: false
-                },
+                },*/
+               
                 {
                     field: "principalName",
                     title: "负责人名称",
@@ -246,10 +241,17 @@
                 },
                 {
                     field: "principalPhone",
-                    title: "负责人手机号",
+                    title: "负责人电话",
                     width: 100,
                     filterable: false
                 },
+                {
+                    field: "fax",
+                    title: "负责人传真",
+                    width: 100,
+                    filterable: false
+                },
+               
                 {
                     field: "contactName",
                     title: "联系人名称",
@@ -257,7 +259,7 @@
                     filterable: false
                 },
                 {
-                    field: "contactPhone",
+                    field: "contactTell",
                     title: "联系人手机号",
                     width: 100,
                     filterable: false

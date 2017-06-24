@@ -31,7 +31,7 @@ public class AssistUnit extends DomainBase {
     /**
      * 单位简称
      */
-    @Column(columnDefinition = "VARCHAR(30)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String unitShortName;
 
     /**
@@ -55,7 +55,7 @@ public class AssistUnit extends DomainBase {
     /**
      * 企业地址
      */
-    @Column(columnDefinition = "VARCHAR(30)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String address;
 
     /**
@@ -68,8 +68,13 @@ public class AssistUnit extends DomainBase {
     private String contactName;//联系人名称
     
     @Column(columnDefinition="VARCHAR(30)")
-    private String contactPhone;//联系人手机号
+    private String contactPhone;//联系人电话
     
+    @Column(columnDefinition="VARCHAR(30)")
+    private String contactTell;//联系人手机
+    
+    @Column(columnDefinition="VARCHAR(30)")
+    private String contactFax;//联系人传真
     
     @Column(columnDefinition="VARCHAR(30)")
     private String principalName;//负责人名称
@@ -211,6 +216,22 @@ public class AssistUnit extends DomainBase {
 
 	public void setIsUse(String isUse) {
 		this.isUse = isUse;
+	}
+
+	public String getContactTell() {
+		return contactTell;
+	}
+
+	public void setContactTell(String contactTell) {
+		this.contactTell = contactTell;
+	}
+
+	public String getContactFax() {
+		return contactFax;
+	}
+
+	public void setContactFax(String contactFax) {
+		this.contactFax = contactFax;
 	}
     
     

@@ -22,6 +22,8 @@ public class AssistUnitDto extends BaseDto {
     private String isLastUnSelected;
     private String fax;
     private Integer drawCount;
+    private String contactTell;//联系人手机
+    private String contactFax;//联系人传真
     
     private String isUse;//是否在用
     
@@ -154,5 +156,22 @@ public class AssistUnitDto extends BaseDto {
 	public void setIsUse(String isUse) {
 		this.isUse = isUse;
 	}
+
+	public String getContactTell() {
+		return contactTell;
+	}
+
+	public void setContactTell(String contactTell) {
+		this.contactTell = contactTell;
+	}
+
+	public String getContactFax() {
+		return contactFax;
+	}
+
+	public void setContactFax(String contactFax) {
+		this.contactFax = contactFax;
+	}
     
+	
 }
