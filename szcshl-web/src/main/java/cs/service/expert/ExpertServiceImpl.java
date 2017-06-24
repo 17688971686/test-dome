@@ -61,13 +61,13 @@ public class ExpertServiceImpl implements ExpertService {
             item.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(item, expertDto);
-            List<ExpertTypeDto> expertTypes = new ArrayList<>();
-            for (ExpertType expertType : item.getExpertType()) {
+            /* List<ExpertTypeDto> expertTypes = new ArrayList<>();
+           for (ExpertType expertType : item.getExpertType()) {
                 ExpertTypeDto expertTypeDto = new ExpertTypeDto();
                 BeanCopierUtils.copyProperties(expertType, expertTypeDto);
                 expertTypes.add(expertTypeDto);
             }
-            expertDto.setExpertTypeDtoList(expertTypes);
+            expertDto.setExpertTypeDtoList(expertTypes);*/
             listExpertDto.add(expertDto);
         }
         pageModelDto.setCount(odataObj.getCount());

@@ -46,6 +46,8 @@ public class ExpertDto extends BaseDto {
     private String state;//专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
     private String openingBank;
     private String bankAccount;
+    private String expertSort;    //专家类别
+    private String expertField;
     public byte[] photo;    //专家照片
 
     private List<WorkExpeDto> workDto;
@@ -322,4 +324,20 @@ public class ExpertDto extends BaseDto {
     public void setExpertOfferDtoList(List<ExpertOfferDto> expertOfferDtoList) {
         this.expertOfferDtoList = expertOfferDtoList;
     }
+
+	public String getExpertSort() {
+		return expertSort;
+	}
+
+	public void setExpertSort(String expertSort) {
+		this.expertSort = expertSort;
+	}
+
+	public String getExpertField() {
+		return expertField;
+	}
+
+	public void setExpertField(String expertField) {
+		this.expertField = expertField;
+	}
 }

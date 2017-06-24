@@ -196,8 +196,8 @@
 			common.initJqValidation($('#workForm'));
 			var isValid = $('#workForm').valid();
 			if (isValid) {
-				vm.work.beginTime = $('#beginTime').val();
-				vm.work.endTime = $('#endTime').val();
+				/*vm.work.beginTime = $('#beginTime').val();
+				vm.work.endTime = $('#endTime').val();*/
 				
 				var httpOptions = {
 					method : 'post',

@@ -30,10 +30,10 @@ public class ProjectExpe extends DomainBase {
 	@Column(name = "projectType", nullable = false, length = 100)
     private String projectType; //项目类型
 	
-	@Column(name = "projectbeginTime", nullable = false)
+	@Column(name = "projectbeginTime", nullable = true)
     private Date projectbeginTime; //项目开始时间
 	
-	@Column(name = "projectendTime", nullable = false)
+	@Column(name = "projectendTime", nullable = true)
     private Date projectendTime; //项目结束时间
 	
 	

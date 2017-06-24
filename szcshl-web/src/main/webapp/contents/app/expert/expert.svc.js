@@ -110,8 +110,6 @@
 				
 		// begin#createExpert		
 		function createExpert(vm) {	
-			console.log(vm.model);
-			return;
 			common.initJqValidation();
 			var isValid = $('form').valid();
 			if(isValid){				
@@ -163,6 +161,7 @@
 			var httpSuccess = function success(response) {
 				vm.showBt = true;
 				vm.model = response.data;
+				console.log(vm.model);
 				 if(vm.model.majorWork){
             		vm.showWS=false;
         			vm.showWC=true;
@@ -291,7 +290,7 @@
 					filterable : true
 				},
 				{
-					field : "maJor",
+					field : "majorWork",
 					title : "现从事专业",
 					width : 100,
 					filterable : true
@@ -303,27 +302,10 @@
 					filterable : true
 				},
 				{
-					field : "",
+					field : "expertSort",
 					title : "专家类别",
 					width : 100,
-					filterable : true,
-					template:function(item){
-						if(item.expertTypeDtoList){
-							var resultStr='';
-							for(var i=0;i<item.expertTypeDtoList.length;i++){
-								if(i==0){
-									resultStr += item.expertTypeDtoList[i].expertType;
-								}else{
-									
-									resultStr += "、"+item.expertTypeDtoList[i].expertType;
-								}
-							}
-							return resultStr;
-						}else{
-						 return "";
-						}
-					}
-					
+					filterable : true
 				},
 				{
 					field : "",

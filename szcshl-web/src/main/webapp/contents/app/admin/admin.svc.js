@@ -87,13 +87,13 @@
                      field: "flowName",
                      title: "所属流程",
                      width: 180,
-                     filterable : false,
+                     filterable : false
                  },                 
                  {
                      field: "taskName",
                      title: "当前环节",
                      width: 180,
-                     filterable : false,
+                     filterable : false
                  },
                  {
                      field: "createDate",
@@ -124,7 +124,7 @@
 						if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
 							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
 						}else{
-							return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+							return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
 						}						
 					}	
 				}
@@ -234,6 +234,8 @@
                     template:function(item){
                         if((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0 || (item.processDefinitionId).indexOf("SIGN_XS_FLOW") >= 0){
                             return common.format($('#columnBtns').html(),"endSignDetail",item.businessKey,item.processInstanceId);
+                        }else{
+                        	return '';
                         }
                      }
                 }
