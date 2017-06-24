@@ -62,6 +62,7 @@
         }
         
         vm.gotoWPage=function(){
+        	vm.createWork=true;
         	workExpeSvc.gotoWPage(vm);
         }
         
@@ -70,7 +71,7 @@
         	workExpeSvc.updateWorkPage(vm);
         }
         
-        vm.createWork=function(){
+        vm.createWorks=function(){
         	vm.createWork=true;
         	vm.work.expertID=vm.model.expertID;
         	workExpeSvc.createWork(vm);
@@ -95,6 +96,7 @@
         }
         
         vm.gotoJPage=function(){
+        	vm.createProject=true;
         	projectExpeSvc.gotoJPage(vm);
         }
         
@@ -102,7 +104,7 @@
         	projectExpeSvc.updateProject(vm);
         }
         
-        vm.createProject=function(){
+        vm.createProjects=function(){
         	vm.createProject=true;
         	vm.project.expertID=vm.model.expertID;
         	projectExpeSvc.createProject(vm);

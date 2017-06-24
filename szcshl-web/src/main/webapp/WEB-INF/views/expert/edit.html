@@ -354,19 +354,14 @@
     <!-- 以下我弹窗部分div-->
 	<!-- S 工作经历弹窗 -->
 	<div id="wrwindow" class="well well-sm" style="background:white;display:none;">
-    <form id="workForm" name="workForm">
+   
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.createWork()" ng-disabled="vm.isSubmit" ng-show="vm.createWork"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.createWorks()" ng-disabled="vm.isSubmit" ng-show="vm.createWork"><span class="glyphicon glyphicon-ok"></span>保存</button>
             <button class="btn btn-sm btn-success" ng-click="vm.updateWork()" ng-disabled="vm.isSubmit" ng-hide="vm.createWork"><span class="glyphicon glyphicon-ok"></span>更新</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.onWClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
          </div>
+         <form id="workForm" name="workForm">
         <table style="width:100%">
-            <tr>
-                <td class="formAlignRight" style="width:150px;"></td>
-                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                <td></td>
-            </tr>
-
             <tr>
                 <td class="formAlignRight">开始时间： <span class="required">*</span></td>
                 <td>
@@ -407,7 +402,7 @@
 	<div id="pjwindow" class="well well-sm" style="background:white;display:none;">
     <form id="ProjectForm" name="ProjectForm">
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.createProject()" ng-disabled="vm.isSubmit" ng-show="vm.createProject" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.createProjects()" ng-disabled="vm.isSubmit" ng-show="vm.createProject" ><span class="glyphicon glyphicon-ok"></span>保存</button>
             <button class="btn btn-sm btn-success" ng-click="vm.updateProject()"  ng-disabled="vm.isSubmit" ng-hide="vm.createProject"><span class="glyphicon glyphicon-ok"></span>更新</button>
              <button class="btn btn-sm btn-primary" ng-click="vm.onPClose()" ><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
          </div>

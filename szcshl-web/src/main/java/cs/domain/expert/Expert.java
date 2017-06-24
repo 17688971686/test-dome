@@ -94,7 +94,7 @@ public class Expert extends DomainBase {
     @Column(columnDefinition = "varchar(32) ")
     private String bankAccount;    //银行账号
     
-    @Column(columnDefinition = "varchar(30) ")
+    @Column(columnDefinition = "varchar(50) ")
     private String expertSort;    //专家类别
     
     @Column(columnDefinition = "varchar(30) ")
