@@ -63,7 +63,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0)"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0) and signState ne '7' "}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -171,7 +171,8 @@
                             }
                         }
                         return common.format($('#columnBtns').html(), item.signid, item.folwState,
-                            item.signid + "/" + item.processInstanceId, "vm.del('" + item.signid + "')", isFlowStart,
+                            item.signid + "/" + item.processInstanceId, 
+                            "vm.del('" + item.signid + "')", isFlowStart,
                             "vm.startNewFlow('" + item.signid + "')", isFlowStart,
                             "vm.stopFlow('" + item.signid + "')", hideStopButton,
                             "vm.restartFlow('" + item.signid + "')", hideRestartButton);
@@ -315,7 +316,9 @@
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/sign",
-                data: signid
+                params: {
+                	signid:signid
+                }
             }
 
             var httpSuccess = function success(response) {
@@ -325,6 +328,10 @@
                     fn: function () {
                         vm.isSubmit = false;
                         vm.gridOptions.dataSource.read();
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功",                            
+                        })
                     }
 
                 });

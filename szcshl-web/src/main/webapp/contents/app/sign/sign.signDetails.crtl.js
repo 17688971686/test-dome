@@ -8,9 +8,9 @@
     function sign($location, signSvc,$state,flowSvc) {
         var vm = this;
     	vm.model = {};							//创建一个form对象   	
-        vm.title = '查看详情信息';        		//标题
+        vm.title = '查看详情信息';        			//标题
         vm.model.signid = $state.params.signid;	//收文ID
-
+        vm.show_flow_info = false;				//显示流程图信息
 
         active();
         function active(){
@@ -26,11 +26,13 @@
             signSvc.initFlowPageData(vm);
 
             signSvc.initAssociateSigns(vm,vm.model.signid);
-            if($state.params.processInstanceId){
+            
+            if(!angular.isUndefined($state.params.processInstanceId) && $state.params.processInstanceId != 'undefined'){           	
                 vm.flow = {}
                 vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
                 //判断是否加载流程图
                 flowSvc.initFlowData(vm);
+                vm.show_flow_info = true;
             }
         }
 

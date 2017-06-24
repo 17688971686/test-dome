@@ -18,9 +18,9 @@
 		<li ng-show="vm.show_filerecord" ><a id="show_filerecord_a"  data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
 
 		<!--有流程实例才显示-->
-		<li><a  data-toggle="tab" ng-show="vm.model.processInstanceId" ng-hide="vm.model.folwState == 9" for-div="sign_diagram">流程图</a></li>
-		<li><a  data-toggle="tab" ng-show="vm.model.processInstanceId" for-div="sign_history">处理记录</a></li>
-		<li><a  data-toggle="tab" ng-show="vm.model.processInstanceId" for-div="sign_associate">关联项目</a></li>
+		<li><a  data-toggle="tab" ng-show="vm.show_flow_info" for-div="sign_diagram">流程图</a></li>
+		<li><a  data-toggle="tab" ng-show="vm.show_flow_info" for-div="sign_history">处理记录</a></li>
+		<li><a  data-toggle="tab" for-div="sign_associate">关联项目</a></li>
 	</ul>
 
 	<div class="tab-content" style="background:white;">

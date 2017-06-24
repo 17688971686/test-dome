@@ -29,9 +29,9 @@
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
         	})
 
-        	//先初始化流程信息        
+        	//初始化流程信息        
         	flowSvc.initFlowData(vm);
-        	//再初始化业务信息
+        	//初始化业务信息
         	signSvc.initFlowPageData(vm);
         }
 

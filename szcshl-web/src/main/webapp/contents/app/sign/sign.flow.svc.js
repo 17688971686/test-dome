@@ -53,10 +53,11 @@
                 case "XMFZR_SP_GZFA1":  //项目负责人承办
                     vm.businessTr = true;
                     vm.MFLOW_XMFZR_SP_GZFA = true ;     //显示是否直接发文
+                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
                     vm.XMFZR_SP_GZFA = true;
                     vm.MarkAndPay=false;//专家评分费用编辑权限
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
-                        vm.show_workprogram = true;
+                        vm.show_workprogram = true;                       
                         $("#show_workprogram_a").click();
 
                         vm.directDisPatch = false;          //是否直接发文
@@ -68,6 +69,7 @@
                     vm.businessTr = true;
                     vm.XMFZR_SP_GZFA = true;
                     vm.MarkAndPay=false;//专家评分费用编辑权限
+                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
                     if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         vm.show_workprogram = true;
                         $("#show_workprogram_a").click();
@@ -140,6 +142,7 @@
                 case "XS_XMFZR_GZFA":       //项目负责人承办
                     vm.businessTr = true;
                     vm.XS_XMFZR_GZFA = true;
+                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         $("#show_workprogram_a").click();
                     }

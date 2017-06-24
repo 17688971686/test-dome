@@ -98,13 +98,12 @@ public class FileRecordServiceImpl implements FileRecordService {
         hqlBuilder.setParam("signId", signid);               
         List<FileRecord> list = fileRecordRepo.findByHql(hqlBuilder);
         if(list != null && list.size() > 0){
-        	FileRecord  fileRecord = list.get(0);
-        	
+        	FileRecord  fileRecord = list.get(0);        	
         	BeanCopierUtils.copyProperties(fileRecord,fileRecordDto);
         }else{
         	//如果是新增，则要初始化
             User priUser = signPrincipalService.getMainPriUser(signid, Constant.EnumState.YES.getValue());
-        	Sign sign = signRepo.findByIds(Sign_.signid.getName(),signid,"").get(0);
+        	Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
         	fileRecordDto.setProjectName(sign.getProjectname());
 //        	fileRecordDto.setProjectName(sign.getProjectname());
         	fileRecordDto.setProjectCode(sign.getProjectcode());

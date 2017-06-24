@@ -1,17 +1,10 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>专家评分一览表</title>
-</head>
-<body>
+﻿<#assign path=request.contextPath/>
+<meta charset="UTF-8">
 <section class="invoice">
-    <div class="box">
-        <div class="box-header">
+	<div class="box-header">
             <h3 class="box-title">
-                <label class="pull-left"  style="line-height: 30px;">报表类型</label>
+                <label class="pull-left"  style="line-height:25px;margin-right:10px;">报表类型</label>
                 <div class="form-group pull-left">
-
                     <select class="form-control">
                         <option>项目评审专家情况表（详细）</option>
                         <option>option 2</option>
@@ -29,35 +22,28 @@
                     </tr>
                 </table>
             </div>
-
         </div>
+        
 
-        <div class="box-header">
-            <div  class="invoice" style="margin-top: -20px;">
-                <table>
-                    <tr>
-                        <td>专家姓名：</td>
-                        <td><input class="form-control" type="text"/></td>
-                        <td>评审方式：</td>
-                        <td><input class="form-control" type="text"/></td>
-                        <td>会议日期：</td>
-                        <td><input class="form-control" type="text"/></td>
-                        <td>至</td>
-                        <td><input class="form-control" type="text"/></td>
-                    </tr>
-                </table>
-
-            </div>
-        </div>
-    </div>
-
+       <table>
+           <tr>
+               <td>专家姓名：</td>
+               <td><input class="form-control" type="text"/></td>
+               <td>评审方式：</td>
+               <td><input class="form-control" type="text"/></td>
+               <td>会议日期：</td>
+               <td><input class="form-control" type="text"/></td>
+               <td>至</td>
+               <td><input class="form-control" type="text"/></td>
+           </tr>
+       </table>
 </section>
 
 
 <section class="invoice">
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title pull-left" style="line-height: 30px;">参会次数大于或等于</h3>
+            <h3 class="box-title pull-left" style="line-height: 25px;">参会次数大于或等于</h3>
             <div class="input-group input-group-sm pull-left" style="width: 150px;">
                 <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
                 <div class="input-group-btn">
@@ -133,18 +119,7 @@
                         <div class="dataTables_info pb p4" id="example2_info" role="status" aria-live="polite">共3位专家，3会议人次</div>
                     </div>
                     <div class="col-sm-7">
-                        <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                            <ul class="pagination">
-                                <li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>
-                                <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
-                                <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="2" tabindex="0">2</a></li>
-                                <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="3" tabindex="0">3</a></li>
-                                <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="4" tabindex="0">4</a></li>
-                                <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="5" tabindex="0">5</a></li>
-                                <li class="paginate_button "><a href="#" aria-controls="example2" data-dt-idx="6" tabindex="0">6</a></li>
-                                <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>
-                            </ul>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -152,5 +127,3 @@
         <!-- /.box-body -->
     </div>
 </section>
-</body>
-</html>

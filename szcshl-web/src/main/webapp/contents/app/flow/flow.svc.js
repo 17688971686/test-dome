@@ -197,7 +197,7 @@
                                     if (response.data.reCode == "error") {
                                         vm.isCommit = false;
                                     } else {
-                                        $state.go('index');
+                                        $state.go('gtasks');
                                     }
                                 }
                             })

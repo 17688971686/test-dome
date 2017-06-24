@@ -9084,7 +9084,7 @@
                                     if (response.data.reCode == "error") {
                                         vm.isCommit = false;
                                     } else {
-                                        $state.go('index');
+                                        $state.go('gtasks');
                                     }
                                 }
                             })
@@ -13740,10 +13740,11 @@
                 case "XMFZR_SP_GZFA1":  //项目负责人承办
                     vm.businessTr = true;
                     vm.MFLOW_XMFZR_SP_GZFA = true ;     //显示是否直接发文
+                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
                     vm.XMFZR_SP_GZFA = true;
                     vm.MarkAndPay=false;//专家评分费用编辑权限
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
-                        vm.show_workprogram = true;
+                        vm.show_workprogram = true;                       
                         $("#show_workprogram_a").click();
 
                         vm.directDisPatch = false;          //是否直接发文
@@ -13755,6 +13756,7 @@
                     vm.businessTr = true;
                     vm.XMFZR_SP_GZFA = true;
                     vm.MarkAndPay=false;//专家评分费用编辑权限
+                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
                     if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         vm.show_workprogram = true;
                         $("#show_workprogram_a").click();
@@ -13827,6 +13829,7 @@
                 case "XS_XMFZR_GZFA":       //项目负责人承办
                     vm.businessTr = true;
                     vm.XS_XMFZR_GZFA = true;
+                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         $("#show_workprogram_a").click();
                     }
@@ -14644,9 +14647,9 @@
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
         	})
 
-        	//先初始化流程信息        
+        	//初始化流程信息        
         	flowSvc.initFlowData(vm);
-        	//再初始化业务信息
+        	//初始化业务信息
         	signSvc.initFlowPageData(vm);
         }
 
@@ -14663,9 +14666,9 @@
     function sign($location, signSvc,$state,flowSvc) {
         var vm = this;
     	vm.model = {};							//创建一个form对象   	
-        vm.title = '查看详情信息';        		//标题
+        vm.title = '查看详情信息';        			//标题
         vm.model.signid = $state.params.signid;	//收文ID
-
+        vm.show_flow_info = false;				//显示流程图信息
 
         active();
         function active(){
@@ -14681,11 +14684,13 @@
             signSvc.initFlowPageData(vm);
 
             signSvc.initAssociateSigns(vm,vm.model.signid);
-            if($state.params.processInstanceId){
+            
+            if(!angular.isUndefined($state.params.processInstanceId) && $state.params.processInstanceId != 'undefined'){           	
                 vm.flow = {}
                 vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
                 //判断是否加载流程图
                 flowSvc.initFlowData(vm);
+                vm.show_flow_info = true;
             }
         }
 
@@ -14757,7 +14762,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0)"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0) and signState ne '7' "}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -14865,7 +14870,8 @@
                             }
                         }
                         return common.format($('#columnBtns').html(), item.signid, item.folwState,
-                            item.signid + "/" + item.processInstanceId, "vm.del('" + item.signid + "')", isFlowStart,
+                            item.signid + "/" + item.processInstanceId, 
+                            "vm.del('" + item.signid + "')", isFlowStart,
                             "vm.startNewFlow('" + item.signid + "')", isFlowStart,
                             "vm.stopFlow('" + item.signid + "')", hideStopButton,
                             "vm.restartFlow('" + item.signid + "')", hideRestartButton);
@@ -15009,7 +15015,9 @@
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/sign",
-                data: signid
+                params: {
+                	signid:signid
+                }
             }
 
             var httpSuccess = function success(response) {
@@ -15019,6 +15027,10 @@
                     fn: function () {
                         vm.isSubmit = false;
                         vm.gridOptions.dataSource.read();
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功",                            
+                        })
                     }
 
                 });
