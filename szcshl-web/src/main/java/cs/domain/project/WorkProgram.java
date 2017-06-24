@@ -80,7 +80,7 @@ public class WorkProgram extends DomainBase {
     private String projectSubType;
 
     //行业类别
-    @Column(columnDefinition = "VARCHAR(40)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String industryType;
 
     //联系人

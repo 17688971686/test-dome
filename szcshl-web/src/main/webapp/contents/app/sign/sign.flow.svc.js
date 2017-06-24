@@ -262,19 +262,18 @@
                     }
                     break;
                 case "XMFZR_SP_GZFA2":
-                    if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9') {
-                        if (vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9) {
-                            resultTag = true;
-                        } else {
-                            resultTag = false;
-                        }
-                    }
+                     if (vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9) {
+                          resultTag = true;
+                     } else {
+                          resultTag = false;
+                     }
+//                     resultTag = false;
                     break;
                 case "BZ_SP_GZAN1":
-                    vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
+                    	vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
                     break;
                 case "BZ_SP_GZAN2":
-                    vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
+	                    vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
                     break;
                 case "FGLD_SP_GZFA1":
                     vm.flow.businessMap.M_WP_ID = vm.mainwork.id;

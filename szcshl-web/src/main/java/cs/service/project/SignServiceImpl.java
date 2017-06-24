@@ -116,7 +116,7 @@ public class SignServiceImpl implements SignService {
         sign.setModifiedBy(currentUser.getLoginName());
         sign.setIssign(EnumState.NO.getValue());    //默认为未签收
         //判断是否为协审
-        if (Validate.isString(sign.getIschangeEstimate())) {
+        if ("项目概算".equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
             sign.setIsassistflow(EnumState.YES.getValue());
         } else {
             sign.setIsassistflow(EnumState.NO.getValue());
@@ -907,11 +907,11 @@ public class SignServiceImpl implements SignService {
                 variables.put("user", dealUser.getLoginName());
                 //更改工作方案信息
                 businessId = flowDto.getBusinessMap().get("WP_ID").toString();
-                wk = workProgramRepo.findById(businessId);
-                wk.setMinisterSuggesttion(flowDto.getDealOption());
-                wk.setMinisterDate(new Date());
-                wk.setMinisterName(currentUser.getLoginName());
-                workProgramRepo.save(wk);
+	                wk = workProgramRepo.findById(businessId);
+	                wk.setMinisterSuggesttion(flowDto.getDealOption());
+	                wk.setMinisterDate(new Date());
+	                wk.setMinisterName(currentUser.getLoginName());
+	                workProgramRepo.save(wk);
                 break;
             case Constant.FLOW_XS_FGLDSP_GZFA:              //分管副主任审批
                 businessId = flowDto.getBusinessMap().get("WP_ID").toString();

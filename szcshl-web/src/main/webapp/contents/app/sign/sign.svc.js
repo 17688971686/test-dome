@@ -1009,6 +1009,11 @@
                         wpId = vm.assistwork.id;
                     }
                     break;
+                    
+                case "XS_XMFZR_GZFA":
+                    if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
+                        wpId = vm.mainwork.id;
+                    }
             }
             if (wpId) {
                 var httpOptions = {

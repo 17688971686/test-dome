@@ -44,6 +44,7 @@
                 <td style="width:150px;" class="text-center">项目类别<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.work.projectType" name="projectType" id="projectType" data-val="true"
+                    ng-change="vm.projectTypes=topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
                             data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectType == x.dictKey">{{x.dictName}}</option>
@@ -53,7 +54,7 @@
                     <select ng-model="vm.work.projectSubType" name="projectSubType" id="projectSubType" data-val="true"
                             data-val-required="必填">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.PROJECTSUBTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectSubType == x.dictKey">{{x.dictName}}</option>
+                        <option ng-repeat="x in vm.projectTypes" value="{{x.dictKey}}" ng-selected="vm.work.projectSubType == x.dictKey">{{x.dictName}}</option>
                     </select>
                     <span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>
                 </td>
