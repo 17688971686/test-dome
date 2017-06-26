@@ -81,7 +81,7 @@
 					 {  
 					    field: "rowNumber",  
 					    title: "序号",  
-					    width: 70,
+					    width: 50,
 					    filterable : false,
 					    template: "<span class='row-number'></span>"  
 					 }
@@ -124,24 +124,6 @@
 						filterable : false
 					},					
 					{
-						field : "orgAddress",
-						title : "地址",
-						width : 130,						
-						filterable : false
-					},										
-					{
-						field : "remark",
-						title : "描述",
-						width : 130,	
-						filterable : false
-					}, {
-						field : "createdDate",
-						title : "创建时间",
-						width : 180,
-						filterable : false,
-						format : "{0:yyyy/MM/dd HH:mm:ss}"
-
-					},  {
 						field : "",
 						title : "操作",
 						width : 200,

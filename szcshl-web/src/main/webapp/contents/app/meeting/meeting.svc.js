@@ -238,33 +238,33 @@
                         return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
-                    width: 30,
+                    width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
                 {
                     field: "rowNumber",
                     title: "序号",
-                    width: 40,
+                    width: 50,
                     filterable: false,
                     template: "<span class='row-number'></span>"
                 }
                 ,
                 {
                     field: "num",
-                    title: "会议室编号",
+                    title: "编号",
                     width: 100,
                     filterable: false
                 },
                 {
                     field: "mrName",
                     title: "会议室名称",
-                    width: 180,
+                    width: 150,
                     filterable: false
                 },
                 {
                     field: "mrType",
-                    title: "会议室类型",
-                    width: 180,
+                    title: "类型",
+                    width: 100,
                     filterable: false
                 },
                 {
@@ -275,26 +275,26 @@
                 },
                 {
                     field: "capacity",
-                    title: "会议室容量",
-                    width: 100,
+                    title: "容量",
+                    width: 80,
                     filterable: false
                 },
                 {
                     field: "userName",
-                    title: "会议室负责人",
-                    width: 100,
+                    title: "负责人",
+                    width: 70,
                     filterable: false
                 },
                 {
                     field: "userPhone",
                     title: "负责人电话",
-                    width: 150,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field : "",
                     title : "状态",
-                    width : 100,
+                    width : 50,
                     template: function (item) {
                        if(item.mrStatus == "2"){
                             return "停用";
@@ -306,7 +306,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 100,
                     template: function (item) {
                         var isUse = false;
                         if (item.mrStatus == "2") {

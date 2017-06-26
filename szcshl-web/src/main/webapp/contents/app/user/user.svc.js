@@ -324,7 +324,7 @@
                 {  
 				    field: "rowNumber",  
 				    title: "序号",  
-				    width: 70,
+				    width: 50,
 				    filterable : false,
 				    template: "<span class='row-number'></span>"  
 				 }
@@ -341,13 +341,6 @@
                     width: 100,
                     filterable: false
                 },
-                {
-                    field: "userMPhone",
-                    title: "联系手机",
-                    width: 120,
-                    filterable: false
-                },
-
                 {
                     field: "orgDto.name",
                     title: "所属部门",

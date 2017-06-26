@@ -75,7 +75,7 @@
 					 {  
 					    field: "rowNumber",  
 					    title: "序号",  
-					    width: 70,
+					    width: 50,
 					    filterable : false,
 					    template: "<span class='row-number'></span>"  
 					 }
@@ -83,19 +83,19 @@
 					{
 						field : "coName",
 						title : "单位名称",
-						width : 260,						
+						width : 220,						
 						filterable : false
 					},
 					{
 						field : "coPhone",
 						title : "单位电话",
-						width : 160,						
+						width : 100,						
 						filterable : false
 					},
 					{
 						field : "coPC",
 						title : "邮编",
-						width : 160,						
+						width : 100,						
 						filterable : false
 					},
 					{
@@ -103,19 +103,7 @@
 						title : "地址",
 						width : 160,						
 						filterable : false
-					},
-					{
-						field : "coSite",
-						title : "网站",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coSynopsis",
-						title : "单位简介",
-						width : 160,						
-						filterable : false
-					},
+					},			
 					{
 						field : "coType",
 						title : "单位类型",

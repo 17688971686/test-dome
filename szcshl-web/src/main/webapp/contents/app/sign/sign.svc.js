@@ -103,25 +103,25 @@
                 {
                     field: "projectcode",
                     title: "收文编号",
-                    width: 160,
+                    width: 120,
                     filterable: false,
                 },
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 200,
+                    width: 150,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
                     title: "项目阶段",
-                    width: 160,
+                    width: 80,
                     filterable: false,
                 },
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 160,
+                    width: 120,
                     filterable: false,
                 },
                 {
@@ -135,7 +135,7 @@
                 {
                     field: "",
                     title: "流程状态",
-                    width: 160,
+                    width: 80,
                     filterable: false,
                     template: function (item) {
                         if (item.folwState) {
@@ -156,7 +156,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 150,
                     template: function (item) {
                         //如果已经发起流程，则只能查看
                         var isFlowStart = false, hideStopButton = true, hideRestartButton = true,

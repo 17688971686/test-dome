@@ -567,7 +567,7 @@
                      field: "",
                      title: "序号",
                      template: "<span class='row-number'></span>",
-                     width:30
+                     width:50
                  },
                  {
                      field: "businessName",
@@ -675,7 +675,7 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number'></span>",
-                    width:30
+                    width:40
                 },
                 {
                     field: "businessName",
@@ -804,7 +804,7 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number'></span>",
-                    width:30
+                    width:50
                 },
                 {
                     field: "businessName",
@@ -3305,7 +3305,7 @@
 					 {  
 					    field: "rowNumber",  
 					    title: "序号",  
-					    width: 70,
+					    width: 50,
 					    filterable : false,
 					    template: "<span class='row-number'></span>"  
 					 }
@@ -3313,19 +3313,19 @@
 					{
 						field : "coName",
 						title : "单位名称",
-						width : 260,						
+						width : 220,						
 						filterable : false
 					},
 					{
 						field : "coPhone",
 						title : "单位电话",
-						width : 160,						
+						width : 100,						
 						filterable : false
 					},
 					{
 						field : "coPC",
 						title : "邮编",
-						width : 160,						
+						width : 100,						
 						filterable : false
 					},
 					{
@@ -3333,19 +3333,7 @@
 						title : "地址",
 						width : 160,						
 						filterable : false
-					},
-					{
-						field : "coSite",
-						title : "网站",
-						width : 160,						
-						filterable : false
-					},
-					{
-						field : "coSynopsis",
-						title : "单位简介",
-						width : 160,						
-						filterable : false
-					},
+					},			
 					{
 						field : "coType",
 						title : "单位类型",
@@ -6131,7 +6119,7 @@
 				{
 					field : "name",
 					title : "姓名",
-					width : 100,
+					width : 80,
 					filterable : true
 				},
 				{
@@ -6143,7 +6131,7 @@
 				{
 					field : "degRee",
 					title : "学位",
-					width : 100,
+					width : 50,
 					filterable : true
 				},
 				{
@@ -6160,16 +6148,10 @@
 				},
 				{
 					field : "degRee",
-					title : "职务",
+					title : "职称",
 					width : 100,
 					filterable : true
-				},
-				{
-					field : "idCard",
-					title : "身份证号",
-					width : 100,
-					filterable : true
-				},
+				},				
 				{
 					field : "majorWork",
 					title : "现从事专业",
@@ -8939,7 +8921,7 @@
                 field: "",
                 title: "序号",
                 template: "<span class='row-number'></span>",
-                width: 30
+                width: 40
             }, {
                 field: "activityName",
                 title: "环节名称",
@@ -10249,33 +10231,33 @@
                         return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
-                    width: 30,
+                    width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
                 {
                     field: "rowNumber",
                     title: "序号",
-                    width: 40,
+                    width: 50,
                     filterable: false,
                     template: "<span class='row-number'></span>"
                 }
                 ,
                 {
                     field: "num",
-                    title: "会议室编号",
+                    title: "编号",
                     width: 100,
                     filterable: false
                 },
                 {
                     field: "mrName",
                     title: "会议室名称",
-                    width: 180,
+                    width: 150,
                     filterable: false
                 },
                 {
                     field: "mrType",
-                    title: "会议室类型",
-                    width: 180,
+                    title: "类型",
+                    width: 100,
                     filterable: false
                 },
                 {
@@ -10286,26 +10268,26 @@
                 },
                 {
                     field: "capacity",
-                    title: "会议室容量",
-                    width: 100,
+                    title: "容量",
+                    width: 80,
                     filterable: false
                 },
                 {
                     field: "userName",
-                    title: "会议室负责人",
-                    width: 100,
+                    title: "负责人",
+                    width: 70,
                     filterable: false
                 },
                 {
                     field: "userPhone",
                     title: "负责人电话",
-                    width: 150,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field : "",
                     title : "状态",
-                    width : 100,
+                    width : 50,
                     template: function (item) {
                        if(item.mrStatus == "2"){
                             return "停用";
@@ -10317,7 +10299,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 100,
                     template: function (item) {
                         var isUse = false;
                         if (item.mrStatus == "2") {
@@ -11235,7 +11217,7 @@
 					 {  
 					    field: "rowNumber",  
 					    title: "序号",  
-					    width: 70,
+					    width: 50,
 					    filterable : false,
 					    template: "<span class='row-number'></span>"  
 					 }
@@ -11278,24 +11260,6 @@
 						filterable : false
 					},					
 					{
-						field : "orgAddress",
-						title : "地址",
-						width : 130,						
-						filterable : false
-					},										
-					{
-						field : "remark",
-						title : "描述",
-						width : 130,	
-						filterable : false
-					}, {
-						field : "createdDate",
-						title : "创建时间",
-						width : 180,
-						filterable : false,
-						format : "{0:yyyy/MM/dd HH:mm:ss}"
-
-					},  {
 						field : "",
 						title : "操作",
 						width : 200,
@@ -13949,19 +13913,18 @@
                     }
                     break;
                 case "XMFZR_SP_GZFA2":
-                    if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9') {
-                        if (vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9) {
-                            resultTag = true;
-                        } else {
-                            resultTag = false;
-                        }
-                    }
+                     if (vm.model.isreviewACompleted && vm.model.isreviewACompleted == 9) {
+                          resultTag = true;
+                     } else {
+                          resultTag = false;
+                     }
+//                     resultTag = false;
                     break;
                 case "BZ_SP_GZAN1":
-                    vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
+                    	vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
                     break;
                 case "BZ_SP_GZAN2":
-                    vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
+	                    vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
                     break;
                 case "FGLD_SP_GZFA1":
                     vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
@@ -14802,25 +14765,25 @@
                 {
                     field: "projectcode",
                     title: "收文编号",
-                    width: 160,
+                    width: 120,
                     filterable: false,
                 },
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 200,
+                    width: 150,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
                     title: "项目阶段",
-                    width: 160,
+                    width: 80,
                     filterable: false,
                 },
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 160,
+                    width: 120,
                     filterable: false,
                 },
                 {
@@ -14834,7 +14797,7 @@
                 {
                     field: "",
                     title: "流程状态",
-                    width: 160,
+                    width: 80,
                     filterable: false,
                     template: function (item) {
                         if (item.folwState) {
@@ -14855,7 +14818,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 150,
                     template: function (item) {
                         //如果已经发起流程，则只能查看
                         var isFlowStart = false, hideStopButton = true, hideRestartButton = true,
@@ -15708,6 +15671,11 @@
                         wpId = vm.assistwork.id;
                     }
                     break;
+                    
+                case "XS_XMFZR_GZFA":
+                    if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
+                        wpId = vm.mainwork.id;
+                    }
             }
             if (wpId) {
                 var httpOptions = {
@@ -16587,7 +16555,7 @@
                 {  
 				    field: "rowNumber",  
 				    title: "序号",  
-				    width: 70,
+				    width: 50,
 				    filterable : false,
 				    template: "<span class='row-number'></span>"  
 				 }
@@ -16604,13 +16572,6 @@
                     width: 100,
                     filterable: false
                 },
-                {
-                    field: "userMPhone",
-                    title: "联系手机",
-                    width: 120,
-                    filterable: false
-                },
-
                 {
                     field: "orgDto.name",
                     title: "所属部门",

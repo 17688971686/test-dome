@@ -250,7 +250,7 @@
 				{
 					field : "name",
 					title : "姓名",
-					width : 100,
+					width : 80,
 					filterable : true
 				},
 				{
@@ -262,7 +262,7 @@
 				{
 					field : "degRee",
 					title : "学位",
-					width : 100,
+					width : 50,
 					filterable : true
 				},
 				{
@@ -282,13 +282,7 @@
 					title : "职称",
 					width : 100,
 					filterable : true
-				},
-				{
-					field : "idCard",
-					title : "身份证号",
-					width : 100,
-					filterable : true
-				},
+				},				
 				{
 					field : "majorWork",
 					title : "现从事专业",

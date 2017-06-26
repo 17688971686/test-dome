@@ -75,7 +75,7 @@
                      field: "",
                      title: "序号",
                      template: "<span class='row-number'></span>",
-                     width:30
+                     width:50
                  },
                  {
                      field: "businessName",
@@ -183,7 +183,7 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number'></span>",
-                    width:30
+                    width:40
                 },
                 {
                     field: "businessName",
@@ -312,7 +312,7 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number'></span>",
-                    width:30
+                    width:50
                 },
                 {
                     field: "businessName",

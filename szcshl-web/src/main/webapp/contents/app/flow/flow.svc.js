@@ -52,7 +52,7 @@
                 field: "",
                 title: "序号",
                 template: "<span class='row-number'></span>",
-                width: 30
+                width: 40
             }, {
                 field: "activityName",
                 title: "环节名称",
