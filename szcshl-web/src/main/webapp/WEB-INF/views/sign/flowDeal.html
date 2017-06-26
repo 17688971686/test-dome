@@ -41,7 +41,7 @@
 
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-        <li ng-show="vm.model.isNeedWrokPrograml == '9' && vm.mainwork.id"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+        <li ng-show="vm.model.isNeedWrokPrograml == '9'"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
         <li ng-show="(angular.isUndefined(vm.model.isNeedWrokPrograml) || vm.model.isNeedWrokPrograml == '0')&& vm.model.isassistproc == '9'"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
         <li ng-show="vm.show_dispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
         <li ng-show="vm.show_filerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>

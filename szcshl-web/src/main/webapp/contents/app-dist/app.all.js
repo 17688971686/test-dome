@@ -16119,7 +16119,7 @@
             var projectfileoptions = {
                 language: 'zh',
                 allowedPreviewTypes: ['image'],
-                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt"],
+                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt","zip","rar"],
                 maxFileSize: 2000,
                 showRemove: false,
                 uploadUrl: rootPath + "/file/fileUpload",
