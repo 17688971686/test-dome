@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import cs.domain.DomainBase;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 专家信息
@@ -19,7 +20,7 @@ public class Expert extends DomainBase {
     @Id
     private String expertID;//专家ID
 
-    @Column(columnDefinition = "varchar(5)")
+    @Column(columnDefinition = "varchar(10)")
     private String expertNo;//专家编号
 
     @Column(columnDefinition = "varchar(32) NOT NULL")
@@ -28,7 +29,8 @@ public class Expert extends DomainBase {
     @Column(columnDefinition = "varchar(5)")
     private String sex;//性别
 
-    @Column(columnDefinition = "date")
+    @Temporal(TemporalType.DATE)
+    @Column
     private Date birthDay;//出生日期
 
     @Column(columnDefinition = "varchar(50)")
@@ -46,7 +48,8 @@ public class Expert extends DomainBase {
     @Column(columnDefinition = "varchar(50) ")
     private String userPhone;//手机号码
 
-    @Column(columnDefinition = "date")
+    @Temporal(TemporalType.DATE)
+    @Column
     private Date graduateDate;//毕业时间
 
     @Column(columnDefinition = "varchar(128) ")
@@ -98,13 +101,24 @@ public class Expert extends DomainBase {
     private String expertSort;    //专家类别
     
     @Column(columnDefinition = "varchar(30) ")
-    private String expertField;    //专家区域
+    private String expertField;    //专家区域(区域类别 2为镜外专家1为市外专家0为市内专家)
 
     @Column(columnDefinition = "varchar(30) ")
     private String state;    //专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
 
     @Column(columnDefinition = "BLOB")
-    public byte[] photo;    //专家照片
+    private byte[] photo;    //专家照片
+
+    @Temporal(TemporalType.DATE)
+    @Column
+    private Date auditDate;     //审核日期
+
+    @Temporal(TemporalType.DATE)
+    @Column
+    private Date applyDate;     //申请日期
+
+    @Column(columnDefinition = "varchar(2) ")
+    private String unable;                              //是否作废（1为作废，0 为正常）
     
     @OneToMany(mappedBy = "expert")
     private List<WorkExpe> work;                        //专家工作经验
@@ -116,6 +130,7 @@ public class Expert extends DomainBase {
     private List<ExpertSelected> expertSelectedList;    //专家抽取条件
 
     @OneToMany(mappedBy = "expert")
+
     private List<ExpertType> expertType;//专家类型
 
     @OneToMany(mappedBy = "expert")
@@ -406,5 +421,30 @@ public class Expert extends DomainBase {
 
     public void setExpertOfferList(List<ExpertOffer> expertOfferList) {
         this.expertOfferList = expertOfferList;
+    }
+
+
+    public Date getAuditDate() {
+        return auditDate;
+    }
+
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
+    }
+
+    public String getUnable() {
+        return unable;
+    }
+
+    public void setUnable(String unable) {
+        this.unable = unable;
+    }
+
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
     }
 }

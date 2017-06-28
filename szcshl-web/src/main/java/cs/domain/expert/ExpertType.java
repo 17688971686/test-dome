@@ -20,6 +20,9 @@ public class ExpertType extends DomainBase{
 	
 	@Id
 	private String id;
+
+	@Column(columnDefinition="INTEGER")
+	private  Integer seqNum;	//序号（序号，一个专家有多个专业）
 	
 	@Column(columnDefinition="VARCHAR(300)")
 	private String expertType;//专家类型
@@ -76,4 +79,11 @@ public class ExpertType extends DomainBase{
 		this.expert = expert;
 	}
 
+    public Integer getSeqNum() {
+        return seqNum;
+    }
+
+    public void setSeqNum(Integer seqNum) {
+        this.seqNum = seqNum;
+    }
 }

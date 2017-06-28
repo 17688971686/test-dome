@@ -118,27 +118,26 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	@Override
 	@Transactional
 	public void delete(String ids) {
-		String[] idss=ids.split(",");
-		if(idss.length>0){
-			for(String id:idss){
-				AssistUnit assistUnit=assistUnitRepo.findById(id);
-				if(assistUnit!=null){
-					
-					HqlBuilder hqlBuilder=HqlBuilder.create();
-					
-					hqlBuilder.append("update "+AssistUnit.class.getSimpleName()+" set "+AssistUnit_.isUse.getName()+"='0'"+" where "+AssistUnit_.id.getName()+"=:id");
-					
-					hqlBuilder.setParam("id", id);
-					
-					assistUnitRepo.executeHql(hqlBuilder);
-				}
-			}
-		}
-		
-//		assistUnitRepo.deleteById(AssistUnit_.id.getName(),id);
+		String[] idArr = ids.split(",");
+        HqlBuilder hqlBuilder=HqlBuilder.create();
+        hqlBuilder.append("update "+AssistUnit.class.getSimpleName()+" set "+AssistUnit_.isUse.getName()+"='0' " );
+
+        if (idArr.length > 1) {
+            hqlBuilder.append(" where " + AssistUnit_.id.getName() + " in ( ");
+            int totalL = idArr.length;
+            for (int i = 0; i < totalL; i++) {
+                if (i == totalL - 1) {
+                    hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
+                } else {
+                    hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
+                }
+            }
+            hqlBuilder.append(" )");
+        } else {
+            hqlBuilder.append(" where " + AssistUnit_.id.getName() + " = :id ");
+            hqlBuilder.setParam("id", ids);
+        }
 	}
-
-
 
 	/**
 	 * 查询抽签单位

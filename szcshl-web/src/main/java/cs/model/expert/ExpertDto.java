@@ -7,6 +7,7 @@ import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.model.BaseDto;
 
+import javax.persistence.Column;
 import javax.persistence.ManyToMany;
 import java.util.Date;
 import java.util.List;
@@ -49,13 +50,18 @@ public class ExpertDto extends BaseDto {
     private String expertSort;    //专家类别
     private String expertField;
     public byte[] photo;    //专家照片
+    @JSONField(format = "yyyy-MM-dd")
+    private Date auditDate; //审核时间
+    @JSONField(format = "yyyy-MM-dd")
+    private Date applyDate;    //申请日期
+    private String unable;                              //是否作废（1为作废，0 为正常）
 
     private List<WorkExpeDto> workDto;
-    
+
     private List<ProjectExpeDto> projectDto;
-    
+
     private List<ExpertReviewDto> expertReviewDtoList;
-    
+
     private List<ExpertTypeDto> expertTypeDtoList;
 
     private List<ExpertOfferDto> expertOfferDtoList;    //专家聘书
@@ -293,29 +299,29 @@ public class ExpertDto extends BaseDto {
         this.expertReviewDtoList = expertReviewDtoList;
     }
 
-	public List<ProjectExpeDto> getProjectDto() {
-		return projectDto;
-	}
+    public List<ProjectExpeDto> getProjectDto() {
+        return projectDto;
+    }
 
-	public void setProjectDto(List<ProjectExpeDto> projectDto) {
-		this.projectDto = projectDto;
-	}
+    public void setProjectDto(List<ProjectExpeDto> projectDto) {
+        this.projectDto = projectDto;
+    }
 
-	public List<WorkExpeDto> getWorkDto() {
-		return workDto;
-	}
+    public List<WorkExpeDto> getWorkDto() {
+        return workDto;
+    }
 
-	public void setWorkDto(List<WorkExpeDto> workDto) {
-		this.workDto = workDto;
-	}
+    public void setWorkDto(List<WorkExpeDto> workDto) {
+        this.workDto = workDto;
+    }
 
-	public List<ExpertTypeDto> getExpertTypeDtoList() {
-		return expertTypeDtoList;
-	}
+    public List<ExpertTypeDto> getExpertTypeDtoList() {
+        return expertTypeDtoList;
+    }
 
-	public void setExpertTypeDtoList(List<ExpertTypeDto> expertTypeDtoList) {
-		this.expertTypeDtoList = expertTypeDtoList;
-	}
+    public void setExpertTypeDtoList(List<ExpertTypeDto> expertTypeDtoList) {
+        this.expertTypeDtoList = expertTypeDtoList;
+    }
 
     public List<ExpertOfferDto> getExpertOfferDtoList() {
         return expertOfferDtoList;
@@ -325,19 +331,43 @@ public class ExpertDto extends BaseDto {
         this.expertOfferDtoList = expertOfferDtoList;
     }
 
-	public String getExpertSort() {
-		return expertSort;
-	}
+    public String getExpertSort() {
+        return expertSort;
+    }
 
-	public void setExpertSort(String expertSort) {
-		this.expertSort = expertSort;
-	}
+    public void setExpertSort(String expertSort) {
+        this.expertSort = expertSort;
+    }
 
-	public String getExpertField() {
-		return expertField;
-	}
+    public String getExpertField() {
+        return expertField;
+    }
 
-	public void setExpertField(String expertField) {
-		this.expertField = expertField;
-	}
+    public void setExpertField(String expertField) {
+        this.expertField = expertField;
+    }
+
+    public Date getAuditDate() {
+        return auditDate;
+    }
+
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
+    }
+
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public String getUnable() {
+        return unable;
+    }
+
+    public void setUnable(String unable) {
+        this.unable = unable;
+    }
 }

@@ -4,6 +4,7 @@ package cs.model.expert;
 public class ExpertTypeDto {
 
 	private String id;
+	private  Integer seqNum;
 	private String expertType;//专家类型
 	private String maJorBig;//突出专业（大类）
 	private String maJorSmall;//突出专业（小类）
@@ -49,6 +50,11 @@ public class ExpertTypeDto {
 		this.expertID = expertID;
 	}
 
-	
-	
+    public Integer getSeqNum() {
+        return seqNum;
+    }
+
+    public void setSeqNum(Integer seqNum) {
+        this.seqNum = seqNum;
+    }
 }

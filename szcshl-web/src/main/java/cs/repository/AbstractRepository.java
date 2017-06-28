@@ -192,11 +192,16 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         return setParamsToQuery2(q, hqlBuilder).list();
     }
 
+    /**
+     * 返回Int的sql查询
+     * @param sqlBuilder
+     * @return
+     */
     @Override
-    public int countBySql(HqlBuilder hqlBuilder) {
-        NativeQuery<?> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString());
-        Object countValue = setParamsToQuery(q, hqlBuilder).getSingleResult();
-        return countValue == null ? 0 : Integer.valueOf(countValue.toString());
+    public int returnIntBySql(HqlBuilder sqlBuilder) {
+        NativeQuery<?> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
+        Object returnValue = setParamsToQuery(q, sqlBuilder).getSingleResult();
+        return returnValue == null ? 0 : Integer.valueOf(returnValue.toString());
     }
 
     @Override

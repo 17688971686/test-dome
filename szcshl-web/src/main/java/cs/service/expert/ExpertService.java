@@ -7,29 +7,31 @@ import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
 
-public interface ExpertService{
-		
-	PageModelDto<ExpertDto> get(ODataObj odataObj);
+public interface ExpertService {
+
+    PageModelDto<ExpertDto> get(ODataObj odataObj);
 
     String createExpert(ExpertDto expertDto);
 
-	void deleteExpert(String id);
+    void deleteExpert(String id);
 
-	void deleteExpert(String[] ids);
-	
-	void updateExpert(ExpertDto expertDto);
-	 
-	void updateAudit(String ids,String flag);
+    void deleteExpert(String[] ids);
 
-	public ExpertDto findById(String id);
+    void updateExpert(ExpertDto expertDto);
 
-	public List<ExpertDto> findAllRepeat();
+    void updateAudit(String ids, String flag);
 
-	List<ExpertDto> findExpert(String workprogramId,String reviewId,ExpertSelConditionDto[] epSelCondition);
+    ExpertDto findById(String id);
 
-    Integer countExpert(String workprogramId, String reviewId,ExpertSelConditionDto epSelCondition);
+    List<ExpertDto> findAllRepeat();
+
+    List<ExpertDto> findExpert(String workprogramId, String reviewId, ExpertSelConditionDto[] epSelCondition);
+
+    Integer countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition);
 
     void savePhone(byte[] bytes, String expertId);
 
-	byte[] findExpertPhoto(String expertId);
+    byte[] findExpertPhoto(String expertId);
+
+    int findMaxNumber();
 }

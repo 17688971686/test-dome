@@ -53,8 +53,8 @@ public interface IRepository<T, ID> {
 
     List<T> findBySql(HqlBuilder hqlBuilder);
 
-    public int countBySql(HqlBuilder hqlBuilder);
+	int returnIntBySql(HqlBuilder sqlBuilder);
 	
-	public int deleteById(String idPropertyName,String idValue);
+	int deleteById(String idPropertyName,String idValue);
 
 }

@@ -22,8 +22,6 @@ public abstract class DomainBase {
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private String modifiedBy = "";
 
-    //@Column(columnDefinition="int(11)")
-    private int itemOrder;
 
     public Date getModifiedDate() {
         return modifiedDate;
@@ -56,14 +54,5 @@ public abstract class DomainBase {
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
-
-    public int getItemOrder() {
-        return itemOrder;
-    }
-
-    public void setItemOrder(int itemOrder) {
-        this.itemOrder = itemOrder;
-    }
-
 
 }

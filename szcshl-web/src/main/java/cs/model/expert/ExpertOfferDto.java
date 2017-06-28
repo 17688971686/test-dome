@@ -24,6 +24,7 @@ public class ExpertOfferDto extends BaseDto {
     private String descInfo;
     private ExpertDto expertDto;
     private String expertId;        //专家ID
+    private Integer seqNum;
 
     public ExpertOfferDto() {
     }
@@ -98,5 +99,13 @@ public class ExpertOfferDto extends BaseDto {
 
     public void setExpertId(String expertId) {
         this.expertId = expertId;
+    }
+
+    public Integer getSeqNum() {
+        return seqNum;
+    }
+
+    public void setSeqNum(Integer seqNum) {
+        this.seqNum = seqNum;
     }
 }

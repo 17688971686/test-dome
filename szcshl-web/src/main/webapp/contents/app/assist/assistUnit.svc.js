@@ -65,11 +65,9 @@
         		method: 'delete',
         		url: url_assistUnit,
         		data: id
-        	
         	};
         	
         	var httpSuccess=function success(response){
-        		
         		common.requestSuccess({
         			vm:vm,
         			response:response,

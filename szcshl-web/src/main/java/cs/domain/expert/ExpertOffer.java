@@ -58,6 +58,12 @@ public class ExpertOffer extends DomainBase {
     @Column(columnDefinition="VARCHAR(512)")
     private String descInfo;
 
+    /**
+     * 序号
+     */
+    @Column(columnDefinition = "INTEGER")
+    private Integer seqNum;
+
     //抽取专家关系（多对一）
     @ManyToOne
     @JoinColumn(name = "expertId")
@@ -126,5 +132,13 @@ public class ExpertOffer extends DomainBase {
 
     public void setExpert(Expert expert) {
         this.expert = expert;
+    }
+
+    public Integer getSeqNum() {
+        return seqNum;
+    }
+
+    public void setSeqNum(Integer seqNum) {
+        this.seqNum = seqNum;
     }
 }

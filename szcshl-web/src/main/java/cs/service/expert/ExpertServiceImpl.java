@@ -1,28 +1,15 @@
 package cs.service.expert;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import cs.model.expert.*;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.NumIncreaseUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertType;
 import cs.domain.expert.Expert_;
-import cs.domain.expert.ProjectExpe;
-import cs.domain.expert.WorkExpe;
 import cs.model.PageModelDto;
+import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
@@ -30,6 +17,15 @@ import cs.repository.repositoryImpl.expert.WorkExpeRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.sys.UserServiceImpl;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ExpertServiceImpl implements ExpertService {
@@ -61,13 +57,7 @@ public class ExpertServiceImpl implements ExpertService {
             item.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(item, expertDto);
-            /* List<ExpertTypeDto> expertTypes = new ArrayList<>();
-           for (ExpertType expertType : item.getExpertType()) {
-                ExpertTypeDto expertTypeDto = new ExpertTypeDto();
-                BeanCopierUtils.copyProperties(expertType, expertTypeDto);
-                expertTypes.add(expertTypeDto);
-            }
-            expertDto.setExpertTypeDtoList(expertTypes);*/
+
             listExpertDto.add(expertDto);
         }
         pageModelDto.setCount(odataObj.getCount());
@@ -86,7 +76,8 @@ public class ExpertServiceImpl implements ExpertService {
             //设置默认属性
             expert.setState(EnumExpertState.AUDITTING.getValue());
             expert.setExpertID(UUID.randomUUID().toString());
-            expert.setExpertNo(NumIncreaseUtils.getExpertNo());
+            //专家编码，系统自动生成
+            expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber())+1));
             Date now = new Date();
             expert.setCreatedDate(now);
             expert.setCreatedBy(currentUser.getLoginName());
@@ -112,15 +103,15 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     @Transactional
     public void deleteExpert(String id) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + "=:state where " + Expert_.expertID.getName() + "=:id");
+        hqlBuilder.setParam("state", EnumExpertState.REMOVE.getValue()).setParam("id", id);
+        expertRepo.executeHql(hqlBuilder);
+
+        /*
         Expert expert = expertRepo.findById(id);
         if (expert != null) {
-            HqlBuilder hqlBuilder = HqlBuilder.create();
-
-            hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + "=:state where " + Expert_.expertID.getName() + "=:id");
-            hqlBuilder.setParam("state", EnumExpertState.REMOVE.getValue()).setParam("id", id);
-            expertRepo.executeHql(hqlBuilder);
-
-			/*List<WorkExpe> workList = expert.getWork();
+			List<WorkExpe> workList = expert.getWork();
             for (WorkExpe workExpe : workList) {
 				workExpeRepo.delete(workExpe);
 			}
@@ -129,8 +120,8 @@ public class ExpertServiceImpl implements ExpertService {
 				projectExpeRepo.delete(projectExpe);
 			}
 			expertRepo.delete(expert);
-			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));*/
-        }
+			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));
+        }*/
     }
 
     @Override
@@ -173,32 +164,8 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     @Transactional
     public void updateExpert(ExpertDto expertDto) {
-        Expert expert = expertRepo.findById(expertDto.getExpertID());
-		
-		/*List<WorkExpeDto> workDtoList=expertDto.getWorkDto();
-		List<WorkExpe> workList=new ArrayList<>();
-		if(Validate.isList(workDtoList)){
-			for (WorkExpeDto workExpeDto : workDtoList) {
-				WorkExpe workExpe=new WorkExpe();
-				BeanCopierUtils.copyPropertiesIgnoreNull(workExpeDto, workExpe);
-				workList.add(workExpe);
-			}
-		}
-		expert.setWork(workList);
-		
-		List<ProjectExpeDto> projectExpeDtoList=expertDto.getProjectDto();
-		List<ProjectExpe> projectExpeList=new ArrayList<>();
-		if(Validate.isList(projectExpeDtoList)){
-			for (ProjectExpeDto projectExpeDto : projectExpeDtoList) {
-				ProjectExpe projectExpe=new ProjectExpe();
-				BeanCopierUtils.copyPropertiesIgnoreNull(projectExpeDto, projectExpe);
-				projectExpeList.add(projectExpe);
-			}
-		}
-		expert.setProject(projectExpeList);*/
-
+        Expert expert = expertRepo.findById(Expert_.expertID.getName(),expertDto.getExpertID());
         BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
-
         expert.setModifiedDate(new Date());
         expert.setModifiedBy(currentUser.getLoginName());
         expertRepo.save(expert);
@@ -388,7 +355,7 @@ public class ExpertServiceImpl implements ExpertService {
             hqlBuilder.append(" ) > 0");
         }
 
-        return expertRepo.countBySql(hqlBuilder);
+        return expertRepo.returnIntBySql(hqlBuilder);
     }
 
     /**
@@ -426,5 +393,17 @@ public class ExpertServiceImpl implements ExpertService {
         Expert expert = expertRepo.findByIds(Expert_.expertID.getName(), expertId, null).get(0);
         return expert.getPhoto();
     }
+
+    /**
+     * 获取最大的专家序号
+     * @return
+     */
+    @Override
+    public int findMaxNumber() {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select max(to_number(expertNo)) from cs_expert");
+        return expertRepo.returnIntBySql(sqlBuilder);
+    }
+
 
 }

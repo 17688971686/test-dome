@@ -70,10 +70,7 @@ public class AssistUnitController {
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	String[] ids=id.split(",");
-    	for(String unitId:ids){
-    		assistUnitService.delete(unitId);      
-    	}
+        assistUnitService.delete(id);
     }
 
     @RequiresPermissions("assistUnit##put")

@@ -486,7 +486,6 @@
                     dictsObj[dict.dictCode].dictName = dict.dictName;
                     dictsObj[dict.dictCode].dictKey = dict.dictKey;
                     dictsObj[dict.dictCode].dictSort = dict.dictSort;
-
                     reduceDict(dictsObj[dict.dictCode], dicts, dict.dictId);
                 }
             }

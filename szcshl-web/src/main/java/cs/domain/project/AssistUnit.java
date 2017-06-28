@@ -22,16 +22,19 @@ public class AssistUnit extends DomainBase {
     /**
      * 单位名称
      */
-    @Column(columnDefinition = "VARCHAR(64)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String unitName;
-    
-    @Column(columnDefinition="VARCHAR(10)")
-    private String isUse; //是否在用("0":表示停用  ，"1":表示在用)
+
+    /**
+     * 是否在用("0":表示停用  ，"1":表示在用)
+     */
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isUse;
 
     /**
      * 单位简称
      */
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(64)")
     private String unitShortName;
 
     /**

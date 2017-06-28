@@ -152,7 +152,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
         sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
         sqlBuilder.append(" and :endTime )").setParam("endTime", roomBookingDto.getEndTime());
 
-        return roomBookingRepo.countBySql(sqlBuilder);
+        return roomBookingRepo.returnIntBySql(sqlBuilder);
     }
 
 	@Override
