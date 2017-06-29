@@ -50,99 +50,150 @@
 		function initBusinessParams(vm){
             switch (vm.flow.curNode.activitiId)
             {
+                case "ZHB_SP_SW":        //综合部办理
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelViceMgr = true;
+                    if (vm.flow.businessMap){
+                        vm.viceDirectors = vm.flow.businessMap.viceDirectors;
+                    }
+                    break;
+                case "FGLD_SP_SW":      //分管领导审批工作方案
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelOrgs = true;
+                    if (vm.flow.businessMap){
+                        vm.orgs = vm.flow.businessMap.orgs;
+                    }
+                    break;
+                case "BM_FB1":          //部门分办
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelPrincipal = true;
+                    if(vm.flow.businessMap){
+                        vm.users = vm.flow.businessMap.users;
+                    }
+                    break ;
+                case "BM_FB2":          //部门分办
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelPrincipal = true;
+                    if(vm.flow.businessMap){
+                        vm.users = vm.flow.businessMap.users;
+                    }
+                    break ;
                 case "XMFZR_SP_GZFA1":  //项目负责人承办
-                    vm.businessTr = true;
-                    vm.MFLOW_XMFZR_SP_GZFA = true ;     //显示是否直接发文
-                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
-                    vm.XMFZR_SP_GZFA = true;
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.businessDis = true;     //显示是否直接发文
+                    vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
+
                     vm.MarkAndPay=false;//专家评分费用编辑权限
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
-                        vm.show_workprogram = true;                       
+                        vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
-
-                        vm.directDisPatch = false;          //是否直接发文
-                    }else{
-                        vm.directDisPatch = true;
                     }
                     break;
                 case "XMFZR_SP_GZFA2":
-                    vm.businessTr = true;
-                    vm.XMFZR_SP_GZFA = true;
-                    vm.MarkAndPay=false;//专家评分费用编辑权限
-                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
-                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
-                        vm.show_workprogram = true;
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
+                    if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9'){ //如果填报完成，则显示
+                        vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
                     };
                     break;
                 case "BZ_SP_GZAN1":
-                    vm.show_workprogram = true;
+                    vm.showFlag.tabWorkProgram = true;
+                    vm.showFlag.buttBack = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "FGLD_SP_GZFA1":
-                    vm.show_workprogram = true;
+                    vm.showFlag.tabWorkProgram = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "BZ_SP_GZAN2":
-                    vm.show_workprogram = true;
+                    vm.showFlag.tabWorkProgram = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "FGLD_SP_GZFA2":
-                    vm.show_workprogram = true;
+                    vm.showFlag.tabWorkProgram = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "FW_SQ":
-                    vm.businessTr = true;
-                    vm.FW_SQ = true;
-                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted == 0){
-                        vm.show_dispatch = true;
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeDispatch = true;
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted == 9){
+                        vm.showFlag.tabDispatch = true;
                         $("#show_dispatch_a").click();
                     };
                     break;
                 case "BZ_SP_FW":
-                    vm.show_dispatch = true;
+                    vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "FGLD_SP_FW":
-                    vm.show_dispatch = true;
+                    vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "ZR_SP_FW":
-                    vm.show_dispatch = true;
+                    vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "MFZR_GD":
-                    vm.businessTr = true;
-                    vm.MFZR_GD = true;
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeFileRecord = true;
+                    //有第二负责人，则显示
+                    if (vm.flow.businessMap && vm.flow.businessMap.secondUserList){
+                        vm.showFlag.businessNext = true;
+                        vm.businessFlag.isHaveSePri = true;
+                        vm.secondUserList = vm.flow.businessMap.secondUserList;
+                    }
                     if(vm.model.filenum){
-                        vm.show_filerecord = true;
+                        vm.showFlag.tabFilerecord = true;
                         $("#show_filerecord_a").click();
                     }
                     break;
                 case "AZFR_SP_GD":
-                    vm.show_filerecord = true;
+                    vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;
                 case "BMLD_QR_GD":
-                    vm.show_filerecord = true;
+                    vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;
                 //以下为协审流程
+                case "XS_ZHBBL":        //综合部拟办
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelViceMgr = true;
+                    if (vm.flow.businessMap){
+                        vm.viceDirectors = vm.flow.businessMap.viceDirectors;
+                    }
+                    break;
+                case "XS_FGLD_SP":    //分管领导审核
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelXSOrg = true;
+                    if (vm.flow.businessMap){
+                        vm.xsOrgs = vm.flow.businessMap.xsOrgs;
+                    }
+                    break;
                 case "XS_BMFB":       //部门分办
-                    vm.principalUsers = [];    //部门负责人数组
+                    vm.showFlag.businessNext = true;
+                    vm.showFlag.nodeSelXSPri = true;
+                    if (vm.flow.businessMap){
+                        vm.xsusers = vm.flow.businessMap.xsusers;
+                        //每个人员默认添加一个未选择属性
+                        vm.xsusers.forEach(function(u,index){
+                            u.isSelected = false;
+                        })
+                    }
                     break;
                 case "XS_XMFZR_GZFA":       //项目负责人承办
-                    vm.businessTr = true;
-                    vm.XS_XMFZR_GZFA = true;
-                    vm.SHOW_CREATE_MEETINGDOCBT = true;		//显示会签准备材料按钮
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeXSWorkProgram = true;
+
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         $("#show_workprogram_a").click();
                     }
@@ -158,38 +209,46 @@
                     }
                     break;
                 case "XS_FW":                    //发文申请
-                    vm.businessTr = true;
-                    vm.FW_SQ = true;
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeDispatch = true;
                     if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted == 9){
-                        vm.show_dispatch = true;
+                        vm.showFlag.tabDispatch = true;
                         $("#show_dispatch_a").click();
                     };
                     break;
                 case "XS_BZSP_FW":               //部长审批发文
-                    vm.show_dispatch = true;
+                    vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "XS_FGLDSP_FW":             //分管领导审批发文
-                    vm.show_dispatch = true;
+                    vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "XS_ZRSP_FW":               //主任审批发文
-                    vm.show_dispatch = true;
+                    vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "XS_FZR_GD":                //第一负责人归档
-                    vm.businessTr = true;
-                    vm.MFZR_GD = true;
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeFileRecord = true;
+                    //有第二负责人，则显示
+                    if (vm.flow.businessMap && vm.flow.businessMap.secondUserList){
+                        vm.showFlag.businessNext = true;
+                        vm.businessFlag.isHaveSePri = true;
+                        vm.secondUserList = vm.flow.businessMap.secondUserList;
+                    }
                     if(vm.model.filenum){
-                        vm.show_filerecord = true;
+                        vm.showFlag.tabFilerecord = true;
                         $("#show_filerecord_a").click();
                     }
                     break;
                 case "XS_FZR_SP":                //第二负责人审批归档
+                    vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;
                 case "XS_QRGD":                  //确认归档
-
+                    vm.showFlag.tabFilerecord = true;
+                    $("#show_filerecord_a").click();
                     break;
                 default:
                     ;
@@ -223,41 +282,47 @@
                     });
                     break;
                 case "BM_FB1":      //部门分办，要选择主办部门
-                    $('.seleteTable input[selectType="main"]:checked').each(function(){
-                        vm.flow.businessMap.M_USER_ID = $(this).val();
-                        seleteCount++;
-                    });
-                    if(seleteCount == 0){
+                    var selUserId = $("#selPrincipalMainUser").val();
+                    if(!selUserId){
                         resultTag = false;
                         break;
                     }
-                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
-                        vm.flow.businessMap.A_USER_ID = $(this).val();
+                    vm.flow.businessMap.M_USER_ID = selUserId;
+                    //以下为第二负责人
+                    var assistIdArr = [];
+                    $('#principalAssistUser input[selectType="assistUser"]:checked').each(function(){
+                        assistIdArr.push($(this).val());
                     });
+                    if(assistIdArr.length > 0){
+                        vm.flow.businessMap.A_USER_ID = assistIdArr.join(',');
+                    }
                     break;
                 case "BM_FB2":      //部门分办，要选择主办部门
-                    $('.seleteTable input[selectType="main"]:checked').each(function(){
-                        vm.flow.businessMap.M_USER_ID = $(this).val();
-                        seleteCount++;
-                    });
-                    if(seleteCount == 0){
+                    var selUserId = $("#selPrincipalMainUser").val();
+                    if(!selUserId){
                         resultTag = false;
                         break;
                     }
-                    $('.seleteTable input[selectType="assist"]:checked').each(function(){
-                        vm.flow.businessMap.A_USER_ID = $(this).val();
+                    vm.flow.businessMap.M_USER_ID = selUserId;
+                    //以下为第二负责人
+                    var assistIdArr = [];
+                    $('#principalAssistUser input[selectType="assistUser"]:checked').each(function(){
+                        assistIdArr.push($(this).val());
                     });
+                    if(assistIdArr.length > 0){
+                        vm.flow.businessMap.A_USER_ID = assistIdArr.join(',');
+                    }
                     break;
                 case "XMFZR_SP_GZFA1":
-                    if(vm.directDisPatch){
-                        vm.flow.businessMap.ZJFW = 9;
+                    //直接发文
+                    if(vm.businessFlag.isGotoDis){
+                        vm.flow.businessMap.ZJFW = '9';
+                    //否则要填写工作方案才能提交
                     }else{
-                        if(vm.model.isNeedWrokPrograml && vm.model.isNeedWrokPrograml == '9'){
-                            if(vm.model.isreviewCompleted && vm.model.isreviewCompleted==9){
-                                resultTag = true;
-                            }else{
-                                resultTag = false;
-                            }
+                        if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){
+                            resultTag = true;
+                        }else{
+                            resultTag = false;
                         }
                     }
                     break;
@@ -267,7 +332,6 @@
                      } else {
                           resultTag = false;
                      }
-//                     resultTag = false;
                     break;
                 case "BZ_SP_GZAN1":
                     	vm.flow.businessMap.M_WP_ID = vm.mainwork.id;
@@ -282,16 +346,11 @@
                     vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
                     break;
                 case "FW_SQ":
-                		/*common.initJqValidation($("#dispatch_form"));
-						var isValid = $("#dispatch_form").valid();
-						if (isValid) {
-							resultTag = false;
-						}*/
-	                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted==9 && vm.model.docnum){
-	                        resultTag = true;
-	                    }else{
-	                        resultTag = false;
-	                    }
+                    if(vm.model.isDispatchCompleted && vm.model.isDispatchCompleted == 9){
+                        resultTag = true;
+                    }else{
+                        resultTag = false;
+                    }
                     break;
                 case "BZ_SP_FW":
                     vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
@@ -305,6 +364,14 @@
                 case "MFZR_GD":
                     if(vm.model.filenum){
                         resultTag = true;
+                        if(vm.businessFlag.isHaveSePri){
+                            if($("#secondPriUser").val()){
+                                vm.flow.businessMap.SEPRI_ID = $("#secondPriUser").val();
+                                resultTag = true;
+                            }else{
+                                resultTag = false;
+                            }
+                        }
                     }else{
                         resultTag = false;
                     }
@@ -327,11 +394,11 @@
                     }
                     break;
                 case "XS_BMFB":          //部门分办
-                    if(angular.isUndefined(vm.principalUsers) || vm.principalUsers.length == 0){
+                    if(vm.businessFlag.principalUsers.length == 0){
                         resultTag = false;
                     }else{
                         var mainPriUserCount = 0;
-                        vm.principalUsers.forEach(function(pu,index){
+                        vm.businessFlag.principalUsers.forEach(function(pu,index){
                             if(pu.isMainUser == 9){
                                 mainPriUserCount ++;
                             }
@@ -340,7 +407,7 @@
                         if(mainPriUserCount == 0 || mainPriUserCount > 1){
                             resultTag = false;
                         }else{
-                            vm.flow.businessMap.PRINCIPAL = vm.principalUsers;
+                            vm.flow.businessMap.PRINCIPAL = vm.businessFlag.principalUsers;
                         }
                     }
 
@@ -377,6 +444,14 @@
                 case "XS_FZR_GD":                //第一负责人归档
                     if(vm.model.filenum){
                         resultTag = true;
+                        if(vm.businessFlag.isHaveSePri){
+                            if($("#secondPriUser").val()){
+                                vm.flow.businessMap.SEPRI_ID = $("#secondPriUser").val();
+                                resultTag = true;
+                            }else{
+                                resultTag = false;
+                            }
+                        }
                     }else{
                         resultTag = false;
                     }

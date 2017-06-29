@@ -9,21 +9,58 @@
     function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc, $http) {
         var vm = this;
         vm.title = "项目流程处理";
-        vm.model = {};
-        vm.flow = {};
-        vm.work = {};
-        vm.dispatchDoc = {};
-        vm.fileRecord = {};
+        vm.model = {};          //收文对象
+        vm.flow = {};           //流程对象
+        vm.work = {};           //工作方案
+        vm.dispatchDoc = {};    //发文
+        vm.fileRecord = {};     //归档
+        vm.expertReview = {};   //评审方案
+
+        //按钮显示控制，全部归为这个对象控制
+        vm.showFlag = {
+            businessTr:false,          //显示业务办理tr
+            businessDis:false,         //显示直接发文复选框
+            businessNext:false,        //显示下一环节处理人或者部门
+
+            nodeNext : true,           //下一环节名称
+            nodeSelViceMgr:false,      // 选择分管副主任环节
+            nodeSelOrgs:false,         // 选择分管部门
+            nodeSelPrincipal:false,    // 选择项目负责人
+            nodeWorkProgram:false,     // 工作方案
+            nodeDispatch:false,        // 发文
+            nodeFileRecord:false,      // 归档
+            nodeSelXSOrg:false,        // 协审选择分管部门
+            nodeSelXSPri:false,        // 选择负责人
+            nodeXSWorkProgram:false,   // 协审工作方案
+
+            tabWorkProgram:false,       // 显示工作方案标签tab
+            tabBaseWP:false,            // 项目基本信息tab
+            tabDispatch:false,          // 发文信息tab
+            tabFilerecord:false,        // 归档信息tab
+            tabExpert:false,            // 专家信息tab
+            tabSysFile:false,           // 附件信息tab
+
+            buttBack:false,             // 回退按钮
+            expert:false,               // 显示专家信息tab
+            expertRemark:false,         // 专家评分弹窗内容显示
+            expertpayment:false,        // 专家费用弹窗内容显示
+            expertEdit:true,            // 专家评分费用编辑权限
+        };
+
+        //业务控制对象
+        vm.businessFlag = {
+            isLoadSign : false,         // 是否加载收文信息
+            isLoadFlow : false,         // 是否加载流程信息
+            isGotoDis : false,          // 是否直接发文
+            isMakeDisNum : false,       // 是否生成发文编号
+            isHaveSePri : false,        // 是否有第二负责人
+            principalUsers : [],         // 部门负责人列表
+            isSelMainPriUser:false,     // 是否已经设置主要负责人
+        }
+
         vm.model.signid = $state.params.signid;
         vm.flow.taskId = $state.params.taskId; // 流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
-        vm.dealFlow = true;
-        vm.expertReview = {};
-        vm.show_expert = false;
-        vm.showExpertRemark = false;// 专家评分弹窗内容显示
-        vm.showExpertpayment = false;// 专家费用弹窗内容显示
-        vm.MarkAndPay = true;// 专家评分费用编辑权限
-        vm.directDisPatch = false;
 
         active();
         function active() {
@@ -35,21 +72,42 @@
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#" + showDiv).addClass("active").addClass("in").show(500);
             })
-
-            // 先初始化流程信息
-            flowSvc.initFlowData(vm);
-            // 再初始化业务信息
+            // 初始化业务信息
             signSvc.initFlowPageData(vm);
-            //初始化上传附件
+            // 初始化流程数据
+            flowSvc.getFlowInfo(vm);
+            // 初始化办理信息
+            flowSvc.initFlowData(vm);
+            // 初始化上传附件
             signSvc.uploadFilelist(vm);
             //关联项目
             signSvc.initAssociateSigns(vm,vm.model.signid);
-            // 初始化专家评分(在流程环节初始化)
-            //signSvc.markGrid(vm);
-            // 初始化专家评审费用(在流程环节初始化)
-            //signSvc.paymentGrid(vm);
-            //初始化项目关联弹窗
             signSvc.associateGrid(vm);
+        }
+
+        //初始化业务参数
+        vm.initBusinessParams = function(){
+            if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
+                signFlowSvc.initBusinessParams(vm);
+            }
+        }
+
+        //检查项目负责人
+        vm.checkPrincipal = function(){
+            var selUserId = $("#selPrincipalMainUser").val();
+            if(selUserId){
+                $('#principalAssistUser input[selectType="assistUser"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value == selUserId) {
+                            $(this).removeAttr("checked");
+                            $(this).attr("disabled", "disabled");
+                        } else {
+                            $(this).removeAttr("disabled");
+                        }
+                    }
+                );
+            }
         }
 
         // 编辑专家评分
@@ -126,7 +184,14 @@
         }
 
         vm.commitBack = function () {
-            flowSvc.rollBack(vm); // 回退到上一个环节
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认回退吗？",
+                fn: function () {
+                    flowSvc.rollBack(vm); // 回退到上一个环节
+                }
+            })
         }
 
         vm.deleteFlow = function () {
@@ -286,21 +351,21 @@
                     })
                     return ;
                 }
-                if(vm.isSelMainPriUser == false && (angular.isUndefined(vm.isMainPriUser) || vm.isMainPriUser == 0)){
+                if(vm.businessFlag.isSelMainPriUser == false && (angular.isUndefined(vm.isMainPriUser) || vm.isMainPriUser == 0)){
                     common.alert({
                         vm: vm,
                         msg: "请先选择总负责人！"
                     })
                     return ;
                 }
-                if(vm.isSelMainPriUser == true && vm.isMainPriUser == 9){
+                if(vm.businessFlag.isSelMainPriUser == true && vm.isMainPriUser == 9){
                     common.alert({
                         vm: vm,
                         msg: "你已经选择了一个总负责人，不能再次选择负责人"
                     })
                     return ;
                 }
-                if(vm.principalUsers && (vm.principalUsers.length + isCheck.length) > 3){
+                if(vm.businessFlag.principalUsers && (vm.businessFlag.principalUsers.length + isCheck.length) > 3){
                     common.alert({
                         vm: vm,
                         msg: "最多只能选择3个负责人，请重新选择！"
@@ -313,7 +378,7 @@
                     priUser.userId = isCheck[i].value;
                     priUser.userType = $("#userType").val();
                     if(vm.isMainPriUser == 9){
-                        vm.isSelMainPriUser = true;
+                        vm.businessFlag.isSelMainPriUser = true;
                         priUser.isMainUser = 9;
                         vm.isMainPriUser == 0;
                     }else{
@@ -325,7 +390,7 @@
                            priUser.userName = u.loginName;
                        }
                     });
-                    vm.principalUsers.push(priUser);
+                    vm.businessFlag.principalUsers.push(priUser);
                 }
             }
 
@@ -346,24 +411,24 @@
                             u.isSelected = false;
                         }
                     });
-                    vm.principalUsers.forEach(function(pu,index){
+                    vm.businessFlag.principalUsers.forEach(function(pu,index){
                         if(pu.userId == isCheck[i].value){
                             if(pu.isMainUser == 9){
-                                vm.isSelMainPriUser = false;
+                                vm.businessFlag.isSelMainPriUser = false;
                             }
-                            vm.principalUsers.splice(index,1);
+                            vm.businessFlag.principalUsers.splice(index,1);
                         }
                     });
                 }
             }
         }//E_删除负责人
 
-
         //直接发文判断
         vm.checkNeedWP = function($event){
             var checkbox = $event.target;
             var checked = checkbox.checked;
             if(checked){
+                vm.showFlag.nodeWorkProgram = false; //显示工作方案和会签准备材料按钮
                 //如果有发文信息，询问是否删除
                 if(vm.mainwork && vm.mainwork.id){
                     common.confirm({
@@ -376,13 +441,12 @@
                         },
                         cancel:function(){
                             checkbox.checked = !checked;
-                            vm.model.isNeedWrokPrograml = '9'
                             $('.confirmDialog').modal('hide');
                         }
                     })
                 }
             }else{
-                vm.model.isNeedWrokPrograml = '9'
+                vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
             }
         }
 

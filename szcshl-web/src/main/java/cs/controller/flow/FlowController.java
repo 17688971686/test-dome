@@ -10,9 +10,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.common.utils.BeanCopierUtils;
 import cs.domain.sys.User;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
+import cs.service.project.SignPrincipalService;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
 import org.activiti.bpmn.model.BpmnModel;
@@ -23,6 +25,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
@@ -81,6 +85,8 @@ public class FlowController {
     private UserService userService;
     @Autowired
     private OrgService orgService;
+    @Autowired
+    private SignPrincipalService signPrincipalService;
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办任务", path = "html/tasks", method = RequestMethod.POST)
@@ -170,6 +176,7 @@ public class FlowController {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
 
+        //获取当前任务数据
         Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
         if (task != null) {
             Node curNode = new Node();
@@ -177,14 +184,21 @@ public class FlowController {
             curNode.setActivitiId(task.getTaskDefinitionKey());
             flowDto.setCurNode(curNode);
         }
-        if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
-            if (Constant.FLOW_BMLD_QR_GD.equals(task.getTaskDefinitionKey())) {
+        flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
+        //项目建议书流程
+        if(Constant.EnumFlow.FINAL_SIGN.getValue().equals(flowDto.getProcessKey())) {
+            if (Constant.FLOW_BMLD_QR_GD.equals(flowDto.getCurNode().getActivitiId())) {
+                flowDto.setEnd(true);
+            }
+        //项目概算流程
+        }else if(Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(flowDto.getProcessKey())){
+            if (Constant.FLOW_XS_QRGD.equals(flowDto.getCurNode().getActivitiId())) {
                 flowDto.setEnd(true);
             }
         }
         //加载环节业务数据
-        if ((Constant.EnumFlow.FINAL_SIGN.getValue().equals(processInstance.getProcessDefinitionKey())
-                || Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(processInstance.getProcessDefinitionKey()))
+        if ((Constant.EnumFlow.FINAL_SIGN.getValue().equals(flowDto.getProcessKey())
+                || Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(flowDto.getProcessKey()))
                 && Validate.isString(flowDto.getCurNode().getActivitiId())) {
 
             Map<String, Object> businessMap = new HashMap<>();
@@ -218,6 +232,18 @@ public class FlowController {
                     }
                     businessMap.put("users", userList2);
                     break;
+                case Constant.FLOW_MFZR_GD:
+                   List<User> secondUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey(), Constant.EnumState.YES.getValue());
+                   if(secondUserList != null && secondUserList.size() > 0){
+                       List<UserDto> userDtoList = new ArrayList<>(secondUserList==null?0:secondUserList.size());
+                       secondUserList.forEach( su ->{
+                           UserDto uDto = new UserDto();
+                           BeanCopierUtils.copyProperties(su,uDto);
+                           userDtoList.add(uDto);
+                       });
+                       businessMap.put("secondUserList", userDtoList);
+                   }
+                   break ;
                 /**************************   E 项目签收流程  ****************************/
 
                 /**************************   S 协审流程环节信息(大部分和项目签收流程一致)  ****************************/
@@ -238,12 +264,41 @@ public class FlowController {
                     }
                     businessMap.put("xsusers",userList3);
                     break;
+                case Constant.FLOW_XS_FZR_GD:
+                    List<User> secondXSUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey(), Constant.EnumState.YES.getValue());
+                    if(secondXSUserList != null && secondXSUserList.size() > 0){
+                        List<UserDto> userDtoList = new ArrayList<>(secondXSUserList==null?0:secondXSUserList.size());
+                        secondXSUserList.forEach( su ->{
+                            UserDto uDto = new UserDto();
+                            BeanCopierUtils.copyProperties(su,uDto);
+                            userDtoList.add(uDto);
+                        });
+                        businessMap.put("secondUserList", userDtoList);
+                    }
+                    break ;
                 /**************************   E 协审流程环节信息  ****************************/
                 default:
             }
             flowDto.setBusinessMap(businessMap);
         }
 
+        //获取下一环节信息
+        if(flowDto.isEnd() == false){
+            //获取下一环节信息--获取从某个节点出来的所有线路
+            ActivityImpl activityImpl = flowService.getActivityImpl(taskId,processInstance.getActivityId());
+            List<TaskDefinition> taskDefinitionList = new ArrayList<TaskDefinition>();
+            flowService.nextTaskDefinition(taskDefinitionList,activityImpl,processInstance.getActivityId());
+            if(taskDefinitionList.size()>0){
+                List<Node> nextNodeList = new ArrayList<Node>(taskDefinitionList.size());
+                taskDefinitionList.forEach(tf->{
+                    Node nextNode = new Node();
+                    nextNode.setActivitiId(tf.getKey());
+                    nextNode.setActivitiName(tf.getNameExpression().getExpressionText());
+                    nextNodeList.add(nextNode);
+                });
+                flowDto.setNextNode(nextNodeList);
+            }
+        }
 
         return flowDto;
     }
@@ -267,7 +322,7 @@ public class FlowController {
     ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = new ResultMsg();
         if (Validate.isString(flowDto.getTaskId())) {
-            flowService.RollBackLastNode(flowDto);
+            flowService.rollBackLastNode(flowDto);
             resultMsg.setReCode(MsgCode.OK.getValue());
             resultMsg.setReMsg("回退成功！");
         } else {
@@ -283,7 +338,7 @@ public class FlowController {
     ResultMsg rollback(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = new ResultMsg();
         if (Validate.isString(flowDto.getTaskId())) {
-            flowService.RollBackByActiviti(flowDto);
+            flowService.rollBackByActiviti(flowDto);
             resultMsg.setReCode(MsgCode.OK.getValue());
             resultMsg.setReMsg("回退成功！");
         } else {

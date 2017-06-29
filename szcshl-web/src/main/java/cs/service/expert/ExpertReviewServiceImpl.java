@@ -316,9 +316,13 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
+    /**
+     * 根据工作方案获取评审专家
+     * @param signId
+     * @return
+     */
     @Override
     public PageModelDto<ExpertSelectedDto> getSelectExpert(String signId) {
-
         PageModelDto<ExpertSelectedDto> pageModelDto = new PageModelDto<ExpertSelectedDto>();
         Sign sign = signRepo.getById(signId);
         if(sign.getWorkProgramList() != null&&sign.getWorkProgramList().size()>0){

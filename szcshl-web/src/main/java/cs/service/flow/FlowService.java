@@ -17,9 +17,9 @@ public interface FlowService {
 
 	List<FlowHistoryDto> convertHistory(String processInstanceId);
 	
-	void RollBackLastNode(FlowDto flowDto);
+	void rollBackLastNode(FlowDto flowDto);
 	
-	void RollBackByActiviti(FlowDto flowDto);
+	void rollBackByActiviti(FlowDto flowDto);
 	
 	ActivityImpl getActivityImpl(String taskId,String activityId);
 

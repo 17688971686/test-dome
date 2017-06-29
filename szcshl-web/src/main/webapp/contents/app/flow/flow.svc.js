@@ -122,45 +122,14 @@
                     response: response,
                     fn: function () {
                         vm.flow = response.data;
-                        if (vm.flow.businessMap) {
-                            if (vm.flow.businessMap.viceDirectors) {
-                                vm.businessTr = true;
-                                vm.ZHB_SP_SW = true;
-                                vm.viceDirectors = vm.flow.businessMap.viceDirectors;
-                            }
-                            if (vm.flow.businessMap.orgs) {
-                                vm.businessTr = true;
-                                vm.FGLD_SP_SW = true;
-                                vm.orgs = vm.flow.businessMap.orgs;
-                            }
-                            if (vm.flow.businessMap.users) {
-                                vm.businessTr = true;
-                                vm.BM_FB = true;
-                                vm.users = vm.flow.businessMap.users;
-                            }
-                            // 协审分管领导审批
-                            if (vm.flow.businessMap.xsOrgs) {
-                                vm.businessTr = true;
-                                vm.XS_FGLD_SP_SW = true;
-                                vm.xsOrgs = vm.flow.businessMap.xsOrgs;
-                            }
-                            //协审部门分办
-                            if (vm.flow.businessMap.xsusers) {
-                                vm.businessTr = true;
-                                vm.XS_BM_FB = true;
-                                vm.xsusers = vm.flow.businessMap.xsusers;
-                                vm.isSelMainPriUser = false;        //是否已经设置总负责人
-                                vm.isMainPriUser = 0;
-
-                                //每个人员默认添加一个未选择属性
-                                vm.xsusers.forEach(function(u,index){
-                                    u.isSelected = false;
-                                })
-                            }
+                        //如果是结束环节，则不显示下一环节信息
+                        if(vm.flow.end){
+                            vm.showFlag.nodeNext = false;
                         }
-                        signFlowSvc.initBusinessParams(vm);
+                        //更改状态,并初始化业务参数
+                        vm.businessFlag.isLoadFlow = true;
+                        vm.initBusinessParams();
                     }
-
                 })
             }
 
@@ -249,50 +218,30 @@
 
         // S_回退到指定环节
         function rollBack(vm) {
-            if (vm.flow.back == null || vm.flow.back.activitiId == null
-                || vm.flow.back.activitiId == "") {
-                common.alert({
-                    vm: vm,
-                    msg: "请先选择要会退的环节！"
-                })
-                return;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/flow/rollbacklast",
+                data: vm.flow
             }
-
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认回退吗？",
-                fn: function () {
-                    // 设置
-                    vm.flow.rollBackActiviti = vm.flow.back.activitiId;
-                    vm.flow.backNodeDealUser = vm.flow.back.assignee;
-
-                    var httpOptions = {
-                        method: 'post',
-                        url: rootPath + "/flow/rollback",
-                        data: vm.flow
-                    }
-                    var httpSuccess = function success(response) {
-                        common.requestSuccess({
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
                             vm: vm,
-                            response: response,
-                            fn: function () {
-                                common.alert({
-                                    vm: vm,
-                                    msg: response.data.reMsg
-                                })
-                            }
+                            msg: response.data.reMsg
                         })
                     }
+                })
+            }
 
-                    common.http({
-                        vm: vm,
-                        $http: $http,
-                        httpOptions: httpOptions,
-                        success: httpSuccess
-                    });
-                }
-            })
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }// E_回退到指定环节
 
         // S_初始化回退环节信息

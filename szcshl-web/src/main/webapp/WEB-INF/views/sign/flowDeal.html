@@ -41,13 +41,13 @@
 
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-        <li ng-show="vm.model.isNeedWrokPrograml == '9'"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
-        <li ng-show="(angular.isUndefined(vm.model.isNeedWrokPrograml) || vm.model.isNeedWrokPrograml == '0')&& vm.model.isassistproc == '9'"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
-        <li ng-show="vm.show_dispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
-        <li ng-show="vm.show_filerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
-        <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
-        <li ng-show="vm.show_expert"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
-        <li ng-show="vm.show_sysfile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
+        <li ng-show="vm.showFlag.tabWorkProgram"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+        <li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
+        <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
+        <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
+        <li ng-show="vm.showFlag.tabExpert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
+        <li ng-show="vm.showFlag.tabExpert"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
+        <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
         <li><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
         <li><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="sign_history">处理记录</a></li>

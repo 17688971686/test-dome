@@ -21,8 +21,8 @@
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             showAssociateSign: showAssociateSign,     //项目关联弹窗
-            markGrid: markGrid,
-            paymentGrid: paymentGrid,
+            markGrid: markGrid,                 //专家评分
+            paymentGrid: paymentGrid,           //专家评审费
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,            //生成会前准备材料
         };
@@ -44,7 +44,7 @@
                     fn: function () {
                         if (response.data && response.data.length > 0) {
                             vm.sysFileDtoList = response.data;
-                            vm.show_sysfile = true;
+                            vm.showFlag.tabSysFile = true;
                         }
                     }
                 })
@@ -440,7 +440,14 @@
                         vm.model = response.data;
                         //工作方案
                         if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
-                            vm.show_workprogram = true;
+                            //判断是基本信息还是工作方案
+                            if(vm.model.isassistflow && vm.model.isassistflow == '9'
+                                && (angular.isUndefined(vm.model.isNeedWrokPrograml) || vm.model.isNeedWrokPrograml == '0')){
+                                vm.showFlag.tabBaseWP = true;
+                            }else{
+                                vm.showFlag.tabWorkProgram = true;
+                            }
+
                             vm.model.workProgramDtoList.forEach(function (w, index) {
                                 if (w.isMain == 9) {
                                     vm.showMainwork = true;
@@ -456,28 +463,22 @@
                         }
                         //发文
                         if (vm.model.dispatchDocDto) {
-                            vm.show_dispatch = true;
+                            vm.showFlag.tabDispatch = true;
                             vm.dispatchDoc = vm.model.dispatchDocDto;
                         }
                         //归档
                         if (vm.model.fileRecordDto) {
-                            vm.show_filerecord = true;
+                            vm.showFlag.tabFilerecord = true;
                             vm.fileRecord = vm.model.fileRecordDto;
                         }
                         //初始化专家评分
-                        if ((vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9') || vm.model.isNeedWrokPrograml == '9') {
-                           vm.show_expert = true;
-                          /* if (vm.model.expertSelectedDtoList && vm.model.expertSelectedDtoList.length > 0) {
-                               vm.show_expert = true;
-                           }*/
+                        if (vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9') {
                             markGrid(vm);
                             paymentGrid(vm);
                         }
-
-                        //先加载完业务数据，再加载流程业务数据
-                        if (vm.dealFlow) {
-                            flowSvc.getFlowInfo(vm);
-                        }
+                        //更改状态,并初始化业务参数
+                        vm.businessFlag.isLoadSign = true;
+                        vm.initBusinessParams();
                     }
                 });
             }
@@ -739,13 +740,10 @@
                 closable: true,
                 actions: ["Pin", "Minimize", "Maximize", "close"]
             }).data("kendoWindow").center().open();
-
             //初始化associateGrid
-
         }
 
         //end 项目关联
-
 
         // begin#markGrid
         function markGrid(vm) {
@@ -754,9 +752,6 @@
             var dataBound = function () {
                 var rows = this.items();
                 $(rows).each(function (i) {
-                    if (i == rows.length - 1) {
-                        //initBackNode(vm);
-                    }
                     $(this).find(".row-number").html(i + 1);
                 });
             }
@@ -769,7 +764,6 @@
                 columns: getExpertColumns(),
                 dataBound: dataBound,
                 resizable: true
-                // editable: "inline"
             };
         }// end fun grid
 
@@ -980,7 +974,7 @@
                         vm.expertReviews = response.data.value;
                         var expertReviews = vm.expertReviews
                         if (expertReviews != undefined && expertReviews.length > 0) {
-                            vm.show_expert = true;
+                            vm.showFlag.tabExpert = true;   //显示专家信息tab
                         }
 
                     }
