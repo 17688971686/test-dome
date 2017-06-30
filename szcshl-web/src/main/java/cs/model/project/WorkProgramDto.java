@@ -47,6 +47,8 @@ public class WorkProgramDto extends BaseDto {
     private String designCompany;
     //主管部门ID
     private String mainDeptId;
+    //主管部门名称
+    private String mainDeptName;
     //是否有环评
     private String isHaveEIA;
     //项目类别
@@ -614,6 +616,15 @@ public class WorkProgramDto extends BaseDto {
 	public void setWorkreviveStage(String workreviveStage) {
 		this.workreviveStage = workreviveStage;
 	}
+
+	public String getMainDeptName() {
+		return mainDeptName;
+	}
+
+	public void setMainDeptName(String mainDeptName) {
+		this.mainDeptName = mainDeptName;
+	}
+	
 	
     
 }

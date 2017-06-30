@@ -77,11 +77,11 @@
 		      		
 					<div style="position: relative;">
 							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
-								<select ng-model="vm.work.mainDeptId"  name="mainDeptId" id="mainDeptId"style="width: 230px;height:26px; margin-left: -100px;">
-									<option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptId == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+								<select ng-model="vm.work.mainDeptName"  name="mainDeptName" id="mainDeptName"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
 							</select>
 							</span>
-							 <input type="text" ng-model="vm.work.mainDeptId" name="mainDeptId" id="mainDeptId" style="width: 214px; position: absolute; left: 0px;"value="">
+							 <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width: 214px; position: absolute; left: 0px;"value="">
 					</div>
 					
 				 </td>

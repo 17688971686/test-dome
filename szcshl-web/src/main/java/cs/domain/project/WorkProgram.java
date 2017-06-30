@@ -66,6 +66,10 @@ public class WorkProgram extends DomainBase {
     //主管部门ID
     @Column(columnDefinition = "VARCHAR(64)")
     private String mainDeptId;
+    
+    //主管部门名称
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String mainDeptName;
 
     //是否有环评
     @Column(columnDefinition = "VARCHAR(2)")
@@ -676,6 +680,15 @@ public class WorkProgram extends DomainBase {
 	public void setWorkreviveStage(String workreviveStage) {
 		this.workreviveStage = workreviveStage;
 	}
+
+	public String getMainDeptName() {
+		return mainDeptName;
+	}
+
+	public void setMainDeptName(String mainDeptName) {
+		this.mainDeptName = mainDeptName;
+	}
+	
     
 	
     
