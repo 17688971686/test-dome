@@ -11,6 +11,7 @@ public interface DictRepo extends IRepository<Dict, String>{
 	public Dict findByCodeOrName(String code, String name);
 
 	public Dict findByName(String dictName);
+
 	public Dict findByCode(String dictCode,String excludeId);
 
 	public Dict findByCodeKeyAndName(String dictCode, String dictKey, String dictName);

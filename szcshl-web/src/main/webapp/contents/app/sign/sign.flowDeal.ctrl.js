@@ -41,7 +41,6 @@
             tabSysFile:false,           // 附件信息tab
 
             buttBack:false,             // 回退按钮
-            expert:false,               // 显示专家信息tab
             expertRemark:false,         // 专家评分弹窗内容显示
             expertpayment:false,        // 专家费用弹窗内容显示
             expertEdit:true,            // 专家评分费用编辑权限
@@ -56,6 +55,9 @@
             isHaveSePri : false,        // 是否有第二负责人
             principalUsers : [],         // 部门负责人列表
             isSelMainPriUser:false,     // 是否已经设置主要负责人
+            expertReviews : [],         // 专家评审方案
+            editExpertSC : false,      // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
+            expertScore:{},             // 专家评分对象
         }
 
         vm.model.signid = $state.params.signid;
@@ -80,8 +82,7 @@
             flowSvc.initFlowData(vm);
             // 初始化上传附件
             signSvc.uploadFilelist(vm);
-            //关联项目
-            signSvc.initAssociateSigns(vm,vm.model.signid);
+            //项目关联初始化
             signSvc.associateGrid(vm);
         }
 
@@ -111,10 +112,41 @@
         }
 
         // 编辑专家评分
-        vm.editSelectExpert = function (id, score) {
-            vm.expertReview.score = score;
-            vm.expertReview.expertId = id;
-            flowSvc.gotoExpertmark(vm);
+        vm.editSelectExpert = function (id) {
+            vm.businessFlag.expertScore = {};
+            vm.businessFlag.expertReviews.forEach(function(epRw,index){
+               epRw.expertSelectedDtoList.forEach(function(epSel,i){
+                   if(epSel.id == id){
+                       vm.businessFlag.expertScore = epSel;
+                       return ;
+                   }
+               })
+            });
+            $("#star").raty({
+                score: function () {
+                    $(this).attr("data-num", angular.isUndefined(vm.businessFlag.expertScore.score)?0:vm.businessFlag.expertScore.score);
+                    return $(this).attr("data-num");
+                },
+                starOn: '../contents/libs/raty/lib/images/star-on.png',
+                starOff: '../contents/libs/raty/lib/images/star-off.png',
+                starHalf: '../contents/libs/raty/lib/images/star-half.png',
+                readOnly: false,
+                halfShow: true,
+                size: 34,
+                click: function (score, evt) {
+                    vm.businessFlag.expertScore.score = score;
+                }
+            });
+
+            $("#expertmark").kendoWindow({
+                width: "820px",
+                height: "365px",
+                title: "编辑-专家星级",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
         }
         // 关闭专家评分
         vm.closeEditMark = function () {
@@ -123,16 +155,28 @@
 
         // 保存专家评分
         vm.saveMark = function () {
-            flowSvc.saveMark(vm);
+            flowSvc.saveMark(vm,function(){
+
+            });
+        }
+        //获取专家评星
+        vm.getExpertStar = function(id ,score){
+            var returnStr = "";
+            if (score != undefined) {
+                for (var i = 0; i <score; i++) {
+                    returnStr += "<span style='color:gold;font-size:20px;'><i class='fa fa-star' aria-hidden='true'></i></span>";
+                }
+            }
+            $("#"+id+"_starhtml").html(returnStr);
         }
 
         vm.editpayment = function (id) {
             vm.expertReview.expertId = id;
             flowSvc.gotopayment(vm);
         }
+
         // 计算应纳税额
         vm.countTaxes = function (expertReview) {
-            //console.log(expertReview.payDate);
             if(expertReview == undefined){
                 return ;
             }
@@ -303,13 +347,24 @@
         //项目关联弹窗
         vm.showAssociate = function(){
             vm.currentAssociateSign = vm.model;
-            signSvc.showAssociateSign();
+
+            //选中要关联的项目
+            var signAssociateWindow = $("#associateWindow");
+            signAssociateWindow.kendoWindow({
+                width: "60%",
+                height: "625px",
+                title: "项目关联",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+            //初始化associateGrid
         }
 
         //start 保存项目关联
         vm.saveAssociateSign = function(associateSignId){
-            var signid = vm.model.signid;
-            if(signid == associateSignId){
+            if(vm.model.signid == associateSignId){
                 common.alert({
                     vm:vm,
                     msg:"不能关联自身项目",
@@ -319,12 +374,17 @@
                 });
                 return ;
             }
-            signSvc.saveAssociateSign(vm,signid,associateSignId,function(){
+            signSvc.saveAssociateSign(vm,vm.model.signid,associateSignId,function(){
                 //回调
                 $state.reload();
             });
         }
         //end 保存项目关联
+
+        //start 查询功能
+        vm.associateQuerySign = function(){
+            vm.associateGridOptions.dataSource.read();
+        }//end 查询功能
 
         //start 解除项目关联
         vm.disAssociateSign = function(){

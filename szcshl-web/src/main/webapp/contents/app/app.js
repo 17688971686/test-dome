@@ -431,9 +431,6 @@
 
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
-
-    	
-//    	common.initIdeaData({$http: $http, scope: $rootScope});
     });
 
 })();

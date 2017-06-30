@@ -161,9 +161,8 @@ public class ODataObj {
                         oDataFilterItem = new ODataFilterItem<String[]>();
                         oDataFilterItem.setValue(value.replace("'","").substring(1, value.length() - 1).split(","));
                     } else {// 其它为Number
-                        oDataFilterItem = new ODataFilterItem<Number>();
-
-                        oDataFilterItem.setValue(NumberFormat.getInstance().parse(value));
+                        oDataFilterItem = new ODataFilterItem<Object>();
+                        oDataFilterItem.setValue(Integer.valueOf(value));
                     }
 
                     oDataFilterItem.setField(filterItems[0]);

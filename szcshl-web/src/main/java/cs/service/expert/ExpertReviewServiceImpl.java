@@ -36,48 +36,48 @@ import cs.service.project.SignService;
  */
 @Service
 public class ExpertReviewServiceImpl implements ExpertReviewService {
-	private static Logger log = Logger.getLogger(ExpertReviewServiceImpl.class);
-	@Autowired
-	private ExpertReviewRepo expertReviewRepo;
-	@Autowired
-	private ICurrentUser currentUser;
+    private static Logger log = Logger.getLogger(ExpertReviewServiceImpl.class);
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
+    @Autowired
+    private ICurrentUser currentUser;
     @Autowired
     private ExpertSelConditionRepo expertSelConditionRepo;
-	@Autowired
-	private ExpertRepo expertRepo;
-	@Autowired
-	private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private ExpertRepo expertRepo;
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
     @Autowired
     private SignRepo signRepo;
 
-	@Override
-	public PageModelDto<ExpertReviewDto> get(ODataObj odataObj) {
-		PageModelDto<ExpertReviewDto> pageModelDto = new PageModelDto<ExpertReviewDto>();
-		List<ExpertReview> resultList = expertReviewRepo.findByOdata(odataObj);
-		List<ExpertReviewDto> resultDtoList = new ArrayList<ExpertReviewDto>(resultList.size());
+    @Override
+    public PageModelDto<ExpertReviewDto> get(ODataObj odataObj) {
+        PageModelDto<ExpertReviewDto> pageModelDto = new PageModelDto<ExpertReviewDto>();
+        List<ExpertReview> resultList = expertReviewRepo.findByOdata(odataObj);
+        List<ExpertReviewDto> resultDtoList = new ArrayList<ExpertReviewDto>(resultList.size());
 
-		if (resultList != null && resultList.size() > 0) {
-			resultList.forEach(x -> {
-				ExpertReviewDto modelDto = new ExpertReviewDto();
-				BeanCopierUtils.copyProperties(x, modelDto);
-				modelDto.setCreatedDate(x.getCreatedDate());
-				modelDto.setModifiedDate(x.getModifiedDate());
+        if (resultList != null && resultList.size() > 0) {
+            resultList.forEach(x -> {
+                ExpertReviewDto modelDto = new ExpertReviewDto();
+                BeanCopierUtils.copyProperties(x, modelDto);
+                modelDto.setCreatedDate(x.getCreatedDate());
+                modelDto.setModifiedDate(x.getModifiedDate());
 
-				resultDtoList.add(modelDto);
-			});
-		}
-		pageModelDto.setCount(odataObj.getCount());
-		pageModelDto.setValue(resultDtoList);
-		return pageModelDto;
-	}
+                resultDtoList.add(modelDto);
+            });
+        }
+        pageModelDto.setCount(odataObj.getCount());
+        pageModelDto.setValue(resultDtoList);
+        return pageModelDto;
+    }
 
-	@Override
-	@Transactional
-	public void save(ExpertReviewDto record) throws Exception {
-		/*ExpertReview domain = new ExpertReview();
-		BeanCopierUtils.copyProperties(record, domain);
+    @Override
+    @Transactional
+    public void save(ExpertReviewDto record) throws Exception {
+        /*ExpertReview domain = new ExpertReview();
+        BeanCopierUtils.copyProperties(record, domain);
 		if (Validate.isString(record.getExpertId()) && Validate.isString(record.getWorkProgramId())) {
 			domain.setExpert(expertRepo.findById(record.getExpertId()));
 			domain.setWorkProgram(workProgramRepo.findById(record.getWorkProgramId()));
@@ -92,42 +92,43 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
 		expertReviewRepo.save(domain);*/
-	}
+    }
 
-	@Override
-	@Transactional
-	public void update(ExpertReviewDto record) {
-		ExpertReview domain = expertReviewRepo.findById(record.getId());
-		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(currentUser.getLoginName());
-		domain.setModifiedDate(new Date());
+    @Override
+    @Transactional
+    public void update(ExpertReviewDto record) {
+        ExpertReview domain = expertReviewRepo.findById(record.getId());
+        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
+        domain.setModifiedBy(currentUser.getLoginName());
+        domain.setModifiedDate(new Date());
 
-		expertReviewRepo.save(domain);
-	}
+        expertReviewRepo.save(domain);
+    }
 
-	@Override
-	public ExpertReviewDto findById(String id) {
-		ExpertReviewDto modelDto = new ExpertReviewDto();
-		if (Validate.isString(id)) {
-			ExpertReview domain = expertReviewRepo.findById(id);
-			BeanCopierUtils.copyProperties(domain, modelDto);
-		}
-		return modelDto;
-	}
+    @Override
+    public ExpertReviewDto findById(String id) {
+        ExpertReviewDto modelDto = new ExpertReviewDto();
+        if (Validate.isString(id)) {
+            ExpertReview domain = expertReviewRepo.findById(id);
+            BeanCopierUtils.copyProperties(domain, modelDto);
+        }
+        return modelDto;
+    }
 
-	@Override
-	@Transactional
-	public void delete(String id) {
-		expertReviewRepo.deleteById(ExpertReview_.id.getName(), id);
-	}
+    @Override
+    @Transactional
+    public void delete(String id) {
+        expertReviewRepo.deleteById(ExpertReview_.id.getName(), id);
+    }
 
     /**
      * 根据工作方案ID初始化专家抽取
+     *
      * @param workProgramId
      * @return
      */
-	@Override
-	public ExpertReviewDto initByWorkProgramId(String workProgramId) {
+    @Override
+    public ExpertReviewDto initByWorkProgramId(String workProgramId) {
         ExpertReviewDto expertReviewDto = new ExpertReviewDto();
         WorkProgram workProgram = workProgramRepo.findById(workProgramId);
         //1、获取抽取方案
@@ -178,15 +179,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         return expertReviewDto;
     }
 
-	@Override
-	public Map<String, Object> getReviewList(String orgName, String year, String quarter) {
+    @Override
+    public Map<String, Object> getReviewList(String orgName, String year, String quarter) {
 
-		return null;
-	}
-	//更新数据,保存分数
-	@Override
-	@Transactional
-	public void expertMark(ExpertReviewDto expertReviewDto ) {
+        return null;
+    }
+
+    //更新数据,保存分数
+    @Override
+    @Transactional
+    public void expertMark(ExpertReviewDto expertReviewDto) {
 		/*Date now=new Date();
 		Expert expert=expertRepo.getById(expertReviewDto.getExpertId());
 		ExpertReview expertReview=expert.getExpertReview();
@@ -224,6 +226,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 确认抽取结果信息
+     *
      * @param reviewId
      * @param state
      */
@@ -243,7 +246,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
      */
     @Override
     @Transactional
-    public void save(String reviewId, String expertIds, String selectType,boolean isDraw) {
+    public void save(String reviewId, String expertIds, String selectType, boolean isDraw) {
         ExpertReview expertReview = expertReviewRepo.findById(reviewId);
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
@@ -281,7 +284,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
      * @param reviewId  抽取方案ID
      * @param expertIds 专家ID
      * @param state     状态值
-     * @param isConfirm  是否已经确认
+     * @param isConfirm 是否已经确认
      */
     @Override
     @Transactional
@@ -309,7 +312,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         expertReviewRepo.executeSql(sqlBuilder);
 
         //如果已经确认，则修改状态
-        if(isConfirm){
+        if (isConfirm) {
             ExpertReview expertReview = expertReviewRepo.findById(reviewId);
             expertReview.setIsComfireResult(Constant.EnumState.YES.getValue());
             expertReviewRepo.save(expertReview);
@@ -318,6 +321,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 根据工作方案获取评审专家
+     *
      * @param signId
      * @return
      */
@@ -325,7 +329,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public PageModelDto<ExpertSelectedDto> getSelectExpert(String signId) {
         PageModelDto<ExpertSelectedDto> pageModelDto = new PageModelDto<ExpertSelectedDto>();
         Sign sign = signRepo.getById(signId);
-        if(sign.getWorkProgramList() != null&&sign.getWorkProgramList().size()>0){
+        if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
 
             List<WorkProgram> workPrograms = sign.getWorkProgramList();
             List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>();
@@ -334,23 +338,23 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             workPrograms.forEach(workProgram -> {
 
                 ExpertReview expertReview = workProgram.getExpertReview();
-                if(expertReview != null&&expertReview.getExpertSelectedList() != null
-                        &&expertReview.getExpertSelectedList().size()>0){
+                if (expertReview != null && expertReview.getExpertSelectedList() != null
+                        && expertReview.getExpertSelectedList().size() > 0) {
                     List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
                     expertSelecteds.forEach(expertSelected -> {
                         ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
-                        BeanUtils.copyProperties(expertSelected,expertSelectedDto,new String[]{ExpertSelected_.expertReview.getName()});
+                        BeanUtils.copyProperties(expertSelected, expertSelectedDto, new String[]{ExpertSelected_.expertReview.getName()});
 
                         //评审专家设置
                         expertSelectedDto.setExpertDto(new ExpertDto());
-                        BeanUtils.copyProperties(expertSelected.getExpert(),expertSelectedDto.getExpertDto(),
-                                new String[]{Expert_.photo.getName(),Expert_.work.getName(),
-                                        Expert_.project.getName(),Expert_.expertSelectedList.getName()});
+                        BeanUtils.copyProperties(expertSelected.getExpert(), expertSelectedDto.getExpertDto(),
+                                new String[]{Expert_.photo.getName(), Expert_.work.getName(),
+                                        Expert_.project.getName(), Expert_.expertSelectedList.getName()});
 
                         //评审方案设置
                         expertSelectedDto.setExpertReviewDto(new ExpertReviewDto());
-                        BeanUtils.copyProperties(expertSelected.getExpertReview(),expertSelectedDto.getExpertReviewDto(),
-                                ExpertReview_.workProgramList.getName(),ExpertReview_.expertSelConditionList.getName(),
+                        BeanUtils.copyProperties(expertSelected.getExpertReview(), expertSelectedDto.getExpertReviewDto(),
+                                ExpertReview_.workProgramList.getName(), ExpertReview_.expertSelConditionList.getName(),
                                 ExpertReview_.expertSelectedList.getName());
 
                         expertSelectedDtos.add(expertSelectedDto);
@@ -367,7 +371,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
 
 
-
         return null;
     }
 
@@ -378,43 +381,41 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         Sign sign = signRepo.getById(signId);
 
         List<WorkProgram> workPrograms = sign.getWorkProgramList();
-        if(workPrograms != null&&workPrograms.size()>0){
-            Map<String,ExpertReview> expertReviewMap = new HashMap<String,ExpertReview>();
+        if (workPrograms != null && workPrograms.size() > 0) {
+            Map<String, ExpertReview> expertReviewMap = new HashMap<String, ExpertReview>();
             workPrograms.forEach(workProgram -> {
                 ExpertReview expertReview = workProgram.getExpertReview();
-                if(expertReview != null){
-                    expertReviewMap.put(expertReview.getId(),expertReview);
+                if (expertReview != null) {
+                    expertReviewMap.put(expertReview.getId(), expertReview);
                 }
-
             });
 
-            for (Map.Entry<String, ExpertReview> entry :  expertReviewMap.entrySet()) {
+            for (Map.Entry<String, ExpertReview> entry : expertReviewMap.entrySet()) {
                 ExpertReview expertReview = entry.getValue();
                 ExpertReviewDto expertReviewDto = new ExpertReviewDto();
-                BeanUtils.copyProperties(expertReview,expertReviewDto,
-                        new String[]{ExpertReview_.expertSelConditionList.getName(),ExpertReview_.workProgramList.getName()});
+                BeanUtils.copyProperties(expertReview, expertReviewDto,
+                        new String[]{ExpertReview_.expertSelConditionList.getName(), ExpertReview_.workProgramList.getName()});
 
                 //设置评审费发放默认标题 《项目名称+项目阶段》+评审费发放表
-                if(!Validate.isString(expertReview.getReviewTitle())){
-                    expertReviewDto.setReviewTitle("《"+sign.getProjectname()+sign.getReviewstage()+"》评审费发放表");
+                if (!Validate.isString(expertReview.getReviewTitle())) {
+                    expertReviewDto.setReviewTitle("《" + sign.getProjectname() + sign.getReviewstage() + "》评审费发放表");
                 }
-
 
                 //设置评审方案的专家
                 List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
                 List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>();
 
-                if(expertSelecteds != null&&expertSelecteds.size()>0){
+                if (expertSelecteds != null && expertSelecteds.size() > 0) {
                     expertSelecteds.forEach(expertSelected -> {
                         ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
-                        BeanUtils.copyProperties(expertSelected,expertSelectedDto,
+                        BeanUtils.copyProperties(expertSelected, expertSelectedDto,
                                 new String[]{ExpertSelected_.expertReview.getName()});
 
                         //======================设置专家======================================================
                         expertSelectedDto.setExpertDto(new ExpertDto());
-                        BeanUtils.copyProperties(expertSelected.getExpert(),expertSelectedDto.getExpertDto(),
-                                new String[]{Expert_.photo.getName(),Expert_.work.getName(),
-                                        Expert_.project.getName(),Expert_.expertSelectedList.getName()});
+                        BeanUtils.copyProperties(expertSelected.getExpert(), expertSelectedDto.getExpertDto(),
+                                new String[]{Expert_.photo.getName(), Expert_.work.getName(),
+                                        Expert_.project.getName(), Expert_.expertSelectedList.getName()});
                         //===================================================================================
 
                         expertSelectedDtos.add(expertSelectedDto);
@@ -425,11 +426,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertReviewDtos.add(expertReviewDto);
             }
 
-
         }
-
-
-
 
         expertReviewDtoPageModelDto.setValue(expertReviewDtos);
         expertReviewDtoPageModelDto.setCount(expertReviewDtos.size());
@@ -438,14 +435,13 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     }
 
     /**
-     *
      * 获取指定专家，指定月份的评审费用
-     * */
+     */
     @Override
     public List<Map<String, Object>> getExpertReviewCost(String expertIds, String month) {
         List<Map<String, Object>> experReviewCosts = null;
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select * from V_EXPERT_PAY_HIS t where t.expertid in ("+expertIds+") and t.paydate='"+month+"'");
+        hqlBuilder.append("select * from V_EXPERT_PAY_HIS t where t.expertid in (" + expertIds + ") and t.paydate='" + month + "'");
         //hqlBuilder.setParam("ids",expertIds);
         //hqlBuilder.setParam("m",month);
         NativeQuery nativeQuery = expertReviewRepo.getSession().createNativeQuery(hqlBuilder.getHqlString());
@@ -455,18 +451,18 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     @Override
     @Transactional
-    public void saveExpertReviewCost(ExpertReviewDto[]  expertReviews) {
+    public void saveExpertReviewCost(ExpertReviewDto[] expertReviews) {
 
-        if(expertReviews != null &&expertReviews.length>0){
-            for(int i = 0;i<expertReviews.length;i++){
+        if (expertReviews != null && expertReviews.length > 0) {
+            for (int i = 0; i < expertReviews.length; i++) {
 
                 ExpertReviewDto expertReviewDto = expertReviews[i];
                 List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
                 //保存评审费用
                 String experReviewId = expertReviewDto.getId();
-                if(Validate.isString(experReviewId)){
+                if (Validate.isString(experReviewId)) {
                     ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
-                    if(expertReview != null){
+                    if (expertReview != null) {
                         //设置评审方案的评审费用、税费和合计
                         expertReview.setReviewCost(expertReviewDto.getReviewCost());
                         expertReview.setReviewTaxes(expertReviewDto.getReviewTaxes());
@@ -477,16 +473,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                         expertReview.setPayDate(expertReviewDto.getPayDate());
                         //设置该评审方案所有专家的评审费用、税费和合计
                         List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
-                        if(expertSelecteds != null&&expertSelecteds.size()>0
-                                &&expertSelectedDtos != null&&expertSelectedDtos.size()>0){
+                        if (expertSelecteds != null && expertSelecteds.size() > 0
+                                && expertSelectedDtos != null && expertSelectedDtos.size() > 0) {
                             expertSelecteds.forEach(expertSelected -> {
 
                                 expertSelectedDtos.forEach(expertSelectedDto -> {
-                                    if(expertSelectedDto.getId().equals(expertSelected.getId())){
+                                    if (expertSelectedDto.getId().equals(expertSelected.getId())) {
                                         expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
                                         expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
                                         expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
-                                        return ;
+                                        return;
                                     }
 
                                 });

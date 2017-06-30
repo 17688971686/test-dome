@@ -173,6 +173,12 @@ public class FlowServiceImpl implements FlowService {
         }
     }
 
+    /**
+     *
+     * @param taskId    任务ID
+     * @param activityId 任务环节ID 而不是实例环节ID
+     * @return
+     */
     @Override
     public ActivityImpl getActivityImpl(String taskId, String activityId) {
         HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();

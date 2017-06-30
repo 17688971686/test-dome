@@ -20,8 +20,6 @@
             associateGrid: associateGrid,//项目关联列表
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
-            showAssociateSign: showAssociateSign,     //项目关联弹窗
-            markGrid: markGrid,                 //专家评分
             paymentGrid: paymentGrid,           //专家评审费
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,            //生成会前准备材料
@@ -460,6 +458,11 @@
                     response: response,
                     fn: function () {
                         vm.model = response.data;
+                        //有关联，则显示项目
+                        if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                            initAssociateSigns(vm,vm.model.signid);
+                        //没有则初始化关联表格
+                        }
                         //工作方案
                         if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
                             //判断是基本信息还是工作方案
@@ -494,8 +497,8 @@
                             vm.fileRecord = vm.model.fileRecordDto;
                         }
                         //初始化专家评分
-                        if (vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9') {
-                            markGrid(vm);
+                        if ((vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9')||
+                            (vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9')) {
                             paymentGrid(vm);
                         }
                         //更改状态,并初始化业务参数
@@ -552,7 +555,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter: "signid ne '"+vm.model.signid+"' and isAssociate eq 0 "}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -603,39 +606,17 @@
                     title: "项目代码",
                     width: 140,
                     filterable: false,
-                }/*,
-                    {
-                        field : "",
-                        title : "流程状态",
-                        width : 160,
-                        filterable : false,
-                        template : function(item) {
-                            if(item.folwState){
-                                if(item.folwState == 1){
-                                    return '<span style="color:green;">进行中</span>';
-                                }else if(item.folwState == 2){
-                                    return '<span style="color:orange;">已暂停</span>';
-                                }else if(item.folwState == 8){
-                                    return '<span style="color:red;">强制结束</span>';
-                                }else if(item.folwState == 9){
-                                    return '<span style="color:blue;">已完成</span>';
-                                }
-                            }else{
-                                return "未发起"
-                            }
-                        }
-                    }*/,
+                },
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 60,
                     template: function (item) {
                         return common.format($('#associateColumnBtns').html(), "vm.saveAssociateSign('" + item.signid + "')");
                     }
                 }
             ];
             // End:column
-
             vm.associateGridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
@@ -644,13 +625,20 @@
                 columns: columns,
                 resizable: true
             };
+            /*$("#associateGrid").kendoGrid({
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            });*/
             vm.associateGridOptions.dataSource.read();
         }//E_初始化associateGrid
 
         //start saveAssociateSign
         //如果associateSignId为空，解除关联
         function saveAssociateSign(vm, signId, associateSignId, callBack) {
-
             associateSignId = associateSignId == 'undefined' ? null : associateSignId;
             var httpOptions = {
                 method: 'post',
@@ -670,7 +658,6 @@
                             closeDialog: true,
                             fn: function () {
                                 //关闭项目关联窗口
-                                //vm.gridOptions.dataSource.read();
                                 if (callBack != undefined && typeof callBack == 'function') {
                                     callBack();
                                 }
@@ -745,239 +732,7 @@
                 success: httpSuccess
             });
         }
-
         //end initAssociateSigns
-
-
-        //start 项目关联弹框
-        function showAssociateSign() {
-            //选中要关联的项目
-            var signAssociateWindow = $("#associateWindow");
-            signAssociateWindow.kendoWindow({
-                width: "50%",
-                height: "80%",
-                title: "项目关联",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-            //初始化associateGrid
-        }
-
-        //end 项目关联
-
-        // begin#markGrid
-        function markGrid(vm) {
-            var signId = vm.model.signid;
-            var dataSource = common.kendoGridDataSource(rootPath + "/expertReview/html/getSelectExpert/" + signId);
-            var dataBound = function () {
-                var rows = this.items();
-                $(rows).each(function (i) {
-                    $(this).find(".row-number").html(i + 1);
-                });
-            }
-
-            // End:column
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: getExpertColumns(),
-                dataBound: dataBound,
-                resizable: true
-            };
-        }// end fun grid
-
-        function getExpertColumns() {
-            var columns = [
-                {
-                    field: "",
-                    title: "序号",
-                    width: 50,
-                    template: "<span class='row-number'></span>"
-                }, {
-                    field: "",
-                    title: "姓名",
-                    width: 100,
-                    filterable: true,
-                    template: function (item) {
-                        return item.expertDto.name == null ? "" : item.expertDto.name;
-                    }
-                },
-                {
-                    field: "",
-                    title: "工作单位",
-                    width: 100,
-                    filterable: true,
-                    template: function (item) {
-                        return item.expertDto.comPany == null ? "" : item.expertDto.comPany;
-                    }
-                },
-                {
-                    field: "",
-                    title: "职位/职称",
-                    width: 150,
-                    filterable: true,
-                    template: function (item) {
-                        var expertDto = item.expertDto;
-                        if (!expertDto.job) {
-                            expertDto.job = "";
-                        }
-                        if (!expertDto.post) {
-                            expertDto.post = "";
-                        }
-                        return expertDto.job + "/" + expertDto.post;
-                    }
-                },
-                {
-                    field: "",
-                    title: "专业",
-                    width: 100,
-                    filterable: true,
-                    template: function (item) {
-                        return item.expertDto.majorStudy == null ? "" : item.expertDto.majorStudy;
-                    }
-                },
-                {
-                    field: "",
-                    title: "联系电话/办公电话",
-                    width: 150,
-                    filterable: true,
-                    template: function (item) {
-                        var expertDto = item.expertDto;
-                        if (!expertDto.phone) {
-                            expertDto.phone = "";
-                        }
-                        if (!expertDto.userPhone) {
-                            expertDto.userPhone = "";
-                        }
-                        return expertDto.userPhone + "/" + expertDto.phone;
-                    }
-                },
-
-                {
-                    field: "",
-                    title: "备注",
-                    width: 100,
-                    filterable: true,
-                    template: function (item) {
-                        return item.expertDto.remark == null ? "" : item.expertDto.remark;
-                    }
-                },
-                {
-                    field: "",
-                    title: "评审方案",
-                    width: 100,
-                    filterable: true,
-                    template: function (item) {
-                        return item.expertDto.remark == null ? "" : item.expertDto.remark;
-                    }
-                },
-                {
-                    field: "",
-                    title: "评分",
-                    width: 200,
-                    template: function (item) {
-                        var str = "";
-                        if (item.score != undefined) {
-                            for (var i = 0; i < item.score; i++) {
-                                str += "<span style='color:gold;font-size:20px;' >☆</span>";
-                            }
-                        }
-                        /* for(var i=0;i<item.expertReviewDto.score;i++){
-                             str+="<span style='color:gold;font-size:20px;' >☆</span>";
-                         }*/
-
-                        return str;
-                    }
-                }, {
-                    field: "",
-                    title: "评级描述",
-                    width: 200,
-                    template: function (item) {
-                        return item.describes != undefined ? item.describes : "";
-                    }
-                }, {
-                    field: "",
-                    title: "操作",
-                    width: 100,
-                    template: function (item) {
-                        var score = item.score != undefined ? item.score : 0;
-                        return common.format($('#columnBtns').html(),
-                            "vm.editSelectExpert('" + item.id + "','" + score + "')");
-                        //item.expertDto.expertID,score);
-                    }
-                }
-            ];
-            return columns;
-        }
-
-        // S_getpaymentColumns
-        function getpaymentColumns() {
-            var columns = [{
-                field: "rowNumber",
-                title: "序号",
-                width: 50,
-                template: "<span class='row-number'></span>"
-            }, {
-                field: "",
-                title: "姓名",
-                width: 100,
-                filterable: true,
-                template: function (item) {
-                    return item.expertDto.name == null ? "" : item.expertDto.name;
-                }
-            }, {
-                field: "",
-                title: "身份证号码",
-                width: 100,
-                filterable: true,
-                template: function (item) {
-                    return item.expertDto.idCard == null ? "" : item.expertDto.idCard;
-                }
-            }, {
-                field: "",
-                title: "开户行",
-                width: 100,
-                filterable: true,
-                template: function (item) {
-                    return item.expertDto.openingBank == null ? "" : item.expertDto.openingBank;
-                }
-            }, {
-                field: "",
-                title: "银行账号",
-                width: 100,
-                filterable: true,
-                template: function (item) {
-                    return item.expertDto.bankAccount == null ? "" : item.expertDto.bankAccount;
-                }
-            }, {
-                field: "reviewCost",
-                title: "评审费",
-                width: 100,
-                filterable: true
-            },
-                {
-                    field: "reviewTaxes",
-                    title: "应纳税额",
-                    width: 100,
-                    filterable: true
-                }, {
-                    field: "totalCost",
-                    title: "合计（元）",
-                    width: 100
-                }, {
-                    field: "",
-                    title: "操作",
-                    width: 100,
-                    template: function (item) {
-                        return common.format($('#columnBtn').html(), "vm.editpayment('" + item.id + "')");
-                        //item.expertID);
-                    }
-                }];
-            return columns;
-        }// E_getpaymentColumns
 
         // begin#remarkGrid
         function paymentGrid(vm) {
@@ -993,12 +748,10 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                        vm.expertReviews = response.data.value;
-                        var expertReviews = vm.expertReviews
-                        if (expertReviews != undefined && expertReviews.length > 0) {
+                        vm.businessFlag.expertReviews = response.data.value;
+                        if (vm.businessFlag.expertReviews != undefined && vm.businessFlag.expertReviews.length > 0) {
                             vm.showFlag.tabExpert = true;   //显示专家信息tab
                         }
-
                     }
                 })
             }

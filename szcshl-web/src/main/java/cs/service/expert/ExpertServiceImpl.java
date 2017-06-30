@@ -258,28 +258,25 @@ public class ExpertServiceImpl implements ExpertService {
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select ep.* from CS_EXPERT ep ");
-        //1、关联与工作方案相同单位的专家
-        hqlBuilder.append(" left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
-        hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
-        hqlBuilder.setParam("workProgramId", workprogramId);
-        //2、关联本周已抽取2次或者本月已抽取四次的专家
-        hqlBuilder.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
-        hqlBuilder.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,cde.EXPERTID as EXPERTID");
-        hqlBuilder.append(" FROM CS_EXPERT_REVIEW er ,(SELECT ES.EXPERTREVIEWID, ES.EXPERTID FROM CS_EXPERT_SELECTED es ) cde ");
-        hqlBuilder.append(" WHERE cde.EXPERTREVIEWID = er.id ");
-        hqlBuilder.append(" GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), cde.EXPERTID ");
-        hqlBuilder.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
-        hqlBuilder.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
+        //1、关联本周未满2次，本月未满4次的专家
+        hqlBuilder.append(" LEFT JOIN (  SELECT er.EXPERTID, COUNT (er.EXPERTID)  FROM ( ");
+        hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel LEFT JOIN CS_EXPERT_REVIEW ep_rev ");
+        hqlBuilder.append(" ON EP_SEL.EXPERTREVIEWID = EP_REV.ID WHERE EP_SEL.ISJOIN = '9') er GROUP BY er.EXPERTID ");
+        hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-mm')) > 4 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
+        hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
+        //2、排除跟工作方案单位的专家
+        hqlBuilder.append(" LEFT JOIN (SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp ");
+        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid",workprogramId);
+        hqlBuilder.append(" ON (lwp.bcp = ep.COMPANY OR lwp.dcp = ep.COMPANY) ");
         //3、排除本次已经选择的专家
-        hqlBuilder.append(" left join (SELECT es.EXPERTREVIEWID, ES.EXPERTID FROM CS_EXPERT_SELECTED es WHERE es.EXPERTREVIEWID =:reviewId )");
-        hqlBuilder.append(" ERM ON ERM.EXPERTID = EP.EXPERTID ");
+        hqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID AND CURSEL.EXPERTREVIEWID =:reviewId ");
         hqlBuilder.setParam("reviewId", reviewId);
 
-        hqlBuilder.append(" where (ep.STATE = :state1 or ep.STATE = :state2 ) ");
+        hqlBuilder.append(" WHERE (ep.STATE = :state1 or ep.STATE = :state2 ) ");
         hqlBuilder.setParam("state1", EnumExpertState.OFFICIAL.getValue()).setParam("state2", EnumExpertState.ALTERNATIVE.getValue());
-        hqlBuilder.append(" and lwp.ID is null ");    //排除单位相同的专家
-        hqlBuilder.append(" and outep.EXPERTID is null ");  //排除已满抽取次数的专家
-        hqlBuilder.append(" and ERM.EXPERTID is null  ");   //排除本次已经选择的专家
+        hqlBuilder.append(" AND fep.EXPERTID IS NULL ");
+        hqlBuilder.append(" AND lwp.ID IS NULL ");
+        hqlBuilder.append(" AND CURSEL.ID IS NULL ");
 
         //拼接专家抽取条件
         int totalLength = epSelConditions.length;
@@ -325,36 +322,35 @@ public class ExpertServiceImpl implements ExpertService {
      */
     @Override
     public Integer countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition) {
+
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select count(ep.EXPERTID) from CS_EXPERT ep left join (select WP.ID ID, WP.BUILDCOMPANY bcp,WP.DESIGNCOMPANY dcp from CS_WORK_PROGRAM wp ");
-        hqlBuilder.append(" where WP.ID = :workProgramId) lwp on (lwp.bcp = ep.COMPANY or lwp.dcp = ep.COMPANY) ");
-        hqlBuilder.setParam("workProgramId", workprogramId);
-        //2、关联本周已抽取2次或者本月已抽取四次的专家
-        hqlBuilder.append(" left join ( SELECT TO_CHAR (er.REVIEWDATE, 'mm') mnum, COUNT (er.id) mcount,");
-        hqlBuilder.append(" TO_CHAR (er.REVIEWDATE, 'iw') wnum, COUNT (er.id) wcount,cde.EXPERTID as EXPERTID");
-        hqlBuilder.append(" FROM CS_EXPERT_REVIEW er ,(SELECT ES.EXPERTREVIEWID, ES.EXPERTID FROM CS_EXPERT_SELECTED es ) cde ");
-        hqlBuilder.append(" WHERE cde.EXPERTREVIEWID = er.id ");
-        hqlBuilder.append(" GROUP BY TO_CHAR (er.REVIEWDATE, 'mm'),TO_CHAR (er.REVIEWDATE, 'iw'), cde.EXPERTID ");
-        hqlBuilder.append(" HAVING COUNT(TO_CHAR (er.REVIEWDATE, 'mm')) = 4  or COUNT(TO_CHAR (er.REVIEWDATE, 'iw')) = 2  ");
-        hqlBuilder.append("  ) outep on ep.EXPERTID = outep.EXPERTID ");
+        hqlBuilder.append("select count(ep.EXPERTID) FROM CS_EXPERT ep ");
+        //1、关联本周未满2次，本月未满4次的专家
+        hqlBuilder.append(" LEFT JOIN (  SELECT er.EXPERTID, COUNT (er.EXPERTID)  FROM ( ");
+        hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel LEFT JOIN CS_EXPERT_REVIEW ep_rev ");
+        hqlBuilder.append(" ON EP_SEL.EXPERTREVIEWID = EP_REV.ID WHERE EP_SEL.ISJOIN = '9') er GROUP BY er.EXPERTID ");
+        hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-mm')) > 4 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
+        hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
+        //2、排除跟工作方案单位的专家
+        hqlBuilder.append(" LEFT JOIN (SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp ");
+        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid",workprogramId);
+        hqlBuilder.append(" ON (lwp.bcp = ep.COMPANY OR lwp.dcp = ep.COMPANY) ");
         //3、排除本次已经选择的专家
-        hqlBuilder.append(" left join (SELECT es.EXPERTREVIEWID, ES.EXPERTID FROM CS_EXPERT_SELECTED es WHERE es.EXPERTREVIEWID =:reviewId )");
-        hqlBuilder.append(" ERM ON ERM.EXPERTID = EP.EXPERTID ");
+        hqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID AND CURSEL.EXPERTREVIEWID =:reviewId ");
         hqlBuilder.setParam("reviewId", reviewId);
 
-        hqlBuilder.append(" where (ep.STATE = :state1 or ep.STATE = :state2 ) ");
+        hqlBuilder.append(" WHERE (ep.STATE = :state1 or ep.STATE = :state2 ) ");
         hqlBuilder.setParam("state1", EnumExpertState.OFFICIAL.getValue()).setParam("state2", EnumExpertState.ALTERNATIVE.getValue());
-        hqlBuilder.append(" and lwp.ID is null ");    //排除单位相同的专家
-        hqlBuilder.append(" and outep.EXPERTID is null ");  //排除已满抽取次数的专家
-        hqlBuilder.append(" and ERM.EXPERTID is null  ");   //排除本次已经选择的专家
+        hqlBuilder.append(" AND fep.EXPERTID IS NULL ");
+        hqlBuilder.append(" AND lwp.ID IS NULL ");
+        hqlBuilder.append(" AND CURSEL.ID IS NULL ");
 
         //加上选择的条件
         if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype())) {
-            hqlBuilder.append(" and (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
+            hqlBuilder.append(" AND (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
             buildCondition(hqlBuilder, "ept", epSelCondition);
             hqlBuilder.append(" ) > 0");
         }
-
         return expertRepo.returnIntBySql(hqlBuilder);
     }
 

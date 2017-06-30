@@ -1,6 +1,8 @@
 package cs.controller.sys;
 
+import com.alibaba.fastjson.JSON;
 import cs.common.utils.DateUtils;
+import cs.service.sys.DictService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,15 @@ public class AdminController {
     private ICurrentUser currentUser;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DictService dictService;
 
 
     @RequiresPermissions("admin#index#get")
     @RequestMapping(name = "首页", path = "index")
     public String index(Model model) {
-
         model.addAttribute("user", currentUser.getLoginName());
+        model.addAttribute("DICT_ITEMS", JSON.toJSONString(dictService.getDictItemByCode(null)));
         return ctrlName + "/index";
     }
 

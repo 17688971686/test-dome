@@ -118,6 +118,16 @@ public class UserController {
         return userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
     }
 
+    /**
+     * 根据用户ID获取用户信息
+     * @param userId
+     * @return
+     */
+    @RequestMapping(name = "获取副主任信息", path = "findUserById", method = RequestMethod.GET)
+    @ResponseBody
+    public UserDto findUserById(@RequestParam String userId){
+        return userService.findById(userId);
+    }
     // begin#html
     @RequiresPermissions("user#html/list#get")
     @RequestMapping(name = "用户列表页面", path = "html/list", method = RequestMethod.GET)

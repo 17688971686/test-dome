@@ -342,7 +342,6 @@ desired effect
     <div class="control-sidebar-bg"></div>
 </div>
 
-
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
@@ -376,6 +375,9 @@ desired effect
 
 <!-- Begin:自定义Js -->
 <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
+<script type="text/javascript">
+    common.initDictItems(${DICT_ITEMS});
+</script>
 <!--<script src="${path}/contents/app/common/common.js?version = ${.now}"></script>-->
 <!--<script src="${path}/contents/app/app.js?version = ${.now}"></script>-->
 <!--&lt;!&ndash; Role &ndash;&gt;-->

@@ -16,11 +16,11 @@
             deleteUser: deleteUser,
             updateUser: updateUser,
             getOrg: getOrg,
-            queryUser:queryUser
+            queryUser: queryUser
         };
 
         return service;
-        
+
         // begin#updateUser
         function updateUser(vm) {
             common.initJqValidation();
@@ -28,7 +28,7 @@
             if (isValid) {
                 vm.isSubmit = true;
                 vm.model.id = vm.id;// id
-                
+
                 // zTree
                 var nodes = getZtreeChecked();
                 var nodes_role = $linq(nodes).where(function (x) {
@@ -169,7 +169,7 @@
                 });
 
             }
-        }      
+        }
 
         //获取部门信息
         function getOrg(vm) {
@@ -199,7 +199,6 @@
                 url: url_role
             }
             var httpSuccess = function success(response) {
-
                 common.requestSuccess({
                     vm: vm,
                     response: response,
@@ -226,8 +225,7 @@
                             name: '角色集合',
                             children: zNodes
                         };
-                        zTreeObj = $.fn.zTree.init($("#zTree"), setting,
-                            rootNode);
+                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
                         if (vm.isUpdate) {
                             updateZtree(vm);
 
@@ -248,11 +246,14 @@
         // begin#getUserById
         function getUserById(vm) {
             var httpOptions = {
-                method: 'POST',
-                url: common.format(url_user +"/fingByOData"+ "?$filter=id eq '{0}'", vm.id)
+                method: 'get',
+                url: rootPath + "/user/findUserById",
+                params: {
+                    userId: vm.id
+                }
             }
             var httpSuccess = function success(response) {
-                vm.model = response.data.value[0];
+                vm.model = response.data;
                 if (vm.isUpdate) {
                     initZtreeClient(vm);
                 }
@@ -271,7 +272,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user+"/fingByOData?$orderby=userSort",$("#usersform")),
+                transport: common.kendoGridConfig().transport(url_user + "/fingByOData?$orderby=userSort", $("#usersform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -279,7 +280,7 @@
                             type: "date"
                         },
                         modifiedDate: {
-                        	type: "date"
+                            type: "date"
                         }
                     }
                 }),
@@ -294,18 +295,18 @@
             });
 
             // End:dataSource
-            
+
             //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
             //S_序号
             // Begin:column
             var columns = [
@@ -321,14 +322,14 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
-                {  
-				    field: "rowNumber",  
-				    title: "序号",  
-				    width: 50,
-				    filterable : false,
-				    template: "<span class='row-number'></span>"  
-				 }
-				,
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable: false,
+                    template: "<span class='row-number'></span>"
+                }
+                ,
                 {
                     field: "loginName",
                     title: "登录名",
@@ -364,22 +365,22 @@
                     title: "所属角色",
                     width: 160,
                     filterable: false,
-                    template: function(item) {
-						if(item.roles){
-							var resultStr = "";
-							for(var i=0,l=item.roles.length;i<l;i++){
-							    if(i == 0){
+                    template: function (item) {
+                        if (item.roles) {
+                            var resultStr = "";
+                            for (var i = 0, l = item.roles.length; i < l; i++) {
+                                if (i == 0) {
                                     resultStr += item.roles[i].roleName
-                                }else{
-                                    resultStr += ", "+item.roles[i].roleName ;
+                                } else {
+                                    resultStr += ", " + item.roles[i].roleName;
                                 }
-							}
-							return resultStr;
-						}
-						else{
-							return " ";
-						}
-					}	
+                            }
+                            return resultStr;
+                        }
+                        else {
+                            return " ";
+                        }
+                    }
                 },
                 {
                     field: "",
@@ -400,16 +401,17 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound:dataBound,
+                dataBound: dataBound,
                 resizable: true
             };
 
         }// end fun grid
 
         //查询
-        function queryUser(vm){
+        function queryUser(vm) {
             vm.gridOptions.dataSource.read();
         }
+
         // begin common fun
         function getZtreeChecked() {
             var treeObj = $.fn.zTree.getZTreeObj("zTree");

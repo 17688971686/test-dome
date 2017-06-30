@@ -80,29 +80,69 @@
 
         <!-- start 专家评分 -->
         <div class="well well-sm tab-pane fade" style="background: white;" id="sign_remark">
-            <div id="expertRemarkGrid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+            <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td>
+                            <table class="table table-bordered">
+                                <caption class="text-center h3">
+                                    <strong>专家评分</strong>
+                                </caption>
+                                <th>
+                                    <tr>
+                                        <td>序号</td>
+                                        <td>姓名</td>
+                                        <td>工作单位</td>
+                                        <td>职位/职称</td>
+                                        <td>专业</td>
+                                        <td>专家评分</td>
+                                        <td>评分描述</td>
+                                        <td ng-show="vm.businessFlag.editExpertSC">操作</td>
+                                    </tr>
+                                    <tr ng-repeat="x in expertReview.expertSelectedDtoList">
+                                        <td>{{$index+1}}</td>
+                                        <td>{{x.expertDto.name}}</td>
+                                        <td>{{x.expertDto.comPany}}</td>
+                                        <td>{{x.expertDto.job}}/{{x.expertDto.post}}</td>
+                                        <td>{{x.expertDto.majorStudy}}</td>
+                                        <td>{{vm.getExpertStar(x.id,x.score)}}<span id="{{x.id}}_starhtml"></span></td>
+                                        <td>{{x.describes}}</td>
+                                        <td>
+                                            <button class="btn btn-xs btn-primary" ng-click="vm.editSelectExpert(x.id)" ng-show="vm.businessFlag.editExpertSC" ng-disabled="!vm.businessFlag.editExpertSC">
+                                                <span class="glyphicon glyphicon-pencil"></span>编辑
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </th>
+                            </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
             <!-- start 专家评分弹窗-->
-            <div id="expertmark" ng-show="vm.showExpertRemark">
+            <div id="expertmark" style="display: none;">
                 <div class="toolbar">
-                    <button class="btn btn-sm btn-success" ng-click="vm.saveMark()"
-                            ng-disabled="vm.isCommit" ng-hide="btnHide">
+                    <button class="btn btn-sm btn-success" ng-click="vm.saveMark()" ng-disabled="vm.isCommit" ng-hide="btnHide">
                         <span class="glyphicon glyphicon-ok"></span>保存
                     </button>
-                    <button class="btn btn-sm btn-success" ng-click="vm.closeEditMark()" ng-disabled="vm.isCommit"
-                            ng-hide="btnHide">
+                    <button class="btn btn-sm btn-success" ng-click="vm.closeEditMark()" ng-disabled="vm.isCommit" ng-hide="btnHide">
                         <span class="glyphicon glyphicon-ok"></span>返回
                     </button>
                 </div>
                 <div>
                     <form id="markform" name="markform">
-                        <div style="float: left;">专家星级:</div>
-                        <div style="margin-left:20px;" id="star" data-num=""></div>
-                        </span>
-
-                        <br><br>
-                        <span style="text-align: center;">评级描述:
-							<textarea rows="7" cols="100" ng-model="vm.expertReview.describes"></textarea>
-						</span>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td style="width: 180px;">专家星级:</td>
+                                <td><div id="star" data-num=""></div></td>
+                            </tr>
+                            <tr>
+                                <td>评级描述:</td>
+                                <td><textarea rows="7" cols="100" ng-model="vm.businessFlag.expertScore.describes"></textarea></td>
+                            </tr>
+                        </table>
                     </form>
                 </div>
             </div>
@@ -112,8 +152,7 @@
 
         <!-- start 专家费用 -->
         <div class="well well-sm tab-pane fade" style="background: white;" id="sign_payment">
-            <div class="toolbar">
-
+            <div class="toolbar" ng-show="vm.businessFlag.editExpertSC">
                 <button class="btn btn-sm btn-success" ng-click="vm.savePayment()" ng-disabled="vm.isCommit"
                         ng-hide="btnHide">
                     <span class="glyphicon glyphicon-ok"></span>保存
@@ -121,15 +160,14 @@
 
             </div>
             <form id="payform" name="payform">
-           <table ng-repeat="expertReview in vm.expertReviews" class="table table-bordered">
+            <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
                <tbody>
-               <tr>
+               <tr ng-show="vm.businessFlag.editExpertSC">
                    <td colspan="4">
                        <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(expertReview)" ng-disabled="vm.isCommit"
                                ng-hide="btnHide">
                            <span class="glyphicon glyphicon-ok"></span>计算应纳税额
                        </button>
-
                    </td>
                </tr>
                <tr>
@@ -149,7 +187,6 @@
                    <td colspan="3">
                        <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
                               class="form-control input-sm " ng-model="expertReview.reviewTitle">
-                      <!-- <span data-valmsg-for="reviewTitle_{{$index}}" data-valmsg-replace="true" class="errors"></span>-->
                    </td>
                </tr>
                <tr>
@@ -202,94 +239,6 @@
                </tbody>
            </table>
             </form>
-
-
-
-           <!-- <div style="margin-top: 10px" class="grid" kendo-grid="grid" k-options="vm.paymentgrid"></div>-->
-           <!-- <div id="payment" ng-show="vm.showExpertpayment">
-
-                <div class="toolbar">
-                    <button class="btn btn-sm btn-success" ng-click="vm.countTaxes()" ng-disabled="vm.isCommit"
-                            ng-hide="btnHide">
-                        <span class="glyphicon glyphicon-ok"></span>计算应纳税额
-                    </button>
-                    <button class="btn btn-sm btn-success" ng-click="vm.savePayment()" ng-disabled="vm.isCommit"
-                            ng-hide="btnHide">
-                        <span class="glyphicon glyphicon-ok"></span>保存
-                    </button>
-
-                    <button class="btn btn-sm btn-success" ng-click="vm.closeEditPay()" ng-disabled="vm.isCommit"
-                            ng-hide="btnHide">
-                        <span class="glyphicon glyphicon-ok"></span>返回
-                    </button>
-                </div>
-
-                <form id="payform" name="payform">
-                    <table class="table table-bordered">
-                        <tr>
-                            <td style="width:100px;" class="text-center">评审费发放日期: <span class="required">*</span></td>
-                            <td>
-                                <input type="text" name="payDate" id="payDate" style="width: 200px;"
-                                       class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-                                       ng-model="vm.expertReview.payDate"
-                                       data-val-date="必须为日期">
-                                <span data-valmsg-for="payDate" data-valmsg-replace="true" class="errors"></span>
-                            </td>
-                            <td style="width:100px;" class="text-center">评审/函评日期:</td>
-                            <td>
-                                {{vm.expertReview.reviewDate}}
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td style="width:100px;" class="text-center">评审费发放表标题：<span class="required">*</span></td>
-                            <td colspan="3">
-                                <input type="text" name="reviewTitle" id="reviewTitle" style="width: 600px;"
-                                       class="form-control input-sm " ng-model="vm.expertReview.reviewTitle"
-                                       data-val="true" data-val-required="必填">
-                                <span data-valmsg-for="reviewTitle" data-valmsg-replace="true" class="errors"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width:100px;" class="text-center">姓名：</td>
-                            <td style="width:150px;" class="text-center">
-                                {{vm.expertReview.expertDto.name}}
-                            </td>
-                            <td style="width:100px;" class="text-center">身份证号码：</td>
-                            <td style="width:150px;" class="text-center">
-                                {{vm.expertReview.expertDto.idCard}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width:100px;" class="text-center">开户行：</td>
-                            <td style="width:150px;" class="text-center">
-                                {{vm.expertReview.expertDto.openingBank}}
-                            </td>
-                            <td style="width:100px;" class="text-center">银行账号：</td>
-                            <td style="width:150px;" class="text-center">
-                                {{vm.expertReview.expertDto.bankAccount}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width:100px;" class="text-center">评审费:</td>
-                            <td style="width:150px;" class="text-center">
-                                <input type="text" name="reviewCost" id="reviewCost" style="width: 210px;"
-                                       class="form-control input-sm " ng-model="vm.expertReview.reviewCost">
-                            </td>
-                            <td style="width:100px;" class="text-center">应纳税额：</td>
-                            <td style="width:150px;" class="text-center">
-                                {{vm.expertReview.reviewTaxes}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width:100px;" class="text-center">合计：</td>
-                            <td style="width:150px;" class="text-center" colspan="3">
-                                {{vm.expertReview.totalCost}}
-                            </td>
-                        </tr>
-                    </table>
-                    <form>
-            </div>-->
         </div>
         <!-- end tab3 -->
         <!-- end 专家费用 -->
@@ -340,23 +289,9 @@
          <div class="well well-sm tab-pane fade" style="background:white;" id="sign_upload" >
             <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
         </div><!-- 上传附件列表 -->
-        
     </div>
 </div>
-<script type="text/template" id="columnBtns">
-    <@shiro.hasPermission name="expert##put">
-    <button class="btn btn-xs btn-primary" ng-click="{0}" ng-disabled="vm.MarkAndPay"><span
-            class="glyphicon glyphicon-pencil"></span>编辑
-    </button>
-    </@shiro.hasPermission>
-</script>
-<script type="text/template" id="columnBtn">
-    <@shiro.hasPermission name="expert##put">
-    <button class="btn btn-xs btn-primary" ng-click="{0}" ng-disabled="vm.MarkAndPay"><span
-            class="glyphicon glyphicon-pencil"></span>编辑
-    </button>
-    </@shiro.hasPermission>
-</script>
+
 <script type="text/template" id="associateColumnBtns">
     <button class="btn btn-xs" ng-click="{0}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>关联</button>
 </script>

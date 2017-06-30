@@ -61,8 +61,6 @@
             }
             var httpSuccess = function success(response) {
                 vm.linkSignId = response.data.linkSignId;
-                
-
             }
             common.http({
                 vm: vm,
@@ -384,7 +382,6 @@
                                     vm.isHaveNext = true;
                                 }
                             }
-//                            vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
 
                             if(vm.work.id){
                             	var sysfileType = "工作方案";

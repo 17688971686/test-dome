@@ -82,8 +82,7 @@
                     vm.showFlag.businessTr = true;
                     vm.showFlag.businessDis = true;     //显示是否直接发文
                     vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
-
-                    vm.MarkAndPay=false;//专家评分费用编辑权限
+                    vm.businessFlag.editExpertSC = true;//编辑专家评分和评审费
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
                         vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
@@ -92,6 +91,7 @@
                 case "XMFZR_SP_GZFA2":
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
+                    vm.businessFlag.editExpertSC = true;//编辑专家评分和评审费
                     if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9'){ //如果填报完成，则显示
                         vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();

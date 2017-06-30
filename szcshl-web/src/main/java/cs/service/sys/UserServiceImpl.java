@@ -396,7 +396,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto findById(String id) {		
-		User  user=	userRepo.findById(id);
+		User  user = userRepo.findById(id);
 		UserDto userDto = new UserDto();
 		BeanCopierUtils.copyProperties(user, userDto);
 		if(user.getOrg() != null){

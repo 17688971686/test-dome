@@ -4,13 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import cs.domain.DomainBase;
 
@@ -79,7 +73,7 @@ public class User extends DomainBase {
 	private Integer userSort;
 	
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<Role> roles=new ArrayList<>();
 	
 	@ManyToOne

@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-
+    var DICT_ITEMS ;    //数字字典
     var service = {
         initJqValidation: initJqValidation,// 重置form验证
         requestError: requestError,// 请求错误时执行
@@ -31,6 +31,9 @@
         saveCommonIdea: saveCommonIdea, // 保存常用意见
         addCorrentIdea: addCorrentIdea, // 添加当前意见
         saveCurrentIdea: saveCurrentIdea, // 绑定当前意见
+        initDictItems : function(dictList){
+            DICT_ITEMS = dictList;
+        }
     };
     window.common = service;
 
@@ -457,17 +460,25 @@
     }// E_封装filer的参数
 
     function initDictData(options) {
-        options.$http({
-            method: 'get',
-            url: rootPath + '/dict/dictItems'
-        }).then(function (response) {
-            options.scope.dictMetaData = response.data;
+        if(!DICT_ITEMS){
+            options.$http({
+                method: 'get',
+                url: rootPath + '/dict/dictItems'
+            }).then(function (response) {
+                options.scope.dictMetaData = response.data;
+                var dictsObj = {};
+                reduceDict(dictsObj,response.data);
+                options.scope.DICT = dictsObj;
+            }, function (response) {
+                alert('初始化数据字典失败');
+            });
+        }else{
+            options.scope.dictMetaData = DICT_ITEMS;
             var dictsObj = {};
-            reduceDict(dictsObj, response.data);
+            reduceDict(dictsObj, options.scope.dictMetaData);
             options.scope.DICT = dictsObj;
-        }, function (response) {
-            alert('初始化数据字典失败');
-        });
+        }
+
     }
 
     function reduceDict(dictsObj, dicts, parentId) {
@@ -475,10 +486,8 @@
             return;
         }
         if (!parentId) {
-            // find the top dict
             for (var i = 0; i < dicts.length; i++) {
                 var dict = dicts[i];
-
                 if (!dict.parentId) {
                     dictsObj[dict.dictCode] = {};
                     dictsObj[dict.dictCode].dictId = dict.dictId;
@@ -490,7 +499,6 @@
                 }
             }
         } else {
-            // find sub dicts
             for (var i = 0; i < dicts.length; i++) {
                 var dict = dicts[i];
                 if (dict.parentId && dict.parentId == parentId) {
@@ -504,7 +512,6 @@
                     subDict.dictKey = dict.dictKey;
                     subDict.dictSort = dict.dictSort;
                     dictsObj.dicts.push(subDict);
-                    // recruce
                     reduceDict(subDict, dicts, dict.dictId);
                 }
             }

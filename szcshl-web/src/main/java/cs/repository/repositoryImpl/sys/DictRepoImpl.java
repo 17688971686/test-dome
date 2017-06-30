@@ -1,12 +1,9 @@
 package cs.repository.repositoryImpl.sys;
 
 import java.util.List;
-
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-
 import cs.domain.sys.Dict;
 import cs.domain.sys.Dict_;
 import cs.repository.AbstractRepository;
@@ -44,7 +41,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 
 	@Override
 	public Dict findByCode(String dictCode,String excludeId) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);
+		Criteria criteria = getExecutableCriteria();
 		criteria.add(Restrictions.eq(Dict_.dictCode.getName(), dictCode));
 		if(excludeId != null&&!excludeId.isEmpty()){
 			criteria.add(Restrictions.not(Restrictions.eq(Dict_.dictId.getName(), excludeId)));
@@ -59,11 +56,9 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 
 	@Override
 	public Dict findByCodeKeyAndName(String dictCode, String dictKey, String dictName) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);
+		Criteria criteria = getExecutableCriteria();
 		criteria.add(Restrictions.eq(Dict_.dictCode.getName(), dictCode));
 		criteria.add(Restrictions.or(Restrictions.eq(Dict_.dictKey.getName(), dictKey),Restrictions.eq(Dict_.dictName.getName(), dictName)));
-		//criteria.add(Restrictions.eq(Dict_.dictKey.getName(), dictKey));
-		//criteria.add(Restrictions.eq(Dict_.dictName.getName(), dictName));
 		List<Dict> dictGroups = criteria.list();
 		if (dictGroups.size() > 0) {
 			return dictGroups.get(0);

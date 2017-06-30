@@ -206,8 +206,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setSendFileUser(sign.getMainDeptUserName());
 
             //查询项目的第一第二负责人
-            User mainUser = signPrincipalService.getMainPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue()),
-             secondUser = signPrincipalService.getSecondPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+            User mainUser = signPrincipalService.getMainPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+            List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
 
             if(mainUser != null && Validate.isString(mainUser.getId())){
                 workProgramDto.setMianChargeUserId(mainUser.getId());
@@ -216,9 +216,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgramDto.setReviewOrgName(mainUser.getOrg().getName());
                 workProgramDto.setIsMain(isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
             }
-            if (secondUser != null && Validate.isString(secondUser.getId())) {
-                workProgramDto.setSecondChargeUserId(secondUser.getId());
-                workProgramDto.setSecondChargeUserName(secondUser.getDisplayName());
+            if (secondPriUserList != null && secondPriUserList.size() > 0) {
+                String seUserIds = "",seUserName = "";
+                for(User u:secondPriUserList){
+                    seUserIds += u.getId() + ",";
+                    seUserName += u.getDisplayName() + ",";
+                }
+                workProgramDto.setSecondChargeUserId(seUserIds.substring(0,seUserIds.length()-1));
+                workProgramDto.setSecondChargeUserName(seUserName.substring(0,seUserName.length()-1));
             }
         }
 

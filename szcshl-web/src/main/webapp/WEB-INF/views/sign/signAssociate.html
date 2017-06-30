@@ -1,32 +1,31 @@
-
-<!-- 审批意见弹出框 -->
+<!-- 项目关联弹出框 -->
 <div id="associateWindow" class="well well-sm" style="background:white;display:none;">
-    <form id="associateForm" name="associateForm">
-        <table style="width:100%">
-            <tr>
-                <td class="formAlignRight">项目名称：</td>
-                <td>{{vm.currentAssociateSign.projectname}}</td>
-                <td class="formAlignRight">委内收文编号：</td>
-                <td>{{vm.currentAssociateSign.filecode}}</td>
-                <td class="formAlignRight">项目代码：</td>
-                <td>{{vm.currentAssociateSign.projectcode}}</td>
-                <td class="formAlignRight">项目阶段：</td>
-                <td>{{vm.currentAssociateSign.reviewstage}}</td>
-            </tr>
-        </table>
-        <div class="well well-sm" style="background:white;">
-            <div class="well">
-                <form id="searchform" name="searchform">
-                        <span class="help-inline">项目名称：</span>
-                        <input type="text" operator="like" name="projectname" id="projectnam" placeholder="请输入">
+    <div class="well well-sm" style="background:white;">
+        <div class="well well-sm">
+            <form id="searchform" name="searchform">
+                    <span class="help-inline">项目名称：</span>
+                    <input type="text" operator="like" name="projectname" id="projectnam" placeholder="请输入">
 
-                        <span class="help-inline" style="margin-left:10px;">项目编号：</span>
-                        <input type="text" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+                    <span class="help-inline" style="margin-left:10px;">项目编号：</span>
+                    <input type="text" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
 
-                        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.associateQuerySign()">查询</a>
-                </form>
-            </div>
-            <div class="grid" kendo-grid="associateGrid" k-options="vm.associateGridOptions"></div>
+                    <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.associateQuerySign()">查询</a>
+            </form>
         </div>
-    </form>
+        <div class="well well-sm" style="background:white;margin-top: 10px;">
+            <table style="width:100%">
+                <tr>
+                    <td class="formAlignRight">项目名称：</td>
+                    <td>{{vm.currentAssociateSign.projectname}}</td>
+                    <td class="formAlignRight">委内收文编号：</td>
+                    <td>{{vm.currentAssociateSign.filecode}}</td>
+                    <td class="formAlignRight">项目代码：</td>
+                    <td>{{vm.currentAssociateSign.projectcode}}</td>
+                    <td class="formAlignRight">项目阶段：</td>
+                    <td>{{vm.currentAssociateSign.reviewstage}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="grid" id="associateGrid" kendo-grid k-options="vm.associateGridOptions"></div>
+    </div>
 </div>

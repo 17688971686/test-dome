@@ -23,8 +23,10 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -285,9 +287,11 @@ public class FlowController {
         //获取下一环节信息
         if(flowDto.isEnd() == false){
             //获取下一环节信息--获取从某个节点出来的所有线路
-            ActivityImpl activityImpl = flowService.getActivityImpl(taskId,processInstance.getActivityId());
+            ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                    .getDeployedProcessDefinition(task.getProcessDefinitionId());
+            ActivityImpl activityImpl = def.findActivity(task.getTaskDefinitionKey());
             List<TaskDefinition> taskDefinitionList = new ArrayList<TaskDefinition>();
-            flowService.nextTaskDefinition(taskDefinitionList,activityImpl,processInstance.getActivityId());
+            flowService.nextTaskDefinition(taskDefinitionList,activityImpl,task.getTaskDefinitionKey());
             if(taskDefinitionList.size()>0){
                 List<Node> nextNodeList = new ArrayList<Node>(taskDefinitionList.size());
                 taskDefinitionList.forEach(tf->{

@@ -3,14 +3,7 @@ package cs.domain.sys;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import cs.domain.DomainBase;
 
@@ -19,9 +12,7 @@ import cs.domain.DomainBase;
 @Entity
 @Table(name = "cs_role")
 public class Role extends DomainBase {
-	@Id	
-	//@SequenceGenerator(name = "generator_increment", sequenceName = "seq_increment" )
-	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_increment")
+	@Id
 	private String id;
 	@Column(columnDefinition="varchar(255) NOT NULL")
 	
@@ -33,7 +24,7 @@ public class Role extends DomainBase {
 	@CollectionTable(name="cs_resource",joinColumns=@JoinColumn(name="roleId"))
 	private List<Resource> resources=new ArrayList<>();
 	
-	@ManyToMany(mappedBy="roles")
+	@ManyToMany(mappedBy="roles",fetch = FetchType.LAZY)
 	private List<User> users =new ArrayList<>();
 	
 	
