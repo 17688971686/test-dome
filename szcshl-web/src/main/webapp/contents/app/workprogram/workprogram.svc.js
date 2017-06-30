@@ -23,9 +23,8 @@
             getInitSeleSignBysId: getInitSeleSignBysId,//初始化已选项目列表
             getInitRelateData: getInitRelateData,	//初始化关联数据
         };
+        
         return service;
-
-
         //S_初始化已选项目列表
         function getInitSeleSignBysId(vm) {
             var bussnessId = vm.work.id;
@@ -62,9 +61,7 @@
             }
             var httpSuccess = function success(response) {
                 vm.linkSignId = response.data.linkSignId;
-                console.log(vm.linkSignId);
-                //系统附件
-                vm.sysFiles = response.data.sysFilelist;
+                
 
             }
             common.http({
@@ -387,6 +384,7 @@
                                     vm.isHaveNext = true;
                                 }
                             }
+//                            vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
 
                             if(vm.work.id){
                             	var sysfileType = "工作方案";

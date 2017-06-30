@@ -327,6 +327,24 @@ public class FileRecordDto extends BaseDto{
 
 	//E 设备清单（国产）
 	
+	//环境影响评价报告是否有复印件
+	private String environmentalEffectCopy;
+
+	//用地规划许可证是否有复印件
+	private String landPlanningLicenseCopy;
+	
+	//项目审核明细表是否有原件
+	private String projectDetailOriginal;
+	
+	//项目审核明细表是否有复印件/扫描件
+	private String projectDetailCopy;
+	
+	//审定工程概算书是否有原件
+	private String judgemenProjectOriginal;
+	
+	//审定工程概算书是否有复印件/扫描件
+	private String judgemenProjectCopy;
+	
 
 	public String getFileRecordId() {
 		return fileRecordId;
@@ -1360,7 +1378,56 @@ public class FileRecordDto extends BaseDto{
 
 	public void setLegalPersoncCardCopy(String legalPersoncCardCopy) {
 		this.legalPersoncCardCopy = legalPersoncCardCopy;
+	}
+
+	public String getEnvironmentalEffectCopy() {
+		return environmentalEffectCopy;
+	}
+
+	public void setEnvironmentalEffectCopy(String environmentalEffectCopy) {
+		this.environmentalEffectCopy = environmentalEffectCopy;
+	}
+
+	public String getLandPlanningLicenseCopy() {
+		return landPlanningLicenseCopy;
+	}
+
+	public void setLandPlanningLicenseCopy(String landPlanningLicenseCopy) {
+		this.landPlanningLicenseCopy = landPlanningLicenseCopy;
+	}
+
+	public String getProjectDetailOriginal() {
+		return projectDetailOriginal;
+	}
+
+	public void setProjectDetailOriginal(String projectDetailOriginal) {
+		this.projectDetailOriginal = projectDetailOriginal;
+	}
+
+	public String getProjectDetailCopy() {
+		return projectDetailCopy;
+	}
+
+	public void setProjectDetailCopy(String projectDetailCopy) {
+		this.projectDetailCopy = projectDetailCopy;
+	}
+
+	public String getJudgemenProjectOriginal() {
+		return judgemenProjectOriginal;
+	}
+
+	public void setJudgemenProjectOriginal(String judgemenProjectOriginal) {
+		this.judgemenProjectOriginal = judgemenProjectOriginal;
+	}
+
+	public String getJudgemenProjectCopy() {
+		return judgemenProjectCopy;
+	}
+
+	public void setJudgemenProjectCopy(String judgemenProjectCopy) {
+		this.judgemenProjectCopy = judgemenProjectCopy;
 	}	
+	
 	
 	
 }

@@ -26,10 +26,16 @@
 	<div class="tab-content" style="background:white;">
 		<!-- 隐藏域部分 -->
 		<input type="hidden" ng-model="vm.model.isreviewcompleted" value="{{vm.model.isreviewcompleted}}" />
-
+	
 		<!-- 详情页 -->
 		<div class="well well-sm tab-pane fade in active" style="background:white;" id="sign_detail">
-			<div ng-include src="'${path}/contents/app/sign/detail.html'"></div>
+			
+			<div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' || vm.model.reviewstage=='其它'"
+			 ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
+			<div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>	
+			<div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmentImportDetail.html'"></div>	
+			<div ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/sign/signDetail/foreignEquipmenDetail.html'"></div>
+			<div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signDetail/projectBudgetDetail.html'"></div>														
 		</div><!-- end tab1 -->
 
 		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram" >
@@ -39,9 +45,9 @@
 		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
 			<div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
 		</div><!-- end tab3 -->
-
+		
 		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" ng-show="vm.show_workprogram">
-			<div ng-include src="'${path}/contents/app/workprogram/all_detail.html'" />
+			<div ng-include src="'${path}/contents/app/workprogram/all_detail.html'"/>
 		</div><!-- 工作方案 -->
 
 		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" ng-show="vm.show_dispatch">

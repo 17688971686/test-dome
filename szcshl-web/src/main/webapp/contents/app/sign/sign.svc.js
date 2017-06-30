@@ -82,7 +82,18 @@
                 }
             });
             // End:dataSource
-
+            //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
             // Begin:column
             var columns = [
                 {
@@ -94,6 +105,13 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
+                {  
+				    field: "rowNumber",  
+				    title: "序号",  
+				    width: 50,
+				    filterable : false,
+				    template: "<span class='row-number'></span>"  
+				 },
                 {
                     field: "projectname",
                     title: "项目名称",
@@ -187,6 +205,7 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound:dataBound,
                 resizable: true
             };
         }//E_初始化grid
@@ -378,14 +397,16 @@
                         //编制单位
                         vm.designcomlist = response.data.designcomlist;
                         //初始化附件上传
-                        sysfileSvc.initUploadOptions({
-                            businessId:vm.model.signid,
-                            sysSignId :vm.model.signid,
-                            sysfileType:"收文",
-                            uploadBt:"upload_file_bt",
-                            detailBt:"detail_file_bt",
-                            vm:vm
-                        });
+                        if(vm.model.signid){
+	                        sysfileSvc.initUploadOptions({
+	                            businessId:vm.model.signid,
+	                            sysSignId :vm.model.signid,
+	                            sysfileType:"收文",
+	                            uploadBt:"upload_file_bt",
+	                            detailBt:"detail_file_bt",
+	                            vm:vm
+	                        });
+                        }
                     }
                 })
             }

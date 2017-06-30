@@ -48,6 +48,7 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(100)")
 	private String fileNumber;
 	
+	
 	//报审登记表是否有原件0表示没有，9表示有
 	@Column(columnDefinition="VARCHAR(2)")
 	private String recordFormOriginal;
@@ -75,6 +76,10 @@ public class FileRecord extends DomainBase{
 	//项目处理表是否有扫描件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sugproHandleFormScan;
+	
+	//委文件处理表份数
+	@Column(columnDefinition="INTEGER")
+	private Integer sugfileHandleFormCount;
 	
 	//委文件处理表是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
@@ -532,6 +537,30 @@ public class FileRecord extends DomainBase{
 	private String legalPersoncCardCopy;
 	
 	//E 设备清单（国产）
+	
+	//环境影响评价报告是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String environmentalEffectCopy;
+
+	//用地规划许可证是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String landPlanningLicenseCopy;
+	
+	//项目审核明细表是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectDetailOriginal;
+	
+	//项目审核明细表是否有复印件/扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectDetailCopy;
+	
+	//审定工程概算书是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String judgemenProjectOriginal;
+	
+	//审定工程概算书是否有复印件/扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String judgemenProjectCopy;
 
 	//收文，一对一
 	@OneToOne(fetch = FetchType.LAZY)
@@ -1569,6 +1598,63 @@ public class FileRecord extends DomainBase{
 	public void setLegalPersoncCardCopy(String legalPersoncCardCopy) {
 		this.legalPersoncCardCopy = legalPersoncCardCopy;
 	}
+
+	public Integer getSugfileHandleFormCount() {
+		return sugfileHandleFormCount;
+	}
+
+	public void setSugfileHandleFormCount(Integer sugfileHandleFormCount) {
+		this.sugfileHandleFormCount = sugfileHandleFormCount;
+	}
+
+	public String getEnvironmentalEffectCopy() {
+		return environmentalEffectCopy;
+	}
+
+	public void setEnvironmentalEffectCopy(String environmentalEffectCopy) {
+		this.environmentalEffectCopy = environmentalEffectCopy;
+	}
+
+	public String getLandPlanningLicenseCopy() {
+		return landPlanningLicenseCopy;
+	}
+
+	public void setLandPlanningLicenseCopy(String landPlanningLicenseCopy) {
+		this.landPlanningLicenseCopy = landPlanningLicenseCopy;
+	}
+
+	public String getProjectDetailOriginal() {
+		return projectDetailOriginal;
+	}
+
+	public void setProjectDetailOriginal(String projectDetailOriginal) {
+		this.projectDetailOriginal = projectDetailOriginal;
+	}
+
+	public String getProjectDetailCopy() {
+		return projectDetailCopy;
+	}
+
+	public void setProjectDetailCopy(String projectDetailCopy) {
+		this.projectDetailCopy = projectDetailCopy;
+	}
+
+	public String getJudgemenProjectOriginal() {
+		return judgemenProjectOriginal;
+	}
+
+	public void setJudgemenProjectOriginal(String judgemenProjectOriginal) {
+		this.judgemenProjectOriginal = judgemenProjectOriginal;
+	}
+
+	public String getJudgemenProjectCopy() {
+		return judgemenProjectCopy;
+	}
+
+	public void setJudgemenProjectCopy(String judgemenProjectCopy) {
+		this.judgemenProjectCopy = judgemenProjectCopy;
+	}
+	
 	
 	
 	

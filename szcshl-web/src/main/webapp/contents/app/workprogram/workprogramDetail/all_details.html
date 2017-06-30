@@ -1,0 +1,458 @@
+<meta charset="UTF-8">
+<!-- start 主项目（项目建议书/可行性研究报告） -->
+<table class="table table-bordered" ng-show=" vm.mainwork.workreviveStage=='项目建议书' || vm.mainwork.workreviveStage=='可行性研究报告' || vm.mainwork.workreviveStage=='提前介入'||vm.mainwork.workreviveStage=='项目概算' || vm.mainwork.workreviveStage=='其它' || vm.mainwork.workreviveStage=='资金申请报告'">
+    <caption class="text-center h3"><strong>{{vm.mainwork.titleName}}</strong></caption>
+    <caption style="width:100%;">
+        <span style="float:left;">评审方式: {{vm.mainwork.reviewType}}  {{angular.isUndefined(vm.mainwork.isSigle)?'':vm.mainwork.isSigle == '1'?'单个函评':'合并评审'}}</span>
+        <span style="float:right;">收文日期:{{vm.mainwork.titleDate | date:'yyyy年MM月dd日' }}</span>
+    </caption>
+    <tbody>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">项目名称</td>
+        <td colspan="5">
+            {{vm.mainwork.projectName}}
+          
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">来文单位</td>
+        <td colspan="3">
+            {{vm.mainwork.sendFileUnit}}
+        </td>
+        <td  style="width:150px;" class="text-center">来文单位联系人</td>
+        <td>
+            {{vm.mainwork.sendFileUser}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">建设单位</td>
+        <td colspan="3">
+            {{vm.mainwork.buildCompany}}
+        </td>
+        <td  style="width:150px;" class="text-center">编制单位</td>
+        <td>
+            {{vm.mainwork.designCompany}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
+        <td colspan="3">
+		{{vm.mainwork.mainDeptId}}
+        </td>
+        <td style="width:150px;" class="text-center">是否有环评</td>
+        <td>
+            <label>
+                <input type="radio" ng-value="9" ng-model="vm.mainwork.isHaveEIA" name="isHaveEIA">是
+            </label>
+            <label>
+                <input type="radio" ng-value="0" ng-model="vm.mainwork.isHaveEIA" name="isHaveEIA">否
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">项目类别</td>
+        <td>
+		{{vm.mainwork.projectType}}
+        </td>
+        <td style="width:50px;" class="text-center">小类</td>
+        <td>
+		{{vm.mainwork.projectSubType}}
+        </td>
+        <td style="width:150px;" class="text-center">行业类别</td>
+        <td>
+		{{vm.mainwork.industryType}}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
+        <td rowspan="3" colspan="3">
+		{{vm.mainwork.contactPerson}}
+        </td>
+        <td style="width:150px;" class="text-center">手机</td>
+        <td>
+		{{vm.mainwork.contactPersonPhone}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px;" class="text-center">电话</td>
+        <td>
+		{{vm.mainwork.contactPersonTel}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px;" class="text-center">传真</td>
+        <td>
+		{{vm.mainwork.contactPersonFax}}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
+        <td style="width:100px;" class="text-center">申报建设规模</td>
+        <td colspan="3">
+		{{vm.mainwork.buildSize}}
+        </td>
+        <td style="width:150px;" class="text-center">申报投资</td>
+        <td >
+		{{vm.mainwork.appalyInvestment}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:100px;" class="text-center">申报建设内容</td>
+        <td colspan="5">
+			{{vm.mainwork.buildContent}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:100px;" class="text-center">项目背景</td>
+        <td colspan="5">
+		{{vm.mainwork.projectBackGround}}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2" colspan="2" style="width:150px;" class="text-center">评审部门</td>
+        <td rowspan="2" colspan="3">
+            {{vm.mainwork.reviewOrgName}}
+        </td>
+        <td style="width:150px;" class="text-center">第一负责人</td>
+        <td >
+            {{vm.mainwork.mianChargeUserName}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px;" class="text-center">第二负责人</td>
+        <td >
+            {{vm.mainwork.secondChargeUserName}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">是否有补充资料函</td>
+        <td colspan="3">
+            <label>
+                <input type="radio" ng-value="9" ng-model="vm.mainwork.isHaveSuppLetter" name="isHaveSuppLetter">是
+            </label>
+            <label>
+                <input type="radio" ng-value="0" ng-model="vm.mainwork.isHaveSuppLetter" name="isHaveSuppLetter">否
+            </label>
+        </td>
+        <td style="width:150px;" class="text-center">补充资料函发文日期</td>
+        <td >
+		{{vm.mainwork.suppLetterDate}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">评审会时间</td>
+        <td colspan="3">
+		{{vm.mainwork.workStageTime}}
+        </td>
+        <td style="width:150px;" class="text-center">会议地点</td>
+        <td >
+		{{vm.mainwork.meetingAddress}}
+        </td>
+    </tr>
+      <tr>
+        <td colspan="2" style="width:150px;" class="text-center">调研开始时间</td>
+        <td colspan="3">
+		{{vm.mainwork.studyBeginTime}}
+        </td>
+        <td style="width:150px;" class="text-center">调研结束时间</td>
+        <td >
+		{{vm.mainwork.studyEndTime}}
+        </td>
+    </tr>
+     <tr>
+        <td colspan="2" style="width:150px;" class="text-center">专家费用</td>
+        <td colspan="3">
+		{{vm.mainwork.expertCost}}
+        </td>
+        <td style="width:150px;" class="text-center"></td>
+        <td >
+	
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">拟聘请专家</td>
+        <td colspan="5">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
+        <td colspan="5">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">拟评审重点问题</td>
+        <td colspan="5">
+            {{vm.mainwork.mainPoint}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
+        <td colspan="5">
+				<table style="width: 80%;">
+					<tr>
+						<td>{{vm.mainwork.ministerSuggesttion}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：{{vm.mainwork.ministerName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.mainwork.ministerDate}}</td>
+					</tr>
+				</table>
+
+			</td>
+        
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
+        <td colspan="5">
+     	   <table style="width: 80%;">
+					<tr>
+						<td>{{vm.mainwork.leaderSuggesttion}} </td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.mainwork.leaderName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.mainwork.leaderDate}}</td>
+					</tr>
+				</table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- end 主项目 （项目建议书/可行性研究报告）table -->
+
+<!-- start 次项目 （项目建议书/可行性研究报告） table -->
+ <table class="table table-bordered" ng-show=" vm.assistwork.workreviveStage=='项目建议书' || vm.assistwork.workreviveStage=='可行性研究报告' || vm.assistwork.workreviveStage=='提前介入'|| vm.assistwork.workreviveStage=='项目概算' || vm.assistwork.workreviveStage=='其它' || vm.assistwork.workreviveStage=='资金申请报告'" >
+    <caption class="text-center h3"><strong>{{vm.assistwork.titleName}}</strong></caption>
+    <caption style="width:100%;">
+        <span style="float:left;">评审方式: {{vm.assistwork.reviewType}}  {{angular.isUndefined(vm.assistwork.isSigle)?'':vm.assistwork.isSigle == '1'?'单个函评':'合并评审'}}</span>
+        <span style="float:right;">收文日期:{{vm.assistwork.titleDate  | date:'yyyy年MM月dd日'}}</span>
+    </caption>
+    <tbody>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">项目名称</td>
+        <td colspan="5">
+            {{vm.assistwork.projectName}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">来文单位</td>
+        <td colspan="3">
+            {{vm.assistwork.sendFileUnit}}
+        </td>
+        <td  style="width:150px;" class="text-center">来文单位联系人</td>
+        <td>
+            {{vm.assistwork.sendFileUser}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">建设单位</td>
+        <td colspan="3">
+            {{vm.assistwork.buildCompany}}
+        </td>
+        <td  style="width:150px;" class="text-center">编制单位</td>
+        <td>
+            {{vm.assistwork.designCompany}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">主管部门</td>
+        <td colspan="3">
+			{{vm.assistwork.mainDeptId}}
+        </td>
+        <td style="width:150px;" class="text-center">是否有环评</td>
+        <td>
+            <label>
+                <input type="radio" ng-value="9" ng-model="vm.assistwork.isHaveEIA" name="isHaveEIA">是
+            </label>
+            <label>
+                <input type="radio" ng-value="0" ng-model="vm.assistwork.isHaveEIA" name="isHaveEIA">否
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">项目类别</td>
+        <td>
+			{{vm.assistwork.projectType}}
+        </td>
+        <td style="width:50px;" class="text-center">小类</td>
+        <td>
+			{{vm.assistwork.projectSubType}}
+        </td>
+        <td style="width:150px;" class="text-center">行业类别</td>
+        <td>
+			{{vm.assistwork.industryType}}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="3" colspan="2" style="width:150px;" class="text-center">联系人</td>
+        <td rowspan="3" colspan="3">
+		{{vm.assistwork.contactPerson}}
+        </td>
+        <td style="width:150px;" class="text-center">手机</td>
+        <td>
+		{{vm.assistwork.contactPersonPhone}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px;" class="text-center">电话</td>
+        <td>
+		{{vm.assistwork.contactPersonTel}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px;" class="text-center">传真</td>
+        <td>
+		{{vm.assistwork.contactPersonFax}}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
+        <td style="width:100px;" class="text-center">申报建设规模</td>
+        <td colspan="3">
+			{{vm.assistwork.buildSize}}
+        </td>
+        <td style="width:150px;" class="text-center">申报投资</td>
+        <td >
+			{{vm.assistwork.appalyInvestment}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:100px;" class="text-center">申报建设内容</td>
+        <td colspan="5">
+		{{vm.assistwork.buildContent}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:100px;" class="text-center">项目背景</td>
+        <td colspan="5">
+		{{vm.assistwork.projectBackGround}}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2" colspan="2" style="width:150px;" class="text-center">评审部门</td>
+        <td rowspan="2" colspan="3">
+            {{vm.assistwork.reviewOrgName}}
+        </td>
+        <td style="width:150px;" class="text-center">第一负责人</td>
+        <td >
+            {{vm.assistwork.mianChargeUserName}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px;" class="text-center">第二负责人</td>
+        <td >
+            {{vm.assistwork.secondChargeUserName}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">是否有补充资料函</td>
+        <td colspan="3">
+            <label>
+                <input type="radio" ng-value="9" ng-model="vm.assistwork.isHaveSuppLetter" name="isHaveSuppLetter">是
+            </label>
+            <label>
+                <input type="radio" ng-value="0" ng-model="vm.assistwork.isHaveSuppLetter" name="isHaveSuppLetter">否
+            </label>
+        </td>
+        <td style="width:150px;" class="text-center">补充资料函发文日期</td>
+        <td >
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">评审会时间</td>
+        <td colspan="3">
+			{{vm.assistwork.workStageTime}}
+        </td>
+        <td style="width:150px;" class="text-center">会议地点</td>
+        <td >
+			{{vm.assistwork.meetingAddress}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">调研开始时间</td>
+        <td colspan="3">
+		{{vm.assistwork.studyBeginTime}}
+        </td>
+        <td style="width:150px;" class="text-center">调研结束时间</td>
+        <td >
+		{{vm.assistwork.studyEndTime}}
+        </td>
+    </tr>
+     <tr>
+        <td colspan="2" style="width:150px;" class="text-center">专家费用</td>
+        <td colspan="3">
+		{{vm.assistwork.expertCost}}
+        </td>
+        <td style="width:150px;" class="text-center"></td>
+        <td >
+	
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">拟聘请专家</td>
+        <td colspan="5">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">拟邀请单位及领导</td>
+        <td colspan="5">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">拟评审重点问题</td>
+        <td colspan="5">
+            {{vm.assistwork.mainPoint}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">部长处理意见</td>
+        <td colspan="5">
+      	  <table style="width: 80%;">
+					<tr>
+						<td>{{vm.assistwork.ministerSuggesttion}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.assistwork.ministerName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.assistwork.ministerDate}}</td>
+					</tr>
+				</table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:150px;" class="text-center">中心领导签批意见</td>
+        <td colspan="5">
+           <table style="width: 80%;">
+					<tr>
+						<td>{{vm.assistwork.leaderSuggesttion}} </td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">签名：
+							{{vm.assistwork.leaderName}}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:80%;">日期：{{vm.assistwork.leaderDate}}</td>
+					</tr>
+				</table>
+        </td>
+    </tr>
+    </tbody>
+</table>	
+<!-- end 次项目 （项目建议书/可行性研究报告） table -->
+
+
+
+
+
+

@@ -603,9 +603,9 @@ public class Validate {
 	 * @author HZH
 	 */
 	public static void main(String[] args) {
-		String str = "chin被对方ese";
+		String str = "chin66ese";
 		System.out.println(Validate.isContainsChinese(str));
-		System.out.println(isLetter("dadd"));
+		System.out.println(isLetter("dadd重大"));
 		System.out.println(Validate.isNumeric("124.444"));
 	}
 

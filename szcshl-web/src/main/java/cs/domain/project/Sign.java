@@ -702,7 +702,94 @@ public class Sign extends DomainBase {
     private String legalPersoncCardCopy;
     
     //E (设备清单(国产))
-
+    
+    //S (项目概算)
+	//环境影响评价报告分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer environmentalEffectCount;
+	
+	//环境影响评价报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String environmentalEffectOriginal;
+	
+	//环境影响评价报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+	private String environmentalEffectCopy;
+	
+	//用地规划许可证分数
+	@Column(columnDefinition = "INTEGER")
+	private Integer landPlanningLicenseCount;
+	
+	//用地规划许可证是否有原件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String landPlanningLicenseOriginal;
+	
+	//用地规划许可证是否有复印件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String  landPlanningLicenseCopy;
+	
+	//地质勘察报告分数
+	@Column(columnDefinition = "INTEGER")
+	private Integer geologicalSurveyCount;
+	
+	//地质勘察报告是否有原件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String geologicalSurveyOriginal;
+	
+	//地质勘察报告是否有复印件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String geologicalSurveyCopy;
+	
+	//设计说明分数
+	@Column(columnDefinition = "INTEGER")
+	private Integer descriptionDesignCount;
+	
+	//设计说明是否有原件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String descriptionDesignOriginal;
+	
+	//设计说明是否有复印件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String descriptionDesignCopy;
+	
+	//工程概算书分数
+	@Column(columnDefinition = "INTEGER")
+	private Integer projectBudgetCount;
+	
+	//工程概算书是否有原件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String projectBudgetOriginal;
+	
+	
+	//工程概算书是否有复印件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String projectBudgetCopy;
+	
+	//初步设计图纸分数
+	@Column(columnDefinition = "INTEGER")
+	private Integer preliminaryDrawingCount;
+	
+	//初步设计图纸是否有原件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String preliminaryDrawingOriginal;
+	
+	//初步设计图纸是否有复印件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String preliminaryDrawingCopy;
+	
+	//施工设计图纸分数
+	@Column(columnDefinition = "INTEGER")
+	private Integer constructionDrawingsCount;
+	
+	//施工设计图纸是否有原件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String constructionDrawingsOriginal;
+	
+	//施工设计图纸是否有复印件
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String constructionDrawingsCopy;
+    //E (项目概算)
+	
     //项目是否已关联,0未关联，1已关联，默认未关联
     @Column(columnDefinition = "INTEGER")
     private Integer isAssociate;
@@ -2058,6 +2145,175 @@ public class Sign extends DomainBase {
 	public void setLegalPersoncCardCopy(String legalPersoncCardCopy) {
 		this.legalPersoncCardCopy = legalPersoncCardCopy;
 	}
+
+	public Integer getEnvironmentalEffectCount() {
+		return environmentalEffectCount;
+	}
+
+	public void setEnvironmentalEffectCount(Integer environmentalEffectCount) {
+		this.environmentalEffectCount = environmentalEffectCount;
+	}
+
+	public String getEnvironmentalEffectOriginal() {
+		return environmentalEffectOriginal;
+	}
+
+	public void setEnvironmentalEffectOriginal(String environmentalEffectOriginal) {
+		this.environmentalEffectOriginal = environmentalEffectOriginal;
+	}
+
+	public String getEnvironmentalEffectCopy() {
+		return environmentalEffectCopy;
+	}
+
+	public void setEnvironmentalEffectCopy(String environmentalEffectCopy) {
+		this.environmentalEffectCopy = environmentalEffectCopy;
+	}
+
+	public Integer getLandPlanningLicenseCount() {
+		return landPlanningLicenseCount;
+	}
+
+	public void setLandPlanningLicenseCount(Integer landPlanningLicenseCount) {
+		this.landPlanningLicenseCount = landPlanningLicenseCount;
+	}
+
+	public String getLandPlanningLicenseOriginal() {
+		return landPlanningLicenseOriginal;
+	}
+
+	public void setLandPlanningLicenseOriginal(String landPlanningLicenseOriginal) {
+		this.landPlanningLicenseOriginal = landPlanningLicenseOriginal;
+	}
+
+	public String getLandPlanningLicenseCopy() {
+		return landPlanningLicenseCopy;
+	}
+
+	public void setLandPlanningLicenseCopy(String landPlanningLicenseCopy) {
+		this.landPlanningLicenseCopy = landPlanningLicenseCopy;
+	}
+
+	public Integer getGeologicalSurveyCount() {
+		return geologicalSurveyCount;
+	}
+
+	public void setGeologicalSurveyCount(Integer geologicalSurveyCount) {
+		this.geologicalSurveyCount = geologicalSurveyCount;
+	}
+
+	public String getGeologicalSurveyOriginal() {
+		return geologicalSurveyOriginal;
+	}
+
+	public void setGeologicalSurveyOriginal(String geologicalSurveyOriginal) {
+		this.geologicalSurveyOriginal = geologicalSurveyOriginal;
+	}
+
+	public String getGeologicalSurveyCopy() {
+		return geologicalSurveyCopy;
+	}
+
+	public void setGeologicalSurveyCopy(String geologicalSurveyCopy) {
+		this.geologicalSurveyCopy = geologicalSurveyCopy;
+	}
+
+	public Integer getDescriptionDesignCount() {
+		return descriptionDesignCount;
+	}
+
+	public void setDescriptionDesignCount(Integer descriptionDesignCount) {
+		this.descriptionDesignCount = descriptionDesignCount;
+	}
+
+	public String getDescriptionDesignOriginal() {
+		return descriptionDesignOriginal;
+	}
+
+	public void setDescriptionDesignOriginal(String descriptionDesignOriginal) {
+		this.descriptionDesignOriginal = descriptionDesignOriginal;
+	}
+
+	public String getDescriptionDesignCopy() {
+		return descriptionDesignCopy;
+	}
+
+	public void setDescriptionDesignCopy(String descriptionDesignCopy) {
+		this.descriptionDesignCopy = descriptionDesignCopy;
+	}
+
+	public Integer getProjectBudgetCount() {
+		return projectBudgetCount;
+	}
+
+	public void setProjectBudgetCount(Integer projectBudgetCount) {
+		this.projectBudgetCount = projectBudgetCount;
+	}
+
+	public String getProjectBudgetOriginal() {
+		return projectBudgetOriginal;
+	}
+
+	public void setProjectBudgetOriginal(String projectBudgetOriginal) {
+		this.projectBudgetOriginal = projectBudgetOriginal;
+	}
+
+	public String getProjectBudgetCopy() {
+		return projectBudgetCopy;
+	}
+
+	public void setProjectBudgetCopy(String projectBudgetCopy) {
+		this.projectBudgetCopy = projectBudgetCopy;
+	}
+
+	public Integer getPreliminaryDrawingCount() {
+		return preliminaryDrawingCount;
+	}
+
+	public void setPreliminaryDrawingCount(Integer preliminaryDrawingCount) {
+		this.preliminaryDrawingCount = preliminaryDrawingCount;
+	}
+
+	public String getPreliminaryDrawingOriginal() {
+		return preliminaryDrawingOriginal;
+	}
+
+	public void setPreliminaryDrawingOriginal(String preliminaryDrawingOriginal) {
+		this.preliminaryDrawingOriginal = preliminaryDrawingOriginal;
+	}
+
+	public String getPreliminaryDrawingCopy() {
+		return preliminaryDrawingCopy;
+	}
+
+	public void setPreliminaryDrawingCopy(String preliminaryDrawingCopy) {
+		this.preliminaryDrawingCopy = preliminaryDrawingCopy;
+	}
+
+	public Integer getConstructionDrawingsCount() {
+		return constructionDrawingsCount;
+	}
+
+	public void setConstructionDrawingsCount(Integer constructionDrawingsCount) {
+		this.constructionDrawingsCount = constructionDrawingsCount;
+	}
+
+	public String getConstructionDrawingsOriginal() {
+		return constructionDrawingsOriginal;
+	}
+
+	public void setConstructionDrawingsOriginal(String constructionDrawingsOriginal) {
+		this.constructionDrawingsOriginal = constructionDrawingsOriginal;
+	}
+
+	public String getConstructionDrawingsCopy() {
+		return constructionDrawingsCopy;
+	}
+
+	public void setConstructionDrawingsCopy(String constructionDrawingsCopy) {
+		this.constructionDrawingsCopy = constructionDrawingsCopy;
+	}
+	
 	
 	
 	

@@ -11,7 +11,7 @@
         vm.title = '查看详情信息';        			//标题
         vm.model.signid = $state.params.signid;	//收文ID
         vm.show_flow_info = false;				//显示流程图信息
-
+       
         active();
         function active(){
             $('#myTab li').click(function (e) {

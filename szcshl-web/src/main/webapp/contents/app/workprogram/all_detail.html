@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <!-- start 主项目（项目建议书/可行性研究报告） -->
-<table class="table table-bordered" ng-show="(vm.model.isreviewCompleted && vm.model.isreviewCompleted=='9') && (vm.mainwork.workreviveStage=='项目建议书' || vm.mainwork.workreviveStage=='可行性研究报告' || vm.mainwork.workreviveStage=='项目概算')">
+<table class="table table-bordered" >
     <caption class="text-center h3"><strong>{{vm.mainwork.titleName}}</strong></caption>
     <caption style="width:100%;">
         <span style="float:left;">评审方式: {{vm.mainwork.reviewType}}  {{angular.isUndefined(vm.mainwork.isSigle)?'':vm.mainwork.isSigle == '1'?'单个函评':'合并评审'}}</span>
@@ -227,7 +227,7 @@
 <!-- end 主项目 （项目建议书/可行性研究报告）table -->
 
 <!-- start 次项目 （项目建议书/可行性研究报告） table -->
- <table class="table table-bordered" ng-show="(vm.model.isreviewACompleted && vm.model.isreviewACompleted=='9') && (vm.assistwork.workreviveStage=='项目建议书' || vm.assistwork.workreviveStage=='可行性研究报告' || vm.assistwork.workreviveStage=='项目概算')">
+ <table class="table table-bordered" ng-show="(vm.model.isreviewACompleted && vm.model.isreviewACompleted=='9') && (vm.assistwork.workreviveStage=='项目建议书' || vm.assistwork.workreviveStage=='可行性研究报告' || vm.assistwork.workreviveStage=='项目概算' || vm.mainwork.workreviveStage=='资金申请报告')">
     <caption class="text-center h3"><strong>{{vm.assistwork.titleName}}</strong></caption>
     <caption style="width:100%;">
         <span style="float:left;">评审方式: {{vm.assistwork.reviewType}}  {{angular.isUndefined(vm.assistwork.isSigle)?'':vm.assistwork.isSigle == '1'?'单个函评':'合并评审'}}</span>
@@ -453,7 +453,7 @@
 
 <!-- S 设备清单（进口）主项目 -->
 		<!--  s table -->
-		<table class="table table-bordered" ng-show="vm.showMainwork && vm.mainwork.workreviveStage =='设备清单（进口）'" >
+		<!-- <table class="table table-bordered" ng-show="vm.showMainwork && vm.mainwork.workreviveStage =='设备清单（进口）'" >
 		  <caption class="text-center h3"><strong>
 		  
 		  {{getTBHeadName(vm.mainwork.workreviveStage,vm.mainwork.isAdvanced,'评审工作方案')}}
@@ -620,13 +620,13 @@
 			  </td>		      
 		    </tr>		      
 		  </tbody>		  
-		</table>	
+		</table>	 -->
 		<!--  end table -->
 <!-- E 设备清单（进口）主项目 -->
 
 <!-- S 设备清单（进口）次项目 -->
 		<!--  s table -->
-		<table class="table table-bordered" ng-show="vm.showAssistwork && vm.assistwork.workreviveStage =='设备清单（进口）'" >
+		<!-- <table class="table table-bordered" ng-show="vm.showAssistwork && vm.assistwork.workreviveStage =='设备清单（进口）'" >
 		  <caption class="text-center h3"><strong>
 		  
 		  {{getTBHeadName(vm.assistwork.workreviveStage,vm.assistwork.isAdvanced,'评审工作方案')}}
@@ -793,14 +793,14 @@
 			  </td>		      
 		    </tr>		      
 		  </tbody>		  
-		</table>	
+		</table> -->	
 		<!--  end table -->
 
 <!-- E 设备清单（进口）次项目 -->
 
 <!-- S 设备清单（国产）主项目 -->
 		<!--  s table -->
-		<table class="table table-bordered"  ng-show="vm.showMainwork && vm.mainwork.workreviveStage=='设备清单（国产）'">
+		<!-- <table class="table table-bordered"  ng-show="vm.showMainwork && vm.mainwork.workreviveStage=='设备清单（国产）'">
 		  <caption class="text-center h3"><strong>
 		  
 		  {{getTBHeadName(vm.mainwork.workreviveStage,vm.mainwork.isAdvanced,'评审工作方案')}}
@@ -966,13 +966,13 @@
 			  </td>		      
 		    </tr>		      
 		  </tbody>		  
-		</table>	
+		</table>	 -->
 		<!--  end table -->
 <!-- E 设备清单（国产）主项目 -->
 
 <!-- S 设备清单（国产）次项目 -->
 <!--  s table -->
-		<table class="table table-bordered"  ng-show="vm.showAssistwork && vm.assistwork.workreviveStage=='设备清单（国产）'">
+		<!-- <table class="table table-bordered"  ng-show="vm.showAssistwork && vm.assistwork.workreviveStage=='设备清单（国产）'">
 		  <caption class="text-center h3"><strong>
 		  
 		  {{getTBHeadName(vm.assistwork.workreviveStage,vm.assistwork.isAdvanced,'评审工作方案')}}
@@ -1138,7 +1138,7 @@
 			  </td>		      
 		    </tr>		      
 		  </tbody>		  
-		</table>	
+		</table>	 -->
 		<!--  end table -->
 
 <!-- E 设备清单（国产）次项目 -->

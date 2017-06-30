@@ -16,6 +16,24 @@
 
         signSvc.initFillData(vm);
 
+        //主办处
+        vm.mainDeptUser = function(){
+        	if(!vm.model.maindeptName){
+                 common.alert({
+                     vm:vm,
+                     msg:"请选择办事处，再选择选择联系人！"
+                 })
+             }
+        }
+        //协办处
+        vm.assistDeptUser = function(){
+        	if(!vm.model.assistdeptName){
+                common.alert({
+                    vm:vm,
+                    msg:"请选择办事处，再选择选择联系人！"
+                })
+            }
+        }
         //打印预览
         vm.signPreview = function (oper) {
             if (oper < 5) {
@@ -33,83 +51,6 @@
             }
         }
 
-   
-        //文件上传窗口
-        vm.commonUploadWin = function () {
-        	var signid =  vm.model.signid;
-        	var fileType="收文";
-            common.initcommonUploadWin({businessId: vm.model.signid},signid,fileType);
-        }
-        //查看附件
-        vm.signQuery = function () {
-            common.initcommonQueryWin(vm);
-            vm.sysSignId = vm.model.signid;
-            common.commonSysFilelist(vm, $http);
-        }
-        //删除系统文件
-        vm.commonDelSysFile = function (id) {
-            common.commonDelSysFile(vm, id, $http);
-        }
-        //附件下载
-        vm.commonDownloadSysFile = function (id) {
-            common.commonDownloadFile(vm, id);
-        }
-
-       
-        //选主办处联系人判断
-        vm.selecedMDUN=function(){
-        	if(!vm.model.maindeptName){
-        		common.alert({
-                            vm : vm,
-                            msg : "请先填写主办处室",
-                            fn : function() {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                            }
-                        })
-        	}
-        }
-        
-        //选协办处联系人判断
-        vm.selectADUN=function(){
-        	if(!vm.model.assistdeptName){
-        		common.alert({
-                            vm : vm,
-                            msg : "请先填写主办处室",
-                            fn : function() {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                            }
-                        })
-        	}
-        }
-        
-        
-        //附件上传
-        vm.signUpload = function () {
-            $("#signUploadWin").kendoWindow({
-                width: "660px",
-                height: "400px",
-                title: "附件上传",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-        //查看附件
-        vm.signJquery = function () {
-            $("#signAttachments").kendoWindow({
-                width: "800px",
-                height: "400px",
-                title: "查看附件",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-            signSvc.initFillData(vm);
-        }
         //申报登记编辑
         vm.updateFillin = function () {
             signSvc.updateFillin(vm);
