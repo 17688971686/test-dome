@@ -263,7 +263,7 @@
         vm.addWorkProgram = function () {
             $state.go('workprogramEdit', {signid: vm.model.signid });
         }// E_跳转到 工作方案 编辑页面
-
+        
         //S_跳转到 工作方案 基本信息
         vm.addBaseWP = function(){
             $state.go('workprogramBaseEdit', {signid: vm.model.signid });

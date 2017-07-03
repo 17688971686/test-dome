@@ -48,6 +48,7 @@ public class WorkProgram extends DomainBase {
     private String projectName;
 
     //来文单位
+    
     @Column(columnDefinition = "VARCHAR(100)")
     private String sendFileUnit;
 

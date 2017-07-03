@@ -23,21 +23,39 @@ import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
+import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertReview_;
+import cs.domain.expert.ExpertSelected;
+import cs.domain.expert.ExpertSelected_;
+import cs.domain.expert.Expert_;
 import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBooking_;
+import cs.domain.project.AssistPlan;
+import cs.domain.project.AssistPlanSign;
+import cs.domain.project.AssistPlanSign_;
+import cs.domain.project.AssistUnit;
+import cs.domain.project.AssistUnit_;
 import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
+import cs.domain.sys.Org;
+import cs.domain.sys.Org_;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.UserDto;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
+import cs.repository.repositoryImpl.project.AssistUnitRepo;
 import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.UserService;
 
@@ -49,6 +67,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private ICurrentUser currentUser;
     @Autowired
+    private ExpertRepo expertRepo;
+    @Autowired
     private SignRepo signRepo;
     @Autowired
     private UserService userService;
@@ -57,7 +77,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private SysFileRepo sysFileRepo;
     @Autowired
+    private AssistPlanSignRepo assistPlanSignRepo;
+    @Autowired
     private SignPrincipalService signPrincipalService;
+    @Autowired
+    private AssistUnitRepo assistUnitRepo;
+    @Autowired
+    private OrgRepo orgRepo;
 
     @Override
     @Transactional
@@ -445,19 +471,88 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         String showName = "",relativeFileUrl="";
         File docFile = null;
         Map<String,Object> dataMap = new HashMap<>();
+        
+        dataMap.put("projectBackGround", workProgram.getProjectBackGround());
+	    dataMap.put("buildSize", workProgram.getBuildSize());
+	    dataMap.put("buildContent", workProgram.getBuildContent());
+	    dataMap.put("appalyInvestment", workProgram.getAppalyInvestment());//申报金额
+	    dataMap.put("mianChargeUserName",workProgram.getMianChargeUserName() ); //第一负责人
+	    dataMap.put("secondChargeUserName",workProgram.getSecondChargeUserName() ); //第二负责人
+	    dataMap.put("ministerName",workProgram.getMinisterName() );//部长名
+	    dataMap.put("mainPoint",workProgram.getMainPoint());//拟评审重点问题
+	    dataMap.put("workStageTime",workProgram.getWorkStageTime());//评审时间
+     	dataMap.put("meetingAddress",workProgram.getMeetingAddress());//会议具体地点
+     	dataMap.put("contactPerson",workProgram.getContactPerson());//联系人
+     	dataMap.put("contactPersonTel",workProgram.getContactPersonTel());//联系电话
+    	dataMap.put("contactPersonFax",workProgram.getContactPersonFax());//传真
+	    
+	    dataMap.put("leaderName",sign.getLeaderName() );//中心领导名
+	    dataMap.put("maindeptName", sign.getMaindeptName());//主办事处名称
+	    dataMap.put("assistdeptName", sign.getAssistdeptName());//协办事处名称
+	    dataMap.put("mainDeptName", sign.getMaindeptName());//主管部门名称
+	    dataMap.put("builtcompanyName", sign.getBuiltcompanyName());//建设单位
+	    dataMap.put("designcompanyName", sign.getDesigncompanyName());//编制单位
+	    
         dataMap.put("projectName",sign.getProjectname());
-        dataMap.put("dateStr",DateUtils.toStringDay(new Date()));
+        dataMap.put("dateStr",DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+        dataMap.put("reviewStage",sign.getReviewstage());
+        
+        
+        //获得拟聘专家信息
+    	 HqlBuilder sqlBuilder = HqlBuilder.create();
+         sqlBuilder.append(" select  e.* from cs_expert_review er,cs_work_program wp,cs_expert_selected es,cs_expert e");
+         sqlBuilder.append(" where er."+ExpertReview_.id.getName()+" = wp.expertreviewid");
+         sqlBuilder.append(" and er."+ExpertReview_.id.getName()+" =es.expertreviewid");
+         sqlBuilder.append(" and es.expertid =e."+Expert_.expertID.getName());
+         sqlBuilder.append(" and wp." +WorkProgram_.id.getName()+" =:workProgramId");
+         sqlBuilder.setParam("workProgramId", workprogramId);
+         List<Expert> expertList=expertRepo.findBySql(sqlBuilder);
+         //获得会议信息
+         List<RoomBooking> rbList=workProgram.getRoomBookings();
+         Date compareDate=DateUtils.converToDate("12:00", "HH:MM");
+         for (RoomBooking roomBooking : rbList) {
+         	dataMap.put("addressName", roomBooking.getAddressName());//会议地点
+         	
+         	if(DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(),compareDate)==1 &&
+    				 DateUtils.compareIgnoreSecond(roomBooking.getEndTime(),compareDate)==-1){
+     			 dataMap.put("lastTime", "全天");//天数
+         	}else{
+         		 dataMap.put("lastTime", "半天");//天数
+         	}
+         }
+         
         //2.1 生成签到表
         showName = Constant.Template.SIGN_IN.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
         relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+      /*  for (Expert expert : expertList) {
+        	 dataMap.put("expertName",expert.getName());
+        	 dataMap.put("comPany",expert.getComPany());
+        	 dataMap.put("job",expert.getJob());//职务
+        	 dataMap.put("post",expert.getPost());//职称
+        	 dataMap.put("phone",expert.getPhone());
+        }*/
         docFile = TemplateUtil.createDoc(dataMap,Constant.Template.SIGN_IN.getKey(),path + File.separator +relativeFileUrl);
-        if(docFile != null){
-            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
-                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
-                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
-        }
+	        if(docFile != null){
+	            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+	                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+	                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+	        }
+	        
         //2.2 生成主持人表
-        dataMap.remove("dateStr");
+        String expertName="";
+        for (Expert expert : expertList) {
+        	if(!StringUtil.isBlank(expertName)){
+        		expertName+="、";
+        	}
+        	expertName+=expert.getName();
+        }
+        dataMap.put("expertName", expertName);
+	    //相关单位
+        String depat=sign.getMaindeptName()+","+sign.getAssistdeptName()+","+workProgram.getMainDeptName();
+        dataMap.put("depat",depat);
+        //评审中心项目组成员
+        String projectWorker=workProgram.getLeaderName()+","+workProgram.getMinisterName()+","+workProgram.getMianChargeUserName()+","+workProgram.getSecondChargeUserName();
+        dataMap.put("projectWorker",projectWorker);
         showName = Constant.Template.COMPERE.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
         relativeFileUrl =  SysFileUtil.generatRelativeUrl(path,signId,workprogramId,showName);
         docFile = TemplateUtil.createDoc(dataMap,Constant.Template.COMPERE.getKey(),path + File.separator +relativeFileUrl);
@@ -466,37 +561,129 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
                     null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
         }
-        //2.3 生成会前准备材料（上午）
-        dataMap.put("reviewStage",sign.getReviewstage());
-        showName = Constant.Template.MEETING_AM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
-        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.MEETING_AM.getKey(),path + File.separator +relativeFileUrl);
-        if(docFile != null){
-            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
-                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
-                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        
+        //2.3 生成会前准备材料
+        //获得会议预定信息
+        if(!rbList.isEmpty()){
+        	for (RoomBooking roomBooking : rbList) {
+        		
+        		dataMap.put("rbDate", roomBooking.getRbDate());//会议日期显示星期
+        		dataMap.put("beginTime", DateUtils.converToString(roomBooking.getBeginTime(),"HH:MM"));//会议开始时间
+        		dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(),"HH:MM"));//会议结束时间
+        		
+        		if(DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(),compareDate)==1){
+        			//（上午）
+        			showName = Constant.Template.MEETING_AM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        			relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+        			docFile = TemplateUtil.createDoc(dataMap,Constant.Template.MEETING_AM.getKey(),path + File.separator +relativeFileUrl);
+        		        if(docFile != null){
+        		            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+        		                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+        		                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        		        }
+        		        
+        		}else{
+        			//（下午）
+	    			 showName = Constant.Template.MEETING_PM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+	    		        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+	    		        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.MEETING_PM.getKey(),path + File.separator +relativeFileUrl);
+	    		        if(docFile != null){
+	    		        	
+	    		        	saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+	    		        			Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+	    		        			null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+	    		        }
+        		}
+			}
         }
+       
+        
+       
         //2.4 邀请函
-        showName = Constant.Template.INVITATION.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
-        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.INVITATION.getKey(),path + File.separator +relativeFileUrl);
-        if(docFile != null){
-            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
-                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
-                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        for (Expert expert : expertList) {
+        	dataMap.put("expertName",expert.getName());
+	        showName = Constant.Template.INVITATION.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+	        relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+	        docFile = TemplateUtil.createDoc(dataMap,Constant.Template.INVITATION.getKey(),path + File.separator +relativeFileUrl);
+	        if(docFile != null){
+	            saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+	                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+	                    null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+	        }
         }
-
-        //3、保存文件信息
-        if(saveFile.size() > 0){
-            Date now = new Date();
-            saveFile.forEach(sf->{
-                sf.setCreatedDate(now);
-                sf.setModifiedDate(now);
-                sf.setCreatedBy(currentUser.getLoginName());
-                sf.setModifiedBy(currentUser.getLoginName());
-            });
-            sysFileRepo.bathUpdate(saveFile);
-        }
+        
+        //2.5 会议通知
+        	dataMap.put("studyBeginTime",DateUtils.converToString(workProgram.getStudyBeginTime(), "yyyy年MM月dd日"));
+        	showName = Constant.Template.UNIT_NOTICE.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        	relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+        	docFile = TemplateUtil.createDoc(dataMap,Constant.Template.UNIT_NOTICE.getKey(),path + File.separator +relativeFileUrl);
+        	if(docFile != null){
+        		
+        		saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+        				Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+        				null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        	}
+        	
+        	//协审协议书
+        	dataMap.put("assistDeptUserName", sign.getAssistdeptName()); //协办事处联系人
+     	    dataMap.put("mainDeptUserName", sign.getMainDeptUserName()); //主办事处联系人
+     	    
+    	    HqlBuilder queryaps = HqlBuilder.create();
+    	    queryaps.append(" from "+AssistPlanSign.class.getSimpleName()+" where "+AssistPlanSign_.signId.getName()+" =:signID");
+    	    queryaps.setParam("signID", signId);
+    	    List<AssistPlanSign> apsList=assistPlanSignRepo.findByHql(queryaps);
+    	    if(!apsList.isEmpty()){
+    	    	
+    	    	AssistPlanSign assistPlanSign=apsList.get(0);
+    	    	AssistPlan assistPlan=assistPlanSign.getAssistPlan();
+    	    	float assistDays=assistPlanSign.getAssistDays();
+    	    	Date reportTime=assistPlan.getReportTime();
+    	    	Date finishTime=DateUtils.addDay(reportTime, (int)assistDays);
+    	    	dataMap.put("estimateCost", assistPlanSign.getEstimateCost()); //建设规模
+    	    	dataMap.put("finishTime", DateUtils.converToString(finishTime, "yyyy年MM月dd日")); //建设规模
+    	    	dataMap.put("assistCost",assistPlanSign.getAssistCost()); //协审费用
+    	    }
+        	if(!StringUtil.isBlank(sign.getAssistdeptid())){
+        		
+	    	    AssistUnit assistUnit=assistUnitRepo.findById(sign.getAssistdeptid());//乙方
+	    	    dataMap.put("unitName",assistUnit.getUnitName());
+	    	    dataMap.put("address",assistUnit.getAddress());
+	    	    dataMap.put("phoneNum",assistUnit.getPhoneNum());
+	    	    dataMap.put("principalName",assistUnit.getPrincipalName());
+	    	    dataMap.put("contactFax",assistUnit.getContactFax());
+        	}
+        	if(!StringUtil.isBlank(sign.getMaindepetid())){
+        		
+	    	    Org org=orgRepo.findById(sign.getMaindepetid());//甲方   
+	    	    dataMap.put("orgName",org.getName());
+	    	    dataMap.put("orgAddress",org.getOrgAddress());
+	    	    dataMap.put("orgMLeader",org.getOrgMLeader());
+	    	    dataMap.put("orgPhone",org.getOrgPhone());
+	    	    dataMap.put("orgFax",org.getOrgFax());
+        	}
+        	   
+        	showName = Constant.Template.ASSIST.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+        	relativeFileUrl =  SysFileUtil.generatRelativeUrl(path, signId,workprogramId,showName);
+        	docFile = TemplateUtil.createDoc(dataMap,Constant.Template.ASSIST.getKey(),path + File.separator +relativeFileUrl);
+        	if(docFile != null){
+        		
+        		saveFile.add(new SysFile(UUID.randomUUID().toString(),workprogramId, relativeFileUrl, showName,
+        				Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+        				null, signId, Constant.SysFileType.WORKPROGRAM.getValue(), Constant.SysFileType.MEETING.getValue()));
+        	}
+        	
+	        //3、保存文件信息
+	        if(saveFile.size() > 0){
+	        	
+	            Date now = new Date();
+	            saveFile.forEach(sf->{
+	                sf.setCreatedDate(now);
+	                sf.setModifiedDate(now);
+	                sf.setCreatedBy(currentUser.getLoginName());
+	                sf.setModifiedBy(currentUser.getLoginName());
+	            });
+	            sysFileRepo.bathUpdate(saveFile);
+	        }
         //4、更改工作方案状态
         workProgram.setIsCreateDoc(EnumState.YES.getValue());
         workProgramRepo.save(workProgram);

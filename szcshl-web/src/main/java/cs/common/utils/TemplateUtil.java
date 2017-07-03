@@ -71,9 +71,12 @@ public class TemplateUtil {
 
     public static void main(String[] args){
         Map<String,Object> dataMap = new HashMap<>();
+        Map<String,Object> dataMap1 = new HashMap<>();
         dataMap.put("projectName","系统测试项目");
+        dataMap1.put("projectName","系统测试项目");
         dataMap.put("reviewStage","科研究型阶段");
         TemplateUtil.createDoc(dataMap,"notice","E:\\szcshl_upload\\test.doc");
+        TemplateUtil.createDoc(dataMap1,"meetingAM","E:\\szcshl_upload\\test1.doc");
 
         //System.out.print(TemplateUtil.class);
     }

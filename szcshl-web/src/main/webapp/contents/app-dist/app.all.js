@@ -431,6 +431,9 @@
 
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
+
+    	
+//    	common.initIdeaData({$http: $http, scope: $rootScope});
     });
 
 })();
@@ -9296,15 +9299,50 @@
                 }
 
 
-                var httpSuccess = function success(response) {
-                    vm.isCommit = false;
-                    common.alert({
-                        vm: vm,
-                        msg: "操作成功",
-                        closeDialog: true,
-                        fn: function () {
-                            //重新初始化评审费发放数据
-                            if (callBack != undefined && typeof callBack == "function") {
+                        return common.format($('#columnBtn').html(),
+                            "vm.editpayment('" + item.expertID + "')",
+                            item.expertID);
+                    }
+                }];
+            return columns;
+        }// E_getpaymentColumns
+
+        // S_savePayment
+        function savePayment(vm) {
+            common.initJqValidation($('#payform'));
+			var isValid = $('#payform').valid();
+			if (isValid) {
+				if (!validateNum(vm,vm.expertReviews)) {
+					//window.parent.$("#payment").data("kendoWindow").close();
+					common.alert({
+								vm : vm,
+								msg : "应纳税额计算错误,保存失败！",
+								fn : function() {
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+					});
+					vm.isCommit = false;
+					return;
+				}
+				vm.isCommit = true;
+				var httpOptions = {
+					method : 'post',
+					//headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                    url : rootPath + "/expertReview/html/saveExpertReviewCost",
+					data : JSON.stringify(vm.expertReviews)
+				}
+
+
+				var httpSuccess = function success(response) {
+					vm.isCommit = false;
+					common.alert({
+                        vm : vm,
+                        msg : "操作成功",
+                        closeDialog : true,
+                        fn : function() {
+                           //重新初始化评审费发放数据
+                           if(callBack != undefined&&typeof callBack == "function"){
                                 callBack();
                             }
                         }
@@ -11387,6 +11425,15 @@
 
 	angular.module('app').factory('orgUserSvc', org);
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('orgUserCtrl', org);
+
+    org.$inject = ['$location','$state','orgSvc','orgUserSvc']; 
+
 	org.$inject = [ '$http','$compile' ];	
 	function org($http,$compile) {	
 		var url_org = "/org";
@@ -13341,6 +13388,24 @@
 
         signSvc.initFillData(vm);
 
+        //主办处
+        vm.mainDeptUser = function(){
+        	if(!vm.model.maindeptName){
+                 common.alert({
+                     vm:vm,
+                     msg:"请选择办事处，再选择选择联系人！"
+                 })
+             }
+        }
+        //协办处
+        vm.assistDeptUser = function(){
+        	if(!vm.model.assistdeptName){
+                common.alert({
+                    vm:vm,
+                    msg:"请选择办事处，再选择选择联系人！"
+                })
+            }
+        }
         //打印预览
         vm.signPreview = function (oper) {
             if (oper < 5) {
@@ -13358,83 +13423,6 @@
             }
         }
 
-   
-        //文件上传窗口
-        vm.commonUploadWin = function () {
-        	var signid =  vm.model.signid;
-        	var fileType="收文";
-            common.initcommonUploadWin({businessId: vm.model.signid},signid,fileType);
-        }
-        //查看附件
-        vm.signQuery = function () {
-            common.initcommonQueryWin(vm);
-            vm.sysSignId = vm.model.signid;
-            common.commonSysFilelist(vm, $http);
-        }
-        //删除系统文件
-        vm.commonDelSysFile = function (id) {
-            common.commonDelSysFile(vm, id, $http);
-        }
-        //附件下载
-        vm.commonDownloadSysFile = function (id) {
-            common.commonDownloadFile(vm, id);
-        }
-
-       
-        //选主办处联系人判断
-        vm.selecedMDUN=function(){
-        	if(!vm.model.maindeptName){
-        		common.alert({
-                            vm : vm,
-                            msg : "请先填写主办处室",
-                            fn : function() {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                            }
-                        })
-        	}
-        }
-        
-        //选协办处联系人判断
-        vm.selectADUN=function(){
-        	if(!vm.model.assistdeptName){
-        		common.alert({
-                            vm : vm,
-                            msg : "请先填写主办处室",
-                            fn : function() {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                            }
-                        })
-        	}
-        }
-        
-        
-        //附件上传
-        vm.signUpload = function () {
-            $("#signUploadWin").kendoWindow({
-                width: "660px",
-                height: "400px",
-                title: "附件上传",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-        //查看附件
-        vm.signJquery = function () {
-            $("#signAttachments").kendoWindow({
-                width: "800px",
-                height: "400px",
-                title: "查看附件",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-            signSvc.initFillData(vm);
-        }
         //申报登记编辑
         vm.updateFillin = function () {
             signSvc.updateFillin(vm);
@@ -14343,7 +14331,7 @@
         vm.addWorkProgram = function () {
             $state.go('workprogramEdit', {signid: vm.model.signid });
         }// E_跳转到 工作方案 编辑页面
-
+        
         //S_跳转到 工作方案 基本信息
         vm.addBaseWP = function(){
             $state.go('workprogramBaseEdit', {signid: vm.model.signid });
@@ -14664,7 +14652,7 @@
         vm.title = '查看详情信息';        			//标题
         vm.model.signid = $state.params.signid;	//收文ID
         vm.show_flow_info = false;				//显示流程图信息
-
+       
         active();
         function active(){
             $('#myTab li').click(function (e) {
@@ -14774,7 +14762,18 @@
                 }
             });
             // End:dataSource
-
+            //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
             // Begin:column
             var columns = [
                 {
@@ -14786,6 +14785,13 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
+                {  
+				    field: "rowNumber",  
+				    title: "序号",  
+				    width: 50,
+				    filterable : false,
+				    template: "<span class='row-number'></span>"  
+				 },
                 {
                     field: "projectname",
                     title: "项目名称",
@@ -14879,6 +14885,7 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound:dataBound,
                 resizable: true
             };
         }//E_初始化grid
@@ -15070,14 +15077,16 @@
                         //编制单位
                         vm.designcomlist = response.data.designcomlist;
                         //初始化附件上传
-                        sysfileSvc.initUploadOptions({
-                            businessId:vm.model.signid,
-                            sysSignId :vm.model.signid,
-                            sysfileType:"收文",
-                            uploadBt:"upload_file_bt",
-                            detailBt:"detail_file_bt",
-                            vm:vm
-                        });
+                        if(vm.model.signid){
+	                        sysfileSvc.initUploadOptions({
+	                            businessId:vm.model.signid,
+	                            sysSignId :vm.model.signid,
+	                            sysfileType:"收文",
+	                            uploadBt:"upload_file_bt",
+	                            detailBt:"detail_file_bt",
+	                            vm:vm
+	                        });
+                        }
                     }
                 })
             }
@@ -16696,9 +16705,8 @@
             getInitSeleSignBysId: getInitSeleSignBysId,//初始化已选项目列表
             getInitRelateData: getInitRelateData,	//初始化关联数据
         };
+        
         return service;
-
-
         //S_初始化已选项目列表
         function getInitSeleSignBysId(vm) {
             var bussnessId = vm.work.id;
@@ -16735,8 +16743,12 @@
             }
             var httpSuccess = function success(response) {
                 vm.linkSignId = response.data.linkSignId;
+<<<<<<< Updated upstream
                 //系统附件
                 vm.sysFiles = response.data.sysFilelist;
+=======
+                
+>>>>>>> Stashed changes
 
             }
             common.http({
@@ -17059,6 +17071,7 @@
                                     vm.isHaveNext = true;
                                 }
                             }
+//                            vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
 
                             if(vm.work.id){
                             	var sysfileType = "工作方案";
