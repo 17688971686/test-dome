@@ -319,6 +319,30 @@ public class SignServiceImpl implements SignService {
                 DispatchDocDto dispatchDocDto = new DispatchDocDto();
                 BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
                 signDto.setDispatchDocDto(dispatchDocDto);
+                //如果评审阶段是可研和概算的，才关联到前一阶段
+                String reviewStage = sign.getReviewstage();
+                if (reviewStage != null && (reviewStage.equals("可行性研究报告") || reviewStage.equals("项目概算")) && sign.getAssociateSign() != null) {
+                    List<Sign> associateSigns = getAssociates(sign.getAssociateSign().getSignid());
+                    if (associateSigns != null && associateSigns.size() > 0) {
+                        List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());
+                        associateSigns.forEach(associateSign -> {
+                            Sign asSign = signRepo.getById(associateSign.getSignid());
+                            DispatchDoc associateDispatch = asSign.getDispatchDoc();
+                            if (associateDispatch != null && associateDispatch.getId() != null) {
+                                //关联发文
+                                DispatchDocDto associateDis = new DispatchDocDto();
+                                BeanCopierUtils.copyProperties(associateDispatch, associateDis);
+                                SignDto copyDto = new SignDto();
+                                copyDto.setReviewstage(asSign.getReviewstage());
+                                associateDis.setSignDto(copyDto);
+                                associateDispatchDtos.add(associateDis);
+                            }
+                        });
+                       if(Validate.isList(associateDispatchDtos)){
+                           dispatchDocDto.setAssociateDispatchs(associateDispatchDtos);
+                       }
+                    }
+                }
             }
 
             if (sign.getFileRecord() != null && Validate.isString(sign.getFileRecord().getFileRecordId())) {

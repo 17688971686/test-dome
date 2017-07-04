@@ -14,8 +14,8 @@ import javax.persistence.*;
 public class SignPrincipal {
 
     @Id
-    @GeneratedValue(generator= "plansignGenerator")
-    @GenericGenerator(name= "plansignGenerator",strategy = "uuid")
+    @GeneratedValue(generator= "priGenerator")
+    @GenericGenerator(name= "priGenerator",strategy = "uuid")
     private String id;
 
     /**

@@ -19,7 +19,7 @@ import cs.repository.odata.ODataObj;
 public class UserRepoImpl extends AbstractRepository<User, String> implements UserRepo {
 	@Override
 	public User findUserByName(String userName) {
-		Criteria criteria = this.getSession().createCriteria(User.class);
+		Criteria criteria = getExecutableCriteria();
 		criteria.add(Restrictions.eq(User_.loginName.getName(), userName));
 		List<User> users = criteria.list();
 		if (users.size() > 0) {
@@ -31,7 +31,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
 	@Override
 	public List<User> getUsersNotIn(List<String> userIds, ODataObj oDataObj) {
-		Criteria crit = this.getSession().createCriteria(User.class);
+		Criteria crit = getExecutableCriteria();
 		userIds.forEach(x -> {
 			crit.add(Restrictions.ne(User_.id.getName(), x));
 		});
@@ -42,7 +42,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
  
 	@Override
 	public Set<String> getUserPermission(String userName) {
-		Criteria crit = this.getSession().createCriteria(User.class);
+		Criteria crit = getExecutableCriteria();
 		crit.add(Restrictions.eq(User_.loginName.getName(), userName));
 		List<User> list = crit.list();		
 		Set<String> permissions = new HashSet<>();

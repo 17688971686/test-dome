@@ -3,9 +3,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['sysfileSvc','$http', '$state', 'flowSvc'];
+    sign.$inject = ['sysfileSvc','$http', '$state'];
 
-    function sign(sysfileSvc,$http, $state, flowSvc) {
+    function sign(sysfileSvc,$http, $state) {
         var service = {
             grid: grid,						//初始化项目列表
             querySign: querySign,			//查询
@@ -23,6 +23,7 @@
             paymentGrid: paymentGrid,           //专家评审费
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,            //生成会前准备材料
+            createDispatchFileNum:createDispatchFileNum,    //生成发文字号
         };
         return service;
 
@@ -460,6 +461,7 @@
                         vm.model = response.data;
                         //有关联，则显示项目
                         if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                            vm.showFlag.tabAssociateSigns = true;
                             initAssociateSigns(vm,vm.model.signid);
                         //没有则初始化关联表格
                         }
@@ -490,6 +492,13 @@
                         if (vm.model.dispatchDocDto) {
                             vm.showFlag.tabDispatch = true;
                             vm.dispatchDoc = vm.model.dispatchDocDto;
+                            //如果是合并发文次项目，则不用生成发文编号
+                            if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
+                                || vm.dispatchDoc.fileNum){
+                                vm.businessFlag.isCreateDisFileNum = true;
+                            }else{
+                                vm.showFlag.buttDisFileNum = true;
+                            }
                         }
                         //归档
                         if (vm.model.fileRecordDto) {
@@ -503,7 +512,9 @@
                         }
                         //更改状态,并初始化业务参数
                         vm.businessFlag.isLoadSign = true;
-                        vm.initBusinessParams();
+                        if(vm.initBusinessParams && "function" ==typeof vm.initBusinessParams ){
+                            vm.initBusinessParams();
+                        }
                     }
                 });
             }
@@ -827,6 +838,47 @@
             }
         }//E_meetingDoc
 
+
+        //S_createDispatchFileNum
+        function createDispatchFileNum(vm){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/dispatch/createFileNum",
+                params: {
+                    dispatchId: vm.dispatchDoc.id
+                }
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        if (response.data.reCode == "error") {
+                            common.alert({
+                                vm: vm,
+                                msg: response.data.reMsg,
+                                closeDialog: true,
+                            })
+                        } else {
+                            vm.dispatchDoc.fileNum = response.data.reMsg;
+                            vm.businessFlag.isCreateDisFileNum = true;
+                            vm.showFlag.buttDisFileNum = false;
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功！",
+                                closeDialog: true,
+                            })
+                        }
+                    }
+                })
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_createDispatchFileNum
 
     }
 })();

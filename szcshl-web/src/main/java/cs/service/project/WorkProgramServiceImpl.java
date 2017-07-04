@@ -8,13 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cs.common.ResultMsg;
-import cs.common.utils.*;
-import cs.domain.sys.SysFile_;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,27 +18,28 @@ import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
+import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.StringUtil;
+import cs.common.utils.SysFileUtil;
+import cs.common.utils.TemplateUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelected;
-import cs.domain.expert.ExpertSelected_;
 import cs.domain.expert.Expert_;
 import cs.domain.meeting.RoomBooking;
-import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
 import cs.domain.project.AssistUnit;
-import cs.domain.project.AssistUnit_;
-import cs.domain.project.MergeDispa;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.domain.sys.Org;
-import cs.domain.sys.Org_;
 import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
 import cs.domain.sys.User;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.SignDto;
@@ -52,7 +48,6 @@ import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
 import cs.repository.repositoryImpl.project.AssistUnitRepo;
-import cs.repository.repositoryImpl.project.MergeDispaRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
@@ -72,8 +67,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private SignRepo signRepo;
     @Autowired
     private UserService userService;
-    @Autowired
-    private MergeDispaRepo mergeDispaRepo;
     @Autowired
     private SysFileRepo sysFileRepo;
     @Autowired
@@ -135,12 +128,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             } else {
                 sign.setIsNeedWrokPrograml(EnumState.YES.getValue());
             }
-
+            //申报金额，与工作方案的、收文的一致，任何一个地方改了，都要同步更新
+            sign.setAppalyInvestment(workProgram.getAppalyInvestment());
             workProgram.setSign(sign);
             workProgramRepo.save(workProgram);
 
-            sign.getWorkProgramList().add(workProgram);
-            signRepo.save(sign);
+            //sign.getWorkProgramList().add(workProgram);
+            //signRepo.save(sign);
             //用于返回页面
             workProgramDto.setId(workProgram.getId());
         } else {
@@ -154,10 +148,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      */
     @Transactional
     public void deleteMegreWokr(String workId) {
-        MergeDispa merge = mergeDispaRepo.getById(workId);
+        /*MergeDispa merge = mergeDispaRepo.getById(workId);
         if (merge != null) {
             mergeDispaRepo.delete(merge);
-        }
+        }*/
     }
 
     /**
@@ -329,7 +323,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Override
     @Transactional
     public void mergeAddWork(String signId, String linkSignId) {
-        Date now = new Date();
+       /* Date now = new Date();
         Sign sign = signRepo.findById(signId);
         MergeDispa merge = new MergeDispa();
         List<WorkProgram> works = sign.getWorkProgramList();
@@ -343,13 +337,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         merge.setModifiedBy(currentUser.getLoginName());
         merge.setCreatedDate(now);
         merge.setModifiedDate(now);
-        mergeDispaRepo.save(merge);
+        mergeDispaRepo.save(merge);*/
     }
 
     @Override
     public Map<String, Object> getInitSeleSignByIds(String bussnessId) {
-        Map<String, Object> map = new HashMap<>();
-        MergeDispa merge = mergeDispaRepo.getById(bussnessId);
+      Map<String, Object> map = new HashMap<>();
+        /*  MergeDispa merge = mergeDispaRepo.getById(bussnessId);
         List<SignDto> signDtos = null;
         String linkSignId = "";
         if (merge != null && Validate.isString(merge.getBusinessId())) {
@@ -370,14 +364,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
         }
         map.put("signDtoList", signDtos);
-        map.put("linkSignId", linkSignId);
+        map.put("linkSignId", linkSignId);*/
         return map;
     }
 
     @Override
     public Map<String, Object> getInitRelateData(String signId) {
         Map<String, Object> map = new HashMap<String, Object>();
-        String linkSignId = "";
+       /* String linkSignId = "";
         Sign sign = signRepo.findById(signId);
         List<WorkProgram> work = sign.getWorkProgramList();
         for (WorkProgram wp : work) {
@@ -394,7 +388,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<SysFile> sysFilelist = file.list();
         if (sysFilelist != null) {
             map.put("sysFilelist", sysFilelist);
-        }
+        }*/
         return map;
     }
 

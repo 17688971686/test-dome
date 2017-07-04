@@ -3,7 +3,9 @@ package cs.service.flow;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 import cs.common.Constant;
@@ -118,12 +120,12 @@ public class FlowServiceImpl implements FlowService {
         // 取得当前任务.当前任务节点
         HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
         // 取得流程实例，流程实例
-        ProcessInstance instance = runtimeService.createProcessInstanceQuery()
-                .processInstanceId(currTask.getProcessInstanceId()).singleResult();
+        ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(currTask.getProcessInstanceId()).singleResult();
         if (instance == null) {
             //流程已结束
             return;
         }
+        Map<String, Object> variables = instance.getProcessVariables();
 
         // 取得流程定义
         ProcessDefinitionEntity definition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
@@ -164,7 +166,7 @@ public class FlowServiceImpl implements FlowService {
 
         for (Task task : tasks) {
             taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption());    //添加处理信息
-            taskService.complete(task.getId(), ActivitiUtil.flowArguments(null, "张一帆", "", false));
+            taskService.complete(task.getId(), getLastDealUser(currTask.getTaskDefinitionKey(),instance.getBusinessKey()));
             historyService.deleteHistoricTaskInstance(task.getId());
         }
 
@@ -178,8 +180,7 @@ public class FlowServiceImpl implements FlowService {
     }
 
     /**
-     *
-     * @param taskId    任务ID
+     * @param taskId     任务ID
      * @param activityId 任务环节ID 而不是实例环节ID
      * @return
      */
@@ -475,5 +476,17 @@ public class FlowServiceImpl implements FlowService {
         pageModelDto.setCount(total);
 
         return pageModelDto;
+    }
+
+    /**
+     * TODO:待实现
+     * 根据当前环节ID取出上一环节处理人
+     * @param taskDefinitionKey
+     * @return
+     */
+    private Map<String,Object> getLastDealUser(String taskDefinitionKey,String businessKey){
+        Map<String,Object> resultMap = new HashMap<>();
+
+        return resultMap;
     }
 }

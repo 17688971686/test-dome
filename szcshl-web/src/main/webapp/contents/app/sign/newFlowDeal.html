@@ -203,11 +203,12 @@
 
                     <!-- 发文 -->
                     <p ng-show="vm.showFlag.nodeDispatch">
-					    <button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>发文</button>
+                        <button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>发文</button>
                     </p>
                     <!-- 归档 -->
                     <p ng-show="vm.showFlag.nodeFileRecord">
-					    <button class="btn btn-xs btn-primary" ng-click="vm.addDoFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>归档</button>
+                        <button class="btn btn-xs btn-primary" ng-click="vm.createDispatchFileNum()" ng-disabled="vm.isCommit" ng-show="vm.showFlag.buttDisFileNum"><span class="glyphicon glyphicon-edit"></span>生成发文字号</button>
+                        <button class="btn btn-xs btn-primary" ng-click="vm.addDoFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>归档</button>
                     </p>
                     <!--*********  以下是协审流程 *******-->
 				    <!-- 协审工作方案 -->

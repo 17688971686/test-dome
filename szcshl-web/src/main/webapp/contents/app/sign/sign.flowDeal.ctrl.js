@@ -41,6 +41,7 @@
             tabSysFile:false,           // 附件信息tab
 
             buttBack:false,             // 回退按钮
+            buttDisFileNum : false,     // 生成发文字号
             expertRemark:false,         // 专家评分弹窗内容显示
             expertpayment:false,        // 专家费用弹窗内容显示
             expertEdit:true,            // 专家评分费用编辑权限
@@ -58,6 +59,7 @@
             expertReviews : [],         // 专家评审方案
             editExpertSC : false,      // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
             expertScore:{},             // 专家评分对象
+            isCreateDisFileNum : false,// 是否已经生成发文字号
         }
 
         vm.model.signid = $state.params.signid;
@@ -526,6 +528,11 @@
         //附件下载
         vm.commonDownloadSysFile = function(sysFileId){
             sysfileSvc.commonDownloadFile(vm,sysFileId);
+        }
+
+        //生成发文字号
+        vm.createDispatchFileNum = function(){
+            signSvc.createDispatchFileNum(vm);
         }
 
     }

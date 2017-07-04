@@ -5,418 +5,468 @@
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-show="vm.showCreate"><span class="glyphicon glyphicon-ok"></span>保存</button>
-    <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
-	<button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button>
-	<button class="btn btn-sm btn-primary" id="detail_file_bt" >查看附件</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
+        <span class="glyphicon glyphicon-ok"></span>保存
+    </button>
+    <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+    </button>
+    <button class="btn btn-sm btn-primary" id="upload_file_bt" ng-show="vm.showFlag.buttSysFile" ng-disabled="vm.isCommit">上传附件</button>
+    <button class="btn btn-sm btn-primary" id="detail_file_bt" ng-show="vm.showFlag.buttSysFile" ng-disabled="vm.isCommit">查看附件</button>
 </div>
-        
+
 <div class="well well-sm" style="background:white;">
-	<!-- s form -->
-	<form id="dispatch_form" name="dispatch_form" >	
-		<!-- s table -->
-		<table class="table table-bordered">
-		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
-		  <caption style="width:100%;">
-		  	<span style="float:left;">发文方式：<span class="required">*</span>
-		  		<select ng-model="vm.dispatchDoc.dispatchWay"  name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
-					<option  ng-value="1" >单个发文</option>
-					<option  ng-value="2" ng-selected="vm.dispatchDoc.dispatchWay == 2" >合并发文</option>
+    <!-- s form -->
+    <form id="dispatch_form" name="dispatch_form">
+        <!-- s table -->
+        <table class="table table-bordered">
+            <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
+            <caption >
+                <span>
+                    发文方式：
+                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
+                        <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
+                                ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
+                    </select>
+                </span>
+				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                           ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
+
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                           ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
+
+					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
+                            ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
+                            ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
+				</span>
+
+                <span style="float:right;">发文类型： <span class="required">*</span>
+		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
+                        data-val-required="必填">
+					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}"
+                            ng-selected="vm.dispatchDoc.dispatchType==x.dictName">{{x.dictName}}</option>
 				</select>
-			</span> 
-			<span id="mergeOptions" style="float: left; margin-left: 10px;">
-				<div  ng-show="vm.dispatchDoc.dispatchWay==2">
-					<input type="radio" id="mainproject"   name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="9" ng-click="vm.isrelated()" ng-checked="vm.dispatchDoc.isRelated=='是'">主项目 &nbsp;&nbsp; 
-					<input type="radio" id="secondproject" name="Type" ng-model="vm.dispatchDoc.isMainProject" ng-value="0" ng-click="vm.isrelated2()" ng-checked="vm.dispatchDoc.isRelated=='否'" ng-show="vm.dispatchDoc.dispatchWay==2">次项目  &nbsp;&nbsp;
-					<button id="linkbtn" ng-click="vm.gotoMergePage()" ng-show=" vm.dispatchDoc.isMainProject==9||vm.dispatchDoc.isRelated=='是'"  ng-hide="vm.dispatchDoc.isRelated=='否'">关联项目</button>
-				</div>
 			</span>
-			
-		  	<span style="float:right;">发文类型： <span class="required">*</span>
-		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true" data-val-required="必填">
-		  			<option value="">请选择</option>
-					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}" ng-selected="vm.dispatchDoc.dispatchType==x.dictName">{{x.dictName}}</option>
-				</select>
-			</span>
-		  </caption>
-		  <tbody>
-		    <tr>
-		      <td style="width:150px;" class="text-center">发文部门</td>
-		      <td>
-		      		{{vm.dispatchDoc.orgName}}
-			  </td>
-			  
-			  <td rowspan="2" style="width:150px;" class="text-center">校对人<span class="required">*</span></td>
-		      <td rowspan="2" style="text-align: center;">
-		      	<select ng-model="vm.dispatchDoc.proofreadName" style="text-align:center;" class="form-control input-sm " name="proofreadName" id="proofreadName"  data-val="true" data-val-required="必填">
-		      		<option value="">请选择</option>
-					<option ng-repeat="x in vm.proofread" value="{{x.loginName}}" ng-selected="vm.dispatchDoc.proofreadName==x.loginName">{{x.loginName}}</option>
-				</select>	
-			  </td>
-			   
-			  <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>
-		      <td rowspan="2">
-		      	<input type="text" name="draftDate" id="draftDate" style="width: 210px;text-align: center;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.dispatchDoc.draftDate" 
-				 data-val-date="必须为日期"  > 			
-			  </td>
-		    </tr>
+            </caption>
+            <tbody>
+            <tr>
+                <td style="width:150px;" class="text-center">发文部门</td>
+                <td>
+                    {{vm.dispatchDoc.orgName}}
+                </td>
 
-		    <tr>
-		      <td style="width:150px;" class="text-center">拟稿人</td>
-		      <td >{{vm.dispatchDoc.userName}}</td>
-		    </tr>
+                <td rowspan="2" style="width:150px;" class="text-center">校对人<span class="required">*</span></td>
+                <td rowspan="2" style="text-align: center;">
+                    <select ng-model="vm.dispatchDoc.proofreadName" style="text-align:center;"
+                            class="form-control input-sm " name="proofreadName" id="proofreadName" data-val="true"
+                            data-val-required="必填">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in vm.proofread" value="{{x.loginName}}"
+                                ng-selected="vm.dispatchDoc.proofreadName==x.loginName">{{x.loginName}}
+                        </option>
+                    </select>
+                </td>
 
+                <td rowspan="2" style="width:150px;" class="text-center">拟稿时间</td>
+                <td rowspan="2">
+                    <input type="text" name="draftDate" id="draftDate" style="width: 210px;text-align: center;"
+                           class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.dispatchDoc.draftDate"
+                           data-val-date="必须为日期">
+                </td>
+            </tr>
 
-		    <tr>
-		      <td style="width:150px;" class="text-center">秘密等级</td>
-		      <td >
-		      	 {{vm.dispatchDoc.secretLevel}}
-		      <!-- <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
-					<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
-				</select> -->
-			  </td>
-			  
-			  <td style="width:150px;" class="text-center">年度计划</td>
-		      <td >
-		      	  {{vm.dispatchDoc.yearPlan}}
-		      	<!-- <select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm ">
-					<option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="true">{{x.dictName}}</option>
-				</select> -->
-			  </td>
-			  
-			  <td style="width:150px;" class="text-center">紧急程度</td>
-		      <td >
-		      	{{vm.dispatchDoc.urgentLevel}}
-		      <!-- 	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel">
-					<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
-				</select>			 -->	
-			  </td>
-		    </tr>
-		    
-		    
-		    <tr>
-		      <td style="width:150px;" class="text-center">发文日期</td>
-		      <td >{{vm.dispatchDoc.dispatchDate}}</td>
-			  
-			  <td style="width:150px;" class="text-center">文件字号</td>
-		      <td >{{vm.dispatchDoc.fileNum}}</td>
-			  
-			  <td style="width:150px;" class="text-center">是否有其他关联 </td>
-		     <td >
-		      	<select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm" style="width:100px;" name="isRelated" id="isRelated" ng-change="vm.relateHandle()" data-val="true" data-val-required="必填">
-					<option value="">请选择</option>
-					<option ng-repeat="x in DICT.ISRELATED.dicts" value="{{x.dictName}}" ng-selected="vm.dispatchDoc.isRelated==x.dictName">{{x.dictName}}</option>
-				</select>			
-			  </td>
-		    </tr>
-		    
-		    
-		    <tr>
-		      <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
-		      <td colspan="5">
-		   
-		      	<input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true" data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">		
-			  </td>
-		    </tr>
-		    
-		    
-		    <tr>
-		      <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
-		      <td colspan="5">
-		      	 <textarea  maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope" data-val="true" data-val-required="必填" placeholder="徐安良主任、邱健明副主任、委秘书处........"/>
-		      	 <span style="float: right;">(印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)</span>
-			  </td>
-		    </tr>
-		    
-		    
-		    <tr>
-		      <td style="width:150px;" class="text-center">相关说明</td>
-		      <td colspan="5">
-		      <textarea  maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.description" id="description" name="description" />
-			  </td>
-		    </tr>
-
-		   	<tr>
-		      <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
-		      <td colspan="3">
-		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest" name="mianChargeSuggest" placeholder="第一负责人"/>
-			  </td>
-		      <td colspan="2">
-		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest" name="secondChargeSuggest" placeholder="第二负责人"/>
-			  </td>
-		    </tr>
-		    
-		   	<tr>
-		      <td style="width:150px;" class="text-center">评审意见摘要</td>
-		      <td colspan="5">
-		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
-			  </td>
-		    </tr>
-		     
-		     
-		    <tr>
-		      <td style="width:150px;" class="text-center">部长审核意见</td>
-		      <td colspan="5">
-		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion" name="ministerSuggesttion"/>	
-			  </td>
-		    </tr>
-		     
-		     
-		    <tr>
-		      <td style="width:150px;" class="text-center">分管副主任意见</td>
-		      <td colspan="5">
-		      	<textarea  maxlength="200" class="form-control input-sm "  rows="5" ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion" name="viceDirectorSuggesttion"/>
-			  </td>
-		    </tr>
-		     
-		     
-		    <tr>
-		      <td style="width:150px;" class="text-center">主任签发</td>
-		      <td colspan="5">
-		      	<textarea  maxlength="200" class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
-			  </td>
-		    </tr>
-		    
-		    
-		    <tr>
-		      <td style="width:150px;" class="text-center">项目概况</td>
-		      <td colspan="5">
+            <tr>
+                <td style="width:150px;" class="text-center">拟稿人</td>
+                <td>{{vm.dispatchDoc.userName}}</td>
+            </tr>
 
 
-				  <!--前一阶段-->
-				  <table ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()" class="table table-bordered" style="text-align: center;">
+            <tr>
+                <td style="width:150px;" class="text-center">秘密等级</td>
+                <td>
+                    {{vm.dispatchDoc.secretLevel}}
+                    <!-- <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
+                          <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
+                      </select> -->
+                </td>
 
-					  <tr>
-						<td  width="20%">{{dispatchDoc.signDto.reviewstage}}</td><td width="14%">申报</td><td width="14%">审定</td><td width="14%">核减（增）</td><td width="14%">核减（增）率</td><td width="14%">批复金额</td><td width="14%">备注</td>
-					  </tr>
+                <td style="width:150px;" class="text-center">年度计划</td>
+                <td>
+                    {{vm.dispatchDoc.yearPlan}}
+                    <!-- <select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm ">
+                      <option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="true">{{x.dictName}}</option>
+                  </select> -->
+                </td>
 
-					  <tr>
-						  <td>投资额（万元）</td>
-						  <td>
-							  {{dispatchDoc.declareValue}}
-						  </td>
-						  <td>
-							  {{dispatchDoc.authorizeValue}}
-						  </td>
-						  <td>
-							  {{dispatchDoc.extraValue}}
-						  </td>
-						  <td>
-							  {{dispatchDoc.extraRate}}<span>%</span>
-						  </td>
-						  <td>
-							  {{dispatchDoc.approveValue}}
-						  </td>
-						  <td>
-							  {{dispatchDoc.remark}}
-						  </td>
-					  </tr>
+                <td style="width:150px;" class="text-center">紧急程度</td>
+                <td>
+                    {{vm.dispatchDoc.urgentLevel}}
+                    <!-- 	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel">
+                          <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
+                      </select>			 -->
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">发文日期</td>
+                <td>{{vm.dispatchDoc.dispatchDate}}</td>
 
-					  <tr>
-						  <td>项目建设必要性</td>
-						  <td colspan="6" class="text-left">
-							  {{dispatchDoc.projectBuildNecess}}
-						  </td>
-					  </tr>
+                <td style="width:150px;" class="text-center">文件字号</td>
+                <td>{{vm.dispatchDoc.fileNum}}</td>
 
-					  <tr>
-						  <td>审定建设规模及内容</td>
-						  <td colspan="6" class="text-left">
-							  {{dispatchDoc.buildSizeContent}}
-						  </td>
-					  </tr>
+                <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
+                <td>
+                    <select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm" style="width:100px;"
+                             data-val="true" data-val-required="必填">
+                        <option ng-repeat="x in DICT.ISRELATED.dicts" value="{{x.dictName}}"
+                                ng-selected="vm.dispatchDoc.isRelated==x.dictName">{{x.dictName}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
 
-					  <tr>
-						  <td>投资匡算及资金来源</td>
-						  <td colspan="6" class="text-left">
-							  {{dispatchDoc.fundTotalOrigin}}
-						  </td>
-					  </tr>
-
-					  <tr>
-						  <td>下一阶段工作要求</td>
-						  <td colspan="6" class="text-left">
-							  {{dispatchDoc.nextWorkPlan}}
-						  </td>
-					  </tr>
-
-				  </table>
+            <tr>
+                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td colspan="5">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                           ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true"
+                           data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                              ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
+                              data-val="true" data-val-required="必填" placeholder="徐安良主任、邱健明副主任、委秘书处........"/>
+                    <span style="float: right;">(印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)</span>
+                </td>
+            </tr>
 
 
+            <tr>
+                <td style="width:150px;" class="text-center">相关说明</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
+                              ng-model="vm.dispatchDoc.description" id="description" name="description"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
+                <td colspan="3">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
+                              name="mianChargeSuggest" placeholder="第一负责人"/>
+                </td>
+                <td colspan="2">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
+                              name="secondChargeSuggest" placeholder="第二负责人"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">评审意见摘要</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+                </td>
+            </tr>
 
 
-		      	<table class="table table-bordered" style="text-align: center;">
-		      	
-		      		<tr>
-		      			<td width="20%">{{vm.sign.reviewstage}}</td><td width="14%">申报</td><td width="14%">审定<span class="required">*</span></td><td width="14%">核减（增）</td><td width="14%">核减（增）率</td><td width="14%">批复金额</td><td width="14%">备注</td>
-		      		</tr>
-		      		
-		      		<tr>
-		      			<td>投资额（万元）</td>
-		      			<td>
-		      				<input type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.declareValue" ng-blur="vm.count()" id="declareValue" name="declareValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
-		      			</td>
-		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.authorizeValue" ng-blur="vm.count()" id="authorizeValue" name="authorizeValue" data-val-regex="金额格式不正确" data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true" data-val-required="必填">
-		      				<span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
-		      			</td>
-		      			<td>
-		      				{{vm.dispatchDoc.extraValue}}
-		      			</td>
-		      			<td>
-		      				{{vm.dispatchDoc.extraRate}}<span>%</span>
-		      			</td>
-		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue">
-		      			</td>
-		      			<td>
-		      				<input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.dispatchDoc.remark" id="remark" name="remark">
-		      			</td>
-		      		</tr>
-		      		
-		      		<tr>
-		      			<td>项目建设必要性<span class="required">*</span></td>
-		      			<td colspan="6">
-		      				<textarea  maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.projectBuildNecess" id="projectBuildNecess" name="projectBuildNecess" data-val="true" data-val-required="必填"/>
-		      			</td>
-		      		</tr>
-		      		
-		      		<tr>
-		      			<td>审定建设规模及内容<span class="required">*</span></td>
-		      			<td colspan="6">
-		      				<textarea  maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit" rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent" name="buildSizeContent" data-val="true" data-val-required="必填"/>
-		      			</td>
-		      		</tr>
-		      		
-		      		<tr>
-		      			<td>投资匡算及资金来源<span class="required">*</span></td>
-		      			<td colspan="6">
-		      				<textarea  maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit" rows="3"  ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin" name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
-		      			</td>
-		      		</tr>
-		      		
-		      		<tr>
-		      			<td>下一阶段工作要求<span class="required">*</span></td>
-		      			<td colspan="6">
-		      				<textarea  maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit" rows="3"  ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan" name="nextWorkPlan" data-val="true" data-val-required="必填"/>
-		      			</td>
-		      		</tr>
-		      			
-		      	</table>
-			  </td>			     
-		    </tr>      
-		  </tbody>		  
-		</table>	<!-- end table -->
-	</form> <!-- end form -->
-	
- 	
-	<div id="mwindow" ng-hide="vm.mwindowHide">
-	<div class="toolbar">
-	    <button class="btn btn-sm btn-success" ng-click="vm.search()"><span class="glyphicon glyphicon-search"></span>查询</button>
-		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
-		 <button class="btn btn-sm btn-success" ng-click="vm.mergeDispa()"><span class="glyphicon glyphicon-ok"></span>确定</button>
-		<button class="btn btn-sm btn-primary" ng-click="vm.onClose()" ><span class="glyphicon glyphicon-chevron-left"></span>关闭</button>
-		<!--  <span style="color: red">{{vm.message}}</span> -->
-	</div>
-	<ol class="breadcrumb"> 
-	<form id="searchform" name="searchform">
-		<table style="width:100%">
-		
-			<tr>
-				<td class="formAlignRight" style="width:150px;">项目名称</td>
-				<td>
-					<input  type="text"  ng-model="vm.sign.projectname" id="projectname" name="projectname">		
-				</td>
-				<td class="formAlignRight" style="width:150px;">建设单位</td>
-				<td>
-					<input  type="text"   ng-model="vm.sign.builtcompanyName" id="builtcompanyName" name="builtcompanyName" >		
-				</td>
-			</tr>
-			
-			<tr>
-				<td class="formAlignRight" style="width:150px;">评审阶段</td>
-				<td >
-					<select ng-model="vm.sign.reviewstage"  name="reviewstage" id="reviewstage" style="width:172px;">
-		  				<option value="">请选择</option>
-						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
-				<td class="formAlignRight" style="width:150px;">签收日期</td>
-				<td>
-					<input type="text" name="signdate" id="signdate1" style="width: 170px;" ng-model="vm.sign.startTime" kendo-date-picker k-format="'yyyy-MM-dd'" > 	
-					- <input type="text" name="signdate" id="signdate2" style="width: 170px;" ng-model="vm.sign.endTime" kendo-date-picker k-format="'yyyy-MM-dd'" > 
-					<input type="text" ng-hide="true" ng-model="vm.linkSignId">
-				</td>
-			</tr>	
-					
-		</table>
-  	</form>      	 
-	</ol> 
-	<table style="width:100%;">		
-		<tr >
-			<td rowspan="4" valign="top" padding:2px 10px;" class="breadcrumb" nowrap="nowrap">
-			<p class="label label-success">待选项目列表</p>	
-				<div style="width:500px; height:400px;overflow: auto;">
-					<table class="table table-bordered" id="workTab"  style="width: 500px;" >
-					  	<tr >
-						  	<td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
-						</tr>	
-						<tr ng-repeat="x in vm.signs">
-						  	<td  align="center"> <input type="checkbox" name="checksign" value="{{ x.signid }}"/></td>
-						    <td style="text-align: center;">{{ x.projectname }}</td>
-						    <td style="text-align: center;">{{ x.reviewstage }}</td>
-						    <td style="text-align: center;">{{ x.reviewdeptid }}</td>
-						    <td style="text-align: center;">{{ x.builtcompanyid }}</td>
-						    <td style="text-align: center;">{{ x.signdate }}</td>
-						    <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
-						    <td style="text-align: center;">{{ x.mainDeptContactPhone }}</td>
-						    <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
-						</tr>	
-					</table>
-				</div>
-			</td>
-			<td class="text-center" style="height:200px;width:100px;">
-				<p ><input ng-click="vm.chooseProject()"  type="button"  value="-&gt;选择项目"  /></p>
-		        <p ><input ng-click="vm.cancelProject()"  type="button" value="取消项目&lt;-" /></p>
-			</td>
-			<td rowspan="4" valign="top" padding:2px 10px;" class="breadcrumb" nowrap="nowrap">
-				<p class="label label-success">已选项目列表</p>
-				<div style="width:500px; height:400px;overflow: auto;">
-					<table class="table table-bordered" id="workTab"  style="width: 500px;overflow: auto;">
-					  	<tr>
-						  	<td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
-						    <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
-						</tr>	
-						<tr ng-repeat="x in vm.selectedSign">
-						  	<td  align="center"> <input type="checkbox" name="checkss" value="{{ x.signid }}"/></td>
-						    <td style="text-align: center;">{{ x.projectname }}</td>
-						    <td style="text-align: center;">{{ x.reviewstage }}</td>
-						    <td style="text-align: center;">{{ x.reviewdeptid }}</td>
-						      <td style="text-align: center;">{{ x.builtcompanyid }}</td>
-						    <td style="text-align: center;">{{ x.signdate }}</td>
-						    <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
-						    <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
-						    <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
-						</tr>	
-					</table>
-				</div>
-			</td>
-		</tr>
-	</table>	
-	</div>
+            <tr>
+                <td style="width:150px;" class="text-center">部长审核意见</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
+                              name="ministerSuggesttion"/>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="width:150px;" class="text-center">分管副主任意见</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
+                              name="viceDirectorSuggesttion"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">主任签发</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">项目概况</td>
+                <td colspan="5">
+                    <!--前一阶段-->
+                    <table ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()" class="table table-bordered" style="text-align: center;">
+                        <tr>
+                            <td width="20%">{{dispatchDoc.signDto.reviewstage}}</td>
+                            <td width="14%">申报</td>
+                            <td width="14%">审定</td>
+                            <td width="14%">核减（增）</td>
+                            <td width="14%">核减（增）率</td>
+                            <td width="14%">批复金额</td>
+                            <td width="14%">备注</td>
+                        </tr>
+                        <tr>
+                            <td>投资额（万元）</td>
+                            <td>
+                                {{dispatchDoc.declareValue}}
+                            </td>
+                            <td>
+                                {{dispatchDoc.authorizeValue}}
+                            </td>
+                            <td>
+                                {{dispatchDoc.extraValue}}
+                            </td>
+                            <td>
+                                {{dispatchDoc.extraRate}}<span>%</span>
+                            </td>
+                            <td>
+                                {{dispatchDoc.approveValue}}
+                            </td>
+                            <td>
+                                {{dispatchDoc.remark}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>项目建设必要性</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.projectBuildNecess}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>审定建设规模及内容</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.buildSizeContent}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>投资匡算及资金来源</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.fundTotalOrigin}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>下一阶段工作要求</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.nextWorkPlan}}
+                            </td>
+                        </tr>
+
+                    </table>
+
+
+                    <table class="table table-bordered" style="text-align: center;">
+                        <tr>
+                            <td width="20%">{{vm.sign.reviewstage}}</td>
+                            <td width="14%">申报<span class="required">*</span></td>
+                            <td width="14%">审定<span class="required">*</span></td>
+                            <td width="14%">核减（增）</td>
+                            <td width="14%">核减（增）率</td>
+                            <td width="14%">批复金额</td>
+                            <td width="14%">备注</td>
+                        </tr>
+
+                        <tr>
+                            <td>投资额（万元）</td>
+                            <td>
+                                <input type="number" maxlength="200" class="form-control input-sm "
+                                       ng-model="vm.dispatchDoc.declareValue" id="declareValue" name="declareValue"
+                                       ng-blur="vm.count()"
+                                       data-val-regex="金额格式不正确"
+                                       data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
+                                       data-val-required="必填">
+                                <span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors" ></span>
+                            </td>
+                            <td>
+                                <input type="number" maxlength="200" class="form-control input-sm "
+                                       ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
+                                       ng-blur="vm.count()"
+                                       data-val-regex="金额格式不正确"
+                                       data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
+                                       data-val-required="必填">
+                                <span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
+                            </td>
+                            <td>
+                                {{vm.dispatchDoc.extraValue}}
+                            </td>
+                            <td>
+                                {{vm.dispatchDoc.extraRate}}<span>%</span>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue">
+                            </td>
+                            <td>
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       ng-model="vm.dispatchDoc.remark" id="remark" name="remark">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>项目建设必要性<span class="required">*</span></td>
+                            <td colspan="6">
+                                <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                          ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.projectBuildNecess"
+                                          id="projectBuildNecess" name="projectBuildNecess" data-val="true"
+                                          data-val-required="必填"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>审定建设规模及内容<span class="required">*</span></td>
+                            <td colspan="6">
+                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                          rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent"
+                                          name="buildSizeContent" data-val="true" data-val-required="必填"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>投资匡算及资金来源<span class="required">*</span></td>
+                            <td colspan="6">
+                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                          rows="3" ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin"
+                                          name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>下一阶段工作要求<span class="required">*</span></td>
+                            <td colspan="6">
+                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                          rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
+                                          name="nextWorkPlan" data-val="true" data-val-required="必填"/>
+                            </td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>    <!-- end table -->
+    </form> <!-- end form -->
+
+
+    <div id="mwindow" style="display: none">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.searchMergeSign()"><span
+                    class="glyphicon glyphicon-search"></span>查询
+            </button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
+
+            <button class="btn btn-sm btn-primary" ng-click="vm.onClose()"><span
+                    class="glyphicon glyphicon-chevron-left"></span>关闭
+            </button>
+        </div>
+        <ol class="breadcrumb">
+            <form id="searchform" name="searchform">
+                <table style="width:100%">
+                    <tr>
+                        <td class="formAlignRight" style="width:150px;">项目名称</td>
+                        <td>
+                            <input type="text" ng-model="vm.serarchSign.projectname" >
+                        </td>
+                        <td class="formAlignRight" style="width:150px;">建设单位</td>
+                        <td>
+                            <input type="text" ng-model="vm.serarchSign.builtcompanyName">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formAlignRight" style="width:150px;">评审阶段</td>
+                        <td>
+                            <select ng-model="vm.serarchSign.reviewstage" name="reviewstage" id="reviewstage"
+                                    style="width:172px;">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                        <td class="formAlignRight" style="width:150px;">签收日期</td>
+                        <td>
+                            <input type="text"style="width: 170px;" ng-model="vm.serarchSign.startTime" kendo-date-picker k-format="'yyyy-MM-dd'">
+                            - <input type="text"  style="width: 170px;" ng-model="vm.serarchSign.endTime" kendo-date-picker k-format="'yyyy-MM-dd'">
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </ol>
+        <table style="width:100%;">
+            <tr>
+                <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
+                <div style="width:500px; height:400px;overflow: auto;">
+                    <table class="table table-bordered" style="width: 500px;">
+                        <tr>
+                            <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
+                        </tr>
+                        <tr ng-repeat="x in vm.signs">
+                            <td align="center"><input type="checkbox" name="checksign" value="{{ x.signid }}"/></td>
+                            <td style="text-align: center;">{{ x.projectname }}</td>
+                            <td style="text-align: center;">{{ x.reviewstage }}</td>
+                            <td style="text-align: center;">{{ x.reviewdeptid }}</td>
+                            <td style="text-align: center;">{{ x.builtcompanyid }}</td>
+                            <td style="text-align: center;">{{ x.signdate }}</td>
+                            <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
+                            <td style="text-align: center;">{{ x.mainDeptContactPhone }}</td>
+                            <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
+                        </tr>
+                    </table>
+                </div>
+                </td>
+                <td class="text-center" style="height:200px;width:100px;">
+                    <p><button class="btn btn-xs btn-default" ng-click="vm.chooseProject()" type="button" ><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
+                    <p><button class="btn btn-xs btn-default" ng-click="vm.cancelProject()" type="button" ><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
+                </td>
+                <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
+                <div style="width:500px; height:400px;overflow: auto;">
+                    <table class="table table-bordered" id="workTab" style="width: 500px;overflow: auto;">
+                        <tr>
+                            <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
+                            <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
+                        </tr>
+                        <tr ng-repeat="x in vm.selectedSign| filter:vm.filterSign">
+                            <td align="center"><input type="checkbox" name="checkss" value="{{ x.signid }}"/></td>
+                            <td style="text-align: center;">{{ x.projectname }}</td>
+                            <td style="text-align: center;">{{ x.reviewstage }}</td>
+                            <td style="text-align: center;">{{ x.reviewdeptid }}</td>
+                            <td style="text-align: center;">{{ x.builtcompanyid }}</td>
+                            <td style="text-align: center;">{{ x.signdate }}</td>
+                            <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
+                            <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
+                            <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
+                        </tr>
+                    </table>
+                </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

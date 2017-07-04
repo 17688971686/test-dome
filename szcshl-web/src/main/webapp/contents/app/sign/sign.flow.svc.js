@@ -11,9 +11,9 @@
 			initBusinessParams:initBusinessParams,	    //初始化业务参数
 			checkBusinessFill : checkBusinessFill,	    //检查相应的表单填写
 			getChargeWorkProgram:getChargeWorkProgram,  //获取工作方案
-			getChargeDispatch : getChargeDispatch,		//获取发文	（停用）
-			getChargeFilerecord : getChargeFilerecord,	//获取归档信息（停用）
-            endSignDetail:endSignDetail,                 //已办结的签收信息（停用）
+			getChargeDispatch : getChargeDispatch,		//获取发文
+			getChargeFilerecord : getChargeFilerecord,	//获取归档信息
+            endSignDetail:endSignDetail,                 //已办结的签收信息
 		};
 		return service;		
 
@@ -145,6 +145,13 @@
                 case "MFZR_GD":
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeFileRecord = true;
+                    //如果是合并发文次项目，则不用生成发文编号
+                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
+                        || vm.dispatchDoc.fileNum){
+                        vm.businessFlag.isCreateDisFileNum = true;
+                    }else{
+                        vm.showFlag.buttDisFileNum = true;
+                    }
                     //有第二负责人，则显示
                     if (vm.flow.businessMap && vm.flow.businessMap.secondUserList){
                         vm.showFlag.businessNext = true;
@@ -362,21 +369,25 @@
                     vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
                     break;
                 case "MFZR_GD":
-                    if(vm.model.filenum){
-                        resultTag = true;
-                        if(vm.businessFlag.isHaveSePri){
-                            if($("#secondPriUser").val()){
-                                vm.flow.businessMap.SEPRI_ID = $("#secondPriUser").val();
-                                resultTag = true;
-                            }else{
-                                resultTag = false;
-                            }
-                        }
-                    }else{
+                    //没有归档
+                    if(vm.businessFlag.isCreateDisFileNum == false){
                         resultTag = false;
+                    }else{
+                        if(vm.model.filenum){
+                            resultTag = true;
+                            if(vm.businessFlag.isHaveSePri){
+                                if($("#secondPriUser").val()){
+                                    vm.flow.businessMap.SEPRI_ID = $("#secondPriUser").val();
+                                    resultTag = true;
+                                }else{
+                                    resultTag = false;
+                                }
+                            }
+                        }else{
+                            resultTag = false;
+                        }
                     }
                     break;
-
                  //以下是协审流程环节
                 case "XS_ZHBBL":            //综合部办理
                     if($("#viceDirector").val()){

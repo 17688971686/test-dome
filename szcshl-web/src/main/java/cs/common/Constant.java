@@ -26,6 +26,12 @@ public class Constant {
      * 默认送件人
      */
     public static final String SEND_SIGN_NAME = "魏俊辉";
+
+    /**
+     * 发文编号前缀
+     */
+    public static String DISPATCH_PREFIX="深投审";
+
     /**
      * 工作方案表抬头
      */
@@ -322,5 +328,37 @@ public class Constant {
     		return value;
     	}
     	
+    }
+    
+    /**
+     * 合并类型
+     */
+    public static enum MergeType{
+        WORK_PROGRAM("1"),          //工作方案
+        DISPATCH("2");              //发文
+        private String value;
+
+        MergeType(String value){
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 发文方式，评审方式
+     */
+    public static enum MergeWay{
+        SINGLE("1"),          //单个
+        MERGE("2");           //合并
+        private String value;
+
+        MergeWay(String value){
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
     }
 }
