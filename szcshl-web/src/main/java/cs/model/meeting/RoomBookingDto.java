@@ -28,7 +28,7 @@ public class RoomBookingDto extends BaseDto{
 	private String content;//主要内容
 	private String remark;//备注
 
-	private String stageOrg;//评审部门
+	private String stageOrgName;//评审部门
 	private String stageProject;//评审项目
 	//开始结束时间段字符串
 	private String beginTimeStr;
@@ -136,12 +136,16 @@ public class RoomBookingDto extends BaseDto{
 	public void setWorkProgramId(String workProgramId) {
 		this.workProgramId = workProgramId;
 	}
-	public String getStageOrg() {
-		return stageOrg;
+
+	
+	public String getStageOrgName() {
+		return stageOrgName;
 	}
-	public void setStageOrg(String stageOrg) {
-		this.stageOrg = stageOrg;
+
+	public void setStageOrgName(String stageOrgName) {
+		this.stageOrgName = stageOrgName;
 	}
+
 	public String getRbDate() {
 		return rbDate;
 	}

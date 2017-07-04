@@ -25,6 +25,7 @@
         };
         
         return service;
+        
         //S_初始化已选项目列表
         function getInitSeleSignBysId(vm) {
             var bussnessId = vm.work.id;
@@ -232,20 +233,24 @@
 
         //S_会议预定添加
         function saveRoom(vm) {
+        	
             common.initJqValidation($('#stageForm'));
             var isValid = $('#stageForm').valid();
             if (isValid) {
                 vm.roombook.workProgramId = vm.work.id;
-                vm.roombook.stageOrg = vm.work.reviewOrgName;
+                vm.roombook.stageOrgName = vm.work.reviewOrgName;
                 vm.roombook.stageProject = "项目名称:" + vm.work.projectName + ":" + vm.work.buildCompany + ":" + vm.work.reviewOrgName;
                 vm.roombook.beginTimeStr = $("#beginTime").val();
                 vm.roombook.endTimeStr = $("#endTime").val();
-                if ($("#endTime").val() < $("#beginTime").val()) {
+                vm.roombook.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
+                vm.roombook.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
+              
+                console.log(vm.roombook);
+                
+                if (new Date(vm.roombook.endTime) < new Date(vm.roombook.beginTime)) {
                     $("#errorTime").html("开始时间不能大于结束时间!");
                     return;
                 }
-                vm.roombook.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
-                vm.roombook.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/room/saveRoom",
@@ -292,6 +297,7 @@
             var httpSuccess = function success(response) {
                 vm.roombookings = {};
                 vm.roombookings = response.data;
+               
             }
             common.http({
                 vm: vm,
@@ -378,6 +384,7 @@
                                 vm.RoomBookings = {};
                                 vm.RoomBookings = response.data.roomBookingDtos;
                                 vm.roombook = vm.RoomBookings[0];
+                              
                                 if (vm.RoomBookings.length > 1) {
                                     vm.isHaveNext = true;
                                 }

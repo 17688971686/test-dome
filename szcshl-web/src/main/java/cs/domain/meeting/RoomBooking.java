@@ -69,7 +69,7 @@ public class RoomBooking extends DomainBase{
 
 	//评审部门
 	@Column(columnDefinition="varchar(100)")
-	private String stageOrg;
+	private String stageOrgName;
 
 	//评审项目,包含:(时间,评审单位,评审项目,项目类型,评审部门)
 	@Column(columnDefinition="varchar(200)")
@@ -143,11 +143,12 @@ public class RoomBooking extends DomainBase{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public String getStageOrg() {
-		return stageOrg;
+	
+	public String getStageOrgName() {
+		return stageOrgName;
 	}
-	public void setStageOrg(String stageOrg) {
-		this.stageOrg = stageOrg;
+	public void setStageOrgName(String stageOrgName) {
+		this.stageOrgName = stageOrgName;
 	}
 	public String getRbDate() {
 		return rbDate;

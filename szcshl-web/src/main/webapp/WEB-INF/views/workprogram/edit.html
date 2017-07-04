@@ -331,7 +331,7 @@
 				<td>
 				
 					<input type="text" name="startTime" id="startTime" style="width: 170px;" ng-model="vm.sign.startTime" kendo-date-picker k-format="'yyyy-MM-dd'" >
-					至 <input type="text" name="endTime" id="endTime" style="width: 170px;" ng-model="vm.sign.endTime" kendo-date-picker k-format="'yyyy-MM-dd'" >
+					至 <input type="text" name="endTime" id="" style="width: 170px;" ng-model="vm.sign.endTime" kendo-date-picker k-format="'yyyy-MM-dd'" >
 					<input type="text" ng-hide="true" ng-model="vm.linkSignId">
 				</td>
 			</tr>
@@ -452,7 +452,7 @@
                 <td class="formAlignRight">会议类型： <span class="required">*</span></td>
                 <td>
                       <select ng-model="vm.roombook.rbType" name="rbType" id="rbType" class="form-control input-sm ">
-						<option ng-repeat="x in DICT.RBTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+						<option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					 </select>
                 </td>
                 <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>

@@ -44,15 +44,15 @@
         <a class="btn btn-sm btn-primary" ng-click="back();" ng-disabled="vm.iscommit"><span
                 class="glyphicon glyphicon-chevron-left"></span>返回</a>
         <@shiro.hasPermission name="room#exports#get">
-            <button type="button" class="k-button k-primary" ng-click="vm.exportWeek()" value="">导出本周评审会会议安排</button>
+            <button type="button" class="k-button k-primary" ng-click="vm.exportThisWeekStage()" value="">导出本周评审会会议安排</button>
         </@shiro.hasPermission>
 
         <@shiro.hasPermission name="room#exportWeek#get">
             <button type="button" class="k-button k-primary" ng-click="vm.exportThisWeek()" value="">导出本周全部会议安排</button>
         </@shiro.hasPermission>
 
-        <@shiro.hasPermission name="room#stageNextWeek#get">
-            <button type="button" class="k-button k-primary" ng-click="vm.stageNextWeek()" value="">导出下周评审会议安排</button>
+        <@shiro.hasPermission name="room#exportNextWeekStage#get">
+            <button type="button" class="k-button k-primary" ng-click="vm.exportNextWeekStage()" value="">导出下周评审会议安排</button>
         </@shiro.hasPermission>
 
         <@shiro.hasPermission name="room#exportNextWeek#get">
@@ -61,10 +61,14 @@
     </div>
     <div class="well well-sm" style="margin-bottom: 5px;">
         会议室查询：
-        <select ng-model="vm.mrID" ng-change="vm.findMeeting()" >
+        <select ng-model="vm.mrID" name="mrID"  ng-change="vm.findMeeting()" >
             <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.mrID == x.id">{{x.addr}}</option>
         </select>
+      
     </div>
+    <!-- 评审部门 -->
+      <input type="hidden" maxlength="200" class="form-control input-sm " 
+       value="{{vm.model.stageOrgName}}" name="stageOrgName" ng-model="vm.model.stageOrgName" id="stageOrgName"  >
     <!--操作说明提示框-->
     <ol class="breadcrumb" style="font-size: 12px;">
         <li class="active">温馨提示：双击时间段进行会议室预定或者修改！</li>
@@ -80,15 +84,16 @@
 <script id="customEditorTemplate" type="text/x-kendo-template">
     <div id="roomWindow" class="well well-sm well-box" style="background:white;margin:10px;">
         <form id="formRoom" name="formRoom">
-            <input type="hidden" maxlength="200" class="form-control input-sm " ng-model="vm.model.id " id="id"
-                   name="id" data-val="true" data-val-required="必填">
 
-            <table style="width:100%">
+            <input type="hidden" maxlength="200" class="form-control input-sm " ng-model="vm.model.id " id="id"  name="id" >
+           
+ <table style="width:100%">
                 <tr>
                     <td class="formAlignRight" width="20%">会议名称 <span class="required">*</span></td>
                     <td width="50%">
-                        <input class="form-control input-sm " ng-model="vm.model.rbName " id="rbName" name="rbName"
-                               data-val="true" data-val-required="必填">
+ 						
+                        <input class="form-control input-sm " type="text" ng-model="vm.model.rbName" value="{{vm.model.rbName}}"     id="rbName">
+
                     </td>
                     <td width="10%"><span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors"></span>
                     </td>
@@ -96,21 +101,20 @@
                 <tr>
                     <td class="formAlignRight">会议地点<span class="required">*</span></td>
                     <td>
-                        <select ng-model="vm.model.mrID" name="mrID" id="mrID" class="form-control input-sm "
-                                data-val="true" data-val-required="必填">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in vm.meetings" value="{{x.id}}">{{x.addr}}</option>
-                        </select>
+                        
+					 <select   id="mrID" name="mrID" ng-model="vm.model.mrID" class="form-control input-sm " data-val="true" data-val-required="必填">
+                 		 <option ng-repeat="x in vm.meetings"  value="{{x.id}}"ng-selected="vm.model.mrID == x.id" >{{x.addr}}</option>
+            	 	</select>
                     </td>
+ 
                     <td><span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
                 <tr>
                     <td class="formAlignRight">会议类型<span class="required">*</span></td>
                     <td>
-                        <select ng-model="vm.model.rbType" name="rbType" id="rbType" class="form-control input-sm "
-                                data-val="true" data-val-required="必填">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        <select  id="rbType" class="form-control input-sm "name="rbType" ng-model="vm.model.rbType"  data-val="true" data-val-required="必填">
+                               
+                            <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}" ng-selected="vm.model.rbType == x.dictName" >{{x.dictName}}</option>
                         </select>
                     </td>
                     <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>
@@ -118,16 +122,16 @@
                 <tr>
                     <td class="formAlignRight">会议主持人<span class="required">*</span></td>
                     <td>
-                        <input type="text" class="form-control input-sm " ng-model="vm.model.host " id="host"
-                               name="host" data-val="true" data-val-required="必填">
+                        <input  type="text" class="form-control input-sm " name="host" ng-model="vm.model.host" id="host" data-val="true" data-val-required="必填"  >
+                              
                     </td>
                     <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
                 <tr>
                     <td class="formAlignRight">会议预定人<span class="required">*</span></td>
                     <td>
-                        <input type="text" class="form-control input-sm " ng-model="vm.model.dueToPeople "
-                               id="dueToPeople" name="dueToPeople" data-val="true" data-val-required="必填">
+                        <input type="text" class="form-control input-sm " name="dueToPeople" id="dueToPeople" ng-model="vm.model.dueToPeople" data-val="true" data-val-required="必填">
+                               
                     </td>
                     <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>

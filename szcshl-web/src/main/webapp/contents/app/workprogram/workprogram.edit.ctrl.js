@@ -26,7 +26,7 @@
         	workprogramSvc.initPage(vm);
             workprogramSvc.findCompanys(vm);//查找主管部门
             //workprogramSvc.getInitRelateData(vm);
-            //workprogramSvc.findAllMeeting(vm);//查找所有会议室地
+            workprogramSvc.findAllMeeting(vm);//查找所有会议室地
         }
         
         //重置

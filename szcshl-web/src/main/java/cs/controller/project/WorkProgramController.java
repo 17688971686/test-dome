@@ -44,6 +44,13 @@ public class WorkProgramController {
         WorkProgramDto workDto = workProgramService.initWorkBySignId(signId, isMain);
         return workDto;
     }
+    
+    @RequiresPermissions("workprogram#initWorkProgramById#get")
+    @RequestMapping(name = "根据ID查找工作方案信息", path = "html/initWorkProgramById", method = RequestMethod.GET)
+    public @ResponseBody WorkProgramDto initWorkProgramById(@RequestParam(required = true) String workId){
+    	WorkProgramDto work = workProgramService.initWorkProgramById(workId);
+    	return work;
+    }
 
     @RequiresPermissions("workprogram#waitProjects#post")
     @RequestMapping(name = "待选项目列表", path = "waitProjects", method = RequestMethod.POST)

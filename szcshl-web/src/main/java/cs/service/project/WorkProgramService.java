@@ -29,4 +29,6 @@ public interface WorkProgramService {
     void delete(String id);
 
     ResultMsg createMeetingDoc(String signId, String workprogramId);
+
+	WorkProgramDto initWorkProgramById(String workId);
 }

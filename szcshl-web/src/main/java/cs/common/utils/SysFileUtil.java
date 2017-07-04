@@ -30,7 +30,7 @@ public class SysFileUtil {
         String url = fileLocation;
         String relativeUrl = "";
         if (module == null || module.isEmpty()) {
-            module = "default";
+            module = "defaultMeeting";
         }
         //文件存放的格式,根目录/模块/日期/业务ID
         Date date = new Date();

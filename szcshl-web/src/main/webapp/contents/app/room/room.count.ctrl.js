@@ -54,6 +54,7 @@
             roomCountSvc.grid(vm);
             roomCountSvc.roomList(vm);
             roomCountSvc.findAllOrg(vm);
+            roomCountSvc.findAllRoom(vm);
         }
     }
 })();

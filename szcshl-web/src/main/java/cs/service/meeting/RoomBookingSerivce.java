@@ -22,12 +22,12 @@ public interface RoomBookingSerivce {
 	void deleteRoom(String id);
 	void deleteRooms(String[] ids);
 	List<RoomBookingDto> getRoomList();
-	List<RoomBooking> findAll();
 	List<RoomBooking> findWeek();
-	List<RoomBooking> findStageNextWeek();
-	List<RoomBooking> findNextWeek();
+	List<RoomBookingDto> findNextWeek();
 	List<MeetingRoomDto> findMeetingAll();
 	void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto);
+	void exportThisWeekStage();
+	void exportNextWeekStage();
 
 	
 }

@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import cs.domain.meeting.RoomBooking;
+import cs.model.meeting.RoomBookingDto;
 import cs.repository.AbstractRepository;
 
 @Repository
@@ -57,7 +58,7 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
 	}
 
 	@Override
-	public List<RoomBooking> findStageNextWeek() {
+	public List<RoomBookingDto> findStageNextWeek() {
 		Calendar cal =Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
@@ -72,12 +73,12 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date nextSunday=cal.getTime();
         Criteria criteria =getExecutableCriteria();
-        List<RoomBooking> roomList= criteria.add(Restrictions.between("rbDay", nextMonday, nextSunday)).list();
+        List<RoomBookingDto> roomList= criteria.add(Restrictions.between("rbDay", nextMonday, nextSunday)).list();
 		return roomList;
 	}
 
 	@Override
-	public List<RoomBooking> findNextWeek() {
+	public List<RoomBookingDto> findNextWeek() {
 		Calendar cal =Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
@@ -92,7 +93,7 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date nextSunday=cal.getTime();
         Criteria criteria =getExecutableCriteria();
-        List<RoomBooking> roomList= criteria.add(Restrictions.between("rbDay", nextMonday, nextSunday)).list();
+        List<RoomBookingDto> roomList= criteria.add(Restrictions.between("rbDay", nextMonday, nextSunday)).list();
 		return roomList;
 	}
 

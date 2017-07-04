@@ -13,16 +13,68 @@
             initRoom: initRoom,
             showMeeting: showMeeting,
             findMeeting: findMeeting,
-            exportWeek: exportWeek,
+            exportThisWeekStage: exportThisWeekStage,//导出本周评审会会议安排
+            exportNextWeekStage: exportNextWeekStage,//下周评审会议安排
             exportThisWeek: exportThisWeek,
-            exportNextWeek: exportNextWeek,
-            stageNextWeek: stageNextWeek,
             addRoom: addRoom,  //添加会议室预定
             editRoom: editRoom,//编辑
+            initFindUserName:initFindUserName,//初始化会议预订人
+            initWorkProgram:initWorkProgram,//初始化工作方案
         };
 
         return service;
-
+        
+        //S 初始化工作方案
+        function initWorkProgram(vm){
+        	
+        	if(!vm.workProgramId){
+        		return;
+        	}else{
+        		var httpOptions = {
+            			method: 'get',
+            			url: rootPath + "/workprogram/html/initWorkProgramById",
+            			params:{workId:vm.workProgramId}
+            	}
+            	var httpSuccess = function success(response) {
+            		vm.model = {}
+            		vm.model = response.data;
+            		vm.model.rbName = vm.model.projectName;
+                	vm.model.stageOrgName = vm.model.reviewOrgName;
+                	console.log(vm.model.projectName);
+                	console.log(vm.model.stageOrgName);
+            	}
+            	common.http({
+            		vm: vm,
+            		$http: $http,
+            		httpOptions: httpOptions,
+            		success: httpSuccess
+            	});
+        	}
+        
+        }
+        //E 初始化工作方案
+        
+        //S 初始化预订人
+        function initFindUserName(vm){
+        	
+            var httpOptions = {
+                    method: 'get',
+                    url: rootPath + "/room/findUser",
+                    data: vm.model
+                }
+                var httpSuccess = function success(response) {
+	            	vm.model = {}
+	            	vm.model = response.data;
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }
+        //E 初始化预订人
+        
         //S_会议预定编辑
         function editRoom(vm) {
             vm.model.id = $("#id").val();
@@ -150,11 +202,14 @@
                         var isValid = $('#formRoom').valid();
                         if (isValid) {
                             var model = options.data.models[0];
+                            model.rbName = $("#rbName").val();
+                            model.stageOrgName = $("#stageOrgName").val();
                             model.rbDay = $("#rbDay").val();
                             model.beginTimeStr = $("#beginTime").val();
                             model.endTimeStr = $("#endTime").val();
                             model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
                             model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
+                            console.log(model);
                             if (vm.workProgramId) {
                                 model.workProgramId = vm.workProgramId;
                             }
@@ -179,7 +234,7 @@
                                                 findMeeting(vm);
                                                 $('.alertDialog').modal('hide');
                                                 $('.modal-backdrop').remove();
-                                                vm.schedulerOptions.cancelEvent();
+                                                //vm.schedulerOptions.cancelEvent();
                                             }
                                         })
                                     }
@@ -198,6 +253,7 @@
                         var isValid = $('#formRoom').valid();
                         if (isValid) {
                             var model = options.data.models[0];
+                           
                             model.rbDay = $("#rbDay").val();
                             model.beginTimeStr = $("#beginTime").val();
                             model.endTimeStr = $("#endTime").val();
@@ -382,10 +438,74 @@
 
         //start#exportWeek
         //本周评审会议
-        function exportWeek() {
-            window.open(url_room + "/exports");
+        function exportThisWeekStage(vm) {
+
+             var httpOptions = {
+                 method: 'get',
+                 url: url_room+"/exportThisWeekStage",
+                
+             }
+             var httpSuccess = function success(response) {
+                 common.requestSuccess({
+                     vm: vm,
+                     response: response,
+                     fn: function () {
+                    	 common.alert({
+                             vm: vm,
+                             msg: "操作成功",
+                             fn: function () {
+                                 $('.alertDialog').modal('hide');
+                                 $('.modal-backdrop').remove();
+                             }
+                         })
+                     }
+
+                 });
+
+             }
+             common.http({
+                 vm: vm,
+                 $http: $http,
+                 httpOptions: httpOptions,
+                 success: httpSuccess
+             });
         }
 
+        //S 下周评审会议
+        function exportNextWeekStage(vm) {
+        
+            var httpOptions = {
+                    method: 'get',
+                    url: url_room+"/exportNextWeekStage",
+                   
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                       	 common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                }
+                            })
+                        }
+
+                    });
+
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }
+        //S 下周评审会议
+        
         //本周全部会议
         function exportThisWeek() {
             window.open(url_room + "/exportWeek");
@@ -396,11 +516,7 @@
             window.open(url_room + "/exportNextWeek");
         }
 
-        //下周评审会议
-        function stageNextWeek() {
-            window.open(url_room + "/stageNextWeek");
-        }
-
+     
         //end#exportWeek
 
     }

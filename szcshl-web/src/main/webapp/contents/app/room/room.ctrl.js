@@ -11,10 +11,11 @@
         vm.title = '会议室预定列表';
         vm.id = $state.params.id;
         vm.workProgramId = $state.params.workProgramId;     //工作方案ID
-      
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00");
 
+       
+       
         //预定会议编辑
        vm.editRoom = function(){
         	roomSvc.editRoom(vm);
@@ -25,8 +26,8 @@
         }
 
         //导出本周评审会议安排
-        vm.exportWeek = function(){
-        	roomSvc.exportWeek();
+        vm.exportThisWeekStage = function(){
+        	roomSvc.exportThisWeekStage(vm);
         }
         //导出本周全部会议安排
         vm.exportThisWeek = function(){
@@ -39,9 +40,8 @@
         	roomSvc.exportNextWeek();
         }
         //导出下周评审会议安排
-        vm.stageNextWeek = function(){
-        	
-        	roomSvc.stageNextWeek();
+        vm.exportNextWeekStage = function(){
+        	roomSvc.exportNextWeekStage(vm);
         }
         //会议室查询
         vm.findMeeting = function(){
@@ -82,6 +82,8 @@
         function activate() {
            roomSvc.showMeeting(vm);
             roomSvc.initRoom(vm);
+            roomSvc.initWorkProgram(vm);
+            roomSvc.initFindUserName(vm);
         }
     }
 })();

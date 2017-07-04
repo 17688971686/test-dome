@@ -11,7 +11,7 @@ public interface RoomBookingRepo extends IRepository<RoomBooking, String> {
 	List<RoomBooking> findByHql(String hql);
 	List<RoomBooking> findWeekBook();
 	List<RoomBooking> thisWeekRoomStage();
-	List<RoomBooking> findStageNextWeek();
-	List<RoomBooking> findNextWeek();
+	List<RoomBookingDto> findStageNextWeek();
+	List<RoomBookingDto> findNextWeek();
 
 }

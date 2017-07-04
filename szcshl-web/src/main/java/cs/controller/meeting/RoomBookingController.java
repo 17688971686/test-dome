@@ -1,10 +1,14 @@
 package cs.controller.meeting;
 
+import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,15 +26,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.ibm.icu.text.SimpleDateFormat;
+
+import cs.common.Constant;
 import cs.common.ICurrentUser;
 import cs.common.utils.ExcelUtils;
+import cs.common.utils.SysFileUtil;
+import cs.common.utils.TemplateUtil;
 import cs.domain.meeting.RoomBooking;
+import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.meeting.MeetingRoomService;
 import cs.service.meeting.RoomBookingSerivce;
 import cs.service.sys.UserService;
@@ -50,6 +61,9 @@ public class RoomBookingController {
 	private UserService userService;
 	@Autowired
 	private ICurrentUser currentUser;
+	
+	@Autowired
+    private SysFileRepo sysFileRepo;
 	
 	@RequiresPermissions("room##get")
 	@RequestMapping(name="获取会议预定数据",path = "",method =RequestMethod.GET)
@@ -92,51 +106,17 @@ public class RoomBookingController {
 		return user;
 	}
 	
-	@RequiresPermissions("room#exports#get")
-	@RequestMapping( name="导出本周评审会议安排", path="exports", method=RequestMethod.GET)
-	public void exports(HttpServletRequest req,HttpServletResponse resp){
-		try {
-			Workbook wb=new HSSFWorkbook();
-			Calendar cal =Calendar.getInstance();
-	        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-	        //获取本周一的日期
-	        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-	        Date  monday=cal.getTime();
-	        String MONDAY =df.format(monday);
-	        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-	        Date tuseday = cal.getTime();
-	        String TUESDAY = df.format(tuseday);
-	        cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-	        Date wednesday =cal.getTime();
-	        String WEDNESDAY = df.format(wednesday);
-	        cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-	        Date thursday = cal.getTime();
-	        String THURSDAY = df.format(thursday);
-	        cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-	        Date friday = cal.getTime();
-	        String FRIDAT = df.format(friday);
-			String headers[]={MONDAY+"(星期一)",TUESDAY+"(星期二)",WEDNESDAY+"星期三",THURSDAY+"星期四",FRIDAT+"星期五"};
-			List<RoomBooking> foom=roomBookingSerivce.findAll();
-			ExcelUtils.fillExcelData(foom,wb, headers);
-			ExcelUtils.exports(resp, wb, "本周评审会会议安排.xls");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+	@SuppressWarnings("unused")
+	@RequiresPermissions("room#exportThisWeekStage#get")
+	@RequestMapping( name="导出本周评审会议安排", path="exportThisWeekStage", method=RequestMethod.GET)
+	public void exportThisWeekStage(HttpServletRequest req,HttpServletResponse resp){
+		roomBookingSerivce.exportThisWeekStage();
 	}
 	
-	@RequiresPermissions("room#stageNextWeek#get")
-	@RequestMapping(name="导出下周评审会议安排" ,path = "stageNextWeek", method=RequestMethod.GET)
+	@RequiresPermissions("room#exportNextWeekStage#get")
+	@RequestMapping(name="导出下周评审会议安排" ,path = "exportNextWeekStage", method=RequestMethod.GET)
 	public void exportsNext(HttpServletRequest req,HttpServletResponse resp){
-		try {
-			Workbook wb = new HSSFWorkbook();
-			String headers [] ={"会议名称","会议日期","会议开始时间","会议结束时间","会议预定人","会议主持人","会议地点"};
-			List<RoomBooking> room =roomBookingSerivce.findNextWeek();
-			ExcelUtils.exportStageNextWeek(room, wb, headers);
-			ExcelUtils.exports(resp, wb, "导出下周评审会议安排.xls");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		roomBookingSerivce.exportNextWeekStage();
 	}
 	
 	//导出本周全部会议安排
@@ -161,7 +141,8 @@ public class RoomBookingController {
 		try {
 			Workbook wb =new HSSFWorkbook();
 			String headers [] ={"会议名称","会议日期","会议开始时间","会议结束时间","会议预定人","会议主持人","会议地点"};
-			List<RoomBooking> rb =roomBookingSerivce.findNextWeek();
+			List<RoomBookingDto> rb =roomBookingSerivce.findNextWeek();
+			
 			ExcelUtils.excelNextWeek(rb, wb, headers);
 			ExcelUtils.exports(resp, wb, "下周全部会议安排.xls");
 		} catch (Exception e) {

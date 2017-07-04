@@ -691,4 +691,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
     }
 
+	@Override
+	public WorkProgramDto initWorkProgramById(String workId) {
+		WorkProgram work = workProgramRepo.findById(workId);
+		WorkProgramDto workDto = new WorkProgramDto();
+		BeanCopierUtils.copyProperties(work, workDto);
+		return workDto;
+	}
+
 }

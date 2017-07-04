@@ -16,8 +16,8 @@
 			queryRoomCount:queryRoomCount,//查询
 			roomList : roomList,
 			findAllOrg:findAllOrg,//查询部门列表
-			cleanValue : cleanValue
-			
+			cleanValue : cleanValue,
+			findAllRoom:findAllRoom
 		};		
 		return service;	
 		
@@ -31,6 +31,25 @@
 		function queryRoomCount(vm){
 			vm.gridOptions.dataSource.read();
 		}
+		
+		//S_查询预定人
+		function findAllRoom(vm){
+			var httpOptions = {
+					method: 'get',
+					url: common.format(url_user + "/findAllUsers")
+			}
+			var httpSuccess = function success(response) {
+				vm.userlist = {};
+				vm.userlist = response.data;
+			}
+			common.http({
+				vm: vm,
+				$http: $http,
+				httpOptions: httpOptions,
+				success: httpSuccess
+			});
+		}
+		//E_查询预定人
 		
 		//S_查询部门列表
 		function findAllOrg(vm){
@@ -56,7 +75,7 @@
 			
 			var httpOptions = {
 					method: 'get',
-					url: common.format(url_room + "/roomNamelist")
+					url: common.format(url_room + "/meeting")
 			}
 			var httpSuccess = function success(response) {
 				vm.roomlists = {};

@@ -1,26 +1,16 @@
 package cs.common.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.math.IEEE754rUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 import cs.domain.meeting.RoomBooking;
+import cs.model.meeting.RoomBookingDto;
 
 
 public class ExcelUtils {
@@ -77,14 +67,14 @@ public class ExcelUtils {
 			}
 	}
 	//导出下周全部会议安排
-	public static void excelNextWeek(List<RoomBooking> room,Workbook wb,String[] headers) throws Exception{
+	public static void excelNextWeek(List<RoomBookingDto> room,Workbook wb,String[] headers) throws Exception{
 		int rowIndex =0;
 		Sheet sheet =wb.createSheet();
 		Row row =sheet.createRow(rowIndex++);
 		for(int i=0;i<headers.length;i++){
 			row.createCell(i).setCellValue(headers[i]);
 		}
-		for(RoomBooking rb : room){
+		for(RoomBookingDto rb : room){
 			row = sheet.createRow(rowIndex++);
 			row.createCell(0).setCellValue(rb.getRbName().toString());
 			row.createCell(1).setCellValue(rb.getRbDay().toString());

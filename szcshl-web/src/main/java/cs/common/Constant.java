@@ -258,8 +258,10 @@ public class Constant {
         ASSIST("assist","协审协议书"),
         SIGN_IN("signIn","签到表"),
         INVITATION("invitation","邀请函"),
-        UNIT_NOTICE("notice","项目单位会议通知");
-
+        UNIT_NOTICE("notice","项目单位会议通知"),
+    	THIS_STAGE_MEETING("thisStageMeeing","本周评审会议安排"),
+    	NEXT_STAGE_MEETING("nextStageMeeting","下周评审会议安排");
+    	
         private String key;
         private String value;
 
@@ -283,7 +285,8 @@ public class Constant {
         DISPATCH("发文"),
         DOFILE("归档"),
         MEETING("会前准备材料"),
-        SUPPLEMENT("补充函");
+        SUPPLEMENT("补充函"),
+    	STAGEMEETING("评审会会议");
 
         private String value;
 
