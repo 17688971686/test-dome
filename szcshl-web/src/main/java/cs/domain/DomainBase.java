@@ -23,6 +23,7 @@ public abstract class DomainBase {
     private String modifiedBy = "";
 
 
+
     public Date getModifiedDate() {
         return modifiedDate;
     }
@@ -54,5 +55,6 @@ public abstract class DomainBase {
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
+
 
 }

@@ -294,4 +294,30 @@ public class Constant {
             return value;
         }
     }
+    
+    /**
+     * 警示灯状态
+     * @author MCL
+     *@date 2017年6月29日 下午12:03:19 
+     */
+    public static enum signEnumState{
+    	PROCESS("1"),	//在办
+    	DISPA("2"),		//已发文
+    	ARCHIVE("3"),	//已发送存档
+    	PAUSE("4"),		//暂停
+    	UNDER3WORKDAY("5"),		//少于三个工作日
+    	DISPAOVER("6"),			//发文超期
+    	OVER25WORKDAYARCHIVE("7"),	//超过25个工作日未存档
+    	ARCHIVEOVER("8");		//存档超期
+    	
+    	private String value;
+    	
+    	signEnumState(String value){
+    		this.value=value;
+    	}
+    	public String getValue(){
+    		return value;
+    	}
+    	
+    }
 }

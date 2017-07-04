@@ -19,6 +19,9 @@ public class SignDto extends BaseDto {
 	
 	private String comprehensiveName;//综合部拟办人名称
 	
+	private String isLightUp;
+	private String isSendFileRecord;
+	
 	@JSONField(format = "yyyy-MM-dd")
 	private Date comprehensiveDate;//综合部拟办日期
 	
@@ -2196,6 +2199,20 @@ public class SignDto extends BaseDto {
 		this.constructionDrawingsCopy = constructionDrawingsCopy;
 	}
 	
-	
-    
+
+	public String getIsLightUp() {
+		return isLightUp;
+	}
+
+	public void setIsLightUp(String isLightUp) {
+		this.isLightUp = isLightUp;
+	}
+
+	public String getIsSendFileRecord() {
+		return isSendFileRecord;
+	}
+
+	public void setIsSendFileRecord(String isSendFileRecord) {
+		this.isSendFileRecord = isSendFileRecord;
+	}
 }

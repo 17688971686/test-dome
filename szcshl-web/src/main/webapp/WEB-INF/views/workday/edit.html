@@ -1,0 +1,47 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/workday">工作日管理</a></li>       
+        <li class="active" >{{vm.title}}</li>
+    </ol>
+     <ol class="breadcrumb" style="font-size: 12px;">
+        <li class="active">温馨提示：1、休：表示将工作日调为休息日     &nbsp;&nbsp;&nbsp;&nbsp;2、 班：表示将休息日调为工作日</li>
+    </ol>
+     <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/workday"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+         </div>
+         <table style="width:500px;">
+	         <tr>
+		         <td class="formAlignRight">日期：<span class="required">*</span></td>
+		         <td><input type="text" name="dates" style="width: 100%"  kendo-date-picker k-format="'yyyy-MM-dd'"  class="form-control input-sm"
+		         		 value="" ng-model="vm.workday.dates" data-val="true" data-val-required="必填"/></td>
+	        	 <td><span data-valmsg-for="dates" data-valmsg-replace="true" class="errors"></span></td>
+	         </tr>
+	         <tr>
+		         <td class="formAlignRight">状态：</td>
+		         <td>
+			         <span><input type="radio" name="status" value="1"  ng-model="vm.workday.status"/>休</span>
+			         <span><input type="radio" name="status" value="2"  ng-model="vm.workday.status"/>班</span>
+		         </td>
+		         <td><span data-valmsg-for="status" data-valmsg-replace="true" class="errors"></span></td>
+	         </tr>
+	         <tr>
+	         	<td class="formAlignRight">备注：</td>
+	         	<td colspan="2">
+	         		<textarea class="form-control" maxlength="200" name="remark" ng-model="vm.workday.remark"></textarea>
+	         	</td>
+	         </tr>
+         </table>
+         
+     </form>
+    
+</div>

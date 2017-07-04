@@ -18,6 +18,7 @@
             <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
             <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期）
         </li>
+        <li><button ng-click="vm.countWorkday()">执行</button></li>
     </ol>
 	<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>                   
 </div>

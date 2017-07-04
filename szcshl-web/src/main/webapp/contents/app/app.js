@@ -370,6 +370,19 @@
                 controller: 'quartzCtrl',
                 controllerAs: 'vm'
             })
+            //begin workday
+             .state('workday', {
+                url: '/workday',
+                templateUrl: rootPath + '/workday/html/list.html',
+                controller: 'workdayCtrl',
+                controllerAs: 'vm'
+            })
+             .state('workdayEdit', {
+                url: '/workdayEdit/:id',
+                templateUrl: rootPath + '/workday/html/edit.html',
+                controller: 'workdayEditCtrl',
+                controllerAs: 'vm'
+            })
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {

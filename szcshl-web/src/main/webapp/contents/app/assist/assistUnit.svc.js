@@ -180,17 +180,22 @@
                         },
                         modifiedDate: {
                         	type: "date"
+                        },
+                        isUse:{
+                        	type:"object"
                         }
+                        
                     }
                 }),
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
                 pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
+                sort: 
+	                {
+	                    field: "createdDate",
+	                    dir: "desc"
+	                }
             });
 
             // End:dataSource
@@ -267,6 +272,26 @@
                     title: "企业地址",
                     width: 100,
                     filterable: true
+                },
+                {
+                    field: "isUse",
+                    title: "状态",
+                    width: 100,
+                    filterable: false,
+                    template:function(item){
+                    	if(item.isUse){
+                    		if(item.isUse=="0"){
+                    		
+                    			return "已停用";
+                    		}
+                    		if(item.isUse=="1"){
+                    		
+                    			return "在用";
+                    		}
+                    	}else{
+                    		return "";
+                    	}
+                    }
                 },
                 {
                     field: "",

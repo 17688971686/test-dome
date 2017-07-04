@@ -1,12 +1,13 @@
 package cs.service.project;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import cs.domain.project.Sign;
 import org.activiti.engine.runtime.ProcessInstance;
 
 import cs.common.ResultMsg;
+import cs.domain.project.Sign;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
@@ -59,5 +60,9 @@ public interface SignService{
 	List<SignDto> getAssociateDtos(String signId);
 
 	List<Sign> getAssociates(String signId);
-
+	
+	List<Sign> selectSignNotFinish();//查询正在办理的项目
+	
+	void bathUpdate(List<Sign> signList);
+	
 }

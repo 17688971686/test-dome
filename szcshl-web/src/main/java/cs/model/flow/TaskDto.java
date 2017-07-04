@@ -3,6 +3,10 @@ package cs.model.flow;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * @author MCL
+ *@date 2017年7月4日 下午2:45:04 
+ */
 public class TaskDto {
 
 	//业务key
@@ -34,6 +38,16 @@ public class TaskDto {
 	//所用时长
 	private long durationInMillis;
 	private String durationTime;
+	
+	private String isLightUp;//是否显示警示灯
+	
+	public String getIsLightUp() {
+		return isLightUp;
+	}
+
+	public void setIsLightUp(String isLightUp) {
+		this.isLightUp = isLightUp;
+	}
 
 	public long getDurationInMillis() {
 		return durationInMillis;

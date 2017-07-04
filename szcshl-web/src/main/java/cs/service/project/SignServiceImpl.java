@@ -6,17 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import cs.common.utils.StringUtil;
-import cs.domain.sys.*;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertSelected;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertSelectedDto;
-import cs.domain.project.*;
-import cs.model.project.*;
-import cs.repository.repositoryImpl.project.*;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -25,10 +14,11 @@ import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSON;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
@@ -39,23 +29,50 @@ import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
+import cs.domain.project.AssistPlanSign;
+import cs.domain.project.AssistPlanSign_;
+import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
+import cs.domain.project.FileRecord;
+import cs.domain.project.Sign;
+import cs.domain.project.SignPrincipal;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
+import cs.domain.sys.Company;
+import cs.domain.sys.Org;
+import cs.domain.sys.SysFile;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
 import cs.model.flow.FlowDto;
+import cs.model.project.DispatchDocDto;
+import cs.model.project.FileRecordDto;
+import cs.model.project.SignDto;
+import cs.model.project.SignPrincipalDto;
+import cs.model.project.WorkProgramDto;
 import cs.model.sys.OrgDto;
-import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.SignPrincipalRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.external.OfficeUserService;
-import cs.service.sys.SysFileService;
 import cs.service.sys.UserService;
+import cs.service.sys.WorkdayService;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -98,6 +115,9 @@ public class SignServiceImpl implements SignService {
     private SignPrincipalRepo signPrincipalRepo;
     @Autowired
     private SignPrincipalService signPrincipalService;
+    
+    @Autowired
+    private WorkdayService workdayService;
 
     @Override
     @Transactional
@@ -115,6 +135,7 @@ public class SignServiceImpl implements SignService {
         sign.setCreatedBy(currentUser.getLoginName());
         sign.setModifiedBy(currentUser.getLoginName());
         sign.setIssign(EnumState.NO.getValue());    //默认为未签收
+        sign.setIsLightUp("0");//默认为不亮灯
         //判断是否为协审
         if ("项目概算".equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
             sign.setIsassistflow(EnumState.YES.getValue());
@@ -1250,4 +1271,23 @@ public class SignServiceImpl implements SignService {
         signRepo.save(sign);
 
     }
+
+	@Override
+	@Transactional
+	public List<Sign> selectSignNotFinish() {
+		HqlBuilder hqlBuilder=HqlBuilder.create();
+//		hqlBuilder.append("select s.signid,s.isLightUp,s.reviewstage,s.ispause,s.signdate from "+Sign.class.getSimpleName() +" s where s."+Sign_.signid.getName()+" not in (");
+		hqlBuilder.append("select s from "+Sign.class.getSimpleName() +" s where s."+Sign_.signState.getName()+"=:state");
+//		hqlBuilder.append("select t.signid,t.isLightUp,t.reviewstage,t.ispause,t.signdate  from cs_sign  t where t.signid not in (select f.signid from cs_file_record  f) ");
+		hqlBuilder.setParam("state", Constant.EnumState.NORMAL.getValue());
+		List<Sign> signList=signRepo.findByHql(hqlBuilder);
+		return signList;
+	}
+
+	@Override
+	@Transactional
+	public void bathUpdate(List<Sign> signList) {
+		signRepo.bathUpdate(signList);
+	}
+
 }

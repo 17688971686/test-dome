@@ -11,8 +11,26 @@
 			gtasksGrid : gtasksGrid,		//个人待办
             etasksGrid : etasksGrid,		//个人办结
             dtasksGrid : dtasksGrid,        //在办任务
+            countWorakday : countWorakday
 		}
 		return service;	
+		
+		function countWorakday(vm){
+			var httpOptions={
+				method:"get",
+				url:rootPath +"/workday/countWorkday"
+			}
+		
+			var httpSuccess=function success(response){
+			}
+			 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+		}
 
 		//S_gtasksGrid
 		function gtasksGrid(vm){
@@ -56,18 +74,24 @@
                         /**
                          * TODO:目前先做样式，具体实现后面再处理
                          */
-                        if(item.isSuspended && item.isSuspended == '9'){    //暂停
+                      if(item.isLightUp && item.isLightUp == '4'){    //暂停
                             return $('#span1').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-01")){
+                        }else if(item.isLightUp && item.isLightUp == '8'){	//存档超期
                             return $('#span5').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-10")){
+                        }else if(item.isLightUp && item.isLightUp == '7'){	//超过25个工作日未存档
                             return $('#span4').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-15")){
+                        }else if(item.isLightUp && item.isLightUp == '6'){	//发文超期
                             return $('#span3').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-20")){
+                        }else if(item.isLightUp && item.isLightUp == '5'){	//少于3个工作日
                             return $('#span2').html();
-                        }else{
+                        }else if(item.isLightUp && item.isLightUp == '1'){	//在办
                             return "";
+                        }else if(item.isLightUp && item.isLightUp == '2'){	//已发文
+                            return "";
+                        }else if(item.isLightUp && item.isLightUp == '3'){	//已发送存档
+                            return "";
+                        }else{
+                        	return "";
                         }
                     }
                 },
@@ -290,21 +314,28 @@
                     title: "",
                     width:30,
                     template:function(item){
+//                    	return item.isLightUp;
                         /**
                          * TODO:目前先做样式，具体实现后面再处理
                          */
-                        if(item.isSuspended && item.isSuspended == '9'){    //暂停
+                        if(item.isLightUp && item.isLightUp == '4'){    //暂停
                             return $('#span1').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-01")){
+                        }else if(item.isLightUp && item.isLightUp == '8'){	//存档超期
                             return $('#span5').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-10")){
+                        }else if(item.isLightUp && item.isLightUp == '7'){	//超过25个工作日未存档
                             return $('#span4').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-15")){
+                        }else if(item.isLightUp && item.isLightUp == '6'){	//发文超期
                             return $('#span3').html();
-                        }else if(new Date(item.createDate) < new Date("2017-06-20")){
+                        }else if(item.isLightUp && item.isLightUp == '5'){	//少于3个工作日
                             return $('#span2').html();
-                        }else{
+                        }else if(item.isLightUp && item.isLightUp == '1'){	//在办
                             return "";
+                        }else if(item.isLightUp && item.isLightUp == '2'){	//已发文
+                            return "";
+                        }else if(item.isLightUp && item.isLightUp == '3'){	//已发送存档
+                            return "";
+                        }else{
+                        	return "";
                         }
                     }
                 },

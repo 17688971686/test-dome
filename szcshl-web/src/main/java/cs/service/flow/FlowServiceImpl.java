@@ -43,11 +43,13 @@ import cs.common.cache.DefaultCacheFactory;
 import cs.common.cache.ICache;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.TaskDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignRepo;
 
 @Service
 public class FlowServiceImpl implements FlowService {
@@ -64,6 +66,8 @@ public class FlowServiceImpl implements FlowService {
     private RepositoryService repositoryService;
     @Autowired
     private ICurrentUser currentUser;
+    @Autowired
+	private SignRepo signRepo;
 
     @Override
     public List<FlowHistoryDto> convertHistory(String processInstanceId) {
@@ -368,6 +372,7 @@ public class FlowServiceImpl implements FlowService {
                     pi = runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
                     cache.put(t.getProcessInstanceId(), pi);
                 }
+                Sign sign=signRepo.findById(pi.getBusinessKey());
                 TaskDto taskDto = new TaskDto();
                 taskDto.setBusinessKey(pi.getBusinessKey());
                 taskDto.setBusinessName(pi.getName());
@@ -384,6 +389,7 @@ public class FlowServiceImpl implements FlowService {
                 taskDto.setSuspended(t.isSuspended());
                 taskDto.setTaskDefinitionKey(t.getTaskDefinitionKey());
                 taskDto.setAssignee(t.getAssignee());
+                taskDto.setIsLightUp(sign.getIsLightUp());
                 list.add(taskDto);
             });
             pageModelDto.setValue(list);
@@ -444,6 +450,7 @@ public class FlowServiceImpl implements FlowService {
                     pi = runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
                     cache.put(t.getProcessInstanceId(), pi);
                 }
+                Sign sign=signRepo.findById(pi.getBusinessKey());
                 TaskDto taskDto = new TaskDto();
                 taskDto.setBusinessKey(pi.getBusinessKey());
                 taskDto.setBusinessName(pi.getName());
@@ -460,6 +467,7 @@ public class FlowServiceImpl implements FlowService {
                 taskDto.setSuspended(t.isSuspended());
                 taskDto.setTaskDefinitionKey(t.getTaskDefinitionKey());
                 taskDto.setAssignee(t.getAssignee());
+                taskDto.setIsLightUp(sign.getIsLightUp());
                 list.add(taskDto);
             });
             pageModelDto.setValue(list);

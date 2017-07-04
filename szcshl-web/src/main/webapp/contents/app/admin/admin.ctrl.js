@@ -13,5 +13,8 @@
         function activate() {
         	adminSvc.gtasksGrid(vm);
         }
+        vm.countWorkday=function(){
+        	adminSvc.countWorakday(vm);
+        }
     }
 })();

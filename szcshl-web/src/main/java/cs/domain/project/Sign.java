@@ -26,6 +26,12 @@ public class Sign extends DomainBase {
      */
     @Id
     private String signid;
+    
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isLightUp;	//警示灯状态
+    
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isSendFileRecord;	//是否已发送存档
 
     //委内收文编号
     @Column(columnDefinition = "VARCHAR(30)")
@@ -2146,6 +2152,7 @@ public class Sign extends DomainBase {
 		this.legalPersoncCardCopy = legalPersoncCardCopy;
 	}
 
+
 	public Integer getEnvironmentalEffectCount() {
 		return environmentalEffectCount;
 	}
@@ -2314,8 +2321,22 @@ public class Sign extends DomainBase {
 		this.constructionDrawingsCopy = constructionDrawingsCopy;
 	}
 	
+
+	public String getIsLightUp() {
+		return isLightUp;
+	}
+
+	public void setIsLightUp(String isLightUp) {
+		this.isLightUp = isLightUp;
+	}
+
+	public String getIsSendFileRecord() {
+		return isSendFileRecord;
+	}
+
+	public void setIsSendFileRecord(String isSendFileRecord) {
+		this.isSendFileRecord = isSendFileRecord;
+	}
+
 	
-	
-	
-    
 }
