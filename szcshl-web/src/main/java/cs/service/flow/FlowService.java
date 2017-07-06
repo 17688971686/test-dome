@@ -1,5 +1,6 @@
 package cs.service.flow;
 
+import cs.domain.flow.RuProcessTask;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
@@ -9,35 +10,39 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 
 import java.util.List;
 
 public interface FlowService {
 
-	List<FlowHistoryDto> convertHistory(String processInstanceId);
-	
-	void rollBackLastNode(FlowDto flowDto);
-	
-	void rollBackByActiviti(FlowDto flowDto);
-	
-	ActivityImpl getActivityImpl(String taskId,String activityId);
+    List<FlowHistoryDto> convertHistory(String processInstanceId);
 
-	HistoricActivityInstance getHistoricInfoByActivityId(String processInstanceId,String activityId);
-	
-	void nextTaskDefinition(List<TaskDefinition> taskDefinitionList,ActivityImpl activityImpl,String activityId);
-	
-	void deployementProcessByName(String path,String sourceName,String flowName);
-	
-	void deployementProcessByZip(String zipPath,String flowName);
-	
-	ProcessInstance findProcessInstanceByBusinessKey(String businessKey);
-	
-	Task findTaskByBusinessKey(String businessKey);
+    void rollBackLastNode(FlowDto flowDto);
 
-	PageModelDto<TaskDto> queryGTasks(ODataObj odataObj);
+    void rollBackByActiviti(FlowDto flowDto);
+
+    ActivityImpl getActivityImpl(String taskId, String activityId);
+
+    HistoricActivityInstance getHistoricInfoByActivityId(String processInstanceId, String activityId);
+
+    void nextTaskDefinition(List<TaskDefinition> taskDefinitionList, ActivityImpl activityImpl, String activityId);
+
+    void deployementProcessByName(String path, String sourceName, String flowName);
+
+    void deployementProcessByZip(String zipPath, String flowName);
+
+    ProcessInstance findProcessInstanceByBusinessKey(String businessKey);
+
+
+    //PageModelDto<TaskDto> queryGTasks(ODataObj odataObj);
+
+    //PageModelDto<TaskDto> queryDoingTasks(ODataObj odataObj);
 
     PageModelDto<TaskDto> queryETasks(ODataObj odataObj);
 
-    PageModelDto<TaskDto> queryDoingTasks(ODataObj odataObj);
+    /**
+     * 20170706 新增
+     **/
+    PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, String skip, String top, boolean isUserDeal);
+
 }

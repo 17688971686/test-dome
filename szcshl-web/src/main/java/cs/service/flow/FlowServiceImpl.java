@@ -1,20 +1,23 @@
 package cs.service.flow;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipInputStream;
-
-import cs.common.Constant;
-import cs.domain.sys.User;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import cs.common.ICurrentUser;
+import cs.common.cache.CacheFactory;
+import cs.common.cache.DefaultCacheFactory;
+import cs.common.cache.ICache;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.Validate;
+import cs.domain.flow.RuProcessTask;
+import cs.domain.flow.RuProcessTask_;
+import cs.domain.project.Sign;
+import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
+import cs.model.flow.FlowHistoryDto;
+import cs.model.flow.TaskDto;
+import cs.repository.odata.ODataFilterItem;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -35,23 +38,19 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
-import cs.common.cache.CacheFactory;
-import cs.common.cache.DefaultCacheFactory;
-import cs.common.cache.ICache;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.Validate;
-import cs.domain.project.Sign;
-import cs.model.PageModelDto;
-import cs.model.flow.FlowDto;
-import cs.model.flow.FlowHistoryDto;
-import cs.model.flow.TaskDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.SignRepo;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 @Service
 public class FlowServiceImpl implements FlowService {
@@ -69,7 +68,10 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     private ICurrentUser currentUser;
     @Autowired
-	private SignRepo signRepo;
+    private SignRepo signRepo;
+
+    @Autowired
+    private RuProcessTaskRepo ruProcessTaskRepo;
 
     @Override
     public List<FlowHistoryDto> convertHistory(String processInstanceId) {
@@ -166,7 +168,7 @@ public class FlowServiceImpl implements FlowService {
 
         for (Task task : tasks) {
             taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption());    //添加处理信息
-            taskService.complete(task.getId(), getLastDealUser(currTask.getTaskDefinitionKey(),instance.getBusinessKey()));
+            taskService.complete(task.getId(), getLastDealUser(currTask.getTaskDefinitionKey(), instance.getBusinessKey()));
             historyService.deleteHistoricTaskInstance(task.getId());
         }
 
@@ -345,15 +347,10 @@ public class FlowServiceImpl implements FlowService {
         return runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
     }
 
-    @Override
-    public Task findTaskByBusinessKey(String businessKey) {
-        return taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
-    }
-
     /**
-     * 查询个人待办任务
+     * 查询个人待办任务(停用：2017-07-06)
      */
-    @Override
+    /*@Override
     public PageModelDto<TaskDto> queryGTasks(ODataObj odataObj) {
         CacheFactory cacheFactory = new DefaultCacheFactory();
         ICache cache = cacheFactory.getCache();
@@ -398,8 +395,7 @@ public class FlowServiceImpl implements FlowService {
         pageModelDto.setCount(total);
 
         return pageModelDto;
-    }
-
+    }*/
     @Override
     public PageModelDto<TaskDto> queryETasks(ODataObj odataObj) {
         PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
@@ -433,7 +429,7 @@ public class FlowServiceImpl implements FlowService {
         return pageModelDto;
     }
 
-    @Override
+    /*@Override
     public PageModelDto<TaskDto> queryDoingTasks(ODataObj odataObj) {
         CacheFactory cacheFactory = new DefaultCacheFactory();
         ICache cache = cacheFactory.getCache();
@@ -451,7 +447,7 @@ public class FlowServiceImpl implements FlowService {
                     pi = runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
                     cache.put(t.getProcessInstanceId(), pi);
                 }
-                Sign sign=signRepo.findById(pi.getBusinessKey());
+                Sign sign = signRepo.findById(pi.getBusinessKey());
                 TaskDto taskDto = new TaskDto();
                 taskDto.setBusinessKey(pi.getBusinessKey());
                 taskDto.setBusinessName(pi.getName());
@@ -477,15 +473,72 @@ public class FlowServiceImpl implements FlowService {
 
         return pageModelDto;
     }
+*/
+
+    /**
+     * 在办任务查询
+     * @param odataObj
+     * @param skip
+     * @param top
+     * @param isUserDeal  是否为个人待办
+     * @return
+     */
+    @Override
+    public PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, String skip, String top,boolean isUserDeal) {
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        // 处理filter
+        if (odataObj.getFilter() != null) {
+            for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
+                String field = oDataFilterItem.getField();
+                String operator = oDataFilterItem.getOperator();
+                Object value = oDataFilterItem.getValue();
+                switch (operator) {
+                    case "like":
+                        criteria.add(Restrictions.like(field, "%" + value + "%"));
+                        break;
+                    case "eq":
+                        criteria.add(Restrictions.eq(field, value));
+                        break;
+                    case "ne":
+                        criteria.add(Restrictions.ne(field, value));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        if(isUserDeal){
+            Disjunction dis = Restrictions.disjunction();
+            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), currentUser.getLoginName()));
+            dis.add(Restrictions.like(RuProcessTask_.userName.getName(), currentUser.getLoginName()));
+            criteria.add(dis);
+        }
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (Validate.isString(skip)) {
+            criteria.setFirstResult(Integer.valueOf(skip));
+        }
+        if (Validate.isString(top)) {
+            criteria.setMaxResults(Integer.valueOf(top));
+        }
+        List<RuProcessTask> runProcessList = criteria.list();
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
 
     /**
      * TODO:待实现
      * 根据当前环节ID取出上一环节处理人
+     *
      * @param taskDefinitionKey
      * @return
      */
-    private Map<String,Object> getLastDealUser(String taskDefinitionKey,String businessKey){
-        Map<String,Object> resultMap = new HashMap<>();
+    private Map<String, Object> getLastDealUser(String taskDefinitionKey, String businessKey) {
+        Map<String, Object> resultMap = new HashMap<>();
 
         return resultMap;
     }

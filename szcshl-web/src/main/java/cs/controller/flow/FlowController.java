@@ -1,28 +1,29 @@
 package cs.controller.flow;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import cs.common.Constant;
+import cs.common.Constant.MsgCode;
+import cs.common.ICurrentUser;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.Validate;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.User;
-import cs.model.sys.OrgDto;
+import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
+import cs.model.flow.FlowHistoryDto;
+import cs.model.flow.Node;
+import cs.model.flow.TaskDto;
 import cs.model.sys.UserDto;
+import cs.repository.odata.ODataFilterItem;
+import cs.repository.odata.ODataObj;
+import cs.service.flow.FlowService;
 import cs.service.project.SignPrincipalService;
+import cs.service.project.SignService;
+import cs.service.project.SignServiceImpl;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -39,28 +40,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-import cs.common.Constant;
-import cs.common.ICurrentUser;
-import cs.common.Constant.MsgCode;
-import cs.common.ResultMsg;
-import cs.common.utils.Validate;
-import cs.model.PageModelDto;
-import cs.model.flow.FlowDto;
-import cs.model.flow.FlowHistoryDto;
-import cs.model.flow.Node;
-import cs.model.flow.TaskDto;
-import cs.repository.odata.ODataObj;
-import cs.service.flow.FlowService;
-import cs.service.project.SignService;
-import cs.service.project.SignServiceImpl;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -93,18 +82,18 @@ public class FlowController {
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办任务", path = "html/tasks", method = RequestMethod.POST)
     public @ResponseBody
-    PageModelDto<TaskDto> tasks(HttpServletRequest request) throws ParseException {
+    PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<TaskDto> pageModelDto = flowService.queryGTasks(odataObj);
+        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,request.getParameter("$skip"),request.getParameter("$top"),true);
         return pageModelDto;
     }
 
     @RequiresPermissions("flow#html/doingtasks#post")
     @RequestMapping(name = "在办任务", path = "html/doingtasks", method = RequestMethod.POST)
     public @ResponseBody
-    PageModelDto<TaskDto> doingtasks(HttpServletRequest request) throws ParseException {
+    PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<TaskDto> pageModelDto = flowService.queryDoingTasks(odataObj);
+        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,request.getParameter("$skip"),request.getParameter("$top"),false);
         return pageModelDto;
     }
 

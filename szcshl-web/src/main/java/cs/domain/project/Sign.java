@@ -470,22 +470,6 @@ public class Sign extends DomainBase {
     @OneToOne(mappedBy = "sign")
     private FileRecord fileRecord;
 
-    /*//主流程第一负责人ID
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String mFlowMainUserId;
-
-    //主流程第二负责人ID
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String mFlowAssistUserId;
-
-    //次流程第一负责人ID
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String aFlowMainUserId;
-
-    //次流程第二负责人ID
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String aFlowAssistUserId;*/
-
     //主办部门
     @Column(columnDefinition = "VARCHAR(64)")
     private String mOrgId;

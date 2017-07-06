@@ -68,9 +68,12 @@
       <!-- 配置监控统计拦截的filters -->
       <property name="filters" value="stat" /> 
   	</bean>
-	
-	
-	
+
+
+	<!-- 配置spring的JdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
 	
 	<!-- 配置activiti -->
 	<!-- 创建流程引擎配置对象 -->

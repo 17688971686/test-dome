@@ -71,28 +71,34 @@
                     title: "",
                     width:30,
                     template:function(item){
-                        /**
-                         * TODO:目前先做样式，具体实现后面再处理
-                         */
-                      if(item.isLightUp && item.isLightUp == '4'){    //暂停
-                            return $('#span1').html();
-                        }else if(item.isLightUp && item.isLightUp == '8'){	//存档超期
-                            return $('#span5').html();
-                        }else if(item.isLightUp && item.isLightUp == '7'){	//超过25个工作日未存档
-                            return $('#span4').html();
-                        }else if(item.isLightUp && item.isLightUp == '6'){	//发文超期
-                            return $('#span3').html();
-                        }else if(item.isLightUp && item.isLightUp == '5'){	//少于3个工作日
-                            return $('#span2').html();
-                        }else if(item.isLightUp && item.isLightUp == '1'){	//在办
-                            return "";
-                        }else if(item.isLightUp && item.isLightUp == '2'){	//已发文
-                            return "";
-                        }else if(item.isLightUp && item.isLightUp == '3'){	//已发送存档
-                            return "";
-                        }else{
-                        	return "";
-                        }
+                       switch(item.lightState){
+                           case "4":          //暂停
+                               return $('#span1').html();
+                               break;
+                           case "8":         	//存档超期
+                               return $('#span5').html();
+                               break;
+                           case "7":           //超过25个工作日未存档
+                               return $('#span4').html();
+                               break;
+                           case "6":          	//发文超期
+                               return $('#span3').html();
+                               break;
+                           case "5":          //少于3个工作日
+                               return $('#span2').html();
+                               break;
+                           case "1":          //在办
+                                return "";
+                                break;
+                           case "2":           //已发文
+                               return "";
+                               break;
+                           case "3":           //已发送存档
+                               return "";
+                               break;
+                           default:
+                               ;
+                       }
                     }
                 },
 				 {
@@ -102,27 +108,46 @@
                      width:50
                  },
                  {
-                     field: "businessName",
-                     title: "任务名称",
+                     field: "projectName",
+                     title: "项目名称",
                      filterable : false,
-                     width:180
+                     width:150
                  },
+                {
+                    field: "reviewStage",
+                    title: "项目阶段",
+                    filterable : false,
+                    width:150
+                },
                  {
-                     field: "flowName",
+                     field: "processName",
                      title: "所属流程",
-                     width: 180,
-                     filterable : false
-                 },                 
-                 {
-                     field: "taskName",
-                     title: "当前环节",
-                     width: 180,
+                     width: 120,
                      filterable : false
                  },
                  {
-                     field: "createDate",
+                     field: "nodeName",
+                     title: "当前环节",
+                     width: 120,
+                     filterable : false
+                 },
+                {
+                    field: "",
+                    title: "处理人",
+                    width: 120,
+                    filterable : false,
+                    template:function(item) {
+                        if(item.assignee){
+                            return item.assignee;
+                        }else if(item.userName){
+                            return item.userName;
+                        }
+                    }
+                },
+                 {
+                     field: "createTime",
                      title: "接收时间",
-                     width: 150,
+                     width: 120,
                      filterable : false,
                      format: "{0: yyyy-MM-dd HH:mm:ss}"
                  },
@@ -132,7 +157,7 @@
                      width: 80,
                      filterable : false,
                      template:function(item){
- 						if(item.isSuspended){
+ 						if(item.processState && item.processState == 0){
  							return '<span style="color:orange;">已暂停</span>';
  						}else{
  							return '<span style="color:green;">进行中</span>';
@@ -142,10 +167,10 @@
 				{
 					field : "",
 					title : "操作",
-					width : 180,
+					width : 80,
 					template:function(item){
 						//项目签收流程，则跳转到项目签收流程处理野人
-						if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
+						if(item.processKey=="FINAL_SIGN_FLOW" || item.processKey=="SIGN_XS_FLOW"){
 							return common.format($('#columnBtns').html(),"signFlowDeal",item.businessKey,item.taskId,item.processInstanceId);
 						}else{
 							return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
@@ -314,28 +339,34 @@
                     title: "",
                     width:30,
                     template:function(item){
-//                    	return item.isLightUp;
-                        /**
-                         * TODO:目前先做样式，具体实现后面再处理
-                         */
-                        if(item.isLightUp && item.isLightUp == '4'){    //暂停
-                            return $('#span1').html();
-                        }else if(item.isLightUp && item.isLightUp == '8'){	//存档超期
-                            return $('#span5').html();
-                        }else if(item.isLightUp && item.isLightUp == '7'){	//超过25个工作日未存档
-                            return $('#span4').html();
-                        }else if(item.isLightUp && item.isLightUp == '6'){	//发文超期
-                            return $('#span3').html();
-                        }else if(item.isLightUp && item.isLightUp == '5'){	//少于3个工作日
-                            return $('#span2').html();
-                        }else if(item.isLightUp && item.isLightUp == '1'){	//在办
-                            return "";
-                        }else if(item.isLightUp && item.isLightUp == '2'){	//已发文
-                            return "";
-                        }else if(item.isLightUp && item.isLightUp == '3'){	//已发送存档
-                            return "";
-                        }else{
-                        	return "";
+                        switch(item.lightState){
+                            case "4":          //暂停
+                                return $('#span1').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
+                                break;
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "6":          	//发文超期
+                                return $('#span3').html();
+                                break;
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
+                                break;
+                            case "1":          //在办
+                                return "";
+                                break;
+                            case "2":           //已发文
+                                return "";
+                                break;
+                            case "3":           //已发送存档
+                                return "";
+                                break;
+                            default:
+                                return "";
+                                ;
                         }
                     }
                 },
@@ -346,27 +377,46 @@
                     width:50
                 },
                 {
-                    field: "businessName",
-                    title: "任务名称",
+                    field: "projectName",
+                    title: "项目名称",
                     filterable : false,
-                    width:180
+                    width:150
                 },
                 {
-                    field: "flowName",
+                    field: "reviewStage",
+                    title: "项目阶段",
+                    filterable : false,
+                    width:150
+                },
+                {
+                    field: "processName",
                     title: "所属流程",
-                    width: 180,
-                    filterable : false,
+                    width: 120,
+                    filterable : false
                 },
                 {
-                    field: "taskName",
+                    field: "nodeName",
                     title: "当前环节",
-                    width: 180,
-                    filterable : false,
+                    width: 120,
+                    filterable : false
                 },
                 {
-                    field: "createDate",
+                    field: "",
+                    title: "处理人",
+                    width: 120,
+                    filterable : false,
+                    template:function(item) {
+                        if(item.assignee){
+                            return item.assignee;
+                        }else if(item.userName){
+                            return item.userName;
+                        }
+                    }
+                },
+                {
+                    field: "createTime",
                     title: "接收时间",
-                    width: 150,
+                    width: 120,
                     filterable : false,
                     format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
@@ -376,7 +426,7 @@
                     width: 80,
                     filterable : false,
                     template:function(item){
-                        if(item.isSuspended){
+                        if(item.processState && item.processState == 0){
                             return '<span style="color:orange;">已暂停</span>';
                         }else{
                             return '<span style="color:green;">进行中</span>';
@@ -386,10 +436,10 @@
                 {
                     field : "",
                     title : "操作",
-                    width : 180,
+                    width : 80,
                     template:function(item){
                         //项目签收流程，则跳转到项目签收流程处理野人
-                        if(item.flowKey=="FINAL_SIGN_FLOW" || item.flowKey=="SIGN_XS_FLOW"){
+                        if(item.processKey=="FINAL_SIGN_FLOW" || item.processKey=="SIGN_XS_FLOW"){
                             return common.format($('#columnBtns').html(),"signFlowDetail",item.businessKey,item.taskId,item.processInstanceId);
                         }else{
                             return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
