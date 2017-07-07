@@ -20,5 +20,7 @@ public interface QuartzService {
 	QuartzDto findById(String deptId);
 
 	void delete(String id);
+	
+	void changeCurState(String id,String state);
 
 }

@@ -1,9 +1,11 @@
 package cs.service.sys;
 
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
+import cs.domain.sys.Quartz_;
 import cs.model.PageModelDto;
 import cs.model.sys.QuartzDto;
 import cs.repository.odata.ODataObj;
@@ -61,6 +63,8 @@ public class QuartzServiceImpl  implements QuartzService {
 		domain.setModifiedBy(currentUser.getLoginName());
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
+		domain.setCurState("0");//默认未执行
+		domain.setIsEnable("9");//默认在用
 		quartzRepo.save(domain);
 	}
 
@@ -88,7 +92,22 @@ public class QuartzServiceImpl  implements QuartzService {
 	@Override
 	@Transactional
 	public void delete(String id) {
+		HqlBuilder hqlBuilder=HqlBuilder.create();
+		hqlBuilder.append("update "+Quartz.class.getName()+" set "+Quartz_.isEnable.getName()+"='0' where "+Quartz_.id.getName()+"=:id");
+		hqlBuilder.setParam("id", id);
+		quartzRepo.executeHql(hqlBuilder);
 
+	}
+
+	@Override
+	@Transactional
+	public void changeCurState(String id,String state) {
+		HqlBuilder hqlBuilder=HqlBuilder.create();
+		hqlBuilder.append("update "+Quartz.class.getName()+" set "+Quartz_.curState.getName()+"=:state where "+Quartz_.id.getName()+"=:id");
+		hqlBuilder.setParam("id", id);
+		hqlBuilder.setParam("state", state);
+		quartzRepo.executeHql(hqlBuilder);
+		
 	}
 	
 }

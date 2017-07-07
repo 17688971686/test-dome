@@ -102,6 +102,8 @@ public class WorkdayController {
 		String jobName="工作日计算";
 		String time="0/10 * * * * ?";
 		QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
+		
+		
 
 	}
 }

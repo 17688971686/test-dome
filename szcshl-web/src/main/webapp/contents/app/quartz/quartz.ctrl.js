@@ -55,6 +55,23 @@
             }).data("kendoWindow").center().open();
         }
 
+          //修改定时器
+        vm.edit = function (id) {
+        	vm.id=id;
+            $("#quartz_edit_div").kendoWindow({
+                width : "600px",
+                height : "400px",
+                title : "定时器修改",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+            quartzSvc.getQuartzById(vm);
+            
+        }
+        
+        
         //关闭弹窗
         vm.colseQuartz = function(){
             window.parent.$("#quartz_edit_div").data("kendoWindow").close();
@@ -63,6 +80,14 @@
         //保存定时器
         vm.saveQuartz = function(){
             quartzSvc.saveQuartz(vm);
+        }
+        
+        vm.execute=function (id){
+        	quartzSvc.quartzExecute(vm,id);
+        }
+        
+        vm.stop=function (id){
+        	quartzSvc.quartzStop(vm,id);
         }
 
     }

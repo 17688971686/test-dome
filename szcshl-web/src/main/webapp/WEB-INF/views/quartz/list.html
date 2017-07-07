@@ -15,10 +15,19 @@
 
     <script type="text/template" id="columnBtns">
         <@shiro.hasPermission name="quartz##delete">
-        <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+        <button class="btn btn-xs btn-danger"  ng-click="{0}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-remove"></span>删除</button>
         </@shiro.hasPermission>
         <@shiro.hasPermission name="quartz##put">
-        <button class="btn btn-xs btn-primary" href="#/quartzEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        <button class="btn btn-xs btn-primary" ng-click="{1}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        </@shiro.hasPermission>
+		<@shiro.hasPermission name="quartz##put">
+        <button class="btn btn-xs btn-primary" ng-click="{3}" ng-if="{2}=='9' && {4}=='0'" ><span class="glyphicon glyphicon-pencil"></span>执行</button>
+        </@shiro.hasPermission>
+		<@shiro.hasPermission name="quartz##put">
+        <button class="btn btn-xs btn-danger" ng-click="{5}" ng-if="{4}=='9'")><span class="glyphicon glyphicon-remove"></span>停止</button>
+        </@shiro.hasPermission>
+		<@shiro.hasPermission name="quartz##put">
+        <button class="btn btn-xs btn-danger" ng-if="{2}=='0'"><span class="glyphicon glyphicon-remove"></span>已停用</button>
         </@shiro.hasPermission>
     </script>
 
@@ -41,28 +50,28 @@
             <tr>
                 <td class="formAlignRight" width="20%">定时器名称：<span class="required">*</span></td>
                 <td>
-                    <input class="form-control input-sm " ng-model="vm.model.quartzName" id="quartzName" name="quartzName" style="width:80%;"/>
+                    <input class="form-control input-sm " ng-model="vm.quartz.quartzName" id="quartzName" name="quartzName" style="width:80%;"/>
                     <span data-valmsg-for="quartzName" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight" >类名：<span class="required">*</span></td>
                 <td>
-                    <input class="form-control input-sm " ng-model="vm.model.className" id="className" name="className"  style="width:80%;"/>
+                    <input class="form-control input-sm " ng-model="vm.quartz.className" id="className" name="className"  style="width:80%;"/>
                     <span data-valmsg-for="className" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight">表达式：<span class="required">*</span></td>
                 <td>
-                    <input class="form-control input-sm " ng-model="vm.model.cronExpression" id="cronExpression" name="cronExpression"  style="width:80%;"/>
+                    <input class="form-control input-sm " ng-model="vm.quartz.cronExpression" id="cronExpression" name="cronExpression"  style="width:80%;"/>
                     <span data-valmsg-for="cronExpression" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight">描述：</td>
                 <td>
-                    <input class="form-control input-sm " ng-model="vm.model.descInfo" id="descInfo" name="descInfo"  style="width:80%;"/>
+                    <input class="form-control input-sm " ng-model="vm.quartz.descInfo" id="descInfo" name="descInfo"  style="width:80%;"/>
                     <span data-valmsg-for="descInfo" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>

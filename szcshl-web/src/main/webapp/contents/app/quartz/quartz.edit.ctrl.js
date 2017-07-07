@@ -11,16 +11,9 @@
         vm.title = '添加定时器配置';
         vm.isuserExist = false;
         vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新定时器配置';
-        }
 
         activate();
         function activate() {
-            if (vm.isUpdate) {
-                quartzSvc.getQuartzById(vm);
-            }
         }
 
         vm.create = function () {
@@ -29,6 +22,8 @@
         vm.update = function () {
             quartzSvc.updateQuartz(vm);
         };
+        
+            
 
     }
 })();

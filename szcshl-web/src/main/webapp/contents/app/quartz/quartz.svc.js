@@ -6,16 +6,91 @@
     quartz.$inject = ['$http'];
 
     function quartz($http) {
-        var url_quartz = rootPath + "/quartz", url_back = '#/quartzList';
+        var url_quartz = rootPath + "/quartz", url_back = '#/quartz';
         var service = {
             grid: grid,
             getQuartzById: getQuartzById,
             saveQuartz: saveQuartz,
             deleteQuartz: deleteQuartz,
-            updateQuartz: updateQuartz
+            updateQuartz: updateQuartz,
+            quartzExecute : quartzExecute,	//执行定时器
+            quartzStop : quartzStop	//停止执行定时器
         };
 
         return service;
+        
+        //begin quartzExecute
+        function quartzExecute(vm,id){
+        	var httpOptions={
+        		method: "put",
+        		url:url_quartz+"/quartzExecute",
+        		params:{quartzId : id}
+        		
+        	}
+        	   var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    vm.gridOptions.dataSource.read();
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+        }//end quartzExecute
+        
+        //begin quartzStop
+        function quartzStop(vm,id){
+        	var httpOptions={
+        		method: "put",
+        		url:url_quartz+"/quartzStop",
+        		params:{quartzId : id}
+        		
+        	}
+        	   var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    vm.gridOptions.dataSource.read();
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }//end quartzStop
 
         // begin#updateQuartz
         function updateQuartz(vm) {
@@ -23,12 +98,12 @@
             var isValid = $('form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-                vm.model.id = vm.id;// id
+                vm.quartz.id = vm.id;// id
 
                 var httpOptions = {
                     method: 'put',
-                    url: url_quartz,
-                    data: vm.model
+                    url: url_quartz+"/updateQuartz",
+                    data: vm.quartz
                 }
 
                 var httpSuccess = function success(response) {
@@ -41,8 +116,10 @@
                                 vm: vm,
                                 msg: "操作成功",
                                 fn: function () {
-                                    vm.isSubmit = false;
                                     $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    window.parent.$("#quartz_edit_div").data("kendoWindow").close();
+                                    vm.gridOptions.dataSource.read();
                                 }
                             })
                         }
@@ -110,7 +187,7 @@
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/quartz",
-                    data: vm.model
+                    data: vm.quartz
                 };
 
                 var httpSuccess = function success(response) {
@@ -124,7 +201,10 @@
                                 closeDialog: true,
                                 fn: function () {
                                     vm.isSubmit = false;
-                                    grid(vm);
+                                    $('.alertDialog').modal('hide');
+                                    $('.modal-backdrop').remove();
+                                    window.parent.$("#quartz_edit_div").data("kendoWindow").close();
+                                    vm.gridOptions.dataSource.read();
                                 }
                             });
                         }
@@ -148,7 +228,7 @@
                 params: {id: vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
+                vm.quartz = response.data;
             };
 
             common.http({
@@ -213,16 +293,40 @@
                     filterable: true
                 },
                 {
-                    field: "curState",
+                    field: "",
                     title: "执行状态",
                     width: 80,
-                    filterable: true
+                    filterable: true,
+                    template :function (item){
+                    	if(item.curState){
+                    		if(item.curState=="9"){
+                    			return "在执行";
+                    		}
+                    		if(item.curState=="0"){
+                    			return "未执行";
+                    		}
+                    	}else{
+                    		return "";
+                    	}
+                    }
                 },
                 {
-                    field: "isEnable",
+                    field: "",
                     title: "是否可用",
                     width: 80,
-                    filterable: true
+                    filterable: true,
+                    template :function (item){
+                    	if(item.isEnable){
+                    		if(item.isEnable=="0"){
+	                    		return "停用";
+                    		}
+                    		if(item.isEnable=="9"){
+                    			return "在用";
+                    		}
+                    	}else {
+                    		return"";
+                    	}
+                    }
                 },
                 {
                     field: "descInfo",
@@ -235,7 +339,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                            "vm.del('" + item.id + "')",  "vm.edit('" + item.id + "')",item.isEnable,"vm.execute('"+item.id+"')",item.curState,"vm.stop('"+item.id+"')");
                     }
                 }
             ];
