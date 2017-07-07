@@ -383,6 +383,26 @@
                 controller: 'workdayEditCtrl',
                 controllerAs: 'vm'
             })
+            //通过公告
+            .state('annountment', {
+                url: '/annountment',
+                templateUrl: rootPath + '/annountment/html/list.html',
+                controller: 'annountmentCtrl',
+                controllerAs: 'vm'
+            })
+            .state('annountmentEdit', {
+                url: '/annountmentEdit/:id',
+                templateUrl: rootPath + '/annountment/html/Edit.html',
+                controller: 'annountmentEditCtrl',
+                controllerAs: 'vm'
+            })
+             //主页的通知公告
+             .state('adminAnnountment', {
+                url: '/adminAnnountment/:id',
+                templateUrl: rootPath + '/admin/html/annountmentEdit.html',
+                controller: 'adminAnnountmentCtrl',
+                controllerAs: 'vm'
+            })
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {

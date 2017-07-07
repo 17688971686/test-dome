@@ -171,7 +171,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_assistUnit+"/fingByOData?$orderby=unitSort",$("#assistUnitform")),
+                transport: common.kendoGridConfig().transport(url_assistUnit+"/fingByOData",$("#assistUnitform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -182,7 +182,8 @@
                         	type: "date"
                         },
                         isUse:{
-                        	type:"object"
+                        },
+                        unitSort:{
                         }
                         
                     }
@@ -191,11 +192,17 @@
                 serverSorting: true,
                 serverFiltering: true,
                 pageSize: 10,
-                sort: 
-	                {
-	                    field: "createdDate",
+                sort: [
+               /* {
+                	 field: "isUse",
 	                    dir: "desc"
+                },*/
+                 {
+	                    field: "unitSort",
+	                    dir: "asc"
 	                }
+                ]
+	               
             });
 
             // End:dataSource

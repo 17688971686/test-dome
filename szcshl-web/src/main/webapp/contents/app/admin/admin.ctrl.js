@@ -12,6 +12,7 @@
         activate();
         function activate() {
         	adminSvc.gtasksGrid(vm);
+        	adminSvc.initAnnountment(vm);
         }
         vm.countWorkday=function(){
         	adminSvc.countWorakday(vm);

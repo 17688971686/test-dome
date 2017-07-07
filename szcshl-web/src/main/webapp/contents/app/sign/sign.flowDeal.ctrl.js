@@ -3,10 +3,10 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc',
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
         '$http'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc, $http) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc, $http) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -86,6 +86,8 @@
             signSvc.uploadFilelist(vm);
             //项目关联初始化
             signSvc.associateGrid(vm);
+            
+            ideaSvc.initIdea(vm);	//初始化个人常用意见
         }
 
         //初始化业务参数
@@ -211,11 +213,15 @@
                  signSvc.paymentGrid(vm);
             });
         }
-        // begin 添加审批意见
+        // begin 管理个人意见
         vm.ideaEdit = function (options) {
             common.initIdeaData(vm, $http, options);
         }
-        // end 添加审批意见
+      
+        //选择个人意见触发事件
+        vm.selectIdea=function(){
+        	vm.flow.dealOption=vm.idea;
+        }
 
         //流程提交
         vm.commitNextStep = function () {

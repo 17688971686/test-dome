@@ -44,7 +44,6 @@ public class IdeaController {
 			
 			ideaService.createIdea(ideaDto);
 		}
-		System.out.println("删除成功");
 	}
 	
 	@RequiresPermissions("idea##delete")

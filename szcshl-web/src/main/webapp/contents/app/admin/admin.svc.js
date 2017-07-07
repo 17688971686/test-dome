@@ -11,10 +11,17 @@
 			gtasksGrid : gtasksGrid,		//个人待办
             etasksGrid : etasksGrid,		//个人办结
             dtasksGrid : dtasksGrid,        //在办任务
-            countWorakday : countWorakday
+            countWorakday : countWorakday,	//计算工作日
+            initAnnountment : initAnnountment,	//初始化通知公告栏
+            findAnnountmentById :findAnnountmentById,	//通过id获取通过公告
+            postArticle : postArticle,	//访问上一篇文章
+            nextArticle : nextArticle,	//访问下一篇文章
+            initFile : initFile,	//初始化附件
+            upload : upload,	//	下载附件
 		}
 		return service;	
 		
+		//begin countWorakday
 		function countWorakday(vm){
 			var httpOptions={
 				method:"get",
@@ -30,8 +37,110 @@
                     success: httpSuccess
                 });
 
-		}
+		}//end countWorakday
+		
+		//begin initAnnountment
+		function initAnnountment(vm){
+			var httpOptions={
+				method :"get",
+				url : rootPath+"/annountment/getAnnountment"
+			}
+			
+			var httpSuccess=function success(response){
+				vm.annountmentList=response.data;
+			}
+			
+			common.http({
+				vm:vm,
+				$http:$http,
+				httpOptions : httpOptions,
+				success : httpSuccess
+			});
+		
+		}//end initAnnountment
+		
+		function findAnnountmentById(vm){
+			var httpOptions={
+        		method:"get",
+        		url:rootPath+"/annountment/findAnnountmentById",
+        		params:{anId:vm.anId}
+        	}
+        	
+        	var httpSuccess=function success(response){
+        		vm.annountment=response.data;
+        		postArticle(vm,vm.annountment.anId);
+        		nextArticle(vm,vm.annountment.anId);
+        	}
+        	 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }//end findAnnountmentById
+        
+        //begin postArticle
+        function postArticle(vm,id){
+        	var httpOptions={
+        		method:"get",
+        		url:rootPath+"/annountment/postArticle",
+        		params:{anId:id}
+        	}
+        	
+        	var httpSuccess=function success(response){
+        		vm.annountmentPost=response.data;
+        	}
+        	 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }//end postArticle
+        
+        
+        //begin nextArticle
+        function nextArticle(vm,id){
+        	var httpOptions={
+        		method:"get",
+        		url:rootPath+"/annountment/nextArticle",
+        		params:{anId:id}
+        	}
+        	
+        	var httpSuccess=function success(response){
+        		vm.annountmentNext=response.data;
+        	}
+        	 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }//end nextArticle
 
+        //begin initFile
+        function initFile(vm){
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/file/findByBusinessId",
+                params: {businessId: vm.anId}
+            }
+        	
+        	var httpSuccess=function success(response){
+        		vm.file=response.data;
+        	}
+        	 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        }//end initFile
+        
+        //begin upload
+        function upload(vm,sysFileId){
+        	window.open(rootPath + "/file/fileDownload?sysfileId=" + sysFileId);
+        }//end upload
 		//S_gtasksGrid
 		function gtasksGrid(vm){
 			var dataSource = new kendo.data.DataSource({

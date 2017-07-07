@@ -2,7 +2,7 @@
 <!-- 审批意见弹出框 -->
 <div id="ideaWindow" class="well well-sm" style="background:white;display:none;">
 		<form id="ideaForm" name="ideaForm">
-			<div>
+			<div ng-if="vm.title!='项目流程处理'">
 				<table class="table table-bordered seleteTable">
 					<tr>
 						<td>
@@ -74,7 +74,10 @@
 							</table>
 						</td>
 					</tr>
-
+</table>
+</div>
+<div>
+	<table class="table table-bordered seleteTable">
 					<tr>
 						<td>
 							<span>个人常用意见</span>
@@ -83,7 +86,7 @@
 								<button ng-click="vm.deleteCommonIdea()" class="btn btn-xs btn-danger"  value="deleteCommonIdea">删除常用意见</button>
 								<button ng-click="vm.saveCommonIdea()" class="btn btn-xs btn-success"  value="saveCommonIdea">保存</button>
 							</span>
-							<div style="max-height:200px; overflow: auto; ">
+							<div style="max-height:200px; overflow: auto;" >
 								<table class="table table-bordered seleteTable" id="commonIdeaTable">
 									<tr ng-repeat="x in vm.commonIdeas">
 										<td><input type="checkbox" ng-checked="ideaCheck" name="ideaCheck" value="{{vm.commonIdeas[$index].ideaID}}" /></td>
@@ -96,7 +99,7 @@
 					</tr>
 				</table>
 			</div>
-			<div>
+			<div ng-if="vm.title!='项目流程处理'">
 				<table class="table table-bordered seleteTable">
 					<tr>
 						<td>

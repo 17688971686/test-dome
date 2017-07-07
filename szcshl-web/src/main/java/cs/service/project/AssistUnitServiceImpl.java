@@ -135,8 +135,9 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
             hqlBuilder.append(" )");
         } else {
             hqlBuilder.append(" where " + AssistUnit_.id.getName() + " = :id ");
-            hqlBuilder.setParam("id", ids);
+            hqlBuilder.setParam("id", idArr[0]);
         }
+        assistUnitRepo.executeHql(hqlBuilder);
 	}
 
 	/**

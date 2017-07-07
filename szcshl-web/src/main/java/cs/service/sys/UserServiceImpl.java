@@ -199,9 +199,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Response Login(String userName, String password, HttpServletRequest request) {
         User user = userRepo.findUserByName(userName);
-        if(user.getOrg() != null){
+       /* if(user.getOrg() != null){
             user.setOrg(user.getOrg());
-        }
+        }*/
         Response response = new Response();
 
         if (user != null) {

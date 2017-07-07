@@ -139,7 +139,7 @@
 
         // S_提交下一步
         function commit(vm) {
-            vm.flow.dealOption = $("#dealOption").val();
+//            vm.flow.dealOption = $("#dealOption").val();
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
             if (isValid) {
