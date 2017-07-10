@@ -492,7 +492,7 @@ public class FlowServiceImpl implements FlowService {
             for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
                 String field = oDataFilterItem.getField();
                 String operator = oDataFilterItem.getOperator();
-                Object value = oDataFilterItem.getValue();
+                Object value = oDataFilterItem.getValue(); 
                 switch (operator) {
                     case "like":
                         criteria.add(Restrictions.like(field, "%" + value + "%"));

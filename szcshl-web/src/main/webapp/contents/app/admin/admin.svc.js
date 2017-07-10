@@ -15,6 +15,9 @@
             initAnnountment : initAnnountment,	//初始化通知公告栏
             initFile : initFile,	//初始化附件
             upload : upload,	//	下载附件
+            getSignList: getSignList,  //项目查询统计
+            initSignList: initSignList,//初始化項目查詢統計
+            searchSignList : searchSignList, //項目查詢統計
 		}
 		return service;	
 		
@@ -517,6 +520,229 @@
                 }
             };
         }//E_dtasksGrid
+		
+         //begin_getSignList
+         function getSignList(vm){
+       		//var url=common.kendoGridConfig().transport(rootPath + "/sign/getSignList", $("#searchform"),{filter: "mOrgId eq '"+vm.sign.mOrgId+"'"});
+       		//console.log(url);
+       		console.log(typeof vm.sign.isAssociate);
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/getSignList", $("#searchform"),{filter: 'isAssociate eq '+vm.isAssociate}),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
 
+            // Begin:column
+            var columns = [
+            	 {
+                     field: "",
+                     title: "序号",
+                     template: "<span class='row-number'></span>",
+                     width:50
+                 },
+                {
+                    field: "projectname",
+                    title: "项目名称",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "reviewstage",
+                    title: "评审阶段",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "receivedate",
+                    title: "收文日期",
+                    width: 200,
+                    filterable: false
+                },
+                {
+                    field: "dispatchDate",
+                    title: "发文日期",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "reviewdays",
+                    title: "评审天数",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "surplusdays",
+                    title: "剩余工作日",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "mOrgName",
+                    title: "评审部门",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "mainuserName",
+                    title: "项目负责人",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "filenum",
+                    title: "归档编号",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "dfilenum",
+                    title: "文件字号",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "appalyInvestment",
+                    title: "申报投资",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "authorizeValue",
+                    title: "审定投资",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "extraValue",
+                    title: "核减（增）投资",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "extraRate",
+                    title: "核减率",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "approveValue",
+                    title: "批复金额",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "approveTime",
+                    title: "批复来文时间",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "dispatchType",
+                    title: "发文类型",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "fileDate",
+                    title: "归档日期",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "builtcompanyName",
+                    title: "建设单位",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "isassistproc",
+                    title: "是否协审",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "daysafterdispatch",
+                    title: "发文后工作日",
+                    width: 140,
+                    filterable: false
+                }
+               /* {
+                    field: "",
+                    title: "操作",
+                    width: 60,
+                    template: $('#columnBtns').html()
+                }*/
+            ];
+            // End:column
+            vm.signListOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {  
+                    var rows = this.items();  
+                    var page = this.pager.page() - 1;  
+                    var pagesize = this.pager.pageSize();  
+                    $(rows).each(function () {  
+                        var index = $(this).index() + 1 + page * pagesize;  
+                        var rowLabel = $(this).find(".row-number");  
+                        $(rowLabel).html(index);  
+                    });  
+                } 
+            };
+            
+       }//end_getSignList
+       
+       	//begin_searchSignList
+        function searchSignList(vm){
+       	//console.log(vm.sign.isAssociate);
+       	if(vm.sign.isAssociate == '1'){
+       		var isAssociate=1;
+       	}else{
+       		var isAssociate=0;
+       	}
+       vm.signListOptions.dataSource.read();
+       }//end_searchSignList
+       
+       	 //begin_initSignList
+        function initSignList(vm){
+       	console.log(vm.isHaveEIA);
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/sign/initSignList"
+            }
+            var httpSuccess = function success(response) {
+            	 vm.sign.mOrgId = response.data.mOrgId;
+            	 vm.usersList = response.data.usersList;
+            	 vm.orgsList = response.data.orgsList;
+            	 
+            	 vm.signListOptions.dataSource.read();
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+       } //end_initSignList
 	}
 })();

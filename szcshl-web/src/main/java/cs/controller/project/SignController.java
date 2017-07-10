@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cs.common.Constant;
 import cs.common.utils.Validate;
+import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
@@ -154,6 +155,21 @@ public class SignController {
 		return orgDto;
 	}
 	
+	@RequiresPermissions("sign#initSignList#get")
+	@RequestMapping(name = "初始化项目查询统计", path = "initSignList", method = RequestMethod.GET)
+	public 	@ResponseBody Map<String,Object> initSignList() throws ParseException{
+		Map<String,Object> map=signService.initSignList();
+		return map;
+	}
+	
+	@RequiresPermissions("sign#getSignList#get")
+	@RequestMapping(name = "项目查询统计", path = "getSignList", method = RequestMethod.POST)
+	public 	@ResponseBody PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException{
+		ODataObj odataObj = new ODataObj(request);
+		PageModelDto<SignDispaWork> pageModelDto=signService.getSign(odataObj,request.getParameter("$skip"),request.getParameter("$top"));
+		return pageModelDto;
+	}
+	
 	/***************************************  S 新流程处理的方法     *******************************************/
 
 	@RequestMapping(name = "初始化流程处理页面", path = "html/initFlowPageData",method=RequestMethod.GET)
@@ -189,6 +205,13 @@ public class SignController {
     public String signEndDetails(){
 
         return ctrlName + "/signEndDetails";
+    }
+    
+    @RequiresPermissions("sign#html/getsignList#get")
+    @RequestMapping(name = "项目查询统计", path = "html/signList", method = RequestMethod.GET)
+    public String getsignList(){
+    	
+    	return ctrlName + "/signList";
     }
 	/***************************************  E 新流程处理的方法     *******************************************/
 

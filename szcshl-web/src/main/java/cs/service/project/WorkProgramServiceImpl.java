@@ -44,7 +44,9 @@ import cs.domain.sys.User;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
+import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
+import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
 import cs.repository.repositoryImpl.project.AssistUnitRepo;
@@ -420,7 +422,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     public void delete(String id) {
         workProgramRepo.deleteById(WorkProgram_.id.getName(),id);
     }
-
+    
     /**
      * TODO:目前只是做一个简单的模板生成，后期再完善
      * 生成会前准备材料

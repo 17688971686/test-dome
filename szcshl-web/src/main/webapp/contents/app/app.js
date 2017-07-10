@@ -274,6 +274,11 @@
                 templateUrl: rootPath + '/sign/html/signEndDetails.html',
                 controller: 'signEndCtrl',
                 controllerAs: 'vm'
+            }).state('signList', { //项目查询统计
+                url: '/signList',
+                templateUrl: rootPath + '/sign/html/signList.html',
+                controller: 'adminCtrl',
+                controllerAs: 'vm'
             })//end#sign
 
             //begin#workprogram

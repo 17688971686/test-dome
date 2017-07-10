@@ -23,7 +23,7 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(Quartz.class, "定时器配置");
+        CRUDGanConfig config = new CRUDGanConfig(SignDispaWork.class, "项目统计视图");
         config.setAuthor("ldm");
         config.setOuputPath("C:\\Users\\Administrator\\Desktop\\Quartz");
         config.setFileOverride(true);

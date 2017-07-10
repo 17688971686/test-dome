@@ -8,13 +8,16 @@
     function sign($location,signSvc,$state,flowSvc,signFlowSvc) {        
         var vm = this;
         vm.title = "收文列表";
-        
         //initGrid
         signSvc.grid(vm);
         vm.querySign = function(){
         	signSvc.querySign(vm);
-        }       
-       
+        }
+        vm.check=function(){
+      	 		vm.isAssociate=vm.ischeck?9:0;
+      	 		console.log(vm.isAssociate);
+      	 }
+        
         //start 收文删除
         vm.del = function (signid) {       	   
              common.confirm({

@@ -13,6 +13,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,18 +34,22 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
+import cs.domain.flow.RuProcessTask;
+import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.DispatchDoc_;
 import cs.domain.project.FileRecord;
 import cs.domain.project.Sign;
+import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignPrincipal;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.domain.sys.Company;
 import cs.domain.sys.Org;
+import cs.domain.sys.Org_;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
@@ -59,10 +65,13 @@ import cs.model.project.SignPrincipalDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
+import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -118,6 +127,10 @@ public class SignServiceImpl implements SignService {
     
     @Autowired
     private WorkdayService workdayService;
+    
+    @Autowired
+    private SignDispaWorkRepo signDispaWorkRepo;
+
 
     @Override
     @Transactional
@@ -1311,5 +1324,108 @@ public class SignServiceImpl implements SignService {
 	public void bathUpdate(List<Sign> signList) {
 		signRepo.bathUpdate(signList);
 	}
+	
+	 @Override
+    public Map<String,Object> initSignList() {
+    	//获取部长所在部门的项目信息
+    	Map<String,Object> map=new HashMap<>();
+    	User loginUser=currentUser.getLoginUser();
+    	List<Org> orgList=orgRepo.findAll();
+    	List<Org> orgsList=new ArrayList<>();
+    	List<User>  userList=new ArrayList<>();
+    	if(!orgList.isEmpty()){
+	    	for (Org org : orgList) {
+	    		Org orgs=new Org();
+	    		orgs.setName(org.getName());
+	    		orgs.setId(org.getId());
+	    		orgsList.add(orgs);
+			}
+    	}
+    	if(loginUser!=null && !StringUtil.isBlank(loginUser.getId())){
+	    	Org org = loginUser.getOrg();
+	    	HqlBuilder hqlBuilder=HqlBuilder.create();
+	    	hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.org.getName()+" ."+Org_.id.getName()+" =:orgId");
+	    	hqlBuilder.setParam("orgId", org.getId());
+	    	userList=userRepo.findByHql(hqlBuilder);
+	    	List<User> usersList=new ArrayList<>();
+	    	if(!userList.isEmpty()){
+		    	for (User user : userList) {
+		    		User users=new User();
+		    		users.setLoginName(user.getLoginName());
+		    		usersList.add(users);
+				}
+	    	}
+	    	map.put("mOrgId", org.getId());
+	    	map.put("usersList", usersList);
+	    	map.put("orgsList", orgsList);
+    	}
+    	return map;
+    }
+    
+    @Override
+    public PageModelDto<SignDispaWork> getSign(ODataObj odataObj,String skip, String top) {
+        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
+        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        // 处理filter
+        if (odataObj.getFilter() != null) {
+            for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
+                String field = oDataFilterItem.getField();
+                String operator = oDataFilterItem.getOperator();
+                Object value = oDataFilterItem.getValue(); 
+                switch (operator) {
+                    case "like":
+                        criteria.add(Restrictions.like(field, "%" + value + "%"));
+                        break;
+                    case "eq":
+                        criteria.add(Restrictions.eq(field, value));
+                        break;
+                    case "ne":
+                        criteria.add(Restrictions.ne(field, value));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (Validate.isString(skip)) {
+            criteria.setFirstResult(Integer.valueOf(skip));
+        }
+        if (Validate.isString(top)) {
+            criteria.setMaxResults(Integer.valueOf(top));
+        }
+        List<SignDispaWork> signDispaWork = criteria.list();
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(signDispaWork);
+        return pageModelDto;
+    
+    	
+    		/*List<Sign> signList=signRepo.findByOdata(odataObj);
+    		if(!signList.isEmpty()){
+	    		for (Sign sign : signList) {
+	    			SignDto signDto=new SignDto();
+	    			
+	    			DispatchDoc dispatchDoc=sign.getDispatchDoc();
+	    			DispatchDocDto dispatchDocDto=new DispatchDocDto();
+	    			if(dispatchDoc!=null&&!StringUtil.isBlank(dispatchDoc.getId())){
+	    				BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDoc, dispatchDocDto);
+	    			}
+	    			signDto.setDispatchDocDto(dispatchDocDto);
+	    			
+	    			FileRecord fileRecord=sign.getFileRecord();
+	    			FileRecordDto fileRecordDto=new FileRecordDto();
+	    			if(fileRecord!=null&&!StringUtil.isBlank(fileRecord.getFileRecordId())){
+	    				BeanCopierUtils.copyPropertiesIgnoreNull(fileRecord, fileRecordDto);
+	    			}
+	    			signDto.setFileRecordDto(fileRecordDto);
+	    			
+	    			BeanCopierUtils.copyPropertiesIgnoreNull(sign, signDto);
+	    			signListDto.add(signDto);
+	    		}
+    		}*/
+    }
 
 }
