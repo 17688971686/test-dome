@@ -3,38 +3,41 @@
 
     angular.module('app').controller('annountmentEditCtrl', annountmentEdit);
 
-    annountmentEdit.$inject = ['$location','$state','$http','annountmentSvc'];
+    annountmentEdit.$inject = ['$location', '$state', '$http', 'annountmentSvc'];
 
-    function annountmentEdit($location,$state,$http,annountmentSvc) {
+    function annountmentEdit($location, $state, $http, annountmentSvc) {
         var vm = this;
-        vm.title="添加通知公告";
-        vm.anId=$state.params.id;
-        vm.annountment={};
-       
-        if(vm.anId){
-        	vm.isUpdate = true;
-        	vm.title="更新通知公告";
+        vm.title = "通知公告编辑";
+        vm.annountment = {};        //通知公告对象
+        vm.annountment.anId = $state.params.id;
+
+        vm.businessFlag ={
+            isInitFileOption : false,   //是否已经初始化附件上传控件
         }
-        if(!vm.anId){
-       		vm.annountment.isStick="1";
+        active();
+        function active() {
+            if (vm.annountment.anId) {
+                annountmentSvc.findAnnountmentById(vm);
+                annountmentSvc.findFileList(vm)
+            }else{
+                //附件初始化
+                annountmentSvc.initFileOption({
+                    sysfileType: "通知公告",
+                    uploadBt: "upload_file_bt",
+                    vm: vm
+                })
+            }
+
         }
-        
-         active();
-        function active(){
-        	annountmentSvc.initAnOrg(vm);
-        	if(vm.anId){
-        		annountmentSvc.findAnnountmentById(vm);
-        	}
+
+        //新增通知公告
+        vm.create = function () {
+            annountmentSvc.createAnnountment(vm);
         }
-        
-        
-        vm.create=function (){
-        	annountmentSvc.createAnnountment(vm);
-        }
-        
-        
-        vm.update=function (){
-        	annountmentSvc.updateAnnountment(vm);
+
+        //编辑通知公告
+        vm.update = function () {
+            annountmentSvc.updateAnnountment(vm);
         }
     }
 })();

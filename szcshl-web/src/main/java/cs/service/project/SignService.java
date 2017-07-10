@@ -45,9 +45,9 @@ public interface SignService{
 	//以下是新流程处理
 	void startNewFlow(String signid);
 
-	ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception;
+	ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto);
 
-    ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto)throws Exception;
+    ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto);
 
     List<SignDto> findAssistSign();
 

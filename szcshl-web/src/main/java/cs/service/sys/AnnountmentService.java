@@ -21,10 +21,11 @@ public interface AnnountmentService {
 	
 	void deleteAnnountment(String id);
 	
-	List<AnnountmentDto> getAnnountment();
+	List<AnnountmentDto> getHomePageAnnountment();
 	
 	AnnountmentDto postAritle(String id);
 	
 	AnnountmentDto nextArticle(String id);
-  
+
+	void updateIssueState(String ids, String issueState);
 }

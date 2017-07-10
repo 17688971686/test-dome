@@ -392,15 +392,15 @@
             })
             .state('annountmentEdit', {
                 url: '/annountmentEdit/:id',
-                templateUrl: rootPath + '/annountment/html/Edit.html',
+                templateUrl: rootPath + '/annountment/html/edit.html',
                 controller: 'annountmentEditCtrl',
                 controllerAs: 'vm'
             })
-             //主页的通知公告
-             .state('adminAnnountment', {
-                url: '/adminAnnountment/:id',
-                templateUrl: rootPath + '/admin/html/annountmentEdit.html',
-                controller: 'adminAnnountmentCtrl',
+             //通知公告详情页
+             .state('annountmentDetail', {
+                url: '/annountmentDetail/:id',
+                templateUrl: rootPath + '/annountment/html/detail.html',
+                controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
 

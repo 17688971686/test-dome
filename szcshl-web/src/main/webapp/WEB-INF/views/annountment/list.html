@@ -9,33 +9,44 @@
         <li><a href="#/annountment">通知公告管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="annountmentform" name="annountmentform">
-    		 
-       <div class="well">
-	    
-       	  <@shiro.hasPermission name="annountment##post"> 
-            	<a class="btn btn-sm btn-primary" href="#/annountmentEdit/"><span class="glyphicon glyphicon-plus"></span>新增公告</a> 
-            </@shiro.hasPermission>
-            <@shiro.hasPermission name="annountment##delete">           
-            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        	</@shiro.hasPermission>
-        </div>
-     </form>
-        <script type="text/template" id="columnBtns">
-		<@shiro.hasPermission name="annountment##delete">
-			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
-		</@shiro.hasPermission>
-		<@shiro.hasPermission name="annountment##put">
-	        <a class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-		</@shiro.hasPermission>
-		</script>
-        
-         <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-         
-         <!-- 上传附件列表 -->
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_upload" >
-		      <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
-		</div>
+    <div class="toolbar">
+        <@shiro.hasPermission name="annountment##post">
+            <a class="btn btn-sm btn-primary" href="#/annountmentEdit/"> <span class="glyphicon glyphicon-plus"></span>新增公告</a>
+        </@shiro.hasPermission>
+        <button class="btn btn-sm btn-success" ng-click="vm.bathIssue()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-cloud-upload"></span>批量发布
+        </button>
+        <button class="btn btn-sm btn-warning" ng-click="vm.bathUnissue()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-cloud-download"></span>取消发布
+        </button>
+        <@shiro.hasPermission name="annountment##delete">
+        <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-remove"></span>批量删除
+        </button>
+        </@shiro.hasPermission>
+    </div>
+
+    <div class="well" >
+        <form id="annountmentform" name="annountmentform">
+            <span class="help-inline">标题：</span>
+            <input type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入标题名称">
+            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryAnnountment()">查询</button>
+        </form>
+    </div>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+
+    <script type="text/template" id="columnBtns">
+        <button class="btn btn-xs btn-success" ng-click="{0}"><span class="glyphicon glyphicon-edit"></span>查看</button>
+        <@shiro.hasPermission name="annountment##put">
+        <a class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}">
+            <span class="glyphicon glyphicon-pencil"></span>编辑</a>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="annountment##delete">
+            <button class="btn btn-xs btn-danger" ng-click="{2}"><span class="glyphicon glyphicon-remove"></span>删除</button>
+        </@shiro.hasPermission>
+    </script>
+
 </div>
 
 

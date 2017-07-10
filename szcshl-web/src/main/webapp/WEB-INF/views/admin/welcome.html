@@ -285,14 +285,14 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-commenting"></span></th>
                             <th>最新通告</th>
-                            <th>发布单位</th>
+                            <th>发布人</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
                         <tr ng-repeat="x in vm.annountmentList|limitTo:6">
                             <td>{{$index +1}}.</td>
-                            <td><a href="#/adminAnnountment/{{x.anId}}">{{x.anTitle}}</a></td>
-                            <td>{{x.anOrg}}</td>
-                            <td><span class="badge bg-red">{{x.anDate}}</span></td>
+                            <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
+                            <td>{{x.issueUser}}</td>
+                            <td><span class="badge bg-green">{{x.issueDate}}</span></td>
                         </tr>
                         </tbody>
                     </table>

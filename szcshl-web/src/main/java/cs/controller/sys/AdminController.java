@@ -68,11 +68,4 @@ public class AdminController {
 
         return ctrlName + "/etasks";
     }
-    
-    @RequiresPermissions("admin#html/annountmentEdit#get")
-    @RequestMapping(name = "办结事项", path = "html/annountmentEdit")
-    public String annountment() {
-
-        return ctrlName + "/annountmentEdit";
-    }
 }

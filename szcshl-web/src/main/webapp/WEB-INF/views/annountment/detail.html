@@ -1,0 +1,34 @@
+<meta charset="UTF-8">
+<div class="toolbar">
+    <button class="btn btn-sm btn-default" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+</div>
+<div class="well well-sm" style="background:white;">
+    <div style="width: 80%;height:80%; text-align: center; margin: auto;">
+    <h2 ><strong>{{vm.annountment.anTitle}}</strong></h2>
+        <span >发布人：{{vm.annountment.issueUser}}</span>  <span >发布时间：{{vm.annountment.issueDate}}</span>
+    <hr/>
+    <div style="width: 100%;height: 80%;">
+	    <span>{{vm.annountment.anContent}}</span>
+    </div>
+    <div style="text-align: left;">
+    	<strong ng-show="vm.sysFilelists.length > 0">附件:</strong>
+        <div ng-repeat="x in vm.sysFilelists">
+            <p >
+                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+            </p>
+        </div>
+    </div>
+    <div>
+	    <ol >
+	    	<li ng-if="vm.annountmentPost.anId"><a href="javascript:void(0)" ng-click="vm.post(vm.annountmentPost.anId)">上一篇:
+	    	<span>{{vm.annountmentPost.anTitle}}</span></a></li>
+	     	<li ng-if="vm.annountmentNext.anId"><a href="javascript:void(0)" ng-click="vm.next(vm.annountmentNext.anId)">下一篇:
+	     	<span>{{vm.annountmentNext.anTitle}}</span></a></li>
+	    </ol>
+    </div>
+    </div>
+</div>

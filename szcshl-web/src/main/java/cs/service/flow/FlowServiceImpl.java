@@ -511,7 +511,7 @@ public class FlowServiceImpl implements FlowService {
         if(isUserDeal){
             Disjunction dis = Restrictions.disjunction();
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), currentUser.getLoginName()));
-            dis.add(Restrictions.like(RuProcessTask_.userName.getName(), currentUser.getLoginName()));
+            dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%"+currentUser.getLoginName()+"%"));
             criteria.add(dis);
         }
 

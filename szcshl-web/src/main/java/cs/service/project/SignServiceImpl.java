@@ -412,7 +412,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     @Transactional
-    public ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception {
+    public ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto){
 
         Task task = null;
         if (Validate.isString(flowDto.getTaskId())) {
@@ -421,8 +421,7 @@ public class SignServiceImpl implements SignService {
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         }
         if (task == null) {
-            log.info("项目签收流程处理失败：获取不到流程任务！");
-            throw new Exception(Constant.ERROR_MSG);
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
         }
         //参数定义
 
@@ -819,7 +818,7 @@ public class SignServiceImpl implements SignService {
      * @return
      */
     @Override
-    public ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto) throws Exception {
+    public ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto){
         Task task = null;
         if (Validate.isString(flowDto.getTaskId())) {
             task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
@@ -827,8 +826,7 @@ public class SignServiceImpl implements SignService {
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         }
         if (task == null) {
-            log.info("项目签收流程处理失败：获取不到流程任务！");
-            throw new Exception(Constant.ERROR_MSG);
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
         }
         //参数定义
 
