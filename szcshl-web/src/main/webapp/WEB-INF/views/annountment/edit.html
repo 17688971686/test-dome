@@ -1,0 +1,72 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/annountment">通知公告管理</a></li>
+        <li class="active" >{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <a class="btn btn-sm btn-primary" href="#/annountment"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+    </div>
+
+    <form id="form" name="form">
+         <table class="table table-bordered">
+ 			<tr>
+                <td class="formAlignRight" style="width:160px;">标题： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.annountment.anTitle" id="anTitle" name="anTitle"
+                            data-val="true" data-val-required="必填" data-val-length-max="100">
+                    <span data-valmsg-for="anTitle" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">是否置顶： </td>
+                <td >
+                	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="9"/>是
+                	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="0"/>否
+                </td>
+            </tr>
+             <tr>
+                 <td class="formAlignRight">发布： </td>
+                 <td >
+                     <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="9"/>是
+                     <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="0"/>否
+                 </td>
+             </tr>
+             <tr>
+                <td class="formAlignRight">排序序号： </td>
+                <td >
+                    <input  type="number" maxlength="50" class="form-control input-sm "   ng-model="vm.annountment.anSort " id="anSort" name="anSort" data-val="true" data-val-required="必填">
+                </td>
+            </tr>
+             <tr>
+                <td class="formAlignRight">内容： </td>
+                <td colspan="2">
+                    <textarea kendo-editor k-ng-model="html" name="content" style="width: 70%; height: 5em"  ng-model="vm.annountment.anContent " id="anContent" name="anContent"></textarea>
+                </td>
+            </tr>
+             <tr>
+                 <td class="formAlignRight">附件： </td>
+                 <td colspan="2">
+                     <p><button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button></p>
+                     <div ng-repeat="x in vm.sysFilelists">
+                         <p >
+                             <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                             <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                             <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                             <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                             <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                             <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+                         </p>
+                     </div>
+                 </td>
+             </tr>
+         </table>
+     </form>
+</div>
