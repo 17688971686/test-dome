@@ -487,6 +487,7 @@
 
             var httpSuccess = function success(response) {
                 vm.annountmentPost = response.data;
+                vm.annountmentPost.inTro=IntroHTML(vm.annountmentPost.anContent);
             }
             common.http({
                 vm: vm,
@@ -509,6 +510,7 @@
 
             var httpSuccess = function success(response) {
                 vm.annountmentNext = response.data;
+                vm.annountmentNext.inTro=IntroHTML(vm.annountmentNext.anContent);
             }
             common.http({
                 vm: vm,
@@ -517,5 +519,22 @@
                 success: httpSuccess
             });
         }//end nextArticle
+
+
+        /*Introduction截取content前240个文本字符*/
+        function IntroHTML(str) {
+            if(str) {
+                str = str.replace(/<\/?[^>]*>/g, '');
+                str = str.replace(/[ | ]*\n/g, '\n');
+                str = str.replace(/\n[\s| | ]*\r/g, '\n');
+                str = str.replace(/&nbsp;/ig, '');
+                str = str.replace(/\s/g, '');
+                if (str.length >= 240) {
+                    str = str.substring(0, 240) + "......";
+                }
+            }
+            return str;
+        }
+
     }
 })();
