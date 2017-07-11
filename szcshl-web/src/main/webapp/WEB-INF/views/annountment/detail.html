@@ -1,16 +1,131 @@
 <meta charset="UTF-8">
+<style>
+    .botttom-tool{ text-align: right;width: 80%; margin: auto; padding: 30px;}
+    .botttom-tool .fa{
+        font-size: 18px;
+        border: 1px solid #979797;
+        padding: 10px 11px;
+        border-radius: 22px;
+        color: #979797;
+        margin-left: 20px;
+        margin-right:5px;
+    }
+    .line{
+        border-bottom: 1px solid #E0DFDF;
+        height: 15px;
+    }
+    .text-left{
+        float: left;
+        margin-top: -20px;
+        background: #FBFBFB;
+        padding-right:20px;
+    }
+    ol li a{
+        color:#000;
+    }
+    .Introduction{
+        color: #818080;
+    }
+    .icon-up .fa{
+        background: #ccc;
+        color:#fff;
+        font-size: 22px;
+        padding: 20px;
+        border-radius: 35px;
+        border: 3px solid #fff;
+    }
+    .icon-down .fa{
+        background: #74AAD4;
+        color:#fff;
+        font-size: 22px;
+        padding: 20px;
+        border-radius: 35px;
+        border: 3px solid #fff;
+    }
+    .cont-alert{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0px;
+        z-index: 2000;
+        background-color: rgb(34, 34, 34);
+        top: 0px;
+        padding:5% 10%;
+        overflow-y: auto;
+    }
+    .cont-alert .back{
+        display: none;
+    }
+    .cont-alert .scre-closed,.cont-alert .scre-left,.cont-alert .scre-right{
+        display: block;
+    }
+
+    .cont-alert .botttom-tool a{
+        position: fixed;
+        right: 52px;
+        top:100px;
+        display: block;
+        width: 52px;
+    }
+    .cont-alert .botttom-tool a:first-child{
+        top:180px;
+    }
+
+    .scre-closed, .scre-left, .scre-right{
+        display: none;
+        color:#fff;
+        background: #ccc;
+        padding: 18px 19px;
+        border-radius: 60px;
+        position:fixed;
+        cursor: pointer;
+    }
+    .scre-closed{
+        top:20px;
+        right: 40px;
+    }
+    .scre-left{
+        top:48%;
+        padding: 18px 22px;
+        background: #6F5656;
+        left: 20px;
+    }
+    .scre-right{
+        top:48%;
+        padding: 18px 22px;
+        background: #6F5656;
+        right:40px;
+    }
+
+
+</style>
 <div class="toolbar">
-    <button class="btn btn-sm btn-default" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+    <button class="btn btn-sm btn-default back" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</button>
+
+    <!--弹出工具显示-->
+    <span class="fa fa-times scre-closed" ng-click="vm.closed()"></span>
+    <span ng-if="vm.annountmentPost.anId" class=" scre-left" ng-click="vm.post(vm.annountmentPost.anId)" ><</span>
+    <span ng-if="vm.annountmentNext.anId" class=" scre-right" ng-click="vm.next(vm.annountmentNext.anId)" >></span>
+    <!--弹出工具结束-->
 </div>
+
 <div class="well well-sm" style="background:white;">
-    <div style="width: 80%;height:80%; text-align: center; margin: auto;">
-    <h2 ><strong>{{vm.annountment.anTitle}}</strong></h2>
-        <span >发布人：{{vm.annountment.issueUser}}</span>  <span >发布时间：{{vm.annountment.issueDate}}</span>
-    <hr/>
-    <div style="width: 100%;height: 80%;">
-	    <span>{{vm.annountment.anContent}}</span>
-    </div>
-    <div style="text-align: left;">
+    <!--文章主内容-->
+    <div  style="width: 80%;height:80%; text-align: center; margin: auto;">
+
+    <!--打印区域-->
+    <span id="context-body">
+        <h2><strong>{{vm.annountment.anTitle}}</strong></h2>
+            <span >发布人：{{vm.annountment.issueUser}}</span>  <span >发布时间：{{vm.annountment.issueDate}}</span>
+        <hr/>
+        <div style="width: 100%;height: 80%;">
+            <span>{{vm.annountment.anContent}}</span>
+        </div>
+    </span>
+        <!--打印区结束-->
+
+      <!--附件区 -->
+     <div style="text-align: left;">
     	<strong ng-show="vm.sysFilelists.length > 0">附件:</strong>
         <div ng-repeat="x in vm.sysFilelists">
             <p >
@@ -22,13 +137,59 @@
             </p>
         </div>
     </div>
-    <div>
-	    <ol >
-	    	<li ng-if="vm.annountmentPost.anId"><a href="javascript:void(0)" ng-click="vm.post(vm.annountmentPost.anId)">上一篇:
-	    	<span>{{vm.annountmentPost.anTitle}}</span></a></li>
-	     	<li ng-if="vm.annountmentNext.anId"><a href="javascript:void(0)" ng-click="vm.next(vm.annountmentNext.anId)">下一篇:
-	     	<span>{{vm.annountmentNext.anTitle}}</span></a></li>
-	    </ol>
+        <!--附件区结束-->
     </div>
+    <!--文章主内容区结束-->
+
+    <!--内容工具区-->
+    <div class="botttom-tool">
+        <a ng-click="vm.alertwd()" href="javascript:void(0)"><i class="fa fa-square-o"></i>弹出</a>
+        <a ng-click="vm.prints()" href="javascript:void(0)"><i class="fa fa-hdd-o"></i>打印</a>
     </div>
+    <!--内容工具区结束-->
+
+    <!--滚动通知区-->
+    <div style="background-color: #fbfbfb; padding: 20px 0px; min-height: 80px;">
+        <div style="width: 80%; margin: auto;">
+            <div style="height:40px;">
+                <div class="text-left"><h3><strong>通知滚动</strong></h3></div>
+                <div class="line"></div>
+            </div>
+            <ol >
+
+                <!--上一篇-->
+                <div ng-if="vm.annountmentPost.anId" class="row" style="overflow: hidden; margin: 20px 10px;">
+                    <div class="col-xs-1 icon-up">
+                        <span class="fa fa-folder-o"></span>
+                    </div>
+                    <div class="col-xs-10">
+                        <li ng-if="vm.annountmentPost.anId"><a href="javascript:void(0)" ng-click="vm.post(vm.annountmentPost.anId)">
+                            <h4><strong>上一篇:{{vm.annountmentPost.anTitle}}</strong></h4></a></li>
+                        <li ng-if="vm.annountmentPost.anId" class="Introduction">
+                            <p class="p1" style="color: #ccc;">发布人：{{vm.annountmentPost.issueUser}} 发布时间：{{vm.annountmentPost.issueDate}}</p>
+                            <span>{{vm.annountmentPost.inTro}}</span></li>
+                    </div>
+                </div>
+
+                <!--下一篇-->
+                <div ng-if="vm.annountmentNext.anId" class="row" style="overflow: hidden; margin: 20px 10px;">
+                    <div class="col-xs-1 icon-down">
+                        <span class="fa fa-folder"></span>
+                    </div>
+                    <div class="col-xs-10">
+                <li ng-if="vm.annountmentNext.anId"><a href="javascript:void(0)" ng-click="vm.next(vm.annountmentNext.anId)">
+                    <h4><strong>下一篇:{{vm.annountmentNext.anTitle}}</strong></h4></a></li>
+                <li ng-if="vm.annountmentNext.anId" class="Introduction">
+                    <p class="p1"  style="color: #ccc;">发布人：{{vm.annountmentNext.issueUser}} 发布时间：{{vm.annountmentNext.issueDate}}</p>
+                    <span>{{vm.annountmentNext.inTro}}</span></li>
+
+                    </div>
+                </div>
+            </ol>
+        </div>
+    </div>
+    <!--滚动通知区结束-->
+
+
 </div>
+
