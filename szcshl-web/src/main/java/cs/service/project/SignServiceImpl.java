@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.Session;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -1352,33 +1354,16 @@ public class SignServiceImpl implements SignService {
     			String orgId="";
     			for (Role role : roleList) {
 					if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
-						map.put("mOrgId", "");
+						map.put("orgMLeaderName", currentUser.getLoginUser().getLoginName());
 					}else if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-						HqlBuilder hqlBuilder=HqlBuilder.create();
-				    	hqlBuilder.append(" from "+Org.class.getSimpleName()+" where "+Org_.orgDirectorName.getName()+" =:orgDirectorName");
-				    	hqlBuilder.setParam("orgDirectorName", currentUser.getLoginUser().getLoginName());
-				    	List<Org> oList=orgRepo.findByHql(hqlBuilder);
-				    	for (Org org : oList) {
-								if(StringUtil.isBlank(orgId)){
-									orgId=org.getId();
-								}
-								orgId+=","+org.getId();
-								map.put("mOrgId", orgId);
-							}
-					}else if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-						Org org = curruser.getOrg();
-						if(org!=null && StringUtil.isBlank(org.getId())){
-							map.put("mOrgId", org.getId());
-							
-						}
+						map.put("orgSLeaderName", currentUser.getLoginUser().getLoginName());
+					}else {
+						map.put("orgdirectorname", currentUser.getLoginUser().getLoginName());
 					}
     				
 				}
     		}
 	    	
-	    	/*HqlBuilder hqlBuilder=HqlBuilder.create();
-	    	hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.org.getName()+" ."+Org_.id.getName()+" =:orgId");
-	    	hqlBuilder.setParam("orgId", org.getId());*/
     		List<User>  userList=new ArrayList<>();
 	    	userList=userRepo.findAll();
 	    	List<User> usersList=new ArrayList<>();
@@ -1389,7 +1374,6 @@ public class SignServiceImpl implements SignService {
 		    		usersList.add(users);
 				}
 	    	}
-	    	
 	    	map.put("usersList", usersList);
 	    	map.put("orgsList", orgsList);
     	return map;

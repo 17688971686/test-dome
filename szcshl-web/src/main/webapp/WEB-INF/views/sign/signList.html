@@ -19,17 +19,20 @@
 	</div>
 	<ol class="breadcrumb"> 
 	<form id="searchform" name="searchform">
-		<input name="mOrgId" ng-model="vm.sign.mOrgId" type="text" ng-hide="true" operator="eq"/>
+		<!-- <input name="mOrgIds" ng-model="vm.sign.mOrgIds" type="text" ng-hide="true" operator="eq"/> -->
+		<input name="orgdirectorname" ng-model="vm.sign.orgdirectorname" type="text" ng-hide="true" operator="eq"/>
+		<input name="orgMLeaderName" ng-model="vm.sign.orgMLeaderName" type="text" ng-hide="true" operator="eq"/>
+		<input name="orgSLeaderName" ng-model="vm.sign.orgSLeaderName" type="text" ng-hide="true" operator="eq"/>
 		<table style="width:100%">
 			<tr>
 				<td class="formAlignRight" style="width:150px;">项目名称</td>
 				<td>
-					<input name="projectname" type="text" ng-model="vm.sign.projectname" operator="like" class="form-control input-sm " />
+					<input name="sprojectname" type="text" ng-model="vm.sign.sprojectname" operator="like" class="form-control input-sm " />
 				</td>
 				
 				<td class="formAlignRight" style="width:150px;">建设单位</td>
 				<td>
-					<input name="builtcompanyName" ng-model="vm.sign.builtcompanyName" type="text" operator="like" class="form-control input-sm "/>
+					<input name="sbuiltcompanyName" ng-model="vm.sign.sbuiltcompanyName" type="text" operator="like" class="form-control input-sm "/>
 				</td>
 				<td class="formAlignRight" style="width:150px;">
 				<input type="checkbox" name="isHaveEIA" ng-model="ischeck1"  ng-change="vm.sign.ishaveeia=ischeck1?9:0" >
@@ -52,7 +55,7 @@
 				</td>
 				<td class="formAlignRight" style="width:150px;">项目负责人</td>
 				<td>
-					<select name="mianChargeUserName" ng-model="vm.sign.mianChargeUserName" operator="eq" class="form-control input-sm "  >
+					<select name="pmianchargeusername" ng-model="vm.sign.pmianchargeusername" operator="eq" class="form-control input-sm "  >
 						<option value="">请选择</option>
 						<option ng-repeat="x in vm.usersList" value="{{vm.usersList}}">{{x.loginName}}</option>
 					</select>
@@ -67,7 +70,7 @@
 				</td>
  -->				<td class="formAlignRight" style="width:150px;">归档编号</td>
 				<td>
-					<input name="filenum"  type="text" operator="like" ng-model="vm.sign.filenum" class="form-control input-sm "/>
+					<input name="sfilenum"  type="text" operator="like" ng-model="vm.sign.sfilenum" class="form-control input-sm "/>
 				</td>
 				<td class="formAlignRight" style="width:150px;">主管部门（改革后）</td>
 				<td>
@@ -80,7 +83,7 @@
 			<tr>
 			<td class="formAlignRight" style="width:150px;">评审阶段</td>
 				<td>
-					<select name="reviewstage" ng-model="vm.sign.reviewstage" operator="eq" class="form-control input-sm " >
+					<select name="sreviewstage" ng-model="vm.sign.sreviewstage" operator="eq" class="form-control input-sm " >
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
@@ -95,7 +98,7 @@
 
 				<td class="formAlignRight" style="width:150px;">缓急程度</td>
 				<td>
-					<select operator="eq" name="urgencydegree" ng-model="vm.sign.urgencydegree" class="form-control input-sm ">
+					<select operator="eq" name="surgencydegree" ng-model="vm.sign.surgencydegree" class="form-control input-sm ">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
@@ -109,7 +112,7 @@
 				</td> -->
 				<td class="formAlignRight" style="width:150px;">评审方式</td>
 				<td>
-					<select operator="eq" name="previewType" ng-model="vm.sign.previewType" class="form-control input-sm ">
+					<select operator="eq" name="previewtype" ng-model="vm.sign.previewtype" class="form-control input-sm ">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
@@ -134,7 +137,7 @@
 				</td>
 				<td class="formAlignRight" style="width:150px;">收文日期</td>
 				<td>
-					<input type="text" name="receivedate"  class="form-control input-sm " text-align: center;" style="width: 210px" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.receivedate" operator="eq" > 	
+					<input type="text" name="sreceivedate"  class="form-control input-sm " text-align: center;" style="width: 210px" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.sreceivedate" operator="eq" > 	
 				</td>
 
 				<!-- <td class="formAlignRight" style="width:150px;">批复时间</td>
@@ -143,17 +146,17 @@
 				</td> -->
 				<td class="formAlignRight" style="width:150px;">发文日期</td>
 				<td>
-					<input type="text" name="dispatchDate" class="form-control input-sm " style="width: 210px" text-align: center;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.dispatchDate" operator="eq" > 
+					<input type="text" name="ddispatchdate" class="form-control input-sm " style="width: 210px" text-align: center;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.ddispatchdate" operator="eq" > 
 				</td>
 				<td class="formAlignRight" style="width:150px;">归档日期</td>
 				<td>
-					<input type="text" name="fileDate" class="form-control input-sm " text-align: center;" style="width: 210px" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.fileDate">
+					<input type="text" name="ffiledate" class="form-control input-sm " text-align: center;" style="width: 210px" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.ffiledate">
 				</td>
 			</tr>			
 			<tr>
 				<td class="formAlignRight" style="width:150px;">发文类型</td>
 				<td>
-					<select operator="eq" name="dispatchType" ng-model="vm.sign.dispatchType" class="form-control input-sm ">
+					<select operator="eq" name="ddispatchtype" ng-model="vm.sign.ddispatchtype" class="form-control input-sm ">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
@@ -165,14 +168,14 @@
 				</td>
 				<td class="formAlignRight" style="width:150px;">行业类型</td>
 				<td>
-					<select operator="eq" name="industryType" ng-model="vm.sign.industryType" class="form-control input-sm ">
+					<select operator="eq" name="pindustrytype" ng-model="vm.sign.pindustrytype" class="form-control input-sm ">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
 				<td class="formAlignRight" style="width:150px;">秘密等级</td>
 				<td>
-					<select operator="eq" name="secrectlevel" ng-model="vm.sign.secrectlevel" class="form-control input-sm ">
+					<select operator="eq" name="ssecrectlevel" ng-model="vm.sign.ssecrectlevel" class="form-control input-sm ">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>

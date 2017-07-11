@@ -558,55 +558,55 @@
                      width:50
                  },
                 {
-                    field: "projectname",
+                    field: "sprojectname",
                     title: "项目名称",
                     width: 160,
                     filterable: false
                 },
                 {
-                    field: "reviewstage",
+                    field: "sreviewstage",
                     title: "评审阶段",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "receivedate",
+                    field: "sreceivedate",
                     title: "收文日期",
                     width: 200,
                     filterable: false
                 },
                 {
-                    field: "dispatchDate",
+                    field: "ddispatchtype",
                     title: "发文日期",
                     width: 160,
                     filterable: false
                 },
                 {
-                    field: "reviewdays",
+                    field: "sreviewdays",
                     title: "评审天数",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "surplusdays",
+                    field: "ssurplusdays",
                     title: "剩余工作日",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "mOrgName",
+                    field: "mOrgNames",
                     title: "评审部门",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "mainuserName",
+                    field: "pmianchargeusername",
                     title: "项目负责人",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "filenum",
+                    field: "sfilenum",
                     title: "归档编号",
                     width: 140,
                     filterable: false
@@ -618,67 +618,67 @@
                     filterable: false
                 },
                 {
-                    field: "appalyInvestment",
+                    field: "sappalyinvestment",
                     title: "申报投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "authorizeValue",
+                    field: "dauthorizevalue",
                     title: "审定投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "extraValue",
+                    field: "dextravalue",
                     title: "核减（增）投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "extraRate",
+                    field: "dextrarate",
                     title: "核减率",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "approveValue",
+                    field: "dapprovevalue",
                     title: "批复金额",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "approveTime",
+                    field: "sreceivedate",
                     title: "批复来文时间",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "dispatchType",
+                    field: "ddispatchtype",
                     title: "发文类型",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "fileDate",
+                    field: "ffiledate",
                     title: "归档日期",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "builtcompanyName",
+                    field: "sbuiltcompanyName",
                     title: "建设单位",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "isassistproc",
+                    field: "sisassistproc",
                     title: "是否协审",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "daysafterdispatch",
+                    field: "sdaysafterdispatch",
                     title: "发文后工作日",
                     width: 140,
                     filterable: false
@@ -731,9 +731,18 @@
                 url: rootPath + "/sign/initSignList"
             }
             var httpSuccess = function success(response) {
-            	 vm.sign.mOrgId = response.data.mOrgId;
+            	 vm.sign.mOrgIds = response.data.mOrgId;
             	 vm.usersList = response.data.usersList;
             	 vm.orgsList = response.data.orgsList;
+            	 if(response.data.orgMLeaderName){
+            	 	vm.sign.orgMLeaderName=response.data.orgMLeaderName;
+            	 }
+            	 if(response.data.orgdirectorname){
+            	 	vm.sign.orgdirectorname=response.data.orgdirectorname;
+            	 }
+            	 if(response.data.orgSLeaderName){
+            	 	vm.sign.orgSLeaderName=response.data.orgSLeaderName;
+            	 }
             	 
             	 vm.signListOptions.dataSource.read();
             }
