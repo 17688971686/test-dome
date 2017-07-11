@@ -26,6 +26,7 @@
             nodeSelViceMgr:false,      // 选择分管副主任环节
             nodeSelOrgs:false,         // 选择分管部门
             nodeSelPrincipal:false,    // 选择项目负责人
+            nodeSign:false,            // 项目签收
             nodeWorkProgram:false,     // 工作方案
             nodeDispatch:false,        // 发文
             nodeFileRecord:false,      // 归档
@@ -236,14 +237,54 @@
         }
 
         vm.commitBack = function () {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认回退吗？",
-                fn: function () {
-                    flowSvc.rollBack(vm); // 回退到上一个环节
-                }
-            })
+            common.initJqValidation($("#flow_form"));
+            var isValid = $("#flow_form").valid();
+            if(isValid){
+                common.confirm({
+                    vm: vm,
+                    title: "",
+                    msg: "确认回退吗？",
+                    fn: function () {
+                        //有几个环节要传递业务参数
+                        switch (vm.flow.curNode.activitiId) {
+                            /************   以下是签收流程  **************/
+                            case "FGLD_SP_GZFA1":
+                                vm.flow.businessMap.M_WP_ID = vm.mainwork.id;       //部门负责人审批工作方案
+                                break;
+                            case "FGLD_SP_GZFA2":
+                                vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
+                                break;
+                            case "FGLD_SP_FW":                                      //分管领导审批发文
+                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
+                                break;
+                            case "ZR_SP_FW":                                        //主任审批发文
+                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
+                                break;
+                            case "BMLD_QR_GD":                                       //确认归档
+                                vm.flow.businessMap.ExclusiveGateWay = true;         //注明是排他网关
+                                break;
+
+                            /************   以下是概算流程  **************/
+                            case "XS_FGLDSP_GZFA":
+                                vm.flow.businessMap.WP_ID = vm.mainwork.id;         //分管领导审批发文
+                                break;
+                            case "XS_FGLDSP_FW":                                   //分管领导审批发文
+                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
+                                break;
+                            case "XS_ZRSP_FW":                                     //主任审批发文
+                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
+                                break;
+                            case "XS_QRGD":                                        //确认归档
+                                vm.flow.businessMap.ExclusiveGateWay = true;       //注明是排他网关
+                                break;
+                            default:
+                                ;
+                        }
+                        flowSvc.rollBackToLast(vm); // 回退到上一个环节
+                        $('.confirmDialog').modal('hide');
+                    }
+                })
+            }
         }
 
         vm.deleteFlow = function () {
@@ -267,6 +308,10 @@
             return vm.flow.curNodeAcivitiId == acivitiId ? true : false;
         }
 
+        //编辑审批登记表
+        vm.editSign = function(){
+            $state.go('fillSign', {signid: vm.model.signid });
+        }
         // S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function () {
             $state.go('workprogramEdit', {signid: vm.model.signid });

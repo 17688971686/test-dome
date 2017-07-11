@@ -63,6 +63,12 @@
                         var data = response.data;
                         vm.sign = data.sign;
                         vm.dispatchDoc = data.dispatch;     //可编辑的发文对象
+                        if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
+                            vm.busiFlag.isMerge = true;     //合并发文
+                        }
+                        if(vm.dispatchDoc.isMainProject && vm.dispatchDoc.isMainProject == 9){
+                            vm.busiFlag.isMain = true;     //主项目
+                        }
                         vm.associateDispatchs = data.associateDispatchs;
                         vm.proofread = data.mainUserList;   //校对人
 
@@ -103,6 +109,7 @@
                     vm: vm,
                     response: response,
                     fn: function () {
+                        vm.isCommit = false;
                         common.alert({
                             vm: vm,
                             msg: response.data.reMsg,
@@ -123,7 +130,10 @@
                 vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError:function () {
+                    vm.isCommit = false;
+                }
             });
 
             //}

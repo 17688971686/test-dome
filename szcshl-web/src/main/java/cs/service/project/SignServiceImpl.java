@@ -85,6 +85,20 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.external.OfficeUserService;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -609,6 +623,12 @@ public class SignServiceImpl implements SignService {
                 }
                 //如果是直接发文，则直接跳转
                 if (flowDto.getBusinessMap().get("ZJFW") != null && EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("ZJFW").toString())) {
+                    //判断当前任务是否是分办任务，如果是分办任务，则不给跳转
+                    String excId = task.getExecutionId();
+                    ExecutionEntity execution = (ExecutionEntity) runtimeService.createExecutionQuery().executionId(task.getExecutionId()).singleResult();
+                    if(execution.isConcurrent()){
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "当前流程为并行分支流程，不能直接跳转发文！");
+                    }
                     variables.put("zjfw", EnumState.YES.getValue());
                     //查找项目负责人
                     List<User> dealUserList = signPrincipalService.getSignPriUser(signid, EnumState.YES.getValue());
@@ -796,6 +816,10 @@ public class SignServiceImpl implements SignService {
                 }
                 dealUser = userList.get(0);
                 variables.put("user", dealUser.getLoginName());
+                //更改第二负责人
+                sign = signRepo.findById(Sign_.signid.getName(),signid);
+                sign.setSecondPriUser(currentUser.getLoginName());
+                saveSignFlag = true;
                 break;
             case Constant.FLOW_BMLD_QR_GD:            //确认归档
                 sign = signRepo.findById(signid);
@@ -861,6 +885,16 @@ public class SignServiceImpl implements SignService {
             case Constant.FLOW_XS_ZR:                       //主任
                 break;
             case Constant.FLOW_XS_XMQS:                     //项目签收
+                userList = userService.findUserByRoleName(EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue());
+                if (userList == null || userList.size() == 0) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue() + "】角色用户！");
+                }
+                variables.put("user", userList.get(0).getLoginName());
+
+                sign = signRepo.findById(Sign_.signid.getName(),signid);
+                sign.setSigndate(new Date());
+                sign.setIssign(EnumState.YES.getValue());
+                saveSignFlag = true;
                 break;
             case Constant.FLOW_XS_ZHBBL:                    //综合部审批
                 if (flowDto.getBusinessMap().get("FGLD") == null) {
@@ -980,11 +1014,11 @@ public class SignServiceImpl implements SignService {
                 variables.put("user", dealUser.getLoginName());
                 //更改工作方案信息
                 businessId = flowDto.getBusinessMap().get("WP_ID").toString();
-	                wk = workProgramRepo.findById(WorkProgram_.id.getName(),businessId);
-	                wk.setMinisterSuggesttion(flowDto.getDealOption());
-	                wk.setMinisterDate(new Date());
-	                wk.setMinisterName(currentUser.getLoginName());
-	                workProgramRepo.save(wk);
+                wk = workProgramRepo.findById(WorkProgram_.id.getName(),businessId);
+                wk.setMinisterSuggesttion(flowDto.getDealOption());
+                wk.setMinisterDate(new Date());
+                wk.setMinisterName(currentUser.getLoginName());
+                workProgramRepo.save(wk);
                 break;
             case Constant.FLOW_XS_FGLDSP_GZFA:              //分管副主任审批
                 businessId = flowDto.getBusinessMap().get("WP_ID").toString();
@@ -1091,6 +1125,10 @@ public class SignServiceImpl implements SignService {
                 }
                 dealUser = userList.get(0);
                 variables.put("user", dealUser.getLoginName());
+                //更改第二负责人
+                sign = signRepo.findById(Sign_.signid.getName(),signid);
+                sign.setSecondPriUser(currentUser.getLoginName());
+                saveSignFlag = true;
                 break;
             case Constant.FLOW_XS_QRGD:                     //确认归档
                 sign = signRepo.findById(signid);

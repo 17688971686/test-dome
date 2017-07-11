@@ -16,6 +16,10 @@ import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
 import cs.repository.odata.ODataObj;
+import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.List;
+import java.util.Map;
 
 public interface SignService{
 

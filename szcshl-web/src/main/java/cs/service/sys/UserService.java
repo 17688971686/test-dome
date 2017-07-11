@@ -14,47 +14,47 @@ import cs.repository.odata.ODataObj;
 
 public interface UserService {
 
-	PageModelDto<UserDto> get(ODataObj odataObj);
+    PageModelDto<UserDto> get(ODataObj odataObj);
 
-	void createUser(UserDto userDto);
+    void createUser(UserDto userDto);
 
-	void deleteUser(String id);
-	
-	void updateUser(UserDto userDto);
-	
-	Response Login(String userName, String password, HttpServletRequest request);
-	
-	Set<String> getCurrentUserPermissions();
-	
-	void logout();
-	
-	void changePwd(String password);
-	
-	UserDto findUserByName(String userName);
+    void deleteUser(String id);
 
-	List<UserDto> getUser();
+    void updateUser(UserDto userDto);
 
-	List<OrgDto> getOrg(ODataObj odataObj );
-	
-	List<UserDto> findUserByRoleName(String roleName);
+    Response Login(String userName, String password, HttpServletRequest request);
 
-	List<UserDto> findUserByOrgId(String orgId);
+    Set<String> getCurrentUserPermissions();
 
-	UserDto findById(String id);
-	
-	boolean curUserIsOrgDirector(UserDto checkUser);
-	
-	boolean curUserIsOrgSLeader(UserDto checkUser);
-	
-	boolean curUserIsSuperLeader(UserDto checkUser);
-	
-	UserDto filterOrgDirector(List<UserDto> userList,Org org);
-	
-	UserDto filterOrgSLeader(List<UserDto> userList,Org org);
-	
-	UserDto getOrgDirector();
-	
-	UserDto getOrgSLeader();
+    void logout();
 
-	List<UserDto> findAllusers();
+    void changePwd(String password);
+
+    UserDto findUserByName(String userName);
+
+    List<UserDto> getUser();
+
+    List<OrgDto> getOrg(ODataObj odataObj);
+
+    List<UserDto> findUserByRoleName(String roleName);
+
+    List<UserDto> findUserByOrgId(String orgId);
+
+    UserDto findById(String id);
+
+    boolean curUserIsOrgDirector(UserDto checkUser);
+
+    boolean curUserIsOrgSLeader(UserDto checkUser);
+
+    boolean curUserIsSuperLeader(UserDto checkUser);
+
+    UserDto filterOrgDirector(List<UserDto> userList, Org org);
+
+    UserDto filterOrgSLeader(List<UserDto> userList, Org org);
+
+    UserDto getOrgDirector();
+
+    UserDto getOrgSLeader();
+
+    List<UserDto> findAllusers();
 }
