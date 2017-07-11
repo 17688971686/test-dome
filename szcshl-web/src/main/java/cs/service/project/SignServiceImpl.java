@@ -50,6 +50,7 @@ import cs.domain.project.WorkProgram_;
 import cs.domain.sys.Company;
 import cs.domain.sys.Org;
 import cs.domain.sys.Org_;
+import cs.domain.sys.Role;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
@@ -1325,14 +1326,16 @@ public class SignServiceImpl implements SignService {
 		signRepo.bathUpdate(signList);
 	}
 	
+	
+	//获取部长所在部门的项目信息
 	 @Override
     public Map<String,Object> initSignList() {
-    	//获取部长所在部门的项目信息
+		 
     	Map<String,Object> map=new HashMap<>();
-    	User loginUser=currentUser.getLoginUser();
-    	List<Org> orgList=orgRepo.findAll();
+    	
+    	//添加部门
     	List<Org> orgsList=new ArrayList<>();
-    	List<User>  userList=new ArrayList<>();
+    	List<Org> orgList=orgRepo.findAll();
     	if(!orgList.isEmpty()){
 	    	for (Org org : orgList) {
 	    		Org orgs=new Org();
@@ -1341,12 +1344,43 @@ public class SignServiceImpl implements SignService {
 	    		orgsList.add(orgs);
 			}
     	}
-    	if(loginUser!=null && !StringUtil.isBlank(loginUser.getId())){
-	    	Org org = loginUser.getOrg();
-	    	HqlBuilder hqlBuilder=HqlBuilder.create();
+    	//获取当前用户的部门id
+    	  User curruser = userRepo.findById(currentUser.getLoginUser().getId());
+    	  List<Role> roleList=curruser.getRoles();
+    		//判断角色
+    		if(!roleList.isEmpty()){
+    			String orgId="";
+    			for (Role role : roleList) {
+					if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+						map.put("mOrgId", "");
+					}else if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+						HqlBuilder hqlBuilder=HqlBuilder.create();
+				    	hqlBuilder.append(" from "+Org.class.getSimpleName()+" where "+Org_.orgDirectorName.getName()+" =:orgDirectorName");
+				    	hqlBuilder.setParam("orgDirectorName", currentUser.getLoginUser().getLoginName());
+				    	List<Org> oList=orgRepo.findByHql(hqlBuilder);
+				    	for (Org org : oList) {
+								if(StringUtil.isBlank(orgId)){
+									orgId=org.getId();
+								}
+								orgId+=","+org.getId();
+								map.put("mOrgId", orgId);
+							}
+					}else if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+						Org org = curruser.getOrg();
+						if(org!=null && StringUtil.isBlank(org.getId())){
+							map.put("mOrgId", org.getId());
+							
+						}
+					}
+    				
+				}
+    		}
+	    	
+	    	/*HqlBuilder hqlBuilder=HqlBuilder.create();
 	    	hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.org.getName()+" ."+Org_.id.getName()+" =:orgId");
-	    	hqlBuilder.setParam("orgId", org.getId());
-	    	userList=userRepo.findByHql(hqlBuilder);
+	    	hqlBuilder.setParam("orgId", org.getId());*/
+    		List<User>  userList=new ArrayList<>();
+	    	userList=userRepo.findAll();
 	    	List<User> usersList=new ArrayList<>();
 	    	if(!userList.isEmpty()){
 		    	for (User user : userList) {
@@ -1355,10 +1389,9 @@ public class SignServiceImpl implements SignService {
 		    		usersList.add(users);
 				}
 	    	}
-	    	map.put("mOrgId", org.getId());
+	    	
 	    	map.put("usersList", usersList);
 	    	map.put("orgsList", orgsList);
-    	}
     	return map;
     }
     
