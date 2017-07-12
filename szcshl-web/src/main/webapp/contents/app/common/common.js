@@ -441,12 +441,15 @@
             }).map(
             function (i, elem) {
                 var $me = $(this), val = $me.val();
-                if (!val)
+                if (!val){
                     return false;
-                val = "'" + val + "'";
-                var operator = $me.attr("operator") || "eq", dataRole = $me
-                        .attr("data-role")
-                    || ""; // data-role="datepicker"
+                }
+                var dataType = $me.attr("data-type") || "String";
+                if(!("Integer" == dataType)){
+                    val = "'" + val + "'";
+                }
+                var operator = $me.attr("operator") || "eq",
+                    dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
                 if (dataRole == "datepicker") {
                     val = "date" + val;
                 } else if (dataRole == "datetimepicker") {
