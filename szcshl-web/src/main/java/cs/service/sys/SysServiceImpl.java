@@ -45,7 +45,6 @@ public class SysServiceImpl implements SysService {
         List<SysResourceDto> resources = new ArrayList<SysResourceDto>();
         List<Class<?>> classes = ClassFinder.find("cs.controller");
         for (Class<?> obj : classes) {
-
             if (obj.isAnnotationPresent(RequestMapping.class)) {
                 SysResourceDto resource = new SysResourceDto();
 
@@ -85,6 +84,7 @@ public class SysServiceImpl implements SysService {
 
     /**
      * 系统初始化，这个要修改
+     *
      * @return
      */
     @Override

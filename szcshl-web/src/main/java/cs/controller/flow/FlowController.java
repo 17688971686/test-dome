@@ -6,6 +6,7 @@ import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -146,9 +147,9 @@ public class FlowController {
 
     @RequestMapping(name = "读取流程历史记录", path = "processInstance/history/{processInstanceId}", method = RequestMethod.POST)
     public @ResponseBody
-    PageModelDto<FlowHistoryDto> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId) {
-        List<FlowHistoryDto> list = flowService.convertHistory(processInstanceId);
-        PageModelDto<FlowHistoryDto> pageModelDto = new PageModelDto<FlowHistoryDto>();
+    PageModelDto<HiProcessTask> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId) {
+        List<HiProcessTask> list = flowService.getProcessHistory(processInstanceId);
+        PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
         pageModelDto.setCount(list.size());
         pageModelDto.setValue(list);
         return pageModelDto;
@@ -311,18 +312,17 @@ public class FlowController {
     }
 
     @RequestMapping(name = "回退到上一个环节", path = "rollbacklast", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
-        ResultMsg resultMsg = new ResultMsg();
-        if (Validate.isString(flowDto.getTaskId())) {
-            flowService.rollBackLastNode(flowDto);
+    public @ResponseBody ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
+        ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
+        /*if (Validate.isString(flowDto.getTaskId())) {
+
             resultMsg.setReCode(MsgCode.OK.getValue());
             resultMsg.setReMsg("回退成功！");
         } else {
             resultMsg.setReCode(MsgCode.ERROR.getValue());
             resultMsg.setReMsg(Constant.ERROR_MSG);
             log.info("流程回退到上一步异常：无法获取任务ID(TaskId)");
-        }
+        }*/
         return resultMsg;
     }
 

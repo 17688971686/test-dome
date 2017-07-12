@@ -74,11 +74,15 @@ public class RuProcessTask {
     private String businessKey;
 
     /**
-     * 流程存活状态
+     * 任务存活状态
      */
     @Column
     private String isActive;
 
+    /**
+     * 任务是否并行
+     */
+    private String isConcurrent;
     /**
      * 流程状态（1：正在进行，2：停止）
      */
@@ -214,5 +218,13 @@ public class RuProcessTask {
 
     public void setLightState(String lightState) {
         this.lightState = lightState;
+    }
+
+    public String getIsConcurrent() {
+        return isConcurrent;
+    }
+
+    public void setIsConcurrent(String isConcurrent) {
+        this.isConcurrent = isConcurrent;
     }
 }

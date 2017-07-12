@@ -132,10 +132,10 @@
 
                     <!-- 协审部门分办 -->
                     <div ng-show="vm.showFlag.nodeSelXSPri" id="xs_bmfb">
-                        <table class="table" style="width:80%;">
+                        <table class="table" style="width:900px;">
                             <caption class="text-center">*必须要选择1个总负责人，最多只能选3个负责人</caption>
                             <tr>
-                                <td style="width: 25%">
+                                <td style="width:100px;">
                                     <table class="table table-bordered seleteTable" >
                                         <tr>
                                             <td width="30%" align="center">选择</td>
@@ -147,7 +147,7 @@
                                         </tr>
                                     </table>
                                 </td>
-                                <td  style="text-align:center;vertical-align:middle;width: 15%">
+                                <td  style="text-align:center;vertical-align:middle;100px;">
                                     <p style="text-align:center;">
                                         负责分工:
                                         <select name="userType" id="userType">
@@ -170,7 +170,7 @@
                                         </button>
                                     </p>
                                 </td>
-                                <td style="width:60%">
+                                <td style="width:700px;">
                                     <table class="table table-bordered">
                                         <tr>
                                             <td width="10%" align="center">选择</td>
@@ -199,6 +199,9 @@
                   业务处理<br>
               </td>
 		      <td >
+                     <p ng-show="vm.showFlag.nodeSign"><!--签收环节，可以编辑审批登记表-->
+                        <button class="btn btn-xs btn-primary" ng-click="vm.editSign()" ng-disabled="vm.isCommit"  ><span class="glyphicon glyphicon-edit"></span>审批登记表</button>
+                    </p>
 		      		<!-- 工作方案 -->
                     <p ng-show="vm.showFlag.businessDis"><!--主流程工作方案环节才显示-->
                        	 直接发文：<input class="formAlignRight" ng-model="vm.businessFlag.isGotoDis" ng-true-value="true"

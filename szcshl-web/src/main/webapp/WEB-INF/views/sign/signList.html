@@ -1,0 +1,247 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a >项目管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.searchSignList()" ng-disabled="vm.isSubmit"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
+        <!--
+             隐藏批量删除
+            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit" ng-hide="true"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
+        -->
+    </div>
+    <ol class="breadcrumb">
+        <form id="searchform" name="searchform">
+
+            <table style="width:100%">
+                <tr>
+                    <td class="formAlignRight" style="width:10%;">项目名称</td>
+                    <td style="width:15%;">
+                        <input name="sprojectname" type="text" ng-model="vm.sign.sprojectname" operator="like"
+                                class="form-control input-sm "/>
+                    </td>
+
+                    <td class="formAlignRight" style="width:10%;">建设单位</td>
+                    <td style="width:15%;">
+                        <input name="sbuiltcompanyName" ng-model="vm.sign.sbuiltcompanyName" type="text" operator="like"
+                               class="form-control input-sm "/>
+                    </td>
+
+                    <td class="formAlignRight" style="width:10%;">是否有环评</td>
+                    <td style="width:15%;">
+                        <input type="checkbox" name="pishaveeia" ng-model="vm.sign.pishaveeia" operator="eq" value="{{vm.sign.pishaveeia}}"
+                               ng-true-value="9" ng-false-value="0">
+                    </td>
+
+                    <td class="formAlignRight" style="width:10%;">是否已关联</td>
+                    <td style="width:15%;">
+                        <input type="checkbox" name="sisAssociate" ng-model="vm.sign.sisAssociate" operator="eq" value="{{vm.sign.sisAssociate}}"
+                               ng-true-value="1" ng-false-value="0" data-type="Integer">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formAlignRight">项目类型</td>
+                    <td>
+                        <select name="dprojectType" ng-model="vm.sign.dprojectType" operator="eq"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                    <td class="formAlignRight">项目负责人</td>
+                    <td>
+                        <select name="pmianchargeusername" ng-model="vm.sign.pmianchargeusername" operator="eq"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in vm.usersList" value="{{vm.loginName}}">{{x.loginName}}</option>
+                        </select>
+                    </td>
+
+                    <!-- 			<td class="formAlignRight" style="width:150px;">类型</td>
+                                    <td>
+                                        <select name="reviewstage" ng-model="vm.sign.reviewstage" operator="eq" class="form-control input-sm " >
+                                            <option value="">请选择</option>
+                                            <option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
+                                        </select>
+                                    </td>
+                     -->
+                    <td class="formAlignRight">归档编号</td>
+                    <td>
+                        <input name="sfilenum" type="text" operator="like" ng-model="vm.sign.sfilenum"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="formAlignRight">主管部门</td>
+                    <td>
+                        <select name="pmaindeptname" ng-model="vm.sign.pmaindeptname" class="form-control input-sm "
+                                operator="eq">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in vm.orgsList" value="{{x.name}}">{{x.name}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formAlignRight">评审阶段</td>
+                    <td>
+                        <select name="sreviewstage" ng-model="vm.sign.sreviewstage" operator="eq"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td>
+                    <!-- <td class="formAlignRight" style="width:150px;">项目状态</td>
+                    <td>
+                        <select name="reviewstage" ng-model="vm.sign.reviewstage" operator="eq" class="form-control input-sm " >
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
+                        </select>
+                    </td> -->
+
+                    <td class="formAlignRight">缓急程度</td>
+                    <td>
+                        <select operator="eq" name="surgencydegree" ng-model="vm.sign.surgencydegree"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td>
+                    <!-- <td class="formAlignRight" style="width:150px;">优秀评审报告</td>
+                    <td>
+                        <select operator="eq" name="goodReview" ng-model="vm.sign.reviewType" class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td> -->
+                    <td class="formAlignRight">评审方式</td>
+                    <td>
+                        <select operator="eq" name="previewtype" ng-model="vm.sign.previewtype"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+
+
+                    <!-- <td class="formAlignRight" style="width:150px;">项目类别</td>
+                    <td>
+                        <select name="dispatchDocDto.projectType" ng-model="vm.sign.dispatchDocDto.projectType" operator="eq"  >
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td> -->
+
+
+                </tr>
+                <tr>
+                    <td class="formAlignRight">文件字号</td>
+                    <td>
+                        <input name="dfilenum" type="text" ng-model="vm.sign.dfilenum" operator="like"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="formAlignRight" style="width:150px;">收文日期</td>
+                    <td>
+                        <input type="text" name="sreceivedate" class="form-control input-sm "
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.sign.sreceivedate" operator="eq">
+                    </td>
+
+                    <!-- <td class="formAlignRight" style="width:150px;">批复时间</td>
+                    <td>
+                        <input type="text" name="receivedate"  class="form-control input-sm " text-align: center;" class="form-control input-sm "  kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.sign.receivedate" operator="eq" >
+                    </td> -->
+                    <td class="formAlignRight">发文日期</td>
+                    <td>
+                        <input type="text" name="ddispatchdate" class="form-control input-sm "
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.sign.ddispatchdate" operator="eq" >
+                    </td>
+                    <td class="formAlignRight">归档日期</td>
+                    <td>
+                        <input type="text" name="ffiledate" class="form-control input-sm "
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.sign.ffiledate" operator="eq" >
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formAlignRight">发文类型</td>
+                    <td>
+                        <select operator="eq" name="ddispatchtype" ng-model="vm.sign.ddispatchtype"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+
+                    <td class="formAlignRight">申报投资</td>
+                    <td>
+                        <input name="appalyInvestment" type="text" ng-model="vm.sign.appalyInvestment" operator="like"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="formAlignRight">行业类型</td>
+                    <td>
+                        <select operator="eq" name="pindustrytype" ng-model="vm.sign.pindustrytype"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                    <td class="formAlignRight">秘密等级</td>
+                    <td>
+                        <select operator="eq" name="ssecrectlevel" ng-model="vm.sign.ssecrectlevel"
+                                class="form-control input-sm ">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                        <!-- </td>
+                        <td class="formAlignRight" style="width:150px;">主管部门（改革前）</td>
+                        <td>
+                            <select operator="eq" name="mainDeptName" ng-model="vm.sign.mainDeptName" class="form-control input-sm ">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in vm.orgsList" value="{{x.name}}">{{x.name}}</option>
+                            </select>
+                        </td> -->
+                </tr>
+            </table>
+        </form>
+    </ol>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.signListOptions"></div>
+</div>
+<script type="text/template" id="columnBtns">
+    <@shiro.hasPermission name="expert##delete">
+    <button class="btn btn-xs btn-danger" ng-click="vm.saveAssociateSign('#=data.signid#')"><span
+            class="glyphicon glyphicon-remove"></span>删除
+    </button>
+    </@shiro.hasPermission>
+    <@shiro.hasPermission name="expert##put">
+    <a class="btn btn-xs btn-primary" href="\#/expertEdit/#=data.signid#"><span
+            class="glyphicon glyphicon-pencil"></span>编辑</a>
+    </@shiro.hasPermission>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

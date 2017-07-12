@@ -92,7 +92,7 @@ public class WorkProgramController {
 
         workProgramService.mergeAddWork(signId, linkSignId);
     }
-
+    
     @RequiresPermissions("workprogram##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

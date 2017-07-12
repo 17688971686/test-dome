@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cs.domain.project.Sign;
+import cs.domain.project.SignDispaWork;
+
 import org.activiti.engine.runtime.ProcessInstance;
 
 import cs.common.ResultMsg;
@@ -13,6 +16,10 @@ import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
 import cs.repository.odata.ODataObj;
+import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.List;
+import java.util.Map;
 
 public interface SignService{
 
@@ -64,5 +71,9 @@ public interface SignService{
 	List<Sign> selectSignNotFinish();//查询正在办理的项目
 	
 	void bathUpdate(List<Sign> signList);
+	
+	PageModelDto<SignDispaWork> getSign(ODataObj odataObj,String skip, String top);
+	
+	Map<String,Object> initSignList();
 	
 }

@@ -55,7 +55,7 @@
 
     <div class="tab-content" style="background:white;">
         <!-- 详情页  收文-->
-        <div class="well well-sm tab-pane fade in active" style="background:white;" id="sign_detail">
+        <div class="tab-pane fade in active" style="background:white;" id="sign_detail">
             <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' || vm.model.reviewstage=='其它'" ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
             <!-- 设备清单（国产）  -->
              <div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>

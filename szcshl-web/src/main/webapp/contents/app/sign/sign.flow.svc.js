@@ -50,7 +50,12 @@
 		function initBusinessParams(vm){
             switch (vm.flow.curNode.activitiId)
             {
+                case "QS":        //项目签收环节
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeSign = true;
+                    break ;
                 case "ZHB_SP_SW":        //综合部办理
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.businessNext = true;
                     vm.showFlag.nodeSelViceMgr = true;
                     if (vm.flow.businessMap){
@@ -58,6 +63,7 @@
                     }
                     break;
                 case "FGLD_SP_SW":      //分管领导审批工作方案
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.businessNext = true;
                     vm.showFlag.nodeSelOrgs = true;
                     if (vm.flow.businessMap){
@@ -98,25 +104,28 @@
                     };
                     break;
                 case "BZ_SP_GZAN1":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
-                    vm.showFlag.buttBack = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "FGLD_SP_GZFA1":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "BZ_SP_GZAN2":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "FGLD_SP_GZFA2":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
@@ -131,14 +140,17 @@
                     };
                     break;
                 case "BZ_SP_FW":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "FGLD_SP_FW":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "ZR_SP_FW":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
@@ -164,15 +176,22 @@
                     }
                     break;
                 case "AZFR_SP_GD":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;
                 case "BMLD_QR_GD":
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;
                 //以下为协审流程
+                case "XS_XMQS":        //项目签收环节
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeSign = true;
+                    break ;
                 case "XS_ZHBBL":        //综合部拟办
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.businessNext = true;
                     vm.showFlag.nodeSelViceMgr = true;
                     if (vm.flow.businessMap){
@@ -180,6 +199,7 @@
                     }
                     break;
                 case "XS_FGLD_SP":    //分管领导审核
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.businessNext = true;
                     vm.showFlag.nodeSelXSOrg = true;
                     if (vm.flow.businessMap){
@@ -206,11 +226,13 @@
                     }
                     break;
                 case "XS_BZSP_GZFA":             //部长审批工作方案
+                    vm.showFlag.buttBack = true;    //可回退
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "XS_FGLDSP_GZFA":           //分管审批工作方案
+                    vm.showFlag.buttBack = true;    //可回退
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
@@ -224,14 +246,17 @@
                     };
                     break;
                 case "XS_BZSP_FW":               //部长审批发文
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "XS_FGLDSP_FW":             //分管领导审批发文
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
                 case "XS_ZRSP_FW":               //主任审批发文
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
@@ -250,10 +275,12 @@
                     }
                     break;
                 case "XS_FZR_SP":                //第二负责人审批归档
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;
                 case "XS_QRGD":                  //确认归档
+                    vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
                     break;

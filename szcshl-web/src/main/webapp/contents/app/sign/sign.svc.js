@@ -22,7 +22,10 @@
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             paymentGrid: paymentGrid,           //专家评审费
             uploadFilelist: uploadFilelist,		//上传附件列表
-            meetingDoc: meetingDoc,            //生成会前准备材料
+            meetingDoc: meetingDoc,            //生成会前准备材
+           
+            
+            
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
         };
         return service;
@@ -837,9 +840,9 @@
                 })
             }
         }//E_meetingDoc
-
-
-        //S_createDispatchFileNum
+        
+      
+  //S_createDispatchFileNum
         function createDispatchFileNum(vm){
             var httpOptions = {
                 method: 'post',
@@ -879,6 +882,5 @@
                 success: httpSuccess
             });
         }//E_createDispatchFileNum
-
     }
 })();

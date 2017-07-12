@@ -1,6 +1,5 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
@@ -42,13 +41,14 @@
              <tr>
                 <td class="formAlignRight">排序序号： </td>
                 <td >
-                    <input  type="number" maxlength="50" class="form-control input-sm "   ng-model="vm.annountment.anSort " id="anSort" name="anSort" data-val="true" data-val-required="必填">
+                    <input  type="number" maxlength="50" class="form-control input-sm "   ng-model="vm.annountment.anSort " id="anSort" name="anSort" >
                 </td>
             </tr>
              <tr>
                 <td class="formAlignRight">内容： </td>
                 <td colspan="2">
-                    <textarea kendo-editor k-ng-model="html" name="content" style="width: 70%; height: 5em"  ng-model="vm.annountment.anContent " id="anContent" name="anContent"></textarea>
+                <textarea id="editor" name="content" type="text/plain" style="width: 100%;height: 300px;" ></textarea>
+                    <!-- <textarea kendo-editor k-ng-model="html" name="content" style="width: 70%; height: 5em"  ng-model="vm.annountment.anContent " id="anContent" name="anContent"></textarea> -->
                 </td>
             </tr>
              <tr>
@@ -70,3 +70,4 @@
          </table>
      </form>
 </div>
+

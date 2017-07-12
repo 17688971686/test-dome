@@ -32,7 +32,6 @@
                 vm.picture = rootPath + "/flow/processInstance/img/"
                     + processInstanceId;
             }
-
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath
@@ -50,15 +49,24 @@
                 template: "<span class='row-number'></span>",
                 width: 40
             }, {
-                field: "activityName",
+                field: "nodeName",
                 title: "环节名称",
                 width: 120,
                 filterable: false
             }, {
-                field: "assignee",
+                field: "",
                 title: "处理人",
                 width: 80,
-                filterable: false
+                filterable: false,
+                template:function(item) {
+                    if(item.assignee){
+                        return item.assignee;
+                    }else if(item.userName){
+                        return item.userName;
+                    }else{
+                        return "";
+                    }
+                }
             }, {
                 field: "startTime",
                 title: "开始时间",
@@ -72,7 +80,7 @@
                 filterable: false,
                 format: "{0: yyyy-MM-dd HH:mm:ss}"
             }, {
-                field: "duration",
+                field: "durationStr",
                 title: "处理时长",
                 width: 120,
                 filterable: false
@@ -197,7 +205,15 @@
                     fn: function () {
                         common.alert({
                             vm: vm,
-                            msg: response.data.reMsg
+                            msg: response.data.reMsg,
+                            closeDialog: true,
+                            fn: function () {
+                                if (response.data.reCode == "error") {
+                                    vm.isCommit = false;
+                                } else {
+                                    $state.go('gtasks');
+                                }
+                            }
                         })
                     }
 
@@ -208,7 +224,10 @@
                 vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError: function (response) {
+                    vm.isCommit = false;
+                }
             });
         }// E_回退到上一步
 

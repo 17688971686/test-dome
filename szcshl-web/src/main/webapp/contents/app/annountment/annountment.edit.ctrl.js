@@ -10,13 +10,19 @@
         vm.title = "通知公告编辑";
         vm.annountment = {};        //通知公告对象
         vm.annountment.anId = $state.params.id;
+        UE.delEditor("editor");
+//        var ue=UE.getEditor("editor");
 
         vm.businessFlag ={
             isInitFileOption : false,   //是否已经初始化附件上传控件
         }
         active();
         function active() {
+        UE.getEditor('editor');
+//        	var editor = new baidu.editor.ui.Editor();  
+//			editor.render('editor');  //editor为编辑器容器的id s
             if (vm.annountment.anId) {
+            	vm.isUpdate=true;
                 annountmentSvc.findAnnountmentById(vm);
                 annountmentSvc.findFileList(vm)
             }else{

@@ -18,6 +18,8 @@
         }
         vm.busiFlag = {
             signleToMerge : false,      //单个发文改成合并发文
+            isMerge : false,            //是否合并发文
+            isMain : false,             //是否合并发文主项目
         }
 
         activate();
@@ -29,24 +31,30 @@
         vm.sigleProject = function () {
             //1、由合并发文主项目改为单个发文
             if(vm.dispatchDoc.dispatchWay == "1" ){
-                common.confirm({
-                    title: "温馨提示",
-                    vm: vm,
-                    msg: "该项目已经设为合并发文，并且已经有关联项目，如果现在要取消合并发文，以前的关联信息将被删除，您确定要取消合并发文么?",
-                    fn: function () {
-                        $('.confirmDialog').modal('hide');
-                        vm.dispatchDoc.isMainProject = "0";
-                        dispatchSvc.deleteAllMerge(vm);
-                    },
-                    cancel:function(){
-                        vm.dispatchDoc.dispatchWay = "2";
-                        $('.confirmDialog').modal('hide');
-                    }
-                });
-
+                if(vm.busiFlag.signleToMerge){
+                    vm.busiFlag.signleToMerge = false;
+                }
+                if(vm.busiFlag.isMerge && vm.busiFlag.isMain){
+                    common.confirm({
+                        title: "温馨提示",
+                        vm: vm,
+                        msg: "该项目已经设为合并发文，并且已经有关联项目，如果现在要取消合并发文，以前的关联信息将被删除，您确定要取消合并发文么?",
+                        fn: function () {
+                            $('.confirmDialog').modal('hide');
+                            vm.dispatchDoc.isMainProject = "0";
+                            dispatchSvc.deleteAllMerge(vm);
+                        },
+                        cancel:function(){
+                            vm.dispatchDoc.dispatchWay = "2";
+                            $('.confirmDialog').modal('hide');
+                        }
+                    });
+                }
             //2、由单个发文改为合并发文
             }else if(vm.dispatchDoc.dispatchWay == "2" ){
-                vm.busiFlag.signleToMerge = true;  //单个发文改成合并发文
+                if(!vm.busiFlag.isMerge){
+                    vm.busiFlag.signleToMerge = true;  //单个发文改成合并发文
+                }
             }
         }
 

@@ -166,7 +166,6 @@ desired effect
                                 <i class="glyphicon glyphicon-thumbs-up"></i>办结任务
                             </a>
                         </li>
-                        
                         <!-- 
                         <li>
 	                        <a href="javascript:void(0)"> 
@@ -181,15 +180,17 @@ desired effect
                   <!-- start 项目管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-cloud-download"></i> <span class="title">项目签收管理</span>
+                        <i class="fa fa-cloud-download"></i><span class="title">项目签收管理</span>
                         <span class="pull-right-container">
-						<i class="fa fa-angle-left pull-right"></i>
-					</span>
+							<i class="fa fa-angle-left pull-right"></i>
+						</span>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
+                        <li><a href="javascript:void(0)"  ui-sref="signList">项目查询统计 </a></li>
                         <li><a href="javascript:void(0)" ui-sref="assistPlan">协审计划管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
+
                     </ul>
                 </li>
                 <!-- end 项目签收-->
@@ -358,6 +359,10 @@ desired effect
 <script src="${path}/contents/libs/kendoui/kendo.message.zh-CN.js"></script>
 <script src="${path}/contents/libs/kendoui/kendo.culture.zh-CN.min.js"></script>
 <script src="${path}/contents/libs/jsLinq/jslinq.min.js"></script>
+<script src="${path}/contents/libs/ueditor/ueditor.config.js"></script> 
+<script src="${path}/contents/libs/ueditor/ueditor.all.min.js"></script> 
+<script src="${path}/contents/libs/ueditor/ueditor.all.js"></script> 
+<link type="text/css" rel="stylesheet" href="${path}/contents/libs/ueditor/themes/default/css/ueditor.css">
 <!-- AdminLTE App -->
 <script src="${path}/contents/libs/adminLTE/dist/js/app.js"></script>
 <!--upload-->

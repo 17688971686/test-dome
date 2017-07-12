@@ -784,6 +784,10 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "INTEGER")
     private Integer isAssociate;
 
+    //第二负责人
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String secondPriUser;
+
     //关联下一阶段的项目
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
@@ -2304,7 +2308,6 @@ public class Sign extends DomainBase {
 	public void setConstructionDrawingsCopy(String constructionDrawingsCopy) {
 		this.constructionDrawingsCopy = constructionDrawingsCopy;
 	}
-	
 
 	public String getIsLightUp() {
 		return isLightUp;
@@ -2322,5 +2325,11 @@ public class Sign extends DomainBase {
 		this.isSendFileRecord = isSendFileRecord;
 	}
 
-	
+    public String getSecondPriUser() {
+        return secondPriUser;
+    }
+
+    public void setSecondPriUser(String secondPriUser) {
+        this.secondPriUser = secondPriUser;
+    }
 }

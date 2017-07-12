@@ -282,10 +282,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 //主项目
                 if(EnumState.YES.getValue().equals(dispatchDocDto.getIsMainProject())){
                     if(!Validate.isString(dispatchDocDto.getId())){
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取到主项目信息！");
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前发文为合并发文主项目，请先进行项目关联！");
                     }
                     else if(!mergeOptionService.isHaveLink(dispatchDocDto.getId(),Constant.MergeType.DISPATCH.getValue())){
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文主项目，请先关联项目再进行保存操作！");
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文主项目，请先进行项目关联！");
                     }
                 //次项目
                 }else{

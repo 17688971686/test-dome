@@ -1,5 +1,7 @@
 package cs.service.flow;
 
+import cs.common.ResultMsg;
+import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -17,7 +19,7 @@ public interface FlowService {
 
     List<FlowHistoryDto> convertHistory(String processInstanceId);
 
-    void rollBackLastNode(FlowDto flowDto);
+    ResultMsg rollBackLastNode(FlowDto flowDto);
 
     void rollBackByActiviti(FlowDto flowDto);
 
@@ -45,4 +47,5 @@ public interface FlowService {
      **/
     PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, String skip, String top, boolean isUserDeal);
 
+    List<HiProcessTask> getProcessHistory(String processInstanceId);
 }
