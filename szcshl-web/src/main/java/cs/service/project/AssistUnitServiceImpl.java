@@ -156,7 +156,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
         AssistUnitDto assistUnitDto = new AssistUnitDto();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from "+AssistUnit.class.getSimpleName()+" where "+AssistUnit_.isLastUnSelected.getName()+" =:isLastUnSelected");
-        hqlBuilder.append(" "+AssistUnit_.isUse.getName()+"='1'");
+        hqlBuilder.append(" and  "+AssistUnit_.isUse.getName()+"='1'");
         hqlBuilder.setParam("isLastUnSelected", Constant.EnumState.YES.getValue());
         List<AssistUnit> list = assistUnitRepo.findByHql(hqlBuilder);
         if(list == null || list.size() == 0){
@@ -189,7 +189,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
             sqlBuilder.append(" SELECT cu.*,CASE WHEN  unitsort < :maxSort then (10000+unitsort) else unitsort end newSort FROM CS_AS_UNIT cu");
             sqlBuilder.setParam("maxSort",(maxSort+1));
             if(Validate.isString(assistUnitDto.getId())){
-                sqlBuilder.append(" WHERE  WHERE id != :id").setParam("id",assistUnitDto.getId()).append(" ORDER BY newSort) nUnit ");
+                sqlBuilder.append("   WHERE id != :id").setParam("id",assistUnitDto.getId()).append(" ORDER BY newSort ");
             }
             sqlBuilder.append(" ) nUnit WHERE ROWNUM < :number ").setParam("number",number+1);
             hqlBuilder.append(" "+AssistUnit_.isUse.getName()+"='1'");

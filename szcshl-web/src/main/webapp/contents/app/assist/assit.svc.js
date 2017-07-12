@@ -152,6 +152,7 @@
 
         //S_saveAssistPlan
         function saveAssistPlan(vm){
+        	vm.model.isDrawed="0";
             var url = rootPath+"/assistPlan";
             var httpOptions = {
                 method : 'post',
@@ -396,6 +397,8 @@
                 vm.planList.forEach(function(ps,number){
                     if(ps.id == vm.selectPlanId){
                         vm.showPlan = ps;
+                        vm.drawType=vm.showPlan.drawType;
+                        console.log(vm.drawType);
                     }
                 });
                 findPlanSign(vm,vm.selectPlanId);
@@ -556,7 +559,6 @@
         	
         	var httpSuccess=function success(response){
         		vm.unitUserList=response.data.value;
-//        		console.log(vm.unitUserList);
         		
         	}
         	
@@ -700,6 +702,9 @@
         	var httpSuccess=function success(response){
 		        	vm.unitList=response.data;	
 		        	vm.signNum=vm.unitList.length;
+		        	if(vm.signNum>0){
+			        	vm.isChoose=true;
+		        	}
 	        }
 	        		
 	        common.http({
