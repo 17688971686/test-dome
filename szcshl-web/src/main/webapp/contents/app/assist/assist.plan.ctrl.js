@@ -23,12 +23,12 @@
         vm.selectPlanId = "";                   //选择显示的协审计划ID
         vm.selectMainSignId = "";               //查看的主项目ID
         vm.initPickLowSign = false;             //是否初始化选择的次项目信息
+        vm.drawType="";
 
         active();
         function active(){
             assistSvc.initPlanPage(vm);
             assistSvc.initPlanGrid(vm);
-
             $('#planInfo li').click(function (e) {
                 var aObj = $("a",this);
                 e.preventDefault();
@@ -355,6 +355,7 @@
 
         //协审项目抽签
         vm.drawAssistUnit = function(){
+        	console.log(vm.showPlan.drawType);
             if(vm.assistPlanSign != undefined&&vm.assistPlanSign.length>0){
                 vm.assistPlanSign.forEach(function(t,n){
                     t.assistUnit = null;
@@ -365,8 +366,8 @@
             //待被抽取的协审单位
             vm.drawAssistUnits = vm.unitList.slice(0);
             
-            //判断协审单位个数是否不少于协审计划个数，若少则先手动选择参与的协审单位，不少则可以直接抽签
-            if(vm.drawAssistUnits.length>=vm.assistPlanSign.length){
+            //判断协审单位个数是否不少于协审计划个数，若少则先手动选择参与的协审单位，不少则可以直接抽签 drawType
+            if(vm.drawType=="1"? (vm.drawAssistUnits.length>vm.assistPlanSign.length):(vm.drawAssistUnits.length>=vm.assistPlanSign.length)){
             
 //            var drawAssistPlanSign
             var drawPlanSignIndex = 0;

@@ -99,8 +99,8 @@ public class AssistUnitController {
     	List<AssistUnitDto> assistUnitDtoList=assistUnitService.findDrawUnit(planId, number);
     	assistPlanService.updateDrawType(planId, drawType);
     	for(AssistUnitDto assistUnitDto:assistUnitDtoList){
-    		assistPlanService.addAssistUnit(planId, assistUnitDto.getId());
-//    		assistUnitService.update(assistUnitDto);
+//    		assistPlanService.addAssistUnit(planId, assistUnitDto.getId());
+    		assistUnitService.update(assistUnitDto);
     	}
     	return assistUnitDtoList;
     }

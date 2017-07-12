@@ -410,11 +410,17 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 	@Transactional
 	public void updateDrawType(String id, String drawType) {
 		
-		AssistPlan assistPlan=assistPlanRepo.findById(id);
-		if(assistPlan!=null){
-			assistPlan.setDrawType(drawType);
-			assistPlanRepo.save(assistPlan);
-		}
+//		AssistPlan assistPlan=assistPlanRepo.findById(id);
+//		if(assistPlan!=null){
+//			assistPlan.setDrawType(drawType);
+//			assistPlanRepo.save(assistPlan);
+//		}
+		
+		HqlBuilder hqlBuilder=HqlBuilder.create();
+		hqlBuilder.append("update " +AssistPlan.class.getSimpleName()+" set "+AssistPlan_.drawType.getName()+"=:drawType where "+AssistPlan_.id.getName()+"=:id");
+		hqlBuilder.setParam("drawType", drawType);
+		hqlBuilder.setParam("id", id);
+		assistPlanRepo.executeHql(hqlBuilder);
 		
 	}
 
