@@ -76,6 +76,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 annountment.setIssueDate(now);
             }
         }
+        annountment.setAnId(UUID.randomUUID().toString());
         annountment.setCreatedBy(currentUser.getDisplayName());
         annountment.setCreatedDate(now);
         annountment.setModifiedBy(currentUser.getDisplayName());

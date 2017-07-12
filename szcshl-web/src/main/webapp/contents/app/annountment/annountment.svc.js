@@ -60,6 +60,11 @@
 
             var httpSuccess = function success(response) {
                 vm.annountment = response.data;
+               var editor= UE.getEditor("editor");
+                 editor.ready( function() {
+				      UE.getEditor("editor").setContent(vm.annountment.anContent);
+				 } );
+
                 //初始化附件上传
                 if (vm.businessFlag.isInitFileOption == false) {
                     initFileOption({
@@ -80,6 +85,7 @@
 
         //begin createAnnountment
         function createAnnountment(vm) {
+        	vm.annountment.anContent=UE.getEditor("editor").getPlainTxt();
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
@@ -88,6 +94,7 @@
                     url: url_annountment,
                     data: vm.annountment
                 }
+                console.log(vm.annountment);
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
                         vm: vm,
@@ -125,12 +132,14 @@
 
         //begin updateAnnountment
         function updateAnnountment(vm) {
+        	vm.annountment.anContent=UE.getEditor("editor").getContentTxt();
             var httpOptions = {
                 method: "put",
                 url: url_annountment,
                 data: vm.annountment
             }
 
+            console.log(vm.annountment);
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm: vm,

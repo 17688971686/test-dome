@@ -1,9 +1,12 @@
 package cs.controller.sys;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import cs.model.PageModelDto;
 import cs.model.sys.AnnountmentDto;
 import cs.repository.odata.ODataObj;
 import cs.service.sys.AnnountmentService;
+import cs.ueditor.ActionEnter;
 
 @Controller
 @RequestMapping(name = "通知公告", path = "annountment")
@@ -103,6 +107,24 @@ public class AnnountmentController {
         annService.deleteAnnountment(anId);
     }
 
+    @RequiresPermissions("annountment#config#post")
+    @RequestMapping(name = "上传图片",path="config",method=RequestMethod.POST) 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void config(HttpServletRequest request, HttpServletResponse response) {  
+        response.setContentType("application/json");  
+        String rootPath = request.getSession().getServletContext().getRealPath("/");  
+        try {  
+            String exec = new ActionEnter(request, rootPath).exec();  
+            PrintWriter writer = response.getWriter();  
+            writer.write(exec);  
+            writer.flush();  
+            writer.close();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+  
+    } 
+    
     //begin  html
     @RequiresPermissions("annountment#html/list#get")
     @RequestMapping(name = "通知公告列表", path = "html/list", method = RequestMethod.GET)
