@@ -299,7 +299,22 @@ input,textarea{ outline:none;}
   
   
 }
-
+.cared a{
+    color:#000;
+    font-size: 14px;
+}
+.cared .small-box .icon{
+    top: 10px;
+    right: 15px;
+    font-size: 70px;
+}
+.cared .small-box .icon:hover{
+    font-size: 60px;
+    transition: font-size 1s;
+    -moz-transition: font-size 1s;	/* Firefox 4 */
+    -webkit-transition: font-size 1s;	/* Safari 和 Chrome */
+    -o-transition: font-size 1s;
+}
 .text-left{
     text-align: left;
 }
