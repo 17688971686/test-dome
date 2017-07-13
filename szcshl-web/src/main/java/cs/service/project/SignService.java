@@ -1,16 +1,8 @@
 package cs.service.project;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import cs.domain.project.Sign;
-import cs.domain.project.SignDispaWork;
-
-import org.activiti.engine.runtime.ProcessInstance;
-
 import cs.common.ResultMsg;
 import cs.domain.project.Sign;
+import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
@@ -39,7 +31,6 @@ public interface SignService{
 
 	public void deleteSigns(String[] signids);
 
-
 	void stopFlow(String signid);
 
 	void restartFlow(String signid);
@@ -47,8 +38,7 @@ public interface SignService{
 	void endFlow(String signid);
 	
 	SignDto findById(String signid,boolean queryAll);
-	
-	
+
 	//以下是新流程处理
 	void startNewFlow(String signid);
 

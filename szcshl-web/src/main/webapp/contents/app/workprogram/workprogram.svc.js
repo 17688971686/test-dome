@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = [ 'sysfileSvc','$http', '$state'];
-    function workprogram(sysfileSvc, $http, $state ) {
+    workprogram.$inject = ['sysfileSvc', '$http', '$state'];
+    function workprogram(sysfileSvc, $http, $state) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				//初始化页面参数
@@ -23,9 +23,9 @@
             getInitSeleSignBysId: getInitSeleSignBysId,//初始化已选项目列表
             getInitRelateData: getInitRelateData,	//初始化关联数据
         };
-        
+
         return service;
-        
+
         //S_初始化已选项目列表
         function getInitSeleSignBysId(vm) {
             var bussnessId = vm.work.id;
@@ -38,7 +38,6 @@
             }
             var httpSuccess = function success(response) {
                 vm.selectedSign = response.data.signDtoList
-                vm.linkSignId = response.data.linkSignId;
             }
             common.http({
                 vm: vm,
@@ -61,7 +60,6 @@
                 }
             }
             var httpSuccess = function success(response) {
-                vm.linkSignId = response.data.linkSignId;
             }
             common.http({
                 vm: vm,
@@ -154,20 +152,7 @@
 
         //S_选择取消
         function cancelworkProject(vm) {
-            var idStr = vm.linkSignId;
-            var linkSignId = $("input[name='checkcancel']:checked");
-            if (linkSignId) {
-                $.each(linkSignId, function (i, obj) {
-                    if (idStr.lastIndexOf(obj.value) == 0) {
-                        idStr = idStr.replace(obj.value, "");
-                    } else {
-                        idStr = idStr.replace("," + obj.value, "");
-                    }
-                });
-                vm.linkSignId = idStr
-                selectedProject(vm);//已选
-                waitProjects(vm);//待选
-            }
+
         }
 
         //S_选择取消
@@ -233,7 +218,7 @@
 
         //S_会议预定添加
         function saveRoom(vm) {
-        	
+
             common.initJqValidation($('#stageForm'));
             var isValid = $('#stageForm').valid();
             if (isValid) {
@@ -244,9 +229,9 @@
                 vm.roombook.endTimeStr = $("#endTime").val();
                 vm.roombook.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
                 vm.roombook.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
-              
+
                 console.log(vm.roombook);
-                
+
                 if (new Date(vm.roombook.endTime) < new Date(vm.roombook.beginTime)) {
                     $("#errorTime").html("开始时间不能大于结束时间!");
                     return;
@@ -297,7 +282,7 @@
             var httpSuccess = function success(response) {
                 vm.roombookings = {};
                 vm.roombookings = response.data;
-               
+
             }
             common.http({
                 vm: vm,
@@ -384,31 +369,31 @@
                                 vm.RoomBookings = {};
                                 vm.RoomBookings = response.data.roomBookingDtos;
                                 vm.roombook = vm.RoomBookings[0];
-                              
+
                                 if (vm.RoomBookings.length > 1) {
                                     vm.isHaveNext = true;
                                 }
                             }
 
-                            if(vm.work.id){
-                            	var sysfileType = "工作方案";
-                            	if(!angular.isUndefined(vm.work.isMain)){
-                            		if(vm.work.isMain == '9'){
-                            			sysfileType = "工作方案[主]"
-                            		}else{
-                            			sysfileType = "工作方案[协]"
-                            		}
-                            	}
-                            	//初始化附件上传
+                            if (vm.work.id) {
+                                var sysfileType = "工作方案";
+                                if (!angular.isUndefined(vm.work.isMain)) {
+                                    if (vm.work.isMain == '9') {
+                                        sysfileType = "工作方案[主]"
+                                    } else {
+                                        sysfileType = "工作方案[协]"
+                                    }
+                                }
+                                //初始化附件上传
                                 sysfileSvc.initUploadOptions({
-                                    businessId:vm.work.id,
-                                    sysSignId :vm.work.signId,
-                                    sysfileType:sysfileType,
-                                    uploadBt:"upload_file_bt",
-                                    detailBt:"detail_file_bt",
-                                    vm:vm
+                                    businessId: vm.work.id,
+                                    sysSignId: vm.work.signId,
+                                    sysfileType: sysfileType,
+                                    uploadBt: "upload_file_bt",
+                                    detailBt: "detail_file_bt",
+                                    vm: vm
                                 });
-                            }                           
+                            }
                         }
 
                     }
@@ -443,25 +428,25 @@
                         fn: function () {
                             vm.iscommit = false;
                             vm.work.id = response.data.id;
-                            if(vm.work.id){
-                            	var sysfileType = "工作方案";
-                            	if(!angular.isUndefined(vm.work.isMain)){
-                            		if(vm.work.isMain == '9'){
-                            			sysfileType = "工作方案[主]"
-                            		}else{
-                            			sysfileType = "工作方案[协]"
-                            		}
-                            	}
-                            	//初始化附件上传
+                            if (vm.work.id) {
+                                var sysfileType = "工作方案";
+                                if (!angular.isUndefined(vm.work.isMain)) {
+                                    if (vm.work.isMain == '9') {
+                                        sysfileType = "工作方案[主]"
+                                    } else {
+                                        sysfileType = "工作方案[协]"
+                                    }
+                                }
+                                //初始化附件上传
                                 sysfileSvc.initUploadOptions({
-                                    businessId:vm.work.id,
-                                    sysSignId :vm.work.signId,
-                                    sysfileType:sysfileType,
-                                    uploadBt:"upload_file_bt",
-                                    detailBt:"detail_file_bt",
-                                    vm:vm
+                                    businessId: vm.work.id,
+                                    sysSignId: vm.work.signId,
+                                    sysfileType: sysfileType,
+                                    uploadBt: "upload_file_bt",
+                                    detailBt: "detail_file_bt",
+                                    vm: vm
                                 });
-                            }   
+                            }
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功！",

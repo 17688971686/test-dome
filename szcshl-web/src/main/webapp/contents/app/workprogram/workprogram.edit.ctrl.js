@@ -3,29 +3,32 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['workprogramSvc','$state',"$http"];
+    workprogram.$inject = ['workprogramSvc','$state','$scope','cfpLoadingBar'];
 
-    function workprogram(workprogramSvc,$state,$http) {
+    function workprogram(workprogramSvc,$state) {
         var vm = this;
     	vm.work = {};						//创建一个form对象
         vm.title = '评审方案编辑';        	//标题
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00"); 
         vm.work.signId = $state.params.signid;		//这个是收文ID
-        vm.linkSignId=" ";
         vm.sign = {};						//创建收文对象
-        vm.isRoomBook = false;              //是否已经预定了会议时间
-        vm.isHavePre = false;               //预定多个会议室的时候，查看上一个
-        vm.isHaveNext = false;              //预定多个会议室 的时候，查看下一个
-        
-        vm.isHideProject = true;
-        vm.isHideProject2 = true;
 
+        vm.businessFlag={
+            isSelfReview : false,           //是否自评
+            isSingleReview : false,         //是否单个评审
+            isMainWorkProj: false,          //是否是合并评审主项目
+
+            isRoomBook : false,             //是否已经预定了会议时间
+            isHavePre : false,              //预定多个会议室的时候，查看上一个
+            isHaveNext : false,             //预定多个会议室 的时候，查看下一个
+        }
+
+        //页面初始化
         activate();
         function activate() {
         	workprogramSvc.initPage(vm);
             workprogramSvc.findCompanys(vm);//查找主管部门
-            //workprogramSvc.getInitRelateData(vm);
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
         }
         
@@ -34,6 +37,7 @@
         	var values=$("#searchformi").find("input,select");
         	values.val("");
         }
+
         //查询
         vm.searchWorkSign = function(){
         	workprogramSvc.waitProjects(vm);
@@ -93,7 +97,7 @@
         //会议预定添加弹窗
         vm.addTimeStage = function(){
             //如果已经预定了会议室，则显示
-            if(vm.isRoomBook){
+            if(vm.businessFlag.isRoomBook){
                 $("#stageWindow").kendoWindow({
                     width : "660px",
                     height : "550px",
@@ -143,12 +147,8 @@
                     curIndex = number;
                 }
             });
-            vm.isHavePre = true;
-            if(curIndex == (vm.RoomBookings.length-2)){
-                vm.isHaveNext = false;
-            }else{
-                vm.isHaveNext = true;
-            }
+            vm.businessFlag.isHavePre = true;
+            vm.businessFlag.isHaveNext = (curIndex == (vm.RoomBookings.length-2))?false:true;
             vm.roombook = vm.RoomBookings[curIndex+1];
         }
 
@@ -160,12 +160,8 @@
                     curIndex = number;
                 }
             });
-            vm.isHaveNext = true;
-            if(curIndex == 1){
-                vm.isHavePre = false;
-            }else{
-                vm.isHavePre = true;
-            }
+            vm.businessFlag.isHaveNext = true;
+            vm.businessFlag.isHavePre = (curIndex == 1)? false:true;
             vm.roombook = vm.RoomBookings[curIndex-1];
         }
         

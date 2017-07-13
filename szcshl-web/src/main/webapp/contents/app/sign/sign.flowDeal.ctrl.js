@@ -400,7 +400,6 @@
         //项目关联弹窗
         vm.showAssociate = function(){
             vm.currentAssociateSign = vm.model;
-
             //选中要关联的项目
             var signAssociateWindow = $("#associateWindow");
             signAssociateWindow.kendoWindow({

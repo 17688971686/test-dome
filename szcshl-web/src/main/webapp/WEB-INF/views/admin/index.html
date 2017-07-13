@@ -76,14 +76,16 @@ desired effect
 |---------------------------------------------------------|
 -->
 <body class="hold-transition skin-green sidebar-mini" ng-app="app">
+<div id="loading-bar-container" ></div>
 <div class="wrapper">
     <!-- Main Header -->
     <header class="main-header">
         <!-- Logo -->
-        <a href="#/admin" class="logo"> <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50"></span>
+        <a href="#/admin" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><img name="menus" src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50"></span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><img id="menus" src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50"></span>
+            <span class="logo-lg"><img name="menus" src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50"></span>
         </a>
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -363,6 +365,13 @@ desired effect
 <script src="${path}/contents/libs/ueditor/ueditor.all.min.js"></script> 
 <script src="${path}/contents/libs/ueditor/ueditor.all.js"></script> 
 <link type="text/css" rel="stylesheet" href="${path}/contents/libs/ueditor/themes/default/css/ueditor.css">
+
+<!--Start:angular loading bar  加载提示框 -->
+<script src="${path}/contents/libs/angular/angular-animate.min.js"></script>
+<script src="${path}/contents/libs/angular-loading-bar/loading-bar.js"></script>
+<link href="${path}/contents/libs/angular-loading-bar/loading-bar.css" rel="stylesheet"/>
+<!--End:angular loading bar  -->
+
 <!-- AdminLTE App -->
 <script src="${path}/contents/libs/adminLTE/dist/js/app.js"></script>
 <!--upload-->
