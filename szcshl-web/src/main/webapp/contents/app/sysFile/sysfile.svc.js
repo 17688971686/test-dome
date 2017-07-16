@@ -188,26 +188,29 @@
                 	}                   
                 });
             }
-            var projectfileoptions = {
-                language: 'zh',
-                allowedPreviewTypes: ['image'],
-                allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt","zip","rar"],
-                maxFileSize: 2000,
-                showRemove: false,
-                uploadUrl: rootPath + "/file/fileUpload",
-                uploadExtraData: {
-                    businessId: sysFileDefaults.businessId,
-                    sysSignId: sysFileDefaults.sysSignId,
-                    sysfileType: sysFileDefaults.sysfileType,
-                    sysMinType: sysFileDefaults.sysMinType
-                }
-            };
-            $("#sysfileinput").fileinput(projectfileoptions)
-                .on("filebatchselected", function (event, files) {
-                   
-                }).on("fileuploaded", function (event, data) {
+            //有业务数据才能初始化
+            if(sysFileDefaults.businessId){
+                var projectfileoptions = {
+                    language: 'zh',
+                    allowedPreviewTypes: ['image'],
+                    allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt","zip","rar"],
+                    maxFileSize: 2000,
+                    showRemove: false,
+                    uploadUrl: rootPath + "/file/fileUpload",
+                    uploadExtraData: {
+                        businessId: sysFileDefaults.businessId,
+                        sysSignId: sysFileDefaults.sysSignId,
+                        sysfileType: sysFileDefaults.sysfileType,
+                        sysMinType: sysFileDefaults.sysMinType
+                    }
+                };
+                $("#sysfileinput").fileinput(projectfileoptions)
+                    .on("filebatchselected", function (event, files) {
 
-            });
+                    }).on("fileuploaded", function (event, data) {
+                });
+            }
+
         }
         // E 初始化上传附件控件
     }

@@ -3,7 +3,7 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['workprogramSvc','$state','$scope','cfpLoadingBar'];
+    workprogram.$inject = ['workprogramSvc','$state'];
 
     function workprogram(workprogramSvc,$state) {
         var vm = this;
@@ -11,12 +11,17 @@
         vm.title = '评审方案编辑';        	//标题
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00"); 
-        vm.work.signId = $state.params.signid;		//这个是收文ID
+        vm.work.signId = $state.params.signid;		//收文ID
+        if($state.params.workProgramId){
+            vm.work.id  = $state.params.workProgramId;  //工作方案ID
+        }
         vm.sign = {};						//创建收文对象
+        vm.unSeledWork = {};                //未选择的工作方案
+        vm.serchWork = {};                  //用于过滤
 
         vm.businessFlag={
             isSelfReview : false,           //是否自评
-            isSingleReview : false,         //是否单个评审
+            isSingleReview : true,         //是否单个评审
             isMainWorkProj: false,          //是否是合并评审主项目
 
             isRoomBook : false,             //是否已经预定了会议时间
@@ -31,16 +36,40 @@
             workprogramSvc.findCompanys(vm);//查找主管部门
             workprogramSvc.findAllMeeting(vm);//查找所有会议室地
         }
-        
-        //重置
-        vm.formResetWork=function(){
-        	var values=$("#searchformi").find("input,select");
-        	values.val("");
-        }
 
-        //查询
-        vm.searchWorkSign = function(){
-        	workprogramSvc.waitProjects(vm);
+        //评审方式修改
+        vm.reviewTypeChange = function(){
+            //自评的话，不需要会议和专家
+            if("自评" == vm.work.reviewType){
+                if("合并评审" == vm.work.isSigle){
+                    vm.work.isSigle = "单个评审";
+                    common.alert({
+                        vm: vm,
+                        msg: "自评方案不能进行合并评审！",
+                        colseDialog:true,
+                    })
+                }
+
+            //专家函评不需要会议室
+            }else {
+                //合并评审改为单个评审
+                if( vm.businessFlag.isMainWorkProj && !vm.businessFlag.isSingleReview && "单个评审" == vm.work.isSigle){
+                    common.confirm({
+                        vm:vm,
+                        title:"",
+                        msg:"该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                        fn: function () {
+                            $('.confirmDialog').modal('hide');
+                            vm.work.isMainProject = "0";
+                            workprogramSvc.deleteAllMerge(vm);
+                        },
+                        cancel:function(){
+                            vm.work.isSigle = "合并评审"
+                            $('.confirmDialog').modal('hide');
+                        }
+                    })
+                }
+            }
         }
         
         //关闭窗口
@@ -51,47 +80,63 @@
         vm.mergeAddWork = function(){
         	workprogramSvc.mergeAddWork(vm);
         }
-        //合并评审
-        vm.reviewType = function(){
-       	if(vm.work.isSigle=="单个评审"){
-      		var isHideProject=false;
-       	}
-      /*  if(vm.work.isSigle == vm.work.isMainProject){
-       		common.confirm({
-    	           	 vm:vm,
-    	           	 title:"",
-    	           	 msg:"该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
-    	           	 fn:function () {
-   	               	$('.confirmDialog').modal('hide');             	
-    	              }
-    	         })
-       
-        		var isHideProject=false;
-        	}*/
-        	
+
+        //初始化合并评审弹框
+        vm.initMergeWP = function(){
+            if (!vm.work.id) {
+                common.alert({
+                    vm: vm,
+                    msg: "请先保存再进行关联！",
+                    colseDialog:true,
+                })
+            }else{
+                workprogramSvc.initMergeWP(vm);
+            }
         }
-        
-        //主项目
-        vm.mainIschecked = function(){
-        	vm.isHideProject2 = false;
+
+        //已选工作方案过滤器,排除自己本身
+        vm.filterWP = function(item){
+            if(vm.work.id != item.id){
+                return item;
+            }
         }
-        //次项目
-        vm.subIschecked = function(){
-        	vm.isHideProject2 = true;
-//        	workprogramSvc.subIschecked(vm);
+        //待选工作方案过滤器
+        vm.filterSelWP = function(item){
+            var isMatch = true;
+            if(vm.serchWork.projectname){
+                if(item.projectname  != vm.serchWork.projectname){
+                    isMatch = false;
+                }
+            }
+            if(isMatch){
+                if(vm.serchWork.mianChargeUserName && (item.mianChargeUserName).indexOf(vm.serchWork.mianChargeUserName) == -1){
+                    isMatch = false;
+                }
+            }
+            if(isMatch){
+                if(vm.serchWork.secondChargeUserName && (item.secondChargeUserName).indexOf(vm.serchWork.secondChargeUserName) == -1){
+                    isMatch = false;
+                }
+            }
+            if(isMatch){
+                return item;
+            }
         }
-        //项目关联页面
-        vm.gotoProjcet = function(){
-        	workprogramSvc.gotoProjcet(vm);
-        
+
+        //刷新待选工作方案
+        vm.fleshWaitSelWp = function(){
+            vm.serchWork = {};
+            workprogramSvc.waitSeleWP(vm);
         }
+
         //选择项目
-        vm.selectworkProject = function(){
-        	workprogramSvc.selectworkProject(vm);
+        vm.chooseWP = function(){
+            workprogramSvc.chooseWP(vm);
         }
+
         //取消项目
-        vm.cancelworkProject = function(){
-        	workprogramSvc.cancelworkProject(vm);
+        vm.cancelWP = function(){
+        	workprogramSvc.cancelWP(vm);
         }
      
         //会议预定添加弹窗

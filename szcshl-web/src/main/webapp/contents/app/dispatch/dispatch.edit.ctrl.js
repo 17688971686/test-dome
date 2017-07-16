@@ -73,12 +73,12 @@
             var pt = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
             if(!pt.test(vm.dispatchDoc.declareValue)){
                 vm.dispatchDoc.declareValue = 0;
-                $("span[data-valmsg-for='declareValue']").html("输入金额不正确");
+                $("span[data-valmsg-for='declareValue']").html("金额只能输入数字！");
                 return ;
             }
             if(!pt.test(vm.dispatchDoc.authorizeValue)){
                 vm.dispatchDoc.authorizeValue = 0;
-                $("span[data-valmsg-for='authorizeValue']").html("输入金额不正确");
+                $("span[data-valmsg-for='authorizeValue']").html("金额只能输入数字！");
                 return ;
             }
             $("span[data-valmsg-for='declareValue']").html("");

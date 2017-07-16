@@ -30,18 +30,17 @@ public class WorkProgramController {
 
 
     @RequiresPermissions("workprogram#addWork#post")
-    @RequestMapping(name = "工作方案提交", path = "addWork", method = RequestMethod.POST)
+    @RequestMapping(name = "保存工作方案", path = "addWork", method = RequestMethod.POST)
     @ResponseBody
-    public WorkProgramDto post(@RequestBody WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) throws Exception {
-        workProgramService.save(workProgramDto, isNeedWorkProgram);
-        return workProgramDto;
+    public ResultMsg post(@RequestBody WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) {
+        return workProgramService.save(workProgramDto, isNeedWorkProgram);
     }
 
-    @RequiresPermissions("workprogram#initWorkBySignId#get")
-    @RequestMapping(name = "工作方案编辑", path = "html/initWorkBySignId", method = RequestMethod.GET)
+    @RequiresPermissions("workprogram#initWorkProgram#get")
+    @RequestMapping(name = "初始化工作方案", path = "html/initWorkProgram", method = RequestMethod.GET)
     public @ResponseBody
-    WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId, String isMain) {
-        WorkProgramDto workDto = workProgramService.initWorkBySignId(signId, isMain);
+    WorkProgramDto initWorkBySignId(@RequestParam(required = true) String signId, String workProgramId) {
+        WorkProgramDto workDto = workProgramService.initWorkProgram(signId, workProgramId);
         return workDto;
     }
     
@@ -52,45 +51,35 @@ public class WorkProgramController {
     	return work;
     }
 
-    @RequiresPermissions("workprogram#waitProjects#post")
-    @RequestMapping(name = "待选项目列表", path = "waitProjects", method = RequestMethod.POST)
+    @RequiresPermissions("workprogram#waitSeleWP#post")
+    @RequestMapping(name = "待选合并评审工作方案", path = "waitSeleWP", method = RequestMethod.POST)
     public @ResponseBody
-    List<SignDto> waitProjects(@RequestBody SignDto signDto) {
-        List<SignDto> sign = workProgramService.waitProjects(signDto);
-        return sign;
+    List<WorkProgramDto> waitSeleWP(@RequestParam(required = true) String mainBussnessId) {
+        List<WorkProgramDto> resultList = workProgramService.waitSeleWP(mainBussnessId);
+        return resultList;
     }
 
-    @RequiresPermissions("workprogram#selectedProject#post")
-    @RequestMapping(name = "已选项目列表", path = "selectedProject", method = RequestMethod.POST)
+    @RequiresPermissions("workprogram#getSeleWPByMainId#get")
+    @RequestMapping(name = "获取已选合并评审工作方案", path = "getSeleWPByMainId", method = RequestMethod.GET)
     public @ResponseBody
-    List<SignDto> selectedProject(@RequestParam String linkSignIds) {
-        String[] ids = linkSignIds.split(",");
-        List<SignDto> signList = workProgramService.selectedProject(ids);
-        return signList;
+    List<WorkProgramDto> getSeleWPByMainId(@RequestParam(required = true) String mainBussnessId) throws Exception {
+        List<WorkProgramDto> resultList = workProgramService.getSeleWPByMainId(mainBussnessId);
+        return resultList;
     }
 
-    @RequiresPermissions("workprogram#getInitSeleSignBysId#get")
-    @RequestMapping(name = "初始化已选项目列表", path = "getInitSeleSignBysId", method = RequestMethod.GET)
-    public @ResponseBody
-    Map<String, Object> getInitSeleSignBysId(@RequestParam(required = true) String bussnessId) throws Exception {
-        Map<String, Object> map = workProgramService.getInitSeleSignByIds(bussnessId);
-        return map;
+    @RequiresPermissions("workprogram#mergeWork#post")
+    @RequestMapping(name = "保存合并评审", path = "mergeWork", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void mergeWork(@RequestParam(required = true) String mainBusinessId, @RequestParam(required = true) String signId,
+                             @RequestParam(required = true) String businessId,@RequestParam(required = true) String linkSignId) {
+        workProgramService.mergeWork(mainBusinessId, signId,businessId,linkSignId);
     }
 
-    @RequiresPermissions("workprogram#getInitRelateData#post")
-    @RequestMapping(name = "初始化页面获取关联数据", path = "getInitRelateData", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> getInitRelateData(@RequestParam(required = true) String signid) {
-        Map<String, Object> map = workProgramService.getInitRelateData(signid);
-        return map;
-    }
-
-    @RequiresPermissions("workprogram#mergeAddWork#get")
-    @RequestMapping(name = "保存合并评审", path = "mergeAddWork", method = RequestMethod.GET)
-    @ResponseBody
-    public void mergeAddWork(@RequestParam(required = true) String signId, String linkSignId) {
-
-        workProgramService.mergeAddWork(signId, linkSignId);
+    @RequiresPermissions("workprogram#deleteMergeWork#post")
+    @RequestMapping(name = "删除合并评审工作方案", path = "deleteMergeWork", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteMergeWork(@RequestParam(required = true) String mainBusinessId,String businessId) {
+        workProgramService.deleteMergeWork(mainBusinessId,businessId);
     }
     
     @RequiresPermissions("workprogram##delete")

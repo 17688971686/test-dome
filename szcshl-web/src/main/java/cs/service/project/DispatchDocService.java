@@ -17,7 +17,7 @@ public interface DispatchDocService {
 
     List<SignDto> getSignForMerge(SignDto signDto, String dispatchId);
 
-    void mergeDispa(String signId, String mainBusinessId, String linkSignId) throws Exception;
+    void mergeDispa(String signId, String mainBusinessId, String linkSignId);
 
     List<SignDto> getSeleSignByMainBusiId(String mainBussnessId);
 

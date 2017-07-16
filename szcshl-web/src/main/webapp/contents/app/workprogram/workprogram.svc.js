@@ -7,37 +7,36 @@
     function workprogram(sysfileSvc, $http, $state) {
         var url_company = rootPath + "/company";
         var service = {
-            initPage: initPage,				//初始化页面参数
-            createWP: createWP,				//新增操作
-            findCompanys: findCompanys,		//查找主管部门
-            findUsersByOrgId: findUsersByOrgId,//查询评估部门
-            selectExpert: selectExpert,			//选择专家
-            saveRoom: saveRoom,					//添加会议预定
-            findAllMeeting: findAllMeeting,      //查找会议室地点
-            gotoProjcet: gotoProjcet,			//项目关联弹窗
-            waitProjects: waitProjects,			//待选项目列表
-            selectedProject: selectedProject,	//已选项目列表
-            selectworkProject: selectworkProject,//选择项目
-            cancelworkProject: cancelworkProject,//取消项目
-            mergeAddWork: mergeAddWork,			//保存合并评审
-            getInitSeleSignBysId: getInitSeleSignBysId,//初始化已选项目列表
-            getInitRelateData: getInitRelateData,	//初始化关联数据
+            initPage: initPage,				        //初始化页面参数
+            createWP: createWP,				        //新增操作
+            findCompanys: findCompanys,		        //查找主管部门
+            findUsersByOrgId: findUsersByOrgId,     //查询评估部门
+            selectExpert: selectExpert,			    //选择专家
+            saveRoom: saveRoom,					    //添加会议预定
+            findAllMeeting: findAllMeeting,         //查找会议室地点
+
+            initMergeWP: initMergeWP,		        //项目关联弹窗
+            getSeleWPByMainId: getSeleWPByMainId,   //初始化已选项目列表
+            waitSeleWP: waitSeleWP,			        //待选项目列表
+
+            chooseWP: chooseWP,                     //选择合并评审的工作方案
+            cancelWP: cancelWP,                     //取消合并评审的工作方案
+            deleteAllMerge:deleteAllMerge,          //删除所有合并评审的工作方案
         };
 
         return service;
 
         //S_初始化已选项目列表
-        function getInitSeleSignBysId(vm) {
-            var bussnessId = vm.work.id;
+        function getSeleWPByMainId(vm) {
             var httpOptions = {
                 method: 'get',
-                url: rootPath + "/workprogram/getInitSeleSignBysId",
+                url: rootPath + "/workprogram/getSeleWPByMainId",
                 params: {
-                    bussnessId: bussnessId
+                    mainBussnessId:vm.work.id
                 }
             }
             var httpSuccess = function success(response) {
-                vm.selectedSign = response.data.signDtoList
+                vm.selectedWP = response.data;
             }
             common.http({
                 vm: vm,
@@ -46,99 +45,20 @@
                 success: httpSuccess
             });
         }
-
         //E_初始化已选项目列表
 
-        //S_初始化关联数据
-        function getInitRelateData(vm) {
-            var signid = vm.work.signId;
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/workprogram/getInitRelateData",
-                params: {
-                    signid: signid
-                }
-            }
-            var httpSuccess = function success(response) {
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-
-        }//E_初始化关联数据
-
-        //S_保存合并评审
-        function mergeAddWork(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/workprogram/mergeAddWork",
-                params: {signId: vm.work.signId, linkSignId: vm.linkSignId}
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        window.parent.$(".workPro").data("kendoWindow").close();
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            fn: function () {
-                                $('.alertDialog').modal('hide');
-                                $('.modal-backdrop').remove();
-                            }
-                        })
-                    }
-                });
-            }
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //E_保存合并评审
-
-        //S_已选项目列表
-        function selectedProject(vm) {
-
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/workprogram/selectedProject",
-                params: {
-                    linkSignIds: vm.linkSignId
-                }
-            }
-            var httpSuccess = function success(response) {
-                vm.selectedSign = response.data;
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //E_已选项目列表
-
         //S_待选项目列表
-        function waitProjects(vm) {
-            vm.sign.signid = vm.linkSignId;
+        function waitSeleWP(vm) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/workprogram/waitProjects",
-                data: vm.sign
+                url: rootPath + "/workprogram/waitSeleWP",
+                params: {
+                    mainBussnessId: vm.work.id
+                }
             }
             var httpSuccess = function success(response) {
-                vm.signs = {};
-                vm.signs = response.data;
+                vm.unSeledWork = {};
+                vm.unSeledWork = response.data;
             }
             common.http({
                 vm: vm,
@@ -147,56 +67,117 @@
                 success: httpSuccess
             });
         }
-
         //E_待选项目列表
 
-        //S_选择取消
-        function cancelworkProject(vm) {
-
-        }
-
-        //S_选择取消
-
-        //S_选择项目
-        function selectworkProject(vm) {
-
-            var idStr = vm.linkSignId;
-            var linkSignId = $("input[name='checkwork']:checked");
-
-            var ids = [];
-            if (linkSignId) {
-                $.each(linkSignId, function (i, obj) {
-                    ids.push(obj.value);
-                });
-                if (idStr) {
-                    idStr += "," + ids.join(',');
-                } else {
-                    idStr = ids.join(',');
-                }
-                vm.linkSignId = idStr;
-                selectedProject(vm);//已选
-                waitProjects(vm);//待选
-            }
-        }
-
-        //S_关联项目弹窗
-        function gotoProjcet(vm) {
-            if (!vm.work.id) {
+        //S_取消合并评审工作方案
+        function cancelWP(vm) {
+            var selIds = $("input[name='cancelSeledWPid']:checked");
+            if(selIds.length == 0){
                 common.alert({
                     vm: vm,
-                    msg: "请先保存再进行关联！",
-                    fn: function () {
-                        $('.alertDialog').modal('hide');
-                        $('.modal-backdrop').remove();
+                    msg: "请选择要取消合并评审的工作方案！",
+                    closeDialog: true
+                });
+                return ;
+            }else{
+                var workIdArr = [];
+                $.each(selIds, function (i, obj) {
+                    workIdArr.push(obj.value);
+                });
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/workprogram/deleteMergeWork",
+                    params: {
+                        mainBusinessId: vm.work.id,
+                        businessId: workIdArr.join(","),
                     }
-                })
-                return;
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            getSeleWPByMainId(vm);//初始化
+                            waitSeleWP(vm);//待选
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功！",
+                                closeDialog: true
+                            });
+                        }
+                    });
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
             }
-            getInitSeleSignBysId(vm);//初始化
-            waitProjects(vm);//待选
+        }//E_cancelWP
+
+        //S_选择合并评审工作方案
+        function chooseWP(vm) {
+            var selIds = $("input[name='checkwork']:checked");
+            if(selIds.length == 0){
+                common.alert({
+                    vm: vm,
+                    msg: "请选择要合并评审的工作方案！",
+                    closeDialog: true
+                });
+                return ;
+            }else{
+                var workIdArr = [];
+                var signIdArr = [];
+                $.each(selIds, function (i, obj) {
+                    var idArr = (obj.value).split("$");
+                    workIdArr.push(idArr[0]);
+                    signIdArr.push(idArr[1]);
+                });
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/workprogram/mergeWork",
+                    params: {
+                        mainBusinessId: vm.work.id,
+                        signId: vm.work.signId,
+                        businessId: workIdArr.join(","),
+                        linkSignId:signIdArr.join(",")
+                    }
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            getSeleWPByMainId(vm);//初始化
+                            waitSeleWP(vm);//待选
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功！",
+                                closeDialog: true
+                            });
+                        }
+                    });
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+
+        }//E_chooseWP
+
+        //S_关联项目弹窗
+        function initMergeWP(vm) {
+            getSeleWPByMainId(vm);//初始化
+            waitSeleWP(vm);//待选
             $(".workPro").kendoWindow({
                 width: "1200px",
-                height: "630px",
+                height: "600px",
                 title: "合并评审",
                 visible: false,
                 modal: true,
@@ -266,11 +247,8 @@
                     httpOptions: httpOptions,
                     success: httpSuccess
                 });
-
             }
-
         }
-
         //E_会议预定添加
 
         //S_查找所有会议室地点
@@ -312,8 +290,8 @@
                 success: httpSuccess
             });
         }
-
         //end 查找主管部门
+
         //S_根据部门ID选择用户
         function findUsersByOrgId(vm, type) {
             var param = {};
@@ -325,7 +303,6 @@
                 url: rootPath + "/user/findUsersByOrgId",
                 params: param
             };
-
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm: vm,
@@ -346,15 +323,17 @@
                 success: httpSuccess
             });
         }
-
         //E_根据部门ID选择用户
 
         //S_初始化页面参数
         function initPage(vm) {
             var httpOptions = {
                 method: 'get',
-                url: rootPath + "/workprogram/html/initWorkBySignId",
-                params: {signId: vm.work.signId}
+                url: rootPath + "/workprogram/html/initWorkProgram",
+                params: {
+                    signId: vm.work.signId,
+                    workProgramId:vm.work.id
+                }
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({
@@ -363,7 +342,18 @@
                     fn: function () {
                         if (response.data != null && response.data != "") {
                             vm.work = response.data;
-                            vm.work.signId = $state.params.signid
+                            vm.work.signId = $state.params.signid;
+                            //初始化数值
+                            if(vm.work.reviewType == "自评"){
+                                vm.businessFlag.isSelfReview = true;           //是否自评
+                            }
+                            if(vm.work.isSigle == "合并评审"){
+                                vm.businessFlag.isSingleReview = false;         //是否单个评审
+                            }
+                            if(vm.work.isMainProject == "9"){
+                                vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
+                            }
+
                             if (response.data.roomBookingDtos && response.data.roomBookingDtos.length > 0) {
                                 vm.isRoomBook = true;
                                 vm.RoomBookings = {};
@@ -371,7 +361,7 @@
                                 vm.roombook = vm.RoomBookings[0];
 
                                 if (vm.RoomBookings.length > 1) {
-                                    vm.isHaveNext = true;
+                                    vm.businessFlag.isHaveNext = true;
                                 }
                             }
 
@@ -427,30 +417,29 @@
                         response: response,
                         fn: function () {
                             vm.iscommit = false;
-                            vm.work.id = response.data.id;
-                            if (vm.work.id) {
-                                var sysfileType = "工作方案";
-                                if (!angular.isUndefined(vm.work.isMain)) {
-                                    if (vm.work.isMain == '9') {
-                                        sysfileType = "工作方案[主]"
-                                    } else {
-                                        sysfileType = "工作方案[协]"
-                                    }
-                                }
-                                //初始化附件上传
-                                sysfileSvc.initUploadOptions({
-                                    businessId: vm.work.id,
-                                    sysSignId: vm.work.signId,
-                                    sysfileType: sysfileType,
-                                    uploadBt: "upload_file_bt",
-                                    detailBt: "detail_file_bt",
-                                    vm: vm
-                                });
-                            }
                             common.alert({
                                 vm: vm,
-                                msg: "操作成功！",
-                                closeDialog: true
+                                msg: response.data.reMsg,
+                                closeDialog: true,
+                                fn: function () {
+                                    if (response.data.reCode == "ok") {
+                                        //如果没有没有工作方案ID，则刷新路由
+                                        if(!vm.work.id){
+                                            $state.go('workprogramEdit', {signid: vm.work.signId,workProgramId:response.data.reObj.id });
+                                        }else{
+                                            //初始化数值
+                                            if(response.data.reObj.reviewType == "自评"){
+                                                vm.businessFlag.isSelfReview = true;           //是否自评
+                                            }
+                                            if(response.data.reObj.isSigle == "合并评审"){
+                                                vm.businessFlag.isSingleReview = false;         //是否单个评审
+                                            }
+                                            if(response.data.reObj.isMainProject == "9"){
+                                                vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
+                                            }
+                                        }
+                                    }
+                                }
                             })
                         }
                     });
@@ -479,5 +468,35 @@
             }
         }//E_selectExpert
 
+        //S_删除所有合并评审工作方案
+        function deleteAllMerge(vm){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/deleteMergeWork",
+                params: {
+                    mainBusinessId: vm.work.id,
+                }
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功！",
+                            closeDialog: true
+                        });
+                    }
+                });
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_deleteAllMerge
     }
 })();

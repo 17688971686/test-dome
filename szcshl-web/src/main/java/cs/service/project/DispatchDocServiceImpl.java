@@ -46,13 +46,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Autowired
     private MergeOptionService mergeOptionService;
 
-    @Autowired
-    private OrgRepo orgRepo;
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-    @Autowired
-    private SysFileRepo sysFileRepo;
-
     /**
      * 查询已经选择的合并发文项目
      *
@@ -64,7 +57,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         List<SignDto> resultList = new ArrayList<>();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + Sign.class.getSimpleName() + " where " + Sign_.signid.getName() + " in ( ");
-        hqlBuilder.append("  select " + MergeOption_.signId.getName() + " from " + MergeOption.class.getSimpleName() + " where " + MergeOption_.mainBusinessId.getName() + " = :dispatchId )").setParam("dispatchId", mainBussnessId);
+        hqlBuilder.append(" select " + MergeOption_.signId.getName() + " from " + MergeOption.class.getSimpleName() );
+        hqlBuilder.append(" where " + MergeOption_.mainBusinessId.getName() + " = :dispatchId ").setParam("dispatchId", mainBussnessId);
+        hqlBuilder.append(" and "+ MergeOption_.businessType.getName() + "=:businessType )").setParam("businessType",  Constant.MergeType.DISPATCH.getValue());
         List<Sign> list = signRepo.findByHql(hqlBuilder);
         if (list != null) {
             list.forEach(sl -> {
@@ -130,7 +125,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
      */
     @Override
     @Transactional
-    public void mergeDispa(String signId, String mainBusinessId, String linkSignId) throws Exception {
+    public void mergeDispa(String signId, String mainBusinessId, String linkSignId){
         List<String> linkSignIdList = StringUtil.getSplit(linkSignId, ",");
         List<MergeOption> saveList = new ArrayList<>(linkSignIdList == null ? 0 : linkSignIdList.size());
 

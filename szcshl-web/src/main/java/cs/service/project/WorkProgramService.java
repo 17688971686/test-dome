@@ -9,19 +9,17 @@ import cs.model.project.WorkProgramDto;
 
 public interface WorkProgramService {
 
-    void save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) throws Exception;
+    ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram);
 
-    WorkProgramDto initWorkBySignId(String signId, String isMain);
+    WorkProgramDto initWorkProgram(String signId, String workProgramId);
 
-    List<SignDto> waitProjects(SignDto signDto);
+    List<WorkProgramDto> waitSeleWP(String mainBusinessId);
 
-    List<SignDto> selectedProject(String[] ids);
+    List<WorkProgramDto> getSeleWPByMainId(String mainBusinessId);
 
-    void mergeAddWork(String signId, String linkSignId);
+    void mergeWork(String mainBusinessId, String signId,String businessId,String linkSignId);
 
-    Map<String, Object> getInitSeleSignByIds(String bussnessId);
-
-    Map<String, Object> getInitRelateData(String signId);
+    void deleteMergeWork(String mainBusinessId, String businessId);
 
     void deleteBySignId(String signId);
 
@@ -30,4 +28,5 @@ public interface WorkProgramService {
     ResultMsg createMeetingDoc(String signId, String workprogramId);
 
     WorkProgramDto initWorkProgramById(String workId);
+
 }

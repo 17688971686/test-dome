@@ -22,7 +22,7 @@
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             paymentGrid: paymentGrid,           //专家评审费
             uploadFilelist: uploadFilelist,		//上传附件列表
-            meetingDoc: meetingDoc,            //生成会前准备材
+            meetingDoc: meetingDoc,             //生成会前准备材
            
             
             
@@ -491,6 +491,7 @@
 
                             });
                         }
+
                         //发文
                         if (vm.model.dispatchDocDto) {
                             vm.showFlag.tabDispatch = true;

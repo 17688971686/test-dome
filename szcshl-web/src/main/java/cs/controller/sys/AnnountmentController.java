@@ -106,24 +106,6 @@ public class AnnountmentController {
     public void delete(@RequestBody String anId) {
         annService.deleteAnnountment(anId);
     }
-
-    @RequiresPermissions("annountment#config#post")
-    @RequestMapping(name = "上传图片",path="config",method=RequestMethod.POST) 
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void config(HttpServletRequest request, HttpServletResponse response) {  
-        response.setContentType("application/json");  
-        String rootPath = request.getSession().getServletContext().getRealPath("/");  
-        try {  
-            String exec = new ActionEnter(request, rootPath).exec();  
-            PrintWriter writer = response.getWriter();  
-            writer.write(exec);  
-            writer.flush();  
-            writer.close();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-        }  
-  
-    } 
     
     //begin  html
     @RequiresPermissions("annountment#html/list#get")

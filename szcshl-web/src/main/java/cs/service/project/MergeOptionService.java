@@ -10,6 +10,13 @@ public interface MergeOptionService {
     boolean isMerge(String businessId,String signId,String businessType);
 
     /**
+     * 获取主项目关联的记录
+     * @param mainBusinessId
+     * @param businessType
+     * @return
+     */
+    int getMainLinkNum(String mainBusinessId,String businessType);
+    /**
      * 判断是否有关联
      * @param mainBusinessId
      * @return

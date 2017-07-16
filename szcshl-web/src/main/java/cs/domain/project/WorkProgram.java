@@ -37,18 +37,18 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "VARCHAR(50)")
     private String workreviveStage;
 
-    //是否单个评审  0:表示合并评审,9:表示单个评审
+    //是否单个评审
     @Column(columnDefinition = "VARCHAR(20)")
     private String isSigle;
 
     //是否主项目
     private String isMainProject;
+
     //项目名称
     @Column(columnDefinition = "VARCHAR(256)")
     private String projectName;
 
     //来文单位
-    
     @Column(columnDefinition = "VARCHAR(100)")
     private String sendFileUnit;
 
@@ -148,6 +148,7 @@ public class WorkProgram extends DomainBase {
     //补充资料函发文日期
     @Column(columnDefinition = "DATE")
     private Date suppLetterDate;
+
     //评审会时间
     @Column(columnDefinition = "DATE")
     private Date stageTime;
@@ -224,7 +225,8 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "number")
     private BigDecimal declareCount;
 
-    @Column(columnDefinition = "varchar(40)")
+    //是否已经生产会前准备材料
+    @Column(columnDefinition = "varchar(2)")
     private String isCreateDoc;
     
     //E 设备清单（进口）

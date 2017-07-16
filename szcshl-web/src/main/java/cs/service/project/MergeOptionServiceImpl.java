@@ -37,6 +37,17 @@ public class MergeOptionServiceImpl implements MergeOptionService {
         return count > 0 ? true : false;
     }
 
+    @Override
+    public int getMainLinkNum(String mainBusinessId, String businessType) {
+        Criteria criteria = mergeOptionRepo.getExecutableCriteria();
+        criteria.setProjection(Projections.rowCount());
+        criteria.add(Restrictions.eq(MergeOption_.businessType.getName(),businessType));
+        criteria.add(Restrictions.eq(MergeOption_.mainBusinessId.getName(),mainBusinessId));
+
+        return Integer.parseInt(criteria.uniqueResult().toString());
+    }
+
+
     /**
      * 主项目是否有关联
      * @param mainBusinessId
@@ -45,12 +56,6 @@ public class MergeOptionServiceImpl implements MergeOptionService {
      */
     @Override
     public boolean isHaveLink(String mainBusinessId,String businessType) {
-        Criteria criteria = mergeOptionRepo.getExecutableCriteria();
-        criteria.setProjection(Projections.rowCount());
-        criteria.add(Restrictions.eq(MergeOption_.businessType.getName(),businessType));
-        criteria.add(Restrictions.eq(MergeOption_.mainBusinessId.getName(),mainBusinessId));
-
-        int count = Integer.parseInt(criteria.uniqueResult().toString());
-        return count > 1 ? true : false; //本身也有一条记录
+        return getMainLinkNum(mainBusinessId,businessType) > 1 ? true : false; //本身有一条主记录
     }
 }

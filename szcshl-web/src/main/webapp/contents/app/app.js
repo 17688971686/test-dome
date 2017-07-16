@@ -6,8 +6,13 @@
         "ui.router",
         "kendo.directives",
         'angular-loading-bar',
-        'ngAnimate'
-        ])
+        'ngAnimate',
+        'froala'
+        ]).filter('trust2Html', ['$sce',function($sce) {
+            return function(val) {
+                return $sce.trustAsHtml(val);
+            };
+        }])
         .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:99;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
@@ -285,7 +290,7 @@
 
             //begin#workprogram
             .state('workprogramEdit', {
-                url: '/workprogramEdit/:signid',
+                url: '/workprogramEdit/:signid/:workProgramId',
                 templateUrl: rootPath + '/workprogram/html/edit.html',
                 controller: 'workprogramEditCtrl',
                 controllerAs: 'vm'

@@ -14,11 +14,11 @@
             createAnnountment: createAnnountment,	    //新增通知公告
             initAnOrg: initAnOrg,		                //初始化发布单位
             findAnnountmentById: findAnnountmentById,	//获取通知公告信息
-            updateIssueState: updateIssueState,        //更改通知公告的发布状态
+            updateIssueState: updateIssueState,         //更改通知公告的发布状态
             updateAnnountment: updateAnnountment,	    //更新通知公告
             deleteAnnountment: deleteAnnountment,	    //删除通知公告
-            initFileOption: initFileOption,            //初始化附件参数
-            findFileList: findFileList,                //查询附件列表
+            initFileOption: initFileOption,             //初始化附件参数
+            findFileList: findFileList,                 //查询附件列表
             findDetailById: findDetailById,	            //通过id获取通过公告
             postArticle: postArticle,	                //访问上一篇文章
             nextArticle: nextArticle,	                //访问下一篇文章
@@ -60,11 +60,6 @@
 
             var httpSuccess = function success(response) {
                 vm.annountment = response.data;
-               var editor= UE.getEditor("editor");
-                 editor.ready( function() {
-				      UE.getEditor("editor").setContent(vm.annountment.anContent);
-				 } );
-
                 //初始化附件上传
                 if (vm.businessFlag.isInitFileOption == false) {
                     initFileOption({
@@ -85,7 +80,6 @@
 
         //begin createAnnountment
         function createAnnountment(vm) {
-        	vm.annountment.anContent=UE.getEditor("editor").getPlainTxt();
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
@@ -132,20 +126,17 @@
 
         //begin updateAnnountment
         function updateAnnountment(vm) {
-        	vm.annountment.anContent=UE.getEditor("editor").getContentTxt();
             var httpOptions = {
                 method: "put",
                 url: url_annountment,
                 data: vm.annountment
             }
 
-            console.log(vm.annountment);
             var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm: vm,
                     response: response,
                     fn: function () {
-
                         common.alert({
                             vm: vm,
                             msg: "操作成功",
@@ -153,11 +144,9 @@
                                 vm.isSubmit = false;
                                 $('.alertDialog').modal('hide');
                                 $('.modal-backdrop').remove();
-                                location.href = url_back;
                             }
                         })
                     }
-
                 })
             }
 
@@ -496,7 +485,6 @@
 
             var httpSuccess = function success(response) {
                 vm.annountmentPost = response.data;
-                vm.annountmentPost.inTro=IntroHTML(vm.annountmentPost.anContent);
             }
             common.http({
                 vm: vm,
@@ -519,7 +507,6 @@
 
             var httpSuccess = function success(response) {
                 vm.annountmentNext = response.data;
-                vm.annountmentNext.inTro=IntroHTML(vm.annountmentNext.anContent);
             }
             common.http({
                 vm: vm,

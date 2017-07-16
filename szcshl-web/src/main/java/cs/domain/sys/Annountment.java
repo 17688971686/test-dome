@@ -17,8 +17,8 @@ import java.util.Date;
 public class Annountment extends DomainBase {
 
     @Id
-//    @GeneratedValue(generator = "noticeGenerator")
-//    @GenericGenerator(name = "noticeGenerator", strategy = "uuid")
+    @GeneratedValue(generator = "noticeGenerator")
+    @GenericGenerator(name = "noticeGenerator", strategy = "uuid")
     private String anId;
 
     /**

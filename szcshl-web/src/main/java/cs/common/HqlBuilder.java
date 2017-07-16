@@ -3,6 +3,9 @@ package cs.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
+import cs.domain.project.WorkProgram_;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
 
@@ -72,8 +75,35 @@ public class HqlBuilder {
 		getTypes().add(type);
 		return this;
 	}
-	
-		
+
+    /**
+     * id封装方法
+     * @param sqlKeyWord(where 、and、 or)等连接关键词
+     * @param idPropoty
+     * @param id
+     * @return
+     */
+	public 	HqlBuilder bulidIdString(String sqlKeyWord,String idPropoty,String id){
+        List<String> idList = StringUtil.getSplit(id, ",");
+        if(Validate.isString(sqlKeyWord)){
+            hqlBuilder.append(sqlKeyWord +" ");
+        }
+        if (idList.size() > 1) {
+            hqlBuilder.append(idPropoty + " in ( ");
+            for (int i = 0,l=idList.size(); i < l; i++) {
+                if (i > 0) {
+                    hqlBuilder.append(",");
+                }
+                hqlBuilder.append(" :id" + i);
+                setParam("id" + i, idList.get(i));
+            }
+            hqlBuilder.append(" )");
+        } else {
+            hqlBuilder.append(idPropoty + " = :id ");
+            setParam("id", idList.get(0));
+        }
+        return this;
+	}
 	
 	public List<String> getParams() {
 		if (params == null) {

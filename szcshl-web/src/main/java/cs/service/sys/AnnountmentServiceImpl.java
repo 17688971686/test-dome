@@ -69,17 +69,24 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         if(!Validate.isString(annountment.getIssue())){
             annountment.setIssue(Constant.EnumState.NO.getValue());
         }
-        if(!Validate.isObject(annountmentDto.getIsStick())){
+        if(!Validate.isObject(annountment.getIsStick())){
             annountment.setIsStick(Integer.valueOf(Constant.EnumState.NO.getValue()));
         }else{
-            if(Constant.EnumState.YES.getValue().equals(annountmentDto.getIsStick())){
+            if(Constant.EnumState.YES.getValue().equals(annountment.getIsStick())){
                 annountment.setIssueDate(now);
             }
         }
-        annountment.setAnId(UUID.randomUUID().toString());
-        annountment.setCreatedBy(currentUser.getDisplayName());
+        if(!Validate.isString(annountment.getAnId())){
+            annountment.setAnId(null);
+        }
+        //已发布的要加上发布人和发布时间
+        if(Constant.EnumState.YES.getValue().equals(annountment.getIssue())){
+            annountment.setIssueDate(now);
+            annountment.setIssueUser(currentUser.getLoginName());
+        }
+        annountment.setCreatedBy(currentUser.getLoginName());
         annountment.setCreatedDate(now);
-        annountment.setModifiedBy(currentUser.getDisplayName());
+        annountment.setModifiedBy(currentUser.getLoginName());
         annountment.setModifiedDate(now);
         annountmentRepo.save(annountment);
         annountmentDto.setAnId(annountment.getAnId());

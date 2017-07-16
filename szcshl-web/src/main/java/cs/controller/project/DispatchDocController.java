@@ -59,7 +59,7 @@ public class DispatchDocController {
     }
 
     @RequiresPermissions("dispatch#getSignByBusinessId#get")
-    @RequestMapping(name = "初始化页面获取已选项目", path = "getSignByBusinessId", method = RequestMethod.GET)
+    @RequestMapping(name = "获取已选合并发文项目", path = "getSignByBusinessId", method = RequestMethod.GET)
     public @ResponseBody
     List<SignDto> getSignByBusinessId(@RequestParam String mainBussnessId) throws Exception {
         return dispatchDocService.getSeleSignByMainBusiId(mainBussnessId);

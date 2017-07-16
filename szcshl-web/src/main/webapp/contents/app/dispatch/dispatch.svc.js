@@ -295,7 +295,6 @@
                             msg: "操作成功！",
                             closeDialog: true
                         });
-                        initDispatchData(vm);
                     }
                 });
             }
@@ -307,7 +306,6 @@
                 onError: function (response) {
                 }
             });
-
         }// end##deletemerge
 
     }

@@ -116,10 +116,11 @@
     <!--打印区域-->
     <span id="context-body">
         <h2><strong>{{vm.annountment.anTitle}}</strong></h2>
-            <span >发布人：{{vm.annountment.issueUser}}</span>  <span >发布时间：{{vm.annountment.issueDate}}</span>
+            <span >发布人：{{vm.annountment.issueUser}}</span>
+            <span style="margin-left:20px;">发布时间：{{vm.annountment.issueDate}}</span>
         <hr/>
         <div style="width: 100%;height: 80%;">
-            <span>{{vm.annountment.anContent}}</span>
+            <span ng-bind-html="vm.annountment.anContent|trust2Html"/>
         </div>
     </span>
         <!--打印区结束-->
@@ -150,39 +151,23 @@
 
     <!--滚动通知区-->
     <div style="background-color: #fbfbfb; padding: 20px 0px; min-height: 80px;">
-        <div style="width: 80%; margin: auto;">
-            <div style="height:40px;">
-                <div class="text-left"><h3><strong>通知滚动</strong></h3></div>
-                <div class="line"></div>
-            </div>
+        <div style="width: 90%; margin: auto;">
             <ol >
-
                 <!--上一篇-->
-                <div ng-if="vm.annountmentPost.anId" class="row" style="overflow: hidden; margin: 20px 10px;">
-                    <div class="col-xs-1 icon-up">
-                        <span class="fa fa-folder-o"></span>
-                    </div>
+                <div ng-if="vm.annountmentPost.anId" class="row" style="overflow: hidden; margin:5px;">
                     <div class="col-xs-10">
                         <li ng-if="vm.annountmentPost.anId"><a href="javascript:void(0)" ng-click="vm.post(vm.annountmentPost.anId)">
-                            <h4><strong>上一篇:{{vm.annountmentPost.anTitle}}</strong></h4></a></li>
-                        <li ng-if="vm.annountmentPost.anId" class="Introduction">
-                            <p class="p1" style="color: #ccc;">发布人：{{vm.annountmentPost.issueUser}} 发布时间：{{vm.annountmentPost.issueDate}}</p>
-                            <span>{{vm.annountmentPost.inTro}}</span></li>
+                            <h4><strong>上一篇:{{vm.annountmentPost.anTitle}}</strong></h4></a>
+                        </li>
                     </div>
                 </div>
 
                 <!--下一篇-->
-                <div ng-if="vm.annountmentNext.anId" class="row" style="overflow: hidden; margin: 20px 10px;">
-                    <div class="col-xs-1 icon-down">
-                        <span class="fa fa-folder"></span>
-                    </div>
+                <div ng-if="vm.annountmentNext.anId" class="row" style="overflow: hidden; margin:5px;">
                     <div class="col-xs-10">
-                <li ng-if="vm.annountmentNext.anId"><a href="javascript:void(0)" ng-click="vm.next(vm.annountmentNext.anId)">
-                    <h4><strong>下一篇:{{vm.annountmentNext.anTitle}}</strong></h4></a></li>
-                <li ng-if="vm.annountmentNext.anId" class="Introduction">
-                    <p class="p1"  style="color: #ccc;">发布人：{{vm.annountmentNext.issueUser}} 发布时间：{{vm.annountmentNext.issueDate}}</p>
-                    <span>{{vm.annountmentNext.inTro}}</span></li>
-
+                        <li ng-if="vm.annountmentNext.anId"><a href="javascript:void(0)" ng-click="vm.next(vm.annountmentNext.anId)">
+                            <h4><strong>下一篇:{{vm.annountmentNext.anTitle}}</strong></h4></a>
+                        </li>
                     </div>
                 </div>
             </ol>

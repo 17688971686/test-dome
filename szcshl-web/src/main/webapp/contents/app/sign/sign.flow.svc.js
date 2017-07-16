@@ -10,7 +10,7 @@
 			startFlow : startFlow,			            //启动流程
 			initBusinessParams:initBusinessParams,	    //初始化业务参数
 			checkBusinessFill : checkBusinessFill,	    //检查相应的表单填写
-			getChargeWorkProgram:getChargeWorkProgram,  //获取工作方案
+			//getChargeWorkProgram:getChargeWorkProgram,  //获取工作方案
 			getChargeDispatch : getChargeDispatch,		//获取发文
 			getChargeFilerecord : getChargeFilerecord,	//获取归档信息
             endSignDetail:endSignDetail,                 //已办结的签收信息
@@ -89,6 +89,7 @@
                     vm.showFlag.businessDis = true;     //显示是否直接发文
                     vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
                     vm.businessFlag.editExpertSC = true;//编辑专家评分和评审费
+                    vm.businessFlag.isMainWP = true;    //主工作方案
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == 9){ //如果填报完成，则显示
                         vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
@@ -98,6 +99,7 @@
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
                     vm.businessFlag.editExpertSC = true;//编辑专家评分和评审费
+                    vm.businessFlag.isAssistWP = true;  //协工作方案
                     if(vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9'){ //如果填报完成，则显示
                         vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
@@ -106,6 +108,7 @@
                 case "BZ_SP_GZAN1":
                     vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
+                    vm.businessFlag.isMainWP = true;    //主工作方案
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
@@ -113,6 +116,7 @@
                 case "FGLD_SP_GZFA1":
                     vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
+                    vm.businessFlag.isMainWP = true;    //主工作方案
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
@@ -120,6 +124,7 @@
                 case "BZ_SP_GZAN2":
                     vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
+                    vm.businessFlag.isAssistWP = true;  //协工作方案
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
@@ -127,6 +132,7 @@
                 case "FGLD_SP_GZFA2":
                     vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.tabWorkProgram = true;
+                    vm.businessFlag.isAssistWP = true;  //协工作方案
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }

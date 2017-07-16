@@ -11,7 +11,8 @@
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
         vm.flow = {};           //流程对象
-        vm.work = {};           //工作方案
+        vm.mainwork = {};       //主工作方案
+        vm.assistwork = {};     //协工作方案
         vm.dispatchDoc = {};    //发文
         vm.fileRecord = {};     //归档
         vm.expertReview = {};   //评审方案
@@ -61,6 +62,8 @@
             editExpertSC : false,      // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
             expertScore:{},             // 专家评分对象
             isCreateDisFileNum : false,// 是否已经生成发文字号
+            isMainWP : false,           // 主工作方案
+            isAssistWP : false,         // 协工作方案
         }
 
         vm.model.signid = $state.params.signid;
@@ -314,7 +317,17 @@
         }
         // S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function () {
-            $state.go('workprogramEdit', {signid: vm.model.signid });
+            var workProgramId = null;
+            if(vm.businessFlag.isMainWP ){
+                if(vm.mainwork.id){
+                    workProgramId = vm.mainwork.id;
+                }
+            }else if(vm.businessFlag.isAssistWP){
+                if(vm.assistwork.id){
+                    workProgramId = vm.mainwork.id;
+                }
+            }
+            $state.go('workprogramEdit', {signid: vm.model.signid,workProgramId:workProgramId });
         }// E_跳转到 工作方案 编辑页面
         
         //S_跳转到 工作方案 基本信息
