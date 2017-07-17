@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cs.common.Constant;
 import cs.common.utils.Validate;
+import cs.domain.flow.HiProcessTask;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.project.SignDto;
@@ -181,6 +183,24 @@ public class SignController {
         PageModelDto<SignDispaWork> pageModelDto = signService.getSign(odataObj, request.getParameter("$skip"), request.getParameter("$top"));
         return pageModelDto;
     }
+    
+    @RequiresPermissions("sign#ruProcessTask#post")
+    @RequestMapping(name = "在办项目", path = "ruProcessTask", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<RuProcessTask> ruProcessTask(HttpServletRequest request) throws ParseException {
+    	ODataObj odataObj = new ODataObj(request);
+    	 PageModelDto<RuProcessTask> pageModelDto = signService.ruProcessTask(odataObj,request.getParameter("$skip"), request.getParameter("$top"));
+    	 return pageModelDto;
+    }
+    
+    @RequiresPermissions("sign#hiProcessTask#post")
+    @RequestMapping(name = "在办项目", path = "hiProcessTask", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<HiProcessTask> hiProcessTask(HttpServletRequest request) throws ParseException {
+    	ODataObj odataObj = new ODataObj(request);
+    	PageModelDto<HiProcessTask> pageModelDto = signService.hiProcessTask(odataObj,request.getParameter("$skip"), request.getParameter("$top"));
+    	return pageModelDto;
+    }
 
     /***************************************  S 新流程处理的方法     *******************************************/
 
@@ -197,7 +217,7 @@ public class SignController {
     public void startNewFlow(@RequestParam(required = true) String signid) {
         signService.startNewFlow(signid);
     }
-
+    
 
     @RequiresPermissions("sign#html/flowDeal#get")
     @RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
@@ -225,6 +245,20 @@ public class SignController {
     public String getsignList() {
 
         return ctrlName + "/signList";
+    }
+    
+    @RequiresPermissions("sign#html/ruProcessTask#get")
+    @RequestMapping(name = "在办项目", path = "html/ruProcessTask", method = RequestMethod.GET)
+    public String ruProcessTask() {
+    	
+    	return ctrlName + "/ruProcessTask";
+    }
+    
+    @RequiresPermissions("sign#html/hiProcessTask#get")
+    @RequestMapping(name = "已办项目", path = "html/hiProcessTask", method = RequestMethod.GET)
+    public String hiProcessTask() {
+    	
+    	return ctrlName + "/hiProcessTask";
     }
 
     /***************************************  E 新流程处理的方法     *******************************************/

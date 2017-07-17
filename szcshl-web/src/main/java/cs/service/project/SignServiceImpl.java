@@ -37,6 +37,7 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
+import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.sys.Company;
@@ -61,6 +62,7 @@ import cs.model.sys.UserDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
+import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
@@ -137,7 +139,13 @@ public class SignServiceImpl implements SignService {
 
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-
+    
+    @Autowired
+    private RuProcessTaskRepo ruProcessTaskRepo;
+    
+    @Autowired
+    private HiProcessTaskRepo hiProcessTaskRepo;
+    
 
     @Override
     @Transactional
@@ -1449,31 +1457,88 @@ public class SignServiceImpl implements SignService {
         pageModelDto.setCount(totalResult);
         pageModelDto.setValue(signDispaWork);
         return pageModelDto;
+    }
     
-    	
-    		/*List<Sign> signList=signRepo.findByOdata(odataObj);
-            if(!signList.isEmpty()){
-	    		for (Sign sign : signList) {
-	    			SignDto signDto=new SignDto();
-	    			
-	    			DispatchDoc dispatchDoc=sign.getDispatchDoc();
-	    			DispatchDocDto dispatchDocDto=new DispatchDocDto();
-	    			if(dispatchDoc!=null&&!StringUtil.isBlank(dispatchDoc.getId())){
-	    				BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDoc, dispatchDocDto);
-	    			}
-	    			signDto.setDispatchDocDto(dispatchDocDto);
-	    			
-	    			FileRecord fileRecord=sign.getFileRecord();
-	    			FileRecordDto fileRecordDto=new FileRecordDto();
-	    			if(fileRecord!=null&&!StringUtil.isBlank(fileRecord.getFileRecordId())){
-	    				BeanCopierUtils.copyPropertiesIgnoreNull(fileRecord, fileRecordDto);
-	    			}
-	    			signDto.setFileRecordDto(fileRecordDto);
-	    			
-	    			BeanCopierUtils.copyPropertiesIgnoreNull(sign, signDto);
-	    			signListDto.add(signDto);
-	    		}
-    		}*/
+    @Override
+    public PageModelDto<RuProcessTask> ruProcessTask(ODataObj odataObj, String skip, String top) {
+    	PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+    	 Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+         // 处理filter
+         if (odataObj.getFilter() != null) {
+             for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
+                 String field = oDataFilterItem.getField();
+                 String operator = oDataFilterItem.getOperator();
+                 Object value = oDataFilterItem.getValue();
+                 switch (operator) {
+                     case "like":
+                         criteria.add(Restrictions.like(field, "%" + value + "%"));
+                         break;
+                     case "eq":
+                         criteria.add(Restrictions.eq(field, value));
+                         break;
+                     case "ne":
+                         criteria.add(Restrictions.ne(field, value));
+                         break;
+                     default:
+                         break;
+                 }
+             }
+         }
+         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+         criteria.setProjection(null);
+         // 处理分页
+         if (Validate.isString(skip)) {
+             criteria.setFirstResult(Integer.valueOf(skip));
+         }
+         if (Validate.isString(top)) {
+             criteria.setMaxResults(Integer.valueOf(top));
+         }
+         List<RuProcessTask> ruProcessTask = criteria.list();
+    	// 处理filter
+    	pageModelDto.setCount(totalResult);
+    	pageModelDto.setValue(ruProcessTask);
+    	return pageModelDto;
+    }
+    
+    @Override
+    public PageModelDto<HiProcessTask> hiProcessTask(ODataObj odataObj, String skip, String top) {
+    	PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
+    	Criteria criteria = hiProcessTaskRepo.getExecutableCriteria();
+    	// 处理filter
+    	if (odataObj.getFilter() != null) {
+    		for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
+    			String field = oDataFilterItem.getField();
+    			String operator = oDataFilterItem.getOperator();
+    			Object value = oDataFilterItem.getValue();
+    			switch (operator) {
+    			case "like":
+    				criteria.add(Restrictions.like(field, "%" + value + "%"));
+    				break;
+    			case "eq":
+    				criteria.add(Restrictions.eq(field, value));
+    				break;
+    			case "ne":
+    				criteria.add(Restrictions.ne(field, value));
+    				break;
+    			default:
+    				break;
+    			}
+    		}
+    	}
+    	Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+    	criteria.setProjection(null);
+    	// 处理分页
+    	if (Validate.isString(skip)) {
+    		criteria.setFirstResult(Integer.valueOf(skip));
+    	}
+    	if (Validate.isString(top)) {
+    		criteria.setMaxResults(Integer.valueOf(top));
+    	}
+    	List<HiProcessTask> ruProcessTask = criteria.list();
+    	// 处理filter
+    	pageModelDto.setCount(totalResult);
+    	pageModelDto.setValue(ruProcessTask);
+    	return pageModelDto;
     }
 
 }

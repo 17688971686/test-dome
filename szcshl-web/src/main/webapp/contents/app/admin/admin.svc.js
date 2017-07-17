@@ -17,6 +17,8 @@
             upload: upload,	//	下载附件
             getSignList: getSignList,  //项目查询统计
             initSignList: initSignList,//初始化項目查詢統計
+            ruProcessTask: ruProcessTask,//在办项目
+            hiProcessTask: hiProcessTask//已办项目
         }
         return service;
 
@@ -670,7 +672,14 @@
                     field: "sisassistproc",
                     title: "是否协审",
                     width: 140,
-                    filterable: false
+                    filterable: false,
+                    template: function(item){
+                    	if(item.sisassistproc==9){
+                    		return "是";
+                    	}else{
+                    		return "否";
+                    	}
+                    }
                 },
                 {
                     field: "sdaysafterdispatch",
@@ -706,7 +715,244 @@
             };
 
         }//end_getSignList
+        
+        //begin_ruProcessTask
+        function ruProcessTask(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/ruProcessTask", $("#searchRuform")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
 
+            // Begin:column
+            var columns = [
+               
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },
+                {
+                    field: "nodeName",
+                    title: "环节名称",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "任务状态",
+                    width: 140,
+                    filterable: false,
+                     template: function(item){
+                     	if(item.taskState==1){
+                     		return "在办";
+                     	}else{
+                     		return "已办";
+                     	}
+                     }
+                },
+                {
+                    field: "createTime",
+                    title: "创建日期",
+                    width: 200,
+                    filterable: false
+                },
+                {
+                    field: "assignee",
+                    title: "指定人",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "userName",
+                    title: "待选用户名称",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "processKey",
+                    title: "流程定义key",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "isActive",
+                    title: "任务存活状态",
+                    width: 140,
+                    filterable: false,
+                    template: function(item){
+                     	if(item.taskState==1){
+                     		return "是";
+                     	}else{
+                     		return "否";
+                     	}
+                     }
+                },
+                {
+                    field: "isConcurrent",
+                    title: "任务是否并行",
+                    width: 140,
+                    filterable: false,
+                    template: function(item){
+                     	if(item.isConcurrent==1){
+                     		return "是";
+                     	}else{
+                     		return "否";
+                     	}
+                     }
+                },
+                {
+                    field: "processState",
+                    title: "流程状态",
+                    width: 140,
+                    filterable: false,
+                    template: function(item){
+                     	if(item.processState==1){
+                     		return "正在进行";
+                     	}else{
+                     		return "停止";
+                     	}
+                     }
+                }
+                
+            ];
+            // End:column
+            vm.gridRuOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+
+        }//end_ruProcessTask
+        
+        function hiProcessTask(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/hiProcessTask",$("#searchHiform")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+            	{
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },
+                {
+                    field: "nodeName",
+                    title: "环节名称",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "startTime",
+                    title: "开始日期",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "endTime",
+                    title: "结束日期",
+                    width: 200,
+                    filterable: false
+                },
+                {
+                    field: "durationStr",
+                    title: "处理时长",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "assignee",
+                    title: "签收人",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "userName",
+                    title: "待办人",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "message",
+                    title: "处理信息",
+                    width: 140,
+                    filterable: false
+                }
+                
+            ];
+            // End:column
+            vm.gridHiOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+
+        }//end_ruProcessTask
 
         //begin_initSignList
         function initSignList(vm) {

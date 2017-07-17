@@ -1,6 +1,8 @@
 package cs.service.project;
 
 import cs.common.ResultMsg;
+import cs.domain.flow.HiProcessTask;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -65,5 +67,9 @@ public interface SignService{
 	PageModelDto<SignDispaWork> getSign(ODataObj odataObj,String skip, String top);
 	
 	Map<String,Object> initSignList();
+	
+	PageModelDto<RuProcessTask> ruProcessTask(ODataObj odataObj, String skip, String top);
+	
+	PageModelDto<HiProcessTask> hiProcessTask(ODataObj odataObj, String skip, String top);
 	
 }
