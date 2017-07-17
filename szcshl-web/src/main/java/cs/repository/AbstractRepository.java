@@ -3,6 +3,7 @@ package cs.repository;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -272,26 +273,35 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         return executeHql(hqlBuilder);
     }
 
+    /**
+     * 返回List<Map>
+     * @param sqlBuilder
+     * @return
+     */
+    @Override
+    public List<Map> findMapListBySql(HqlBuilder sqlBuilder) {
+        NativeQuery<Map> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
+        List<String> params = sqlBuilder.getParams();
+        List<Object> values = sqlBuilder.getValues();
+        List<Type> types = sqlBuilder.getTypes();
+        if (params != null) {
+            for (int i = 0; i < params.size(); i++) {
+                if (types.get(i) == null) {
+                    q.setParameter(params.get(i), values.get(i));
+                } else {
+                    q.setParameter(params.get(i), values.get(i), types.get(i));
+                }
+            }
+        }
+        return q.list();
+    }
+
     @Override
     public List<T> findByIds(String idPropertyName, String idValue, String orderStr) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from  " + getPersistentClass().getSimpleName());
-        String[] idArr = idValue.split(",");
-        if (idArr.length > 1) {
-            hqlBuilder.append(" where " + idPropertyName + " in ( ");
-            int totalL = idArr.length;
-            for (int i = 0; i < totalL; i++) {
-                if (i == totalL - 1) {
-                    hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-                } else {
-                    hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-                }
-            }
-            hqlBuilder.append(" ) ");
-        } else {
-            hqlBuilder.append(" where " + idPropertyName + " = :id ");
-            hqlBuilder.setParam("id", idValue);
-        }
+        hqlBuilder.bulidIdString("where",idPropertyName,idValue);
+
         if (Validate.isString(orderStr)) {
             hqlBuilder.append(" order by " + orderStr);
         }
