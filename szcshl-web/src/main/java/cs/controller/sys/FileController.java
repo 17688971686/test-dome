@@ -1,30 +1,43 @@
 package cs.controller.sys;
 
-import cs.common.Constant;
-import cs.common.utils.SysFileUtil;
-import cs.domain.sys.SysFile;
-import cs.model.PageModelDto;
-import cs.model.sys.SysFileDto;
-import cs.repository.odata.ODataObj;
-import cs.service.sys.SysFileService;
-import org.apache.log4j.Logger;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import cs.domain.flow.RuProcessTask;
+import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
+
+import cs.ahelper.RealPathResolver;
+import cs.common.Constant;
+import cs.common.utils.FileUtils;
+import cs.common.utils.SysFileUtil;
+import cs.domain.sys.SysFile;
+import cs.model.PageModelDto;
+import cs.model.sys.PluginFileDto;
+import cs.model.sys.SysFileDto;
+import cs.repository.odata.ODataObj;
+import cs.service.sys.SysFileService;
 
 /**
  * @author lqs
@@ -34,10 +47,16 @@ import java.util.Map;
 @RequestMapping(name = "文件管理", path = "file")
 public class FileController {
     private static Logger logger = Logger.getLogger(FileController.class);
+    
+    private static final String plugin_file_path = "contents/plugins";
+    
     private String ctrlName = "file";
 
     @Autowired
     private SysFileService fileService;
+    
+    @Autowired
+    private RealPathResolver realPathResolver;
 
     @RequestMapping(name = "获取文件数据", path = "", method = RequestMethod.GET)
     public @ResponseBody
@@ -201,4 +220,30 @@ public class FileController {
     public void delete(@RequestParam(required = true) String sysFileId) throws IOException {
         fileService.deleteById(sysFileId);
     }
+
+    @RequiresPermissions("file#html/pluginfile#get")
+    @RequestMapping(name = "办结事项", path = "html/pluginfile")
+    public String pluginfile(Model model) {
+
+        return ctrlName + "/pluginfile";
+    }
+    @RequestMapping(name = "获取本地插件", path = "getPluginFile", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto listFile() {
+        PageModelDto<PluginFileDto> pageModelDto = new PageModelDto();
+        List<PluginFileDto> list = new ArrayList<PluginFileDto>();
+		File parent = new File(realPathResolver.get(plugin_file_path));
+		if (parent.exists()) {			
+			 File flist[] = parent.listFiles();
+			 for (File f : flist) {
+	                if (!f.isDirectory()) {
+	                	list.add(new PluginFileDto(f,plugin_file_path)) ;
+	                } 
+	         }
+		}
+        pageModelDto.setValue(list);
+        pageModelDto.setCount(list.size());
+
+        return pageModelDto;
+	}
 }

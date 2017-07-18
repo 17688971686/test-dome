@@ -1,16 +1,12 @@
 package cs.service.project;
 
-import java.util.List;
-
-import cs.domain.sys.SysFile;
+import cs.common.ResultMsg;
 import cs.model.project.FileRecordDto;
 
 public interface FileRecordService{
 
-	void save(FileRecordDto fileRecordDto) throws Exception;
+	ResultMsg save(FileRecordDto fileRecordDto);
 
 	FileRecordDto initBySignId(String signid);
-
-	List<SysFile> sysFileByIds(String signid);
 
 }

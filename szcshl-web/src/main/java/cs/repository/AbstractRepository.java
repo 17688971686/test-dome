@@ -299,7 +299,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public List<T> findByIds(String idPropertyName, String idValue, String orderStr) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from  " + getPersistentClass().getSimpleName());
+        hqlBuilder.append(" from  " + getPersistentClass().getSimpleName()+" ");
         hqlBuilder.bulidIdString("where",idPropertyName,idValue);
 
         if (Validate.isString(orderStr)) {

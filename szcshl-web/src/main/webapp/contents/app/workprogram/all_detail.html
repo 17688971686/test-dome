@@ -3,7 +3,7 @@
 <table class="table table-bordered" >
     <caption class="text-center h3"><strong>{{vm.mainwork.titleName}}</strong></caption>
     <caption style="width:100%;">
-        <span style="float:left;">评审方式: {{vm.mainwork.reviewType}}  {{angular.isUndefined(vm.mainwork.isSigle)?'':vm.mainwork.isSigle == '1'?'单个函评':'合并评审'}}</span>
+        <span style="float:left;">评审方式: {{vm.mainwork.reviewType}}  {{vm.mainwork.isSigle}}</span>
         <span style="float:right;">收文日期:{{vm.mainwork.titleDate | date:'yyyy年MM月dd日' }}</span>
     </caption>
     <tbody>
@@ -230,7 +230,7 @@
  <table class="table table-bordered" ng-show="(vm.model.isreviewACompleted && vm.model.isreviewACompleted=='9') && (vm.assistwork.workreviveStage=='项目建议书' || vm.assistwork.workreviveStage=='可行性研究报告' || vm.assistwork.workreviveStage=='项目概算' || vm.mainwork.workreviveStage=='资金申请报告')">
     <caption class="text-center h3"><strong>{{vm.assistwork.titleName}}</strong></caption>
     <caption style="width:100%;">
-        <span style="float:left;">评审方式: {{vm.assistwork.reviewType}}  {{angular.isUndefined(vm.assistwork.isSigle)?'':vm.assistwork.isSigle == '1'?'单个函评':'合并评审'}}</span>
+        <span style="float:left;">评审方式: {{vm.assistwork.reviewType}}  {{vm.assistwork.isSigle}}</span>
         <span style="float:right;">收文日期:{{vm.assistwork.titleDate  | date:'yyyy年MM月dd日'}}</span>
     </caption>
     <tbody>

@@ -23,7 +23,7 @@ public class DispatchDocController {
     private DispatchDocService dispatchDocService;
 
     @RequiresPermissions("dispatch##post")
-    @RequestMapping(name = "发文提交", path = "", method = RequestMethod.POST)
+    @RequestMapping(name = "保存发文", path = "", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg post(@RequestBody DispatchDocDto dispatchDocDto) throws Exception {
        return dispatchDocService.save(dispatchDocDto);

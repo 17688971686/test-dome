@@ -28,6 +28,7 @@ import org.activiti.engine.*;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -167,6 +168,7 @@ public class FlowController {
         //流程实例
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
+        flowDto.setEnd(processInstance.isEnded());
 
         //获取当前任务数据
         Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
@@ -224,16 +226,13 @@ public class FlowController {
                     }
                     businessMap.put("users", userList2);
                     break;
+                case Constant.FLOW_XMFZR_SP_GZFA1:  //项目负责人承办，如果是并行流程，则不可以直接发文
+                    ExecutionEntity execution = (ExecutionEntity) runtimeService.createExecutionQuery().executionId(task.getExecutionId()).singleResult();
+                    flowDto.getCurNode().setIsConcurrent(execution.isConcurrent());
                 case Constant.FLOW_MFZR_GD:
                    List<User> secondUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey(), Constant.EnumState.YES.getValue());
                    if(secondUserList != null && secondUserList.size() > 0){
-                       List<UserDto> userDtoList = new ArrayList<>(secondUserList==null?0:secondUserList.size());
-                       secondUserList.forEach( su ->{
-                           UserDto uDto = new UserDto();
-                           BeanCopierUtils.copyProperties(su,uDto);
-                           userDtoList.add(uDto);
-                       });
-                       businessMap.put("secondUserList", userDtoList);
+                       businessMap.put("secondUserList", secondUserList);
                    }
                    break ;
                 /**************************   E 项目签收流程  ****************************/

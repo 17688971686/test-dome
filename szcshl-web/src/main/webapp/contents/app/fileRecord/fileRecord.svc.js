@@ -60,11 +60,14 @@
             common.initJqValidation($("#fileRecord_form"));
             var isValid = $("#fileRecord_form").valid();
             if (isValid) {
-                if (vm.signUser) {
-                    vm.fileRecord.signUserid = vm.signUser.id;
-                    vm.fileRecord.signUserName = vm.signUser.displayName;
-                }
-                vm.saveProcess = true;
+                vm.signUserList.forEach(function(su,index){
+                    if(vm.fileRecord.signUserid == su.id){
+                        vm.fileRecord.signUserName = su.displayName;
+                        return;
+                    }
+                })
+
+                vm.isCommit = true;
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/fileRecord",
@@ -75,10 +78,30 @@
                         vm: vm,
                         response: response,
                         fn: function () {
-                            vm.saveProcess = false;
+                            vm.isCommit = false;
                             common.alert({
                                 vm: vm,
-                                msg: "操作成功！",
+                                msg: response.data.reMsg,
+                                closeDialog: true,
+                                fn: function () {
+                                    if (response.data.reCode == "error") {
+                                        vm.isCommit = false;
+                                    } else {
+                                        if(!vm.fileRecord.fileRecordId){
+                                            vm.fileRecord = response.data.reObj;
+                                            vm.fileRecord.signId = vm.signId;
+                                            //初始化附件上传
+                                            sysfileSvc.initUploadOptions({
+                                                businessId: vm.fileRecord.fileRecordId,
+                                                sysSignId: vm.fileRecord.signId,
+                                                sysfileType: "归档",
+                                                uploadBt: "upload_file_bt",
+                                                detailBt: "detail_file_bt",
+                                                vm: vm
+                                            });
+                                        }
+                                    }
+                                }
                             })
                         }
                     });
@@ -89,7 +112,7 @@
                     httpOptions: httpOptions,
                     success: httpSuccess,
                     onError: function (response) {
-                        vm.saveProcess = false;
+                        vm.isCommit = false;
                     }
                 });
             }

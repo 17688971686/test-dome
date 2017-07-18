@@ -9,6 +9,7 @@ public class Node {
 
 	private String activitiId;
 	private String activitiName;
+	private boolean isConcurrent;	//是否并行流程
 	
 	public String getActivitiId() {
 		return activitiId;
@@ -21,5 +22,13 @@ public class Node {
 	}
 	public void setActivitiName(String activitiName) {
 		this.activitiName = activitiName;
-	}		
+	}
+
+	public boolean getIsConcurrent() {
+		return isConcurrent;
+	}
+
+	public void setIsConcurrent(boolean isConcurrent) {
+		this.isConcurrent = isConcurrent;
+	}
 }

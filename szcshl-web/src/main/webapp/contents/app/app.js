@@ -177,19 +177,6 @@
                 controllerAs: 'vm'
             })
             //end#demo
-            //begin#mytest
-            .state('myTest', {
-			  url: '/myTest',
-			  templateUrl: rootPath + '/myTest/html/list.html',
-			  controller: 'myTestCtrl',
-			  controllerAs: 'vm'
-			}).state('myTestEdit', {
-			  url: '/myTestEdit/:id',
-			  templateUrl: rootPath + '/myTest/html/edit.html',
-			  controller: 'myTestEditCtrl',
-			  controllerAs: 'vm'
-			})
-            //end#mytest
             //begin Dict
             .state('dict', {
                 url: '/dict',
@@ -415,6 +402,7 @@
                 controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
+<<<<<<< Updated upstream
              //通过公告
             .state('annountmentList', {
                 url: '/annountmentList',
@@ -450,6 +438,15 @@
             
            
             //end#sharing
+=======
+            //系统安装包管理
+            .state('pluginfile',{
+                url: '/pluginfile',
+                templateUrl: rootPath + '/file/html/pluginfile.html',
+                controller: 'pluginfileCtrl',
+                controllerAs: 'vm'
+            })
+>>>>>>> Stashed changes
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
@@ -490,7 +487,7 @@
         //kendo 语言
     	kendo.culture("zh-CN");
     	
-        $rootScope.topSelectChange = function (dictKey, dicts , type) {            	
+        $rootScope.topSelectChange = function (dictKey, dicts , type) {
         	if(dicts !=undefined){       		
 	            for (var i = 0; i < dicts.length; i++) {
 	            	//根据code查询

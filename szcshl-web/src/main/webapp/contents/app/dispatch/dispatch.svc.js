@@ -3,9 +3,9 @@
 
     angular.module('app').factory('dispatchSvc', dispatch);
 
-    dispatch.$inject = ['sysfileSvc', '$http'];
+    dispatch.$inject = ['sysfileSvc', '$http','$state'];
 
-    function dispatch(sysfileSvc, $http) {
+    function dispatch(sysfileSvc,$http,$state) {
         var service = {
             initDispatchData: initDispatchData, // 初始化流程数据
             saveDispatch: saveDispatch,         // 保存
@@ -45,7 +45,6 @@
         function initDispatchData(vm) {
             vm.isCommit = true;
             vm.busiFlag.signleToMerge = false;
-
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/dispatch/initData",
@@ -63,6 +62,7 @@
                         var data = response.data;
                         vm.sign = data.sign;
                         vm.dispatchDoc = data.dispatch;     //可编辑的发文对象
+                        vm.dispatchDoc.signId = $state.params.signid;
                         if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
                             vm.busiFlag.isMerge = true;     //合并发文
                         }
@@ -118,8 +118,19 @@
                                 if (response.data.reCode == "error") {
                                     vm.isCommit = false;
                                 } else {
-                                    // 初始化数据获得保存后的数据
-                                    initDispatchData(vm);
+                                    if(!vm.dispatchDoc.id){
+                                        vm.dispatchDoc.id = response.data.reObj.id;
+                                        //初始化附件上传
+                                        vm.showFlag.buttSysFile = true;
+                                        sysfileSvc.initUploadOptions({
+                                            businessId: vm.dispatchDoc.id,
+                                            sysSignId: vm.dispatchDoc.signId,
+                                            sysfileType: "发文",
+                                            uploadBt: "upload_file_bt",
+                                            detailBt: "detail_file_bt",
+                                            vm: vm
+                                        });
+                                    }
                                 }
                             }
                         })

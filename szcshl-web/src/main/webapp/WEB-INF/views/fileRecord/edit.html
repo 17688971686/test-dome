@@ -8,7 +8,7 @@
 <!--  s form -->
 <form id="fileRecord_form" name="fileRecord_form" >	
 <div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.saveProcess"><span class="glyphicon glyphicon-ok"></span>保存</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
 	<a  class="btn btn-sm btn-danger" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 	<button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button>
 	<button class="btn btn-sm btn-primary" id="detail_file_bt" >查看附件</button>
@@ -349,8 +349,10 @@
 		    <tr>
 		      <td width="15%" class="text-center">档案员签收</td>
 		      <td>
-		     	 <select ng-model="vm.signUser" id="signUserid"  ng-options="o as o.displayName for o in vm.signUserList">		     			     											
-				 	<option value="">请选择</option>
+		     	 <select ng-model="vm.fileRecord.signUserid" id="signUserid">
+					 <option ng-repeat="x in vm.signUserList" value="{{x.id}}"
+							 ng-selected="vm.fileRecord.signUserid == x.id">{{x.displayName}}
+					 </option>
 				 </select> 				
 		      </td>
 		      <td width="15%" class="text-center">存档日期</td>

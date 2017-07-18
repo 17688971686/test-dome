@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = ['sysfileSvc', '$http', '$state'];
-    function workprogram(sysfileSvc, $http, $state) {
+    workprogram.$inject = ['sysfileSvc', '$http', '$state','$rootScope'];
+    function workprogram(sysfileSvc, $http, $state,$rootScope) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				        //初始化页面参数
@@ -29,13 +29,14 @@
         //S_初始化已选项目列表
         function getSeleWPByMainId(vm) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/workprogram/getSeleWPByMainId",
                 params: {
                     mainBussnessId:vm.work.id
                 }
             }
             var httpSuccess = function success(response) {
+                vm.selectedWP = [];
                 vm.selectedWP = response.data;
             }
             common.http({
@@ -57,7 +58,7 @@
                 }
             }
             var httpSuccess = function success(response) {
-                vm.unSeledWork = {};
+                vm.unSeledWork = [];
                 vm.unSeledWork = response.data;
             }
             common.http({
@@ -342,7 +343,10 @@
                     fn: function () {
                         if (response.data != null && response.data != "") {
                             vm.work = response.data;
-                            vm.work.signId = $state.params.signid;
+                            vm.work.signId = $state.params.signid;		//收文ID(重新赋值)
+                            if(vm.work.projectType){
+                                vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
+                            }
                             //初始化数值
                             if(vm.work.reviewType == "自评"){
                                 vm.businessFlag.isSelfReview = true;           //是否自评
@@ -424,19 +428,16 @@
                                 fn: function () {
                                     if (response.data.reCode == "ok") {
                                         //如果没有没有工作方案ID，则刷新路由
-                                        if(!vm.work.id){
-                                            $state.go('workprogramEdit', {signid: vm.work.signId,workProgramId:response.data.reObj.id });
-                                        }else{
-                                            //初始化数值
-                                            if(response.data.reObj.reviewType == "自评"){
-                                                vm.businessFlag.isSelfReview = true;           //是否自评
-                                            }
-                                            if(response.data.reObj.isSigle == "合并评审"){
-                                                vm.businessFlag.isSingleReview = false;         //是否单个评审
-                                            }
-                                            if(response.data.reObj.isMainProject == "9"){
-                                                vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
-                                            }
+                                        vm.work.id = response.data.reObj.id;
+                                        //初始化数值
+                                        if(response.data.reObj.reviewType == "自评"){
+                                            vm.businessFlag.isSelfReview = true;           //是否自评
+                                        }
+                                        if(response.data.reObj.isSigle == "合并评审"){
+                                            vm.businessFlag.isSingleReview = false;         //是否单个评审
+                                        }
+                                        if(response.data.reObj.isMainProject == "9"){
+                                            vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
                                         }
                                     }
                                 }

@@ -293,21 +293,23 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //2、执行保存操作
             Date now = new Date();
             DispatchDoc dispatchDoc = null;
-            if (dispatchDocDto != null && !Validate.isString(dispatchDocDto.getId())) {
+            if (!Validate.isString(dispatchDocDto.getId())) {
                 dispatchDoc = new DispatchDoc();
                 BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
                 dispatchDoc.setId(UUID.randomUUID().toString());
                 dispatchDoc.setDraftDate(now);
                 dispatchDoc.setCreatedBy(currentUser.getLoginName());
                 dispatchDoc.setCreatedDate(now);
+
+                dispatchDocDto.setId(dispatchDoc.getId());
             } else {
-                dispatchDoc = dispatchDocRepo.findById(dispatchDocDto.getId());
+                dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(),dispatchDocDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);
             }
             dispatchDoc.setModifiedBy(currentUser.getLoginName());
             dispatchDoc.setModifiedDate(now);
 
-            Sign sign = signRepo.getById(dispatchDocDto.getSignId());
+            Sign sign = signRepo.findById(Sign_.signid.getName(),dispatchDocDto.getSignId());
             sign.setIsDispatchCompleted(EnumState.YES.getValue());
             sign.setDispatchDoc(dispatchDoc);
             // 收文、工作方案、发文的报审金额一致
@@ -322,7 +324,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatchDoc.setSign(sign);
             dispatchDocRepo.save(dispatchDoc);
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",dispatchDocDto);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取收文信息，请联系管理员处理！");
         }
@@ -341,7 +343,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         Map<String, Object> map = new HashMap<String, Object>();
         DispatchDocDto dispatchDto = new DispatchDocDto();
         //1、获取发文信息
-        Sign sign = signRepo.getById(signId);
+        Sign sign = signRepo.findById(signId);
         DispatchDoc dispatch = sign.getDispatchDoc();
 
         //2、如果为空，则初始化发文数据

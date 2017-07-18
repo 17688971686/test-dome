@@ -203,7 +203,7 @@
                         <button class="btn btn-xs btn-primary" ng-click="vm.editSign()" ng-disabled="vm.isCommit"  ><span class="glyphicon glyphicon-edit"></span>审批登记表</button>
                     </p>
 		      		<!-- 工作方案 -->
-                    <p ng-show="vm.showFlag.businessDis"><!--主流程工作方案环节才显示-->
+                    <p ng-show="vm.showFlag.businessDis"><!--主流程工作方案环节才显示，如果是并行流程，则不显示-->
                        	 直接发文：<input class="formAlignRight" ng-model="vm.businessFlag.isGotoDis" ng-true-value="true"
                                      ng-false-value="false" type="checkbox" style="width:20px;" ng-click="vm.checkNeedWP($event)">
                     </p>

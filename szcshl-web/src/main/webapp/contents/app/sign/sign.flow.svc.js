@@ -86,7 +86,10 @@
                     break ;
                 case "XMFZR_SP_GZFA1":  //项目负责人承办
                     vm.showFlag.businessTr = true;
-                    vm.showFlag.businessDis = true;     //显示是否直接发文
+                    //如果是并行流程，则不显示直接发文
+                    if(!vm.flow.curNode.isConcurrent){
+                        vm.showFlag.businessDis = true;     //显示是否直接发文
+                    }
                     vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
                     vm.businessFlag.editExpertSC = true;//编辑专家评分和评审费
                     vm.businessFlag.isMainWP = true;    //主工作方案
@@ -226,6 +229,7 @@
                 case "XS_XMFZR_GZFA":       //项目负责人承办
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeXSWorkProgram = true;
+                    vm.businessFlag.isMainWP = true;    //主工作方案
 
                     if(vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9' && vm.model.isNeedWrokPrograml == '9'){ //如果填报完成，则显示
                         $("#show_workprogram_a").click();
@@ -233,11 +237,13 @@
                     break;
                 case "XS_BZSP_GZFA":             //部长审批工作方案
                     vm.showFlag.buttBack = true;    //可回退
+                    vm.businessFlag.isMainWP = true;    //主工作方案
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();
                     }
                     break;
                 case "XS_FGLDSP_GZFA":           //分管审批工作方案
+                    vm.businessFlag.isMainWP = true;    //主工作方案
                     vm.showFlag.buttBack = true;    //可回退
                     if(vm.model.isNeedWrokPrograml == '9'){
                         $("#show_workprogram_a").click();

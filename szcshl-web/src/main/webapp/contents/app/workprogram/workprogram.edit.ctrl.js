@@ -76,10 +76,6 @@
         vm.onWorkClose=function(){
         	window.parent.$(".workPro").data("kendoWindow").close();
         }
-        //保存合并评审
-        vm.mergeAddWork = function(){
-        	workprogramSvc.mergeAddWork(vm);
-        }
 
         //初始化合并评审弹框
         vm.initMergeWP = function(){

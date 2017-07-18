@@ -59,8 +59,8 @@ public class WorkProgramController {
         return resultList;
     }
 
-    @RequiresPermissions("workprogram#getSeleWPByMainId#get")
-    @RequestMapping(name = "获取已选合并评审工作方案", path = "getSeleWPByMainId", method = RequestMethod.GET)
+    @RequiresPermissions("workprogram#getSeleWPByMainId#post")
+    @RequestMapping(name = "获取已选合并评审工作方案", path = "getSeleWPByMainId", method = RequestMethod.POST)
     public @ResponseBody
     List<WorkProgramDto> getSeleWPByMainId(@RequestParam(required = true) String mainBussnessId) throws Exception {
         List<WorkProgramDto> resultList = workProgramService.getSeleWPByMainId(mainBussnessId);

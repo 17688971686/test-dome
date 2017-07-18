@@ -1,29 +1,10 @@
 package cs.service.sys;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import cs.common.utils.BeanCopierUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SysFileUtil;
 import cs.domain.project.Sign;
-import cs.domain.project.WorkProgram;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
@@ -32,6 +13,16 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.*;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {
@@ -197,4 +188,11 @@ public class SysFileServiceImpl implements SysFileService {
         return map;
     }
 
+    @Override
+    public List<SysFile> sysFileByIds(String signid) {
+        HqlBuilder hql = HqlBuilder.create();
+        hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.businessId.getName()).append("=:businessId").setParam("businessId", signid);
+        List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
+        return sysFiles;
+    }
 }

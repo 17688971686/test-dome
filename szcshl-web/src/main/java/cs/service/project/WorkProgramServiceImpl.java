@@ -170,62 +170,87 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //如果有工作方案ID，则按工作方案ID查询
         if(Validate.isString(workProgramId)){
             WorkProgram workProgram = workProgramRepo.findById(workProgramId);
-            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-            //初始化会议室预定情况
-            List<RoomBooking> roomBookings = workProgram.getRoomBookings();
-            if (roomBookings != null && roomBookings.size() > 0) {
-                List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
-                roomBookings.forEach(r -> {
-                    RoomBookingDto rbDto = new RoomBookingDto();
-                    BeanCopierUtils.copyProperties(r, rbDto);
-                    rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(), "HH:mm"));
-                    rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
-                    roomBookingDtos.add(rbDto);
-                });
-                workProgramDto.setRoomBookingDtos(roomBookingDtos);
-            }
+            initWorkProgramDto(workProgram,workProgramDto);
 
-        //没有则初始化
+        //没有则按收文ID查询(主要是负责人填报环节)
         }else{
-            //是否为项目负责人标识,如果两者都不是，则是审核领导
-            boolean isMainUser = false;
-            isMainUser = signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), signId, EnumState.YES.getValue());
+            //是否主项目负责人
+            boolean isMainUser = signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), signId, EnumState.YES.getValue());
+            boolean isHaveWP = false;
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append(" from "+WorkProgram.class.getSimpleName()+" where "+WorkProgram_.sign.getName()+"."+Sign_.signid.getName());
+            hqlBuilder.append(" =:signId").setParam("signId",signId);
 
-            Sign sign = signRepo.findById(signId);
-            workProgramDto.setProjectName(sign.getProjectname());
-            workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
-            workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
-            workProgramDto.setWorkreviveStage(sign.getReviewstage());//评审阶段
-            workProgramDto.setTitleDate(new Date());
-            //来文单位默认全部是：深圳市发展和改革委员会，可改...
-            //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
-            workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
-            workProgramDto.setSendFileUser(sign.getMainDeptUserName());
-
-            //查询项目的第一第二负责人
-            User mainUser = signPrincipalService.getMainPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
-            List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
-
-            if(mainUser != null && Validate.isString(mainUser.getId())){
-                workProgramDto.setMianChargeUserId(mainUser.getId());
-                workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
-                workProgramDto.setReviewOrgId(mainUser.getOrg().getId());
-                workProgramDto.setReviewOrgName(mainUser.getOrg().getName());
-                workProgramDto.setIsMain(isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
-            }
-            if (secondPriUserList != null && secondPriUserList.size() > 0) {
-                String seUserIds = "",seUserName = "";
-                for(User u:secondPriUserList){
-                    seUserIds += u.getId() + ",";
-                    seUserName += u.getDisplayName() + ",";
+            List<WorkProgram> wpList = workProgramRepo.findByHql(hqlBuilder);
+            if(wpList != null && wpList.size() > 0){
+                for(WorkProgram wp : wpList){
+                    if((EnumState.YES.getValue()).equals(wp.getIsMain()) && isMainUser){
+                        initWorkProgramDto(wp,workProgramDto);
+                        isHaveWP = true;
+                        break;
+                    }else if((EnumState.NO.getValue()).equals(wp.getIsMain()) && !isMainUser){
+                        initWorkProgramDto(wp,workProgramDto);
+                        isHaveWP = true;
+                        break;
+                    }
                 }
-                workProgramDto.setSecondChargeUserId(seUserIds.substring(0,seUserIds.length()-1));
-                workProgramDto.setSecondChargeUserName(seUserName.substring(0,seUserName.length()-1));
+            }
+
+            //如果没有，则初始化
+            if(!isHaveWP){
+                Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+                workProgramDto.setProjectName(sign.getProjectname());
+                workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
+                workProgramDto.setDesignCompany(sign.getDesigncompanyName());
+                workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
+                workProgramDto.setWorkreviveStage(sign.getReviewstage());//评审阶段
+                workProgramDto.setTitleDate(new Date());
+                //来文单位默认全部是：深圳市发展和改革委员会，可改...
+                //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
+                workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
+                workProgramDto.setSendFileUser(sign.getMainDeptUserName());
+
+                //查询项目的第一第二负责人
+                User mainUser = signPrincipalService.getMainPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+                List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+
+                if(mainUser != null && Validate.isString(mainUser.getId())){
+                    workProgramDto.setMianChargeUserId(mainUser.getId());
+                    workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
+                    workProgramDto.setReviewOrgId(mainUser.getOrg().getId());
+                    workProgramDto.setReviewOrgName(mainUser.getOrg().getName());
+                    workProgramDto.setIsMain(isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+                }
+                if (secondPriUserList != null && secondPriUserList.size() > 0) {
+                    String seUserIds = "",seUserName = "";
+                    for(User u:secondPriUserList){
+                        seUserIds += u.getId() + ",";
+                        seUserName += u.getDisplayName() + ",";
+                    }
+                    workProgramDto.setSecondChargeUserId(seUserIds.substring(0,seUserIds.length()-1));
+                    workProgramDto.setSecondChargeUserName(seUserName.substring(0,seUserName.length()-1));
+                }
             }
         }
 
         return workProgramDto;
+    }
+
+    private void initWorkProgramDto(WorkProgram workProgram,WorkProgramDto workProgramDto){
+        BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+        //初始化会议室预定情况
+        List<RoomBooking> roomBookings = workProgram.getRoomBookings();
+        if (roomBookings != null && roomBookings.size() > 0) {
+            List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
+            roomBookings.forEach(r -> {
+                RoomBookingDto rbDto = new RoomBookingDto();
+                BeanCopierUtils.copyProperties(r, rbDto);
+                rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(), "HH:mm"));
+                rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
+                roomBookingDtos.add(rbDto);
+            });
+            workProgramDto.setRoomBookingDtos(roomBookingDtos);
+        }
     }
 
     /**

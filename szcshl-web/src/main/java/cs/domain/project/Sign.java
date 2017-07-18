@@ -458,18 +458,6 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String isDispatchCompleted;
 
-    //工作方案
-    @OneToMany(mappedBy = "sign")
-    private List<WorkProgram> workProgramList;
-
-    //发文
-    @OneToOne(mappedBy = "sign")
-    private DispatchDoc dispatchDoc;
-
-    //归档
-    @OneToOne(mappedBy = "sign")
-    private FileRecord fileRecord;
-
     //主办部门
     @Column(columnDefinition = "VARCHAR(64)")
     private String mOrgId;
@@ -787,6 +775,18 @@ public class Sign extends DomainBase {
     //第二负责人
     @Column(columnDefinition = "VARCHAR(64)")
     private String secondPriUser;
+
+    //工作方案
+    @OneToMany(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkProgram> workProgramList;
+
+    //发文
+    @OneToOne(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private DispatchDoc dispatchDoc;
+
+    //归档
+    @OneToOne(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private FileRecord fileRecord;
 
     //关联下一阶段的项目
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,10 +34,10 @@ private  String ctrlName = "fileRecord";
 	private UserService userService;
 	
 	@RequiresPermissions("fileRecord##post")
-	@RequestMapping(name = "发文提交", path = "",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void post(@RequestBody FileRecordDto fileRecordDto) throws Exception  {
-		fileRecordService.save(fileRecordDto);
+	@RequestMapping(name = "发文提交", path = "",method=RequestMethod.POST)
+	@ResponseBody
+	public ResultMsg post(@RequestBody FileRecordDto fileRecordDto) throws Exception  {
+		return fileRecordService.save(fileRecordDto);
 	}
 	
 	@RequiresPermissions("fileRecord#html/edit#get")
@@ -49,8 +50,6 @@ private  String ctrlName = "fileRecord";
 	@RequestMapping(name = "初始归档编辑页面", path = "html/initFillPage",method=RequestMethod.GET)	
 	public @ResponseBody Map<String,Object> initFillPage(@RequestParam(required = true)String signId){		
 		Map<String,Object> resultMap = new HashMap<String,Object>();
-		List<SysFile> sysFilelist = fileRecordService.sysFileByIds(signId);
-		resultMap.put("sysFilelist", sysFilelist);
 		resultMap.put("file_record", fileRecordService.initBySignId(signId));
 		resultMap.put("sign_user_List", userService.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue()));
 		return resultMap;	

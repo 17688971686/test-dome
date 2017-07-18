@@ -29,4 +29,5 @@ public interface SysFileService {
 
     Map<String, Object> initFileUploadlist(String signid);
 
+    List<SysFile> sysFileByIds(String signid);
 }

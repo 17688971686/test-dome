@@ -324,7 +324,7 @@
                 }
             }else if(vm.businessFlag.isAssistWP){
                 if(vm.assistwork.id){
-                    workProgramId = vm.mainwork.id;
+                    workProgramId = vm.assistwork.id;
                 }
             }
             $state.go('workprogramEdit', {signid: vm.model.signid,workProgramId:workProgramId });
@@ -566,6 +566,7 @@
                         },
                         cancel:function(){
                             checkbox.checked = !checked;
+                            vm.showFlag.nodeWorkProgram = true;     //显示工作方案
                             $('.confirmDialog').modal('hide');
                         }
                     })

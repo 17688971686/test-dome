@@ -23,9 +23,6 @@
             paymentGrid: paymentGrid,           //专家评审费
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,             //生成会前准备材
-           
-            
-            
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
         };
         return service;
@@ -549,9 +546,17 @@
                             msg: "操作成功",
                             fn: function () {
                                 vm.isSubmit = false;
-                                vm.model.isNeedWrokPrograml = '0'
+                                //更改收文状态
+                                vm.model.isNeedWrokPrograml = '0';
+                                vm.model.isreviewCompleted = '0';
+                                vm.model.isreviewACompleted = '0';
+                                //更改工作方案状态
+                                vm.showMainwork = false;
+                                vm.mainwork = {};
+                                vm.showAssistwork = false;
+                                vm.assistwork = {};
                                 $('.alertDialog').modal('hide');
-                                initFlowPageData(vm);
+
                             }
                         })
                     }

@@ -111,7 +111,7 @@
             <tr>
                 <td colspan="2" style="width:100px;" class="text-center">项目类别<span class="required">*</span></td>
                 <td>
-                    <select class="form-control input-sm " style="width: 60%; " name="wide"
+                    <select style="width: 60%; " name="wide"
                             ng-model="vm.work.projectType"
                             ng-change="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
                             data-val-required="必选项" data-val="true">
@@ -123,9 +123,8 @@
                 </td>
                 <td style="width:80px;" class="text-center">小类<span class="required">*</span></td>
                 <td>
-                    <select class="form-control input-sm " ng-model="vm.work.projectSubType" style="width: 60%;"
-                            name="projectSubType"
-                            data-val="true">
+                    <select ng-model="vm.work.projectSubType" style="width: 60%;"
+                            name="projectSubType" data-val="true">
                         <option ng-repeat="x in vm.work.projectTypeDicts" value="{{x.dictName}}"
                                 ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}
                         </option>
