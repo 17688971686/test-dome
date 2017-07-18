@@ -68,8 +68,4 @@ public interface SignService{
 	
 	Map<String,Object> initSignList();
 	
-	PageModelDto<RuProcessTask> ruProcessTask(ODataObj odataObj, String skip, String top);
-	
-	PageModelDto<HiProcessTask> hiProcessTask(ODataObj odataObj, String skip, String top);
-	
 }

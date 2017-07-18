@@ -449,7 +449,7 @@ public class SignServiceImpl implements SignService {
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         }
         if (task == null) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+            return new ResultMsg(false, MsgCode.ERROR.getValue(),  "该流程已被处理！");
         }
         //参数定义
 
@@ -1459,86 +1459,5 @@ public class SignServiceImpl implements SignService {
         return pageModelDto;
     }
     
-    @Override
-    public PageModelDto<RuProcessTask> ruProcessTask(ODataObj odataObj, String skip, String top) {
-    	PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
-    	 Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
-         // 处理filter
-         if (odataObj.getFilter() != null) {
-             for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
-                 String field = oDataFilterItem.getField();
-                 String operator = oDataFilterItem.getOperator();
-                 Object value = oDataFilterItem.getValue();
-                 switch (operator) {
-                     case "like":
-                         criteria.add(Restrictions.like(field, "%" + value + "%"));
-                         break;
-                     case "eq":
-                         criteria.add(Restrictions.eq(field, value));
-                         break;
-                     case "ne":
-                         criteria.add(Restrictions.ne(field, value));
-                         break;
-                     default:
-                         break;
-                 }
-             }
-         }
-         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-         criteria.setProjection(null);
-         // 处理分页
-         if (Validate.isString(skip)) {
-             criteria.setFirstResult(Integer.valueOf(skip));
-         }
-         if (Validate.isString(top)) {
-             criteria.setMaxResults(Integer.valueOf(top));
-         }
-         List<RuProcessTask> ruProcessTask = criteria.list();
-    	// 处理filter
-    	pageModelDto.setCount(totalResult);
-    	pageModelDto.setValue(ruProcessTask);
-    	return pageModelDto;
-    }
-    
-    @Override
-    public PageModelDto<HiProcessTask> hiProcessTask(ODataObj odataObj, String skip, String top) {
-    	PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
-    	Criteria criteria = hiProcessTaskRepo.getExecutableCriteria();
-    	// 处理filter
-    	if (odataObj.getFilter() != null) {
-    		for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
-    			String field = oDataFilterItem.getField();
-    			String operator = oDataFilterItem.getOperator();
-    			Object value = oDataFilterItem.getValue();
-    			switch (operator) {
-    			case "like":
-    				criteria.add(Restrictions.like(field, "%" + value + "%"));
-    				break;
-    			case "eq":
-    				criteria.add(Restrictions.eq(field, value));
-    				break;
-    			case "ne":
-    				criteria.add(Restrictions.ne(field, value));
-    				break;
-    			default:
-    				break;
-    			}
-    		}
-    	}
-    	Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-    	criteria.setProjection(null);
-    	// 处理分页
-    	if (Validate.isString(skip)) {
-    		criteria.setFirstResult(Integer.valueOf(skip));
-    	}
-    	if (Validate.isString(top)) {
-    		criteria.setMaxResults(Integer.valueOf(top));
-    	}
-    	List<HiProcessTask> ruProcessTask = criteria.list();
-    	// 处理filter
-    	pageModelDto.setCount(totalResult);
-    	pageModelDto.setValue(ruProcessTask);
-    	return pageModelDto;
-    }
 
 }

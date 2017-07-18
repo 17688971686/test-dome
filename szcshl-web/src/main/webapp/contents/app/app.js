@@ -286,17 +286,7 @@
                 templateUrl: rootPath + '/sign/html/signList.html',
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
-            }).state('ruProcessTask', { //在办项目
-                url: '/ruProcessTask',
-                templateUrl: rootPath + '/sign/html/ruProcessTask.html',
-                controller: 'adminRuPrTaskCtrl',
-                controllerAs: 'vm'
-            }).state('hiProcessTask', { //已办项目
-                url: '/hiProcessTask',
-                templateUrl: rootPath + '/sign/html/hiProcessTask.html',
-                controller: 'adminHiPrTaskCtrl',
-                controllerAs: 'vm'
-            })//end#ruProcessTask
+            })//end#signList
 
             //begin#workprogram
             .state('workprogramEdit', {

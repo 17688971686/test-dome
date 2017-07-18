@@ -106,42 +106,14 @@
                         <tbody>
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
-                            <th>最新已办</th>
-                            <th>发布单位</th>
+                            <th>最新待办</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
-                            <td>
-                                管委会
-                            </td>
-                            <td><span class="badge bg-red">2017-8-10</span></td>
+                        <tr ng-repeat="t in vm.tasksList|limitTo:6">
+                            <td ng-bind="$index+1">1</td>
+                            <td>{{t.projectName}}</td>
+                            <td><span class="badge bg-red">{{t.createTime}}</span></td>
                         </tr>
-                        <tr>
-                            <td>2.</td>
-                            <td>关于居民安全消防检查的通知</td>
-                            <td>
-                                消防部
-                            </td>
-                            <td><span class="badge bg-yellow">2017-8-9</span></td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td>关于增设宝龙街道清洁岗位的通知</td>
-                            <td>
-                                市政部门
-                            </td>
-                            <td><span class="badge bg-light-blue">2017-5-12</span></td>
-                        </tr>                        
-                        <tr>
-                            <td>4.</td>
-                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
-                            <td>
-                                管委会
-                            </td>
-                            <td><span class="badge bg-green">2017-5-8</span></td>
-                        </tr>                       
                         </tbody>
                     </table>
                 </div>
@@ -160,41 +132,13 @@
                         <tbody>
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
-                            <th>最新待办</th>
-                            <th>发布单位</th>
+                            <th>最新已办</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
-                            <td>
-                                管委会
-                            </td>
-                            <td><span class="badge bg-red">2017-8-10</span></td>
-                        </tr>
-                        <tr>
-                            <td>2.</td>
-                            <td>关于居民安全消防检查的通知</td>
-                            <td>
-                                消防部
-                            </td>
-                            <td><span class="badge bg-yellow">2017-8-9</span></td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td>关于增设宝龙街道清洁岗位的通知</td>
-                            <td>
-                                市政部门
-                            </td>
-                            <td><span class="badge bg-light-blue">2017-5-12</span></td>
-                        </tr>
-                        <tr>
-                            <td>4.</td>
-                            <td>宝龙街道管委会关于2017-2018社区活动计划</td>
-                            <td>
-                                管委会
-                            </td>
-                            <td><span class="badge bg-green">2017-5-8</span></td>
+                        <tr ng-repeat="e in vm.endTasksList|limitTo:6">
+                             <td ng-bind="$index+1">1</td>
+                            <td>{{e.projectName}}</td>
+                            <td><span class="badge bg-red">{{e.endTime}}</span></td>
                         </tr>
                         </tbody>
                     </table>

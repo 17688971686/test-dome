@@ -184,7 +184,7 @@ public class SignController {
         return pageModelDto;
     }
     
-    @RequiresPermissions("sign#ruProcessTask#post")
+    /*@RequiresPermissions("sign#ruProcessTask#post")
     @RequestMapping(name = "在办项目", path = "ruProcessTask", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<RuProcessTask> ruProcessTask(HttpServletRequest request) throws ParseException {
@@ -200,7 +200,7 @@ public class SignController {
     	ODataObj odataObj = new ODataObj(request);
     	PageModelDto<HiProcessTask> pageModelDto = signService.hiProcessTask(odataObj,request.getParameter("$skip"), request.getParameter("$top"));
     	return pageModelDto;
-    }
+    }*/
 
     /***************************************  S 新流程处理的方法     *******************************************/
 
