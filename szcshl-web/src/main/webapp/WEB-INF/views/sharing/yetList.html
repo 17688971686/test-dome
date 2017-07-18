@@ -1,0 +1,48 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/sharingPlatlform">共享平台</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+ 
+       <form id="formSharingPub" name="formSharingPub">
+    	 <div class="well">
+      	 
+           <span class="help-inline" style="margin-left:10px;">发布部门：</span>
+           <select style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
+	    	   	 	<option value="">无</option>
+					<option ng-repeat="org in vm.orglist" value="{{org.name}}">{{org.name}}</option>
+			</select>
+			
+           <span class="help-inline" style="margin-left:10px;">个人发布：</span>
+          		 <select style="width:10%;" ng-model="vm.model.postResume"  name="postResume" id="postResume" operator="eq" >
+	    	   	 	<option value="">无</option>
+					<option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
+				</select>
+		<span class="help-inline" style="margin-left:10px;">发布状态：</span>
+          	<select style="width:10%;" ng-model="vm.model.isPublish"  name="isPublish" id="isPublish" operator="eq" >
+	    	   	 	<option value="">无</option>
+	    	   	 	<option value="9">已发布</option>
+	    	   	 	<option value="0">未发布</option>
+			</select>
+          <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.findSharing()">查询</a>
+          <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetShared()">重置</a>
+        </div>
+        </form>
+        
+        <script type="text/template" id="columnBtns">
+		 <button class="btn btn-sm btn-success" ng-click="{0}"  ng-hide="{1}" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-cloud-upload"></span>确认发布
+       	</button>
+ 		<button class="btn btn-sm btn-warning" ng-click="{2}" ng-show="{3}" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-cloud-download"></span>取消发布
+        </button>
+
+        </script>
+        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+
