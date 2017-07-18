@@ -425,6 +425,34 @@
                 controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
+            //begin#sharing
+            .state('sharingPlatlform', {
+                url: '/sharingPlatlform',
+                templateUrl: rootPath + '/sharingPlatlform/html/list.html',
+                controller: 'sharingPlatlformCtrl',
+                controllerAs: 'vm'
+            }).state('sharingPlatlformEdit', {
+                url: '/sharingPlatlformEdit/:sharId',
+                templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
+                controller: 'sharingPlatlformEditCtrl',
+                controllerAs: 'vm'
+            })
+             //资料共享详情页
+             .state('sharingDetil', {
+                url: '/sharingDetil/:sharId',
+                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
+                controller: 'sharingDetailCtrl',
+                controllerAs: 'vm'
+            })
+             .state('sharingPlatlformYet', {
+                url: '/sharingPlatlformYet',
+                templateUrl: rootPath + '/sharingPlatlform/html/yetList.html',
+                controller: 'sharingPlatlformYetCtrl',
+                controllerAs: 'vm'
+            })
+            
+           
+            //end#sharing
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {

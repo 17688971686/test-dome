@@ -143,6 +143,7 @@
 			vm.gridOptions.dataSource.read();	
 		}
 		// end 模糊查询
+		
 		function createcompany(vm) {
 			common.initJqValidation();
 			var isValid = $('form').valid();
