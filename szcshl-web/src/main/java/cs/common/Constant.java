@@ -257,6 +257,7 @@ public class Constant {
      * 模板枚举
      */
     public static enum Template{
+    	EXPORTROOM("exportRoom","导出会议室安排"),
         OUTPUT_SUFFIX(".doc","work文档"),        //生成work文档
         COMPERE("compere","主持人"),
         MEETING_AM("meetingAM","会议议程（上午）"),

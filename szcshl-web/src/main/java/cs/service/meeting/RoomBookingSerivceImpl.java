@@ -10,10 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.ibm.icu.util.CharsTrie.Entry;
+import com.ibm.icu.util.CharsTrie.Iterator;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
@@ -28,6 +33,7 @@ import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
@@ -54,8 +60,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	private WorkProgramRepo workProgramRepo;
 
 	@Autowired
-    private SysFileRepo sysFileRepo;
-	
+	private SysFileRepo sysFileRepo;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
 	@Override
 	public List<RoomBookingDto> getRoomList() {
 		List<RoomBooking> roomList=	roomBookingRepo.findAll();
@@ -78,24 +87,24 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Override
 	public void exportThisWeekStage() {
 		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //获取本周一到周五的日期
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        Date  monday=cal.getTime();
-        String MONDAY =df.format(monday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-        Date tuseday = cal.getTime();
-        String TUESDAY = df.format(tuseday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-        Date wednesday =cal.getTime();
-        String WEDNESDAY = df.format(wednesday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-        Date thursday = cal.getTime();
-        String THURSDAY = df.format(thursday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-        Date friday = cal.getTime();
-        String FRIDAT = df.format(friday);
-        
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		//获取本周一到周五的日期
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		Date  monday=cal.getTime();
+		String MONDAY =df.format(monday);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		Date tuseday = cal.getTime();
+		String TUESDAY = df.format(tuseday);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+		Date wednesday =cal.getTime();
+		String WEDNESDAY = df.format(wednesday);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+		Date thursday = cal.getTime();
+		String THURSDAY = df.format(thursday);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+		Date friday = cal.getTime();
+		String FRIDAT = df.format(friday);
+
 		String path =SysFileUtil.getUploadPath();//文件路劲
 		List<SysFile> sysfile = new ArrayList<>();
 		String showName = "";
@@ -115,13 +124,13 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			});
 		}
 		Map<String,Object> dataMap = new HashMap<>();
-	        dataMap.put("MONDAY",MONDAY);
-	        dataMap.put("TUESDAY",TUESDAY);
-	        dataMap.put("WEDNESDAY",WEDNESDAY);
-	        dataMap.put("THURSDAY",THURSDAY);
-	        dataMap.put("FRIDAT",FRIDAT);
-	        dataMap.put("rbNamelist",roomDtos);
-	        
+		dataMap.put("MONDAY",MONDAY);
+		dataMap.put("TUESDAY",TUESDAY);
+		dataMap.put("WEDNESDAY",WEDNESDAY);
+		dataMap.put("THURSDAY",THURSDAY);
+		dataMap.put("FRIDAT",FRIDAT);
+		dataMap.put("rbNamelist",roomDtos);
+
 		showName = Constant.Template.THIS_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
 		relativeFileUrl = SysFileUtil.generatRelativeUrl(path,roomId+"本周评审会议安排", roomId,showName);
 		String pathFile = path + File.separator + relativeFileUrl;
@@ -132,17 +141,17 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
 		}
 		if(sysfile.size() > 0){
-			
-			 Date now = new Date();
-			 sysfile.forEach(sf->{
-	                sf.setCreatedDate(now);
-	                sf.setModifiedDate(now);
-	                sf.setCreatedBy(currentUser.getLoginName());
-	                sf.setModifiedBy(currentUser.getLoginName());
-	            });
-	         sysFileRepo.bathUpdate(sysfile);
+
+			Date now = new Date();
+			sysfile.forEach(sf->{
+				sf.setCreatedDate(now);
+				sf.setModifiedDate(now);
+				sf.setCreatedBy(currentUser.getLoginName());
+				sf.setModifiedBy(currentUser.getLoginName());
+			});
+			sysFileRepo.bathUpdate(sysfile);
 		}
-		
+
 	}
 	/**
 	 * 导出下周评审会安排
@@ -151,94 +160,94 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	public void exportNextWeekStage() {
 
 		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //增加一个星期，才是我们中国人理解的本周日的日期
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        //星期一
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextMonday=cal.getTime();
-        String MONDAY = df.format(nextMonday);
-        //星期二
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextTuesday = cal.getTime();
-        String TUESDAY = df.format(nextTuesday);
-        //星期三
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextWednesday = cal.getTime();
-        String WEDNESDAY =df.format(nextWednesday);
-        //星期四
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextThursday = cal.getTime();
-        String THURSDAY =   df.format(nextThursday);
-        //星期五
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextFriday = cal.getTime();
-        String FRIDAY = df.format(nextFriday);
-        //星期六
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextSatday = cal.getTime();
-        //获取下周星期日
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        Date nextSunday=cal.getTime();
-        
-        String path =SysFileUtil.getUploadPath();//文件路劲
-   		List<SysFile> sysfile = new ArrayList<>();
-   		String showName = "";
-   		String relativeFileUrl = "";
-   		String stageProject  = "";
-   		String roomId = "";
-   		File docFile = null;
-   		List<SysFile> saveFile = new ArrayList<>();
-   		List<RoomBookingDto> room =roomBookingRepo.findStageNextWeek();
-        Map<String,Object> dataMap = new HashMap<>();
-      
-        dataMap.put("MONDAY",MONDAY);
-        dataMap.put("TUESDAY",TUESDAY);
-        dataMap.put("WEDNESDAY",WEDNESDAY);
-        dataMap.put("THURSDAY",THURSDAY);
-        dataMap.put("FRIDAY",FRIDAY);
-        dataMap.put("roomlist",room);
-        
-        showName = Constant.Template.NEXT_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-        relativeFileUrl = SysFileUtil.generatRelativeUrl(path, roomId+"下周评审会议安排", roomId, showName);
-   
-       docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
-        
-       if(docFile !=null){
-    	   sysfile.add(new SysFile(UUID.randomUUID().toString(),roomId,relativeFileUrl,showName,
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		//这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		//增加一个星期，才是我们中国人理解的本周日的日期
+		cal.add(Calendar.WEEK_OF_YEAR, 1);
+		//星期一
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		Date nextMonday=cal.getTime();
+		String MONDAY = df.format(nextMonday);
+		//星期二
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		Date nextTuesday = cal.getTime();
+		String TUESDAY = df.format(nextTuesday);
+		//星期三
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		Date nextWednesday = cal.getTime();
+		String WEDNESDAY =df.format(nextWednesday);
+		//星期四
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		Date nextThursday = cal.getTime();
+		String THURSDAY =   df.format(nextThursday);
+		//星期五
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		Date nextFriday = cal.getTime();
+		String FRIDAY = df.format(nextFriday);
+		//星期六
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		Date nextSatday = cal.getTime();
+		//获取下周星期日
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		cal.add(Calendar.WEEK_OF_YEAR, 1);
+		Date nextSunday=cal.getTime();
+
+		String path =SysFileUtil.getUploadPath();//文件路劲
+		List<SysFile> sysfile = new ArrayList<>();
+		String showName = "";
+		String relativeFileUrl = "";
+		String stageProject  = "";
+		String roomId = "";
+		File docFile = null;
+		List<SysFile> saveFile = new ArrayList<>();
+		List<RoomBookingDto> room =roomBookingRepo.findStageNextWeek();
+		Map<String,Object> dataMap = new HashMap<>();
+
+		dataMap.put("MONDAY",MONDAY);
+		dataMap.put("TUESDAY",TUESDAY);
+		dataMap.put("WEDNESDAY",WEDNESDAY);
+		dataMap.put("THURSDAY",THURSDAY);
+		dataMap.put("FRIDAY",FRIDAY);
+		dataMap.put("roomlist",room);
+
+		showName = Constant.Template.NEXT_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, roomId+"下周评审会议安排", roomId, showName);
+
+		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
+
+		if(docFile !=null){
+			sysfile.add(new SysFile(UUID.randomUUID().toString(),roomId,relativeFileUrl,showName,
 					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
-       }
-		
-       if(saveFile.size() >0){
-    	   Date now = new Date();
-    	   saveFile.forEach(sfile ->{
-    		   sfile.setCreatedDate(now);
-    		   sfile.setModifiedDate(now);
-    		   sfile.setCreatedBy(currentUser.getLoginName());
-    		   sfile.setModifiedBy(currentUser.getLoginName());
-    	   });
-       }
-       sysFileRepo.bathUpdate(saveFile);
-		
+		}
+
+		if(saveFile.size() >0){
+			Date now = new Date();
+			saveFile.forEach(sfile ->{
+				sfile.setCreatedDate(now);
+				sfile.setModifiedDate(now);
+				sfile.setCreatedBy(currentUser.getLoginName());
+				sfile.setModifiedBy(currentUser.getLoginName());
+			});
+		}
+		sysFileRepo.bathUpdate(saveFile);
+
 	}
-	
+
 	//本周全部会议安排
 	@Override
 	@Transactional
 	public List<RoomBooking> findWeek() {
-		 List<RoomBooking> rb= roomBookingRepo.findWeekBook();
+		List<RoomBooking> rb= roomBookingRepo.findWeekBook();
 		return rb;
 	}
-	
+
 
 	//导出下周全部会议安排
 	@Override
@@ -247,7 +256,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		List<RoomBookingDto> room =roomBookingRepo.findNextWeek();
 		return room;
 	}
-	
+
 	@Override
 	@Transactional
 	public List<MeetingRoomDto> findMeetingAll() {
@@ -264,7 +273,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		}
 		return meetingDtos;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see cs.service.meeting.RoomBookingSerivce#get(cs.repository.odata.ODataObj)
 	 */
@@ -277,7 +286,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			roomList.forEach(x->{
 				RoomBookingDto roomDto = new RoomBookingDto();
 				BeanCopierUtils.copyProperties(x, roomDto);
-                roomDtoList.add(roomDto);
+				roomDtoList.add(roomDto);
 			});						
 		}		
 		pageModelDto.setCount(odataObj.getCount());
@@ -286,23 +295,23 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	}
 
 	protected  int checkRootBook(RoomBookingDto roomBookingDto){
-        //判断会议时间是否冲突
-        HqlBuilder sqlBuilder= HqlBuilder.create();
-        sqlBuilder.append(" select count(ID) from CS_ROOM_BOOKING where " + RoomBooking_.mrID.getName()+" =:mrId");
+		//判断会议时间是否冲突
+		HqlBuilder sqlBuilder= HqlBuilder.create();
+		sqlBuilder.append(" select count(ID) from CS_ROOM_BOOKING where " + RoomBooking_.mrID.getName()+" =:mrId");
 		sqlBuilder.setParam("mrId",roomBookingDto.getMrID()) ;
-        //排除本身
-        if(Validate.isString(roomBookingDto.getId())){
-            sqlBuilder.append(" and ID <> :id").setParam("id",roomBookingDto.getId());
-        }
+		//排除本身
+		if(Validate.isString(roomBookingDto.getId())){
+			sqlBuilder.append(" and ID <> :id").setParam("id",roomBookingDto.getId());
+		}
 		sqlBuilder.append(" and("+RoomBooking_.beginTime.getName());
-        sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
-        sqlBuilder.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
-        sqlBuilder.append(" or "+RoomBooking_.endTime.getName());
-        sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
-        sqlBuilder.append(" and :endTime )").setParam("endTime", roomBookingDto.getEndTime());
+		sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
+		sqlBuilder.append(" and :endTime").setParam("endTime", roomBookingDto.getEndTime());
+		sqlBuilder.append(" or "+RoomBooking_.endTime.getName());
+		sqlBuilder.append(" between :beginTime").setParam("beginTime", roomBookingDto.getBeginTime());
+		sqlBuilder.append(" and :endTime )").setParam("endTime", roomBookingDto.getEndTime());
 
-        return roomBookingRepo.returnIntBySql(sqlBuilder);
-    }
+		return roomBookingRepo.returnIntBySql(sqlBuilder);
+	}
 
 	@Override
 	@Transactional
@@ -325,34 +334,34 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 
 			if(Validate.isString(roomBookingDto.getWorkProgramId())){
 				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
-                wp.setWorkStageTime(strdate+"("+day+")"+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
-                wp.setMeetingId(roomBookingDto.getMrID());
-                wp.setMeetingAddress(roomBookingDto.getAddressName());
-                rb.setWorkProgram(wp);
+				wp.setWorkStageTime(strdate+"("+day+")"+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
+				wp.setMeetingId(roomBookingDto.getMrID());
+				wp.setMeetingAddress(roomBookingDto.getAddressName());
+				rb.setWorkProgram(wp);
 			}
 			roomBookingRepo.save(rb);
 		}
-		
+
 	}
-	
+
 	@Override
 	@Transactional
 	public void updateRoom(RoomBookingDto roomBookingDto) {
 		if(checkRootBook(roomBookingDto) > 0){
 			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomBookingDto.getBeginTime()));
 		}else{
-            RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
+			RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
 			BeanCopierUtils.copyPropertiesIgnoreNull(roomBookingDto, room);
 			room.setModifiedBy(currentUser.getLoginName());
 			room.setModifiedDate(new Date());
 
-            if(Validate.isString(roomBookingDto.getWorkProgramId())){
-                WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
-                wp.setWorkStageTime(room.getRbDate()+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
-                wp.setMeetingId(roomBookingDto.getMrID());
-                wp.setMeetingAddress(roomBookingDto.getAddressName());
-                room.setWorkProgram(wp);
-            }
+			if(Validate.isString(roomBookingDto.getWorkProgramId())){
+				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
+				wp.setWorkStageTime(room.getRbDate()+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
+				wp.setMeetingId(roomBookingDto.getMrID());
+				wp.setMeetingAddress(roomBookingDto.getAddressName());
+				room.setWorkProgram(wp);
+			}
 			roomBookingRepo.save(room);
 			logger.info(String.format("更新会议室预定,会议名称:%s", roomBookingDto.getRbName()));
 		}
@@ -363,55 +372,178 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	public void deleteRoom(String id) {
 		RoomBooking room = 	roomBookingRepo.findById(id);
 		if(room != null){
-//			room.getCreatedBy().equals(currentUser.getLoginUser().getId())
-		    if(room.getCreatedBy().equals(currentUser.getLoginName())){
-                roomBookingRepo.delete(room);
-                logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
-            }else{
-                throw new IllegalArgumentException("您不是会议室预定人员，不能对其进行删除操作！");
-            }
+			//			room.getCreatedBy().equals(currentUser.getLoginUser().getId())
+			if(room.getCreatedBy().equals(currentUser.getLoginName())){
+				roomBookingRepo.delete(room);
+				logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
+			}else{
+				throw new IllegalArgumentException("您不是会议室预定人员，不能对其进行删除操作！");
+			}
 		}
 	}
 
 	@Override
 	public void deleteRooms(String[] ids) {
 		for(String id:ids){
-            deleteRoom(id);
-        }
+			deleteRoom(id);
+		}
 	}
 
 	@Override
 	@Transactional
 	public void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto) {
-        if(checkRootBook(roomDto) > 0){
-            throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomDto.getBeginTime()));
-        }else{
-            RoomBooking rb = new RoomBooking();
-            BeanCopierUtils.copyProperties(roomDto, rb);
-            String strdate = DateUtils.toStringDay(roomDto.getRbDay());
-            String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
-            rb.setRbDate(strdate+"("+stageday+")");//星期几
-            String stageProject = roomDto.getStageProject();
-            rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
+		if(checkRootBook(roomDto) > 0){
+			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomDto.getBeginTime()));
+		}else{
+			RoomBooking rb = new RoomBooking();
+			BeanCopierUtils.copyProperties(roomDto, rb);
+			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
+			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
+			rb.setRbDate(strdate+"("+stageday+")");//星期几
+			String stageProject = roomDto.getStageProject();
+			rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
 
-            Date now = new Date();
-            rb.setCreatedDate(now);
-            rb.setModifiedDate(now);
-            rb.setCreatedBy(currentUser.getLoginName());
-            rb.setModifiedBy(currentUser.getLoginName());
-            roomBookingRepo.save(rb);
-            WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
-            if(workProgram != null){
-                String d = DateUtils.toStringDay(roomDto.getRbDay());
-                String day = GetWeekUtils.getWeek(roomDto.getRbDay());
-                workProgram.setWorkStageTime(d+"("+day+")"+roomDto.getBeginTimeStr()+"至"+roomDto.getEndTimeStr());
-                workProgram.setMeetingId(roomDto.getMrID());
-                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-                workProgramRepo.save(workProgram);
-            }
-        }
+			Date now = new Date();
+			rb.setCreatedDate(now);
+			rb.setModifiedDate(now);
+			rb.setCreatedBy(currentUser.getLoginName());
+			rb.setModifiedBy(currentUser.getLoginName());
+			roomBookingRepo.save(rb);
+			WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
+			if(workProgram != null){
+				String d = DateUtils.toStringDay(roomDto.getRbDay());
+				String day = GetWeekUtils.getWeek(roomDto.getRbDay());
+				workProgram.setWorkStageTime(d+"("+day+")"+roomDto.getBeginTimeStr()+"至"+roomDto.getEndTimeStr());
+				workProgram.setMeetingId(roomDto.getMrID());
+				BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+				workProgramRepo.save(workProgram);
+			}
+		}
 	}
 
-	
-	
+	/**
+	 * 导出本周评审会议安排
+	 */
+	@Override
+	public void exportRoom(String date,String rbType,String mrId) {
+		String [] dates=date.split("-");
+		String start=dates[0].replace("/", "-");
+		String end=dates[1].replaceAll("/", "-");
+		List<Map> roomBookMap=findWeekRoom(start,rbType,mrId);
+		if("0".equals(rbType)){
+			rbType="评审会";
+		}
+		if("1".equals(rbType)){
+			rbType="全部会";
+		}
+		List<List<String>> rbNameList=new ArrayList<>();
+		//		int j=0;
+		for(int i=0;i<13;i++){
+			List<String> rbNames=new ArrayList<>();
+			for(int j=0;j<roomBookMap.size();j++){
+				Object obj=roomBookMap.get(j);
+				Object[] objArr= (Object[]) obj;
+				if((String) objArr[1]!=null){
+					String[] str=((String) objArr[1]).split(",");
+					if(i<=str.length-1){
+						rbNames.add(str[i]);
+					}else{
+						rbNames.add("");
+//						i=0;
+					}
+				}else{
+					rbNames.add("");
+				}
+			}
+			rbNameList.add(rbNames);
+		}
+
+		List<String> timeList=new ArrayList<String>();
+		timeList.add("星期一");
+		timeList.add("星期二");
+		timeList.add("星期三");
+		timeList.add("星期四");
+		timeList.add("星期五");
+		timeList.add("星期六");
+		timeList.add("星期日");
+
+		String path =SysFileUtil.getUploadPath();//文件路劲
+		List<SysFile> sysfile = new ArrayList<>();
+		String showName = "";
+		String relativeFileUrl = "";
+		String stageProject  = "";
+		String roomId = "";
+		File docFile = null;
+		List<RoomBooking> rb= roomBookingRepo.findWeekBook();
+		List<RoomBookingDto> roomDtos = new ArrayList<>();
+		if(rb !=null && rb.size() >0){
+			rb.forEach(x->{
+				RoomBookingDto roomDto = new RoomBookingDto();
+				BeanCopierUtils.copyProperties(x, roomDto);
+				roomDto.setCreatedDate(x.getCreatedDate());
+				roomDto.setModifiedDate(x.getModifiedDate());
+				roomDtos.add(roomDto);
+			});
+		}
+		Map<String,Object> dataMap = new HashMap<>();
+		dataMap.put("timeList", timeList);
+		dataMap.put("TITLE",rbType);
+		dataMap.put("START",start);
+		dataMap.put("END",end);
+		dataMap.put("contentList",rbNameList);
+		showName = Constant.Template.EXPORTROOM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+		relativeFileUrl = SysFileUtil.generatRelativeUrl(path,roomId+"本周评审会议安排", roomId,showName);
+		String pathFile = path + File.separator + relativeFileUrl;
+		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.EXPORTROOM.getKey(),pathFile);
+		if(docFile != null){
+			sysfile.add(new SysFile(UUID.randomUUID().toString(),UUID.randomUUID().toString(),relativeFileUrl,showName,
+					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
+					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
+		}
+		if(sysfile.size() > 0){
+
+			Date now = new Date();
+			sysfile.forEach(sf->{
+				sf.setCreatedDate(now);
+				sf.setModifiedDate(now);
+				sf.setCreatedBy(currentUser.getLoginName());
+				sf.setModifiedBy(currentUser.getLoginName());
+			});
+			sysFileRepo.bathUpdate(sysfile);
+		}
+
+	}
+
+	/* 
+	 * 获取一周每天的会议安排信息
+	 */
+	@Override
+	public List<Map> findWeekRoom(String date,String rbType,String mrId) {
+		HqlBuilder sqlBuilder=HqlBuilder.create();
+		sqlBuilder.append("select dd.wDate,rbdd.rbName from (select trunc(to_date('"+date+"','yyyy-mm-dd'),'iw') as wdate from dual union ");
+		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +1 as wDate from dual union ");
+		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +2 as wDate from dual union ");
+		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +3 as wDate from dual union ");
+		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +4 as wDate from dual union ");
+		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +5 as wDate from dual union ");
+		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +6 as wDate from dual ) dd  ");
+		sqlBuilder.append(" left join ( select rbd.rbday,wm_concat(rbd.rbName) rbName from (");
+		sqlBuilder.append("select rb."+RoomBooking_.rbName.getName()+",rb."+ RoomBooking_.rbDay.getName()+" from CS_ROOM_BOOKING rb");
+		sqlBuilder.append(" where "+RoomBooking_.rbDay.getName()+" > (trunc(to_date(:dates,'yyyy-mm-dd'),'iw')-1)");
+		sqlBuilder.append(" and "+RoomBooking_.rbDay.getName()+" < (trunc (to_date(:dates,'yyyy-mm-dd'),'iw')+7) ");
+		sqlBuilder.append(" and "+RoomBooking_.mrID.getName()+"=:mrId ");
+		if("0".equals(rbType)){
+			sqlBuilder.append(" and workProgramId is not null");
+		}
+		/*if("1".equals(rbType)){
+			sqlBuilder.append(" and workProgramId is null");
+		}*/
+		sqlBuilder.append(") rbd ");
+		sqlBuilder.append("group by rbd."+RoomBooking_.rbDay.getName()+") rbdd on rbdd.rbday = dd.wDate order by dd.wDate");
+		sqlBuilder.setParam("dates", date);
+		sqlBuilder.setParam("mrId", mrId);
+		List<Map> roomMap=roomBookingRepo.findMapListBySql(sqlBuilder);
+		return roomMap;
+	}
+
 }

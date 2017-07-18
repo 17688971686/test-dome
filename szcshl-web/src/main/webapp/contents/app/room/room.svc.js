@@ -348,6 +348,11 @@
             });
 
             vm.schedulerOptions = {
+            	 toolbar: [ "pdf" ],
+            pdf: {
+                fileName: "会议室一览表.pdf",
+                proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+            },
                 date: new Date(),
                 startTime: vm.startDateTime,
                 endTime: vm.endDateTime,
@@ -439,10 +444,10 @@
         //start#exportWeek
         //本周评审会议
         function exportThisWeekStage(vm) {
-
              var httpOptions = {
                  method: 'get',
                  url: url_room+"/exportThisWeekStage",
+                 params:{currentDate : vm.currentDate,rbType : vm.rbType, mrId : vm.mrID}
                 
              }
              var httpSuccess = function success(response) {
@@ -476,7 +481,8 @@
         
             var httpOptions = {
                     method: 'get',
-                    url: url_room+"/exportNextWeekStage",
+                 url: url_room+"/exportThisWeekStage",
+                 params:{currentDate : vm.currentDate}
                    
                 }
                 var httpSuccess = function success(response) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class TemplateUtil {
         cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
         Date friday = cal.getTime();
         String FRIDAT = df.format(friday);*/
-    	
+    /*	
 		Calendar cal =Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
@@ -160,9 +161,35 @@ public class TemplateUtil {
         dataMap.put("stageProject","资金申请报告书");
         
        File docFile =  TemplateUtil.createDoc(dataMap,"nextStageMeeting","E:\\szcshl_upload\\nexstmeeating.doc");
-
+*/
 //        System.out.print(docFile);
 //    	nextWeekMeeting();
+    	
+    	 Map<String,Object> dataMap = new HashMap<>();
+    	 List<String> timeList=new ArrayList<String>();
+    	 timeList.add("星期一");
+    	 timeList.add("星期二");
+    	 timeList.add("星期三");
+    	 timeList.add("星期四");
+    	 timeList.add("星期五");
+    	 timeList.add("星期六");
+    	 timeList.add("星期日");
+    	 List<String> contentList=new ArrayList<String>();
+    	 contentList.add("aaa1");
+    	 contentList.add("aaa2");
+    	 contentList.add("aaa3");
+    	 contentList.add("aaa4");
+    	 contentList.add("aaa5");
+    	 contentList.add("aaa6");
+    	 contentList.add("aaa7");
+       
+         dataMap.put("TITLE","评审会");
+         dataMap.put("START","2017-07-10");
+         dataMap.put("END","2017-07-14");
+         dataMap.put("contentList",contentList);
+         dataMap.put("timeList", timeList);
+         TemplateUtil.createDoc(dataMap,"exportRoom","E:\\szcshl_upload\\1234.doc");
+        
     }
     
     public static void nextWeekMeeting(){

@@ -2,6 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+ <script src="https://kendo.cdn.telerik.com/2017.2.621/js/pako_deflate.min.js"></script>
 <style>
     .custom-event {
         color: #000000;
@@ -73,7 +74,9 @@
     <ol class="breadcrumb" style="font-size: 12px;">
         <li class="active">温馨提示：双击时间段进行会议室预定或者修改！</li>
     </ol>
-    <div kendo-scheduler k-options="vm.schedulerOptions"></div>
+    <!--  <button type="button"  class="k-button" ng-click="vm.getPDF('#scheduler')" >导出PDF</button> -->
+    <div kendo-scheduler k-options="vm.schedulerOptions" id="scheduler" ></div>
+
 </div>
 
 <script id="event-template" type="text/x-kendo-template">
