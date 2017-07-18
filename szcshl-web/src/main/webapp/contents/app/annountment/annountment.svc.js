@@ -184,10 +184,14 @@
 
         // begin#grid
         function grid(vm) {
+        	var url="/annountment/fingByOData";
+            if(vm.title=="通知公告列表"){
+            	url="/annountment/fingByOData?$filter=issue eq '9'";
+             }
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/annountment/fingByOData",$("#annountmentform")),
+                transport: common.kendoGridConfig().transport(rootPath + url,$("#annountmentform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -279,8 +283,17 @@
                     title: "操作",
                     width: 150,
                     template: function (item) {
+                    	if(vm.title=="通知公告管理"){
+                    	
                         return common.format($('#columnBtns').html(),
                             "vm.detail('" + item.anId + "')", item.anId, "vm.del('" + item.anId + "')");
+                    	}
+                    	
+                    	if(vm.title=="通知公告列表"){
+                    	
+                        return common.format($('#columnBtns').html(),
+                            "vm.detail('" + item.anId + "')");
+                    	}
                     }
                 }
             ];

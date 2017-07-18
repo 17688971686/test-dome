@@ -415,6 +415,13 @@
                 controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
+             //通过公告
+            .state('annountmentList', {
+                url: '/annountmentList',
+                templateUrl: rootPath + '/annountment/html/annList.html',
+                controller: 'annountmentListCtrl',
+                controllerAs: 'vm'
+            })
             //begin#sharing
             .state('sharingPlatlform', {
                 url: '/sharingPlatlform',

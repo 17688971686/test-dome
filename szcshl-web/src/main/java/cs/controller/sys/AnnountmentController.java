@@ -109,7 +109,7 @@ public class AnnountmentController {
     
     //begin  html
     @RequiresPermissions("annountment#html/list#get")
-    @RequestMapping(name = "通知公告列表", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "通知公告管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
@@ -124,5 +124,11 @@ public class AnnountmentController {
     @RequestMapping(name = "通知公告详情页", path = "html/detail")
     public String annountment() {
         return ctrlName + "/detail";
+    }
+    
+    @RequiresPermissions("annountment#html/annList#get")
+    @RequestMapping(name = "通知公告列表", path = "html/annList", method = RequestMethod.GET)
+    public String annList() {
+        return ctrlName + "/annList";
     }
 }

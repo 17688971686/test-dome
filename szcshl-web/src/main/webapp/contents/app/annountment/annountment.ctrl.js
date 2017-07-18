@@ -7,7 +7,7 @@
 
     function annountment($location, $state, $http, annountmentSvc, sysfileSvc) {
         var vm = this;
-        vm.title = "通知公告列表";
+        vm.title = "通知公告管理";
 
         active();
         function active() {
