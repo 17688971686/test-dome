@@ -48,4 +48,8 @@ public interface FlowService {
     PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, String skip, String top, boolean isUserDeal);
 
     List<HiProcessTask> getProcessHistory(String processInstanceId);
+
+    List<RuProcessTask> queryMyRunProcessTasks();
+
+    List<TaskDto> queryMyEndTasks();
 }

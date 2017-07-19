@@ -12,11 +12,16 @@
             etasksGrid: etasksGrid,		//个人办结
             dtasksGrid: dtasksGrid,        //在办任务
             countWorakday: countWorakday,	//计算工作日
-            initAnnountment: initAnnountment,	//初始化通知公告栏
-            initFile: initFile,	//初始化附件
-            upload: upload,	//	下载附件
+
+            initFile: initFile,	        //初始化附件
+            upload: upload,	            //	下载附件
             getSignList: getSignList,  //项目查询统计
             initSignList: initSignList,//初始化項目查詢統計
+            <!-- 以下是首页方法-->
+            initAnnountment: initAnnountment,	    //初始化通知公告栏
+            findendTasks: findendTasks,             //已办项目列表
+            findtasks: findtasks,                   //待办项目列表
+            findHomePluginFile :findHomePluginFile, //获取首页安装文件
         }
         return service;
 
@@ -40,7 +45,7 @@
 
         //begin initAnnountment
         function initAnnountment(vm) {
-        	vm.i=1;
+            vm.i = 1;
             var httpOptions = {
                 method: "get",
                 url: rootPath + "/annountment/getHomePageAnnountment"
@@ -56,23 +61,37 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-            findtasks(vm);
-            findendTasks(vm);
-            
+
         }//end initAnnountment
-       
-        //查找待办
-        function findtasks(vm){
-        	  vm.tasksList={};
-        	  var httpOptions = {
+
+        //S_获取本地安装包
+        function findHomePluginFile(vm){
+            var httpOptions = {
                 method: "post",
-                url: rootPath + "/flow/html/tasks"
+                url: rootPath + "/file/listHomeFile"
             }
-
             var httpSuccess = function success(response) {
-            	vm.tasksList=response.data.value;
+                vm.pluginFileList = {};
+                vm.pluginFileList = response.data;
             }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_findHomePluginFile
 
+        //查找待办
+        function findtasks(vm) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/flow/getMyHomeTasks"
+            }
+            var httpSuccess = function success(response) {
+                vm.tasksList = {};
+                vm.tasksList = response.data;
+            }
             common.http({
                 vm: vm,
                 $http: $http,
@@ -80,16 +99,17 @@
                 success: httpSuccess
             });
         }
+
         //查找已办
-        function findendTasks(vm){
-        	  vm.endTasksList={};
-        	  var httpOptions = {
+        function findendTasks(vm) {
+            vm.endTasksList = {};
+            var httpOptions = {
                 method: "post",
-                url: rootPath + "/flow/html/endTasks"
+                url: rootPath + "/flow/getMyHomeEndTask"
             }
 
             var httpSuccess = function success(response) {
-                vm.endTasksList = response.data.value;
+                vm.endTasksList = response.data;
             }
 
             common.http({
@@ -123,6 +143,7 @@
         function upload(vm, sysFileId) {
             window.open(rootPath + "/file/fileDownload?sysfileId=" + sysFileId);
         }//end upload
+
         //S_gtasksGrid
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
@@ -712,12 +733,12 @@
                     title: "是否协审",
                     width: 140,
                     filterable: false,
-                    template: function(item){
-                    	if(item.sisassistproc==9){
-                    		return "是";
-                    	}else{
-                    		return "否";
-                    	}
+                    template: function (item) {
+                        if (item.sisassistproc == 9) {
+                            return "是";
+                        } else {
+                            return "否";
+                        }
                     }
                 },
                 {
@@ -754,7 +775,7 @@
             };
 
         }//end_getSignList
-        
+
 
         //begin_initSignList
         function initSignList(vm) {
@@ -767,14 +788,14 @@
                 vm.usersList = response.data.usersList;
                 vm.orgsList = response.data.orgsList;
                 /*if (response.data.orgMLeaderName) {
-                    vm.sign.orgMLeaderName = response.data.orgMLeaderName;
-                }
-                if (response.data.orgdirectorname) {
-                    vm.sign.orgdirectorname = response.data.orgdirectorname;
-                }
-                if (response.data.orgSLeaderName) {
-                    vm.sign.orgSLeaderName = response.data.orgSLeaderName;
-                }*/
+                 vm.sign.orgMLeaderName = response.data.orgMLeaderName;
+                 }
+                 if (response.data.orgdirectorname) {
+                 vm.sign.orgdirectorname = response.data.orgdirectorname;
+                 }
+                 if (response.data.orgSLeaderName) {
+                 vm.sign.orgSLeaderName = response.data.orgSLeaderName;
+                 }*/
                 //这里不用查询
                 //vm.signListOptions.dataSource.read();
             }

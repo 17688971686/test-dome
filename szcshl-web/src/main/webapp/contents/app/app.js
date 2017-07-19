@@ -23,7 +23,7 @@
             .state('welcome', {
                 url: '/welcome',
                 templateUrl: rootPath + '/admin/welcome.html',
-                controller: 'adminCtrl',
+                controller: 'adminWelComeCtrl',
                 controllerAs: 'vm'
             })
             .state('gtasks', {
@@ -402,7 +402,6 @@
                 controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
-<<<<<<< Updated upstream
              //通过公告
             .state('annountmentList', {
                 url: '/annountmentList',
@@ -435,10 +434,8 @@
                 controller: 'sharingPlatlformYetCtrl',
                 controllerAs: 'vm'
             })
-            
-           
             //end#sharing
-=======
+
             //系统安装包管理
             .state('pluginfile',{
                 url: '/pluginfile',
@@ -446,7 +443,6 @@
                 controller: 'pluginfileCtrl',
                 controllerAs: 'vm'
             })
->>>>>>> Stashed changes
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {

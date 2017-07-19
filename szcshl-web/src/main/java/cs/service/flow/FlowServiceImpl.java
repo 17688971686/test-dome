@@ -573,55 +573,6 @@ public class FlowServiceImpl implements FlowService {
         return runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
     }
 
-    /**
-     * 查询个人待办任务(停用：2017-07-06)
-     */
-    /*@Override
-    public PageModelDto<TaskDto> queryGTasks(ODataObj odataObj) {
-        CacheFactory cacheFactory = new DefaultCacheFactory();
-        ICache cache = cacheFactory.getCache();
-
-        PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
-
-        TaskQuery taskQuery = taskService.createTaskQuery();
-        taskQuery.taskCandidateOrAssigned(currentUser.getLoginUser().getLoginName());
-
-        int total = Integer.valueOf(String.valueOf(taskQuery.count()));
-        List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
-        if (tasks != null && tasks.size() > 0) {
-            List<TaskDto> list = new ArrayList<TaskDto>(tasks.size());
-            tasks.forEach(t -> {
-                ProcessInstance pi = (ProcessInstance) cache.get(t.getProcessInstanceId());
-                if (pi == null || !Validate.isString(pi.getId())) {
-                    pi = runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
-                    cache.put(t.getProcessInstanceId(), pi);
-                }
-                Sign sign=signRepo.findById(pi.getBusinessKey());
-                TaskDto taskDto = new TaskDto();
-                taskDto.setBusinessKey(pi.getBusinessKey());
-                taskDto.setBusinessName(pi.getName());
-                taskDto.setFlowKey(pi.getProcessDefinitionKey());
-                taskDto.setFlowName(pi.getProcessDefinitionName());
-                taskDto.setTaskId(t.getId());
-                taskDto.setTaskName(t.getName());
-                taskDto.setFormKey(t.getFormKey());
-                taskDto.setParentTaskId(t.getParentTaskId());
-                taskDto.setProcessInstanceId(t.getProcessInstanceId());
-                taskDto.setProcessDefinitionId(t.getProcessDefinitionId());
-                taskDto.setProcessVariables(t.getProcessVariables());
-                taskDto.setCreateDate(t.getCreateTime());
-                taskDto.setSuspended(t.isSuspended());
-                taskDto.setTaskDefinitionKey(t.getTaskDefinitionKey());
-                taskDto.setAssignee(t.getAssignee());
-                taskDto.setIsLightUp(sign.getIsLightUp());
-                list.add(taskDto);
-            });
-            pageModelDto.setValue(list);
-        }
-        pageModelDto.setCount(total);
-
-        return pageModelDto;
-    }*/
     @Override
     public PageModelDto<TaskDto> queryETasks(ODataObj odataObj) {
         PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
@@ -654,53 +605,6 @@ public class FlowServiceImpl implements FlowService {
 
         return pageModelDto;
     }
-
-    /*@Override
-    public PageModelDto<TaskDto> queryDoingTasks(ODataObj odataObj) {
-        CacheFactory cacheFactory = new DefaultCacheFactory();
-        ICache cache = cacheFactory.getCache();
-
-        PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
-
-        TaskQuery taskQuery = taskService.createTaskQuery();
-        int total = Integer.valueOf(String.valueOf(taskQuery.count()));
-        List<Task> tasks = taskQuery.orderByTaskCreateTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
-        if (tasks != null && tasks.size() > 0) {
-            List<TaskDto> list = new ArrayList<TaskDto>(tasks.size());
-            tasks.forEach(t -> {
-                ProcessInstance pi = (ProcessInstance) cache.get(t.getProcessInstanceId());
-                if (pi == null || !Validate.isString(pi.getId())) {
-                    pi = runtimeService.createProcessInstanceQuery().processInstanceId(t.getProcessInstanceId()).singleResult();
-                    cache.put(t.getProcessInstanceId(), pi);
-                }
-                Sign sign = signRepo.findById(pi.getBusinessKey());
-                TaskDto taskDto = new TaskDto();
-                taskDto.setBusinessKey(pi.getBusinessKey());
-                taskDto.setBusinessName(pi.getName());
-                taskDto.setFlowKey(pi.getProcessDefinitionKey());
-                taskDto.setFlowName(pi.getProcessDefinitionName());
-                taskDto.setTaskId(t.getId());
-                taskDto.setTaskName(t.getName());
-                taskDto.setFormKey(t.getFormKey());
-                taskDto.setParentTaskId(t.getParentTaskId());
-                taskDto.setProcessInstanceId(t.getProcessInstanceId());
-                taskDto.setProcessDefinitionId(t.getProcessDefinitionId());
-                taskDto.setProcessVariables(t.getProcessVariables());
-                taskDto.setCreateDate(t.getCreateTime());
-                taskDto.setSuspended(t.isSuspended());
-                taskDto.setTaskDefinitionKey(t.getTaskDefinitionKey());
-                taskDto.setAssignee(t.getAssignee());
-                taskDto.setIsLightUp(sign.getIsLightUp());
-                list.add(taskDto);
-            });
-            pageModelDto.setValue(list);
-        }
-        pageModelDto.setCount(total);
-
-        return pageModelDto;
-    }
-*/
-
     /**
      * 在办任务查询
      *
@@ -769,6 +673,51 @@ public class FlowServiceImpl implements FlowService {
         criteria.addOrder(Order.asc(HiProcessTask_.startTime.getName()));
         List<HiProcessTask> resultList = criteria.list();
         return resultList;
+    }
+
+    /**
+     * 查询首页的个人待办任务
+     * @return
+     */
+    @Override
+    public List<RuProcessTask> queryMyRunProcessTasks() {
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), currentUser.getLoginName()));
+        dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + currentUser.getLoginName() + "%"));
+        criteria.add(dis);
+        criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
+        criteria.setMaxResults(6);
+
+        return criteria.list();
+    }
+
+    /**
+     * 查询首页我的办结任务
+     * @return
+     */
+    @Override
+    public List<TaskDto> queryMyEndTasks() {
+        HistoryService historyService = processEngine.getHistoryService();
+        HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().finished();
+        List<HistoricProcessInstance> historicList = hq.orderByProcessInstanceEndTime().desc().listPage(0, 6);
+        List<TaskDto> list = new ArrayList<TaskDto>(historicList == null ? 0 : historicList.size());
+        if (historicList != null && historicList.size() > 0) {
+            historicList.forEach(h -> {
+                TaskDto taskDto = new TaskDto();
+                taskDto.setBusinessKey(h.getBusinessKey());
+                taskDto.setBusinessName(h.getName());
+                taskDto.setProcessInstanceId(h.getId());
+                taskDto.setProcessVariables(h.getProcessVariables());
+                taskDto.setProcessDefinitionId(h.getProcessDefinitionId());
+                taskDto.setCreateDate(h.getStartTime());
+                taskDto.setEndDate(h.getEndTime());
+                taskDto.setDurationInMillis(h.getDurationInMillis());
+                taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
+                list.add(taskDto);
+            });
+        }
+        return list;
     }
 
 }

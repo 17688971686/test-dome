@@ -14,6 +14,7 @@ import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
+import cs.model.sys.AnnountmentDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
@@ -115,6 +116,20 @@ public class FlowController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<TaskDto> pageModelDto = flowService.queryETasks(odataObj);
         return pageModelDto;
+    }
+
+    @RequiresPermissions("flow#getMyHomeTasks#post")
+    @RequestMapping(name = "查询主页我的待办任务", path = "getMyHomeTasks", method = RequestMethod.POST)
+    @ResponseBody
+    public  List<RuProcessTask> getMyHomeTasks() {
+        return flowService.queryMyRunProcessTasks();
+    }
+
+    @RequiresPermissions("flow#getMyHomeEndTask#postt")
+    @RequestMapping(name = "获取主页上的办结任务", path = "getMyHomeEndTask", method = RequestMethod.POST)
+    @ResponseBody
+    public List<TaskDto> getMyHomeEndTask() {
+        return flowService.queryMyEndTasks();
     }
 
     @RequestMapping(name = "读取流程图", path = "processInstance/img/{processInstanceId}", method = RequestMethod.GET)

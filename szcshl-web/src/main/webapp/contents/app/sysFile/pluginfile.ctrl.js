@@ -14,9 +14,6 @@
             sysfileSvc.queryPluginfile(vm);
         }
 
-        vm.downLoadPlugin = function(fileName){
-            window.open(rootPath + "/file/pluginDownload?fileName=" + fileName);
-        }
 
     }//E_sysConfig
 })();

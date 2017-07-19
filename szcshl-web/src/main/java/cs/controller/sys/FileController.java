@@ -246,4 +246,20 @@ public class FileController {
 
         return pageModelDto;
 	}
+
+    @RequestMapping(name = "获取首页本地插件", path = "listHomeFile", method = RequestMethod.POST)
+    @ResponseBody
+    public List<PluginFileDto> listHomeFile() {
+        List<PluginFileDto> list = new ArrayList<PluginFileDto>();
+        File parent = new File(realPathResolver.get(plugin_file_path));
+        if (parent.exists()) {
+            File flist[] = parent.listFiles();
+            for (File f : flist) {
+                if (!f.isDirectory()) {
+                    list.add(new PluginFileDto(f,plugin_file_path)) ;
+                }
+            }
+        }
+        return list;
+    }
 }
