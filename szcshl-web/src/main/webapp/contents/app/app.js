@@ -435,16 +435,23 @@
                 controllerAs: 'vm'
             })
             //end#sharing
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
             //系统安装包管理
             .state('pluginfile',{
                 url: '/pluginfile',
                 templateUrl: rootPath + '/file/html/pluginfile.html',
                 controller: 'pluginfileCtrl',
                 controllerAs: 'vm'
+<<<<<<< Updated upstream
             })
 
         ;
+=======
+            });
+>>>>>>> Stashed changes
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         //获取表头名称
         $rootScope.getTBHeadName = function(stageName,isAdvanced,type){

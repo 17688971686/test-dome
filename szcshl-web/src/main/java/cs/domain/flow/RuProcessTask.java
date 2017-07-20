@@ -98,9 +98,20 @@ public class RuProcessTask {
 
     @Column
     private String lightState;
+    
+    @Column
+    private String ispause;
 
 
-    public String getTaskId() {
+    public String getIspause() {
+		return ispause;
+	}
+
+	public void setIspause(String ispause) {
+		this.ispause = ispause;
+	}
+
+	public String getTaskId() {
         return taskId;
     }
 

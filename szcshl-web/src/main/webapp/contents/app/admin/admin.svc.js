@@ -22,6 +22,8 @@
             findendTasks: findendTasks,             //已办项目列表
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
+            pauseProject: pauseProject,//暂停工作日
+            startProject: startProject  //启动项目
         }
         return service;
 
@@ -806,5 +808,74 @@
                 success: httpSuccess
             });
         } //end_initSignList
+        //start_pauseProject
+        function pauseProject(vm){
+        	var httpOptions = {
+                method: 'post',
+                url: rootPath + "/projectStop/projectStop",
+                params: {signid: vm.model.signid}
+            }
+            var httpSuccess = function success(response) {
+            	common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							window.parent.$("#spwindow").data("kendoWindow").close();
+							vm.gridOptions.dataSource.read();
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.showWorkHistory = true;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})
+						}
+
+					});
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        } //end_pauseProject
+        
+        //start_startProject
+        function startProject(vm){
+        	console.log(vm.model.signid);
+        	var httpOptions = {
+                method: 'post',
+                url: rootPath + "/projectStop/projectStart",
+                params: {signid: vm.model.signid}
+            }
+            var httpSuccess = function success(response) {
+            	common.requestSuccess({
+						vm : vm,
+						response : response,
+						fn : function() {
+							vm.gridOptions.dataSource.read();
+							common.alert({
+								vm : vm,
+								msg : "操作成功",
+								fn : function() {
+									vm.showWorkHistory = true;
+									$('.alertDialog').modal('hide');
+									$('.modal-backdrop').remove();
+								}
+							})
+						}
+
+					});
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });//end_startProject
+        }
     }
 })();

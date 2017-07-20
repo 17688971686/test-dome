@@ -779,7 +779,11 @@ public class Sign extends DomainBase {
     //工作方案
     @OneToMany(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkProgram> workProgramList;
-
+    
+    //暂停项目
+    @OneToMany(mappedBy="sign")
+    private List<ProjectStop> projectStopList;
+    
     //发文
     @OneToOne(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private DispatchDoc dispatchDoc;
@@ -796,7 +800,16 @@ public class Sign extends DomainBase {
             inverseJoinColumns = @JoinColumn(name = "associate_signid"))
     private Sign associateSign;
 
-    public String getSignid() {
+    
+    public List<ProjectStop> getProjectStopList() {
+		return projectStopList;
+	}
+
+	public void setProjectStopList(List<ProjectStop> projectStopList) {
+		this.projectStopList = projectStopList;
+	}
+
+	public String getSignid() {
         return signid;
     }
 
