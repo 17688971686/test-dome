@@ -10,13 +10,12 @@
         vm.title = "通知公告编辑";
         vm.annountment = {};        //通知公告对象
         vm.annountment.anId = $state.params.id;
-
         vm.businessFlag ={
             isInitFileOption : false,   //是否已经初始化附件上传控件
         }
         active();
         function active() {
-            vm.froalaOptions = {
+           /* vm.froalaOptions = {
                 language: 'zh_cn',
                 inlineMode: false,
                 placeholder: '请输入内容',
@@ -26,7 +25,22 @@
                 toolbarButtons: [
                     'bold', 'italic', 'underline', 'paragraphFormat', 'align','color','fontSize','insertImage','insertTable','undo', 'redo'
                 ]
-            }
+            }*/
+            
+        	   $('#froalaEditor') .froalaEditor({
+		        	
+		        		language: 'zh_cn',
+		                inlineMode: false,
+		                placeholderText:'请输入内容' ,
+		                imageUploadURL: rootPath +"/froala/uploadImg",
+		                imageUploadParams:{rootPath:"E:/szcshl_upload/froala/"},//接口其他传参,默认为空对象{},
+		                enter: $.FroalaEditor.ENTER_BR,
+		                toolbarButtons: [
+		                    'bold', 'italic', 'underline','strikeThrough','fontFamily', 'paragraphFormat', 'align','color','fontSize','outdent',
+		                    'indent','insertImage','insertTable','undo', 'redo','insertLink','fullscreen'
+		                ]
+		        	});
+
 
             if (vm.annountment.anId) {
             	vm.isUpdate=true;
@@ -40,7 +54,9 @@
                     vm: vm
                 })
             }
-
+            
+          
+           
         }
 
         //新增通知公告
