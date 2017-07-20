@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import cs.common.Constant;
 import cs.common.ICurrentUser;
 import cs.common.utils.DateUtils;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;

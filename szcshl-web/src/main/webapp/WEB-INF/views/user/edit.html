@@ -102,11 +102,13 @@
             <tr>
                 <td class="formAlignRight">在职情况：<span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.jobState" id="jobState" name="jobState"class="form-control input-sm " data-val="true" data-val-required="必填">
-                        <option ng-repeat="x in DICT.JOBSTATE.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.model.jobState">{{x.dictName}}</option>
-                    </select>
-                    <span data-valmsg-for="jobState" data-valmsg-replace="true" class="errors"></span>
+                     <select ng-model="vm.model.jobState" id="jobState" name="jobState"class="form-control input-sm " data-val="true" data-val-required="必填">
+						 <option value="t" ng-selected="vm.model.jobState == 't'">在职</option>
+                         <option value="f" ng-selected="vm.model.jobState == 'f'">离职</option>
+					</select>
                 </td>
+                <td><span data-valmsg-for="jobState" data-valmsg-replace="true" class="errors"></span>
+                </td>              
                 <td class="formAlignRight">所在部门：<span class="required">*</span> </td>
                 <td>
                     <select ng-model="vm.model.orgId" id="orgId" name="orgId"class="form-control input-sm " data-val="true" data-val-required="必填">

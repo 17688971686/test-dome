@@ -251,7 +251,7 @@
                         <tr ng-repeat="pf in vm.pluginFileList|limitTo:6">
                             <td>{{$index +1}}.</td>
                             <td>{{pf.fileName}}</td>
-                            <td> <a class="btn btn-xs btn-primary" href="${path}{{+'/'+pf.relativePath}}" ><i class="fa fa-download" aria-hidden="true"></i>下载</a></td>
+                            <td> <a class="btn btn-xs btn-primary" href="${path}{{'/'+pf.relativePath}}" ><i class="fa fa-download" aria-hidden="true"></i>下载</a></td>
                         </tr>
                         </tbody>
                     </table>

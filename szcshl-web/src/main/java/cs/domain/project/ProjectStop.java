@@ -1,15 +1,18 @@
 package cs.domain.project;
 
 
-import cs.domain.DomainBase;
-import cs.domain.expert.ExpertSelected;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.DynamicUpdate;
+
+import cs.domain.DomainBase;
 
 /**
  * 设置为动态更新，只更新有修改的字段

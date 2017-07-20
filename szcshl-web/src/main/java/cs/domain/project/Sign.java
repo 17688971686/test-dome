@@ -781,7 +781,7 @@ public class Sign extends DomainBase {
     private List<WorkProgram> workProgramList;
     
     //暂停项目
-    @OneToMany(mappedBy="sign")
+    @OneToMany(mappedBy="sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProjectStop> projectStopList;
     
     //发文

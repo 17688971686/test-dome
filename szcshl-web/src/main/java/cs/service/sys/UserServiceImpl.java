@@ -47,11 +47,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private IdentityService identityService;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see cs.service.UserService#get(cs.repository.odata.ODataObj)
-     */
     @Override
     @Transactional
     public PageModelDto<UserDto> get(ODataObj odataObj) {
@@ -173,7 +168,6 @@ public class UserServiceImpl implements UserService {
         user.setJobState(userDto.getJobState());
         user.setUseState(userDto.getUseState());
         user.setPwdState(userDto.getPwdState());
-        user.setUserOrder(userDto.getUserOrder());
 
         //添加部门
         if (Validate.isString(userDto.getOrgId())) {
@@ -201,9 +195,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Response Login(String userName, String password, HttpServletRequest request) {
         User user = userRepo.findUserByName(userName);
-       /* if(user.getOrg() != null){
-            user.setOrg(user.getOrg());
-        }*/
         Response response = new Response();
 
         if (user != null) {

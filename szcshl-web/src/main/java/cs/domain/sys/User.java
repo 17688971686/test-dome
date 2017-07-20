@@ -14,61 +14,152 @@ public class User extends DomainBase {
     @Id
     private String id;
 
-    @Column(columnDefinition = "varchar(255) NOT NULL")
-    private String loginName;//登录名
+    /**
+     * 员工代码
+     */
+    @Column(columnDefinition = "varchar(4)")
+    private String userNo;
 
-    @Column(columnDefinition = "varchar(255) NOT NULL")
+    /**
+     * 职务（01中心主任、02中心副主任、03部长、04工程师）
+     */
+    @Column(columnDefinition = "varchar(20)")
+    private String position;
+
+    /**
+     * 职称
+     */
+    @Column(columnDefinition = "varchar(20)")
+    private String  jobTitle;
+
+    /**
+     * 工作岗位
+     */
+    @Column(columnDefinition = "varchar(50)")
+    private String job;
+    /**
+     * 登录名
+     */
+    @Column(columnDefinition = "varchar(64) NOT NULL")
+    private String loginName;
+
+    /**
+     * 登录名
+     */
+    @Column(columnDefinition = "varchar(20) NOT NULL")
     private String password;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String displayName;//显示名
+    /**
+     * 显示名
+     */
+    @Column(columnDefinition = "varchar(64) ")
+    private String displayName;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String userSex; //性别
+    /**
+     * 性别
+     */
+    @Column(columnDefinition = "varchar(2) ")
+    private String userSex;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String userPhone; //联系电话
+    /**
+     * 联系电话
+     */
+    @Column(columnDefinition = "varchar(20) ")
+    private String userPhone;
 
-    @Column(columnDefinition = "varchar(255) ")
+    /**
+     * 联系电话
+     */
+    @Column(columnDefinition = "varchar(20) ")
     private String userMPhone; //联系手机
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String email; //电子邮件
+    /**
+     * 电子邮件
+     */
+    @Column(columnDefinition = "varchar(64) ")
+    private String email;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String jobState; //在职情况
+    /**
+     * 在职情况(t表示在职，f表示不在)
+     */
+    @Column(columnDefinition = "varchar(2) ")
+    private String jobState;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String useState; //是否停用
+    /**
+     * 是否停用
+     */
+    @Column(columnDefinition = "varchar(2) ")
+    private String useState;
 
+    /**
+     * 是否需要更改密码
+     */
     @Column(columnDefinition = "varchar(255) ")
-    private String pwdState; //是否需要更改密码
+    private String pwdState;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String userIP; //登录IP
+    /**
+     * 登录IP
+     */
+    @Column(columnDefinition = "varchar(64) ")
+    private String userIP;
 
+    /**
+     * 最后登录时间
+     */
     @Column(columnDefinition = "date")
-    private Date lastLogin; //最后登录时间
+    private Date lastLogin;
 
+    /**
+     * 加密盐
+     */
     @Column(columnDefinition = "varchar(255) ")
-    private String userSalt; //加密盐
+    private String userSalt;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private Long userOrder; //用户序号
+    /**
+     * 钉钉ID
+     */
+    @Column(columnDefinition = "varchar(64) ")
+    private String userDtID;
 
-    @Column(columnDefinition = "varchar(255) ")
-    private String userDtID;//钉钉ID
-
+    /**
+     * 备注信息
+     */
     @Column(columnDefinition = "varchar(255) ")
     private String remark;
 
+    /**
+     * 登录次数
+     */
     @Column(columnDefinition = "integer")
     private int loginFailCount;
 
+    /**
+     * 最后登录成功日期
+     */
     @Column(columnDefinition = "date")
     private Date lastLoginDate;
 
-    //用户排序
+    /**
+     * 是否参与考勤（默认值为0，1为不参加考勤）
+     */
+    @Column(columnDefinition = "varchar(2) ")
+    private String isAttendance;
+
+    /**
+     * 是否参与统计（默认值为0，1为不参加考勤）
+     */
+    @Column(columnDefinition = "varchar(2) ")
+    private String isCount;
+
+    /**
+     * 是否上传发改委（默认值为0，1为已提交，2为已上传）
+     */
+    @Column(columnDefinition = "varchar(2) ")
+    private String isUploadFGW;
+
+    /**
+     * 用户排序
+     */
     @Column(columnDefinition = "INTEGER")
     private Integer userSort;
 
@@ -233,14 +324,6 @@ public class User extends DomainBase {
         this.userSalt = userSalt;
     }
 
-    public Long getUserOrder() {
-        return userOrder;
-    }
-
-    public void setUserOrder(Long userOrder) {
-        this.userOrder = userOrder;
-    }
-
     public String getUserDtID() {
         return userDtID;
     }
@@ -257,5 +340,59 @@ public class User extends DomainBase {
         this.userSort = userSort;
     }
 
+    public String getUserNo() {
+        return userNo;
+    }
 
+    public void setUserNo(String userNo) {
+        this.userNo = userNo;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getIsAttendance() {
+        return isAttendance;
+    }
+
+    public void setIsAttendance(String isAttendance) {
+        this.isAttendance = isAttendance;
+    }
+
+    public String getIsCount() {
+        return isCount;
+    }
+
+    public void setIsCount(String isCount) {
+        this.isCount = isCount;
+    }
+
+    public String getIsUploadFGW() {
+        return isUploadFGW;
+    }
+
+    public void setIsUploadFGW(String isUploadFGW) {
+        this.isUploadFGW = isUploadFGW;
+    }
 }
