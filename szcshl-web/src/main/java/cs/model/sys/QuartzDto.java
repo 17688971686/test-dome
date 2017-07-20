@@ -17,6 +17,15 @@ public class QuartzDto extends BaseDto {
     private String curState;
     private String isEnable;
     private String descInfo;
+    private String runWay;  //执行方式： 自动    或  手动
+    
+    public String getRunWay() {
+		return runWay;
+	}
+
+	public void setRunWay(String runWay) {
+		this.runWay = runWay;
+	}
 
     public QuartzDto() {
     }

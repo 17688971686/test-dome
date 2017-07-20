@@ -109,5 +109,15 @@ public class QuartzServiceImpl  implements QuartzService {
 		quartzRepo.executeHql(hqlBuilder);
 		
 	}
+
+	@Override
+	public List<Quartz> findDefaultQuartz() {
+		
+		HqlBuilder hqlBuilder=HqlBuilder.create();
+		hqlBuilder.append("select q from "+Quartz.class.getSimpleName()+" q where q."+Quartz_.runWay.getName()+"='自动'");
+		List<Quartz> quartzList=quartzRepo.findByHql(hqlBuilder);
+		
+		return quartzList;
+	}
 	
 }

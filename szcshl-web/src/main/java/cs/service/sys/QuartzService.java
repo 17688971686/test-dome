@@ -1,5 +1,8 @@
 package cs.service.sys;
 
+import java.util.List;
+
+import cs.domain.sys.Quartz;
 import cs.model.PageModelDto;
 import cs.model.sys.QuartzDto;
 import cs.repository.odata.ODataObj;
@@ -22,5 +25,7 @@ public interface QuartzService {
 	void delete(String id);
 	
 	void changeCurState(String id,String state);
+	
+	List<Quartz> findDefaultQuartz();
 
 }

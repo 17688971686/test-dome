@@ -39,10 +39,10 @@
 <div class="well well-sm" style="background:white;display: none;" id="quartz_edit_div">
     <div class="toolbar">
         <button class="btn btn-sm btn-success" ng-click="vm.saveQuartz()" ng-disabled="vm.isSubmit"
-                ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
+                ><span class="glyphicon glyphicon-ok"></span>保存
         </button>
         <button class="btn btn-sm btn-danger" ng-click="vm.colseQuartz()" ng-disabled="vm.isSubmit"
-                ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>关闭
+                ><span class="glyphicon glyphicon-ok"></span>关闭
         </button>
     </div>
     <form id="quartz_form" name="form">
@@ -67,6 +67,18 @@
                     <input class="form-control input-sm " ng-model="vm.quartz.cronExpression" id="cronExpression" name="cronExpression"  style="width:80%;"/>
                     <span data-valmsg-for="cronExpression" data-valmsg-replace="true" class="errors"></span>
                 </td>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">执行方式：</td>
+                <td>
+                <select class="form-control input-sm " ng-model="vm.quartz.runWay" 
+                           id="runWay" name="runWay"  style="width:80%;" >
+                	<option value="手动" >手动</option>
+                	<option value="自动">自动</option>
+                
+                </select >
+               <span data-valmsg-for="isEnable" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
                 <td class="formAlignRight">描述：</td>

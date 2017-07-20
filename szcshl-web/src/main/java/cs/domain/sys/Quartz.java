@@ -63,8 +63,22 @@ public class Quartz extends DomainBase {
      */
     @Column(columnDefinition="VARCHAR(256)")
     private String descInfo;
+    
+    /**
+     * 执行方式
+     */
+    @Column(columnDefinition="VARCHAR(10)")
+    private String runWay;  //执行方式： 自动    或  手动 （默认为手动）
+    
+    public String getRunWay() {
+		return runWay;
+	}
 
-    public String getId() {
+	public void setRunWay(String runWay) {
+		this.runWay = runWay;
+	}
+
+	public String getId() {
         return id;
     }
 
