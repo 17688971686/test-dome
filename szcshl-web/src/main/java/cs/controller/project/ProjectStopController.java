@@ -23,16 +23,16 @@ public class ProjectStopController {
     @RequiresPermissions("ProjectStop#createpStop#post")
     @RequestMapping(name="项目暂停",path="projectStop",method=RequestMethod.POST)
     @ResponseBody
-    public void projectStop(@RequestParam String signid){
-    	projectStopService.addProjectStop(signid);
+    public void projectStop(@RequestParam String signid,String taskid){
+    	projectStopService.addProjectStop(signid,taskid);
     	
     }
     
     @RequiresPermissions("ProjectStop#projectStart#post")
     @RequestMapping(name="项目启动",path="projectStart",method=RequestMethod.POST)
     @ResponseBody
-    public void projectStart(@RequestParam String signid){
-    	projectStopService.projectStart(signid);
+    public void projectStart(@RequestParam String signid,String taskid){
+    	projectStopService.projectStart(signid,taskid);
     }
 	
 }

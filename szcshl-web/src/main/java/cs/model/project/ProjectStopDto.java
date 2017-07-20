@@ -50,7 +50,6 @@ public class ProjectStopDto extends DomainBase {
     
     private SignDto signDto;
     
-    private String signid;
 
 	public Float getExpectpausedays() {
 		return expectpausedays;
@@ -124,12 +123,5 @@ public class ProjectStopDto extends DomainBase {
 		this.startTime = startTime;
 	}
 
-	public String getSignid() {
-		return signid;
-	}
-
-	public void setSignid(String signid) {
-		this.signid = signid;
-	}
     
 }

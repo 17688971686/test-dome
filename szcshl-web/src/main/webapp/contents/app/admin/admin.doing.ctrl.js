@@ -14,12 +14,12 @@
         	vm.showwin=false;
         	adminSvc.dtasksGrid(vm);
         }
-         vm.pauseProject=function(signid){
-         	if(!signid){
+         vm.pauseProject=function(signid,taskid){
+         	if(!signid && !taskid){
         		return;
         	}
          	vm.model.signid=signid;
-         	console.log(vm.model.signid);
+         	vm.model.taskid=taskid;
          	vm.showwin=true;
         	var WorkeWindow = $("#spwindow");
 			WorkeWindow.kendoWindow({
@@ -41,11 +41,12 @@
         	adminSvc.pauseProject(vm);
         }
         
-        vm.startProject=function(signid){
-        	if(!signid){
+        vm.startProject=function(signid,taskid){
+        	if(!signid && !taskid){
         		return;
         	}
         	vm.model.signid=signid;
+        	vm.model.taskid=taskid;
         	adminSvc.startProject(vm);
         }
     }

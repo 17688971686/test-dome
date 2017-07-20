@@ -2,10 +2,15 @@ package cs.repository.repositoryImpl.project;
 
 import java.util.List;
 
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cs.common.HqlBuilder;
+import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.ProjectStop_;
 import cs.domain.project.Sign_;

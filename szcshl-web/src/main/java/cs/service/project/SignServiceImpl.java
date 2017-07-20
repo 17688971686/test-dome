@@ -1,11 +1,5 @@
 package cs.service.project;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.mail.Session;
 
 import cs.domain.project.*;
@@ -34,6 +28,7 @@ import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
@@ -66,6 +61,7 @@ import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -146,6 +142,8 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private HiProcessTaskRepo hiProcessTaskRepo;
     
+    @Autowired
+	private ProjectStopRepo projectStopRepo;
 
     @Override
     @Transactional
@@ -310,16 +308,50 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public void stopFlow(String signid) {
-        Sign sign = signRepo.findById(signid);
-        sign.setFolwState(EnumState.STOP.getValue());
-        signRepo.save(sign);
+      
+        Date now = new Date();
+		ProjectStop projectStop = new ProjectStop();
+		projectStop.setPausetime(now);
+		projectStop.setIspause(Constant.EnumState.STOP.getValue());
+		projectStop.setStopid(UUID.randomUUID().toString());
+		projectStop.setModifiedBy(currentUser.getLoginName());
+		projectStop.setCreatedBy(currentUser.getLoginName());
+		
+		Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
+		if (sign != null && Validate.isString(sign.getSignid())) {
+			sign.setFolwState(Constant.EnumState.STOP.getValue());
+			sign.setIspause(Constant.EnumState.STOP.getValue());
+			projectStop.setSign(sign);
+		}
+		projectStopRepo.save(projectStop);
+        //signRepo.save(sign);
     }
 
     @Override
     public void restartFlow(String signid) {
-        Sign sign = signRepo.findById(signid);
+		Date now = new Date();
+		//获取已暂停项目
+		List<ProjectStop> pList = new ArrayList<>();
+		pList = projectStopRepo.getProjectStop(signid, Constant.EnumState.STOP.getValue());
+		if (!pList.isEmpty()) {
+			ProjectStop projectStop = pList.get(0);
+			projectStop.setStartTime(now);
+			long longtime = DateUtils.daysBetween(now, projectStop.getPausetime());
+			projectStop.setPausedays((float) longtime);
+			projectStop.setIspause(Constant.EnumState.PROCESS.getValue());
+
+			Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+			if (sign != null && Validate.isString(sign.getSignid())) {
+				sign.setIspause(Constant.EnumState.PROCESS.getValue());
+				sign.setFolwState(Constant.EnumState.PROCESS.getValue());
+				projectStop.setSign(sign);
+			}
+			projectStopRepo.save(projectStop);
+		}
+    	
+        /*Sign sign = signRepo.findById(signid);
         sign.setFolwState(EnumState.PROCESS.getValue());
-        signRepo.save(sign);
+        signRepo.save(sign);*/
     }
 
     @Override

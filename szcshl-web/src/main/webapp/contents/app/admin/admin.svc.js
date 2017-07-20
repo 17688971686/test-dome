@@ -17,7 +17,7 @@
             upload: upload,	            //	下载附件
             getSignList: getSignList,  //项目查询统计
             initSignList: initSignList,//初始化項目查詢統計
-            <!-- 以下是首页方法-->
+           // <!-- 以下是首页方法-->
             initAnnountment: initAnnountment,	    //初始化通知公告栏
             findendTasks: findendTasks,             //已办项目列表
             findtasks: findtasks,                   //待办项目列表
@@ -541,7 +541,7 @@
                     width: 80,
                     filterable: false,
                     template: function (item) {
-                        if (item.processState && item.processState == 0) {
+                        if (item.processState && item.processState == 2) {
                             return '<span style="color:orange;">已暂停</span>';
                         } else {
                             return '<span style="color:green;">进行中</span>';
@@ -551,11 +551,17 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: 150,
                     template: function (item) {
+                    	 var isstart = false;
+                        if (item.ispause == "2") {
+                            isstart = true;//显示已暂停，提示启动
+                        } else {
+                            isstart = false;//显示暂停
+                        }
                         //项目签收流程，则跳转到项目签收流程处理野人
                         if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
+                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,"vm.pauseProject('"+item.businessKey+"','"+item.taskId+"')",isstart,isstart,"vm.startProject('"+item.businessKey+"','"+item.taskId+"')",isstart);
                         } else {
                             return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
                         }
@@ -813,7 +819,7 @@
         	var httpOptions = {
                 method: 'post',
                 url: rootPath + "/projectStop/projectStop",
-                params: {signid: vm.model.signid}
+                params: {signid: vm.model.signid,taskid:vm.model.taskid}
             }
             var httpSuccess = function success(response) {
             	common.requestSuccess({
@@ -845,11 +851,10 @@
         
         //start_startProject
         function startProject(vm){
-        	console.log(vm.model.signid);
         	var httpOptions = {
                 method: 'post',
                 url: rootPath + "/projectStop/projectStart",
-                params: {signid: vm.model.signid}
+                params: {signid: vm.model.signid,taskid:vm.model.taskid}
             }
             var httpSuccess = function success(response) {
             	common.requestSuccess({

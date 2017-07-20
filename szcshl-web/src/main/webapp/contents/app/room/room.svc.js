@@ -26,7 +26,7 @@
         
         //S 初始化工作方案
         function initWorkProgram(vm){
-        	
+        	 //console.log();
         	if(!vm.workProgramId){
         		return;
         	}else{

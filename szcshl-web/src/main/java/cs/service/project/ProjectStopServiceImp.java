@@ -7,6 +7,10 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,7 @@ import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.service.flow.FlowService;
 
 @Service
 public class ProjectStopServiceImp implements ProjectStopService {
@@ -28,54 +33,47 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
 	@Autowired
 	private SignRepo signRepo;
+	
+	@Autowired
+	private SignService signService;
+	
+	@Autowired
+	private FlowService flowService;
+	
+	@Autowired
+	private RuntimeService runtimeService;
 
 	@Autowired
 	private ICurrentUser currentUser;
+	
+	@Autowired
+	private TaskService taskService;
 
 	@Transactional
 	@Override
-	public void addProjectStop(String signid) {
+	public void addProjectStop(String signid,String taskid) {
 		if (Validate.isString(signid)) {
-			Date now = new Date();
-			ProjectStop projectStop = new ProjectStop();
-			projectStop.setPausetime(now);
-			projectStop.setIspause(Constant.EnumState.STOP.getValue());
-			projectStop.setStopid(UUID.randomUUID().toString());
-			projectStop.setModifiedBy(currentUser.getLoginName());
-			projectStop.setCreatedBy(currentUser.getLoginName());
-
-			Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
-			if (sign != null && Validate.isString(sign.getSignid())) {
-				sign.setIspause(Constant.EnumState.STOP.getValue());
-				projectStop.setSign(sign);
-			}
-
-			projectStopRepo.save(projectStop);
+		   //ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(signid);
+		   //runtimeService.suspendProcessInstanceById(processInstance.getId());
+          // if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
+              signService.stopFlow(signid);
+              /*Task task = taskService.createTaskQuery().taskId(taskid).active().singleResult();
+              task.set*/
+              
+           //}
+			
 		}
 	}
 
 	@Transactional
 	@Override
-	public void projectStart(String signid) {
+	public void projectStart(String signid,String taskid) {
 		if (Validate.isString(signid)) {
-			List<ProjectStop> pList = new ArrayList<>();
-			Date now = new Date();
-			//获取已暂停项目
-			pList = projectStopRepo.getProjectStop(signid, Constant.EnumState.STOP.getValue());
-			if (!pList.isEmpty()) {
-				ProjectStop projectStop = pList.get(0);
-				projectStop.setStartTime(now);
-				long longtime = DateUtils.daysBetween(now, projectStop.getPausetime());
-				projectStop.setPausedays((float) longtime);
-				projectStop.setIspause(Constant.EnumState.PROCESS.getValue());
-
-				Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
-				if (sign != null && Validate.isString(sign.getSignid())) {
-					sign.setIspause(Constant.EnumState.PROCESS.getValue());
-					projectStop.setSign(sign);
-				}
-				projectStopRepo.save(projectStop);
-			}
+			 //ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(signid);
+			   //if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
+		            signService.restartFlow(signid);
+		        //}
+			
 		}
 	}
 
