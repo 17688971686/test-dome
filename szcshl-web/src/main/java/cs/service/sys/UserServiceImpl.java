@@ -104,6 +104,8 @@ public class UserServiceImpl implements UserService {
 
             user.setId(UUID.randomUUID().toString());
             user.setCreatedBy(currentUser.getLoginName());
+            user.setCreatedDate(new Date());
+            user.setModifiedDate(new Date());
             user.setModifiedBy(currentUser.getLoginName());
             //MD5加密密码
             /*String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();

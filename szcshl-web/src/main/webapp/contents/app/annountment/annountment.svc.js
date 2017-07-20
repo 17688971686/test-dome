@@ -60,6 +60,7 @@
 
             var httpSuccess = function success(response) {
                 vm.annountment = response.data;
+                $("#froalaEditor").froalaEditor('html.set', vm.annountment.anContent);
                 //初始化附件上传
                 if (vm.businessFlag.isInitFileOption == false) {
                     initFileOption({
@@ -80,6 +81,7 @@
 
         //begin createAnnountment
         function createAnnountment(vm) {
+        	vm.annountment.anContent=$("#froalaEditor").val();
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
@@ -88,7 +90,6 @@
                     url: url_annountment,
                     data: vm.annountment
                 }
-                console.log(vm.annountment);
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
                         vm: vm,
@@ -126,6 +127,7 @@
 
         //begin updateAnnountment
         function updateAnnountment(vm) {
+        	vm.annountment.anContent=$("#froalaEditor").val();
             var httpOptions = {
                 method: "put",
                 url: url_annountment,
@@ -208,10 +210,13 @@
                 serverSorting: true,
                 serverFiltering: true,
                 pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
+                sort: [
+                {
+                    field: "issue",
+                    dir: "asc"
                 }
+                ]
+                	
 
             });
             // End:dataSource
