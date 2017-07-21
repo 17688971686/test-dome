@@ -17,7 +17,7 @@
             buttSysFile : false,        //显示附件按钮
         }
         vm.busiFlag = {
-            signleToMerge : false,      //单个发文改成合并发文
+            signleToMerge : false,      //单个发文改成合并发文(多余的,后期修改)
             isMerge : false,            //是否合并发文
             isMain : false,             //是否合并发文主项目
         }
@@ -43,6 +43,8 @@
                             $('.confirmDialog').modal('hide');
                             vm.dispatchDoc.isMainProject = "0";
                             dispatchSvc.deleteAllMerge(vm);
+                            vm.busiFlag.isMerge=false;
+                            vm.busiFlag.isMain=false;
                         },
                         cancel:function(){
                             vm.dispatchDoc.dispatchWay = "2";
@@ -52,8 +54,15 @@
                 }
             //2、由单个发文改为合并发文
             }else if(vm.dispatchDoc.dispatchWay == "2" ){
+            	
                 if(!vm.busiFlag.isMerge){
+                	vm.busiFlag.isMerge=true;
                     vm.busiFlag.signleToMerge = true;  //单个发文改成合并发文
+                    if(vm.dispatchDoc.isMainProject=="9"){//如果为主项目
+                    	if(!vm.busiFlag.isMain){
+                    	 	vm.busiFlag.isMain = true;
+                    	}
+                    }
                 }
             }
         }
@@ -67,6 +76,7 @@
         // 创建发文
         vm.create = function () {
             dispatchSvc.saveDispatch(vm);
+            //vm.busiFlag.signleToMerge = "";  //单个发文改成合并发文(除去改标签）
         }
         // 核减（增）/核减率（增）计算
         vm.count = function () {
@@ -92,8 +102,12 @@
 
         // 打开合并页面
         vm.gotoMergePage = function () {
+        	console.log("signleToMerge:"+vm.busiFlag.signleToMerge);
+        	console.log("isMainProject:"+vm.dispatchDoc.isMainProject);
+        	console.log("id："+vm.dispatchDoc.id);
             //没保存或者单个发文改成合并发文主项目时候要先进行保存
-            if((vm.busiFlag.signleToMerge && vm.dispatchDoc.isMainProject == 9) || !vm.dispatchDoc.id){
+           // if((vm.busiFlag.signleToMerge && vm.dispatchDoc.isMainProject == 9) || !vm.dispatchDoc.id){
+        	 if(!vm.dispatchDoc.id){
                 common.alert({
                     vm: vm,
                     msg: "请先进行保存！",

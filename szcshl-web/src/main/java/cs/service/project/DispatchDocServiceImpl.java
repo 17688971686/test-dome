@@ -280,6 +280,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前发文为合并发文主项目，请先进行项目关联！");
                     }
                     else if(!mergeOptionService.isHaveLink(dispatchDocDto.getId(),Constant.MergeType.DISPATCH.getValue())){
+                    	
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文主项目，请先进行项目关联！");
                     }
                 //次项目
