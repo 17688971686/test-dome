@@ -29,11 +29,14 @@
 
         //发文方式改变事件
         vm.sigleProject = function () {
+        	 //console.log(vm.dispatchDoc.isMainProject);
             //1、由合并发文主项目改为单个发文
             if(vm.dispatchDoc.dispatchWay == "1" ){
                 if(vm.busiFlag.signleToMerge){
                     vm.busiFlag.signleToMerge = false;
                 }
+                //console.log(vm.busiFlag.isMain);
+                //console.log(vm.busiFlag.isMerge);
                 if(vm.busiFlag.isMerge && vm.busiFlag.isMain){
                     common.confirm({
                         title: "温馨提示",
@@ -54,15 +57,11 @@
                 }
             //2、由单个发文改为合并发文
             }else if(vm.dispatchDoc.dispatchWay == "2" ){
-            	
+            	 console.log(vm.dispatchDoc.isMainProject);
                 if(!vm.busiFlag.isMerge){
                 	vm.busiFlag.isMerge=true;
                     vm.busiFlag.signleToMerge = true;  //单个发文改成合并发文
-                    if(vm.dispatchDoc.isMainProject=="9"){//如果为主项目
-                    	if(!vm.busiFlag.isMain){
-                    	 	vm.busiFlag.isMain = true;
-                    	}
-                    }
+                    vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
                 }
             }
         }
@@ -102,9 +101,7 @@
 
         // 打开合并页面
         vm.gotoMergePage = function () {
-        	console.log("signleToMerge:"+vm.busiFlag.signleToMerge);
-        	console.log("isMainProject:"+vm.dispatchDoc.isMainProject);
-        	console.log("id："+vm.dispatchDoc.id);
+        	 vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
             //没保存或者单个发文改成合并发文主项目时候要先进行保存
            // if((vm.busiFlag.signleToMerge && vm.dispatchDoc.isMainProject == 9) || !vm.dispatchDoc.id){
         	 if(!vm.dispatchDoc.id){
