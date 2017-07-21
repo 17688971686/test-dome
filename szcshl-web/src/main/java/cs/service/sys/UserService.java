@@ -57,4 +57,6 @@ public interface UserService {
     UserDto getOrgSLeader();
 
     List<UserDto> findAllusers();
+    
+    int findMaxUserNo();
 }

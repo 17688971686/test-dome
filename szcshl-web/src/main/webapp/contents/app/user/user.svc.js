@@ -16,10 +16,34 @@
             deleteUser: deleteUser,
             updateUser: updateUser,
             getOrg: getOrg,
-            queryUser: queryUser
+            queryUser: queryUser,
+            initUserNo : initUserNo//初始化 员工工号
         };
 
         return service;
+        
+        //begin initUserNo
+        function initUserNo(vm){
+        
+        	var httpOptions={
+        		method : "get",
+        		url : url_user +"/createUserNo"
+        	}
+        	
+        	var httpSuccess=function success(response){
+        	
+        		vm.model={};
+        		var userNo=response.data;
+        		vm.model.userNo=userNo.substring(1,userNo.length-1);
+        	}
+         common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        	
+        }//end initUserNo
 
         // begin#updateUser
         function updateUser(vm) {

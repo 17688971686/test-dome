@@ -118,6 +118,15 @@ public class UserController {
         return userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
     }
 
+    
+    @RequiresPermissions("user#createUserNo#get")
+    @RequestMapping(name="生成员工工号",path="createUserNo",method=RequestMethod.GET)
+    @ResponseBody
+    public String createUserNo(){
+    	 String userNo=String.format("%03d", Integer.valueOf(userService.findMaxUserNo())+1);
+    	 return userNo;
+    }
+    
     /**
      * 根据用户ID获取用户信息
      * @param userId

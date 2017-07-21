@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cs.domain.sys.*;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
@@ -20,10 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.Response;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.sys.Org;
+import cs.domain.sys.Org_;
+import cs.domain.sys.Role;
+import cs.domain.sys.Role_;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.RoleDto;
@@ -102,6 +108,7 @@ public class UserServiceImpl implements UserService {
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
             user.setModifiedBy(currentUser.getLoginName());
+//            user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo())+1));
             //MD5加密密码
             /*String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
 			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
@@ -401,9 +408,9 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         BeanCopierUtils.copyProperties(user, userDto);
         if (user.getOrg() != null) {
-            OrgDto orgDto = new OrgDto();
-            BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
-            userDto.setOrgDto(orgDto);
+        		OrgDto orgDto = new OrgDto();
+        		BeanCopierUtils.copyProperties(user.getOrg() , orgDto);
+        		userDto.setOrgDto(orgDto);
         }
         return userDto;
     }
@@ -522,6 +529,17 @@ public class UserServiceImpl implements UserService {
         }
         return userDtos;
     }
+
+
+	@Override
+	public int findMaxUserNo() {
+		
+		HqlBuilder sql=HqlBuilder.create();
+		
+		sql.append("select max(to_number(userNo)) from cs_user");
+		
+		return userRepo.returnIntBySql(sql);
+	}
 }
 
 

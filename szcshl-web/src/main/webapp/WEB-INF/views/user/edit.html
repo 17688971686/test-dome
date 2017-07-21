@@ -59,16 +59,18 @@
                 </td>
                 <td colspan="2"></td>
             </tr>
+            
+           
             <tr>
                 <td class="formAlignRight">电子邮件：<span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.email" id="email" name="email" data-val="false" data-val-required="必填">
                     <span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">序号：<span class="required">*</span></td>
+                <td class="formAlignRight">工号：</td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userOrder" id="userOrder" name="userOrder" data-val="false" data-val-required="必填">
-                    <span data-valmsg-for="userOrder" data-valmsg-replace="true" class="errors"></span>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userNo" id="userNo" name="userNo" readonly="readonly">
+                    <span data-valmsg-for="userNo" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td class="formAlignRight">联系手机：<span class="required">*</span></td>
                 <td>
@@ -106,9 +108,8 @@
 						 <option value="t" ng-selected="vm.model.jobState == 't'">在职</option>
                          <option value="f" ng-selected="vm.model.jobState == 'f'">离职</option>
 					</select>
+					<span data-valmsg-for="jobState" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="jobState" data-valmsg-replace="true" class="errors"></span>
-                </td>              
                 <td class="formAlignRight">所在部门：<span class="required">*</span> </td>
                 <td>
                     <select ng-model="vm.model.orgId" id="orgId" name="orgId"class="form-control input-sm " data-val="true" data-val-required="必填">
@@ -124,6 +125,49 @@
                     <span data-valmsg-for="pwdState" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
+            
+              <tr>
+                <td class="formAlignRight">职务：</td>
+                <td>
+                     <select ng-model="vm.model.position" id="position" name="position"class="form-control input-sm ">
+						 <option value="01" ng-selected="vm.model.position == '01'">中心主任</option>
+                         <option value="02" ng-selected="vm.model.position == '02'">中心副主任</option>
+                         <option value="03" ng-selected="vm.model.position == '03'">部长</option>
+                         <option value="04" ng-selected="vm.model.position == '04'">工程师</option>
+					</select>
+					<span data-valmsg-for="position" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="formAlignRight">是否参与考勤： </td>
+                <td>
+                    <input  type="radio" name="isAttendance" ng-model="vm.model.isAttendance" value="0" ng-checked="true"/>是
+                    <input  type="radio" name="isAttendance" ng-model="vm.model.isAttendance" value="1"/>否
+                    <span data-valmsg-for="isAttendance" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="formAlignRight">是否参与统计： </td>
+                <td>
+                    <input  type="radio" name="isCount" ng-model="vm.model.isCount" value="0" ng-checked="true"/>是
+                    <input  type="radio" name="isCount" ng-model="vm.model.isCount" value="1"/>否
+                    <span data-valmsg-for="isCount" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            
+            <tr>
+                 <td class="formAlignRight">是否上传发改委： </td>
+                <td colspan="3" style="width:400px;">
+                	<select ng-model="vm.model.isUploadFGW" id="isUploadFGW" name="isUploadFGW"class="form-control input-sm " style="width: 20%;">
+						 <option value="0" ng-selected="vm.model.isUploadFGW == '0'">否</option>
+                         <option value="1" ng-selected="vm.model.isUploadFGW == '1'">已提交</option>
+                         <option value="2" ng-selected="vm.model.isUploadFGW == '2'">已上传</option>
+					</select>
+                </td>
+               
+                <td class="formAlignRight">排序序号： </td>
+                <td>
+                    <input  type="number" name="userSort" ng-model="vm.model.userSort"  ng-checked="true"/>
+                    <span data-valmsg-for="userSort" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            
             <tr>
                 <td class="formAlignRight">备注： </td>
                 <td colspan="5">
