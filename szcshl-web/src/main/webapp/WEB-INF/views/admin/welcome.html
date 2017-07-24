@@ -20,7 +20,7 @@
                 <div class="icon">
                     <i class="fa fa-map-o"></i>
                 </div>
-                <a href="#/ruProcessTask" class="small-box-footer">
+                <a href="#/gtasks" class="small-box-footer">
                     更多消息 <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -37,7 +37,7 @@
                 <div class="icon">
                     <i class="fa fa-map"></i>
                 </div>
-                <a href="#/hiProcessTask" class="small-box-footer">
+                <a href="#/etasks" class="small-box-footer">
                     更多消息 <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -98,7 +98,7 @@
                         </tr>
                         <tr ng-repeat="t in vm.tasksList|limitTo:6">
                             <td ng-bind="$index+1">1</td>
-                            <td>{{t.projectName}}</td>
+                            <td><a href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a></td>
                             <td><span class="badge bg-red">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
@@ -124,7 +124,7 @@
                         </tr>
                         <tr ng-repeat="e in vm.endTasksList|limitTo:6">
                              <td ng-bind="$index+1">1</td>
-                            <td>{{e.businessName}}</td>
+                            <td><a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}">{{e.businessName}}</a></td>
                             <td><span class="badge bg-red">{{e.createDate}}</span></td>
                         </tr>
                         </tbody>
