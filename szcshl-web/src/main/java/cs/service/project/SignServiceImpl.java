@@ -1,24 +1,6 @@
 package cs.service.project;
 
-import javax.mail.Session;
-
-import cs.domain.project.*;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
-
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.EnumState;
@@ -26,53 +8,29 @@ import cs.common.Constant.MsgCode;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.external.Dept;
-import cs.domain.flow.HiProcessTask;
-import cs.domain.flow.RuProcessTask;
-import cs.domain.flow.RuProcessTask_;
-import cs.domain.sys.Company;
-import cs.domain.sys.Org;
-import cs.domain.sys.Org_;
-import cs.domain.sys.Role;
-import cs.domain.sys.SysFile;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
+import cs.domain.project.*;
+import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
 import cs.model.flow.FlowDto;
-import cs.model.project.DispatchDocDto;
-import cs.model.project.FileRecordDto;
-import cs.model.project.SignDto;
-import cs.model.project.SignPrincipalDto;
-import cs.model.project.WorkProgramDto;
+import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
-import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
-import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.FileRecordRepo;
-import cs.repository.repositoryImpl.project.ProjectStopRepo;
-import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
-import cs.repository.repositoryImpl.project.SignPrincipalRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.external.OfficeUserService;
+import cs.service.flow.FlowService;
 import cs.service.sys.UserService;
-import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -81,6 +39,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,21 +89,12 @@ public class SignServiceImpl implements SignService {
     private SignPrincipalRepo signPrincipalRepo;
     @Autowired
     private SignPrincipalService signPrincipalService;
-
-    @Autowired
-    private WorkdayService workdayService;
-
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-    
-    @Autowired
-    private RuProcessTaskRepo ruProcessTaskRepo;
-    
-    @Autowired
-    private HiProcessTaskRepo hiProcessTaskRepo;
-    
     @Autowired
 	private ProjectStopRepo projectStopRepo;
+    @Autowired
+    private FlowService flowService;
 
     @Override
     @Transactional
@@ -306,52 +257,73 @@ public class SignServiceImpl implements SignService {
         log.info("批量删除收文");
     }
 
+    /**
+     * 项目暂停
+     * @param signid
+     */
     @Override
-    public void stopFlow(String signid) {
-      
+    public ResultMsg stopFlow(String signid,ProjectStopDto projectStopDto) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
+        if (sign == null ) {
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该项目数据已被删除！");
+        }else if(Constant.EnumState.STOP.getValue().equals(sign.getSignState())){
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该项目目前还是暂停状态！");
+        }
+        sign.setSignState(Constant.EnumState.STOP.getValue());
+
+        //暂停流程
+        ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(signid);
+        runtimeService.suspendProcessInstanceById(processInstance.getId());
+
         Date now = new Date();
 		ProjectStop projectStop = new ProjectStop();
+		if(projectStopDto != null){
+            BeanCopierUtils.copyProperties(projectStopDto,projectStop);
+        }
+        projectStop.setStopid(UUID.randomUUID().toString());
 		projectStop.setPausetime(now);
-		projectStop.setIspause(Constant.EnumState.STOP.getValue());
-		projectStop.setStopid(UUID.randomUUID().toString());
+        projectStop.setCreatedDate(now);
+        projectStop.setModifiedDate(now);
+		projectStop.setIsactive(EnumState.YES.getValue());
 		projectStop.setModifiedBy(currentUser.getLoginName());
 		projectStop.setCreatedBy(currentUser.getLoginName());
-		
-		Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
-		if (sign != null && Validate.isString(sign.getSignid())) {
-			sign.setFolwState(Constant.EnumState.STOP.getValue());
-			sign.setIspause(Constant.EnumState.STOP.getValue());
-			projectStop.setSign(sign);
-		}
+        projectStop.setSign(sign);
 		projectStopRepo.save(projectStop);
-        //signRepo.save(sign);
+
+        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
     }
 
+    /**
+     * 流程激活
+     * @param signid
+     * @return
+     */
     @Override
-    public void restartFlow(String signid) {
-		Date now = new Date();
-		//获取已暂停项目
-		List<ProjectStop> pList = new ArrayList<>();
-		pList = projectStopRepo.getProjectStop(signid, Constant.EnumState.STOP.getValue());
-		if (!pList.isEmpty()) {
-			ProjectStop projectStop = pList.get(0);
-			projectStop.setStartTime(now);
-			long longtime = DateUtils.daysBetween(now, projectStop.getPausetime());
-			projectStop.setPausedays((float) longtime);
-			projectStop.setIspause(Constant.EnumState.PROCESS.getValue());
+    public ResultMsg restartFlow(String signid) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
+        if (sign == null ) {
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该项目数据已被删除！");
+        }
+        sign.setSignState(EnumState.PROCESS.getValue());
 
-			Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
-			if (sign != null && Validate.isString(sign.getSignid())) {
-				sign.setIspause(Constant.EnumState.PROCESS.getValue());
-				sign.setFolwState(Constant.EnumState.PROCESS.getValue());
-				projectStop.setSign(sign);
-			}
-			projectStopRepo.save(projectStop);
+        //激活流程
+        ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(signid);
+        runtimeService.activateProcessInstanceById(processInstance.getId());
+
+		//获取已暂停项目
+        ProjectStop projectStop = projectStopRepo.findProjectStop(signid);
+		if (projectStop == null) {
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，暂停记录已被删除！");
 		}
-    	
-        /*Sign sign = signRepo.findById(signid);
-        sign.setFolwState(EnumState.PROCESS.getValue());
-        signRepo.save(sign);*/
+        Date now = new Date();
+        projectStop.setStartTime(now);
+        long longtime = DateUtils.daysBetween(now, projectStop.getPausetime());
+        projectStop.setPausedays((float) longtime);
+        projectStop.setIsactive(EnumState.NO.getValue());
+        projectStop.setSign(sign);
+        projectStopRepo.save(projectStop);
+
+        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
     }
 
     @Override
@@ -421,20 +393,27 @@ public class SignServiceImpl implements SignService {
     @Override
     public void endFlow(String signid) {
         Sign sign = signRepo.findById(signid);
-        sign.setFolwState(EnumState.FORCE.getValue());
+        sign.setSignState(EnumState.FORCE.getValue());
         signRepo.save(sign);
     }
 
     /************************************** S  新流程项目处理   *********************************************/
+    /**
+     * 发起流程
+     * @param signid
+     * @return
+     */
     @Override
     @Transactional
-    public void startNewFlow(String signid) {
-        if (!Validate.isString(signid)) {
-            log.info("发起流程失败，无法获取收文ID！");
-            throw new IllegalArgumentException(Constant.ERROR_MSG);
+    public ResultMsg startNewFlow(String signid) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+        if(sign == null){
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"发起流程失败，该项目已不存在！");
         }
 
-        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+        if(Validate.isString(sign.getProcessInstanceId())){
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"该项目已发起流程！");
+        }
 
         ProcessInstance processInstance = null;
         //如果是协审流程
@@ -461,19 +440,18 @@ public class SignServiceImpl implements SignService {
         taskService.addComment(task.getId(), processInstance.getId(), "已经确认签收！");    //添加处理信息
         taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(userList.get(0).getLoginName()));
 
-        //项目正式签收完毕
-        sign.setFolwState(EnumState.PROCESS.getValue());
+        //项目正在运行
         sign.setProcessInstanceId(processInstance.getId());
-        sign.setIssign(EnumState.YES.getValue());
+        sign.setSignState(EnumState.PROCESS.getValue());
         signRepo.save(sign);
 
-        log.info("项目签收流程创建成功,流程实例ID为" + processInstance.getId() + "，任务ID为" + task.getId());
+        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
+
     }
 
     @Override
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) {
-
         Task task = null;
         if (Validate.isString(flowDto.getTaskId())) {
             task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
@@ -482,6 +460,9 @@ public class SignServiceImpl implements SignService {
         }
         if (task == null) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(),  "该流程已被处理！");
+        }
+        if(task.isSuspended()){
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
         }
         //参数定义
 
@@ -492,7 +473,8 @@ public class SignServiceImpl implements SignService {
         List<UserDto> userList = null;
         List<User> users = null;
         List<SignPrincipal> signPriList = null;     //项目负责人
-        UserDto dealUser = null;
+        User dealUser = null;
+        UserDto dealUserDto = null;
         boolean saveSignFlag = false;
 
         Map<String, Object> variables = processInstance.getProcessVariables();
@@ -541,13 +523,13 @@ public class SignServiceImpl implements SignService {
                 //判断是否分为两个部门处理
                 if (flowDto.getBusinessMap().get("hostdept") != null) {
                     Org hostOrg = orgRepo.findById(flowDto.getBusinessMap().get("hostdept").toString());
-                    dealUser = userService.filterOrgDirector(userList, hostOrg);
-                    if (dealUser == null || !Validate.isString(dealUser.getLoginName())) {
+                    dealUserDto = userService.filterOrgDirector(userList, hostOrg);
+                    if (dealUserDto == null || !Validate.isString(dealUserDto.getLoginName())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + hostOrg.getName() + "】的" + EnumFlowNodeGroupName.DEPT_LEADER.getValue()
                                 + "，设置的用户角色必须为【" + EnumFlowNodeGroupName.DEPT_LEADER.getValue() + "】！");
                     }
                     sign.setmOrgId(hostOrg.getId());    //设置主办部门
-                    assigneeValue = dealUser.getLoginName();
+                    assigneeValue = dealUserDto.getLoginName();
                     variables.put("hostdept", Integer.valueOf(EnumState.YES.getValue()));
                     variables.put("muser", assigneeValue);
                 } else {
@@ -556,14 +538,14 @@ public class SignServiceImpl implements SignService {
 
                 if (flowDto.getBusinessMap().get("assistdept") != null) {
                     Org assistOrg = orgRepo.findById(flowDto.getBusinessMap().get("assistdept").toString());
-                    dealUser = userService.filterOrgDirector(userList, assistOrg);
-                    if (dealUser == null || !Validate.isString(dealUser.getLoginName())) {
+                    dealUserDto = userService.filterOrgDirector(userList, assistOrg);
+                    if (dealUserDto == null || !Validate.isString(dealUserDto.getLoginName())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + assistOrg.getName() + "】的" + EnumFlowNodeGroupName.DEPT_LEADER.getValue()
                                 + "，设置的用户角色必须为【" + EnumFlowNodeGroupName.DEPT_LEADER.getValue() + "】！");
                     }
                     sign.setaOrgId(assistOrg.getId());    //设置协办部门
                     variables.put("assistdept", Integer.valueOf(EnumState.YES.getValue()));
-                    variables.put("auser", dealUser.getLoginName());
+                    variables.put("auser", dealUserDto.getLoginName());
                 } else {
                     variables.put("assistdept", Integer.valueOf(EnumState.NO.getValue()));
                 }
@@ -574,7 +556,7 @@ public class SignServiceImpl implements SignService {
                 if (flowDto.getBusinessMap().get("M_USER_ID") == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置选择主要负责人！");
                 }
-                dealUser = userService.findById(flowDto.getBusinessMap().get("M_USER_ID").toString());
+                dealUser = userRepo.findById(User_.id.getName(),flowDto.getBusinessMap().get("M_USER_ID").toString());
 
                 //设置项目负责人
                 signPriList = new ArrayList<>();
@@ -616,7 +598,7 @@ public class SignServiceImpl implements SignService {
                 if (flowDto.getBusinessMap().get("M_USER_ID") == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置选择主要负责人！");
                 }
-                dealUser = userService.findById(flowDto.getBusinessMap().get("M_USER_ID").toString());
+                dealUser = userRepo.findById(User_.id.getName(),flowDto.getBusinessMap().get("M_USER_ID").toString());
                 //设置项目负责人
                 signPriList = new ArrayList<>();
                 SignPrincipal sMainPri = new SignPrincipal();
@@ -672,32 +654,31 @@ public class SignServiceImpl implements SignService {
                     variables.put("users", assigneeValue);
                 } else {
                     variables.put("zjfw", EnumState.NO.getValue());
-                    dealUser = userService.getOrgDirector();
-                    if (dealUser == null) {
+                    dealUserDto = userService.getOrgDirector();
+                    if (dealUserDto == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置" + EnumFlowNodeGroupName.DEPT_LEADER.getValue() + "，然后重新登录处理即可！");
                     }
-                    variables.put("user", dealUser.getLoginName());
+                    variables.put("user", dealUserDto.getLoginName());
                 }
                 break;
             case Constant.FLOW_XMFZR_SP_GZFA2:        //项目负责人承办
                 if (!signPrincipalService.isMainPri(currentUser.getLoginUser().getId(), signid, EnumState.NO.getValue())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您不是第一负责人，不能进行下一步操作！");
                 }
-
-                dealUser = userService.getOrgDirector();
-                if (dealUser == null) {
+                dealUserDto = userService.getOrgDirector();
+                if (dealUserDto == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置" + EnumFlowNodeGroupName.DEPT_LEADER.getValue() + "，然后重新登录处理即可！");
                 } else {
-                    variables.put("user", dealUser.getLoginName());
+                    variables.put("user", dealUserDto.getLoginName());
                 }
                 break;
             case Constant.FLOW_BZ_SP_GZAN1:            //部长审批-主流程
                 //获取分管领导
-                dealUser = userService.getOrgSLeader();
-                if (dealUser == null) {
+                dealUserDto = userService.getOrgSLeader();
+                if (dealUserDto == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的【" + EnumFlowNodeGroupName.VICE_DIRECTOR.getValue() + "】角色用户！");
                 }
-                variables.put("user", dealUser.getLoginName());
+                variables.put("user", dealUserDto.getLoginName());
                 //更改工作方案信息
                 businessId = flowDto.getBusinessMap().get("M_WP_ID").toString();
                 wk = workProgramRepo.findById(WorkProgram_.id.getName(), businessId);
@@ -708,11 +689,11 @@ public class SignServiceImpl implements SignService {
                 break;
             case Constant.FLOW_BZ_SP_GZAN2:            //部长审批
                 //获取分管领导
-                dealUser = userService.getOrgSLeader();
-                if (dealUser == null) {
+                dealUserDto = userService.getOrgSLeader();
+                if (dealUserDto == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的【" + EnumFlowNodeGroupName.VICE_DIRECTOR.getValue() + "】角色用户！");
                 }
-                variables.put("user", dealUser.getLoginName());
+                variables.put("user", dealUserDto.getLoginName());
 
                 //更改工作方案信息
                 businessId = flowDto.getBusinessMap().get("A_WP_ID").toString();
@@ -765,18 +746,18 @@ public class SignServiceImpl implements SignService {
                 if (!signPrincipalService.isMainPri(currentUser.getLoginUser().getId(), signid, EnumState.YES.getValue())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您不是第一负责人，不能进行下一步操作！");
                 }
-                dealUser = userService.getOrgDirector();
-                if (dealUser == null) {
+                dealUserDto = userService.getOrgDirector();
+                if (dealUserDto == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的部门领导！");
                 }
-                variables.put("user", dealUser.getLoginName());
+                variables.put("user", dealUserDto.getLoginName());
                 break;
             case Constant.FLOW_BZ_SP_FW:            //部长审批发文
-                dealUser = userService.getOrgSLeader();
-                if (dealUser == null) {
+                dealUserDto = userService.getOrgSLeader();
+                if (dealUserDto == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
                 }
-                variables.put("user", dealUser.getLoginName());
+                variables.put("user", dealUserDto.getLoginName());
                 //修改发文信息
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
@@ -834,8 +815,8 @@ public class SignServiceImpl implements SignService {
                     if (userList == null || userList.size() == 0) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                     }
-                    dealUser = userList.get(0);
-                    variables.put("user", dealUser.getLoginName());
+                    dealUserDto = userList.get(0);
+                    variables.put("user", dealUserDto.getLoginName());
                 }
 
                 break;
@@ -844,8 +825,8 @@ public class SignServiceImpl implements SignService {
                 if (userList == null || userList.size() == 0) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                 }
-                dealUser = userList.get(0);
-                variables.put("user", dealUser.getLoginName());
+                dealUserDto = userList.get(0);
+                variables.put("user", dealUserDto.getLoginName());
                 //更改第二负责人
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 sign.setSecondPriUser(currentUser.getLoginName());
@@ -860,7 +841,6 @@ public class SignServiceImpl implements SignService {
                 fileRecordRepo.save(fileRecord);
 
                 sign.setSignState(EnumState.YES.getValue());    //更改状态
-                sign.setFolwState(EnumState.YES.getValue());
                 saveSignFlag = true;
                 break;
             default:
@@ -897,6 +877,9 @@ public class SignServiceImpl implements SignService {
         }
         if (task == null) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+        }
+        if(task.isSuspended()){
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
         }
         //参数定义
 
@@ -1169,7 +1152,6 @@ public class SignServiceImpl implements SignService {
                 fileRecordRepo.save(fileRecord);
 
                 sign.setSignState(EnumState.YES.getValue());    //更改状态
-                sign.setFolwState(EnumState.YES.getValue());
                 saveSignFlag = true;
                 break;
             default:
@@ -1191,14 +1173,12 @@ public class SignServiceImpl implements SignService {
     @Override
     public List<SignDto> findAssistSign() {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        /*sqlBuilder.append(" select sign.* from cs_sign sign left join cs_as_plansign plang on sign.signid = plang.signid ");
-        sqlBuilder.append(" where sign.isassistflow =:isassistflow");*/
         sqlBuilder.append(" select sign from " + Sign.class.getSimpleName() + " sign left join " + AssistPlanSign.class.getSimpleName() +
                 " plang on sign." + Sign_.signid.getName() + " = plang." + AssistPlanSign_.signId.getName());
         sqlBuilder.append(" where sign." + Sign_.isassistflow.getName() + " =:isassistflow");
         sqlBuilder.setParam("isassistflow", EnumState.YES.getValue());
-        sqlBuilder.append(" and sign." + Sign_.folwState.getName() + "  =:folwState");
-        sqlBuilder.setParam("folwState", EnumState.PROCESS.getValue());
+        sqlBuilder.append(" and sign." + Sign_.signState.getName() + "  =:signState");
+        sqlBuilder.setParam("signState", EnumState.PROCESS.getValue());
         //排除掉已经在选的项目
         sqlBuilder.append(" and plang." + AssistPlanSign_.signId.getName() + " is null ");
         List<Sign> signList = signRepo.findByHql(sqlBuilder);
@@ -1441,6 +1421,20 @@ public class SignServiceImpl implements SignService {
         map.put("usersList", usersList);
         map.put("orgsList", orgsList);
         return map;
+    }
+
+    /**
+     * 正式签收
+     * @param signId
+     */
+    @Override
+    public void realSign(String signId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_sign set "+Sign_.signdate.getName()+" = sysdate,");
+        sqlBuilder.append(Sign_.issign.getName()+" =:issign ").setParam("issign",EnumState.YES.getValue());
+        sqlBuilder.bulidIdString("where",Sign_.signid.getName(),signId);
+
+        signRepo.executeSql(sqlBuilder);
     }
 
     @Override

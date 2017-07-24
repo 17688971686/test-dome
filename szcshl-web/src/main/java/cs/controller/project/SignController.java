@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -183,24 +184,7 @@ public class SignController {
         PageModelDto<SignDispaWork> pageModelDto = signService.getSign(odataObj, request.getParameter("$skip"), request.getParameter("$top"));
         return pageModelDto;
     }
-    
-    /*@RequiresPermissions("sign#ruProcessTask#post")
-    @RequestMapping(name = "在办项目", path = "ruProcessTask", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<RuProcessTask> ruProcessTask(HttpServletRequest request) throws ParseException {
-    	ODataObj odataObj = new ODataObj(request);
-    	 PageModelDto<RuProcessTask> pageModelDto = signService.ruProcessTask(odataObj,request.getParameter("$skip"), request.getParameter("$top"));
-    	 return pageModelDto;
-    }
-    
-    @RequiresPermissions("sign#hiProcessTask#post")
-    @RequestMapping(name = "在办项目", path = "hiProcessTask", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<HiProcessTask> hiProcessTask(HttpServletRequest request) throws ParseException {
-    	ODataObj odataObj = new ODataObj(request);
-    	PageModelDto<HiProcessTask> pageModelDto = signService.hiProcessTask(odataObj,request.getParameter("$skip"), request.getParameter("$top"));
-    	return pageModelDto;
-    }*/
+
 
     /***************************************  S 新流程处理的方法     *******************************************/
 
@@ -213,9 +197,9 @@ public class SignController {
 
     @RequiresPermissions("sign#html/startNewFlow#post")
     @RequestMapping(name = "发起流程", path = "html/startNewFlow", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void startNewFlow(@RequestParam(required = true) String signid) {
-        signService.startNewFlow(signid);
+    @ResponseBody
+    public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
+        return signService.startNewFlow(signid);
     }
     
 

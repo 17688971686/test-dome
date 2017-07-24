@@ -2,14 +2,9 @@ package cs.domain.project;
 
 
 import cs.domain.DomainBase;
-import cs.domain.expert.ExpertSelected;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 设置为动态更新，只更新有修改的字段

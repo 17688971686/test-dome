@@ -20,7 +20,7 @@ public class ProjectStopController {
 	@Autowired
 	private ProjectStopService projectStopService;
 	
-    @RequiresPermissions("ProjectStop#createpStop#post")
+   /* @RequiresPermissions("ProjectStop#createpStop#post")
     @RequestMapping(name="项目暂停",path="projectStop",method=RequestMethod.POST)
     @ResponseBody
     public void projectStop(@RequestParam String signid,String taskid){
@@ -33,6 +33,6 @@ public class ProjectStopController {
     @ResponseBody
     public void projectStart(@RequestParam String signid,String taskid){
     	projectStopService.projectStart(signid,taskid);
-    }
+    }*/
 	
 }

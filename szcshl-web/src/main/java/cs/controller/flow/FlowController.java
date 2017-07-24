@@ -14,6 +14,7 @@ import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
+import cs.model.project.ProjectStopDto;
 import cs.model.sys.AnnountmentDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataFilterItem;
@@ -178,7 +179,6 @@ public class FlowController {
         flowDto.setTaskId(taskId);
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
-        flowDto.setSeleteNode(false);
 
         //流程实例
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -192,9 +192,10 @@ public class FlowController {
             curNode.setActivitiName(task.getName());
             curNode.setActivitiId(task.getTaskDefinitionKey());
             flowDto.setCurNode(curNode);
+            flowDto.setSuspended(task.isSuspended());
         }
         flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
-        //项目建议书流程
+        /*//项目建议书流程
         if(Constant.EnumFlow.FINAL_SIGN.getValue().equals(flowDto.getProcessKey())) {
             if (Constant.FLOW_BMLD_QR_GD.equals(flowDto.getCurNode().getActivitiId())) {
                 flowDto.setEnd(true);
@@ -204,7 +205,7 @@ public class FlowController {
             if (Constant.FLOW_XS_QRGD.equals(flowDto.getCurNode().getActivitiId())) {
                 flowDto.setEnd(true);
             }
-        }
+        }*/
         //加载环节业务数据
         if ((Constant.EnumFlow.FINAL_SIGN.getValue().equals(flowDto.getProcessKey())
                 || Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(flowDto.getProcessKey()))
@@ -328,15 +329,6 @@ public class FlowController {
     @RequestMapping(name = "回退到上一个环节", path = "rollbacklast", method = RequestMethod.POST)
     public @ResponseBody ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
-        /*if (Validate.isString(flowDto.getTaskId())) {
-
-            resultMsg.setReCode(MsgCode.OK.getValue());
-            resultMsg.setReMsg("回退成功！");
-        } else {
-            resultMsg.setReCode(MsgCode.ERROR.getValue());
-            resultMsg.setReMsg(Constant.ERROR_MSG);
-            log.info("流程回退到上一步异常：无法获取任务ID(TaskId)");
-        }*/
         return resultMsg;
     }
 
@@ -358,26 +350,23 @@ public class FlowController {
 
     @Transactional
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void activeFlow(@PathVariable("businessKey") String businessKey) {
-        ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(businessKey);
-        runtimeService.activateProcessInstanceById(processInstance.getId());
-        if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
-            signService.restartFlow(businessKey);
-        }
+    public @ResponseBody ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
+        return signService.restartFlow(businessKey);
     }
 
+    /**
+     * 流程挂起
+     * @param businessKey
+     * @return
+     */
     @Transactional
     @RequestMapping(name = "挂起流程", path = "suspend/{businessKey}", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void suspendFlow(@PathVariable("businessKey") String businessKey) {
-        ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(businessKey);
-        runtimeService.suspendProcessInstanceById(processInstance.getId());
-        if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
-            signService.stopFlow(businessKey);
-        }
+    @ResponseBody
+    public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey,@RequestBody ProjectStopDto projectStopDto) {
         log.info("流程挂起成功！businessKey=" + businessKey);
+        return signService.stopFlow(businessKey,projectStopDto);
+
     }
 
     @Transactional

@@ -4,6 +4,8 @@ import cs.model.PageModelDto;
 import cs.model.sys.RoleDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.List;
+
 public interface RoleService {
 
 	PageModelDto<RoleDto> get(ODataObj odataObj);
@@ -12,4 +14,6 @@ public interface RoleService {
 	void deleteRole(String id);
 	void deleteRoles(String[] ids);
 	RoleDto findById(String roleId);
+
+    List<RoleDto> findAllRoles();
 }

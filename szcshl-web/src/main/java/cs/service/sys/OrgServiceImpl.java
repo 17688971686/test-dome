@@ -209,26 +209,6 @@ public class OrgServiceImpl implements OrgService {
 
 	@Override
 	@Transactional
-	public List<UserDto> getUser(ODataObj odataObj) {
-		List<User> listUser = userRepo.findByOdata(odataObj);
-		List<UserDto> userDtoList = new ArrayList<>();
-		for (User item : listUser) {
-			UserDto userDto = new UserDto();
-			userDto.setId(item.getId());
-			userDto.setLoginName(item.getLoginName());
-			userDto.setDisplayName(item.getDisplayName());
-			userDto.setPassword(item.getPassword());
-			userDto.setRemark(item.getRemark());
-			userDto.setCreatedDate(item.getCreatedDate());
-
-			userDtoList.add(userDto);
-		}
-	
-		return userDtoList;
-	}
-
-	@Override
-	@Transactional
 	public List<CompanyDto> getCompany(ODataObj odataObj) {	
 		List<Company> com	=companyRepo.findByOdata(odataObj);	
 		List<CompanyDto> comDtoList= new ArrayList<>();
@@ -284,21 +264,6 @@ public class OrgServiceImpl implements OrgService {
 			orgDto.setUserDtos(userDtoList);
 		}*/
 		return orgDto;
-	}
-
-	@Override
-	public List<OrgDto> findUserChargeOrg() {
-		List<Org> orgList = orgRepo.findUserChargeOrg();
-		if(orgList != null){
-			List<OrgDto> orgDtoList = new ArrayList<OrgDto>(orgList.size());
-			orgList.forEach( o ->{
-				OrgDto orgDto = new OrgDto();
-				BeanCopierUtils.copyProperties(o, orgDto);
-				orgDtoList.add(orgDto);
-			});
-			return orgDtoList;
-		}
-		return null;
 	}
 
 	@Override

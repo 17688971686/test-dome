@@ -288,7 +288,8 @@
         function suspendFlow(vm, businessKey) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/flow/suspend/" + businessKey
+                url: rootPath + "/flow/suspend/" + businessKey,
+                data : vm.projectStop
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({
@@ -297,7 +298,16 @@
                     fn: function () {
                         common.alert({
                             vm: vm,
-                            msg: "操作成功！"
+                            msg: response.data.reMsg,
+                            closeDialog: true,
+                            fn: function () {
+                                if (response.data.reCode == "error") {
+                                    vm.isCommit = false;
+                                } else {
+                                    window.parent.$("#spwindow").data("kendoWindow").close();
+                                    vm.gridOptions.dataSource.read();
+                                }
+                            }
                         })
                     }
                 })
@@ -307,12 +317,16 @@
                 vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError : function () {
+                    vm.isCommit = false;
+                }
             });
         }// E_流程挂起
 
         // S_流程激活
         function activeFlow(vm, businessKey) {
+            vm.isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/flow/active/" + businessKey
@@ -324,7 +338,15 @@
                     fn: function () {
                         common.alert({
                             vm: vm,
-                            msg: "操作成功！"
+                            msg: response.data.reMsg,
+                            closeDialog: true,
+                            fn: function () {
+                                if (response.data.reCode == "error") {
+                                    vm.isCommit = false;
+                                } else {
+                                    vm.gridOptions.dataSource.read();
+                                }
+                            }
                         })
                     }
                 })
@@ -334,7 +356,10 @@
                 vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError : function () {
+                    vm.isCommit = false;
+                }
             });
         }// E_流程激活
 

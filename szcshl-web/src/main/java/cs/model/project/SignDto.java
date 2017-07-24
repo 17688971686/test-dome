@@ -34,6 +34,9 @@ public class SignDto extends BaseDto {
     @JSONField(format = "yyyy-MM-dd")
     private Date ministerDate;//部长处理日期
 
+    @JSONField(format = "yyyy-MM-dd")
+    private Date presignDate;  //预签收时间
+
     private String signid;
 
     private String filecode;
@@ -2226,5 +2229,13 @@ public class SignDto extends BaseDto {
 
     public void setSecondPriUser(String secondPriUser) {
         this.secondPriUser = secondPriUser;
+    }
+
+    public Date getPresignDate() {
+        return presignDate;
+    }
+
+    public void setPresignDate(Date presignDate) {
+        this.presignDate = presignDate;
     }
 }

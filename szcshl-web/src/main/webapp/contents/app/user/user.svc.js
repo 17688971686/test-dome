@@ -197,17 +197,14 @@
 
         //获取部门信息
         function getOrg(vm) {
-
             var httpOptions = {
                 method: 'get',
-                url: common.format(url_user + "/getOrg")
+                url: rootPath + "/org/listAll",
             }
             var httpSuccess = function success(response) {
                 vm.org = {};
                 vm.org = response.data;
-
             }
-
             common.http({
                 vm: vm,
                 $http: $http,
@@ -220,7 +217,7 @@
         function initZtreeClient(vm) {
             var httpOptions = {
                 method: 'post',
-                url: url_role
+                url: url_role = rootPath + "/role/findAllRoles"
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({
@@ -237,7 +234,7 @@
                                 enable: true
                             }
                         };
-                        var zNodes = $linq(response.data.value).select(
+                        var zNodes = $linq(response.data).select(
                             function (x) {
                                 return {
                                     id: x.id,
@@ -252,7 +249,6 @@
                         zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
                         if (vm.isUpdate) {
                             updateZtree(vm);
-
                         }
                     }
 
@@ -270,13 +266,14 @@
         // begin#getUserById
         function getUserById(vm) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/user/findUserById",
                 params: {
                     userId: vm.id
                 }
             }
             var httpSuccess = function success(response) {
+                console.log(response.data);
                 vm.model = response.data;
                 if (vm.isUpdate) {
                     initZtreeClient(vm);

@@ -8,78 +8,6 @@
 </div>
 
 <div class="cared">
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-aqua">
-                <div class="inner">
-                    <h3>150</h3>
-
-                    <p>项目待办</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-map-o"></i>
-                </div>
-                <a href="#/gtasks" class="small-box-footer">
-                    更多消息 <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-green">
-                <div class="inner">
-                    <h3>53</h3>
-
-                    <p>项目已办</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-map"></i>
-                </div>
-                <a href="#/etasks" class="small-box-footer">
-                    更多消息 <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-yellow">
-                <div class="inner">
-                    <h3>44</h3>
-                    <p>公文待办</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-paper-plane"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    更多消息 <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-red">
-                <div class="inner">
-                    <h3>65</h3>
-
-                    <p>公文已办</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                    更多消息 <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <!-- ./col -->
-    </div>
-</div>
-
-<div class="cared">
     <div class="row">    
     <div class="col-xs-6">
             <div class="box">
@@ -94,12 +22,19 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新待办</th>
+                            <th style="width: 80px" align="center">流程状态</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.tasksList|limitTo:6">
-                            <td ng-bind="$index+1">1</td>
-                            <td><a href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a></td>
-                            <td><span class="badge bg-red">{{t.createTime}}</span></td>
+                            <td ng-bind="$index+1"></td>
+                            <td>
+                                <a ng-if="t.processState == '1'" href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
+                                <a ng-if="t.processState == '2'" href="#/signFlowDetail/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a></td>
+                            <td >
+                                <span  ng-if="t.processState == '1'" style="color:green;">进行中</span>
+                                <span  ng-if="t.processState == '2'" style="color:orange;">已暂停</span>
+                            </td>
+                            <td><span class="badge bg-red">{{t.createTime | FormatStrDate}}</span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -125,7 +60,7 @@
                         <tr ng-repeat="e in vm.endTasksList|limitTo:6">
                              <td ng-bind="$index+1">1</td>
                             <td><a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}">{{e.businessName}}</a></td>
-                            <td><span class="badge bg-red">{{e.createDate}}</span></td>
+                            <td><span class="badge bg-red">{{e.createDate | FormatStrDate }}</span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -135,106 +70,6 @@
         </div>
     </div>
 
-</div>
-
-<div class="cared">
-    <div class="row">
-        <div class="col-xs-6 ">
-            <div class="box box-widget widget-user-2">
-                <!-- Add the bg color to the header using any of the bg-* classes -->
-                <div class="widget-user-header b-gray-blue">
-                    <div class="widget-user-image">
-                        <img class="img-circle" src="${path}/contents/libs/adminLTE/dist/img/user7-128x128.jpg"
-                             alt="User Avatar">
-                    </div>
-                    <!-- /.widget-user-image -->
-                    <h3 class="widget-user-username">我的业务统计</h3>
-                    <h5 class="widget-user-desc">（张小可 书记员）</h5>
-                </div>
-                <div class="box-footer no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th style="width: 10px"><span class="fa  fa-bar-chart"></span></th>
-                            <th>项目名称</th>
-                            <th></th>
-                            <th style="width: 80px">总任务比</th>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>待办业务</td>
-                            <td>
-                                <div class="progress progress-xs">
-                                    <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-red">55%</span></td>
-                        </tr>
-                        <tr>
-                            <td>2.</td>
-                            <td>已办业务</td>
-                            <td>
-                                <div class="progress progress-xs">
-                                    <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-yellow">70%</span></td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td>主办业务</td>
-                            <td>
-                                <div class="progress progress-xs progress-striped active">
-                                    <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-light-blue">30%</span></td>
-                        </tr>
-                        <tr>
-                            <td>4.</td>
-                            <td>计划业务</td>
-                            <td>
-                                <div class="progress progress-xs progress-striped active">
-                                    <div class="progress-bar progress-bar-success" style="width: 90%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-green">90%</span></td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-6 ">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">公告通知</h3>
-                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment">查看更多</a>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th style="width: 10px"><span class="fa fa-commenting"></span></th>
-                            <th>最新通告</th>
-                            <th>发布人</th>
-                            <th style="width: 100px" align="center">日期</th>
-                        </tr>
-                        <tr ng-repeat="x in vm.annountmentList|limitTo:6">
-                            <td>{{$index +1}}.</td>
-                            <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
-                            <td>{{x.issueUser}}</td>
-                            <td><span class="badge bg-green">{{x.issueDate}}</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>        
-    </div>
 </div>
 
 <div class="cared">
@@ -256,8 +91,36 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <div class="col-xs-6 ">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">公告通知</h3>
+                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment">查看更多</a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa fa-commenting"></span></th>
+                            <th>最新通告</th>
+                            <th>发布人</th>
+                            <th style="width: 100px" align="center">日期</th>
+                        </tr>
+                        <tr ng-repeat="x in vm.annountmentList|limitTo:6">
+                            <td>{{$index +1}}.</td>
+                            <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
+                            <td>{{x.issueUser}}</td>
+                            <td><span class="badge bg-green">{{x.issueDate | FormatStrDate}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <!-- /.box-body -->
             </div>
-        </div>
+        </div>        
     </div>
 </div>

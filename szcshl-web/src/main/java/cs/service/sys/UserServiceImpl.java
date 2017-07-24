@@ -402,50 +402,29 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * 根据ID查询用户
+     * @param id
+     * @param inclueOrg
+     * @return
+     */
     @Override
-    public UserDto findById(String id) {
-        User user = userRepo.findById(id);
+    public UserDto findById(String id,boolean inclueOrg) {
         UserDto userDto = new UserDto();
-        BeanCopierUtils.copyProperties(user, userDto);
-        if (user.getOrg() != null) {
-        		OrgDto orgDto = new OrgDto();
-        		BeanCopierUtils.copyProperties(user.getOrg() , orgDto);
-        		userDto.setOrgDto(orgDto);
+        if(inclueOrg){
+            User user = userRepo.findById(id);
+            BeanCopierUtils.copyProperties(user, userDto);
+            if (user.getOrg() != null) {
+                OrgDto orgDto = new OrgDto();
+                BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
+                userDto.setOrgDto(orgDto);
+            }
+        }else{
+            User user = userRepo.findById(User_.id.getName(),id);
+            BeanCopierUtils.copyProperties(user, userDto);
         }
+
         return userDto;
-    }
-
-
-    /**
-     * 当前用户是否是用户的部门领导
-     */
-    @Override
-    public boolean curUserIsOrgDirector(UserDto checkUser) {
-        return currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector()) ? true : false;
-    }
-
-
-    /**
-     * 当前用户是否是用户的分管领导
-     */
-    @Override
-    public boolean curUserIsOrgSLeader(UserDto checkUser) {
-        return currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader()) ? true : false;
-    }
-
-
-    /**
-     * 当前用户是否是用户的上级领导（包括部门领导和分管领导）
-     */
-    @Override
-    public boolean curUserIsSuperLeader(UserDto checkUser) {
-        boolean isTrue = true;
-        isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector()) ? true : false;
-        if (isTrue) {
-            return isTrue;
-        }
-        isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader()) ? true : false;
-        return isTrue;
     }
 
 
@@ -454,7 +433,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getOrgDirector() {
-        UserDto user = findById(currentUser.getLoginUser().getOrg().getOrgDirector());
+        UserDto user = findById(currentUser.getLoginUser().getOrg().getOrgDirector(),false);
         if (user != null && Validate.isString(user.getId())) {
             return user;
         }

@@ -2,9 +2,7 @@ package cs.domain.project;
 
 
 import cs.domain.DomainBase;
-import cs.domain.expert.ExpertSelected;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -28,9 +26,6 @@ public class Sign extends DomainBase {
     private String signid;
     
     @Column(columnDefinition="VARCHAR(2)")
-    private String isLightUp;	//警示灯状态
-    
-    @Column(columnDefinition="VARCHAR(2)")
     private String isSendFileRecord;	//是否已发送存档
 
     //委内收文编号
@@ -45,17 +40,9 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(64)")
     private String reviewstage;
 
-    //是否项目预签收
-    @Column(columnDefinition = "VARCHAR(1)")
-    private String ispresign;
-
     //项目名称
     @Column(columnDefinition = "VARCHAR(200)")
     private String projectname;
-
-    //是否登记完毕
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isregisteredcompleted;
 
     //主办处室ID
     @Column(columnDefinition = "VARCHAR(64)")
@@ -124,43 +111,41 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(255)")
     private String comprehensivehandlesug;
 
+    //综合部拟办人名称
     @Column(columnDefinition = "VARCHAR(100)")
-    private String comprehensiveName;//综合部拟办人名称
+    private String comprehensiveName;
 
+    //综合部拟办日期
     @Column(columnDefinition = "DATE")
-    private Date comprehensiveDate;//综合部拟办日期
+    private Date comprehensiveDate;
 
     //中心领导审批意见
     @Column(columnDefinition = "VARCHAR(255)")
     private String leaderhandlesug;
 
+    //中心领导名称
     @Column(columnDefinition = "VARCHAR(100)")
-    private String leaderName;//中心领导名称
+    private String leaderName;
 
+    //中心领导审批日期
     @Column(columnDefinition = "DATE")
-    private Date leaderDate;//中心领导审批日期
+    private Date leaderDate;
 
     //部长处理意见
     @Column(columnDefinition = "VARCHAR(255)")
     private String ministerhandlesug;
 
+    //部长名称
     @Column(columnDefinition = "VARCHAR(100)")
-    private String ministerName;//部长名称
+    private String ministerName;
 
+    //部长处理日期
     @Column(columnDefinition = "DATE")
-    private Date ministerDate;//部长处理日期
+    private Date ministerDate;
 
     //送件人签名
     @Column(columnDefinition = "VARCHAR(16)")
     private String sendusersign;
-
-    //是否确认签收
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String issign;
-
-    //是否有评审费用
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String ishasreviewcost;
 
     //项目签收时间
     @Column(columnDefinition = "DATE")
@@ -186,14 +171,6 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private Float reviewdays;
 
-    //是否协审
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isassistproc;
-
-    //是否协审流程
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isassistflow;
-
     //归档编号
     @Column(columnDefinition = "VARCHAR(100)")
     private String filenum;
@@ -201,34 +178,6 @@ public class Sign extends DomainBase {
     //文号
     @Column(columnDefinition = "VARCHAR(100)")
     private String docnum;
-
-    //是否暂停
-    @Column(columnDefinition = "VARCHAR(1)")
-    private String ispause;
-
-    //暂停工作日
-    @Column(columnDefinition = "NUMBER")
-    private Float pausedays;
-
-    //暂停时间
-    @Column(columnDefinition = "DATE")
-    private Date pausetime;
-
-    //暂停说明
-    @Column(columnDefinition = "VARCHAR(2048)")
-    private String pasedescription;
-
-    //是否调概
-    @Column(columnDefinition = "VARCHAR(5)")
-    private String ischangeEstimate;
-
-    //是否完成评审方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isreviewCompleted;
-
-    //是否完成分支的评审方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isreviewACompleted;
 
     //建议书项目处理表份数
     @Column(columnDefinition = "INTEGER")
@@ -446,13 +395,6 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String energyCopy;
 
-    //是否已发起流程
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String folwState;
-
-    //收文状态
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String signState;
 
     //发文是否完成
     @Column(columnDefinition = "VARCHAR(2)")
@@ -469,14 +411,6 @@ public class Sign extends DomainBase {
     //流程实例ID
     @Column(columnDefinition = "VARCHAR(64)")
     private String processInstanceId;
-
-    //是否需要工作方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isNeedWrokPrograml;
-
-    //是否提前介入
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isAdvanced;
 
     //申报投资
     @Column(columnDefinition = "NUMBER")
@@ -767,14 +701,17 @@ public class Sign extends DomainBase {
 	@Column(columnDefinition = "VARCHAR(2)")
 	private String constructionDrawingsCopy;
     //E (项目概算)
-	
-    //项目是否已关联,0未关联，1已关联，默认未关联
-    @Column(columnDefinition = "INTEGER")
-    private Integer isAssociate;
 
     //第二负责人
     @Column(columnDefinition = "VARCHAR(64)")
     private String secondPriUser;
+
+
+    /**
+     * 预签收日期
+     */
+    @Column(columnDefinition = "DATE")
+    private Date presignDate;
 
     //工作方案
     @OneToMany(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -800,6 +737,63 @@ public class Sign extends DomainBase {
             inverseJoinColumns = @JoinColumn(name = "associate_signid"))
     private Sign associateSign;
 
+    /**************************  是否或者 状态字段放这里  ****************************/
+    //是否项目预签收
+    @Column(columnDefinition = "VARCHAR(1)")
+    private String ispresign;
+
+    //是否登记完毕
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isregisteredcompleted;
+
+    //警示灯状态
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isLightUp;
+
+    //收文状态
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String signState;
+
+    //是否有评审费用
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ishasreviewcost;
+
+    //是否协审
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isassistproc;
+
+    //是否协审流程
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isassistflow;
+
+    //是否确认签收
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String issign;
+
+    //项目是否已关联,0未关联，1已关联，默认未关联
+    @Column(columnDefinition = "INTEGER")
+    private Integer isAssociate;
+
+    //是否需要工作方案
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isNeedWrokPrograml;
+
+    //是否调概
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String ischangeEstimate;
+
+    //是否完成评审方案
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isreviewCompleted;
+
+    //是否完成分支的评审方案
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isreviewACompleted;
+
+    //是否提前介入
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isAdvanced;
+    /**************************  状态字段放这里  ****************************/
     
     public List<ProjectStop> getProjectStopList() {
 		return projectStopList;
@@ -1167,38 +1161,6 @@ public class Sign extends DomainBase {
 
     public void setDocnum(String docnum) {
         this.docnum = docnum;
-    }
-
-    public String getIspause() {
-        return ispause;
-    }
-
-    public void setIspause(String ispause) {
-        this.ispause = ispause;
-    }
-
-    public Float getPausedays() {
-        return pausedays;
-    }
-
-    public void setPausedays(Float pausedays) {
-        this.pausedays = pausedays;
-    }
-
-    public Date getPausetime() {
-        return pausetime;
-    }
-
-    public void setPausetime(Date pausetime) {
-        this.pausetime = pausetime;
-    }
-
-    public String getPasedescription() {
-        return pasedescription;
-    }
-
-    public void setPasedescription(String pasedescription) {
-        this.pasedescription = pasedescription;
     }
 
     public String getIschangeEstimate() {
@@ -1655,14 +1617,6 @@ public class Sign extends DomainBase {
 
     public void setEnergyCopy(String energyCopy) {
         this.energyCopy = energyCopy;
-    }
-
-    public String getFolwState() {
-        return folwState;
-    }
-
-    public void setFolwState(String folwState) {
-        this.folwState = folwState;
     }
 
     public String getSignState() {
@@ -2344,5 +2298,13 @@ public class Sign extends DomainBase {
 
     public void setSecondPriUser(String secondPriUser) {
         this.secondPriUser = secondPriUser;
+    }
+
+    public Date getPresignDate() {
+        return presignDate;
+    }
+
+    public void setPresignDate(Date presignDate) {
+        this.presignDate = presignDate;
     }
 }

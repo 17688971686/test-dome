@@ -7,6 +7,7 @@ import cs.auto.core.config.FileConst;
 import cs.domain.expert.ExpertOffer;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.project.*;
 import cs.domain.sys.Quartz;
 import cs.domain.sys.SysConfig;
@@ -25,7 +26,7 @@ public class AutoGenerate {
 
         CRUDGanConfig config = new CRUDGanConfig(SignDispaWork.class, "项目统计视图");
         config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\Quartz");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\RuProcessTask");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());
@@ -46,11 +47,11 @@ public class AutoGenerate {
         fileConfs.add(new FileConfig(FileConst.serviceImplCls));
         fileConfs.add(new FileConfig(FileConst.controllerCls));
 
-        fileConfs.add(new FileConfig(FileConst.listHtml));
+       /* fileConfs.add(new FileConfig(FileConst.listHtml));
         fileConfs.add(new FileConfig(FileConst.listCtrlJs));
         fileConfs.add(new FileConfig(FileConst.listSvcJs));
         fileConfs.add(new FileConfig(FileConst.editHtml));
-        fileConfs.add(new FileConfig(FileConst.editCtrJs));
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));*/
         return fileConfs;
     }
 

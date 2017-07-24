@@ -132,10 +132,10 @@ public class UserController {
      * @param userId
      * @return
      */
-    @RequestMapping(name = "获取副主任信息", path = "findUserById", method = RequestMethod.GET)
+    @RequestMapping(name = "根据用户ID查询用户信息", path = "findUserById", method = RequestMethod.POST)
     @ResponseBody
     public UserDto findUserById(@RequestParam String userId){
-        return userService.findById(userId);
+        return userService.findById(userId,true);
     }
     // begin#html
     @RequiresPermissions("user#html/list#get")
