@@ -147,7 +147,7 @@
 			</tr>
 
 			<tr>
-				<td width="15%" class="text-center">秘密登记</td>
+				<td width="15%" class="text-center">秘密等级</td>
 				<td>
 					<select ng-model="vm.model.secrectlevel" name="secrectlevel" id="secrectlevel">
 						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
@@ -183,7 +183,7 @@
 										<td style="border-top:none;"><span data-valmsg-for="sugProDealCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
 									<tr>
-										<td style="border-top:none;text-align:right;" class="formAlignRight">委文件处理表</td>
+										<td style="border-top:none;text-align:right;">委文件处理表</td>
 										<td style="border-top:none;">
 											<input type="text" style="width:50px;" class="form-control input-sm"  ng-model="vm.model.sugFileDealCount" id="sugFileDealCount" name="sugFileDealCount"
 												   data-val="true" data-val-digits="只能输入数字" >

@@ -21,7 +21,7 @@
 		function startFlow(vm,signid){
 			var httpOptions = {
 					method : 'post',
-					url : rootPath+"/sign/html/startNewFlow",
+					url : rootPath+"/sign/startNewFlow",
 					params : {signid:signid}
 				}
 				

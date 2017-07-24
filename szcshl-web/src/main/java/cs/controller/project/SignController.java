@@ -195,13 +195,19 @@ public class SignController {
         return signService.findById(signid, true);
     }
 
-    @RequiresPermissions("sign#html/startNewFlow#post")
-    @RequestMapping(name = "发起流程", path = "html/startNewFlow", method = RequestMethod.POST)
+    @RequiresPermissions("sign#startNewFlow#post")
+    @RequestMapping(name = "发起流程", path = "startNewFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
         return signService.startNewFlow(signid);
     }
-    
+
+    @RequiresPermissions("sign#realSign#post")
+    @RequestMapping(name = "正式签收", path = "realSign", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg realSign(@RequestParam(required = true) String signid) {
+        return signService.realSign(signid);
+    }
 
     @RequiresPermissions("sign#html/flowDeal#get")
     @RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)

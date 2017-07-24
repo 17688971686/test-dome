@@ -446,7 +446,6 @@ public class SignServiceImpl implements SignService {
         signRepo.save(sign);
 
         return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
-
     }
 
     @Override
@@ -1428,13 +1427,18 @@ public class SignServiceImpl implements SignService {
      * @param signId
      */
     @Override
-    public void realSign(String signId) {
+    public ResultMsg realSign(String signId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+        if(Validate.isString(sign.getIssign()) && EnumState.YES.getValue().equals(sign.getIssign())){
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该项目已经签收完毕！");
+        }
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_sign set "+Sign_.signdate.getName()+" = sysdate,");
         sqlBuilder.append(Sign_.issign.getName()+" =:issign ").setParam("issign",EnumState.YES.getValue());
         sqlBuilder.bulidIdString("where",Sign_.signid.getName(),signId);
-
         signRepo.executeSql(sqlBuilder);
+
+        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
     }
 
     @Override

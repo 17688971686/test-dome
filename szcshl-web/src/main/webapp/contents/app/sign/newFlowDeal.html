@@ -132,45 +132,42 @@
 
                     <!-- 协审部门分办 -->
                     <div ng-show="vm.showFlag.nodeSelXSPri" id="xs_bmfb">
-                        <table class="table" style="width:900px;">
+                        <table class="table">
                             <caption class="text-center">*必须要选择1个总负责人，最多只能选3个负责人</caption>
                             <tr>
-                                <td style="width:100px;">
-                                    <table class="table table-bordered seleteTable" >
-                                        <tr>
-                                            <td width="30%" align="center">选择</td>
-                                            <td width="70%" align="center">人员</td>
-                                        </tr>
-                                        <tr ng-repeat="u in vm.xsusers | filter:{isSelected:false}">
-                                            <td align="center"><input type="checkbox" name="unSelPriUser"  value="{{u.id}}"/></td>
-                                            <td align="center">{{u.displayName}}</td>
-                                        </tr>
-                                    </table>
+                                <td>
+                                    <span ng-repeat="u in vm.xsusers | filter:{isSelected:false}" style="width:14%;">
+                                        <span ><input type="checkbox" name="unSelPriUser"  value="{{u.id}}"/>{{u.displayName}}</span>
+                                    </span>
                                 </td>
-                                <td  style="text-align:center;vertical-align:middle;100px;">
-                                    <p style="text-align:center;">
+                            </tr>
+                            <tr>
+                                <td  style="text-align:center;vertical-align:middle;">
+                                    <span style="text-align:center;">
                                         负责分工:
                                         <select name="userType" id="userType">
                                             <option value="土建">土建</option>
                                             <option value="安装">安装</option>
                                             <option value="所有">所有</option>
                                         </select>
-                                    </p>
-                                    <p style="text-align:center;">
-                                        是否总负责人：<input ng-model="vm.isMainPriUser" type="checkbox" ng-true-value="9" ng-false-value="0" id="isMainPriUser" ng-checked="vm.isMainPriUser==9"/>
-                                    </p>
-                                    <p style="text-align:center;">
-                                        <button class="btn btn-sm btn-default" ng-click="vm.addPriUser()" ng-disabled="vm.iscommit"><span
-                                                class="glyphicon glyphicon-arrow-right"></span>添加
+                                    </span>
+                                    <span style="text-align:center;">
+                                        <button class="btn btn-xs btn-default" ng-click="vm.addPriUser()" ng-disabled="vm.iscommit"><span
+                                                class="glyphicon glyphicon-arrow-down"></span>添加
                                         </button>
-                                    </p>
-                                    <p style="text-align:center;">
-                                        <button class="btn btn-sm btn-default" ng-click="vm.delPriUser()" ng-disabled="vm.iscommit"><span
-                                                class="glyphicon glyphicon-arrow-left"></span>删除
+                                    </span>
+                                    <span style="text-align:center;">
+                                        <button class="btn btn-xs btn-default" ng-click="vm.delPriUser()" ng-disabled="vm.iscommit"><span
+                                                class="glyphicon glyphicon-arrow-up"></span>删除
                                         </button>
-                                    </p>
+                                    </span>
+                                    <span style="text-align:center;margin: 0px 20px;">
+                                        是否总负责人<input ng-model="vm.isMainPriUser" type="checkbox" ng-true-value="9" ng-false-value="0" id="isMainPriUser" ng-checked="vm.isMainPriUser==9"/>
+                                    </span>
                                 </td>
-                                <td style="width:700px;">
+                            </tr>
+                            <tr>
+                                <td>
                                     <table class="table table-bordered">
                                         <tr>
                                             <td width="10%" align="center">选择</td>
@@ -191,7 +188,6 @@
                             </tr>
                         </table>
                     </div>
-
                 </td>
             </tr>
             <tr ng-show="vm.showFlag.businessTr">

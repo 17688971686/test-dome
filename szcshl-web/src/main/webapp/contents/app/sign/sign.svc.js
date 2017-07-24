@@ -24,6 +24,7 @@
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
+            realSign : realSign ,               //正式签收
         };
         return service;
 
@@ -63,7 +64,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0) and signState ne '7' "}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0)"}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -152,19 +153,21 @@
                 },
                 {
                     field: "",
-                    title: "流程状态",
+                    title: "收文状态",
                     width: 80,
                     filterable: false,
                     template: function (item) {
-                        if (item.folwState) {
-                            if (item.folwState == 1) {
+                        if (item.signState) {
+                            if (item.signState == 1) {
                                 return '<span style="color:green;">进行中</span>';
-                            } else if (item.folwState == 2) {
+                            } else if (item.signState == 2) {
                                 return '<span style="color:orange;">已暂停</span>';
-                            } else if (item.folwState == 8) {
+                            } else if (item.signState == 8) {
                                 return '<span style="color:red;">强制结束</span>';
-                            } else if (item.folwState == 9) {
+                            } else if (item.signState == 9) {
                                 return '<span style="color:blue;">已完成</span>';
+                            }else{
+                                return "";
                             }
                         } else {
                             return "未发起"
@@ -176,24 +179,14 @@
                     title: "操作",
                     width: 150,
                     template: function (item) {
+                        var isRealSign = (item.issign && item.issign == 9)?true:false;
+
                         //如果已经发起流程，则只能查看
-                        var isFlowStart = false, hideStopButton = true, hideRestartButton = true,
-                            isAlreadyAssociate = false;
-                        if (item.folwState && item.folwState > 0) {
-                            isFlowStart = true;
-                            if (item.folwState == 1) {
-                                hideStopButton = false;
-                            }
-                            if (item.folwState == 2) {
-                                hideRestartButton = false;
-                            }
-                        }
-                        return common.format($('#columnBtns').html(), item.signid, item.folwState,
+                        return common.format($('#columnBtns').html(), item.signid, item.signState,
                             item.signid + "/" + item.processInstanceId, 
-                            "vm.del('" + item.signid + "')", isFlowStart,
-                            "vm.startNewFlow('" + item.signid + "')", isFlowStart,
-                            "vm.stopFlow('" + item.signid + "')", hideStopButton,
-                            "vm.restartFlow('" + item.signid + "')", hideRestartButton);
+                            "vm.del('" + item.signid + "')", item.signState,
+                            "vm.startNewFlow('" + item.signid + "')", item.signState,
+                            "vm.realSign('" + item.signid + "')", isRealSign);
                     }
                 }
             ];
@@ -888,5 +881,49 @@
                 success: httpSuccess
             });
         }//E_createDispatchFileNum
+
+        //S_项目正式签收
+        function realSign(vm,signid){
+            vm.isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/sign/realSign",
+                params:{
+                    signid : signid
+                }
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        vm.isCommit = false;
+                        common.alert({
+                            vm: vm,
+                            msg: response.data.reMsg,
+                            closeDialog: true,
+                            fn: function () {
+                                if (response.data.reCode == "error") {
+
+                                } else {
+                                    vm.gridOptions.dataSource.read();
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError : function () {
+                    vm.isCommit = false;
+                }
+            });
+        }//E_realSign
+
+
     }
 })();

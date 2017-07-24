@@ -69,6 +69,6 @@ public interface SignService {
 
     Map<String, Object> initSignList();
 
-    void realSign(String signId);
+    ResultMsg realSign(String signId);
 
 }
