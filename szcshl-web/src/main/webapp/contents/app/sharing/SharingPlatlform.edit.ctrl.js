@@ -33,8 +33,21 @@
             	 vm.publishOrg = false
             }
         }
-     
-        //个人发布
+     vm.checkboxSelected =function(){
+    /*	 	var dept = document.getElementsByTagName('input');
+     //	alert(dept);
+     	var val = [];
+     	for(var i=0; i<dept.length; i++){
+     		if(dept[i].name =="pubDept" && dept[i].checked == true){
+     			val.push(dept[i].value);
+     		}
+     	}
+     	var strVal = val.join(",");*/
+     	//alert(strVal);
+    	// alert(vm.model.pubDept);
+     	sharingPlatlformSvc.findByIdOrgUsers(vm,vm.model.orgId);
+     }
+        
         vm.postPerson = function(){
         	var username = "admin";
         	 if(vm.model.postResume){
@@ -59,7 +72,16 @@
         vm.businessFlag ={
             isInitFileOption : false,   //是否已经初始化附件上传控件
         }
-
+        
+      //全选、反选
+      $("#menuModuleAll").click(function(){
+    	  if (this.checked) {
+			   	$("input[name=menuModule]").attr("checked", "checked");
+			   }else {
+			   	  $("input[name=menuModule]").attr("checked", null);
+			   }		
+      });
+        
         activate();
         function activate() {
         
@@ -74,9 +96,11 @@
                })
             }
            sharingPlatlformSvc.findAllOrglist(vm);
+           //sharingPlatlformSvc.initZtreeClient(vm);
            sharingPlatlformSvc.findAllUsers(vm);
            sharingPlatlformSvc.findFileList(vm);
-           
+         //  sharingPlatlformSvc.getOrg(vm);
+          
         }
     }
 })();

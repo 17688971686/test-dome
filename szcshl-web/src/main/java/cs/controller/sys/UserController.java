@@ -72,12 +72,21 @@ public class UserController {
     	return userDto;
     }
     
+     
     @RequiresPermissions("user#findChargeUsers#get")
     @RequestMapping(name = "获取所在部门的用户", path = "findChargeUsers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findChargeUsers(){
     	User curUser = currentUser.getLoginUser();
     	return userService.findUserByOrgId(curUser.getOrg().getId());
+    }
+    
+    @RequiresPermissions("user#findByOrgUserName#get")
+    @RequestMapping(name = "根据部门ID获取用户所在部门", path = "findByOrgUserName", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findByOrgUserNames(@RequestParam(required = true)String orgId){
+    	List<UserDto> userlist = userService.findByOrgUserName(orgId);
+    	return userlist;
     }
     
     @RequiresPermissions("user##post")

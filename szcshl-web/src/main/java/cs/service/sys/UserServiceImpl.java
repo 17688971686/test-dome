@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -518,6 +519,28 @@ public class UserServiceImpl implements UserService {
 		sql.append("select max(to_number(userNo)) from cs_user");
 		
 		return userRepo.returnIntBySql(sql);
+	}
+
+
+	@Override
+	public List<UserDto> findByOrgUserName(String orgId) {
+		
+	    HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select loginName from cs_user where orgId = ");
+        sqlBuilder.setParam("orgId", orgId);
+        List<User> users=  userRepo.findByHql(sqlBuilder);
+        List<UserDto> userDto = new ArrayList<UserDto>();
+        
+        if (users != null && users.size() > 0) {
+            users.forEach(x -> {
+                UserDto userDtos = new UserDto();
+                BeanCopierUtils.copyProperties(x, userDto);
+                userDtos.setCreatedDate(x.getCreatedDate());
+                userDtos.setModifiedDate(x.getModifiedDate());
+                userDto.add(userDtos);
+            });
+        }
+		return userDto;
 	}
 }
 

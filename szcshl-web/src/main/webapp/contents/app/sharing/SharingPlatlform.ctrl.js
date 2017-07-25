@@ -38,7 +38,7 @@
                  
                 }
                 var idStr = ids.join(',');
-                alert(idStr);
+               
                 vm.del(idStr);
             }
         };
@@ -52,8 +52,8 @@
         activate();
         function activate() {
             sharingPlatlformSvc.grid(vm);
-            sharingPlatlformSvc.findAllOrglist(vm);
-            sharingPlatlformSvc.findAllUsers(vm);
+          //  sharingPlatlformSvc.findAllOrglist(vm);
+          //  sharingPlatlformSvc.findAllUsers(vm);
         }
     }
 })();

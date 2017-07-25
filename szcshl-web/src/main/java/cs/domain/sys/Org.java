@@ -2,9 +2,17 @@ package cs.domain.sys;
 
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import cs.domain.DomainBase;
+import cs.domain.sharing.SharingPlatlform;
 
 @Entity
 @Table(name = "cs_org")
@@ -88,6 +96,9 @@ public class Org extends DomainBase {
     @OneToMany(mappedBy = "org",fetch = FetchType.LAZY)
     private List<User> users;
 
+	@ManyToOne
+	@JoinColumn(name = "sharngId")
+	private SharingPlatlform sharing;
 
     public List<User> getUsers() {
         return users;
@@ -302,4 +313,14 @@ public class Org extends DomainBase {
         this.sort = sort;
     }
 
+	public SharingPlatlform getSharing() {
+		return sharing;
+	}
+
+	public void setSharing(SharingPlatlform sharing) {
+		this.sharing = sharing;
+	}
+
+	
+    
 }

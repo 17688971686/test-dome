@@ -4,7 +4,8 @@
     angular.module('app').factory('sharingPlatlformYetSvc', sharingPlatlformYet);
 
     sharingPlatlformYet.$inject = ['$http'];
-
+    
+    
     function sharingPlatlformYet($http) {
         var url_sharingPlatlformYet = rootPath + "/sharingPlatlform", url_back = '#/sharingPlatlformYetList';
         var url_user=rootPath +'/user';
@@ -300,13 +301,13 @@
                 
                 {
                     field: "theme",
-                    title: "发布主题",
+                    title: "共享主题",
                     width: 100,
                     filterable: true
                 },
                 {
                     field: "pubDept",
-                    title: "发布部门",
+                    title: "共享部门",
                     width: 100,
                     filterable: true
                 },
