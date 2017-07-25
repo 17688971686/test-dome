@@ -2,8 +2,6 @@ package cs.controller.sys;
 
 import cs.ahelper.RealPathResolver;
 import cs.common.utils.SysFileUtil;
-
-import org.activiti.engine.RepositoryService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,14 +41,14 @@ public class FroalaController {
         Map<String, String> map = new HashMap<>();
         try {
             String imgId = UUID.randomUUID().toString();
-//            String savePath = realPathResolver.get(froala_img_path);
-            String savePath = SysFileUtil.getUploadPath();
-            File isFileExists = new File(savePath+"/froala");
+            String savePath = realPathResolver.get(froala_img_path);
+            //String savePath = SysFileUtil.getUploadPath();
+            File isFileExists = new File(savePath);
             if (!isFileExists.exists()) {
                 isFileExists.mkdirs();      //如果目录不存在，则创建
             }
-            FileUtils.copyInputStreamToFile(multipartFile.getInputStream(),new File(savePath+"/froala/"+imgId+fileType));
-            map.put("link", rootPath+imgId+fileType);
+            FileUtils.copyInputStreamToFile(multipartFile.getInputStream(),new File(savePath+"/"+imgId+fileType));
+            map.put("link", rootPath+"/"+froala_img_path+"/"+imgId+fileType);
         } catch (Exception e) {
 
         }

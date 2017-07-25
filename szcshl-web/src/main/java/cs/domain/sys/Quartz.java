@@ -65,9 +65,9 @@ public class Quartz extends DomainBase {
     private String descInfo;
     
     /**
-     * 执行方式
+     * 执行方式(9:自动，0：手动)
      */
-    @Column(columnDefinition="VARCHAR(10)")
+    @Column(columnDefinition="VARCHAR(2)")
     private String runWay;  //执行方式： 自动    或  手动 （默认为手动）
     
     public String getRunWay() {

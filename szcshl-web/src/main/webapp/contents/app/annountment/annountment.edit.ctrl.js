@@ -15,32 +15,19 @@
         }
         active();
         function active() {
-           /* vm.froalaOptions = {
+           $('#froalaEditor') .froalaEditor({
                 language: 'zh_cn',
                 inlineMode: false,
-                placeholder: '请输入内容',
+                placeholderText:'请输入内容' ,
                 imageUploadURL: rootPath +"/froala/uploadImg",
                 imageUploadParams:{rootPath:rootPath},//接口其他传参,默认为空对象{},
+                height: '260px', //高度
                 enter: $.FroalaEditor.ENTER_BR,
                 toolbarButtons: [
-                    'bold', 'italic', 'underline', 'paragraphFormat', 'align','color','fontSize','insertImage','insertTable','undo', 'redo'
+                    'bold', 'italic', 'underline','strikeThrough','fontFamily', 'paragraphFormat', 'align','color','fontSize','outdent',
+                    'indent','insertImage','insertTable','undo', 'redo','insertLink','fullscreen'
                 ]
-            }*/
-            
-        	   $('#froalaEditor') .froalaEditor({
-		        	
-		        		language: 'zh_cn',
-		                inlineMode: false,
-		                placeholderText:'请输入内容' ,
-		                imageUploadURL: rootPath +"/froala/uploadImg",
-		                imageUploadParams:{rootPath:"E:/szcshl_upload/froala/"},//接口其他传参,默认为空对象{},
-		                enter: $.FroalaEditor.ENTER_BR,
-		                toolbarButtons: [
-		                    'bold', 'italic', 'underline','strikeThrough','fontFamily', 'paragraphFormat', 'align','color','fontSize','outdent',
-		                    'indent','insertImage','insertTable','undo', 'redo','insertLink','fullscreen'
-		                ]
-		        	});
-
+            });
 
             if (vm.annountment.anId) {
             	vm.isUpdate=true;

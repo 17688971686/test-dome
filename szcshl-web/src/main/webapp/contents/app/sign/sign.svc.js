@@ -153,7 +153,7 @@
                 },
                 {
                     field: "",
-                    title: "收文状态",
+                    title: "流程状态",
                     width: 80,
                     filterable: false,
                     template: function (item) {
@@ -166,6 +166,8 @@
                                 return '<span style="color:red;">强制结束</span>';
                             } else if (item.signState == 9) {
                                 return '<span style="color:blue;">已完成</span>';
+                            }else if (item.signState == 5) {
+                                return '未发起';
                             }else{
                                 return "";
                             }
@@ -177,15 +179,16 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 150,
+                    width: 180,
                     template: function (item) {
+                        var isStartFlow = angular.isString(item.processInstanceId);
                         var isRealSign = (item.issign && item.issign == 9)?true:false;
 
                         //如果已经发起流程，则只能查看
-                        return common.format($('#columnBtns').html(), item.signid, item.signState,
+                        return common.format($('#columnBtns').html(), item.signid, false,
                             item.signid + "/" + item.processInstanceId, 
-                            "vm.del('" + item.signid + "')", item.signState,
-                            "vm.startNewFlow('" + item.signid + "')", item.signState,
+                            "vm.del('" + item.signid + "')", isStartFlow,
+                            "vm.startNewFlow('" + item.signid + "')", isStartFlow,
                             "vm.realSign('" + item.signid + "')", isRealSign);
                     }
                 }

@@ -33,6 +33,17 @@ public class Constant {
     public static String DISPATCH_PREFIX="深投审";
 
     /**
+     * 默认收文工作日
+     */
+    public static Float WORK_DAY_15 = 15f;
+
+    /**
+     * 默认工作日
+     */
+    public static Float WORK_DAY_12 = 12f;
+
+
+    /**
      * 工作方案表抬头
      */
     public static final String WORKPROGRAM_NAME = "评审工作方案";

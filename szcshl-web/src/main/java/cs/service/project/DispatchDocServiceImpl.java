@@ -272,15 +272,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 if(mergeOptionService.isMerge(null,dispatchDocDto.getSignId(),Constant.MergeType.DISPATCH.getValue())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，单个发文不能关联其他项目，请先删除关联项目再操作！");
                 }
-            // 合并发文
+            // 合并发文次项目一定要关联
             }else if(Constant.MergeWay.MERGE.getValue().equals(dispatchDocDto.getDispatchWay())) {
-                //主项目
-                if(EnumState.YES.getValue().equals(dispatchDocDto.getIsMainProject())){
-                    if(!Validate.isString(dispatchDocDto.getId())){
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前发文为合并发文主项目，请先进行项目关联！");
-                    }
-                    else if(!mergeOptionService.isHaveLink(dispatchDocDto.getId(),Constant.MergeType.DISPATCH.getValue())){
-                    	
+                //主项目(有ID才判断)
+                if(EnumState.YES.getValue().equals(dispatchDocDto.getIsMainProject()) ){
+                    if(Validate.isString(dispatchDocDto.getId()) && !mergeOptionService.isHaveLink(dispatchDocDto.getId(),Constant.MergeType.DISPATCH.getValue())){
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文主项目，请先进行项目关联！");
                     }
                 //次项目

@@ -69,19 +69,19 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecord.setModifiedBy(currentUser.getLoginName());
             fileRecord.setModifiedDate(now);
 
+            //设置归档编号(评估类)
+            if (!Validate.isString(fileRecord.getFileNo())) {
+                fileRecord.setFileNo(NumIncreaseUtils.getFileRecordNo(Constant.FileNumType.PD.getValue()));
+                fileRecordDto.setFileNo(fileRecord.getFileNo());
+            }
             Sign sign = signRepo.findById(Sign_.signid.getName(),fileRecordDto.getSignId());
             //更新收文信息
             sign.setFilenum(fileRecord.getFileNo());
             sign.setFileRecord(fileRecord);
 
             fileRecord.setSign(sign);
-            //设置归档编号(评估类)
-            if (!Validate.isString(fileRecord.getFileNo())) {
-                fileRecord.setFileNo(NumIncreaseUtils.getFileRecordNo(Constant.FileNumType.PD.getValue()));
-                fileRecordDto.setFileNo(fileRecord.getFileNo());
-            }
-            fileRecordRepo.save(fileRecord);
 
+            fileRecordRepo.save(fileRecord);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecordDto);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取项目信息！");

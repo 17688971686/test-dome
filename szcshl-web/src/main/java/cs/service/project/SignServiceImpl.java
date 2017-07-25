@@ -106,12 +106,10 @@ public class SignServiceImpl implements SignService {
         sign.setSendusersign(Constant.SEND_SIGN_NAME);
         Date now = new Date();
         //签收时间
-        sign.setSigndate(now);
         sign.setCreatedDate(now);
         sign.setModifiedDate(now);
         sign.setCreatedBy(currentUser.getLoginName());
         sign.setModifiedBy(currentUser.getLoginName());
-        sign.setIssign(EnumState.NO.getValue());    //默认为未签收
         sign.setIsLightUp("0");//默认为不亮灯
         //判断是否为协审
         if ("项目概算".equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
@@ -1354,14 +1352,17 @@ public class SignServiceImpl implements SignService {
 
     }
 
+    /**
+     * 查找正在运行并没有结束的收文
+     * @return
+     */
     @Override
     @Transactional
     public List<Sign> selectSignNotFinish() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-//		hqlBuilder.append("select s.signid,s.isLightUp,s.reviewstage,s.ispause,s.signdate from "+Sign.class.getSimpleName() +" s where s."+Sign_.signid.getName()+" not in (");
-        hqlBuilder.append("select s from " + Sign.class.getSimpleName() + " s where s." + Sign_.signState.getName() + "=:state");
-//		hqlBuilder.append("select t.signid,t.isLightUp,t.reviewstage,t.ispause,t.signdate  from cs_sign  t where t.signid not in (select f.signid from cs_file_record  f) ");
-        hqlBuilder.setParam("state", Constant.EnumState.NORMAL.getValue());
+        hqlBuilder.append("select s from " + Sign.class.getSimpleName() + " s where s." + Sign_.signState.getName() + "=:state ");
+        hqlBuilder.setParam("state", EnumState.PROCESS.getValue());
+        hqlBuilder.append(" and s."+Sign_.issign.getName()+" =:issign").setParam("issign",EnumState.YES.getValue());
         List<Sign> signList = signRepo.findByHql(hqlBuilder);
         return signList;
     }
@@ -1432,9 +1433,16 @@ public class SignServiceImpl implements SignService {
         if(Validate.isString(sign.getIssign()) && EnumState.YES.getValue().equals(sign.getIssign())){
             return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该项目已经签收完毕！");
         }
+        boolean is15Days = (Validate.isString(sign.getReviewstage())&&("可行性研究报告".equals(sign.getReviewstage())|| "项目概算".equals(sign.getReviewstage())));
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_sign set "+Sign_.signdate.getName()+" = sysdate,");
         sqlBuilder.append(Sign_.issign.getName()+" =:issign ").setParam("issign",EnumState.YES.getValue());
+        sqlBuilder.append(" ,"+Sign_.surplusdays.getName()+" = :surplusdays  ");
+        if(is15Days){
+            sqlBuilder.setParam("surplusdays",Constant.WORK_DAY_15);
+        }else{
+            sqlBuilder.setParam("surplusdays",Constant.WORK_DAY_12);
+        }
         sqlBuilder.bulidIdString("where",Sign_.signid.getName(),signId);
         signRepo.executeSql(sqlBuilder);
 

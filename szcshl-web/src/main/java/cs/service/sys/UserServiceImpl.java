@@ -226,6 +226,9 @@ public class UserServiceImpl implements UserService {
                 currentUser.login(token);
 
                 response.setIsSuccess(true);
+                //设置session时长
+                SecurityUtils.getSubject().getSession().setTimeout(30000);
+
                 logger.info(String.format("登录成功,用户名:%s", userName));
             } else {
                 user.setLoginFailCount(user.getLoginFailCount() + 1);

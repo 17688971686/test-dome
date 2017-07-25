@@ -105,6 +105,7 @@
             //没保存或者单个发文改成合并发文主项目时候要先进行保存
            // if((vm.busiFlag.signleToMerge && vm.dispatchDoc.isMainProject == 9) || !vm.dispatchDoc.id){
         	 if(!vm.dispatchDoc.id){
+
                 common.alert({
                     vm: vm,
                     msg: "请先进行保存！",

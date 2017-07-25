@@ -45,7 +45,6 @@
         //新增定时器
         vm.addQuartz = function () {
         	vm.quartz={};
-        	vm.quartz.runWay="自动";
             $("#quartz_edit_div").kendoWindow({
                 width : "600px",
                 height : "400px",

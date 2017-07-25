@@ -54,6 +54,8 @@ public class SignCountWorkdayExecute implements Job {
             if (Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {    //判断是否是暂停状态，暂停状态显示警示灯
                 sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
                 //count -= sign.getPausedays();    //将工作日减掉暂停的工作日
+            }else{
+                sign.setSurplusdays(sign.getSurplusdays() - 1);     //剩余工作日减一
             }
 
             if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
