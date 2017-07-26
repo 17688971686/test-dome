@@ -1,48 +1,67 @@
 package cs.domain.sharing;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 
-import cs.domain.DomainBase;
-import cs.model.BaseDto;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "cs_Sharing_Privilege")
-public class SharingPrivilege extends DomainBase {
+@Table(name = "cs_sharing_privilege")
+@DynamicUpdate(true)
+public class SharingPrivilege {
 
-	@Id
-	private String id;
-	private String businessId;//主题ID
-	private String businessType;//业务类型,部门,用户
-	private String remark;//备注
-	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getBusinessId() {
-		return businessId;
-	}
-	public void setBusinessId(String businessId) {
-		this.businessId = businessId;
-	}
-	public String getBusinessType() {
-		return businessType;
-	}
-	public void setBusinessType(String businessType) {
-		this.businessType = businessType;
-	}
-	
-	public String getRemark() {
-		return remark;
-	}
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-	
-	
-	
+    @Id
+    @GeneratedValue(generator= "sharePriviGenerator")
+    @GenericGenerator(name= "sharePriviGenerator",strategy = "uuid")
+    private String id;
+
+    /**
+     * 业务ID（用户ID或者部门ID）
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String businessId;
+    /**
+     * 业务类型（用户或者部门,1是部分，2是用户）
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String businessType;
+
+    /**
+     * 共享ID
+     */
+    @ManyToOne
+    @JoinColumn(name="sharId")
+    private SharingPlatlform sharingPlatlform;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
+
+    public SharingPlatlform getSharingPlatlform() {
+        return sharingPlatlform;
+    }
+
+    public void setSharingPlatlform(SharingPlatlform sharingPlatlform) {
+        this.sharingPlatlform = sharingPlatlform;
+    }
 }

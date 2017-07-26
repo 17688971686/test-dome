@@ -7,11 +7,14 @@
 
     function sharingPlatlformYet($location,$state, $http,sharingPlatlformYetSvc) {
         var vm = this;
-        
-        vm.title = '共享资料';
-        
+        vm.title = '共享管理';
         vm.model = {};
-        
+
+        activate();
+        function activate() {
+            sharingPlatlformYetSvc.grid(vm);
+        }
+
         vm.del = function (id) {
             common.confirm({
                 vm: vm,
@@ -80,12 +83,5 @@
              });
         }
 
-        activate();
-        function activate() {
-            sharingPlatlformYetSvc.grid(vm);
-            sharingPlatlformYetSvc.findAllOrglist(vm);
-            sharingPlatlformYetSvc.findAllUsers(vm);
-            
-        }
     }
 })();

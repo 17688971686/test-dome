@@ -91,25 +91,25 @@ header{
 </style>
 
 <div class="loginbg">
-<img src="${path}/contents/images/loginbg.jpg" height="100%"/>
-<div class="mask"></div>
+    <img src="${path}/contents/images/loginbg.jpg" height="100%"/>
+    <div class="mask"></div>
 </div>
 <header><img src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50px"></header>
+
 <div class="login-box" ng-app="loginApp" ng-controller="LoginCtrl as vm">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+    <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+    <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
     <div class="login-logo">
         <img src="${path}/contents/images/loglogo.png"/>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body" >
-
         <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
             <div>
                 <span ng-show="vm.message" class="errors" ng-bind="vm.message" ></span>
             </div>
-
             <div>
                 <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
             </div>
@@ -121,59 +121,74 @@ header{
                 <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
             </div>
             <div class="form-group has-feedback">
-                
                 <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
-           
-         
             <div class="row">
-             
                 <!-- /.col -->
                 <div class="pull-right col-sm-12">
                     <button  type="button" ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-primary btn-block btn-flat">登 录</button>
+                    <button  type="button" ng-click="vm.sysInfo()" class="btn btn-info btn-block btn-flat">说明</button>
                 </div>
                 <!-- /.col -->
             </div>
         </form>
-
-
     </div>
     <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
-<footer>        深圳市政府投资项目评审中心版权所有  </footer>
+
+
+
+<footer> 深圳市政府投资项目评审中心版权所有  </footer>
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
-	<script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
-	<script src="${path}/contents/libs/angular/angular.js"></script>
-	<script src="${path}/contents/libs/angular/sanitize.js"></script>
-	<script src="${path}/contents/libs/angular/angular-ui-router.js"></script>
-	<script src="${path}/contents/libs/angular-ui/angular-locale_zh-cn.js"></script>
-	<script src="${path}/contents/libs/boilerplate/plugins.js"></script>
-	<script src="${path}/contents/libs/jquery-validation/jquery.validate.js"></script>
-	<script
-		src="${path}/contents/libs/jquery-validation/jquery.validate.unobtrusive.js"></script>
-		
-	<script src="${path}/contents/app/common/common.js"></script>
+<script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
+<script src="${path}/contents/libs/angular/angular.js"></script>
+<script src="${path}/contents/libs/angular/sanitize.js"></script>
+<script src="${path}/contents/libs/angular/angular-ui-router.js"></script>
+<script src="${path}/contents/libs/angular-ui/angular-locale_zh-cn.js"></script>
+<script src="${path}/contents/libs/boilerplate/plugins.js"></script>
+<script src="${path}/contents/libs/jquery-validation/jquery.validate.js"></script>
+<script src="${path}/contents/libs/jquery-validation/jquery.validate.unobtrusive.js"></script>
+<script src="${path}/contents/app/common/common.js"></script>
+
+<!-- 弹窗说明 begin-->
+<div id="showDetailDiv" style="display: none;">
+    <table class="table table-bordered">
+        <tr>
+            <td style="width:100px;">系统说明</td>
+            <td>由于IE浏览器版本问题，目前系统只兼容IE9或以上的版本，若你的系统浏览器的IE版本低于IE8，请下载google浏览器运行。</td>
+        </tr>
+        <tr>
+            <td>安装文件下载</td>
+            <td>
+                1、谷歌浏览器安装 <a class="btn btn-xs btn-primary" href="${path}/contents/plugins/chrome_installer.exe" ><i class="fa fa-download" aria-hidden="true"></i>下载</a></td>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- 弹窗说明 end-->
+<!-- kendo -->
+<link href="${path}/contents/libs/kendoui/kendo.common.min.css" rel="stylesheet"/>
+<link href="${path}/contents/libs/kendoui/kendo.blueopal.min.css"  rel="stylesheet"/>
+<script src="${path}/contents/libs/kendoui/kendo.all.min.js"></script>
+<script src="${path}/contents/libs/kendoui/kendo.message.zh-CN.js"></script>
+<script src="${path}/contents/libs/kendoui/kendo.culture.zh-CN.min.js"></script>
+
+
 <script>
-    
     (function () {
         'use strict';
-
         angular.module('loginApp', [
             // Angular modules
             // Custom modules
-
             // 3rd Party Modules
-
         ]);
     })();
 
     (function () {
         'use strict';
-        angular
-            .module('loginApp')
-            .controller('LoginCtrl', controller);
+        angular.module('loginApp').controller('LoginCtrl', controller);
 
         controller.$inject = ['$http'];
 
@@ -181,7 +196,6 @@ header{
             /* jshint validthis:true */
             var vm = this;
             vm.title = 'controller';
-
             vm.submit = function () {
                 common.initJqValidation();
                 var isValid = $('form').valid();
@@ -218,6 +232,19 @@ header{
                 }
             }
 
+            //新增弹窗
+            vm.sysInfo = function(){
+                $("#showDetailDiv").kendoWindow({
+                    width : "600px",
+                    height : "400px",
+                    title : "系统说明",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+            }
+
             vm.keyEnter = function (e) {
                 if (e.which === 13) {
                     vm.submit()
@@ -225,14 +252,13 @@ header{
             }
 
             activate();
-            function activate() { }
+            function activate() {
+                vm.sysInfo();
+            }
+
         }
     })();
-
 </script>
-
-
-
 
 </body>
 </html>

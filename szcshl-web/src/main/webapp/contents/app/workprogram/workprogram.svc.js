@@ -212,8 +212,6 @@
                 vm.roombook.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
                 vm.roombook.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
 
-                console.log(vm.roombook);
-
                 if (new Date(vm.roombook.endTime) < new Date(vm.roombook.beginTime)) {
                     $("#errorTime").html("开始时间不能大于结束时间!");
                     return;
@@ -357,9 +355,8 @@
                             if(vm.work.isMainProject == "9"){
                                 vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
                             }
-
                             if (response.data.roomBookingDtos && response.data.roomBookingDtos.length > 0) {
-                                vm.isRoomBook = true;
+                                vm.businessFlag.isRoomBook = true;
                                 vm.RoomBookings = {};
                                 vm.RoomBookings = response.data.roomBookingDtos;
                                 vm.roombook = vm.RoomBookings[0];

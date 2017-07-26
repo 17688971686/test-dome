@@ -273,7 +273,6 @@
                 }
             }
             var httpSuccess = function success(response) {
-                console.log(response.data);
                 vm.model = response.data;
                 if (vm.isUpdate) {
                     initZtreeClient(vm);

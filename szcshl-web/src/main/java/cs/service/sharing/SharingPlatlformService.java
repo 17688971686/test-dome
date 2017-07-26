@@ -27,14 +27,9 @@ public interface SharingPlatlformService {
 
 	void deletes(String[] ids);
 
-	SharingPlatlformDto postSharingAritle(String id);
-
-	SharingPlatlformDto nextSharingArticle(String id);
-
 	void updatePublishStatus(SharingPlatlformDto record);
 
 	UserDto findUser(String loginName);
 
-	Map<String, Object> getOrg();
-
+    Map<String,Object> initOrgAndUser();
 }

@@ -7,11 +7,13 @@
 
     function sharingPlatlform($location,$state, $http,sharingPlatlformSvc) {
         var vm = this;
-        
-        vm.title = '共享平台';
-        
-       
-        
+        vm.title = '共享资料管理';
+
+        activate();
+        function activate() {
+            sharingPlatlformSvc.grid(vm);
+        }
+
         vm.del = function (id) {
             common.confirm({
                 vm: vm,
@@ -47,13 +49,6 @@
         vm.querySharing = function(){
         	vm.gridOptions.dataSource.read();
         }
-       
 
-        activate();
-        function activate() {
-            sharingPlatlformSvc.grid(vm);
-          //  sharingPlatlformSvc.findAllOrglist(vm);
-          //  sharingPlatlformSvc.findAllUsers(vm);
-        }
     }
 })();

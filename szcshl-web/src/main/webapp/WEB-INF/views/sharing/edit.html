@@ -3,9 +3,9 @@
 
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
-<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
 <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
-  
+
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sharingPlatlformList">共享平台</a></li>
@@ -13,107 +13,109 @@
     </ol>
     <form id="form" name="form">
         <div class="toolbar">
-            <a class="btn btn-sm btn-primary" href="#/sharingPlatlform"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <a class="btn btn-sm btn-primary" href="#/sharingPlatlform"><span
+                    class="glyphicon glyphicon-chevron-left"></span>返回</a>
             <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit"
                     ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
             </button>
-           
+
             <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
                     ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
             </button>
-           
+
         </div>
-       
-        <table style="width:100%">
+
+        <table class="table table-bordered">
             <tr>
-                <td class="formAlignRight" style="width:150px;"></td>
-                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                <td></td>
-            </tr>
-        
-            <tr>
-                <td class="formAlignRight">共享主题：</td>
+                <td class="formAlignRight" style="width:120px;">主题： <span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.theme"
-                           id="theme" name="theme"  />
+                    <input type="text" maxlength="32" class="form-control input-sm " ng-model="vm.model.theme"
+                           id="theme" name="theme" data-val-required="必填" data-val-regex="必填" data-val-length-max="32"/>
                 </td>
                 <td><span data-valmsg-for="theme" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight"><span ng-hide="vm.centerDept || vm.postResume">共享部门：</span></td>
+                <td class="formAlignRight">全员可看：</td>
                 <td>
-	    		  <select ng-model="vm.model.orgId" class="form-control input-sm " name="orgId" id="orgId" ng-change="vm.checkboxSelected()">
-	    	   	 	<option value="">无</option>
-					<option ng-repeat="org in vm.orglist" ng-selected="vm.model.orgId == org.id"  value="{{org.id}}">{{org.name}}</option>
-				</select>  
-				
+                    <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isNoPermission"
+                           name="isNoPermission" ng-true-value="9" ng-false-value="0">是
                 </td>
                 <td><span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span></td>
-            </tr> 
-            
-            <tr>
-                 <td class="formAlignRight"> </td>
-                 <td >
-            
-				 <span style="margin-right: 10px;"><input type="checkbox" id="menuModuleAll"    />全选</span>
-				
-				  <hr/>
-			
-                 </td>
-             </tr>
-            
-            <tr>
-                 <td class="formAlignRight">共享用户： </td>
-                 <td >
-               	<span ng-repeat="r in vm.modelPost" >
-				 <span style="margin-right: 10px;"><input type="checkbox" id="menuModule" name='menuModule'  value="{{r.loginName}}"  />{{r.loginName}}</span>
-				</span>
-                 </td>
-             </tr>
-               <tr>
-                 <td class="formAlignRight">是否全局共享： </td>
-                 <td >
-                  <label>
-			        <input type="radio" ng-value="9" ng-model="vm.model.isPublish" name="isPublish">是
-			    </label>
-			    <label>
-			        <input type="radio" ng-value="0" ng-model="vm.model.isPublish"  name="isPublish">否
-			    </label>
-                 </td>
-             </tr>
-            
-         
-            <tr>
-                <td class="formAlignRight">备注：</td>
-                <td>
-                     <textarea  id="remark" name="remark" rows="" maxlength="200" class="form-control input-sm " ng-model="vm.model.remark" cols="">
-                       </textarea>
-                </td>
-                <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
-            
+
+            <tr ng-hide="vm.model.isNoPermission == 9">
+                <td class="formAlignRight">共享部门：</td>
+                <td>
+                    <span ng-repeat="o in vm.shareOrgList">
+                        <input type="checkbox" name="shareOrg" value="{{o.id}}" ng-click="vm.checkBox($event)" ng-checked="{{o.isChecked}}"/>{{o.name}}</span>
+                    </span>
+                </td>
+            </tr>
+
+            <tr ng-hide="vm.model.isNoPermission == 9">
+                <td class="formAlignRight">共享用户：</td>
+                <td>
+                    <table class="table">
+                        <tr>
+                            <td style="width: 85px;">
+                                其他用户
+                            </td>
+                            <td>
+                                <span ng-repeat="u in vm.noOrgUsetList">
+                                    <input type="checkbox" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}"/>{{u.displayName}}</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="o in vm.shareOrgList">
+                            <td>{{o.name}}</td>
+                            <td>
+                                <span ng-repeat="u in o.userDtos">
+                                    <input type="checkbox" tit="{{o.id}}" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}" ng-disabled="{{u.isDisabled}}"/>{{u.displayName}}</span>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
             <tr>
-                 <td class="formAlignRight">附件： </td>
-                 <td colspan="2">
-                     <p><button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button></p> 
-                
-                     <div ng-repeat="x in vm.sysFilelists">
-                         <p >
-                             <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
-                             <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
-                             <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
-                             <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
-                             <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
-                             <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
-                         </p>
+                <td class="formAlignRight">说明：</td>
+                <td>
+                    <textarea id="content" name="content" rows="5" cols="30" maxlength="1000"
+                              class="form-control input-sm " ng-model="vm.model.content" data-val-length-max="1000"></textarea>
+                </td>
+                <td><span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">附件：</td>
+                <td colspan="2">
+                    <p>
+                        <button class="btn btn-sm btn-primary" id="upload_file_bt">上传附件</button>
+                    </p>
+
+                    <div ng-repeat="x in vm.sysFilelists">
+                        <p>
+                            <i class="fa fa-file-image-o" aria-hidden="true"
+                               ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                            <i class="fa fa-file-word-o" aria-hidden="true"
+                               ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                            <i class="fa fa-file-excel-o" aria-hidden="true"
+                               ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                            <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                            <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                            <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i
+                                    class="fa fa-times" aria-hidden="true"></i>删除
+                            </button>
+                        </p>
                     </div>
-                 </td>
-             </tr>
+                </td>
+            </tr>
         </table>
-    
-       
+
+
     </form>
-  
-    </div>
+
+</div>
     
   

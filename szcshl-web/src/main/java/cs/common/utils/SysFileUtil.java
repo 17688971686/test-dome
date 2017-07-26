@@ -18,7 +18,7 @@ public class SysFileUtil {
     public static String getUploadPath() {
         PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
         String uploadPath = propertyUtil.readProperty(FILE_UPLOAD_PATH);
-        return uploadPath == null ? "D:\\szec_uploadfile" : uploadPath;
+        return uploadPath == null ? "E:\\szec_uploadfile" : uploadPath;
     }
 
     /**

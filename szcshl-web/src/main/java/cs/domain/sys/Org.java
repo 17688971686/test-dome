@@ -93,12 +93,8 @@ public class Org extends DomainBase {
     @Column(columnDefinition = "integer")
     private Integer sort;        //排序
 
-    @OneToMany(mappedBy = "org",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "org", fetch = FetchType.LAZY)
     private List<User> users;
-
-	@ManyToOne
-	@JoinColumn(name = "sharngId")
-	private SharingPlatlform sharing;
 
     public List<User> getUsers() {
         return users;
@@ -313,14 +309,5 @@ public class Org extends DomainBase {
         this.sort = sort;
     }
 
-	public SharingPlatlform getSharing() {
-		return sharing;
-	}
 
-	public void setSharing(SharingPlatlform sharing) {
-		this.sharing = sharing;
-	}
-
-	
-    
 }

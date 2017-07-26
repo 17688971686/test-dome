@@ -225,10 +225,11 @@ public class UserServiceImpl implements UserService {
                 Subject currentUser = SecurityUtils.getSubject();
                 currentUser.login(token);
 
-                response.setIsSuccess(true);
                 //设置session时长
-                SecurityUtils.getSubject().getSession().setTimeout(30000);
+                SecurityUtils.getSubject().getSession().setTimeout(30*60*1000);
+                token.setRememberMe(true);
 
+                response.setIsSuccess(true);
                 logger.info(String.format("登录成功,用户名:%s", userName));
             } else {
                 user.setLoginFailCount(user.getLoginFailCount() + 1);

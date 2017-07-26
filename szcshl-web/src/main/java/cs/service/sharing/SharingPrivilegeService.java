@@ -1,6 +1,5 @@
 package cs.service.sharing;
 
-import cs.domain.sharing.SharingPrivilege;
 import cs.model.PageModelDto;
 import cs.model.sharing.SharingPrivilegeDto;
 import cs.repository.odata.ODataObj;
@@ -12,14 +11,7 @@ import cs.repository.odata.ODataObj;
  */
 public interface SharingPrivilegeService {
     
-    PageModelDto<SharingPrivilegeDto> get(ODataObj odataObj);
 
-	void save(SharingPrivilegeDto record);
-
-	void update(SharingPrivilegeDto record);
-
-	SharingPrivilegeDto findById(String deptId);
-
-	void delete(String id);
+	boolean deleteByShareId(String shareId);
 
 }

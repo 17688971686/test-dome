@@ -8,8 +8,7 @@
         <li><a href="#/sharingPlatlform">共享平台</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
- 
-     
+
      <div class="toolbar">
       <@shiro.hasPermission name="sharingPlatlform##post">
             <a class="btn btn-sm btn-primary" href="#/sharingPlatlformEdit/"><span class="glyphicon glyphicon-plus"></span>新增发布</a>
@@ -18,39 +17,24 @@
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
         </@shiro.hasPermission>
      </div>
+
+    <div class="well">
        <form id="formSharing" name="formSharing">
-    	 <div class="well">
-      	 
-           <span class="help-inline" style="margin-left:10px;">发布部门：</span>
-           <select style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
-	    	   	 	<option value="">无</option>
-					<option ng-repeat="org in vm.orglist" value="{{org.name}}">{{org.name}}</option>
-			</select>
-			
-           <span class="help-inline" style="margin-left:10px;">个人发布：</span>
-          		 <select style="width:10%;" ng-model="vm.model.postResume"  name="postResume" id="postResume" operator="eq" >
-	    	   	 	<option value="">无</option>
-					<option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
-				</select>
           <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySharing()">查询</a>
           <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetSharing()">重置</a>
-        </div>
         </form>
-        
-        <script type="text/template" id="columnBtns">
-		
- 			<a class="btn btn-xs btn-success" href="#/sharingDetil/{0}"><span class="glyphicon glyphicon-edit"></span>查看</a>
-        
-			
-            <@shiro.hasPermission name="sharingPlatlform##put">
-            <a class="btn btn-xs btn-primary" href="#/sharingPlatlformEdit/{2}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-            </@shiro.hasPermission>
-			 <@shiro.hasPermission name="sharingPlatlform##delete">
-            <button class="btn btn-xs btn-danger"  ng-click="{1}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
-            </@shiro.hasPermission>
-        </script>
+    </div>
 
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
+<script type="text/template" id="columnBtns">
+    <a class="btn btn-xs btn-success" href="#/sharingDetil/{0}"><span class="glyphicon glyphicon-edit"></span>查看</a>
+    <@shiro.hasPermission name="sharingPlatlform##put">
+    <a class="btn btn-xs btn-primary" href="#/sharingPlatlformEdit/{2}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    </@shiro.hasPermission>
+    <@shiro.hasPermission name="sharingPlatlform##delete">
+    <button class="btn btn-xs btn-danger"  ng-click="{1}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+    </@shiro.hasPermission>
+</script>
