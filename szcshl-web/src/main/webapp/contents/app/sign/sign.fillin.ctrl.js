@@ -36,19 +36,78 @@
         }
         //打印预览
         vm.signPreview = function (oper) {
-            if (oper < 5) {
-                /*bdhtml = window.document.table.innerHTML;//获取当前页的html代码
-                sprnstr = "<!--startprint" + oper + "   ";//设置打印开始区域
-                eprnstr = "<!--endprint" + oper + "-->";//设置打印结束区域
-                prnhtml = bdhtml.substring(bdhtml.indexOf(sprnstr) + 10); //从开始代码向后取html
-                prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));//从结束代码向前取html
+
+            var htmlBody=$(".well").parents("body");
+            var htmlsidebar=htmlBody.find(".main-sidebar");
+            var htmlhedaer=htmlBody.find(".main-header");
+            var htmlContentwrapper=htmlBody.find(".content-wrapper");
+            //隐藏不需打印的区域;
+             htmlsidebar.hide();
+             htmlhedaer.hide();
+             $(".toolbar").hide();
+
+            //修改打印显示样式
+
+                 //添加替换input的显示内容，打印后自动删除
+                     $(".well input").each(function(){
+                         var inptTpye=$(this).attr("type");
+                         if(inptTpye=="text"){
+                                 $(this).before('<span class="printmesge" data="text" style="white-space : nowrap;">'+$(this).val()+'</span>');
+                         };
+                         if(inptTpye=="checkbox"){
+                             if($(this).is(':checked')){
+                                 $(this).before('<span class="printmesge" data="text">有</span>');
+                             }else{
+                                 $(this).before('<span class="printmesge" data="text">无</span>');
+                             }
+                         }
+                     });
+                   $(".printmesge").show();
+                   $(".well input[type=text]").hide();
+                   $(".well input[type=checkbox]").hide();
+                   $(".well button").hide();
+                   htmlContentwrapper.find("td div select").hide();
+                   htmlContentwrapper.find("td div span").css("margin","0");
+
+               /*自定义表格样式*/
+             $(".well").addClass("printbody");
+             $(".well .table-bordered").addClass("tableBOX");
+             htmlContentwrapper.find("input").addClass("noborder");
+             htmlContentwrapper.addClass("nomargin");
+
+             window.print();
+
+         // 恢复原有
+            htmlsidebar.show();
+            htmlhedaer.show();
+            $(".toolbar").show();
+            $(".printmesge").hide();
+            $(".well input[type=text]").show();
+            $(".well input[type=checkbox]").show();
+            $(".well button").show();
+            htmlContentwrapper.find("td div select").show();
+            htmlContentwrapper.find("td div span").css("margin-left","100px");
+            $(".well").removeClass("printbody");
+            $(".well .table-bordered").removeClass("tableBOX");
+            $("[data=text]").remove();//删除临时添加的内容
+
+            htmlContentwrapper.find("input").removeClass("noborder");
+            htmlContentwrapper.removeClass("nomargin");
+
+
+          /* if (oper < 5) {
+               /!* var bdhtml = window.document.table.innerHTML;//获取当前页的html代码
+                var sprnstr = "<!--startprint" + oper + "   ";//设置打印开始区域
+                var eprnstr = "<!--endprint" + oper + "-->";//设置打印结束区域
+                var prnhtml = bdhtml.substring(bdhtml.indexOf(sprnstr) + 10); //从开始代码向后取html
+                var prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr));//从结束代码向前取html
                 window.document.table.innerHTML = prnhtml;
                 window.print();
-                window.document.table.innerHTML = bdhtml;*/
+                window.document.table.innerHTML = bdhtml;*!/
 
             } else {
                 window.print();
-            }
+            }*/
         }
 
         //申报登记编辑

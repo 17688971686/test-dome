@@ -8,6 +8,37 @@
         display: none
     }
 </style>
+<style>
+	.printbody{
+		border: 0px;
+		width: 100%;
+		left: 0px;
+		top:0px;
+	}
+	.nomargin{
+		margin:0;
+	}
+    .noborder{
+		border: 0px !important;
+	}
+	.printmesge{
+		display: none;
+	}
+
+	.tableBOX{ border-right:1px solid #000;border-bottom:1px solid #000; background:#fff;}
+	.tableBOX td{
+		border-left: 1px solid #000;
+		border-top: 1px solid #000;
+		padding: 2px;
+		word-break:break-all;
+		word-wrap:break-word;
+
+	}
+	table tr td div input{
+		top:0px;
+	}
+	.tableBOX table>tbody>tr>td{white-space : nowrap; padding:0px !important; text-align: center;}
+</style>
 <div class="well well-sm" style="background:white;">
     <!-- s form -->
   
@@ -49,8 +80,9 @@
 								</select>
 							</span>
 						<input type="text" ng-model="vm.model.maindeptName" name="maindeptName" id="maindeptName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
+							   style="width: 214px; position: absolute; left: 0px; top:0px"value="">
 					</div>
+
 				<td width="15%" class="text-center">主办处室联系人</td>
 				<td>
 					<div style="position: relative;">
@@ -60,8 +92,9 @@
 							</select>
 							</span>
 						<input type="text" ng-model="vm.model.mainDeptUserName" ng-click="vm.mainDeptUser()" name="mainDeptUserName" id="mainDeptUserName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
+							   style="width: 214px; position: absolute; left: 0px; top:0px"value="">
 					</div>
+
 				</td>
 			</tr>
 
@@ -75,8 +108,9 @@
 								</select>
 							</span>
 						<input type="text" ng-model="vm.model.assistdeptName" name="assistdeptName" id="assistdeptName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
+							   style="width: 214px; position: absolute; left: 0px; top:0px"value="">
 					</div>
+
 				</td>
 				<td width="15%" class="text-center">协办处室联系人</td>
 				<td>
@@ -87,8 +121,9 @@
 							</select>
 							</span>
 						<input type="text" ng-model="vm.model.assistDeptUserName" ng-click="vm.assistDeptUser()" name="assistDeptUserName" id="assistDeptUserName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
+							   style="width: 214px; position: absolute; left: 0px; top:0px"value="">
 					</div>
+
 
 
 				</td>
@@ -111,8 +146,9 @@
 							</select>
 							</span>
 						<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
+							   style="width: 214px; position: absolute; left: 0px; top:0px"value="">
 					</div>
+
 				</td>
 			</tr>
 			<tr>
@@ -125,8 +161,9 @@
 								</select>
 							</span>
 						<input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
+							   style="width: 214px; position: absolute; left: 0px; top:0px"value="">
 					</div>
+
 				</td>
 			</tr>
 
@@ -169,7 +206,7 @@
 								<table class="table" style="border: 0px solid transparent !important;">
 									<tbody>
 									<tr>
-										<td style="border-top:none;width:40%;">&nbsp;</td>
+										<td style="border-top:none;width:40%;"></td>
 										<td style="border-top:none;">份数</td>
 										<td style="border-top:none;">原件</td>
 										<td style="border-top:none;">附件</td>
@@ -217,7 +254,7 @@
 								<table class="table" style="border: 0px solid transparent !important;">
 									<tbody>
 									<tr>
-										<td style="border-top:none;width:50%;">&nbsp;</td>
+										<td style="border-top:none;width:50%;"></td>
 										<td style="border-top:none;">份数</td>
 										<td style="border-top:none;">原件</td>
 										<td style="border-top:none;">附件</td>
