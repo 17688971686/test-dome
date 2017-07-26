@@ -5,6 +5,7 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.quartz.Job;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
@@ -79,16 +80,22 @@ public class QuartzController {
     
     @RequiresPermissions("quartz#quartzExecute#put")
     @RequestMapping(name = "执行定时器", path = "quartzExecute", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void quartzExecute(@RequestParam String quartzId) throws Exception{
+    @ResponseBody
+    public String quartzExecute(@RequestParam String quartzId) throws Exception{
     	Quartz quartz=quartzRepo.findById(quartzId);
     	SchedulerFactory schedulderFactory=new StdSchedulerFactory();
 		Scheduler sched=schedulderFactory.getScheduler();
 		String cls=quartz.getClassName();
 		String jobName=quartz.getQuartzName();
 		String time=quartz.getCronExpression();
-		QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
-		quartzService.changeCurState(quartzId,"9");
+		if(Job.class .isAssignableFrom(Class.forName(cls))){
+			QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
+			quartzService.changeCurState(quartzId,"9");
+			return "success";
+		}else{
+			return "defeated";
+		}
+		
     	
     }
     

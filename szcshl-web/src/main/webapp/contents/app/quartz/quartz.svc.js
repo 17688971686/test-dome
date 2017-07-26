@@ -28,14 +28,19 @@
         		
         	}
         	   var httpSuccess = function success(response) {
-                    common.requestSuccess({
+        	   	var msg="操作成功";
+        	   	var str=response.data;
+        	   	if("defeated"==str.substring(1,response.data.length-1)){
+                    msg="该定时器未存在！"
+        	   	}
+        	   	common.requestSuccess({
                         vm: vm,
                         response: response,
                         fn: function () {
 
                             common.alert({
                                 vm: vm,
-                                msg: "操作成功",
+                                msg: msg,
                                 fn: function () {
                                     $('.alertDialog').modal('hide');
                                     $('.modal-backdrop').remove();
@@ -45,6 +50,7 @@
                         }
 
                     })
+        	   	
                 }
 
                 common.http({
