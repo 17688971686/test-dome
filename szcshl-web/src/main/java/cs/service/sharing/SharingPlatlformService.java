@@ -1,5 +1,7 @@
 package cs.service.sharing;
 
+import java.util.Map;
+
 import cs.domain.sharing.SharingPlatlform;
 import cs.model.PageModelDto;
 import cs.model.sharing.SharingPlatlformDto;
@@ -32,5 +34,7 @@ public interface SharingPlatlformService {
 	void updatePublishStatus(SharingPlatlformDto record);
 
 	UserDto findUser(String loginName);
+
+	Map<String, Object> getOrg();
 
 }

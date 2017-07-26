@@ -224,11 +224,18 @@
       
         //选择个人意见触发事件
         vm.selectIdea=function(){
-        	vm.flow.dealOption=vm.idea;
+        	vm.flow.dealOption = vm.idea;
         }
 
         //流程提交
         vm.commitNextStep = function () {
+            if(vm.flow.isSuspended){
+                common.alert({
+                    vm: vm,
+                    msg: "该流程目前为暂停状态，不能进行流转操作！"
+                })
+                return ;
+            }
             if (signFlowSvc.checkBusinessFill(vm)) {
                 flowSvc.commit(vm);
             } else {

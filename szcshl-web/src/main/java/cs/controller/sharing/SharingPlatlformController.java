@@ -1,6 +1,7 @@
 package cs.controller.sharing;
 
 import java.text.ParseException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,7 +43,12 @@ public class SharingPlatlformController {
         PageModelDto<SharingPlatlformDto> sharingPlatlformDtos = sharingPlatlformService.get(odataObj);	
         return sharingPlatlformDtos;
     }
-    
+    @RequiresPermissions("sharingPlatlform#getOrg#post")
+    @RequestMapping(name = "获取部门数据", path = "getOrg", method = RequestMethod.POST)
+    public  @ResponseBody Map<String,Object> getOrg(){
+    	Map<String,Object> map =sharingPlatlformService.getOrg();
+    	return map;
+    }
     @RequiresPermissions("sharingPlatlform#findByODataYet#post")
     @RequestMapping(name = "获取已发布共享数据", path = "findByODataYet", method = RequestMethod.POST)
     @ResponseBody

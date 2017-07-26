@@ -23,7 +23,6 @@
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
             pauseProject: pauseProject,//暂停工作日
-            startProject: startProject  //启动项目
         }
         return service;
 
@@ -235,21 +234,35 @@
                     width: 150
                 },
                 {
-                    field: "processName",
-                    title: "所属流程",
-                    width: 120,
-                    filterable: false
-                },
-                {
                     field: "nodeName",
                     title: "当前环节",
                     width: 120,
                     filterable: false
                 },
                 {
+                    field: "preSignDate",
+                    title: "预签收时间",
+                    width: 120,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "signDate",
+                    title: "正式签收时间",
+                    width: 120,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "surplusDays",
+                    title: "剩余工作日",
+                    width: 100,
+                    filterable: false,
+                },
+                {
                     field: "",
                     title: "处理人",
-                    width: 120,
+                    width: 100,
                     filterable: false,
                     template: function (item) {
                         if (item.assignee) {
@@ -260,19 +273,12 @@
                     }
                 },
                 {
-                    field: "createTime",
-                    title: "接收时间",
-                    width: 120,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
                     field: "",
                     title: "流程状态",
                     width: 80,
                     filterable: false,
                     template: function (item) {
-                        if (item.processState && item.processState == 0) {
+                        if (item.processState && item.processState == 2) {
                             return '<span style="color:orange;">已暂停</span>';
                         } else {
                             return '<span style="color:green;">进行中</span>';
@@ -286,10 +292,17 @@
                     template: function (item) {
                         //项目签收流程，则跳转到项目签收流程处理野人
                         if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
+                            if(item.processState == 2){
+                                return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
+                            }else{
+                                return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
+                            }
+
                         } else {
                             return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
                         }
+
+
                     }
                 }
             ];
@@ -504,21 +517,35 @@
                     width: 150
                 },
                 {
-                    field: "processName",
-                    title: "所属流程",
-                    width: 120,
-                    filterable: false
-                },
-                {
                     field: "nodeName",
                     title: "当前环节",
                     width: 120,
                     filterable: false
                 },
                 {
+                    field: "preSignDate",
+                    title: "预签收时间",
+                    width: 120,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "signDate",
+                    title: "正式签收时间",
+                    width: 120,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "surplusDays",
+                    title: "剩余工作日",
+                    width: 100,
+                    filterable: false,
+                },
+                {
                     field: "",
                     title: "处理人",
-                    width: 120,
+                    width: 100,
                     filterable: false,
                     template: function (item) {
                         if (item.assignee) {
@@ -527,13 +554,6 @@
                             return item.userName;
                         }
                     }
-                },
-                {
-                    field: "createTime",
-                    title: "接收时间",
-                    width: 120,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
                     field: "",
@@ -554,14 +574,15 @@
                     width: 150,
                     template: function (item) {
                     	 var isstart = false;
-                        if (item.ispause == "2") {
+                        if (item.processState == "2") {
                             isstart = true;//显示已暂停，提示启动
                         } else {
                             isstart = false;//显示暂停
                         }
                         //项目签收流程，则跳转到项目签收流程处理野人
                         if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,"vm.pauseProject('"+item.businessKey+"','"+item.taskId+"')",isstart,isstart,"vm.startProject('"+item.businessKey+"','"+item.taskId+"')",isstart);
+                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,
+                                "vm.pauseProject('"+item.businessKey+"')",isstart,"vm.startProject('"+item.businessKey+"')",isstart);
                         } else {
                             return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
                         }
@@ -848,39 +869,6 @@
                 success: httpSuccess
             });
         } //end_pauseProject
-        
-        //start_startProject
-        function startProject(vm){
-        	var httpOptions = {
-                method: 'post',
-                url: rootPath + "/projectStop/projectStart",
-                params: {signid: vm.model.signid,taskid:vm.model.taskid}
-            }
-            var httpSuccess = function success(response) {
-            	common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.gridOptions.dataSource.read();
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.showWorkHistory = true;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})
-						}
 
-					});
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });//end_startProject
-        }
     }
 })();

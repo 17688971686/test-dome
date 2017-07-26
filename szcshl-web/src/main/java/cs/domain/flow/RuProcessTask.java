@@ -82,6 +82,7 @@ public class RuProcessTask {
     /**
      * 任务是否并行
      */
+    @Column
     private String isConcurrent;
     /**
      * 流程状态（1：正在进行，2：停止）
@@ -101,6 +102,20 @@ public class RuProcessTask {
     
     @Column
     private String ispause;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date preSignDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date signDate;
+
+    @Column
+    private Float surplusDays;
+
+    @Column
+    private String signState;
 
 
     public String getIspause() {
@@ -237,5 +252,37 @@ public class RuProcessTask {
 
     public void setIsConcurrent(String isConcurrent) {
         this.isConcurrent = isConcurrent;
+    }
+
+    public Date getSignDate() {
+        return signDate;
+    }
+
+    public void setSignDate(Date signDate) {
+        this.signDate = signDate;
+    }
+
+    public Float getSurplusDays() {
+        return surplusDays;
+    }
+
+    public void setSurplusDays(Float surplusDays) {
+        this.surplusDays = surplusDays;
+    }
+
+    public String getSignState() {
+        return signState;
+    }
+
+    public void setSignState(String signState) {
+        this.signState = signState;
+    }
+
+    public Date getPreSignDate() {
+        return preSignDate;
+    }
+
+    public void setPreSignDate(Date preSignDate) {
+        this.preSignDate = preSignDate;
     }
 }

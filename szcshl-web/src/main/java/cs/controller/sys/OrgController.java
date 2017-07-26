@@ -30,116 +30,121 @@ import cs.service.sys.UserService;
 @Controller
 @RequestMapping(name = "部门", path = "org")
 public class OrgController {
-	private String ctrlName = "org";
-	@Autowired
-	private OrgService orgService;
-	
-	@RequiresPermissions("org#fingByOData#post")	
-	@RequestMapping(name = "获取部门数据", path = "fingByOData", method = RequestMethod.POST)
-	public @ResponseBody PageModelDto<OrgDto> get(HttpServletRequest request) throws ParseException {
-		ODataObj odataObj = new ODataObj(request);
-		PageModelDto<OrgDto> orgDtos = orgService.get(odataObj);
+    private String ctrlName = "org";
+    @Autowired
+    private OrgService orgService;
 
-		return orgDtos;
-	}
-	
-	@RequiresPermissions("org#html/getOrgById#get")	
-	@RequestMapping(name = "根据ID获取部门数据", path = "html/getOrgById", method = RequestMethod.GET)
-	public @ResponseBody OrgDto get(@RequestParam(required = true)String id) throws ParseException {
-		OrgDto orgDto = orgService.findById(id);
+    @RequiresPermissions("org#fingByOData#post")
+    @RequestMapping(name = "获取部门数据", path = "fingByOData", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<OrgDto> get(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<OrgDto> orgDtos = orgService.get(odataObj);
 
-		return orgDto;
-	}
-	
-	@RequiresPermissions("org#getCompany#get")	
-	@RequestMapping(name = "获取所有单位", path = "getCompany", method = RequestMethod.GET)
-	@ResponseBody
-	public List<CompanyDto> getCompany(HttpServletRequest request) throws ParseException{		
-		ODataObj oDataObj = new ODataObj(request);
-		List<CompanyDto> comDto = orgService.getCompany(oDataObj);
-		return comDto;
-	}
+        return orgDtos;
+    }
 
-	@RequiresPermissions("org##post")	
-	@RequestMapping(name = "创建部门", path = "", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void post(@RequestBody OrgDto orgDto) {
-		orgService.createOrg(orgDto);
-	}
+    @RequiresPermissions("org#html/getOrgById#get")
+    @RequestMapping(name = "根据ID获取部门数据", path = "html/getOrgById", method = RequestMethod.GET)
+    public @ResponseBody
+    OrgDto get(@RequestParam(required = true) String id) throws ParseException {
+        OrgDto orgDto = orgService.findById(id);
 
-	@RequiresPermissions("org##put")	
-	@RequestMapping(name = "更新部门", path = "", method = RequestMethod.PUT)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void update(@RequestBody OrgDto orgDto) {
-		orgService.updateOrg(orgDto);
-	}
+        return orgDto;
+    }
 
-	@RequiresPermissions("org##delete")	
-	@RequestMapping(name = "删除部门", path = "", method = RequestMethod.DELETE)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void delete(@RequestBody String id) {
-		orgService.deleteOrg(id);
-	}
+    @RequiresPermissions("org#getCompany#get")
+    @RequestMapping(name = "获取所有单位", path = "getCompany", method = RequestMethod.GET)
+    @ResponseBody
+    public List<CompanyDto> getCompany(HttpServletRequest request) throws ParseException {
+        ODataObj oDataObj = new ODataObj(request);
+        List<CompanyDto> comDto = orgService.getCompany(oDataObj);
+        return comDto;
+    }
 
-	@RequiresPermissions("org#users#post")	
-	@RequestMapping(name = "部门用户", path = "users", method = RequestMethod.POST)
-	public @ResponseBody PageModelDto<UserDto> orgUsers(@RequestParam String orgId) {
+    @RequiresPermissions("org##post")
+    @RequestMapping(name = "创建部门", path = "", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public void post(@RequestBody OrgDto orgDto) {
+        orgService.createOrg(orgDto);
+    }
 
-		return orgService.getOrgUsers(orgId);
-	}
-	
-	@RequiresPermissions("org#userNotIn#post")	
-	@RequestMapping(name = "非部门用户", path = "userNotIn", method = RequestMethod.POST)
-	public @ResponseBody PageModelDto<UserDto> userNotIn(@RequestParam String orgId,HttpServletRequest request) throws ParseException {
+    @RequiresPermissions("org##put")
+    @RequestMapping(name = "更新部门", path = "", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody OrgDto orgDto) {
+        orgService.updateOrg(orgDto);
+    }
 
-		ODataObj odataObj = new ODataObj(request);
-		return orgService.getUsersNotInOrg(orgId, odataObj);
-	}
-	
-	@RequiresPermissions("org#addUsers#post")	
-	@RequestMapping(name = "添加用户到部门", path = "addUsers", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void postUserToOrg(@RequestParam String orgId,@RequestParam String userId) {
-		orgService.addUserToOrg(userId, orgId);
-	}
-	
-	@RequiresPermissions("org#deleteUsers#delete")
-	@RequestMapping(name = "从部门移除用户", path = "deleteUsers", method = RequestMethod.DELETE)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void deleteUserFromOrg(@RequestParam String orgId,@RequestParam String userId) {
-		String[] ids = userId.split(",");
-		if (ids.length > 1) {
-			orgService.removeOrgUsers(ids,orgId);
-		} else {
-			orgService.removeOrgUser(userId, orgId);
-		}
-	}
-	
-	@RequiresPermissions("org#listAll#get")	
-	@RequestMapping(name = "所有部门查询", path = "listAll", method = RequestMethod.GET)
-	public @ResponseBody List<OrgDto> listAll()  {			
-		return orgService.listAll();
-	}
-	
-	
-	// begin#html
-	
-	@RequiresPermissions("org#html/list#get")
-	@RequestMapping(name = "部门列表页面", path = "html/list", method = RequestMethod.GET)
-	public String list() {
-		return ctrlName + "/list";
-	}
+    @RequiresPermissions("org##delete")
+    @RequestMapping(name = "删除部门", path = "", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@RequestBody String id) {
+        orgService.deleteOrg(id);
+    }
 
-	@RequiresPermissions("org#html/edit#get")
-	@RequestMapping(name = "编辑部门页面", path = "html/edit", method = RequestMethod.GET)
-	public String edit() {
-		return ctrlName + "/edit";
-	}
+    @RequiresPermissions("org#users#post")
+    @RequestMapping(name = "部门用户", path = "users", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<UserDto> orgUsers(@RequestParam String orgId) {
 
-	@RequiresPermissions("org#html/orgUser#get")
-	@RequestMapping(name = "部门用户列表页面", path = "html/orgUser", method = RequestMethod.GET)
-	public String listUser() {
-		return ctrlName + "/list_user";
-	}
-	// end#html
+        return orgService.getOrgUsers(orgId);
+    }
+
+    @RequiresPermissions("org#userNotIn#post")
+    @RequestMapping(name = "非部门用户", path = "userNotIn", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<UserDto> userNotIn(@RequestParam String orgId, HttpServletRequest request) throws ParseException {
+
+        ODataObj odataObj = new ODataObj(request);
+        return orgService.getUsersNotInOrg(orgId, odataObj);
+    }
+
+    @RequiresPermissions("org#addUsers#post")
+    @RequestMapping(name = "添加用户到部门", path = "addUsers", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public void postUserToOrg(@RequestParam String orgId, @RequestParam String userId) {
+        orgService.addUserToOrg(userId, orgId);
+    }
+
+    @RequiresPermissions("org#deleteUsers#delete")
+    @RequestMapping(name = "从部门移除用户", path = "deleteUsers", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteUserFromOrg(@RequestParam String orgId, @RequestParam String userId) {
+        String[] ids = userId.split(",");
+        if (ids.length > 1) {
+            orgService.removeOrgUsers(ids, orgId);
+        } else {
+            orgService.removeOrgUser(userId, orgId);
+        }
+    }
+
+    @RequiresPermissions("org#listAll#get")
+    @RequestMapping(name = "所有部门查询", path = "listAll", method = RequestMethod.GET)
+    public @ResponseBody
+    List<OrgDto> listAll() {
+        return orgService.listAll();
+    }
+
+
+    // begin#html
+
+    @RequiresPermissions("org#html/list#get")
+    @RequestMapping(name = "部门列表页面", path = "html/list", method = RequestMethod.GET)
+    public String list() {
+        return ctrlName + "/list";
+    }
+
+    @RequiresPermissions("org#html/edit#get")
+    @RequestMapping(name = "编辑部门页面", path = "html/edit", method = RequestMethod.GET)
+    public String edit() {
+        return ctrlName + "/edit";
+    }
+
+    @RequiresPermissions("org#html/orgUser#get")
+    @RequestMapping(name = "部门用户列表页面", path = "html/orgUser", method = RequestMethod.GET)
+    public String listUser() {
+        return ctrlName + "/list_user";
+    }
+    // end#html
 }

@@ -2,27 +2,39 @@ package cs.service.sharing;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cs.common.Constant;
 import cs.common.Constant.EnumState;
+import cs.common.Constant.OrgName;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.sharing.SharingPlatlform;
+import cs.domain.sharing.SharingPrivilege;
+import cs.domain.sys.Org;
+import cs.domain.sys.Org_;
+import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sharing.SharingPlatlformDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sharing.SharingPlatlformRepo;
+import cs.repository.repositoryImpl.sharing.SharingPrivilegeRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 
 /**
@@ -38,9 +50,13 @@ public class SharingPlatlformServiceImpl  implements SharingPlatlformService {
 	private SharingPlatlformRepo sharingPlatlformRepo;
 	@Autowired
 	private ICurrentUser currentUser;
-	
+	@Autowired
+	private SharingPrivilegeRepo sharingPrivilegeRepo;
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	private OrgRepo orgRepo;
 	
 	@Override
 	public PageModelDto<SharingPlatlformDto> get(ODataObj odataObj) {
@@ -66,10 +82,17 @@ public class SharingPlatlformServiceImpl  implements SharingPlatlformService {
 	@Override
 	@Transactional
 	public void save(SharingPlatlformDto record) {
+		Org  org= orgRepo.findById(record.getOrgId());
+		
 		SharingPlatlform domain = new SharingPlatlform(); 
+		
+		SharingPrivilege shared = new SharingPrivilege();
+		Date now = new Date();
+		
+		
 		BeanCopierUtils.copyProperties(record, domain); 
 		domain.setSharId(UUID.randomUUID().toString());
-		Date now = new Date();
+		domain.setPubDept(org.getName());
 		domain.setIsPublish(record.getIsPublish());
 		domain.setCreatedBy(currentUser.getLoginName());
 		domain.setModifiedBy(currentUser.getLoginName());
@@ -79,7 +102,17 @@ public class SharingPlatlformServiceImpl  implements SharingPlatlformService {
 		domain.setModifiedDate(now);
 		sharingPlatlformRepo.save(domain);
 		record.setSharId(domain.getSharId());
+		//for(Org o : record.getOrgs()){
 		
+		shared.setId(UUID.randomUUID().toString());
+		shared.setBusinessId(domain.getSharId());
+		shared.setBusinessType(org.getName());
+		shared.setCreatedBy(currentUser.getLoginName());
+		shared.setModifiedBy(currentUser.getLoginName());
+		shared.setCreatedDate(now);
+		shared.setModifiedDate(now);
+		sharingPrivilegeRepo.save(shared);
+	//}
 	}
 
 	@Override
@@ -213,6 +246,53 @@ public class SharingPlatlformServiceImpl  implements SharingPlatlformService {
 			throw new IllegalArgumentException("只能选择登录本人！");
 		}
 		
+	}
+
+	@Override
+	public Map<String, Object> getOrg() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		HqlBuilder hql =  HqlBuilder.create();
+		hql.append(" select o from " +Org.class.getSimpleName()+" o where o."+Org_.name.getName()+ "=:name");
+		hql.setParam("name", "综合部");
+		List<Org> o =   orgRepo.findByHql(hql);
+		String id ="";
+		for(Org org : o){
+			id=org.getId();
+		}
+		 List<User> userList = userRepo.findUserByOrgId(id);
+	        List<UserDto> userDtolist = new ArrayList<>();
+	        if (userList != null && userList.size() > 0) {
+	            userList.forEach(x -> {
+	                UserDto userDto = new UserDto();
+	                BeanCopierUtils.copyProperties(x, userDto);
+	                userDtolist.add(userDto);
+	            });
+	        }
+	        if(userDtolist!=null){
+				map.put("userDtolist", userDtolist);
+			}
+	        HqlBuilder hqlpgyib =  HqlBuilder.create();
+	        hqlpgyib.append(" select o from " +Org.class.getSimpleName()+" o where o."+Org_.name.getName()+ "=:name");
+	        hqlpgyib.setParam("name", "评估一部");
+			List<Org> orgpgyb =   orgRepo.findByHql(hqlpgyib);
+			String pgybId ="";
+			for(Org pgyb : orgpgyb){
+				pgybId=pgyb.getId();
+			}         
+			 List<User> userpgyb = userRepo.findUserByOrgId(pgybId);
+		        List<UserDto> userDtopgyb = new ArrayList<>();
+		        if (userpgyb != null && userpgyb.size() > 0) {
+		        	userpgyb.forEach(x -> {
+		                UserDto userpgybD= new UserDto();
+		                BeanCopierUtils.copyProperties(x, userpgybD);
+		                userDtopgyb.add(userpgybD);
+		            });
+		        }
+		
+		if(userDtopgyb!=null){
+			map.put("userDtopgyb", userDtopgyb);
+		}
+		return map;
 	}
 	
 }

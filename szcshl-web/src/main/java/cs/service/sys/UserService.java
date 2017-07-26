@@ -40,13 +40,7 @@ public interface UserService {
 
     List<UserDto> findUserByOrgId(String orgId);
 
-    UserDto findById(String id);
-
-    boolean curUserIsOrgDirector(UserDto checkUser);
-
-    boolean curUserIsOrgSLeader(UserDto checkUser);
-
-    boolean curUserIsSuperLeader(UserDto checkUser);
+    UserDto findById(String id,boolean inclueOrg);
 
     UserDto filterOrgDirector(List<UserDto> userList, Org org);
 
@@ -57,6 +51,8 @@ public interface UserService {
     UserDto getOrgSLeader();
 
     List<UserDto> findAllusers();
-    
-    int findMaxUserNo();
+
+	int findMaxUserNo();
+
+	List<UserDto> findByOrgUserName(String orgId);
 }

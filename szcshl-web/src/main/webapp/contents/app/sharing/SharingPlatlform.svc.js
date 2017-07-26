@@ -8,24 +8,144 @@
     function sharingPlatlform($http) {
         var url_sharingPlatlform = rootPath + "/sharingPlatlform", url_back = '#/sharingPlatlform';
         var url_user=rootPath +'/user';
+        var  url_org = rootPath + "/org/fingByOData";
+       
         var service = {
             grid: grid,
             getSharingPlatlformById: getSharingPlatlformById,
             createSharingPlatlform: createSharingPlatlform,
             deleteSharingPlatlform: deleteSharingPlatlform,
             updateSharingPlatlform: updateSharingPlatlform,
-            initFileOption:initFileOption,					//初始化上传空间
+            initFileOption:initFileOption,					//初始化上传控件
             findAllOrglist:findAllOrglist,					//所有部门
             findAllUsers:findAllUsers,						//所有用户
             findFileList:findFileList,					//系统附件列表
             getSharingDetailById:getSharingDetailById,	//获取详情页
             downloadSysfile:downloadSysfile,		//下载
-            postArticle:postArticle,		//上一篇
-            IntroHTML:IntroHTML,		//截取字符串
+            postArticle:postArticle,			//上一篇
+            IntroHTML:IntroHTML,				//截取字符串
+            initZtreeClient:initZtreeClient,	//初始化树
+            findByIdOrgUsers:findByIdOrgUsers,	//根据id查找部门下所以用户
+            getOrg: getOrg,
+            
         };
 
         return service;
         
+        function  getOrg(vm){
+        	 var httpOptions = {
+ 	                method: "post",
+ 	                url: url_sharingPlatlform + "/getOrg",
+ 	               
+ 	            }
+
+ 	            var httpSuccess = function success(response) {
+ 	                vm.orgUsers = response.data.userDtolist;
+ 	                vm.orgPgyb = response.data.userDtopgyb;
+ 	                console.log(vm.orgPgyb);
+ 	                console.log(vm.orgUsers);
+ 	            }
+ 	            common.http({
+ 	                vm: vm,
+ 	                $http: $http,
+ 	                httpOptions: httpOptions,
+ 	                success: httpSuccess
+ 	            });
+        }
+        function findByIdOrgUsers(vm,id){
+	        var httpOptions = {
+	                method: "get",
+	                url: url_user + "/findUsersByOrgId",
+	                params: {
+	                    orgId: id
+	                }
+	            }
+	            var httpSuccess = function success(response) {
+	                vm.modelPost = response.data;
+	            }
+	            common.http({
+	                vm: vm,
+	                $http: $http,
+	                httpOptions: httpOptions,
+	                success: httpSuccess
+	            });
+        }
+        
+        // begin common fun
+        function getZtreeChecked() {
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+            var nodes = treeObj.getCheckedNodes(true);
+            return nodes;
+        }
+        
+        
+        function updateZtree(vm) {
+        	
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+            var checkedNodes = $linq(vm.model.roles).select(function (x) {
+                return x.roleName;
+            }).toArray();
+            var allNodes = treeObj.getNodesByParam("level", 1, null);
+
+            var nodes = $linq(allNodes).where(function (x) {
+                return $linq(checkedNodes).contains(x.name);
+            }).toArray();
+
+            for (var i = 0, l = nodes.length; i < l; i++) {
+                treeObj.checkNode(nodes[i], true, true);
+            }
+        }
+        // begin#initZtreeClient
+        function initZtreeClient(vm) {
+            var httpOptions = {
+                method: 'post',
+                url: url_org
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        var zTreeObj;
+                        var setting = {
+                            check: {
+                                chkboxType: {
+                                    "Y": "ps",
+                                    "N": "ps"
+                                },
+                                enable: true
+                            }
+                        };
+                        var zNodes = $linq(response.data.value).select(
+                            function (x) {
+                                return {
+                                    id: x.id,
+                                    name: x.name
+                                };
+                            }).toArray();
+                        var rootNode = {
+                            id: '',
+                            name: '共享部门',
+                            children: zNodes
+                        };
+                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
+                      
+                        if (vm.isUpdate) {
+                            updateZtree(vm);
+                       }
+                    }
+
+                });
+
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
         /*Introduction截取content前240个文本字符*/
         function IntroHTML(str) {
             if(str) {
@@ -143,13 +263,13 @@
         function findAllUsers(vm){
         	
         	var httpOptions = {
-					method: 'get',
-					url: common.format(url_user + "/findAllUsers")
+					method: 'post',
+					url: url_user + "/fingByOData"
 			}
 			var httpSuccess = function success(response) {
 				vm.userlist = {};
-				vm.userlist = response.data;
-			
+				vm.userlist = response.data.value;
+				//console.log(vm.userlist);
 			}
 			common.http({
 				vm: vm,
@@ -180,6 +300,7 @@
 			});
 		}
 		//E_查询部门列表
+        
         //S_initFileOption
         function initFileOption(option) {
         	
@@ -358,12 +479,22 @@
 
         // begin#createSharingPlatlform
         function createSharingPlatlform(vm) {
-        	
+   
+        	var dept = document.getElementsByTagName('input');
+        	var val = [];
+        	for(var i=0; i<dept.length; i++){
+        		if(dept[i].name =="menuModule" && dept[i].checked == true){
+        			val.push(dept[i].value);
+        		}
+        	}
+        	var strVal = val.join(",");
+        	vm.model.postResume = strVal;
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-
+             
+              
                 var httpOptions = {
                     method: 'post',
                     url: url_sharingPlatlform +"/addSharing",
@@ -489,11 +620,23 @@
                 },
                 {
                     field: "theme",
-                    title: "发布主题",
+                    title: "共享主题",
                     width: 100,
                     filterable: true
                 },
-               
+                {
+                    field: "pubDept",
+                    title: "共享部门",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "postResume",
+                    title: "共享用户",
+                    width: 100,
+                    filterable: true
+                },
+             
                 {
                     field: "publishUsername",
                     title: "发布人",

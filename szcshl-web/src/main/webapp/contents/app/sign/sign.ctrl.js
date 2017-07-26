@@ -8,14 +8,18 @@
     function sign($location,signSvc,$state,flowSvc,signFlowSvc) {        
         var vm = this;
         vm.title = "收文列表";
-        //initGrid
-        signSvc.grid(vm);
+
+        active();
+        function active() {
+            signSvc.grid(vm);
+        }
+
+        //收文查询
         vm.querySign = function(){
         	signSvc.querySign(vm);
         }
         vm.check=function(){
-      	 		vm.isAssociate=vm.ischeck?9:0;
-      	 		console.log(vm.isAssociate);
+      	 		vm.isAssociate = vm.ischeck?9:0;
       	 }
         
         //start 收文删除
@@ -49,45 +53,6 @@
               }   
          }//end 收文删除
          
-         //start 发起流程
-         vm.startFlow = function(signid){
-        	 common.confirm({
-              	 vm:vm,
-              	 title:"",
-              	 msg:"发起流程后，将不能对信息进行修改，确认发起流程么？",
-              	 fn:function () {
-                    	$('.confirmDialog').modal('hide');             	
-                    	signSvc.startFlow(vm,signid);
-                 }
-              })
-         }//end 发起流程
-         
-         //start 停止流程
-         vm.stopFlow = function(signid){
-        	 common.confirm({
-              	 vm:vm,
-              	 title:"",
-              	 msg:"停止流程后，将无法对流程环节进行操作，确认停止么？",
-              	 fn:function () {
-                    $('.confirmDialog').modal('hide');             	
-                    flowSvc.suspend(vm,signid);
-                 }
-              })
-         }//end 停止流程
-         
-         //start 重启流程
-         vm.restartFlow = function(signid){
-        	 common.confirm({
-              	 vm:vm,
-              	 title:"",
-              	 msg:"确认重启流程么？",
-              	 fn:function () {
-                    $('.confirmDialog').modal('hide');             	
-                    flowSvc.activeFlow(vm,signid);
-                 }
-              })
-         }//end 重启流程
-         
          //************************** S 以下是新流程处理js **************************//
          vm.startNewFlow = function(signid){
         	 common.confirm({
@@ -100,6 +65,22 @@
                  }
               })
          }
+
+        /**
+         * 正式签收收文
+         * @param signId
+         */
+        vm.realSign = function(signid){
+            common.confirm({
+                vm:vm,
+                title:"",
+                msg:"确认正式签收了么？",
+                fn:function () {
+                    $('.confirmDialog').modal('hide');
+                    signSvc.realSign(vm,signid);
+                }
+            })
+        }
          //************************** S 以下是新流程处理js **************************//
 
     }

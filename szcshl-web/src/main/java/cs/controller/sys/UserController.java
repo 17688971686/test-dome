@@ -72,12 +72,21 @@ public class UserController {
     	return userDto;
     }
     
+     
     @RequiresPermissions("user#findChargeUsers#get")
     @RequestMapping(name = "获取所在部门的用户", path = "findChargeUsers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findChargeUsers(){
     	User curUser = currentUser.getLoginUser();
     	return userService.findUserByOrgId(curUser.getOrg().getId());
+    }
+    
+    @RequiresPermissions("user#findByOrgUserName#get")
+    @RequestMapping(name = "根据部门ID获取用户所在部门", path = "findByOrgUserName", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findByOrgUserNames(@RequestParam(required = true)String orgId){
+    	List<UserDto> userlist = userService.findByOrgUserName(orgId);
+    	return userlist;
     }
     
     @RequiresPermissions("user##post")
@@ -132,10 +141,10 @@ public class UserController {
      * @param userId
      * @return
      */
-    @RequestMapping(name = "获取副主任信息", path = "findUserById", method = RequestMethod.GET)
+    @RequestMapping(name = "根据用户ID查询用户信息", path = "findUserById", method = RequestMethod.POST)
     @ResponseBody
     public UserDto findUserById(@RequestParam String userId){
-        return userService.findById(userId);
+        return userService.findById(userId,true);
     }
     // begin#html
     @RequiresPermissions("user#html/list#get")

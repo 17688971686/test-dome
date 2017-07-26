@@ -1,10 +1,12 @@
 package cs.model.sharing;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 
 import cs.domain.sharing.SharingPlatlform;
+import cs.domain.sys.Org;
 import cs.model.BaseDto;
 import cs.model.BaseDto2;
     
@@ -24,10 +26,10 @@ public class SharingPlatlformDto extends BaseDto {
     private String postResume;
 	private String isPublish;//是否发布 0:未发布 ,9:已发布
 	private String publishUsername;//发布人
-	private Date publishDate;//发布时间 String shfileName;
-    private String shfileType;
-    private String shfileSzie;
-    private String shfileUrl;
+	private Date publishDate;//发布时间 
+	private String orgId;
+	private List<Org> orgs;
+  
     private String remark;
     private String content;
     
@@ -48,24 +50,6 @@ public class SharingPlatlformDto extends BaseDto {
 	}
 	public void setPubDept(String pubDept) {
 		this.pubDept = pubDept;
-	}
-	public String getShfileType() {
-		return shfileType;
-	}
-	public void setShfileType(String shfileType) {
-		this.shfileType = shfileType;
-	}
-	public String getShfileSzie() {
-		return shfileSzie;
-	}
-	public void setShfileSzie(String shfileSzie) {
-		this.shfileSzie = shfileSzie;
-	}
-	public String getShfileUrl() {
-		return shfileUrl;
-	}
-	public void setShfileUrl(String shfileUrl) {
-		this.shfileUrl = shfileUrl;
 	}
 	public String getRemark() {
 		return remark;
@@ -111,6 +95,20 @@ public class SharingPlatlformDto extends BaseDto {
 	public void setPublishDate(Date publishDate) {
 		this.publishDate = publishDate;
 	}
+	public List<Org> getOrgs() {
+		return orgs;
+	}
+	public void setOrgs(List<Org> orgs) {
+		this.orgs = orgs;
+	}
+	public String getOrgId() {
+		return orgId;
+	}
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+	
+	
 	
 
 	

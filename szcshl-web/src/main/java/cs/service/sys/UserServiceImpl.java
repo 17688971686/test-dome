@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -225,6 +226,9 @@ public class UserServiceImpl implements UserService {
                 currentUser.login(token);
 
                 response.setIsSuccess(true);
+                //设置session时长
+                SecurityUtils.getSubject().getSession().setTimeout(30000);
+
                 logger.info(String.format("登录成功,用户名:%s", userName));
             } else {
                 user.setLoginFailCount(user.getLoginFailCount() + 1);
@@ -402,50 +406,29 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * 根据ID查询用户
+     * @param id
+     * @param inclueOrg
+     * @return
+     */
     @Override
-    public UserDto findById(String id) {
-        User user = userRepo.findById(id);
+    public UserDto findById(String id,boolean inclueOrg) {
         UserDto userDto = new UserDto();
-        BeanCopierUtils.copyProperties(user, userDto);
-        if (user.getOrg() != null) {
-        		OrgDto orgDto = new OrgDto();
-        		BeanCopierUtils.copyProperties(user.getOrg() , orgDto);
-        		userDto.setOrgDto(orgDto);
+        if(inclueOrg){
+            User user = userRepo.findById(id);
+            BeanCopierUtils.copyProperties(user, userDto);
+            if (user.getOrg() != null) {
+                OrgDto orgDto = new OrgDto();
+                BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
+                userDto.setOrgDto(orgDto);
+            }
+        }else{
+            User user = userRepo.findById(User_.id.getName(),id);
+            BeanCopierUtils.copyProperties(user, userDto);
         }
+
         return userDto;
-    }
-
-
-    /**
-     * 当前用户是否是用户的部门领导
-     */
-    @Override
-    public boolean curUserIsOrgDirector(UserDto checkUser) {
-        return currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector()) ? true : false;
-    }
-
-
-    /**
-     * 当前用户是否是用户的分管领导
-     */
-    @Override
-    public boolean curUserIsOrgSLeader(UserDto checkUser) {
-        return currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader()) ? true : false;
-    }
-
-
-    /**
-     * 当前用户是否是用户的上级领导（包括部门领导和分管领导）
-     */
-    @Override
-    public boolean curUserIsSuperLeader(UserDto checkUser) {
-        boolean isTrue = true;
-        isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgDirector()) ? true : false;
-        if (isTrue) {
-            return isTrue;
-        }
-        isTrue = currentUser.getLoginUser().getId().equals(checkUser.getOrgDto().getOrgSLeader()) ? true : false;
-        return isTrue;
     }
 
 
@@ -454,7 +437,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getOrgDirector() {
-        UserDto user = findById(currentUser.getLoginUser().getOrg().getOrgDirector());
+        UserDto user = findById(currentUser.getLoginUser().getOrg().getOrgDirector(),false);
         if (user != null && Validate.isString(user.getId())) {
             return user;
         }
@@ -539,6 +522,28 @@ public class UserServiceImpl implements UserService {
 		sql.append("select max(to_number(userNo)) from cs_user");
 		
 		return userRepo.returnIntBySql(sql);
+	}
+
+
+	@Override
+	public List<UserDto> findByOrgUserName(String orgId) {
+		
+	    HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select loginName from cs_user where orgId = ");
+        sqlBuilder.setParam("orgId", orgId);
+        List<User> users=  userRepo.findByHql(sqlBuilder);
+        List<UserDto> userDto = new ArrayList<UserDto>();
+        
+        if (users != null && users.size() > 0) {
+            users.forEach(x -> {
+                UserDto userDtos = new UserDto();
+                BeanCopierUtils.copyProperties(x, userDto);
+                userDtos.setCreatedDate(x.getCreatedDate());
+                userDtos.setModifiedDate(x.getModifiedDate());
+                userDto.add(userDtos);
+            });
+        }
+		return userDto;
 	}
 }
 

@@ -2,13 +2,20 @@ package cs.domain.sharing;
 
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import cs.domain.DomainBase;
+import cs.domain.sys.Org;
+import cs.domain.sys.User;
 
 
 @Entity
@@ -39,12 +46,12 @@ public class SharingPlatlform extends DomainBase{
 	@Column(columnDefinition="DATE")
 	private Date publishDate;//发布时间
 	
-	@Column(columnDefinition="VARCHAR(64)")
-	private String shfileType;
-	@Column(columnDefinition="VARCHAR(64)")
-	private String shfileSzie;
-	@Column(columnDefinition="VARCHAR(64)")
-	private String shfileUrl;
+	@Column(columnDefinition="VARCHAR(128)")
+	private String orgId;
+	
+	@OneToMany(mappedBy = "sharing",fetch = FetchType.LAZY)
+	private List<Org> orgs;
+	
 	@Column(columnDefinition="VARCHAR(255)")
 	private String remark;
 	
@@ -69,24 +76,7 @@ public class SharingPlatlform extends DomainBase{
 	public void setPubDept(String pubDept) {
 		this.pubDept = pubDept;
 	}
-	public String getShfileType() {
-		return shfileType;
-	}
-	public void setShfileType(String shfileType) {
-		this.shfileType = shfileType;
-	}
-	public String getShfileSzie() {
-		return shfileSzie;
-	}
-	public void setShfileSzie(String shfileSzie) {
-		this.shfileSzie = shfileSzie;
-	}
-	public String getShfileUrl() {
-		return shfileUrl;
-	}
-	public void setShfileUrl(String shfileUrl) {
-		this.shfileUrl = shfileUrl;
-	}
+
 	public String getRemark() {
 		return remark;
 	}
@@ -129,7 +119,21 @@ public class SharingPlatlform extends DomainBase{
 	public void setPublishDate(Date publishDate) {
 		this.publishDate = publishDate;
 	}
+	public List<Org> getOrgs() {
+		return orgs;
+	}
+	public void setOrgs(List<Org> orgs) {
+		this.orgs = orgs;
+	}
+	public String getOrgId() {
+		return orgId;
+	}
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
 	
-
+	
+	
+	
 	
 }

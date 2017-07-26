@@ -21,7 +21,7 @@
 		function startFlow(vm,signid){
 			var httpOptions = {
 					method : 'post',
-					url : rootPath+"/sign/html/startNewFlow",
+					url : rootPath+"/sign/startNewFlow",
 					params : {signid:signid}
 				}
 				
@@ -408,10 +408,11 @@
                     vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
                     break;
                 case "MFZR_GD":
-                    //没有归档
+                    //生成发文编号
                     if(vm.businessFlag.isCreateDisFileNum == false){
                         resultTag = false;
                     }else{
+                        //没有归档
                         if(vm.model.filenum){
                             resultTag = true;
                             if(vm.businessFlag.isHaveSePri){
@@ -492,18 +493,22 @@
                     vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id
                     break;
                 case "XS_FZR_GD":                //第一负责人归档
-                    if(vm.model.filenum){
-                        resultTag = true;
-                        if(vm.businessFlag.isHaveSePri){
-                            if($("#secondPriUser").val()){
-                                vm.flow.businessMap.SEPRI_ID = $("#secondPriUser").val();
-                                resultTag = true;
-                            }else{
-                                resultTag = false;
-                            }
-                        }
-                    }else{
+                    if(vm.businessFlag.isCreateDisFileNum == false){
                         resultTag = false;
+                    }else{
+                        if(vm.model.filenum){
+                            resultTag = true;
+                            if(vm.businessFlag.isHaveSePri){
+                                if($("#secondPriUser").val()){
+                                    vm.flow.businessMap.SEPRI_ID = $("#secondPriUser").val();
+                                    resultTag = true;
+                                }else{
+                                    resultTag = false;
+                                }
+                            }
+                        }else{
+                            resultTag = false;
+                        }
                     }
                     break;
                 case "XS_FZR_SP":                //第二负责人审批归档

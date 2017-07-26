@@ -15,7 +15,7 @@
 
     <script type="text/template" id="columnBtns">
         <@shiro.hasPermission name="quartz##delete">
-        <button class="btn btn-xs btn-danger"  ng-click="{0}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-remove"></span>删除</button>
+        <button class="btn btn-xs btn-danger"  ng-click="{0}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-remove"></span>停用</button>
         </@shiro.hasPermission>
         <@shiro.hasPermission name="quartz##put">
         <button class="btn btn-xs btn-primary" ng-click="{1}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
@@ -74,8 +74,8 @@
                 <td>
                 <select class="form-control input-sm " ng-model="vm.quartz.runWay" 
                            id="runWay" name="runWay"  style="width:80%;" >
-                	<option value="手动" >手动</option>
-                	<option value="自动">自动</option>
+                	<option value="0" >手动</option>
+                	<option value="9">自动</option>
                 
                 </select >
                <span data-valmsg-for="isEnable" data-valmsg-replace="true" class="errors"></span></td>

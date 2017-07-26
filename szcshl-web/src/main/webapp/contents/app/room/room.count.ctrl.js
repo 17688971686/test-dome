@@ -16,7 +16,6 @@
         	roomCountSvc.queryRoomCount(vm);
         }
         vm.del = function (id) {        	
-        	
              common.confirm({
             	 vm:vm,
             	 title:"",
@@ -28,7 +27,6 @@
              })
         }
         vm.ResetRoomCount=function(){
-        	console.log("ddfdf");
         	roomCountSvc.cleanValue();
         }
         vm.dels = function () {     

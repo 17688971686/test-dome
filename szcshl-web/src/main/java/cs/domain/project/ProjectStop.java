@@ -29,11 +29,12 @@ public class ProjectStop extends DomainBase {
      */
     @Id
     private String stopid;
-    
 
-    //是否暂停(2:暂停，1：运行)
+    /**
+     * 是否有效（9：是，0：否）
+     */
     @Column(columnDefinition = "VARCHAR(1)")
-    private String ispause;
+    private String isactive;
 
     //实际暂停工作日
     @Column(columnDefinition = "NUMBER")
@@ -104,13 +105,6 @@ public class ProjectStop extends DomainBase {
 		this.stopid = stopid;
 	}
 
-	public String getIspause() {
-		return ispause;
-	}
-
-	public void setIspause(String ispause) {
-		this.ispause = ispause;
-	}
 
 	public Float getPausedays() {
 		return pausedays;
@@ -135,5 +129,12 @@ public class ProjectStop extends DomainBase {
 	public void setPasedescription(String pasedescription) {
 		this.pasedescription = pasedescription;
 	}
-    
+
+	public String getIsactive() {
+		return isactive;
+	}
+
+	public void setIsactive(String isactive) {
+		this.isactive = isactive;
+	}
 }
