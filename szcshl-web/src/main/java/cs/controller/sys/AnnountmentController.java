@@ -34,14 +34,24 @@ public class AnnountmentController {
     @Autowired
     private AnnountmentService annService;
 
-    @RequiresPermissions("annountment#fingByOData#post")
-    @RequestMapping(name = "获取所有数据", path = "fingByOData", method = RequestMethod.POST)
+    @RequiresPermissions("annountment#fingByCurUser#post")
+    @RequestMapping(name = "获取个人发布的通知公告", path = "fingByCurUser", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<AnnountmentDto> get(HttpServletRequest request) throws ParseException {
+    public PageModelDto<AnnountmentDto> fingByCurUser(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AnnountmentDto> pageModelDto = annService.get(odataObj);
+        PageModelDto<AnnountmentDto> pageModelDto = annService.findByCurUser(odataObj);
         return pageModelDto;
     }
+    
+    @RequiresPermissions("annountment#findByIssue#post")
+    @RequestMapping(name = "获取已发布的通知公告", path = "findByIssue", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<AnnountmentDto> findByReception(HttpServletRequest request) throws ParseException {
+    	 ODataObj odataObj = new ODataObj(request);
+        PageModelDto<AnnountmentDto> pageModelDto = annService.findByIssue(odataObj);
+        return pageModelDto;
+    }
+    
 
     @RequiresPermissions("annountment##post")
     @RequestMapping(name = "新增通知公告", path = "", method = RequestMethod.POST)
@@ -126,9 +136,9 @@ public class AnnountmentController {
         return ctrlName + "/detail";
     }
     
-    @RequiresPermissions("annountment#html/annList#get")
-    @RequestMapping(name = "通知公告列表", path = "html/annList", method = RequestMethod.GET)
+    @RequiresPermissions("annountment#html/yetList#get")
+    @RequestMapping(name = "通知公告列表", path = "html/yetList", method = RequestMethod.GET)
     public String annList() {
-        return ctrlName + "/annList";
+        return ctrlName + "/yetList";
     }
 }

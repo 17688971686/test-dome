@@ -5,6 +5,14 @@ package cs.common;
  *
  * @author ldm
  */
+/**
+ * @author MCL
+ *@date 2017年7月28日 下午2:12:53 
+ */
+/**
+ * @author MCL
+ *@date 2017年7月28日 下午2:12:55 
+ */
 public class Constant {
     /**
      * 企业名称
@@ -41,6 +49,11 @@ public class Constant {
      * 默认工作日
      */
     public static Float WORK_DAY_12 = 12f;
+    
+    /**
+     * 初始化用户密码
+     */
+    public static final String PASSWORD="123456";
 
 
     /**

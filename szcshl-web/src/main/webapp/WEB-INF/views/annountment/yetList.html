@@ -12,10 +12,11 @@
    
 
     <div class="well" >
-        <form id="annountmentform" name="annountmentform">
-            <span class="help-inline">标题：</span>
-            <input type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入标题名称">
-            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryAnnountment()">查询</button>
+        <form id="annountmentYetform" name="annountmentYetform">
+            <span class="help-inline">发布人：</span>
+           <input type="text"   operator="like" name="issueUser" id="issueUser" >
+            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.findAnnountment()">查询</button>
+            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetAnnountment()">重置</a>
         </form>
     </div>
 

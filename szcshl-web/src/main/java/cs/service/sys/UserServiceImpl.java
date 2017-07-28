@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
             user.setModifiedBy(currentUser.getLoginName());
-            user.setPassword("123456");		//设置系统默认登录密码
+            user.setPassword(Constant.PASSWORD);		//设置系统默认登录密码
             
 //            user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo())+1));
             //MD5加密密码

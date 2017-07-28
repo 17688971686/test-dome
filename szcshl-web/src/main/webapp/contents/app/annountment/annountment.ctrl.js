@@ -65,5 +65,12 @@
             vm.gridOptions.dataSource.read();
         }
 
+        //重置
+        vm.resetAnnountment=function(){
+        	var tab=$("#annountmentform").find('input,select');
+        	$.each(tab,function(i,obj){
+        		obj.value="";
+        	});
+        }
     }
 })();

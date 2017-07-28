@@ -403,10 +403,10 @@
                 controllerAs: 'vm'
             })
              //通过公告
-            .state('annountmentList', {
-                url: '/annountmentList',
-                templateUrl: rootPath + '/annountment/html/annList.html',
-                controller: 'annountmentListCtrl',
+            .state('annountmentYet', {
+                url: '/annountmentYet',
+                templateUrl: rootPath + '/annountment/html/yetList.html',
+                controller: 'annountmentYetCtrl',
                 controllerAs: 'vm'
             })
             //begin#sharing

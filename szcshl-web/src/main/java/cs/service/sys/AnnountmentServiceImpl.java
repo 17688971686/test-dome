@@ -14,6 +14,8 @@ import cs.repository.repositoryImpl.sys.AnnountmentRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,23 +37,97 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     @Autowired
     private OrgRepo orgRepo;
 
+    /* 
+     * 获取个人发布的通知公告
+     */
     @Override
-    public PageModelDto<AnnountmentDto> get(ODataObj odataobj) {
-        List<Annountment> annList = annountmentRepo.findByOdata(odataobj);
+    public PageModelDto<AnnountmentDto> findByCurUser(ODataObj odataobj) {
+    	PageModelDto<AnnountmentDto> pageModelDto = new PageModelDto<>();
+    	Criteria criteria=annountmentRepo.getExecutableCriteria();
+    	criteria=odataobj.buildFilterToCriteria(criteria);
+    	//创建人为当前用户
+    	criteria.add(Restrictions.eq(Annountment_.createdBy.getName(), currentUser.getLoginName()));
+    	//统计总数
+    	Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+       pageModelDto.setCount(totalResult);
+       //处理分页
+       criteria.setProjection(null);
+       if(odataobj.getSkip() > 0){
+    	   criteria.setFirstResult(odataobj.getSkip());
+       }
+       if(odataobj.getTop() > 0){
+    	   criteria.setMaxResults(odataobj.getTop());
+       }
+    	
+       //处理orderby
+       if(Validate.isString(odataobj.getOrderby())){
+    	   if(odataobj.isOrderbyDesc()){
+    		   criteria.addOrder(Property.forName(odataobj.getOrderby()).desc());
+    	   }else{
+    		   criteria.addOrder(Property.forName(odataobj.getOrderby()).asc());
+    	   }
+       }
+       
+    	List<Annountment> annList =criteria.list();
         List<AnnountmentDto> annountmentDtoList = new ArrayList<>();
-        PageModelDto<AnnountmentDto> pagemodelDto = new PageModelDto<>();
         for (Annountment annountment : annList) {
             AnnountmentDto annDto = new AnnountmentDto();
             BeanCopierUtils.copyProperties(annountment, annDto);
             annountmentDtoList.add(annDto);
         }
 
-        pagemodelDto.setValue(annountmentDtoList);
-        pagemodelDto.setCount(odataobj.getCount());
+        pageModelDto.setValue(annountmentDtoList);
 
-        return pagemodelDto;
+        return pageModelDto;
     }
 
+
+
+	/* 
+	 * 获取所有已经发布的通知公告
+	 */
+	@Override
+	public PageModelDto<AnnountmentDto> findByIssue(ODataObj odataobj) {
+		PageModelDto<AnnountmentDto> pageModelDto=new PageModelDto<>();
+		Criteria criteria = annountmentRepo.getExecutableCriteria();
+		criteria.add(Restrictions.like(Annountment_.issue.getName(), Constant.EnumState.YES.getValue()));
+		criteria=odataobj.buildFilterToCriteria(criteria);
+		
+		//统计总数
+    	Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+       pageModelDto.setCount(totalResult);
+       //处理分页
+       criteria.setProjection(null);
+       if(odataobj.getSkip() > 0){
+    	   criteria.setFirstResult(odataobj.getSkip());
+       }
+       if(odataobj.getTop() > 0){
+    	   criteria.setMaxResults(odataobj.getTop());
+       }
+    	
+       //处理orderby
+       if(Validate.isString(odataobj.getOrderby())){
+    	   if(odataobj.isOrderbyDesc()){
+    		   criteria.addOrder(Property.forName(odataobj.getOrderby()).desc());
+    	   }else{
+    		   criteria.addOrder(Property.forName(odataobj.getOrderby()).asc());
+    	   }
+       }
+		List<Annountment> annountmentList=criteria.list();
+		
+		List<AnnountmentDto> annountmentDtoList=new ArrayList<>();
+		for(Annountment annountment : annountmentList){
+			AnnountmentDto annountmentDto = new AnnountmentDto();
+			BeanCopierUtils.copyProperties(annountment, annountmentDto);
+			annountmentDtoList.add(annountmentDto);
+		}
+		
+		pageModelDto.setValue(annountmentDtoList);
+		return pageModelDto;
+	}
+
+
+    
     @Override
     @Transactional
     public void createAnnountment(AnnountmentDto annountmentDto) {
@@ -230,5 +306,6 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         }
         annountmentRepo.executeHql(hqlBuilder);
     }
+
 
 }

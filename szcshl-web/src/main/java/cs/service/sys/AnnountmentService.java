@@ -8,7 +8,8 @@ import cs.repository.odata.ODataObj;
 
 public interface AnnountmentService {
 	
-	PageModelDto<AnnountmentDto> get(ODataObj odataobj);
+	PageModelDto<AnnountmentDto> findByCurUser(ODataObj odataobj);
+	
 	
 	void createAnnountment(AnnountmentDto annountmentDto);
 	
@@ -28,4 +29,6 @@ public interface AnnountmentService {
 	AnnountmentDto nextArticle(String id);
 
 	void updateIssueState(String ids, String issueState);
+
+	PageModelDto<AnnountmentDto> findByIssue(ODataObj odataobj);
 }
