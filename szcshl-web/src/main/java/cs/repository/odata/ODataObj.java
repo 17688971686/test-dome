@@ -2,6 +2,7 @@ package cs.repository.odata;
 
 import cs.common.utils.ObjectUtils;
 import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -192,82 +193,29 @@ public class ODataObj {
         return filterItems;
     }
 
+    /**
+     * 把 ODataFilterItem 封装成 criteria
+     * @param criteria
+     * @return
+     */
+    public Criteria buildFilterToCriteria(Criteria criteria){
+        if (Validate.isList(filter)) {
+            Object value;
+            for (ODataFilterItem item : filter) {
+                value = item.getValue();
+                if (null == value) {
+                    continue;
+                }
+                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
+            }
+        }
+        return criteria;
+    }
+
     @SuppressWarnings("rawtypes")
     public Criteria buildQuery(Criteria criteria) {
         logger.debug("begin:buildQuery");
-
-        // 处理filter
-        if (filter != null) {
-            for (ODataFilterItem oDataFilterItem : filter) {
-                String field = oDataFilterItem.getField();
-                String operator = oDataFilterItem.getOperator();
-                Object value = oDataFilterItem.getValue();
-                logger.debug(String.format("fitler:field:%s,operator:%s,value:%s", field, operator, value));
-                switch (operator) {
-                    case "like":
-                        criteria.add(Restrictions.like(field, "%" + value + "%"));
-                        break;
-                    case "eq":
-                            criteria.add(getCriterions(field, value, new MyRestrictions() {
-                                @Override
-                                public Criterion toRestrictions(String field, Object val) {
-                                    return Restrictions.eq(field, val);
-                                }
-                            }));
-                        break;
-                    case "ne":
-                        criteria.add(getCriterions(field, value, new MyRestrictions() {
-                            @Override
-                            public Criterion toRestrictions(String field, Object val) {
-                                return Restrictions.ne(field, val);
-                            }
-                        }));
-                        break;
-                    case "gt":
-                        criteria.add(getCriterions(field, value, new MyRestrictions() {
-                            @Override
-                            public Criterion toRestrictions(String field, Object val) {
-                                return Restrictions.gt(field, val);
-                            }
-                        }));
-                        break;
-                    case "ge":
-                        criteria.add(getCriterions(field, value, new MyRestrictions() {
-                            @Override
-                            public Criterion toRestrictions(String field, Object val) {
-                                return Restrictions.ge(field, val);
-                            }
-                        }));
-                        break;
-                    case "lt":
-                        criteria.add(getCriterions(field, value, new MyRestrictions() {
-                            @Override
-                            public Criterion toRestrictions(String field, Object val) {
-                                return Restrictions.lt(field, val);
-                            }
-                        }));
-                        break;
-                    case "le":
-                        criteria.add(getCriterions(field, value, new MyRestrictions() {
-                            @Override
-                            public Criterion toRestrictions(String field, Object val) {
-                                return Restrictions.le(field, val);
-                            }
-                        }));
-                        break;
-                    case "ni":    //not in
-                        Object[] notInObjValues = splitObj(value, ",");
-                        criteria.add(Restrictions.not(Restrictions.in(field, notInObjValues)));
-                        break;
-                    case "in":    //in
-                        Object[] inObjValues = splitObj(value, ",");
-                        criteria.add(Restrictions.in(field, inObjValues));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+        this.buildFilterToCriteria(criteria);
         //统计总数
         if (this.isCount) {
             Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
@@ -290,48 +238,6 @@ public class ODataObj {
         }
         logger.debug("end:buildQuery");
         return criteria;
-    }
-
-    public interface MyRestrictions {
-
-        Criterion toRestrictions(String field, Object value);
-
-    }
-
-    public Criterion getCriterions(String field, Object value, MyRestrictions myRestrictions) {
-        if (value.getClass().isArray()) {
-            Object[] values = (Object[]) value;
-            int i = 0, len = values.length;
-            Criterion[] criterias = new Criterion[len];
-            for (; i < len; i++) {
-                if("isNull".equals(values[i].toString())){
-                    criterias[i] = Restrictions.isNull(field);
-                }else{
-                    criterias[i] = myRestrictions.toRestrictions(field, values[i]);
-                }
-
-            }
-            return Restrictions.or(criterias);
-        } else {
-            if("isNull".equals(value.toString())){
-               return Restrictions.isNull(field);
-            }else {
-                return myRestrictions.toRestrictions(field, value);
-            }
-        }
-    }
-
-    private Object[] splitObj(Object value, String splitOperate) {
-        if (value instanceof String) {
-            String s = value.toString();
-            String[] sArr = s.split(splitOperate);
-            Object[] resultObj = new Object[sArr.length];
-            for (int i = 0, l = sArr.length; i < l; i++) {
-                resultObj[i] = sArr[i];
-            }
-            return resultObj;
-        }
-        return null;
     }
 
 }

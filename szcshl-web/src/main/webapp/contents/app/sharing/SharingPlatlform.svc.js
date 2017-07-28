@@ -13,13 +13,13 @@
             getSharingPlatlformById: getSharingPlatlformById,
             createSharingPlatlform: createSharingPlatlform,
             deleteSharingPlatlform: deleteSharingPlatlform,
-            updateSharingPlatlform: updateSharingPlatlform,
             initFileOption: initFileOption,					//初始化上传控件
             findFileList: findFileList,					    //系统附件列表
             getSharingDetailById: getSharingDetailById,	    //获取详情页
             downloadSysfile: downloadSysfile,		        //下载
             initOrgAndUser: initOrgAndUser,                 //初始化部门和用户
             initSeleObj : initSeleObj,                      //初始化选择的用户
+            updatePublish : updatePublish,                  //批量更改发布状态
         };
 
         return service;
@@ -196,12 +196,13 @@
                 var projectfileoptions = {
                     language: 'zh',
                     allowedPreviewTypes: ['image'],
-                    allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf", "ppt", "zip", "rar"],
+                    allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf", "ppt", "zip", "rar","txt"],
                     maxFileSize: 2000,
                     showRemove: false,
                     uploadUrl: rootPath + "/file/fileUpload",
                     uploadExtraData: {
                         businessId: option.businessId,
+                        sysSignId:"共享平台",
                         sysfileType: angular.isUndefined(option.sysfileType) ? "共享平台" : option.sysfileType,
                     }
                 };
@@ -219,58 +220,6 @@
             }
 
         }//E_initFileOption
-
-        // begin#updateSharingPlatlform
-        function updateSharingPlatlform(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_sharingPlatlform,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                    location.href = url_back;
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
 
         // begin#deleteSharingPlatlform
         function deleteSharingPlatlform(vm, id) {
@@ -412,9 +361,9 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_sharingPlatlform + "/findByOData", $("#formSharing")),
+                transport: common.kendoGridConfig().transport(url_sharingPlatlform + "/findByCurUser", $("#formSharing")),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
+                    id: "sharId",
                     fields: {
                         createdDate: {
                             type: "date"
@@ -452,7 +401,7 @@
                             item.sharId)
                     },
                     filterable: false,
-                    width: 40,
+                    width: 30,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
                 {
@@ -464,49 +413,42 @@
                 },
                 {
                     field: "theme",
-                    title: "共享主题",
-                    width: 100,
-                    filterable: true
+                    title: "主题",
+                    width: 180,
+                    filterable: false
                 },
-                {
-                    field: "pubDept",
-                    title: "共享部门",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "postResume",
-                    title: "共享用户",
-                    width: 100,
-                    filterable: true
-                },
-
                 {
                     field: "publishUsername",
                     title: "发布人",
-                    width: 80,
-                    filterable: true
+                    width: 120,
+                    filterable: false
                 },
                 {
                     field: "publishDate",
                     title: "发布时间",
                     format: "{0:yyyy-MM-dd hh24:mm:ss}",
-                    width: 100,
-                    filterable: true
+                    width: 180,
+                    filterable: false
                 },
                 {
-                    field: "remark",
-                    title: "备注",
+                    field: "isPublish",
+                    title: "发布状态",
                     width: 100,
-                    filterable: true
+                    template: function (item) {
+                       if(item.isPublish && item.isPublish == 9){
+                           return "已发布";
+                       }else{
+                           return "未发布";
+                       }
+                    }
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: 180,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            item.sharId, "vm.del('" + item.sharId + "')", item.sharId);
+                            item.sharId, item.sharId, "vm.del('" + item.sharId + "')");
                     }
                 }
             ];
@@ -523,6 +465,52 @@
             };
 
         }// end fun grid
+
+
+        //S_批量发布
+        function updatePublish(vm,isUpdate){
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: "请选择要批量发布的数据"
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/sharingPlatlform/updatePublish",
+                    params: {
+                        ids: ids.join(','),
+                        status: (isUpdate == true)?'9':'0'
+                    }
+                }
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            vm.isSubmit = false;
+                            vm.gridOptions.dataSource.read();
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog: true
+                            })
+                        }
+                    })
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+        }//E_bathPublish
 
     }
 })();

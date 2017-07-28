@@ -46,6 +46,24 @@ public class SharingPlatlformController {
         return sharingPlatlformDtos;
     }
 
+    @RequiresPermissions("sharingPlatlform#findByCurUser#post")
+    @RequestMapping(name = "获取当前用户发布的数据", path = "findByCurUser", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<SharingPlatlformDto> findByCurUser(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<SharingPlatlformDto> sharingPlatlformDtos = sharingPlatlformService.findByCurUser(odataObj);
+        return sharingPlatlformDtos;
+    }
+
+    @RequiresPermissions("sharingPlatlform#findByReception#post")
+    @RequestMapping(name = "获取接收到的共享数据", path = "findByReception", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<SharingPlatlformDto> findByReception(HttpServletRequest req) throws ParseException {
+        ODataObj odataObj = new ODataObj(req);
+        PageModelDto<SharingPlatlformDto> sharingPlatlformDtos = sharingPlatlformService.findByReception(odataObj);
+        return sharingPlatlformDtos;
+    }
+
     @RequiresPermissions("sharingPlatlform#initOrgAndUser#post")
     @RequestMapping(name = "获取部门和用户数据", path = "initOrgAndUser", method = RequestMethod.POST)
     public @ResponseBody
@@ -53,20 +71,12 @@ public class SharingPlatlformController {
         return sharingPlatlformService.initOrgAndUser();
     }
 
-    @RequiresPermissions("sharingPlatlform#findByODataYet#post")
-    @RequestMapping(name = "获取已发布共享数据", path = "findByODataYet", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<SharingPlatlformDto> getYetData(HttpServletRequest req) throws ParseException {
-        ODataObj odataObj = new ODataObj(req);
-        PageModelDto<SharingPlatlformDto> sharingPlatlformDtos = sharingPlatlformService.get(odataObj);
-        return sharingPlatlformDtos;
-    }
 
-    @RequiresPermissions("sharingPlatlform#editPubStatus#put")
-    @RequestMapping(name = "修改发布状态", path = "editPubStatus", method = RequestMethod.PUT)
+    @RequiresPermissions("sharingPlatlform#updatePublish#post")
+    @RequestMapping(name = "修改发布状态", path = "updatePublish", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updatePublish(@RequestBody SharingPlatlformDto record) {
-        sharingPlatlformService.updatePublishStatus(record);
+    public void updatePublish(@RequestParam String ids,@RequestParam String status) {
+        sharingPlatlformService.updatePublishStatus(ids,status);
     }
 
     @RequiresPermissions("sharingPlatlform#findUser#post")
@@ -103,12 +113,7 @@ public class SharingPlatlformController {
     @RequestMapping(name = "删除记录", path = "sharingDelete", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-        String[] ids = id.split(",");
-        if (ids.length > 1) {
-            sharingPlatlformService.deletes(ids);
-        } else {
-            sharingPlatlformService.delete(id);
-        }
+        sharingPlatlformService.delete(id);
     }
 
     //@RequiresPermissions("sharingPlatlform##put")

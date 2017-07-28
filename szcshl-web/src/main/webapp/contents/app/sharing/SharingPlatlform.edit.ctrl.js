@@ -45,12 +45,12 @@
 				obj.value = "";
 			});
         }
-        
+
+        /**
+         * 保存发布信息
+         */
         vm.create = function () {
             sharingPlatlformSvc.createSharingPlatlform(vm);
-        };
-        vm.update = function () {
-            sharingPlatlformSvc.updateSharingPlatlform(vm);
         };
 
         // 业务判断

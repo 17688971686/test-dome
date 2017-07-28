@@ -1,15 +1,17 @@
 package cs.service.sharing;
 
+import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ICurrentUser;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SysFileUtil;
 import cs.common.utils.Validate;
 import cs.domain.sharing.SharingPlatlform;
+import cs.domain.sharing.SharingPlatlform_;
 import cs.domain.sharing.SharingPrivilege;
-import cs.domain.sys.Org;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
+import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.sharing.SharingPlatlformDto;
 import cs.model.sharing.SharingPrivilegeDto;
@@ -17,11 +19,14 @@ import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sharing.SharingPlatlformRepo;
-import cs.repository.repositoryImpl.sharing.SharingPrivilegeRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +50,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
     private SharingPrivilegeService sharingPrivilegeService;
     @Autowired
     private UserRepo userRepo;
-
+    @Autowired
+    private SysFileRepo sysFileRepo;
     @Autowired
     private OrgRepo orgRepo;
 
@@ -67,6 +73,102 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         }
         pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(resultDtoList);
+        return pageModelDto;
+    }
+
+    /**
+     * 查询个人发布
+     * @param odataObj
+     * @return
+     */
+    @Override
+    public PageModelDto<SharingPlatlformDto> findByCurUser(ODataObj odataObj) {
+        PageModelDto<SharingPlatlformDto> pageModelDto = new PageModelDto<SharingPlatlformDto>();
+        Criteria criteria = sharingPlatlformRepo.getExecutableCriteria();
+        criteria = odataObj.buildFilterToCriteria(criteria);
+        //创建人为当前用户
+        criteria.add(Restrictions.eq(SharingPlatlform_.createdBy.getName(),currentUser.getLoginName()));
+        //统计总数
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        pageModelDto.setCount(totalResult);
+        // 处理分页
+        criteria.setProjection(null);
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+        // 处理orderby
+        if (Validate.isString(odataObj.getOrderby())) {
+            if (odataObj.isOrderbyDesc()) {
+                criteria.addOrder(Property.forName(odataObj.getOrderby()).desc());
+            } else {
+                criteria.addOrder(Property.forName(odataObj.getOrderby()).asc());
+            }
+        }
+        List<SharingPlatlform> resultList = criteria.list();
+        List<SharingPlatlformDto> resultDtoList = new ArrayList<SharingPlatlformDto>(resultList==null?0:resultList.size());
+        if (resultList != null && resultList.size() > 0) {
+            resultList.forEach(x -> {
+                SharingPlatlformDto modelDto = new SharingPlatlformDto();
+                BeanCopierUtils.copyProperties(x, modelDto);
+                resultDtoList.add(modelDto);
+            });
+        }
+        pageModelDto.setValue(resultDtoList);
+
+        return pageModelDto;
+    }
+
+
+    /**
+     * 个人接收到的共享数据
+     * @param odataObj
+     * @return
+     */
+    @Override
+    public PageModelDto<SharingPlatlformDto> findByReception(ODataObj odataObj) {
+        PageModelDto<SharingPlatlformDto> pageModelDto = new PageModelDto<SharingPlatlformDto>();
+        Criteria criteria = sharingPlatlformRepo.getExecutableCriteria();
+        criteria = odataObj.buildFilterToCriteria(criteria);
+        //查询个人接收到的记录信息（全局、部分和个人）
+        StringBuilder linkSql = new StringBuilder("(isnopermission = '9' or sharid in ");
+        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+currentUser.getLoginUser().getId()+"') ");
+        linkSql.append(" or (businesstype = '1' and  businessId ='"+currentUser.getLoginUser().getOrg().getId()+"') ) )");
+
+        criteria.add(Restrictions.sqlRestriction(linkSql.toString()));
+
+        //统计总数
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        pageModelDto.setCount(totalResult);
+        // 处理分页
+        criteria.setProjection(null);
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+        // 处理orderby
+        if (Validate.isString(odataObj.getOrderby())) {
+            if (odataObj.isOrderbyDesc()) {
+                criteria.addOrder(Property.forName(odataObj.getOrderby()).desc());
+            } else {
+                criteria.addOrder(Property.forName(odataObj.getOrderby()).asc());
+            }
+        }
+        List<SharingPlatlform> resultList = criteria.list();
+        List<SharingPlatlformDto> resultDtoList = new ArrayList<SharingPlatlformDto>(resultList==null?0:resultList.size());
+        if (resultList != null && resultList.size() > 0) {
+            resultList.forEach(x -> {
+                SharingPlatlformDto modelDto = new SharingPlatlformDto();
+                BeanCopierUtils.copyProperties(x, modelDto);
+                resultDtoList.add(modelDto);
+            });
+        }
+        pageModelDto.setValue(resultDtoList);
+
         return pageModelDto;
     }
 
@@ -101,16 +203,19 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
                 domain.setPrivilegeList(privilegeList);
             }
         }
+        //立即发布
+        if(Validate.isString(domain.getIsPublish()) && EnumState.YES.getValue().equals(domain.getIsPublish())){
+            domain.setPublishDate(now);
+            domain.setPublishUsername(currentUser.getLoginName());
+        }
         domain.setIsPublish(record.getIsPublish());
         domain.setCreatedBy(currentUser.getLoginName());
         domain.setModifiedBy(currentUser.getLoginName());
-        domain.setPublishDate(now);
-        domain.setPublishUsername(currentUser.getLoginName());
         domain.setCreatedDate(now);
         domain.setModifiedDate(now);
+
         sharingPlatlformRepo.save(domain);
         record.setSharId(domain.getSharId());
-
     }
 
     @Override
@@ -172,62 +277,41 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
     @Override
     @Transactional
     public void delete(String id) {
-        SharingPlatlform sharing = sharingPlatlformRepo.findById(id);
-        if (sharing != null) {
-            if (sharing.getCreatedBy().equals(currentUser.getLoginName())) {
-                sharingPlatlformRepo.delete(sharing);
-                logger.info(String.format("删除发现信息，发布主题:%s", sharing.getTheme()));
-            } else if (currentUser.getLoginName().equals("admin")) {
-                sharingPlatlformRepo.delete(sharing);
-                logger.info(String.format("删除发现信息，发布主题:%s", sharing.getTheme()));
-            } else {
-                throw new IllegalArgumentException("您不是发布人员，不能对其进行删除操作！");
-            }
-        }
+        //1、删除对应关系
+        sharingPrivilegeService.bathDeleteByShareId(id);
+        //2、删除记录信息
+        sharingPlatlformRepo.deleteById(SharingPlatlform_.sharId.getName(),id);
+        //3、删除附件
+        HqlBuilder queryHql = HqlBuilder.create();
+        queryHql.append(" from "+SysFile.class.getSimpleName());
+        queryHql.bulidIdString("where",SysFile_.businessId.getName(),id);
 
+        List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
+        if(fileList != null && fileList.size() > 0){
+            fileList.forEach(f->{
+                sysFileRepo.delete(f);
+                SysFileUtil.deleteFile(SysFileUtil.getUploadPath() + f.getFileUrl());
+            });
+        }
     }
 
-    @Override
-    public void deletes(String[] ids) {
-        for (String id : ids) {
-            this.delete(id);
-        }
-        logger.info("批量删除发布信息");
-    }
-
-
+    /**
+     * 更改发布状态
+     * @param ids
+     * @param status
+     */
     @Override
     @Transactional
-    public void updatePublishStatus(SharingPlatlformDto sharingDto) {
-        SharingPlatlform domain = sharingPlatlformRepo.findById(sharingDto.getSharId());
-        if (domain != null) {
-
-            if (domain.getIsPublish().equals("0") && domain.getPublishUsername().equals(currentUser.getLoginName())) {
-                domain.setIsPublish(EnumState.YES.getValue());
-                BeanCopierUtils.copyPropertiesIgnoreNull(sharingDto, domain);
-                Date now = new Date();
-                domain.setCreatedBy(currentUser.getLoginName());
-                domain.setModifiedBy(currentUser.getLoginName());
-                domain.setPublishDate(now);
-                domain.setPublishUsername(currentUser.getLoginName());
-                domain.setCreatedDate(now);
-                domain.setModifiedDate(now);
-            } else if (domain.getIsPublish().equals("9") && domain.getPublishUsername().equals(currentUser.getLoginName())) {
-                domain.setIsPublish(EnumState.NO.getValue());
-                BeanCopierUtils.copyPropertiesIgnoreNull(sharingDto, domain);
-                Date now = new Date();
-                domain.setCreatedBy(currentUser.getLoginName());
-                domain.setModifiedBy(currentUser.getLoginName());
-                domain.setPublishDate(now);
-                domain.setPublishUsername(currentUser.getLoginName());
-                domain.setCreatedDate(now);
-                domain.setModifiedDate(now);
-            } else {
-                throw new IllegalArgumentException("您不是发布人员，不能对该记录操作！");
-            }
+    public void updatePublishStatus(String ids,String status) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+SharingPlatlform.class.getSimpleName()+" set "+ SharingPlatlform_.isPublish.getName()+" =:status " );
+        hqlBuilder.setParam("status",status);
+        if(Constant.EnumState.YES.getValue().equals(status)){
+            hqlBuilder.append(","+SharingPlatlform_.publishDate.getName()+"=sysdate ");
+            hqlBuilder.append(","+SharingPlatlform_.publishUsername.getName()+"= :issueUser ").setParam("issueUser",currentUser.getLoginName());
         }
-
-        sharingPlatlformRepo.save(domain);
+        hqlBuilder.bulidIdString("where",SharingPlatlform_.sharId.getName(),ids);
+        sharingPlatlformRepo.executeHql(hqlBuilder);
     }
 
     @Override

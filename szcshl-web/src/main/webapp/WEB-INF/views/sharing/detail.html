@@ -111,85 +111,37 @@
 
 <div class="well well-sm" style="background:white;">
     <!--文章主内容-->
-    <div  style="width: 80%;height:80%; text-align: center; margin: auto;">
-
-    <!--打印区域-->
-    <span id="context-print">
-        <h2><strong>{{vm.model.theme}}</strong></h2>
-          <h4>  <span >发布人：{{vm.model.publishUsername}}</span></h4>  <h4><span >发布时间：{{vm.model.publishDate}}</span></h4>
-        <hr/>
-        <div style="width: 100%;height: 80%;">
-            <span>{{vm.model.content}}</span>
-        </div>
-    </span>
-        <!--打印区结束-->
-
-      <!--附件区 -->
-     <div style="text-align: left;">
-    	<strong ng-show="vm.sysFilelists.length > 0">附件:温馨提示！点击附件可以下载查看</strong>
-        <div ng-repeat="x in vm.sysFilelists">
-            <p >
-                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
-                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
-                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
-                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
-                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
-            </p>
-        </div>
-    </div>
-        <!--附件区结束-->
+    <div  style="margin: auto;">
+        <table class="table table-bordered">
+            <caption class="text-center"><h4><strong>{{vm.model.theme}}</strong></h4></caption>
+            <tr>
+                <td class="text-right" style="width: 120px;">发布人</td>
+                <td >{{vm.model.publishUsername}}</td>
+                <td class="text-right" style="width: 120px;">发布时间</td>
+                <td>{{vm.model.publishDate}}</td>
+            </tr>
+            <tr>
+                <td class="text-right">备注内容</td>
+                <td colspan="3">
+                    {{vm.model.content}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">共享文件</td>
+                <td colspan="3">
+                    <div ng-repeat="x in vm.sysFilelists">
+                    <p >
+                        <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                        <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                        <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                        <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                        <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                    </p>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
     <!--文章主内容区结束-->
-
-    <!--内容工具区-->
-    <div class="botttom-tool">
-        <a ng-click="vm.alertWindow()" href="javascript:void(0)"><i class="fa fa-square-o"></i>弹出</a>
-        <a ng-click="vm.printText()" href="javascript:void(0)"><i class="fa fa-hdd-o"></i>打印</a>
-    </div>
-    <!--内容工具区结束-->
-
-    <!--滚动通知区-->
-    <div style="background-color: #fbfbfb; padding: 20px 0px; min-height: 80px;">
-        <div style="width: 80%; margin: auto;">
-            <div style="height:40px;">
-                <div class="text-left"><h3><strong>通知滚动</strong></h3></div>
-                <div class="line"></div>
-            </div>
-            <ol >
-
-                <!--上一篇-->
-                <div ng-if="vm.modelPost.sharId" class="row" style="overflow: hidden; margin: 20px 10px;">
-                    <div class="col-xs-1 icon-up">
-                        <span class="fa fa-folder-o"></span>
-                    </div>
-                    <div class="col-xs-10">
-                        <li ng-if="vm.modelPost.sharId"><a href="javascript:void(0)" ng-click="vm.post(vm.modelPost.sharId)">
-                            <h4><strong>上一篇:{{vm.modelPost.theme}}</strong></h4></a></li>
-                        <li ng-if="vm.modelPost.sharId" class="Introduction">
-                            <p class="p1" style="color: #ccc;">发布人：{{vm.modelPost.publishUsername}} 发布时间：{{vm.modelPost.publishDate}}</p>
-                            <span>{{vm.modelPost.conent}}</span></li>
-                    </div>
-                </div>
-
-                <!--下一篇-->
-                <div ng-if="vm.modelNext.sharId" class="row" style="overflow: hidden; margin: 20px 10px;">
-                    <div class="col-xs-1 icon-down">
-                        <span class="fa fa-folder"></span>
-                    </div>
-                    <div class="col-xs-10">
-                <li ng-if="vm.modelNext.sharId"><a href="javascript:void(0)" ng-click="vm.next(vm.modelNext.sharId)">
-                    <h4><strong>下一篇:{{vm.modelNext.theme}}</strong></h4></a></li>
-                <li ng-if="vm.modelNext.anId" class="Introduction">
-                    <p class="p1"  style="color: #ccc;">发布人：{{vm.modelNext.publishUsername}} 发布时间：{{vm.modelNext.publishDate}}</p>
-                    <span>{{vm.modelNext.conent}}</span></li>
-
-                    </div>
-                </div>
-            </ol>
-        </div>
-    </div>
-    <!--滚动通知区结束-->
-
-
 </div>
 

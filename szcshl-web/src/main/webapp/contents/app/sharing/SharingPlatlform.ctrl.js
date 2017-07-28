@@ -3,9 +3,9 @@
 
     angular.module('app').controller('sharingPlatlformCtrl', sharingPlatlform);
 
-    sharingPlatlform.$inject = ['$location', '$state','$http','sharingPlatlformSvc'];
+    sharingPlatlform.$inject = ['$location', '$state', '$http', 'sharingPlatlformSvc'];
 
-    function sharingPlatlform($location,$state, $http,sharingPlatlformSvc) {
+    function sharingPlatlform($location, $state, $http, sharingPlatlformSvc) {
         var vm = this;
         vm.title = '共享资料管理';
 
@@ -27,27 +27,39 @@
         }
         vm.dels = function () {
             var selectIds = common.getKendoCheckId('.grid');
-          
             if (selectIds.length == 0) {
                 common.alert({
                     vm: vm,
-                    msg: '请选择数据'
+                    msg: '请选择要删除的数据'
                 });
             } else {
                 var ids = [];
                 for (var i = 0; i < selectIds.length; i++) {
                     ids.push(selectIds[i].value);
-                 
                 }
                 var idStr = ids.join(',');
-               
+
                 vm.del(idStr);
             }
         };
-        
+
+        /**
+         * 批量发布
+         */
+        vm.bathPublish = function () {
+            sharingPlatlformSvc.updatePublish(vm, true);
+        }
+
+        /**
+         * 批量取消发布
+         */
+        vm.bathDown = function () {
+            sharingPlatlformSvc.updatePublish(vm, false);
+        }
+
         //查询
-        vm.querySharing = function(){
-        	vm.gridOptions.dataSource.read();
+        vm.querySharing = function () {
+            vm.gridOptions.dataSource.read();
         }
 
     }

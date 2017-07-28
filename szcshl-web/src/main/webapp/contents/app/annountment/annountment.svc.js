@@ -384,6 +384,7 @@
                     uploadUrl: rootPath + "/file/fileUpload",
                     uploadExtraData: {
                         businessId: option.businessId,
+                        sysSignId:"通知公告",
                         sysfileType: angular.isUndefined(option.sysfileType) ? "通知公告" : option.sysfileType,
                     }
                 };
@@ -522,7 +523,6 @@
                     anId: id
                 }
             }
-
             var httpSuccess = function success(response) {
                 vm.annountmentNext = response.data;
             }
@@ -534,21 +534,6 @@
             });
         }//end nextArticle
 
-
-        /*Introduction截取content前240个文本字符*/
-        function IntroHTML(str) {
-            if(str) {
-                str = str.replace(/<\/?[^>]*>/g, '');
-                str = str.replace(/[ | ]*\n/g, '\n');
-                str = str.replace(/\n[\s| | ]*\r/g, '\n');
-                str = str.replace(/&nbsp;/ig, '');
-                str = str.replace(/\s/g, '');
-                if (str.length >= 240) {
-                    str = str.substring(0, 240) + "......";
-                }
-            }
-            return str;
-        }
 
     }
 })();

@@ -10,8 +10,9 @@ import cs.repository.odata.ODataObj;
  * Date: 2017-7-20 18:23:08
  */
 public interface SharingPrivilegeService {
-    
 
-	boolean deleteByShareId(String shareId);
 
+    boolean deleteByShareId(String shareId);
+
+    boolean bathDeleteByShareId(String shareIds);
 }

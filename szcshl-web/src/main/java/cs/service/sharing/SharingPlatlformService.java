@@ -1,12 +1,11 @@
 package cs.service.sharing;
 
-import java.util.Map;
-
-import cs.domain.sharing.SharingPlatlform;
 import cs.model.PageModelDto;
 import cs.model.sharing.SharingPlatlformDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
+
+import java.util.Map;
 
 /**
  * Description: 共享平台 业务操作接口
@@ -14,22 +13,24 @@ import cs.repository.odata.ODataObj;
  * Date: 2017-7-11 10:40:17
  */
 public interface SharingPlatlformService {
-    
+
     PageModelDto<SharingPlatlformDto> get(ODataObj odataObj);
 
-	void save(SharingPlatlformDto record);
+    PageModelDto<SharingPlatlformDto> findByCurUser(ODataObj odataObj);
 
-	void update(SharingPlatlformDto record);
+    void save(SharingPlatlformDto record);
 
-	SharingPlatlformDto findById(String deptId);
+    void update(SharingPlatlformDto record);
 
-	void delete(String id);
+    SharingPlatlformDto findById(String deptId);
 
-	void deletes(String[] ids);
+    void delete(String id);
 
-	void updatePublishStatus(SharingPlatlformDto record);
+    void updatePublishStatus(String ids,String status);
 
-	UserDto findUser(String loginName);
+    UserDto findUser(String loginName);
 
-    Map<String,Object> initOrgAndUser();
+    Map<String, Object> initOrgAndUser();
+
+    PageModelDto<SharingPlatlformDto> findByReception(ODataObj odataObj);
 }
