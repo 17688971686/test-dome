@@ -141,7 +141,7 @@ public class UserDto extends BaseDto {
     private String orgId;
 
     //角色
-    private List<RoleDto> roles = new ArrayList<>();
+    private List<RoleDto> roleDtoList = new ArrayList<>();
 
     private OrgDto orgDto;
 
@@ -361,15 +361,16 @@ public class UserDto extends BaseDto {
         this.orgId = orgId;
     }
 
-    public List<RoleDto> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(List<RoleDto> roles) {
-        this.roles = roles;
-    }
+    public List<RoleDto> getRoleDtoList() {
+		return roleDtoList;
+	}
 
-    public OrgDto getOrgDto() {
+	public void setRoleDtoList(List<RoleDto> roleDtoList) {
+		this.roleDtoList = roleDtoList;
+	}
+
+	public OrgDto getOrgDto() {
         return orgDto;
     }
 

@@ -63,7 +63,7 @@
                         roleName: x.name
                     };
                 }).toArray();
-                vm.model.roles = nodes_role;
+                vm.model.roleDtoList = nodes_role;
 
                 var httpOptions = {
                     method: 'put',
@@ -154,7 +154,7 @@
                         roleName: x.name
                     };
                 }).toArray();
-                vm.model.roles = nodes_roles;
+                vm.model.roleDtoList = nodes_roles;
 
                 var httpOptions = {
                     method: 'post',
@@ -274,6 +274,7 @@
             }
             var httpSuccess = function success(response) {
                 vm.model = response.data;
+                console.log(response.data);
                 if (vm.isUpdate) {
                     initZtreeClient(vm);
                 }
@@ -386,13 +387,13 @@
                     width: 160,
                     filterable: false,
                     template: function (item) {
-                        if (item.roles) {
+                        if (item.roleDtoList) {
                             var resultStr = "";
-                            for (var i = 0, l = item.roles.length; i < l; i++) {
+                            for (var i = 0, l = item.roleDtoList.length; i < l; i++) {
                                 if (i == 0) {
-                                    resultStr += item.roles[i].roleName
+                                    resultStr += item.roleDtoList[i].roleName
                                 } else {
-                                    resultStr += ", " + item.roles[i].roleName;
+                                    resultStr += ", " + item.roleDtoList[i].roleName;
                                 }
                             }
                             return resultStr;
@@ -441,7 +442,7 @@
 
         function updateZtree(vm) {
             var treeObj = $.fn.zTree.getZTreeObj("zTree");
-            var checkedNodes = $linq(vm.model.roles).select(function (x) {
+            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
                 return x.roleName;
             }).toArray();
             var allNodes = treeObj.getNodesByParam("level", 1, null);

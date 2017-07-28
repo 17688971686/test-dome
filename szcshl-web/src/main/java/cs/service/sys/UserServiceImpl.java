@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
                 roleDtoList.add(roleDto);
             }
-            userDto.setRoles(roleDtoList);
+            userDto.setRoleDtoList(roleDtoList);
 
             OrgDto orgDto = new OrgDto();
             if (item.getOrg() != null) {
@@ -109,17 +109,19 @@ public class UserServiceImpl implements UserService {
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
             user.setModifiedBy(currentUser.getLoginName());
+            user.setPassword("123456");		//设置系统默认登录密码
+            
 //            user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo())+1));
             //MD5加密密码
             /*String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
 			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
 			String password = Cryptography.md5(userDto.getPassword(), userDto.getPassword()+salt2,2);
 			user.setUserSalt(salt1);*/
-            user.setPassword(userDto.getPassword());
-
+//            user.setPassword(userDto.getPassword());
+//            user.getRoles().clear();
             List<String> roleNames = new ArrayList<String>();
             // 加入角色
-            for (RoleDto roleDto : userDto.getRoles()) {
+            for (RoleDto roleDto : userDto.getRoleDtoList()) {
                 Role role = roleRepo.findById(Role_.id.getName(),roleDto.getId());
                 if (role != null) {
                     user.getRoles().add(role);
@@ -187,7 +189,7 @@ public class UserServiceImpl implements UserService {
         user.getRoles().clear();
         List<String> roleNames = new ArrayList<String>();
         // 加入角色
-        for (RoleDto roleDto : userDto.getRoles()) {
+        for (RoleDto roleDto : userDto.getRoleDtoList()) {
             Role role = roleRepo.findById(roleDto.getId());
             roleNames.add(roleDto.getRoleName());
             if (role != null) {
@@ -226,6 +228,7 @@ public class UserServiceImpl implements UserService {
                 currentUser.login(token);
 
                 //设置session时长
+
                 SecurityUtils.getSubject().getSession().setTimeout(30*60*1000);
                 token.setRememberMe(true);
 
@@ -288,7 +291,7 @@ public class UserServiceImpl implements UserService {
                 BeanCopierUtils.copyProperties(r, roleDto);
                 roleDtoList.add(roleDto);
             });
-            userDto.setRoles(roleDtoList);
+            userDto.setRoleDtoList(roleDtoList);
         }
 
         if (user.getOrg() != null) {
@@ -423,6 +426,15 @@ public class UserServiceImpl implements UserService {
                 OrgDto orgDto = new OrgDto();
                 BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
                 userDto.setOrgDto(orgDto);
+            }
+            if(user.getRoles()!=null){
+            	List<RoleDto> roleDtoList=new ArrayList<>();
+            	for(Role role : user.getRoles()){
+            		RoleDto roleDto=new RoleDto();
+            		BeanCopierUtils.copyProperties(role, roleDto);
+            		roleDtoList.add(roleDto);
+            	}
+            	userDto.setRoleDtoList(roleDtoList);
             }
         }else{
             User user = userRepo.findById(User_.id.getName(),id);
