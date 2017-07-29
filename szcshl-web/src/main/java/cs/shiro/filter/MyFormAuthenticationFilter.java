@@ -1,6 +1,7 @@
 package cs.shiro.filter;
 
 import cs.common.Constant;
+import cs.common.utils.SessionUtil;
 import cs.domain.sys.User;
 import cs.model.sys.UserDto;
 import cs.service.sys.UserService;
@@ -36,17 +37,15 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
         String username = (String) subject.getPrincipal();
         User user = userService.findByName(username);
-
         Date now = new Date();
         String loginIP = request.getRemoteAddr();
         user.setUserIP(loginIP);
         user.setLastLogin(now);
         user.setLastLoginDate(now);
         user.setLoginFailCount(0);
-        subject.getSession().setTimeout(30*60*1000);
-
         userService.saveUser(user);
 
+        //保存session
         user.setPassword(null);
         user.setUserSalt(null);
         subject.getSession().setAttribute(Constant.USER_SESSION_KEY, user); // 在session中设置用户信息
@@ -74,13 +73,12 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         if (!"XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {// 不是ajax请求
+            //如果被踢出了，直接退出，重定向到踢出后的地址
             return super.onAccessDenied(servletRequest, servletResponse);
         }
-
         logger.warn("用户登录超时！");
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getOutputStream().print("登录超时");
         return false;
     }
 

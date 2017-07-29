@@ -55,6 +55,9 @@
             case 412:
                 bsWin.warning(data.message || "操作失败");
                 break;
+            case 499:
+                bsWin.warning(data.message || "您的账号已在别的地方登录，请确认密码是否被修改！");
+                break;
             default:
                 bsWin.error("操作失败");
         }

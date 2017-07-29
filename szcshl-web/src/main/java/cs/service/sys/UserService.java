@@ -1,17 +1,14 @@
 package cs.service.sys;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import cs.common.Response;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
+
+import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
@@ -23,7 +20,9 @@ public interface UserService {
 
     void updateUser(UserDto userDto);
 
-    Set<String> getCurrentUserPermissions();
+    Set<String> findPermissions(String username);
+
+    Set<String> findRoles(String username);
 
     void changePwd(String password);
 
@@ -52,7 +51,6 @@ public interface UserService {
 	int findMaxUserNo();
 
 	List<UserDto> findByOrgUserName(String orgId);
-
 
     void saveUser(User user);
 

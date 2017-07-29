@@ -2,10 +2,12 @@ package cs.common.utils;
 
 import cs.common.Constant;
 import cs.domain.sys.User;
-import cs.model.sys.UserDto;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
+import java.util.List;
 
 /**
  * Description: session  工具类
@@ -35,5 +37,25 @@ public class SessionUtil {
         User user = getUserInfo();
         if (null == user) return null;
         return user.getDisplayName();
+    }
+
+    public static boolean checkPermissions(String... permissions ){
+        Subject subject = SecurityUtils.getSubject();
+        try{
+            subject.checkPermissions(permissions);
+            return true;
+        } catch (AuthorizationException e){
+            return false;
+        }
+    }
+
+    public static boolean hashRole(String role){
+        Subject subject = SecurityUtils.getSubject();
+        return  subject.hasRole(role);
+    }
+
+    public static boolean hashAllRole(List<String> roles){
+        Subject subject = SecurityUtils.getSubject();
+        return  subject.hasAllRoles(roles);
     }
 }

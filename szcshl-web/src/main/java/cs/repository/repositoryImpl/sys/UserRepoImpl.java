@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.sys;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,26 +43,38 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
     @Override
     public Set<String> getUserPermission(String userName) {
-        Criteria crit = getExecutableCriteria();
-        crit.add(Restrictions.eq(User_.loginName.getName(), userName));
-        List<User> list = crit.list();
-        Set<String> permissions = new HashSet<>();
-        if (list.size() > 0) {
-            User user = list.get(0);
-            //如果超级管理员，则默认给所有权限，开发阶段暂时这么使用
-            user.getRoles().forEach(x -> {
-                if ("超级管理员".equals(x.getRoleName())) {
-                    permissions.clear();
-                    permissions.add("*");
-                    return;
-                } else {
-                    x.getResources().forEach(y -> {
-                        permissions.add(y.getPath());
-                    });
-                }
-            });
+        User user = findUserByName(userName);
+        if(user == null || user.getRoles() == null) {
+            return Collections.EMPTY_SET;
         }
+        Set<String> permissions = new HashSet<>();
+        //如果超级管理员，则默认给所有权限，开发阶段暂时这么使用
+        user.getRoles().forEach(x -> {
+            if ("超级管理员".equals(x.getRoleName())) {
+                permissions.clear();
+                permissions.add("*");
+                return;
+            } else {
+                x.getResources().forEach(y -> {
+                    permissions.add(y.getPath());
+                });
+            }
+        });
         return permissions;
+    }
+
+    @Override
+    public Set<String> getUserRoles(String userName) {
+        User user = findUserByName(userName);
+        if(user == null || user.getRoles() == null) {
+            return Collections.EMPTY_SET;
+        }
+        Set<String> roles = new HashSet<String>();
+        //如果超级管理员，则默认给所有权限，开发阶段暂时这么使用
+        user.getRoles().forEach(x -> {
+            roles.add(x.getRoleName());
+        });
+        return roles;
     }
 
     @Override

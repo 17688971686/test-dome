@@ -25,8 +25,8 @@ public class SystemRealm extends AuthorizingRealm {
         // TODO Auto-generated method stub
         String userName = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        Set<String> permissions = userService.getCurrentUserPermissions();
-        authorizationInfo.addStringPermissions(permissions);
+        authorizationInfo.addStringPermissions(userService.findPermissions(userName));
+        authorizationInfo.setRoles(userService.findRoles(userName));
         return authorizationInfo;
     }
 

@@ -53,6 +53,9 @@ public class AccountController {
 				msg = exception;
 			}
 		}
+		if(request.getParameter("forceLogout") != null) {
+			msg = "您已经被管理员强制退出，请重新登录";
+		}
 		model.addAttribute("msg", msg);
 		// 此方法不处理登录成功,由shiro进行处理
 		return "home/login";

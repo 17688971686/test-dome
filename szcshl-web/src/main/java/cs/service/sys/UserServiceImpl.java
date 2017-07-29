@@ -186,18 +186,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public Set<String> getCurrentUserPermissions() {
-        //logger.info(String.format("查询当前用户权限,用户名:%s", currentUser.getLoginName()));
-        return userRepo.getUserPermission(SessionUtil.getLoginName());
+    public Set<String> findPermissions(String userName) {
+        return userRepo.getUserPermission(userName);
 
+    }
+
+    @Override
+    public Set<String> findRoles(String userName) {
+        return userRepo.getUserRoles(userName);
     }
 
     @Transactional
     public void changePwd(String password) {
         String userName = SessionUtil.getLoginName();
         User user = userRepo.findUserByName(userName);
-
         if (user != null) {
             user.setPassword(password);
             userRepo.save(user);
