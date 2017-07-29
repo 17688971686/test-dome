@@ -64,6 +64,11 @@ public class Constant {
     public static final String FLOW_LINK_SYMBOL = "$";    //流程业务ID和名称关联符号
 
     /**
+     * session中用户的key
+     */
+    public final static String USER_SESSION_KEY = "CURRENT_USER";
+
+    /**
      * 项目签收流程环节名称
      *
      * @author Administrator
@@ -244,7 +249,7 @@ public class Constant {
      * @author ldm
      */
     public static enum MsgCode {
-        OK("ok"), ERROR("error");
+        OK("ok"), ERROR("error"),TIMEOUT("timeout");
 
         private String value;
 

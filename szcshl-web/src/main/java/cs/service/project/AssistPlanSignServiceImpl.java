@@ -11,12 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
-import cs.domain.project.Sign;
 import cs.domain.sys.User;
 import cs.model.project.AssistPlanSignDto;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
@@ -38,17 +36,7 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 
 	@Autowired
 	private AssistPlanRepo assistPlanRepo;
-	
-	@Autowired
-	private WorkProgramRepo workProgramRepo;
-	
-	@Autowired
-	private UserRepo userRepo;
-	
-	@Autowired
-	private SignRepo signRepo;
-	@Autowired
-	private ICurrentUser currentUser;
+
 	@Autowired
     private SignPrincipalService signPrincipalService;
 	

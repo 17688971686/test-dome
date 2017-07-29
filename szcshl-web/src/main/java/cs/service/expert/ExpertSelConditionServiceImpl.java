@@ -41,8 +41,6 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
     @Autowired
 	private ExpertSelConditionRepo expertSelConditionRepo;
     @Autowired
-    private ExpertReviewService expertReviewService;
-    @Autowired
     private ExpertReviewRepo expertReviewRepo;
 	
 	@Override

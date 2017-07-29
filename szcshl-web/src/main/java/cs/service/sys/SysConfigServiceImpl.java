@@ -1,11 +1,11 @@
 package cs.service.sys;
 
 import cs.common.Constant;
-import cs.common.ICurrentUser;
 import cs.common.cache.CacheFactory;
 import cs.common.cache.DefaultCacheFactory;
 import cs.common.cache.ICache;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.SysConfig;
 import cs.domain.sys.SysConfig_;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Description: 系统参数 业务操作实现类
@@ -35,8 +34,6 @@ public class SysConfigServiceImpl implements SysConfigService {
 
     @Autowired
     private SysConfigRepo sysConfigRepo;
-    @Autowired
-    private ICurrentUser currentUser;
 
     @Override
     public PageModelDto<SysConfigDto> get(ODataObj odataObj) {
@@ -63,14 +60,14 @@ public class SysConfigServiceImpl implements SysConfigService {
 
         Date now = new Date();
         if (!Validate.isString(record.getId())) {
-            record.setCreatedBy(currentUser.getLoginName());
+            record.setCreatedBy(SessionUtil.getLoginName());
             record.setCreatedDate(now);
         }
 
         if(!Validate.isString(record.getIsShow())){
             record.setIsShow(Constant.EnumState.YES.getValue());
         }
-        record.setModifiedBy(currentUser.getLoginName());
+        record.setModifiedBy(SessionUtil.getLoginName());
         record.setModifiedDate(now);
 
         BeanCopierUtils.copyProperties(record, domain);

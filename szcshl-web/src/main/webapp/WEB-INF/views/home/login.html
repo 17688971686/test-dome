@@ -106,9 +106,9 @@ header{
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body" >
-        <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
+        <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" action="">
             <div>
-                <span ng-show="vm.message" class="errors" ng-bind="vm.message" ></span>
+                <span ng-show="vm.message" class="errors" ng-bind="vm.message">${msg!''}</span>
             </div>
             <div>
                 <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
@@ -179,56 +179,20 @@ header{
 <script>
     (function () {
         'use strict';
-        angular.module('loginApp', [
-            // Angular modules
-            // Custom modules
-            // 3rd Party Modules
-        ]);
-    })();
-
-    (function () {
-        'use strict';
-        angular.module('loginApp').controller('LoginCtrl', controller);
+        angular.module('loginApp',[]).controller('LoginCtrl', controller);
 
         controller.$inject = ['$http'];
 
         function controller($http) {
-            /* jshint validthis:true */
             var vm = this;
             vm.title = 'controller';
+            vm.message = "${msg!''}";
             vm.submit = function () {
                 common.initJqValidation();
                 var isValid = $('form').valid();
                 if (isValid) {
                     vm.isSubmit = true;
-                    var httpOptions = {
-                        method: 'post',
-                        url: '${path}/account/login',
-                        data: vm.model
-                    }
-                    var httpSuccess = function success(response) {
-                        vm.isSubmit = false;                        
-                        common.requestSuccess({
-                        	vm:vm,
-                        	response:response,
-                        	fn:function () {
-                                var isSuccess = response.data.isSuccess;
-                                if (isSuccess) {
-                                    vm.message = "";
-                                    location.href = "${path}/admin/index.html";
-                                } else {
-                                    vm.message=response.data.message
-                                }
-                        	}
-                        });
-
-                    }
-                    common.http({
-                    	vm:vm,
-                    	$http:$http,
-                    	httpOptions:httpOptions,
-                    	success:httpSuccess
-                    });
+                    $('form').submit();
                 }
             }
 

@@ -1,21 +1,15 @@
 package cs.service.expert;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Description: 抽取专家 业务操作实现类
@@ -29,8 +23,6 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	private ExpertSelectedRepo expertSelectedRepo;
 	@Autowired
 	private ExpertReviewRepo expertReviewRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 
 	@Override
 	@Transactional

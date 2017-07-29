@@ -3,16 +3,8 @@ package cs.model.sharing;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import cs.domain.sharing.SharingPlatlform;
-import cs.domain.sys.Org;
 import cs.model.BaseDto;
-import cs.model.BaseDto2;
-    
-    
+
 
 /**
  * Description: 共享平台 页面数据模型

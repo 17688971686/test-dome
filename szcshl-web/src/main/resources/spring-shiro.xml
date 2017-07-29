@@ -7,49 +7,79 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-       
-       
-		<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-		<property name="securityManager" ref="securityManager" />
-		
-		
-		 <property name="loginUrl" value="/"/> 
-			<property name="successUrl" value="/"/> 
-			<property name="unauthorizedUrl" value="/"/> 
-		<!-- The 'filters' property is not necessary since any declared javax.servlet.Filter 
-			bean -->
-		<!-- defined will be automatically acquired and available via its beanName 
-			in chain -->
-		<!-- definitions, but you can perform instance overrides or name aliases 
-			here if you like: -->
-		<!-- <property name="filters"> <util:map> <entry key="anAlias" value-ref="someFilter"/> 
-			</util:map> </property> -->
-		<!-- <property name="filterChainDefinitions"> <value> # some example chain 
-			definitions: /admin/** = authc, roles[admin] /docs/** = authc, perms[document:read] 
-			/** = authc # more URL-to-FilterChain definitions here </value> </property> -->
-	</bean>
 
-	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<!-- Single realm app. If you have multiple realms, use the 'realms' property 
-			instead. -->
-			
-		<property name="realm" ref="myRealm" />
-		
-		<!-- By default the servlet container sessions will be used. Uncomment 
-			this line to use shiro's native sessions (see the JavaDoc for more): -->
-		<!-- <property name="sessionMode" value="native"/> -->
-	</bean>
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+    <!-- 基于Form表单的身份验证过滤器 -->
+    <bean id="formAuthenticationFilter" class="cs.shiro.filter.MyFormAuthenticationFilter">
+        <property name="usernameParam" value="loginName"/>
+        <property name="passwordParam" value="password"/>
+        <property name="loginUrl" value="/account/login"/>
+        <property name="successUrl" value="/admin/index"/>
+    </bean>
 
-	<!-- Define the Shiro Realm implementation you want to use to connect to 
-		your back-end -->
-	<!-- security datasource: -->
-	<bean id="myRealm" class="cs.common.SystemRealm"></bean>
-	<bean
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
-		depends-on="lifecycleBeanPostProcessor" />
-	<bean
-		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-		<property name="securityManager" ref="securityManager" />
-	</bean>
+    <!-- Shiro过滤器 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- Shiro的核心安全接口,这个属性是必须的 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- loginUrl认证提交地址，如果没有认证将会请求此地址进行认证，请求此地址将由formAuthenticationFilter进行表单认证 -->
+        <property name="loginUrl" value="/"/>
+        <!-- 认证成功统一跳转到first.action，建议不配置，shiro认证成功自动到上一个请求路径 -->
+        <property name="successUrl" value="/"/>
+        <!-- 通过unauthorizedUrl指定没有权限操作时跳转页面 -->
+        <property name="unauthorizedUrl" value="/"/>
+        <!-- 自定义filter配置 -->
+        <property name="filters">
+            <util:map>
+                <entry key="authc" value-ref="formAuthenticationFilter"/>
+            </util:map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- ** = anon所有url都可以匿名访问 -->
+                /contents/**    =anon
+                /sys/init       =anon
+                <!-- ** = authc 所有url都必须认证通过才可以访问 -->
+                /account/login =authc
+                /account/logout =logout
+                /admin/index =authc
+                /** =authc,perms
+            </value>
+        </property>
+    </bean>
+
+    <!-- 缓存管理器 -->
+    <bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManager" ref="cacheManagerFactory"/>
+    </bean>
+
+    <!-- 凭证匹配器
+    <bean id="credentialsMatcher" class="cs.shiro.RetryLimitHashedCredentialsMatcher">
+        <constructor-arg ref="shiroCacheManager"/>
+        <property name="hashAlgorithmName" value="md5"/>
+        <property name="hashIterations" value="2"/>
+        <property name="storedCredentialsHexEncoded" value="true"/>
+    </bean>
+    -->
+    <bean id="myRealm" class="cs.shiro.SystemRealm">
+        <property name="cacheManager" ref="shiroCacheManager"/>
+        <!--密码加密
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+        -->
+        <property name="cachingEnabled" value="true"/>
+    </bean>
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="myRealm"/>
+        <!-- 注入缓存管理器 -->
+        <property name="cacheManager" ref="shiroCacheManager"/>
+    </bean>
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <bean
+            class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+            depends-on="lifecycleBeanPostProcessor"/>
+    <bean
+            class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
 </beans>

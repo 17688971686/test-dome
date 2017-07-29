@@ -6,15 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
-import cs.common.Response;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.Org;
 import cs.domain.sys.Org_;
@@ -48,8 +41,6 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
     @Autowired
     private RoleRepo roleRepo;
-    @Autowired
-    private ICurrentUser currentUser;
     @Autowired
     private OrgRepo orgRepo;
     @Autowired
@@ -106,20 +97,12 @@ public class UserServiceImpl implements UserService {
             BeanCopierUtils.copyProperties(userDto, user);
 
             user.setId(UUID.randomUUID().toString());
-            user.setCreatedBy(currentUser.getLoginName());
+            user.setCreatedBy(SessionUtil.getLoginName());
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
-            user.setModifiedBy(currentUser.getLoginName());
+            user.setModifiedBy(SessionUtil.getLoginName());
             user.setPassword(Constant.PASSWORD);		//设置系统默认登录密码
-            
-//            user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo())+1));
-            //MD5加密密码
-            /*String salt1 = new SecureRandomNumberGenerator().nextBytes().toHex();
-			String salt2 = Cryptography.md5(salt1, userDto.getLoginName());
-			String password = Cryptography.md5(userDto.getPassword(), userDto.getPassword()+salt2,2);
-			user.setUserSalt(salt1);*/
-//            user.setPassword(userDto.getPassword());
-//            user.getRoles().clear();
+
             List<String> roleNames = new ArrayList<String>();
             // 加入角色
             for (RoleDto roleDto : userDto.getRoleDtoList()) {
@@ -170,7 +153,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userDto.getId());
         user.setRemark(userDto.getRemark());
         user.setDisplayName(userDto.getDisplayName());
-        user.setModifiedBy(currentUser.getLoginName());
+        user.setModifiedBy(SessionUtil.getLoginName());
 
         user.setUserSex(userDto.getUserSex());
         user.setUserPhone(userDto.getUserPhone());
@@ -204,71 +187,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Response Login(String userName, String password, HttpServletRequest request) {
-        User user = userRepo.findUserByName(userName);
-        Response response = new Response();
-
-        if (user != null) {
-//			if(user.getLoginFailCount()>5&&user.getLastLoginDate().getDay()==(new Date()).getDay()){	
-//				response.setMessage("登录失败次数过多,请明天再试!");
-//				logger.warn(String.format("登录失败次数过多,用户名:%s", userName));
-//			}
-            if (password != null && password.equals(user.getPassword())) {
-                currentUser.setLoginName(user.getLoginName());
-                currentUser.setDisplayName(user.getDisplayName());
-                currentUser.setLoginUser(user);
-                user.setLoginFailCount(0);
-
-                String loginIP = request.getRemoteAddr();
-                user.setUserIP(loginIP);
-                user.setLastLogin(new Date());
-                user.setLastLoginDate(new Date());
-                //shiro
-                UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());
-                Subject currentUser = SecurityUtils.getSubject();
-                currentUser.login(token);
-
-                //设置session时长
-
-                SecurityUtils.getSubject().getSession().setTimeout(30*60*1000);
-                token.setRememberMe(true);
-
-                response.setIsSuccess(true);
-                logger.info(String.format("登录成功,用户名:%s", userName));
-            } else {
-                user.setLoginFailCount(user.getLoginFailCount() + 1);
-                user.setLastLoginDate(new Date());
-                response.setMessage("用户名或密码错误!");
-            }
-            userRepo.save(user);
-        } else {
-            response.setMessage("用户名或密码错误!");
-        }
-
-        return response;
-    }
-
-    @Override
-    @Transactional
     public Set<String> getCurrentUserPermissions() {
         //logger.info(String.format("查询当前用户权限,用户名:%s", currentUser.getLoginName()));
-        return userRepo.getUserPermission(currentUser.getLoginName());
-
-    }
-
-    @Transactional
-    public void logout() {
-        Subject currentUser = SecurityUtils.getSubject();
-        if (currentUser != null) {
-            currentUser.logout();
-            logger.info(String.format("退出登录,用户名:%s", currentUser.getPrincipal()));
-        }
+        return userRepo.getUserPermission(SessionUtil.getLoginName());
 
     }
 
     @Transactional
     public void changePwd(String password) {
-        String userName = currentUser.getLoginName();
+        String userName = SessionUtil.getLoginName();
         User user = userRepo.findUserByName(userName);
 
         if (user != null) {
@@ -451,7 +378,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getOrgDirector() {
-        UserDto user = findById(currentUser.getLoginUser().getOrg().getOrgDirector(),false);
+        UserDto user = findById(SessionUtil.getUserInfo().getOrg().getOrgDirector(),false);
         if (user != null && Validate.isString(user.getId())) {
             return user;
         }
@@ -464,7 +391,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getOrgSLeader() {
-        Org org = orgRepo.findById(currentUser.getLoginUser().getOrg().getId());
+        Org org = orgRepo.findById(SessionUtil.getUserInfo().getOrg().getId());
         List<UserDto> userList = findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
         if (userList == null || userList.size() == 0) {
             return null;
@@ -559,6 +486,17 @@ public class UserServiceImpl implements UserService {
         }
 		return userDto;
 	}
+
+	/********************   以下方法主要是登录用  **********************/
+    @Override
+    public User findByName(String userName) {
+        return userRepo.findUserByName(userName);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepo.save(user);
+    }
 }
 
 

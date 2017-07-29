@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.utils.SessionUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.ICurrentUser;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
@@ -35,8 +35,6 @@ public class UserController {
     private String ctrlName = "user";
     @Autowired
     private UserService userService;
-    @Autowired
-	private ICurrentUser currentUser;
 
 	
 	@RequiresPermissions("user#fingByOData#post")
@@ -77,7 +75,7 @@ public class UserController {
     @RequestMapping(name = "获取所在部门的用户", path = "findChargeUsers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findChargeUsers(){
-    	User curUser = currentUser.getLoginUser();
+    	User curUser = SessionUtil.getUserInfo();
     	return userService.findUserByOrgId(curUser.getOrg().getId());
     }
     

@@ -5,17 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.domain.expert.Expert;
 import cs.domain.expert.ProjectExpe;
-import cs.domain.expert.ProjectExpe_;
 import cs.model.expert.ProjectExpeDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
@@ -29,8 +26,6 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
     private ExpertRepo expertRepo;
 	@Autowired
     private ProjectExpeRepo projectExpeRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 	
 	@Override
 	public List<ProjectExpeDto> getProject(ODataObj odataObj) {
@@ -53,8 +48,8 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		project.setPeID(UUID.randomUUID().toString());
 		
 		Date now = new Date();
-		project.setCreatedBy(currentUser.getLoginName());
-		project.setModifiedBy(currentUser.getLoginName());
+		project.setCreatedBy(SessionUtil.getLoginName());
+		project.setModifiedBy(SessionUtil.getLoginName());
 		project.setCreatedDate(now);
 		project.setModifiedDate(now);
 		
@@ -84,7 +79,7 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		
 		BeanCopierUtils.copyProperties(projectExpeDto,projectExpe);
 		
-		projectExpe.setModifiedBy(currentUser.getLoginName());
+		projectExpe.setModifiedBy(SessionUtil.getLoginName());
 		projectExpe.setModifiedDate(new Date());
 		
 		projectExpeRepo.save(projectExpe);

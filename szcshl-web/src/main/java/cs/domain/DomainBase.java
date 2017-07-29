@@ -1,5 +1,8 @@
 package cs.domain;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -56,5 +59,21 @@ public abstract class DomainBase {
         this.modifiedBy = modifiedBy;
     }
 
-
+    /**
+     * 属性拷贝方法
+     * @param cls
+     * @param ignoreProperties
+     * @param <T>
+     * @return
+     */
+    public <T> T convert(Class<T> cls, String... ignoreProperties) {
+        Assert.notNull(cls);
+        try {
+            T entity = cls.newInstance();
+            BeanUtils.copyProperties(this, entity, ignoreProperties);
+            return entity;
+        } catch (Exception e) {
+            throw new RuntimeException("Error: Conversion Object Failed. Cause:" + e);
+        }
+    }
 }

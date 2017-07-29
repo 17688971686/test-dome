@@ -1,7 +1,7 @@
 package cs.service.expert;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertOffer;
 import cs.domain.expert.ExpertOffer_;
@@ -30,9 +30,6 @@ public class ExpertOfferServiceImpl  implements ExpertOfferService {
 	private ExpertOfferRepo expertOfferRepo;
     @Autowired
     private ExpertRepo expertRepo;
-
-	@Autowired
-	private ICurrentUser currentUser;
 
 	@Override
 	public PageModelDto<ExpertOfferDto> get(ODataObj odataObj) {
@@ -63,8 +60,8 @@ public class ExpertOfferServiceImpl  implements ExpertOfferService {
             ExpertOffer domain = new ExpertOffer();
             BeanCopierUtils.copyProperties(record, domain);
             Date now = new Date();
-            domain.setCreatedBy(currentUser.getLoginName());
-            domain.setModifiedBy(currentUser.getLoginName());
+            domain.setCreatedBy(SessionUtil.getLoginName());
+            domain.setModifiedBy(SessionUtil.getLoginName());
             domain.setCreatedDate(now);
             domain.setModifiedDate(now);
 
@@ -80,7 +77,7 @@ public class ExpertOfferServiceImpl  implements ExpertOfferService {
 	public void update(ExpertOfferDto record) {
 		ExpertOffer domain = expertOfferRepo.findById(record.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setModifiedBy(SessionUtil.getLoginName());
 		domain.setModifiedDate(new Date());
 		
 		expertOfferRepo.save(domain);

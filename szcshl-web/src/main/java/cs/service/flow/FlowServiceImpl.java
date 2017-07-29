@@ -1,9 +1,9 @@
 package cs.service.flow;
 
 import cs.common.Constant;
-import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.HiProcessTask_;
@@ -73,8 +73,6 @@ public class FlowServiceImpl implements FlowService {
     private RuntimeService runtimeService;
     @Autowired
     private RepositoryService repositoryService;
-    @Autowired
-    private ICurrentUser currentUser;
     @Autowired
     private SignRepo signRepo;
     @Autowired
@@ -641,8 +639,8 @@ public class FlowServiceImpl implements FlowService {
         }
         if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
-            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), currentUser.getLoginName()));
-            dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + currentUser.getLoginName() + "%"));
+            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getLoginName()));
+            dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + SessionUtil.getLoginName() + "%"));
             criteria.add(dis);
         }
 
@@ -683,8 +681,8 @@ public class FlowServiceImpl implements FlowService {
     public List<RuProcessTask> queryMyRunProcessTasks() {
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         Disjunction dis = Restrictions.disjunction();
-        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), currentUser.getLoginName()));
-        dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + currentUser.getLoginName() + "%"));
+        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getLoginName()));
+        dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + SessionUtil.getLoginName() + "%"));
         criteria.add(dis);
         criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
         criteria.setMaxResults(6);

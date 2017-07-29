@@ -7,31 +7,27 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.external.Dept;
 import cs.domain.external.OfficeUser;
-import cs.domain.sys.Org;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.external.OfficeUserRepo;
-import cs.service.sys.UserServiceImpl;
 
 @Service
 public class OfficeUserServiceImpl implements OfficeUserService{
 	private static Logger logger = Logger.getLogger(OfficeUserServiceImpl.class);
 	@Autowired
 	private OfficeUserRepo officeUserRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 	@Autowired
 	private DeptRepo deptRepo;
 	@Override
@@ -62,8 +58,8 @@ public class OfficeUserServiceImpl implements OfficeUserService{
 		OfficeUser domain = new OfficeUser(); 
 		BeanCopierUtils.copyProperties(record, domain); 
 		Date now = new Date();
-		domain.setCreatedBy(currentUser.getLoginName());
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setCreatedBy(SessionUtil.getLoginName());
+		domain.setModifiedBy(SessionUtil.getLoginName());
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
 		domain.setOfficeID(UUID.randomUUID().toString());
@@ -80,7 +76,7 @@ public class OfficeUserServiceImpl implements OfficeUserService{
 	public void update(OfficeUserDto record) {
 		OfficeUser domain = officeUserRepo.findById(record.getOfficeID());
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setModifiedBy(SessionUtil.getLoginName());
 		domain.setModifiedDate(new Date());
 		
 		officeUserRepo.save(domain);

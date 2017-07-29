@@ -48,15 +48,6 @@
             </bean>
         </mvc:message-converters>       
     </mvc:annotation-driven>
-    
-	
-	<!-- <mvc:resources mapping="/resources/**" location="/resources/"/>
-    <mvc:resources mapping="/static/**" location="/static/"/>
-	<mvc:resources mapping="/upload/**" location="/upload/"/>
-	<mvc:resources mapping="/AmazeUI/**" location="/AmazeUI/"/> -->
-	<!--<mvc:view-controller path="/page500" view-name="/page500"/>-->
-	<!--<mvc:view-controller path="/page404" view-name="/page404"/>-->
-	<mvc:view-controller path="/Unauthorized" view-name="/unauthorized"/>
 
 	<!-- 支持上传文件-->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -107,22 +98,7 @@
         <property name="exposeSessionAttributes" value="true" />  
         <!-- 使用这些宏，必须设置FreeMarkerViewResolver的exposeMacroHelpers属性为true -->  
         <property name="exposeSpringMacroHelpers" value="true" />   
-	</bean>    
-
-	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
-	<!-- <bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/views" />
-		<property name="suffix" value=".jsp" />
-	</bean> -->
-
-	<!--&lt;!&ndash; shiro annotation &ndash;&gt;-->
-	<!--<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>-->
-	<!--&lt;!&ndash; Enable Shiro Annotations for Spring-configured beans.  Only run after &ndash;&gt;-->
-	<!--&lt;!&ndash; the lifecycleBeanProcessor has run: &ndash;&gt;-->
-	<!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>-->
+	</bean>
 
 	<!-- 开启shiro注解 AOP代理-->
 	<aop:config proxy-target-class="true"/>

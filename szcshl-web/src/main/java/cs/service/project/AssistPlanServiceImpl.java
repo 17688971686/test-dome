@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.utils.*;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.NumIncreaseUtils;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
@@ -47,8 +43,6 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 	private AssistPlanRepo assistPlanRepo;
     @Autowired
     private AssistPlanSignRepo assistPlanSignRepo;
-	@Autowired
-	private ICurrentUser currentUser;
     @Autowired
     private SignService signService;
     @Autowired
@@ -83,14 +77,14 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
             BeanCopierUtils.copyProperties(record,assistPlan);
             assistPlan.setId(UUID.randomUUID().toString());
             assistPlan.setPlanName(NumIncreaseUtils.getAssistPlanName());
-            assistPlan.setCreatedBy(currentUser.getLoginUser().getLoginName());
+            assistPlan.setCreatedBy(SessionUtil.getLoginName());
             assistPlan.setCreatedDate(now);
             assistPlan.setPlanState(Constant.EnumState.PROCESS.getValue());
         }else{
             assistPlan = assistPlanRepo.findById(record.getId());
             BeanCopierUtils.copyPropertiesIgnoreNull(record,assistPlan);
         }
-        assistPlan.setModifiedBy(currentUser.getLoginUser().getLoginName());
+        assistPlan.setModifiedBy(SessionUtil.getLoginName());
         assistPlan.setModifiedDate(now);
         assistPlanRepo.save(assistPlan);
         record.setId(assistPlan.getId());   //copy ID
@@ -135,7 +129,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 	public void update(AssistPlanDto record) {
 		AssistPlan domain = assistPlanRepo.findById(record.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setModifiedBy(SessionUtil.getLoginName());
 		domain.setModifiedDate(new Date());
 		
 		assistPlanRepo.save(domain);

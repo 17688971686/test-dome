@@ -3,7 +3,6 @@ package cs.service.project;
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;
@@ -13,9 +12,6 @@ import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.MergeOptionRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -33,8 +29,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     private static Logger log = Logger.getLogger(DispatchDocServiceImpl.class);
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
-    @Autowired
-    private ICurrentUser currentUser;
     @Autowired
     private UserService userService;
     @Autowired
@@ -131,7 +125,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         if (linkSignIdList != null) {
             Date now = new Date();
-            String createUserId = currentUser.getLoginUser().getId();
+            String createUserId = SessionUtil.getUserInfo().getId();
             //判断是否已经添加了主项目
             Criteria criteria = mergeOptionRepo.getExecutableCriteria();
             criteria.add(Restrictions.eq(MergeOption_.mainBusinessId.getName(), mainBusinessId));
@@ -295,7 +289,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
                 dispatchDoc.setId(UUID.randomUUID().toString());
                 dispatchDoc.setDraftDate(now);
-                dispatchDoc.setCreatedBy(currentUser.getLoginName());
+                dispatchDoc.setCreatedBy(SessionUtil.getLoginName());
                 dispatchDoc.setCreatedDate(now);
 
                 dispatchDocDto.setId(dispatchDoc.getId());
@@ -303,7 +297,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(),dispatchDocDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);
             }
-            dispatchDoc.setModifiedBy(currentUser.getLoginName());
+            dispatchDoc.setModifiedBy(SessionUtil.getLoginName());
             dispatchDoc.setModifiedDate(now);
 
             Sign sign = signRepo.findById(Sign_.signid.getName(),dispatchDocDto.getSignId());
@@ -375,10 +369,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setFileTitle(fileTitle);
 
             // 获取当前用户信息
-            dispatch.setUserName(currentUser.getLoginUser().getLoginName());
-            dispatch.setUserId(currentUser.getLoginUser().getId());
-            dispatch.setOrgName(currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getName());
-            dispatch.setOrgId(currentUser.getLoginUser().getOrg() == null ? "" : currentUser.getLoginUser().getOrg().getId());
+            dispatch.setUserName(SessionUtil.getLoginName());
+            dispatch.setUserId(SessionUtil.getUserInfo().getId());
+            dispatch.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
+            dispatch.setOrgId(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getId());
             dispatch.setYearPlan(sign.getYearplantype());
             dispatch.setSecretLevel(sign.getSecrectlevel());
             dispatch.setUrgentLevel(sign.getUrgencydegree());

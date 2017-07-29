@@ -5,15 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.domain.expert.Expert;
 import cs.domain.expert.WorkExpe;
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
@@ -28,8 +26,6 @@ public class WorkExpeServiceImpl implements WorkExpeService {
     private ExpertRepo expertRepo;
 	@Autowired
     private WorkExpeRepo workExpeRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 	
 	@Override
 	public List<WorkExpeDto> getWork(ODataObj odataObj) {
@@ -58,8 +54,8 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 			
 			work.setWeID(UUID.randomUUID().toString());										
 			Date now = new Date();
-			work.setCreatedBy(currentUser.getLoginName());
-			work.setModifiedBy(currentUser.getLoginName());
+			work.setCreatedBy(SessionUtil.getLoginName());
+			work.setModifiedBy(SessionUtil.getLoginName());
 			work.setCreatedDate(now);
 			work.setModifiedDate(now);
 			

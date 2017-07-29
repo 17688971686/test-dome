@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.common.utils.SessionUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -43,7 +44,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant;
 import cs.common.Constant.MsgCode;
-import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
@@ -84,8 +84,6 @@ public class FlowController {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private ICurrentUser currentUser;
-    @Autowired
     private UserService userService;
     @Autowired
     private OrgService orgService;
@@ -115,7 +113,7 @@ public class FlowController {
     public @ResponseBody
     long tasksCount(HttpServletRequest request) throws ParseException {
         TaskQuery taskQuery = taskService.createTaskQuery();
-        taskQuery.taskCandidateOrAssigned(currentUser.getLoginUser().getLoginName());
+        taskQuery.taskCandidateOrAssigned(SessionUtil.getLoginName());
         return taskQuery.count();
     }
 
@@ -230,10 +228,10 @@ public class FlowController {
                     businessMap.put("orgs", orgService.listAll());
                     break;
                 case Constant.FLOW_BM_FB1://选择项目负责人
-                    List<UserDto> userList = userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId());
+                    List<UserDto> userList = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
                     //排除项目负责人（这里是用户本身）
                     for(UserDto userDto:userList){
-                        if(userDto.getId().equals(currentUser.getLoginUser().getId())){
+                        if(userDto.getId().equals(SessionUtil.getUserInfo().getId())){
                             userList.remove(userDto);
                             break;
                         }
@@ -241,10 +239,10 @@ public class FlowController {
                     businessMap.put("users", userList);
                     break;
                 case Constant.FLOW_BM_FB2://选择项目负责人
-                    List<UserDto> userList2 = userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId());
+                    List<UserDto> userList2 = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
                     //排除项目负责人（这里是用户本身）
                     for(UserDto userDto:userList2){
-                        if(userDto.getId().equals(currentUser.getLoginUser().getId())){
+                        if(userDto.getId().equals(SessionUtil.getUserInfo().getId())){
                             userList2.remove(userDto);
                             break;
                         }
@@ -270,10 +268,10 @@ public class FlowController {
                     businessMap.put("xsOrgs", orgService.listAll());
                     break;
                 case Constant.FLOW_XS_BMFB://选择项目负责人
-                    List<UserDto> userList3 = userService.findUserByOrgId(currentUser.getLoginUser().getOrg().getId());
+                    List<UserDto> userList3 = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
                     //排除项目负责人（这里是用户本身）
                     for(UserDto userDto:userList3){
-                        if(userDto.getId().equals(currentUser.getLoginUser().getId())){
+                        if(userDto.getId().equals(SessionUtil.getUserInfo().getId())){
                             userList3.remove(userDto);
                             break;
                         }

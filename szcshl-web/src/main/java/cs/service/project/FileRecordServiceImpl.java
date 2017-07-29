@@ -2,17 +2,15 @@ package cs.service.project;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.NumIncreaseUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.FileRecord;
 import cs.domain.project.FileRecord_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
-import cs.domain.sys.SysFile;
-import cs.domain.sys.SysFile_;
 import cs.domain.sys.User;
 import cs.model.project.FileRecordDto;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
@@ -34,13 +32,7 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Autowired
     private FileRecordRepo fileRecordRepo;
     @Autowired
-    private ICurrentUser currentUser;
-    @Autowired
     private SignRepo signRepo;
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private SysFileRepo sysFileRepo;
     @Autowired
     private SignPrincipalService signPrincipalService;
 
@@ -58,7 +50,7 @@ public class FileRecordServiceImpl implements FileRecordService {
 
                 BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
                 fileRecord.setFileRecordId(UUID.randomUUID().toString());
-                fileRecord.setCreatedBy(currentUser.getLoginName());
+                fileRecord.setCreatedBy(SessionUtil.getLoginName());
                 fileRecord.setCreatedDate(now);
 
                 fileRecordDto.setFileRecordId(fileRecord.getFileRecordId());
@@ -66,7 +58,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 fileRecord = fileRecordRepo.findById(fileRecordDto.getFileRecordId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(fileRecordDto, fileRecord);
             }
-            fileRecord.setModifiedBy(currentUser.getLoginName());
+            fileRecord.setModifiedBy(SessionUtil.getLoginName());
             fileRecord.setModifiedDate(now);
 
             //设置归档编号(评估类)

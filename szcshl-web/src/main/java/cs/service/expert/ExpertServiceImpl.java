@@ -2,8 +2,8 @@ package cs.service.expert;
 
 import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertType;
@@ -33,19 +33,6 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Autowired
     private ExpertRepo expertRepo;
-    @Autowired
-    private WorkExpeRepo workExpeRepo;
-    @Autowired
-    private ProjectExpeRepo projectExpeRepo;
-    @Autowired
-    private ICurrentUser currentUser;
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-    @Autowired
-    private SignRepo signRepo;
-
-    @Autowired
-    private ExpertTypeService expertTypeService;
 
     @Override
     public PageModelDto<ExpertDto> get(ODataObj odataObj) {
@@ -80,8 +67,8 @@ public class ExpertServiceImpl implements ExpertService {
             expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber())+1));
             Date now = new Date();
             expert.setCreatedDate(now);
-            expert.setCreatedBy(currentUser.getLoginName());
-            expert.setModifiedBy(currentUser.getLoginName());
+            expert.setCreatedBy(SessionUtil.getLoginName());
+            expert.setModifiedBy(SessionUtil.getLoginName());
             expert.setModifiedDate(now);
 
 
@@ -167,7 +154,7 @@ public class ExpertServiceImpl implements ExpertService {
         Expert expert = expertRepo.findById(Expert_.expertID.getName(),expertDto.getExpertID());
         BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
         expert.setModifiedDate(new Date());
-        expert.setModifiedBy(currentUser.getLoginName());
+        expert.setModifiedBy(SessionUtil.getLoginName());
         expertRepo.save(expert);
         logger.info(String.format("更新专家,专家名为:%s", expertDto.getName()));
     }

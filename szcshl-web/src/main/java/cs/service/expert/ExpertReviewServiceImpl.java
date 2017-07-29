@@ -2,6 +2,7 @@ package cs.service.expert;
 
 import java.util.*;
 
+import cs.common.utils.SessionUtil;
 import cs.domain.expert.*;
 import cs.domain.project.*;
 import org.apache.log4j.Logger;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
@@ -29,7 +29,6 @@ import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.service.project.SignService;
 
 /**
  * Description: 专家评审 业务操作实现类 author: ldm Date: 2017-5-17 14:02:25
@@ -39,10 +38,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     private static Logger log = Logger.getLogger(ExpertReviewServiceImpl.class);
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
-    @Autowired
-    private ICurrentUser currentUser;
-    @Autowired
-    private ExpertSelConditionRepo expertSelConditionRepo;
     @Autowired
     private ExpertRepo expertRepo;
     @Autowired
@@ -99,7 +94,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public void update(ExpertReviewDto record) {
         ExpertReview domain = expertReviewRepo.findById(record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        domain.setModifiedBy(currentUser.getLoginName());
+        domain.setModifiedBy(SessionUtil.getLoginName());
         domain.setModifiedDate(new Date());
 
         expertReviewRepo.save(domain);
@@ -137,9 +132,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             //初始化
             expertReview = new ExpertReview();
             Date now = new Date();
-            expertReview.setCreatedBy(currentUser.getLoginName());
+            expertReview.setCreatedBy(SessionUtil.getLoginName());
             expertReview.setCreatedDate(now);
-            expertReview.setModifiedBy(currentUser.getLoginName());
+            expertReview.setModifiedBy(SessionUtil.getLoginName());
             expertReview.setModifiedDate(now);
             expertReview.setReviewDate(workProgram.getStageTime());  //评审会时间
             expertReviewRepo.save(expertReview);

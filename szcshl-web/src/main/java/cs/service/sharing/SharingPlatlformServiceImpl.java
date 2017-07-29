@@ -3,9 +3,8 @@ package cs.service.sharing;
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
-import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.SysFileUtil;
 import cs.common.utils.Validate;
 import cs.domain.sharing.SharingPlatlform;
@@ -44,8 +43,6 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
     private static Logger logger = Logger.getLogger(SharingPlatlformServiceImpl.class);
     @Autowired
     private SharingPlatlformRepo sharingPlatlformRepo;
-    @Autowired
-    private ICurrentUser currentUser;
     @Autowired
     private SharingPrivilegeService sharingPrivilegeService;
     @Autowired
@@ -87,7 +84,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         Criteria criteria = sharingPlatlformRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         //创建人为当前用户
-        criteria.add(Restrictions.eq(SharingPlatlform_.createdBy.getName(),currentUser.getLoginName()));
+        criteria.add(Restrictions.eq(SharingPlatlform_.createdBy.getName(), SessionUtil.getLoginName()));
         //统计总数
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
@@ -134,8 +131,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         criteria = odataObj.buildFilterToCriteria(criteria);
         //查询个人接收到的记录信息（全局、部分和个人）
         StringBuilder linkSql = new StringBuilder("(isnopermission = '9' or sharid in ");
-        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+currentUser.getLoginUser().getId()+"') ");
-        linkSql.append(" or (businesstype = '1' and  businessId ='"+currentUser.getLoginUser().getOrg().getId()+"') ) )");
+        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserInfo().getId()+"') ");
+        linkSql.append(" or (businesstype = '1' and  businessId ='"+SessionUtil.getUserInfo().getOrg().getId()+"') ) )");
 
         criteria.add(Restrictions.sqlRestriction(linkSql.toString()));
 
@@ -206,11 +203,11 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //立即发布
         if(Validate.isString(domain.getIsPublish()) && EnumState.YES.getValue().equals(domain.getIsPublish())){
             domain.setPublishDate(now);
-            domain.setPublishUsername(currentUser.getLoginName());
+            domain.setPublishUsername(SessionUtil.getLoginName());
         }
         domain.setIsPublish(record.getIsPublish());
-        domain.setCreatedBy(currentUser.getLoginName());
-        domain.setModifiedBy(currentUser.getLoginName());
+        domain.setCreatedBy(SessionUtil.getLoginName());
+        domain.setModifiedBy(SessionUtil.getLoginName());
         domain.setCreatedDate(now);
         domain.setModifiedDate(now);
 
@@ -243,9 +240,9 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
             }
         }
         Date now = new Date();
-        domain.setModifiedBy(currentUser.getLoginName());
+        domain.setModifiedBy(SessionUtil.getLoginName());
         domain.setPublishDate(now);
-        domain.setPublishUsername(currentUser.getLoginName());
+        domain.setPublishUsername(SessionUtil.getLoginName());
         domain.setModifiedDate(now);
         sharingPlatlformRepo.save(domain);
     }
@@ -308,7 +305,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         hqlBuilder.setParam("status",status);
         if(Constant.EnumState.YES.getValue().equals(status)){
             hqlBuilder.append(","+SharingPlatlform_.publishDate.getName()+"=sysdate ");
-            hqlBuilder.append(","+SharingPlatlform_.publishUsername.getName()+"= :issueUser ").setParam("issueUser",currentUser.getLoginName());
+            hqlBuilder.append(","+SharingPlatlform_.publishUsername.getName()+"= :issueUser ").setParam("issueUser",SessionUtil.getLoginName());
         }
         hqlBuilder.bulidIdString("where",SharingPlatlform_.sharId.getName(),ids);
         sharingPlatlformRepo.executeHql(hqlBuilder);
@@ -318,7 +315,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
     public UserDto findUser(String loginName) {
         User user = userRepo.findUserByName(loginName);
         UserDto userDto = new UserDto();
-        if (user.getLoginName().equals(currentUser.getLoginName())) {
+        if (user.getLoginName().equals(SessionUtil.getLoginName())) {
             BeanCopierUtils.copyProperties(user, userDto);
             return userDto;
         } else {

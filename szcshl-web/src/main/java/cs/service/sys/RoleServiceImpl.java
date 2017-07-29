@@ -6,15 +6,14 @@ import java.util.UUID;
 
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
 import cs.domain.sys.Resource;
 import cs.domain.sys.Role;
 import cs.domain.sys.User;
@@ -29,8 +28,6 @@ public class RoleServiceImpl implements RoleService {
     private static Logger logger = Logger.getLogger(RoleServiceImpl.class);
     @Autowired
     private RoleRepo roleRepository;
-    @Autowired
-    private ICurrentUser currentUser;
     @Autowired
     private IdentityService identityService;
 
@@ -80,8 +77,8 @@ public class RoleServiceImpl implements RoleService {
             role.setRemark(roleDto.getRemark());
             role.setRoleName(roleDto.getRoleName());
             role.setId(UUID.randomUUID().toString());
-            role.setCreatedBy(currentUser.getLoginName());
-            role.setModifiedBy(currentUser.getLoginName());
+            role.setCreatedBy(SessionUtil.getLoginName());
+            role.setModifiedBy(SessionUtil.getLoginName());
 
             // resource
             for (ResourceDto resourceDto : roleDto.getResources()) {
@@ -107,7 +104,7 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleRepository.findById(roleDto.getId());
         String oldRoleName = role.getRoleName();
         role.setRemark(roleDto.getRemark());
-        role.setModifiedBy(currentUser.getLoginName());
+        role.setModifiedBy(SessionUtil.getLoginName());
         //清除已有resource
         role.getResources().clear();
 

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.utils.SessionUtil;
 import cs.domain.project.AssistPlan;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.AssistUnit;
@@ -39,10 +39,6 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 	
 	@Autowired
 	private AssistUnitRepo assistUnitRepo;
-	
-	
-	@Autowired
-	private ICurrentUser currentUser;
 
     @Autowired
     private SysConfigService sysConfigService;
@@ -81,8 +77,8 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 			int unitSort=assistUnitRepo.getUnitSortMax();
 			domain.setUnitSort(++unitSort);
 			Date now = new Date();
-			domain.setCreatedBy(currentUser.getLoginName());
-			domain.setModifiedBy(currentUser.getLoginName());
+			domain.setCreatedBy(SessionUtil.getLoginName());
+			domain.setModifiedBy(SessionUtil.getLoginName());
 			domain.setCreatedDate(now);
 			domain.setModifiedDate(now);
 			assistUnitRepo.save(domain);
@@ -97,7 +93,7 @@ public class AssistUnitServiceImpl  implements AssistUnitService {
 		AssistUnit domain = assistUnitRepo.findById(record.getId());
 		
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setModifiedBy(SessionUtil.getLoginName());
 		domain.setModifiedDate(new Date());
 		
 		domain.getAssistPlanList().clear();

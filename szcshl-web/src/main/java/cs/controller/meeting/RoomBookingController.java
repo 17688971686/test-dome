@@ -1,18 +1,12 @@
 package cs.controller.meeting;
 
-import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.common.utils.SessionUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -27,15 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.ibm.icu.text.SimpleDateFormat;
-
-import cs.common.Constant;
-import cs.common.ICurrentUser;
 import cs.common.utils.ExcelUtils;
-import cs.common.utils.SysFileUtil;
-import cs.common.utils.TemplateUtil;
 import cs.domain.meeting.RoomBooking;
-import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
@@ -57,14 +44,7 @@ public class RoomBookingController {
 	@Autowired
 	private RoomBookingSerivce roomBookingSerivce;
 	@Autowired
-	private MeetingRoomService meetingRoomService;
-	@Autowired
 	private UserService userService;
-	@Autowired
-	private ICurrentUser currentUser;
-	
-	@Autowired
-    private SysFileRepo sysFileRepo;
 	
 	@RequiresPermissions("room##get")
 	@RequestMapping(name="获取会议预定数据",path = "",method =RequestMethod.GET)
@@ -103,7 +83,7 @@ public class RoomBookingController {
 	@RequestMapping( name="获取会议室预定人", path="findUser", method=RequestMethod.GET)
 	@ResponseBody		
 	public UserDto userObj(){
-		UserDto user = userService.findUserByName(currentUser.getLoginName());
+		UserDto user = userService.findUserByName(SessionUtil.getLoginName());
 		return user;
 	}
 	
@@ -186,7 +166,7 @@ public class RoomBookingController {
 	@RequiresPermissions("room#html/roomlist#get")
 	@RequestMapping(name = "预定会议室列表", path = "html/roomlist" ,method = RequestMethod.GET)
 	public String roomlist(HttpServletRequest request ,ModelMap model){		
-		UserDto user = userService.findUserByName(currentUser.getLoginName());
+		UserDto user = userService.findUserByName(SessionUtil.getLoginName());
 		if(user!=null){
 			model.addAttribute("user", user.getLoginName());
 		}

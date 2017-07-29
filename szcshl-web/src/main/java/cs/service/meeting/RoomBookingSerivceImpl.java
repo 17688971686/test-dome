@@ -1,39 +1,12 @@
 package cs.service.meeting;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.ibm.icu.util.CharsTrie.Entry;
-import com.ibm.icu.util.CharsTrie.Iterator;
-
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.GetWeekUtils;
-import cs.common.utils.SysFileUtil;
-import cs.common.utils.TemplateUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
-import cs.domain.project.WorkProgram_;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
@@ -45,13 +18,20 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.RoleServiceImpl;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 
 	private static Logger logger = Logger.getLogger(RoleServiceImpl.class);
-	@Autowired
-	private ICurrentUser currentUser;
 	@Autowired
 	private RoomBookingRepo roomBookingRepo;
 	@Autowired
@@ -146,8 +126,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			sysfile.forEach(sf->{
 				sf.setCreatedDate(now);
 				sf.setModifiedDate(now);
-				sf.setCreatedBy(currentUser.getLoginName());
-				sf.setModifiedBy(currentUser.getLoginName());
+				sf.setCreatedBy(SessionUtil.getLoginName());
+				sf.setModifiedBy(SessionUtil.getLoginName());
 			});
 			sysFileRepo.bathUpdate(sysfile);
 		}
@@ -232,8 +212,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			saveFile.forEach(sfile ->{
 				sfile.setCreatedDate(now);
 				sfile.setModifiedDate(now);
-				sfile.setCreatedBy(currentUser.getLoginName());
-				sfile.setModifiedBy(currentUser.getLoginName());
+				sfile.setCreatedBy(SessionUtil.getLoginName());
+				sfile.setModifiedBy(SessionUtil.getLoginName());
 			});
 		}
 		sysFileRepo.bathUpdate(saveFile);
@@ -329,8 +309,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			Date now = new Date();
 			rb.setCreatedDate(now);
 			rb.setModifiedDate(now);
-			rb.setCreatedBy(currentUser.getLoginName());
-			rb.setModifiedBy(currentUser.getLoginName());
+			rb.setCreatedBy(SessionUtil.getLoginName());
+			rb.setModifiedBy(SessionUtil.getLoginName());
 
 			if(Validate.isString(roomBookingDto.getWorkProgramId())){
 				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
@@ -352,7 +332,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		}else{
 			RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
 			BeanCopierUtils.copyPropertiesIgnoreNull(roomBookingDto, room);
-			room.setModifiedBy(currentUser.getLoginName());
+			room.setModifiedBy(SessionUtil.getLoginName());
 			room.setModifiedDate(new Date());
 
 			if(Validate.isString(roomBookingDto.getWorkProgramId())){
@@ -372,8 +352,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	public void deleteRoom(String id) {
 		RoomBooking room = 	roomBookingRepo.findById(id);
 		if(room != null){
-			//			room.getCreatedBy().equals(currentUser.getLoginUser().getId())
-			if(room.getCreatedBy().equals(currentUser.getLoginName())){
+			//			room.getCreatedBy().equals(SessionUtil.getLoginUser().getId())
+			if(room.getCreatedBy().equals(SessionUtil.getLoginName())){
 				roomBookingRepo.delete(room);
 				logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
 			}else{
@@ -406,8 +386,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			Date now = new Date();
 			rb.setCreatedDate(now);
 			rb.setModifiedDate(now);
-			rb.setCreatedBy(currentUser.getLoginName());
-			rb.setModifiedBy(currentUser.getLoginName());
+			rb.setCreatedBy(SessionUtil.getLoginName());
+			rb.setModifiedBy(SessionUtil.getLoginName());
 			roomBookingRepo.save(rb);
 			WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
 			if(workProgram != null){
@@ -506,8 +486,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			sysfile.forEach(sf->{
 				sf.setCreatedDate(now);
 				sf.setModifiedDate(now);
-				sf.setCreatedBy(currentUser.getLoginName());
-				sf.setModifiedBy(currentUser.getLoginName());
+				sf.setCreatedBy(SessionUtil.getLoginName());
+				sf.setModifiedBy(SessionUtil.getLoginName());
 			});
 			sysFileRepo.bathUpdate(sysfile);
 		}

@@ -2,6 +2,7 @@ package cs.controller.sys;
 
 import com.alibaba.fastjson.JSON;
 import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
 import cs.service.sys.DictService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import cs.common.ICurrentUser;
 import cs.model.sys.UserDto;
 import cs.service.sys.UserService;
 
@@ -20,8 +20,6 @@ public class AdminController {
     private String ctrlName = "admin";
     private static Logger logger = Logger.getLogger(AdminController.class.getName());
     @Autowired
-    private ICurrentUser currentUser;
-    @Autowired
     private UserService userService;
     @Autowired
     private DictService dictService;
@@ -30,7 +28,7 @@ public class AdminController {
     @RequiresPermissions("admin#index#get")
     @RequestMapping(name = "首页", path = "index")
     public String index(Model model) {
-        model.addAttribute("user", currentUser.getLoginName());
+        model.addAttribute("user", SessionUtil.getLoginName());
         model.addAttribute("DICT_ITEMS", JSON.toJSONString(dictService.getDictItemByCode(null)));
         return ctrlName + "/index";
     }
@@ -38,7 +36,7 @@ public class AdminController {
     @RequiresPermissions("admin#welcome#get")
     @RequestMapping(name = "欢迎页", path = "welcome")
     public String welcome(Model model) {
-        UserDto user = userService.findUserByName(currentUser.getLoginName());
+        UserDto user = userService.findUserByName(SessionUtil.getLoginName());
         if (user != null) {
             model.addAttribute("user", user.getLoginName());
             model.addAttribute("lastLoginDate", DateUtils.toStringDay(user.getLastLoginDate()));

@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cs.domain.expert.ExpertReview;
+import cs.common.utils.*;
 import cs.domain.project.*;
 import cs.repository.repositoryImpl.project.*;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -22,14 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.StringUtil;
-import cs.common.utils.SysFileUtil;
-import cs.common.utils.TemplateUtil;
-import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.Expert_;
@@ -41,9 +33,6 @@ import cs.domain.sys.User;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
@@ -55,13 +44,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private WorkProgramRepo workProgramRepo;
     @Autowired
-    private ICurrentUser currentUser;
-    @Autowired
     private ExpertRepo expertRepo;
     @Autowired
     private SignRepo signRepo;
-    @Autowired
-    private UserService userService;
     @Autowired
     private SysFileRepo sysFileRepo;
     @Autowired
@@ -114,11 +99,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram = new WorkProgram();
                 BeanCopierUtils.copyProperties(workProgramDto, workProgram);
                 workProgram.setId(UUID.randomUUID().toString());
-                workProgram.setCreatedBy(currentUser.getLoginUser().getId());
+                workProgram.setCreatedBy(SessionUtil.getUserInfo().getId());
                 workProgram.setCreatedDate(now);
             }
 
-            workProgram.setModifiedBy(currentUser.getLoginUser().getId());
+            workProgram.setModifiedBy(SessionUtil.getUserInfo().getId());
             workProgram.setModifiedDate(now);
 
             Sign sign = signRepo.findById(workProgramDto.getSignId());
@@ -128,7 +113,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //判断是否是主流程
             boolean isMainFlow = false;
             if ((Validate.isString(workProgramDto.getIsMain()) && workProgramDto.getIsMain().equals(EnumState.YES.getValue()))
-                    || signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), sign.getSignid(), EnumState.YES.getValue())) {
+                    || signPrincipalService.isFlowPri(SessionUtil.getUserInfo().getId(), sign.getSignid(), EnumState.YES.getValue())) {
                 isMainFlow = true;
             }
             if (isMainFlow) {
@@ -175,7 +160,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //没有则按收文ID查询(主要是负责人填报环节)
         }else{
             //是否主项目负责人
-            boolean isMainUser = signPrincipalService.isFlowPri(currentUser.getLoginUser().getId(), signId, EnumState.YES.getValue());
+            boolean isMainUser = signPrincipalService.isFlowPri(SessionUtil.getUserInfo().getId(), signId, EnumState.YES.getValue());
             boolean isHaveWP = false;
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" from "+WorkProgram.class.getSimpleName()+" where "+WorkProgram_.sign.getName()+"."+Sign_.signid.getName());
@@ -297,7 +282,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         if (totalLength > 0) {
             Date now = new Date();
-            String createUserId = currentUser.getLoginUser().getId();
+            String createUserId = SessionUtil.getUserInfo().getId();
             //判断是否已经添加了主项目
             Criteria criteria = mergeOptionRepo.getExecutableCriteria();
             criteria.add(Restrictions.eq(MergeOption_.mainBusinessId.getName(), mainBusinessId));
@@ -713,8 +698,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	            saveFile.forEach(sf->{
 	                sf.setCreatedDate(now);
 	                sf.setModifiedDate(now);
-	                sf.setCreatedBy(currentUser.getLoginName());
-	                sf.setModifiedBy(currentUser.getLoginName());
+	                sf.setCreatedBy(SessionUtil.getLoginName());
+	                sf.setModifiedBy(SessionUtil.getLoginName());
 	            });
 	            sysFileRepo.bathUpdate(saveFile);
 	        }

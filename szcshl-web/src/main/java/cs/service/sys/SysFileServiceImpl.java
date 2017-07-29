@@ -1,8 +1,8 @@
 package cs.service.sys;
 
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.SysFileUtil;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
@@ -33,12 +33,6 @@ public class SysFileServiceImpl implements SysFileService {
     @Autowired
     private SignRepo signRepo;
 
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-
-    @Autowired
-    private ICurrentUser currentUser;
-
     @Override
     @Transactional
     public SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType, String sysSignId, String sysfileType, String sysMinType) {
@@ -60,8 +54,8 @@ public class SysFileServiceImpl implements SysFileService {
             sysFile.setSysMinType(sysMinType);
 
             Date now = new Date();
-            sysFile.setCreatedBy(currentUser.getLoginName());
-            sysFile.setModifiedBy(currentUser.getLoginName());
+            sysFile.setCreatedBy(SessionUtil.getLoginName());
+            sysFile.setModifiedBy(SessionUtil.getLoginName());
             sysFile.setCreatedDate(now);
             sysFile.setModifiedDate(now);
 
@@ -175,8 +169,8 @@ public class SysFileServiceImpl implements SysFileService {
             sysFileDto.setFileType(item.getFileType());
             sysFileDto.setSysfileType(item.getSysfileType());
             sysFileDto.setCreatedDate(item.getCreatedDate());
-            sysFileDto.setCreatedBy(currentUser.getLoginName());
-            sysFileDto.setModifiedBy(currentUser.getLoginName());
+            sysFileDto.setCreatedBy(SessionUtil.getLoginName());
+            sysFileDto.setModifiedBy(SessionUtil.getLoginName());
             sysFileDtoList.add(sysFileDto);
         }
 

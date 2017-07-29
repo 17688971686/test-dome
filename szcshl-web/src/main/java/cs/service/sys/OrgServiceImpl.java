@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.sys.Company;
 import cs.domain.sys.Org;
@@ -36,8 +36,6 @@ public class OrgServiceImpl implements OrgService {
 	private UserRepo userRepo;
 	@Autowired
 	private OrgRepo orgRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 	@Autowired
 	private CompanyRepo companyRepo;
 	
@@ -84,9 +82,9 @@ public class OrgServiceImpl implements OrgService {
 			BeanCopierUtils.copyProperties(orgDto, org);
 			Date now = new Date();
 			org.setId(UUID.randomUUID().toString());
-			org.setCreatedBy(currentUser.getLoginName());
+			org.setCreatedBy(SessionUtil.getLoginName());
 			org.setCreatedDate(now);
-			org.setModifiedBy(currentUser.getLoginName());
+			org.setModifiedBy(SessionUtil.getLoginName());
 			org.setModifiedDate(now);
 			
 			orgRepo.save(org);
@@ -101,7 +99,7 @@ public class OrgServiceImpl implements OrgService {
 	public void updateOrg(OrgDto orgDto) {
 		Org org = orgRepo.findById(orgDto.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);						
-		org.setModifiedBy(currentUser.getLoginName());
+		org.setModifiedBy(SessionUtil.getLoginName());
 		org.setModifiedDate(new Date());
 		orgRepo.save(org);
 		logger.info(String.format("更新部门,部门名:%s", orgDto.getName()));
@@ -277,7 +275,7 @@ public class OrgServiceImpl implements OrgService {
 			orgList.forEach( o ->{
 				OrgDto orgDto = new OrgDto();
 				BeanCopierUtils.copyProperties(o, orgDto);
-				orgDto.setCharge((currentUser.getLoginUser().getId().equals(o.getOrgSLeader()))?true:false);				
+				orgDto.setCharge((SessionUtil.getUserInfo().getId().equals(o.getOrgSLeader()))?true:false);
 				orgDtoList.add(orgDto);
 			});
 			return orgDtoList;

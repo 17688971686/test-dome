@@ -1,17 +1,9 @@
 package cs.service.sys;
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
-import cs.domain.sys.*;
-import cs.model.PageModelDto;
-import cs.model.sys.AnnountmentDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.AnnountmentRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -21,18 +13,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
+import cs.domain.sys.Annountment;
+import cs.domain.sys.Annountment_;
+import cs.domain.sys.Org;
+import cs.domain.sys.Org_;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
+import cs.model.PageModelDto;
+import cs.model.sys.AnnountmentDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.AnnountmentRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
 
 @Service
 public class AnnountmentServiceImpl implements AnnountmentService {
 
     @Autowired
     private AnnountmentRepo annountmentRepo;
-
-    @Autowired
-    private ICurrentUser currentUser;
+    
 
     @Autowired
     private OrgRepo orgRepo;
@@ -46,7 +50,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     	Criteria criteria=annountmentRepo.getExecutableCriteria();
     	criteria=odataobj.buildFilterToCriteria(criteria);
     	//创建人为当前用户
-    	criteria.add(Restrictions.eq(Annountment_.createdBy.getName(), currentUser.getLoginName()));
+    	criteria.add(Restrictions.eq(Annountment_.createdBy.getName(), SessionUtil.getLoginName()));
     	//统计总数
     	Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
        pageModelDto.setCount(totalResult);
@@ -151,11 +155,11 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         //已发布的要加上发布人和发布时间
         if(Constant.EnumState.YES.getValue().equals(annountment.getIssue())){
             annountment.setIssueDate(now);
-            annountment.setIssueUser(currentUser.getLoginName());
+            annountment.setIssueUser(SessionUtil.getLoginName());
         }
-        annountment.setCreatedBy(currentUser.getLoginName());
+        annountment.setCreatedBy(SessionUtil.getLoginName());
         annountment.setCreatedDate(now);
-        annountment.setModifiedBy(currentUser.getLoginName());
+        annountment.setModifiedBy(SessionUtil.getLoginName());
         annountment.setModifiedDate(now);
         annountmentRepo.save(annountment);
         annountmentDto.setAnId(annountment.getAnId());
@@ -164,7 +168,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     @Override
     @Transactional
     public String findAnOrg() {
-        String loginName = currentUser.getLoginName();
+        String loginName = SessionUtil.getLoginName();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select o from " + Org.class.getSimpleName() + " o where o." + Org_.id.getName() + "=(");
         hqlBuilder.append("select u." + User_.org.getName() + "." + Org_.id.getName() + " from " + User.class.getSimpleName() + " u where u." + User_.loginName.getName() + "=:loginName)");
@@ -193,7 +197,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(),annountmentDto.getAnId());
         if (annountment != null) {
             BeanCopierUtils.copyPropertiesIgnoreNull(annountmentDto, annountment);
-            annountment.setModifiedBy(currentUser.getDisplayName());
+            annountment.setModifiedBy(SessionUtil.getLoginName());
             annountment.setModifiedDate(new Date());
         }
         annountmentRepo.save(annountment);
@@ -286,7 +290,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         hqlBuilder.setParam("issueState",issueState);
         if(Constant.EnumState.YES.getValue().equals(issueState)){
             hqlBuilder.append(","+Annountment_.issueDate.getName()+"=sysdate ");
-            hqlBuilder.append(","+Annountment_.issueUser.getName()+"= :issueUser ").setParam("issueUser",currentUser.getLoginName());
+            hqlBuilder.append(","+Annountment_.issueUser.getName()+"= :issueUser ").setParam("issueUser",SessionUtil.getLoginName());
         }
         List<String> idList = StringUtil.getSplit(ids,",");
         if (idList != null && idList.size() > 1) {

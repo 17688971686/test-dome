@@ -3,6 +3,7 @@ package cs.common;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class ApiFilter implements HandlerInterceptor{
 	private static Logger logger = Logger.getLogger(ApiFilter.class);
-	@Autowired
-	private ICurrentUser currentUser;
 	@Override
 	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse response, Object arg2, Exception ex)
 			throws Exception {
@@ -30,7 +29,7 @@ public class ApiFilter implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
 		// TODO Auto-generated method stub
 		logger.debug("request pre handle");
-		NDC.push(currentUser.getLoginName());
+		NDC.push(SessionUtil.getLoginName());
 		return true;
 	}
 

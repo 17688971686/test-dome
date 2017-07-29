@@ -1,35 +1,27 @@
 package cs.service.meeting;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.domain.meeting.MeetingRoom_;
 import cs.domain.meeting.RoomBooking_;
-import cs.domain.sys.Org_;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.CurrentUser;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.meeting.MeetingRoom;
-import cs.domain.meeting.RoomBooking;
-import cs.domain.sys.Company;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
-import cs.model.meeting.RoomBookingDto;
-import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.meeting.MeetingRoomRepo;
 @Service
@@ -41,8 +33,6 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 	private MeetingRoomRepo meetingRoomRepo;
     @Autowired
     private RoomBookingRepo roomBookingRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 	@Override
 	@Transactional
 	public PageModelDto<MeetingRoomDto> get(ODataObj odataObj) {
@@ -87,8 +77,8 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 			mr.setRemark(meetingDto.getRemark());
 
 			//创建者
-			mr.setCreatedBy(currentUser.getLoginName());
-			mr.setModifiedBy(currentUser.getLoginName());
+			mr.setCreatedBy(SessionUtil.getLoginName());
+			mr.setModifiedBy(SessionUtil.getLoginName());
 			meetingRoomRepo.save(mr);
 			logger.info(String.format("创建会议室，会议名:%s", meetingDto.getMrName()));
 		}else{
@@ -130,7 +120,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 		meeting.setUserName(meetingDto.getUserName());
 		meeting.setUserPhone(meetingDto.getUserPhone());
 		meeting.setRemark(meetingDto.getRemark());
-		meeting.setModifiedBy(currentUser.getLoginName());
+		meeting.setModifiedBy(SessionUtil.getLoginName());
 		meetingRoomRepo.save(meeting);
 		logger.info(String.format("更新会议室,会议室名:%s", meetingDto.getMrName()));
 	}
@@ -142,7 +132,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
 		Date now=new Date();
 		MeetingRoom  meeting =  meetingRoomRepo.findById(meetingDto.getId());
 		meeting.setMrStatus(meetingDto.getMrStatus());
-		meeting.setModifiedBy(currentUser.getLoginName());
+		meeting.setModifiedBy(SessionUtil.getLoginName());
 		meeting.setModifiedDate(now);
 		meetingRoomRepo.save(meeting);
 		logger.info(String.format("更新会议室使用状态,会议室名:%s", meetingDto.getMrName()));

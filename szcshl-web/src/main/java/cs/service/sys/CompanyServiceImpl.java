@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -11,151 +12,153 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.sys.Company;
 import cs.model.PageModelDto;
-import cs.model.external.DeptDto;
 import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
+
 @Service
-public class CompanyServiceImpl implements CompanyService{
+public class CompanyServiceImpl implements CompanyService {
+    private static Logger logger = Logger.getLogger(CompanyServiceImpl.class);
+    @Autowired
+    private CompanyRepo companyRepo;
 
-	private static Logger logger = Logger.getLogger(CompanyServiceImpl.class);
-	@Autowired
-	private ICurrentUser currentUser;
-	@Autowired
-	private CompanyRepo companyRepo;
-	@Override
-	public PageModelDto<CompanyDto> get(ODataObj odataObj) {
-		List<Company> comList =companyRepo.findByOdata(odataObj);
-		List<CompanyDto> comDtoList = new ArrayList<>();
-		
-		for(Company item : comList){
-			
-			CompanyDto comDto =new CompanyDto();
-			
-			comDto.setId(item.getId());
-			comDto.setCoAddress(item.getCoAddress());
-			comDto.setCoDept(item.getCoDept());
-			comDto.setCoDeptName(item.getCoDeptName());
-			comDto.setCoFax(item.getCoFax());
-			comDto.setCoName(item.getCoName());
-			comDto.setCoPC(item.getCoPC());
-			comDto.setCoPhone(item.getCoPhone());
-			comDto.setCoSite(item.getCoSite());
-			comDto.setCoSynopsis(item.getCoSynopsis());
-			comDto.setCoType(item.getCoType());
-			comDtoList.add(comDto);
-			
-		}
-		PageModelDto<CompanyDto> pageModelDto =new PageModelDto<>();
-		pageModelDto.setCount(odataObj.getCount());
-		pageModelDto.setValue(comDtoList);
-		return pageModelDto;
-	}
-	@Override
-	@Transactional
-	public void createCompany(CompanyDto companyDto) {
-		//判断单位名称是否添加
-		Criteria criteria =	companyRepo.getSession().createCriteria(Company.class);
-		criteria.add(Restrictions.eq("coName", companyDto.getCoName()));
-		List<Company> com = criteria.list();
-		if(com.isEmpty()){
-			
-			Company c =new Company();
-			c.setId(UUID.randomUUID().toString());
-			c.setCoAddress(companyDto.getCoAddress());
-			c.setCoDept(companyDto.getCoDept());
-			c.setCoDeptName(companyDto.getCoDeptName());
-			c.setCoFax(companyDto.getCoFax());
-			c.setCoName(companyDto.getCoName());
-			c.setCoPC(companyDto.getCoPC());
-			c.setCoPhone(companyDto.getCoPhone());
-			c.setCoSite(companyDto.getCoSite());
-			c.setCoType(companyDto.getCoType());
-			c.setCoSynopsis(companyDto.getCoSynopsis());
-			c.setCreatedBy(currentUser.getLoginName());
-			c.setModifiedBy(currentUser.getLoginName());
-			
-			companyRepo.save(c);
-			logger.info(String.format("创建单位，单位名:%s", companyDto.getCoName()));
-		}else{
-			
-			throw new IllegalArgumentException(String.format("该单位已存在：%s 已经存在，请重新输入", companyDto.getCoName()));
+    @Override
+    public PageModelDto<CompanyDto> get(ODataObj odataObj) {
+        List<Company> comList = companyRepo.findByOdata(odataObj);
+        List<CompanyDto> comDtoList = new ArrayList<>();
 
-		}
-		
-	}
-	@Override
-	@Transactional
-	public void deleteCompany(String id) {
-		
-		Company com  = companyRepo.findById(id);
-		if(com !=null){
-			
-			companyRepo.delete(com);
-		//	this.deleteCompany(id);
-			logger.info(String.format("删除单位，单位名coName:%s", com.getCoName()));
-		}
-		
-	}
-	@Override
-	@Transactional
-	public void deleteCompanys(String[] ids) {
+        for (Company item : comList) {
 
-		for( String id : ids){
-			
-			this.deleteCompany(id);
-			//companyRepo.delete(entity);
-		}
-		logger.info("批量删除单位");
-		
-	}
-	@Override
-	@Transactional
-	public void updateCompany(CompanyDto companyDto) {
-		
-		Company c =companyRepo.findById(companyDto.getId());
-	
-		c.setCoAddress(companyDto.getCoAddress());
-		c.setCoDept(companyDto.getCoDept());
-		c.setCoDeptName(companyDto.getCoDeptName());
-		c.setCoFax(companyDto.getCoFax());
-		c.setCoName(companyDto.getCoName());
-		c.setCoPC(companyDto.getCoPC());
-		c.setCoPhone(companyDto.getCoPhone());
-		c.setCoSite(companyDto.getCoSite());
-		c.setCoType(companyDto.getCoType());
-		c.setCoSynopsis(companyDto.getCoSynopsis());
-		c.setCreatedBy(currentUser.getLoginName());
-		c.setModifiedBy(currentUser.getLoginName());
-		
-		companyRepo.save(c);
-		logger.info(String.format("编辑单位，单位名:%s", companyDto.getCoName()));
-	}
-	@Override
-	public CompanyDto findByIdCompany(String id) {
-		Company com =	companyRepo.findById(id);
-		CompanyDto comDto = new CompanyDto();
-		BeanCopierUtils.copyProperties(com, comDto);
-		return comDto;
-	}
-	@Override
-	public List<CompanyDto> findCompanys() {
-		List<Company> companyList=companyRepo.findAll();
-		List<CompanyDto> comDtoList = new ArrayList<>();
-		if(companyList != null && companyList.size() > 0){
-			companyList.forEach(x->{
-				CompanyDto comDto = new CompanyDto();
-				BeanCopierUtils.copyProperties(x, comDto);
-				comDto.setCreatedDate(x.getCreatedDate());
-				comDto.setModifiedDate(x.getModifiedDate());
-				comDtoList.add(comDto);
-			});
-		}
-		return comDtoList;
-	}
+            CompanyDto comDto = new CompanyDto();
+
+            comDto.setId(item.getId());
+            comDto.setCoAddress(item.getCoAddress());
+            comDto.setCoDept(item.getCoDept());
+            comDto.setCoDeptName(item.getCoDeptName());
+            comDto.setCoFax(item.getCoFax());
+            comDto.setCoName(item.getCoName());
+            comDto.setCoPC(item.getCoPC());
+            comDto.setCoPhone(item.getCoPhone());
+            comDto.setCoSite(item.getCoSite());
+            comDto.setCoSynopsis(item.getCoSynopsis());
+            comDto.setCoType(item.getCoType());
+            comDtoList.add(comDto);
+
+        }
+        PageModelDto<CompanyDto> pageModelDto = new PageModelDto<>();
+        pageModelDto.setCount(odataObj.getCount());
+        pageModelDto.setValue(comDtoList);
+        return pageModelDto;
+    }
+
+    @Override
+    @Transactional
+    public void createCompany(CompanyDto companyDto) {
+        //判断单位名称是否添加
+        Criteria criteria = companyRepo.getSession().createCriteria(Company.class);
+        criteria.add(Restrictions.eq("coName", companyDto.getCoName()));
+        List<Company> com = criteria.list();
+        if (com.isEmpty()) {
+
+            Company c = new Company();
+            c.setId(UUID.randomUUID().toString());
+            c.setCoAddress(companyDto.getCoAddress());
+            c.setCoDept(companyDto.getCoDept());
+            c.setCoDeptName(companyDto.getCoDeptName());
+            c.setCoFax(companyDto.getCoFax());
+            c.setCoName(companyDto.getCoName());
+            c.setCoPC(companyDto.getCoPC());
+            c.setCoPhone(companyDto.getCoPhone());
+            c.setCoSite(companyDto.getCoSite());
+            c.setCoType(companyDto.getCoType());
+            c.setCoSynopsis(companyDto.getCoSynopsis());
+            c.setCreatedBy(SessionUtil.getLoginName());
+            c.setModifiedBy(SessionUtil.getLoginName());
+
+            companyRepo.save(c);
+            logger.info(String.format("创建单位，单位名:%s", companyDto.getCoName()));
+        } else {
+            throw new IllegalArgumentException(String.format("该单位已存在：%s 已经存在，请重新输入", companyDto.getCoName()));
+
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteCompany(String id) {
+
+        Company com = companyRepo.findById(id);
+        if (com != null) {
+
+            companyRepo.delete(com);
+            //	this.deleteCompany(id);
+            logger.info(String.format("删除单位，单位名coName:%s", com.getCoName()));
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteCompanys(String[] ids) {
+
+        for (String id : ids) {
+
+            this.deleteCompany(id);
+            //companyRepo.delete(entity);
+        }
+        logger.info("批量删除单位");
+
+    }
+
+    @Override
+    @Transactional
+    public void updateCompany(CompanyDto companyDto) {
+
+        Company c = companyRepo.findById(companyDto.getId());
+
+        c.setCoAddress(companyDto.getCoAddress());
+        c.setCoDept(companyDto.getCoDept());
+        c.setCoDeptName(companyDto.getCoDeptName());
+        c.setCoFax(companyDto.getCoFax());
+        c.setCoName(companyDto.getCoName());
+        c.setCoPC(companyDto.getCoPC());
+        c.setCoPhone(companyDto.getCoPhone());
+        c.setCoSite(companyDto.getCoSite());
+        c.setCoType(companyDto.getCoType());
+        c.setCoSynopsis(companyDto.getCoSynopsis());
+        c.setCreatedBy(SessionUtil.getLoginName());
+        c.setModifiedBy(SessionUtil.getLoginName());
+
+        companyRepo.save(c);
+        logger.info(String.format("编辑单位，单位名:%s", companyDto.getCoName()));
+    }
+
+    @Override
+    public CompanyDto findByIdCompany(String id) {
+        Company com = companyRepo.findById(id);
+        CompanyDto comDto = new CompanyDto();
+        BeanCopierUtils.copyProperties(com, comDto);
+        return comDto;
+    }
+
+    @Override
+    public List<CompanyDto> findCompanys() {
+        List<Company> companyList = companyRepo.findAll();
+        List<CompanyDto> comDtoList = new ArrayList<>();
+        if (companyList != null && companyList.size() > 0) {
+            companyList.forEach(x -> {
+                CompanyDto comDto = new CompanyDto();
+                BeanCopierUtils.copyProperties(x, comDto);
+                comDto.setCreatedDate(x.getCreatedDate());
+                comDto.setModifiedDate(x.getModifiedDate());
+                comDtoList.add(comDto);
+            });
+        }
+        return comDtoList;
+    }
 
 }

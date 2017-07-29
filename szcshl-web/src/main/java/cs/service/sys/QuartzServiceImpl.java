@@ -2,8 +2,8 @@ package cs.service.sys;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
 import cs.domain.sys.Quartz_;
@@ -29,8 +29,6 @@ public class QuartzServiceImpl implements QuartzService {
 
     @Autowired
     private QuartzRepo quartzRepo;
-    @Autowired
-    private ICurrentUser currentUser;
 
     @Override
     public PageModelDto<QuartzDto> get(ODataObj odataObj) {
@@ -60,8 +58,8 @@ public class QuartzServiceImpl implements QuartzService {
         Quartz domain = new Quartz();
         BeanCopierUtils.copyProperties(record, domain);
         Date now = new Date();
-        domain.setCreatedBy(currentUser.getLoginName());
-        domain.setModifiedBy(currentUser.getLoginName());
+        domain.setCreatedBy(SessionUtil.getLoginName());
+        domain.setModifiedBy(SessionUtil.getLoginName());
         domain.setCreatedDate(now);
         domain.setModifiedDate(now);
         //默认自动执行
@@ -78,7 +76,7 @@ public class QuartzServiceImpl implements QuartzService {
     public void update(QuartzDto record) {
         Quartz domain = quartzRepo.findById(record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        domain.setModifiedBy(currentUser.getLoginName());
+        domain.setModifiedBy(SessionUtil.getLoginName());
         domain.setModifiedDate(new Date());
 
         quartzRepo.save(domain);

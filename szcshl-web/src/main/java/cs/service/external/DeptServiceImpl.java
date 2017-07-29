@@ -5,15 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant.EnumState;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.Validate;
 import cs.domain.external.Dept;
 import cs.domain.external.OfficeUser;
 import cs.model.PageModelDto;
@@ -29,8 +28,6 @@ public class DeptServiceImpl implements DeptService {
 	private static Logger logger = Logger.getLogger(DeptServiceImpl.class);
 	@Autowired
 	private DeptRepo deptRepo;
-	@Autowired
-	private ICurrentUser currentUser;
 	@Autowired
 	private OfficeUserRepo officeUserRepo;
 	@Override
@@ -58,8 +55,8 @@ public class DeptServiceImpl implements DeptService {
 		Dept dept = new Dept(); 
 		BeanCopierUtils.copyProperties(record, dept); 
 		Date now = new Date();
-		dept.setCreatedBy(currentUser.getLoginName());
-		dept.setModifiedBy(currentUser.getLoginName());
+		dept.setCreatedBy(SessionUtil.getLoginName());
+		dept.setModifiedBy(SessionUtil.getLoginName());
 		dept.setCreatedDate(now);
 		dept.setModifiedDate(now);
 		dept.setDeptId(UUID.randomUUID().toString());
@@ -75,7 +72,7 @@ public class DeptServiceImpl implements DeptService {
 		dept.setDeptName(record.getDeptName());
 		dept.setDeptType(record.getDeptType());
 		dept.setDeptOfficeId(record.getDeptOfficeId());
-		dept.setModifiedBy(currentUser.getLoginName());
+		dept.setModifiedBy(SessionUtil.getLoginName());
 		dept.setModifiedDate(new Date());
 		deptRepo.save(dept);
 		logger.info(String.format("更新办事处", record.getDeptName()));
@@ -122,31 +119,6 @@ public class DeptServiceImpl implements DeptService {
         }
 		
 	}
-
-	/*@Override
-	public PageModelDto<OfficeUserDto> getOfficeUsers(String deptId, ODataObj odataObj) {
-		
-		PageModelDto<OfficeUserDto> pageModelDto = new  PageModelDto<>();
-		List<OfficeUserDto> officeDtos  = new ArrayList<>();
-		Dept dept =deptRepo.findById(deptId);
-		List<String> officeIds =new ArrayList<>();
-		if(dept !=null){
-			List<OfficeUser> offices= officeUserRepo.getOfficeNotIn(officeIds,odataObj);
-			offices.forEach(x->{
-				OfficeUserDto officeDto = new OfficeUserDto();
-				officeDto.setOfficeID(x.getOfficeID());
-				officeDto.setOfficeDesc(x.getOfficeDesc());
-				officeDto.setOfficeEmail(x.getOfficeEmail());
-				officeDto.setOfficePhone(x.getOfficePhone());
-				officeDto.setOfficeUserName(x.getOfficeUserName());
-				officeDto.setCreatedDate(x.getCreatedDate());
-			});
-			pageModelDto.setValue(officeDtos);
-			pageModelDto.setCount(officeDtos.size());
-		}
-		 
-		return pageModelDto;
-	}*/
 
 	@Override
 	public PageModelDto<OfficeUserDto> getDeptOfficeUsers(String officeId) {

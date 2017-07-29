@@ -5,12 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertType;
@@ -23,8 +22,6 @@ import cs.repository.repositoryImpl.expert.ExpertTypeRepo;
 @Service
 public class ExpertTypeServiceImpl implements ExpertTypeService{
 	
-	@Autowired
-	private ICurrentUser currentUser;
 	
 	@Autowired
 	private ExpertTypeRepo expertTypeRepo;
@@ -41,9 +38,9 @@ public class ExpertTypeServiceImpl implements ExpertTypeService{
 			ExpertType expertType=new ExpertType();
 			BeanCopierUtils.copyProperties(expertTypeDto, expertType);
 			expertType.setId(UUID.randomUUID().toString());
-			expertType.setCreatedBy(currentUser.getDisplayName());
+			expertType.setCreatedBy(SessionUtil.getLoginName());
 			expertType.setCreatedDate(new Date());
-			expertType.setModifiedBy(currentUser.getDisplayName());
+			expertType.setModifiedBy(SessionUtil.getLoginName());
 			expertType.setModifiedDate(new Date());
 			
 			Expert expert=expertRepo.findById(expertTypeDto.getExpertID());
@@ -86,7 +83,7 @@ public class ExpertTypeServiceImpl implements ExpertTypeService{
 	public void updateExpertType(ExpertTypeDto expertTypeDto) {
 		ExpertType expertType=new ExpertType();
 		BeanCopierUtils.copyProperties(expertTypeDto, expertType);
-		expertType.setModifiedBy(currentUser.getDisplayName());
+		expertType.setModifiedBy(SessionUtil.getDisplayName());
 		expertType.setExpert(expertRepo.findById(expertTypeDto.getExpertID()));
 		expertType.setModifiedDate(new Date());
 		expertTypeRepo.save(expertType);

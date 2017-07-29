@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cs.common.Response;
 import cs.domain.sys.Org;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
@@ -22,11 +23,7 @@ public interface UserService {
 
     void updateUser(UserDto userDto);
 
-    Response Login(String userName, String password, HttpServletRequest request);
-
     Set<String> getCurrentUserPermissions();
-
-    void logout();
 
     void changePwd(String password);
 
@@ -55,4 +52,9 @@ public interface UserService {
 	int findMaxUserNo();
 
 	List<UserDto> findByOrgUserName(String orgId);
+
+
+    void saveUser(User user);
+
+    User findByName(String userName);
 }

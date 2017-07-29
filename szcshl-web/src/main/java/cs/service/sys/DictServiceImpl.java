@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.HqlBuilder;
-import cs.common.ICurrentUser;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.common.utils.BeanCopierUtils;
@@ -36,9 +36,6 @@ public class DictServiceImpl implements DictService {
 
     @Autowired
     private DictRepo dictRepo;
-
-    @Autowired
-    private ICurrentUser currentUser;
 
     private ICache cache = CacheManager.getCache();
 
@@ -92,8 +89,8 @@ public class DictServiceImpl implements DictService {
         BeanUtils.copyProperties(dictDto, dict);
 
         dict.setDictId(UUID.randomUUID().toString());
-        dict.setCreatedBy(currentUser.getLoginName());
-        dict.setModifiedBy(currentUser.getLoginName());
+        dict.setCreatedBy(SessionUtil.getLoginName());
+        dict.setModifiedBy(SessionUtil.getLoginName());
         dict.setIsUsed("0");
 
         Date now = new Date();
@@ -146,7 +143,7 @@ public class DictServiceImpl implements DictService {
         Dict dict = dictRepo.findById(dictDto.getDictId());
 
         BeanUtils.copyProperties(dictDto, dict);
-        dict.setModifiedBy(currentUser.getLoginName());
+        dict.setModifiedBy(SessionUtil.getLoginName());
         dict.setModifiedDate(new Date());
         dictRepo.save(dict);
 
