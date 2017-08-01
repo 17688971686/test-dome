@@ -3,15 +3,13 @@
 
     angular.module('app').controller('signFillinCtrl', sign);
 
-    sign.$inject = ['$location', 'signSvc', '$state', '$http'];
+    sign.$inject = ['$location', 'signSvc', '$state', '$http','bsWin'];
 
-    function sign($location, signSvc, $state, $http) {
+    function sign($location, signSvc, $state, $http,bsWin) {
         var vm = this;
-        var options = this;
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
         vm.model.signid = $state.params.signid;	//收文ID
-     
         vm.flowDeal = false;		//是否是流程处理标记
 
         signSvc.initFillData(vm);
@@ -34,6 +32,48 @@
                 })
             }
         }
+        //选择默认办理部门
+        vm.checkOrgType = function($event){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            var checkboxValue = checkbox.value;
+            if(checked){
+                vm.model.leaderName = signcommon.getDefaultLeader(checkboxValue);
+                vm.model.comprehensivehandlesug = signcommon.getDefaultZHBYJ(checkboxValue);
+            }
+        }
+
+        //发起流程
+        vm.startNewFlow = function(){
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确定发起流程么",
+                onOk: function () {
+                    $('.confirmDialog').modal('hide');
+                    var httpOptions = {
+                        method : 'post',
+                        url : rootPath+"/sign/startNewFlow",
+                        params : {
+                            signid:vm.model.signid
+                        }
+                    }
+                    var httpSuccess = function success(response) {
+                        if(response.data.reCode == "ok"){
+                            bsWin.success("操作成功！");
+                        }else{
+                            bsWin.error(response.data.reMsg);
+                        }
+                    }
+                    common.http({
+                        vm : vm,
+                        $http : $http,
+                        httpOptions : httpOptions,
+                        success : httpSuccess
+                    });
+                }
+            });
+        }
+
         //打印预览
         vm.signPreview = function (oper) {
 
