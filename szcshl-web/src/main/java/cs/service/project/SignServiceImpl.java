@@ -295,17 +295,18 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg restartFlow(String signid) {
-        Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
-        if (sign == null ) {
-            return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该项目数据已被删除！");
-        }
-        sign.setSignState(EnumState.PROCESS.getValue());
+        //修改项目状态
+        HqlBuilder hql=HqlBuilder.create();
+        hql.append("update "+ Sign.class.getSimpleName()+" set "+Sign_.signState.getName()+" =:signStatus where "+Sign_.signid.getName()+"=:signId");
+        hql.setParam("signStatus", EnumState.PROCESS.getValue());
+        hql.setParam("signId",signid);
+        signRepo.executeHql(hql);
 
         //激活流程
         ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(signid);
         runtimeService.activateProcessInstanceById(processInstance.getId());
 
-		//获取已暂停项目
+		/*//获取已暂停项目
         ProjectStop projectStop = projectStopRepo.findProjectStop(signid);
 		if (projectStop == null) {
             return new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，暂停记录已被删除！");
@@ -316,7 +317,7 @@ public class SignServiceImpl implements SignService {
         projectStop.setPausedays((float) longtime);
         projectStop.setIsactive(EnumState.NO.getValue());
         projectStop.setSign(sign);
-        projectStopRepo.save(projectStop);
+        projectStopRepo.save(projectStop);*/
 
         return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
     }

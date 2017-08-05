@@ -2,6 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/pauseProject/projectStopFrom.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -19,41 +20,16 @@
             <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期）
         </li>
     </ol>
-	<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>                   
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
-
-<div id="spwindow" class="well well-sm" style="background:white;display:none;">
-    <form id="pauseform" name="pauseform">
-        <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.commitProjectStop()" ng-disabled="vm.isCommit">确定</button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.closewin()" ng-disabled="vm.isSubmit">取消</button>
-        </div>
-        <table style="width:90%">
-            <tr>
-                <td class="formAlignRight" style="width: 120px;">暂停工作日[天]: <span class="required">*</span></td>
-                <td>
-                	<span><input type="text" name="pausedays" ng-model="vm.projectStop.expectpausedays"
-                                 class="form-control input-sm " data-val="true" data-val-number="必须为有效数字"></span>
-                    <span data-valmsg-for="pausedays" data-valmsg-replace="true" class="errors"></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="formAlignRight">暂停说明:</td>
-                <td>
-                    <textarea rows="3" cols="25" name="pasedescription" ng-model="vm.projectStop.pasedescription"
-                              class="form-control input-sm "></textarea>
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}/{3}" ><span class="glyphicon glyphicon-pencil"></span>查看</a>
-	 <!-- 暂停项目 -->
+    <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}/{3}"><span class="glyphicon glyphicon-pencil"></span>查看</a>
+    <!-- 暂停项目 -->
     <button class="btn btn-xs btn-warning" ng-click="{4}" ng-hide="{5}"><span class="glyphicon glyphicon-off"></span>暂停
     </button>
     <!-- 启动项目 -->
-    <button class="btn btn-xs btn-success" ng-click="{6}" ng-show="{7}"><span class="glyphicon glyphicon-play-circle"></span>启动
+    <button class="btn btn-xs btn-success" ng-click="{6}" ng-show="{7}"><span
+            class="glyphicon glyphicon-play-circle"></span>启动
     </button>
 </script>

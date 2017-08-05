@@ -3,7 +3,7 @@
 
     angular.module('app').controller('adminCtrl', admin);
 
-    admin.$inject = ['$location','adminSvc']; 
+    admin.$inject = ['$location','adminSvc'];
 
     function admin($location, adminSvc) {
         var vm = this;

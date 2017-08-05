@@ -3,6 +3,7 @@ package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.DomainBase;
+import cs.domain.project.Sign;
 
 import java.util.Date;
 
@@ -40,6 +41,116 @@ public class ProjectStopDto extends DomainBase {
 
     //暂停说明
     private String pasedescription;
+
+    private String projectDesc;	//项目描述
+
+    private String signid;
+
+    private Sign sign;
+
+    private String directorIdeaContent;	//部长意见
+
+    private String leaderIdeaContent;	//分管副主任签批
+
+    private String isSupplementMaterial;//是否中心发补充材料函
+
+    private String isPuaseApprove;//是否申报单位要求暂停审核函
+
+    private String directorName;//部长名称
+
+    private String leaderName;//分管副主任名称
+
+    private String material;
+    private String approveStatus;//审批环节状态    0：为审批   1：部长审批  9：分管副主任审批
+
+    public String getApproveStatus() {
+        return approveStatus;
+    }
+
+    public void setApproveStatus(String approveStatus) {
+        this.approveStatus = approveStatus;
+    }
+
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
+
+    public String getDirectorName() {
+        return directorName;
+    }
+
+    public void setDirectorName(String directorName) {
+        this.directorName = directorName;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public String getIsSupplementMaterial() {
+        return isSupplementMaterial;
+    }
+
+    public void setIsSupplementMaterial(String isSupplementMaterial) {
+        this.isSupplementMaterial = isSupplementMaterial;
+    }
+
+    public String getIsPuaseApprove() {
+        return isPuaseApprove;
+    }
+
+    public void setIsPuaseApprove(String isPuaseApprove) {
+        this.isPuaseApprove = isPuaseApprove;
+    }
+
+    public String getProjectDesc() {
+        return projectDesc;
+    }
+
+    public void setProjectDesc(String projectDesc) {
+        this.projectDesc = projectDesc;
+    }
+
+    public Sign getSign() {
+
+        return sign;
+    }
+
+    public void setSign(Sign sign) {
+        this.sign = sign;
+    }
+
+    public String getSignid() {
+        return signid;
+    }
+
+    public void setSignid(String signid) {
+        this.signid = signid;
+    }
+
+    public String getLeaderIdeaContent() {
+        return leaderIdeaContent;
+    }
+
+    public void setLeaderIdeaContent(String leaderIdeaContent) {
+        this.leaderIdeaContent = leaderIdeaContent;
+    }
+
+    public String getDirectorIdeaContent() {
+        return directorIdeaContent;
+    }
+
+    public void setDirectorIdeaContent(String directorIdeaContent) {
+        this.directorIdeaContent = directorIdeaContent;
+    }
 
     public String getStopid() {
         return stopid;

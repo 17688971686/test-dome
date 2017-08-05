@@ -118,6 +118,7 @@ public class SignController {
         return signService.findByPlanId(planId);
     }
 
+
     @RequiresPermissions("sign#html/fillin#get")
     @RequestMapping(name = "填写表格页面", path = "html/fillin", method = RequestMethod.GET)
     public String fillin() {
@@ -249,6 +250,12 @@ public class SignController {
     public String hiProcessTask() {
     	
     	return ctrlName + "/hiProcessTask";
+    }
+
+    @RequiresPermissions("sign#html/pauseProjectList#get")
+    @RequestMapping(name="项目暂停审批"  , path="html/pauseProjectList")
+    public String stopApprove(){
+        return ctrlName +"/pauseProjectList";
     }
 
     /***************************************  E 新流程处理的方法     *******************************************/

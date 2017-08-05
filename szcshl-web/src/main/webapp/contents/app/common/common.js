@@ -25,6 +25,7 @@
         kendoGridDataSource: kendoGridDataSource, // 获取gridDataSource
         initUploadOption: initUploadOption, // 附件上传参数(已停用)
         getTaskCount: getTaskCount, // 用户待办总数
+        getPauseProjectCount : getPauseProjectCount,//待办暂停项目个数
         initIdeaData: initIdeaData, // 初始化选择意见窗口数据
         deleteCommonIdea: deleteCommonIdea, // 删除常用意见
         addCommonIdea: addCommonIdea, // 添加常用意见
@@ -581,6 +582,16 @@
         });
     }// E_获取待办总数
 
+    //begin 获取项目暂停待办个数
+    function getPauseProjectCount(options){
+        options.$http({
+            method : "get",
+            url : rootPath + "/projectStop/pauseProjectCount"
+        }).then(function (response){
+            $("#pauseCount").html(response.data);
+        });
+    }
+    //end  获取项目暂停待办个数
     // init
     init();
     function init() {

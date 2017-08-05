@@ -274,6 +274,12 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
+            .state('pauseProject', { //项目暂停审批
+                url: '/pauseProject',
+                templateUrl: rootPath + '/sign/html/pauseProjectList.html',
+                controller: 'pauseProjectCtrl',
+                controllerAs: 'vm'
+            })
 
             //begin#workprogram
             .state('workprogramEdit', {
@@ -500,6 +506,7 @@
         }      
 
         common.getTaskCount({$http: $http});
+        common.getPauseProjectCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     });
 

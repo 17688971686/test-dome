@@ -24,6 +24,9 @@ public class SignDispaWork extends DomainBase {
     private String signDwid;    //收文编号*
 
     @Column
+    private String ssignid;//收文id
+
+    @Column
     private String sprojectname;    //项目名称*
 
     @Column

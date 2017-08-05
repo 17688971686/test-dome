@@ -1,8 +1,12 @@
 package cs.service.project;
 
-import java.util.List;
-
 import cs.domain.project.ProjectStop;
+import cs.domain.project.SignDispaWork;
+import cs.model.PageModelDto;
+import cs.model.project.ProjectStopDto;
+import cs.repository.odata.ODataObj;
+
+import java.util.List;
 
 public interface ProjectStopService {
 	
@@ -10,4 +14,20 @@ public interface ProjectStopService {
 	void projectStart(String signid,String taskid);*/
 	
 	List<ProjectStop> findProjectStopBySign(String signId);
+
+    SignDispaWork findSignBySignId(String signId);
+
+    int countUsedWorkday(String signId);
+
+    void savePauseProject(ProjectStopDto projectStopDto);
+
+    PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj);
+
+    ProjectStopDto getProjectStopByStopId(String stopId);
+
+    void updateProjectStop(ProjectStopDto projectStopDto);
+
+    List<ProjectStop> findPauseProjectSuccess();
+
+    void updateProjectStopStatus(List<ProjectStop> projectStopList);
 }
