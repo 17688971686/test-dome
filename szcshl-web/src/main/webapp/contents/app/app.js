@@ -280,7 +280,7 @@
                 controller: 'pauseProjectCtrl',
                 controllerAs: 'vm'
             })
-            }).state('reserveAdd', {	//新增预签收
+            .state('reserveAdd', {	//新增预签收
                 url: '/reserveAdd',
                 templateUrl: rootPath + '/sign/html/reserveAdd.html',
                 controller: 'signReserveAddCtrl',
