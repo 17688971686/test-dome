@@ -623,6 +623,9 @@ public class SignDto extends BaseDto {
 
     //抽取专家
     private List<ExpertSelectedDto> expertSelectedDtoList;
+    
+    //拟补充资料编号
+    private String suppletterid;
 
     public FileRecordDto getFileRecordDto() {
         return fileRecordDto;
@@ -2263,4 +2266,12 @@ public class SignDto extends BaseDto {
 		Declaration = declaration;
 	}
 	
+
+	public String getSuppletterid() {
+		return suppletterid;
+	}
+
+	public void setSuppletterid(String suppletterid) {
+		this.suppletterid = suppletterid;
+	}
 }

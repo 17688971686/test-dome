@@ -74,8 +74,7 @@
     //S_获取流程参数
     function getFlowParams() {
         return signFlowParams;
-    }
-    //E_getFlowParams
+    }//E_getFlowParams
 
 
 

@@ -32,6 +32,20 @@
                 controller: 'adminCtrl',
                 controllerAs: 'vm'
             })
+             //begin#addSuppletter
+            .state('addSupp', {
+                url: '/addSupp/:signid',
+                templateUrl: rootPath + '/addSuppLetter/edit.html',
+                controller: 'suppletterCtrl',
+                controllerAs: 'vm'
+            })//end#addSuppletter
+             //begin#registerFile
+            .state('registerFile', {
+                url: '/registerFile/:signid/:id',
+                templateUrl: rootPath + '/addRegisterFile/list.html',
+                controller: 'registerFileCtrl',
+                controllerAs: 'vm'
+            }) //end#registerFile
             .state('dtasks', {
                 url: '/dtasks',
                 templateUrl: rootPath + '/admin/dtasks.html',
@@ -305,21 +319,7 @@
                 controller: 'workprogramEditCtrl',
                 controllerAs: 'vm'
             })
-            .state('workprogramBaseEdit', {
-                url: '/workprogramBaseEdit/:signid',
-                templateUrl: rootPath + '/workprogram/html/baseEdit.html',
-                controller: 'workprogramBaseEditCtrl',
-                controllerAs: 'vm'
-            })
             //end#workprogram
-
-            //begin#dispatch
-            .state('dispatchEdit', {
-                url: '/dispatchEdit/:signid',
-                templateUrl: rootPath + '/dispatch/html/edit.html',
-                controller: 'dispatchEditCtrl',
-                controllerAs: 'vm'
-            })//end#dispatch
             
             //begin#fileRecord
         	.state('fileRecordEdit', {
@@ -362,7 +362,7 @@
             })
         	.state('deptEdit', {
             	url: '/deptEdit/:deptId',
-            	templateUrl: rootPath + '/dept/html/edit.html',
+            	templateUrl: rootPath + '/depthtml/edit.html',
             	controller: 'deptEditCtrl',
             	controllerAs: 'vm'
         	}).state('deptOfficeUser', {

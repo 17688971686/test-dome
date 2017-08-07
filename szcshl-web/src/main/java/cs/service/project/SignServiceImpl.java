@@ -1475,11 +1475,11 @@ public class SignServiceImpl implements SignService {
             }
         }
 
-        Disjunction dis = Restrictions.disjunction();
+       /* Disjunction dis = Restrictions.disjunction();
         dis.add(Restrictions.eq(SignDispaWork_.orgdirectorname.getName(), SessionUtil.getLoginName()));
         dis.add(Restrictions.eq(SignDispaWork_.orgMLeaderName.getName(), SessionUtil.getLoginName()));
         dis.add(Restrictions.eq(SignDispaWork_.orgSLeaderName.getName(), SessionUtil.getLoginName()));
-        criteria.add(dis);
+        criteria.add(dis);*/
 
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();

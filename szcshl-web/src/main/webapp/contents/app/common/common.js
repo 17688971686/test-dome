@@ -36,6 +36,7 @@
         saveSuppletter: saveSuppletter,
         registerFilePrint: registerFilePrint,//转到登记资料打印页面
         initPrintData: initPrintData,  //初始化登记资料打印页面数据
+        kendoGridinlineConfig : kendoGridinlineConfig,//行内编辑方法
         initDictItems : function(dictList){
             DICT_ITEMS = dictList;
         }
@@ -194,6 +195,7 @@
         });
         return dataSource;
     }
+    
 
     function kendoGridConfig() {
         return {
@@ -280,6 +282,119 @@
         }
     }
 
+     function kendoGridinlineConfig(){
+     	
+        return {
+            filterable: {
+                extra: false,
+                // mode: "row", 将过滤条件假如title下,如果不要直接与title并排
+                operators: {
+                    string: {
+                        "contains": "包含",
+                        "eq": "等于"
+                        // "neq": "不等于",
+                        // "doesnotcontain": "不包含"
+                    },
+                    number: {
+                        "eq": "等于",
+                        "neq": "不等于",
+                        gt: "大于",
+                        lt: "小于"
+                    },
+                    date: {
+                        gt: "大于",
+                        lt: "小于"
+                    }
+                }
+            },
+            pageable: {
+                pageSize: 10,
+                previousNext: true,
+                buttonCount: 5,
+                refresh: true,
+                pageSizes: true
+            },
+            schema: function (model) {
+                return {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model: model
+                };
+            },
+            transport: function (vm,url, form, paramObj) {
+                return {
+                    read: {
+                        url: url.readUrl,
+                        dataType: "json",
+                        type: "post",
+                        beforeSend: function (req) {
+                            req.setRequestHeader('Token', service.getToken());
+                        },
+                        data: function () {
+                            if (form) {
+                                var filterParam = common.buildOdataFilter(form);
+                                if (filterParam) {
+                                    if (paramObj && paramObj.filter) {
+                                        return {
+                                            "$filter": filterParam + " and "
+                                            + paramObj.filter
+                                        };
+                                    } else {
+                                        return {
+                                            "$filter": filterParam
+                                        };
+                                    }
+                                } else {
+                                    if (paramObj && paramObj.filter) {
+                                        return {
+                                            "$filter": paramObj.filter
+                                        };
+                                    } else {
+                                        return {};
+                                    }
+                                }
+                            } else {
+                                return {};
+                            }
+                        }
+                    },
+                    update: {
+                        url: url.updateUrl,
+                        dataType: "json",
+            			type: "post"
+                    },
+                    destroy: {
+                        url: url.destroyUrl,
+                        dataType: "json",
+                        type: "post",
+                        contentType: "application/json"
+                    },
+                    create:{
+                        url: url.createUrl,
+                        dataType: "json",
+                        type: "post"
+                    },
+                     parameterMap: function(options, operation) {
+                        if (operation == "create") {
+                     	    options.signid = vm.model.signid;
+                            return kendo.stringify(options);
+                        }
+                        if (operation == "update" || operation == "destroy") {
+                            return kendo.stringify(options.models);
+                        }
+                      }
+                      
+                }
+            },
+            noRecordMessage: {
+                template: '暂时没有数据.'
+            }
+        }
+    
+    }
+    
     function getKendoCheckId($id) {
         var checkbox = $($id).find('tr td:nth-child(1)').find('input:checked')
         var data = [];
@@ -848,18 +963,4 @@
         targetObj.focus();
     }// end
     
-     /*function saveSuppLetter(options) {
-
-        options.$http({
-            method: 'post',
-            url: rootPath + "/idea",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            data: angular.toJson(options.commonIdeas)
-        }).then(function (response) {
-            alert("保存成功！");
-        });
-    }// end
-*/})();
+})();

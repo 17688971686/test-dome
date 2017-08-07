@@ -24,9 +24,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(SignDispaWork.class, "项目统计视图");
+        CRUDGanConfig config = new CRUDGanConfig(AddRegisterFile.class, "登记补充资料");
         config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\RuProcessTask");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AddRegisterFile");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());

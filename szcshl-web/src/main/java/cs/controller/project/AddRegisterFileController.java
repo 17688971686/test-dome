@@ -45,9 +45,8 @@ public class AddRegisterFileController {
 	@RequiresPermissions("addRegisterFile#create#post")
 	@RequestMapping(name = "创建记录", path = "create", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void create(HttpServletRequest request, @RequestParam String signid, String models) throws ParseException {
+	public void create(@RequestParam String signid, String models) throws ParseException {
 		List<AddRegisterFileDto> list = JSON.parseArray(models, AddRegisterFileDto.class);  
- 
 		 addRegisterFileService.save(signid,list);
 	}
 	@RequiresPermissions("addRegisterFile#initprintdata#post")
