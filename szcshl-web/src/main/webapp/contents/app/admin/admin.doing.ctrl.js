@@ -29,6 +29,9 @@
                 $("#file2").prop("checked",false);
             }
         }
+        vm.Checked2=function(){
+            $("#fileNo").prop("checked",false);
+        }
 
 
         /**

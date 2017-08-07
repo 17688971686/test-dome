@@ -93,7 +93,7 @@ public class ProjectStopController {
 		List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(signId);
 		String result =null;
 		for(ProjectStop p : projectStopList){
-			if(Constant.EnumState.YES.getValue().equals(p.getIsactive())){
+			if(! Constant.EnumState.YES.getValue().equals(p.getApproveStatus())){
 				result= "pausingProject";
 				break;
 			}

@@ -54,11 +54,9 @@
                         vm: vm,
                         response: response,
                         fn: function () {
-                            window.parent.$("#spwindow").data("kendoWindow").close();
-                            vm.gridOptions.dataSource.read();
                             common.alert({
                                 vm: vm,
-                                msg: "该项目已申请暂停",
+                                msg: "该项目暂停申请正在处理",
                                 fn: function () {
                                     $('.alertDialog').modal('hide');
                                     $('.modal-backdrop').remove();

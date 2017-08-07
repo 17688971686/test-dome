@@ -65,7 +65,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
 	public SignDispaWork findSignBySignId(String signId) {
 		HqlBuilder sqlBuilder = HqlBuilder.create();
 //		sqlBuilder.append(" select signid,projectname from cs_sign where "+Sign_.signid.getName()+" =:signid");
-		sqlBuilder.append("select ssignid,sprojectname,sbuiltcompanyName,pmianchargeusername,sreceivedate,mOrgNames from V_SIGN_DISP_WORK where ssignid=:signid");
+		sqlBuilder.append("select ssignid,sprojectname,sbuiltcompanyName,pmianchargeusername,sreceivedate,mOrgNames from V_SIGN_DISP_WORK where "+SignDispaWork_.ssignid.getName()+"=:signid");
 		sqlBuilder.setParam("signid",signId);
 		List<Map> signList=signDispaWorkRepo.findMapListBySql(sqlBuilder);
 		SignDispaWork  signDispaWork=new SignDispaWork();
@@ -90,9 +90,11 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		List<Map> signList= signRepo.findMapListBySql(sqlBuilder);
 		int count=0;
 		if(!signList.isEmpty()){
-			Date signDate=(Date)signList.get(0);
-			QuartzUnit unit=new QuartzUnit();
-			count=unit.countWorkday( signDate );
+			if(signList.get(0)!=null){
+				Date signDate=(Date)signList.get(0);
+				QuartzUnit unit=new QuartzUnit();
+				count=unit.countWorkday( signDate );
+			}
 		}
 
 		return count;
@@ -111,8 +113,16 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		projectStop.setModifiedDate(new Date());
 		projectStop.setStopid(UUID.randomUUID().toString());
 		projectStop.setSign(sign);
-		projectStop.setDirectorName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());//部长
-		projectStop.setLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());//分管副主任
+		if(SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!= null){
+			projectStop.setDirectorName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());//部长
+		}else{
+			projectStop.setDirectorName(SessionUtil.getLoginName());
+		}
+		if(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName()!=null){
+			projectStop.setLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());//分管副主任
+		}else{
+			projectStop.setLeaderName(SessionUtil.getLoginName());
+		}
 		projectStop.setIsactive(Constant.EnumState.NO.getValue());
 		projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
 		if(projectStopDto.getMaterial() != null){

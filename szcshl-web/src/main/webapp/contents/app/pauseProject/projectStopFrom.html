@@ -74,13 +74,13 @@
                 <td></td>
                 <td colspan="5" id="materials">
                     <p>中心发补充材料函
-                        <input type="checkbox" name="file" id="file1"  value="中心发补充材料函" ng-disabled="vm.showIdea"  ng-checked="vm.projectStop.isSupplementMaterial == '9'"/>
+                        <input type="checkbox" name="file" id="file1"  value="中心发补充材料函" ng-disabled="vm.showIdea" ng-click="vm.Checked2()"  ng-checked="vm.projectStop.isSupplementMaterial == '9'"/>
                     </p>
                     <p>申报单位要求暂停审核函
-                        <input type="checkbox" name="file" id="file2"  value="申报单位要求暂停审核函" ng-disabled="vm.showIdea"  ng-checked="vm.projectStop.isPuaseApprove == '9'"/>
+                        <input type="checkbox" name="file" id="file2"  value="申报单位要求暂停审核函" ng-disabled="vm.showIdea" ng-click="vm.Checked2()"  ng-checked="vm.projectStop.isPuaseApprove == '9'"/>
                     </p>
                     <p>无以上文件
-                        <input type="checkbox" name="file" id="fileNo"  value="无以上文件" ng-disabled="vm.showIdea" ng-click="vm.Checked()" ng-checked="vm.projectStop.isPuaseApprove != '9'&& vm.projectStop.isSupplementMaterial!= '9'"/>
+                        <input type="checkbox" name="file" id="fileNo"  value="无以上文件" ng-disabled="vm.showIdea" ng-click="vm.Checked()" ng-checked="vm.projectStop.isPuaseApprove != '9' && vm.projectStop.isSupplementMaterial!= '9'"/>
                     </p>
                 </td>
                 <td></td>
