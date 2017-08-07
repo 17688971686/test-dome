@@ -1,0 +1,44 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;margin: auto;overflow: auto">
+    <ol class="breadcrumb">
+       	<li><a href="#/expert">拟补资料函正文</a></li>
+        <!-- <li class="active">{{vm.titles}}</li> -->
+   	</ol>
+
+	<div class="toolbar"> 
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>新建</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>上传</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>下载</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>删除</button>
+	</div>
+	 
+	<table style="width:100%;">
+		<tr>
+			<td rowspan="4" valign="top"  class="breadcrumb">
+				<p class="label bg-yellow disabled color-palette">审核中</p>
+				<div id="grid1" class="grid1" kendo-grid="grid1" k-options="vm.gridOptions1"></div>
+			</td>
+			<td class="text-center" style="height:200px;width:100px;"></td>
+			<td valign="top" class="breadcrumb1">
+				<p class="label label-success">正式专家</p>
+				<div id="grid2" class="grid2" kendo-grid="grid2" k-options="vm.gridOptions2"></div>
+			</td>
+		</tr>
+		<tr><td class="text-center" style="height:200px;"></td><td valign="top" class="breadcrumb2"></td></tr>
+		<tr><td class="text-center" style="height:200px;"></td><td valign="top" class="breadcrumb2"></td></tr>
+		<tr>			
+			<td class="text-center" style="height:200px;">
+				<p ><input class="btn_add" ng-click="vm.auditToRemove()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
+		        <p ><input class="btn_remove" ng-click="vm.temoveToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
+			</td>
+			<td valign="top" class="breadcrumb3"></td>
+		</tr>
+	</table>	
+</div>
+
+
+
