@@ -22,10 +22,73 @@
             chooseWP: chooseWP,                     //选择合并评审的工作方案
             cancelWP: cancelWP,                     //取消合并评审的工作方案
             deleteAllMerge:deleteAllMerge,          //删除所有合并评审的工作方案
+            
+            initReview: initReview,                      //初始化评审方案信息
+            initParamValue:initParamValue,				//初始化参数值
         };
 
         return service;
-
+        
+        //初始化参数值
+        function initParamValue(vm) {
+            vm.conditions = new Array();          //条件列表
+            vm.customCondition = new Array();
+            vm.expertReview = {};                 //评审方案对象
+            vm.selfExperts = [],
+            vm.selectExperts = [],
+            vm.selectIds = [],
+            vm.autoExperts = [],
+            vm.autoSelExperts = [],
+            vm.outsideExperts = [];
+        }
+        
+        //S_initReview
+        function initReview(vm) {
+        	
+            vm.iscommit = true;
+            initParamValue(vm);
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/expertReview/html/initByWorkProgramId",
+                params: {workProgramId: vm.work.id}
+            };
+            var httpSuccess = function success(response) {
+                vm.iscommit = false;
+                vm.expertReview = response.data;
+                //专家抽取条件
+                if (vm.expertReview.expertSelConditionDtoList && vm.expertReview.expertSelConditionDtoList.length > 0) {
+                    vm.conditions = vm.expertReview.expertSelConditionDtoList;
+                    vm.conditionIndex = vm.expertReview.expertSelConditionDtoList.length;//下标值
+                }
+                //获取已经抽取的专家
+                if (vm.expertReview.expertSelectedDtoList && vm.expertReview.expertSelectedDtoList.length > 0) {
+                    vm.expertReview.expertSelectedDtoList.forEach(function (sep, index) {
+                        vm.selectIds.push(sep.expertDto.expertID);
+                        vm.selectExperts.push(sep);
+                        if (sep.selectType == '1') {           //抽取专家
+                            vm.autoExperts.push(sep);
+                            vm.autoSelExperts.push(sep.expertDto)
+                        } else if (sep.selectType == '2') {     //自选专家
+                            vm.selfExperts.push(sep);
+                        } else if (sep.selectType == '3') {     //境外专家
+                            vm.outsideExperts.push(sep);
+                        }
+                    });
+                    if (vm.selectIds.length > 0) {
+                        vm.excludeIds = vm.selectIds.join(',');
+                    } else {
+                        vm.excludeIds = '';
+                    }
+                }
+            };
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //E_initReview
         //S_初始化已选项目列表
         function getSeleWPByMainId(vm) {
             var httpOptions = {

@@ -26,8 +26,24 @@
 
     <div class="well">
        <form id="formSharing" name="formSharing">
+
            <span class="help-inline">主题：</span>
            <input type="text"  operator="like" name="theme" id="theme" placeholder="请输入名称">
+
+    	 <div class="well">
+      	 
+           <span class="help-inline" style="margin-left:10px;">共享主题：</span>
+           <select style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
+	    	   	 	<option value="">无</option>
+					<option ng-repeat="org in vm.orglist" value="{{org.name}}">{{org.name}}</option>
+			</select>
+			
+           <span class="help-inline" style="margin-left:10px;">共享部门：</span>
+          		 <select style="width:10%;" ng-model="vm.model.postResume"  name="postResume" id="postResume" operator="eq" >
+	    	   	 	<option value="">无</option>
+					<option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
+				</select>
+
           <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySharing()">查询</a>
           <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetSharing()">重置</a>
         </form>

@@ -78,10 +78,13 @@
     	<!-- E 项目概算  -->
 
     </form> <!-- end form -->
+ 
 	<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;" >
         <div class="text-center" style="line-height: 50px;">
             默认办理部门：<input type="radio" value="PD" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span> <input type="radio" value="GD" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>概算</span>
-            <button class="btn btn-sm btn-default"  >发起流程</button>
+           	<span ng-hide="vm.model.ispresign == '0' ">
+            <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  >发起流程</button>
+            </span>
         </div>
 	</div>
 

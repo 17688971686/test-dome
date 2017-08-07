@@ -9,15 +9,47 @@
                     {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
                 </strong>
             </caption>
-            <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
+           <!--  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption> -->
+              <caption class="text-right">  
+        <tr>
+        <td width="15%" class="text-center">QR-4.7-01-A2</td>
+        <td></td>
+        <td width="20%" class="text-center"></td>
+        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
+    </tr>
+    </caption> 
 			<tbody>
 			
 			<tr>
+				<td width="15%" class="text-center">项目名称</td>
+				<td>{{vm.model.projectname}}</td>
+				<td width="15%" class="text-center">收文编号</td>
+				<td>{{vm.model.filecode}} </td>
+			</tr>
+			<tr>
+				<td width="15%" class="text-center">建设单位</td>
+				<td>
+				{{vm.model.builtcompanyName}}
+				</td>
+				<td width="15%" class="text-center">项目代码</td>
+				<td>{{vm.model.projectcode}} </td>
+			</tr>
+			<tr>
+				<td width="15%" class="text-center">编制单位</td>
+				<td>
+					{{vm.model.designcompanyName}}
+				</td>
+				<td width="15%" class="text-center">报审概算</td>
+				<td>
+				{{vm.model.Declaration}} 万元
+				</td>
+			</tr>
+			
+		<tr>
 				<td width="15%" class="text-center">主办处室</td>
 				<td>
 				{{vm.model.maindeptName}}
 				</td>
-
 				<td width="15%" class="text-center">主办处室联系人</td>
 				<td>
 					{{vm.model.mainDeptUserName}}
@@ -31,49 +63,18 @@
 				</td>
 				<td width="15%" class="text-center">协办处室联系人</td>
 				<td>
-				{{vm.model.assistDeptUserName}}
+					{{vm.model.assistDeptUserName}}
 				</td>
 			</tr>
-			<tr>
-				<td width="15%" class="text-center">收文编号</td>
-				<td>{{vm.model.filecode}}</td>
-				<td width="15%" class="text-center">项目代码</td>
-				<td>{{vm.model.projectcode}} </td>
-			</tr>
-			<tr>
-				<td width="15%" rowspan="2" class="text-center">项目名称</td>
-				<td rowspan="2">{{vm.model.projectname}}</td>
-				<td width="15%" class="text-center">建设单位</td>
-				<td>
-				{{vm.model.builtcompanyName}}
-				</td>
-			</tr>
-			<tr>
-				<td width="15%" class="text-center">编制单位</td>
-				<td>
-				{{vm.model.designcompanyName}}
-				</td>
-			</tr>
-
 			<tr>
 				<td width="15%" class="text-center" >缓急程度</td>
 				<td>
 					{{vm.model.urgencydegree}}
 				</td>
 
-				<td width="15%" class="text-center">年度计划类别</td>
-				<td>
-					{{vm.model.yearplantype}}
-				</td>
-			</tr>
-
-			<tr>
-				<td width="15%" class="text-center">秘密登记</td>
+				<td width="15%" class="text-center">秘密等级</td>
 				<td>
 					{{vm.model.secrectlevel}}
-				</td>
-				<td width="15%" class="text-center"></td>
-				<td>
 				</td>
 			</tr>
 
@@ -328,14 +329,12 @@
 			<tr>
 				<td width="15%" class="text-center">综合部拟办意见</td>
 				<td colspan="3">
-					请张主任阅示:
 					{{vm.model.comprehensivehandlesug}}
 				</td>
 			</tr>
 			<tr>
 				<td width="15%" class="text-center">中心领导签批意见</td>
 				<td colspan="3">
-					中心领导审批：
 					{{vm.model.leaderhandlesug}}
 				</td>
 			</tr>

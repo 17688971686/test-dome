@@ -79,6 +79,10 @@ public class Sign extends DomainBase {
     //协办事处联系人
     private String assistDeptUserName;
 
+    //报审概算
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal Declaration;
+    
     //编制单位ID
     @Column(columnDefinition = "VARCHAR(64)")
     private String designcompanyid;
@@ -789,6 +793,12 @@ public class Sign extends DomainBase {
     //是否完成分支的评审方案
     @Column(columnDefinition = "VARCHAR(2)")
     private String isreviewACompleted;
+    
+    /**
+     * 默认办理类型
+     */
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String dealOrgType;
 
     //是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
@@ -2307,4 +2317,22 @@ public class Sign extends DomainBase {
     public void setPresignDate(Date presignDate) {
         this.presignDate = presignDate;
     }
+
+	public String getDealOrgType() {
+		return dealOrgType;
+	}
+
+	public void setDealOrgType(String dealOrgType) {
+		this.dealOrgType = dealOrgType;
+	}
+
+	public BigDecimal getDeclaration() {
+		return Declaration;
+	}
+
+	public void setDeclaration(BigDecimal declaration) {
+		Declaration = declaration;
+	}
+	
+    
 }

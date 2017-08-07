@@ -52,6 +52,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 fileRecord.setFileRecordId(UUID.randomUUID().toString());
                 fileRecord.setCreatedBy(SessionUtil.getLoginName());
                 fileRecord.setCreatedDate(now);
+                fileRecord.setFileDate(now);
 
                 fileRecordDto.setFileRecordId(fileRecord.getFileRecordId());
             } else {

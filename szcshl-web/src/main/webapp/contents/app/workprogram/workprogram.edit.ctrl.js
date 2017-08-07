@@ -15,6 +15,7 @@
         if($state.params.workProgramId){
             vm.work.id  = $state.params.workProgramId;  //工作方案ID
         }
+        
         vm.sign = {};						//创建收文对象
         vm.unSeledWork = {};                //未选择的工作方案
         vm.serchWork = {};                  //用于过滤
@@ -33,8 +34,9 @@
         activate();
         function activate() {
         	workprogramSvc.initPage(vm);
-            workprogramSvc.findCompanys(vm);//查找主管部门
-            workprogramSvc.findAllMeeting(vm);//查找所有会议室地
+            workprogramSvc.findCompanys(vm);	//查找主管部门
+            workprogramSvc.findAllMeeting(vm);	//查找所有会议室地
+            workprogramSvc.initReview(vm);		//初始化参数值
         }
 
         //评审方式修改

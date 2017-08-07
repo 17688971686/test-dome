@@ -561,12 +561,395 @@ public class FileRecord extends DomainBase{
 	//审定工程概算书是否有复印件/扫描件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String judgemenProjectCopy;
+	
+	//环评批复文件是否复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String environmentalCopy;
+	
+	//环评批复文件是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String environmentalRmb;
+	
+	//规划选址批文是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String planningCopy;
+	
+	//归还选址批文是否有扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String PlanningRmb;
+	
+	//节能报告分数
+	@Column(columnDefinition="INTEGER")
+	private Integer energyCount;
+	
+	//节能报告是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String energyOriginal;
+	
+	//节能报告是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String energyCopy;
+	
+	//S 项目概算
+	//专家审核概算书
+	@Column(columnDefinition="INTEGER")
+	private Integer expertBookCount;
+	
+	//专家审核概算书是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String expertBookCountOriginal;
+	
+	//专家审核概算书是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String expertBookCountCopy;
+	
+	//专家审核概算书是否有扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String expertBookCountScan;
+	
+	//1.地址勘察报告分数
+	@Column(columnDefinition="INTEGER")
+	private Integer addressInvestigateCount;
+	
+	//地址勘察报告是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String addressInvestigateOriginal;
+	
+	//地址勘察报告是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String addressInvestigateEpub;
 
+	//2.设计说明分数
+	@Column(columnDefinition="INTEGER")
+	private Integer designDescriptionCount;
+	
+	//设计说明是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String designDescriptionOriginal;
+	
+	//设计说明是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String designDescriptionEpub;
+
+	//申报工程概算书份数
+	@Column(columnDefinition="INTEGER")
+	private Integer projectBudgetCount;
+	
+	//申报工程概算书是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	 private String projectBudgetOriginal;
+	 
+	//申报工程概算书是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectBudgetEpub;
+
+	//初步设计图纸分数
+	@Column(columnDefinition="INTEGER")
+	private Integer preliminaryDesignCount;
+	
+	//初步设计图纸是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String preliminaryDesignOriginal;
+	
+	//初步设计图纸是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String preliminaryDesignEpub;
+
+	//施工设计图纸份数
+	@Column(columnDefinition="INTEGER")
+	private Integer constructionDesignCount;
+	
+	//施工设计图纸是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String constructionDesignOriginal;
+	
+	//施工设计图纸是否有电子版
+	@Column(columnDefinition="VARCHAR(2)")
+	private String constructionDesignEpub;
+
+	//6.项目电子光盘
+	@Column(columnDefinition="INTEGER")
+	private Integer electronicCount;
+
+	//7.建筑
+	@Column(columnDefinition="VARCHAR(2)")
+	private String architecture;
+	
+	//8.结构
+	@Column(columnDefinition="VARCHAR(2)")
+	private String construction;
+	
+	//9.给排水
+	@Column(columnDefinition="VARCHAR(2)")
+	private String drainAwayWater;
+
+	//10.空调
+	@Column(columnDefinition="VARCHAR(2)")
+	private String conditioner;
+	
+	//11.强电
+	@Column(columnDefinition="VARCHAR(2)")
+	private String highVoltage;
+	
+	//12.弱电
+	@Column(columnDefinition="VARCHAR(2)")
+	private String lightCurrent;
+	
+	//13.道路
+	@Column(columnDefinition="VARCHAR(2)")
+	private String roadway;
+	
+	//14.桥梁
+	@Column(columnDefinition="VARCHAR(2)")
+	private String bridge;
+	
+	//15.园林
+	@Column(columnDefinition="VARCHAR(2)")
+	private String gardens;
+	
+	//16.消防
+	@Column(columnDefinition="VARCHAR(2)")
+	private String fireFighting;
+	
+	//17.燃气
+	@Column(columnDefinition="VARCHAR(2)")
+	private String combustiblegas;
+
+	//18.其他
+	@Column(columnDefinition="VARCHAR(2)")
+	private String fieOther;
+	//E 项目概算
+
+	
 	//收文，一对一
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="signId",unique = true)
 	private Sign sign;
 		
+	public Integer getAddressInvestigateCount() {
+		return addressInvestigateCount;
+	}
+
+	public void setAddressInvestigateCount(Integer addressInvestigateCount) {
+		this.addressInvestigateCount = addressInvestigateCount;
+	}
+
+	public String getAddressInvestigateOriginal() {
+		return addressInvestigateOriginal;
+	}
+
+	public void setAddressInvestigateOriginal(String addressInvestigateOriginal) {
+		this.addressInvestigateOriginal = addressInvestigateOriginal;
+	}
+
+	public String getAddressInvestigateEpub() {
+		return addressInvestigateEpub;
+	}
+
+	public void setAddressInvestigateEpub(String addressInvestigateEpub) {
+		this.addressInvestigateEpub = addressInvestigateEpub;
+	}
+
+	public Integer getDesignDescriptionCount() {
+		return designDescriptionCount;
+	}
+
+	public void setDesignDescriptionCount(Integer designDescriptionCount) {
+		this.designDescriptionCount = designDescriptionCount;
+	}
+
+	public String getDesignDescriptionOriginal() {
+		return designDescriptionOriginal;
+	}
+
+	public void setDesignDescriptionOriginal(String designDescriptionOriginal) {
+		this.designDescriptionOriginal = designDescriptionOriginal;
+	}
+
+	public String getDesignDescriptionEpub() {
+		return designDescriptionEpub;
+	}
+
+	public void setDesignDescriptionEpub(String designDescriptionEpub) {
+		this.designDescriptionEpub = designDescriptionEpub;
+	}
+
+	public Integer getProjectBudgetCount() {
+		return projectBudgetCount;
+	}
+
+	public void setProjectBudgetCount(Integer projectBudgetCount) {
+		this.projectBudgetCount = projectBudgetCount;
+	}
+
+	public String getProjectBudgetOriginal() {
+		return projectBudgetOriginal;
+	}
+
+	public void setProjectBudgetOriginal(String projectBudgetOriginal) {
+		this.projectBudgetOriginal = projectBudgetOriginal;
+	}
+
+	public String getProjectBudgetEpub() {
+		return projectBudgetEpub;
+	}
+
+	public void setProjectBudgetEpub(String projectBudgetEpub) {
+		this.projectBudgetEpub = projectBudgetEpub;
+	}
+
+	public Integer getPreliminaryDesignCount() {
+		return preliminaryDesignCount;
+	}
+
+	public void setPreliminaryDesignCount(Integer preliminaryDesignCount) {
+		this.preliminaryDesignCount = preliminaryDesignCount;
+	}
+
+	public String getPreliminaryDesignOriginal() {
+		return preliminaryDesignOriginal;
+	}
+
+	public void setPreliminaryDesignOriginal(String preliminaryDesignOriginal) {
+		this.preliminaryDesignOriginal = preliminaryDesignOriginal;
+	}
+
+	public String getPreliminaryDesignEpub() {
+		return preliminaryDesignEpub;
+	}
+
+	public void setPreliminaryDesignEpub(String preliminaryDesignEpub) {
+		this.preliminaryDesignEpub = preliminaryDesignEpub;
+	}
+
+	public Integer getConstructionDesignCount() {
+		return constructionDesignCount;
+	}
+
+	public void setConstructionDesignCount(Integer constructionDesignCount) {
+		this.constructionDesignCount = constructionDesignCount;
+	}
+
+	public String getConstructionDesignOriginal() {
+		return constructionDesignOriginal;
+	}
+
+	public void setConstructionDesignOriginal(String constructionDesignOriginal) {
+		this.constructionDesignOriginal = constructionDesignOriginal;
+	}
+
+	public String getConstructionDesignEpub() {
+		return constructionDesignEpub;
+	}
+
+	public void setConstructionDesignEpub(String constructionDesignEpub) {
+		this.constructionDesignEpub = constructionDesignEpub;
+	}
+
+	public Integer getElectronicCount() {
+		return electronicCount;
+	}
+
+	public void setElectronicCount(Integer electronicCount) {
+		this.electronicCount = electronicCount;
+	}
+
+	public String getArchitecture() {
+		return architecture;
+	}
+
+	public void setArchitecture(String architecture) {
+		this.architecture = architecture;
+	}
+
+	public String getConstruction() {
+		return construction;
+	}
+
+	public void setConstruction(String construction) {
+		this.construction = construction;
+	}
+
+	public String getDrainAwayWater() {
+		return drainAwayWater;
+	}
+
+	public void setDrainAwayWater(String drainAwayWater) {
+		this.drainAwayWater = drainAwayWater;
+	}
+
+	public String getConditioner() {
+		return conditioner;
+	}
+
+	public void setConditioner(String conditioner) {
+		this.conditioner = conditioner;
+	}
+
+	public String getHighVoltage() {
+		return highVoltage;
+	}
+
+	public void setHighVoltage(String highVoltage) {
+		this.highVoltage = highVoltage;
+	}
+
+	public String getLightCurrent() {
+		return lightCurrent;
+	}
+
+	public void setLightCurrent(String lightCurrent) {
+		this.lightCurrent = lightCurrent;
+	}
+
+	public String getRoadway() {
+		return roadway;
+	}
+
+	public void setRoadway(String roadway) {
+		this.roadway = roadway;
+	}
+
+	public String getBridge() {
+		return bridge;
+	}
+
+	public void setBridge(String bridge) {
+		this.bridge = bridge;
+	}
+
+	public String getGardens() {
+		return gardens;
+	}
+
+	public void setGardens(String gardens) {
+		this.gardens = gardens;
+	}
+
+	public String getFireFighting() {
+		return fireFighting;
+	}
+
+	public void setFireFighting(String fireFighting) {
+		this.fireFighting = fireFighting;
+	}
+
+	public String getCombustiblegas() {
+		return combustiblegas;
+	}
+
+	public void setCombustiblegas(String combustiblegas) {
+		this.combustiblegas = combustiblegas;
+	}
+
+	public String getFieOther() {
+		return fieOther;
+	}
+
+	public void setFieOther(String fieOther) {
+		this.fieOther = fieOther;
+	}
+
 	public Sign getSign() {
 		return sign;
 	}
@@ -1654,6 +2037,95 @@ public class FileRecord extends DomainBase{
 	public void setJudgemenProjectCopy(String judgemenProjectCopy) {
 		this.judgemenProjectCopy = judgemenProjectCopy;
 	}
+
+	public String getEnvironmentalCopy() {
+		return environmentalCopy;
+	}
+
+	public void setEnvironmentalCopy(String environmentalCopy) {
+		this.environmentalCopy = environmentalCopy;
+	}
+
+	public String getEnvironmentalRmb() {
+		return environmentalRmb;
+	}
+
+	public void setEnvironmentalRmb(String environmentalRmb) {
+		this.environmentalRmb = environmentalRmb;
+	}
+
+	public String getPlanningCopy() {
+		return planningCopy;
+	}
+
+	public void setPlanningCopy(String planningCopy) {
+		this.planningCopy = planningCopy;
+	}
+
+	public String getPlanningRmb() {
+		return PlanningRmb;
+	}
+
+	public void setPlanningRmb(String planningRmb) {
+		PlanningRmb = planningRmb;
+	}
+
+	public Integer getEnergyCount() {
+		return energyCount;
+	}
+
+	public void setEnergyCount(Integer energyCount) {
+		this.energyCount = energyCount;
+	}
+
+	public String getEnergyOriginal() {
+		return energyOriginal;
+	}
+
+	public void setEnergyOriginal(String energyOriginal) {
+		this.energyOriginal = energyOriginal;
+	}
+
+	public String getEnergyCopy() {
+		return energyCopy;
+	}
+
+	public void setEnergyCopy(String energyCopy) {
+		this.energyCopy = energyCopy;
+	}
+
+	public Integer getExpertBookCount() {
+		return expertBookCount;
+	}
+
+	public void setExpertBookCount(Integer expertBookCount) {
+		this.expertBookCount = expertBookCount;
+	}
+
+	public String getExpertBookCountOriginal() {
+		return expertBookCountOriginal;
+	}
+
+	public void setExpertBookCountOriginal(String expertBookCountOriginal) {
+		this.expertBookCountOriginal = expertBookCountOriginal;
+	}
+
+	public String getExpertBookCountCopy() {
+		return expertBookCountCopy;
+	}
+
+	public void setExpertBookCountCopy(String expertBookCountCopy) {
+		this.expertBookCountCopy = expertBookCountCopy;
+	}
+
+	public String getExpertBookCountScan() {
+		return expertBookCountScan;
+	}
+
+	public void setExpertBookCountScan(String expertBookCountScan) {
+		this.expertBookCountScan = expertBookCountScan;
+	}
+	
 	
 	
 	

@@ -289,6 +289,7 @@
 
         //Start 申报登记编辑
         function updateFillin(vm) {
+        	
             common.initJqValidation($('#sign_fill_form'));
             var isValid = $('#sign_fill_form').valid();
             if (isValid) {

@@ -24,7 +24,10 @@ public class DispatchDocDto extends BaseDto {
 
     //文件标题
     private String fileTitle;
-
+    
+    //评审方式
+    private String dispatchStage;
+    
     //发文部门
     private String orgId;
 
@@ -541,4 +544,13 @@ public class DispatchDocDto extends BaseDto {
     public void setFileSeq(Integer fileSeq) {
         this.fileSeq = fileSeq;
     }
+
+	public String getDispatchStage() {
+		return dispatchStage;
+	}
+
+	public void setDispatchStage(String dispatchStage) {
+		this.dispatchStage = dispatchStage;
+	}
+    
 }
