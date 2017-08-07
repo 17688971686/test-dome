@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,12 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
 
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.Validate;
-import cs.domain.flow.HiProcessTask;
-import cs.domain.flow.RuProcessTask;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.project.SignDto;
@@ -68,6 +65,8 @@ public class SignController {
     public String add() {
         return ctrlName + "/add";
     }
+    
+  
 
     @RequiresPermissions("sign##post")
     @RequestMapping(name = "创建收文", path = "", method = RequestMethod.POST)
@@ -82,7 +81,40 @@ public class SignController {
 
         return signDto;
     }
-
+    
+    @RequiresPermissions("sign#html/reserveAdd#get")
+    @RequestMapping(name = "项目预签收页面" ,path = "html/reserveAdd",method = RequestMethod.GET)
+    public String reserveAdd(){
+    	
+    	return ctrlName + "/reserveAdd";
+    }
+    
+    
+    @RequiresPermissions("sign#html/reserveAddPost#post")
+    @RequestMapping(name = "新增预签收" ,path = "html/reserveAddPost",method = RequestMethod.POST)
+    public @ResponseBody SignDto reserveAddPost(@RequestBody SignDto signDto){
+    	if(!Validate.isString(signDto.getSignid())){
+    		signDto.setSignid(UUID.randomUUID().toString());
+    	}
+    	signService.reserveAddSign(signDto);
+    	
+    	return signDto;
+    }
+    
+    @RequiresPermissions("sign#html/reserveList#get")
+    @RequestMapping(name = "项目预签收列表" ,path = "html/reserveList",method = RequestMethod.GET)
+    public String reserveList(){
+    	
+    	return ctrlName + "/reserveList";
+    }
+    
+    @RequiresPermissions("sign#reserveListSign#post")
+    @RequestMapping(name = "获取预签收列表" ,path = "reserveListSign",method = RequestMethod.POST)
+    public @ResponseBody PageModelDto<SignDto> reserveListSign(HttpServletRequest request) throws ParseException{
+    	 ODataObj odataObj = new ODataObj(request);
+    	PageModelDto<SignDto> signlist = signService.findAllReserve(odataObj);
+    	return signlist;
+    }
     /**
      * 获取项目关联
      *
@@ -146,6 +178,13 @@ public class SignController {
         }
     }
 
+    @RequiresPermissions("sign#deleteReserve#delete")
+    @RequestMapping(name = "删除预签收收文", path = "deleteReserve", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteReserve(@RequestParam String signid){
+    	signService.deleteReserveSign(signid);
+    }
+    
     @RequestMapping(name = "初始收文编辑页面", path = "html/initFillPageData", method = RequestMethod.GET)
     @Transactional
     public @ResponseBody

@@ -9,13 +9,62 @@
                     {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
                 </strong>
             </caption>
-            <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
+         <!--  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption> -->
+        <caption class="text-right">  
+        <tr>
+        <td width="15%" class="text-center">QR-4.7-01-A2</td>
+        <td></td>
+        <td width="20%" class="text-center"></td>
+        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
+    </tr>
+    </caption> 
+    
 			<tbody>
 			
 			<tr>
+				<td width="15%" class="text-center">项目名称</td>
+				<td>{{vm.model.projectname}}</td>
+				<td width="15%" class="text-center">收文编号</td>
+				<td>{{vm.model.filecode}} </td>
+			</tr>
+			<tr>
+				<td width="15%" class="text-center">建设单位</td>
+				<td>
+				<div style="position: relative;">
+							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
+								<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" id="builtcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+							</select>
+							</span>
+						<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName"
+							   style="width: 214px; position: absolute; left: 0px;"value="">
+					</div>
+					</td>
+				<td width="15%" class="text-center">项目代码</td>
+				<td>{{vm.model.projectcode}} </td>
+			</tr>
+			<tr>
+				<td width="15%" class="text-center">编制单位</td>
+				<td>
+					<div style="position: relative;">
+							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
+								<select ng-model="vm.model.designcompanyName"  name="designcompanyName" id="designcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
+									<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
+								</select>
+							</span>
+						<input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName"
+							   style="width: 214px; position: absolute; left: 0px;"value="">
+					</div>
+				</td>
+				<td width="15%" class="text-center">报审概算</td>
+				<td>
+				<input type="text" style="width: 210px;" ng-model="vm.model.Declaration"  name="Declaration"  >万元
+				</td>
+			</tr>
+			
+		<tr>
 				<td width="15%" class="text-center">主办处室</td>
 				<td>
-
 					<div style="position: relative;">
 							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
 								<select ng-model="vm.model.maindeptName" ng-change="vm.findOfficeUsersByDeptName('main')"  name="maindeptName" id="maindeptName"style="width: 230px;height:26px; margin-left: -100px;">
@@ -64,46 +113,8 @@
 							   style="width: 214px; position: absolute; left: 0px;"value="">
 					</div>
 
-
 				</td>
 			</tr>
-			<tr>
-				<td width="15%" class="text-center">收文编号</td>
-				<td>{{vm.model.filecode}}</td>
-				<td width="15%" class="text-center">项目代码</td>
-				<td>{{vm.model.projectcode}} </td>
-			</tr>
-			<tr>
-				<td width="15%" rowspan="2" class="text-center">项目名称</td>
-				<td rowspan="2">{{vm.model.projectname}}</td>
-				<td width="15%" class="text-center">建设单位</td>
-				<td>
-					<div style="position: relative;">
-							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
-								<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" id="builtcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
-									<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
-							</select>
-							</span>
-						<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td width="15%" class="text-center">编制单位</td>
-				<td>
-					<div style="position: relative;">
-							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
-								<select ng-model="vm.model.designcompanyName"  name="designcompanyName" id="designcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
-									<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
-								</select>
-							</span>
-						<input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
-					</div>
-				</td>
-			</tr>
-
 			<tr>
 				<td width="15%" class="text-center" >缓急程度</td>
 				<td>
@@ -112,23 +123,11 @@
 					</select>
 				</td>
 
-				<td width="15%" class="text-center">年度计划类别</td>
-				<td>
-					<select ng-model="vm.model.yearplantype" name="yearplantype" id="yearplantype">
-						<option ng-repeat="x in DICT.YEARPLANTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
-			</tr>
-
-			<tr>
-				<td width="15%" class="text-center">秘密登记</td>
+				<td width="15%" class="text-center">秘密等级</td>
 				<td>
 					<select ng-model="vm.model.secrectlevel" name="secrectlevel" id="secrectlevel">
 						<option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
-				</td>
-				<td width="15%" class="text-center"></td>
-				<td>
 				</td>
 			</tr>
 
@@ -383,14 +382,12 @@
 			<tr>
 				<td width="15%" class="text-center">综合部拟办意见</td>
 				<td colspan="3">
-					请张主任阅示:
 					{{vm.model.comprehensivehandlesug}}
 				</td>
 			</tr>
 			<tr>
 				<td width="15%" class="text-center">中心领导签批意见</td>
 				<td colspan="3">
-					中心领导审批：
 					{{vm.model.leaderhandlesug}}
 				</td>
 			</tr>

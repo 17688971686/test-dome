@@ -41,7 +41,11 @@ public class DispatchDoc extends DomainBase {
     //项目类别
     @Column(columnDefinition = "VARCHAR(2)")
     private String projectType;
-
+    
+    //评审阶段
+    @Column(columnDefinition = "VARCHAR(40)")
+    private String dispatchStage;
+    
     //发文类别
     @Column(columnDefinition = "VARCHAR(20)")
     private String dispatchType;
@@ -581,5 +585,14 @@ public class DispatchDoc extends DomainBase {
     public void setFileSeq(Integer fileSeq) {
         this.fileSeq = fileSeq;
     }
+
+	public String getDispatchStage() {
+		return dispatchStage;
+	}
+
+	public void setDispatchStage(String dispatchStage) {
+		this.dispatchStage = dispatchStage;
+	}
+    
 }
 

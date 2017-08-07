@@ -316,7 +316,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
 				wp.setWorkStageTime(strdate+"("+day+")"+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
 				wp.setMeetingId(roomBookingDto.getMrID());
-				wp.setMeetingAddress(roomBookingDto.getAddressName());
+				MeetingRoom meeting = meetingRoomRepo.findById(roomBookingDto.getMrID());
+				wp.setMeetingAddress(meeting.getMrName());
 				rb.setWorkProgram(wp);
 			}
 			roomBookingRepo.save(rb);

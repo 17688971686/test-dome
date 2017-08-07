@@ -367,6 +367,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             fileTitle += "》";
             fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             dispatch.setFileTitle(fileTitle);
+           
 
             // 获取当前用户信息
             dispatch.setUserName(SessionUtil.getLoginName());
@@ -377,7 +378,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setSecretLevel(sign.getSecrectlevel());
             dispatch.setUrgentLevel(sign.getUrgencydegree());
         }
-
+        dispatch.setDispatchStage(sign.getReviewstage());//评审阶段
         BeanCopierUtils.copyProperties(dispatch, dispatchDto);
         dispatchDto.setSignId(signId);
         map.put("dispatch", dispatchDto);

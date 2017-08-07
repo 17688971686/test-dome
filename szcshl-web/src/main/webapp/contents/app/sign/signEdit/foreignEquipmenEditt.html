@@ -10,7 +10,17 @@
                     {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
                 </strong>
             </caption>
-            <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
+           <!--  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption> -->
+			
+		<caption class="text-right">  
+        <tr>
+        <td width="15%" class="text-center">QR-4.10-01-AO</td>
+        <td></td>
+        <td width="20%" class="text-center"></td>
+        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
+  	  </tr>
+   	 </caption> 
+    
 			<tbody>
 			
 			<tr>
@@ -70,14 +80,14 @@
 			</tr>
 			
 			<tr>
-				<td width="15%" class="text-center">收文编号</td>
-				<td>{{vm.model.filecode}}</td>
-				<td width="15%" class="text-center">项目代码</td>
-				<td>{{vm.model.projectcode}} </td>
-			</tr>
-			<tr>
 				<td width="15%" class="text-center">项目名称</td>
 				<td>{{vm.model.projectname}}</td>
+				<td width="15%" class="text-center">收文编号</td>
+				<td> {{vm.model.filecode}}</td>
+			</tr>
+			<tr>
+				<td width="15%" class="text-center">项目代码</td>
+				<td>{{vm.model.projectcode}}</td>
 				<td width="15%" class="text-center">采购单位</td>
 				<td>
 					<div style="position: relative;">
@@ -337,6 +347,25 @@
 					</table>
 				</td>
 			</tr>
+			
+	<tr>
+        <td width="15%" class="text-center">综合部拟办意见</td>
+        <td colspan="3">
+            <textarea rows="3" ng-model="vm.model.comprehensivehandlesug" style="width: 98%">{{ vm.model.comprehensivehandlesug }}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" class="text-center">中心领导签批意见</td>
+        <td colspan="3">
+            <textarea rows="3" ng-model="vm.model.leaderhandlesug" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" class="text-center">部长处理意见</td>
+        <td colspan="3">
+            <textarea rows="3" ng-model="vm.model.ministerhandlesug" style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
+        </td>
+    </tr>
 			<tr>
 				<td width="15%" class="text-center">送件人：</td>
 				<td colspan="3">

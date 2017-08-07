@@ -42,6 +42,8 @@ public class SignDto extends BaseDto {
     private String filecode;
 
     private String projectcode;
+    
+    private BigDecimal Declaration;
 
     private String reviewstage;
 
@@ -579,6 +581,11 @@ public class SignDto extends BaseDto {
     //关联阶段的项目
     private SignDto associateSign;
 
+    /**
+     * 默认办理类型
+     */
+    private String dealOrgType;
+    
     public Date getStartTime() {
         return startTime;
     }
@@ -2234,8 +2241,26 @@ public class SignDto extends BaseDto {
     public Date getPresignDate() {
         return presignDate;
     }
+    
 
-    public void setPresignDate(Date presignDate) {
+    public String getDealOrgType() {
+		return dealOrgType;
+	}
+
+	public void setDealOrgType(String dealOrgType) {
+		this.dealOrgType = dealOrgType;
+	}
+
+	public void setPresignDate(Date presignDate) {
         this.presignDate = presignDate;
     }
+
+	public BigDecimal getDeclaration() {
+		return Declaration;
+	}
+
+	public void setDeclaration(BigDecimal declaration) {
+		Declaration = declaration;
+	}
+	
 }

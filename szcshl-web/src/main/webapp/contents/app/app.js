@@ -280,6 +280,23 @@
                 controller: 'pauseProjectCtrl',
                 controllerAs: 'vm'
             })
+            }).state('reserveAdd', {	//新增预签收
+                url: '/reserveAdd',
+                templateUrl: rootPath + '/sign/html/reserveAdd.html',
+                controller: 'signReserveAddCtrl',
+                controllerAs: 'vm'
+            }).state('reserveList', {	//预签收列表
+                url: '/reserveList',
+                templateUrl: rootPath + '/sign/html/reserveList.html',
+                controller: 'signReserveCtrl',
+                controllerAs: 'vm'
+            }).state('reserveEdit', {	//预签收审批登记表
+                url: '/reserveEdit',
+                templateUrl: rootPath + '/sign/html/reserveList.html',
+                controller: 'signReserveCtrl',
+                controllerAs: 'vm'
+            })
+            //end#signList
 
             //begin#workprogram
             .state('workprogramEdit', {
@@ -506,7 +523,6 @@
         }      
 
         common.getTaskCount({$http: $http});
-        common.getPauseProjectCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     });
 

@@ -34,6 +34,7 @@
         }
         //选择默认办理部门
         vm.checkOrgType = function($event){
+        	
             var checkbox = $event.target;
             var checked = checkbox.checked;
             var checkboxValue = checkbox.value;

@@ -29,6 +29,7 @@ import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
+import cs.service.sys.CompanyServiceImpl;
 import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -50,7 +51,6 @@ import java.util.*;
 @Service
 public class SignServiceImpl implements SignService {
     private static Logger log = Logger.getLogger(SignServiceImpl.class);
-
     @Autowired
     private SignRepo signRepo;
     @Autowired
@@ -101,6 +101,8 @@ public class SignServiceImpl implements SignService {
         sign.setSignState(EnumState.NORMAL.getValue());
         //送件人默认魏俊辉(可以更改)
         sign.setSendusersign(Constant.SEND_SIGN_NAME);
+        //预签收状态为0
+    	signDto.setIspresign(Constant.EnumState.NO.getValue());
         Date now = new Date();
         //签收时间
         sign.setCreatedDate(now);
@@ -1494,6 +1496,66 @@ public class SignServiceImpl implements SignService {
         pageModelDto.setValue(signDispaWork);
         return pageModelDto;
     }
+
+	@Override
+	@Transactional
+	public void reserveAddSign(SignDto signDto) {
+		  Sign sign = new Sign();
+	        BeanCopierUtils.copyProperties(signDto, sign);
+	        sign.setSignState(EnumState.NORMAL.getValue());
+	        //送件人默认魏俊辉(可以更改)
+	        sign.setSendusersign(Constant.SEND_SIGN_NAME);
+	        //预签收状态为0
+	        sign.setIspresign(Constant.EnumState.NO.getValue());
+	        Date now = new Date();
+	        //签收时间
+	        sign.setCreatedDate(now);
+	        sign.setModifiedDate(now);
+	        sign.setCreatedBy(SessionUtil.getLoginName());
+	        sign.setModifiedBy(SessionUtil.getLoginName());
+	        sign.setIsLightUp("0");//默认为不亮灯
+	        signRepo.save(sign);
+		
+	}
+
+	@Override
+	public PageModelDto<SignDto> findAllReserve(ODataObj odataObj) {
+			PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
+			Criteria criteria  = signRepo.getExecutableCriteria();
+			criteria = odataObj.buildFilterToCriteria(criteria);
+			criteria.add(Restrictions.eq(Sign_.ispresign.getName(), Constant.EnumState.NO.getValue()));
+		  Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+		  pageModelDto.setCount(totalResult);
+		  criteria.setProjection(null);
+		  if(odataObj.getSkip() > 0 ){
+			  criteria.setFirstResult(odataObj.getTop());
+		  }
+		  if(odataObj.getTop() > 0){
+			  criteria.setMaxResults(odataObj.getTop());
+		  }
+		  List<Sign> signlist = criteria.list();
+		  List<SignDto> signDtos = new ArrayList<SignDto>(signlist ==null?0:signlist.size());
+		  if(signlist != null &&signlist.size() > 0){
+			   signlist.forEach(x ->{
+				   SignDto signDto = new SignDto();
+				   BeanCopierUtils.copyProperties(x, signDto);
+				   signDtos.add(signDto);
+			   });
+		  }
+		   pageModelDto.setValue(signDtos);
+		  
+        return  pageModelDto;
+	}
+
+	@Override
+	@Transactional
+	public void deleteReserveSign(String signid) {
+		Sign sign = signRepo.findById(signid);
+		if(sign !=null){
+			signRepo.delete(sign);
+			log.info(String.format("删除预签收项目", sign.getProjectname()));
+		}
+	}
     
 
 }
