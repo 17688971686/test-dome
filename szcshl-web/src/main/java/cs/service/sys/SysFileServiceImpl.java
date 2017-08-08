@@ -60,7 +60,7 @@ public class SysFileServiceImpl implements SysFileService {
 
             sysFileRepo.save(sysFile);
 
-            //先保存成功，再传输文件
+            //先保存成功，
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
             stream.write(bytes);
             stream.close();
