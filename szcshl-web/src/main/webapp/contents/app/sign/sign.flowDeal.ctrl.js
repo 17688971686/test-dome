@@ -218,6 +218,7 @@
                  signSvc.paymentGrid(vm);
             });
         }
+
         // begin 管理个人意见
         vm.ideaEdit = function (options) {
             common.initIdeaData(vm, $http, options);
