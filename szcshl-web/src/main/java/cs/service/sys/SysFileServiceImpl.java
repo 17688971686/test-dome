@@ -104,8 +104,12 @@ public class SysFileServiceImpl implements SysFileService {
         if (fileList != null && fileList.size() > 0) {
             String path = SysFileUtil.getUploadPath();
             fileList.forEach(f -> {
-                sysFileRepo.delete(f);
-                SysFileUtil.deleteFile(path + f.getFileUrl());
+                if(SessionUtil.getLoginName().equals(f.getCreatedBy())){
+                    sysFileRepo.delete(f);
+                    SysFileUtil.deleteFile(path + f.getFileUrl());
+                }else{
+                    throw new IllegalArgumentException("您没有权限删除该文件！");
+                }
             });
         }
     }
