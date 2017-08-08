@@ -29,7 +29,7 @@
         SIGN_QRFW: "SIGN_QRFW",            //项目负责人确认发文
         SIGN_BMLD_QRFW: "SIGN_BMLD_QRFW",  //部长审批发文
         SIGN_FGLD_QRFW: "SIGN_FGLD_QRFW",  //分管领导审批发文
-        SIGN_ZR_QRFW: "FLOW_SIGN_ZR_QRFW", //主任审批发文
+        SIGN_ZR_QRFW: "SIGN_ZR_QRFW", //主任审批发文
         SIGN_FWBH: "SIGN_FWBH",            //生成发文编号
         SIGN_CWBL: "SIGN_CWBL",            //财务办理
         SIGN_GD: "SIGN_GD",                //归档
@@ -38,11 +38,11 @@
     };
 
     var service = {
-        signFlowNode: signFlowNode,               //项目签收流程环节
+        getSignFlowNode: getSignFlowNode,               //项目签收流程环节
     };
     window.flowcommon = service;
 
-    function signFlowNode() {
+    function getSignFlowNode() {
         return signNode;
     }
 

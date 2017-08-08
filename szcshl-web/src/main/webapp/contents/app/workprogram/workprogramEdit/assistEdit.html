@@ -1,0 +1,129 @@
+<meta charset="UTF-8">
+<!--  协审流程编辑的工作方案  -->
+<form id="work_program_form" name="work_program_form">
+<!--  s table-->
+<table class="table table-bordered">
+    <tr>
+        <td style="width:10%;" class="formAlignRight">评审方式<span class="required">*</span></td>
+        <td colspan="3">
+            <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType">
+                <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+        </td>
+        <td style="width:10%;" class="formAlignRight">申报投资<span class="required">*</span></td>
+        <td colspan="3">
+            <input type="text" style="width:100px;" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
+                   id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+            万元
+            <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">申报建设内容</td>
+        <td colspan="7">
+            <textarea rows="3" ng-model="vm.work.buildContent" name="buildContent" cols=""  style="width:100%;"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">是否有补充资料函</td>
+        <td colspan="3">
+            <label>
+                <input type="radio" ng-value="9" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">是
+            </label>
+            <label>
+                <input type="radio" ng-value="0" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">否
+            </label>
+        </td>
+        <td class="formAlignRight">补充资料函发文日期</td>
+        <td colspan="3">
+            <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.suppLetterDate" value="" type="text"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">调研开始时间</td>
+        <td colspan="3">
+            <input name="studyBeginTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyBeginTime" type="text"/>
+        </td>
+        <td class="formAlignRight">调研结束时间</td>
+        <td colspan="3">
+            <input name="studyEndTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyEndTime" type="text"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">专家费用</td>
+        <td colspan="3">
+            <input type="text" style="width:30%;" ng-model="vm.work.expertCost" ng-value="0" name="expertCost"  data-val-digits="只能为数字">
+            万元
+            <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        <td class="text-center"></td>
+        <td colspan="3">
+
+        </td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">评审会时间</td>
+        <td colspan="7">
+            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        </td>
+    </tr>
+    <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
+        <td class="text-center" style="width:10%;">评审会日期</td>
+        <td class="text-center" style="width:15%;">会议室名称</td>
+        <td class="text-center" style="width:15%;">开始时间</td>
+        <td class="text-center" style="width:10%;">结束时间</td>
+        <td class="text-center" style="width:10%;">主持人</td>
+        <td class="text-center" colspan="3">会议内容</td>
+    </tr>
+    <tr ng-repeat="r in vm.work.roomBookingDtos track by $index" ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0">
+        <td class="text-center">{{r.rbDate}}</td>
+        <td class="text-center">{{r.addressName}}</td>
+        <td class="text-center">{{r.beginTimeStr}}</td>
+        <td class="text-center">{{r.endTimeStr}}</td>
+        <td class="text-center">{{r.host}}</td>
+        <td class="text-center" colspan="3">{{r.content}}</td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">拟聘请专家</td>
+        <td colspan="7">
+            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();">
+                <span class="glyphicon glyphicon-pencil"></span>编辑
+            </button>
+        </td>
+    </tr>
+    <tr ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+        <td class="text-center" style="width:10%;">拟聘请专家</td>
+        <td class="text-center" style="width:15%;">工作单位</td>
+        <td class="text-center" style="width:15%;">职务</td>
+        <td class="text-center" style="width:10%;">职称</td>
+        <td class="text-center" style="width:10%;">专业</td>
+        <td class="text-center" style="width:15%;">联系电话</td>
+        <td class="text-center" style="width:10%;">专家类别</td>
+        <td class="text-center" style="width:15%;">备注</td>
+    </tr>
+    <tr ng-repeat="x in vm.work.expertDtoList track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+        <td class="text-center">{{x.name}}</td>
+        <td class="text-center">{{x.comPany}}</td>
+        <td class="text-center">{{x.job}}</td>
+        <td class="text-center">{{x.post}}</td>
+        <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+        <td class="text-center">{{x.userPhone}}</td>
+        <td class="text-center">{{x.expeRttype}}</td>
+        <td class="text-center">{{x.remark}}</td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">拟邀请单位及领导</td>
+        <td colspan="7">
+            <textarea rows="3" ng-model="vm.work.inviteUnitLeader" name="mainPoint" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="formAlignRight">拟评审重点问题</td>
+        <td colspan="7">
+            <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
+        </td>
+    </tr>
+    </tbody>
+</table>    <!--  	end table -->
+</form>  <!-- end form -->

@@ -106,19 +106,9 @@
     <tr>
         <td style="width:150px;" class="text-center">部长审核意见</td>
         <td colspan="5">
-            <table style="width: 80%;">
-                <tr>
-                    <td>{{vm.dispatchDoc.ministerSuggesttion}}</td>
-                </tr>
-                <tr>
-                    <td style="padding-left:80%;">签名：
-                        {{vm.dispatchDoc.ministerName}}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-left:80%;">日期：{{vm.dispatchDoc.ministerDate}}</td>
-                </tr>
-            </table>
+            <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
         </td>
     </tr>
 
@@ -126,19 +116,9 @@
     <tr>
         <td style="width:150px;" class="text-center">分管副主任意见</td>
         <td colspan="5">
-            <table style="width: 80%;">
-                <tr>
-                    <td>{{vm.dispatchDoc.viceDirectorSuggesttion}}</td>
-                </tr>
-                <tr>
-                    <td style="padding-left:80%;">签名：
-                        {{vm.dispatchDoc.viceDirectorName}}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-left:80%;">日期：{{vm.dispatchDoc.viceDirectorDate}}</td>
-                </tr>
-            </table>
+            <p> {{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
         </td>
     </tr>
 
@@ -146,19 +126,9 @@
     <tr>
         <td style="width:150px;" class="text-center">主任签发</td>
         <td colspan="5">
-            <table style="width: 80%;">
-                <tr>
-                    <td>{{vm.dispatchDoc.DirectorIssue}}</td>
-                </tr>
-                <tr>
-                    <td style="padding-left:80%;">签名：
-                        {{vm.dispatchDoc.DirectorName}}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-left:80%;">日期：{{vm.dispatchDoc.DirectorDate}}</td>
-                </tr>
-            </table>
+            <p> {{vm.dispatchDoc.DirectorIssue}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.DirectorName">签名：{{vm.dispatchDoc.DirectorName}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.DirectorDate">日期：{{vm.dispatchDoc.DirectorDate}}</p>
         </td>
     </tr>
 

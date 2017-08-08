@@ -119,12 +119,16 @@
                         newWin.el.modal("hide");
                     }
                 }
-
-                newWin.el = createWinEl(newWin.scope, options.templateUrl)
-                    .on('hidden.bs.modal', function (e) {
-                        if (options.onClose && options.onClose.apply(this, e) == false) {
+                if(options.onClose){
+                    newWin.scope.onClose = function () {
+                        if (options.onClose && options.onClose.apply(this) == false) {
                             return false;
                         }
+                        newWin.el.modal("hide");
+                    }
+                }
+                newWin.el = createWinEl(newWin.scope, options.templateUrl)
+                    .on('hidden.bs.modal', function (e) {
                         destroy(newWin);
                     }).modal('show');  // 打开
                 return newWin;
@@ -216,7 +220,7 @@
                         <div class="modal-body text-primary"><p><i class="fa fa-question-circle" aria-hidden="true"></i> {{message}}</p></div>\
                         <div class="modal-footer">\
                             <button type="button" ng-click="ok()" class="btn btn-info" >确认</button>\
-                            <button type="button"  class="btn btn-info" data-dismiss="modal">取消</button>\
+                            <button type="button" ng-click="onClose()" class="btn btn-info" data-dismiss="modal">取消</button>\
                         </div>\
                     </div>\
                 </div>\

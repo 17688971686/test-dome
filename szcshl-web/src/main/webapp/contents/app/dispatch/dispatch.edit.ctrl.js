@@ -3,21 +3,20 @@
 
     angular.module('app').controller('dispatchEditCtrl', dispatch);
 
-    dispatch.$inject = ['$location', 'dispatchSvc', '$state', "$http"];
+    dispatch.$inject = ['$location', 'dispatchSvc', '$state', 'bsWin'];
 
-    function dispatch($location, dispatchSvc, $state, $http) {
+    function dispatch($location, dispatchSvc, $state, bsWin) {
         var vm = this;
         vm.title = '项目发文编辑';
         vm.sign = {};
-        vm.serarchSign = {};        //发文查询对象
-        vm.dispatchDoc = {};        //发文对象
+        vm.searchSign = {};        //发文查询对象
+        vm.dispatchDoc = {};       //发文对象
         vm.dispatchDoc.signId = $state.params.signid;
 
         vm.showFlag = {
             buttSysFile : false,        //显示附件按钮
         }
         vm.busiFlag = {
-            signleToMerge : false,      //单个发文改成合并发文(多余的,后期修改)
             isMerge : false,            //是否合并发文
             isMain : false,             //是否合并发文主项目
         }
@@ -29,27 +28,24 @@
 
         //发文方式改变事件
         vm.sigleProject = function () {
-        	 //console.log(vm.dispatchDoc.isMainProject);
             //1、由合并发文主项目改为单个发文
             if(vm.dispatchDoc.dispatchWay == "1" ){
-                if(vm.busiFlag.signleToMerge){
-                    vm.busiFlag.signleToMerge = false;
-                }
-                //console.log(vm.busiFlag.isMain);
-                //console.log(vm.busiFlag.isMerge);
                 if(vm.busiFlag.isMerge && vm.busiFlag.isMain){
-                    common.confirm({
-                        title: "温馨提示",
-                        vm: vm,
-                        msg: "该项目已经设为合并发文，并且已经有关联项目，如果现在要取消合并发文，以前的关联信息将被删除，您确定要取消合并发文么?",
-                        fn: function () {
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "该项目已经设为合并发文，并且已经有关联项目，如果现在要取消合并发文，以前的关联信息将被删除，您确定要取消合并发文么?",
+                        onOk: function () {
                             $('.confirmDialog').modal('hide');
-                            vm.dispatchDoc.isMainProject = "0";
-                            dispatchSvc.deleteAllMerge(vm);
-                            vm.busiFlag.isMerge=false;
-                            vm.busiFlag.isMain=false;
+                            dispatchSvc.cancelProject(vm.dispatchDoc.signId,null,function (data) {
+                                if (data.flag || data.reCode == "ok") {
+                                    vm.dispatchDoc.isMainProject = "0";
+                                    vm.busiFlag.isMerge=false;
+                                    vm.busiFlag.isMain=false;
+                                }
+                                bsWin.alert(data.reMsg);
+                            });
                         },
-                        cancel:function(){
+                        onClose : function(){
                             vm.dispatchDoc.dispatchWay = "2";
                             $('.confirmDialog').modal('hide');
                         }
@@ -57,25 +53,16 @@
                 }
             //2、由单个发文改为合并发文
             }else if(vm.dispatchDoc.dispatchWay == "2" ){
-            	 console.log(vm.dispatchDoc.isMainProject);
                 if(!vm.busiFlag.isMerge){
                 	vm.busiFlag.isMerge=true;
-                    vm.busiFlag.signleToMerge = true;  //单个发文改成合并发文
                     vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
                 }
             }
         }
 
-        //待选择过来器
-        vm.filterSign = function(item){
-            if(vm.dispatchDoc.signId != item.signid){
-                return item;
-            }
-        }
         // 创建发文
         vm.create = function () {
             dispatchSvc.saveDispatch(vm);
-            //vm.busiFlag.signleToMerge = "";  //单个发文改成合并发文(除去改标签）
         }
         // 核减（增）/核减率（增）计算
         vm.count = function () {
@@ -102,32 +89,61 @@
         // 打开合并页面
         vm.gotoMergePage = function () {
         	 vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
-            //没保存或者单个发文改成合并发文主项目时候要先进行保存
-           // if((vm.busiFlag.signleToMerge && vm.dispatchDoc.isMainProject == 9) || !vm.dispatchDoc.id){
-        	 if(!vm.dispatchDoc.id){
-
-                common.alert({
-                    vm: vm,
-                    msg: "请先进行保存！",
-                    closeDialog:true,
-                })
+             //没保存或者单个发文改成合并发文主项目时候要先进行保存
+            if( vm.dispatchDoc.isMainProject == 9 || !vm.dispatchDoc.id){
+                bsWin.alert("请先保存！");
             }else{
-                dispatchSvc.gotoMergePage(vm);
+                //初始化合并评审信息
+                dispatchSvc.initMergeInfo(vm,vm.dispatchDoc.signId);
+                $("#mwindow").kendoWindow({
+                    width: "1200px",
+                    height: "630px",
+                    title: "合并发文",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
             }
-        }
-
-        vm.searchMergeSign = function () {
-            dispatchSvc.getSignForMerge(vm);
         }
 
         // 选择合并发文项目
         vm.chooseProject = function () {
-            dispatchSvc.chooseProject(vm);
+            var selIds = $("input[name='checksign']:checked");
+            if(selIds.length == 0){
+                bsWin.alert("请选择要合并发文的项目！");
+            }else{
+                var signIdArr = [];
+                $.each(selIds, function (i, obj) {
+                    signIdArr.push(obj.value);
+                });
+                dispatchSvc.chooseProject(vm.dispatchDoc.signId,signIdArr.join(","),function (data) {
+                    if (data.flag || data.reCode == "ok") {
+                        dispatchSvc.initMergeInfo(vm,vm.dispatchDoc.signId);
+                    }
+                    bsWin.alert(data.reMsg);
+                });
+            }
         }
 
         // 取消选择
         vm.cancelProject = function () {
-            dispatchSvc.cancelProject(vm);
+            var linkSignId = $("input[name='checkss']:checked");
+            if (linkSignId.length < 1){
+                bsWin.alert("请选择要取消合并发文的项目！");
+            }else{
+                var ids = [];
+                $.each(linkSignId, function (i, obj) {
+                    ids.push(obj.value);
+                });
+                dispatchSvc.cancelProject(vm.dispatchDoc.signId,ids.join(","),function (data) {
+                    if (data.flag || data.reCode == "ok") {
+                        dispatchSvc.initMergeInfo(vm,vm.dispatchDoc.signId);
+                    }
+                    bsWin.alert(data.reMsg);
+                });
+            }
+
         }
 
         // 关闭窗口
@@ -135,8 +151,26 @@
             window.parent.$("#mwindow").data("kendoWindow").close();
         }
 
+        //合并发文待选过滤器
+        vm.filterMergeSign = function(item){
+            var isMatch = true;
+            if(vm.searchSign.projectname && (item.projectname).indexOf(vm.searchSign.projectname) == -1){
+                isMatch = false;
+            }
+            if(vm.searchSign.reviewstage && (item.reviewstage != vm.searchSign.reviewstage)){
+                isMatch = false;
+            }
+            if(vm.searchSign.builtcompanyName && (item.builtcompanyName).indexOf(vm.searchSign.builtcompanyName) == -1){
+                isMatch = false;
+            }
+            if(isMatch){
+                return item;
+            }
+        }
+
+        //重置合并发文
         vm.formReset = function () {
-            vm.serarchSign = {};
+            vm.searchSign = {};
         }
 
     }

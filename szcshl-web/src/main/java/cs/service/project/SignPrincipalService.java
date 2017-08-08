@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import cs.domain.project.SignPrincipal;
 import cs.domain.sys.User;
 
 import java.util.List;
@@ -11,17 +12,18 @@ import java.util.List;
  */
 public interface SignPrincipalService {
 
-    boolean isMainPri(String userId,String signId,String isMainFolw);
+    boolean isMainPri(String userId,String signId);
 
-    boolean isFlowPri(String userId,String signId,String isMainFolw);
+    boolean isFlowPri(String userId,String signId);
 
-    List<User> getSignPriUser(String signId, String isMainFolw);
+    boolean isMainFlowPri(String userId,String signId);
 
-    User getMainPriUser(String signId, String isMainFolw);
+    List<User> getSignPriUser(String signId,String branchId);
 
-    User getSecondPriUser(String signId, String isMainFolw);
+    User getMainPriUser(String signId);
 
-    List<User> getAllSecondPriUser(String signId, String isMainFolw);
+    List<User> getAllSecondPriUser(String signId);
 
-    User getPriUserByType(String signId, String isMainFolw,String userType);
+    SignPrincipal getPrincipalInfo(String userId, String signId);
+
 }

@@ -19,36 +19,46 @@
 </div>
 
 <div class="well well-sm" style="background:white;">
+    <ul id="wpTab" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="wp_edit">编辑页面</a></li>
+        <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0"><a data-toggle="tab" for-div="wp_list">项目其它工作方案</a></li>
+    </ul>
 
 
     <!--S 编辑页面 -->
-    <div>
-    	<!-- S 项目建议书/可行性研究报告/项目概算/提前介入/资金申请报告/其他 -->
-    	 <div ng-show="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='资金申请报告'|| vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='提前介入' || vm.work.workreviveStage=='其它'" ng-include
-             src="'${path}/contents/app/workprogram/workprogramEdit/all_Default.html'"></div>
-    	<!-- E 项目建议书/可行性研究报告/项目概算/提前介入/资金申请报告/其他 -->
-    	
-        <!-- S 设备清单（进口） -->
-        <div ng-show="vm.work.workreviveStage=='设备清单（进口）'" ng-include
-             src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div>
-        <!-- E 设备清单（进口） -->
+    <div class="tab-content" style="background:white;">
+        <!--S 编辑页面 -->
+        <div class="well well-sm tab-pane fade in active" style="background:white;" id="wp_edit">
 
-        <!-- S 设备清单（国产） -->
-        <div ng-show="vm.work.workreviveStage=='设备清单（国产）'" ng-include
-             src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div>
-        <!-- S 设备清单（国产） -->
+            <!-- S 项目建议书/可行性研究报告 -->
+            <div ng-show="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='资金申请报告'|| vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='提前介入' || vm.work.workreviveStage=='其它'">
+                <div ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEdit.html'"></div>
+                <div ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEdit.html'"></div>
+            </div>
+            <!-- E 项目建议书/可行性研究报告 -->
+            <!-- S 设备清单（进口） -->
+            <div ng-show="vm.work.workreviveStage=='设备清单（进口）'" ng-include
+                 src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div>
+            <!-- E 设备清单（进口） -->
+
+            <!-- S 设备清单（国产） -->
+            <div ng-show="vm.work.workreviveStage=='设备清单（国产）'" ng-include
+                 src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div>
+            <!-- S 设备清单（国产） -->
+        </div>
+        <!--E 编辑页面 -->
+        <!--S 工作方案查看页面 -->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="wp_list">
+            <div ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
+        </div>
+        <!--E 工作方案查看页面 -->
     </div>
-    <!--E 编辑页面 -->
-
     <!--S 项目关联弹窗 -->
-    <div class="workPro" style="background:white;display:none;">
+    <div class="mergeSignWP" id="mergeSignWP" style="background:white;display:none;">
         <form id="searchformi" name="searchformi">
             <div class="toolbar">
                 <button class="btn btn-sm btn-success" ng-click="vm.mergeAddWork()"><span
                         class="glyphicon glyphicon-ok"></span>保存
-                </button>
-                <button class="btn btn-sm btn-info" ng-click="vm.fleshWaitSelWp()"><span
-                        class="glyphicon glyphicon-ok"></span>刷新
                 </button>
                 <button class="btn btn-sm btn-primary" ng-click="vm.onWorkClose()"><span
                         class="glyphicon glyphicon-chevron-left"></span>关闭
@@ -59,18 +69,11 @@
                     <tr>
                         <td class="formAlignRight" style="width:100px;">项目名称</td>
                         <td>
-
-                            <input type="text" ng-model="vm.serchWork.projectname" >
+                            <input type="text" ng-model="vm.serchSign.projectname" >
                         </td>
-                        <td class="formAlignRight" style="width:100px;">第一负责人</td>
+                        <td class="formAlignRight" style="width:100px;">评审阶段</td>
                         <td>
-
-                            <input type="text" ng-model="vm.serchWork.mianChargeUserName">
-                        </td>
-                        <td class="formAlignRight" style="width:100px;">第二负责人</td>
-                        <td>
-
-                            <input type="text" ng-model="vm.serchWork.secondChargeUserName">
+                            <input type="text" ng-model="vm.serchSign.reviewstage">
                         </td>
                     </tr>
                 </table>
@@ -84,25 +87,33 @@
                     <div style="width:500px; height:400px;overflow: auto;">
                         <table class="table table-bordered" style="width: 500px;">
                             <tr>
-                                <td style="width:50px;" align="center" bgcolor="#eeeeee">选择</td>
-                                <td  align="center" bgcolor="#eeeeee">项目名称</td>
-                                <td style="width:60px;" align="center" bgcolor="#eeeeee">类型</td>
-                                <td style="width:80px;" align="center" bgcolor="#eeeeee">第一负责人</td>
-                                <td style="width:100px;" align="center" bgcolor="#eeeeee">第二负责人</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
                             </tr>
-                            <tr ng-repeat="x in vm.unSeledWork | filter:vm.filterSelWP">
-                                <td align="center"><input type="checkbox" name="checkwork" value="{{ x.id + '$'+ x.signDto.signid}}"/></td>
-                                <td style="text-align: center;">{{ x.projectName }}</td>
-                                <td style="text-align: center;">{{ x.isMain == '9'?'主方案':'协方案' }}</td>
-                                <td style="text-align: center;">{{ x.mianChargeUserName }}</td>
-                                <td style="text-align: center;">{{ x.secondChargeUserName }}</td>
+                            <tr ng-repeat="x in vm.unMergeSign | filter:vm.filterSign ">
+                                <td align="center"><input type="checkbox" name="mergeSign" value="{{x.signid }}"/></td>
+                                <td style="text-align: center;">{{ x.projectname }}</td>
+                                <td style="text-align: center;">{{ x.reviewstage }}</td>
+                                <td style="text-align: center;">{{ x.reviewdeptid }}</td>
+                                <td style="text-align: center;">{{ x.builtcompanyid }}</td>
+                                <td style="text-align: center;">{{ x.signdate }}</td>
+                                <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
+                                <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
+                                <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
                             </tr>
                         </table>
                     </div>
                 </td>
                 <td class="text-center" style="height:200px;width:100px;">
-                    <p><button class="btn btn-xs btn-default" ng-click="vm.chooseWP()" type="button" ><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
-                    <p><button class="btn btn-xs btn-default" ng-click="vm.cancelWP()" type="button" ><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
+                    <p><button class="btn btn-xs btn-default" ng-click="vm.chooseSign()" type="button" ><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
+                    <p><button class="btn btn-xs btn-default" ng-click="vm.cancelSign()" type="button" ><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
                 </td>
 
                 <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
@@ -110,19 +121,26 @@
                     <div style="width:500px; height:400px;overflow: auto;">
                         <table class="table table-bordered" id="workTab" style="width: 500px;overflow: auto;">
                             <tr>
-                                <td style="width:50px;" align="center" bgcolor="#eeeeee">选择</td>
-                                <td  align="center" bgcolor="#eeeeee">项目名称</td>
-                                <td style="width:60px;" align="center" bgcolor="#eeeeee">类型</td>
-                                <td style="width:80px;" align="center" bgcolor="#eeeeee">第一负责人</td>
-                                <td style="width:100px;" align="center" bgcolor="#eeeeee">第二负责人</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
+                                <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
                             </tr>
-                            <tr ng-repeat="w in vm.selectedWP| filter:vm.filterWP">
-                                <td align="center"><input type="checkbox" name="cancelSeledWPid" value="{{ w.id }}"/>
-                                </td>
-                                <td style="text-align: center;">{{ w.projectName }}</td>
-                                <td style="text-align: center;">{{ w.isMain == '9'?'主方案':'协方案' }}</td>
-                                <td style="text-align: center;">{{ w.mianChargeUserName }}</td>
-                                <td style="text-align: center;">{{ w.secondChargeUserName }}</td>
+                            <tr ng-repeat="x in vm.mergeSign">
+                                <td align="center"><input type="checkbox" name="cancelMergeSignid" value="{{x.signid}}"/></td>
+                                <td style="text-align: center;">{{ x.projectname }}</td>
+                                <td style="text-align: center;">{{ x.reviewstage }}</td>
+                                <td style="text-align: center;">{{ x.reviewdeptid }}</td>
+                                <td style="text-align: center;">{{ x.builtcompanyid }}</td>
+                                <td style="text-align: center;">{{ x.signdate }}</td>
+                                <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
+                                <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
+                                <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
                             </tr>
                         </table>
                     </div>
@@ -136,33 +154,14 @@
     <div id="stageWindow" style="background:white;display:none;">
         <form id="stageForm" name="stageForm">
             <div class="toolbar">
-                <button class="btn btn-sm btn-primary" ng-click="vm.gotoRoom()"><span
-                        class="glyphicon glyphicon-chevron-left"></span>同项目预定多次会议室
-                </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.saveWorks()" ng-disabled="vm.isSubmit"
-                        ng-show="updateWork"><span class="glyphicon glyphicon-ok"></span>保存
-                </button>
                 <button class="btn btn-sm btn-success" ng-click="vm.saveRoom()"><span
                         class="glyphicon glyphicon-ok"></span>保存
                 </button>
-
-                <button class="btn btn-sm btn-info" ng-click="vm.preBookRoom()" ng-show="vm.businessFlag.isHavePre"><span
-                        class="glyphicon glyphicon-ok"></span>上一页
-                </button>
-                <button class="btn btn-sm btn-info" ng-click="vm.nextBookRoom()" ng-show="vm.businessFlag.isHaveNext"><span
-                        class="glyphicon glyphicon-ok"></span>下一页
-                </button>
-
                 <button class="btn btn-sm btn-primary" ng-click="vm.onRoomClose()"><span
                         class="glyphicon glyphicon-chevron-left"></span>关闭
                 </button>
             </div>
             <table style="width:100%">
-                <tr>
-                    <td class="formAlignRight" style="width:100px;"></td>
-                    <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                    <td></td>
-                </tr>
                 <tr>
                     <td class="formAlignRight">会议名称： <span class="required">*</span></td>
                     <td>
@@ -180,24 +179,20 @@
                 <tr>
                     <td class="formAlignRight">会议地点： <span class="required">*</span></td>
                     <td>
-                        <select ng-model="vm.roombook.mrID" name="mrID" id="mrID" class="form-control input-sm "
-                                data-val="true" data-val-required="必填">
-                            <option ng-repeat="x in vm.roombookings" value="{{x.id}}">{{x.addr}}</option>
+                        <select ng-model="vm.roombook.mrID" name="mrID" id="mrID" data-val="true" data-val-required="必填">
+                            <option ng-repeat="x in vm.roombookingList" value="{{x.id}}" ng-checked="vm.roombook.mrID == x.id">{{x.addr}}</option>
                         </select>
                     </td>
                     <td><span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span></td>
-
                 </tr>
                 <tr>
                     <td class="formAlignRight">会议类型： <span class="required">*</span></td>
                     <td>
-                        <select ng-model="vm.roombook.rbType" name="rbType" id="rbType" class="form-control input-sm ">
-                            <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}
-                            </option>
+                        <select ng-model="vm.roombook.rbType" name="rbType" id="rbType">
+                            <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
                     </td>
                     <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>
-
                 </tr>
                 <tr>
                     <td class="formAlignRight">会议主持人： <span class="required">*</span></td>
@@ -206,7 +201,6 @@
                                id="host" name="host" data-val="true" data-val-required="必填">
                     </td>
                     <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
-
                 </tr>
                 <tr>
                     <td class="formAlignRight">会议预定人： <span class="required">*</span></td>

@@ -1,8 +1,11 @@
 package cs.service.project;
 
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.runtime.ProcessInstance;
+
 import cs.common.ResultMsg;
-import cs.domain.flow.HiProcessTask;
-import cs.domain.flow.RuProcessTask;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -11,14 +14,10 @@ import cs.model.project.ProjectStopDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
 import cs.repository.odata.ODataObj;
-import org.activiti.engine.runtime.ProcessInstance;
-
-import java.util.List;
-import java.util.Map;
 
 public interface SignService {
 
-    void createSign(SignDto signDto);
+    ResultMsg createSign(SignDto signDto);
 
     PageModelDto<SignDto> get(ODataObj odataObj);
 
@@ -34,20 +33,20 @@ public interface SignService {
 
     public void deleteSigns(String[] signids);
 
-    ResultMsg stopFlow(String signid,ProjectStopDto projectStopDto);
-
-    ResultMsg restartFlow(String signid);
-
-    void endFlow(String signid);
 
     SignDto findById(String signid, boolean queryAll);
 
-    //以下是新流程处理
+    //流程处理begin
     ResultMsg startNewFlow(String signid);
 
-    ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto);
+    ResultMsg stopFlow(String signid, ProjectStopDto projectStopDto);
 
-    ResultMsg dealXSFlow(ProcessInstance processInstance, FlowDto flowDto);
+    ResultMsg restartFlow(String signid);
+
+    ResultMsg endFlow(String signid);
+
+    ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto);
+    //流程处理end
 
     List<SignDto> findAssistSign();
 
@@ -77,4 +76,21 @@ public interface SignService {
 
 	void deleteReserveSign(String signid);
 
+    /******************   以下是项目关联操作  *******************/
+    List<SignDto> unMergeWPSign(String signId);
+
+    List<SignDto> getMergeWPSignBySignId(String signId);
+
+    List<SignDto> unMergeDISSign(String signId);
+
+    List<SignDto> getMergeDISSignBySignId(String signId);
+
+    ResultMsg mergeSign(String signId, String mergeIds, String mergeType);
+
+    ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType);
+
+    /***********************   更改项目状态  ****************************/
+    boolean updateSignState(String signId,String state);
+
+    boolean updateSignProcessState(String signId,Integer processState);
 }

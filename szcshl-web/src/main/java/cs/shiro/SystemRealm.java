@@ -20,6 +20,9 @@ public class SystemRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    /**
+     * 登录认证
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         // TODO Auto-generated method stub
@@ -30,6 +33,9 @@ public class SystemRealm extends AuthorizingRealm {
         return authorizationInfo;
     }
 
+    /**
+     * 授权,只有成功通过doGetAuthenticationInfo方法的认证后才会执行。
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         System.out.println("authentication process");

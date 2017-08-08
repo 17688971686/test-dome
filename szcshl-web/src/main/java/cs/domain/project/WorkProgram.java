@@ -1,13 +1,13 @@
 package cs.domain.project;
 
 import cs.domain.DomainBase;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertSelCondition;
 import cs.domain.meeting.RoomBooking;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
-
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +21,6 @@ import java.util.List;
 @Table(name = "cs_work_program")
 @DynamicUpdate(true)
 public class WorkProgram extends DomainBase {
-
     @Id
     private String id;
 
@@ -121,23 +120,14 @@ public class WorkProgram extends DomainBase {
     private String projectBackGround;
 
     //评估部门
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String reviewOrgId;
-
-    @Column(columnDefinition = "VARCHAR(128)")
+    @Column(columnDefinition = "VARCHAR(512)")
     private String reviewOrgName;
 
     //第一负责人
     @Column(columnDefinition = "VARCHAR(64)")
-    private String mianChargeUserId;
-
-    @Column(columnDefinition = "VARCHAR(64)")
     private String mianChargeUserName;
 
     //第二负责人(可以有多个)
-    @Column(columnDefinition = "VARCHAR(2000)")
-    private String secondChargeUserId;
-
     @Column(columnDefinition = "VARCHAR(1000)")
     private String secondChargeUserName;
 
@@ -150,7 +140,7 @@ public class WorkProgram extends DomainBase {
     private Date suppLetterDate;
 
     //评审会时间
-    @Column(columnDefinition = "DATE")
+   /* @Column(columnDefinition = "DATE")
     private Date stageTime;
 
     //评审时间
@@ -162,7 +152,7 @@ public class WorkProgram extends DomainBase {
     private String meetingAddress;
 
     @Column(columnDefinition = "VARCHAR(128)")
-    private String meetingId;
+    private String meetingId;*/
 
     //调研开始时间
     @Column(columnDefinition = "DATE")
@@ -207,10 +197,6 @@ public class WorkProgram extends DomainBase {
     //标题日期
     @Column(columnDefinition = "DATE")
     private Date titleDate;
-
-    //是否主流程的工作方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isMain;
     
     //S 设备清单（进口）
     //项目概况
@@ -228,20 +214,29 @@ public class WorkProgram extends DomainBase {
     //是否已经生产会前准备材料
     @Column(columnDefinition = "varchar(2)")
     private String isCreateDoc;
-    
     //E 设备清单（进口）
 
-    //收文，一对一
+    //邀请单位及领导
+    @Column(columnDefinition = "varchar(1024)")
+    private String inviteUnitLeader;
+
+    //流程分支序号
+    @Column(columnDefinition = "varchar(2)")
+    private String branchId;
+
+    //收文，一对一（只做级联删除）
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "signId")
     private Sign sign;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="expertReviewId")
-    private ExpertReview expertReview;
+    /**
+     * 专家评审方案ID（这里不做关联了）
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String expertReviewId;
 
     //会议预定信息
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workProgram")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workProgram",orphanRemoval=true)
     private List<RoomBooking> roomBookings;
 
     public Sign getSign() {
@@ -420,14 +415,6 @@ public class WorkProgram extends DomainBase {
         this.projectBackGround = projectBackGround;
     }
 
-    public String getReviewOrgId() {
-        return reviewOrgId;
-    }
-
-    public void setReviewOrgId(String reviewOrgId) {
-        this.reviewOrgId = reviewOrgId;
-    }
-
     public String getReviewOrgName() {
         return reviewOrgName;
     }
@@ -436,28 +423,12 @@ public class WorkProgram extends DomainBase {
         this.reviewOrgName = reviewOrgName;
     }
 
-    public String getMianChargeUserId() {
-        return mianChargeUserId;
-    }
-
-    public void setMianChargeUserId(String mianChargeUserId) {
-        this.mianChargeUserId = mianChargeUserId;
-    }
-
     public String getMianChargeUserName() {
         return mianChargeUserName;
     }
 
     public void setMianChargeUserName(String mianChargeUserName) {
         this.mianChargeUserName = mianChargeUserName;
-    }
-
-    public String getSecondChargeUserId() {
-        return secondChargeUserId;
-    }
-
-    public void setSecondChargeUserId(String secondChargeUserId) {
-        this.secondChargeUserId = secondChargeUserId;
     }
 
     public String getSecondChargeUserName() {
@@ -482,14 +453,6 @@ public class WorkProgram extends DomainBase {
 
     public void setSuppLetterDate(Date suppLetterDate) {
         this.suppLetterDate = suppLetterDate;
-    }
-
-    public String getMeetingAddress() {
-        return meetingAddress;
-    }
-
-    public void setMeetingAddress(String meetingAddress) {
-        this.meetingAddress = meetingAddress;
     }
 
     public Date getStudyBeginTime() {
@@ -564,38 +527,6 @@ public class WorkProgram extends DomainBase {
         this.leaderDate = leaderDate;
     }
 
-    public String getIsMain() {
-        return isMain;
-    }
-
-    public void setIsMain(String isMain) {
-        this.isMain = isMain;
-    }
-
-    public Date getStageTime() {
-        return stageTime;
-    }
-
-    public void setStageTime(Date stageTime) {
-        this.stageTime = stageTime;
-    }
-
-    public String getMeetingId() {
-        return meetingId;
-    }
-
-    public void setMeetingId(String meetingId) {
-        this.meetingId = meetingId;
-    }
-
-    public String getWorkStageTime() {
-        return workStageTime;
-    }
-
-    public void setWorkStageTime(String workStageTime) {
-        this.workStageTime = workStageTime;
-    }
-
     public String getTitleName() {
         return titleName;
     }
@@ -634,14 +565,6 @@ public class WorkProgram extends DomainBase {
 
     public void setIsMainProject(String isMainProject) {
         this.isMainProject = isMainProject;
-    }
-
-    public ExpertReview getExpertReview() {
-        return expertReview;
-    }
-
-    public void setExpertReview(ExpertReview expertReview) {
-        this.expertReview = expertReview;
     }
 
 	public String getProjectSurvey() {
@@ -691,8 +614,29 @@ public class WorkProgram extends DomainBase {
 	public void setMainDeptName(String mainDeptName) {
 		this.mainDeptName = mainDeptName;
 	}
-	
-    
-	
-    
+
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getInviteUnitLeader() {
+        return inviteUnitLeader;
+    }
+
+    public void setInviteUnitLeader(String inviteUnitLeader) {
+        this.inviteUnitLeader = inviteUnitLeader;
+    }
+
+    public String getExpertReviewId() {
+        return expertReviewId;
+    }
+
+    public void setExpertReviewId(String expertReviewId) {
+        this.expertReviewId = expertReviewId;
+    }
 }

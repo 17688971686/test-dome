@@ -35,15 +35,6 @@ public class RoomBookingDto extends BaseDto{
 	private String endTimeStr;
 
 	private String workProgramId;//工作方案Id
-	private WorkProgram workProgram;
-
-	public WorkProgram getWorkProgram() {
-		return workProgram;
-	}
-
-	public void setWorkProgram(WorkProgram workProgram) {
-		this.workProgram = workProgram;
-	}
 
 	public String getId() {
 		return id;

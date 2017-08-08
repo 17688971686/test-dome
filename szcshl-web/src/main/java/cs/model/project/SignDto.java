@@ -7,12 +7,9 @@ import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-import cs.domain.project.Sign;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.model.sys.OrgDto;
-
-import javax.persistence.*;
 
 public class SignDto extends BaseDto {
 
@@ -43,15 +40,13 @@ public class SignDto extends BaseDto {
 
     private String projectcode;
     
-    private BigDecimal Declaration;
+    private BigDecimal declaration;
 
     private String reviewstage;
 
     private String ispresign;
 
     private String projectname;
-
-    private String isregisteredcompleted;
 
     private String ischangeEstimate;
 
@@ -305,20 +300,11 @@ public class SignDto extends BaseDto {
     //部长处理意见
     private String ministerhandlesug;
 
-    //是否已经发起流程
-    private String folwState;
-
     //收文状态
     private String signState;
 
-    //是否完成工作方案评审
-    private String isreviewCompleted;
-
-    //是否完成分支工作方案评审
-    private String isreviewACompleted;
-
-    //是否完成发文
-    private String isDispatchCompleted;
+    //项目流程状态信息
+    private Integer processState;
 
     //部门
     private OrgDto orgDto;
@@ -585,7 +571,7 @@ public class SignDto extends BaseDto {
      * 默认办理类型
      */
     private String dealOrgType;
-    
+
     public Date getStartTime() {
         return startTime;
     }
@@ -651,22 +637,6 @@ public class SignDto extends BaseDto {
         this.workProgramDtoList = workProgramDtoList;
     }
 
-    public String getIsreviewCompleted() {
-        return isreviewCompleted;
-    }
-
-    public void setIsreviewCompleted(String isreviewCompleted) {
-        this.isreviewCompleted = isreviewCompleted;
-    }
-
-    public String getIsreviewACompleted() {
-        return isreviewACompleted;
-    }
-
-    public void setIsreviewACompleted(String isreviewACompleted) {
-        this.isreviewACompleted = isreviewACompleted;
-    }
-
     public void setOrgDto(OrgDto orgDto) {
         this.orgDto = orgDto;
     }
@@ -717,14 +687,6 @@ public class SignDto extends BaseDto {
 
     public void setProjectname(String projectname) {
         this.projectname = projectname;
-    }
-
-    public String getIsregisteredcompleted() {
-        return isregisteredcompleted;
-    }
-
-    public void setIsregisteredcompleted(String isregisteredcompleted) {
-        this.isregisteredcompleted = isregisteredcompleted;
     }
 
     public String getMaindepetid() {
@@ -1440,28 +1402,12 @@ public class SignDto extends BaseDto {
         this.assistDeptUserName = assistDeptUserName;
     }
 
-    public String getFolwState() {
-        return folwState;
-    }
-
-    public void setFolwState(String folwState) {
-        this.folwState = folwState;
-    }
-
     public String getSignState() {
         return signState;
     }
 
     public void setSignState(String signState) {
         this.signState = signState;
-    }
-
-    public String getIsDispatchCompleted() {
-        return isDispatchCompleted;
-    }
-
-    public void setIsDispatchCompleted(String isDispatchCompleted) {
-        this.isDispatchCompleted = isDispatchCompleted;
     }
 
     public String getmFlowMainUserId() {
@@ -2246,6 +2192,10 @@ public class SignDto extends BaseDto {
     }
     
 
+	public void setPresignDate(Date presignDate) {
+        this.presignDate = presignDate;
+    }
+    
     public String getDealOrgType() {
 		return dealOrgType;
 	}
@@ -2253,19 +2203,14 @@ public class SignDto extends BaseDto {
 	public void setDealOrgType(String dealOrgType) {
 		this.dealOrgType = dealOrgType;
 	}
-
-	public void setPresignDate(Date presignDate) {
-        this.presignDate = presignDate;
-    }
-
+	
 	public BigDecimal getDeclaration() {
-		return Declaration;
+		return declaration;
 	}
 
 	public void setDeclaration(BigDecimal declaration) {
-		Declaration = declaration;
+		this.declaration = declaration;
 	}
-	
 
 	public String getSuppletterid() {
 		return suppletterid;
@@ -2274,4 +2219,12 @@ public class SignDto extends BaseDto {
 	public void setSuppletterid(String suppletterid) {
 		this.suppletterid = suppletterid;
 	}
+
+    public Integer getProcessState() {
+        return processState;
+    }
+
+    public void setProcessState(Integer processState) {
+        this.processState = processState;
+    }
 }

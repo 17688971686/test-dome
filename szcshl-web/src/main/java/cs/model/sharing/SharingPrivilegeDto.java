@@ -5,8 +5,6 @@ import cs.model.BaseDto;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "cs_sharing_privilege")
 public class SharingPrivilegeDto extends BaseDto {
 
     private String id;

@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-
     angular.module('app', [
         // Angular modules 
         "ui.router",
@@ -314,7 +313,7 @@
 
             //begin#workprogram
             .state('workprogramEdit', {
-                url: '/workprogramEdit/:signid/:workProgramId',
+                url: '/workprogramEdit/:signid',
                 templateUrl: rootPath + '/workprogram/html/edit.html',
                 controller: 'workprogramEditCtrl',
                 controllerAs: 'vm'

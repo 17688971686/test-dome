@@ -72,21 +72,15 @@ public class ExpertReview extends DomainBase {
     private String state;
 
     /**
-     * 工作方案【与工作方案一对多关系（合并评审）】
-     */
-    @OneToMany(mappedBy = "expertReview")
-    private List<WorkProgram> workProgramList;
-
-    /**
      * 抽取条件（一对多）
      */
-    @OneToMany(mappedBy = "expertReview")
+    @OneToMany(mappedBy = "expertReview",fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<ExpertSelCondition> expertSelConditionList;
 
     /**
      * 抽取的专家信息（一对多）
      */
-    @OneToMany(mappedBy = "expertReview",cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "expertReview",fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<ExpertSelected> expertSelectedList;
 
 
@@ -145,14 +139,6 @@ public class ExpertReview extends DomainBase {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public List<WorkProgram> getWorkProgramList() {
-        return workProgramList;
-    }
-
-    public void setWorkProgramList(List<WorkProgram> workProgramList) {
-        this.workProgramList = workProgramList;
     }
 
     public List<ExpertSelCondition> getExpertSelConditionList() {

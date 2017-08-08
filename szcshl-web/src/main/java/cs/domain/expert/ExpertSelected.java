@@ -1,6 +1,5 @@
 package cs.domain.expert;
 
-import cs.domain.project.Sign;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 

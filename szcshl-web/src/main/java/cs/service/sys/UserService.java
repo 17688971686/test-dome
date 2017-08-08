@@ -38,8 +38,6 @@ public interface UserService {
 
     UserDto findById(String id,boolean inclueOrg);
 
-    UserDto filterOrgDirector(List<UserDto> userList, Org org);
-
     UserDto filterOrgSLeader(List<UserDto> userList, Org org);
 
     UserDto getOrgDirector();

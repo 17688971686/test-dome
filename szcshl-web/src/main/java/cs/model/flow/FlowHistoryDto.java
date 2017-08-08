@@ -7,6 +7,7 @@ import java.util.Date;
  * @author ldm
  *
  */
+@Deprecated
 public class FlowHistoryDto {
 
 	private String taskId;

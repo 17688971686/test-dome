@@ -1,27 +1,18 @@
 package cs.service.project;
 
-import java.util.List;
 import java.util.Map;
 
 import cs.common.ResultMsg;
-import cs.model.project.SignDto;
+import cs.domain.project.WorkProgram;
 import cs.model.project.WorkProgramDto;
 
 public interface WorkProgramService {
 
     ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram);
 
-    WorkProgramDto initWorkProgram(String signId, String workProgramId);
+    Map<String,Object> initWorkProgram(String signId);
 
-    List<WorkProgramDto> waitSeleWP(String mainBusinessId);
-
-    List<WorkProgramDto> getSeleWPByMainId(String mainBusinessId);
-
-    void mergeWork(String mainBusinessId, String signId,String businessId,String linkSignId);
-
-    void deleteMergeWork(String mainBusinessId, String businessId);
-
-    void deleteBySignId(String signId);
+    ResultMsg deleteBySignId(String signId);
 
     void delete(String id);
 
@@ -29,4 +20,5 @@ public interface WorkProgramService {
 
     WorkProgramDto initWorkProgramById(String workId);
 
+    void initWorkProgramDto(WorkProgram workProgram, WorkProgramDto workProgramDto);
 }

@@ -59,7 +59,7 @@
                 bsWin.warning(data.message || "您的账号已在别的地方登录，请确认密码是否被修改！");
                 break;
             default:
-                bsWin.error("操作失败");
+                bsWin.error("发生错误,系统已记录,我们会尽快处理！");
         }
     }
 

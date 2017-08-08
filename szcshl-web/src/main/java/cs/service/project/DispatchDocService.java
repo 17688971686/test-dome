@@ -15,16 +15,8 @@ public interface DispatchDocService {
 
     Map<String, Object> initDispatchData(String signId);
 
-    List<SignDto> getSignForMerge(SignDto signDto, String dispatchId);
-
-    void mergeDispa(String signId, String mainBusinessId, String linkSignId);
-
-    List<SignDto> getSeleSignByMainBusiId(String mainBussnessId);
-
-    ResultMsg fileNum(String dispatchId);
+    ResultMsg fileNum(String signId,String dispatchId);
 
     DispatchDocDto initDispatchBySignId(String signId);
-
-    void deleteMergeDispa(String mainBusinessId, String removeSignIds);
 
 }

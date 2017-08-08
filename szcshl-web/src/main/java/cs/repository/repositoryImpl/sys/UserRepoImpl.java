@@ -5,14 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cs.common.utils.SessionUtil;
+import cs.domain.sys.*;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import cs.domain.sys.Org_;
-import cs.domain.sys.Role_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataObj;
 
@@ -87,12 +85,19 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         return list;
     }
 
+    /**
+     * 根据部门ID查询在职的人员
+     * @param orgId
+     * @return
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<User> findUserByOrgId(String orgId) {
         Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(User_.jobState.getName(),"t"));
         List<User> list = criteria.createAlias(User_.org.getName(), User_.org.getName())
                 .add(Restrictions.eq(User_.org.getName() + "." + Org_.id.getName(), orgId)).list();
         return list;
     }
+
 }

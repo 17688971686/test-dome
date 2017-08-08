@@ -4,9 +4,9 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-        '$http'];
+        '$http','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc, $http) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc, $http,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -27,9 +27,12 @@
             nodeSelViceMgr:false,      // 选择分管副主任环节
             nodeSelOrgs:false,         // 选择分管部门
             nodeSelPrincipal:false,    // 选择项目负责人
+            isMainBranch:false,        // 选择第一负责人
             nodeSign:false,            // 项目签收
             nodeWorkProgram:false,     // 工作方案
             nodeDispatch:false,        // 发文
+            nodeConfirmDis:false,      // 确认发文
+            nodeCreateDisNum:false,    // 生成发文编号
             nodeFileRecord:false,      // 归档
             nodeSelXSOrg:false,        // 协审选择分管部门
             nodeSelXSPri:false,        // 选择负责人
@@ -43,7 +46,6 @@
             tabSysFile:false,           // 附件信息tab
 
             buttBack:false,             // 回退按钮
-            buttDisFileNum : false,     // 生成发文字号
             expertRemark:false,         // 专家评分弹窗内容显示
             expertpayment:false,        // 专家费用弹窗内容显示
             expertEdit:true,            // 专家评分费用编辑权限
@@ -55,15 +57,15 @@
             isLoadFlow : false,         // 是否加载流程信息
             isGotoDis : false,          // 是否直接发文
             isMakeDisNum : false,       // 是否生成发文编号
-            isHaveSePri : false,        // 是否有第二负责人
-            principalUsers : [],         // 部门负责人列表
+            principalUsers : [],         // 负责人列表
             isSelMainPriUser:false,     // 是否已经设置主要负责人
-            expertReviews : [],         // 专家评审方案
-            editExpertSC : false,      // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
-            expertScore:{},             // 专家评分对象
-            isCreateDisFileNum : false,// 是否已经生成发文字号
-            isMainWP : false,           // 主工作方案
-            isAssistWP : false,         // 协工作方案
+            expertReviews : [],          // 专家评审方案
+            editExpertSC : false,       // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
+            expertScore:{},              // 专家评分对象
+            isNeedWP : 9,                // 是否需要工作方案
+            isMainBranch : false,       // 是否是主分支流程
+            isFinishWP : false,         // 是否完成了工作方案
+            passDis:false,              // 发文是否通过
         }
 
         vm.model.signid = $state.params.signid;
@@ -201,7 +203,6 @@
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if(isValid){
-
                  flowSvc.countTaxes(vm,expertReview);
             }
 
@@ -230,14 +231,18 @@
         //流程提交
         vm.commitNextStep = function () {
             if(vm.flow.isSuspended){
-                common.alert({
-                    vm: vm,
-                    msg: "该流程目前为暂停状态，不能进行流转操作！"
-                })
+                bsWin.error("该流程目前为暂停状态，不能进行流转操作！");
                 return ;
             }
-            if (signFlowSvc.checkBusinessFill(vm)) {
-                flowSvc.commit(vm);
+            var checkResult = signFlowSvc.checkBusinessFill(vm);
+            if (checkResult.resultTag) {
+                flowSvc.commit(vm.isCommit,vm.flow,function(data){
+                    if (data.flag || data.reCode == "ok") {
+                        bsWin.success("操作成功！",function(){
+                            $state.go('gtasks');
+                        })
+                    }
+                });
             } else {
                 common.alert({
                     vm: vm,
@@ -250,11 +255,10 @@
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
             if(isValid){
-                common.confirm({
-                    vm: vm,
-                    title: "",
-                    msg: "确认回退吗？",
-                    fn: function () {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认回退吗？",
+                    onOk: function () {
                         //有几个环节要传递业务参数
                         switch (vm.flow.curNode.activitiId) {
                             /************   以下是签收流程  **************/
@@ -291,22 +295,20 @@
                                 ;
                         }
                         flowSvc.rollBackToLast(vm); // 回退到上一个环节
-                        $('.confirmDialog').modal('hide');
                     }
-                })
+                });
             }
         }
 
         vm.deleteFlow = function () {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "终止流程将无法恢复，确认挂起么？",
-                fn: function () {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "终止流程将无法恢复，确认删除么？？",
+                onOk: function () {
                     $('.confirmDialog').modal('hide');
                     flowSvc.deleteFlow(vm);
                 }
-            })
+            });
         }
 
         vm.initDealUerByAcitiviId = function () {
@@ -323,18 +325,8 @@
             $state.go('fillSign', {signid: vm.model.signid });
         }
         // S_跳转到 工作方案 编辑页面
-        vm.addWorkProgram = function () {
-            var workProgramId = null;
-            if(vm.businessFlag.isMainWP ){
-                if(vm.mainwork.id){
-                    workProgramId = vm.mainwork.id;
-                }
-            }else if(vm.businessFlag.isAssistWP){
-                if(vm.assistwork.id){
-                    workProgramId = vm.assistwork.id;
-                }
-            }
-            $state.go('workprogramEdit');
+        vm.addWorkProgram = function () {  
+            $state.go('workprogramEdit', {signid: vm.model.signid});
         }// E_跳转到 工作方案 编辑页面
         
         //S_链接到拟补充资料函
@@ -366,27 +358,39 @@
         }
 
         // 业务判断
-        vm.checkBox = function ($event, type, disabletype) {
+        vm.mainOrg = function ($event) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
             var checkboxValue = checkbox.value;
             if (checked) {
-                $('.seleteTable input[selectType=\"' + type + '\"]').each(
+                $('.seleteTable input[selectType="main"]').each(
                     function () {
-                        var id = $(this).attr("id");
                         var value = $(this).attr("value");
-                        if (id != (type + "_" + checkboxValue)) {
-                            $("#" + disabletype + "_" + value)
-                                .removeAttr("disabled");
+                        if(value != checkboxValue){
                             $(this).removeAttr("checked");
-                        } else {
-                            $("#" + disabletype + "_" + checkboxValue)
-                                .attr("disabled", "disabled");
+                            $("#assist_" + value).removeAttr("disabled");
+                        }else{
+                            $("#assist_" + checkboxValue).removeAttr("checked");
+                            $("#assist_" + checkboxValue).attr("disabled", "disabled");
                         }
                     });
+
             } else {
-                $("#" + disabletype + "_" + checkboxValue)
-                    .removeAttr("disabled");
+                $("#assist_" + checkboxValue).removeAttr("disabled");
+            }
+            vm.initOption();
+        }
+
+        vm.initOption = function(){
+            var selOrg = [];
+            $('.seleteTable input[selectType="main"]:checked').each(function () {
+                selOrg.push($(this).attr("tit"));
+            });
+            $('.seleteTable input[selectType="assist"]:checked').each(function () {
+                selOrg.push($(this).attr("tit"));
+            });
+            if(selOrg.length > 0){
+                vm.flow.dealOption = "请（"+selOrg.join('，')+"）组织评审";
             }
         }
 
@@ -447,16 +451,11 @@
         //start 保存项目关联
         vm.saveAssociateSign = function(associateSignId){
             if(vm.model.signid == associateSignId){
-                common.alert({
-                    vm:vm,
-                    msg:"不能关联自身项目",
-                    closeDialog:true,
-                    fn:function() {
-                    }
-                });
+                bsWin.alert("不能关联自身项目");
                 return ;
             }
             signSvc.saveAssociateSign(vm,vm.model.signid,associateSignId,function(){
+                bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功");
                 //回调
                 $state.reload();
             });
@@ -565,33 +564,33 @@
             }
         }//E_删除负责人
 
-        //直接发文判断
+        //S_判断是否需要工作方案
         vm.checkNeedWP = function($event){
             var checkbox = $event.target;
             var checked = checkbox.checked;
             if(checked){
-                vm.showFlag.nodeWorkProgram = false; //显示工作方案和会签准备材料按钮
-                //如果有发文信息，询问是否删除
-                if(vm.mainwork && vm.mainwork.id){
-                    common.confirm({
-                        vm:vm,
-                        title:"",
-                        msg:"取消会对填报的工作方案进行删除，确认删除么？",
-                        fn:function () {
+                vm.businessFlag.isNeedWP = 9;
+            }else{
+                //如果已经完成了工作方案，则询问是否要删除
+                if(vm.businessFlag.isFinishWP){
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "取消工作方案操作将会对您之前的做的工作方案进行清除，数据清除不可恢复，确定不做工作么？",
+                        onOk: function () {
                             $('.confirmDialog').modal('hide');
+                            vm.businessFlag.isNeedWP = 0;
                             signSvc.removeWP(vm);
                         },
-                        cancel:function(){
+                        onClose:function(){
                             checkbox.checked = !checked;
-                            vm.showFlag.nodeWorkProgram = true;     //显示工作方案
-                            $('.confirmDialog').modal('hide');
+                            vm.businessFlag.isNeedWP = 9;
                         }
-                    })
+                    });
+                }else{
+                    vm.businessFlag.isNeedWP = 0;
                 }
-            }else{
-                vm.showFlag.nodeWorkProgram = true; //显示工作方案和会签准备材料按钮
             }
-        }
+        }//E_判断是否需要工作方案
 
         //生产会前准备材料
         vm.meetingDoc = function(){
@@ -613,7 +612,12 @@
 
         //生成发文字号
         vm.createDispatchFileNum = function(){
-            signSvc.createDispatchFileNum(vm);
+            signSvc.createDispatchFileNum(vm.model.signid,vm.dispatchDoc.id,function(data){
+                if (data.flag || data.reCode == "ok") {
+                    vm.dispatchDoc.fileNum = data.reObj;
+                }
+                bsWin.alert(data.reMsg);
+            });
         }
 
     }

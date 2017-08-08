@@ -74,6 +74,8 @@
         <property name="passwordParam" value="password"/>
         <property name="loginUrl" value="/account/login"/>
         <property name="successUrl" value="/admin/index"/>
+        <!-- 记住我input的名称 -->
+        <property name="rememberMeParam" value="rememberMe"/>
     </bean>
 
     <!-- 缓存管理器 -->
@@ -111,9 +113,9 @@
         <!-- Shiro的核心安全接口,这个属性是必须的 -->
         <property name="securityManager" ref="securityManager"/>
         <!-- loginUrl认证提交地址，如果没有认证将会请求此地址进行认证，请求此地址将由formAuthenticationFilter进行表单认证 -->
-        <property name="loginUrl" value="/"/>
+        <property name="loginUrl" value="/account/login"/>
         <!-- 认证成功统一跳转到first.action，建议不配置，shiro认证成功自动到上一个请求路径 -->
-        <property name="successUrl" value="/"/>
+        <property name="successUrl" value="/admin/index"/>
         <!-- 通过unauthorizedUrl指定没有权限操作时跳转页面 -->
         <property name="unauthorizedUrl" value="/"/>
         <!-- 自定义filter配置 -->

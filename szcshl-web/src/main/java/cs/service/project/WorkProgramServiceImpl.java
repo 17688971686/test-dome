@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cs.common.utils.*;
-import cs.domain.project.*;
-import cs.repository.repositoryImpl.project.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -22,21 +19,42 @@ import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.SysFileUtil;
+import cs.common.utils.TemplateUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.Expert_;
 import cs.domain.meeting.RoomBooking;
+import cs.domain.project.AssistPlan;
+import cs.domain.project.AssistPlanSign;
+import cs.domain.project.AssistPlanSign_;
+import cs.domain.project.AssistUnit;
+import cs.domain.project.Sign;
+import cs.domain.project.SignPrincipal;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.domain.sys.Org;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.domain.sys.User;
+import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
-import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
+import cs.repository.repositoryImpl.project.AssistUnitRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
-import cs.service.sys.UserService;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -58,9 +76,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private OrgRepo orgRepo;
     @Autowired
-    private MergeOptionRepo mergeOptionRepo;
-    @Autowired
     private MergeOptionService mergeOptionService;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
+    @Autowired
+    private SignMergeRepo signMergeRepo;
 
     @Override
     @Transactional
@@ -75,22 +95,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 }
                 // 2、自评和单个评审不能有关联
                 if ("自评".equals(workProgramDto.getReviewType()) || "单个评审".equals(workProgramDto.getIsSigle())) {
-                    if(mergeOptionService.isMerge(workProgramDto.getId(),null,Constant.MergeType.WORK_PROGRAM.getValue())){
+                    if(signMergeRepo.isHaveMerge(workProgramDto.getSignId(),Constant.MergeType.WORK_PROGRAM.getValue())){
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，自评和单个评审不能关联其他工作方案，请先删除关联关系！");
                     }
                 }
-                // 3、合并评审
-                if("合并评审".equals(workProgramDto.getIsSigle()) ){
-                    //主项目
-                    if (EnumState.YES.getValue().equals(workProgramDto.getIsMainProject())) {
-                        if (!mergeOptionService.isHaveLink(workProgramDto.getId(), Constant.MergeType.WORK_PROGRAM.getValue())) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前工作方案为合并评审主方案，请先选择要合并评审的工作方案！");
-                        }
-                    //次项目
-                    } else {
-                        if (!mergeOptionService.isMerge(workProgramDto.getId(), null, Constant.MergeType.WORK_PROGRAM.getValue())) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为合并评审次项目，请在主工作方案中挑选此工作方案为次工作方案再保存！");
-                        }
+                // 3、合并评审 次项目
+                if("合并评审".equals(workProgramDto.getIsSigle()) && EnumState.NO.getValue().equals(workProgramDto.getIsMainProject())){
+                    if (!signMergeRepo.checkIsMerege(workProgramDto.getSignId(),Constant.MergeType.WORK_PROGRAM.getValue())) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为合并评审次项目，请在主工作方案中挑选此工作方案为次工作方案再保存！");
                     }
                 }
                 workProgram = workProgramRepo.findById(workProgramDto.getId());
@@ -102,44 +114,27 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedBy(SessionUtil.getUserInfo().getId());
                 workProgram.setCreatedDate(now);
             }
-
             workProgram.setModifiedBy(SessionUtil.getUserInfo().getId());
             workProgram.setModifiedDate(now);
-
-            Sign sign = signRepo.findById(workProgramDto.getSignId());
-            if (!Validate.isString(workProgram.getTitleName())) {
-                workProgram.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
+            //设置关联对象
+            Sign sign = workProgram.getSign();
+            if(sign == null ){
+                sign = signRepo.findById(Sign_.signid.getName(),workProgramDto.getSignId());
             }
-            //判断是否是主流程
-            boolean isMainFlow = false;
-            if ((Validate.isString(workProgramDto.getIsMain()) && workProgramDto.getIsMain().equals(EnumState.YES.getValue()))
-                    || signPrincipalService.isFlowPri(SessionUtil.getUserInfo().getId(), sign.getSignid(), EnumState.YES.getValue())) {
-                isMainFlow = true;
+            //只有主方案改了，才会更新
+            if((Constant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
+                    && sign.getAppalyInvestment() != workProgram.getAppalyInvestment()){
+                sign.setAppalyInvestment(workProgram.getAppalyInvestment());
             }
-            if (isMainFlow) {
-                workProgram.setIsMain(EnumState.YES.getValue());
-                sign.setIsreviewCompleted(EnumState.YES.getValue());
-            } else {
-                workProgram.setIsMain(Constant.EnumState.NO.getValue());
-                sign.setIsreviewACompleted(EnumState.YES.getValue());
-            }
-
-            //是否需要工作方案（默认需要）
-            if (isNeedWorkProgram != null) {
-                sign.setIsNeedWrokPrograml(isNeedWorkProgram == true ? EnumState.YES.getValue() : EnumState.NO.getValue());
-            } else {
-                sign.setIsNeedWrokPrograml(EnumState.YES.getValue());
-            }
-            //申报金额，与工作方案的、收文的一致，任何一个地方改了，都要同步更新
-            sign.setAppalyInvestment(workProgram.getAppalyInvestment());
+            //表示正在做工作方案
+            sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
             workProgram.setSign(sign);
             workProgramRepo.save(workProgram);
 
-            //sign.getWorkProgramList().add(workProgram);
-            //signRepo.save(sign);
+            //完成分支工作方案
+            signBranchRepo.finishWP(workProgramDto.getSignId(),workProgram.getBranchId());
             //用于返回页面
             workProgramDto.setId(workProgram.getId());
-
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",workProgramDto);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，获取项目信息失败，请联系相关人员处理！");
@@ -147,85 +142,102 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     }
 
     /**
-     * 根据收文ID初始化用户待处理的工作方案
+     * 根据收文ID初始化 用户待处理的工作方案
      */
     @Override
-    public WorkProgramDto initWorkProgram(String signId, String workProgramId) {
+    public Map<String,Object> initWorkProgram(String signId) {
+        Map<String,Object> resultMap = new HashMap<>();
         WorkProgramDto workProgramDto = new WorkProgramDto();
-        //如果有工作方案ID，则按工作方案ID查询
-        if(Validate.isString(workProgramId)){
-            WorkProgram workProgram = workProgramRepo.findById(workProgramId);
-            initWorkProgramDto(workProgram,workProgramDto);
 
-        //没有则按收文ID查询(主要是负责人填报环节)
-        }else{
-            //是否主项目负责人
-            boolean isMainUser = signPrincipalService.isFlowPri(SessionUtil.getUserInfo().getId(), signId, EnumState.YES.getValue());
-            boolean isHaveWP = false;
-            HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" from "+WorkProgram.class.getSimpleName()+" where "+WorkProgram_.sign.getName()+"."+Sign_.signid.getName());
-            hqlBuilder.append(" =:signId").setParam("signId",signId);
+        //1、根据收文ID查询出所有的工作方案ID
+        Criteria criteria = workProgramRepo.getExecutableCriteria();
+        criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
+        criteria.add(Restrictions.eq(WorkProgram_.sign.getName()+ "." + Sign_.signid.getName(), signId));
+        List<WorkProgram> wpList = criteria.list();
+        //2、是否有当前用户负责的工作方案
+        boolean isHaveCurUserWP = false;
 
-            List<WorkProgram> wpList = workProgramRepo.findByHql(hqlBuilder);
-            if(wpList != null && wpList.size() > 0){
-                for(WorkProgram wp : wpList){
-                    if((EnumState.YES.getValue()).equals(wp.getIsMain()) && isMainUser){
-                        initWorkProgramDto(wp,workProgramDto);
-                        isHaveWP = true;
-                        break;
-                    }else if((EnumState.NO.getValue()).equals(wp.getIsMain()) && !isMainUser){
-                        initWorkProgramDto(wp,workProgramDto);
-                        isHaveWP = true;
-                        break;
-                    }
+        SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserInfo().getId(),signId);
+        if(Validate.isList(wpList)){
+            List<WorkProgramDto> wpDtoList = new ArrayList<>();
+            for(WorkProgram wp : wpList){
+                if((signPrincipal.getFlowBranch()).equals(wp.getBranchId())){
+                    initWorkProgramDto(wp,workProgramDto);
+                    isHaveCurUserWP = true;
+                }else{
+                    WorkProgramDto wpDto = new WorkProgramDto();
+                    initWorkProgramDto(wp,wpDto);
+                    wpDtoList.add(wpDto);
                 }
             }
+            resultMap.put("WPList",wpDtoList);
+        }
+        //3、主流程负责人，可以填写主要信息
+        if(isHaveCurUserWP == false ){
+            Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+            workProgramDto.setWorkreviveStage(sign.getReviewstage());
+            workProgramDto.setBranchId(signPrincipal.getFlowBranch());
+            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
 
-            //如果没有，则初始化
-            if(!isHaveWP){
-                Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+            if(signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(),signId)){
+                //判断是否是关联次项目
+                boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
+                if(isMerge){
+                    workProgramDto.setReviewType("合并评审");
+                    workProgramDto.setIsMainProject(EnumState.NO.getValue());
+                }
+                //项目基本信息
                 workProgramDto.setProjectName(sign.getProjectname());
                 workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
                 workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-                workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
-                workProgramDto.setWorkreviveStage(sign.getReviewstage());//评审阶段
+                workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
+
                 workProgramDto.setTitleDate(new Date());
                 //来文单位默认全部是：深圳市发展和改革委员会，可改...
                 //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
                 workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
                 workProgramDto.setSendFileUser(sign.getMainDeptUserName());
 
-                //查询项目的第一第二负责人
-                User mainUser = signPrincipalService.getMainPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
-                List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId, isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
-
-                if(mainUser != null && Validate.isString(mainUser.getId())){
-                    workProgramDto.setMianChargeUserId(mainUser.getId());
-                    workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
-                    workProgramDto.setReviewOrgId(mainUser.getOrg().getId());
-                    workProgramDto.setReviewOrgName(mainUser.getOrg().getName());
-                    workProgramDto.setIsMain(isMainUser==true?EnumState.YES.getValue():EnumState.NO.getValue());
+                //获取评审部门
+                List<Org> orgList = workProgramRepo.getReviewOrg(signId);
+                if(Validate.isList(orgList)){
+                    String orgName = "";
+                    for(Org org:orgList){
+                        orgName += org.getName()+",";
+                    }
+                    workProgramDto.setReviewOrgName(orgName.substring(0,orgName.length()-1));
                 }
-                if (secondPriUserList != null && secondPriUserList.size() > 0) {
-                    String seUserIds = "",seUserName = "";
+                //项目第一负责人
+                User mainUser = signPrincipalService.getMainPriUser(signId);
+                if(mainUser != null && Validate.isString(mainUser.getId())){
+                    workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
+                }
+                //项目其它负责人
+                List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId);
+                if (Validate.isList(secondPriUserList)) {
+                    String seUserName = "";
                     for(User u:secondPriUserList){
-                        seUserIds += u.getId() + ",";
                         seUserName += u.getDisplayName() + ",";
                     }
-                    workProgramDto.setSecondChargeUserId(seUserIds.substring(0,seUserIds.length()-1));
                     workProgramDto.setSecondChargeUserName(seUserName.substring(0,seUserName.length()-1));
                 }
             }
         }
-
-        return workProgramDto;
+        resultMap.put("eidtWP",workProgramDto);
+        return resultMap;
     }
 
-    private void initWorkProgramDto(WorkProgram workProgram,WorkProgramDto workProgramDto){
+    /**
+     * entity 转成 dto
+     * @param workProgram
+     * @param workProgramDto
+     */
+    @Override
+    public void initWorkProgramDto(WorkProgram workProgram,WorkProgramDto workProgramDto){
         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-        //初始化会议室预定情况
+        //1、初始化会议室预定情况
         List<RoomBooking> roomBookings = workProgram.getRoomBookings();
-        if (roomBookings != null && roomBookings.size() > 0) {
+        if (Validate.isList(roomBookings)) {
             List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
             roomBookings.forEach(r -> {
                 RoomBookingDto rbDto = new RoomBookingDto();
@@ -236,185 +248,18 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             });
             workProgramDto.setRoomBookingDtos(roomBookingDtos);
         }
-    }
-
-    /**
-     * 查询可以选择的合并评审工作方案列表
-     * @param mainBusinessId
-     * @return
-     */
-    @Override
-    public List<WorkProgramDto> waitSeleWP(String mainBusinessId) {
-        List<WorkProgramDto> resultList = new ArrayList<>();
-        Criteria criteria = workProgramRepo.getExecutableCriteria();
-        criteria.add(Restrictions.ne(WorkProgram_.reviewType.getName(),"自评"));        //自评项目不能进行选择
-        criteria.add(Restrictions.eq(WorkProgram_.isSigle.getName(),"单个评审"));       //单个评审的才能进行合并操作
-        criteria.add(Restrictions.sqlRestriction(" (expertReviewId is null or expertReviewId = '' ) and id not in ( select " + MergeOption_.businessId.getName() + " from cs_merge_option where " + MergeOption_.mainBusinessId.getName() + " = '"+mainBusinessId+"' and "+MergeOption_.businessType.getName()+"='"+Constant.MergeType.WORK_PROGRAM.getValue()+"')"));
-        List<WorkProgram> workProgramList = criteria.list();
-        if(workProgramList != null ){
-            workProgramList.forEach(wp ->{
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(wp.getSign(),signDto);
-                WorkProgramDto nWPDto = new WorkProgramDto();
-                BeanCopierUtils.copyProperties(wp,nWPDto);
-                nWPDto.setSignDto(signDto);
-                resultList.add(nWPDto);
+        //2、拟聘请专家
+        List<Expert> expertList = expertRepo.findByWorkProgramId(workProgram.getId());
+        if(Validate.isList(expertList)){
+            List<ExpertDto> expertDtoList = new ArrayList<>(expertList.size());
+            expertList.forEach( el ->{
+                ExpertDto expertDto = new ExpertDto();
+                el.setPhoto(null);
+                BeanCopierUtils.copyProperties(el,expertDto);
+                expertDtoList.add(expertDto);
             });
+            workProgramDto.setExpertDtoList(expertDtoList);
         }
-        return resultList;
-    }
-
-
-    /**
-     * 保存合并评审工作方案
-     * @param mainBusinessId
-     * @param signId
-     * @param businessId
-     * @param linkSignId
-     */
-    @Override
-    @Transactional
-    public void mergeWork(String mainBusinessId, String signId,String businessId,String linkSignId) {
-        List<String> businessIdList = StringUtil.getSplit(businessId, ",");
-        List<String> linkSignIdList = StringUtil.getSplit(linkSignId, ",");
-        int totalLength = businessIdList == null ? 0 : businessIdList.size();
-        List<MergeOption> saveList = new ArrayList<>(totalLength);
-
-        if (totalLength > 0) {
-            Date now = new Date();
-            String createUserId = SessionUtil.getUserInfo().getId();
-            //判断是否已经添加了主项目
-            Criteria criteria = mergeOptionRepo.getExecutableCriteria();
-            criteria.add(Restrictions.eq(MergeOption_.mainBusinessId.getName(), mainBusinessId));
-            criteria.add(Restrictions.eq(MergeOption_.businessId.getName(), mainBusinessId));
-            criteria.add(Restrictions.eq(MergeOption_.businessType.getName(), Constant.MergeType.WORK_PROGRAM.getValue()));
-
-            MergeOption mergeOption = (MergeOption) criteria.uniqueResult();
-            if (mergeOption == null || !Validate.isString(mergeOption.getId())) {
-                mergeOption = new MergeOption();
-                mergeOption.setBusinessId(mainBusinessId);
-                mergeOption.setMainBusinessId(mainBusinessId);
-                mergeOption.setSignId(signId);
-                mergeOption.setBusinessType(Constant.MergeType.WORK_PROGRAM.getValue());
-                mergeOption.setCreatedBy(createUserId);
-                mergeOption.setModifiedBy(createUserId);
-                mergeOption.setCreatedDate(now);
-                mergeOption.setModifiedDate(now);
-                saveList.add(mergeOption);
-            }
-            for (int i=0,l=businessIdList.size();i<l;i++) {
-                MergeOption mergeOptionLk = new MergeOption();
-                mergeOptionLk.setMainBusinessId(mainBusinessId);
-                mergeOptionLk.setBusinessId(businessIdList.get(i));
-                mergeOptionLk.setSignId(linkSignIdList.get(i));
-                mergeOptionLk.setBusinessType(Constant.MergeType.WORK_PROGRAM.getValue());
-                mergeOptionLk.setCreatedBy(createUserId);
-                mergeOptionLk.setModifiedBy(createUserId);
-                mergeOptionLk.setCreatedDate(now);
-                mergeOptionLk.setModifiedDate(now);
-                saveList.add(mergeOptionLk);
-            }
-        }
-
-        if (Validate.isList(saveList)) {
-            mergeOptionRepo.bathUpdate(saveList);
-            //修改工作方案状态
-            addMergeWPReview(mainBusinessId,businessId);
-        }
-
-    }
-
-    /**
-     * 删除合并评审
-     * @param mainBusinessId
-     * @param businessId
-     */
-    @Override
-    @Transactional
-    public void deleteMergeWork(String mainBusinessId, String businessId) {
-        if (Validate.isString(mainBusinessId)) {
-            boolean isDeleteAll = true;
-            HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" delete from " + MergeOption.class.getSimpleName());
-            hqlBuilder.append(" where " + MergeOption_.mainBusinessId.getName() + " =:mainBusinessId").setParam("mainBusinessId", mainBusinessId);
-            hqlBuilder.append(" and "+MergeOption_.businessType.getName()+" =:businessType ").setParam("businessType",Constant.MergeType.WORK_PROGRAM.getValue());
-            //删除合并评审ID
-            if (Validate.isString(businessId)) {
-                List<String> delLinkIds = StringUtil.getSplit(businessId, ",");
-                int linkNum = mergeOptionService.getMainLinkNum(mainBusinessId,Constant.MergeType.WORK_PROGRAM.getValue());
-                //不是删除所有合并评审的工作方案
-                if((linkNum -1) > delLinkIds.size()){
-                    isDeleteAll = false;
-                    hqlBuilder.bulidIdString("and",MergeOption_.businessId.getName(),businessId);
-                }
-            }
-            //更新所有删除合并评审的工作方案状态
-            delMergeWPReview(mainBusinessId,isDeleteAll==true?null:businessId);
-
-            //更改所有的合并评审改为单个评审
-            mergeOptionRepo.executeHql(hqlBuilder);
-        }
-    }
-
-    /**
-     * 删除合并评审
-     * @param mainBusinessId
-     * @param businessId
-     */
-    private void delMergeWPReview(String mainBusinessId, String businessId) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" UPDATE cs_work_program  SET "+WorkProgram_.isSigle.getName()+" = '单个评审', "+WorkProgram_.isMainProject.getName()+" = '"+EnumState.NO.getValue()+"',expertReviewId = null ");
-        //如果只删除部分，则更改部分的工作方案状态
-        if(Validate.isString(businessId)){
-            sqlBuilder.bulidIdString("where",WorkProgram_.id.getName(),businessId);
-        //如果删除所有，则主工作方案的评审方案不修改
-        }else{
-            sqlBuilder.append(" where " + WorkProgram_.id.getName() + " in ( ");
-            sqlBuilder.append(" select "+MergeOption_.businessId.getName()+" from cs_merge_option where "+MergeOption_.mainBusinessId.getName()+" =:mainBusinessId ");
-            sqlBuilder.setParam("mainBusinessId",mainBusinessId);
-            sqlBuilder.append(" and "+MergeOption_.businessType.getName()+"=:businessType").setParam("businessType",Constant.MergeType.WORK_PROGRAM.getValue());
-            sqlBuilder.append(" and "+MergeOption_.businessId.getName()+" <> :businessId").setParam("businessId",mainBusinessId);
-            sqlBuilder.append(" )");
-        }
-
-        workProgramRepo.executeSql(sqlBuilder);
-    }
-
-    /**
-     * 把关联的项目改为合并评审此项目，并更新评审方案
-     * @param mainBusinessId
-     * @param businessId
-     */
-    private void addMergeWPReview(String mainBusinessId,String businessId) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" UPDATE cs_work_program  SET "+WorkProgram_.isSigle.getName()+" = '合并评审', "+WorkProgram_.isMainProject.getName()+" = '"+EnumState.NO.getValue()+"',");
-        sqlBuilder.append(" expertReviewId = (select expertReviewId from cs_work_program where "+WorkProgram_.id.getName()+" =:mId ) ").setParam("mId",mainBusinessId);
-        sqlBuilder.bulidIdString("where",WorkProgram_.id.getName(),businessId);
-        workProgramRepo.executeSql(sqlBuilder);
-    }
-
-    /**
-     * 获取已选合并评审项目列表
-     * @param mainBusinessId
-     * @return
-     */
-    @Override
-    public List<WorkProgramDto> getSeleWPByMainId(String mainBusinessId) {
-        List<WorkProgramDto> resultList = new ArrayList<>();
-        Criteria criteria = workProgramRepo.getExecutableCriteria();
-        criteria.add(Restrictions.sqlRestriction(" id IN ( select " + MergeOption_.businessId.getName() + " from cs_merge_option where " + MergeOption_.mainBusinessId.getName() + " = '"+mainBusinessId+"' and "+MergeOption_.businessType.getName()+"='"+Constant.MergeType.WORK_PROGRAM.getValue()+"')"));
-        List<WorkProgram> workProgramList = criteria.list();
-        if(workProgramList != null ){
-            workProgramList.forEach(wp ->{
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(wp.getSign(),signDto);
-                WorkProgramDto nWPDto = new WorkProgramDto();
-                BeanCopierUtils.copyProperties(wp,nWPDto);
-                nWPDto.setSignDto(signDto);
-                resultList.add(nWPDto);
-            });
-        }
-        return resultList;
     }
 
     /**
@@ -423,18 +268,24 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * @param signId
      */
     @Override
-    public void deleteBySignId(String signId) {
+    @Transactional
+    public ResultMsg deleteBySignId(String signId) {
+        SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserInfo().getId(),signId);
+        if(signPrincipal == null){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您不是项目负责人，不能对工作方案进行操作！");
+        }
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" delete from cs_work_program where signid =:signid");
+        sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId ");
         sqlBuilder.setParam("signid", signId);
-        workProgramRepo.executeSql(sqlBuilder);
-        //更改收文状态
-        Sign sign = signRepo.findById(signId);
-        sign.setIsNeedWrokPrograml(EnumState.NO.getValue());
-        sign.setIsreviewCompleted(EnumState.NO.getValue());
-        sign.setIsreviewACompleted(EnumState.NO.getValue());
-
-        signRepo.save(sign);
+        sqlBuilder.setParam("branchId", signPrincipal.getFlowBranch());
+        int result = workProgramRepo.executeSql(sqlBuilder);
+        //不需要做工作方案
+        signBranchRepo.isNeedWP(signId,signPrincipal.getFlowBranch(),EnumState.NO.getValue());
+        if(result < 0){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您不是项目负责人，不能对工作方案进行操作！");
+        }else{
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        }
     }
 
     /**
@@ -499,8 +350,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 	    dataMap.put("secondChargeUserName",workProgram.getSecondChargeUserName() ); //第二负责人
 	    dataMap.put("ministerName",workProgram.getMinisterName() );//部长名
 	    dataMap.put("mainPoint",workProgram.getMainPoint());//拟评审重点问题
-	    dataMap.put("workStageTime",workProgram.getWorkStageTime());//评审时间
-     	dataMap.put("meetingAddress",workProgram.getMeetingAddress());//会议具体地点
      	dataMap.put("contactPerson",workProgram.getContactPerson());//联系人
      	dataMap.put("contactPersonTel",workProgram.getContactPersonTel());//联系电话
     	dataMap.put("contactPersonFax",workProgram.getContactPersonFax());//传真

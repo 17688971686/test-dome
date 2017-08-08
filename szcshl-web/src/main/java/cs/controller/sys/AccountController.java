@@ -29,11 +29,8 @@ public class AccountController {
 
 	@RequestMapping(name = "登录", path = "login")
 	public String login(HttpServletRequest request, Model model) throws Exception {
-		logger.debug("AccountController.login()");
-		// 登录失败从request中获取shiro处理的异常信息。
-		// shiroLoginFailure:就是shiro异常类的全类名.
+		// 如果登陆失败从request中获取认证异常信息，shiroLoginFailure就是shiro异常类的全限定名
 		String exception = (String) request.getAttribute("shiroLoginFailure");
-		logger.debug("exception=" + exception);
 		String msg = "";
 		if (exception != null) {
 			if (UnknownAccountException.class.getName().equals(exception)) {
@@ -52,9 +49,6 @@ public class AccountController {
 				logger.info(exception);
 				msg = exception;
 			}
-		}
-		if(request.getParameter("forceLogout") != null) {
-			msg = "您已经被管理员强制退出，请重新登录";
 		}
 		model.addAttribute("msg", msg);
 		// 此方法不处理登录成功,由shiro进行处理

@@ -64,17 +64,17 @@ public class FileRecordServiceImpl implements FileRecordService {
 
             //设置归档编号(评估类)
             if (!Validate.isString(fileRecord.getFileNo())) {
-                fileRecord.setFileNo(NumIncreaseUtils.getFileRecordNo(Constant.FileNumType.PD.getValue()));
+                fileRecord.setFileNo(NumIncreaseUtils.getFileRecordNo(Constant.SignBusinessType.PD.getValue()));
                 fileRecordDto.setFileNo(fileRecord.getFileNo());
             }
             Sign sign = signRepo.findById(Sign_.signid.getName(),fileRecordDto.getSignId());
             //更新收文信息
             sign.setFilenum(fileRecord.getFileNo());
             sign.setFileRecord(fileRecord);
-
+            sign.setProcessState(Constant.SignProcessState.DO_FILE.getValue());
             fileRecord.setSign(sign);
-
             fileRecordRepo.save(fileRecord);
+
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecordDto);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取项目信息！");
@@ -100,7 +100,7 @@ public class FileRecordServiceImpl implements FileRecordService {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
         } else {
             //如果是新增，则要初始化
-            User priUser = signPrincipalService.getMainPriUser(signid, Constant.EnumState.YES.getValue());
+            User priUser = signPrincipalService.getMainPriUser(signid);
             Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
             fileRecordDto.setProjectName(sign.getProjectname());
             fileRecordDto.setProjectCode(sign.getProjectcode());

@@ -1,43 +1,39 @@
 package cs.domain.project;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 /**
  * 项目-负责人中间表（主要用于查询用）
  */
 @Entity
-@Table(name = "cs_sign_principal")
+@Table(name = "cs_sign_principal2")
 @DynamicUpdate(true)
+@IdClass(SignPrincipalID.class)
 public class SignPrincipal {
-
-    @Id
-    @GeneratedValue(generator= "priGenerator")
-    @GenericGenerator(name= "priGenerator",strategy = "uuid")
-    private String id;
-
-    /**
-     * 用户ID
-     */
-    @Column(columnDefinition="VARCHAR(64)")
-    private String userId;
 
     /**
      *收文ID
      */
-    @Column(columnDefinition="VARCHAR(64)")
-    private String singId;
+    @Id
+    @Column(name="signId",columnDefinition="VARCHAR(64)")
+    private String signId;
 
     /**
-     *是否主流程
+     * 用户ID
+     */
+    @Id
+    @Column(name="userId",columnDefinition="VARCHAR(64)")
+    private String userId;
+
+    /**
+     *流程分支（1,2,3,4）最多四个流程
      */
     @Column(columnDefinition="VARCHAR(2)")
-    private String isMainFlow;
+    private String flowBranch;
 
     /**
-     * 负责人类型
+     * 负责人类型(土建、安装)
      */
     @Column(columnDefinition="VARCHAR(64)")
     private String userType;
@@ -49,18 +45,10 @@ public class SignPrincipal {
     private Integer sort;
 
     /**
-     * 是否总负责人
+     * 是否总负责人（第一负责人）
      */
     @Column(columnDefinition="VARCHAR(2)")
     private String isMainUser;  //是否总负责人
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -70,20 +58,20 @@ public class SignPrincipal {
         this.userId = userId;
     }
 
-    public String getSingId() {
-        return singId;
+    public String getSignId() {
+        return signId;
     }
 
-    public void setSingId(String singId) {
-        this.singId = singId;
+    public void setSignId(String signId) {
+        this.signId = signId;
     }
 
-    public String getIsMainFlow() {
-        return isMainFlow;
+    public String getFlowBranch() {
+        return flowBranch;
     }
 
-    public void setIsMainFlow(String isMainFlow) {
-        this.isMainFlow = isMainFlow;
+    public void setFlowBranch(String flowBranch) {
+        this.flowBranch = flowBranch;
     }
 
     public String getUserType() {

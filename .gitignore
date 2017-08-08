@@ -1,5 +1,6 @@
 /szcshl-web/*.iml
 /szcshl-web/target
+/szcshl-web/.idea
 /.idea
 /szcshl-web/src/metamodel
 /szcshl-web/node_modules

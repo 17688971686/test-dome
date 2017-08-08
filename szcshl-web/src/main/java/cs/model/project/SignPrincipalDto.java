@@ -4,7 +4,7 @@ public class SignPrincipalDto {
     private String id;
     private String userId;
     private String singId;
-    private String isMainFlow;
+    private String flowBranch;
     private String userType;
     private Integer sort;
     private String isMainUser;
@@ -34,12 +34,12 @@ public class SignPrincipalDto {
         this.singId = singId;
     }
 
-    public String getIsMainFlow() {
-        return isMainFlow;
+    public String getFlowBranch() {
+        return flowBranch;
     }
 
-    public void setIsMainFlow(String isMainFlow) {
-        this.isMainFlow = isMainFlow;
+    public void setFlowBranch(String flowBranch) {
+        this.flowBranch = flowBranch;
     }
 
     public String getUserType() {

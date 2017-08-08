@@ -1,34 +1,25 @@
 package cs.service.project;
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
-import cs.domain.project.AddSuppLetter;
-import cs.domain.project.AddSuppLetter_;
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.DispatchDoc_;
-import cs.domain.project.Sign;
-import cs.model.PageModelDto;
-import cs.model.project.AddSuppLetterDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.User;
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.project.AddSuppLetter;
+import cs.domain.project.AddSuppLetter_;
+import cs.domain.project.Sign;
+import cs.model.project.AddSuppLetterDto;
+import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 
 
 /**

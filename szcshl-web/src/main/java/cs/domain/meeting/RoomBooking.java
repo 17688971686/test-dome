@@ -28,7 +28,6 @@ public class RoomBooking extends DomainBase{
 	@Column(columnDefinition="varchar(255)")
 	private String rbName;//会议名称
 
-	@Formula("(select m.addr from cs_meeting_room m where m.id = mrID)")
 	@Column(columnDefinition="varchar(255)")
 	private String addressName;//会议地点
 

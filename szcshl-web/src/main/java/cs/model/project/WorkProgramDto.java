@@ -1,18 +1,15 @@
 package cs.model.project;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertReview;
+import cs.model.BaseDto;
+import cs.model.expert.ExpertDto;
+import cs.model.meeting.RoomBookingDto;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.domain.expert.ExpertReview;
-import cs.domain.meeting.RoomBooking;
-import cs.model.BaseDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.meeting.RoomBookingDto;
 
 /**
  * 工作方案
@@ -32,7 +29,7 @@ public class WorkProgramDto extends BaseDto {
     private String reviewType;
     //评审阶段
     private String workreviveStage;
-    
+
     //是否单个评审
     private String isSigle;
     //项目名称
@@ -77,17 +74,12 @@ public class WorkProgramDto extends BaseDto {
     private String projectBackGround;
 
     //评估部门
-    private String reviewOrgId;
     private String reviewOrgName;
 
     //第一负责人
-    private String mianChargeUserId;
-
     private String mianChargeUserName;
 
     //第二负责人
-    private String secondChargeUserId;
-
     private String secondChargeUserName;
 
     //是否有补充函
@@ -98,7 +90,7 @@ public class WorkProgramDto extends BaseDto {
     private Date suppLetterDate;
 
     //评审会时间
-    @JSONField(format = "yyyy-MM-dd")
+   /* @JSONField(format = "yyyy-MM-dd")
     private Date stageTime;
 
     //评审时间
@@ -107,7 +99,7 @@ public class WorkProgramDto extends BaseDto {
     //会议地点
     private String meetingAddress;
 
-    private String meetingId;
+    private String meetingId;*/
     //调研开始时间
     @JSONField(format = "yyyy-MM-dd")
     private Date studyBeginTime;
@@ -138,35 +130,51 @@ public class WorkProgramDto extends BaseDto {
     private Date leaderDate;
 
     //标题日期
+    @JSONField(format = "yyyy-MM-dd")
     private Date titleDate;
 
     //收文对象
     private SignDto signDto;
 
-    //是否主流程
-    private String isMain;
-    
     //S 设备清单（进口）
     //项目概况
     private String projectSurvey;
-    
+
     //评审重点
     private String stageEmphasis;
-    
+
     //申报总额
     private BigDecimal declareCount;
 
     //是否已经生成会前准备材料
     private String isCreateDoc;
-    
+
     //E 设备清单（进口）
 
+    //流程分支序号
+    private String branchId;
+
+    //邀请单位及领导
+    private String inviteUnitLeader;
+
+    private String expertReviewId;
     //专家评审方案
     private ExpertReview expertReview;
 
     //会议室预定
     private List<RoomBookingDto> roomBookingDtos;
 
+
+    //拟聘请专家
+    private List<ExpertDto> expertDtoList;
+
+    public List<ExpertDto> getExpertDtoList() {
+        return expertDtoList;
+    }
+
+    public void setExpertDtoList(List<ExpertDto> expertDtoList) {
+        this.expertDtoList = expertDtoList;
+    }
 
     public String getId() {
         return id;
@@ -344,14 +352,6 @@ public class WorkProgramDto extends BaseDto {
         this.projectBackGround = projectBackGround;
     }
 
-    public String getReviewOrgId() {
-        return reviewOrgId;
-    }
-
-    public void setReviewOrgId(String reviewOrgId) {
-        this.reviewOrgId = reviewOrgId;
-    }
-
     public String getReviewOrgName() {
         return reviewOrgName;
     }
@@ -360,28 +360,12 @@ public class WorkProgramDto extends BaseDto {
         this.reviewOrgName = reviewOrgName;
     }
 
-    public String getMianChargeUserId() {
-        return mianChargeUserId;
-    }
-
-    public void setMianChargeUserId(String mianChargeUserId) {
-        this.mianChargeUserId = mianChargeUserId;
-    }
-
     public String getMianChargeUserName() {
         return mianChargeUserName;
     }
 
     public void setMianChargeUserName(String mianChargeUserName) {
         this.mianChargeUserName = mianChargeUserName;
-    }
-
-    public String getSecondChargeUserId() {
-        return secondChargeUserId;
-    }
-
-    public void setSecondChargeUserId(String secondChargeUserId) {
-        this.secondChargeUserId = secondChargeUserId;
     }
 
     public String getSecondChargeUserName() {
@@ -398,14 +382,6 @@ public class WorkProgramDto extends BaseDto {
 
     public void setIsHaveSuppLetter(String isHaveSuppLetter) {
         this.isHaveSuppLetter = isHaveSuppLetter;
-    }
-
-    public String getMeetingAddress() {
-        return meetingAddress;
-    }
-
-    public void setMeetingAddress(String meetingAddress) {
-        this.meetingAddress = meetingAddress;
     }
 
     public BigDecimal getExpertCost() {
@@ -456,14 +432,6 @@ public class WorkProgramDto extends BaseDto {
         this.leaderDate = leaderDate;
     }
 
-    public String getIsMain() {
-        return isMain;
-    }
-
-    public void setIsMain(String isMain) {
-        this.isMain = isMain;
-    }
-
     public List<RoomBookingDto> getRoomBookingDtos() {
         return roomBookingDtos;
     }
@@ -502,31 +470,6 @@ public class WorkProgramDto extends BaseDto {
 
     public void setTitleDate(Date titleDate) {
         this.titleDate = titleDate;
-    }
-
-
-    public Date getStageTime() {
-        return stageTime;
-    }
-
-    public void setStageTime(Date stageTime) {
-        this.stageTime = stageTime;
-    }
-
-    public String getMeetingId() {
-        return meetingId;
-    }
-
-    public void setMeetingId(String meetingId) {
-        this.meetingId = meetingId;
-    }
-
-    public String getWorkStageTime() {
-        return workStageTime;
-    }
-
-    public void setWorkStageTime(String workStageTime) {
-        this.workStageTime = workStageTime;
     }
 
     public SignDto getSignDto() {
@@ -577,21 +520,21 @@ public class WorkProgramDto extends BaseDto {
         this.isMainProject = isMainProject;
     }
 
-	public String getProjectSurvey() {
-		return projectSurvey;
-	}
+    public String getProjectSurvey() {
+        return projectSurvey;
+    }
 
-	public void setProjectSurvey(String projectSurvey) {
-		this.projectSurvey = projectSurvey;
-	}
+    public void setProjectSurvey(String projectSurvey) {
+        this.projectSurvey = projectSurvey;
+    }
 
-	public String getStageEmphasis() {
-		return stageEmphasis;
-	}
+    public String getStageEmphasis() {
+        return stageEmphasis;
+    }
 
-	public void setStageEmphasis(String stageEmphasis) {
-		this.stageEmphasis = stageEmphasis;
-	}
+    public void setStageEmphasis(String stageEmphasis) {
+        this.stageEmphasis = stageEmphasis;
+    }
 
     public BigDecimal getDeclareCount() {
         return declareCount;
@@ -610,21 +553,41 @@ public class WorkProgramDto extends BaseDto {
     }
 
     public String getWorkreviveStage() {
-		return workreviveStage;
-	}
+        return workreviveStage;
+    }
 
-	public void setWorkreviveStage(String workreviveStage) {
-		this.workreviveStage = workreviveStage;
-	}
+    public void setWorkreviveStage(String workreviveStage) {
+        this.workreviveStage = workreviveStage;
+    }
 
-	public String getMainDeptName() {
-		return mainDeptName;
-	}
+    public String getMainDeptName() {
+        return mainDeptName;
+    }
 
-	public void setMainDeptName(String mainDeptName) {
-		this.mainDeptName = mainDeptName;
-	}
-	
-	
-    
+    public void setMainDeptName(String mainDeptName) {
+        this.mainDeptName = mainDeptName;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getInviteUnitLeader() {
+        return inviteUnitLeader;
+    }
+
+    public void setInviteUnitLeader(String inviteUnitLeader) {
+        this.inviteUnitLeader = inviteUnitLeader;
+    }
+    public String getExpertReviewId() {
+        return expertReviewId;
+    }
+
+    public void setExpertReviewId(String expertReviewId) {
+        this.expertReviewId = expertReviewId;
+    }
 }

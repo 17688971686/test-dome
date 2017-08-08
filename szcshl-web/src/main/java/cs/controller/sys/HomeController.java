@@ -34,9 +34,9 @@ public class HomeController {
 	public @ResponseBody String initProccess(){	
 		//部署下一个版本
 		logger.info("开始部署项目签收流程...");
-		InputStream in=this.getClass().getClassLoader().getResourceAsStream("");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/signflow.zip");
 		ZipInputStream zipIn=new ZipInputStream(in);
-		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目概算流程").deploy();
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目签收流程").deploy();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
 		logger.info("项目签收流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
 		

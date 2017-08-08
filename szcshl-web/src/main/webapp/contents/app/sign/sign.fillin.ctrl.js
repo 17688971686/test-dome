@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signFillinCtrl', sign);
 
-    sign.$inject = ['$location', 'signSvc', '$state', '$http','bsWin'];
+    sign.$inject = ['signSvc', '$state', '$http','bsWin'];
 
-    function sign($location, signSvc, $state, $http,bsWin) {
+    function sign(signSvc, $state, $http,bsWin) {
         var vm = this;
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
@@ -41,6 +41,12 @@
             if(checked){
                 vm.model.leaderName = signcommon.getDefaultLeader(checkboxValue);
                 vm.model.comprehensivehandlesug = signcommon.getDefaultZHBYJ(checkboxValue);
+                vm.model.comprehensiveName = '综合部';
+
+                var date = new Date();
+                var monthValue = (date.getMonth()+1) < 10 ?"0"+(date.getMonth()+1):(date.getMonth()+1);
+                var dayValue = (date.getDate()) < 10 ?"0"+(date.getDate()):(date.getDate());
+                vm.model.comprehensiveDate = (date.getFullYear()+"-"+monthValue+"-"+dayValue);
             }
         }
 
@@ -153,7 +159,11 @@
 
         //申报登记编辑
         vm.updateFillin = function () {
-            signSvc.updateFillin(vm);
+            vm.isSubmit = true;
+            signSvc.updateFillin(vm.model,function (data) {
+                vm.isSubmit = false;
+                bsWin.alert("操作成功！");
+            });
         }
 
         //根据协办部门查询用户

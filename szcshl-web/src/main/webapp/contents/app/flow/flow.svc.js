@@ -146,46 +146,28 @@
         }// E_getFlowInfo
 
         // S_提交下一步
-        function commit(vm) {
-//            vm.flow.dealOption = $("#dealOption").val();
+        function commit(isCommit,flowObj,callBack) {
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
             if (isValid) {
-                vm.isCommit = true;
+                isCommit = true;
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/flow/commit",
-                    data: vm.flow
+                    data: flowObj
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: response.data.reMsg,
-                                closeDialog: true,
-                                fn: function () {
-                                    if (response.data.reCode == "error") {
-                                        vm.isCommit = false;
-                                    } else {
-                                        $state.go('gtasks');
-                                    }
-                                }
-                            })
-                        }
-
-                    })
+                    isCommit = false;
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
                 }
-
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess,
                     onError: function (response) {
-                        vm.isCommit = false;
+                        isCommit = false;
                     }
                 });
             }

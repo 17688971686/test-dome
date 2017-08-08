@@ -1,5 +1,6 @@
 package cs.domain;
 
+import cs.domain.project.WorkProgram;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 

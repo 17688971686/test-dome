@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -137,30 +138,28 @@ public class RoomBookingController {
 	@RequestMapping(name = "创建会议室预定", path = "addRoom",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void save(@RequestBody RoomBookingDto roomDto ){
-		roomBookingSerivce.createRoom(roomDto);
+		roomBookingSerivce.saveRoom(roomDto);
 	}
 	
 	@RequiresPermissions("room#saveRoom#post")
 	@RequestMapping(name = "评审会时间", path = "saveRoom",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void saveRoom(@RequestBody RoomBookingDto roomDto,WorkProgramDto workProgramDto){
-		roomBookingSerivce.saveRoom(roomDto,workProgramDto);
+	@ResponseBody
+	public ResultMsg saveRoom(@RequestBody RoomBookingDto roomDto){
+		return roomBookingSerivce.saveRoom(roomDto);
 	}
 	
 	@RequiresPermissions("room#updateRoom#put")
 	@RequestMapping(name = "编辑会议室预定", path = "updateRoom",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void update(@RequestBody  RoomBookingDto roomDto){
-		roomBookingSerivce.updateRoom(roomDto);
+		roomBookingSerivce.saveRoom(roomDto);
 	}
 	
 	@RequiresPermissions("room##delete")
 	@RequestMapping(name = "删除会议室预定" ,path = "" ,method =RequestMethod.DELETE)
 	@ResponseStatus( value =HttpStatus.NO_CONTENT)
-	public void delete(@RequestBody String id){
-		if(id!=null){
-			roomBookingSerivce.deleteRoom(id);
-		}
+	public void delete(@RequestParam String id){
+		roomBookingSerivce.deleteRoom(id);
 	}
 	
 	@RequiresPermissions("room#html/roomlist#get")

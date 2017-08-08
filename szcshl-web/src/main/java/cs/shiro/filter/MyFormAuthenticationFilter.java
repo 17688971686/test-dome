@@ -1,9 +1,7 @@
 package cs.shiro.filter;
 
 import cs.common.Constant;
-import cs.common.utils.SessionUtil;
 import cs.domain.sys.User;
-import cs.model.sys.UserDto;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
@@ -53,7 +51,9 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
 
         // 清除记录的前一个请求
         WebUtils.getAndClearSavedRequest(request);
-        return super.onLoginSuccess(token, subject, request, response);
+        WebUtils.redirectToSavedRequest(request, response, "/admin/index");
+        return false;
+        //return super.onLoginSuccess(token, subject, request, response);
     }
 
     @Override

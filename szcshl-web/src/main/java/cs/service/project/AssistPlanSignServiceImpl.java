@@ -53,7 +53,7 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 		for(AssistPlanSign assistPlanSign:list){
 			AssistPlanSignDto assistPlanSignDto=new AssistPlanSignDto();
 			BeanCopierUtils.copyProperties(assistPlanSign, assistPlanSignDto);
-			User user = signPrincipalService.getMainPriUser(assistPlanSign.getSignId(), EnumState.YES.getValue());
+			User user = signPrincipalService.getMainPriUser(assistPlanSign.getSignId());
 			assistPlanSignDto.setUserName(user == null?"":user.getDisplayName());
 			assistPlanSignDto.setPlanId(planId);
 			dtoList.add(assistPlanSignDto);

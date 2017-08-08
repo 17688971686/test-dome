@@ -10,4 +10,6 @@ import cs.repository.IRepository;
  * Date: 2017-5-17 14:02:25
  */
 public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
+
+    ExpertReview findByWPId(String workProgramId);
 }

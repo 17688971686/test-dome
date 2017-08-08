@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Deprecated
 @Service
 public class MergeOptionServiceImpl implements MergeOptionService {
     @Autowired

@@ -14,6 +14,7 @@ import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
+import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
@@ -87,54 +88,6 @@ public class FlowServiceImpl implements FlowService {
     private DispatchDocRepo dispatchDocRepo;
 
     /**
-     * 获取流程处理记录（停用 20170710）
-     * @param processInstanceId
-     * @return
-     */
-    @Deprecated
-    @Override
-    public List<FlowHistoryDto> convertHistory(String processInstanceId) {
-        List<HistoricActivityInstance> list = processEngine.getHistoryService().createHistoricActivityInstanceQuery()
-                .processInstanceId(processInstanceId).list();
-        List<Comment> cmlist = taskService.getProcessInstanceComments(processInstanceId);
-
-        if (list != null) {
-            List<FlowHistoryDto> reultList = new ArrayList<FlowHistoryDto>(list.size());
-            list.forEach(h -> {
-                FlowHistoryDto fh = new FlowHistoryDto();
-                fh.setTaskId(h.getTaskId());
-                fh.setActivityId(h.getActivityId());
-                fh.setActivityName(h.getActivityName());
-                fh.setDurationInMillis(h.getDurationInMillis());
-                fh.setDuration(ActivitiUtil.formatTime(h.getDurationInMillis()));
-                fh.setStartTime(h.getStartTime());
-                fh.setEndTime(h.getEndTime());
-                fh.setAssignee(h.getAssignee());
-                fh.setProcessInstanceId(h.getProcessInstanceId());
-                fh.setMessage(getTaskMessage(cmlist, h.getTaskId()));
-                reultList.add(fh);
-            });
-            return reultList;
-        } else {
-            return null;
-        }
-
-    }
-
-    private String getTaskMessage(List<Comment> list, String taskId) {
-        StringBuffer message = new StringBuffer();
-        if (list != null && Validate.isString(taskId)) {
-            list.forEach(cl -> {
-                if (taskId.equals(cl.getTaskId())) {
-                    message.append(cl.getFullMessage());
-                    return;
-                }
-            });
-        }
-        return message.toString();
-    }
-
-    /**
      * 回退到上一环节
      *
      * @param flowDto
@@ -187,7 +140,7 @@ public class FlowServiceImpl implements FlowService {
         Map<String,Object> valiables = new HashMap<>();
         String backActivitiId = "";
         //如果是排他网关，则只能回退到前一个处理人环节，而不是多人
-        if(flowDto.getBusinessMap().get("ExclusiveGateWay") != null && Boolean.parseBoolean(flowDto.getBusinessMap().get("ExclusiveGateWay").toString())){
+        /*if(flowDto.getBusinessMap().get("ExclusiveGateWay") != null && Boolean.parseBoolean(flowDto.getBusinessMap().get("ExclusiveGateWay").toString())){
             switch (task.getTaskDefinitionKey()){
                 case Constant.FLOW_BMLD_QR_GD://确认归档 -》第二负责人确认归档 或者 第一负责人归档
                     Sign sign = signRepo.findById(Sign_.signid.getName(),instance.getBusinessKey());
@@ -228,7 +181,7 @@ public class FlowServiceImpl implements FlowService {
                 newTransition.setDestination(nextActivityImpl);
                 newTransitions.add(newTransition);
             }
-        }
+        }*/
 
         if(!Validate.isMap(valiables)) {
             valiables = getLastNodeUser(task.getTaskDefinitionKey(), instance.getProcessDefinitionKey(), instance.getBusinessKey(), flowDto.getBusinessMap());
@@ -268,9 +221,8 @@ public class FlowServiceImpl implements FlowService {
         Sign sign = null;
         WorkProgram wk = null;
         DispatchDoc dp = null;
-
+        /*
         switch (taskDefinitionKey){
-            /**********************************   项目签收流程 begin  ****************************************/
             case Constant.FLOW_ZHB_SP_SW: //综合部部长-》签收
                 sign = signRepo.findById(Sign_.signid.getName(),businessKey);
                 resultMap.put("user",sign.getCreatedBy());
@@ -346,9 +298,9 @@ public class FlowServiceImpl implements FlowService {
                 priUser = signPrincipalService.getMainPriUser(businessKey, Constant.EnumState.YES.getValue());
                 resultMap.put("user",priUser.getLoginName());
                 break;
-            /**********************************   项目签收流程 end  ****************************************/
+            *//**********************************   项目签收流程 end  ****************************************//*
 
-            /**********************************   项目概算流程 begin  ****************************************/
+            *//**********************************   项目概算流程 begin  ****************************************//*
             case Constant.FLOW_XS_ZHBBL: //综合部审批 -》 项目签收
                 sign = signRepo.findById(Sign_.signid.getName(),businessKey);
                 resultMap.put("user",sign.getCreatedBy());
@@ -398,45 +350,13 @@ public class FlowServiceImpl implements FlowService {
                 priUser = signPrincipalService.getMainPriUser(businessKey, Constant.EnumState.YES.getValue());
                 resultMap.put("user",priUser.getLoginName());
                 break;
-            /**********************************   项目概算流程 end  ****************************************/
+            *//**********************************   项目概算流程 end  ****************************************//*
             default:
                 resultMap = null;
-        }
+        }*/
         return resultMap;
     }
 
-    /**
-     * @param taskId     任务ID
-     * @param activityId 任务环节ID 而不是实例环节ID
-     * @return
-     */
-    @Override
-    public ActivityImpl getActivityImpl(String taskId, String activityId) {
-        HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-        ProcessDefinitionEntity definition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-                .getDeployedProcessDefinition(currTask.getProcessDefinitionId());
-        if (definition == null) {
-            return null;
-        }
-
-        return definition.findActivity(activityId);
-    }
-
-    public HistoricActivityInstance getHistoricInfoByActivityId(String processInstanceId, String activityId) {
-        List<HistoricActivityInstance> listH = processEngine.getHistoryService().
-                createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).desc().list();
-        HistoricActivityInstance resultObj = null;
-        if (listH != null) {
-            for (int i = 0, l = listH.size(); i < l; i++) {
-                HistoricActivityInstance h = listH.get(i);
-                if (activityId.equals(h.getActivityId())) {
-                    resultObj = h;
-                    break;
-                }
-            }
-        }
-        return resultObj;
-    }
 
     @Override
     public void rollBackByActiviti(FlowDto flowDto) {
@@ -502,33 +422,41 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public void nextTaskDefinition(List<TaskDefinition> taskDefinitionList, ActivityImpl activityImpl, String activityId) {
-        PvmActivity ac = null;
+    public void nextTaskDefinition(List<Node> nextNodeList, ActivityImpl activityImpl, String activityId) {
+        TaskDefinition taskDefinition = null;
         //如果遍历节点为用户任务并且节点不是当前节点信息   
         if ("userTask".equals(activityImpl.getProperty("type")) && !activityId.equals(activityImpl.getId())) {
             //获取该节点下一个节点信息   
-            TaskDefinition taskDefinition = ((UserTaskActivityBehavior) activityImpl.getActivityBehavior()).getTaskDefinition();
-            taskDefinitionList.add(taskDefinition);
+            taskDefinition = ((UserTaskActivityBehavior) activityImpl.getActivityBehavior()).getTaskDefinition();
+            Node nextNode = new Node();
+            nextNode.setActivitiId(taskDefinition.getKey());
+            nextNode.setActivitiName(taskDefinition.getNameExpression().getExpressionText());
+            nextNodeList.add(nextNode);
         } else {
             //获取节点所有流向线路信息
             List<PvmTransition> outTransitions = activityImpl.getOutgoingTransitions();
             List<PvmTransition> outTransitionsTemp = null;
-            if (outTransitions != null) {
+            if (Validate.isList(outTransitions)) {
                 for (PvmTransition tr : outTransitions) {
-                    ac = tr.getDestination(); //获取线路的终点节点
+                    PvmActivity ac = tr.getDestination(); //获取线路的终点节点
                     //如果流向线路为排他网关
-                    if ("exclusiveGateway".equals(ac.getProperty("type")) || "inclusiveGateway".equals(ac.getProperty("type"))) {
+                    if ("exclusiveGateway".equals(ac.getProperty("type")) || "inclusiveGateway".equals(ac.getProperty("type"))||"parallelGateway".equals(ac.getProperty("type"))) {
                         outTransitionsTemp = ac.getOutgoingTransitions();
                         if (outTransitionsTemp.size() == 1) {
-                            nextTaskDefinition(taskDefinitionList, (ActivityImpl) outTransitionsTemp.get(0).getDestination(), activityId);
+                            nextTaskDefinition(nextNodeList, (ActivityImpl) outTransitionsTemp.get(0).getDestination(), activityId);
                         } else if (outTransitionsTemp.size() > 1) {
                             for (PvmTransition tr1 : outTransitionsTemp) {
-                                nextTaskDefinition(taskDefinitionList, (ActivityImpl) tr1.getDestination(), activityId);
+                                nextTaskDefinition(nextNodeList, (ActivityImpl) tr1.getDestination(), activityId);
                             }
                         }
                     } else if ("userTask".equals(ac.getProperty("type"))) {
-                        TaskDefinition taskDefinition = ((UserTaskActivityBehavior) ((ActivityImpl) ac).getActivityBehavior()).getTaskDefinition();
-                        taskDefinitionList.add(taskDefinition);
+                        Node nextNode = new Node();
+                        nextNode.setActivitiId(ac.getId());
+                        nextNode.setActivitiName((String) ac.getProperty("name"));
+                        nextNodeList.add(nextNode);
+                    }else{
+                        String taskType = (String) ac.getProperty("type");
+                        System.out.print(taskType);
                     }
                 }
             }

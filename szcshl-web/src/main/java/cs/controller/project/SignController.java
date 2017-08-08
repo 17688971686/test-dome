@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import cs.domain.project.SignDispaWork;
@@ -70,16 +69,8 @@ public class SignController {
 
     @RequiresPermissions("sign##post")
     @RequestMapping(name = "创建收文", path = "", method = RequestMethod.POST)
-    public @ResponseBody
-    SignDto post(@RequestBody SignDto signDto) {
-        if (!Validate.isString(signDto.getSignid())) {
-            signDto.setSignid(UUID.randomUUID().toString());
-        }
-        // not complete
-        signDto.setIsregisteredcompleted(Constant.EnumState.NO.getValue());
-        signService.createSign(signDto);
-
-        return signDto;
+    public @ResponseBody ResultMsg post(@RequestBody SignDto signDto) {
+        return signService.createSign(signDto);
     }
     
     @RequiresPermissions("sign#html/reserveAdd#get")
@@ -119,7 +110,6 @@ public class SignController {
      * 获取项目关联
      *
      * @param signId      项目ID
-     * @param associateId 关联到的项目ID
      */
     @RequiresPermissions("sign#associate#get")
     @RequestMapping(name = "项目关联", path = "associate", method = RequestMethod.GET)
@@ -149,7 +139,6 @@ public class SignController {
     List<SignDto> findByPlanId(@RequestParam(required = true) String planId) {
         return signService.findByPlanId(planId);
     }
-
 
     @RequiresPermissions("sign#html/fillin#get")
     @RequestMapping(name = "填写表格页面", path = "html/fillin", method = RequestMethod.GET)
@@ -225,13 +214,53 @@ public class SignController {
         return pageModelDto;
     }
 
+    @RequiresPermissions("sign#unMergeWPSign#post")
+    @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDto> unMergeWPSign(@RequestParam(required = true) String signId) {
+        return signService.unMergeWPSign(signId);
+    }
+
+    @RequiresPermissions("sign#getMergeSignBySignId#post")
+    @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDto> getMergeSignBySignId(@RequestParam(required = true) String signId){
+        return signService.getMergeWPSignBySignId(signId);
+    }
+
+    @RequiresPermissions("sign#unMergeDISSign#post")
+    @RequestMapping(name = "待选合并发文项目", path = "unMergeDISSign", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDto> unMergeDISSign(@RequestParam(required = true) String signId) {
+        return signService.unMergeDISSign(signId);
+    }
+
+    @RequiresPermissions("sign#getMergeDISSign#post")
+    @RequestMapping(name = "获取已选合并发文项目", path = "getMergeDISSign", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDto> getMergeDISSign(@RequestParam(required = true) String signId){
+        return signService.getMergeDISSignBySignId(signId);
+    }
+
+    @RequiresPermissions("sign#mergeSign#post")
+    @RequestMapping(name = "保存合并评审发文", path = "mergeSign", method = RequestMethod.POST)
+    public @ResponseBody ResultMsg mergeSign(@RequestParam(required = true) String signId,
+             @RequestParam(required = true) String mergeIds,@RequestParam(required = true) String mergeType) {
+        return signService.mergeSign(signId,mergeIds,mergeType);
+    }
+
+    @RequiresPermissions("sign#cancelMergeSign#post")
+    @RequestMapping(name = "解除合并评审发文", path = "cancelMergeSign", method = RequestMethod.POST)
+    public @ResponseBody ResultMsg cancelMergeSign(@RequestParam(required = true) String signId,
+        String cancelIds,@RequestParam(required = true) String mergeType){
+        return signService.cancelMergeSign(signId,cancelIds,mergeType);
+    }
 
     /***************************************  S 新流程处理的方法     *******************************************/
 
-    @RequestMapping(name = "初始化流程处理页面", path = "html/initFlowPageData", method = RequestMethod.GET)
+    @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
-    public @ResponseBody
-    SignDto initFlowPageData(@RequestParam(required = true) String signid) {
+    public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true) String signid) {
         return signService.findById(signid, true);
     }
 

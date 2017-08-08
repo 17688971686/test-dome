@@ -6,7 +6,7 @@ import cs.domain.DomainBase;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * 合并发文/评审
+ * 合并发文/评审(停用2017-08-05)
  *
  * @author ldm
  */
@@ -14,6 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "cs_merge_option")
 @DynamicUpdate(true)
+@Deprecated
 public class MergeOption extends DomainBase {
 
     /**

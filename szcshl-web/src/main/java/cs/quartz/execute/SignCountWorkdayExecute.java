@@ -68,7 +68,7 @@ public class SignCountWorkdayExecute implements Job {
 				String reviewstage = sign.getReviewstage();//获取评审阶段
 
 				// 已发文状态
-				if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {   
+				if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {   
 					sign.setIsLightUp(Constant.signEnumState.DISPA.getValue());
 				}
 
@@ -80,7 +80,7 @@ public class SignCountWorkdayExecute implements Job {
 				switch (reviewstage) {
 				case "项目建议书":
 					if (count >= 12) {
-						if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
+						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
 							if (count > 25) {
 								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
 							} else {
@@ -100,7 +100,7 @@ public class SignCountWorkdayExecute implements Job {
 
 				case "可行性研究报告":
 					if (count >= 15) {
-						if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
+						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
 							if (count > 25) {
 								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
 							} else {
@@ -118,7 +118,7 @@ public class SignCountWorkdayExecute implements Job {
 
 				case "项目概算":
 					if (count >= 15) {
-						if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
+						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
 							if (count > 25) {
 								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
 							} else {
@@ -136,7 +136,7 @@ public class SignCountWorkdayExecute implements Job {
 
 				case "资金申请报告":
 					if (count >= 12) {
-						if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
+						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
 							if (count > 25) {
 								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
 							} else {
@@ -154,7 +154,7 @@ public class SignCountWorkdayExecute implements Job {
 
 				case "设备清单（国产）":
 					if (count >= 12 || 12 - count <= 3) {
-						if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
+						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
 							if (count > 25) {
 								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
 							} else {
@@ -172,7 +172,7 @@ public class SignCountWorkdayExecute implements Job {
 
 				case "设备清单（进产）":
 					if (count >= 12) {
-						if (sign.getIsDispatchCompleted() == Constant.EnumState.YES.getValue()) {    //已发文
+						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
 							if (count > 25) {
 								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
 							} else {

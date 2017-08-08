@@ -2,11 +2,13 @@ package cs.service.meeting;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
@@ -24,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.transform.Result;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -295,110 +298,47 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 
 	@Override
 	@Transactional
-	public void createRoom(RoomBookingDto roomBookingDto) {
-		if(checkRootBook(roomBookingDto) > 0){
-			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomBookingDto.getBeginTime()));
-		}else{
-			RoomBooking rb = new RoomBooking();
-			BeanCopierUtils.copyProperties(roomBookingDto, rb);
-			rb.setId(UUID.randomUUID().toString());
-			Date days = roomBookingDto.getRbDay();
-			String strdate = DateUtils.toStringDay(days);
-			String day = GetWeekUtils.getWeek(days);
-			rb.setRbDate(strdate+"("+day+")");//星期几
-			Date now = new Date();
-			rb.setCreatedDate(now);
-			rb.setModifiedDate(now);
-			rb.setCreatedBy(SessionUtil.getLoginName());
-			rb.setModifiedBy(SessionUtil.getLoginName());
-
-			if(Validate.isString(roomBookingDto.getWorkProgramId())){
-				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
-				wp.setWorkStageTime(strdate+"("+day+")"+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
-				wp.setMeetingId(roomBookingDto.getMrID());
-				MeetingRoom meeting = meetingRoomRepo.findById(roomBookingDto.getMrID());
-				wp.setMeetingAddress(meeting.getMrName());
-				rb.setWorkProgram(wp);
-			}
-			roomBookingRepo.save(rb);
-		}
-
-	}
-
-	@Override
-	@Transactional
-	public void updateRoom(RoomBookingDto roomBookingDto) {
-		if(checkRootBook(roomBookingDto) > 0){
-			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomBookingDto.getBeginTime()));
-		}else{
-			RoomBooking room =  roomBookingRepo.findById(roomBookingDto.getId());
-			BeanCopierUtils.copyPropertiesIgnoreNull(roomBookingDto, room);
-			room.setModifiedBy(SessionUtil.getLoginName());
-			room.setModifiedDate(new Date());
-
-			if(Validate.isString(roomBookingDto.getWorkProgramId())){
-				WorkProgram wp = workProgramRepo.findById(roomBookingDto.getWorkProgramId());
-				wp.setWorkStageTime(room.getRbDate()+roomBookingDto.getBeginTimeStr()+"至"+roomBookingDto.getEndTimeStr());
-				wp.setMeetingId(roomBookingDto.getMrID());
-				wp.setMeetingAddress(roomBookingDto.getAddressName());
-				room.setWorkProgram(wp);
-			}
-			roomBookingRepo.save(room);
-			logger.info(String.format("更新会议室预定,会议名称:%s", roomBookingDto.getRbName()));
-		}
-	}
-
-	@Override
-	@Transactional
 	public void deleteRoom(String id) {
-		RoomBooking room = 	roomBookingRepo.findById(id);
-		if(room != null){
-			//			room.getCreatedBy().equals(SessionUtil.getLoginUser().getId())
-			if(room.getCreatedBy().equals(SessionUtil.getLoginName())){
-				roomBookingRepo.delete(room);
-				logger.info(String.format("删除会议室预定,会议名称:%s", room.getRbName()));
-			}else{
-				throw new IllegalArgumentException("您不是会议室预定人员，不能对其进行删除操作！");
-			}
-		}
+		roomBookingRepo.deleteById(RoomBooking_.id.getName(),id);
 	}
 
-	@Override
-	public void deleteRooms(String[] ids) {
-		for(String id:ids){
-			deleteRoom(id);
-		}
-	}
-
+	/**
+	 * 保存会议预定信息
+	 * @param roomDto
+	 * @return
+	 */
 	@Override
 	@Transactional
-	public void saveRoom(RoomBookingDto roomDto, WorkProgramDto workProgramDto) {
+	public ResultMsg saveRoom(RoomBookingDto roomDto) {
 		if(checkRootBook(roomDto) > 0){
-			throw new IllegalArgumentException(String.format("%s 会议室安排时间冲突!!!", roomDto.getBeginTime()));
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"预定的会议室时间跟其他会议有冲突！");
 		}else{
+			Date now = new Date();
 			RoomBooking rb = new RoomBooking();
-			BeanCopierUtils.copyProperties(roomDto, rb);
+			if(Validate.isString(roomDto.getId())){
+				rb = roomBookingRepo.getById(roomDto.getId());
+				BeanCopierUtils.copyPropertiesIgnoreNull(roomDto,rb);
+				rb.setCreatedDate(now);
+				rb.setModifiedDate(now);
+			}else{
+				BeanCopierUtils.copyProperties(roomDto, rb);
+			}
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
 			rb.setRbDate(strdate+"("+stageday+")");//星期几
 			String stageProject = roomDto.getStageProject();
 			rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
-
-			Date now = new Date();
-			rb.setCreatedDate(now);
-			rb.setModifiedDate(now);
 			rb.setCreatedBy(SessionUtil.getLoginName());
 			rb.setModifiedBy(SessionUtil.getLoginName());
+			//如果有关联,则要加上
+			if(Validate.isString(roomDto.getWorkProgramId())){
+                WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),roomDto.getWorkProgramId());
+                rb.setWorkProgram(wp);
+            }
+
 			roomBookingRepo.save(rb);
-			WorkProgram workProgram =workProgramRepo.findById(roomDto.getWorkProgramId());
-			if(workProgram != null){
-				String d = DateUtils.toStringDay(roomDto.getRbDay());
-				String day = GetWeekUtils.getWeek(roomDto.getRbDay());
-				workProgram.setWorkStageTime(d+"("+day+")"+roomDto.getBeginTimeStr()+"至"+roomDto.getEndTimeStr());
-				workProgram.setMeetingId(roomDto.getMrID());
-				BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-				workProgramRepo.save(workProgram);
-			}
+
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",rb);
 		}
 	}
 

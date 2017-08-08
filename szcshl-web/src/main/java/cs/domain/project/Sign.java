@@ -81,7 +81,7 @@ public class Sign extends DomainBase {
 
     //报审概算
     @Column(columnDefinition = "NUMBER")
-    private BigDecimal Declaration;
+    private BigDecimal declaration;
     
     //编制单位ID
     @Column(columnDefinition = "VARCHAR(64)")
@@ -399,11 +399,6 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String energyCopy;
 
-
-    //发文是否完成
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isDispatchCompleted;
-
     //主办部门
     @Column(columnDefinition = "VARCHAR(64)")
     private String mOrgId;
@@ -714,9 +709,11 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(64)")
     private String suppletterid;
     
-    
-
-
+    /**
+     * 默认办理类型
+     */
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String dealOrgType;
     /**
      * 预签收日期
      */
@@ -724,23 +721,23 @@ public class Sign extends DomainBase {
     private Date presignDate;
 
     //工作方案
-    @OneToMany(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<WorkProgram> workProgramList;
     
     //暂停项目
-    @OneToMany(mappedBy="sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<ProjectStop> projectStopList;
     
     //发文
-    @OneToOne(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private DispatchDoc dispatchDoc;
 
     //归档
-    @OneToOne(mappedBy = "sign",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "sign",fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private FileRecord fileRecord;
 
     //关联下一阶段的项目
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     @JoinTable(
             name = "cs_associate_sign",
             joinColumns = @JoinColumn(name = "signid"),
@@ -752,19 +749,19 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(1)")
     private String ispresign;
 
-    //是否登记完毕
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isregisteredcompleted;
-
     //警示灯状态
     @Column(columnDefinition="VARCHAR(2)")
     private String isLightUp;
 
-    //收文状态
+    //项目状态
     @Column(columnDefinition = "VARCHAR(2)")
     private String signState;
 
-    //是否有评审费用
+    //进程状态(1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
+    @Column(columnDefinition = "Integer")
+    private Integer processState;
+
+	//是否有评审费用
     @Column(columnDefinition = "VARCHAR(2)")
     private String ishasreviewcost;
 
@@ -784,27 +781,9 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "INTEGER")
     private Integer isAssociate;
 
-    //是否需要工作方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isNeedWrokPrograml;
-
     //是否调概
     @Column(columnDefinition = "VARCHAR(5)")
     private String ischangeEstimate;
-
-    //是否完成评审方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isreviewCompleted;
-
-    //是否完成分支的评审方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String isreviewACompleted;
-    
-    /**
-     * 默认办理类型
-     */
-    @Column(columnDefinition = "VARCHAR(5)")
-    private String dealOrgType;
 
 	//是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
@@ -865,14 +844,6 @@ public class Sign extends DomainBase {
 
     public void setProjectname(String projectname) {
         this.projectname = projectname;
-    }
-
-    public String getIsregisteredcompleted() {
-        return isregisteredcompleted;
-    }
-
-    public void setIsregisteredcompleted(String isregisteredcompleted) {
-        this.isregisteredcompleted = isregisteredcompleted;
     }
 
     public String getMaindepetid() {
@@ -1185,22 +1156,6 @@ public class Sign extends DomainBase {
 
     public void setIschangeEstimate(String ischangeEstimate) {
         this.ischangeEstimate = ischangeEstimate;
-    }
-
-    public String getIsreviewCompleted() {
-        return isreviewCompleted;
-    }
-
-    public void setIsreviewCompleted(String isreviewCompleted) {
-        this.isreviewCompleted = isreviewCompleted;
-    }
-
-    public String getIsreviewACompleted() {
-        return isreviewACompleted;
-    }
-
-    public void setIsreviewACompleted(String isreviewACompleted) {
-        this.isreviewACompleted = isreviewACompleted;
     }
 
     public Integer getSugProDealCount() {
@@ -1643,14 +1598,6 @@ public class Sign extends DomainBase {
         this.signState = signState;
     }
 
-    public String getIsDispatchCompleted() {
-        return isDispatchCompleted;
-    }
-
-    public void setIsDispatchCompleted(String isDispatchCompleted) {
-        this.isDispatchCompleted = isDispatchCompleted;
-    }
-
     public List<WorkProgram> getWorkProgramList() {
         return workProgramList;
     }
@@ -1705,14 +1652,6 @@ public class Sign extends DomainBase {
 
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
-    }
-
-    public String getIsNeedWrokPrograml() {
-        return isNeedWrokPrograml;
-    }
-
-    public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
-        this.isNeedWrokPrograml = isNeedWrokPrograml;
     }
 
     public Integer getIsAssociate() {
@@ -2339,14 +2278,20 @@ public class Sign extends DomainBase {
 	public void setDealOrgType(String dealOrgType) {
 		this.dealOrgType = dealOrgType;
 	}
-
+	
 	public BigDecimal getDeclaration() {
-		return Declaration;
+		return declaration;
 	}
 
 	public void setDeclaration(BigDecimal declaration) {
-		Declaration = declaration;
+		this.declaration = declaration;
 	}
-	
-    
+
+	public Integer getProcessState() {
+		return processState;
+	}
+
+	public void setProcessState(Integer processState) {
+		this.processState = processState;
+	}
 }

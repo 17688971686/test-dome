@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cs.common.utils.SessionUtil;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -89,6 +91,10 @@ public class FlowController {
     private OrgService orgService;
     @Autowired
     private SignPrincipalService signPrincipalService;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
+    @Autowired
+    private SignMergeRepo signMergeRepo;
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办任务", path = "html/tasks", method = RequestMethod.POST)
@@ -166,7 +172,6 @@ public class FlowController {
                 processEngineConfiguration.getClassLoader(), 1.0);
 
         return imageStream;
-
     }
 
     @RequestMapping(name = "读取流程历史记录", path = "processInstance/history/{processInstanceId}", method = RequestMethod.POST)
@@ -202,32 +207,27 @@ public class FlowController {
             flowDto.setSuspended(task.isSuspended());
         }
         flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
-        /*//项目建议书流程
-        if(Constant.EnumFlow.FINAL_SIGN.getValue().equals(flowDto.getProcessKey())) {
-            if (Constant.FLOW_BMLD_QR_GD.equals(flowDto.getCurNode().getActivitiId())) {
-                flowDto.setEnd(true);
-            }
-        //项目概算流程
-        }else if(Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(flowDto.getProcessKey())){
-            if (Constant.FLOW_XS_QRGD.equals(flowDto.getCurNode().getActivitiId())) {
-                flowDto.setEnd(true);
-            }
-        }*/
+
         //加载环节业务数据
-        if ((Constant.EnumFlow.FINAL_SIGN.getValue().equals(flowDto.getProcessKey())
-                || Constant.EnumFlow.SIGN_XS_FLOW.getValue().equals(flowDto.getProcessKey()))
+        if ((Constant.SIGN_FLOW.equals(flowDto.getProcessKey()))
                 && Validate.isString(flowDto.getCurNode().getActivitiId())) {
 
             Map<String, Object> businessMap = new HashMap<>();
+            String branchIndex = "";
             switch (flowDto.getCurNode().getActivitiId()) {
-                /**************************   S 项目签收流程  ****************************/
-                case Constant.FLOW_ZHB_SP_SW://综合部拟办
+                //综合部拟办
+                case Constant.FLOW_SIGN_ZHB:
                     businessMap.put("viceDirectors", userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
                     break;
-                case Constant.FLOW_FGLD_SP_SW://分管领导分办
+                //分管领导审核
+                case Constant.FLOW_SIGN_FGLD_FB:
                     businessMap.put("orgs", orgService.listAll());
                     break;
-                case Constant.FLOW_BM_FB1://选择项目负责人
+                //部门分办（选择项目负责人）
+                case Constant.FLOW_SIGN_BMFB1:
+                case Constant.FLOW_SIGN_BMFB2:
+                case Constant.FLOW_SIGN_BMFB3:
+                case Constant.FLOW_SIGN_BMFB4:
                     List<UserDto> userList = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
                     //排除项目负责人（这里是用户本身）
                     for(UserDto userDto:userList){
@@ -238,59 +238,49 @@ public class FlowController {
                     }
                     businessMap.put("users", userList);
                     break;
-                case Constant.FLOW_BM_FB2://选择项目负责人
-                    List<UserDto> userList2 = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
-                    //排除项目负责人（这里是用户本身）
-                    for(UserDto userDto:userList2){
-                        if(userDto.getId().equals(SessionUtil.getUserInfo().getId())){
-                            userList2.remove(userDto);
-                            break;
-                        }
+                //项目负责人办理
+                case Constant.FLOW_SIGN_XMFZR1:
+                    branchIndex =  Constant.SignFlowParams.BRANCH_INDEX1.getValue();
+                case Constant.FLOW_SIGN_XMFZR2:
+                    if(!Validate.isString(branchIndex)){
+                        branchIndex =  Constant.SignFlowParams.BRANCH_INDEX2.getValue();
                     }
-                    businessMap.put("users", userList2);
-                    break;
-                case Constant.FLOW_XMFZR_SP_GZFA1:  //项目负责人承办，如果是并行流程，则不可以直接发文
-                    ExecutionEntity execution = (ExecutionEntity) runtimeService.createExecutionQuery().executionId(task.getExecutionId()).singleResult();
-                    flowDto.getCurNode().setIsConcurrent(execution.isConcurrent());
-                case Constant.FLOW_MFZR_GD:
-                   List<User> secondUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey(), Constant.EnumState.YES.getValue());
-                   if(secondUserList != null && secondUserList.size() > 0){
-                       businessMap.put("secondUserList", secondUserList);
-                   }
-                   break ;
-                /**************************   E 项目签收流程  ****************************/
-
-                /**************************   S 协审流程环节信息(大部分和项目签收流程一致)  ****************************/
-                case Constant.FLOW_XS_ZHBBL://综合部拟办
-                    businessMap.put("viceDirectors", userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
-                    break;
-                case Constant.FLOW_XS_FGLD_SP://分管领导审批
-                    businessMap.put("xsOrgs", orgService.listAll());
-                    break;
-                case Constant.FLOW_XS_BMFB://选择项目负责人
-                    List<UserDto> userList3 = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
-                    //排除项目负责人（这里是用户本身）
-                    for(UserDto userDto:userList3){
-                        if(userDto.getId().equals(SessionUtil.getUserInfo().getId())){
-                            userList3.remove(userDto);
-                            break;
-                        }
+                case Constant.FLOW_SIGN_XMFZR3:
+                    if(!Validate.isString(branchIndex)){
+                        branchIndex =  Constant.SignFlowParams.BRANCH_INDEX3.getValue();
                     }
-                    businessMap.put("xsusers",userList3);
+                case Constant.FLOW_SIGN_XMFZR4:
+                    if(!Validate.isString(branchIndex)){
+                        branchIndex =  Constant.SignFlowParams.BRANCH_INDEX4.getValue();
+                    }
+                    businessMap.put("isFinishWP", signBranchRepo.checkFinishWP(processInstance.getBusinessKey(),branchIndex));
                     break;
-                case Constant.FLOW_XS_FZR_GD:
-                    List<User> secondXSUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey(), Constant.EnumState.YES.getValue());
-                    if(secondXSUserList != null && secondXSUserList.size() > 0){
-                        List<UserDto> userDtoList = new ArrayList<>(secondXSUserList==null?0:secondXSUserList.size());
-                        secondXSUserList.forEach( su ->{
-                            UserDto uDto = new UserDto();
-                            BeanCopierUtils.copyProperties(su,uDto);
-                            userDtoList.add(uDto);
+                //发文申请
+                case Constant.FLOW_SIGN_FW:
+                    List<User> prilUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey());
+                    if(Validate.isList(prilUserList)){
+                        List<UserDto> userDtoList = new ArrayList<>(prilUserList.size());
+                        prilUserList.forEach(pul ->{
+                            UserDto userDto = new UserDto();
+                            BeanCopierUtils.copyProperties(pul,userDto);
+                            userDtoList.add(userDto);
                         });
-                        businessMap.put("secondUserList", userDtoList);
+                        businessMap.put("prilUserList", userDtoList);
                     }
-                    break ;
-                /**************************   E 协审流程环节信息  ****************************/
+                    break;
+                //生成发文编号，如果是合并发文次项目，则不需要关联
+                case Constant.FLOW_SIGN_FWBH:
+                    boolean isMerge =signMergeRepo.checkIsMerege(processInstance.getBusinessKey(), Constant.MergeType.DISPATCH.getValue());
+                    businessMap.put("needDISNum", !isMerge);
+                    break;
+                //项目归档
+                case Constant.FLOW_SIGN_GD:
+                    //项目负责人获取第一个作为处理人
+                    List<User> checkUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey());
+                    if(Validate.isList(checkUserList)){
+                        businessMap.put("checkFileUser", checkUserList.get(0));
+                    }
+                    break;
                 default:
             }
             flowDto.setBusinessMap(businessMap);
@@ -302,18 +292,29 @@ public class FlowController {
             ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
                     .getDeployedProcessDefinition(task.getProcessDefinitionId());
             ActivityImpl activityImpl = def.findActivity(task.getTaskDefinitionKey());
-            List<TaskDefinition> taskDefinitionList = new ArrayList<TaskDefinition>();
-            flowService.nextTaskDefinition(taskDefinitionList,activityImpl,task.getTaskDefinitionKey());
-            if(taskDefinitionList.size()>0){
-                List<Node> nextNodeList = new ArrayList<Node>(taskDefinitionList.size());
-                taskDefinitionList.forEach(tf->{
-                    Node nextNode = new Node();
-                    nextNode.setActivitiId(tf.getKey());
-                    nextNode.setActivitiName(tf.getNameExpression().getExpressionText());
-                    nextNodeList.add(nextNode);
-                });
-                flowDto.setNextNode(nextNodeList);
+            List<Node> nextNodeList = new ArrayList<>();
+            flowService.nextTaskDefinition(nextNodeList,activityImpl,task.getTaskDefinitionKey());
+            //排除掉一些环节
+            switch (flowDto.getCurNode().getActivitiId()) {
+                case Constant.FLOW_SIGN_FW:
+                    //有项目负责人，则隐藏部长审核环节
+                    if(flowDto.getBusinessMap().get("prilUserList") != null){
+                        for(int i=0;i<nextNodeList.size();i++){
+                            if((nextNodeList.get(i).getActivitiId()).equals(Constant.FLOW_SIGN_BMLD_QRFW))
+                                nextNodeList.remove(i);
+                        }
+                    }
+                case Constant.FLOW_SIGN_GD:
+                    if(flowDto.getBusinessMap().get("checkFileUser") != null){
+                        for(int i=0;i<nextNodeList.size();i++){
+                            if((nextNodeList.get(i).getActivitiId()).equals(Constant.FLOW_SIGN_QRGD))
+                                nextNodeList.remove(i);
+                        }
+                    }
+                    break;
+                default:
             }
+            flowDto.setNextNode(nextNodeList);
         }
 
         return flowDto;
@@ -325,10 +326,12 @@ public class FlowController {
     ResultMsg flowCommit(@RequestBody FlowDto flowDto) throws Exception {
         ResultMsg resultMsg = null;
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
-        if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
-            resultMsg = signService.dealFlow(processInstance, flowDto);
-        } else if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.SIGN_XS_FLOW.getValue())) {
-            resultMsg = signService.dealXSFlow(processInstance, flowDto);
+        switch (processInstance.getProcessDefinitionKey()){
+            case Constant.SIGN_FLOW:
+                resultMsg = signService.dealFlow(processInstance, flowDto);
+                break;
+            default:
+                resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
         }
         return resultMsg;
     }
@@ -379,13 +382,22 @@ public class FlowController {
     @Transactional
     @RequestMapping(name = "终止流程", path = "deleteFLow", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteFlow(@RequestParam FlowDto flowDto) {
+    public ResultMsg deleteFlow(@RequestParam FlowDto flowDto) {
+        ResultMsg resultMsg = null;
         //流程实例
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
-        runtimeService.deleteProcessInstance(processInstance.getId(), flowDto.getDealOption());
-        if (processInstance.getProcessDefinitionKey().equals(Constant.EnumFlow.FINAL_SIGN.getValue())) {
-            signService.endFlow(processInstance.getBusinessKey());
+        switch (processInstance.getProcessDefinitionKey()){
+            case Constant.SIGN_FLOW:
+                resultMsg = signService.endFlow(processInstance.getBusinessKey());
+                break;
+            default:
+                resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
+        }
+        //成功再删除流程
+        if(resultMsg.isFlag()){
+            runtimeService.deleteProcessInstance(processInstance.getId(), flowDto.getDealOption());
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
+        return resultMsg;
     }
 }

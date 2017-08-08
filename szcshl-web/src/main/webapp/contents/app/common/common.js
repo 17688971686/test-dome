@@ -3,7 +3,6 @@
     var DICT_ITEMS ;    //数字字典
     var service = {
         initJqValidation: initJqValidation,// 重置form验证
-        requestError: requestError,// 请求错误时执行
         requestSuccess: requestSuccess,// 请求成功时执行
         format: format,// string格式化
         blockNonNumber: blockNonNumber,// 只允许输入数字
@@ -53,25 +52,6 @@
             $("form").removeData("unobtrusiveValidation");
             $.validator.unobtrusive.parse("form");
         }
-    }
-
-    function requestError(options) {
-        var message = '发生错误,系统已记录,我们会尽快处理！';
-        if (options.response != undefined) {
-            if (options.response.status == 401) {
-                location.href = service.loginUrl;
-            }
-            message = options.response.data.message || message;
-        }
-        service.alert({
-            vm: options.vm,
-            msg: message,
-            fn: function () {
-                options.vm.isSubmit = false;
-                options.vm.disabledButton = false;
-                $('.alertDialog').modal('hide');
-            }
-        });
     }
 
     function requestSuccess(options) {
@@ -417,10 +397,6 @@
                 if (options.onError) {
                     options.onError(response);
                 }
-                common.requestError({
-                    vm: options.vm,
-                    response: response
-                });
             });
     }
 

@@ -4,11 +4,14 @@ package cs.common;
  * 系统常亮
  *
  * @author ldm
+ * @author MCL
+ * @date 2017年7月28日 下午2:12:53
  */
 /**
  * @author MCL
  *@date 2017年7月28日 下午2:12:53 
  */
+
 /**
  * @author MCL
  *@date 2017年7月28日 下午2:12:55 
@@ -38,7 +41,7 @@ public class Constant {
     /**
      * 发文编号前缀
      */
-    public static String DISPATCH_PREFIX="深投审";
+    public static String DISPATCH_PREFIX = "深投审";
 
     /**
      * 默认收文工作日
@@ -49,11 +52,11 @@ public class Constant {
      * 默认工作日
      */
     public static Float WORK_DAY_12 = 12f;
-    
+
     /**
      * 初始化用户密码
      */
-    public static final String PASSWORD="123456";
+    public static final String PASSWORD = "123456";
 
 
     /**
@@ -61,7 +64,6 @@ public class Constant {
      */
     public static final String WORKPROGRAM_NAME = "评审工作方案";
     public static final String DRAW_ASSIST_UNITNAME = "系统协审单位抽签最大序号值";
-    public static final String FLOW_LINK_SYMBOL = "$";    //流程业务ID和名称关联符号
 
     /**
      * session中用户的key
@@ -69,51 +71,139 @@ public class Constant {
     public final static String USER_SESSION_KEY = "CURRENT_USER";
 
     /**
-     * 项目签收流程环节名称
-     *
-     * @author Administrator
+     * 流程名称
      */
-    public static final String FLOW_ZR_TB = "ZR_TB";//填报
-    public static final String FLOW_QS = "QS";//签收
-    public static final String FLOW_ZHB_SP_SW = "ZHB_SP_SW";//综合部审批
-    public static final String FLOW_FGLD_SP_SW = "FGLD_SP_SW";//分管副主任审批
-    public static final String FLOW_BM_FB1 = "BM_FB1";//部门分办-主流程
-    public static final String FLOW_BM_FB2 = "BM_FB2";//部门分办
-    public static final String FLOW_XMFZR_SP_GZFA1 = "XMFZR_SP_GZFA1";//项目负责人承办	-主流程
-    public static final String FLOW_XMFZR_SP_GZFA2 = "XMFZR_SP_GZFA2";//项目负责人承办
-    public static final String FLOW_BZ_SP_GZAN1 = "BZ_SP_GZAN1";//部长审批-主流程
-    public static final String FLOW_BZ_SP_GZAN2 = "BZ_SP_GZAN2";//部长审批
-    public static final String FLOW_FGLD_SP_GZFA1 = "FGLD_SP_GZFA1";//分管副主任审批-主流程
-    public static final String FLOW_FGLD_SP_GZFA2 = "FGLD_SP_GZFA2";//分管副主任审批
-    public static final String FLOW_FW_SQ = "FW_SQ";//发文申请
-    public static final String FLOW_BZ_SP_FW = "BZ_SP_FW";//部长审批发文
-    public static final String FLOW_FGLD_SP_FW = "FGLD_SP_FW";//分管领导审批发文
-    public static final String FLOW_ZR_SP_FW = "ZR_SP_FW";//主任审批发文
-    public static final String FLOW_MFZR_GD = "MFZR_GD";//第一负责人归档
-    public static final String FLOW_AZFR_SP_GD = "AZFR_SP_GD";//第二负责人审批归档
-    public static final String FLOW_BMLD_QR_GD = "BMLD_QR_GD";//确认归档
+    public final static String SIGN_FLOW = "FINAL_SIGN_FLOW";           //项目签收流程
 
-    //项目协审流程环节名称
-    public static final String FLOW_XS_ZR = "XS_ZR";// 主任
-    public static final String FLOW_XS_XMQS = "XS_XMQS";// 项目签收
-    public static final String FLOW_XS_ZHBBL = "XS_ZHBBL";// 综合部审批
-    public static final String FLOW_XS_FGLD_SP = "XS_FGLD_SP";// 分管副主任审批
-    public static final String FLOW_XS_BMFB = "XS_BMFB";// 部门分办
-    public static final String FLOW_XS_XMFZR_GZFA = "XS_XMFZR_GZFA";// 项目负责人承办
-    public static final String FLOW_XS_BZSP_GZFA = "XS_BZSP_GZFA";// 部长审批
-    public static final String FLOW_XS_FGLDSP_GZFA = "XS_FGLDSP_GZFA";// 分管副主任审批
-    public static final String FLOW_XS_FW = "XS_FW"; //发文申请
-    public static final String FLOW_XS_BZSP_FW = "XS_BZSP_FW";// 部长审批发文
-    public static final String FLOW_XS_FGLDSP_FW = "XS_FGLDSP_FW";// 分管领导审批发文
-    public static final String FLOW_XS_ZRSP_FW = "XS_ZRSP_FW";// 主任审批发文
-    public static final String FLOW_XS_FZR_GD = "XS_FZR_GD";// 第一负责人归档
-    public static final String FLOW_XS_FZR_SP = "XS_FZR_SP";// 第二负责人审批归档
-    public static final String FLOW_XS_QRGD = "XS_QRGD";// 确认归档
+    /**
+     * 项目签收流程环节名称
+     */
+    public static final String FLOW_SIGN_ZR = "SIGN_ZR";                //填报
+    public static final String FLOW_SIGN_QS = "SIGN_QS";                 //签收
+    public static final String FLOW_SIGN_ZHB = "SIGN_ZHB";              //综合部审批
+    public static final String FLOW_SIGN_FGLD_FB = "SIGN_FGLD_FB";      //分管副主任审批
+    public static final String FLOW_SIGN_BMFB1 = "SIGN_BMFB1";          //部门分办1
+    public static final String FLOW_SIGN_BMFB2 = "SIGN_BMFB2";          //部门分办2
+    public static final String FLOW_SIGN_BMFB3 = "SIGN_BMFB3";          //部门分办3
+    public static final String FLOW_SIGN_BMFB4 = "SIGN_BMFB4";          //部门分办4
+    public static final String FLOW_SIGN_XMFZR1 = "SIGN_XMFZR1";        //项目负责人办理1
+    public static final String FLOW_SIGN_XMFZR2 = "SIGN_XMFZR2";        //项目负责人办理2
+    public static final String FLOW_SIGN_XMFZR3 = "SIGN_XMFZR3";        //项目负责人办理3
+    public static final String FLOW_SIGN_XMFZR4 = "SIGN_XMFZR4";        //项目负责人办理4
+    public static final String FLOW_SIGN_BMLD_SPW1 = "SIGN_BMLD_SPW1";  //部长审批1
+    public static final String FLOW_SIGN_BMLD_SPW2 = "SIGN_BMLD_SPW2";  //部长审批2
+    public static final String FLOW_SIGN_BMLD_SPW3 = "SIGN_BMLD_SPW3";  //部长审批3
+    public static final String FLOW_SIGN_BMLD_SPW4 = "SIGN_BMLD_SPW4";  //部长审批4
+    public static final String FLOW_SIGN_FGLD_SPW1 = "SIGN_FGLD_SPW1";  //分管副主任审批1
+    public static final String FLOW_SIGN_FGLD_SPW2 = "SIGN_FGLD_SPW2";  //分管副主任审批2
+    public static final String FLOW_SIGN_FGLD_SPW3 = "SIGN_FGLD_SPW3";  //分管副主任审批3
+    public static final String FLOW_SIGN_FGLD_SPW4 = "SIGN_FGLD_SPW4";  //分管副主任审批4
+    public static final String FLOW_SIGN_FW = "SIGN_FW";                //发文申请
+    public static final String FLOW_SIGN_QRFW = "SIGN_QRFW";            //项目负责人确认发文
+    public static final String FLOW_SIGN_BMLD_QRFW = "SIGN_BMLD_QRFW";  //部长审批发文
+    public static final String FLOW_SIGN_FGLD_QRFW = "SIGN_FGLD_QRFW";  //分管领导审批发文
+    public static final String FLOW_SIGN_ZR_QRFW = "SIGN_ZR_QRFW";      //主任审批发文
+    public static final String FLOW_SIGN_FWBH = "SIGN_FWBH";            //生成发文编号
+    public static final String FLOW_SIGN_CWBL = "SIGN_CWBL";            //财务办理
+    public static final String FLOW_SIGN_GD = "SIGN_GD";                //归档
+    public static final String FLOW_SIGN_DSFZR_QRGD = "SIGN_DSFZR_QRGD";//第二负责人确认
+    public static final String FLOW_SIGN_QRGD = "SIGN_QRGD";            //最终归档
 
+    /**
+     * 项目签收流程参数
+     */
+    public static enum SignFlowParams {
+        GO_DISPATCH("godispatch"),              //直接发文
+        PRIN_USER("principaluser"),             //项目负责人确认
+        SECOND_USER("seconduser"),              //第二负责人确认
+        UNPASS("unpass"),                       //项目负责人确认不通过
+        BRANCH1("branch1"),                     //项目分支1
+        BRANCH2("branch2"),                     //项目分支2
+        BRANCH3("branch3"),                     //项目分支3
+        BRANCH4("branch4"),                     //项目分支4
+        BRANCH_INDEX1("1"),                     //分支序号1（主分支）
+        BRANCH_INDEX2("2"),                     //分支序号2
+        BRANCH_INDEX3("3"),                     //分支序号3
+        BRANCH_INDEX4("4");                     //分支序号4
+
+        private String value;
+
+        SignFlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 流程用户处理定义名称
+     */
+    public static enum FlowUserName{
+        USER_ZR("user_zr"),              //主任
+        USER_QS("user_qs"),              //项目签收人
+        USER_ZHB("user_zhb"),            //综合部部长
+        USER_FGLD("user_fgld"),          //分管领导
+        USER_BZ1("user_bz1"),            //部门领导1（主分支）
+        USER_BZ2("user_bz2"),            //部门领导2
+        USER_BZ3("user_bz3"),            //部门领导3
+        USER_BZ4("user_bz4"),            //部门领导4
+        USER_FZR1("users1"),             //项目负责人1（主分支）
+        USER_FZR2("users2"),             //项目负责人
+        USER_FZR3("users3"),             //项目负责人
+        USER_FZR4("users4"),             //项目负责人
+        USER_FGLD1("user_fgld1"),        //分管领导1（主分支）
+        USER_FGLD2("user_fgld2"),        //分管领导2
+        USER_FGLD3("user_fgld3"),        //分管领导3
+        USER_FGLD4("user_fgld4"),        //分管领导4
+        USER_HQ("user_hq"),              //项目负责人确认
+        USER_HQ_LIST("user_hq_list"),    //项目负责人确认列表
+        USER_M("user_m"),                //项目第一负责人
+        USER_A("user_a"),                //项目第二负责人
+        USER_CW("users_cw"),             //财务
+        USER_QRGD("user_qrgd");          //确认归档人员
+
+        private String value;
+
+        FlowUserName(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 项目流程信息状态
+     * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
+     */
+    public static enum SignProcessState{
+        IS_START(1),
+        DO_WP(2),
+        END_WP(3),
+        DO_DIS(4),
+        END_DIS(5),
+        END_DIS_NUM(6),
+        DO_FILE(7),
+        END_FILE(8),
+        FINISH(9);
+
+        private Integer value;
+
+        SignProcessState(Integer value) {
+            this.value = value;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+    }
     /**
      * 以下是缓存参数
      */
-    public static enum EnumConfigKey{
+    public static enum EnumConfigKey {
         CONFIG_LIST("CONFIG_LIST"),                 //所有数据参数缓存
         LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),     //上一个抽签单位的最大序号
         SYSINIT("SYSINIT"),                         //系统初始化
@@ -137,7 +227,7 @@ public class Constant {
      * "2" 表示暂停
      * "5" 表示正常
      * "7" 表示已删除
-     * "8" 表示强制结束
+     * "8" 表示强制结束(流程结束)
      * "9" 表示是,或者已完成
      *
      * @author ldm
@@ -198,28 +288,6 @@ public class Constant {
     }
 
     /**
-     * 业务流程名称
-     *
-     * @author ldm
-     */
-    public static enum EnumFlow {
-        FINAL_SIGN("FINAL_SIGN_FLOW"),        //项目签收流程
-        SIGN_XS_FLOW("SIGN_XS_FLOW"),        //项目协审流程
-        SIGN("newsignflow");
-
-        private String value;
-
-        EnumFlow(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-    }
-
-    /**
      * 流程环节 处理组名称
      *
      * @author ldm
@@ -230,7 +298,8 @@ public class Constant {
         VICE_DIRECTOR("副主任"),
         DIRECTOR("主任"),
         FILER("归档员"),
-        DEPT_LEADER("部门负责人");
+        DEPT_LEADER("部门负责人"),
+        FINANCIAL("财务人员");
 
         private String value;
 
@@ -249,7 +318,7 @@ public class Constant {
      * @author ldm
      */
     public static enum MsgCode {
-        OK("ok"), ERROR("error"),TIMEOUT("timeout");
+        OK("ok"), ERROR("error"), TIMEOUT("timeout");
 
         private String value;
 
@@ -263,17 +332,16 @@ public class Constant {
     }
 
     /**
-     * 存档编号类型
-     * （GD表示概率，PD表示评估）
+     *  项目业务类型
      *
      * @author ldm
      */
-    public static enum FileNumType {
+    public static enum SignBusinessType {
         GD("GD"), PD("PD");
 
         private String value;
 
-        FileNumType(String value) {
+        SignBusinessType(String value) {
             this.value = value;
         }
 
@@ -285,23 +353,23 @@ public class Constant {
     /**
      * 模板枚举
      */
-    public static enum Template{
-    	EXPORTROOM("exportRoom","导出会议室安排"),
-        OUTPUT_SUFFIX(".doc","work文档"),        //生成work文档
-        COMPERE("compere","主持人"),
-        MEETING_AM("meetingAM","会议议程（上午）"),
-        MEETING_PM("meetingPM","会议议程（下午）"),
-        ASSIST("assist","协审协议书"),
-        SIGN_IN("signIn","签到表"),
-        INVITATION("invitation","邀请函"),
-        UNIT_NOTICE("notice","项目单位会议通知"),
-    	THIS_STAGE_MEETING("thisStageMeeing","本周评审会议安排"),
-    	NEXT_STAGE_MEETING("nextStageMeeting","下周评审会议安排");
-    	
+    public static enum Template {
+        EXPORTROOM("exportRoom", "导出会议室安排"),
+        OUTPUT_SUFFIX(".doc", "work文档"),        //生成work文档
+        COMPERE("compere", "主持人"),
+        MEETING_AM("meetingAM", "会议议程（上午）"),
+        MEETING_PM("meetingPM", "会议议程（下午）"),
+        ASSIST("assist", "协审协议书"),
+        SIGN_IN("signIn", "签到表"),
+        INVITATION("invitation", "邀请函"),
+        UNIT_NOTICE("notice", "项目单位会议通知"),
+        THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
+        NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排");
+
         private String key;
         private String value;
 
-        Template(String key,String value) {
+        Template(String key, String value) {
             this.key = key;
             this.value = value;
         }
@@ -309,68 +377,75 @@ public class Constant {
         public String getValue() {
             return value;
         }
-        public String getKey(){return key;}
+
+        public String getKey() {
+            return key;
+        }
     }
 
     /**
      * 系统文件类型
      */
-    public static enum SysFileType{
+    public static enum SysFileType {
         SIGN("收文"),
         WORKPROGRAM("工作方案"),
         DISPATCH("发文"),
         DOFILE("归档"),
         MEETING("会前准备材料"),
         SUPPLEMENT("补充函"),
-    	STAGEMEETING("评审会会议");
+        STAGEMEETING("评审会会议");
 
         private String value;
 
-        SysFileType(String value){
+        SysFileType(String value) {
             this.value = value;
         }
+
         public String getValue() {
             return value;
         }
     }
-    
+
     /**
      * 警示灯状态
      * @author MCL
      *@date 2017年6月29日 下午12:03:19 
      */
-    public static enum signEnumState{
-    	PROCESS("1"),	//在办
-    	DISPA("2"),		//已发文
-    	ARCHIVE("3"),	//已发送存档
-    	PAUSE("4"),		//暂停
-    	UNDER3WORKDAY("5"),		//少于三个工作日
-    	DISPAOVER("6"),			//发文超期
-    	OVER25WORKDAYARCHIVE("7"),	//超过25个工作日未存档
-    	ARCHIVEOVER("8");		//存档超期
-    	
-    	private String value;
-    	
-    	signEnumState(String value){
-    		this.value=value;
-    	}
-    	public String getValue(){
-    		return value;
-    	}
-    	
+    public static enum signEnumState {
+        NOLIGHT("0"),                   //不显示
+        PROCESS("1"),                   //在办
+        DISPA("2"),                     //已发文
+        ARCHIVE("3"),                   //已发送存档
+        PAUSE("4"),                     //暂停
+        UNDER3WORKDAY("5"),             //少于三个工作日
+        DISPAOVER("6"),                 //发文超期
+        OVER25WORKDAYARCHIVE("7"),      //超过25个工作日未存档
+        ARCHIVEOVER("8");               //存档超期
+
+        private String value;
+
+        signEnumState(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
     }
-    
+
     /**
      * 合并类型
      */
-    public static enum MergeType{
+    public static enum MergeType {
         WORK_PROGRAM("1"),          //工作方案
         DISPATCH("2");              //发文
         private String value;
 
-        MergeType(String value){
+        MergeType(String value) {
             this.value = value;
         }
+
         public String getValue() {
             return value;
         }
@@ -379,38 +454,41 @@ public class Constant {
     /**
      * 发文方式，评审方式
      */
-    public static enum MergeWay{
+    public static enum MergeWay {
         SINGLE("1"),          //单个
         MERGE("2");           //合并
         private String value;
 
-        MergeWay(String value){
+        MergeWay(String value) {
             this.value = value;
         }
+
         public String getValue() {
             return value;
         }
     }
+
     /**
      * 部门名称
      * @author sjy
      *
      */
-    public static enum OrgName{
-    	 ORGZHB("综合部"),         
-    	 ORGPGYB("评估一部"),
-    	 ORGPGEB("评估二部"),
-         ORGGSYB("概算一部"),         
-         ORGGSEB("概算二部");
-    	
-         private String value;
+    public static enum OrgName {
+        ORGZHB("综合部"),
+        ORGPGYB("评估一部"),
+        ORGPGEB("评估二部"),
+        ORGGSYB("概算一部"),
+        ORGGSEB("概算二部");
 
-         OrgName(String value){
-             this.value = value;
-         }
-         public String getValue() {
-             return value;
-         }
+        private String value;
+
+        OrgName(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 
 }

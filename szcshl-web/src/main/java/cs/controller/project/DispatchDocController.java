@@ -29,40 +29,11 @@ public class DispatchDocController {
        return dispatchDocService.save(dispatchDocDto);
     }
 
-    @RequiresPermissions("dispatch#mergeDispa#get")
-    @RequestMapping(name = "生成关联信息", path = "mergeDispa", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void mergeDispa(@RequestParam String signId, @RequestParam String mainBusinessId, @RequestParam String linkSignId) throws Exception {
-        dispatchDocService.mergeDispa(signId, mainBusinessId, linkSignId);
-    }
-
-    @RequiresPermissions("dispatch#deleteMerge#post")
-    @RequestMapping(name = "删除关联信息", path = "deleteMerge", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void deleteMerge(@RequestParam String mainBusinessId,String removeSignIds) {
-        dispatchDocService.deleteMergeDispa(mainBusinessId, removeSignIds);
-    }
-
     @RequiresPermissions("dispatch#createFileNum#post")
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg createFileNum(@RequestParam String dispatchId) throws Exception {
-        ResultMsg returnMsg = dispatchDocService.fileNum(dispatchId);
+    public @ResponseBody ResultMsg createFileNum(@RequestParam String signId, @RequestParam String dispatchId) throws Exception {
+        ResultMsg returnMsg = dispatchDocService.fileNum(signId,dispatchId);
         return returnMsg;
-    }
-
-    @RequiresPermissions("dispatch#getSignForMerge#get")
-    @RequestMapping(name = "获取待选项目", path = "getSignForMerge", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDto> getSignForMerge(@RequestBody SignDto signDto, @RequestParam String dispatchId) throws Exception {
-        List<SignDto> sList = dispatchDocService.getSignForMerge(signDto, dispatchId);
-        return sList;
-    }
-
-    @RequiresPermissions("dispatch#getSignByBusinessId#get")
-    @RequestMapping(name = "获取已选合并发文项目", path = "getSignByBusinessId", method = RequestMethod.GET)
-    public @ResponseBody
-    List<SignDto> getSignByBusinessId(@RequestParam String mainBussnessId) throws Exception {
-        return dispatchDocService.getSeleSignByMainBusiId(mainBussnessId);
     }
 
     @RequiresPermissions("dispatch#initData#get")

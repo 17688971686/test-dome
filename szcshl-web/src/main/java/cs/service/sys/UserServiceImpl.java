@@ -406,23 +406,6 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 获取部门部长
-     *
-     * @param userList
-     * @param org
-     * @return
-     */
-    public UserDto filterOrgDirector(List<UserDto> userList, Org org) {
-        for (int i = 0, l = userList.size(); i < l; i++) {
-            UserDto delUser = userList.get(i);
-            if (delUser.getId().equals(org.getOrgDirector())) {
-                return delUser;
-            }
-        }
-        return null;
-    }
-
-    /**
      * 获取部门副主任
      *
      * @param userList

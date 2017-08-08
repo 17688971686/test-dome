@@ -124,6 +124,9 @@ header{
                 <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
+            <div style="display: none;">
+               下次自动登录： <input type="checkbox" value="true"  name="rememberMe" id="rememberMe" ng-model="vm.model.rememberMe">
+            </div>
             <div class="row">
                 <!-- /.col -->
                 <div class="pull-right col-sm-12">
@@ -217,7 +220,6 @@ header{
 
             activate();
             function activate() {
-                vm.sysInfo();
             }
 
         }

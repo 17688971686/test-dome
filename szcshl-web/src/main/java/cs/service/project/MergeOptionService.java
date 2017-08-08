@@ -1,5 +1,6 @@
 package cs.service.project;
 
+@Deprecated
 public interface MergeOptionService {
     /**
      * 判断是否有合并

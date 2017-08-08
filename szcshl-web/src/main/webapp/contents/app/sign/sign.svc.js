@@ -3,9 +3,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['sysfileSvc','$http', '$state'];
+    sign.$inject = ['sysfileSvc','$http', '$state','bsWin'];
 
-    function sign(sysfileSvc,$http, $state) {
+    function sign(sysfileSvc,$http, $state,bsWin) {
         var service = {
             grid: grid,						//初始化项目列表
             querySign: querySign,			//查询
@@ -24,7 +24,7 @@
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
-            realSign : realSign              //正式签收
+            realSign : realSign ,               //正式签收
         };
         return service;
 
@@ -222,21 +222,11 @@
                     data: vm.model
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功,请继续填写报审登记表！",
-                                closeDialog: true,
-                                fn: function () {
-                                    //跳转并刷新页面
-                                    $state.go('fillSign', {signid: response.data.signid}, {reload: true});
-                                }
-                            })
-                        }
-                    });
+                    bsWin.alert(response.data.reMsg);
+                    if (response.data.flag || response.data.reCode == "ok") {
+                        //跳转并刷新页面
+                        $state.go('fillSign', {signid: response.data.reObj.signid}, {reload: true});
+                    }
                 }
                 common.http({
                     vm: vm,
@@ -296,27 +286,15 @@
                 var httpOptions = {
                     method: 'put',
                     url: rootPath + "/sign",
-                    data: vm.model,
+                    data: signObj,
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-                    })
+                    //关闭项目关联窗口
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
                 }
-
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess
@@ -442,7 +420,7 @@
         function initFlowPageData(vm) {
             var httpOptions = {
                 method: 'get',
-                url: rootPath + "/sign/html/initFlowPageData",
+                url: rootPath + "/sign/initFlowPageData",
                 params: {signid: vm.model.signid, queryAll: true}
             }
 
@@ -458,30 +436,6 @@
                             initAssociateSigns(vm,vm.model.signid);
                         //没有则初始化关联表格
                         }
-                        //工作方案
-                        if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
-                            //判断是基本信息还是工作方案
-                            if(vm.model.isassistflow && vm.model.isassistflow == '9'
-                                && (angular.isUndefined(vm.model.isNeedWrokPrograml) || vm.model.isNeedWrokPrograml == '0')){
-                                vm.showFlag.tabBaseWP = true;
-                            }else{
-                                vm.showFlag.tabWorkProgram = true;
-                            }
-
-                            vm.model.workProgramDtoList.forEach(function (w, index) {
-                                if (w.isMain == 9) {
-                                    vm.showMainwork = true;
-                                    vm.mainwork = {};
-                                    vm.mainwork = w;
-                                } else if (w.isMain == 0) {
-                                    vm.showAssistwork = true;
-                                    vm.assistwork = {};
-                                    vm.assistwork = w;
-                                }
-
-                            });
-                        }
-
                         //发文
                         if (vm.model.dispatchDocDto) {
                             vm.showFlag.tabDispatch = true;
@@ -530,30 +484,14 @@
                 }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            fn: function () {
-                                vm.isSubmit = false;
-                                //更改收文状态
-                                vm.model.isNeedWrokPrograml = '0';
-                                vm.model.isreviewCompleted = '0';
-                                vm.model.isreviewACompleted = '0';
-                                //更改工作方案状态
-                                vm.showMainwork = false;
-                                vm.mainwork = {};
-                                vm.showAssistwork = false;
-                                vm.assistwork = {};
-                                $('.alertDialog').modal('hide');
-
-                            }
-                        })
-                    }
-                });
+                vm.isSubmit = false;
+                if ( response.data.flag || response.data.reCode == "ok") {
+                    //更改状态
+                    vm.businessFlag.isFinishWP = false;
+                    bsWin.success("操作成功！");
+                } else {
+                    bsWin.error(response.data.reMsg);
+                }
             }
             common.http({
                 vm: vm,
@@ -661,23 +599,10 @@
 
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: associateSignId != undefined ? "项目关联成功" : "项目解除关联成功",
-                            closeDialog: true,
-                            fn: function () {
-                                //关闭项目关联窗口
-                                if (callBack != undefined && typeof callBack == 'function') {
-                                    callBack();
-                                }
-                            }
-                        });
-                    }
-                });
+                //关闭项目关联窗口
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack();
+                }
             }
             common.http({
                 vm: vm,
@@ -842,40 +767,21 @@
         
       
   //S_createDispatchFileNum
-        function createDispatchFileNum(vm){
+        function createDispatchFileNum(signId,dispatchId,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/dispatch/createFileNum",
                 params: {
-                    dispatchId: vm.dispatchDoc.id
+                    signId : signId,
+                    dispatchId: dispatchId
                 }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        if (response.data.reCode == "error") {
-                            common.alert({
-                                vm: vm,
-                                msg: response.data.reMsg,
-                                closeDialog: true,
-                            })
-                        } else {
-                            vm.dispatchDoc.fileNum = response.data.reMsg;
-                            vm.businessFlag.isCreateDisFileNum = true;
-                            vm.showFlag.buttDisFileNum = false;
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功！",
-                                closeDialog: true,
-                            })
-                        }
-                    }
-                })
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

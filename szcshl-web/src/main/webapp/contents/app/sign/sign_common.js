@@ -76,7 +76,14 @@
         return signFlowParams;
     }//E_getFlowParams
 
-
+    //S_判断评审阶段
+    function isCommonStage(reviewstage){
+        if(reviewstage=='项目建议书' || reviewstage=='可行性研究报告' ||reviewstage=='提前介入' || reviewstage=='项目概算' || reviewstage=='其它' || reviewstage=='资金申请报告'){
+            return true;
+        }else{
+            return false;
+        }
+    }//E_isCommonStage
 
 })();
 
