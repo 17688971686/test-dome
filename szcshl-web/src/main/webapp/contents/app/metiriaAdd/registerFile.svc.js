@@ -162,9 +162,6 @@
                         editable: true,
                         resizable: true
                     });*/
-        	
-        	
-        	
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',

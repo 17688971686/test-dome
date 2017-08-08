@@ -15,27 +15,29 @@
 	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>下载</button>
 	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>删除</button>
 	</div>
-	 
-	<table style="width:100%;">
-		<tr>
-			<td rowspan="4" valign="top"  class="breadcrumb">
-				<p class="label bg-yellow disabled color-palette">审核中</p>
-				<div id="grid1" class="grid1" kendo-grid="grid1" k-options="vm.gridOptions1"></div>
+	<span>地址（	D）：
+		<select style="width:800"></select>
+	</span> 
+	<table style="width:100%;" >
+		<tr >
+			<td valign="top"  class="breadcrumb"></td>
+			<td valign="top"  class="breadcrumb">
+				<table class="table table-bordered" style="text-align: center;">
+					<tr >
+						<td align="center" bgcolor="#eeeeee">名称（点击排序）</td>
+						<td align="center" bgcolor="#eeeeee">类型</td>
+						<td align="center" bgcolor="#eeeeee">最近修改人员</td>
+						<td align="center" bgcolor="#eeeeee">最近修改时间</td>
+					</tr>
+					<tr >
+						<td  align="center">{{}}</td>
+						<td  align="center">{{}}</td>
+						<td  align="center">{{}}</td>
+						<td  align="center">{{}}</td>
+					</tr>
+				</table>
 			</td>
-			<td class="text-center" style="height:200px;width:100px;"></td>
-			<td valign="top" class="breadcrumb1">
-				<p class="label label-success">正式专家</p>
-				<div id="grid2" class="grid2" kendo-grid="grid2" k-options="vm.gridOptions2"></div>
-			</td>
-		</tr>
-		<tr><td class="text-center" style="height:200px;"></td><td valign="top" class="breadcrumb2"></td></tr>
-		<tr><td class="text-center" style="height:200px;"></td><td valign="top" class="breadcrumb2"></td></tr>
-		<tr>			
-			<td class="text-center" style="height:200px;">
-				<p ><input class="btn_add" ng-click="vm.auditToRemove()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input class="btn_remove" ng-click="vm.temoveToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
-			</td>
-			<td valign="top" class="breadcrumb3"></td>
+			
 		</tr>
 	</table>	
 </div>
