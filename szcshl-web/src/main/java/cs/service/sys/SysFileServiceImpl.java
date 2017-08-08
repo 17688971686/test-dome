@@ -38,6 +38,7 @@ public class SysFileServiceImpl implements SysFileService {
         SysFileDto sysFileDto = new SysFileDto();
         SysFile sysFile = new SysFile();
         logger.debug("Begin save file " + fileName + "-" + businessId);
+
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, sysSignId, businessId, fileName);
