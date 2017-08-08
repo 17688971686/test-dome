@@ -1,0 +1,77 @@
+
+<!-- 拟补充资料函弹出框 -->
+  <div id="printWindow" ng-show="vm.showPrint" class="well well-sm conttent_list" style="background:white;">
+	<div class="toolbar"> 
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>打印设置</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>打印预览</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>打印</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>关闭</button>
+	</div>
+	<form id="auditform" name="auditform">
+		 <table style="width:100%;" class="">
+		 <caption class="text-center h3"><strong >{{}}登记表补充资料清单<br>登记补充资料</strong></caption>
+		 <caption style="text-align: right;">
+		 <span>收文编号:
+		  {{vm.signdto.filecode}}
+		 </caption>
+		 <tbody style="width:90%;">
+             <tr>
+	               <td align="center" width="10%">项目名称</td>
+	               <td align="center" colspan="3">{{vm.signdto.projectname}}</td>
+	              
+	          </tr>
+             <tr>
+	               <td align="center" width="10%">项目单位</td>
+	               <td align="center">{{vm.signdto.designcompanyName}}</td>
+	               <td align="center" width="10%">项目代码</td>
+	               <td align="center">{{vm.signdto.projectcode}}</td>
+	              
+	          </tr>
+             <tr>
+	               <td align="center" width="10%" colspan="4">
+	               	<div style="text-align: left;"><span>项目送审补充材料：</span></div>
+		              <div style=" margin-left: 200px;text-align: left;" >
+		             	 <span >资料名称</span>
+		             	 <span style="margin-left: 250px;">份数 </span>
+		             	 <span style="margin-left:20px;">原件 </span>
+		             	 <span style="margin-left:20px;">复印件 </span>
+		             	 <span style="margin-left:30px;">补充日期 </span>
+		              </div>
+	               </td>
+	          </tr>
+             <tr ng-repeat="x in vm.registerFileList">
+             <td width="50%" colspan="2" style="text-align: center;"> {{x.fileName}}</td>
+             	<td width="50%" colspan="2">
+             		 <span style="margin-left: 60px;">{{x.totalNum}}</span>
+		             <span style="margin:35px;">{{x.isHasOriginfile=='true'?'是':'否'}}</span>
+		             <span style="margin:10px;">{{x.isHasCopyfile=='true'?'是':'否'}}</span>
+		             <span>{{x.suppleDate}}</span> 
+             	</td> 
+             	
+	              <!-- <td align="center" colspan="4" >
+	               <div style=" margin-left: 150px;text-align: left;">
+	                  <span>{{x.fileName}}</span>
+	                  <span style="margin-left: 350px;">{{x.totalNum}}</span>
+		               <span style="margin:30px;">{{x.isHasOriginfile=='true'?'是':'否'}}</span>
+		               <span style="margin:20px;">{{x.isHasCopyfile=='true'?'是':'否'}}</span>
+		               <span>{{x.suppleDate}}</span> 
+	               </div>
+	               </td> -->
+	          </tr>
+	         </tbody>
+        </table>
+        <div style="text-align: left; margin-top: 5px;">
+		     <span>签名：
+		     {{vm.signdto.sendusersign}}
+		     <span style="float:right;">打印日期：
+		     {{vm.printDate}}
+	   </div>
+	   <div style="margin-top: 150px;">
+	   	<span>补充日期：
+	   		<select>
+	   			<option value="">请选择</option>
+	   		</select>
+	   	</span>
+	   </div>
+</div>
+

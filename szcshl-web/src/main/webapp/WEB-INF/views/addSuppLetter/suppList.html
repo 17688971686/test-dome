@@ -1,0 +1,46 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;margin: auto;overflow: auto">
+    <ol class="breadcrumb">
+       	<li><a href="#/expert">拟补资料函正文</a></li>
+        <!-- <li class="active">{{vm.titles}}</li> -->
+   	</ol>
+
+	<div class="toolbar"> 
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>新建</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>上传</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>下载</button>
+	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>删除</button>
+	</div>
+	<span>地址（	D）：
+		<select style="width:800"></select>
+	</span> 
+	<table style="width:100%;" >
+		<tr >
+			<td valign="top"  class="breadcrumb"></td>
+			<td valign="top"  class="breadcrumb">
+				<table class="table table-bordered" style="text-align: center;">
+					<tr >
+						<td align="center" bgcolor="#eeeeee">名称（点击排序）</td>
+						<td align="center" bgcolor="#eeeeee">类型</td>
+						<td align="center" bgcolor="#eeeeee">最近修改人员</td>
+						<td align="center" bgcolor="#eeeeee">最近修改时间</td>
+					</tr>
+					<tr >
+						<td  align="center">{{}}</td>
+						<td  align="center">{{}}</td>
+						<td  align="center">{{}}</td>
+						<td  align="center">{{}}</td>
+					</tr>
+				</table>
+			</td>
+			
+		</tr>
+	</table>	
+</div>
+
+
+

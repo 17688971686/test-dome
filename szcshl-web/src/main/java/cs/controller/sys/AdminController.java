@@ -66,4 +66,11 @@ public class AdminController {
 
         return ctrlName + "/etasks";
     }
+    
+    @RequiresPermissions("admin#edit#get")
+    @RequestMapping(name = "拟补充资料函",  path = "edit")
+    public String eidt(Model model) {
+    	
+    	return ctrlName + "/edit";
+    }
 }

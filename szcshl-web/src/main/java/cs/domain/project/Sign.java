@@ -709,6 +709,12 @@ public class Sign extends DomainBase {
     //第二负责人
     @Column(columnDefinition = "VARCHAR(64)")
     private String secondPriUser;
+    
+    //拟补充资料ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String suppletterid;
+    
+    
 
 
     /**
@@ -800,11 +806,11 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(5)")
     private String dealOrgType;
 
-    //是否提前介入
+	//是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
     private String isAdvanced;
     /**************************  状态字段放这里  ****************************/
-    
+	
     public List<ProjectStop> getProjectStopList() {
 		return projectStopList;
 	}
@@ -1673,7 +1679,15 @@ public class Sign extends DomainBase {
         return mOrgId;
     }
 
-    public void setmOrgId(String mOrgId) {
+    public String getSuppletterid() {
+		return suppletterid;
+	}
+
+	public void setSuppletterid(String suppletterid) {
+		this.suppletterid = suppletterid;
+	}
+
+	public void setmOrgId(String mOrgId) {
         this.mOrgId = mOrgId;
     }
 

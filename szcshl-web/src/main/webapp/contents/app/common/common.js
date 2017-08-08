@@ -32,6 +32,11 @@
         saveCommonIdea: saveCommonIdea, // 保存常用意见
         addCorrentIdea: addCorrentIdea, // 添加当前意见
         saveCurrentIdea: saveCurrentIdea, // 绑定当前意见
+        initSuppData: initSuppData,  //初始化项目资料补充函
+        saveSuppletter: saveSuppletter,
+        registerFilePrint: registerFilePrint,//转到登记资料打印页面
+        initPrintData: initPrintData,  //初始化登记资料打印页面数据
+        kendoGridinlineConfig : kendoGridinlineConfig,//行内编辑方法
         initDictItems : function(dictList){
             DICT_ITEMS = dictList;
         }
@@ -190,6 +195,7 @@
         });
         return dataSource;
     }
+    
 
     function kendoGridConfig() {
         return {
@@ -276,6 +282,119 @@
         }
     }
 
+     function kendoGridinlineConfig(){
+     	
+        return {
+            filterable: {
+                extra: false,
+                // mode: "row", 将过滤条件假如title下,如果不要直接与title并排
+                operators: {
+                    string: {
+                        "contains": "包含",
+                        "eq": "等于"
+                        // "neq": "不等于",
+                        // "doesnotcontain": "不包含"
+                    },
+                    number: {
+                        "eq": "等于",
+                        "neq": "不等于",
+                        gt: "大于",
+                        lt: "小于"
+                    },
+                    date: {
+                        gt: "大于",
+                        lt: "小于"
+                    }
+                }
+            },
+            pageable: {
+                pageSize: 10,
+                previousNext: true,
+                buttonCount: 5,
+                refresh: true,
+                pageSizes: true
+            },
+            schema: function (model) {
+                return {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model: model
+                };
+            },
+            transport: function (vm,url, form, paramObj) {
+                return {
+                    read: {
+                        url: url.readUrl,
+                        dataType: "json",
+                        type: "post",
+                        beforeSend: function (req) {
+                            req.setRequestHeader('Token', service.getToken());
+                        },
+                        data: function () {
+                            if (form) {
+                                var filterParam = common.buildOdataFilter(form);
+                                if (filterParam) {
+                                    if (paramObj && paramObj.filter) {
+                                        return {
+                                            "$filter": filterParam + " and "
+                                            + paramObj.filter
+                                        };
+                                    } else {
+                                        return {
+                                            "$filter": filterParam
+                                        };
+                                    }
+                                } else {
+                                    if (paramObj && paramObj.filter) {
+                                        return {
+                                            "$filter": paramObj.filter
+                                        };
+                                    } else {
+                                        return {};
+                                    }
+                                }
+                            } else {
+                                return {};
+                            }
+                        }
+                    },
+                    update: {
+                        url: url.updateUrl,
+                        dataType: "json",
+            			type: "post"
+                    },
+                    destroy: {
+                        url: url.destroyUrl,
+                        dataType: "json",
+                        type: "post",
+                        contentType: "application/json"
+                    },
+                    create:{
+                        url: url.createUrl,
+                        dataType: "json",
+                        type: "post"
+                    },
+                     parameterMap: function(options, operation) {
+                        if (operation == "create") {
+                     	    options.signid = vm.model.signid;
+                            return kendo.stringify(options);
+                        }
+                        if (operation == "update" || operation == "destroy") {
+                            return kendo.stringify(options.models);
+                        }
+                      }
+                      
+                }
+            },
+            noRecordMessage: {
+                template: '暂时没有数据.'
+            }
+        }
+    
+    }
+    
     function getKendoCheckId($id) {
         var checkbox = $($id).find('tr td:nth-child(1)').find('input:checked')
         var data = [];
@@ -484,6 +603,8 @@
         }
 
     }
+    
+    
 
     function reduceDict(dictsObj, dicts, parentId) {
         if (!dicts || dicts.length == 0) {
@@ -618,7 +739,7 @@
         })
         // end#grid 处理
     }
-
+    
     // 初始化常用意见
     function initIdeaData(vm, $http, options) {
         vm.ideaContent = '';// 初始化当前意见
@@ -665,7 +786,122 @@
         });
 
     }
-
+    
+    // 初始化项目补充资料函
+    function initSuppData(vm,options) {
+    	//options.$state.go('addSupp', {signid: vm.model.signid,id:vm.model.suppletterid })
+    	//options.url;
+    	console.log(options.$state.params.id);
+    	options.$http({
+            method: 'get',
+            url: rootPath + "/addSuppLetter",
+            headers: {
+                "contentType": "application/json;charset=utf-8" // 设置请求头信息
+            },
+            dataType: "json",
+             params: {signid: options.$state.params.signid,id: options.$state.params.id}
+        }).then(function (response) {
+        	vm.suppletter=response.data;
+        });
+        
+          vm.saveSuppletter = function () {
+          		if(vm.suppletter.id){// 更新
+          			updateSuppletter(vm,options);
+          		}else{
+               	 	saveSuppletter(vm,options);//保存
+          		}
+            }
+            
+            if(vm.suppletter.id){
+            	getAddsuppletterbyId(vm,options);//根据id获取数据
+            }
+        /* $("#suppWin").kendoWindow({
+            width: "50%",
+            height: "80%",
+            title: "意见选择",
+            visible: false,
+            modal: true,
+            closable: true,
+            actions: ["Pin", "Minimize", "Maximize", "close"]
+        }).data("kendoWindow").center().open();*/
+    }
+    
+    function saveSuppletter(vm,options) {
+    	console.log(vm.suppletter);
+        options.$http({
+            method: 'post',
+            url: rootPath + "/addSuppLetter/add",
+            headers: {
+                "contentType": "application/json;charset=utf-8" // 设置请求头信息
+            },
+            dataType: "json",
+            data: vm.suppletter
+        }).then(function (response) {
+            alert("保存成功！");
+        });
+    }// end
+    
+    function updateSuppletter(vm,options) {
+        options.$http({
+            method: 'post',
+            url: rootPath + "/addSuppLetter/update",
+            headers: {
+                "contentType": "application/json;charset=utf-8" // 设置请求头信息
+            },
+            dataType: "json",
+            data: vm.suppletter
+        }).then(function (response) {
+            alert("更新成功！");
+        });
+    }// end
+    
+    function getAddsuppletterbyId(vm,options){
+    	 options.$http({
+            method: 'post',
+            url: rootPath + "/addSuppLetter/getbyId",
+            headers: {
+                "contentType": "application/json;charset=utf-8" // 设置请求头信息
+            },
+            dataType: "json",
+            data: vm.suppletter.id
+        }).then(function (response) {
+        	vm.suppletter = response.data;
+        });
+    }
+    
+    function registerFilePrint(vm,options){
+    	vm.showPrint=true;
+        var registerWin = $("#printWindow");
+        registerWin.kendoWindow({
+            width: "50%",
+            height: "60%",
+            title: "打印登记补充资料",
+            visible: false,
+            modal: true,
+            closable: true,
+            actions: ["Pin", "Minimize", "Maximize", "close"]
+        }).data("kendoWindow").center().open();
+        
+        initPrintData(vm,options);
+   }
+   
+    function initPrintData(vm,options){
+    	  options.$http({
+            method: 'post',
+            url: rootPath + "/addRegisterFile/initprintdata",
+            headers: {
+                "contentType": "application/json;charset=utf-8" // 设置请求头信息
+            },
+            dataType: "json",
+            params: {signid:vm.model.signid}
+        }).then(function (response) {
+        	vm.registerFileList=response.data.AddRegisterFileDtoList;
+        	vm.signdto=response.data.signdto;
+        	vm.printDate=response.data.printDate;
+        	
+        });
+    }
+    
     function deleteCommonIdea(options) {
         var isCheck = $("#commonIdeaTable input[name='ideaCheck']:checked");
         if (isCheck.length < 1) {
@@ -719,12 +955,12 @@
             alert("保存成功！");
         });
     }// end
-
+    
     function saveCurrentIdea(vm, options) {
         var targetObj = $("#" + options.targetId);
         targetObj.val(targetObj.val() + vm.ideaContent);
         window.parent.$("#ideaWindow").data("kendoWindow").close();
         targetObj.focus();
     }// end
-
+    
 })();

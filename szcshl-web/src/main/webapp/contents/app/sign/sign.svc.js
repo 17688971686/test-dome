@@ -24,7 +24,7 @@
             uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
-            realSign : realSign ,               //正式签收
+            realSign : realSign              //正式签收
         };
         return service;
 

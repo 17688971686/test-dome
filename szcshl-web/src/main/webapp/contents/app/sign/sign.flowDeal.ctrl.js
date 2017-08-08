@@ -334,8 +334,18 @@
                     workProgramId = vm.assistwork.id;
                 }
             }
-            $state.go('workprogramEdit', {signid: vm.model.signid,workProgramId:workProgramId });
+            $state.go('workprogramEdit');
         }// E_跳转到 工作方案 编辑页面
+        
+        //S_链接到拟补充资料函
+        vm.addSuppLetter = function () {
+        	$state.go('addSupp', {signid: vm.model.signid,id:vm.model.suppletterid });
+        }// E_跳转到 拟补充资料函 编辑页面
+        
+        //S_链接到登记表补充资料
+        vm.addRegisterFile = function () {
+        	$state.go('registerFile', {signid: vm.model.signid});
+        }// E_链接到登记表补充资料
         
         //S_跳转到 工作方案 基本信息
         vm.addBaseWP = function(){

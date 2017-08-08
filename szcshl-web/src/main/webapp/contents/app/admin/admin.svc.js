@@ -607,8 +607,16 @@
                         $(rowLabel).html(index);
                     });
                 }
+                
             };
         }//E_dtasksGrid
+        
+        function on(arg){
+        	var row = this.select();
+            var data = this.dataItem(row);
+            var name = data.name;
+            alert('单击事件【name：' + name + '】');
+        }
 
         //begin_getSignList
         function getSignList(vm) {
@@ -776,6 +784,7 @@
                     width: 140,
                     filterable: false
                 }
+                
                 /* {
                  field: "",
                  title: "操作",
@@ -783,6 +792,7 @@
                  template: $('#columnBtns').html()
                  }*/
             ];
+            
             // End:column
             vm.signListOptions = {
                 dataSource: common.gridDataSource(dataSource),
@@ -790,6 +800,7 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                selectable: "multiple cell",
                 resizable: true,
                 dataBound: function () {
                     var rows = this.items();
@@ -800,8 +811,31 @@
                         var rowLabel = $(this).find(".row-number");
                         $(rowLabel).html(index);
                     });
+                    
+                    
                 }
             };
+            /* vm.signListOptions.on('dblclick', '.k-grid-content tr', function () {
+            // 双击
+            var row = grid.data("kendoGrid").select();
+            var data = grid.data("kendoGrid").dataItem(row);
+            var name = data.name;
+            alert('单击事件【name：' + name + '】');
+            });*/
+           /* $('#grid tbody tr').bind("dblclick",function(e){
+            var row = $('#grid').data('kendoGrid').dataItem(e.currentTarget);
+            	alert("ddfd");
+            });*/
+            /*  vm.signListOptions.bind('dataBound', function(){
+       		 $('#grid tbody tr').dblclick(function(e){
+             var row = $('#grid').data('kendoGrid').dataItem(e.currentTarget);
+             alert("ddfd");
+        	});
+    		}); */  
+           
+            $('#grid tbody td').dblclick(function(e){
+            	console.log($('#grid tbody td'));
+        	});
 
         }//end_getSignList
 
