@@ -1,6 +1,7 @@
 package cs.shiro.filter;
 
 import cs.common.Constant;
+import cs.common.utils.Validate;
 import cs.domain.sys.User;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
@@ -30,6 +31,48 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
     @Autowired
     private UserService userService;
 
+    /**
+     * 登录URL
+     */
+    private String loginUrl;
+    /**
+     * 登录成功跳转URL
+     */
+    private String successUrl;
+
+    protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception {
+        AuthenticationToken token = createToken(request, response);
+        if (token == null) {
+            String msg = "create AuthenticationToken error";
+            throw new IllegalStateException(msg);
+        }
+        String username = (String) token.getPrincipal();
+        User user = userService.findByName(username);
+        if(user != null){
+            //用户停用，未激活等判断
+            /*if(isDisabled(user)){
+                return onLoginFailure(token,failureUrl,adminLogin,new DisabledException(),request, response);
+            }
+            if(!isActive(user)){
+                return onLoginFailure(token,failureUrl,adminLogin,new InactiveException(),request, response);
+            }*/
+        }
+        try {
+            Subject subject = getSubject(request, response);
+            subject.login(token);
+            return onLoginSuccess(token,subject, request, response);
+        } catch (AuthenticationException e) {
+            return onLoginFailure(token, e, request, response);
+        }
+    }
+
+    protected void issueSuccessRedirect(ServletRequest request, ServletResponse response)
+            throws Exception {
+        // 清除记录的前一个请求
+        WebUtils.getAndClearSavedRequest(request);
+        WebUtils.issueRedirect(request, response, successUrl, null, true);
+    }
+
     @Transactional
     @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
@@ -49,11 +92,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         subject.getSession().setAttribute(Constant.USER_SESSION_KEY, user); // 在session中设置用户信息
         logger.info("用户【" + username + "】登录成功！");
 
-        // 清除记录的前一个请求
-        WebUtils.getAndClearSavedRequest(request);
-        WebUtils.redirectToSavedRequest(request, response, "/admin/index");
-        return false;
-        //return super.onLoginSuccess(token, subject, request, response);
+        return super.onLoginSuccess(token, subject, request, response);
     }
 
     @Override
@@ -65,8 +104,18 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
             user.setLastLoginDate(new Date());
             userService.saveUser(user);
         }
+        //自己处理用户登录错误跳转
         logger.warn("用户【" + username + "】登录失败！");
-        return super.onLoginFailure(token, e, request, response);
+        String className = e.getClass().getName();
+        request.setAttribute(getFailureKeyAttribute(), className);
+        if(Validate.isString(loginUrl)){
+            try {
+                request.getRequestDispatcher(loginUrl).forward(request, response);
+            }  catch (Exception e1) {
+
+            }
+        }
+        return true;
     }
 
     @Override
@@ -82,4 +131,23 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         return false;
     }
 
+    @Override
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    @Override
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
+    }
+
+    @Override
+    public String getSuccessUrl() {
+        return successUrl;
+    }
+
+    @Override
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
 }

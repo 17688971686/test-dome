@@ -13,7 +13,6 @@
             rollBackToLast: rollBackToLast, // 回退到上一环节
             rollBack: rollBack, // 回退到选定环节
             initBackNode: initBackNode, // 初始化回退环节信息
-            initDealUerByAcitiviId: initDealUerByAcitiviId,
             suspendFlow: suspendFlow, // 流程挂起
             activeFlow: activeFlow, // 重启流程
             deleteFlow: deleteFlow, // 流程终止
@@ -257,14 +256,6 @@
                 }
             }
         }// E_初始化回退环节信息
-
-        // S_初始化下一环节处理人
-        function initDealUerByAcitiviId(vm) {
-            vm.nextDealUserList = vm.nextDealUserMap[vm.flow.nextNodeAcivitiId];
-            if (vm.nextDealUserList) {
-                vm.flow.nextDealUser = vm.nextDealUserList[0].loginName; // 默认选中
-            }
-        }// E_初始化下一环节处理人
 
         // S_流程挂起
         function suspendFlow(vm, businessKey) {

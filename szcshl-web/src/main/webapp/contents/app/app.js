@@ -319,7 +319,15 @@
                 controllerAs: 'vm'
             })
             //end#workprogram
-            
+
+            //begin#dispatch
+            .state('dispatchEdit', {
+                url: '/dispatchEdit/:signid',
+                templateUrl: rootPath + '/dispatch/html/edit.html',
+                controller: 'dispatchEditCtrl',
+                controllerAs: 'vm'
+            })//end#dispatch
+
             //begin#fileRecord
         	.state('fileRecordEdit', {
             	url: '/fileRecordEdit/:signid',
@@ -361,7 +369,7 @@
             })
         	.state('deptEdit', {
             	url: '/deptEdit/:deptId',
-            	templateUrl: rootPath + '/depthtml/edit.html',
+            	templateUrl: rootPath + '/dept/html/edit.html',
             	controller: 'deptEditCtrl',
             	controllerAs: 'vm'
         	}).state('deptOfficeUser', {

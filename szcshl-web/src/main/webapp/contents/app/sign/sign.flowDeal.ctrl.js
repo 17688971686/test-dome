@@ -278,20 +278,6 @@
                             case "BMLD_QR_GD":                                       //确认归档
                                 vm.flow.businessMap.ExclusiveGateWay = true;         //注明是排他网关
                                 break;
-
-                            /************   以下是概算流程  **************/
-                            case "XS_FGLDSP_GZFA":
-                                vm.flow.businessMap.WP_ID = vm.mainwork.id;         //分管领导审批发文
-                                break;
-                            case "XS_FGLDSP_FW":                                   //分管领导审批发文
-                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
-                                break;
-                            case "XS_ZRSP_FW":                                     //主任审批发文
-                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
-                                break;
-                            case "XS_QRGD":                                        //确认归档
-                                vm.flow.businessMap.ExclusiveGateWay = true;       //注明是排他网关
-                                break;
                             default:
                                 ;
                         }
@@ -310,15 +296,6 @@
                     flowSvc.deleteFlow(vm);
                 }
             });
-        }
-
-        vm.initDealUerByAcitiviId = function () {
-            flowSvc.initDealUerByAcitiviId(vm);
-        }
-
-        // 根据特定的环节隐藏相应的业务按钮
-        vm.showBtByAcivitiId = function (acivitiId) {
-            return vm.flow.curNodeAcivitiId == acivitiId ? true : false;
         }
 
         //编辑审批登记表

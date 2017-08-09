@@ -278,8 +278,7 @@
         //end  根据协办部门查询用户
 
         //Start 申报登记编辑
-        function updateFillin(vm) {
-        	
+        function updateFillin(signObj,callBack) {
             common.initJqValidation($('#sign_fill_form'));
             var isValid = $('#sign_fill_form').valid();
             if (isValid) {
