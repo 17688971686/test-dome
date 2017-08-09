@@ -200,10 +200,16 @@
                     maxFileSize: 2000,
                     showRemove: false,
                     uploadUrl: rootPath + "/file/fileUpload",
-                    uploadExtraData: {
-                        businessId: option.businessId,
-                        sysSignId:"共享平台",
-                        sysfileType: angular.isUndefined(option.sysfileType) ? "共享平台" : option.sysfileType,
+                    uploadExtraData: function(previewId, index) {
+                        var result={};
+                        result.businessId=option.businessId;
+                        result.sysSignId="共享平台";
+                        result.sysfileType=angular.isUndefined(option.sysfileType) ? "共享平台" : option.sysfileType;
+                        result.sysMinType=$("#sysMinType option:selected").val();
+                        return result;
+                        // businessId: option.businessId,
+                        // sysSignId:"共享平台",
+                        // sysfileType: angular.isUndefined(option.sysfileType) ? "共享平台" : option.sysfileType,
                     }
                 };
 

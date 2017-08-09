@@ -172,7 +172,7 @@
                             sysFileDefaults.vm.sysFilelists = response.data;
                             $("#commonQueryWindow").kendoWindow({
                                 width: "800px",
-                                height: "400px",
+                                height: "500px",
                                 title: "附件上传列表",
                                 visible: false,
                                 modal: true,
@@ -198,17 +198,25 @@
                     maxFileSize: 2000,
                     showRemove: false,
                     uploadUrl: rootPath + "/file/fileUpload",
-                    uploadExtraData: {
-                        businessId: sysFileDefaults.businessId,
-                        sysSignId: sysFileDefaults.sysSignId,
-                        sysfileType: sysFileDefaults.sysfileType,
-                        sysMinType: sysFileDefaults.sysMinType
+                    uploadExtraData: function(previewId, index) {
+                        var result={};
+                        result.businessId=sysFileDefaults.businessId;
+                        result.sysSignId=sysFileDefaults.sysSignId;
+                        result.sysfileType=sysFileDefaults.sysfileType;
+                        result.sysMinType=$("#sysMinType option:selected").val();
+                        return result;
+                        // businessId: sysFileDefaults.businessId,
+                        // sysSignId: sysFileDefaults.sysSignId,
+                        // sysfileType: sysFileDefaults.sysfileType,
+                        // sysMinType: sysFileDefaults.sysMinType
                     }
                 };
                 $("#sysfileinput").fileinput(projectfileoptions)
                     .on("filebatchselected", function (event, files) {
 
                     }).on("fileuploaded", function (event, data) {
+                        console.log(555);
+                    projectfileoptions.sysMinType=$("#sysMinType").val();
                 });
             }
 

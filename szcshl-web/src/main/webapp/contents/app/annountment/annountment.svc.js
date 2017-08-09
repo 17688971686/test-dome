@@ -67,6 +67,7 @@
                         businessId: vm.annountment.anId,
                         sysfileType: "通知公告",
                         uploadBt: "upload_file_bt",
+                        sysMinType:$("#sysMinType").val(),
                         vm: vm
                     });
                 }
@@ -110,6 +111,7 @@
                             businessId: vm.annountment.anId,
                             sysfileType: "通知公告",
                             uploadBt: "upload_file_bt",
+                            sysMinType:$("#sysMinType").val(),
                             vm: vm
                         });
                     }
@@ -318,8 +320,8 @@
                         })
                     } else {
                         $("#commonuploadWindow").kendoWindow({
-                            width: 600,
-                            height: 400,
+                            width: "800px",
+                            height: "500px",
                             title: "附件上传",
                             visible: false,
                             modal: true,
@@ -371,10 +373,17 @@
                     maxFileSize: 2000,
                     showRemove: false,
                     uploadUrl: rootPath + "/file/fileUpload",
-                    uploadExtraData: {
-                        businessId: option.businessId,
-                        sysSignId:"通知公告",
-                        sysfileType: angular.isUndefined(option.sysfileType) ? "通知公告" : option.sysfileType,
+                    uploadExtraData: function(previewId, index) {
+                        var result={};
+                        result.businessId=option.businessId;
+                        result.sysSignId="通知公告";
+                        result.sysfileType=angular.isUndefined(option.sysfileType) ? "通知公告" : option.sysfileType;
+                        result.sysMinType=$("#sysMinType option:selected").val();
+                        return result;
+                        // businessId: option.businessId,
+                        // sysSignId:"通知公告",
+                        // sysfileType: angular.isUndefined(option.sysfileType) ? "通知公告" : option.sysfileType,
+                        // sysMinType :$("#sysMinType option:selected").val()
                     }
                 };
 

@@ -1,7 +1,18 @@
 <meta charset="UTF-8">
 <!--S 上传附件弹窗 -->
 <div id="commonuploadWindow" class="well well-sm" style="background:white;display:none;">
-    <input type="file" id="sysfileinput" name="file" multiple="multiple" id="file"/>
+
+        <input type="file" id="sysfileinput" name="file" multiple="multiple" id="file"/>
+<br/>
+    <div >
+        <span >文件类型：</span>
+        <span >
+           <select id="sysMinType" name="sysMinType" ng-model="vm.sysFile.sysMinType" style="width:100px;" >
+               <option value="">请选择</option>
+               <option  ng-repeat="x in DICT.SYS_MIN_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+           </select>
+       </span>
+    </div>
 </div>
 <!--E 上传附件弹窗 -->
 
