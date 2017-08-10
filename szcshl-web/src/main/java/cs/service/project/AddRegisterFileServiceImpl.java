@@ -52,14 +52,14 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
 		 }
 		List<AddRegisterFileDto> resultDtoList = new ArrayList<AddRegisterFileDto>(resultList.size());
 		pageModelDto.setValue(listDto);
-		pageModelDto.setCount(listDto.size());
+		pageModelDto.setCount(odataObj.getCount());
 		return pageModelDto;
 	}
 
 	@Override
 	@Transactional
-	public void save(String signid,List<AddRegisterFileDto> addRegisterFileDtos) {
-		if(addRegisterFileDtos !=null && addRegisterFileDtos.size()>0){
+	public void save(String signid,AddRegisterFileDto[] addRegisterFileDtos) {
+		if(addRegisterFileDtos !=null && addRegisterFileDtos.length>0){
 			for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
 				AddRegisterFile addRegisterFile = new AddRegisterFile(); 
 				BeanCopierUtils.copyProperties(addRegisterFileDto, addRegisterFile); 

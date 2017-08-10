@@ -1,942 +1,912 @@
-﻿(function () {
-    'use strict';
-    var DICT_ITEMS ;    //数字字典
-    var service = {
-        initJqValidation: initJqValidation,// 重置form验证
-        requestSuccess: requestSuccess,// 请求成功时执行
-        format: format,// string格式化
-        blockNonNumber: blockNonNumber,// 只允许输入数字
-        floatNumberInput: floatNumberInput,
-        adminContentHeight: adminContentHeight,// 当前Content高度
-        alert: alertDialog,// 显示alert窗口
-        confirm: confirmDialog,// 显示Confirm窗口
-        getQuerystring: getQuerystring,// 取得Url参数
-        kendoGridConfig: kendoGridConfig,// kendo grid配置
-        getKendoCheckId: getKendoCheckId,// 获得kendo grid的第一列checkId
-        cookie: cookie,// cookie操作
-        getToken: getToken,// 获得令牌
-        appPath: "",// app路径
-        http: http,// http请求
-        gridDataSource: gridDataSource,// gridDataSource
-        loginUrl: window.rootPath + '/home/login',
-        buildOdataFilter: buildOdataFilter, // 创建多条件查询的filter
-        initDictData: initDictData, // 初始化数字字典
-        kendoGridDataSource: kendoGridDataSource, // 获取gridDataSource
-        initUploadOption: initUploadOption, // 附件上传参数(已停用)
-        getTaskCount: getTaskCount, // 用户待办总数
-        getPauseProjectCount : getPauseProjectCount,//待办暂停项目个数
-        initIdeaData: initIdeaData, // 初始化选择意见窗口数据
-        deleteCommonIdea: deleteCommonIdea, // 删除常用意见
-        addCommonIdea: addCommonIdea, // 添加常用意见
-        saveCommonIdea: saveCommonIdea, // 保存常用意见
-        addCorrentIdea: addCorrentIdea, // 添加当前意见
-        saveCurrentIdea: saveCurrentIdea, // 绑定当前意见
-        initSuppData: initSuppData,  //初始化项目资料补充函
-        saveSuppletter: saveSuppletter,
-        registerFilePrint: registerFilePrint,//转到登记资料打印页面
-        initPrintData: initPrintData,  //初始化登记资料打印页面数据
-        kendoGridinlineConfig : kendoGridinlineConfig,//行内编辑方法
-        initDictItems : function(dictList){
-            DICT_ITEMS = dictList;
-        }
-    };
-    window.common = service;
+﻿(function() {
+	'use strict';
+	var DICT_ITEMS; // 数字字典
+	var service = {
+		initJqValidation : initJqValidation,// 重置form验证
+		requestSuccess : requestSuccess,// 请求成功时执行
+		format : format,// string格式化
+		blockNonNumber : blockNonNumber,// 只允许输入数字
+		floatNumberInput : floatNumberInput,
+		adminContentHeight : adminContentHeight,// 当前Content高度
+		alert : alertDialog,// 显示alert窗口
+		confirm : confirmDialog,// 显示Confirm窗口
+		getQuerystring : getQuerystring,// 取得Url参数
+		kendoGridConfig : kendoGridConfig,// kendo grid配置
+		getKendoCheckId : getKendoCheckId,// 获得kendo grid的第一列checkId
+		cookie : cookie,// cookie操作
+		getToken : getToken,// 获得令牌
+		appPath : "",// app路径
+		http : http,// http请求
+		gridDataSource : gridDataSource,// gridDataSource
+		loginUrl : window.rootPath + '/home/login',
+		buildOdataFilter : buildOdataFilter, // 创建多条件查询的filter
+		initDictData : initDictData, // 初始化数字字典
+		kendoGridDataSource : kendoGridDataSource, // 获取gridDataSource
+		initUploadOption : initUploadOption, // 附件上传参数(已停用)
+		getTaskCount : getTaskCount, // 用户待办总数
+		getPauseProjectCount : getPauseProjectCount,// 待办暂停项目个数
+		initIdeaData : initIdeaData, // 初始化选择意见窗口数据
+		deleteCommonIdea : deleteCommonIdea, // 删除常用意见
+		addCommonIdea : addCommonIdea, // 添加常用意见
+		saveCommonIdea : saveCommonIdea, // 保存常用意见
+		addCorrentIdea : addCorrentIdea, // 添加当前意见
+		saveCurrentIdea : saveCurrentIdea, // 绑定当前意见
+		initSuppData : initSuppData, // 初始化项目资料补充函
+		saveSuppletter : saveSuppletter,
+		registerFilePrint : registerFilePrint,// 转到登记资料打印页面
+		initPrintData : initPrintData, // 初始化登记资料打印页面数据
+		kendoGridinlineConfig : kendoGridinlineConfig,// 行内编辑方法
+		initDictItems : function(dictList) {
+			DICT_ITEMS = dictList;
+		}
+	};
+	window.common = service;
 
-    function initJqValidation(formObj) {
-        if (formObj) {
-            formObj.removeData("validator");
-            formObj.removeData("unobtrusiveValidation");
-            $.validator.unobtrusive.parse(formObj);
-        } else {
-            $("form").removeData("validator");
-            $("form").removeData("unobtrusiveValidation");
-            $.validator.unobtrusive.parse("form");
-        }
-    }
+	function initJqValidation(formObj) {
+		if (formObj) {
+			formObj.removeData("validator");
+			formObj.removeData("unobtrusiveValidation");
+			$.validator.unobtrusive.parse(formObj);
+		} else {
+			$("form").removeData("validator");
+			$("form").removeData("unobtrusiveValidation");
+			$.validator.unobtrusive.parse("form");
+		}
+	}
 
-    function requestSuccess(options) {
-        var showError = function (msg) {
-            service.alert({
-                vm: options.vm,
-                msg: msg,
-                fn: function () {
-                    options.vm.isSubmit = false;
-                    $('.alertDialog').modal('hide');
-                }
-            });
-        };
-        if (options.response.status > 400) {
-            showError("发生错误！");
-        } else {
-            var data = options.response.data;
-            if (data && data.status == 555) {
-                showError(data.message);
-            } else if (options.fn) {
-                options.fn(data);
-            }
-        }
-    }
+	function requestSuccess(options) {
+		var showError = function(msg) {
+			service.alert({
+						vm : options.vm,
+						msg : msg,
+						fn : function() {
+							options.vm.isSubmit = false;
+							$('.alertDialog').modal('hide');
+						}
+					});
+		};
+		if (options.response.status > 400) {
+			showError("发生错误！");
+		} else {
+			var data = options.response.data;
+			if (data && data.status == 555) {
+				showError(data.message);
+			} else if (options.fn) {
+				options.fn(data);
+			}
+		}
+	}
 
-    function format() {
-        var theString = arguments[0];
-        // start with the second argument (i = 1)
-        for (var i = 1; i < arguments.length; i++) {
-            // "gm" = RegEx options for Global search (more than one instance)
-            // and for Multiline search
-            var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
-            theString = theString.replace(regEx, arguments[i]);
-        }
-        return theString;
-    }
+	function format() {
+		var theString = arguments[0];
+		// start with the second argument (i = 1)
+		for (var i = 1; i < arguments.length; i++) {
+			// "gm" = RegEx options for Global search (more than one instance)
+			// and for Multiline search
+			var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+			theString = theString.replace(regEx, arguments[i]);
+		}
+		return theString;
+	}
 
-    function blockNonNumber(val) {
-        var str = val.toString().replace(/[^0-9]/g, '');
-        return parseInt(str, 10);
-    }
+	function blockNonNumber(val) {
+		var str = val.toString().replace(/[^0-9]/g, '');
+		return parseInt(str, 10);
+	}
 
-    function floatNumberInput(val) {
-        return isNaN(parseFloat(val, 10)) ? 0 : parseFloat(val, 10);
-    }
+	function floatNumberInput(val) {
+		return isNaN(parseFloat(val, 10)) ? 0 : parseFloat(val, 10);
+	}
 
-    function adminContentHeight() {
-        return $(window).height() - 180;
-    }
+	function adminContentHeight() {
+		return $(window).height() - 180;
+	}
 
-    function alertDialog(options) {
+	function alertDialog(options) {
 
-        // $('.alertDialog').modal('hide');//bug:backdrop:static会失效
-        options.vm.alertDialogMessage = options.msg;
-        options.vm.alertDialogFn = function () {
-            if (options.closeDialog && options.closeDialog == true) {
-                $('.alertDialog').modal('hide');
-                $('.modal-backdrop').remove();
-            }
-            if (options.fn) {
-                options.fn();
-            } else {
-                $('.alertDialog').modal('hide');
-            }
-        };
-        $('.alertDialog').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-    }
+		// $('.alertDialog').modal('hide');//bug:backdrop:static会失效
+		options.vm.alertDialogMessage = options.msg;
+		options.vm.alertDialogFn = function() {
+			if (options.closeDialog && options.closeDialog == true) {
+				$('.alertDialog').modal('hide');
+				$('.modal-backdrop').remove();
+			}
+			if (options.fn) {
+				options.fn();
+			} else {
+				$('.alertDialog').modal('hide');
+			}
+		};
+		$('.alertDialog').modal({
+					backdrop : 'static',
+					keyboard : false
+				});
+	}
 
-    function confirmDialog(options) {
-        options.vm.dialogConfirmTitle = options.title;
-        options.vm.dialogConfirmMessage = options.msg;
-        $('.confirmDialog').modal({
-            backdrop: 'static'
-        });
-        options.vm.dialogConfirmSubmit = options.fn;
-        if (options.cancel) {
-            options.vm.dialogConfirmCancel = options.cancel;
-        } else {
-            options.vm.dialogConfirmCancel = function () {
-                $('.confirmDialog').modal('hide');
-            }
-        }
+	function confirmDialog(options) {
+		options.vm.dialogConfirmTitle = options.title;
+		options.vm.dialogConfirmMessage = options.msg;
+		$('.confirmDialog').modal({
+					backdrop : 'static'
+				});
+		options.vm.dialogConfirmSubmit = options.fn;
+		if (options.cancel) {
+			options.vm.dialogConfirmCancel = options.cancel;
+		} else {
+			options.vm.dialogConfirmCancel = function() {
+				$('.confirmDialog').modal('hide');
+			}
+		}
 
-    }
+	}
 
-    function getQuerystring(key, default_) {
-        if (default_ == null)
-            default_ = "";
-        key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-        var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
-        var qs = regex.exec(window.location.href);
-        if (qs == null)
-            return default_;
-        else
-            return qs[1];
-    }
+	function getQuerystring(key, default_) {
+		if (default_ == null)
+			default_ = "";
+		key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+		var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
+		var qs = regex.exec(window.location.href);
+		if (qs == null)
+			return default_;
+		else
+			return qs[1];
+	}
 
-    function kendoGridDataSource(url, searchForm) {
-        var dataSource = new kendo.data.DataSource({
-            type: 'odata',
-            transport: kendoGridConfig().transport(url, searchForm),
-            schema: kendoGridConfig().schema({
-                id: "id",
-                fields: {
-                    createdDate: {
-                        type: "date"
-                    }
-                }
-            }),
-            serverPaging: true,
-            serverSorting: true,
-            serverFiltering: true,
-            pageSize: 10,
-            sort: {
-                field: "createdDate",
-                dir: "desc"
-            }
-        });
-        return dataSource;
-    }
-    
+	function kendoGridDataSource(url, searchForm) {
+		var dataSource = new kendo.data.DataSource({
+					type : 'odata',
+					transport : kendoGridConfig().transport(url, searchForm),
+					schema : kendoGridConfig().schema({
+								id : "id",
+								fields : {
+									createdDate : {
+										type : "date"
+									}
+								}
+							}),
+					serverPaging : true,
+					serverSorting : true,
+					serverFiltering : true,
+					pageSize : 10,
+					sort : {
+						field : "createdDate",
+						dir : "desc"
+					}
+				});
+		return dataSource;
+	}
 
-    function kendoGridConfig() {
-        return {
-            filterable: {
-                extra: false,
-                // mode: "row", 将过滤条件假如title下,如果不要直接与title并排
-                operators: {
-                    string: {
-                        "contains": "包含",
-                        "eq": "等于"
-                        // "neq": "不等于",
-                        // "doesnotcontain": "不包含"
-                    },
-                    number: {
-                        "eq": "等于",
-                        "neq": "不等于",
-                        gt: "大于",
-                        lt: "小于"
-                    },
-                    date: {
-                        gt: "大于",
-                        lt: "小于"
-                    }
-                }
-            },
-            pageable: {
-                pageSize: 10,
-                previousNext: true,
-                buttonCount: 5,
-                refresh: true,
-                pageSizes: true
-            },
-            schema: function (model) {
-                return {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: model
-                };
-            },
-            transport: function (url, form, paramObj) {
-                return {
-                    read: {
-                        url: url,
-                        dataType: "json",
-                        type: "post",
-                        beforeSend: function (req) {
-                            req.setRequestHeader('Token', service.getToken());
-                        },
-                        data: function () {
-                            if (form) {
-                                var filterParam = common.buildOdataFilter(form);
-                                if (filterParam) {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": filterParam + " and "
-                                            + paramObj.filter
-                                        };
-                                    } else {
-                                        return {
-                                            "$filter": filterParam
-                                        };
-                                    }
-                                } else {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": paramObj.filter
-                                        };
-                                    } else {
-                                        return {};
-                                    }
-                                }
-                            } else {
-                                return {};
-                            }
-                        }
-                    }
-                }
-            },
-            noRecordMessage: {
-                template: '暂时没有数据.'
-            }
-        }
-    }
+	function kendoGridConfig() {
+		return {
+			filterable : {
+				extra : false,
+				// mode: "row", 将过滤条件假如title下,如果不要直接与title并排
+				operators : {
+					string : {
+						"contains" : "包含",
+						"eq" : "等于"
+						// "neq": "不等于",
+						// "doesnotcontain": "不包含"
+					},
+					number : {
+						"eq" : "等于",
+						"neq" : "不等于",
+						gt : "大于",
+						lt : "小于"
+					},
+					date : {
+						gt : "大于",
+						lt : "小于"
+					}
+				}
+			},
+			pageable : {
+				pageSize : 10,
+				previousNext : true,
+				buttonCount : 5,
+				refresh : true,
+				pageSizes : true
+			},
+			schema : function(model) {
+				return {
+					data : "value",
+					total : function(data) {
+						return data['count'];
+					},
+					model : model
+				};
+			},
+			transport : function(url, paramObj, form) {
+				return {
+					read : {
+						url : url,
+						dataType : "json",
+						type : "post",
+						beforeSend : function(req) {
+							req.setRequestHeader('Token', service.getToken());
+						},
+						data : function() {
+							if (form) {
+								var filterParam = common.buildOdataFilter(form);
+								if (filterParam) {
+									if (paramObj && paramObj.filter) {
+										return {
+											"$filter" : filterParam + " and "
+													+ paramObj.filter
+										};
+									} else {
+										return {
+											"$filter" : filterParam
+										};
+									}
+								} else {
+									if (paramObj && paramObj.filter) {
+										return {
+											"$filter" : paramObj.filter
+										};
+									} else {
+										return {};
+									}
+								}
+							} else {
+								return {};
+							}
+						}
+					}
+				}
+			},
+			noRecordMessage : {
+				template : '暂时没有数据.'
+			}
+		}
+	}
 
-     function kendoGridinlineConfig(){
-     	
-        return {
-            filterable: {
-                extra: false,
-                // mode: "row", 将过滤条件假如title下,如果不要直接与title并排
-                operators: {
-                    string: {
-                        "contains": "包含",
-                        "eq": "等于"
-                        // "neq": "不等于",
-                        // "doesnotcontain": "不包含"
-                    },
-                    number: {
-                        "eq": "等于",
-                        "neq": "不等于",
-                        gt: "大于",
-                        lt: "小于"
-                    },
-                    date: {
-                        gt: "大于",
-                        lt: "小于"
-                    }
-                }
-            },
-            pageable: {
-                pageSize: 10,
-                previousNext: true,
-                buttonCount: 5,
-                refresh: true,
-                pageSizes: true
-            },
-            schema: function (model) {
-                return {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: model
-                };
-            },
-            transport: function (vm,url, form, paramObj) {
-                return {
-                    read: {
-                        url: url.readUrl,
-                        dataType: "json",
-                        type: "post",
-                        beforeSend: function (req) {
-                            req.setRequestHeader('Token', service.getToken());
-                        },
-                        data: function () {
-                            if (form) {
-                                var filterParam = common.buildOdataFilter(form);
-                                if (filterParam) {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": filterParam + " and "
-                                            + paramObj.filter
-                                        };
-                                    } else {
-                                        return {
-                                            "$filter": filterParam
-                                        };
-                                    }
-                                } else {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": paramObj.filter
-                                        };
-                                    } else {
-                                        return {};
-                                    }
-                                }
-                            } else {
-                                return {};
-                            }
-                        }
-                    },
-                    update: {
-                        url: url.updateUrl,
-                        dataType: "json",
-            			type: "post"
-                    },
-                    destroy: {
-                        url: url.destroyUrl,
-                        dataType: "json",
-                        type: "post",
-                        contentType: "application/json"
-                    },
-                    create:{
-                        url: url.createUrl,
-                        dataType: "json",
-                        type: "post"
-                    },
-                     parameterMap: function(options, operation) {
-                        if (operation == "create") {
-                     	    options.signid = vm.model.signid;
-                            return kendo.stringify(options);
-                        }
-                        if (operation == "update" || operation == "destroy") {
-                            return kendo.stringify(options.models);
-                        }
-                      }
-                      
-                }
-            },
-            noRecordMessage: {
-                template: '暂时没有数据.'
-            }
-        }
-    
-    }
-    
-    function getKendoCheckId($id) {
-        var checkbox = $($id).find('tr td:nth-child(1)').find('input:checked')
-        var data = [];
-        checkbox.each(function () {
-            var id = $(this).attr('relId');
-            data.push({
-                name: 'id',
-                value: id
-            });
-        });
-        return data;
-    }
+	function kendoGridinlineConfig() {
 
-    function http(options) {
-        options.headers = {
-            Token: service.getToken()
-        };
-        options.$http(options.httpOptions).then(options.success,
-            function (response) {
-                if (options.onError) {
-                    options.onError(response);
-                }
-            });
-    }
+		return {
+			filterable : {
+				extra : false,
+				// mode: "row", 将过滤条件假如title下,如果不要直接与title并排
+				operators : {
+					string : {
+						"contains" : "包含",
+						"eq" : "等于"
+						// "neq": "不等于",
+						// "doesnotcontain": "不包含"
+					},
+					number : {
+						"eq" : "等于",
+						"neq" : "不等于",
+						gt : "大于",
+						lt : "小于"
+					},
+					date : {
+						gt : "大于",
+						lt : "小于"
+					}
+				}
+			},
+			pageable : {
+				pageSize : 10,
+				previousNext : true,
+				buttonCount : 5,
+				refresh : true,
+				pageSizes : true
+			},
+			schema : function(model) {
+				return {
+					data : "value",
+					total : function(data) {
+						return data['count'];
+					},
+					model : model
+				};
+			},
+			transport : function(vm, url, paramObj) {
+				return {
+					read : {
+						url : url.readUrl,
+						dataType : "json",
+						type : "post",
+						beforeSend : function(req) {
+							req.setRequestHeader('Token', service.getToken());
+						}
+					},
+					update : {
+						url : url.updateUrl,
+						dataType : "json",
+						type : "post"
+					},
+					destroy : {
+						url : url.destroyUrl,
+						dataType : "json",
+						type : "post",
+						contentType : "application/json"
+					},
+					create : {
+						url : url.createUrl,
+						dataType : "json",
+						type : "post",
+						contentType : "application/json"
+					},
+					parameterMap : function(options, operation) {
+						if (operation == "update"|| operation == "destroy"
+						||operation == "create") {
+							return kendo.stringify(options.models);
+						} else if (operation == "read") {
+							return {
+								"$filter" : paramObj.filter,
+								"$skip" : options.skip,
+								"$top" : options.take,
+								"$inlinecount" : "allpages"
+							}
+						}
 
-    // begin:cookie
-    function cookie() {
-        var cookieUtil = {
-            get: function (name, subName) {
-                var subCookies = this.getAll(name);
-                if (subCookies) {
-                    return subCookies[subName];
-                } else {
-                    return null;
-                }
-            },
-            getAll: function (name) {
-                var cookieName = encodeURIComponent(name) + "=", cookieStart = document.cookie
-                    .indexOf(cookieName), cookieValue = null, result = {};
-                if (cookieStart > -1) {
-                    var cookieEnd = document.cookie.indexOf(";", cookieStart)
-                    if (cookieEnd == -1) {
-                        cookieEnd = document.cookie.length;
-                    }
-                    cookieValue = document.cookie.substring(cookieStart
-                        + cookieName.length, cookieEnd);
-                    if (cookieValue.length > 0) {
-                        var subCookies = cookieValue.split("&");
-                        for (var i = 0, len = subCookies.length; i < len; i++) {
-                            var parts = subCookies[i].split("=");
-                            result[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
-                        }
-                        return result;
-                    }
-                }
-                return null;
-            },
-            set: function (name, subName, value, expires, path, domain, secure) {
-                var subcookies = this.getAll(name) || {};
-                subcookies[subName] = value;
-                this.setAll(name, subcookies, expires, path, domain, secure);
-            },
-            setAll: function (name, subcookies, expires, path, domain, secure) {
-                var cookieText = encodeURIComponent(name) + "=";
-                var subcookieParts = new Array();
-                for (var subName in subcookies) {
-                    if (subName.length > 0
-                        && subcookies.hasOwnProperty(subName)) {
-                        subcookieParts.push(encodeURIComponent(subName) + "="
-                            + encodeURIComponent(subcookies[subName]));
-                    }
-                }
-                if (subcookieParts.length > 0) {
+					}
+				}
+			},
+			noRecordMessage : {
+				template : '暂时没有数据.'
+			}
+		}
 
-                    cookieText += subcookieParts.join("&");
-                    if (expires instanceof Date) {
+	}
 
-                        cookieText += ";expires=" + expires.toGMTString();
-                    }
-                    if (path) {
-                        cookieText += ";path=" + path;
-                    }
-                    if (domain) {
-                        cookieText += ";domain=" + domain;
-                    }
-                    if (secure) {
-                        cookieText += ";secure";
-                    }
-                } else {
+	function getKendoCheckId($id) {
+		var checkbox = $($id).find('tr td:nth-child(1)').find('input:checked')
+		var data = [];
+		checkbox.each(function() {
+					var id = $(this).attr('relId');
+					data.push({
+								name : 'id',
+								value : id
+							});
+				});
+		return data;
+	}
 
-                    cookieText += ";expires=" + (new Date(0)).toGMTString();
-                }
-                document.cookie = cookieText;
-            },
-            unset: function (name, subName, path, domain, secure) {
-                var subcookies = this.getAll(name);
-                if (subcookies) {
-                    delete subcookies[subName];
-                    this.setAll(name, subcookies, null, path, domain, secure);
-                }
-            },
-            unsetAll: function (name, path, domain, secure) {
-                this.setAll(name, null, new Date(0), path, domain, secure);
-            }
-        };
-        return cookieUtil;
-    }
+	function http(options) {
+		options.headers = {
+			Token : service.getToken()
+		};
+		options.$http(options.httpOptions).then(options.success,
+				function(response) {
+					if (options.onError) {
+						options.onError(response);
+					}
+				});
+	}
 
-    // end:cookie
+	// begin:cookie
+	function cookie() {
+		var cookieUtil = {
+			get : function(name, subName) {
+				var subCookies = this.getAll(name);
+				if (subCookies) {
+					return subCookies[subName];
+				} else {
+					return null;
+				}
+			},
+			getAll : function(name) {
+				var cookieName = encodeURIComponent(name) + "=", cookieStart = document.cookie
+						.indexOf(cookieName), cookieValue = null, result = {};
+				if (cookieStart > -1) {
+					var cookieEnd = document.cookie.indexOf(";", cookieStart)
+					if (cookieEnd == -1) {
+						cookieEnd = document.cookie.length;
+					}
+					cookieValue = document.cookie.substring(cookieStart
+									+ cookieName.length, cookieEnd);
+					if (cookieValue.length > 0) {
+						var subCookies = cookieValue.split("&");
+						for (var i = 0, len = subCookies.length; i < len; i++) {
+							var parts = subCookies[i].split("=");
+							result[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+						}
+						return result;
+					}
+				}
+				return null;
+			},
+			set : function(name, subName, value, expires, path, domain, secure) {
+				var subcookies = this.getAll(name) || {};
+				subcookies[subName] = value;
+				this.setAll(name, subcookies, expires, path, domain, secure);
+			},
+			setAll : function(name, subcookies, expires, path, domain, secure) {
+				var cookieText = encodeURIComponent(name) + "=";
+				var subcookieParts = new Array();
+				for (var subName in subcookies) {
+					if (subName.length > 0
+							&& subcookies.hasOwnProperty(subName)) {
+						subcookieParts.push(encodeURIComponent(subName) + "="
+								+ encodeURIComponent(subcookies[subName]));
+					}
+				}
+				if (subcookieParts.length > 0) {
 
-    function getToken() {
-        var data = cookie().getAll("data");
-        return data != null ? data.token : "";
-    }
+					cookieText += subcookieParts.join("&");
+					if (expires instanceof Date) {
 
-    function gridDataSource(dataSource) {
-        dataSource.error = function (e) {
-            if (e.status == 401) {
-                location.href = service.loginUrl;
-            } else {
+						cookieText += ";expires=" + expires.toGMTString();
+					}
+					if (path) {
+						cookieText += ";path=" + path;
+					}
+					if (domain) {
+						cookieText += ";domain=" + domain;
+					}
+					if (secure) {
+						cookieText += ";secure";
+					}
+				} else {
 
-            }
-        };
-        return dataSource;
-    }
+					cookieText += ";expires=" + (new Date(0)).toGMTString();
+				}
+				document.cookie = cookieText;
+			},
+			unset : function(name, subName, path, domain, secure) {
+				var subcookies = this.getAll(name);
+				if (subcookies) {
+					delete subcookies[subName];
+					this.setAll(name, subcookies, null, path, domain, secure);
+				}
+			},
+			unsetAll : function(name, path, domain, secure) {
+				this.setAll(name, null, new Date(0), path, domain, secure);
+			}
+		};
+		return cookieUtil;
+	}
 
-    // S_封装filer的参数
-    function buildOdataFilter(from) {
-        /*
-         * var t = new Array(); var arrIndex = 0;
-         * $(from).find('input,radio,select,textarea').each(function(index,obj){
-         * if(obj.name && obj.value){ var param = {};
-         * if($(this).attr('operator')){ param.operator =
-         * $(this).attr('operator'); }else{ param.operator = 'eq'; } param.name =
-         * $.trim(obj.name); param.value = $.trim(obj.value); t[arrIndex] =
-         * param; arrIndex++; } });
-         *
-         * var i = 0; var filterStr = ""; $.each(t, function() { if(this.value){
-         * if(i > 0){ filterStr += " and "; } filterStr += this.name + " " +
-         * this.operator + " '"+ this.value +"'"; i++; } }); return filterStr;
-         */
+	// end:cookie
 
-        var manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
-            rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
-            rsubmittable = /^(?:input|select|textarea|keygen)/i;
+	function getToken() {
+		var data = cookie().getAll("data");
+		return data != null ? data.token : "";
+	}
 
-        return $(from).map(function () {
-            var elements = jQuery.prop(this, "elements");
-            return elements ? jQuery.makeArray(elements) : this;
-        }).filter(
-            function () {
-                var type = this.type;
-                return this.value
-                    && this.name
-                    && !$(this).is(":disabled")
-                    && rsubmittable.test(this.nodeName)
-                    && !rsubmitterTypes.test(type)
-                    && (this.checked || !manipulation_rcheckableType
-                        .test(type));
-            }).map(
-            function (i, elem) {
-                var $me = $(this), val = $me.val();
-                if (!val){
-                    return false;
-                }
-                var dataType = $me.attr("data-type") || "String";
-                if(!("Integer" == dataType)){
-                    val = "'" + val + "'";
-                }
-                var operator = $me.attr("operator") || "eq",
-                    dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
-                if (dataRole == "datepicker") {
-                    val = "date" + val;
-                } else if (dataRole == "datetimepicker") {
-                    val = "datetime" + val;
-                }
+	function gridDataSource(dataSource) {
+		dataSource.error = function(e) {
+			if (e.status == 401) {
+				location.href = service.loginUrl;
+			} else {
 
-                return operator == "like" ? ("substringof(" + val + ", "
-                    + elem.name + ")") : (elem.name + " " + operator
-                    + " " + val);
-            }).get().join(" and ");
-    }// E_封装filer的参数
+			}
+		};
+		return dataSource;
+	}
 
-    function initDictData(options) {
-        if(!DICT_ITEMS){
-            options.$http({
-                method: 'get',
-                url: rootPath + '/dict/dictItems'
-            }).then(function (response) {
-                options.scope.dictMetaData = response.data;
-                var dictsObj = {};
-                reduceDict(dictsObj,response.data);
-                options.scope.DICT = dictsObj;
-            }, function (response) {
-                alert('初始化数据字典失败');
-            });
-        }else{
-            options.scope.dictMetaData = DICT_ITEMS;
-            var dictsObj = {};
-            reduceDict(dictsObj, options.scope.dictMetaData);
-            options.scope.DICT = dictsObj;
-        }
+	// S_封装filer的参数
+	function buildOdataFilter(from) {
+		/*
+		 * var t = new Array(); var arrIndex = 0;
+		 * $(from).find('input,radio,select,textarea').each(function(index,obj){
+		 * if(obj.name && obj.value){ var param = {};
+		 * if($(this).attr('operator')){ param.operator =
+		 * $(this).attr('operator'); }else{ param.operator = 'eq'; } param.name =
+		 * $.trim(obj.name); param.value = $.trim(obj.value); t[arrIndex] =
+		 * param; arrIndex++; } });
+		 * 
+		 * var i = 0; var filterStr = ""; $.each(t, function() { if(this.value){
+		 * if(i > 0){ filterStr += " and "; } filterStr += this.name + " " +
+		 * this.operator + " '"+ this.value +"'"; i++; } }); return filterStr;
+		 */
 
-    }
-    
-    
+		var manipulation_rcheckableType = /^(?:checkbox|radio)$/i, rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i, rsubmittable = /^(?:input|select|textarea|keygen)/i;
 
-    function reduceDict(dictsObj, dicts, parentId) {
-        if (!dicts || dicts.length == 0) {
-            return;
-        }
-        if (!parentId) {
-            for (var i = 0; i < dicts.length; i++) {
-                var dict = dicts[i];
-                if (!dict.parentId) {
-                    dictsObj[dict.dictCode] = {};
-                    dictsObj[dict.dictCode].dictId = dict.dictId;
-                    dictsObj[dict.dictCode].dictCode = dict.dictCode;
-                    dictsObj[dict.dictCode].dictName = dict.dictName;
-                    dictsObj[dict.dictCode].dictKey = dict.dictKey;
-                    dictsObj[dict.dictCode].dictSort = dict.dictSort;
-                    reduceDict(dictsObj[dict.dictCode], dicts, dict.dictId);
-                }
-            }
-        } else {
-            for (var i = 0; i < dicts.length; i++) {
-                var dict = dicts[i];
-                if (dict.parentId && dict.parentId == parentId) {
-                    if (!dictsObj.dicts) {
-                        dictsObj.dicts = new Array();
-                    }
-                    var subDict = {};
-                    subDict.dictId = dict.dictId;
-                    subDict.dictName = dict.dictName;
-                    subDict.dictCode = dict.dictCode;
-                    subDict.dictKey = dict.dictKey;
-                    subDict.dictSort = dict.dictSort;
-                    dictsObj.dicts.push(subDict);
-                    reduceDict(subDict, dicts, dict.dictId);
-                }
-            }
-        }
-    }
+		return $(from).map(function() {
+					var elements = jQuery.prop(this, "elements");
+					return elements ? jQuery.makeArray(elements) : this;
+				}).filter(function() {
+			var type = this.type;
+			return this.value
+					&& this.name
+					&& !$(this).is(":disabled")
+					&& rsubmittable.test(this.nodeName)
+					&& !rsubmitterTypes.test(type)
+					&& (this.checked || !manipulation_rcheckableType.test(type));
+		}).map(function(i, elem) {
+			var $me = $(this), val = $me.val();
+			if (!val) {
+				return false;
+			}
+			var dataType = $me.attr("data-type") || "String";
+			if (!("Integer" == dataType)) {
+				val = "'" + val + "'";
+			}
+			var operator = $me.attr("operator") || "eq", dataRole = $me
+					.attr("data-role")
+					|| ""; // data-role="datepicker"
+			if (dataRole == "datepicker") {
+				val = "date" + val;
+			} else if (dataRole == "datetimepicker") {
+				val = "datetime" + val;
+			}
 
-    // S_附件上传参数初始化
-    function initUploadOption(options) {
-        return {
-            async: {
-                saveUrl: rootPath + "/file",
-                removeUrl: rootPath + "/file/delete",
-                autoUpload: false
-            },
-            select: function (e) {
-                if (options.onSelect) {
-                    options.onSelect(e)
-                } else {
-                    $.each(e.files, function (index, value) {
-                        console.log("Name: " + value.name + "Size: "
-                            + value.size + " bytes" + "Extension: "
-                            + value.extension);
-                    });
-                }
-            },
-            upload: function (e) {
-                if (options.onUpload) {
-                    options.onUpload(e)
-                } else {
-                    var files = e.files;
-                    console.log(e.response)
-                }
-            },
-            success: function (e) {
-                if (options.onSuccess) {
-                    options.onSuccess(e)
-                } else {
-                    var files = e.files;
-                    if (e.operation == "upload") {
-                        files[0].sysFileId = e.response.sysFileId;
-                    }
-                }
-            },
-            remove: function (e) {
-                if (options.onRemove) {
-                    options.onRemove(e)
-                } else {
-                    var files = e.files;
-                    e.data = {
-                        'sysFileId': files[0].sysFileId
-                    };
-                }
-            }
-        }
-    }// E_附件上传参数初始化
+			return operator == "like"
+					? ("substringof(" + val + ", " + elem.name + ")")
+					: (elem.name + " " + operator + " " + val);
+		}).get().join(" and ");
+	}// E_封装filer的参数
 
-    // S_获取待办总数
-    function getTaskCount(options) {
-        options.$http({
-            method: 'get',
-            url: rootPath + '/flow/html/tasksCount'
-        }).then(function (response) {
-            $('#GtasksCount').html(response.data);
-        });
-    }// E_获取待办总数
+	function initDictData(options) {
+		if (!DICT_ITEMS) {
+			options.$http({
+						method : 'get',
+						url : rootPath + '/dict/dictItems'
+					}).then(function(response) {
+						options.scope.dictMetaData = response.data;
+						var dictsObj = {};
+						reduceDict(dictsObj, response.data);
+						options.scope.DICT = dictsObj;
+					}, function(response) {
+						alert('初始化数据字典失败');
+					});
+		} else {
+			options.scope.dictMetaData = DICT_ITEMS;
+			var dictsObj = {};
+			reduceDict(dictsObj, options.scope.dictMetaData);
+			options.scope.DICT = dictsObj;
+		}
 
-    //begin 获取项目暂停待办个数
-    function getPauseProjectCount(options){
-        options.$http({
-            method : "get",
-            url : rootPath + "/projectStop/pauseProjectCount"
-        }).then(function (response){
-            $("#pauseCount").html(response.data);
-        });
-    }
-    //end  获取项目暂停待办个数
-    // init
-    init();
-    function init() {
-        // begin#grid 处理
-        // 全选
-        $(document)
-            .on(
-                'click',
-                '#checkboxAll',
-                function () {
-                    var isSelected = $(this).is(':checked');
-                    $('.grid').find('tr td:nth-child(1)').find(
-                        'input:checkbox').prop('checked',
-                        isSelected);
-                });
-        // 点击行，改变背景
-        $('body').on('click', '.grid tr', function (e) {
-            $(this).parent().find('tr').removeClass('selected');
-            $(this).addClass('selected');
-            // $(this).find('td:nth-child(1)').find('input').prop('checked',
-            // true);
-            // $(this).find('td:nth-child(2)').find('input').prop('checked',
-            // true);
-        })
-        // end#grid 处理
-    }
-    
-    // 初始化常用意见
-    function initIdeaData(vm, $http, options) {
-        vm.ideaContent = '';// 初始化当前意见
-        vm.$http = $http;
-        vm.i = 1;
+	}
 
-        var ideaEditWindow = $("#ideaWindow");
-        ideaEditWindow.kendoWindow({
-            width: "50%",
-            height: "80%",
-            title: "意见选择",
-            visible: false,
-            modal: true,
-            closable: true,
-            actions: ["Pin", "Minimize", "Maximize", "close"]
-        }).data("kendoWindow").center().open();
+	function reduceDict(dictsObj, dicts, parentId) {
+		if (!dicts || dicts.length == 0) {
+			return;
+		}
+		if (!parentId) {
+			for (var i = 0; i < dicts.length; i++) {
+				var dict = dicts[i];
+				if (!dict.parentId) {
+					dictsObj[dict.dictCode] = {};
+					dictsObj[dict.dictCode].dictId = dict.dictId;
+					dictsObj[dict.dictCode].dictCode = dict.dictCode;
+					dictsObj[dict.dictCode].dictName = dict.dictName;
+					dictsObj[dict.dictCode].dictKey = dict.dictKey;
+					dictsObj[dict.dictCode].dictSort = dict.dictSort;
+					reduceDict(dictsObj[dict.dictCode], dicts, dict.dictId);
+				}
+			}
+		} else {
+			for (var i = 0; i < dicts.length; i++) {
+				var dict = dicts[i];
+				if (dict.parentId && dict.parentId == parentId) {
+					if (!dictsObj.dicts) {
+						dictsObj.dicts = new Array();
+					}
+					var subDict = {};
+					subDict.dictId = dict.dictId;
+					subDict.dictName = dict.dictName;
+					subDict.dictCode = dict.dictCode;
+					subDict.dictKey = dict.dictKey;
+					subDict.dictSort = dict.dictSort;
+					dictsObj.dicts.push(subDict);
+					reduceDict(subDict, dicts, dict.dictId);
+				}
+			}
+		}
+	}
 
-        vm.$http({
-            method: 'get',
-            url: rootPath + "/idea"
-        }).then(function (response) {
-            vm.commonIdeas = response.data;
+	// S_附件上传参数初始化
+	function initUploadOption(options) {
+		return {
+			async : {
+				saveUrl : rootPath + "/file",
+				removeUrl : rootPath + "/file/delete",
+				autoUpload : false
+			},
+			select : function(e) {
+				if (options.onSelect) {
+					options.onSelect(e)
+				} else {
+					$.each(e.files, function(index, value) {
+								console.log("Name: " + value.name + "Size: "
+										+ value.size + " bytes" + "Extension: "
+										+ value.extension);
+							});
+				}
+			},
+			upload : function(e) {
+				if (options.onUpload) {
+					options.onUpload(e)
+				} else {
+					var files = e.files;
+					console.log(e.response)
+				}
+			},
+			success : function(e) {
+				if (options.onSuccess) {
+					options.onSuccess(e)
+				} else {
+					var files = e.files;
+					if (e.operation == "upload") {
+						files[0].sysFileId = e.response.sysFileId;
+					}
+				}
+			},
+			remove : function(e) {
+				if (options.onRemove) {
+					options.onRemove(e)
+				} else {
+					var files = e.files;
+					e.data = {
+						'sysFileId' : files[0].sysFileId
+					};
+				}
+			}
+		}
+	}// E_附件上传参数初始化
 
-            vm.deleteCommonIdea = function () {// 删除常用意见
-                deleteCommonIdea(vm);
-            };
+	// S_获取待办总数
+	function getTaskCount(options) {
+		options.$http({
+					method : 'get',
+					url : rootPath + '/flow/html/tasksCount'
+				}).then(function(response) {
+					$('#GtasksCount').html(response.data);
+				});
+	}// E_获取待办总数
 
-            vm.addCorrentIdea = function (ideaContent) {// 添加当前意见
-                addCorrentIdea(vm, ideaContent);
-            };
+	// begin 获取项目暂停待办个数
+	function getPauseProjectCount(options) {
+		options.$http({
+					method : "get",
+					url : rootPath + "/projectStop/pauseProjectCount"
+				}).then(function(response) {
+					$("#pauseCount").html(response.data);
+				});
+	}
+	// end 获取项目暂停待办个数
+	// init
+	init();
+	function init() {
+		// begin#grid 处理
+		// 全选
+		$(document).on('click', '#checkboxAll', function() {
+			var isSelected = $(this).is(':checked');
+			$('.grid').find('tr td:nth-child(1)').find('input:checkbox').prop(
+					'checked', isSelected);
+		});
+		// 点击行，改变背景
+		$('body').on('click', '.grid tr', function(e) {
+			$(this).parent().find('tr').removeClass('selected');
+			$(this).addClass('selected');
+				// $(this).find('td:nth-child(1)').find('input').prop('checked',
+				// true);
+				// $(this).find('td:nth-child(2)').find('input').prop('checked',
+				// true);
+			})
+		// end#grid 处理
+	}
 
-            vm.addCommonIdea = function () {// 添加常用意见
-                addCommonIdea(vm);
-            }
+	// 初始化常用意见
+	function initIdeaData(vm, $http, options) {
+		vm.ideaContent = '';// 初始化当前意见
+		vm.$http = $http;
+		vm.i = 1;
 
-            vm.saveCommonIdea = function () {// 保存常用意见
+		var ideaEditWindow = $("#ideaWindow");
+		ideaEditWindow.kendoWindow({
+					width : "50%",
+					height : "80%",
+					title : "意见选择",
+					visible : false,
+					modal : true,
+					closable : true,
+					actions : ["Pin", "Minimize", "Maximize", "close"]
+				}).data("kendoWindow").center().open();
 
-                saveCommonIdea(vm);
-            }
+		vm.$http({
+					method : 'get',
+					url : rootPath + "/idea"
+				}).then(function(response) {
+					vm.commonIdeas = response.data;
 
-            vm.saveCurrentIdea = function () {
-                saveCurrentIdea(vm, options);
-            }
-        });
+					vm.deleteCommonIdea = function() {// 删除常用意见
+						deleteCommonIdea(vm);
+					};
 
-    }
-    
-    // 初始化项目补充资料函
-    function initSuppData(vm,options) {
-    	//options.$state.go('addSupp', {signid: vm.model.signid,id:vm.model.suppletterid })
-    	//options.url;
-    	console.log(options.$state.params.id);
-    	options.$http({
-            method: 'get',
-            url: rootPath + "/addSuppLetter",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-             params: {signid: options.$state.params.signid,id: options.$state.params.id}
-        }).then(function (response) {
-        	vm.suppletter=response.data;
-        });
-        
-          vm.saveSuppletter = function () {
-          		if(vm.suppletter.id){// 更新
-          			updateSuppletter(vm,options);
-          		}else{
-               	 	saveSuppletter(vm,options);//保存
-          		}
-            }
-            
-            if(vm.suppletter.id){
-            	getAddsuppletterbyId(vm,options);//根据id获取数据
-            }
-        /* $("#suppWin").kendoWindow({
-            width: "50%",
-            height: "80%",
-            title: "意见选择",
-            visible: false,
-            modal: true,
-            closable: true,
-            actions: ["Pin", "Minimize", "Maximize", "close"]
-        }).data("kendoWindow").center().open();*/
-    }
-    
-    function saveSuppletter(vm,options) {
-    	console.log(vm.suppletter);
-        options.$http({
-            method: 'post',
-            url: rootPath + "/addSuppLetter/add",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            data: vm.suppletter
-        }).then(function (response) {
-            alert("保存成功！");
-        });
-    }// end
-    
-    function updateSuppletter(vm,options) {
-        options.$http({
-            method: 'post',
-            url: rootPath + "/addSuppLetter/update",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            data: vm.suppletter
-        }).then(function (response) {
-            alert("更新成功！");
-        });
-    }// end
-    
-    function getAddsuppletterbyId(vm,options){
-    	 options.$http({
-            method: 'post',
-            url: rootPath + "/addSuppLetter/getbyId",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            data: vm.suppletter.id
-        }).then(function (response) {
-        	vm.suppletter = response.data;
-        });
-    }
-    
-    function registerFilePrint(vm,options){
-    	vm.showPrint=true;
-        var registerWin = $("#printWindow");
-        registerWin.kendoWindow({
-            width: "50%",
-            height: "60%",
-            title: "打印登记补充资料",
-            visible: false,
-            modal: true,
-            closable: true,
-            actions: ["Pin", "Minimize", "Maximize", "close"]
-        }).data("kendoWindow").center().open();
-        
-        initPrintData(vm,options);
-   }
-   
-    function initPrintData(vm,options){
-    	  options.$http({
-            method: 'post',
-            url: rootPath + "/addRegisterFile/initprintdata",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            params: {signid:vm.model.signid}
-        }).then(function (response) {
-        	vm.registerFileList=response.data.AddRegisterFileDtoList;
-        	vm.signdto=response.data.signdto;
-        	vm.printDate=response.data.printDate;
-        	
-        });
-    }
-    
-    function deleteCommonIdea(options) {
-        var isCheck = $("#commonIdeaTable input[name='ideaCheck']:checked");
-        if (isCheck.length < 1) {
-            alert("请选择要删除的意见！");
-        } else {
-            var ids = [];
-            for (var i = 0; i < isCheck.length; i++) {
-                options.commonIdeas.forEach(function (c, number) {
-                    if (isCheck[i].value == c.ideaID || c.ideaID == undefined) {
-                        options.commonIdeas.splice(number, 1);
-                    }
-                    ids.push(isCheck[i].value);
-                });
-            }
-            var idsStr = ids.join(",");
+					vm.addCorrentIdea = function(ideaContent) {// 添加当前意见
+						addCorrentIdea(vm, ideaContent);
+					};
 
-            options.$http({
-                method: 'delete',
-                url: rootPath + '/idea',
-                params: {
-                    ideas: idsStr
-                }
-            })
+					vm.addCommonIdea = function() {// 添加常用意见
+						addCommonIdea(vm);
+					}
 
-        }
-    }// end
+					vm.saveCommonIdea = function() {// 保存常用意见
 
-    function addCorrentIdea(options, ideaContent) {
+						saveCommonIdea(vm);
+					}
 
-        options.ideaContent = options.ideaContent + ideaContent;
-    }// end
+					vm.saveCurrentIdea = function() {
+						saveCurrentIdea(vm, options);
+					}
+				});
 
-    function addCommonIdea(options) {
-        options.commonIdea = {};
-        options.commonIdea.ideaType = "个人常用意见";
-        options.commonIdeas.push(options.commonIdea);
-        options.i++;
-    }// end
+	}
 
-    function saveCommonIdea(options) {
+	// 初始化项目补充资料函
+	function initSuppData(vm, options) {
+		// options.$state.go('addSupp', {signid:
+		// vm.model.signid,id:vm.model.suppletterid })
+		// options.url;
+		console.log(options.$state.params.id);
+		options.$http({
+					method : 'get',
+					url : rootPath + "/addSuppLetter",
+					headers : {
+						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
+					},
+					dataType : "json",
+					params : {
+						signid : options.$state.params.signid,
+						id : options.$state.params.id
+					}
+				}).then(function(response) {
+					vm.suppletter = response.data;
+				});
 
-        options.$http({
-            method: 'post',
-            url: rootPath + "/idea",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            data: angular.toJson(options.commonIdeas)
-        }).then(function (response) {
-            alert("保存成功！");
-        });
-    }// end
-    
-    function saveCurrentIdea(vm, options) {
-        var targetObj = $("#" + options.targetId);
-        targetObj.val(targetObj.val() + vm.ideaContent);
-        window.parent.$("#ideaWindow").data("kendoWindow").close();
-        targetObj.focus();
-    }// end
-    
+		vm.saveSuppletter = function() {
+			if (vm.suppletter.id) {// 更新
+				updateSuppletter(vm, options);
+			} else {
+				saveSuppletter(vm, options);// 保存
+			}
+		}
+
+		if (vm.suppletter.id) {
+			getAddsuppletterbyId(vm, options);// 根据id获取数据
+		}
+		/*
+		 * $("#suppWin").kendoWindow({ width: "50%", height: "80%", title:
+		 * "意见选择", visible: false, modal: true, closable: true, actions: ["Pin",
+		 * "Minimize", "Maximize", "close"]
+		 * }).data("kendoWindow").center().open();
+		 */
+	}
+
+	function saveSuppletter(vm, options) {
+		console.log(vm.suppletter);
+		options.$http({
+					method : 'post',
+					url : rootPath + "/addSuppLetter/add",
+					headers : {
+						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
+					},
+					dataType : "json",
+					data : vm.suppletter
+				}).then(function(response) {
+					alert("保存成功！");
+				});
+	}// end
+
+	function updateSuppletter(vm, options) {
+		options.$http({
+					method : 'post',
+					url : rootPath + "/addSuppLetter/update",
+					headers : {
+						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
+					},
+					dataType : "json",
+					data : vm.suppletter
+				}).then(function(response) {
+					alert("更新成功！");
+				});
+	}// end
+
+	function getAddsuppletterbyId(vm, options) {
+		options.$http({
+					method : 'post',
+					url : rootPath + "/addSuppLetter/getbyId",
+					headers : {
+						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
+					},
+					dataType : "json",
+					data : vm.suppletter.id
+				}).then(function(response) {
+					vm.suppletter = response.data;
+				});
+	}
+
+	function registerFilePrint(vm, options) {
+		vm.showPrint = true;
+		var registerWin = $("#printWindow");
+		registerWin.kendoWindow({
+					width : "50%",
+					height : "60%",
+					title : "打印登记补充资料",
+					visible : false,
+					modal : true,
+					closable : true,
+					actions : ["Pin", "Minimize", "Maximize", "close"]
+				}).data("kendoWindow").center().open();
+
+		initPrintData(vm, options);
+	}
+
+	function initPrintData(vm, options) {
+		options.$http({
+					method : 'post',
+					url : rootPath + "/addRegisterFile/initprintdata",
+					headers : {
+						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
+					},
+					dataType : "json",
+					params : {
+						signid : vm.model.signid
+					}
+				}).then(function(response) {
+					vm.registerFileList = response.data.AddRegisterFileDtoList;
+					vm.signdto = response.data.signdto;
+					vm.printDate = response.data.printDate;
+
+				});
+	}
+
+	function deleteCommonIdea(options) {
+		var isCheck = $("#commonIdeaTable input[name='ideaCheck']:checked");
+		if (isCheck.length < 1) {
+			alert("请选择要删除的意见！");
+		} else {
+			var ids = [];
+			for (var i = 0; i < isCheck.length; i++) {
+				options.commonIdeas.forEach(function(c, number) {
+							if (isCheck[i].value == c.ideaID
+									|| c.ideaID == undefined) {
+								options.commonIdeas.splice(number, 1);
+							}
+							ids.push(isCheck[i].value);
+						});
+			}
+			var idsStr = ids.join(",");
+
+			options.$http({
+						method : 'delete',
+						url : rootPath + '/idea',
+						params : {
+							ideas : idsStr
+						}
+					})
+
+		}
+	}// end
+
+	function addCorrentIdea(options, ideaContent) {
+
+		options.ideaContent = options.ideaContent + ideaContent;
+	}// end
+
+	function addCommonIdea(options) {
+		options.commonIdea = {};
+		options.commonIdea.ideaType = "个人常用意见";
+		options.commonIdeas.push(options.commonIdea);
+		options.i++;
+	}// end
+
+	function saveCommonIdea(options) {
+
+		options.$http({
+					method : 'post',
+					url : rootPath + "/idea",
+					headers : {
+						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
+					},
+					dataType : "json",
+					data : angular.toJson(options.commonIdeas)
+				}).then(function(response) {
+					alert("保存成功！");
+				});
+	}// end
+
+	function saveCurrentIdea(vm, options) {
+		var targetObj = $("#" + options.targetId);
+		targetObj.val(targetObj.val() + vm.ideaContent);
+		window.parent.$("#ideaWindow").data("kendoWindow").close();
+		targetObj.focus();
+	}// end
+
 })();

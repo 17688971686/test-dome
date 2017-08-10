@@ -10,6 +10,8 @@ import cs.model.BaseDto;
     
     import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 
 /**
  * Description: 登记补充资料 页面数据模型
@@ -24,6 +26,7 @@ public class AddRegisterFileDto extends BaseDto {
     private String isHasOriginfile;
     private String isHasCopyfile;
     private String suppleDeclare;
+    @JSONField(format = "yyyy-MM-dd")
     private Date suppleDate;
     private String signid;
     

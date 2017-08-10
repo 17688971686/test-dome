@@ -4,6 +4,8 @@ import cs.domain.project.AddSuppLetter;
 import cs.model.BaseDto;
 
 import java.util.Date;
+
+import com.alibaba.fastjson.annotation.JSONField;
     
     
     
@@ -23,6 +25,7 @@ public class AddSuppLetterDto extends BaseDto {
 	private String id;
     private String orgName;
     private String userName;
+    @JSONField(format = "yyyy-MM-dd")
     private Date suppLetterTime;
     private String secretLevel;
     private String mergencyLevel;
@@ -32,6 +35,7 @@ public class AddSuppLetterDto extends BaseDto {
     private String suppleterSuggest;
     private String printnum;
     private String signid;
+    @JSONField(format = "yyyy-MM-dd")
     private Date disapDate;
     private String meetingSuggest;
     private String leaderSuggest;

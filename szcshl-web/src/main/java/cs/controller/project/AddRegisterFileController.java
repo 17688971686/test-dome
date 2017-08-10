@@ -2,6 +2,7 @@ package cs.controller.project;
 
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddRegisterFileService;
 
@@ -11,13 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
 
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.fastjson.JSON;
 
 import javax.management.modelmbean.ModelMBeanInfoSupport;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +48,10 @@ public class AddRegisterFileController {
 	}
 
 	@RequiresPermissions("addRegisterFile#create#post")
-	@RequestMapping(name = "创建记录", path = "create", method = RequestMethod.POST)
+	@RequestMapping(name = "创建记录", path = "create/{signid}", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void create(@RequestParam String signid, String models) throws ParseException {
-		List<AddRegisterFileDto> list = JSON.parseArray(models, AddRegisterFileDto.class);  
-		 addRegisterFileService.save(signid,list);
+	public void create(@RequestBody AddRegisterFileDto[] addRegisterFileDtos,@PathVariable("signid") String signid) throws ParseException {
+		 addRegisterFileService.save(signid,addRegisterFileDtos);
 	}
 	@RequiresPermissions("addRegisterFile#initprintdata#post")
 	@RequestMapping(name = "初始化打印資料頁面", path = "initprintdata", method = RequestMethod.POST)
@@ -71,7 +75,7 @@ public class AddRegisterFileController {
 	@RequiresPermissions("addRegisterFile#update#put")
 	@RequestMapping(name = "更新记录", path = "update", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void put(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) {
+	public void update(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) {
 		addRegisterFileService.update(addRegisterFileDtos);
 	}
 

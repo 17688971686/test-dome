@@ -44,7 +44,6 @@ public class AddRegisterFile extends DomainBase {
 	private String suppleDeclare;
 	
 	//补充日期
-	@JSONField(format = "yyyy-MM-dd")
 	@Column(columnDefinition = "Date")
 	private Date suppleDate;
 	

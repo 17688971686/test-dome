@@ -32,12 +32,10 @@ public class AddSuppLetter extends DomainBase {
 	private String userName;
 	
 	//拟稿时间
-	@JSONField(format = "yyyy-MM-dd")
 	@Column(columnDefinition = "Date")
 	private Date suppLetterTime;
 	
 	//发文日期
-	@JSONField(format = "yyyy-MM-dd")
 	@Column(columnDefinition = "Date")
 	private Date disapDate;
 	

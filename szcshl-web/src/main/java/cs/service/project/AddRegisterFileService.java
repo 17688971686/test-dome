@@ -17,7 +17,7 @@ public interface AddRegisterFileService {
     
     PageModelDto<AddRegisterFileDto> get(ODataObj odataObj);
 
-	void save(String signid,List<AddRegisterFileDto> addRegisterFileDtoss);
+	void save(String signid,AddRegisterFileDto[] addRegisterFileDtos);
 
 	void update(AddRegisterFileDto[] addRegisterFileDtos);
 

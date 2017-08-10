@@ -64,7 +64,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"), {filter: "issign eq (isNull,0)"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", {filter: "issign eq (isNull,0)"},$("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -505,7 +505,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter: "signid ne '"+vm.model.signid+"' and isAssociate eq 0 "}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", {filter: "signid ne '"+vm.model.signid+"' and isAssociate eq 0 "}, $("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

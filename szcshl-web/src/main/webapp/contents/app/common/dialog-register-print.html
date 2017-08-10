@@ -1,5 +1,5 @@
 
-<!-- 拟补充资料函弹出框 -->
+<!-- 登记补充资料弹出框 -->
   <div id="printWindow" ng-show="vm.showPrint" class="well well-sm conttent_list" style="background:white;">
 	<div class="toolbar"> 
 	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>打印设置</button>
@@ -40,12 +40,15 @@
 	               </td>
 	          </tr>
              <tr ng-repeat="x in vm.registerFileList">
-             <td width="50%" colspan="2" style="text-align: center;"> {{x.fileName}}</td>
+	             <td width="50%" colspan="2">
+	             	<span style="text-align: left;">{{$index +1}}、</span> 
+	             	<span>{{x.fileName}}</span>
+	             </td>
              	<td width="50%" colspan="2">
-             		 <span style="margin-left: 60px;">{{x.totalNum}}</span>
+             		 <span style="margin-left: 58px;">{{x.totalNum}}</span>
 		             <span style="margin:35px;">{{x.isHasOriginfile=='true'?'是':'否'}}</span>
-		             <span style="margin:10px;">{{x.isHasCopyfile=='true'?'是':'否'}}</span>
-		             <span>{{x.suppleDate}}</span> 
+		             <span style="margin:8px;">{{x.isHasCopyfile=='true'?'是':'否'}}</span>
+		             <span style="margin:25px;">{{x.suppleDate}}</span> 
              	</td> 
              	
 	              <!-- <td align="center" colspan="4" >
