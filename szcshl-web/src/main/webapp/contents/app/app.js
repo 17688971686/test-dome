@@ -465,6 +465,21 @@
                 controllerAs: 'vm'
             })
             //end#sharing
+             //S 财务管理
+             .state('financialManager', {
+                url: '/financialManager/:signid',
+                templateUrl: rootPath + '/financialManager/html/add.html',
+                controller: 'financialManagerCtrl',
+                controllerAs: 'vm'
+            })
+              //begin#dispatch
+           /* .state('financialEdit', {
+                url: '/financialEdit/:signid',
+                templateUrl: rootPath + '/financialManager/html/addFinancial.html',
+                controller: 'financialManagerEditCtrl',
+                controllerAs: 'vm'
+            })*///end#财务管理
+            //end#financial
             //系统安装包管理
             .state('pluginfile',{
                 url: '/pluginfile',

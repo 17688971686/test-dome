@@ -120,6 +120,8 @@
                     break;
                 //财务办理
                 case flowcommon.getSignFlowNode().SIGN_CWBL:
+                	vm.showFlag.businessTr = true;
+                	vm.showFlag.financialCode = true;
                     break;
                 //归档
                 case flowcommon.getSignFlowNode().SIGN_GD:

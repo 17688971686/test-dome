@@ -328,7 +328,15 @@
                 signid: vm.model.signid
             });
         }// E_跳转到 发文 编辑页面
-
+        
+        // S 财务报销
+        vm.addFinancialApply = function(){
+        	  $state.go('financialManager', {
+                  signid: vm.model.signid
+              });
+        }
+        // E 财务报销
+        
         vm.addDoFile = function () {
             $state.go('fileRecordEdit', {
                 signid: vm.model.signid

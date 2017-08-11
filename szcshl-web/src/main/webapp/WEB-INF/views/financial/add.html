@@ -1,0 +1,86 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/financialManagerList">财务管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="financialForm" name="financialForm">
+
+       
+        <table class="table table-bordered" id="conditionTable">
+          	<tr>
+          	<input type="hidden" name="signid" id="signid"  value="{{vm.model.signid}}">
+          	<td width="15%" align="center">项目名称</td>
+          	<td width="15%" colspan="3" ><input type="text" class="form-control input-sm " style="width: 300px;" name="projectName" id="projectName" value="{{vm.model.projectName}}">
+          	
+          	</td>
+          	</tr>
+             <tr>
+                <td width="5%" align="center">付款日期</td>
+                 <td width="5%" align="center">
+                  <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" 
+                               ng-model="vm.financial.paymentData" id="paymentData" name="paymentData" data-val="true"
+                               data-val-required="必填">
+                  </td>
+                  <td width="5%" align="center">评审会总额</td>
+                <td width="15%" align="center"> 
+                          <span id="financialCount"></span>&nbsp;元
+                 </td>
+            </tr> 
+						
+			</table>
+				
+    
+    <table class="table table-bordered seleteTable">
+					<tr>
+						<td>
+							<span>财务管理</span>
+							<span>
+								<button ng-click="vm.addFinancial()"  value="addFinancial" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-plus"></span>新建</button>
+								<button ng-click="vm.deleteFinancial()"  class="btn btn-sm btn-danger"  value="deleteFinancial"> <span class="glyphicon glyphicon-remove"></span>删除</button>
+								<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-success"  value="saveCommonIdea"> <span class="glyphicon glyphicon-ok"></span>保存</button>
+								<button class="btn btn-sm btn-primary" ng-click=""><span class="glyphicon glyphicon-chevron-left"></span>查看评审费发放表</button>
+								<button class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+							</span>
+							<div style="max-height:800px; overflow: auto;" >
+								<table class="table table-bordered seleteTable" id="financialsTable">
+									 <tr>
+						                <td width="5%" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
+						                <td width="5%" align="center">序号</td>
+						                <td width="15%" >费用名称</td>
+						                <td width="15%" >费用</td>
+						                <td width="20%" >备注</td>
+						            </tr>
+									<tr ng-repeat="x in vm.financials">
+										<td width="5%" align="center"><input type="checkbox" ng-checked="financialsCheck" name="financialsCheck" value="{{vm.financials[$index].id}}" /></td>
+										<td width="5%" align="center">{{$index+1}}</td>
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 200px;"
+											ng-model="vm.financials[$index].chargeName"  />
+										</td>
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 200px;"
+											ng-model="vm.financials[$index].charge" id="chargeNum" name="charge" 
+											ng-keyup="vm.inputIntegerValue(vm.financials[$index].charge,$index+1)"> 
+											 <span id="errorsUnmber{{$index+1}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"  class="errors"></span>
+                        
+										</td>
+										
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 200px;"
+											ng-model="vm.financials[$index].remarke"  />
+										</td>
+										
+									</tr>
+								</table>
+							</div>
+							</td>
+					</tr>
+				</table>
+			</div>
+			</form>
+</div>

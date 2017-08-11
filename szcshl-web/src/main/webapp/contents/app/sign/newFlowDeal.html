@@ -44,6 +44,7 @@
                 <td>
                     <div ng-repeat="x in vm.flow.nextNode">
                         <span>{{$index+1}}、{{x.activitiName}}</span>
+                        
                     </div>
                 </td>
             </tr>
@@ -165,6 +166,7 @@
                     </div>
                 </td>
             </tr>
+          
             <tr ng-if="vm.showFlag.businessTr">
 		      <td width="10%" class="text-center">
                   业务处理<br>
@@ -194,12 +196,18 @@
                         <input type="checkbox" ng-model="vm.businessFlag.passDis" ng-true-value="9" ng-false-value="0" ng-checked="vm.businessFlag.passDis == 9" ><span>通过</span>
                         <input type="checkbox" ng-model="vm.businessFlag.passDis" ng-true-value="0" ng-false-value="9"  ng-checked="vm.businessFlag.passDis == 0" ><span>不通过</span>
                     </div>
-
+                    
+					
+                    
                     <div ng-if="vm.showFlag.nodeCreateDisNum">
                         <ol class="breadcrumb" style="font-size: 12px;" >
                             <li class="active">温馨提示：合并发文次项目，不用生成发文编号！</li>
                         </ol>
                         <button class="btn btn-xs btn-primary" ng-click="vm.createDispatchFileNum()" ng-disabled="vm.isCommit" ng-hide="vm.dispatchDoc.fileNum || vm.model.processState >= 6 || (vm.dispatchDoc.dispatchWay=='2'&& vm.dispatchDoc.isMainProject=='0') "><span class="glyphicon glyphicon-edit"></span>生成发文字号</button>
+                    </div>
+                     <!-- 财务报销 -->
+                    <div ng-if="vm.showFlag.financialCode">
+                        <button class="btn btn-xs btn-primary" ng-click="vm.addFinancialApply()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>财务报销</button>
                     </div>
                     <!-- 归档 -->
                     <div ng-if="vm.showFlag.nodeFileRecord">
