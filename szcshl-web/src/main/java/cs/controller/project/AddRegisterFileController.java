@@ -46,13 +46,14 @@ public class AddRegisterFileController {
 		PageModelDto<AddRegisterFileDto> addRegisterFileDtos = addRegisterFileService.get(odataObj);
 		return addRegisterFileDtos;
 	}
-
+    
 	@RequiresPermissions("addRegisterFile#create#post")
 	@RequestMapping(name = "创建记录", path = "create/{signid}", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void create(@RequestBody AddRegisterFileDto[] addRegisterFileDtos,@PathVariable("signid") String signid) throws ParseException {
 		 addRegisterFileService.save(signid,addRegisterFileDtos);
 	}
+	
 	@RequiresPermissions("addRegisterFile#initprintdata#post")
 	@RequestMapping(name = "初始化打印資料頁面", path = "initprintdata", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> initpint(@RequestParam String signid) throws ParseException {
@@ -77,6 +78,13 @@ public class AddRegisterFileController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void update(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) {
 		addRegisterFileService.update(addRegisterFileDtos);
+	}
+	
+	@RequiresPermissions("addRegisterFile#findbySuppdate#post")
+	@RequestMapping(name = "根据日期查找资料", path = "findbySuppdate", method = RequestMethod.POST)
+	public @ResponseBody List<AddRegisterFileDto> findbySuppdate(@RequestParam String suppDate) throws ParseException {
+		List<AddRegisterFileDto> list = addRegisterFileService.findbySuppdate(suppDate);
+		return list;
 	}
 
 	// begin#html

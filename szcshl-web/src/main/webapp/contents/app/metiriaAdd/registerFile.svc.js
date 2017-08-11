@@ -24,8 +24,8 @@
 											+ "/findByOData",
 									updateUrl : addregister_url + "/update",
 									destroyUrl : addregister_url + "/delete",
-									createUrl : addregister_url + "/create/"+vm.model.signid
-								},{filter: "signid eq '"+vm.model.signid+"'"}),
+									createUrl : addregister_url + "/create/"+vm.model.signid},
+									{filter: "signid eq '"+vm.model.signid+"'"}),
 						schema : common.kendoGridConfig().schema({
 									id : "id",
 									fields : {
@@ -36,14 +36,12 @@
 											type : "date"
 										},
 										fileName : {
-											nullable : true,
+											validation: { required: true },
 											type : "String"
 										},
 										totalNum : {
 											type : "number",
-											validation : {
-												required : true
-											}
+											validation: { required: true, min: 1}
 										},
 										isHasOriginfile : {
 											type : "boolean"

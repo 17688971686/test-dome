@@ -71,8 +71,9 @@
 	   </div>
 	   <div style="margin-top: 150px;">
 	   	<span>补充日期：
-	   		<select>
+	   		<select ng-model = "vm.addregister.suppleDate" >
 	   			<option value="">请选择</option>
+	   			<option ng-repeat="x in vm.AddRegisterFileDtoList" value="{{x.suppleDate}}" >{{x.suppleDate}}</option>
 	   		</select>
 	   	</span>
 	   </div>

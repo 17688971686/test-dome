@@ -21,5 +21,8 @@
     		//vm.signdto={};
         	common.registerFilePrint(vm,{$http: $http});
         }
+        vm.findbySuppleDate = function(e){
+        	
+        }
     }
 })();

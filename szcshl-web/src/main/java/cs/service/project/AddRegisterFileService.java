@@ -6,6 +6,7 @@ import java.util.Map;
 import cs.domain.project.AddRegisterFile;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
+import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 
 /**
@@ -26,5 +27,7 @@ public interface AddRegisterFileService {
 	void delete(AddRegisterFileDto[] addRegisterFileDtos);
 	
 	 Map<String,Object> initprint( String signid);
+	 
+	 List<AddRegisterFileDto> findbySuppdate(String suppDate);
 
 }
