@@ -734,7 +734,6 @@
 		// options.$state.go('addSupp', {signid:
 		// vm.model.signid,id:vm.model.suppletterid })
 		// options.url;
-		console.log(options.$state.params.id);
 		options.$http({
 					method : 'get',
 					url : rootPath + "/addSuppLetter",
@@ -757,7 +756,6 @@
 				saveSuppletter(vm, options);// 保存
 			}
 		}
-
 		if (vm.suppletter.id) {
 			getAddsuppletterbyId(vm, options);// 根据id获取数据
 		}
@@ -770,7 +768,6 @@
 	}
 
 	function saveSuppletter(vm, options) {
-		console.log(vm.suppletter);
 		options.$http({
 					method : 'post',
 					url : rootPath + "/addSuppLetter/add",
@@ -800,13 +797,13 @@
 
 	function getAddsuppletterbyId(vm, options) {
 		options.$http({
-					method : 'post',
+					method : 'get',
 					url : rootPath + "/addSuppLetter/getbyId",
 					headers : {
 						"contentType" : "application/json;charset=utf-8" // 设置请求头信息
 					},
 					dataType : "json",
-					data : vm.suppletter.id
+					params : {id:vm.suppletter.id}
 				}).then(function(response) {
 					vm.suppletter = response.data;
 				});

@@ -8,8 +8,11 @@
     function suppletter($location, suppletterSvc,$state,$http) {
         var vm = this;
         vm.showsupp=false;
-        vm.title = '待办事项';
+        vm.title = '拟补资料函';
         vm.suppletter={};
+        vm.model = {};
+        vm.model.signid=$state.params.signid;
+        vm.suppletter.id=$state.params.id;
         activate();
         function activate() {
         	common.initSuppData(vm,{$http:$http,$state:$state});
