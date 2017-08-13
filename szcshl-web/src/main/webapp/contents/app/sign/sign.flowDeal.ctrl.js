@@ -135,7 +135,7 @@
             // 初始化上传附件
             signSvc.uploadFilelist(vm);
             //项目关联初始化
-            //signSvc.associateGrid(vm);
+            signSvc.associateGrid(vm);
 
             ideaSvc.initIdea(vm);	//初始化个人常用意见
         }
