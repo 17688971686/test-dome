@@ -46,6 +46,8 @@
                             });
                         },
                         onClose : function(){
+                        },
+                        onCancel : function () {
                             vm.dispatchDoc.dispatchWay = "2";
                             $('.confirmDialog').modal('hide');
                         }

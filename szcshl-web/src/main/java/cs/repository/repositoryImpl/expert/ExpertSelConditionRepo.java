@@ -10,4 +10,6 @@ import cs.repository.IRepository;
  * Date: 2017-5-23 19:49:58
  */
 public interface ExpertSelConditionRepo extends IRepository<ExpertSelCondition, String> {
+
+    void updateSelectIndexById(String ids);
 }

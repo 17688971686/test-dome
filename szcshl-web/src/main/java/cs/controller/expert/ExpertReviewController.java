@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.model.expert.ExpertSelectedDto;
@@ -53,17 +54,23 @@ public class ExpertReviewController {
     }
 
     /**
-     * 更改抽取专家状态
-     * @param expertIds
+     * 更改抽取专家是否参加会议状态
+     * @param expertSelId
      * @param state
      */
     @RequiresPermissions("expertReview#updateJoinState#post")
     @RequestMapping(name = "更改专家状态", path = "updateJoinState", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState( @RequestParam(required = true) String expertIds,@RequestParam(required = true) String state) {
-        expertReviewService.updateExpertState(null,expertIds, state,false);
+    public void updateExpertState( @RequestParam(required = true) String expertSelId,@RequestParam(required = true) String state) {
+        expertReviewService.updateExpertState(null,expertSelId, state,false);
     }
 
+    @RequiresPermissions("expertReview#affirmAutoExpert#post")
+    @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void affirmAutoExpert(@RequestParam(required=true)String reviewId,@RequestParam(required = true) String expertSelId,@RequestParam(required = true) String state){
+        expertReviewService.updateExpertState(reviewId,expertSelId,state,true);
+    }
     @RequiresPermissions("expertReview##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -73,12 +80,11 @@ public class ExpertReviewController {
 
     @RequiresPermissions("expertReview#saveExpertReview#post")
     @RequestMapping(name = "保存抽取专家信息", path = "saveExpertReview", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveExpertReview(@RequestParam(required = true) String reviewId,
-                                 @RequestParam(required = true) String selectType,
-                                 @RequestParam(required = true) String expertIds,
-                                 boolean isDraw) {
-        expertReviewService.save(reviewId,expertIds,selectType,isDraw);
+    @ResponseBody
+    public ResultMsg saveExpertReview( @RequestParam(required = true) String workProgramId,
+            String reviewId,@RequestParam(required = true) String expertIds ,
+             @RequestParam(required = true) String selectType,boolean isDraw ) {
+       return expertReviewService.save(workProgramId,reviewId,expertIds,selectType,isDraw);
     }
 
 
@@ -103,18 +109,10 @@ public class ExpertReviewController {
         expertReviewService.update(record);
     }
 
-    @RequiresPermissions("expertReview#initByWorkProgramId#get")
-    @RequestMapping(name = "专家选择", path = "html/initByWorkProgramId", method = RequestMethod.GET)
-    public @ResponseBody
-    ExpertReviewDto initByWorkProgramId(@RequestParam(required = true) String workProgramId) {
+    @RequiresPermissions("expertReview#initByWPId#post")
+    @RequestMapping(name = "专家选择", path = "initByWPId", method = RequestMethod.POST)
+    public @ResponseBody ExpertReviewDto initByWorkProgramId(@RequestParam(required = true) String workProgramId) {
         return expertReviewService.initByWorkProgramId(workProgramId);
-    }
-
-    @RequiresPermissions("expertReview#affirmAutoExpert#post")
-    @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void affirmAutoExpert(@RequestParam(required=true)String reviewId){
-        expertReviewService.affirmAutoExpert(reviewId,Constant.EnumState.YES.getValue());
     }
 
     @RequiresPermissions("expertReview#getReviewList#get")
@@ -181,7 +179,7 @@ public class ExpertReviewController {
     }
 
     @RequiresPermissions("expertReview#html/selectExpert#get")
-    @RequestMapping(name = "选择专家", path = "html/selectExpert", method = RequestMethod.GET)
+    @RequestMapping(name = "编辑专家评审方案", path = "html/selectExpert", method = RequestMethod.GET)
     public String selectExpert() {
 
         return ctrlName + "/selectExpert";

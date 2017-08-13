@@ -44,10 +44,16 @@ public class RuProcessTask {
     private String assignee;
 
     /**
+     * 用户的显示名
+     */
+    @Column
+    private String displayName;
+
+    /**
      * 待选用户名称（多个用“，”相隔）
      */
     @Column
-    private String userName;
+    private String assigneeList;
 
     /**
      * 流程定义名称
@@ -166,12 +172,12 @@ public class RuProcessTask {
         this.assignee = assignee;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getAssigneeList() {
+        return assigneeList;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setAssigneeList(String assigneeList) {
+        this.assigneeList = assigneeList;
     }
 
     public String getProcessName() {
@@ -284,5 +290,13 @@ public class RuProcessTask {
 
     public void setPreSignDate(Date preSignDate) {
         this.preSignDate = preSignDate;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

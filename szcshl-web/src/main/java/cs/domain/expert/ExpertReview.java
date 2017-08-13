@@ -3,9 +3,12 @@ package cs.domain.expert;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.*;
 
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import org.hibernate.annotations.DynamicUpdate;
 
 import cs.domain.DomainBase;
@@ -55,16 +58,12 @@ public class ExpertReview extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private BigDecimal reviewTaxes;
 
-    //是否已经抽取专家
-    @Column(columnDefinition = "varchar(2) ")
-    private String isSelete;
-
     //抽取结果是否已经确认
     @Column(columnDefinition = "varchar(2) ")
     private String isComfireResult;
 
     //专家抽取次数
-    @Column(columnDefinition = "Integer")
+    @Column(columnDefinition = "Integer default 0")
     private Integer selCount;
 
     //状态
@@ -149,14 +148,6 @@ public class ExpertReview extends DomainBase {
         this.expertSelConditionList = expertSelConditionList;
     }
 
-    public String getIsSelete() {
-        return isSelete;
-    }
-
-    public void setIsSelete(String isSelete) {
-        this.isSelete = isSelete;
-    }
-
     public String getIsComfireResult() {
         return isComfireResult;
     }
@@ -195,5 +186,9 @@ public class ExpertReview extends DomainBase {
 
     public void setReviewTaxes(BigDecimal reviewTaxes) {
         this.reviewTaxes = reviewTaxes;
+    }
+
+    public ExpertReview(){
+
     }
 }

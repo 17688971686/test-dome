@@ -1,6 +1,7 @@
 package cs.controller.expert;
 
 import com.google.gson.JsonObject;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
@@ -49,15 +50,15 @@ public class ExpertController {
 
 	@RequestMapping(name = "统计符合条件的专家", path = "countReviewExpert", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer countReviewExpert(@RequestParam String workprogramId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto epSelCondition) {
+	public List<ExpertDto> countReviewExpert(@RequestParam String workprogramId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto epSelCondition) {
 		return expertService.countExpert(workprogramId,reviewId,epSelCondition);
 	}
 
-    @RequestMapping(name = "专家抽取", path = "findReviewExpert", method = RequestMethod.POST)
+    @RequestMapping(name = "专家抽取", path = "autoExpertReview", method = RequestMethod.POST)
     @ResponseBody
-    public List<ExpertDto> findReviewExpert(@RequestParam String workprogramId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto[] paramArrary) {
-		List<ExpertDto> pageModelDto = expertService.findExpert(workprogramId,reviewId,paramArrary);
-        return pageModelDto;
+    public ResultMsg findReviewExpert(@RequestParam String workprogramId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto[] paramArrary) {
+
+        return expertService.autoExpertReview(workprogramId,reviewId,paramArrary);
     }
 
 	@RequiresPermissions("expert##post")

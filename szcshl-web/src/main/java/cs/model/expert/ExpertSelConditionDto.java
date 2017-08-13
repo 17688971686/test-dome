@@ -1,9 +1,6 @@
 package cs.model.expert;
 
-import cs.domain.expert.ExpertReview;
-import cs.domain.project.WorkProgram;
-
-import java.util.List;
+import javax.persistence.Column;
 
 /**
  * Description: 专家抽取条件 页面数据模型
@@ -21,6 +18,8 @@ public class ExpertSelConditionDto {
     private String signId;
     private Integer sort;
     private String selectType;
+    private Integer selectIndex;
+    private String expertReviewId;
     private ExpertReviewDto expertReviewDto;
 
     public ExpertSelConditionDto() {
@@ -113,5 +112,21 @@ public class ExpertSelConditionDto {
 
     public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
         this.expertReviewDto = expertReviewDto;
+    }
+
+    public String getExpertReviewId() {
+        return expertReviewId;
+    }
+
+    public void setExpertReviewId(String expertReviewId) {
+        this.expertReviewId = expertReviewId;
+    }
+
+    public Integer getSelectIndex() {
+        return selectIndex;
+    }
+
+    public void setSelectIndex(Integer selectIndex) {
+        this.selectIndex = selectIndex;
     }
 }

@@ -32,6 +32,12 @@ public class SessionUtil {
             return (User) session.getAttribute(Constant.USER_SESSION_KEY);
     }
 
+    public static String getUserId() {
+        User user = getUserInfo();
+        if (null == user) return null;
+        return user.getId();
+    }
+
     public static String getLoginName() {
         User user = getUserInfo();
         if (null == user) return null;

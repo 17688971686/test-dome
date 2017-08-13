@@ -36,7 +36,7 @@ public class Company extends DomainBase{
 	private String coDept; //直属部门
 	@Column(columnDefinition="varchar(255)")
 	private String coDeptName;//直属部门名称
-	@Column(columnDefinition="varchar(255)")
+	@Column(columnDefinition="varchar(10)")
 	private String coType;//单位类型  0:表示建设单位，1:表示编制单位
 	
 	public String getId() {
@@ -105,7 +105,7 @@ public class Company extends DomainBase{
 	public void setCoType(String coType) {
 		this.coType = coType;
 	}
-	
-	
+
+
 	
 }

@@ -1,11 +1,9 @@
 package cs.domain.expert;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "cs_expert_condition")
@@ -35,6 +33,8 @@ public class ExpertSelCondition {
     @Column(columnDefinition = "integer")
     private Integer sort;
 
+    @Column(columnDefinition = "integer default 0")
+    private Integer selectIndex;    //抽取次数
     /**
      * 专家评审方案
      */
@@ -104,5 +104,13 @@ public class ExpertSelCondition {
 
     public void setExpertReview(ExpertReview expertReview) {
         this.expertReview = expertReview;
+    }
+
+    public Integer getSelectIndex() {
+        return selectIndex;
+    }
+
+    public void setSelectIndex(Integer selectIndex) {
+        this.selectIndex = selectIndex;
     }
 }

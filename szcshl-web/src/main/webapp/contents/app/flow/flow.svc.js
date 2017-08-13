@@ -53,19 +53,10 @@
                 width: 120,
                 filterable: false
             }, {
-                field: "",
+                field: "displayName",
                 title: "处理人",
                 width: 80,
-                filterable: false,
-                template:function(item) {
-                    if(item.assignee){
-                        return item.assignee;
-                    }else if(item.userName){
-                        return item.userName;
-                    }else{
-                        return "";
-                    }
-                }
+                filterable: false
             }, {
                 field: "startTime",
                 title: "开始时间",

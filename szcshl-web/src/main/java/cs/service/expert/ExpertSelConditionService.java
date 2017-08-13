@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
@@ -23,8 +24,8 @@ public interface ExpertSelConditionService {
 
 	ExpertSelConditionDto findById(String deptId);
 
-	void delete(String ids);
+	ResultMsg delete(String ids);
 
-	List<ExpertSelConditionDto> saveConditionList(ExpertSelConditionDto[] recordList) throws Exception;
+	ResultMsg saveConditionList(String workProgramId,ExpertSelConditionDto[] recordList);
 
 }

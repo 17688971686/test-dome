@@ -2,7 +2,6 @@ package cs.controller.sys;
 
 
 import cs.common.Response;
-import cs.common.utils.SessionUtil;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -10,8 +9,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
+
+import static org.apache.shiro.web.filter.authc.FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME;
 
 @Controller
 @RequestMapping(name = "账户", path = "account")
@@ -33,33 +31,29 @@ public class AccountController {
 
 	@RequestMapping(name = "登录", path = "login")
 	public String login(HttpServletRequest request, Model model) throws Exception {
-	    //如果已经登录，则转到首页
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.isAuthenticated()) {
-            return"redirect:/admin/index";
-        }
 		// 如果登陆失败从request中获取认证异常信息，shiroLoginFailure就是shiro异常类的全限定名
-		String exception = (String) request.getAttribute("shiroLoginFailure");
-		String msg = "";
-		if (exception != null) {
-			if (UnknownAccountException.class.getName().equals(exception)) {
-				logger.info("账号不存在");
-				msg = "账号或密码不正确";
-			} else if (IncorrectCredentialsException.class.getName().equals(exception)) {
-				logger.info("密码不正确");
-				msg = "账号或密码不正确";
+        String exception = (String) request.getAttribute(DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
+        String msg = "";
+        if (exception != null) {
+            if (UnknownAccountException.class.getName().equals(exception)) {
+                logger.info("账号不存在");
+                msg = "账号或密码不正确";
+            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
+                logger.info("密码不正确");
+                msg = "账号或密码不正确";
             } else if (AuthenticationException.class.getName().equals(exception)) {
                 logger.info("账号或密码不正确");
                 msg = "账号或密码不正确";
-			} else if(DisabledAccountException.class.getName().equals(exception)){
-				logger.info("账号已停用");
-				msg = "账号已停用";
-			} else {
-				logger.info(exception);
-				msg = exception;
-			}
-		}
+            } else if(DisabledAccountException.class.getName().equals(exception)){
+                logger.info("账号已停用");
+                msg = "账号已停用";
+            } else {
+                logger.info(exception);
+                msg = exception;
+            }
+        }
 		model.addAttribute("msg", msg);
+
         return "home/login";
 	}
 

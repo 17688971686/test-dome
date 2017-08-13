@@ -1,19 +1,18 @@
 package cs.service.expert;
 
+import cs.common.Constant;
 import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertType;
-import cs.domain.expert.Expert_;
+import cs.domain.expert.*;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.expert.ProjectExpeRepo;
-import cs.repository.repositoryImpl.expert.WorkExpeRepo;
+import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.sys.UserServiceImpl;
@@ -22,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ExpertServiceImpl implements ExpertService {
@@ -33,6 +29,13 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Autowired
     private ExpertRepo expertRepo;
+
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
+    @Autowired
+    private ExpertSelectedRepo expertSelectedRepo;
+    @Autowired
+    private ExpertSelConditionRepo expertSelConditionRepo;
 
     @Override
     public PageModelDto<ExpertDto> get(ODataObj odataObj) {
@@ -308,10 +311,10 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     @Override
-    public Integer countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition) {
+    public List<ExpertDto> countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition) {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select count(ep.EXPERTID) FROM CS_EXPERT ep ");
+        hqlBuilder.append("select ep.* FROM CS_EXPERT ep ");
         //1、关联本周未满2次，本月未满4次的专家
         hqlBuilder.append(" LEFT JOIN (  SELECT er.EXPERTID, COUNT (er.EXPERTID)  FROM ( ");
         hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel LEFT JOIN CS_EXPERT_REVIEW ep_rev ");
@@ -338,7 +341,19 @@ public class ExpertServiceImpl implements ExpertService {
             buildCondition(hqlBuilder, "ept", epSelCondition);
             hqlBuilder.append(" ) > 0");
         }
-        return expertRepo.returnIntBySql(hqlBuilder);
+
+        List<Expert> listExpert = expertRepo.findBySql(hqlBuilder);
+        List<ExpertDto> listExpertDto = new ArrayList<>();
+        if (Validate.isList(listExpert)) {
+            listExpert.forEach(el ->{
+                //把图片设置为空
+                el.setPhoto(null);
+                ExpertDto epDto = new ExpertDto();
+                BeanCopierUtils.copyProperties(el, epDto);
+                listExpertDto.add(epDto);
+            });
+        }
+        return listExpertDto;
     }
 
     /**
@@ -388,5 +403,143 @@ public class ExpertServiceImpl implements ExpertService {
         return expertRepo.returnIntBySql(sqlBuilder);
     }
 
+    /**
+     * 专家方案抽取
+     * @param workprogramId
+     * @param reviewId
+     * @param paramArrary
+     * @return
+     */
+    @Override
+    public ResultMsg autoExpertReview(String workprogramId, String reviewId, ExpertSelConditionDto[] paramArrary) {
+        String conditionIds = "";       //条件ID，用于更新抽取次数
+        List<ExpertDto> officialEPList = new ArrayList<>(),alternativeEPList = new ArrayList<>(),allEPList = new ArrayList<>();
+        ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(),reviewId);
+        List<ExpertSelected> saveList = new ArrayList<>();
+        //1、遍历所有抽取条件，每个条件单独抽取
+        ResultMsg resultMsg = null;
+        for(ExpertSelConditionDto epConditon : paramArrary){
+            if(!Validate.isString(epConditon.getId())){
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请先保存专家抽取条件再进行专家抽取！");
+                break;
+            }
+            conditionIds += Validate.isString(conditionIds)?","+epConditon.getId():epConditon.getId();
+            if(resultMsg != null && resultMsg.isFlag() == false){
+                return resultMsg;
+            }
+            //2、获取所有符合条件的专家
+            List<ExpertDto> matchEPList = countExpert(workprogramId,reviewId, epConditon);
+            if(!Validate.isList(matchEPList)){
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
+                break;
+            }
+            //3、符合条件的正选专家、备选专家分类
+            List<ExpertDto> officialList = new ArrayList<>(),alternativeList = new ArrayList<>();
+            matchEPList.forEach(ep ->{
+                if(EnumExpertState.OFFICIAL.getValue().equals(ep.getState())){
+                    officialList.add(ep);
+                }else if(EnumExpertState.ALTERNATIVE.getValue().equals(ep.getState())){
+                    alternativeList.add(ep);
+                }
+            });
+            if(epConditon.getOfficialNum() > officialList.size()){
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+                break;
+            }
+            if(epConditon.getAlternativeNum() > alternativeList.size()){
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+            }
+            allEPList.addAll(matchEPList);
+            //4、开始抽取
+            for(int i = 0;i<epConditon.getOfficialNum();i++){
+                if(!addAutoExpert(officialEPList,officialList,saveList,epConditon,expertReview)){
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+                    break;
+                }
+                if(!addAutoExpert(alternativeEPList,alternativeList,saveList,epConditon,expertReview)){
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+                    break;
+                }
+            }
+        }
+        if(resultMsg == null){
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        }
+        //抽取成功，添加相应的抽取记录
+        if(resultMsg.isFlag()){
+            Map<String,Object> resultMap = new HashMap<>();
+            expertSelectedRepo.bathUpdate(saveList);
+            List<ExpertSelectedDto> resultList = new ArrayList<>();
+            saveList.forEach(ep ->{
+                ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                BeanCopierUtils.copyProperties(ep,expertSelectedDto);
+                Expert reEP = ep.getExpert();
+                reEP.setPhoto(null);
+                ExpertDto reEPDto = new ExpertDto();
+                BeanCopierUtils.copyProperties(reEP,reEPDto);
+                expertSelectedDto.setExpertDto(reEPDto);
+                resultList.add(expertSelectedDto);
+            });
+            resultMap.put("autoEPList",resultList);
+            resultMap.put("allEPList",allEPList);
+            resultMap.put("officialEPList",officialEPList);
+            resultMap.put("alternativeEPList",alternativeEPList);
+            //抽取次数加一,默认已经确认
+            expertReview.setSelCount(expertReview.getSelCount()==null?1:(expertReview.getSelCount()+1));
+            expertReview.setIsComfireResult(Constant.EnumState.YES.getValue());
+            expertReviewRepo.save(expertReview);
+            resultMap.put("selCount",expertReview.getSelCount());
+            //更新专家抽取条件的抽取次数
+            expertSelConditionRepo.updateSelectIndexById(conditionIds);
+            resultMsg.setReObj(resultMap);
+        }
+        return resultMsg;
+    }
+
+    /**
+     * 获取抽取的专家，排除同名
+     * @param saveEPList
+     * @param randomEPList
+     * @return
+     */
+    private boolean addAutoExpert(List<ExpertDto> saveEPList,List<ExpertDto> randomEPList,List<ExpertSelected> saveList,
+                                  ExpertSelConditionDto epConditon,ExpertReview expertReview){
+        if(randomEPList.size() == 0){
+            return false;
+        }
+        Random random = new Random();
+        boolean success = true;
+        int randomNum = random.nextInt(randomEPList.size());
+        ExpertDto randomEP = randomEPList.get(randomNum);
+        randomEPList.remove(randomNum);
+        //排除同名
+        for(ExpertDto ep:saveEPList){
+            if(ep.getExpertID().equals(randomEP.getExpertID())){
+                success = false;
+                break;
+            }
+        }
+        //如果不满足，则继续抽
+        if(success == false){
+            return addAutoExpert(saveEPList,randomEPList,saveList,epConditon,expertReview);
+        }else{
+            saveEPList.add(randomEP);
+            //保存抽取记录
+            ExpertSelected aExpertSelected = new ExpertSelected();
+            aExpertSelected.setIsJoin(Constant.EnumState.YES.getValue());
+            aExpertSelected.setIsConfrim(Constant.EnumState.NO.getValue());
+            aExpertSelected.setSelectType(Constant.EnumExpertSelectType.AUTO.getValue());
+            aExpertSelected.setMaJorBig(epConditon.getMaJorBig());
+            aExpertSelected.setMaJorSmall(epConditon.getMaJorSmall());
+            aExpertSelected.setSelectIndex(epConditon.getSelectIndex()==null?1:(epConditon.getSelectIndex()+1));
+            aExpertSelected.setExpeRttype(epConditon.getExpeRttype());
+            Expert aEP = new Expert();
+            BeanCopierUtils.copyProperties(saveEPList.get(saveEPList.size()-1),aEP);
+            aExpertSelected.setExpert(aEP);//保存专家映射
+            aExpertSelected.setExpertReview(expertReview); //保存抽取条件映射
+            saveList.add(aExpertSelected);
+            return true;
+        }
+    }
 
 }

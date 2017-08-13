@@ -3,6 +3,7 @@ package cs.service.expert;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
@@ -29,9 +30,9 @@ public interface ExpertReviewService {
 
 	ExpertReviewDto initByWorkProgramId(String workProgramId);
 
-	void save(String reviewId,String expertIds, String selectType,boolean isDraw);
+	ResultMsg save(String workProgramId,String reviewId, String expertIds, String selectType, boolean isDraw);
 
-	void updateExpertState(String reviewId,String expertIds,String state,boolean isConfirm);
+	void updateExpertState(String reviewId,String expertSelId,String state,boolean isConfirm);
 	
 	Map<String,Object> getReviewList(String orgName,String year,String quarter);
 	
@@ -48,4 +49,5 @@ public interface ExpertReviewService {
     List<Map<String,Object>> getExpertReviewCost(String expertIds, String month);
 
     void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
+
 }

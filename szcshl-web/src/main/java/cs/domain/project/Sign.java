@@ -115,6 +115,10 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(255)")
     private String comprehensivehandlesug;
 
+    //综合部部长ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String comprehensiveId;
+
     //综合部拟办人名称
     @Column(columnDefinition = "VARCHAR(100)")
     private String comprehensiveName;
@@ -127,8 +131,12 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(255)")
     private String leaderhandlesug;
 
+    //中心领导ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String leaderId;
+
     //中心领导名称
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String leaderName;
 
     //中心领导审批日期
@@ -139,8 +147,12 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(255)")
     private String ministerhandlesug;
 
+    //部长ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String ministerId;
+
     //部长名称
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String ministerName;
 
     //部长处理日期
@@ -788,6 +800,10 @@ public class Sign extends DomainBase {
 	//是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
     private String isAdvanced;
+
+    //是否有专家评审方案
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String hasExpertReview;
     /**************************  状态字段放这里  ****************************/
 	
     public List<ProjectStop> getProjectStopList() {
@@ -2294,4 +2310,36 @@ public class Sign extends DomainBase {
 	public void setProcessState(Integer processState) {
 		this.processState = processState;
 	}
+
+    public String getHasExpertReview() {
+        return hasExpertReview;
+    }
+
+    public void setHasExpertReview(String hasExpertReview) {
+        this.hasExpertReview = hasExpertReview;
+    }
+
+    public String getComprehensiveId() {
+        return comprehensiveId;
+    }
+
+    public void setComprehensiveId(String comprehensiveId) {
+        this.comprehensiveId = comprehensiveId;
+    }
+
+    public String getLeaderId() {
+        return leaderId;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public String getMinisterId() {
+        return ministerId;
+    }
+
+    public void setMinisterId(String ministerId) {
+        this.ministerId = ministerId;
+    }
 }

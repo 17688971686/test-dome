@@ -67,4 +67,19 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         }
         return null;
     }
+
+    /**
+     * 更新工作方案的专家评审方案信息
+     * @param wpId
+     * @param reviewId
+     */
+    @Override
+    public void updateReviewId(String wpId, String reviewId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+WorkProgram.class.getSimpleName()+" set "+WorkProgram_.expertReviewId.getName()+" =:expertReviewId ");
+        hqlBuilder.setParam("expertReviewId",reviewId);
+        hqlBuilder.append(" where "+WorkProgram_.id.getName()+" =:wpId ");
+        hqlBuilder.setParam("wpId",wpId);
+        executeHql(hqlBuilder);
+    }
 }

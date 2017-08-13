@@ -173,11 +173,10 @@ public class SignController {
     public void deleteReserve(@RequestParam String signid){
     	signService.deleteReserveSign(signid);
     }
-    
-    @RequestMapping(name = "初始收文编辑页面", path = "html/initFillPageData", method = RequestMethod.GET)
-    @Transactional
-    public @ResponseBody
-    Map<String, Object> initFillPageData(@RequestParam(required = true) String signid, String taskId) {
+
+    @RequiresPermissions("sign#html/initFillPageData#post")
+    @RequestMapping(name = "初始收文编辑页面", path = "html/initFillPageData", method = RequestMethod.POST)
+    public @ResponseBody ResultMsg initFillPageData(@RequestParam(required = true) String signid) {
         return signService.initFillPageData(signid);
     }
 

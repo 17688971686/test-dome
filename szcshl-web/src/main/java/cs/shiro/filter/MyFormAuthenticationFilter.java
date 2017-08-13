@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,6 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
 
     @Autowired
     private UserService userService;
-
     /**
      * 登录URL
      */
@@ -70,7 +70,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
             throws Exception {
         // 清除记录的前一个请求
         WebUtils.getAndClearSavedRequest(request);
-        WebUtils.issueRedirect(request, response, successUrl, null, true);
+        WebUtils.issueRedirect(request, response, getSuccessUrl(), null, true);
     }
 
     @Transactional
@@ -106,7 +106,9 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         }
         //自己处理用户登录错误跳转
         logger.warn("用户【" + username + "】登录失败！");
-        String className = e.getClass().getName();
+        return super.onLoginFailure(token, e, request, response);
+
+        /*String className = e.getClass().getName();
         request.setAttribute(getFailureKeyAttribute(), className);
         if(Validate.isString(loginUrl)){
             try {
@@ -115,7 +117,24 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
 
             }
         }
-        return true;
+        return true;*/
+    }
+
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        if (isLoginRequest(request, response)){
+            if (isLoginSubmission(request, response)){
+                //本次用户登陆账号
+                String account = this.getUsername(request);
+                Subject subject = this.getSubject(request, response);
+                //之前登陆的用户
+                String username  = (String) subject.getPrincipal();
+                //如果两次登陆的用户不一样，则先退出之前登陆的用户(之前有登录用户，则退出)
+                if (username != null ){
+                    subject.logout();
+                }
+            }
+        }
+        return super.isAccessAllowed(request, response, mappedValue);
     }
 
     @Override

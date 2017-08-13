@@ -3,9 +3,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['sysfileSvc','$http', '$state','bsWin'];
+    sign.$inject = ['$http', '$state','bsWin'];
 
-    function sign(sysfileSvc,$http, $state,bsWin) {
+    function sign($http, $state,bsWin) {
         var service = {
             grid: grid,						//初始化项目列表
             querySign: querySign,			//查询
@@ -212,39 +212,26 @@
         }//E_查询grid
 
         //S_创建收文
-        function createSign(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/sign",
-                    data: vm.model
-                }
-                var httpSuccess = function success(response) {
-                    bsWin.alert(response.data.reMsg);
-                    if (response.data.flag || response.data.reCode == "ok") {
-                        //跳转并刷新页面
-                        $state.go('fillSign', {signid: response.data.reObj.signid}, {reload: true});
-                    }
-                }
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
+        function createSign(model,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/sign",
+                data: model
             }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }//E_创建收文
 
         //start  根据协办部门查询用户
-        function findOfficeUsersByDeptName(vm, status) {
-            var param = {};
-            if ("main" == status) {
-                param.maindeptName = vm.model.maindeptName;
-            } else {
-                param.assistdeptName = vm.model.assistdeptName;
-            }
+        function findOfficeUsersByDeptName(param, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/officeUser/findOfficeUsersByDeptName",
@@ -252,23 +239,12 @@
             };
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        if ("main" == status) {
-                            vm.mainOfficeList = {};
-                            vm.mainOfficeList = response.data;
-                        } else {
-                            vm.assistOfficeList = {};
-                            vm.assistOfficeList = response.data;
-                        }
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -300,7 +276,6 @@
                 });
             }
         }
-
         //End 申报登记编辑
 
         //Start 删除收文
@@ -326,9 +301,7 @@
                             msg: "操作成功",                            
                         })
                     }
-
                 });
-
             }
             common.http({
                 vm: vm,
@@ -337,52 +310,24 @@
                 success: httpSuccess
             });
         }
-
         //End 删除收文
 
         //S_初始化填报页面数据
-        function initFillData(vm) {
+        function initFillData(signid,callBack) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/sign/html/initFillPageData",
-                params: {signid: vm.model.signid}
+                params: {
+                    signid: signid
+                }
             }
-
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.model = response.data.sign;
-                        vm.deptlist = response.data.deptlist
-
-                        if (response.data.mainOfficeList) {
-                            vm.mainOfficeList = response.data.mainOfficeList;
-                        }
-                        if (response.data.assistOfficeList) {
-                            vm.assistOfficeList = response.data.assistOfficeList;
-                        }
-                        //建设单位
-                        vm.builtcomlist = response.data.builtcomlist;
-                        //编制单位
-                        vm.designcomlist = response.data.designcomlist;
-                        //初始化附件上传
-                        if(vm.model.signid){
-	                        sysfileSvc.initUploadOptions({
-	                            businessId:vm.model.signid,
-	                            sysSignId :vm.model.signid,
-	                            sysfileType:"收文",
-	                            uploadBt:"upload_file_bt",
-	                            detailBt:"detail_file_bt",
-	                            vm:vm
-	                        });
-                        }
-                    }
-                })
+                //关闭项目关联窗口
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
-
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

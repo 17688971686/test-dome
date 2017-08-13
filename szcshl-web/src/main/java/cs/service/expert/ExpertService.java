@@ -2,6 +2,7 @@ package cs.service.expert;
 
 import java.util.List;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
@@ -27,11 +28,13 @@ public interface ExpertService {
 
     List<ExpertDto> findExpert(String workprogramId, String reviewId, ExpertSelConditionDto[] epSelCondition);
 
-    Integer countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition);
+    List<ExpertDto> countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition);
 
     void savePhone(byte[] bytes, String expertId);
 
     byte[] findExpertPhoto(String expertId);
 
     int findMaxNumber();
+
+    ResultMsg autoExpertReview(String workprogramId, String reviewId, ExpertSelConditionDto[] paramArrary);
 }

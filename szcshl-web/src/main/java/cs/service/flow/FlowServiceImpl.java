@@ -523,7 +523,6 @@ public class FlowServiceImpl implements FlowService {
                 taskDto.setEndDate(h.getEndTime());
                 taskDto.setDurationInMillis(h.getDurationInMillis());
                 taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
-
                 list.add(taskDto);
             });
             pageModelDto.setValue(list);
@@ -535,51 +534,29 @@ public class FlowServiceImpl implements FlowService {
      * 在办任务查询
      *
      * @param odataObj
-     * @param skip
-     * @param top
      * @param isUserDeal 是否为个人待办
      * @return
      */
     @Override
-    public PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, String skip, String top, boolean isUserDeal) {
+    public PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal) {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
-        // 处理filter
-        if (odataObj.getFilter() != null) {
-            for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
-                String field = oDataFilterItem.getField();
-                String operator = oDataFilterItem.getOperator();
-                Object value = oDataFilterItem.getValue(); 
-                switch (operator) {
-                    case "like":
-                        criteria.add(Restrictions.like(field, "%" + value + "%"));
-                        break;
-                    case "eq":
-                        criteria.add(Restrictions.eq(field, value));
-                        break;
-                    case "ne":
-                        criteria.add(Restrictions.ne(field, value));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+        criteria = odataObj.buildFilterToCriteria(criteria);
         if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
-            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getLoginName()));
-            dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + SessionUtil.getLoginName() + "%"));
+            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
+            dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
         }
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
         // 处理分页
-        if (Validate.isString(skip)) {
-            criteria.setFirstResult(Integer.valueOf(skip));
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
         }
-        if (Validate.isString(top)) {
-            criteria.setMaxResults(Integer.valueOf(top));
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
         }
         List<RuProcessTask> runProcessList = criteria.list();
         pageModelDto.setCount(totalResult);
@@ -609,8 +586,8 @@ public class FlowServiceImpl implements FlowService {
     public List<RuProcessTask> queryMyRunProcessTasks() {
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         Disjunction dis = Restrictions.disjunction();
-        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getLoginName()));
-        dis.add(Restrictions.like(RuProcessTask_.userName.getName(), "%" + SessionUtil.getLoginName() + "%"));
+        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
+        dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
         criteria.add(dis);
         criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
         criteria.setMaxResults(6);

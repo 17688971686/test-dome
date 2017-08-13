@@ -12,6 +12,8 @@ package cs.common;
  *@date 2017年7月28日 下午2:12:53 
  */
 
+import java.util.Date;
+
 /**
  * @author MCL
  *@date 2017年7月28日 下午2:12:55 
@@ -43,6 +45,15 @@ public class Constant {
      */
     public static String DISPATCH_PREFIX = "深投审";
 
+    /**
+     * 是否正在进行专家抽取方案
+     */
+    public static boolean RUNNING_EP_REVIEW = false;
+
+    /**
+     * 上一次专家抽取方案时间
+     */
+    public static Date LAST_EP_REIVEW_TIME = new Date();
     /**
      * 默认收文工作日
      */

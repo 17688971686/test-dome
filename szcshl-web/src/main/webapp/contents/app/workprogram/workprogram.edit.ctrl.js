@@ -248,16 +248,41 @@
         	workprogramSvc.findUsersByOrgId(vm,type);
         }
         
-        vm.create = function () {  
-        	workprogramSvc.createWP(vm);
-        };  
-        
+        vm.create = function () {
+            common.initJqValidation($("#work_program_form"));
+            var isValid = $("#work_program_form").valid();
+            if(isValid){
+                workprogramSvc.createWP(vm.work,false,vm.iscommit,function(data){
+                    if (data.flag || data.reCode == "ok") {
+                        vm.work.id = data.reObj.id;
+                        //初始化数值
+                        if(data.reObj.reviewType == "自评"){
+                            vm.businessFlag.isSelfReview = true;           //是否自评
+                        }
+                        if(data.reObj.isSigle == "合并评审"){
+                            vm.businessFlag.isSingleReview = false;         //是否单个评审
+                        }
+                        if(data.reObj.isMainProject == "9"){
+                            vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
+                        }
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }else{
+                bsWin.alert("表格填写不正确，请检查相应的必填项信息！");
+            }
+
+        };
+
+        //拟聘请专家
         vm.selectExpert = function(){
-        	workprogramSvc.selectExpert(vm);
-        }
-            
-        vm.findReviewDept = function(){
-        
+            if (vm.work.id) {
+                $state.go('expertReviewEdit', {workProgramId: vm.work.id});
+            } else {
+                bsWin.alert("请先保存当前信息，再继续操作！");
+            }
         }
     }
 })();

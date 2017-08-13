@@ -1,5 +1,7 @@
 package cs.service.expert;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
@@ -61,13 +63,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
      */
 	@Override
 	@Transactional
-	public void delete(String reviewId,String ids,boolean deleteAll) {
+	public ResultMsg delete(String reviewId, String ids, boolean deleteAll) {
 		ExpertReview expertReview = expertReviewRepo.findById(reviewId);
 		if(deleteAll){
 			expertReviewRepo.delete(expertReview);
         }else{
             expertSelectedRepo.deleteById(ExpertSelected_.id.getName(),ids);
         }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
 	}
 
 }

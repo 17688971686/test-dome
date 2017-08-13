@@ -35,7 +35,7 @@ public interface FlowService {
     /**
      * 20170706 新增
      **/
-    PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, String skip, String top, boolean isUserDeal);
+    PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal);
 
     List<HiProcessTask> getProcessHistory(String processInstanceId);
 

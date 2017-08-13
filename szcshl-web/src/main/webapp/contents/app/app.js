@@ -512,6 +512,10 @@
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
+            if(fromState.name == 'signFlowDeal'){
+                $rootScope.$flowUrl = fromState.name;
+                $rootScope.$flowParams = fromParams;
+            }
         });
 
         $rootScope.back = function () {
@@ -520,6 +524,13 @@
         	}else{
         		window.history.back();
         	}           
+        };
+        $rootScope.backtoflow = function () {
+            if($rootScope.$flowUrl ){
+                $state.go($rootScope.$flowUrl, $rootScope.$flowParams);
+            }else{
+                $state.go('gtasks');
+            }
         };
 
         //kendo 语言

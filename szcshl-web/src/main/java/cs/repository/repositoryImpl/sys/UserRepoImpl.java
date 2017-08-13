@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cs.common.HqlBuilder;
 import cs.common.utils.SessionUtil;
 import cs.domain.sys.*;
 import org.hibernate.Criteria;
@@ -78,7 +79,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     @SuppressWarnings("unchecked")
     public List<User> findUserByRoleName(String roleName) {
-        Criteria criteria = getExecutableCriteria();
+         Criteria criteria = getExecutableCriteria();
         List<User> list = criteria.createAlias(User_.roles.getName(), User_.roles.getName())
                 .add(Restrictions.eq(User_.roles.getName() + "." + Role_.roleName.getName(), roleName)).list();
 

@@ -84,6 +84,6 @@ public class CompanyDto extends BaseDto {
 	public void setCoType(String coType) {
 		this.coType = coType;
 	}
-	
-	
+
+
 }

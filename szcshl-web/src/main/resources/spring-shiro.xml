@@ -13,7 +13,7 @@
 
     <!-- 会话Cookie模板 -->
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
-        <constructor-arg value="sid"/>
+        <constructor-arg name="name" value="szec.session.id"/>
         <property name="httpOnly" value="true"/>
         <property name="maxAge" value="-1"/>
     </bean>
@@ -131,11 +131,10 @@
                 /contents/**    =anon
                 /sys/init       =anon
 
-                /admin/index =authc
                 /account/login =authc
                 /account/logout =logout
                 <!-- ** = authc 所有url都必须认证通过才可以访问 -->
-                /** =authc
+                /** =user
             </value>
         </property>
     </bean>

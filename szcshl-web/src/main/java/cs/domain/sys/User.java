@@ -12,6 +12,7 @@ import cs.domain.DomainBase;
 @Table(name = "cs_user")
 public class User extends DomainBase {
     @Id
+    @Column(columnDefinition = "varchar(64)")
     private String id;
 
     /**
@@ -163,6 +164,17 @@ public class User extends DomainBase {
     @Column(columnDefinition = "INTEGER")
     private Integer userSort;
 
+    /**
+     * 代办用户ID
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String takeUserId;
+
+    /**
+     * 分管部门类型（PD:评估，GD:概算）
+     */
+    @Column(columnDefinition = "varchar(8)")
+    private String mngOrgType;
 
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Role> roles = new ArrayList<>();
@@ -394,5 +406,21 @@ public class User extends DomainBase {
 
     public void setIsUploadFGW(String isUploadFGW) {
         this.isUploadFGW = isUploadFGW;
+    }
+
+    public String getTakeUserId() {
+        return takeUserId;
+    }
+
+    public void setTakeUserId(String takeUserId) {
+        this.takeUserId = takeUserId;
+    }
+
+    public String getMngOrgType() {
+        return mngOrgType;
+    }
+
+    public void setMngOrgType(String mngOrgType) {
+        this.mngOrgType = mngOrgType;
     }
 }

@@ -69,10 +69,16 @@ public class HiProcessTask {
     @Column
     private String assignee;
     /**
-     * 待办人
+     * 用户的显示名
      */
     @Column
-    private String userName;
+    private String displayName;
+
+    /**
+     * 待选用户名称（多个用“，”相隔）
+     */
+    @Column
+    private String assigneeList;
     /**
      * 处理信息
      */
@@ -152,12 +158,20 @@ public class HiProcessTask {
         this.assignee = assignee;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAssigneeList() {
+        return assigneeList;
+    }
+
+    public void setAssigneeList(String assigneeList) {
+        this.assigneeList = assigneeList;
     }
 
     public String getMessage() {

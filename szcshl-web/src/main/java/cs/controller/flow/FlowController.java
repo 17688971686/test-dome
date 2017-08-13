@@ -101,7 +101,7 @@ public class FlowController {
     public @ResponseBody
     PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,request.getParameter("$skip"),request.getParameter("$top"),true);
+        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,true);
         return pageModelDto;
     }
 
@@ -110,7 +110,7 @@ public class FlowController {
     public @ResponseBody
     PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,request.getParameter("$skip"),request.getParameter("$top"),false);
+        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,false);
         return pageModelDto;
     }
 
@@ -119,7 +119,7 @@ public class FlowController {
     public @ResponseBody
     long tasksCount(HttpServletRequest request) throws ParseException {
         TaskQuery taskQuery = taskService.createTaskQuery();
-        taskQuery.taskCandidateOrAssigned(SessionUtil.getLoginName());
+        taskQuery.taskCandidateOrAssigned(SessionUtil.getUserId());
         return taskQuery.count();
     }
 

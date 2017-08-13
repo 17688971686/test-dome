@@ -1,5 +1,6 @@
 package cs.controller.expert;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
@@ -44,11 +45,11 @@ public class ExpertSelConditionController {
         expertSelConditionService.save(record);
     }
 
-
     @RequiresPermissions("expertSelCondition#saveConditionList#post")
-    @RequestMapping(name = "创建记录", path = "saveConditionList", method = RequestMethod.POST)
-    public @ResponseBody List<ExpertSelConditionDto> saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary) throws Exception{
-        return  (paramArrary==null||paramArrary.length==0)?null:expertSelConditionService.saveConditionList(paramArrary);
+    @RequestMapping(name = "保存专家抽取条件", path = "saveConditionList", method = RequestMethod.POST)
+    public @ResponseBody
+    ResultMsg saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary,@RequestParam(required = true)String workProgramId){
+        return  expertSelConditionService.saveConditionList(workProgramId,paramArrary);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
@@ -58,9 +59,9 @@ public class ExpertSelConditionController {
 
     @RequiresPermissions("expertSelCondition##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam(required = true)String ids) {
-        expertSelConditionService.delete(ids);
+    @ResponseBody
+    public ResultMsg delete(@RequestParam(required = true)String ids) {
+	    return expertSelConditionService.delete(ids);
     }
 
     @RequiresPermissions("expertSelCondition##put")

@@ -1,34 +1,32 @@
 package cs.service.expert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import cs.domain.expert.ExpertReview;
-import cs.model.expert.ExpertReviewDto;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.Constant;
-import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelCondition_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
-import cs.model.project.WorkProgramDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Description: 专家抽取条件 业务操作实现类
@@ -42,7 +40,9 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
 	private ExpertSelConditionRepo expertSelConditionRepo;
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
-	
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
+
 	@Override
 	public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
 		PageModelDto<ExpertSelConditionDto> pageModelDto = new PageModelDto<ExpertSelConditionDto>();
@@ -93,13 +93,23 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
      */
 	@Override
 	@Transactional
-	public void delete(String ids) {
+	public ResultMsg delete(String ids) {
+        ResultMsg resultMsg = null;
 		List<String> idArr = StringUtil.getSplit(ids,",");
 		for(String id : idArr){
 			ExpertSelCondition condition = expertSelConditionRepo.findById(id);
-			expertSelConditionRepo.delete(condition);
+			if(condition.getSelectIndex() > 0){
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，删除的条件中，已经进行了专家抽取！");
+                break;
+            }
 		}
-
+		if(resultMsg == null){
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功");
+        }
+        if(resultMsg.isFlag()){
+            expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(),ids);
+        }
+        return resultMsg;
 	}
 
     /**
@@ -110,25 +120,44 @@ public class ExpertSelConditionServiceImpl  implements ExpertSelConditionService
      */
 	@Override
 	@Transactional
-	public List<ExpertSelConditionDto> saveConditionList(ExpertSelConditionDto[] recordList) throws Exception{
-		List<ExpertSelConditionDto> resultList = new ArrayList<>();
+	public ResultMsg saveConditionList(String workProgramId,ExpertSelConditionDto[] recordList){
 	    if(recordList != null && recordList.length > 0){
-            ExpertReview reviewObj = expertReviewRepo.findById(recordList[0].getExpertReviewDto().getId());
-	        if(reviewObj == null || !Validate.isString(reviewObj.getId())){
-                log.info("保存专家收取条件失败：无法获取评审方案信息" );
-	            throw  new Exception(Constant.ERROR_MSG);
+            ExpertReview reviewObj = null;
+			if(null != recordList[0].getExpertReviewDto() && Validate.isString(recordList[0].getExpertReviewDto().getId())){
+                reviewObj = expertReviewRepo.findById(ExpertReview_.id.getName(),recordList[0].getExpertReviewDto().getId());
             }
+            if(reviewObj == null || !Validate.isString(reviewObj.getId())){
+                reviewObj = new ExpertReview();
+                Date now = new Date();
+                reviewObj.setCreatedBy(SessionUtil.getLoginName());
+                reviewObj.setModifiedBy(SessionUtil.getLoginName());
+                reviewObj.setCreatedDate(now);
+                reviewObj.setModifiedDate(now);
+                expertReviewRepo.save(reviewObj);
+                //更新工作方案关联关系
+                WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(),workProgramId);
+                workProgram.setExpertReviewId(reviewObj.getId());
+                workProgramRepo.save(workProgram);
+            }
+
             for(int i=0,l=recordList.length;i<l;i++){
 				ExpertSelCondition domain = new ExpertSelCondition();
 				ExpertSelConditionDto rl = recordList[i];
                 domain.setExpertReview(reviewObj);
 				BeanCopierUtils.copyProperties(rl, domain);
-				expertSelConditionRepo.save(domain);
+				//设置默认抽取次数
+				if(domain.getSelectIndex() == null){
+					domain.setSelectIndex(0);
+				}
+                expertSelConditionRepo.save(domain);
                 rl.setId(domain.getId());
-				resultList.add(rl);
+                rl.setExpertReviewId(reviewObj.getId());
 			}
-        }
-        return resultList;
+			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"保存成功！",recordList);
+        }else{
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，获取不到抽取条件信息！");
+		}
+
 	}
 
 }

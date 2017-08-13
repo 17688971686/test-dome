@@ -47,6 +47,26 @@ public class ExpertSelected {
     @Column(columnDefinition = "VARCHAR(2)")
     private String selectType;
 
+    //突出专业(大类)
+    @Column(columnDefinition = "varchar(128) ")
+    private String maJorBig;
+
+    //突出专业(小类)
+    @Column(columnDefinition = "varchar(128) ")
+    private String maJorSmall;
+
+    //专家类别
+    @Column(columnDefinition = "varchar(30) ")
+    private String expeRttype;
+
+    //抽取结果确认（已经确认的才能成为这次抽取的专家）
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isConfrim;
+
+    //抽取次数
+    @Column(columnDefinition = "INTEGER default 1")
+    private Integer selectIndex;
+
     //抽取评审方案（多对一）
     @ManyToOne
     @JoinColumn(name = "expertReviewId")
@@ -135,5 +155,45 @@ public class ExpertSelected {
 
     public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public String getIsConfrim() {
+        return isConfrim;
+    }
+
+    public void setIsConfrim(String isConfrim) {
+        this.isConfrim = isConfrim;
+    }
+
+    public Integer getSelectIndex() {
+        return selectIndex;
+    }
+
+    public void setSelectIndex(Integer selectIndex) {
+        this.selectIndex = selectIndex;
+    }
+
+    public String getMaJorBig() {
+        return maJorBig;
+    }
+
+    public void setMaJorBig(String maJorBig) {
+        this.maJorBig = maJorBig;
+    }
+
+    public String getMaJorSmall() {
+        return maJorSmall;
+    }
+
+    public void setMaJorSmall(String maJorSmall) {
+        this.maJorSmall = maJorSmall;
+    }
+
+    public String getExpeRttype() {
+        return expeRttype;
+    }
+
+    public void setExpeRttype(String expeRttype) {
+        this.expeRttype = expeRttype;
     }
 }

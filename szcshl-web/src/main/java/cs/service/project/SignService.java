@@ -23,7 +23,7 @@ public interface SignService {
 
     void updateSign(SignDto signDto);
 
-    Map<String, Object> initFillPageData(String signId);
+    ResultMsg initFillPageData(String signId);
 
     void claimSignFlow(String taskId);
 

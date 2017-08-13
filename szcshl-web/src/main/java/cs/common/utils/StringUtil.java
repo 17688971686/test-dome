@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 字符串工具类
@@ -94,10 +95,8 @@ public class StringUtil extends StringUtils {
 
 
 	public static void main(String[] args){
-		String s="sdgdsagds,asdgasdgsd,asdgsadg,adsgadsg,sd";		
-		List<String> re = getSplit(s,",");
-		for(String d : re){
-			System.out.println(d);
-		}
+		Random random = new Random();
+		int s = random.nextInt(10);
+		System.out.print(s);
 	}
 }

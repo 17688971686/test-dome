@@ -289,16 +289,44 @@ public class SignDto extends BaseDto {
     //可研节能报告是否有原件
     private String energyOriginal;
 
+    public String getComprehensiveId() {
+        return comprehensiveId;
+    }
+
+    public void setComprehensiveId(String comprehensiveId) {
+        this.comprehensiveId = comprehensiveId;
+    }
+
+    public String getLeaderId() {
+        return leaderId;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public String getMinisterId() {
+        return ministerId;
+    }
+
+    public void setMinisterId(String ministerId) {
+        this.ministerId = ministerId;
+    }
+
     //可研节能报告是否有复印件
     private String energyCopy;
     //综合部拟办意见
     private String comprehensivehandlesug;
-
+    //综合部部长ID
+    private String comprehensiveId;
     //中心领导审批意见
     private String leaderhandlesug;
-
+    //中心领导ID
+    private String leaderId;
     //部长处理意见
     private String ministerhandlesug;
+    //部长ID
+    private String ministerId;
 
     //收文状态
     private String signState;
@@ -562,8 +590,12 @@ public class SignDto extends BaseDto {
     //项目是否已关联,0未关联，1已关联，默认未关联
     private Integer isAssociate = 0;
 
+    //是否有专家评审方案
+    private String hasExpertReview;
+
     //是否提前介入
     private String isAdvanced;
+
     //关联阶段的项目
     private SignDto associateSign;
 
@@ -2226,5 +2258,13 @@ public class SignDto extends BaseDto {
 
     public void setProcessState(Integer processState) {
         this.processState = processState;
+    }
+
+    public String getHasExpertReview() {
+        return hasExpertReview;
+    }
+
+    public void setHasExpertReview(String hasExpertReview) {
+        this.hasExpertReview = hasExpertReview;
     }
 }

@@ -1,5 +1,6 @@
 package cs.controller.expert;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelectedDto;
@@ -43,9 +44,9 @@ public class ExpertSelectedController {
 
     @RequiresPermissions("expertSelected##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam(required = true)String reviewId,@RequestParam(required = true) String id,boolean deleteAll) {
-        expertSelectedService.delete(reviewId,id,deleteAll);
+    @ResponseBody
+    public ResultMsg delete(@RequestParam(required = true)String reviewId, @RequestParam(required = true) String id, boolean deleteAll) {
+        return expertSelectedService.delete(reviewId,id,deleteAll);
     }
 
     @RequiresPermissions("expertSelected##put")

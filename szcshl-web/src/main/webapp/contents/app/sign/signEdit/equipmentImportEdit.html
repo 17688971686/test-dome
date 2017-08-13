@@ -51,29 +51,19 @@
 				<td rowspan="2">{{vm.model.projectname}}</td>
 				<td width="15%" class="text-center">建设单位</td>
 				<td>
-					<div style="position: relative;">
-							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
-								<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" id="builtcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
-									<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
-							</select>
-							</span>
-						<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
-					</div>
+					<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" style="width:220px;height:26px;">
+						<option ng-repeat="x in vm.companyList|filter:{coType:'建设单位'}"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+					</select>
+					<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName"  style="width:200px;height:26px;margin-left:-224px;">
 				</td>
 			</tr>
 			<tr>
 				<td width="15%" class="text-center">编制单位</td>
 				<td>
-					<div style="position: relative;">
-							<span style="margin-left: 100px; width: 128px; overflow: hidden;">
-								<select ng-model="vm.model.designcompanyName"  name="designcompanyName" id="designcompanyName"style="width: 230px;height:26px; margin-left: -100px;">
-									<option ng-repeat="x in vm.designcomlist" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
-								</select>
-							</span>
-						<input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName" id="designcompanyName"
-							   style="width: 214px; position: absolute; left: 0px;"value="">
-					</div>
+					<select ng-model="vm.model.designcompanyName"  name="designcompanyName" style="width:220px;height:26px;">
+						<option ng-repeat="x in vm.companyList|filter:{coType:'编制单位'}" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
+					</select>
+					<input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName"  style="width:200px;height:26px;margin-left:-224px;">
 				</td>
 			</tr>
 

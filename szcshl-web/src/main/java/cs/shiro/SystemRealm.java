@@ -9,6 +9,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
@@ -41,6 +42,9 @@ public class SystemRealm extends AuthorizingRealm {
         System.out.println("authentication process");
         // TODO Auto-generated method stub
         String userName = (String) token.getPrincipal(); // 得到用户名
+        SimplePrincipalCollection principals = new SimplePrincipalCollection(userName, getName());
+        super.doClearCache(principals);
+
         User user = userService.findByName(userName);
         if (null == user) {
             throw new UnknownAccountException();

@@ -245,14 +245,12 @@
                     }
                 });
             } else {
-                common.alert({
-                    vm: vm,
-                    msg: "请先完成相应的业务操作才能提交"
-                })
+                bsWin.alert(checkResult.resultMsg);
             }
         }
 
         vm.commitBack = function () {
+
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
             if(isValid){

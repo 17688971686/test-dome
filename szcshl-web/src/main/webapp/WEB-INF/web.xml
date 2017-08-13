@@ -10,6 +10,10 @@
         <error-code>404</error-code>
         <location>/</location>
     </error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/</location>
+	</error-page>
 	<servlet>
 		<servlet-name>framework</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

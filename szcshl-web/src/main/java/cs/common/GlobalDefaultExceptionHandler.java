@@ -1,18 +1,20 @@
 package cs.common;
 
-import javax.servlet.http.HttpServletRequest;
-
+import cs.service.sys.RoleServiceImpl;
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.subject.Subject;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.service.sys.RoleServiceImpl;
+import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.UnauthenticatedException;
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler {
 	private static Logger logger = Logger.getLogger(RoleServiceImpl.class);
@@ -29,9 +31,9 @@ public class GlobalDefaultExceptionHandler {
 	}
 	@ExceptionHandler(value ={ UnauthenticatedException.class,AuthorizationException.class})
 	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-	public String unAuthErrorHandler(HttpServletRequest req, Exception e) throws Exception {			
-		logger.warn("登录信息失效或您没有权限,请重新登录");
-		return "forward:/";
+	public String unAuthErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+		logger.warn("登录信息失效或您没有权限!");
+		return "error/401";
 	}
 	@ExceptionHandler(value = Exception.class)
 	public void  errorHandler(HttpServletRequest req, Exception e) throws Exception {

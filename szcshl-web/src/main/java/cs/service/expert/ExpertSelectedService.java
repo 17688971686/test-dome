@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelectedDto;
@@ -20,5 +21,5 @@ public interface ExpertSelectedService {
 
 	ExpertSelectedDto findById(String deptId);
 
-	void delete(String conditionId,String id,boolean deleteAll);
+	ResultMsg delete(String conditionId, String id, boolean deleteAll);
 }

@@ -9,13 +9,14 @@
  *      onClose: function () { console.log("This's close!"); }
  *  });
  * 询问窗口使用方法：
- *  bsWin.confirm("询问提示", "是否进行该操作！", function () { console.log("This's ok!"); }, function () { console.log("This's close!"); } );
+ *  bsWin.confirm("询问提示", "是否进行该操作！", function () { console.log("This's ok!"); }, function () { console.log("This's close!"); },function(){console.log("This's onCancel!");} );
  * 或者
  *  bsWin.confirm({
  *      title: "询问提示",
  *      message: "是否进行该操作！",
  *      onOk: function () { console.log("This's ok!"); },
- *      onClose: function () { console.log("This's close!"); }
+ *      onClose: function () { console.log("This's close!"); },
+ *      onCancel:function(){console.log("This's onCancel!");}
  *  });
  */
 (function () {
@@ -71,10 +72,12 @@
                     options.templateUrl = alertTplPath;
                     return initWin(options);
                 },
-                confirm: function (options, message, onOk, onClose) {
+                confirm: function (options, message, onOk, onClose,onCancel) {
                     if (!angular.isObject(options)) {
                         var title;
                         if (!message || angular.isFunction(message)) {
+                            onCancel = onClose || function(){
+                                };
                             onClose = onOk || function () {
                                 };
                             onOk = message || function () {
@@ -87,7 +90,8 @@
                         options = {
                             message: message,
                             onOk: onOk,
-                            onClose: onClose
+                            onClose: onClose,
+                            onCancel: onCancel
                         };
                         if (title) {
                             options.title = title;
@@ -119,9 +123,9 @@
                         newWin.el.modal("hide");
                     }
                 }
-                if(options.onClose){
-                    newWin.scope.onClose = function () {
-                        if (options.onClose && options.onClose.apply(this) == false) {
+                if(options.onCancel){
+                    newWin.scope.onCancel = function () {
+                        if (options.onCancel && options.onCancel.apply(this) == false) {
                             return false;
                         }
                         newWin.el.modal("hide");
@@ -129,6 +133,9 @@
                 }
                 newWin.el = createWinEl(newWin.scope, options.templateUrl)
                     .on('hidden.bs.modal', function (e) {
+                        if (options.onClose && options.onClose.apply(this, e) == false) {
+                            return false;
+                        }
                         destroy(newWin);
                     }).modal('show');  // 打开
                 return newWin;
@@ -220,7 +227,7 @@
                         <div class="modal-body text-primary"><p><i class="fa fa-question-circle" aria-hidden="true"></i> {{message}}</p></div>\
                         <div class="modal-footer">\
                             <button type="button" ng-click="ok()" class="btn btn-info" >确认</button>\
-                            <button type="button" ng-click="onClose()" class="btn btn-info" data-dismiss="modal">取消</button>\
+                            <button type="button" ng-click="onCancel()" class="btn btn-info" data-dismiss="modal">取消</button>\
                         </div>\
                     </div>\
                 </div>\

@@ -3,38 +3,51 @@
 
     angular.module('app').controller('signFillinCtrl', sign);
 
-    sign.$inject = ['signSvc', '$state', '$http','bsWin'];
+    sign.$inject = ['signSvc', 'sysfileSvc','$state', '$http','bsWin'];
 
-    function sign(signSvc, $state, $http,bsWin) {
+    function sign(signSvc,sysfileSvc, $state, $http,bsWin) {
         var vm = this;
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
         vm.model.signid = $state.params.signid;	//收文ID
         vm.flowDeal = false;		//是否是流程处理标记
 
-        signSvc.initFillData(vm);
+        vm.busiObj ={};             //业务对象，用于记录页面操作对象等信息
 
-        //主办处
-        vm.mainDeptUser = function(){
-        	if(!vm.model.maindeptName){
-                 common.alert({
-                     vm:vm,
-                     msg:"请选择办事处，再选择选择联系人！"
-                 })
-             }
+        active();
+        function  active(){
+            signSvc.initFillData(vm.model.signid,function(data){
+                console.log(data.reObj)
+                vm.model = data.reObj.sign;
+                vm.deptlist = data.reObj.deptlist
+
+                if (data.reObj.mainOfficeList) {
+                    vm.mainOfficeList = data.reObj.mainOfficeList;
+                }
+                if (data.reObj.assistOfficeList) {
+                    vm.assistOfficeList = data.reObj.assistOfficeList;
+                }
+                //建设单位和编制单位
+                vm.companyList = data.reObj.companyList;
+                //分管领导信息
+                vm.busiObj.leaderList = data.reObj.leaderList;
+
+                //初始化附件上传
+                if(vm.model.signid){
+                    sysfileSvc.initUploadOptions({
+                        businessId:vm.model.signid,
+                        sysSignId :vm.model.signid,
+                        sysfileType:"审批登记表",
+                        uploadBt:"upload_file_bt",
+                        detailBt:"detail_file_bt",
+                        vm:vm
+                    });
+                }
+            });
         }
-        //协办处
-        vm.assistDeptUser = function(){
-        	if(!vm.model.assistdeptName){
-                common.alert({
-                    vm:vm,
-                    msg:"请选择办事处，再选择选择联系人！"
-                })
-            }
-        }
+
         //选择默认办理部门
         vm.checkOrgType = function($event){
-        	
             var checkbox = $event.target;
             var checked = checkbox.checked;
             var checkboxValue = checkbox.value;
@@ -42,7 +55,18 @@
                 vm.model.leaderName = signcommon.getDefaultLeader(checkboxValue);
                 vm.model.comprehensivehandlesug = signcommon.getDefaultZHBYJ(checkboxValue);
                 vm.model.comprehensiveName = '综合部';
-
+                //设置综合部和分管领导ID
+                $.each(vm.busiObj.leaderList,function(i,leader){
+                    console.log(leader.mngOrgType+"---"+checkboxValue)
+                    if(leader.mngOrgType == checkboxValue){
+                        vm.model.leaderId = leader.id;
+                        vm.model.leaderName = leader.displayName;
+                        vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,2)+"主任阅示。";
+                    }
+                })
+                if(!vm.model.leaderId){
+                    bsWin.alert("选择的默认办理部门没有合适的分管领导，请先设置分管领导角色用户！");
+                }
                 var date = new Date();
                 var monthValue = (date.getMonth()+1) < 10 ?"0"+(date.getMonth()+1):(date.getMonth()+1);
                 var dayValue = (date.getDate()) < 10 ?"0"+(date.getDate()):(date.getDate());
@@ -168,7 +192,21 @@
 
         //根据协办部门查询用户
         vm.findOfficeUsersByDeptName = function (status) {
-            signSvc.findOfficeUsersByDeptName(vm, status);
+            var param = {};
+            if ("main" == status) {
+                param.maindeptName = vm.model.maindeptName;
+            } else {
+                param.assistdeptName = vm.model.assistdeptName;
+            }
+            signSvc.findOfficeUsersByDeptName(param,function(data){
+                if ("main" == status) {
+                    vm.mainOfficeList = {};
+                    vm.mainOfficeList = data;
+                } else {
+                    vm.assistOfficeList = {};
+                    vm.assistOfficeList = data;
+                }
+            });
         }
 
     }

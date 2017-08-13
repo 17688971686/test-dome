@@ -17,18 +17,20 @@
         return service;
 
         //S_startFlow
-        function startFlow(vm, signid) {
+        function startFlow(signid,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/sign/startNewFlow",
-                params: {signid: signid}
+                params: {
+                    signid: signid
+                }
             }
             var httpSuccess = function success(response) {
-                vm.gridOptions.dataSource.read();
-                bsWin.success("操作成功！");
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -82,6 +84,11 @@
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true;
                     vm.businessFlag.isFinishWP = vm.flow.businessMap.isFinishWP;
+                    //已经在做工作方案，则显示
+                    if(vm.model.processState >= 2){
+                        vm.showFlag.tabWorkProgram = true;
+                        $("#show_workprogram_a").click();
+                    }
                     break;
                 //发文
                 case flowcommon.getSignFlowNode().SIGN_FW:

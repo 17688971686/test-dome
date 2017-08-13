@@ -11,7 +11,6 @@
             createWP: createWP,				        //新增操作
             findCompanys: findCompanys,		        //查找主管部门
             findUsersByOrgId: findUsersByOrgId,     //查询评估部门
-            selectExpert: selectExpert,			    //选择专家
             saveRoom: saveRoom,					    //添加会议预定
             deleteBookRoom:deleteBookRoom,          //删除会议室
             findAllMeeting: findAllMeeting,         //查找会议室地点
@@ -23,73 +22,10 @@
             chooseSign: chooseSign,                 //选择合并评审的工作方案
             cancelMergeSign: cancelMergeSign,       //取消合并评审的工作方案
             deleteAllMerge:deleteAllMerge,          //删除所有合并评审的工作方案
-            
-            initReview: initReview,                      //初始化评审方案信息
-            initParamValue:initParamValue,				//初始化参数值
         };
 
         return service;
-        
-        //初始化参数值
-        function initParamValue(vm) {
-            vm.conditions = new Array();          //条件列表
-            vm.customCondition = new Array();
-            vm.expertReview = {};                 //评审方案对象
-            vm.selfExperts = [],
-            vm.selectExperts = [],
-            vm.selectIds = [],
-            vm.autoExperts = [],
-            vm.autoSelExperts = [],
-            vm.outsideExperts = [];
-        }
-        
-        //S_initReview
-        function initReview(vm) {
-        	
-            vm.iscommit = true;
-            initParamValue(vm);
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/expertReview/html/initByWorkProgramId",
-                params: {workProgramId: vm.work.id}
-            };
-            var httpSuccess = function success(response) {
-                vm.iscommit = false;
-                vm.expertReview = response.data;
-                //专家抽取条件
-                if (vm.expertReview.expertSelConditionDtoList && vm.expertReview.expertSelConditionDtoList.length > 0) {
-                    vm.conditions = vm.expertReview.expertSelConditionDtoList;
-                    vm.conditionIndex = vm.expertReview.expertSelConditionDtoList.length;//下标值
-                }
-                //获取已经抽取的专家
-                if (vm.expertReview.expertSelectedDtoList && vm.expertReview.expertSelectedDtoList.length > 0) {
-                    vm.expertReview.expertSelectedDtoList.forEach(function (sep, index) {
-                        vm.selectIds.push(sep.expertDto.expertID);
-                        vm.selectExperts.push(sep);
-                        if (sep.selectType == '1') {           //抽取专家
-                            vm.autoExperts.push(sep);
-                            vm.autoSelExperts.push(sep.expertDto)
-                        } else if (sep.selectType == '2') {     //自选专家
-                            vm.selfExperts.push(sep);
-                        } else if (sep.selectType == '3') {     //境外专家
-                            vm.outsideExperts.push(sep);
-                        }
-                    });
-                    if (vm.selectIds.length > 0) {
-                        vm.excludeIds = vm.selectIds.join(',');
-                    } else {
-                        vm.excludeIds = '';
-                    }
-                }
-            };
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //E_initReview
+
         //S_初始化已选项目列表
         function getMergeSignBySignId(signId,callBack) {
             var httpOptions = {
@@ -356,72 +292,31 @@
         }//S_初始化页面参数
 
         //S_保存操作
-        function createWP(vm, isNeedWorkProgram) {
-            common.initJqValidation($("#work_program_form"));
-            var isValid = $("#work_program_form").valid();
-            if (isValid) {
-                vm.iscommit = true;
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/workprogram/addWork",
-                    data: vm.work,
-                    params: {
-                        isNeedWorkProgram: isNeedWorkProgram
-                    }
+        function createWP(work, isNeedWorkProgram,isCommit,callBack) {
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/addWork",
+                data: work,
+                params: {
+                    isNeedWorkProgram: isNeedWorkProgram
                 }
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            vm.iscommit = false;
-                            common.alert({
-                                vm: vm,
-                                msg: response.data.reMsg,
-                                closeDialog: true,
-                                fn: function () {
-                                    if (response.data.reCode == "ok") {
-                                        //如果没有没有工作方案ID，则刷新路由
-                                        vm.work.id = response.data.reObj.id;
-                                        //初始化数值
-                                        if(response.data.reObj.reviewType == "自评"){
-                                            vm.businessFlag.isSelfReview = true;           //是否自评
-                                        }
-                                        if(response.data.reObj.isSigle == "合并评审"){
-                                            vm.businessFlag.isSingleReview = false;         //是否单个评审
-                                        }
-                                        if(response.data.reObj.isMainProject == "9"){
-                                            vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    });
-                }
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess,
-                    onError: function (response) {
-                        vm.iscommit = false;
-                    }
-                });
             }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    isCommit = false;
+                }
+            });
         }//E_保存操作
 
-        //S_selectExpert
-        function selectExpert(vm) {
-            if (vm.work.id && vm.work.id != '') {
-                $state.go('expertReviewEdit', {workProgramId: vm.work.id});
-            } else {
-                common.alert({
-                    vm: vm,
-                    msg: "请先保存，再继续执行操作！"
-                })
-            }
-        }//E_selectExpert
 
         //S_删除所有合并评审工作方案
         function deleteAllMerge(vm){

@@ -138,6 +138,16 @@ public class UserDto extends BaseDto {
      */
     private Integer userSort;
 
+    /**
+     * 代办用户ID
+     */
+    private String takeUserId;
+
+    /**
+     * 分管部门类型（PD:评估，GD:概算）
+     */
+    private String mngOrgType;
+
     private String orgId;
 
     //角色
@@ -376,5 +386,20 @@ public class UserDto extends BaseDto {
 
     public void setOrgDto(OrgDto orgDto) {
         this.orgDto = orgDto;
+    }
+    public String getTakeUserId() {
+        return takeUserId;
+    }
+
+    public void setTakeUserId(String takeUserId) {
+        this.takeUserId = takeUserId;
+    }
+
+    public String getMngOrgType() {
+        return mngOrgType;
+    }
+
+    public void setMngOrgType(String mngOrgType) {
+        this.mngOrgType = mngOrgType;
     }
 }

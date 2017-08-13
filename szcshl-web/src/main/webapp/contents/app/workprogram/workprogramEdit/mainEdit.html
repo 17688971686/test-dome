@@ -2,7 +2,7 @@
 <!--  主流程编辑的工作方案  -->
 <form id="work_program_form" name="work_program_form">
 <!--  s table-->
-<table class="table table-bordered">
+<table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
     <caption class="text-center h3"><strong>{{vm.work.titleName}}</strong></caption>
     <caption style="width:100%;color: #333;">
             <span>
@@ -59,10 +59,10 @@
     <tr>
         <td class="text-center">主管部门</td>
         <td colspan="3">
-            <select ng-model="vm.work.mainDeptName" name="mainDeptName" style="width:250px;height:26px;">
+            <select ng-model="vm.work.mainDeptName" name="mainDeptName" style="width:220px;height:26px;">
                 <option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
             </select>
-            <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:230px;height:26px;margin-left:-254px;">
+            <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
         </td>
         <td class="text-center">是否有环评</td>
         <td colspan="3">

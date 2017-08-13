@@ -225,13 +225,13 @@
                     field: "projectName",
                     title: "项目名称",
                     filterable: false,
-                    width: 150
+                    width: "10%"
                 },
                 {
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: 150
+                    width: "10%"
                 },
                 {
                     field: "nodeName",
@@ -260,17 +260,10 @@
                     filterable: false,
                 },
                 {
-                    field: "",
+                    field: "displayName",
                     title: "处理人",
                     width: 100,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.assignee) {
-                            return item.assignee;
-                        } else if (item.userName) {
-                            return item.userName;
-                        }
-                    }
+                    filterable: false
                 },
                 {
                     field: "",
@@ -301,8 +294,6 @@
                         } else {
                             return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
                         }
-
-
                     }
                 }
             ];

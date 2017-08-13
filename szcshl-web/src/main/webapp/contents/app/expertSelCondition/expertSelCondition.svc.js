@@ -14,7 +14,7 @@
         return service;
 
         //S_saveCondition
-		function saveCondition(vm) {
+		function saveCondition(workProgramId,conditions,callBack) {
             var httpOptions = {
                 method : 'post',
                 url : rootPath + "/expertSelCondition/saveConditionList",
@@ -23,24 +23,17 @@
                 },
                 traditional: true,
                 dataType : "json",
-                data : angular.toJson(vm.conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+                data : angular.toJson(conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+                params:{
+                    workProgramId:workProgramId
+                }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm : vm,
-                    response : response,
-                    fn : function() {
-                        vm.conditions = response.data;
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！",
-                            closeDialog: true
-                        })
-                    }
-                });
-            }
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm : vm,
                 $http : $http,
                 httpOptions : httpOptions,
                 success : httpSuccess
@@ -57,8 +50,8 @@
         }
 
         //S_deleteSelConditions
-        function deleteSelConditions(vm,delIds){
-            vm.iscommit = true;
+        function deleteSelConditions(delIds,isCommit,callBack){
+            isCommit = true;
             var httpOptions = {
                 method : 'delete',
                 url : rootPath + "/expertSelCondition",
@@ -67,25 +60,15 @@
                 }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm : vm,
-                    response : response,
-                    fn : function() {
-                        vm.iscommit = false;
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！",
-                            closeDialog: true
-                        })
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm : vm,
                 $http : $http,
                 httpOptions : httpOptions,
                 success : httpSuccess,
-                onError: function(response){vm.iscommit = false;}
+                onError: function(response){isCommit = false;}
             });
         }//E_deleteSelConditions
     }
