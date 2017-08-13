@@ -164,8 +164,8 @@ public class SignServiceImpl implements SignService {
             sign.setSendusersign(SessionUtil.getDisplayName());
         }
         //4、创建时间
-        sign.setCreatedBy(SessionUtil.getLoginName());
-        sign.setModifiedBy(SessionUtil.getLoginName());
+        sign.setCreatedBy(SessionUtil.getUserId());
+        sign.setModifiedBy(SessionUtil.getUserId());
 
         //5、判断是否为协审
         if ("项目概算".equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
@@ -201,7 +201,7 @@ public class SignServiceImpl implements SignService {
         Sign sign = signRepo.findById(signDto.getSignid());
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
 
-        sign.setModifiedBy(SessionUtil.getLoginName());
+        sign.setModifiedBy(SessionUtil.getUserId());
         sign.setModifiedDate(new Date());
         signRepo.save(sign);
     }
@@ -1239,36 +1239,24 @@ public class SignServiceImpl implements SignService {
     }
 
 
-    //获取部长所在部门的项目信息
+    /**
+     * 项目综合查询 条件初始化
+     * @return
+     */
     @Override
-    public Map<String, Object> initSignList() {
-
-        Map<String, Object> map = new HashMap<>();
-
+    public ResultMsg initSignList() {
         //添加部门
-        List<Org> orgsList = new ArrayList<>();
+        List<OrgDto> orgsList = new ArrayList<>();
         List<Org> orgList = orgRepo.findAll();
-        if (!orgList.isEmpty()) {
+        if (Validate.isList(orgList)) {
             for (Org org : orgList) {
-                Org orgs = new Org();
+                OrgDto orgs = new OrgDto();
                 orgs.setName(org.getName());
                 orgs.setId(org.getId());
                 orgsList.add(orgs);
             }
         }
-        List<User> userList = new ArrayList<>();
-        userList = userRepo.findAll();
-        List<User> usersList = new ArrayList<>();
-        if (!userList.isEmpty()) {
-            for (User user : userList) {
-                User users = new User();
-                users.setLoginName(user.getLoginName());
-                usersList.add(users);
-            }
-        }
-        map.put("usersList", usersList);
-        map.put("orgsList", orgsList);
-        return map;
+        return new ResultMsg(true,MsgCode.OK.getValue(),"添加成功", orgsList);
     }
 
     /**
@@ -1497,46 +1485,24 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public PageModelDto<SignDispaWork> getSign(ODataObj odataObj, String skip, String top) {
+    public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
-        // 处理filter
-        if (odataObj.getFilter() != null) {
-            for (ODataFilterItem oDataFilterItem : odataObj.getFilter()) {
-                String field = oDataFilterItem.getField();
-                String operator = oDataFilterItem.getOperator();
-                Object value = oDataFilterItem.getValue();
-                switch (operator) {
-                    case "like":
-                        criteria.add(Restrictions.like(field, "%" + value + "%"));
-                        break;
-                    case "eq":
-                        criteria.add(Restrictions.eq(field, value));
-                        break;
-                    case "ne":
-                        criteria.add(Restrictions.ne(field, value));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+        criteria = odataObj.buildFilterToCriteria(criteria);
 
-        Disjunction dis = Restrictions.disjunction();
+       /* Disjunction dis = Restrictions.disjunction();
         dis.add(Restrictions.eq(SignDispaWork_.orgdirectorname.getName(), SessionUtil.getLoginName()));
         dis.add(Restrictions.eq(SignDispaWork_.orgMLeaderName.getName(), SessionUtil.getLoginName()));
         dis.add(Restrictions.eq(SignDispaWork_.orgSLeaderName.getName(), SessionUtil.getLoginName()));
-        criteria.add(dis);
-
+        criteria.add(dis);*/
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
-        // 处理分页
-        if (Validate.isString(skip)) {
-            criteria.setFirstResult(Integer.valueOf(skip));
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
         }
-        if (Validate.isString(top)) {
-            criteria.setMaxResults(Integer.valueOf(top));
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
         }
         List<SignDispaWork> signDispaWork = criteria.list();
         pageModelDto.setCount(totalResult);

@@ -4,13 +4,7 @@ package cs.domain.project;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
@@ -79,7 +73,8 @@ public class DispatchDoc extends DomainBase {
     private String urgentLevel;
 
     //发文日期
-    @Column(columnDefinition = "DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
     private Date dispatchDate;
 
     //文件字号

@@ -326,7 +326,8 @@ public class FileRecord extends DomainBase{
 	private String signUserName;
 		
 	//存档日期
-	@Column(columnDefinition="DATE")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column
 	private Date fileDate;
 	
 	//S （进口设备）

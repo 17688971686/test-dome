@@ -4,6 +4,7 @@ package cs.domain.project;
 import cs.domain.DomainBase;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,261 +16,296 @@ import java.util.Date;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "V_SIGN_DISP_WORK")
-public class SignDispaWork extends DomainBase {
+public class SignDispaWork {
 
     /**
      * 收文ID
      */
     @Id
-    private String signDwid;    //收文编号*
+    private String signid;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date signdate;          //签收日期（收文日期）
 
     @Column
-    private String ssignid;//收文id
+    private String projectname;    //项目名称*
 
     @Column
-    private String sprojectname;    //项目名称*
+    private String reviewstage;    //评审阶段*
 
     @Column
-    private String sbuiltcompanyName;//建设单位*
+    private String builtcompanyname;//建设单位*
 
     @Column
-    private String sreviewstage;    //评审阶段*
-
-    @Column
-    private String pishaveeia;    //是否有环评*
+    private String appalyinvestment;//申报投资
 
     @Column(columnDefinition = "INTEGER")
-    private Integer sisAssociate;    //是否已关联*
-
-    @Column
-    private String pprojecttype;    //项目类型*
-
-    @Column
-    private String pmianchargeusername;    //项目负责人*
-
-    @Column
-    private String sfilenum;    //归档编号*
-
-    @Column
-    private String mOrgNames;    //主办部门*
-    @Column
-
-    private String pmaindeptname;    //主管部门(改革前)*
-
-    @Column
-    private String surgencydegree;    //缓急程度*
-
-    /*  @Column
-      private String mOrgNameAfter;	//主管部门(改革后）
-  */
-   /* @Column
-    private String goodReview;	//优秀评审报告
-*/
-    @Column
-    private String previewtype;    //评审方式*
+    private String isAssociate;     //是否已关联*
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private Date sreceivedate;    //收文日期*
+    private Date receivedate;       //送来日期
 
-    /*@Column
-    private String agreedate;	//批复时间
-*/
+    @Column(columnDefinition = "NUMBER")
+    private Float daysafterdispatch; //发文后工作日
+
+
+    @Column(columnDefinition = "NUMBER")
+    private Float reviewdays; //评审天数
+
+    //秘密登记
     @Column
-    private String dfilenum;    //文件字号*
+    private String secrectlevel;
+
+    //缓急程度
+    @Column
+    private String urgencydegree;
+
+    //剩余工作日
+    @Column(columnDefinition = "NUMBER")
+    private Float surplusdays;
+
+    //归档编号
+    @Column
+    private String ffilenum;
+
+    //是否有环评
+    @Column
+    private String ishaveeia;
+
+    //项目类别
+    @Column
+    private String projectType;
+
+    //评审方式
+    @Column
+    private String reviewType;
+
+    //行业类别
+    @Column
+    private String industryType;
+
+    //主负责人名称
+    @Column
+    private String mUserName;
+
+    //负责人名称
+    @Column
+    private String aUserName;
+
+    //评审部门
+    @Column
+    private String reviewOrgName;
+
+    //发文编号
+    @Column
+    private String dfilenum;
+
+    //核减（增）金额
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal extraValue;
+
+    //增减（增）率
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal extraRate;
+
+    //批复金额
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal approveValue;
+
+    //审定金额
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal authorizeValue;
+
+    //发文类别
+    @Column
+    private String dispatchType;
+
+    //发文日期
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    private Date dispatchDate;
+
+    //主办部门
+    @Column
+    private String mOrgName;
+
+    //主办部门ID
+    @Column
+    private String mOrgId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private Date ddispatchdate;    //发文日期*
+    private Date fileDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column
-    private Date ffiledate;    //归档日期*
 
-    @Column
-    private String ddispatchtype;    //发文类型*
-
-    @Column
-    private String pindustrytype;    //行业类型*
-
-    @Column
-    private String ssecrectlevel;    //秘密等级*
-
-    @Column
-    private String sreviewdays;    //评审天数*
-
-    //@Column
-    private String ssurplusdays;    //剩余工作日*
-
-    @Column
-    private String sappalyinvestment;    //申报投资*
-
-    @Column
-    private String dauthorizevalue;    //审定投资*
-
-    @Column
-    private String dextravalue;    //核减（增）投资*
-
-    @Column
-    private String dextrarate;    //核减率*
-
-    @Column
-    private String dapprovevalue;    //批复金额*
-
-    // @Column
-    // private String approveTime;	//批复来文时间
-
-    @Column
-    private String sisassistproc;    //是否协审*
-
-    @Column
-    private String sdaysafterdispatch;    //发文后工作日*
-
-    @Column
-    private String mOrgIds;    //部长所属部门ID*
-
-    @Column
-    private String orgdirectorname;    //部长名称*
-    @Column
-    private String orgMLeaderName;    //主任名称*
-    @Column
-    private String orgSLeaderName;    //副主任名称*
-
-    public String getOrgdirectorname() {
-        return orgdirectorname;
+    public String getSignid() {
+        return signid;
     }
 
-    public void setOrgdirectorname(String orgdirectorname) {
-        this.orgdirectorname = orgdirectorname;
+    public void setSignid(String signid) {
+        this.signid = signid;
     }
 
-    public String getOrgMLeaderName() {
-        return orgMLeaderName;
+    public Date getSigndate() {
+        return signdate;
     }
 
-    public void setOrgMLeaderName(String orgMLeaderName) {
-        this.orgMLeaderName = orgMLeaderName;
+    public void setSigndate(Date signdate) {
+        this.signdate = signdate;
     }
 
-    public String getOrgSLeaderName() {
-        return orgSLeaderName;
+    public String getProjectname() {
+        return projectname;
     }
 
-    public void setOrgSLeaderName(String orgSLeaderName) {
-        this.orgSLeaderName = orgSLeaderName;
+    public void setProjectname(String projectname) {
+        this.projectname = projectname;
     }
 
-
-    public String getSignDwid() {
-        return signDwid;
+    public String getReviewstage() {
+        return reviewstage;
     }
 
-    public void setSignDwid(String signDwid) {
-        this.signDwid = signDwid;
+    public void setReviewstage(String reviewstage) {
+        this.reviewstage = reviewstage;
     }
 
-    public String getSprojectname() {
-        return sprojectname;
+    public String getBuiltcompanyname() {
+        return builtcompanyname;
     }
 
-    public void setSprojectname(String sprojectname) {
-        this.sprojectname = sprojectname;
+    public void setBuiltcompanyname(String builtcompanyname) {
+        this.builtcompanyname = builtcompanyname;
     }
 
-    public String getSbuiltcompanyName() {
-        return sbuiltcompanyName;
+    public String getAppalyinvestment() {
+        return appalyinvestment;
     }
 
-    public void setSbuiltcompanyName(String sbuiltcompanyName) {
-        this.sbuiltcompanyName = sbuiltcompanyName;
+    public void setAppalyinvestment(String appalyinvestment) {
+        this.appalyinvestment = appalyinvestment;
     }
 
-    public String getSreviewstage() {
-        return sreviewstage;
+    public String getIsAssociate() {
+        return isAssociate;
     }
 
-    public void setSreviewstage(String sreviewstage) {
-        this.sreviewstage = sreviewstage;
+    public void setIsAssociate(String isAssociate) {
+        this.isAssociate = isAssociate;
     }
 
-    public String getPishaveeia() {
-        return pishaveeia;
+    public Date getReceivedate() {
+        return receivedate;
     }
 
-    public void setPishaveeia(String pishaveeia) {
-        this.pishaveeia = pishaveeia;
+    public void setReceivedate(Date receivedate) {
+        this.receivedate = receivedate;
     }
 
-    public Integer getSisAssociate() {
-        return sisAssociate;
+    public Float getDaysafterdispatch() {
+        return daysafterdispatch;
     }
 
-    public void setSisAssociate(Integer sisAssociate) {
-        this.sisAssociate = sisAssociate;
+    public void setDaysafterdispatch(Float daysafterdispatch) {
+        this.daysafterdispatch = daysafterdispatch;
     }
 
-    public String getPprojecttype() {
-        return pprojecttype;
+    public Float getReviewdays() {
+        return reviewdays;
     }
 
-    public void setPprojecttype(String pprojecttype) {
-        this.pprojecttype = pprojecttype;
+    public void setReviewdays(Float reviewdays) {
+        this.reviewdays = reviewdays;
     }
 
-    public String getPmianchargeusername() {
-        return pmianchargeusername;
+    public String getSecrectlevel() {
+        return secrectlevel;
     }
 
-    public void setPmianchargeusername(String pmianchargeusername) {
-        this.pmianchargeusername = pmianchargeusername;
+    public void setSecrectlevel(String secrectlevel) {
+        this.secrectlevel = secrectlevel;
     }
 
-    public String getSfilenum() {
-        return sfilenum;
+    public String getUrgencydegree() {
+        return urgencydegree;
     }
 
-    public void setSfilenum(String sfilenum) {
-        this.sfilenum = sfilenum;
+    public void setUrgencydegree(String urgencydegree) {
+        this.urgencydegree = urgencydegree;
     }
 
-    public String getmOrgNames() {
-        return mOrgNames;
+    public Float getSurplusdays() {
+        return surplusdays;
     }
 
-    public void setmOrgNames(String mOrgNames) {
-        this.mOrgNames = mOrgNames;
+    public void setSurplusdays(Float surplusdays) {
+        this.surplusdays = surplusdays;
     }
 
-    public String getPmaindeptname() {
-        return pmaindeptname;
+    public String getIshaveeia() {
+        return ishaveeia;
     }
 
-    public void setPmaindeptname(String pmaindeptname) {
-        this.pmaindeptname = pmaindeptname;
+    public void setIshaveeia(String ishaveeia) {
+        this.ishaveeia = ishaveeia;
     }
 
-    public String getSurgencydegree() {
-        return surgencydegree;
+    public String getProjectType() {
+        return projectType;
     }
 
-    public void setSurgencydegree(String surgencydegree) {
-        this.surgencydegree = surgencydegree;
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
     }
 
-    public String getPreviewtype() {
-        return previewtype;
+    public String getReviewType() {
+        return reviewType;
     }
 
-    public void setPreviewtype(String previewtype) {
-        this.previewtype = previewtype;
+    public void setReviewType(String reviewType) {
+        this.reviewType = reviewType;
     }
 
-    public Date getSreceivedate() {
-        return sreceivedate;
+    public String getIndustryType() {
+        return industryType;
     }
 
-    public void setSreceivedate(Date sreceivedate) {
-        this.sreceivedate = sreceivedate;
+    public void setIndustryType(String industryType) {
+        this.industryType = industryType;
+    }
+
+    public String getmUserName() {
+        return mUserName;
+    }
+
+    public void setmUserName(String mUserName) {
+        this.mUserName = mUserName;
+    }
+
+    public String getaUserName() {
+        return aUserName;
+    }
+
+    public void setaUserName(String aUserName) {
+        this.aUserName = aUserName;
+    }
+
+    public String getReviewOrgName() {
+        return reviewOrgName;
+    }
+
+    public void setReviewOrgName(String reviewOrgName) {
+        this.reviewOrgName = reviewOrgName;
+    }
+
+    public String getFfilenum() {
+        return ffilenum;
+    }
+
+    public void setFfilenum(String ffilenum) {
+        this.ffilenum = ffilenum;
     }
 
     public String getDfilenum() {
@@ -280,126 +316,75 @@ public class SignDispaWork extends DomainBase {
         this.dfilenum = dfilenum;
     }
 
-    public Date getDdispatchdate() {
-        return ddispatchdate;
+    public BigDecimal getExtraValue() {
+        return extraValue;
     }
 
-    public void setDdispatchdate(Date ddispatchdate) {
-        this.ddispatchdate = ddispatchdate;
+    public void setExtraValue(BigDecimal extraValue) {
+        this.extraValue = extraValue;
     }
 
-    public Date getFfiledate() {
-        return ffiledate;
+    public BigDecimal getExtraRate() {
+        return extraRate;
     }
 
-    public void setFfiledate(Date ffiledate) {
-        this.ffiledate = ffiledate;
+    public void setExtraRate(BigDecimal extraRate) {
+        this.extraRate = extraRate;
     }
 
-    public String getDdispatchtype() {
-        return ddispatchtype;
+    public BigDecimal getApproveValue() {
+        return approveValue;
     }
 
-    public void setDdispatchtype(String ddispatchtype) {
-        this.ddispatchtype = ddispatchtype;
+    public void setApproveValue(BigDecimal approveValue) {
+        this.approveValue = approveValue;
     }
 
-    public String getPindustrytype() {
-        return pindustrytype;
+    public BigDecimal getAuthorizeValue() {
+        return authorizeValue;
     }
 
-    public void setPindustrytype(String pindustrytype) {
-        this.pindustrytype = pindustrytype;
+    public void setAuthorizeValue(BigDecimal authorizeValue) {
+        this.authorizeValue = authorizeValue;
     }
 
-    public String getSsecrectlevel() {
-        return ssecrectlevel;
+    public String getDispatchType() {
+        return dispatchType;
     }
 
-    public void setSsecrectlevel(String ssecrectlevel) {
-        this.ssecrectlevel = ssecrectlevel;
+    public void setDispatchType(String dispatchType) {
+        this.dispatchType = dispatchType;
     }
 
-    public String getSreviewdays() {
-        return sreviewdays;
+    public Date getDispatchDate() {
+        return dispatchDate;
     }
 
-    public void setSreviewdays(String sreviewdays) {
-        this.sreviewdays = sreviewdays;
+    public void setDispatchDate(Date dispatchDate) {
+        this.dispatchDate = dispatchDate;
     }
 
-    public String getSsurplusdays() {
-        return ssurplusdays;
+    public String getmOrgName() {
+        return mOrgName;
     }
 
-
-    public void setSsurplusdays(String ssurplusdays) {
-        this.ssurplusdays = ssurplusdays;
+    public void setmOrgName(String mOrgName) {
+        this.mOrgName = mOrgName;
     }
 
-    public String getSappalyinvestment() {
-        return sappalyinvestment;
+    public String getmOrgId() {
+        return mOrgId;
     }
 
-    public void setSappalyinvestment(String sappalyinvestment) {
-        this.sappalyinvestment = sappalyinvestment;
+    public void setmOrgId(String mOrgId) {
+        this.mOrgId = mOrgId;
     }
 
-    public String getDauthorizevalue() {
-        return dauthorizevalue;
+    public Date getFileDate() {
+        return fileDate;
     }
 
-    public void setDauthorizevalue(String dauthorizevalue) {
-        this.dauthorizevalue = dauthorizevalue;
+    public void setFileDate(Date fileDate) {
+        this.fileDate = fileDate;
     }
-
-    public String getDextravalue() {
-        return dextravalue;
-    }
-
-    public void setDextravalue(String dextravalue) {
-        this.dextravalue = dextravalue;
-    }
-
-    public String getDextrarate() {
-        return dextrarate;
-    }
-
-    public void setDextrarate(String dextrarate) {
-        this.dextrarate = dextrarate;
-    }
-
-    public String getDapprovevalue() {
-        return dapprovevalue;
-    }
-
-    public void setDapprovevalue(String dapprovevalue) {
-        this.dapprovevalue = dapprovevalue;
-    }
-
-    public String getSisassistproc() {
-        return sisassistproc;
-    }
-
-    public void setSisassistproc(String sisassistproc) {
-        this.sisassistproc = sisassistproc;
-    }
-
-    public String getSdaysafterdispatch() {
-        return sdaysafterdispatch;
-    }
-
-    public void setSdaysafterdispatch(String sdaysafterdispatch) {
-        this.sdaysafterdispatch = sdaysafterdispatch;
-    }
-
-    public String getmOrgIds() {
-        return mOrgIds;
-    }
-
-    public void setmOrgIds(String mOrgIds) {
-        this.mOrgIds = mOrgIds;
-    }
-
-
 }

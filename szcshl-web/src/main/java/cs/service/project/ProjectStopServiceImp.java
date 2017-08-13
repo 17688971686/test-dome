@@ -64,12 +64,11 @@ public class ProjectStopServiceImp implements ProjectStopService {
 	@Override
 	public SignDispaWork findSignBySignId(String signId) {
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-//		sqlBuilder.append(" select signid,projectname from cs_sign where "+Sign_.signid.getName()+" =:signid");
-		sqlBuilder.append("select ssignid,sprojectname,sbuiltcompanyName,pmianchargeusername,sreceivedate,mOrgNames from V_SIGN_DISP_WORK where "+SignDispaWork_.ssignid.getName()+"=:signid");
+		sqlBuilder.append("select ssignid,sprojectname,sbuiltcompanyName,pmianchargeusername,sreceivedate,mOrgNames from V_SIGN_DISP_WORK where "+SignDispaWork_.signid.getName()+"=:signid");
 		sqlBuilder.setParam("signid",signId);
 		List<Map> signList=signDispaWorkRepo.findMapListBySql(sqlBuilder);
 		SignDispaWork  signDispaWork=new SignDispaWork();
-		if(!signList.isEmpty()){
+		/*if(!signList.isEmpty()){
 			Object obj=signList.get(0);
 			Object[] str = (Object[])obj;
 			signDispaWork.setSignDwid((String) str[0]);
@@ -78,7 +77,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
 			signDispaWork.setPmianchargeusername( (String)str[3]);
 			signDispaWork.setSreceivedate((Date) str[4]);
 			signDispaWork.setmOrgNames((String)str[5]);
-		}
+		}*/
 		return signDispaWork;
 	}
 

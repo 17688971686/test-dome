@@ -337,24 +337,6 @@ public class SignDto extends BaseDto {
     //部门
     private OrgDto orgDto;
 
-    //主流程第一负责人ID
-    private String mFlowMainUserId;
-
-    //主流程第二负责人ID
-    private String mFlowAssistUserId;
-
-    //次流程第一负责人ID
-    private String aFlowMainUserId;
-
-    //次流程第二负责人ID
-    private String aFlowAssistUserId;
-
-    //主办部门
-    private String mOrgId;
-
-    //协办部门
-    private String aOrgId;
-
     //流程实例ID
     private String processInstanceId;
 
@@ -1440,54 +1422,6 @@ public class SignDto extends BaseDto {
 
     public void setSignState(String signState) {
         this.signState = signState;
-    }
-
-    public String getmFlowMainUserId() {
-        return mFlowMainUserId;
-    }
-
-    public void setmFlowMainUserId(String mFlowMainUserId) {
-        this.mFlowMainUserId = mFlowMainUserId;
-    }
-
-    public String getmFlowAssistUserId() {
-        return mFlowAssistUserId;
-    }
-
-    public void setmFlowAssistUserId(String mFlowAssistUserId) {
-        this.mFlowAssistUserId = mFlowAssistUserId;
-    }
-
-    public String getaFlowMainUserId() {
-        return aFlowMainUserId;
-    }
-
-    public void setaFlowMainUserId(String aFlowMainUserId) {
-        this.aFlowMainUserId = aFlowMainUserId;
-    }
-
-    public String getaFlowAssistUserId() {
-        return aFlowAssistUserId;
-    }
-
-    public void setaFlowAssistUserId(String aFlowAssistUserId) {
-        this.aFlowAssistUserId = aFlowAssistUserId;
-    }
-
-    public String getmOrgId() {
-        return mOrgId;
-    }
-
-    public void setmOrgId(String mOrgId) {
-        this.mOrgId = mOrgId;
-    }
-
-    public String getaOrgId() {
-        return aOrgId;
-    }
-
-    public void setaOrgId(String aOrgId) {
-        this.aOrgId = aOrgId;
     }
 
     public String getProcessInstanceId() {

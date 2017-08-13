@@ -125,6 +125,7 @@
                 if (vm.flow.end) {
                     vm.showFlag.nodeNext = false;
                 }
+                vm.businessFlag.isLoadFlow = true;
                 //更改状态,并初始化业务参数
                 if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
                     signFlowSvc.initBusinessParams(vm);
@@ -134,8 +135,6 @@
             flowSvc.initFlowData(vm);
             // 初始化上传附件
             signSvc.uploadFilelist(vm);
-            //项目关联初始化
-            signSvc.associateGrid(vm);
 
             ideaSvc.initIdea(vm);	//初始化个人常用意见
         }

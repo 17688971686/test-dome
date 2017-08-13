@@ -201,11 +201,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 //获取评审部门
                 List<Org> orgList = workProgramRepo.getReviewOrg(signId);
                 if(Validate.isList(orgList)){
-                    String orgName = "";
-                    for(Org org:orgList){
-                        orgName += org.getName()+",";
+                    StringBuffer orgName = new StringBuffer();
+                    for(int i=0,l=orgList.size();i<l;i++){
+                        if(i > 0){
+                            orgName.append(",");
+                        }
+                        orgName.append(orgList.get(i).getName());
                     }
-                    workProgramDto.setReviewOrgName(orgName.substring(0,orgName.length()-1));
+                    workProgramDto.setReviewOrgName(orgName.toString());
                 }
                 //项目第一负责人
                 User mainUser = signPrincipalService.getMainPriUser(signId);

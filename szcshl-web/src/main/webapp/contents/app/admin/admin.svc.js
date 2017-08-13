@@ -15,8 +15,8 @@
 
             initFile: initFile,	        //初始化附件
             upload: upload,	            //	下载附件
-            getSignList: getSignList,  //项目查询统计
-            initSignList: initSignList,//初始化項目查詢統計
+            getSignList: getSignList,   //项目查询统计
+            initSignList: initSignList, //初始化項目查詢統計
            // <!-- 以下是首页方法-->
             initAnnountment: initAnnountment,	    //初始化通知公告栏
             findendTasks: findendTasks,             //已办项目列表
@@ -643,55 +643,55 @@
                     width: 50
                 },
                 {
-                    field: "sprojectname",
+                    field: "projectname",
                     title: "项目名称",
                     width: 160,
                     filterable: false
                 },
                 {
-                    field: "sreviewstage",
+                    field: "reviewstage",
                     title: "评审阶段",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "sreceivedate",
+                    field: "signdate",
                     title: "收文日期",
                     width: 200,
                     filterable: false
                 },
                 {
-                    field: "ddispatchtype",
+                    field: "dispatchtype",
                     title: "发文日期",
                     width: 160,
                     filterable: false
                 },
                 {
-                    field: "sreviewdays",
+                    field: "reviewdays",
                     title: "评审天数",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "ssurplusdays",
+                    field: "surplusdays",
                     title: "剩余工作日",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "mOrgNames",
+                    field: "reviewOrgName",
                     title: "评审部门",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "pmianchargeusername",
+                    field: "aUserName",
                     title: "项目负责人",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "sfilenum",
+                    field: "ffilenum",
                     title: "归档编号",
                     width: 140,
                     filterable: false
@@ -703,43 +703,43 @@
                     filterable: false
                 },
                 {
-                    field: "sappalyinvestment",
+                    field: "appalyinvestment",
                     title: "申报投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "dauthorizevalue",
+                    field: "authorizevalue",
                     title: "审定投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "dextravalue",
+                    field: "extravalue",
                     title: "核减（增）投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "dextrarate",
+                    field: "extrarate",
                     title: "核减率",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "dapprovevalue",
+                    field: "approvevalue",
                     title: "批复金额",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "sreceivedate",
+                    field: "receivedate",
                     title: "批复来文时间",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "ddispatchtype",
+                    field: "dispatchtype",
                     title: "发文类型",
                     width: 140,
                     filterable: false
@@ -751,13 +751,13 @@
                     filterable: false
                 },
                 {
-                    field: "sbuiltcompanyName",
+                    field: "builtcompanyName",
                     title: "建设单位",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "sisassistproc",
+                    field: "isassistproc",
                     title: "是否协审",
                     width: 140,
                     filterable: false,
@@ -770,7 +770,7 @@
                     }
                 },
                 {
-                    field: "sdaysafterdispatch",
+                    field: "daysafterdispatch",
                     title: "发文后工作日",
                     width: 140,
                     filterable: false
@@ -802,59 +802,22 @@
                         var rowLabel = $(this).find(".row-number");
                         $(rowLabel).html(index);
                     });
-                    
-                    
                 }
             };
-            /* vm.signListOptions.on('dblclick', '.k-grid-content tr', function () {
-            // 双击
-            var row = grid.data("kendoGrid").select();
-            var data = grid.data("kendoGrid").dataItem(row);
-            var name = data.name;
-            alert('单击事件【name：' + name + '】');
-            });*/
-           /* $('#grid tbody tr').bind("dblclick",function(e){
-            var row = $('#grid').data('kendoGrid').dataItem(e.currentTarget);
-            	alert("ddfd");
-            });*/
-            /*  vm.signListOptions.bind('dataBound', function(){
-       		 $('#grid tbody tr').dblclick(function(e){
-             var row = $('#grid').data('kendoGrid').dataItem(e.currentTarget);
-             alert("ddfd");
-        	});
-    		}); */  
-           
-            $('#grid tbody td').dblclick(function(e){
-            	console.log($('#grid tbody td'));
-        	});
-
         }//end_getSignList
 
-
         //begin_initSignList
-        function initSignList(vm) {
+        function initSignList(callBack) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/sign/initSignList"
             }
             var httpSuccess = function success(response) {
-                vm.sign.mOrgIds = response.data.mOrgId;
-                vm.usersList = response.data.usersList;
-                vm.orgsList = response.data.orgsList;
-                /*if (response.data.orgMLeaderName) {
-                 vm.sign.orgMLeaderName = response.data.orgMLeaderName;
-                 }
-                 if (response.data.orgdirectorname) {
-                 vm.sign.orgdirectorname = response.data.orgdirectorname;
-                 }
-                 if (response.data.orgSLeaderName) {
-                 vm.sign.orgSLeaderName = response.data.orgSLeaderName;
-                 }*/
-                //这里不用查询
-                //vm.signListOptions.dataSource.read();
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

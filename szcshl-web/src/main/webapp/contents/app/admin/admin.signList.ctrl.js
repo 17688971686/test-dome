@@ -3,18 +3,22 @@
 
     angular.module('app').controller('adminSignListCtrl', admin);
 
-    admin.$inject = ['$location', 'adminSvc'];
+    admin.$inject = ['signSvc', 'adminSvc'];
 
-    function admin($location, adminSvc) {
+    function admin(signSvc, adminSvc) {
         var vm = this;
         vm.title = '项目查询统计';
-        vm.sign = {};
         activate();
         function activate() {
-            //adminSvc.etasksGrid(vm);
-            //初始化项目查询统计
-            adminSvc.initSignList(vm);
+            //初始化查询参数
+            adminSvc.initSignList(function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    vm.orgsList = data.reObj;
+                }
+            });
             adminSvc.getSignList(vm);
+            //项目关联初始化
+            //signSvc.associateGrid(vm);
         }
 
         //重置

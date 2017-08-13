@@ -237,10 +237,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             }
         }
 
-        // 获取主办处联系人
-        List<UserDto> userList = userService.findUserByOrgId(sign.getmOrgId());
-        map.put("mainUserList", userList);
-
         SignDto signDto = new SignDto();
         BeanUtils.copyProperties(sign, signDto, new String[]{Sign_.workProgramList.getName(),
                 Sign_.dispatchDoc.getName(), Sign_.fileRecord.getName(), Sign_.associateSign.getName()});

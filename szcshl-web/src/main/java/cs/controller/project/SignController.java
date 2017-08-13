@@ -197,11 +197,9 @@ public class SignController {
     }
 
     @RequiresPermissions("sign#initSignList#get")
-    @RequestMapping(name = "初始化项目查询统计", path = "initSignList", method = RequestMethod.GET)
-    public @ResponseBody
-    Map<String, Object> initSignList() throws ParseException {
-        Map<String, Object> map = signService.initSignList();
-        return map;
+    @RequestMapping(name = "初始化项目查询统计", path = "initSignList", method = RequestMethod.POST)
+    public @ResponseBody ResultMsg initSignList() {
+        return signService.initSignList();
     }
 
     @RequiresPermissions("sign#getSignList#get")
@@ -209,7 +207,7 @@ public class SignController {
     public @ResponseBody
     PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDispaWork> pageModelDto = signService.getSign(odataObj, request.getParameter("$skip"), request.getParameter("$top"));
+        PageModelDto<SignDispaWork> pageModelDto = signService.getCommQurySign(odataObj);
         return pageModelDto;
     }
 

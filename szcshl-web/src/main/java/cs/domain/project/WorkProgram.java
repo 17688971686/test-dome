@@ -128,7 +128,7 @@ public class WorkProgram extends DomainBase {
     private String mianChargeUserName;
 
     //第二负责人(可以有多个)
-    @Column(columnDefinition = "VARCHAR(1000)")
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String secondChargeUserName;
 
     //是否有补充函

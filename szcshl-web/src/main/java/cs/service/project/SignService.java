@@ -64,9 +64,9 @@ public interface SignService {
 
     void bathUpdate(List<Sign> signList);
 
-    PageModelDto<SignDispaWork> getSign(ODataObj odataObj, String skip, String top);
+    PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
 
-    Map<String, Object> initSignList();
+    ResultMsg initSignList();
 
     ResultMsg realSign(String signId);
 

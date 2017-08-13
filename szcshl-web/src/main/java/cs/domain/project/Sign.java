@@ -411,14 +411,6 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String energyCopy;
 
-    //主办部门
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String mOrgId;
-
-    //协办部门
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String aOrgId;
-
     //流程实例ID
     @Column(columnDefinition = "VARCHAR(64)")
     private String processInstanceId;
@@ -1638,10 +1630,6 @@ public class Sign extends DomainBase {
         this.fileRecord = fileRecord;
     }
 
-    public String getmOrgId() {
-        return mOrgId;
-    }
-
     public String getSuppletterid() {
 		return suppletterid;
 	}
@@ -1649,18 +1637,6 @@ public class Sign extends DomainBase {
 	public void setSuppletterid(String suppletterid) {
 		this.suppletterid = suppletterid;
 	}
-
-	public void setmOrgId(String mOrgId) {
-        this.mOrgId = mOrgId;
-    }
-
-    public String getaOrgId() {
-        return aOrgId;
-    }
-
-    public void setaOrgId(String aOrgId) {
-        this.aOrgId = aOrgId;
-    }
 
     public String getProcessInstanceId() {
         return processInstanceId;
