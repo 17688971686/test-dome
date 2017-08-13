@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state','flowSvc','signFlowSvc','bsWin'];
+    sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin'];
 
-    function sign($location,signSvc,$state,flowSvc,signFlowSvc,bsWin) {
+    function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin) {
         var vm = this;
         vm.title = "收文列表";
 

@@ -1,0 +1,248 @@
+<meta charset="UTF-8">
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
+    <li ng-show="vm.showFlag.tabWorkProgram"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+    <li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
+    <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
+    <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
+    <li ng-show="vm.showFlag.tabExpert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
+    <li ng-show="vm.showFlag.tabExpert"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
+    <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
+    <li ng-show="vm.model.isAssociate == 1"><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
+    <li ng-show="vm.model.processInstanceId && vm.model.processState < 9"><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
+    <li ng-show="vm.model.processInstanceId"><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
+</ul>
+
+<div class="tab-content" style="background:white;">
+    <!-- 详情页  收文-->
+    <div class="tab-pane fade in active" style="background:white;" id="sign_detail">
+        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' || vm.model.reviewstage=='其它'" ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
+        <!-- 设备清单（国产）  -->
+        <div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>
+        <!-- 设备清单（进口）  -->
+        <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmentImportDetail.html'"></div>
+        <div ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/sign/signDetail/foreignEquipmenDetail.html'"></div>
+        <!-- 项目概算  -->
+        <div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signDetail/projectBudgetDetail.html'"></div>
+    </div><!-- end tab1 -->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram">
+        <img style="" src="{{vm.picture}}">
+    </div><!-- end tab2 -->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
+        <div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
+    </div>
+    <!-- end tab3 -->
+
+    <!-- start 专家评分 -->
+    <div class="well well-sm tab-pane fade" style="background: white;" id="sign_remark">
+        <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
+            <tbody>
+            <tr>
+                <td>
+                    <table class="table table-bordered">
+                        <caption class="text-center h3">
+                            <strong>专家评分</strong>
+                        </caption>
+                        <th>
+                            <tr>
+                                <td>序号</td>
+                                <td>姓名</td>
+                                <td>工作单位</td>
+                                <td>职位/职称</td>
+                                <td>专业</td>
+                                <td>专家评分</td>
+                                <td>评分描述</td>
+                                <td ng-show="vm.businessFlag.editExpertSC">操作</td>
+                            </tr>
+                            <tr ng-repeat="x in expertReview.expertSelectedDtoList">
+                                <td>{{$index+1}}</td>
+                                <td>{{x.expertDto.name}}</td>
+                                <td>{{x.expertDto.comPany}}</td>
+                                <td>{{x.expertDto.job}}/{{x.expertDto.post}}</td>
+                                <td>{{x.expertDto.majorStudy}}</td>
+                                <td>{{vm.getExpertStar(x.id,x.score)}}<span id="{{x.id}}_starhtml"></span></td>
+                                <td>{{x.describes}}</td>
+                                <td>
+                                    <button class="btn btn-xs btn-primary" ng-click="vm.editSelectExpert(x.id)" ng-show="vm.businessFlag.editExpertSC" ng-disabled="!vm.businessFlag.editExpertSC">
+                                        <span class="glyphicon glyphicon-pencil"></span>编辑
+                                    </button>
+                                </td>
+                            </tr>
+                        </th>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- end 专家评分 -->
+
+    <!-- start 专家费用 -->
+    <div class="well well-sm tab-pane fade" style="background: white;" id="sign_payment">
+        <div class="toolbar" ng-show="vm.businessFlag.editExpertSC">
+            <button class="btn btn-sm btn-success" ng-click="vm.savePayment()" ng-disabled="vm.isCommit"
+                    ng-hide="btnHide">
+                <span class="glyphicon glyphicon-ok"></span>保存
+            </button>
+
+        </div>
+        <form id="payform" name="payform">
+            <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
+                <tbody>
+                <tr ng-show="vm.businessFlag.editExpertSC">
+                    <td colspan="4">
+                        <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(expertReview)" ng-disabled="vm.isCommit"
+                                ng-hide="btnHide">
+                            <span class="glyphicon glyphicon-ok"></span>计算应纳税额
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>评审费发放日期 <span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="expertReview.payDate"
+                               data-val-date="必须为日期"><span class="required">{{expertReview.errorMsg}}</span>
+                        <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td>评审/函评日期</td>
+                    <td>{{expertReview.reviewDate}}</td>
+                </tr>
+                <tr>
+                    <td>评审费发放标题</td>
+                    <td colspan="3">
+                        <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
+                               class="form-control input-sm " ng-model="expertReview.reviewTitle">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div style="text-align:center;">
+                            <table class="table table-bordered">
+                                <caption class="text-center h3">
+                                    <strong>
+                                        {{expertReview.reviewTitle}}
+                                    </strong>
+                                </caption>
+                                <th>
+                                    <tr>
+                                        <td>序号</td>
+                                        <td>姓名</td>
+                                        <td>身份证号码</td>
+                                        <td>开户行/银行账号</td>
+                                        <td>评审费</td>
+                                        <td>应纳税额</td>
+                                        <td>合计（元）</td>
+                                    </tr>
+                                </th>
+                                <tbody>
+                                <tr ng-repeat="x in expertReview.expertSelectedDtoList">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{x.expertDto.name}}</td>
+                                    <td>{{x.expertDto.idCard}}</td>
+                                    <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
+                                    <td>
+                                        <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                               class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
+                                               data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
+                                               data-val="true" data-val-required="必填">
+                                        <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                    </td>
+                                    <td> {{x.reviewTaxes}}</td>
+                                    <td> {{x.totalCost}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td>{{expertReview.reviewCost}}</td>
+                                    <td>{{expertReview.reviewTaxes}}</td>
+                                    <td>{{expertReview.totalCost}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <!-- end tab3 -->
+    <!-- end 专家费用 -->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
+        <!-- <div ng-include src="'${path}/contents/app/workprogram/all_detail.html'"/> -->
+        <!-- （包含：主、次项目）项目建议书/可行性研究报告/资金申请报告/提前介入/项目概算/其它  -->
+        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' || vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
+             ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
+        <!-- 设备清单（国产） 包含：主项目、次项目 -->
+        <div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
+        <!-- 设备清单（进口）包含： 主项目 、次项目-->
+        <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainImportDetail.html'"></div>
+    </div><!-- 工作方案 -->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_basewp" >
+        <div ng-include src="'${path}/contents/app/workprogram/base_detail.html'"/>
+    </div><!-- 工作方案 【项目基本信息 协审流程才有】-->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" >
+        <div ng-include src="'${path}/contents/app/dispatch/detail.html'"/>
+    </div><!-- 发文 -->
+
+    <!-- S 归档 -->
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
+        <!--   <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' ||  vm.model.reviewstage=='其它'"
+          ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordAllDetails.html'"/> -->
+        <!-- 项目建议书 -->
+        <div ng-show="vm.model.reviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileProjectIdeaDetail.html'"></div>
+        <!-- 可行性研究报告 -->
+        <div ng-show="vm.model.reviewstage=='可行性研究报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileFeasibilityDetail.html'"></div>
+        <!-- 进口设备 -->
+        <div ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordForeignDetail.html'"></div>
+        <!-- 项目概算 -->
+        <div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetail.html'"></div>
+        <!-- 设备清单（国产） -->
+        <div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
+        <!-- 设备清单（进口） -->
+        <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordImportDetail.html'"></div>
+    </div>
+    <!--E 归档 -->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_associate">
+        <div ng-include src="'${path}/contents/app/sign/associate.html'" />
+    </div><!--项目关联-->
+
+    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_upload" >
+        <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
+    </div><!-- 上传附件列表 -->
+</div>
+
+<!-- start 专家评分弹窗-->
+<div id="expertmark" style="display: none;">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveMark()" ng-disabled="vm.isCommit" ng-hide="btnHide">
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.closeEditMark()" ng-disabled="vm.isCommit" ng-hide="btnHide">
+            <span class="glyphicon glyphicon-ok"></span>返回
+        </button>
+    </div>
+    <div>
+        <form id="markform" name="markform">
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width: 180px;">专家星级:</td>
+                    <td><div id="star" data-num=""></div></td>
+                </tr>
+                <tr>
+                    <td>评级描述:</td>
+                    <td><textarea rows="7" cols="100" ng-model="vm.businessFlag.expertScore.describes"></textarea></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<!-- end 专家评分弹窗-->

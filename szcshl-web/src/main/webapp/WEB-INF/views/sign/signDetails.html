@@ -11,55 +11,6 @@
 	<div class="toolbar">
 		<a class="btn btn-sm btn-primary" href="#/listSign"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 	</div>
-	<ul id="myTab" class="nav nav-tabs">
-		<li class="active"><a  data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-		<li ng-show="vm.show_workprogram" ><a id="show_workprogram_a"  data-toggle="tab" for-div="sign_workprogram">工作方案</a></li>
-		<li ng-show="vm.show_dispatch" ><a id="show_dispatch_a"  data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
-		<li ng-show="vm.show_filerecord" ><a id="show_filerecord_a"  data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
-
-		<!--有流程实例才显示-->
-		<li><a  data-toggle="tab" ng-show="vm.show_flow_info" for-div="sign_diagram">流程图</a></li>
-		<li><a  data-toggle="tab" ng-show="vm.show_flow_info" for-div="sign_history">处理记录</a></li>
-		<li><a  data-toggle="tab" for-div="sign_associate">关联项目</a></li>
-	</ul>
-
-	<div class="tab-content" style="background:white;">
-		<!-- 隐藏域部分 -->
-		<input type="hidden" ng-model="vm.model.isreviewcompleted" value="{{vm.model.isreviewcompleted}}" />
-
-		<!-- 详情页 -->
-		<div class="well well-sm tab-pane fade in active" style="background:white;" id="sign_detail">
-
-			<div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' || vm.model.reviewstage=='其它'"
-			 ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
-			<div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>
-			<div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmentImportDetail.html'"></div>
-			<div ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/sign/signDetail/foreignEquipmenDetail.html'"></div>
-			<div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signDetail/projectBudgetDetail.html'"></div>
-		</div><!-- end tab1 -->
-
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram" >
-			<img style="" src="{{vm.picture}}">
-		</div><!-- end tab2 -->
-
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
-			<div class="grid" kendo-grid="grid" k-options="vm.historygrid"></div>
-		</div><!-- end tab3 -->
-
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" ng-show="vm.show_workprogram">
-			<div ng-include src="'${path}/contents/app/workprogram/all_detail.html'"/>
-		</div><!-- 工作方案 -->
-
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" ng-show="vm.show_dispatch">
-			<div ng-include src="'${path}/contents/app/dispatch/detail.html'" />
-		</div><!-- 发文 -->
-
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" ng-show="vm.show_filerecord">
-			<div ng-include src="'${path}/contents/app/fileRecord/detail.html'" />
-		</div><!-- 归档 -->
-
-		<div class="well well-sm tab-pane fade" style="background:white;" id="sign_associate">
-			<div ng-include src="'${path}/contents/app/sign/associate.html'" />
-		</div><!--项目关联-->
-	</div>
+    <!--显示详情页-->
+    <#include "/sign/sign.html"/>
 </div>

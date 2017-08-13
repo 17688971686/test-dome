@@ -17,7 +17,7 @@
             findOfficeUsersByDeptName: findOfficeUsersByDeptName,//根据协办部门名称查询用户
             initFlowPageData: initFlowPageData, //初始化流程收文信息
             removeWP: removeWP,             //删除工作方案
-            associateGrid: associateGrid,//项目关联列表
+            associateGrid: associateGrid,   //项目关联列表
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             paymentGrid: paymentGrid,           //专家评审费
@@ -64,7 +64,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", {filter: "issign eq (isNull,0)"},$("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter: "issign eq (isNull,0)"}),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -322,7 +322,6 @@
                 }
             }
             var httpSuccess = function success(response) {
-                //关闭项目关联窗口
                 if (callBack != undefined && typeof callBack == 'function') {
                     callBack(response.data);
                 }
@@ -335,25 +334,21 @@
         }//E_初始化填报页面数据
 
         //S_初始化详情数据
-        function initDetailData(vm) {
+        function initDetailData(signid,callBack) {
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/sign/html/initDetailPageData",
-                params: {signid: vm.model.signid}
+                params: {
+                    signid:signid
+                }
             }
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.model = response.data;
-                    }
-                })
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
-
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -415,7 +410,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", {filter: "signid ne '"+vm.model.signid+"' and isAssociate eq 0 "}, $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchAssociateform"),{filter: "isAssociate eq 0"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -472,7 +467,7 @@
                     title: "操作",
                     width: 60,
                     template: function (item) {
-                        return common.format($('#associateColumnBtns').html(), "vm.saveAssociateSign('" + item.signid + "')");
+                        return '<button class="btn btn btn-xs" ng-click="vm.saveAssociateSign(\''+item.signid+'\')" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-resize-small">关联</button>';
                     }
                 }
             ];
@@ -485,20 +480,11 @@
                 columns: columns,
                 resizable: true
             };
-            /*$("#associateGrid").kendoGrid({
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            });*/
-            vm.associateGridOptions.dataSource.read();
         }//E_初始化associateGrid
 
         //start saveAssociateSign
         //如果associateSignId为空，解除关联
-        function saveAssociateSign(vm, signId, associateSignId, callBack) {
+        function saveAssociateSign(signId, associateSignId, callBack) {
             associateSignId = associateSignId == 'undefined' ? null : associateSignId;
             var httpOptions = {
                 method: 'post',
@@ -514,7 +500,6 @@
                 }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -526,12 +511,10 @@
         //显示关联信息
         //start initAssociateSigns
         function initAssociateSigns(vm, singid) {
-
             var httpOptions = {
                 method: 'get',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 url: rootPath + "/sign/associate?signId=" + singid,
-
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({

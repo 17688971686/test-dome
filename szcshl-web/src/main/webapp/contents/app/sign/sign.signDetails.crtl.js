@@ -10,7 +10,6 @@
     	vm.model = {};							//创建一个form对象   	
         vm.title = '查看详情信息';        			//标题
         vm.model.signid = $state.params.signid;	//收文ID
-        vm.show_flow_info = false;				//显示流程图信息
        
         active();
         function active(){
@@ -23,17 +22,34 @@
                 $("#"+showDiv).addClass("active").addClass("in").show(500);
             })
 
-            signSvc.initFlowPageData(vm);
+            // 初始化业务信息
+            signSvc.initFlowPageData(vm.model.signid,function(data){
+                vm.model = data;
+                //有关联，则显示项目
+                if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                    signSvc.initAssociateSigns(vm,vm.model.signid);
+                    //没有则初始化关联表格
+                }
+                //发文
+                if (vm.model.dispatchDocDto) {
+                    vm.dispatchDoc = vm.model.dispatchDocDto;
+                }
+                //归档
+                if (vm.model.fileRecordDto) {
+                    vm.fileRecord = vm.model.fileRecordDto;
+                }
 
-            signSvc.initAssociateSigns(vm,vm.model.signid);
+                if(vm.model.processInstanceId ){
+                    vm.flow = {};
+                    vm.flow.processInstanceId = vm.model.processInstanceId;
+                    if(vm.model.processState ==0 ||  vm.model.processState == 9){
+                        vm.flow.hideFlowImg = true;
+                    }
+                    flowSvc.initFlowData(vm);
+                }
+            });
             
-            if(!angular.isUndefined($state.params.processInstanceId) && $state.params.processInstanceId != 'undefined'){           	
-                vm.flow = {}
-                vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
-                //判断是否加载流程图
-                flowSvc.initFlowData(vm);
-                vm.show_flow_info = true;
-            }
+
         }
 
     }

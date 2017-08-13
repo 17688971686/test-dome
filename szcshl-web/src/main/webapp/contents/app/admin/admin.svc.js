@@ -534,17 +534,10 @@
                     filterable: false,
                 },
                 {
-                    field: "",
+                    field: "displayName",
                     title: "处理人",
                     width: 100,
                     filterable: false,
-                    template: function (item) {
-                        if (item.assignee) {
-                            return item.assignee;
-                        } else if (item.userName) {
-                            return item.userName;
-                        }
-                    }
                 },
                 {
                     field: "",
@@ -643,10 +636,18 @@
                     width: 50
                 },
                 {
-                    field: "projectname",
+                    field: "",
                     title: "项目名称",
                     width: 160,
-                    filterable: false
+                    filterable: false,
+                    template: function (item) {
+                        if(item.processInstanceId){
+                            return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
+                        }else{
+                            return '<a href="#/signDetails/'+item.signid+'" >'+item.projectname+'</a>';
+                        }
+
+                    }
                 },
                 {
                     field: "reviewstage",
@@ -774,14 +775,19 @@
                     title: "发文后工作日",
                     width: 140,
                     filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        if (item.isAssociate == 0) {
+                            return '<button class="btn btn-xs btn-success" ng-click="vm.showAssociate(\''+item.signid+'\')" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>关联项目</button>';
+                        } else {
+                            return '<button class="btn btn-xs btn-warning" ng-click="vm.disAssociateSign(\''+item.signid+'\')" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>取消关联</button>';;
+                        }
+                    }
                 }
-                
-                /* {
-                 field: "",
-                 title: "操作",
-                 width: 60,
-                 template: $('#columnBtns').html()
-                 }*/
             ];
             
             // End:column

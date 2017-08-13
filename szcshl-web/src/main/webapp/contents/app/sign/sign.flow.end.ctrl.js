@@ -41,7 +41,31 @@
             })
 
             flowSvc.initFlowData(vm);
-            signSvc.initFlowPageData(vm);
+            //初始化业务信息
+            signSvc.initFlowPageData(vm.model.signid,function(data){
+                vm.model = data;
+                //有关联，则显示项目
+                if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                    signSvc.initAssociateSigns(vm,vm.model.signid);
+                }
+                //发文
+                if (vm.model.dispatchDocDto) {
+                    vm.showFlag.tabDispatch = true;
+                    vm.dispatchDoc = vm.model.dispatchDocDto;
+                    //如果是合并发文次项目，则不用生成发文编号
+                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
+                        || vm.dispatchDoc.fileNum){
+                        vm.businessFlag.isCreateDisFileNum = true;
+                    }else{
+                        vm.showFlag.buttDisFileNum = true;
+                    }
+                }
+                //归档
+                if (vm.model.fileRecordDto) {
+                    vm.showFlag.tabFilerecord = true;
+                    vm.fileRecord = vm.model.fileRecordDto;
+                }
+            });
         }
         //获取专家评星
         vm.getExpertStar = function(id ,score){

@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<#include "/sign/signAssociate.html"/>
+
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/listSign">项目签收管理</a></li>
@@ -43,7 +43,4 @@
 
     <!--正式签收-->
 	<button class="btn btn-xs btn-success"  ng-click="{7}" ng-hide="{8}" ng-disabled="vm.isCommit">正式签收</button>
-</script>
-<script type="text/template" id="associateColumnBtns">
-	<button class="btn btn-xs" ng-click="{0}" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>关联</button>
 </script>

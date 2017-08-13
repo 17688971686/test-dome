@@ -43,6 +43,9 @@ public class SignDispaWork {
     @Column(columnDefinition = "INTEGER")
     private String isAssociate;     //是否已关联*
 
+    @Column
+    private String processInstanceId;   //流程实例ID
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date receivedate;       //送来日期
@@ -386,5 +389,13 @@ public class SignDispaWork {
 
     public void setFileDate(Date fileDate) {
         this.fileDate = fileDate;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 }

@@ -451,51 +451,6 @@
                 });
             }
         }
-
-        //项目关联弹窗
-        vm.showAssociate = function(){
-            vm.currentAssociateSign = vm.model;
-            //选中要关联的项目
-            var signAssociateWindow = $("#associateWindow");
-            signAssociateWindow.kendoWindow({
-                width: "60%",
-                height: "625px",
-                title: "项目关联",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-            //初始化associateGrid
-        }
-
-        //start 保存项目关联
-        vm.saveAssociateSign = function(associateSignId){
-            if(vm.model.signid == associateSignId){
-                bsWin.alert("不能关联自身项目");
-                return ;
-            }
-            signSvc.saveAssociateSign(vm,vm.model.signid,associateSignId,function(){
-                bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功");
-                //回调
-                $state.reload();
-            });
-        }
-        //end 保存项目关联
-
-        //start 查询功能
-        vm.associateQuerySign = function(){
-            vm.associateGridOptions.dataSource.read();
-        }//end 查询功能
-
-        //start 解除项目关联
-        vm.disAssociateSign = function(){
-            signSvc.saveAssociateSign(vm,vm.model.signid,null,function(){
-                 //回调
-                 $state.reload();
-            });
-        }
-        //end 解除项目关联
         
         //选择负责人
         vm.addPriUser = function () {
