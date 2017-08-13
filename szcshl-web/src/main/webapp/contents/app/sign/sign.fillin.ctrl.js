@@ -17,7 +17,6 @@
         active();
         function  active(){
             signSvc.initFillData(vm.model.signid,function(data){
-                console.log(data.reObj)
                 vm.model = data.reObj.sign;
                 vm.deptlist = data.reObj.deptlist
 

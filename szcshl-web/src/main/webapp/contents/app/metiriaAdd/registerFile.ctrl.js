@@ -19,7 +19,7 @@
         vm.print = function(){
         	//vm.registerFileList={};
     		//vm.signdto={};
-        	common.registerFilePrint(vm,{$http: $http});
+            signcommon.registerFilePrint(vm,{$http: $http});
         }
         vm.findbySuppleDate = function(e){
         	

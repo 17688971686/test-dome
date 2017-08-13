@@ -83,24 +83,61 @@
                 $("#" + showDiv).addClass("active").addClass("in").show(500);
             })
             // 初始化业务信息
-            signSvc.initFlowPageData(vm);
+            signSvc.initFlowPageData(vm.model.signid,function(data){
+                vm.model = data;
+                //有关联，则显示项目
+                if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                    vm.showFlag.tabAssociateSigns = true;
+                    signSvc.initAssociateSigns(vm,vm.model.signid);
+                    //没有则初始化关联表格
+                }
+                //发文
+                if (vm.model.dispatchDocDto) {
+                    vm.showFlag.tabDispatch = true;
+                    vm.dispatchDoc = vm.model.dispatchDocDto;
+                    //如果是合并发文次项目，则不用生成发文编号
+                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
+                        || vm.dispatchDoc.fileNum){
+                        vm.businessFlag.isCreateDisFileNum = true;
+                    }else{
+                        vm.showFlag.buttDisFileNum = true;
+                    }
+                }
+                //归档
+                if (vm.model.fileRecordDto) {
+                    vm.showFlag.tabFilerecord = true;
+                    vm.fileRecord = vm.model.fileRecordDto;
+                }
+                //初始化专家评分
+                if (vm.model.processState > 2) {
+                    signSvc.paymentGrid(vm);
+                }
+                //更改状态,并初始化业务参数
+                vm.businessFlag.isLoadSign = true;
+                if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
+                    signFlowSvc.initBusinessParams(vm);
+                }
+            });
             // 初始化流程数据
-            flowSvc.getFlowInfo(vm);
+            flowSvc.getFlowInfo(vm.flow.taskId,vm.flow.processInstanceId,function(data){
+                vm.flow = data;
+                //如果是结束环节，则不显示下一环节信息
+                if (vm.flow.end) {
+                    vm.showFlag.nodeNext = false;
+                }
+                //更改状态,并初始化业务参数
+                if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
+                    signFlowSvc.initBusinessParams(vm);
+                }
+            });
             // 初始化办理信息
             flowSvc.initFlowData(vm);
             // 初始化上传附件
             signSvc.uploadFilelist(vm);
             //项目关联初始化
-            signSvc.associateGrid(vm);
-            
-            ideaSvc.initIdea(vm);	//初始化个人常用意见
-        }
+            //signSvc.associateGrid(vm);
 
-        //初始化业务参数
-        vm.initBusinessParams = function(){
-            if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
-                signFlowSvc.initBusinessParams(vm);
-            }
+            ideaSvc.initIdea(vm);	//初始化个人常用意见
         }
 
         //检查项目负责人

@@ -13,10 +13,8 @@ import cs.domain.project.*;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
-import cs.model.flow.FlowHistoryDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
-import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
@@ -41,7 +39,6 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -75,17 +72,9 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     private RepositoryService repositoryService;
     @Autowired
-    private SignRepo signRepo;
-    @Autowired
-    private SignPrincipalService signPrincipalService;
-    @Autowired
     private RuProcessTaskRepo ruProcessTaskRepo;
     @Autowired
     private HiProcessTaskRepo hiProcessTaskRepo;
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-    @Autowired
-    private DispatchDocRepo dispatchDocRepo;
 
     /**
      * 回退到上一环节
@@ -191,7 +180,6 @@ public class FlowServiceImpl implements FlowService {
         }
         taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption());    //添加处理信息
         taskService.complete(task.getId(),valiables );
-        //historyService.deleteHistoricTaskInstance(task.getId());  保留任务的历史数据信息（备注、附件等！）
 
         // 恢复方向
         for (TransitionImpl transitionImpl : newTransitions) {

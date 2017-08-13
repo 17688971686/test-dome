@@ -361,57 +361,22 @@
         }//E_初始化详情数据
 
         //S_初始化流程页面
-        function initFlowPageData(vm) {
+        function initFlowPageData(signId,callBack) {
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/sign/initFlowPageData",
-                params: {signid: vm.model.signid, queryAll: true}
+                params: {
+                    signid: signId,
+                    queryAll: true
+                }
             }
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.model = response.data;
-                        //有关联，则显示项目
-                        if(vm.model.isAssociate && vm.model.isAssociate == 1){
-                            vm.showFlag.tabAssociateSigns = true;
-                            initAssociateSigns(vm,vm.model.signid);
-                        //没有则初始化关联表格
-                        }
-                        //发文
-                        if (vm.model.dispatchDocDto) {
-                            vm.showFlag.tabDispatch = true;
-                            vm.dispatchDoc = vm.model.dispatchDocDto;
-                            //如果是合并发文次项目，则不用生成发文编号
-                            if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
-                                || vm.dispatchDoc.fileNum){
-                                vm.businessFlag.isCreateDisFileNum = true;
-                            }else{
-                                vm.showFlag.buttDisFileNum = true;
-                            }
-                        }
-                        //归档
-                        if (vm.model.fileRecordDto) {
-                            vm.showFlag.tabFilerecord = true;
-                            vm.fileRecord = vm.model.fileRecordDto;
-                        }
-                        //初始化专家评分
-                        if ((vm.model.isreviewCompleted && vm.model.isreviewCompleted == '9')||
-                            (vm.model.isreviewACompleted && vm.model.isreviewACompleted == '9')) {
-                            paymentGrid(vm);
-                        }
-                        //更改状态,并初始化业务参数
-                        vm.businessFlag.isLoadSign = true;
-                        if(vm.initBusinessParams && "function" ==typeof vm.initBusinessParams ){
-                            vm.initBusinessParams();
-                        }
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

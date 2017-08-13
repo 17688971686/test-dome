@@ -184,7 +184,7 @@ public class FlowController {
         return pageModelDto;
     }
 
-    @RequestMapping(name = "获取流程处理信息", path = "processInstance/flowNodeInfo", method = RequestMethod.GET)
+    @RequestMapping(name = "获取流程处理信息", path = "processInstance/flowNodeInfo", method = RequestMethod.POST)
     public @ResponseBody
     FlowDto flowNodeInfo(@RequestParam(required = true) String taskId, @RequestParam(required = true) String processInstanceId) {
         FlowDto flowDto = new FlowDto();

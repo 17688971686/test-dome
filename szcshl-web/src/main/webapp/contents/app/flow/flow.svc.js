@@ -26,15 +26,12 @@
         // S_初始化流程数据
         function initFlowData(vm) {
             var processInstanceId = vm.flow.processInstanceId;
-            if (angular.isUndefined(vm.flow.hideFlowImg)
-                || vm.flow.hideFlowImg == false) {
-                vm.picture = rootPath + "/flow/processInstance/img/"
-                    + processInstanceId;
+            if (angular.isUndefined(vm.flow.hideFlowImg)|| vm.flow.hideFlowImg == false) {
+                vm.picture = rootPath + "/flow/processInstance/img/"+ processInstanceId;
             }
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath
-                    + "/flow/processInstance/history/" + processInstanceId),
+                transport: common.kendoGridConfig().transport(rootPath+ "/flow/processInstance/history/" + processInstanceId),
                 schema: common.kendoGridConfig().schema({
                     id: "id"
                 }),
@@ -100,35 +97,22 @@
         }// E_初始化流程数据
 
         // S_getFlowInfo
-        function getFlowInfo(vm) {
+        function getFlowInfo(taskId,processInstanceId,callBack) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/flow/processInstance/flowNodeInfo",
                 params: {
-                    taskId: vm.flow.taskId,
-                    processInstanceId: vm.flow.processInstanceId
+                    taskId: taskId,
+                    processInstanceId:processInstanceId
                 }
             }
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.flow = response.data;
-                        //如果是结束环节，则不显示下一环节信息
-                        if (vm.flow.end) {
-                            vm.showFlag.nodeNext = false;
-                        }
-                        //更改状态,并初始化业务参数
-                        vm.businessFlag.isLoadFlow = true;
-                        vm.initBusinessParams();
-                    }
-                })
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
-
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
