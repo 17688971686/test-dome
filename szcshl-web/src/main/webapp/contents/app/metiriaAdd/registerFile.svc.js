@@ -29,12 +29,6 @@
 						schema : common.kendoGridConfig().schema({
 									id : "id",
 									fields : {
-										createdDate : {
-											type : "date"
-										},
-										modifiedDate : {
-											type : "date"
-										},
 										fileName : {
 											validation: { required: true },
 											type : "String"

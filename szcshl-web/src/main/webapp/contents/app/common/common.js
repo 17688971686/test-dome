@@ -1,4 +1,4 @@
-﻿﻿(function () {
+﻿(function () {
     'use strict';
     var DICT_ITEMS;    //数字字典
     var service = {
@@ -31,7 +31,6 @@
         saveCommonIdea: saveCommonIdea,             // 保存常用意见
         addCorrentIdea: addCorrentIdea,             // 添加当前意见
         saveCurrentIdea: saveCurrentIdea,           // 绑定当前意见
-
         initDictItems: function (dictList) {
             DICT_ITEMS = dictList;
         }
@@ -667,7 +666,6 @@
     // init
     init();
     function init() {
-        // begin#grid 处理
         // 全选
         $(document).on(
             'click',
@@ -681,6 +679,6 @@
             $(this).parent().find('tr').removeClass('selected');
             $(this).addClass('selected');
         })
-        // end#grid 处理
     }
+
 })();
