@@ -34,17 +34,17 @@
     </form>
     <script type="text/template" id="columnBtns">
         <@shiro.hasPermission name="assistUnit##delete">
-        <button class="btn btn-xs btn-danger" ng-click="vm.del('#=data.id#', vm.test)" ng-if="#=data.isUse# == '1'">
+        <button class="btn btn-xs btn-danger" ng-click="{0}" ng-if="{2}== '1'">
             <span class="glyphicon glyphicon-remove"></span> 删除
         </button>
         </@shiro.hasPermission>
         <@shiro.hasPermission name="assistUnit##put">
-        <a class="btn btn-xs btn-primary" href="\#/assistUnitEdit/#=data.id#" ng-if="#=data.isUse# == '1'">
+        <a class="btn btn-xs btn-primary" href="#/assistUnitEdit/{1}" ng-if="{2} == '1'">
             <span class="glyphicon glyphicon-pencil"></span> 编辑
         </a>
         </@shiro.hasPermission>
         <@shiro.hasPermission name="assistUnit##put">
-        <button class="btn btn-xs btn-danger" ng-if="#=data.isUse# == '0'">已停用</button>
+        <button class="btn btn-xs btn-danger" ng-if="{2} == '0'">已停用</button>
         </@shiro.hasPermission>
 
     </script>

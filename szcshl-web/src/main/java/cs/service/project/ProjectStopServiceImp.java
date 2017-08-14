@@ -64,20 +64,20 @@ public class ProjectStopServiceImp implements ProjectStopService {
 	@Override
 	public SignDispaWork findSignBySignId(String signId) {
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select ssignid,sprojectname,sbuiltcompanyName,pmianchargeusername,sreceivedate,mOrgNames from V_SIGN_DISP_WORK where "+SignDispaWork_.signid.getName()+"=:signid");
+		sqlBuilder.append("select signid,projectname,builtcompanyname,mUserName,receivedate,mOrgName from V_SIGN_DISP_WORK where "+SignDispaWork_.signid.getName()+"=:signid");
 		sqlBuilder.setParam("signid",signId);
 		List<Map> signList=signDispaWorkRepo.findMapListBySql(sqlBuilder);
 		SignDispaWork  signDispaWork=new SignDispaWork();
-		/*if(!signList.isEmpty()){
+		if(!signList.isEmpty()){
 			Object obj=signList.get(0);
 			Object[] str = (Object[])obj;
-			signDispaWork.setSignDwid((String) str[0]);
-			signDispaWork.setSprojectname((String)str[1]);
-			signDispaWork.setSbuiltcompanyName( (String)str[2]);
-			signDispaWork.setPmianchargeusername( (String)str[3]);
-			signDispaWork.setSreceivedate((Date) str[4]);
-			signDispaWork.setmOrgNames((String)str[5]);
-		}*/
+			signDispaWork.setSignid((String) str[0]);
+			signDispaWork.setProjectname((String)str[1]);
+			signDispaWork.setBuiltcompanyname( (String)str[2]);
+			signDispaWork.setmUserName( (String)str[3]);
+			signDispaWork.setReceivedate((Date) str[4]);
+			signDispaWork.setmOrgName((String)str[5]);
+		}
 		return signDispaWork;
 	}
 
