@@ -481,7 +481,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUserDisplayName() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " +User_.id.getName() +"," + User_.displayName.getName()+" from cs_user");
+        hqlBuilder.append("select " +User_.id.getName() +"," + User_.displayName.getName()+" from cs_user where "+User_.loginName.getName()+"<>:loginName");
+        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
         List<Map> list = userRepo.findMapListBySql(hqlBuilder);
         List<UserDto> userDtoList = new ArrayList<>();
         if(!list.isEmpty()){

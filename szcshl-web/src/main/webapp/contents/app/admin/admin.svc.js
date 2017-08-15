@@ -644,7 +644,7 @@
                         if(item.processInstanceId){
                             return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
                         }else{
-                            return '<a href="#/signDetails/'+item.signid+'" >'+item.projectname+'</a>';
+                            return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
                         }
 
                     }
