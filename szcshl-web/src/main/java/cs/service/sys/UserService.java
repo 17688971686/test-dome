@@ -53,4 +53,12 @@ public interface UserService {
     void saveUser(User user);
 
     User findByName(String userName);
+
+    List<UserDto> getAllUserDisplayName();
+
+    void saveTakeUser(String takeUserId);
+
+    UserDto getTakeUserByLoginName();
+
+    void cancelTakeUser();
 }

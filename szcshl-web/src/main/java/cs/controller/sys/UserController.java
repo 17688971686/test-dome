@@ -144,6 +144,38 @@ public class UserController {
     public UserDto findUserById(@RequestParam String userId){
         return userService.findById(userId,true);
     }
+
+/**
+ * 以下代办人处理
+ * */
+    @RequiresPermissions("user#getAllUserDisplayName#get")
+    @RequestMapping(name="获取所有用户显示名和id", path="getAllUserDisplayName", method=RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> getAllUserDisPlayName(){
+        return userService.getAllUserDisplayName();
+    }
+
+    @RequiresPermissions("user#getUserByLoginName#get")
+    @RequestMapping(name="通过登录名获取用户信息",path="getUserByLoginName",method=RequestMethod.GET)
+    @ResponseBody
+    public UserDto getUserByLoginName(){
+        return userService.getTakeUserByLoginName();
+    }
+
+    @RequiresPermissions("user#saveTakeUser#post")
+    @RequestMapping(name="保存代办人",path="saveTakeUser" ,method=RequestMethod.POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveTkeUser(@RequestParam String takeUserId){
+        userService.saveTakeUser(takeUserId);
+    }
+
+    @RequiresPermissions("user#cancelTakeUser#get")
+    @RequestMapping(name="取消代办人",path="cancelTakeUser" ,method=RequestMethod.GET)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelTakeUser(){
+        userService.cancelTakeUser();
+    }
+
     // begin#html
     @RequiresPermissions("user#html/list#get")
     @RequestMapping(name = "用户列表页面", path = "html/list", method = RequestMethod.GET)

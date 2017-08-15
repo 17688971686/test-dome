@@ -486,7 +486,16 @@
                 templateUrl: rootPath + '/file/html/pluginfile.html',
                 controller: 'pluginfileCtrl',
                 controllerAs: 'vm'
-            });
+            })
+        //个人中心
+            .state('takeUser',{
+                url:'/takeUser',
+                templateUrl: rootPath + '/personalCenter/html/takeUser.html',
+                controller: 'takeUserCtrl',
+                controllerAs: 'vm'
+            })
+
+        ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         //获取表头名称
         $rootScope.getTBHeadName = function(stageName,isAdvanced,type){

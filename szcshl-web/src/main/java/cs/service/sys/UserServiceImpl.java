@@ -1,10 +1,6 @@
 package cs.service.sys;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
@@ -476,6 +472,72 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByName(String userName) {
         return userRepo.findUserByName(userName);
+    }
+
+
+    /**
+    * 查询所有用户显示名和id
+    */
+    @Override
+    public List<UserDto> getAllUserDisplayName() {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select " +User_.id.getName() +"," + User_.displayName.getName()+" from cs_user");
+        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+        List<UserDto> userDtoList = new ArrayList<>();
+        if(!list.isEmpty()){
+            for(int i=0 ; i<list.size();i++){
+                Object obj=list.get(i);
+                Object[] userNames = (Object[]) obj;
+                UserDto userDto = new UserDto();
+                userDto.setId((String)userNames[0]);
+                userDto.setDisplayName((String)userNames[1]);
+                userDtoList.add(userDto);
+            }
+        }
+        return userDtoList;
+    }
+
+
+    /**
+     * 保存代办人
+     * */
+    @Override
+    @Transactional
+    public void saveTakeUser(String takeUserId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("update "+User.class.getSimpleName()+" set "+User_.takeUserId.getName()+"=:takeUserId where "+User_.loginName.getName()+"=:loginName");
+        hqlBuilder.setParam("takeUserId",takeUserId);
+        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        userRepo.executeHql(hqlBuilder);
+    }
+
+    @Override
+    public UserDto getTakeUserByLoginName() {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select "+User_.displayName.getName()+" from cs_user where id=(");
+        hqlBuilder.append("select "+User_.takeUserId.getName()+" from cs_user where "+User_.loginName.getName()+"=:loginName)");
+        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+        UserDto userDto = new UserDto();
+        if(!list.isEmpty()){
+            Object obj= list.get(0);
+//            Object[] userName =(Object[]) obj;
+            userDto.setDisplayName((String)obj);
+        }
+        return userDto;
+    }
+
+    /**
+     * 取消代办人
+     * */
+    @Override
+    @Transactional
+    public void cancelTakeUser() {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("update "+User.class.getSimpleName()+" set "+User_.takeUserId.getName()+"=:takeUserId where "+User_.loginName.getName()+"=:loginName");
+        hqlBuilder.setParam("takeUserId","");
+        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        userRepo.executeHql(hqlBuilder);
     }
 
     @Override
