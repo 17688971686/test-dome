@@ -42,7 +42,7 @@
             <td>
                 <div ng-repeat="x in vm.flow.nextNode">
                     <span>{{$index+1}}、{{x.activitiName}}</span>
-
+					
                 </div>
             </td>
         </tr>
@@ -196,13 +196,14 @@
                 </div>
 
 
-
                 <div ng-if="vm.showFlag.nodeCreateDisNum">
                     <ol class="breadcrumb" style="font-size: 12px;" >
                         <li class="active">温馨提示：合并发文次项目，不用生成发文编号！</li>
                     </ol>
+                    
                     <button class="btn btn-xs btn-primary" ng-click="vm.createDispatchFileNum()" ng-disabled="vm.isCommit" ng-hide="vm.dispatchDoc.fileNum || vm.model.processState >= 6 || (vm.dispatchDoc.dispatchWay=='2'&& vm.dispatchDoc.isMainProject=='0') "><span class="glyphicon glyphicon-edit"></span>生成发文字号</button>
                 </div>
+              
                  <!-- 财务报销 -->
                 <div ng-if="vm.showFlag.financialCode">
                     <button class="btn btn-xs btn-primary" ng-click="vm.addFinancialApply()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>财务报销</button>

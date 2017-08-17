@@ -8,7 +8,7 @@
     function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin) {
         var vm = this;
         vm.title = "收文列表";
-
+       
         active();
         function active() {
             signSvc.grid(vm);

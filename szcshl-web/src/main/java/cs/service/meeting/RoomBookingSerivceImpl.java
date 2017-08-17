@@ -322,7 +322,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				rb.setModifiedDate(now);
 			}else{
 				BeanCopierUtils.copyProperties(roomDto, rb);
+				rb.setId(UUID.randomUUID().toString());
 			}
+			
+			MeetingRoom meeting= meetingRoomRepo.findById(roomDto.getMrID());
+			rb.setAddressName(meeting.getAddr());
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
 			rb.setRbDate(strdate+"("+stageday+")");//星期几
@@ -330,6 +334,9 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
 			rb.setCreatedBy(SessionUtil.getLoginName());
 			rb.setModifiedBy(SessionUtil.getLoginName());
+			
+			rb.setCreatedDate(now);
+			rb.setModifiedDate(now);
 			//如果有关联,则要加上
 			if(Validate.isString(roomDto.getWorkProgramId())){
                 WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),roomDto.getWorkProgramId());

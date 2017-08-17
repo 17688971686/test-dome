@@ -68,7 +68,7 @@
         function initUploadOptions(options) {
             var sysFileDefaults = {
                 width: "800px",
-                height: "600px",
+                height: "480px",
                 sysMinType: "",
                 sysfileType: "",
                 sysSignId: "",

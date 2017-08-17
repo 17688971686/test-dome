@@ -69,17 +69,19 @@
         </td>
     </tr>
     <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
-        <td class="text-center" style="width:10%;">评审会日期</td>
-        <td class="text-center" style="width:15%;">会议室名称</td>
-        <td class="text-center" style="width:15%;">开始时间</td>
-        <td class="text-center" style="width:10%;">结束时间</td>
+        <td class="text-center" style="width:15%;">评审会日期</td>
+        <td class="text-center" style="width:20%;">会议名称</td>
+        <td class="text-center" style="width:10%;">会议地点</td>
+        <td class="text-center" style="width:8%;">开始时间</td>
+        <td class="text-center" style="width:8%;">结束时间</td>
         <td class="text-center" style="width:10%;">主持人</td>
         <td class="text-center" colspan="3">会议内容</td>
     </tr>
     <tr ng-repeat="r in vm.work.roomBookingDtos track by $index" ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0">
         <td class="text-center">{{r.rbDate}}</td>
+        <td class="text-center">{{r.rbName}}</td>
         <td class="text-center">{{r.addressName}}</td>
-        <td class="text-center">{{r.beginTimeStr}}</td>
+         <td class="text-center">{{r.beginTimeStr}}</td>
         <td class="text-center">{{r.endTimeStr}}</td>
         <td class="text-center">{{r.host}}</td>
         <td class="text-center" colspan="3">{{r.content}}</td>

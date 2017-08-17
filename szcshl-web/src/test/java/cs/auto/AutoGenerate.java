@@ -24,9 +24,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(AddRegisterFile.class, "登记补充资料");
-        config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AddRegisterFile");
+        CRUDGanConfig config = new CRUDGanConfig(AddSuppLetter.class, "登记补充资料");
+        config.setAuthor("sjy");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AddSuppLetter");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());
@@ -47,11 +47,11 @@ public class AutoGenerate {
         fileConfs.add(new FileConfig(FileConst.serviceImplCls));
         fileConfs.add(new FileConfig(FileConst.controllerCls));
 
-       /* fileConfs.add(new FileConfig(FileConst.listHtml));
+        fileConfs.add(new FileConfig(FileConst.listHtml));
         fileConfs.add(new FileConfig(FileConst.listCtrlJs));
         fileConfs.add(new FileConfig(FileConst.listSvcJs));
         fileConfs.add(new FileConfig(FileConst.editHtml));
-        fileConfs.add(new FileConfig(FileConst.editCtrJs));*/
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));
         return fileConfs;
     }
 

@@ -23,10 +23,9 @@
         };
 
         return service;
-        
+      
         //S 初始化工作方案
         function initWorkProgram(vm){
-        	 //console.log();
         	if(!vm.workProgramId){
         		return;
         	}else{
@@ -36,12 +35,10 @@
             			params:{workId:vm.workProgramId}
             	}
             	var httpSuccess = function success(response) {
-            		vm.model = {}
-            		vm.model = response.data;
-            		vm.model.rbName = vm.model.projectName;
-                	vm.model.stageOrgName = vm.model.reviewOrgName;
-                	console.log(vm.model.projectName);
-                	console.log(vm.model.stageOrgName);
+            		vm.sign = response.data;
+            		console.log(vm.sign);
+                	vm.sign.stageOrgName = vm.sign.reviewOrgName;
+                
             	}
             	common.http({
             		vm: vm,
@@ -63,8 +60,7 @@
                     data: vm.model
                 }
                 var httpSuccess = function success(response) {
-	            	vm.model = {}
-	            	vm.model = response.data;
+	            	vm.user = response.data;
                 }
                 common.http({
                     vm: vm,
@@ -202,14 +198,27 @@
                         var isValid = $('#formRoom').valid();
                         if (isValid) {
                             var model = options.data.models[0];
-                            model.rbName = $("#rbName").val();
+                            if($("#rbName").val()){
+                            	model.rbName = $("#rbName").val();
+                            }else{
+                            	model.rbName = $("#projectName").val();
+                            }
                             model.stageOrgName = $("#stageOrgName").val();
                             model.rbDay = $("#rbDay").val();
+                            if($("#host").val()){
+                            	 model.host = $("#host").val();
+                            }else{
+                            	 model.host = $("#hostName").val();
+                            }
+                            if($("#dueToPeople").val()){
+                            	 model.dueToPeople = $("#dueToPeople").val();
+                            }else{
+                            	 model.dueToPeople = $("#dueToPeopleName").val();
+                            }
                             model.beginTimeStr = $("#beginTime").val();
                             model.endTimeStr = $("#endTime").val();
                             model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
                             model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
-                            console.log(model);
                             if (vm.workProgramId) {
                                 model.workProgramId = vm.workProgramId;
                             }
@@ -299,7 +308,10 @@
                         var httpOptions = {
                             method: 'delete',
                             url: url_room,
-                            data: id
+                          //  data: id
+                            params:{
+                            	id:id
+                            }
                         }
                         var httpSuccess = function success(response) {
                             common.requestSuccess({

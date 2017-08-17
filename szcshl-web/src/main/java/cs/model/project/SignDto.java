@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import cs.domain.project.AddSuppLetter;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.model.sys.OrgDto;
@@ -608,7 +609,8 @@ public class SignDto extends BaseDto {
 
     //工作方案
     private List<WorkProgramDto> workProgramDtoList;
-
+    
+    
     //发文
     private DispatchDocDto dispatchDocDto;
 
@@ -2201,4 +2203,5 @@ public class SignDto extends BaseDto {
     public void setHasExpertReview(String hasExpertReview) {
         this.hasExpertReview = hasExpertReview;
     }
+
 }

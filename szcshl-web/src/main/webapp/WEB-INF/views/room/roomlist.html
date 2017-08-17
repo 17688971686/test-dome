@@ -59,13 +59,13 @@
         <@shiro.hasPermission name="room#exportNextWeek#get">
             <button type="button" class="k-button k-primary" ng-click="vm.exportNextWeek()" value="">导出下周全部会议安排</button>
         </@shiro.hasPermission>
+        
     </div>
     <div class="well well-sm" style="margin-bottom: 5px;">
         会议室查询：
         <select ng-model="vm.mrID" name="mrID"  ng-change="vm.findMeeting()" >
             <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.mrID == x.id">{{x.addr}}</option>
         </select>
-      
     </div>
     <!-- 评审部门 -->
       <input type="hidden" maxlength="200" class="form-control input-sm " 
@@ -78,9 +78,10 @@
     <div kendo-scheduler k-options="vm.schedulerOptions" id="scheduler" ></div>
 
 </div>
-
+	
 <script id="event-template" type="text/x-kendo-template">
     <p style="padding:0;margin: 0;">预定时间段：#: kendo.toString(start, "HH:mm") # - #: kendo.toString(end, "HH:mm") #</p>
+
     <p style="padding:0;margin: 0;padding-left: 5px;">会议室名称：#: title #</p>
 </script>
 
@@ -94,8 +95,12 @@
                 <tr>
                     <td class="formAlignRight" width="20%">会议名称 <span class="required">*</span></td>
                     <td width="50%">
- 						
-                        <input class="form-control input-sm " type="text" ng-model="vm.model.rbName" value="{{vm.model.rbName}}"     id="rbName">
+ 						<span ng-show="vm.workProgramId ==false">
+                        <input class="form-control input-sm " ng-model="vm.model.rbName" type="text"  name="rbName"  id="rbName">
+						</span>
+						<span ng-show="vm.workProgramId">
+						 <input class="form-control input-sm "  type="text"   value="{{vm.sign.projectName}}" id="projectName">
+						</span>
 
                     </td>
                     <td width="10%"><span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors"></span>
@@ -125,16 +130,26 @@
                 <tr>
                     <td class="formAlignRight">会议主持人<span class="required">*</span></td>
                     <td>
-                        <input  type="text" class="form-control input-sm " name="host" ng-model="vm.model.host" id="host" data-val="true" data-val-required="必填"  >
-                              
+						<span ng-hide="vm.workProgramId">
+						 <input  type="text" class="form-control input-sm "  ng-model="vm.model.host"; name="host" id="hostName" data-val="true" data-val-required="必填"  >
+						 </span>
+						<span ng-show="vm.workProgramId">
+                        <input  type="text" class="form-control input-sm "  value="{{vm.sign.mianChargeUserName}}" id="host" data-val="true" data-val-required="必填"  >
+                         </span>   
                     </td>
                     <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
                 <tr>
                     <td class="formAlignRight">会议预定人<span class="required">*</span></td>
                     <td>
-                        <input type="text" class="form-control input-sm " name="dueToPeople" id="dueToPeople" ng-model="vm.model.dueToPeople" data-val="true" data-val-required="必填">
-                               
+						
+						<span ng-show="vm.workProgramId">
+                        <input type="text" class="form-control input-sm " value="{{vm.sign.mianChargeUserName}}" id="dueToPeople"  data-val="true" data-val-required="必填">
+                      	</span>
+						<span ng-hide="vm.workProgramId">
+                        <input type="text" class="form-control input-sm " ng-model="vm.model.dueToPeople" name="dueToPeople" id="dueToPeopleName"   data-val="true" data-val-required="必填">
+                      	</span>
+						
                     </td>
                     <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,16 +34,28 @@ public class AddSuppLetterController {
     
     @RequiresPermissions("addSuppLetter##get")
     @RequestMapping(name = "初始化拟补充资料函", path = "", method = RequestMethod.GET)
-    public @ResponseBody AddSuppLetterDto initSupp(@ RequestParam String signid,String id){
-    	AddSuppLetterDto addSuppLetterDto=addSuppLetterService.initSupp(signid,id);
-    	return addSuppLetterDto;
+    public @ResponseBody AddSuppLetterDto initSupp(@RequestParam String signid){
+    	//AddSuppLetterDto addSuppLetterDto=addSuppLetterService.initSupp(signid,id);
+    	return null;
     }
     
-    @RequiresPermissions("addSuppLetter#add#get")
+    @RequiresPermissions("addSuppLetter#initaddSuppLetterData#get")
+    @RequestMapping(name = "初始化补充资料函", path = "initaddSuppLetterData", method = RequestMethod.GET)
+    public @ResponseBody Map<String ,Object> initSuppLetterData(@RequestParam String signid, String id){
+    	Map<String,Object> resultMap = new HashMap<String,Object>();
+    	resultMap.put("suppletterDto", addSuppLetterService.initSuppLetter(signid,id));
+    	//AddSuppLetterDto suppletter = addSuppLetterService.findByIdSuppLetter(id);
+    	//resultMap.put("suppletter", suppletter);
+    	return resultMap;
+    }
+    
+    
+    @RequiresPermissions("addSuppLetter#add#post")
     @RequestMapping(name = "添加拟补充资料函", path = "add", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void add(@RequestBody AddSuppLetterDto addSuppLetterDto){
-    	        addSuppLetterService.addSupp(addSuppLetterDto);
+    @ResponseBody
+    public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto,Boolean isaddSuppLettr){
+		return  addSuppLetterService.addSupp(addSuppLetterDto,isaddSuppLettr);
     }
     
     @RequiresPermissions("addSuppLetter#update#get")
@@ -59,12 +72,12 @@ public class AddSuppLetterController {
     	return addSuppLetterDto;
     }
     
-    /*@RequiresPermissions("dispatch#createFileNum#post")
+    @RequiresPermissions("dispatch#createFileNum#post")
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg createFileNum(@RequestParam String id) throws Exception {
-        ResultMsg returnMsg = addSuppLetterService.fileNum(id);
-        return returnMsg;
-    }*/
+    public @ResponseBody void createFileNum(@RequestParam String id) throws Exception {
+        addSuppLetterService.fileNum(id);
+       // return returnMsg;
+    }
     
     @RequiresPermissions("addSuppLetter#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "edit", method = RequestMethod.GET)

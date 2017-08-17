@@ -4,7 +4,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -51,6 +54,10 @@ public class AddSuppLetter extends DomainBase {
 	@Column(columnDefinition ="VARCHAR(32)")
 	private String filenum;
 	
+	//用户登录id
+	@Column(columnDefinition ="VARCHAR(100)")
+	private String userId;
+	
 	//文件标题
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String title;
@@ -78,6 +85,7 @@ public class AddSuppLetter extends DomainBase {
 	//收文id
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String signid;
+	
 	
 	//文字序号
     @Column(columnDefinition = "INTEGER")
@@ -210,6 +218,14 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setDisapDate(Date disapDate) {
 		this.disapDate = disapDate;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 	

@@ -33,9 +33,9 @@
             })
              //begin#addSuppletter
             .state('addSupp', {
-                url: '/addSupp/:signid/:id',
+                url: '/addSupp/:signid',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
-                controller: 'suppletterCtrl',
+                controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
             })//end#addSuppletter
              //begin#registerFile

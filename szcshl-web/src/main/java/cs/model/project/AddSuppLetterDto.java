@@ -1,6 +1,7 @@
 package cs.model.project;
 
 import cs.domain.project.AddSuppLetter;
+import cs.domain.project.Sign;
 import cs.model.BaseDto;
 
 import java.util.Date;
@@ -40,8 +41,8 @@ public class AddSuppLetterDto extends BaseDto {
     private String meetingSuggest;
     private String leaderSuggest;
     private Integer fileSeq;
+    private String userId;
     
-
     
     public Date getDisapDate() {
 		return disapDate;
@@ -75,13 +76,7 @@ public class AddSuppLetterDto extends BaseDto {
 		this.id = id;
 	}
 
-	public String getSignid() {
-		return signid;
-	}
-
-	public void setSignid(String signid) {
-		this.signid = signid;
-	}
+	
 
 	public AddSuppLetterDto() {
     }
@@ -164,5 +159,24 @@ public class AddSuppLetterDto extends BaseDto {
 	public void setFileSeq(Integer fileSeq) {
 		this.fileSeq = fileSeq;
 	}
+
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getSignid() {
+		return signid;
+	}
+
+	public void setSignid(String signid) {
+		this.signid = signid;
+	}
+	
+	
 
 }

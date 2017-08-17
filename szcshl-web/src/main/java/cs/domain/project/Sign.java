@@ -728,6 +728,7 @@ public class Sign extends DomainBase {
     @OneToMany(mappedBy = "sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<WorkProgram> workProgramList;
     
+    
     //暂停项目
     @OneToMany(mappedBy="sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<ProjectStop> projectStopList;
@@ -2318,4 +2319,6 @@ public class Sign extends DomainBase {
     public void setMinisterId(String ministerId) {
         this.ministerId = ministerId;
     }
+
+    
 }

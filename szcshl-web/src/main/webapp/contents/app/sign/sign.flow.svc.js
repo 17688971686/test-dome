@@ -58,9 +58,10 @@
                 case flowcommon.getSignFlowNode().SIGN_FGLD_FB:
                     vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.businessNext = true;
+                   
                     vm.showFlag.nodeSelOrgs = true;
                     if (vm.flow.businessMap) {
-                        vm.orgs = vm.flow.businessMap.orgs;
+                        vm.orgs= vm.flow.businessMap.orgs;
                     }
                     break;
                 //部门分办

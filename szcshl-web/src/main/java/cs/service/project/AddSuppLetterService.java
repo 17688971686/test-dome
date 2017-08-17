@@ -17,7 +17,7 @@ public interface AddSuppLetterService {
     
     AddSuppLetterDto getbyId(String id);
     
-    void addSupp(AddSuppLetterDto addSuppLetterDto);
+    ResultMsg addSupp(AddSuppLetterDto addSuppLetterDto,Boolean isaddSuppLettr);
     
     AddSuppLetterDto initSupp(String signid,String id);
 
@@ -25,6 +25,10 @@ public interface AddSuppLetterService {
 	
 	void updateSupp(AddSuppLetterDto addSuppLetterDto);
 	
-    ResultMsg fileNum(String id);
+    void fileNum(String id);
+
+	AddSuppLetterDto initSuppLetter(String signid,String id);
+
+	AddSuppLetterDto findByIdSuppLetter(String id);
 
 }
