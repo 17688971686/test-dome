@@ -57,10 +57,12 @@
                 //设置综合部和分管领导ID
                 $.each(vm.busiObj.leaderList,function(i,leader){
                     console.log(leader.mngOrgType+"---"+checkboxValue)
+                    console.log(leader);
                     if(leader.mngOrgType == checkboxValue){
                         vm.model.leaderId = leader.id;
                         vm.model.leaderName = leader.displayName;
-                        vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,2)+"主任阅示。";
+                        vm.model.comprehensivehandlesug = "请"+(leader.displayName)+"主任阅示。";
+                        // vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,2)+"主任阅示。";
                     }
                 })
                 if(!vm.model.leaderId){
@@ -72,6 +74,7 @@
                 vm.model.comprehensiveDate = (date.getFullYear()+"-"+monthValue+"-"+dayValue);
             }
         }
+
 
         //发起流程
         vm.startNewFlow = function(){
@@ -91,7 +94,16 @@
                         if(response.data.reCode == "ok"){
                             bsWin.success("操作成功！");
                         }else{
-                            bsWin.error(response.data.reMsg);
+                            if(response.data.reMsg == "操作失败，请先设置默认办理部门！"){
+                                common.alert({
+                                    vm : vm,
+                                    title : "温馨提示",
+                                    msg : "请先设置默认办理部门，并保存数据",
+                                    closeDialog: true
+                                });
+                            }else{
+                                bsWin.error(response.data.reMsg);
+                            }
                         }
                     }
                     common.http({
@@ -183,6 +195,8 @@
         //申报登记编辑
         vm.updateFillin = function () {
             vm.isSubmit = true;
+            console.log(vm.model);
+
             signSvc.updateFillin(vm.model,function (data) {
                 vm.isSubmit = false;
                 bsWin.alert("操作成功！");
