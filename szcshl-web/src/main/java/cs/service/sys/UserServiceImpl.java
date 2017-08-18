@@ -113,6 +113,17 @@ public class UserServiceImpl implements UserService {
                 Org o = orgRepo.findById(Org_.id.getName(),userDto.getOrgId());
                 user.setOrg(o);
             }
+
+            //添加分管部门类型
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append("select "+ User_.mngOrgType.getName()+ " from cs_user where "+ User_.id.getName()+"=(");
+            hqlBuilder.append("select "+ Org_.orgSLeader.getName()+ " from cs_org where "+ Org_.id.getName()+"=:orgId)");
+            hqlBuilder.setParam("orgId",userDto.getOrgId());
+            List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+            if(!list.isEmpty()){
+                Object obj = list.get(0);
+                user.setMngOrgType((String)obj);
+            }
             userRepo.save(user);
 
             createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
@@ -176,6 +187,19 @@ public class UserServiceImpl implements UserService {
                 user.getRoles().add(role);
             }
         }
+
+        //修改分管部门类型
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select "+ User_.mngOrgType.getName()+ " from cs_user where "+ User_.id.getName()+"=(");
+        hqlBuilder.append("select "+ Org_.orgSLeader.getName()+ " from cs_org where "+ Org_.id.getName()+"=(");
+        hqlBuilder.append("select orgid from cs_user where "+ User_.id.getName()+"=:userId))");
+        hqlBuilder.setParam("userId",userDto.getId());
+        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+        if(!list.isEmpty()){
+            Object obj = list.get(0);
+            user.setMngOrgType((String)obj);
+        }
+
         userRepo.save(user);
         this.updateActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
         logger.info(String.format("更新用户,用户名:%s", userDto.getLoginName()));
