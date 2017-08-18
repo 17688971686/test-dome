@@ -192,15 +192,11 @@
             }*/
         }
 
+        
         //申报登记编辑
         vm.updateFillin = function () {
             vm.isSubmit = true;
-<<<<<<< Upstream, based on origin/develop
-            console.log(vm.model);
-
-=======
             vm.model.leaderhandlesug = $("#leaderhandlesug").val();
->>>>>>> 613c273 拟补充资料函，会议室预定修改
             signSvc.updateFillin(vm.model,function (data) {
                 vm.isSubmit = false;
                 bsWin.alert("操作成功！");

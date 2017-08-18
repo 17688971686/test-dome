@@ -46,12 +46,23 @@ public class AddRegisterFileController {
 		PageModelDto<AddRegisterFileDto> addRegisterFileDtos = addRegisterFileService.get(odataObj);
 		return addRegisterFileDtos;
 	}
+	
+	@RequiresPermissions("addRegisterFile#initFindByOData#get")
+	@RequestMapping(name = "初始化登记表数据", path = "initFindByOData", method = RequestMethod.GET)
+	@ResponseBody
+	public List<AddRegisterFileDto> initFindByOData(HttpServletRequest request) throws ParseException {
+		ODataObj odataObj = new ODataObj(request);
+		List<AddRegisterFileDto> addRegisterFileList = addRegisterFileService.initRegisterFileData(odataObj);
+		return addRegisterFileList;
+	}
     
-	@RequiresPermissions("addRegisterFile#create#post")
-	@RequestMapping(name = "创建记录", path = "create/{signid}", method = RequestMethod.POST)
+	@RequiresPermissions("addRegisterFile#save#post")
+	@RequestMapping(name = "创建记录", path = "save", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void create(@RequestBody AddRegisterFileDto[] addRegisterFileDtos,@PathVariable("signid") String signid) throws ParseException {
-		 addRegisterFileService.save(signid,addRegisterFileDtos);
+	public void create(@RequestBody AddRegisterFileDto addRegisterFileDtos[]) throws ParseException {
+		for(AddRegisterFileDto fileDto :addRegisterFileDtos ){
+			addRegisterFileService.save(fileDto);
+		}
 	}
 	
 	@RequiresPermissions("addRegisterFile#initprintdata#post")
@@ -60,17 +71,24 @@ public class AddRegisterFileController {
 		 Map<String,Object> map = addRegisterFileService.initprint(signid);
 		return map;
 	}
+	
+	@RequiresPermissions("addRegisterFile#initRegisterData#post")
+	@RequestMapping(name = "初始化登记补充资料", path = "initRegisterData", method = RequestMethod.POST)
+	public @ResponseBody Map<String,Object> initAddRegisterFile(@RequestParam String signid)throws ParseException{
+		Map<String,Object> map = addRegisterFileService.initRegisterFile(signid);
+		return map;
+	}
 
 	@RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
 	public @ResponseBody AddRegisterFileDto findById(@RequestParam(required = true) String id) {
 		return addRegisterFileService.findById(id);
 	}
 
-	@RequiresPermissions("addRegisterFile#delete#delete")
-	@RequestMapping(name = "删除记录", path = "delete", method = RequestMethod.POST)
+	@RequiresPermissions("addRegisterFile#deleteFile#delete")
+	@RequestMapping(name = "删除记录", path = "deleteFile", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void delete(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) {
-		addRegisterFileService.delete(addRegisterFileDtos);
+	public void delete(@RequestBody String id) {
+		addRegisterFileService.deleteRegisterFile(id);
 	}
 
 	@RequiresPermissions("addRegisterFile#update#put")

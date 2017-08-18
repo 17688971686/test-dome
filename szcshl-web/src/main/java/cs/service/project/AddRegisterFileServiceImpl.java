@@ -3,12 +3,15 @@ package cs.service.project;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import cs.domain.financial.FinancialManager;
 import cs.domain.project.AddRegisterFile;
 import cs.domain.project.AddRegisterFile_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.model.PageModelDto;
+import cs.model.financial.FinancialManagerDto;
 import cs.model.project.AddRegisterFileDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.model.project.SignDto;
@@ -59,21 +62,19 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
 
 	@Override
 	@Transactional
-	public void save(String signid,AddRegisterFileDto[] addRegisterFileDtos) {
-		if(addRegisterFileDtos !=null && addRegisterFileDtos.length>0){
-			for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
-				AddRegisterFile addRegisterFile = new AddRegisterFile(); 
-				BeanCopierUtils.copyProperties(addRegisterFileDto, addRegisterFile); 
-				Date now = new Date();
-				addRegisterFile.setId(UUID.randomUUID().toString());
-				addRegisterFile.setCreatedDate(now);
-				addRegisterFile.setModifiedDate(now);
-				addRegisterFile.setCreatedBy(SessionUtil.getLoginName());
-				addRegisterFile.setModifiedBy(SessionUtil.getLoginName());
-				addRegisterFile.setSignid(signid);
-				addRegisterFileRepo.save(addRegisterFile);
-			}
+	public void save(AddRegisterFileDto addRegisterFileDtos) {
+		AddRegisterFile registerFile = new AddRegisterFile();
+		BeanCopierUtils.copyProperties(addRegisterFileDtos, registerFile);
+		Date now = new Date();
+		if(addRegisterFileDtos.getId() == null){
+			registerFile.setId(UUID.randomUUID().toString());
 		}
+		registerFile.setCreatedBy(SessionUtil.getUserInfo().getId());
+		registerFile.setModifiedBy(SessionUtil.getUserInfo().getId());
+		registerFile.setCreatedDate(now);
+		registerFile.setModifiedDate(now);
+		addRegisterFileRepo.save(registerFile);
+		
 	}
 
 	@Override
@@ -105,14 +106,10 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
 
 	@Override
 	@Transactional
-	public void delete(AddRegisterFileDto[] addRegisterFileDtos) {
-		if(addRegisterFileDtos !=null && addRegisterFileDtos.length > 0){
-			for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
-					AddRegisterFile addRegisterFile = addRegisterFileRepo.findById(addRegisterFileDto.getId());
-					if(addRegisterFile !=null){
-						addRegisterFileRepo.delete(addRegisterFile);
-					}
-			}
+	public void deleteRegisterFile(String id) {
+		List<String> registerId = StringUtil.getSplit(id, ",");
+		if(registerId !=null && registerId.size() > 0){
+			addRegisterFileRepo.deleteById(AddRegisterFile_.id.getName(), registerId.get(0));
 		}
 	}
 	
@@ -164,6 +161,36 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
         	map.put("signdto", signdto);
 		return map;
 		
+	}
+
+	@Override
+	public Map<String, Object> initRegisterFile(String signid) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		/* Sign sign = signRepo.findById(signid);
+		 FinancialManagerDto financialDto = new FinancialManagerDto();
+		 financialDto.setProjectName(sign.getProjectname());
+		 financialDto.setSignid(sign.getSignid());*/
+		 HqlBuilder hqlBuilder = HqlBuilder.create();
+		 hqlBuilder.append(" from "+AddRegisterFile.class.getSimpleName() + " where "+AddRegisterFile_.signid.getName()+ " =:signid");
+		 hqlBuilder.setParam("signid", signid);
+		 List<AddRegisterFile> financiallist= addRegisterFileRepo.findByHql(hqlBuilder);
+		 map.put("financiallist", financiallist);
+		 //map.put("financialDto", financialDto);
+		 return map;
+	}
+
+	@Override
+	public List<AddRegisterFileDto> initRegisterFileData(ODataObj odataObj) {
+		List<AddRegisterFile>	registerFilelist =addRegisterFileRepo.findByOdata(odataObj);
+		List<AddRegisterFileDto> fileDtoList = new ArrayList<AddRegisterFileDto>();
+		for(AddRegisterFile file :registerFilelist ){
+			if(file.getCreatedBy().equals(SessionUtil.getUserInfo().getId())){
+				AddRegisterFileDto registerDto = new AddRegisterFileDto();
+				BeanCopierUtils.copyProperties(file, registerDto);
+				fileDtoList.add(registerDto);
+			}
+		}
+		return fileDtoList;
 	}
 	
 }

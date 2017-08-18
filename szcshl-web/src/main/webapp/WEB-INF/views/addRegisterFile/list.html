@@ -6,17 +6,81 @@
 
 <div class="well well-sm" style="background:white;margin: auto;overflow: auto">
     <ol class="breadcrumb">
-       	<li><a href="#/expert">登记补充资料</a></li>
+       	<li><a href="#/">登记补充资料</a></li>
         <!-- <li class="active">{{vm.titles}}</li> -->
    	</ol>
-   	<form id="usersform" name="usersform">
     		 
        <div class="toolbar">
 		    <button class="btn btn-sm btn-primary" ng-click="vm.print()">打印</button>
 			<button class="btn btn-sm btn-primary" ng-click="back()" >返回</button>
 	   </div>
+	   <div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/">登记补充资料</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="financialForm" name="financialForm">
+
+				
+    <table class="table table-bordered seleteTable">
+					<tr>
+						<td>
+							<span>登记补充资料</span>
+							<span>
+								<button ng-click="vm.addRegisterFile()"  value="addRegisterFile" class="btn btn-sm btn-primary"> <span class="glyphicon glyphicon-plus"></span>新建</button>
+								<button ng-click="vm.deleteRegisterFile()"  class="btn btn-sm btn-danger"  value="deleteFinancial"> <span class="glyphicon glyphicon-remove"></span>删除</button>
+								<button ng-click="vm.saveRegisterFilel()" class="btn btn-sm btn-success"  value="saveCommonIdea"> <span class="glyphicon glyphicon-ok"></span>保存</button>
+								<button class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+							</span>
+							<div style="max-height:800px; overflow: auto;" >
+								<table class="table table-bordered seleteTable" id="addRegistersTable">
+									 <tr>
+						                <td width="5%" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
+						                <td width="5%" align="center">序号</td>
+						                <td width="15%" >资料名称</td>
+						                <td width="10%" >份数</td>
+						                <td width="10%" >原件</td>
+						                <td width="10%" >复印件</td>
+						                <td width="20%" >补充说明</td>
+						                <td width="15%" >补充日期</td>
+						            </tr>
+									<tr ng-repeat="x in vm.addRegisters">
+										<td width="5%" align="center"><input type="checkbox" ng-checked="addRegistersCheck" name="addRegistersCheck" value="{{vm.addRegisters[$index].id}}" /></td>
+										<td width="5%" align="center">{{$index+1}}</td>
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 200px;"
+											ng-model="vm.addRegisters[$index].fileName"  />
+										</td>
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 110px;"
+											ng-model="vm.addRegisters[$index].totalNum" id="totalNum" name="totalNum" 
+											ng-keyup="vm.inputIntegerValue(vm.addRegisters[$index].totalNum,$index+1)"> 
+											 <span id="errorsUnmber{{$index+1}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"  class="errors"></span>
+                        
+										</td>
+										<td >
+											<input type="checkbox" style="width:50px;" ng-model="vm.addRegisters[$index].isHasOriginfile"id="isHasOriginfile" name="isHasOriginfile" ng-true-value="9" ng-false-value="0">
+										</td>
+										<td >
+											<input type="checkbox" style="width:50px;" ng-model="vm.addRegisters[$index].isHasCopyfile"id="isHasCopyfile" name="isHasCopyfile" ng-true-value="9" ng-false-value="0">
+										</td>
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 160px;"
+											ng-model="vm.addRegisters[$index].suppleDeclare"  />
+										</td>
+										<td >
+										<input type="text" class="form-control input-sm " style="width: 100px;"
+											ng-model="vm.addRegisters[$index].suppleDate" kendo-date-picker k-format="'yyyy-MM-dd'" />
+										</td>
+									</tr>
+								</table>
+							</div>
+							</td>
+					</tr>
+				</table>
+			</div>
      </form>
-	<div id="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+	
 	
 </div>
 

@@ -42,7 +42,7 @@
             .state('registerFile', {
                 url: '/registerFile/:signid/:id',
                 templateUrl: rootPath + '/addRegisterFile/list.html',
-                controller: 'registerFileCtrl',
+                controller: 'addRegisterFileCtrl',
                 controllerAs: 'vm'
             }) //end#registerFile
             .state('dtasks', {

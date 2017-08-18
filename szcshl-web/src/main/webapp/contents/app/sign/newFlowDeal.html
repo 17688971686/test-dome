@@ -178,7 +178,7 @@
                 <div ng-if="vm.showFlag.nodeWorkProgram">
                     <p>是否做工作方案：<input class="formAlignRight" type="checkbox" style="width:20px;"  ng-checked="vm.businessFlag.isNeedWP == 9" ng-true-value="9" ng-false-value="0" ng-click="vm.checkNeedWP($event)"></p>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit"  ng-show="vm.businessFlag.isNeedWP == 9 " ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="false" ><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="vm.businessFlag.isNeedWP == 9" ><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ng-show="vm.businessFlag.isNeedWP == 9"><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ng-show="vm.businessFlag.isNeedWP == 9"><span class="glyphicon glyphicon-edit"></span>登记表补充资料</button>
                 </div>

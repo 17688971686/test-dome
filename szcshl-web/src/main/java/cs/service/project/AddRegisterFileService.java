@@ -18,16 +18,20 @@ public interface AddRegisterFileService {
     
     PageModelDto<AddRegisterFileDto> get(ODataObj odataObj);
 
-	void save(String signid,AddRegisterFileDto[] addRegisterFileDtos);
+	void save(AddRegisterFileDto addRegisterFileDtos);
 
 	void update(AddRegisterFileDto[] addRegisterFileDtos);
 
 	AddRegisterFileDto findById(String deptId);
 
-	void delete(AddRegisterFileDto[] addRegisterFileDtos);
+	void deleteRegisterFile(String id);
 	
 	 Map<String,Object> initprint( String signid);
 	 
 	 List<AddRegisterFileDto> findbySuppdate(String suppDate);
+
+	Map<String, Object> initRegisterFile(String signid);
+
+	List<AddRegisterFileDto> initRegisterFileData(ODataObj odataObj);
 
 }
