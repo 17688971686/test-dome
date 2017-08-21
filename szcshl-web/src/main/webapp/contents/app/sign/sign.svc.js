@@ -116,19 +116,19 @@
                 {
                     field: "projectname",
                     title: "项目名称",
-                    width: 160,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "filecode",
                     title: "收文编号",
-                    width: 120,
+                    width: 80,
                     filterable: false,
                 },
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 150,
+                    width: 100,
                     filterable: false,
                 },
                 {
@@ -140,13 +140,13 @@
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 120,
+                    width: 80,
                     filterable: false,
                 },
                 {
                     field: "receivedate",
                     title: "收文时间",
-                    width: 160,
+                    width: 100,
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
 

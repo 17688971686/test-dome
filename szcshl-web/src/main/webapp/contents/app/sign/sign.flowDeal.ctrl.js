@@ -343,8 +343,6 @@
         
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
-        
-        	console.log("id:"+vm.model.suppletterid);
         	//$state.go('addSupp', {signid: vm.model.signid,id:vm.model.suppletterid });
         	$state.go('addSupp', {signid: vm.model.signid});
         }// E_跳转到 拟补充资料函 编辑页面

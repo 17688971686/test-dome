@@ -56,7 +56,7 @@
     <form id="sign_fill_form" name="sign_fill_form">
 		<!-- S 编辑页面 -->
 		<!--S_ 项目建议书/可行性研究报告 -->
-		<div ng-show="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告'" ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
+		<div ng-show="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'" ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
 		<!--E_ 项目建议书/可行性研究报告 -->
 
 		<!-- S 进口设备 -->
@@ -64,16 +64,17 @@
         <!-- S 进口设备 -->
         
          <!-- S_设备清单（国产） -->
-        <div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
+        <div ng-show="vm.model.reviewstage=='设备清单（国产）'||vm.model.reviewstage=='设备清单（进口）' " ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
     	<!-- E_设备清单（国产） --> 
-    	
-    	 <!-- S_设备清单（进口） -->
-        <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signEdit/equipmentImportEdit.html'"></div>
-    	<!-- E_设备清单（进口） --> 
     	
     	<!-- S 项目概算  --> 
     	  <div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signEdit/projectBudgetEidt.html'"></div>
     	<!-- E 项目概算  -->
+    	
+    	 <!-- S_设备清单（进口） -->
+       <!--  <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signEdit/equipmentImportEdit.html'"></div> -->
+    	<!-- E_设备清单（进口） --> 
+    	
 
     </form> <!-- end form -->
  
