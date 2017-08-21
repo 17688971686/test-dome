@@ -56,13 +56,11 @@
                 vm.model.comprehensiveName = '综合部';
                 //设置综合部和分管领导ID
                 $.each(vm.busiObj.leaderList,function(i,leader){
-                    console.log(leader.mngOrgType+"---"+checkboxValue)
-                    console.log(leader);
                     if(leader.mngOrgType == checkboxValue){
                         vm.model.leaderId = leader.id;
                         vm.model.leaderName = leader.displayName;
-                        vm.model.comprehensivehandlesug = "请"+(leader.displayName)+"主任阅示。";
-                        // vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,2)+"主任阅示。";
+                        // vm.model.comprehensivehandlesug = "请"+(leader.displayName)+"主任阅示。";
+                        vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,1)+"主任阅示。";
                     }
                 })
                 if(!vm.model.leaderId){
@@ -80,7 +78,7 @@
         vm.startNewFlow = function(){
             bsWin.confirm({
                 title: "询问提示",
-                message: "确定发起流程么",
+                message: "确定发起流程么，请确保填写的信息已经保存正确！",
                 onOk: function () {
                     $('.confirmDialog').modal('hide');
                     var httpOptions = {

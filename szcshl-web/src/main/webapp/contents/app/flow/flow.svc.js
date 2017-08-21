@@ -152,41 +152,25 @@
         }// E_提交下一步
 
         // S_回退到上一步
-        function rollBackToLast(vm) {
+        function rollBackToLast(flowModel,isCommit,callBack) {
+            isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/flow/rollbacklast",
-                data: vm.flow
+                data: flowModel
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: response.data.reMsg,
-                            closeDialog: true,
-                            fn: function () {
-                                if (response.data.reCode == "error") {
-                                    vm.isCommit = false;
-                                } else {
-                                    $state.go('gtasks');
-                                }
-                            }
-                        })
-                    }
-
-                })
-            }
-
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
                 onError: function (response) {
-                    vm.isCommit = false;
+                    isCommit = false;
                 }
             });
         }// E_回退到上一步

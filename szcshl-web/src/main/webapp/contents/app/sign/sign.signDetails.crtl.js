@@ -10,7 +10,21 @@
     	vm.model = {};							//创建一个form对象   	
         vm.title = '查看详情信息';        			//标题
         vm.model.signid = $state.params.signid;	//收文ID
-        vm.showFlag={};
+        //按钮显示控制，全部归为这个对象控制
+        vm.showFlag = {
+            tabWorkProgram:false,       // 显示工作方案标签tab
+            tabBaseWP:false,            // 项目基本信息tab
+            tabDispatch:false,          // 发文信息tab
+            tabFilerecord:false,        // 归档信息tab
+            tabExpert:false,            // 专家信息tab
+            tabSysFile:false,           // 附件信息tab
+            tabAssociateSigns:false,    // 关联项目tab
+        };
+
+        //业务控制对象
+        vm.businessFlag = {
+            expertReviews : []
+        }
        
         active();
         function active(){
@@ -28,7 +42,6 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
-                console.log(vm.model);
                 //有关联，则显示项目
                 if(vm.model.isAssociate && vm.model.isAssociate == 1){
                     signSvc.initAssociateSigns(vm,vm.model.signid);
@@ -37,8 +50,13 @@
                 //工作方案
                 if(vm.model.processState > 2){
                     vm.showFlag.tabWorkProgram=true;
-                    vm.work = vm.model.workProgramDtoList;
-
+                    //初始化专家评分
+                    signSvc.paymentGrid(vm.model.signid,function(data){
+                        vm.businessFlag.expertReviews = data.value;
+                        if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
+                            vm.showFlag.tabExpert = true;   //显示专家信息tab
+                        }
+                    });
                 }
                 //发文
                 if (vm.model.dispatchDocDto) {
@@ -58,7 +76,6 @@
                     if(vm.model.processState ==0 ||  vm.model.processState == 9){
                         vm.flow.hideFlowImg = true;
                     }
-                    // flowSvc.initFlowData(vm);
                 }
             });
             

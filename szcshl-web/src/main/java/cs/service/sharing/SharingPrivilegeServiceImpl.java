@@ -34,7 +34,7 @@ public class SharingPrivilegeServiceImpl implements SharingPrivilegeService {
     public boolean bathDeleteByShareId(String shareIds) {
         HqlBuilder sqlHuilder = HqlBuilder.create();
         sqlHuilder.append(" delete from cs_sharing_privilege ");
-        sqlHuilder.bulidIdString("where","sharid",shareIds);
+        sqlHuilder.bulidPropotyString("where","sharid",shareIds);
         return sharingPrivilegeRepo.executeSql(sqlHuilder) < 0 ? false : true;
     }
 }

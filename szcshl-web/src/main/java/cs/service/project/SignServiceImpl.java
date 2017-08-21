@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import cs.domain.sys.*;
 import cs.model.sys.UserDto;
+import cs.repository.repositoryImpl.sys.*;
+import cs.service.sys.OrgDeptService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -76,10 +78,6 @@ import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.sys.CompanyRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.sys.UserService;
@@ -87,11 +85,8 @@ import cs.service.sys.UserService;
 @Service
 public class SignServiceImpl implements SignService {
     private static Logger log = Logger.getLogger(SignServiceImpl.class);
-
     @Autowired
     private SignRepo signRepo;
-    @Autowired
-    private UserService userService;
     @Autowired
     private UserRepo userRepo;
     @Autowired
@@ -135,6 +130,9 @@ public class SignServiceImpl implements SignService {
     private SignMergeRepo signMergeRepo;
     @Autowired
     private WorkProgramService workProgramService;
+    //部门（小组）列表
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      * @param signDto
@@ -527,7 +525,8 @@ public class SignServiceImpl implements SignService {
         List<User> userList = null;
         List<SignPrincipal> signPriList = null;     //项目负责人
         User dealUser = null;
-        Org org = null;
+        Org org = null;                             //部门
+        OrgDept orgDept = null;                     //部门和小组
         boolean isMainBranch = false;
         boolean saveSignFlag = false;
 
@@ -549,11 +548,11 @@ public class SignServiceImpl implements SignService {
                 taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
                 //完成综合部审批，查询是否有代办
                 dealUser = userRepo.findById(User_.id.getName(),sign.getLeaderId());
-                taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(Constant.FlowUserName.USER_FGLD.getValue(),
-                        Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId()));
+                variables = ActivitiUtil.setAssigneeValue(Constant.FlowUserName.USER_FGLD.getValue(),
+                        Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
 
                 break;
-            //综合部审批
+            //综合部审批（该环节自动跳过）
             case Constant.FLOW_SIGN_ZHB:
                 if (flowDto.getBusinessMap().get("FGLD") == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择分管领导！");
@@ -599,12 +598,12 @@ public class SignServiceImpl implements SignService {
                 saveBranchList.add(signBranch1);
                 //设置流程参数
                 variables.put(Constant.SignFlowParams.BRANCH1.getValue(), Integer.valueOf(EnumState.YES.getValue()));
-                org = orgRepo.findById(Org_.id.getName(),flowDto.getBusinessMap().get("MAIN_ORG").toString());
-                if(org == null || !Validate.isString(org.getOrgDirectorName())){
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置"+org.getName()+"的部门负责人！");
+                orgDept = orgDeptRepo.findById(signBranch1.getOrgId());
+                if(orgDept == null || !Validate.isString(orgDept.getDirectorID())){
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置"+orgDept.getName()+"的部门负责人！");
                 }
                 //查询是否有代办
-                dealUser = userRepo.findById(User_.id.getName(),org.getOrgDirector());
+                dealUser = userRepo.findById(User_.id.getName(),orgDept.getDirectorID());
                 variables.put(Constant.FlowUserName.USER_BZ1.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                 //默认不走其他分支
                 variables.put(Constant.SignFlowParams.BRANCH2.getValue(), Integer.valueOf(EnumState.NO.getValue()));
@@ -621,24 +620,22 @@ public class SignServiceImpl implements SignService {
                         signBranch.setIsMainBrabch(EnumState.NO.getValue());
                         signBranch.setOrgId(assistOrgId);
                         saveBranchList.add(signBranch);
-                        org = orgRepo.findById(Org_.id.getName(),assistOrgId);
-                        if(org == null || !Validate.isString(org.getOrgDirector())){
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置【"+org.getName()+"】的部门负责人！");
+                        orgDept = orgDeptRepo.findById(signBranch.getOrgId());
+                        if(orgDept == null || !Validate.isString(orgDept.getDirectorID())){
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置【"+orgDept.getName()+"】的部门负责人！");
                         }
+                        dealUser = userRepo.findById(User_.id.getName(),orgDept.getDirectorID());
                         switch (branchId){
                             case 2:
                                 variables.put(Constant.SignFlowParams.BRANCH2.getValue(), Integer.valueOf(EnumState.YES.getValue()));
-                                dealUser = userRepo.findById(User_.id.getName(),org.getOrgDirector());
                                 variables.put(Constant.FlowUserName.USER_BZ2.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                                 break;
                             case 3:
                                 variables.put(Constant.SignFlowParams.BRANCH3.getValue(), Integer.valueOf(EnumState.YES.getValue()));
-                                dealUser = userRepo.findById(User_.id.getName(),org.getOrgDirector());
                                 variables.put(Constant.FlowUserName.USER_BZ3.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                                 break;
                             case 4:
                                 variables.put(Constant.SignFlowParams.BRANCH4.getValue(), Integer.valueOf(EnumState.YES.getValue()));
-                                dealUser = userRepo.findById(User_.id.getName(),org.getOrgDirector());
                                 variables.put(Constant.FlowUserName.USER_BZ4.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                                 break;
                             default:
@@ -766,8 +763,13 @@ public class SignServiceImpl implements SignService {
                     variables.put(Constant.SignFlowParams.GO_DISPATCH.getValue(), EnumState.NO.getValue());
 
                     //查询部门领导
-                    dealUser = userRepo.findById(User_.id.getName(), SessionUtil.getUserInfo().getOrg().getOrgDirector());
-                    //设定下一环节处理人
+                    orgDept = orgDeptRepo.queryBySignBranchId(signid,branchIndex);
+                    if(orgDept == null || !Validate.isString(orgDept.getDirectorID())){
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置【"+orgDept.getName()+"】的部门负责人！");
+                    }
+                    dealUser = userRepo.findById(User_.id.getName(),orgDept.getDirectorID());
+
+                   //设定下一环节处理人
                     if(Constant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)){
                         variables.put(Constant.FlowUserName.USER_BZ1.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                     }else if(Constant.SignFlowParams.BRANCH_INDEX2.getValue().equals(branchIndex)){
@@ -816,7 +818,7 @@ public class SignServiceImpl implements SignService {
                 if(!Validate.isString(branchIndex)){
                     branchIndex = Constant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName())) {
+                if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
                 }
                 //更改工作方案信息
@@ -882,7 +884,8 @@ public class SignServiceImpl implements SignService {
                 //没有项目负责人，则部长审核
                 }else{
                     variables.put(Constant.SignFlowParams.PRIN_USER.getValue(), EnumState.NO.getValue());
-                    dealUser = userRepo.findById(User_.id.getName(),SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                    orgDept = orgDeptRepo.queryBySignBranchId(signid,Constant.SignFlowParams.BRANCH_INDEX1.getValue());
+                    dealUser = userRepo.findById(User_.id.getName(),orgDept.getDirectorID());
                     variables.put(Constant.FlowUserName.USER_BZ1.getValue(),Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                 }
                 //完成发文
@@ -897,7 +900,8 @@ public class SignServiceImpl implements SignService {
                 if(EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())){
                     variables.put(Constant.SignFlowParams.UNPASS.getValue(),false);
                     //设置部长审核参数
-                    dealUser = userRepo.findById(User_.id.getName(),SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                    orgDept = orgDeptRepo.queryBySignBranchId(signid,Constant.SignFlowParams.BRANCH_INDEX1.getValue());
+                    dealUser = userRepo.findById(User_.id.getName(),orgDept.getDirectorID());
                     variables.put(Constant.FlowUserName.USER_BZ1.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                     flowDto.setDealOption(flowDto.getDealOption()+"【审批结果：通过】");
                 //如果不同意，则流程回到发文申请环节
@@ -989,11 +993,18 @@ public class SignServiceImpl implements SignService {
                     variables.put(Constant.FlowUserName.USER_A.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                 }else{
                     variables.put(Constant.SignFlowParams.SECOND_USER.getValue(),EnumState.NO.getValue());
-                    userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue());
-                    if (!Validate.isList(userList)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【"+EnumFlowNodeGroupName.FILER.getValue()+"】角色用户！");
+                    //如果是回退，则保留之前的审核人
+                    sign = signRepo.findById(Sign_.signid.getName(), signid);
+                    if(Validate.isString(sign.getSecondPriUser())){
+                        dealUser = userRepo.findById(User_.id.getName(),sign.getSecondPriUser());
+                    //不是回退，则取第一个
+                    }else{
+                        userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue());
+                        if (!Validate.isList(userList)) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【"+EnumFlowNodeGroupName.FILER.getValue()+"】角色用户！");
+                        }
+                        dealUser = userList.get(0);
                     }
-                    dealUser = userList.get(0);
                     variables.put(Constant.FlowUserName.USER_QRGD.getValue(), Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
                 }
                 signRepo.updateSignProcessState(signid, Constant.SignProcessState.END_FILE.getValue());
@@ -1006,6 +1017,10 @@ public class SignServiceImpl implements SignService {
                 }
                 dealUser = userList.get(0);
                 variables.put(Constant.FlowUserName.USER_QRGD.getValue(),  Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
+                //更新项目第二负责人
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                sign.setSecondPriUser(SessionUtil.getUserId());
+                saveSignFlag = true;
                 break;
             //确认归档
             case Constant.FLOW_SIGN_QRGD:
@@ -1280,7 +1295,7 @@ public class SignServiceImpl implements SignService {
         } else {
             sqlBuilder.setParam("surplusdays", Constant.WORK_DAY_12);
         }
-        sqlBuilder.bulidIdString("where", Sign_.signid.getName(), signId);
+        sqlBuilder.bulidPropotyString("where", Sign_.signid.getName(), signId);
         signRepo.executeSql(sqlBuilder);
 
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
@@ -1454,7 +1469,7 @@ public class SignServiceImpl implements SignService {
         hqlBuilder.append(" and "+SignMerge_.mergeType.getName()+" =:mergeType ").setParam("mergeType",mergeType);
         //如果有解除删除，则解除相应的项目，否则解除所有
         if(Validate.isString(cancelIds)){
-            hqlBuilder.bulidIdString("and",SignMerge_.mergeId.getName(),cancelIds);
+            hqlBuilder.bulidPropotyString("and",SignMerge_.mergeId.getName(),cancelIds);
         }
 
         signMergeRepo.executeHql(hqlBuilder);

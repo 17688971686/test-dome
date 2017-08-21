@@ -5,27 +5,27 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/dept">处室管理</a></li>
+        <li><a href="#/sysDept">处室管理</a></li>
         <li class="active">{{vm.model.name}}人员列表</li>
     </ol>
     <form id="form" name="form">
         <div class="toolbar">
        		 <a class="btn btn-sm btn-primary" href="#/listDept"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-       		 <@shiro.hasPermission name="dept#getDeptOfficeUsers#post"> 
+       		 <@shiro.hasPermission name="sysDept#getDeptOfficeUsers#post">
             <button class="btn btn-sm btn-primary" ng-click="vm.showAddUserDialog()"><span class="glyphicon glyphicon-plus"></span>添加成员</button>            
              </@shiro.hasPermission> 
-              <@shiro.hasPermission name="dept#deleteOfficeUsers#delete"> 
+              <@shiro.hasPermission name="sysDept#deleteOfficeUsers#delete">
             <button class="btn btn-sm btn-danger" ng-click="vm.removes()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量移除</button>
         </@shiro.hasPermission> 
         </div>
         <script type="text/template" id="columnBtns">
- 		<@shiro.hasPermission name="dept#deleteOfficeUsers#delete"> 
+ 		<@shiro.hasPermission name="sysDept#deleteOfficeUsers#delete">
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>移除</button>
  		</@shiro.hasPermission> 
 		</script>
         
         <script type="text/template" id="allUserGridBtns">
-		<@shiro.hasPermission name="dept#addOfficeUser#post"> 
+		<@shiro.hasPermission name="sysDept#addOfficeUser#post">
 			<button class="btn btn-xs btn-success"  ng-click="{0}" ><span class="glyphicon glyphicon-plus"></span>添加</button>
  		</@shiro.hasPermission> 
 		</script>

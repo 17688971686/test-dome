@@ -1,31 +1,31 @@
 package cs.controller.flow;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import cs.common.Constant;
+import cs.common.Constant.MsgCode;
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.common.utils.Validate;
+import cs.domain.flow.HiProcessTask;
+import cs.domain.flow.RuProcessTask;
+import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
+import cs.model.flow.Node;
+import cs.model.flow.TaskDto;
+import cs.model.project.ProjectStopDto;
+import cs.repository.odata.ODataObj;
+import cs.service.flow.FlowNextNodeFilter;
+import cs.service.flow.FlowService;
+import cs.service.flow.IFlow;
+import cs.service.flow.SignFlowImpl;
+import cs.service.project.SignService;
+import cs.service.project.SignServiceImpl;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
@@ -33,38 +33,18 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-import cs.common.Constant;
-import cs.common.Constant.MsgCode;
-import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.Validate;
-import cs.domain.flow.HiProcessTask;
-import cs.domain.flow.RuProcessTask;
-import cs.domain.sys.User;
-import cs.model.PageModelDto;
-import cs.model.flow.FlowDto;
-import cs.model.flow.Node;
-import cs.model.flow.TaskDto;
-import cs.model.project.ProjectStopDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
-import cs.service.flow.FlowService;
-import cs.service.project.SignPrincipalService;
-import cs.service.project.SignService;
-import cs.service.project.SignServiceImpl;
-import cs.service.sys.OrgService;
-import cs.service.sys.UserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -86,15 +66,8 @@ public class FlowController {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private UserService userService;
-    @Autowired
-    private OrgService orgService;
-    @Autowired
-    private SignPrincipalService signPrincipalService;
-    @Autowired
-    private SignBranchRepo signBranchRepo;
-    @Autowired
-    private SignMergeRepo signMergeRepo;
+    @Qualifier("signFlowImpl")
+    private IFlow signFlowImpl;
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办任务", path = "html/tasks", method = RequestMethod.POST)
@@ -208,82 +181,15 @@ public class FlowController {
         }
         flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
 
-        //加载环节业务数据
-        if ((Constant.SIGN_FLOW.equals(flowDto.getProcessKey()))
-                && Validate.isString(flowDto.getCurNode().getActivitiId())) {
-
-            Map<String, Object> businessMap = new HashMap<>();
-            String branchIndex = "";
-            switch (flowDto.getCurNode().getActivitiId()) {
-                //综合部拟办
-                case Constant.FLOW_SIGN_ZHB:
-                    businessMap.put("viceDirectors", userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
-                    break;
-                //分管领导审核
-                case Constant.FLOW_SIGN_FGLD_FB:
-                    businessMap.put("orgs", orgService.listAll());
-                    break;
-                //部门分办（选择项目负责人）
-                case Constant.FLOW_SIGN_BMFB1:
-                case Constant.FLOW_SIGN_BMFB2:
-                case Constant.FLOW_SIGN_BMFB3:
-                case Constant.FLOW_SIGN_BMFB4:
-                    List<UserDto> userList = userService.findUserByOrgId(SessionUtil.getUserInfo().getOrg().getId());
-                    //排除项目负责人（这里是用户本身）
-                    for(UserDto userDto:userList){
-                        if(userDto.getId().equals(SessionUtil.getUserInfo().getId())){
-                            userList.remove(userDto);
-                            break;
-                        }
-                    }
-                    businessMap.put("users", userList);
-                    break;
-                //项目负责人办理
-                case Constant.FLOW_SIGN_XMFZR1:
-                    branchIndex =  Constant.SignFlowParams.BRANCH_INDEX1.getValue();
-                case Constant.FLOW_SIGN_XMFZR2:
-                    if(!Validate.isString(branchIndex)){
-                        branchIndex =  Constant.SignFlowParams.BRANCH_INDEX2.getValue();
-                    }
-                case Constant.FLOW_SIGN_XMFZR3:
-                    if(!Validate.isString(branchIndex)){
-                        branchIndex =  Constant.SignFlowParams.BRANCH_INDEX3.getValue();
-                    }
-                case Constant.FLOW_SIGN_XMFZR4:
-                    if(!Validate.isString(branchIndex)){
-                        branchIndex =  Constant.SignFlowParams.BRANCH_INDEX4.getValue();
-                    }
-                    businessMap.put("isFinishWP", signBranchRepo.checkFinishWP(processInstance.getBusinessKey(),branchIndex));
-                    break;
-                //发文申请
-                case Constant.FLOW_SIGN_FW:
-                    List<User> prilUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey());
-                    if(Validate.isList(prilUserList)){
-                        List<UserDto> userDtoList = new ArrayList<>(prilUserList.size());
-                        prilUserList.forEach(pul ->{
-                            UserDto userDto = new UserDto();
-                            BeanCopierUtils.copyProperties(pul,userDto);
-                            userDtoList.add(userDto);
-                        });
-                        businessMap.put("prilUserList", userDtoList);
-                    }
-                    break;
-                //生成发文编号，如果是合并发文次项目，则不需要关联
-                case Constant.FLOW_SIGN_FWBH:
-                    boolean isMerge =signMergeRepo.checkIsMerege(processInstance.getBusinessKey(), Constant.MergeType.DISPATCH.getValue());
-                    businessMap.put("needDISNum", !isMerge);
-                    break;
-                //项目归档
-                case Constant.FLOW_SIGN_GD:
-                    //项目负责人获取第一个作为处理人
-                    List<User> checkUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey());
-                    if(Validate.isList(checkUserList)){
-                        businessMap.put("checkFileUser", checkUserList.get(0));
-                    }
-                    break;
-                default:
-            }
-            flowDto.setBusinessMap(businessMap);
+        /**
+         * 流程的一些参数处理
+         */
+        switch (processInstance.getProcessDefinitionKey()){
+            case Constant.SIGN_FLOW:
+                flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
+            default:
+                    ;
         }
 
         //获取下一环节信息
@@ -294,25 +200,10 @@ public class FlowController {
             ActivityImpl activityImpl = def.findActivity(task.getTaskDefinitionKey());
             List<Node> nextNodeList = new ArrayList<>();
             flowService.nextTaskDefinition(nextNodeList,activityImpl,task.getTaskDefinitionKey());
-            //排除掉一些环节
-            switch (flowDto.getCurNode().getActivitiId()) {
-                case Constant.FLOW_SIGN_FW:
-                    //有项目负责人，则隐藏部长审核环节
-                    if(flowDto.getBusinessMap().get("prilUserList") != null){
-                        for(int i=0;i<nextNodeList.size();i++){
-                            if((nextNodeList.get(i).getActivitiId()).equals(Constant.FLOW_SIGN_BMLD_QRFW))
-                                nextNodeList.remove(i);
-                        }
-                    }
-                case Constant.FLOW_SIGN_GD:
-                    if(flowDto.getBusinessMap().get("checkFileUser") != null){
-                        for(int i=0;i<nextNodeList.size();i++){
-                            if((nextNodeList.get(i).getActivitiId()).equals(Constant.FLOW_SIGN_QRGD))
-                                nextNodeList.remove(i);
-                        }
-                    }
-                    break;
-                default:
+            //如果有环节需要过滤，则过滤
+            FlowNextNodeFilter flowNextNodeFilter = FlowNextNodeFilter.getInstance(task.getTaskDefinitionKey());
+            if(flowNextNodeFilter != null){
+                nextNodeList = flowNextNodeFilter.filterNextNode(flowDto.getBusinessMap(),nextNodeList);
             }
             flowDto.setNextNode(nextNodeList);
         }
@@ -336,7 +227,7 @@ public class FlowController {
         return resultMsg;
     }
 
-    @RequestMapping(name = "回退到上一个环节", path = "rollbacklast", method = RequestMethod.POST)
+    @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
     public @ResponseBody ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
         return resultMsg;

@@ -253,23 +253,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public int deleteById(String idPropertyName, String idValue) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" delete from  " + getPersistentClass().getSimpleName());
-        String[] idArr = idValue.split(",");
-        if (idArr.length > 1) {
-            hqlBuilder.append(" where " + idPropertyName + " in ( ");
-            int totalL = idArr.length;
-            for (int i = 0; i < totalL; i++) {
-                if (i == totalL - 1) {
-                    hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-                } else {
-                    hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-                }
-            }
-            hqlBuilder.append(" )");
-        } else {
-            hqlBuilder.append(" where " + idPropertyName + " = :id ");
-            hqlBuilder.setParam("id", idValue);
-        }
+        hqlBuilder.append(" delete from  " + getPersistentClass().getSimpleName()+" ");
+        hqlBuilder.bulidPropotyString("where",idPropertyName,idValue);
+
         return executeHql(hqlBuilder);
     }
 
@@ -300,7 +286,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     public List<T> findByIds(String idPropertyName, String idValue, String orderStr) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from  " + getPersistentClass().getSimpleName()+" ");
-        hqlBuilder.bulidIdString("where",idPropertyName,idValue);
+        hqlBuilder.bulidPropotyString("where",idPropertyName,idValue);
 
         if (Validate.isString(orderStr)) {
             hqlBuilder.append(" order by " + orderStr);

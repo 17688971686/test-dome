@@ -91,6 +91,10 @@
                     signSvc.initAssociateSigns(vm,vm.model.signid);
                     //没有则初始化关联表格
                 }
+                //工作方案
+                if(vm.model.processState > 2){
+                    vm.showFlag.tabWorkProgram=true;
+                }
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
@@ -110,7 +114,13 @@
                 }
                 //初始化专家评分
                 if (vm.model.processState > 2) {
-                    signSvc.paymentGrid(vm);
+                    //初始化专家评分
+                    signSvc.paymentGrid(vm.model.signid,function(data){
+                        vm.businessFlag.expertReviews = data.value;
+                        if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
+                            vm.showFlag.tabExpert = true;   //显示专家信息tab
+                        }
+                    });
                 }
                 //更改状态,并初始化业务参数
                 vm.businessFlag.isLoadSign = true;
@@ -285,8 +295,8 @@
             }
         }
 
+        //S_流程回退
         vm.commitBack = function () {
-
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
             if(isValid){
@@ -294,28 +304,16 @@
                     title: "询问提示",
                     message: "确认回退吗？",
                     onOk: function () {
-                        //有几个环节要传递业务参数
-                        switch (vm.flow.curNode.activitiId) {
-                            /************   以下是签收流程  **************/
-                            case "FGLD_SP_GZFA1":
-                                vm.flow.businessMap.M_WP_ID = vm.mainwork.id;       //部门负责人审批工作方案
-                                break;
-                            case "FGLD_SP_GZFA2":
-                                vm.flow.businessMap.A_WP_ID = vm.assistwork.id;
-                                break;
-                            case "FGLD_SP_FW":                                      //分管领导审批发文
-                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
-                                break;
-                            case "ZR_SP_FW":                                        //主任审批发文
-                                vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
-                                break;
-                            case "BMLD_QR_GD":                                       //确认归档
-                                vm.flow.businessMap.ExclusiveGateWay = true;         //注明是排他网关
-                                break;
-                            default:
-                                ;
-                        }
-                        flowSvc.rollBackToLast(vm); // 回退到上一个环节
+                        flowSvc.rollBackToLast(vm.flow,vm.isCommit,function(data){
+                            if (data.flag || data.reCode == "ok") {
+                                vm.isCommit = false;
+                                bsWin.alert("回退成功！",function(){
+                                    $state.go('gtasks');
+                                });
+                            } else {
+                                bsWin.alert(data.reMsg);
+                            }
+                        }); // 回退到上一个环节
                     }
                 });
             }

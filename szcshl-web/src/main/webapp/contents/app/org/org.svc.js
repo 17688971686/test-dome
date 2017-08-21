@@ -146,57 +146,27 @@
 			
 		}// end fun grid
 
-		function createOrg(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (isValid && vm.isorgExist == false) {				
-				vm.isSubmit = true;
-				var httpOptions = {
-					method : 'post',
-					url : url_org,
-					data : vm.model
-				}
-				vm.OrgDirectorUsers.forEach(function (u, number) {
-                    if(u.id == vm.model.orgDirector){
-                    	vm.model.orgDirectorName = u.displayName;
-                    }
-                });
-				vm.orgMLeaderUsers.forEach(function (u, number) {
-                    if(u.id == vm.model.orgMLeader){
-                    	vm.model.orgMLeaderName = u.displayName;
-                    }
-                });
-				vm.orgSLeaderUser.forEach(function (u, number) {
-                    if(u.id == vm.model.orgSLeader){
-                    	vm.model.orgSLeaderName = u.displayName;
-                    }
-                });
-				var httpSuccess = function success(response) {									
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {														
-							common.alert({
-								vm:vm,
-								msg:"操作成功",
-								fn:function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-									location.href = url_back;
-								}
-							})
-						}						
-					});
-				}
-
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-			} 
+		function createOrg(orgModel,isSubmit,callBack) {
+            isSubmit = true;
+            var httpOptions = {
+                method : 'post',
+                url : url_org,
+                data : orgModel
+            }
+            var httpSuccess = function success(response) {
+                isSubmit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess,
+                onError:function(){
+                    isSubmit = false;
+                }
+            });
 		}// end fun createorg
 		
 		//获取单位信息
@@ -219,79 +189,47 @@
 				});
 		}
 		
-		function getOrgById(vm) {			
+		function getOrgById(id,callBack) {
 			var httpOptions = {
-				method : 'get',
-				url :  url_org + "/html/getOrgById",
-				params:{id:vm.id}
+				method : 'post',
+				url : rootPath +"/org/getOrgById",
+				params:{
+				    id:id
+				}
 			}
-			var httpSuccess = function success(response) {																			
-				vm.model = response.data;				
-			}			
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
 			common.http({
-				vm:vm,
 				$http:$http,
 				httpOptions:httpOptions,
 				success:httpSuccess
 			});
 		}// end fun getorgById
 		
-		function updateOrg(vm){
-			common.initJqValidation();			
-			var isValid = $('form').valid();
-			if (isValid && vm.isorgExist == false) {
-				vm.isSubmit = true;
-				vm.model.id=vm.id;
-				vm.OrgDirectorUsers.forEach(function (u, number) {
-                    if(u.id == vm.model.orgDirector){
-                    	vm.model.orgDirectorName = u.displayName;
-                    }
-                });
-				vm.orgMLeaderUsers.forEach(function (u, number) {
-                    if(u.id == vm.model.orgMLeader){
-                    	vm.model.orgMLeaderName = u.displayName;
-                    }
-                });
-				vm.orgSLeaderUser.forEach(function (u, number) {
-                    if(u.id == vm.model.orgSLeader){
-                    	vm.model.orgSLeaderName = u.displayName;
-                    }
-                });
-				
-				var httpOptions = {
-					method : 'put',
-					url : url_org,
-					data : vm.model
-				}
-
-				var httpSuccess = function success(response) {
-					
-					common.requestSuccess({
-						vm:vm,
-						response:response,
-						fn:function() {
-							
-							common.alert({
-								vm:vm,
-								msg:"操作成功",
-								fn:function() {
-									vm.isSubmit = false;
-									$('.alertDialog').modal('hide');							
-								}
-							})
-						}
-						
-					})
-				}
-
-				common.http({
-					vm:vm,
-					$http:$http,
-					httpOptions:httpOptions,
-					success:httpSuccess
-				});
-
-			}
+		function updateOrg(orgModel,isSubmit,callBack){
+            isSubmit = true;
+            var httpOptions = {
+                method : 'put',
+                url : rootPath +"/org",
+                data : orgModel
+            }
+            var httpSuccess = function success(response) {
+                isSubmit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess,
+                onError:function(){
+                    isSubmit = false;
+                }
+            });
 		}// end fun updateorg
 		
 		function deleteOrg(vm,id) {
@@ -323,24 +261,17 @@
         }// end fun deleteorg
 		
 		//S_initRoleUsers
-		function initRoleUsers(vm){
+		function initRoleUsers(callBack){
 			var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url:rootPath +'/user/initRoleUsers'               
             }
-            var httpSuccess = function success(response) {	                
-                common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function () {	
-						vm.orgMLeaderUsers = response.data.DIRECTOR;
-						vm.orgSLeaderUser = response.data.VICE_DIRECTOR;
-						vm.OrgDirectorUsers = response.data.DEPT_LEADER;
-	                }						
-				});
-            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-				vm:vm,
 				$http:$http,
 				httpOptions:httpOptions,
 				success:httpSuccess

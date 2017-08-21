@@ -105,6 +105,25 @@
             })
             //end#org
 
+            //begin#sysdept
+            .state('sysdept', {
+                url: '/sysdept',
+                templateUrl: rootPath + '/sysdept/html/list.html',
+                controller: 'sysdeptCtrl',
+                controllerAs: 'vm'
+            }).state('sysdeptEdit', {
+                url: '/sysdeptEdit/:id',
+                templateUrl: rootPath + '/sysdept/html/edit.html',
+                controller: 'sysdeptEditCtrl',
+                controllerAs: 'vm'
+            }).state('sysdeptUser', {
+                url: '/sysdeptUser/:id',
+                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                controller: 'sysdeptUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#sysdept
+
             //begin#log
             .state('log', {
                 url: '/log',

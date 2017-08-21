@@ -91,7 +91,7 @@ public class RoleServiceImpl implements RoleService {
             }
 
             roleRepository.save(role);
-            this.createActivitiGroup(role.getRoleName());
+            //this.createActivitiGroup(role.getRoleName());
             logger.info(String.format("创建角色,角色名:%s", roleDto.getRoleName()));
         } else {
             throw new IllegalArgumentException(String.format("角色名：%s 已经存在,请重新输入！", roleDto.getRoleName()));
@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
             resource.setName(resourceDto.getName());
             role.getResources().add(resource);
         }
-        this.updateActivitiGroup(oldRoleName, roleDto.getRoleName());
+        //this.updateActivitiGroup(oldRoleName, roleDto.getRoleName());
         roleRepository.save(role);
         logger.info(String.format("更新角色,角色名:%s", roleDto.getRoleName()));
     }
@@ -127,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRole(String id) {
         Role role = roleRepository.findById(id);
         if (role != null) {
-            this.deleteActivitiGroup(role.getRoleName());
+            //this.deleteActivitiGroup(role.getRoleName());
             List<User> users = role.getUsers();
             //把用户里的角色移出才能删除
             for (User user : users) {
@@ -145,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRoles(String[] ids) {
         for (String id : ids) {
             Role role = roleRepository.findById(id);
-            this.deleteActivitiGroup(role.getRoleName());
+            //this.deleteActivitiGroup(role.getRoleName());
             this.deleteRole(id);
         }
         logger.info("批量删除角色");

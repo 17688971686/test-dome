@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * 发文会签监听类
- * Created by shenning on 2017/8/7.
+ * Created by ldm on 2017/8/7.
  */
 @Component
 public class ConfirmDisMulitiTask {

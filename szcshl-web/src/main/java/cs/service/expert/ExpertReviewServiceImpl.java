@@ -308,7 +308,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             sqlBuilder.append("set " + ExpertSelected_.isJoin.getName() + " =:state ");
         }
         sqlBuilder.setParam("state", state);
-        sqlBuilder.bulidIdString("where",ExpertSelected_.id.getName(),expertSelId);
+        sqlBuilder.bulidPropotyString("where",ExpertSelected_.id.getName(),expertSelId);
         expertReviewRepo.executeSql(sqlBuilder);
 
     }

@@ -5,7 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.sys.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -16,10 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.utils.BeanCopierUtils;
-import cs.domain.sys.Company;
-import cs.domain.sys.Org;
-import cs.domain.sys.Org_;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.CompanyDto;
 import cs.model.sys.OrgDto;
@@ -69,7 +69,7 @@ public class OrgServiceImpl implements OrgService {
 
 	@Override
 	@Transactional
-	public void createOrg(OrgDto orgDto) {
+	public ResultMsg createOrg(OrgDto orgDto) {
 		// 判断部门是否已经存在
 		Criteria criteria = orgRepo.getExecutableCriteria();		
 		criteria.setProjection(Projections.rowCount());  
@@ -86,23 +86,35 @@ public class OrgServiceImpl implements OrgService {
 			org.setCreatedDate(now);
 			org.setModifiedBy(SessionUtil.getLoginName());
 			org.setModifiedDate(now);
+			if(Validate.isString(org.getOrgSLeader())){
+                User user = userRepo.findById(User_.id.getName(),org.getOrgSLeader());
+                user.setMngOrgType(Constant.OrgType.getValue(org.getName()));
+                userRepo.save(user);
+            }
 			
 			orgRepo.save(org);
-			logger.info(String.format("创建部门,部门名:%s", orgDto.getOrgIdentity()));
+			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),org.getId(),"操作成功！",null);
+			//logger.info(String.format("创建部门,部门名:%s", orgDto.getOrgIdentity()));
 		} else{
-			throw new IllegalArgumentException(String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
+			//throw new IllegalArgumentException(String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
 		}
 	}
 
 	@Override
 	@Transactional
-	public void updateOrg(OrgDto orgDto) {
-		Org org = orgRepo.findById(orgDto.getId());
+	public ResultMsg updateOrg(OrgDto orgDto) {
+		Org org = orgRepo.findById(Org_.id.getName(),orgDto.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);						
 		org.setModifiedBy(SessionUtil.getLoginName());
 		org.setModifiedDate(new Date());
+        if(Validate.isString(org.getOrgSLeader())){
+            User user = userRepo.findById(User_.id.getName(),org.getOrgSLeader());
+            user.setMngOrgType(Constant.OrgType.getValue(org.getName()));
+            userRepo.save(user);
+        }
 		orgRepo.save(org);
-		logger.info(String.format("更新部门,部门名:%s", orgDto.getName()));
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
 	}
 
 	@Override

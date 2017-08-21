@@ -565,29 +565,18 @@
         //end initAssociateSigns
 
         // begin#remarkGrid
-        function paymentGrid(vm) {
-            var signId = vm.model.signid;
-            var url = rootPath + "/expertReview/html/getBySignId/" + signId;
+        function paymentGrid(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: url
+                url: rootPath + "/expertReview/html/getBySignId/" + signId
             }
-
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.businessFlag.expertReviews = response.data.value;
-                        if (vm.businessFlag.expertReviews != undefined && vm.businessFlag.expertReviews.length > 0) {
-                            vm.showFlag.tabExpert = true;   //显示专家信息tab
-                        }
-                    }
-                })
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

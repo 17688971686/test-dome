@@ -281,7 +281,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //3、删除附件
         HqlBuilder queryHql = HqlBuilder.create();
         queryHql.append(" from "+SysFile.class.getSimpleName());
-        queryHql.bulidIdString("where",SysFile_.businessId.getName(),id);
+        queryHql.bulidPropotyString("where",SysFile_.businessId.getName(),id);
 
         List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
         if(fileList != null && fileList.size() > 0){
@@ -307,7 +307,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
             hqlBuilder.append(","+SharingPlatlform_.publishDate.getName()+"=sysdate ");
             hqlBuilder.append(","+SharingPlatlform_.publishUsername.getName()+"= :issueUser ").setParam("issueUser",SessionUtil.getLoginName());
         }
-        hqlBuilder.bulidIdString("where",SharingPlatlform_.sharId.getName(),ids);
+        hqlBuilder.bulidPropotyString("where",SharingPlatlform_.sharId.getName(),ids);
         sharingPlatlformRepo.executeHql(hqlBuilder);
     }
 
