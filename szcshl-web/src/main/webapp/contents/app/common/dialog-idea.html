@@ -76,7 +76,7 @@
 					</tr>
 </table>
 </div>
-<div>
+<div >
 	<table class="table table-bordered seleteTable">
 					<tr>
 						<td>
@@ -91,7 +91,7 @@
 									<tr ng-repeat="x in vm.commonIdeas">
 										<td><input type="checkbox" ng-checked="ideaCheck" name="ideaCheck" value="{{vm.commonIdeas[$index].ideaID}}" /></td>
 										<td width="20">{{$index+1}}</td>
-										<td><input type="text" class="form-control input-sm " style="width: 800px;"
+										<td><input type="text" class="form-control input-sm " style="width: 400px;"
 											ng-model="vm.commonIdeas[$index].ideaContent" ng-dblclick="vm.addCorrentIdea(vm.commonIdeas[$index].ideaContent)" /></td>
 									</tr>
 								</table>

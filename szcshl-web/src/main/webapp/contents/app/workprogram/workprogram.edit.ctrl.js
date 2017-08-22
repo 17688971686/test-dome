@@ -153,6 +153,7 @@
      
         //会议预定添加弹窗
         vm.addTimeStage = function(){
+        
             if(vm.work.id){
                 $state.go('room', {workProgramId:vm.work.id});
             }else{

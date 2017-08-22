@@ -556,8 +556,8 @@
 
         var ideaEditWindow = $("#ideaWindow");
         ideaEditWindow.kendoWindow({
-            width: "50%",
-            height: "80%",
+            width: "600px",
+            height: "450px",
             title: "意见选择",
             visible: false,
             modal: true,
