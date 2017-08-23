@@ -29,6 +29,8 @@ public class FileRecordDto extends BaseDto{
 	private String fileTitle;
 	
 	private String fileNumber;
+	//报审登记表份数
+	private Integer recordFormCount;
 	
 	private String recordFormOriginal;
 	
@@ -365,7 +367,41 @@ public class FileRecordDto extends BaseDto{
 
 	//节能报告是否有电子版
 	private String energyCopy;	
+
 	//S 项目概算
+
+	//项目申报基本情况表是否有原件
+	private String projectBaseOriginal;
+
+	//项目申报基本情况表是否有电子版/扫描件
+	private String projectBaseCopy;
+
+	//项目指标分析表是否有原件
+	private String projectTargetOriginal;
+
+	//项目指标分析表是否有电子版/扫描件
+	private String projectTargetCopy;
+
+	//工程量计算书是否原件
+	private String projectComputeOriginal;
+
+	//工程量计算书是否电子版/扫描件
+	private String projectComputeCopy;
+	//沟通会签到表是否有原件
+	private String communicateMeetingOriginal;
+		
+	//沟通会签到表是否有扫描件
+	private String communicateMeetingCopy;
+	
+	//调概项目转评审请示是否原件
+	private String probableTurnStageOriginal;
+	
+	//调概项目转评审请示是否复印件
+	private String probableTurnStageCopy;
+	
+	//调概项目转评审请示是否扫描件
+	private String probableTurnStageRmb;
+	
 	//专家审核概算书
 	private Integer expertBookCount;
 
@@ -1855,7 +1891,105 @@ public class FileRecordDto extends BaseDto{
 
 	public void setExpertBookCountScan(String expertBookCountScan) {
 		this.expertBookCountScan = expertBookCountScan;
+	}
+
+	public String getProbableTurnStageOriginal() {
+		return probableTurnStageOriginal;
+	}
+
+	public void setProbableTurnStageOriginal(String probableTurnStageOriginal) {
+		this.probableTurnStageOriginal = probableTurnStageOriginal;
+	}
+
+	public String getProbableTurnStageCopy() {
+		return probableTurnStageCopy;
+	}
+
+	public void setProbableTurnStageCopy(String probableTurnStageCopy) {
+		this.probableTurnStageCopy = probableTurnStageCopy;
+	}
+
+	public String getProbableTurnStageRmb() {
+		return probableTurnStageRmb;
+	}
+
+	public void setProbableTurnStageRmb(String probableTurnStageRmb) {
+		this.probableTurnStageRmb = probableTurnStageRmb;
+	}
+
+	public String getCommunicateMeetingOriginal() {
+		return communicateMeetingOriginal;
+	}
+
+	public void setCommunicateMeetingOriginal(String communicateMeetingOriginal) {
+		this.communicateMeetingOriginal = communicateMeetingOriginal;
+	}
+
+	public String getCommunicateMeetingCopy() {
+		return communicateMeetingCopy;
+	}
+
+	public void setCommunicateMeetingCopy(String communicateMeetingCopy) {
+		this.communicateMeetingCopy = communicateMeetingCopy;
+	}
+
+	public String getProjectBaseOriginal() {
+		return projectBaseOriginal;
+	}
+
+	public void setProjectBaseOriginal(String projectBaseOriginal) {
+		this.projectBaseOriginal = projectBaseOriginal;
+	}
+
+	public String getProjectBaseCopy() {
+		return projectBaseCopy;
+	}
+
+	public void setProjectBaseCopy(String projectBaseCopy) {
+		this.projectBaseCopy = projectBaseCopy;
+	}
+
+	public String getProjectTargetOriginal() {
+		return projectTargetOriginal;
+	}
+
+	public void setProjectTargetOriginal(String projectTargetOriginal) {
+		this.projectTargetOriginal = projectTargetOriginal;
+	}
+
+	public String getProjectTargetCopy() {
+		return projectTargetCopy;
+	}
+
+	public void setProjectTargetCopy(String projectTargetCopy) {
+		this.projectTargetCopy = projectTargetCopy;
+	}
+
+	public String getProjectComputeOriginal() {
+		return projectComputeOriginal;
+	}
+
+	public void setProjectComputeOriginal(String projectComputeOriginal) {
+		this.projectComputeOriginal = projectComputeOriginal;
+	}
+
+	public String getProjectComputeCopy() {
+		return projectComputeCopy;
+	}
+
+	public void setProjectComputeCopy(String projectComputeCopy) {
+		this.projectComputeCopy = projectComputeCopy;
+	}
+
+	public Integer getRecordFormCount() {
+		return recordFormCount;
+	}
+
+	public void setRecordFormCount(Integer recordFormCount) {
+		this.recordFormCount = recordFormCount;
 	}	
+	
+	
 	
 	
 	

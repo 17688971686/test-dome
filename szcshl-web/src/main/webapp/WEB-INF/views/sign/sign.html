@@ -212,9 +212,9 @@
         <!-- 项目概算 -->
         <div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetail.html'"></div>
         <!-- 设备清单（国产） -->
-        <div ng-show="vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
+        <div ng-show="vm.model.reviewstage=='设备清单（进口）' || vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
         <!-- 设备清单（进口） -->
-        <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordImportDetail.html'"></div>
+        <!-- <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordImportDetail.html'"></div> -->
     </div>
     <!--E 归档 -->
 

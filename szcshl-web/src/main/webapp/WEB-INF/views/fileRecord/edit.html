@@ -24,8 +24,8 @@
 	   <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetIdeaEdit.html'"></div>
 	   <div ng-show="vm.fileRecord.fileReviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEdit.html'"></div>
 	   <div ng-show="vm.fileRecord.fileReviewstage=='进口设备'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
-	   <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
-	   <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileImportEdit.html'"></div>
+	   <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
+	  <!--  <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileImportEdit.html'"></div> -->
 	 </div> 
  <!--E 编辑页面/项目概算/进口设备/设备清单（进口）/设备清单（国产） -->
  
