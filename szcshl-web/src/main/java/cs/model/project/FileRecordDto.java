@@ -16,6 +16,8 @@ public class FileRecordDto extends BaseDto{
 	private String signId;
 	
 	private String projectName;
+	private String fileType;
+	private Integer fileSeq;
 	
 	//评审阶段
 	private String fileReviewstage;
@@ -1987,11 +1989,22 @@ public class FileRecordDto extends BaseDto{
 
 	public void setRecordFormCount(Integer recordFormCount) {
 		this.recordFormCount = recordFormCount;
-	}	
-	
-	
-	
-	
-	
-	
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public Integer getFileSeq() {
+		return fileSeq;
+	}
+
+	public void setFileSeq(Integer fileSeq) {
+		this.fileSeq = fileSeq;
+	}					
+		
 }

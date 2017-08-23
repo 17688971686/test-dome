@@ -3,10 +3,16 @@ package cs.domain.project;
 
 import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.hibernate.annotations.DynamicUpdate;
 
 import cs.domain.DomainBase;
@@ -27,6 +33,18 @@ public class FileRecord extends DomainBase{
 	//评审阶段
 	@Column(columnDefinition="VARCHAR(200)")
 	private String fileReviewstage;
+	/**
+     * 存档类型（评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD）
+     */
+    @Column(columnDefinition = "VARCHAR(8)")
+    private String fileType;
+
+    /**
+     * 存档顺序号（每年从1开始递增）
+     */
+    @Column(columnDefinition = "INTEGER")
+    private Integer fileSeq;
+   
 	
 	//档案编号
 	@Column(columnDefinition="VARCHAR(50)")
@@ -2270,10 +2288,20 @@ public class FileRecord extends DomainBase{
 		this.recordFormCount = recordFormCount;
 	}
 	
-	
-	
-	
-	
-	
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public Integer getFileSeq() {
+		return fileSeq;
+	}
+
+	public void setFileSeq(Integer fileSeq) {
+		this.fileSeq = fileSeq;
+	}
 	
 }
