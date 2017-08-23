@@ -79,14 +79,30 @@
                 //项目负责人办理
                 case flowcommon.getSignFlowNode().SIGN_XMFZR1:
                     vm.businessFlag.isMainBranch = true;
+                    vm.businessFlag.curBranchId = "1";
                 case flowcommon.getSignFlowNode().SIGN_XMFZR2:
+                    if(!vm.businessFlag.curBranchId){
+                        vm.businessFlag.curBranchId = "2";
+                    }
                 case flowcommon.getSignFlowNode().SIGN_XMFZR3:
+                    if(!vm.businessFlag.curBranchId){
+                        vm.businessFlag.curBranchId = "3";
+                    }
                 case flowcommon.getSignFlowNode().SIGN_XMFZR4:
+                    if(!vm.businessFlag.curBranchId){
+                        vm.businessFlag.curBranchId = "4";          //计算当前分支，主要是为了控制评审方案的编辑
+                    }
+                    $.each(vm.model.workProgramDtoList,function(i,wp){
+                        if(wp.branchId ==  vm.businessFlag.curBranchId){
+                            vm.businessFlag.editEPReviewId = wp.expertReviewId;
+                        }
+                    })
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true;
                     vm.businessFlag.isFinishWP = vm.flow.businessMap.isFinishWP;
                     //已经在做工作方案，则显示
                     if(vm.model.processState >= 2){
+                        vm.businessFlag.editExpertSC = true;        //显示专家评分按钮
                         vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
                     }

@@ -394,6 +394,8 @@ public class Constant {
         }
     }
 
+
+
     /**
      * 系统文件类型
      */
@@ -502,6 +504,9 @@ public class Constant {
         }
     }
 
+    /**
+     * 部门对应的类型
+     */
     public static enum OrgType{
         ORGZHB("综合部",""),
         ORGPGYB("评估一部","PD"),
@@ -543,4 +548,5 @@ public class Constant {
             this.value = value;
         }
     }
+
 }

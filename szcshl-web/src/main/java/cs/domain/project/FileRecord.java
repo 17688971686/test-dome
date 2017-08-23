@@ -33,6 +33,7 @@ public class FileRecord extends DomainBase{
 	//评审阶段
 	@Column(columnDefinition="VARCHAR(200)")
 	private String fileReviewstage;
+	
 	/**
      * 存档类型（评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD）
      */
@@ -44,10 +45,9 @@ public class FileRecord extends DomainBase{
      */
     @Column(columnDefinition = "INTEGER")
     private Integer fileSeq;
-   
 	
 	//档案编号
-	@Column(columnDefinition="VARCHAR(50)")
+	@Column(columnDefinition="VARCHAR(16)")
 	private String fileNo;
 	
 	//项目单位
@@ -2287,7 +2287,7 @@ public class FileRecord extends DomainBase{
 	public void setRecordFormCount(Integer recordFormCount) {
 		this.recordFormCount = recordFormCount;
 	}
-	
+
 	public String getFileType() {
 		return fileType;
 	}
@@ -2303,5 +2303,6 @@ public class FileRecord extends DomainBase{
 	public void setFileSeq(Integer fileSeq) {
 		this.fileSeq = fileSeq;
 	}
+	
 	
 }

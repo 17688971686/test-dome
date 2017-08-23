@@ -1,15 +1,20 @@
 package cs.service.sys;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.cache.CacheManager;
+import cs.common.cache.ICache;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.sys.Dict;
+import cs.domain.sys.Dict_;
+import cs.model.PageModelDto;
+import cs.model.sys.DictDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.DictRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -18,16 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.HqlBuilder;
-import cs.common.cache.CacheManager;
-import cs.common.cache.ICache;
-import cs.common.utils.BeanCopierUtils;
-import cs.domain.sys.Dict;
-import cs.domain.sys.Dict_;
-import cs.model.PageModelDto;
-import cs.model.sys.DictDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.DictRepo;
+import java.util.*;
 
 
 @Service
@@ -41,119 +37,92 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public PageModelDto<DictDto> get(ODataObj odataObj) {
-
         PageModelDto<DictDto> pageModelDto = new PageModelDto<DictDto>();
-        List<Dict> dicts = dictRepo.findByOdata(odataObj);
-        List<DictDto> dictDtos = new ArrayList<DictDto>();
-
-        if (dicts != null) {
-            for (Dict dict : dicts) {
-                DictDto dictDto = new DictDto();
-                dictDto.setDictId(dict.getDictId());
-                //dictDto.set
-                BeanUtils.copyProperties(dict, dictDto);
-                dictDtos.add(dictDto);
-
+        //1、先从缓存取数据
+        List<DictDto> dictDtos = (List<DictDto>) cache.get("DICT_ALL_ITEMS");
+        //2、如果缓存没有，再去读数据库
+        if(!Validate.isList(dictDtos)){
+            List<Dict> dicts = dictRepo.findByOdata(odataObj);
+            if(Validate.isList(dicts)){
+                dictDtos = new ArrayList<>(dicts.size());
+                for (Dict dict : dicts) {
+                    DictDto dictDto = new DictDto();
+                    BeanCopierUtils.copyProperties(dict, dictDto);
+                    dictDtos.add(dictDto);
+                }
             }
-
+            cache.put("DICT_ALL_ITEMS", dictDtos);
         }
-
         pageModelDto.setCount(dictDtos.size());
         pageModelDto.setValue(dictDtos);
-
         return pageModelDto;
     }
 
     @Override
     @Transactional
-    public void createDict(DictDto dictDto) {
-
-        checkDictExists(dictDto, null);
-
-		/*
-		if(dictDto.getDictType().equals("0")){
-			//如果是增加字典编码，检查编码是否有重复
-			Dict dictExists = dictRepo.findByCode(dictDto.getDictCode());
-			if(dictExists != null){
-				throw new IllegalArgumentException(String.format("增加字典类型，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
-			}
-		}else if(dictDto.getDictType().equals("1")){
-			//如果是增加字典数据项，检查类型编码、字典值、字典名称是否重复
-			Dict dictExists = dictRepo.findByCodeKeyAndName(dictDto.getDictCode(),dictDto.getDictKey(),dictDto.getDictName());
-			if(dictExists != null){
-				throw new IllegalArgumentException(String.format("增加字典数据项[%s,%s,%s] 已经存在,请重新输入！", dictDto.getDictCode(),dictDto.getDictKey(),dictDto.getDictName()));
-			}
-		}*/
+    public ResultMsg createDict(DictDto dictDto) {
+        //检查DICT CODE是否重复
+        Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(), null);
+        if (dictExists != null) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
+        }
         Dict dict = new Dict();
-
-        BeanUtils.copyProperties(dictDto, dict);
-
+        BeanCopierUtils.copyProperties(dictDto, dict);
         dict.setDictId(UUID.randomUUID().toString());
-        dict.setCreatedBy(SessionUtil.getLoginName());
-        dict.setModifiedBy(SessionUtil.getLoginName());
+        dict.setCreatedBy(SessionUtil.getDisplayName());
+        dict.setModifiedBy(SessionUtil.getDisplayName());
         dict.setIsUsed("0");
 
         Date now = new Date();
         dict.setCreatedDate(now);
         dict.setModifiedDate(now);
         dictRepo.save(dict);
+
+        //清除缓存
         clearCache(dict.getDictCode());
 
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"创建成功！");
     }
 
 
     //检查数据字典是否已存在
-    private void checkDictExists(DictDto dictDto, String checkDictId) {
+    private ResultMsg checkDictExists(DictDto dictDto, String checkDictId) {
         //检查DICT CODE是否重复
         Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(), checkDictId);
         if (dictExists != null) {
-            throw new IllegalArgumentException(String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
         }
-        //dictRepo.findByCodeKeyAndName(dictDto.getDictCode(),dictDto.getDictKey(),dictDto.getDictName());
         //如果DICT CODE不重复，检查和同级字典值和字典名称是否有重复，有重复不创建
         Dict hasDictAtSomeLevel = dictRepo.findByKeyAndNameAtSomeLevel(dictDto.getDictKey(), dictDto.getDictName(), dictDto.getParentId(), checkDictId);
         if (hasDictAtSomeLevel != null) {
-            throw new IllegalArgumentException(String.format("增加字典[%s-%s]在同级已经存在,请重新输入！", dictDto.getDictName(), dictDto.getDictKey()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("增加字典[%s-%s]在同级已经存在,请重新输入！", dictDto.getDictName(), dictDto.getDictKey()));
         }
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"验证正确！");
     }
 
     @Override
     @Transactional
-    public void updateDict(DictDto dictDto) {
-
-        checkDictExists(dictDto, dictDto.getDictId());
-		
-		/*Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(),dictDto.getDictId());
-		if(dictExists != null){
-			throw new IllegalArgumentException(String.format("更新字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
-		}
-		dictRepo.findByCodeKeyAndName(dictDto.getDictCode(),dictDto.getDictKey(),dictDto.getDictName());
-		//如果DICT CODE不重复，检查和同级字典值和字典名称是否有重复，有重复不创建
-		Dict hasDictAtSomeLevel = dictRepo.findByKeyAndNameAtSomeLevel(dictDto.getDictKey(),dictDto.getDictName(), dictDto.getParentId(),dictDto.getDictId());
-		if(hasDictAtSomeLevel != null){
-			throw new IllegalArgumentException(String.format("更新字典[%s-%s]在同级已经存在,请重新输入！", dictDto.getDictName(),dictDto.getDictKey()));
-		}*/
-		/*if(dictDto.getDictType().equals("1")){
-			//如果是增加字典数据项，检查类型编码、字典值、字典名称是否重复
-			Dict dictExists = dictRepo.findByCodeKeyAndName(dictDto.getDictCode(),dictDto.getDictKey(),dictDto.getDictName());
-			if(dictExists != null&&!dictExists.getDictId().equals(dictDto.getDictId())){
-				throw new IllegalArgumentException(String.format("更新字典数据项[%s,%s,%s] 已经存在,请重新输入！", dictDto.getDictCode(),dictDto.getDictKey(),dictDto.getDictName()));
-			}
-		}*/
-        Dict dict = dictRepo.findById(dictDto.getDictId());
-
-        BeanUtils.copyProperties(dictDto, dict);
+    public ResultMsg updateDict(DictDto dictDto) {
+        //检查DICT CODE是否重复
+        Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(), dictDto.getDictId());
+        if (dictExists != null) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
+        }
+        //修改
+        Dict dict = dictRepo.findById(Dict_.dictId.getName(),dictDto.getDictId());
+        BeanCopierUtils.copyPropertiesIgnoreNull(dictDto, dict);
         dict.setModifiedBy(SessionUtil.getLoginName());
         dict.setModifiedDate(new Date());
         dictRepo.save(dict);
-
+        //清除缓存
         clearCache(dict.getDictCode());
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
     private void clearCache(String dictCode) {
-        //update cache
-        cache.clear("DICT_ITEMS".concat(dictCode));
         cache.clear("DICT_ALL_ITEMS");
+        cache.clear("DICT_ITEMS".concat(dictCode));
         cache.clear("DICT_NAME_DATA".concat(dictCode));
 
     }
@@ -182,26 +151,31 @@ public class DictServiceImpl implements DictService {
         return null;
     }
 
+    /**
+     * 删除字典，包括它的子项，只适用于单个删除
+     * @param dictId
+     * @return
+     */
     @Override
     @Transactional
-    public void deleteDict(String dictId) {
-        Dict dict = dictRepo.findById(dictId);
-        if (dict != null) {
-            dictRepo.delete(dict);
-            clearCache(dict.getDictCode());
-        }
-
-    }
-
-    @Override
-    @Transactional
-    public void deleteDicts(String[] dictCodes) {
-        if (dictCodes.length > 0) {
-            for (String dictCode : dictCodes) {
-                deleteDict(dictCode);
+    public ResultMsg deleteDict(String dictId) {
+        Dict dict = dictRepo.findById(Dict_.dictId.getName(),dictId);
+        if(dict != null){
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append(" delete from "+Dict.class.getSimpleName()+" where "+Dict_.dictId.getName()+" =:dictId ");
+            hqlBuilder.setParam("dictId",dictId);
+            hqlBuilder.append(" or "+Dict_.parentId.getName()+" =:parentId ");
+            hqlBuilder.setParam("parentId",dictId);
+            int result = dictRepo.executeHql(hqlBuilder);
+            if(result > 0){
+                //删除所有缓存
+                clearCache(dict.getDictCode());
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+            }else{
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该字典信息已被删除！");
             }
         }
-
+        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该字典信息已被删除！");
     }
 
 
@@ -218,39 +192,32 @@ public class DictServiceImpl implements DictService {
         //如果dictCode是null，则返回全部数据
         if (Validate.isString(dictCode)) {
             dictDtos = (List<DictDto>) cache.get("DICT_ITEMS".concat(dictCode));
-            if (dictDtos.size() == 0) {
-                Dict pDict = dictRepo.findByCode(dictCode, null);
-                if (pDict != null) {
-                    List<Dict> dicts = dictRepo.findDictItemByCode(dictCode);
-                    if (dicts != null) {
-                        dictDtos = new ArrayList<DictDto>(dicts.size());
-                        for (Dict dict : dicts) {
-                            DictDto dictDto = new DictDto();
-                            BeanUtils.copyProperties(dict, dictDto);
-                            dictDtos.add(dictDto);
-                        }
-                        if (dictDtos.size() > 0) {
-                            //放到缓存
-                            cache.put("DICT_ITEMS".concat(dictCode), dictDtos);
-                        }
+            if (!Validate.isList(dictDtos)) {
+                List<Dict> dicts = dictRepo.findDictItemByCode(dictCode);
+                if (Validate.isList(dicts)) {
+                    dictDtos = new ArrayList<DictDto>(dicts.size());
+                    for (Dict dict : dicts) {
+                        DictDto dictDto = new DictDto();
+                        BeanCopierUtils.copyProperties(dict, dictDto);
+                        dictDtos.add(dictDto);
                     }
+                    //放到缓存
+                    cache.put("DICT_ITEMS".concat(dictCode), dictDtos);
                 }
             }
         } else {
             dictDtos = (List<DictDto>) cache.get("DICT_ALL_ITEMS");
-            if (dictDtos == null || dictDtos.size() == 0) {
+            if (!Validate.isList(dictDtos)) {
                 Criteria criteria = dictRepo.getExecutableCriteria();
                 criteria.addOrder(Order.asc(Dict_.dictSort.getName()));
                 List<Dict> dicts = criteria.list();
-                if (dicts != null) {
+                if (Validate.isList(dicts)) {
                     dictDtos = new ArrayList<DictDto>(dicts.size());
                     for (Dict dict : dicts) {
                         DictDto dictDto = new DictDto();
-                        BeanUtils.copyProperties(dict, dictDto);
+                        BeanCopierUtils.copyProperties(dict, dictDto);
                         dictDtos.add(dictDto);
                     }
-                }
-                if (dictDtos != null) {
                     cache.put("DICT_ALL_ITEMS", dictDtos);
                 }
             }
@@ -302,6 +269,23 @@ public class DictServiceImpl implements DictService {
             dictDtoList.add(dictDto);
         }
         return dictDtoList;
+    }
+
+    /**
+     * 根据ID查询字典信息
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultMsg findById(String id) {
+        Dict dict = dictRepo.findById(Dict_.dictId.getName(),id);
+        if(dict == null){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"获取数据失败，字典信息已被删除！");
+        }else{
+            DictDto dictDto = new DictDto();
+            BeanCopierUtils.copyProperties(dict,dictDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"查询成功！",dictDto);
+        }
     }
 
 

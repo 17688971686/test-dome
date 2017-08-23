@@ -624,7 +624,7 @@ public class DateUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 	    Date myDate = sdf.parse(dateString);
 		System.out.println("<<---" + myDate);
-        System.out.println("KKKKKKKK"+converToString(new Date(),"yyyy年MM月dd日"));
+        System.out.println("KKKKKKKK"+converToString(new Date(),"yy"));
 
 	}
 }

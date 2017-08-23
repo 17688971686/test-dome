@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.project.*;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.domain.project.AssistPlan;
-import cs.domain.project.AssistPlanSign;
-import cs.domain.project.AssistPlanSign_;
-import cs.domain.project.AssistPlan_;
-import cs.domain.project.AssistUnit;
 import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;
 import cs.model.project.AssistPlanSignDto;
@@ -68,15 +65,26 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 		return pageModelDto;
 	}
 
+    /**
+     * TODO(递增序号还要实现)
+     * @param record
+     */
 	@Override
 	@Transactional
-	public void save(AssistPlanDto record) {
+	public ResultMsg save(AssistPlanDto record) {
         AssistPlan assistPlan = new AssistPlan();
         Date now = new Date();
         if(!Validate.isString(record.getId())){
             BeanCopierUtils.copyProperties(record,assistPlan);
             assistPlan.setId(UUID.randomUUID().toString());
-            assistPlan.setPlanName(NumIncreaseUtils.getAssistPlanName());
+            int maxPlanName = findMaxPlanName(now);
+            String panName = "";
+            if(maxPlanName == 0){
+                panName = DateUtils.converToString(now,"yyyyMMdd")+String.format("%02d", maxPlanName+1);
+            }else{
+                panName = String.valueOf(maxPlanName++);
+            }
+            assistPlan.setPlanName(panName);
             assistPlan.setCreatedBy(SessionUtil.getLoginName());
             assistPlan.setCreatedDate(now);
             assistPlan.setPlanState(Constant.EnumState.PROCESS.getValue());
@@ -121,7 +129,9 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
         }
 
         //更新项目协审状态
-        signService.updateAssistState(record.getSignId(), Constant.EnumState.YES.getValue(),true);
+        signService.updateAssistState(record.getSignId(), Constant.EnumState.YES.getValue());
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue(),"保存成功！",record);
 	}
 
 	@Override
@@ -290,7 +300,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
         assistPlanRepo.executeSql(sqlBuilder);
 
         //更新项目协审状态
-        signService.updateAssistState(signIds, Constant.EnumState.NO.getValue(),false);
+        signService.updateAssistState(signIds, Constant.EnumState.NO.getValue());
     }
 
     /**
@@ -322,7 +332,7 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
         }
 
         //更新项目协审状态
-        signService.updateAssistState(signIds.toString(), Constant.EnumState.YES.getValue(),false);
+        signService.updateAssistState(signIds.toString(), Constant.EnumState.YES.getValue());
     }
 
     /**
@@ -403,13 +413,6 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 	@Override
 	@Transactional
 	public void updateDrawType(String id, String drawType) {
-		
-//		AssistPlan assistPlan=assistPlanRepo.findById(id);
-//		if(assistPlan!=null){
-//			assistPlan.setDrawType(drawType);
-//			assistPlanRepo.save(assistPlan);
-//		}
-		
 		HqlBuilder hqlBuilder=HqlBuilder.create();
 		hqlBuilder.append("update " +AssistPlan.class.getSimpleName()+" set "+AssistPlan_.drawType.getName()+"=:drawType where "+AssistPlan_.id.getName()+"=:id");
 		hqlBuilder.setParam("drawType", drawType);
@@ -442,4 +445,16 @@ public class AssistPlanServiceImpl  implements AssistPlanService {
 		}
 		return assitUnitDtoList;
 	}
+
+    /**
+     * 获取最大的项目名称号
+     * @param date
+     * @return
+     */
+	private int findMaxPlanName(Date date){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select max(to_number("+AssistPlan_.planName.getName()+")) from cs_as_plan where "+AssistPlan_.planName.getName()+" like :cdate ");
+        sqlBuilder.setParam("cdate", "%"+DateUtils.converToString(date,"yyyyMMdd")+"%");
+        return assistPlanRepo.returnIntBySql(sqlBuilder);
+    }
 }

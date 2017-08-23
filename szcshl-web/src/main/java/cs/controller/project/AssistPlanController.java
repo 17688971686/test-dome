@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,9 +49,8 @@ public class AssistPlanController {
 
     @RequiresPermissions("assistPlan##post")
     @RequestMapping(name = "新增计划信息", path = "", method = RequestMethod.POST)
-    public @ResponseBody AssistPlanDto post(@RequestBody AssistPlanDto record) {
-        assistPlanService.save(record);
-        return record;
+    public @ResponseBody ResultMsg post(@RequestBody AssistPlanDto record) {
+        return assistPlanService.save(record);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)

@@ -3,6 +3,7 @@ package cs.service.project;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;
 import cs.model.project.AssistUnitDto;
@@ -17,7 +18,7 @@ public interface AssistPlanService {
     
     PageModelDto<AssistPlanDto> get(ODataObj odataObj);
 
-	void save(AssistPlanDto record);
+    ResultMsg save(AssistPlanDto record);
 
 	void update(AssistPlanDto record);
 

@@ -16,12 +16,14 @@ public class FileRecordDto extends BaseDto{
 	private String signId;
 	
 	private String projectName;
-	private String fileType;
-	private Integer fileSeq;
 	
 	//评审阶段
 	private String fileReviewstage;
-	
+
+	private String fileType;
+
+	private Integer fileSeq;
+
 	private String fileNo;
 	
 	private String projectCompany;
@@ -1895,44 +1897,28 @@ public class FileRecordDto extends BaseDto{
 		this.expertBookCountScan = expertBookCountScan;
 	}
 
-	public String getProbableTurnStageOriginal() {
-		return probableTurnStageOriginal;
+	public String getFileType() {
+		return fileType;
 	}
 
-	public void setProbableTurnStageOriginal(String probableTurnStageOriginal) {
-		this.probableTurnStageOriginal = probableTurnStageOriginal;
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
-	public String getProbableTurnStageCopy() {
-		return probableTurnStageCopy;
+	public Integer getFileSeq() {
+		return fileSeq;
 	}
 
-	public void setProbableTurnStageCopy(String probableTurnStageCopy) {
-		this.probableTurnStageCopy = probableTurnStageCopy;
+	public void setFileSeq(Integer fileSeq) {
+		this.fileSeq = fileSeq;
 	}
 
-	public String getProbableTurnStageRmb() {
-		return probableTurnStageRmb;
+	public Integer getRecordFormCount() {
+		return recordFormCount;
 	}
 
-	public void setProbableTurnStageRmb(String probableTurnStageRmb) {
-		this.probableTurnStageRmb = probableTurnStageRmb;
-	}
-
-	public String getCommunicateMeetingOriginal() {
-		return communicateMeetingOriginal;
-	}
-
-	public void setCommunicateMeetingOriginal(String communicateMeetingOriginal) {
-		this.communicateMeetingOriginal = communicateMeetingOriginal;
-	}
-
-	public String getCommunicateMeetingCopy() {
-		return communicateMeetingCopy;
-	}
-
-	public void setCommunicateMeetingCopy(String communicateMeetingCopy) {
-		this.communicateMeetingCopy = communicateMeetingCopy;
+	public void setRecordFormCount(Integer recordFormCount) {
+		this.recordFormCount = recordFormCount;
 	}
 
 	public String getProjectBaseOriginal() {
@@ -1983,28 +1969,44 @@ public class FileRecordDto extends BaseDto{
 		this.projectComputeCopy = projectComputeCopy;
 	}
 
-	public Integer getRecordFormCount() {
-		return recordFormCount;
+	public String getCommunicateMeetingOriginal() {
+		return communicateMeetingOriginal;
 	}
 
-	public void setRecordFormCount(Integer recordFormCount) {
-		this.recordFormCount = recordFormCount;
+	public void setCommunicateMeetingOriginal(String communicateMeetingOriginal) {
+		this.communicateMeetingOriginal = communicateMeetingOriginal;
 	}
 
-	public String getFileType() {
-		return fileType;
+	public String getCommunicateMeetingCopy() {
+		return communicateMeetingCopy;
 	}
 
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
+	public void setCommunicateMeetingCopy(String communicateMeetingCopy) {
+		this.communicateMeetingCopy = communicateMeetingCopy;
 	}
 
-	public Integer getFileSeq() {
-		return fileSeq;
+	public String getProbableTurnStageOriginal() {
+		return probableTurnStageOriginal;
 	}
 
-	public void setFileSeq(Integer fileSeq) {
-		this.fileSeq = fileSeq;
-	}					
-		
+	public void setProbableTurnStageOriginal(String probableTurnStageOriginal) {
+		this.probableTurnStageOriginal = probableTurnStageOriginal;
+	}
+
+	public String getProbableTurnStageCopy() {
+		return probableTurnStageCopy;
+	}
+
+	public void setProbableTurnStageCopy(String probableTurnStageCopy) {
+		this.probableTurnStageCopy = probableTurnStageCopy;
+	}
+
+	public String getProbableTurnStageRmb() {
+		return probableTurnStageRmb;
+	}
+
+	public void setProbableTurnStageRmb(String probableTurnStageRmb) {
+		this.probableTurnStageRmb = probableTurnStageRmb;
+	}
+
 }

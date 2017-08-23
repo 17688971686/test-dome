@@ -171,7 +171,7 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private Float surplusdays;
 
-    //预计发文时间
+    //发文时间
     @Column(columnDefinition = "DATE")
     private Date expectdispatchdate;
 

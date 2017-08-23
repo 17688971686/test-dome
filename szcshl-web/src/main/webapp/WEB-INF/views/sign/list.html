@@ -17,11 +17,7 @@
 	    	<input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">	    		
 	    	
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>   	   	    		    		  	
-	 		
-	 		<@shiro.hasPermission name="sign##delete">           
-            	<button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        	</@shiro.hasPermission>
-        		 	 	 
+
 	   	</form>      
 	 </div>
 

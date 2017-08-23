@@ -76,8 +76,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private OrgRepo orgRepo;
     @Autowired
-    private MergeOptionService mergeOptionService;
-    @Autowired
     private SignBranchRepo signBranchRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;

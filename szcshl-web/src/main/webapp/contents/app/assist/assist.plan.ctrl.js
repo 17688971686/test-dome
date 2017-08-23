@@ -3,9 +3,9 @@
 
     angular.module('app').controller('assistPlanCtrl', assistPlan);
 
-    assistPlan.$inject = ['$location','$state','assistSvc','$http','$interval'];
+    assistPlan.$inject = ['$location','$state','assistSvc','$http','$interval','bsWin'];
 
-    function assistPlan($location,$state,assistSvc,$http,$interval) {
+    function assistPlan($location,$state,assistSvc,$http,$interval,bsWin) {
         var vm = this;
         vm.model = {};							//创建一个form对象
         vm.filterModel = {};                    //filter对象
@@ -131,24 +131,14 @@
         vm.affirmSign = function () {
             var isCheckSign = $("input[name='selASTSign']:checked");
             if (isCheckSign.length < 1) {
-                common.alert({
-                    vm : vm,
-                    msg : "请选择要挑选的项目"
-                })
+                bsWin.alert("请选择要挑选的项目");
             }else{
                 if(isCheckSign.length > 1){
                     if(vm.plan.assistType == '合并项目'){
-                        common.alert({
-                            vm : vm,
-                            msg : "合并项目要先挑选一个主项目，再挑选次项目！"
-                        })
+                        bsWin.alert("合并项目要先挑选一个主项目，再挑选次项目！");
                     }else{
-                        common.alert({
-                            vm : vm,
-                            msg : "独立项目，每次只能选择一个！"
-                        })
+                        bsWin.alert("独立项目，每次只能选择一个！");
                     }
-                    return ;
                 }else{
                     vm.model.signId = isCheckSign[0].value;
                     vm.model.assistType = vm.plan.assistType;
@@ -160,7 +150,23 @@
                             vm.model.projectName = st.projectname;
                         }
                     });
-                    assistSvc.saveAssistPlan(vm);
+                    vm.model.isDrawed="0";
+                    assistSvc.saveAssistPlan(vm.model,vm.isCommit,function(data){
+                        vm.isCommit = false;
+                        //如果是新增，则重新刷新列表
+                        if(!vm.showPlan.id){
+                            vm.gridOptions.dataSource.read();
+                        }
+                        vm.showPlan = data.reObj;
+                        vm.selectPlanId = vm.showPlan.id;
+                        assistSvc.initPlanPage(vm);
+                        //如果是合并对象，则选择次项目
+                        if(vm.plan.assistType == '合并项目'){
+                            vm.showPickLowSign(vm.model.signId);
+                        }else{
+                            bsWin.success("操作成功！");
+                        }
+                    });
                 }
             }
         }
@@ -169,10 +175,7 @@
         vm.cancelSign = function(){
             var isCheckSign = $("input[name='checkASTSign']:checked");
             if (isCheckSign.length < 1) {
-                common.alert({
-                    vm : vm,
-                    msg : "请选择取消的项目"
-                })
+                bsWin.alert("请选择取消的项目");
             }else{
                 common.confirm({
                     vm: vm,
@@ -198,20 +201,21 @@
         //删除操作
         vm.doDelete  = function(){
            if(vm.showPlan.id){
-               common.confirm({
-                   vm: vm,
-                   title: "",
-                   msg: "确认删除数据吗?",
-                   fn: function () {
+               bsWin.confirm({
+                   title: "询问提示",
+                   message: "确认删除数据吗？删除数据不可恢复，请慎重！",
+                   onOk: function () {
                        $('.confirmDialog').modal('hide');
-                       assistSvc.deletePlan(vm);
+                       assistSvc.deletePlan(vm.showPlan.id,vm.isCommit,function(data){
+                           vm.isCommit = false;
+                           assistSvc.initPlanPage(vm);
+                           //刷新列表信息
+                           vm.gridOptions.dataSource.read();
+                       });
                    }
                });
            }else{
-               common.alert({
-                   vm : vm,
-                   msg : "请选择要删除的数据"
-               })
+               bsWin.alert("请选择要删除的协审计划包");
            }
         }
 
@@ -252,10 +256,7 @@
         vm.cancelLowerSign = function(){
             var checkSign = $("input[name='checkLowSign']:checked");
             if (checkSign.length < 1) {
-                common.alert({
-                    vm : vm,
-                    msg : "请选择要挑选的次项目"
-                })
+                bsWin.alert("请选择要挑选的次项目");
             }else{
                 var ids = [];
                 for (var i = 0; i < checkSign.length; i++) {

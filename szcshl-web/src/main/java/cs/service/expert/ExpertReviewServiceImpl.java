@@ -486,4 +486,49 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
+    /**
+     * 保存单个评审方案的专家评审费
+     * @param expertReviewDto
+     * @return
+     */
+    @Override
+    public ResultMsg saveExpertReviewCost(ExpertReviewDto expertReviewDto) {
+        //保存评审费用
+        String experReviewId = expertReviewDto.getId();
+        if (Validate.isString(experReviewId)) {
+            ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
+            if (expertReview != null) {
+                //设置评审方案的评审费用、税费和合计
+                expertReview.setReviewCost(expertReviewDto.getReviewCost());
+                expertReview.setReviewTaxes(expertReviewDto.getReviewTaxes());
+                expertReview.setTotalCost(expertReviewDto.getTotalCost());
+                //设置标题
+                expertReview.setReviewTitle(expertReviewDto.getReviewTitle());
+                //设置评审费发放日期
+                expertReview.setPayDate(expertReviewDto.getPayDate());
+                //设置该评审方案所有专家的评审费用、税费和合计
+                List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
+                List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
+                if (Validate.isList(expertSelecteds) && Validate.isList(expertSelectedDtos)) {
+                    expertSelecteds.forEach(expertSelected -> {
+                        expertSelectedDtos.forEach(expertSelectedDto -> {
+                            if (expertSelectedDto.getId().equals(expertSelected.getId())) {
+                                expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
+                                expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
+                                expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
+                                return;
+                            }
+                        });
+                    });
+                }
+                //设置专家评审费用结束s
+                expertReviewRepo.save(expertReview);
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+            }
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，该评审方案已被删除");
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，该评审方案已被删除");
+        }
+    }
+
 }

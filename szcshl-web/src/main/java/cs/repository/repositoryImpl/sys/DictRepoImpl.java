@@ -72,7 +72,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 	 * */
 	@Override
 	public List<Dict> findDictItemByCode(String dictCode) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);
+		Criteria criteria = getExecutableCriteria();
 		if(dictCode == null||dictCode.isEmpty()){
 			
 		}else{
@@ -85,7 +85,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 
 	@Override
 	public Dict findByKeyAndNameAtSomeLevel(String dictKey, String dictName, String parentId,String excludeId) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);	
+		Criteria criteria = getExecutableCriteria();
 		criteria.add(Restrictions.eqOrIsNull(Dict_.parentId.getName(), parentId));
 		criteria.add(Restrictions.or(Restrictions.eq(Dict_.dictKey.getName(), dictKey),Restrictions.eq(Dict_.dictName.getName(), dictName)));
 		if(excludeId != null&&!excludeId.isEmpty()){

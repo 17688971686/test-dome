@@ -1,4 +1,4 @@
-﻿(function () {
+﻿﻿(function () {
     'use strict';
     var DICT_ITEMS;    //数字字典
     var service = {
@@ -25,12 +25,7 @@
         initUploadOption: initUploadOption,         // 附件上传参数(已停用)
         getTaskCount: getTaskCount,                 // 用户待办总数
         getPauseProjectCount:getPauseProjectCount,  // 待办暂停项目个数
-        initIdeaData: initIdeaData,                 // 初始化选择意见窗口数据
-        deleteCommonIdea: deleteCommonIdea,         // 删除常用意见
-        addCommonIdea: addCommonIdea,               // 添加常用意见
-        saveCommonIdea: saveCommonIdea,             // 保存常用意见
-        addCorrentIdea: addCorrentIdea,             // 添加当前意见
-        saveCurrentIdea: saveCurrentIdea,           // 绑定当前意见
+
         initDictItems: function (dictList) {
             DICT_ITEMS = dictList;
         }
@@ -547,111 +542,6 @@
             $('#GtasksCount').html(response.data);
         });
     }// E_获取待办总数
-
-    // 初始化常用意见
-    function initIdeaData(vm, $http, options) {
-        vm.ideaContent = '';// 初始化当前意见
-        vm.$http = $http;
-        vm.i = 1;
-
-        var ideaEditWindow = $("#ideaWindow");
-        ideaEditWindow.kendoWindow({
-            width: "600px",
-            height: "450px",
-            title: "意见选择",
-            visible: false,
-            modal: true,
-            closable: true,
-            actions: ["Pin", "Minimize", "Maximize", "close"]
-        }).data("kendoWindow").center().open();
-
-        vm.$http({
-            method: 'get',
-            url: rootPath + "/idea"
-        }).then(function (response) {
-            vm.commonIdeas = response.data;
-
-            vm.deleteCommonIdea = function () {// 删除常用意见
-                deleteCommonIdea(vm);
-            };
-
-            vm.addCorrentIdea = function (ideaContent) {// 添加当前意见
-                addCorrentIdea(vm, ideaContent);
-            };
-
-            vm.addCommonIdea = function () {// 添加常用意见
-                addCommonIdea(vm);
-            }
-
-            vm.saveCommonIdea = function () {// 保存常用意见
-
-                saveCommonIdea(vm);
-            }
-
-            vm.saveCurrentIdea = function () {
-                saveCurrentIdea(vm, options);
-            }
-        });
-    }//end
-
-    function deleteCommonIdea(options) {
-        var isCheck = $("#commonIdeaTable input[name='ideaCheck']:checked");
-        if (isCheck.length < 1) {
-            alert("请选择要删除的意见！");
-        } else {
-            var ids = [];
-            for (var i = 0; i < isCheck.length; i++) {
-                options.commonIdeas.forEach(function (c, number) {
-                    if (isCheck[i].value == c.ideaID || c.ideaID == undefined) {
-                        options.commonIdeas.splice(number, 1);
-                    }
-                    ids.push(isCheck[i].value);
-                });
-            }
-            var idsStr = ids.join(",");
-
-            options.$http({
-                method: 'delete',
-                url: rootPath + '/idea',
-                params: {
-                    ideas: idsStr
-                }
-            })
-
-        }
-    }// end
-
-    function addCorrentIdea(options, ideaContent) {
-        options.ideaContent = options.ideaContent + ideaContent;
-    }// end
-
-    function addCommonIdea(options) {
-        options.commonIdea = {};
-        options.commonIdea.ideaType = "个人常用意见";
-        options.commonIdeas.push(options.commonIdea);
-        options.i++;
-    }// end
-
-    function saveCommonIdea(options) {
-        options.$http({
-            method: 'post',
-            url: rootPath + "/idea",
-            headers: {
-                "contentType": "application/json;charset=utf-8" // 设置请求头信息
-            },
-            dataType: "json",
-            data: angular.toJson(options.commonIdeas)
-        }).then(function (response) {
-            alert("保存成功！");
-        });
-    }// end
-
-    function saveCurrentIdea(vm, options) {
-        var targetObj = $("#" + options.targetId);
-        targetObj.val(targetObj.val() + vm.ideaContent);
-        window.parent.$("#ideaWindow").data("kendoWindow").close();
-        targetObj.focus();
-    }// end
 
     // begin 获取项目暂停待办个数
     function getPauseProjectCount(options) {

@@ -11,12 +11,9 @@ import cs.common.utils.Validate;
 import cs.domain.project.*;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
-import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.MergeOptionRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +28,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
     @Autowired
-    private UserService userService;
-    @Autowired
     private SignRepo signRepo;
     @Autowired
     private SignService signService;
-    @Autowired
-    private MergeOptionRepo mergeOptionRepo;
-    @Autowired
-    private MergeOptionService mergeOptionService;
     @Autowired
     private SignMergeRepo signMergeRepo;
 
@@ -77,7 +68,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatchDoc.setFileSeq((curYearMaxSeq + 1));
             dispatchDocRepo.save(dispatchDoc);
         }
-        signRepo.updateSignProcessState(signId, Constant.SignProcessState.END_DIS_NUM.getValue());
+        //更改项目信息
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+        //1、流程状态修改
+        sign.setProcessState( Constant.SignProcessState.END_DIS_NUM.getValue());
+        //2、发文日期等修改
+        sign.setExpectdispatchdate(new Date());
+        sign.setDocnum(fileNum);
+        //3、发文后剩余工作日
+        sign.setDaysafterdispatch(sign.getSurplusdays());
+        signRepo.save(sign);
+
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileNum);
 
     }

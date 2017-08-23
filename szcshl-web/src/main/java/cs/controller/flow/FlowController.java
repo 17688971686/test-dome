@@ -123,16 +123,25 @@ public class FlowController {
     public void readProccessInstanceImg(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response)
             throws Exception {
         InputStream imageStream = getProcessInstanceImage(processInstanceId);
-        // 输出资源内容到相应对象
-        byte[] b = new byte[1024];
-        int len;
-        while ((len = imageStream.read(b, 0, 1024)) != -1) {
-            response.getOutputStream().write(b, 0, len);
+        if(imageStream == null){
+            String resultMsg = "已找不到流程信息";
+            response.getOutputStream().write(resultMsg.getBytes());
+        }else{
+            // 输出资源内容到相应对象
+            byte[] b = new byte[1024];
+            int len;
+            while ((len = imageStream.read(b, 0, 1024)) != -1) {
+                response.getOutputStream().write(b, 0, len);
+            }
         }
+
     }
 
     private InputStream getProcessInstanceImage(String processInstanceId) {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        if(processInstance == null){
+            return null;
+        }
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);
         // 使用spring注入引擎请使用下面的这行代码

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cs.common.Response;
+import cs.common.ResultMsg;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.DictDto;
@@ -21,27 +22,21 @@ public interface DictService {
 
     /*字典分组查询
     描述：查询全部的字典分组数据，首先从缓存查询，如果存在，直接查询，如果不存在，从数据库查询，然后放到缓存，缓存的key为dictGroups，value为字典分组数据数组*/
-    public PageModelDto<DictDto> get(ODataObj odataObj);
+    PageModelDto<DictDto> get(ODataObj odataObj);
 
     /*字典分组新增
     描述:增加数据字典分组，必须填写分组名称、字典类型编码，名称和编码都是唯一的、排序默认*/
-    public void createDict(DictDto dictDto);
+    ResultMsg createDict(DictDto dictDto);
 
     /*字典分组更新
     描述：只能更新分组名称、排序，分组类型编码不可编辑*/
-    public void updateDict(DictDto dictDto);
-
+    ResultMsg updateDict(DictDto dictDto);
 
     /*
      * 删除
      *
     */
-    public void deleteDict(String dictId);
-
-    /*
-     * 批量删除
-    */
-    public void deleteDicts(String[] dictIds);
+    ResultMsg deleteDict(String dictId);
 
     /*字典分组启用禁用
     描述：设置字典分组启用还是禁用，创建分组字典后，默认是启用的*/
@@ -65,7 +60,7 @@ public interface DictService {
      *
      * @param dictCode 字典编码
      */
-    public List<DictDto> getDictItemByCode(String dictCode);
+    List<DictDto> getDictItemByCode(String dictCode);
 
     /**
      * 通过编码类型取得字典名称，用于翻译出字典值，只返回字典数据
@@ -79,4 +74,5 @@ public interface DictService {
     public List<DictDto> getAllDictByCode(String dictCode);
 
 
+    ResultMsg findById(String id);
 }

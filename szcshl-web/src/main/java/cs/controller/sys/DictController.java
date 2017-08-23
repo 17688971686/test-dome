@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
+import cs.model.sys.OrgDto;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,15 +33,20 @@ public class DictController {
 	@Autowired
 	private DictService dictService;
 	
-	@RequiresPermissions("dict##get")	
-	@RequestMapping(name = "获取字典数据", path = "", method = RequestMethod.GET)
+	@RequiresPermissions("dict#fingByOdata#post")
+	@RequestMapping(name = "获取字典数据", path = "fingByOdata", method = RequestMethod.POST)
 	public @ResponseBody PageModelDto<DictDto> get(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
 		PageModelDto<DictDto> dictDtos = dictService.get(odataObj);
-//		List<DictDto> dtos = dictService.getDictItemByCode("DICT_SEX");		
 		return dictDtos;
 	}
-	
+
+    @RequiresPermissions("dict#fingById#post")
+    @RequestMapping(name = "根据ID获取字典信息", path = "fingById", method = RequestMethod.POST)
+    public @ResponseBody ResultMsg dict(@RequestParam(required = true) String id){
+        return dictService.findById(id);
+    }
+
 	
 	@RequiresPermissions("dict#dictItems#get")	
 	@RequestMapping(name = "获取字典数据", path = "dictItems", method = RequestMethod.GET)
@@ -62,28 +69,23 @@ public class DictController {
 	
 	@RequiresPermissions("dict##post")
 	@RequestMapping(name = "创建字典", path = "",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void  post(@RequestBody DictDto dictDto)  {		
-		dictService.createDict(dictDto);	
+	@ResponseBody
+	public ResultMsg  post(@RequestBody DictDto dictDto)  {
+		return dictService.createDict(dictDto);
 	}
 	
 	@RequiresPermissions("dict##put")
-	@RequestMapping(name = "更新字典", path = "",method=RequestMethod.PUT)	
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void  put(@RequestBody DictDto dictDto)  {		
-		dictService.updateDict(dictDto);		
+	@RequestMapping(name = "更新字典", path = "",method=RequestMethod.PUT)
+    @ResponseBody
+	public ResultMsg  put(@RequestBody DictDto dictDto)  {
+		return dictService.updateDict(dictDto);
 	}
 	
 	@RequiresPermissions("dict##delete")
 	@RequestMapping(name = "删除字典", path = "",method=RequestMethod.DELETE)	
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void  delete(@RequestBody String id)  {		
-		String[] ids=id.split(",");
-		if(ids.length>1){
-			dictService.deleteDicts(ids);
-		}else{
-			dictService.deleteDict(ids[0]);
-		}		
+	@ResponseBody
+	public ResultMsg delete(@RequestBody String id)  {
+		return dictService.deleteDict(id);
 	}
 	
 	@RequiresPermissions("dict#html/list#get")
