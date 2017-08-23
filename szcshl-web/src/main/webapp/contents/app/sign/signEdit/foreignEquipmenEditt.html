@@ -73,11 +73,10 @@
 				<td>{{vm.model.projectcode}}</td>
 				<td width="15%" class="text-center">采购单位</td>
 				<td>
-					 <select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" id="builtcompanyName"style="width:220px;height:26px;">
-							<option ng-repeat="x in vm.builtcomlist"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
-					</select>
-					<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName" id="builtcompanyName"
-							    style="width:200px;height:26px;margin-left:-224px;">
+					<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" style="width:220px;height:26px;">
+               		 <option ng-repeat="x in vm.companyList|filter:{coType:'建设单位'}"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+          		 	 </select>
+           			 <input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName"  style="width:200px;height:26px;margin-left:-224px;">
 				</td>
 			</tr>
 			<tr>

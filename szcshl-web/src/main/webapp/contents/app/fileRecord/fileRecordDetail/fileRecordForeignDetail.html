@@ -269,16 +269,22 @@
 			  	<a class="btn btn-xs btn-primary" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
 			  </td>		      
 		    </tr>		    
-		      <tr>
+		     		      <tr>
 		      <td width="15%" class="text-center">项目负责人（签名）</td>
 		      <td>	
 		      {{vm.fileRecord.projectChargeUser}}	   		 
-		      
 		      </td>
-		       <td width="15%" class="text-center">表格打印日期</td>
-		      <td>
+		       <td width="15%" rowspan='2' class="text-center">发送存档日期</td>
+		      <td rowspan='2'>
 		      {{vm.fileRecord.printDate}}
 			  </td>
+			  
+		    </tr>	
+		      <tr>
+		      <td width="15%" class="text-center">项目第二负责人（签名）</td>
+		      <td>	
+				{{vm.fileRecord.projectChargeUser}}   		 
+		      </td>
 		    </tr>	
 		    
 		    <tr>

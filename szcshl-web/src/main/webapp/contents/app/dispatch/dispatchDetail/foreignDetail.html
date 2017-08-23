@@ -1,0 +1,148 @@
+<meta charset="UTF-8">
+<!--  S 进口设备-->
+ <!-- s form -->
+    <form id="dispatch_form" name="dispatch_form">
+        <!-- s table -->
+        <table class="table table-bordered"  >
+       
+            <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
+            <caption >
+                <span>
+                  QR-4.10-03-A0<br>
+                    发文方式：{{vm.dispatchDoc.dispatchWay}}
+                </span>
+				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                           ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
+
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                           ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
+
+					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
+                            ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
+                            ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
+				</span>
+
+                <span style="float:right;">发文类型：
+                {{vm.dispatchDoc.dispatchType}}
+			</span>
+            </caption>
+            <tbody>
+           
+
+            <tr>
+                <td style="width:150px;" rowspan='2' class="text-center">发文部门</br>拟稿人</td>
+                <td class="text-center">
+                    {{vm.dispatchDoc.orgName}}
+                </td>
+                <td style="width:150px;" rowspan='2' class="text-center">校对人</td>
+                <td rowspan='2' class="text-center">
+            	    {{vm.dispatchDoc.userName}}
+                </td>
+                <td rowspan='2' style="width:150px;" class="text-center">拟稿时间</td>
+                <td rowspan='2' class="text-center">
+                    {{vm.dispatchDoc.draftDate | date:'yyyy年MM月dd日'}}
+                </td>
+            </tr>
+             <tr>
+                <td style="width:150px;" class="text-center"> {{vm.dispatchDoc.userName}}</td>
+            </tr>
+            
+            <tr>
+                <td style="width:150px;" class="text-center">秘密等级</td>
+                <td> {{vm.dispatchDoc.secretLevel}}</td>
+
+                <td style="width:150px;" class="text-center">紧急程度</td>
+                <td>{{vm.dispatchDoc.urgentLevel}}</td>
+
+                <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
+                <td>
+                    <label>
+                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                    </label>
+                </td>
+            </tr>
+              <tr>
+                <td style="width:150px;" class="text-center">发文日期</td>
+                <td>
+                {{vm.dispatchDoc.dispatchDate}}
+                </td>
+
+                <td style="width:150px;" class="text-center">文件字号</td>
+                <td colspan="3">{{vm.dispatchDoc.fileNum}}</td>
+
+            </tr>
+			 <tr>
+                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td colspan="5">
+                {{vm.dispatchDoc.fileTitle}}
+                </td>
+            </tr>
+          
+            <tr>
+                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td colspan="5">
+                {{vm.dispatchDoc.dispatchScope}}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="width:150px;" class="text-center">相关说明</td>
+                <td colspan="5">
+                {{vm.dispatchDoc.description}}
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
+                <td colspan="3">
+                {{vm.dispatchDoc.mianChargeSuggest}}
+                </td>
+                <td colspan="2">
+                {{vm.dispatchDoc.secondChargeSuggest}}
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">评审意见摘要</td>
+                <td colspan="5">
+                {{vm.dispatchDoc.reviewAbstract}}
+                </td>
+            </tr>
+
+             <tr>
+                <td style="width:150px;" class="text-center">部长审核意见</td>
+                <td colspan="5">
+               
+                 <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">分管副主任意见</td>
+                <td colspan="5">
+                {{vm.dispatchDoc.viceDirectorSuggesttion}}
+                 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">主任签发</td>
+                <td colspan="5">
+                {{vm.dispatchDoc.directorIssue}}
+                <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
+                </td>
+            </tr> 
+            
+            </tbody>
+        </table>    <!-- end table -->
+    </form> <!-- end form -->
+<!--  E 进口设备-->
