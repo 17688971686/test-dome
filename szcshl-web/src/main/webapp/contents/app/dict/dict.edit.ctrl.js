@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('dictEditCtrl', dict);
+    angular.module('app').controller('dictEditCtrl', dict);
 
     dict.$inject = ['$scope','bsWin','dictSvc','$state'];
     function dict($scope,bsWin, dictSvc,$state) {

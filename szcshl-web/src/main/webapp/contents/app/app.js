@@ -209,6 +209,7 @@
                 controllerAs: 'vm'
             })
             //end#demo
+
             //begin Dict
             .state('dict', {
                 url: '/dict',
@@ -355,6 +356,7 @@
             	controllerAs: 'vm'
         	})
         	//end#fileRecord
+
             //begin#assistMng
             .state('assistPlan', {
                 url: '/assistPlan',
@@ -560,9 +562,6 @@
                 $state.go('gtasks');
             }
         };
-
-        //kendo 语言
-    	kendo.culture("zh-CN");
     	
         $rootScope.topSelectChange = function (dictKey, dicts , type) {
         	if(dicts !=undefined){       		
@@ -581,8 +580,10 @@
 	            	}               
 	            }
         	}
-        }      
+        }
 
+        //kendo 语言
+        kendo.culture("zh-CN");
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     });

@@ -20,44 +20,14 @@
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             paymentGrid: paymentGrid,           //专家评审费
-            uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
             realSign : realSign ,               //正式签收
         };
         return service;
 
-        //S 上传附件列表
-        function uploadFilelist(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/file/findBySysFileSignId",
-                params: {
-                    signid: vm.model.signid
-                }
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        if (response.data && response.data.length > 0) {
-                            vm.sysFileDtoList = response.data;
-                            vm.showFlag.tabSysFile = true;
-                        }
-                    }
-                })
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
         //E 上传附件列表
-        
+
         //S_初始化grid(过滤已签收和已经完成的项目)
         function signGrid(vm) {
             // Begin:dataSource
@@ -83,16 +53,16 @@
             });
             // End:dataSource
             //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
             //S_序号
             // Begin:column
             var columns = [
@@ -105,12 +75,12 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
-                {  
-				    field: "rowNumber",  
-				    title: "序号",  
+                {
+				    field: "rowNumber",
+				    title: "序号",
 				    width: 50,
 				    filterable : false,
-				    template: "<span class='row-number'></span>"  
+				    template: "<span class='row-number'></span>"
 				 },
                 {
                     field: "projectname",
@@ -185,7 +155,7 @@
 
                         //如果已经发起流程，则只能查看
                         return common.format($('#columnBtns').html(), item.signid, isStartFlow,
-                            item.signid + "/" + item.processInstanceId, 
+                            item.signid + "/" + item.processInstanceId,
                             "vm.del('" + item.signid + "')", isStartFlow,
                             "vm.startNewFlow('" + item.signid + "')", isStartFlow,
                             "vm.realSign('" + item.signid + "')", isRealSign);
@@ -580,7 +550,7 @@
                         wpId = vm.assistwork.id;
                     }
                     break;
-                    
+
                 case "XS_XMFZR_GZFA":
                     if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
                         wpId = vm.mainwork.id;
@@ -628,8 +598,8 @@
                 })
             }
         }//E_meetingDoc
-        
-      
+
+
         //S_createDispatchFileNum
         function createDispatchFileNum(signId,dispatchId,callBack){
             var httpOptions = {

@@ -34,8 +34,6 @@
             nodeConfirmDis:false,      // 确认发文
             nodeCreateDisNum:false,    // 生成发文编号
             nodeFileRecord:false,      // 归档
-            nodeSelXSOrg:false,        // 协审选择分管部门
-            nodeSelXSPri:false,        // 选择负责人
             nodeXSWorkProgram:false,   // 协审工作方案
 
             tabWorkProgram:false,       // 显示工作方案标签tab
@@ -146,10 +144,16 @@
             });
             // 初始化办理信息
             flowSvc.initFlowData(vm);
-            // 初始化上传附件
-            signSvc.uploadFilelist(vm);
 
-            ideaSvc.initIdea(vm);	//初始化个人常用意见
+            // 初始化上传附件
+            sysfileSvc.findByMianId(vm.model.signid,function(data){
+                if(data || data.length > 0){
+                    vm.showFlag.tabSysFile = true;
+                    vm.sysFileList = data;
+                }
+            });
+            //初始化个人常用意见
+            ideaSvc.initIdea(vm);
         }
 
         //检查项目负责人
@@ -359,6 +363,11 @@
                 options = {};
             }
             ideaSvc.initIdeaData(vm,options);
+        }
+
+        //选择个人常用意见
+        vm.selectedIdea = function(){
+            vm.flow.dealOption = vm.chooseIdea;
         }
 
         //流程提交
@@ -667,7 +676,7 @@
 
         //附件下载
         vm.commonDownloadSysFile = function(sysFileId){
-            sysfileSvc.commonDownloadFile(vm,sysFileId);
+            sysfileSvc.downloadFile(sysFileId);
         }
 
         //生成发文字号

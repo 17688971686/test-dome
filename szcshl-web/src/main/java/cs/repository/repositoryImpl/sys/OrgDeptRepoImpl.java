@@ -58,6 +58,7 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
         sqlBuilder.setParam("signid",signId).setParam("branchid",branchId);
         sqlBuilder.append(" OR (u.id IN (SELECT USERLIST_ID FROM CS_DEPT_CS_USER WHERE SYSDEPTLIST_ID = (SELECT orgid FROM CS_SIGN_BRANCH WHERE signid =:signid2 AND branchid =:branchid2))) ");
         sqlBuilder.setParam("signid2",signId).setParam("branchid2",branchId);
+        sqlBuilder.append(" order by "+User_.userSort.getName()+" nulls last");
         return userRepo.findBySql(sqlBuilder);
     }
 }

@@ -22,7 +22,7 @@
         <tr>
           <td width="10%" class="text-center">审批意见</td>
           <td>
-               <select onChange="$('#dealOption').val(this.value)" style="min-width:10%;max-width: 100%;margin:5px 0px;">
+               <select ng-model="vm.chooseIdea" ng-change="vm.selectedIdea()" style="min-width:10%;max-width: 100%;margin:5px 0px;">
                   <option value="">-- 个人常用意见列表 --</option>
                   <option  ng-repeat="x in vm.ideas" value="{{x.ideaContent}}" >{{x.ideaContent}}</option>
                </select>
@@ -71,7 +71,7 @@
                 </div>
 
                 <!-- 选择负责人 -->
-                <div ng-if="vm.showFlag.nodeSelPrincipal">
+                <div ng-if="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow != 9">
                     <ol class="breadcrumb" style="font-size: 12px;">
                         <li class="active">温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个！</li>
                     </ol>
@@ -101,7 +101,7 @@
 
                 <!------------  以下为协审流程业务  ------------->
                 <!-- 协审部门分办 -->
-                <div ng-show="vm.showFlag.nodeSelXSPri" id="xs_bmfb">
+                <div ng-show="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow == 9" id="xs_bmfb">
                     <table class="table">
                         <caption class="text-center">*必须要选择1个总负责人，最多只能选3个负责人</caption>
                         <tr>
@@ -207,18 +207,6 @@
                 <!-- 归档 -->
                 <div ng-if="vm.showFlag.nodeFileRecord">
                     <button class="btn btn-xs btn-primary" ng-click="vm.addDoFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>归档</button>
-                </div>
-                <!--*********  以下是协审流程 *******-->
-                <!-- 协审工作方案 -->
-                <div ng-if="vm.showFlag.nodeXSWorkProgram">
-                    <p>
-                        项目评审：<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isNeedWrokPrograml" name="isNeedWrokPrograml" ng-true-value="9" ng-false-value="0" >
-                       </p>
-                    <p>
-                        <button class="btn btn-xs btn-primary" ng-click="vm.addBaseWP()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>项目基本信息</button>
-                        <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit" ng-show="vm.model.isNeedWrokPrograml == 9" ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
-                        <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="vm.model.isNeedWrokPrograml == 9"><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>
-                    </p>
                 </div>
           </td>
         </tr>

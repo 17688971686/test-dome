@@ -49,8 +49,8 @@
         <button id="linksbtn" class="btn btn-sm btn-primary"  ng-click="vm.signPreview()" >打印预览</button>
         <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印" onclick="javascript:window.print();" />
         <button class="btn btn-sm btn-primary" ng-click="vm.otherPrintln()" ng-hide="true">其他资料打印</button>
-        <button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button>
-        <button class="btn btn-sm btn-primary" id="detail_file_bt" >查看附件</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
     </div>
     <!-- s form -->
     <form id="sign_fill_form" name="sign_fill_form">

@@ -3,9 +3,9 @@
 
     angular.module('app').factory('fileRecordSvc', fileRecord);
 
-    fileRecord.$inject = ['sysfileSvc', '$http'];
+    fileRecord.$inject = ['bsWin', '$http'];
 
-    function fileRecord(sysfileSvc, $http) {
+    function fileRecord(bsWin, $http) {
         var service = {
             initFileRecordData: initFileRecordData,		//初始化流程数据
             saveFileRecord: saveFileRecord,				//保存
@@ -21,31 +21,15 @@
                 params: {signId: vm.fileRecord.signId}
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        if (response.data != null && response.data != "") {
-                            vm.fileRecord = response.data.file_record;
-                            
-                            vm.fileRecord.signId = vm.signId;
-                            vm.signUserList = response.data.sign_user_List;
+                if (response.data != null && response.data != "") {
+                    vm.fileRecord = response.data.file_record;
 
-                            //初始化附件上传
-                            if(vm.fileRecord.fileRecordId){
-	                            sysfileSvc.initUploadOptions({
-	                                businessId: vm.fileRecord.fileRecordId,
-	                                sysSignId: vm.fileRecord.signId,
-	                                sysfileType: "归档",
-	                                uploadBt: "upload_file_bt",
-	                                detailBt: "detail_file_bt",
-	                                vm: vm
-	                            });
-                            }
-                        }
-                    }
+                    vm.fileRecord.signId = vm.signId;
+                    vm.signUserList = response.data.sign_user_List;
 
-                });
+                    //初始化附件上传
+                    vm.initFileUpload();
+                }
             }
             common.http({
                 vm: vm,
@@ -63,7 +47,6 @@
                 vm.signUserList.forEach(function(su,index){
                     if(vm.fileRecord.signUserid == su.id){
                         vm.fileRecord.signUserName = su.displayName;
-                        return;
                     }
                 })
 
@@ -74,40 +57,16 @@
                     data: vm.fileRecord
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            vm.isCommit = false;
-                            common.alert({
-                                vm: vm,
-                                msg: response.data.reMsg,
-                                closeDialog: true,
-                                fn: function () {
-                                    if (response.data.reCode == "error") {
-                                        vm.isCommit = false;
-                                    } else {
-                                        if(!vm.fileRecord.fileRecordId){
-                                            vm.fileRecord = response.data.reObj;
-                                            vm.fileRecord.signId = vm.signId;
-                                            //初始化附件上传
-                                            sysfileSvc.initUploadOptions({
-                                                businessId: vm.fileRecord.fileRecordId,
-                                                sysSignId: vm.fileRecord.signId,
-                                                sysfileType: "归档",
-                                                uploadBt: "upload_file_bt",
-                                                detailBt: "detail_file_bt",
-                                                vm: vm
-                                            });
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    });
+                    vm.isCommit = false;
+                    if(response.data.flag || response.data.reCode == 'ok'){
+                        vm.fileRecord = response.data.reObj;
+                        vm.fileRecord.signId = vm.signId;
+                        bsWin.success("操作成功！")
+                    }else{
+                        bsWin.error(response.data.reMsg);
+                    }
                 }
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess,

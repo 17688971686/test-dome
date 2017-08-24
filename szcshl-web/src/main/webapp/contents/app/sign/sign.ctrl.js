@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-
     angular.module('app').controller('signCtrl', sign);
 
     sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin'];

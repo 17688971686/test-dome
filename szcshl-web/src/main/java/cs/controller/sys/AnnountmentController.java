@@ -68,8 +68,8 @@ public class AnnountmentController {
         return annService.findAnOrg();
     }
 
-    @RequiresPermissions("annountment#findAnnountmentById#get")
-    @RequestMapping(name = "通过ID获取通知公告", path = "findAnnountmentById", method = RequestMethod.GET)
+    @RequiresPermissions("annountment#findAnnountmentById#post")
+    @RequestMapping(name = "通过ID获取通知公告", path = "findAnnountmentById", method = RequestMethod.POST)
     @ResponseBody
     public AnnountmentDto findAnnoungmentById(@RequestParam String anId) {
         return annService.findAnnountmentById(anId);

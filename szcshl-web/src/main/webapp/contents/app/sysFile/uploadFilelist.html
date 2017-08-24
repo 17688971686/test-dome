@@ -9,7 +9,7 @@
         <td style="width: 200px;" align="center" bgcolor="#eeeeee">时间</td>
         <td style="width: 200px;" align="center" bgcolor="#eeeeee">操作</td>
     </tr>
-    <tr ng-repeat="x in vm.sysFileDtoList ">
+    <tr ng-repeat="x in vm.sysFileList ">
         <td >
             <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
             <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
@@ -18,7 +18,7 @@
             <a ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
         </td>
         <td style="text-align: center;">{{ x.sysfileType }}</td>
-        <td style="text-align: center;">{{ x.sysMinType }}</td>
+        <td style="text-align: center;">{{ x.sysBusiType }}</td>
         <td style="text-align: center;">{{ x.createdBy }}</td>
         <td style="text-align: center;">{{ x.createdDate }}</td>
         <td style="text-align: center;">

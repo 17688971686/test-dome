@@ -397,10 +397,17 @@ public class Constant {
 
 
     /**
-     * 系统文件类型
+     * 系统文件类型（跟sysfile.svc.js mainTypeValue同步）
      */
     public static enum SysFileType {
-        SIGN("收文"),
+        SIGN("项目附件"),
+        FILLSIGN("审批登记"),
+        TOPIC("课题附件"),
+        HUMAN("人事附件"),
+        BOOKS("图书附件"),
+        NOTICE("通知公告"),
+        SHARE("资料共享"),
+        MEETTINGROOM("会议室预定"),
         WORKPROGRAM("工作方案"),
         DISPATCH("发文"),
         DOFILE("归档"),

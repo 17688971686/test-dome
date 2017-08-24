@@ -3,16 +3,16 @@
 
     angular.module('app').controller('sharingPlatlformEditCtrl', sharingPlatlform);
 
-    sharingPlatlform.$inject = ['$location', 'sharingPlatlformSvc', '$state'];
+    sharingPlatlform.$inject = ['sharingPlatlformSvc', '$state','sysfileSvc','$scope'];
 
-    function sharingPlatlform($location, sharingPlatlformSvc, $state) {
+    function sharingPlatlform(sharingPlatlformSvc, $state,sysfileSvc,$scope) {
         var vm = this;
         vm.title = '新增共享资料';
         vm.model = {};                   //共享平台对象
         vm.businessFlag ={
-            isInitFileOption : false,   //是否已经初始化附件上传控件
             isUpdate : false,           //是否为更改
-            isInitSeled : false,        //是否已经初始化选择了
+            isLoadModel : false,        //是否已经加载对象
+            isLoadOrgUser : false,      //是否已经加载部门和用户
         }
 
         vm.model.sharId = $state.params.sharId;
@@ -20,19 +20,44 @@
             vm.businessFlag.isUpdate = true;
             vm.title = '更改共享资料';
         }
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.model.sharId){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.model.sharId",function (newValue, oldValue) {
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId : vm.model.sharId,
+                mainId : vm.model.sharId,
+                mainType : sysfileSvc.mainTypeValue().SHARE,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId:"sysfileinput",
+                vm:vm,
+                uploadSuccess:function(){
+                    sysfileSvc.findByBusinessId(vm.model.sharId,function(data){
+                        vm.sysFilelists = data;
+                    });
+                }
+            });
+        }
+
         activate();
         function activate() {
-            if (vm.businessFlag.isUpdate) {
+            if (vm.model.sharId) {
                 sharingPlatlformSvc.getSharingPlatlformById(vm);
                 //初始化附件列表
-                sharingPlatlformSvc.findFileList(vm);
+                sysfileSvc.findByBusinessId(vm.model.sharId,function(data){
+                    vm.sysFilelists = data;
+                });
             }else{
-                //附件初始化
-                sharingPlatlformSvc.initFileOption({
-                    sysfileType: "共享平台",
-                    uploadBt: "upload_file_bt",
-                    vm: vm
-                })
+                vm.initFileUpload();
             }
             //初始化部门和用户
             sharingPlatlformSvc.initOrgAndUser(vm);

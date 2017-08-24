@@ -131,8 +131,11 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         criteria = odataObj.buildFilterToCriteria(criteria);
         //查询个人接收到的记录信息（全局、部分和个人）
         StringBuilder linkSql = new StringBuilder("(isnopermission = '9' or sharid in ");
-        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserInfo().getId()+"') ");
-        linkSql.append(" or (businesstype = '1' and  businessId ='"+SessionUtil.getUserInfo().getOrg().getId()+"') ) )");
+        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserId()+"') ");
+        if(Validate.isObject(SessionUtil.getUserInfo().getOrg()) && Validate.isString(SessionUtil.getUserInfo().getOrg().getId())){
+            linkSql.append(" or (businesstype = '1' and  businessId ='"+SessionUtil.getUserInfo().getOrg().getId()+"')" );
+        }
+        linkSql.append(" ) )");
 
         criteria.add(Restrictions.sqlRestriction(linkSql.toString()));
 

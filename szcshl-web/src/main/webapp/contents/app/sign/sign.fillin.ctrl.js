@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signFillinCtrl', sign);
 
-    sign.$inject = ['signSvc', 'sysfileSvc','$state', '$http','bsWin'];
+    sign.$inject = ['signSvc', 'sysfileSvc','$state', '$http','bsWin','$scope'];
 
-    function sign(signSvc,sysfileSvc, $state, $http,bsWin) {
+    function sign(signSvc,sysfileSvc, $state, $http,bsWin,$scope) {
         var vm = this;
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
@@ -31,17 +31,18 @@
                 //分管领导信息
                 vm.busiObj.leaderList = data.reObj.leaderList;
 
-                //初始化附件上传
-                if(vm.model.signid){
-                    sysfileSvc.initUploadOptions({
-                        businessId:vm.model.signid,
-                        sysSignId :vm.model.signid,
-                        sysfileType:"审批登记表",
-                        uploadBt:"upload_file_bt",
-                        detailBt:"detail_file_bt",
-                        vm:vm
-                    });
-                }
+                //创建附件对象
+                vm.sysFile = {
+                    businessId : vm.model.signid,
+                    mainId : vm.model.signid,
+                    mainType : sysfileSvc.mainTypeValue().SIGN,
+                    sysfileType:sysfileSvc.mainTypeValue().FILLSIGN,
+                    sysBusiType:sysfileSvc.mainTypeValue().FILLSIGN,
+                };
+                sysfileSvc.initUploadOptions({
+                    inputId:"sysfileinput",
+                    vm:vm
+                });
             });
         }
 

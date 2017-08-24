@@ -3,9 +3,9 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['workprogramSvc','$state','bsWin'];
+    workprogram.$inject = ['workprogramSvc','$state','bsWin','sysfileSvc','$scope'];
 
-    function workprogram(workprogramSvc,$state,bsWin) {
+    function workprogram(workprogramSvc,$state,bsWin,sysfileSvc,$scope) {
         var vm = this;
     	vm.work = {};						//创建一个form对象
         vm.model = {};                      //项目对象
@@ -13,6 +13,7 @@
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00"); 
         vm.work.signId = $state.params.signid;		//收文ID
+        vm.work.id = "";
 
         vm.sign = {};						//创建收文对象
         vm.unSeledWork = {};                //未选择的工作方案
@@ -29,7 +30,6 @@
         activate();
         function activate() {
         	workprogramSvc.initPage(vm);
-            
             $('#wpTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -39,6 +39,31 @@
                 $("#" + showDiv).addClass("active").addClass("in").show(500);
             })
             //查询会议列表
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.work.id){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.work.id",function (newValue, oldValue) {
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId : vm.work.id,
+                mainId : vm.work.signId,
+                mainType : sysfileSvc.mainTypeValue().SIGN,
+                sysfileType:sysfileSvc.mainTypeValue().WORKPROGRAM,
+                sysBusiType:sysfileSvc.mainTypeValue().WORKPROGRAM,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId:"sysfileinput",
+                vm:vm
+            });
         }
 
         //评审方式修改
@@ -153,7 +178,6 @@
      
         //会议预定添加弹窗
         vm.addTimeStage = function(){
-        
             if(vm.work.id){
                 $state.go('room', {workProgramId:vm.work.id});
             }else{

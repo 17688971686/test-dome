@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('roomEditCtrl', room);
+    angular.module('app').controller('roomEditCtrl', room);
 
     room.$inject = ['$location','roomSvc','$state']; 
 

@@ -1,4 +1,4 @@
-﻿﻿<#assign path=request.contextPath/>
+﻿<#assign path=request.contextPath/>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -133,6 +133,8 @@ desired effect
                <li class="treeview menu" style="height: 52px;"><a href="javascript:void(0)"> <span class="title">菜单</span> 
 					</a>
 			   </li>
+            
+            
                 <li class="treeview active">
                     <a href="javascript:void(0)">
                         <img style="width: 20px; height: 20px" src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
@@ -193,6 +195,22 @@ desired effect
                     </ul>
                 </li>
                 <!-- end 项目签收-->
+                
+				<!-- begin 用户部门管理 -->
+				<!-- <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-link"></i>
+                        <span class="title">用户部门管理</span>
+                        <span class="pull-right-container"> 
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        
+                    </ul>
+                </li> -->
+                <!-- end 用户部门管理 -->
+                
 				<!-- begin 专家管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
@@ -252,8 +270,6 @@ desired effect
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
-                        <!--先隐藏-->
-                        <li ng-if="false"><a href="javascript:void(0)" ui-sref="sysdept">部门小组管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
@@ -319,12 +335,33 @@ desired effect
                     </ul>
 
                 </li>
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-archive" aria-hidden="true"></i>
+                        <span class="title">文件库</span>
+                        <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="fileLibrary">个人文件库</a></li>
+                    </ul>
+
+                </li>
              
             </ul>
             <!-- /.sidebar-menu -->
 
         </section>
+        <!-- /.sidebar -->
+        <!-- <div id="close" class="main_menu">
 
+             <a href="javascript:void(0)" class="sidebar-toggle"
+                 data-toggle="offcanvas" role="button"><span class="sr-only">Toggle
+                     navigation</span>
+            </a>
+             Sidebar toggle button
+        </div> -->
     </aside>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -332,9 +369,27 @@ desired effect
         <section class="content">
             <!-- Your Page Content Here -->
             <div ui-view></div>
+
+
         </section>
         <!-- /.content -->
     </div>
+    <!-- /.content-wrapper -->
+    <!-- Main Footer -->
+    <!-- <footer class="main-footer">
+        To the right
+        <div class="pull-right hidden-xs"></div>
+        Default to the left
+        <strong>Copyright &copy; 2016 <a href="javascript:void(0)">
+        </a>.
+        </strong> 版权所有.
+    </footer> -->
+    <!-- Control Sidebar -->
+
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
 </div>
 
 <!-- ./wrapper -->
@@ -393,12 +448,94 @@ desired effect
 
 <link href="${path}/contents/libs/jquery/jquery.steps/css/jquery.step.css" rel="stylesheet"/>
 <script src="${path}/contents/libs/jquery/jquery.steps/js/jquery.step.js?version = ${.now}"></script>
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. Slimscroll is required when using the
+     fixed layout. -->
 
 <!-- Begin:自定义Js -->
 <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
 <script type="text/javascript">
     common.initDictItems(${DICT_ITEMS});
 </script>
+<!--<script src="${path}/contents/app/common/common.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/app.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; Role &ndash;&gt;-->
+<!--<script src="${path}/contents/app/role/sysconfig.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/role/sysconfig.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/role/sysconfig.edit.ctrl.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; User &ndash;&gt;-->
+<!--<script src="${path}/contents/app/user/user.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/user/user.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/user/user.edit.ctrl.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; Org&ndash;&gt;-->
+<!--<script src="${path}/contents/app/org/org.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/org/org.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/org/org.edit.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/org/orgUser.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/org/orgUser.svc.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; log &ndash;&gt;-->
+<!--<script src="${path}/contents/app/log/log.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/log/log.svc.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; meeting &ndash;&gt;-->
+<!--<script src="${path}/contents/app/meeting/meeting.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/meeting/meeting.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/meeting/meeting.edit.ctrl.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; room &ndash;&gt;-->
+<!--<script src="${path}/contents/app/room/room.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/room/room.edit.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/room/room.svc.js?version = ${.now}"></script>-->
+
+<!--<script src="${path}/contents/app/room/room.count.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/room/room.count.svc.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; company &ndash;&gt;-->
+<!--<script src="${path}/contents/app/company/company.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/company/company.edit.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/company/company.svc.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; home &ndash;&gt;-->
+<!--<script src="${path}/contents/app/home/home.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/home/home.svc.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; flow &ndash;&gt;-->
+<!--<script src="${path}/contents/app/flow/flow.svc.js?version = ${.now}"></script>-->
+<!--&lt;!&ndash; sign &ndash;&gt;-->
+<!--<script src="${path}/contents/app/sign/assit.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/sign.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/sign.create.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/sign.fillin.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/sign.flow.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/sign.flowDeal.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/sign/sign.signDetails.crtl.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; workProgram &ndash;&gt;-->
+<!--<script src="${path}/contents/app/workprogram/workprogram.edit.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/workprogram/workprogram.svc.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; dispatch &ndash;&gt;-->
+<!--<script src="${path}/contents/app/dispatch/dispatch.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/dispatch/dispatch.edit.ctrl.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; demo &ndash;&gt;-->
+<!--<script src="${path}/contents/app/demo/demo.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/demo/demo.svc.js?version = ${.now}"></script>-->
+
+<!--&lt;!&ndash; mytest &ndash;&gt;-->
+<!--<script src="${path}/contents/app/mytest/mytest.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/mytest/mytest.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/mytest/mytest.edit.ctrl.js?version = ${.now}"></script>-->
+
+<!--<script src="${path}/contents/app/dict/dict.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/dict/dict.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/dict/dict.edit.ctrl.js?version = ${.now}"></script>-->
+
+<!--<script src="${path}/contents/app/expert/expert.ctrl.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/expert/expert.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/expert/expert.edit.ctrl.js?version = ${.now}"></script>-->
+
+<!--<script src="${path}/contents/app/expert/projectExpe.svc.js?version = ${.now}"></script>-->
+<!--<script src="${path}/contents/app/expert/workExpe.svc.js?version = ${.now}"></script>-->
 <!-- End:自定义Js-->
 </body>
 </html>

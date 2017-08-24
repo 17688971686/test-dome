@@ -3,9 +3,9 @@
 
     angular.module('app').factory('sharingPlatlformSvc', sharingPlatlform);
 
-    sharingPlatlform.$inject = ['$http'];
+    sharingPlatlform.$inject = ['$http','bsWin'];
 
-    function sharingPlatlform($http) {
+    function sharingPlatlform($http,bsWin) {
         var url_sharingPlatlform = rootPath + "/sharingPlatlform", url_back = '#/sharingPlatlform';
 
         var service = {
@@ -13,10 +13,7 @@
             getSharingPlatlformById: getSharingPlatlformById,
             createSharingPlatlform: createSharingPlatlform,
             deleteSharingPlatlform: deleteSharingPlatlform,
-            initFileOption: initFileOption,					//初始化上传控件
-            findFileList: findFileList,					    //系统附件列表
             getSharingDetailById: getSharingDetailById,	    //获取详情页
-            downloadSysfile: downloadSysfile,		        //下载
             initOrgAndUser: initOrgAndUser,                 //初始化部门和用户
             initSeleObj : initSeleObj,                      //初始化选择的用户
             updatePublish : updatePublish,                  //批量更改发布状态
@@ -26,6 +23,10 @@
 
         //S_初始化选择的用户
         function initSeleObj(vm){
+            //没有加载完整或者是所有人可见的，不需要初始化选择的用户
+            if(!vm.businessFlag.isLoadOrgUser || !vm.businessFlag.isLoadModel || (vm.model.isNoPermission && vm.model.isNoPermission == '9')){
+                return ;
+            }
             if((vm.shareOrgList && vm.shareOrgList.length > 0)){
                 //1、先计算选择的部门
                 if(vm.model.privilegeDtoList && vm.model.privilegeDtoList.length > 0){
@@ -72,9 +73,8 @@
             var httpSuccess = function success(response) {
                 vm.shareOrgList = response.data.orgDtoList;
                 vm.noOrgUsetList = response.data.noOrgUserList;
-                if(vm.businessFlag.isUpdate && !vm.businessFlag.isInitSeled){
-                    initSeleObj(vm);
-                }
+                vm.businessFlag.isLoadOrgUser = true;
+                initSeleObj(vm);
             };
             common.http({
                 vm: vm,
@@ -83,13 +83,6 @@
                 success: httpSuccess
             });
         }//E_initOrgAndUser
-
-        //下载
-        function downloadSysfile(id) {
-            if (id) {
-                window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
-            }
-        }
 
         //S 详情页面
         function getSharingDetailById(vm, id) {
@@ -109,123 +102,6 @@
             });
         }
 
-        //E 详情页面
-
-
-        //S_findFileList
-        function findFileList(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/file/findByBusinessId",
-                params: {
-                    businessId: vm.model.sharId
-                }
-            }
-            var httpSuccess = function success(response) {
-                vm.sysFilelists = response.data;
-
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_findFileList
-
-        //S_initFileOption
-        function initFileOption(option) {
-            if (option.uploadBt) {
-                $("#" + option.uploadBt).click(function () {
-                    if (!option.businessId) {
-                        common.alert({
-                            vm: option.vm,
-                            msg: "请先保存数据！",
-                            closeDialog: true
-                        })
-                    } else {
-                        $("#commonuploadWindow").kendoWindow({
-                            width: 700,
-                            height: 400,
-                            title: "附件上传",
-                            visible: false,
-                            modal: true,
-                            closable: true,
-                            actions: ["Pin", "Minimize", "Maximize", "Close"]
-                        }).data("kendoWindow").center().open();
-                    }
-                });
-
-                if (option.businessId) {
-                    //附件下载方法
-                    option.vm.downloadSysFile = function (id) {
-                        window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
-                    }
-                }
-                //附件删除方法
-                option.vm.delSysFile = function (id) {
-                    var httpOptions = {
-                        method: 'delete',
-                        url: rootPath + "/file/deleteSysFile",
-                        params: {
-                            id: id
-                        }
-                    }
-                    var httpSuccess = function success(response) {
-                        common.requestSuccess({
-                            vm: option.vm,
-                            response: response,
-                            fn: function () {
-                                findFileList(option.vm);
-                                common.alert({
-                                    vm: option.vm,
-                                    msg: "删除成功",
-                                    closeDialog: true
-                                })
-                            }
-                        });
-                    }
-                    common.http({
-                        vm: option.vm,
-                        $http: $http,
-                        httpOptions: httpOptions,
-                        success: httpSuccess
-                    });
-                }
-
-                var projectfileoptions = {
-                    language: 'zh',
-                    allowedPreviewTypes: ['image'],
-                    allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf", "ppt", "zip", "rar","txt"],
-                    maxFileSize: 2000,
-                    showRemove: false,
-                    uploadUrl: rootPath + "/file/fileUpload",
-                    uploadExtraData: function(previewId, index) {
-                        var result={};
-                        result.businessId=option.businessId;
-                        result.sysSignId="共享平台";
-                        result.sysfileType=angular.isUndefined(option.sysfileType) ? "共享平台" : option.sysfileType;
-                        result.sysMinType=$("#sysMinType option:selected").val();
-                        return result;
-                        // businessId: option.businessId,
-                        // sysSignId:"共享平台",
-                        // sysfileType: angular.isUndefined(option.sysfileType) ? "共享平台" : option.sysfileType,
-                    }
-                };
-
-                var filesCount = 0;
-                $("#sysfileinput").fileinput(projectfileoptions)
-                    .on("filebatchselected", function (event, files) {
-                        filesCount = files.length;
-                    }).on("fileuploaded", function (event, data, previewId, index) {
-                    if (filesCount == (index + 1)) {
-                        findFileList(option.vm);
-                    }
-                });
-                option.vm.businessFlag.isInitFileOption = true;
-            }
-
-        }//E_initFileOption
 
         // begin#deleteSharingPlatlform
         function deleteSharingPlatlform(vm, id) {
@@ -237,21 +113,9 @@
             };
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog: true,
-                            fn: function () {
-                                vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
+                vm.isSubmit = false;
+                vm.gridOptions.dataSource.read();
+                bsWin.alert("操作成功");
             };
 
             common.http({
@@ -299,30 +163,12 @@
                 };
 
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            vm.isSubmit = false;
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog: true
-                            })
-                        }
-                    });
+                    vm.isSubmit = false;
                     vm.model.sharId = response.data.sharId;
-                    //初始化附件上传
-                    initFileOption({
-                        businessId: vm.model.sharId,
-                        sysfileType: "共享平台",
-                        uploadBt: "upload_file_bt",
-                        vm: vm
-                    });
+                    bsWin.alert("操作成功");
                 };
 
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess,
@@ -339,21 +185,15 @@
             var httpOptions = {
                 method: 'get',
                 url: url_sharingPlatlform + "/html/findById",
-                params: {id: vm.model.sharId}
+                params: {
+                    id: vm.model.sharId
+                }
             };
             var httpSuccess = function success(response) {
                 vm.model = response.data;
-                if(!vm.businessFlag.isInitSeled){
-                    initSeleObj(vm);
-                }
-                initFileOption({
-                    businessId: vm.model.sharId,
-                    sysfileType: "共享平台",
-                    uploadBt: "upload_file_bt",
-                    vm: vm
-                });
+                vm.businessFlag.isLoadModel = true;
+                initSeleObj(vm);
             };
-
             common.http({
                 vm: vm,
                 $http: $http,

@@ -3,9 +3,9 @@
 
     angular.module('app').controller('annountmentCtrl', annountment);
 
-    annountment.$inject = ['$location', '$state', '$http', 'annountmentSvc', 'sysfileSvc'];
+    annountment.$inject = ['$location', '$state', 'bsWin', 'annountmentSvc', 'sysfileSvc'];
 
-    function annountment($location, $state, $http, annountmentSvc, sysfileSvc) {
+    function annountment($location, $state, bsWin, annountmentSvc, sysfileSvc) {
         var vm = this;
         vm.title = "通知公告管理";
 
@@ -25,15 +25,13 @@
         }
 
         vm.del = function (anId) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除数据吗?",
+                onOk: function () {
                     annountmentSvc.deleteAnnountment(vm, anId);
                 }
-            })
+            });
         }
 
         vm.dels = function () {

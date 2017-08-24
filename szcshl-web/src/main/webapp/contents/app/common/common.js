@@ -1,4 +1,4 @@
-﻿﻿(function () {
+﻿(function () {
     'use strict';
     var DICT_ITEMS;    //数字字典
     var service = {
@@ -15,17 +15,13 @@
         getKendoCheckId: getKendoCheckId,           // 获得kendo grid的第一列checkId
         cookie: cookie,                             // cookie操作
         getToken: getToken,                         // 获得令牌
-        appPath: "",                                // app路径
         http: http,                                 // http请求
         gridDataSource: gridDataSource,             // gridDataSource
-        loginUrl: window.rootPath + '/home/login',
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
         initDictData: initDictData,                 // 初始化数字字典
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
-        initUploadOption: initUploadOption,         // 附件上传参数(已停用)
         getTaskCount: getTaskCount,                 // 用户待办总数
         getPauseProjectCount:getPauseProjectCount,  // 待办暂停项目个数
-
         initDictItems: function (dictList) {
             DICT_ITEMS = dictList;
         }
@@ -315,7 +311,6 @@
                     }
                 }
                 if (subcookieParts.length > 0) {
-
                     cookieText += subcookieParts.join("&");
                     if (expires instanceof Date) {
 
@@ -349,7 +344,6 @@
         };
         return cookieUtil;
     }
-
     // end:cookie
 
     function getToken() {
@@ -360,7 +354,7 @@
     function gridDataSource(dataSource) {
         dataSource.error = function (e) {
             if (e.status == 401) {
-                location.href = service.loginUrl;
+                location.href = window.rootPath + '/home/login';
             } else {
 
             }
@@ -370,20 +364,6 @@
 
     // S_封装filer的参数
     function buildOdataFilter(from) {
-        /*
-         * var t = new Array(); var arrIndex = 0;
-         * $(from).find('input,radio,select,textarea').each(function(index,obj){
-         * if(obj.name && obj.value){ var param = {};
-         * if($(this).attr('operator')){ param.operator =
-         * $(this).attr('operator'); }else{ param.operator = 'eq'; } param.name =
-         * $.trim(obj.name); param.value = $.trim(obj.value); t[arrIndex] =
-         * param; arrIndex++; } });
-         *
-         * var i = 0; var filterStr = ""; $.each(t, function() { if(this.value){
-         * if(i > 0){ filterStr += " and "; } filterStr += this.name + " " +
-         * this.operator + " '"+ this.value +"'"; i++; } }); return filterStr;
-         */
-
         var manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
             rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
             rsubmittable = /^(?:input|select|textarea|keygen)/i;
@@ -483,56 +463,6 @@
         }
     }//end
 
-    // S_附件上传参数初始化
-    function initUploadOption(options) {
-        return {
-            async: {
-                saveUrl: rootPath + "/file",
-                removeUrl: rootPath + "/file/delete",
-                autoUpload: false
-            },
-            select: function (e) {
-                if (options.onSelect) {
-                    options.onSelect(e)
-                } else {
-                    $.each(e.files, function (index, value) {
-                        console.log("Name: " + value.name + "Size: "
-                            + value.size + " bytes" + "Extension: "
-                            + value.extension);
-                    });
-                }
-            },
-            upload: function (e) {
-                if (options.onUpload) {
-                    options.onUpload(e)
-                } else {
-                    var files = e.files;
-                    console.log(e.response)
-                }
-            },
-            success: function (e) {
-                if (options.onSuccess) {
-                    options.onSuccess(e)
-                } else {
-                    var files = e.files;
-                    if (e.operation == "upload") {
-                        files[0].sysFileId = e.response.sysFileId;
-                    }
-                }
-            },
-            remove: function (e) {
-                if (options.onRemove) {
-                    options.onRemove(e)
-                } else {
-                    var files = e.files;
-                    e.data = {
-                        'sysFileId': files[0].sysFileId
-                    };
-                }
-            }
-        }
-    }// E_附件上传参数初始化
-
     // S_获取待办总数
     function getTaskCount(options) {
         options.$http({
@@ -552,23 +482,5 @@
             $("#pauseCount").html(response.data);
         });
     }// end 获取项目暂停待办个数
-
-    // init
-    init();
-    function init() {
-        // 全选
-        $(document).on(
-            'click',
-            '#checkboxAll',
-            function () {
-                var isSelected = $(this).is(':checked');
-                $('.grid').find('tr td:nth-child(1)').find('input:checkbox').prop('checked',isSelected);
-            });
-        // 点击行，改变背景
-        $('body').on('click', '.grid tr', function (e) {
-            $(this).parent().find('tr').removeClass('selected');
-            $(this).addClass('selected');
-        })
-    }
 
 })();

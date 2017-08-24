@@ -1,9 +1,7 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('meetingEditCtrl', meeting);
+    angular.module('app').controller('meetingEditCtrl', meeting);
 
     meeting.$inject = ['$location','meetingSvc','$state']; 
 

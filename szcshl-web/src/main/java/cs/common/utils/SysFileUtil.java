@@ -1,11 +1,9 @@
 package cs.common.utils;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-
 import cs.common.Constant;
+
+import java.io.File;
+import java.util.UUID;
 
 /**
  * 文件工具
@@ -15,10 +13,14 @@ import cs.common.Constant;
 public class SysFileUtil {
     private static String FILE_UPLOAD_PATH = "file_upload_path";
 
+    /**
+     * 根据附件主类划分
+     * @return
+     */
     public static String getUploadPath() {
         PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
         String uploadPath = propertyUtil.readProperty(FILE_UPLOAD_PATH);
-        return uploadPath == null ? "E:\\szec_uploadfile" : uploadPath;
+        return  Validate.isString(uploadPath)?uploadPath : "E:\\szec_uploadfile";
     }
 
     /**
@@ -26,20 +28,20 @@ public class SysFileUtil {
      *
      * @param fileLocation 文件存放的根目录
      */
-    public static String generatRelativeUrl(String fileLocation, String module, String businessId, String fileName) {
+    public static String generatRelativeUrl(String fileLocation,String mainType,String mainId, String sysBusiType, String fileName) {
         String url = fileLocation;
         String relativeUrl = "";
-        if (module == null || module.isEmpty()) {
-            module = "defaultMeeting";
+        if(!Validate.isString(mainType)){
+            mainType = "NO_MAIN_TYPE_FILE";
         }
-        //文件存放的格式,根目录/模块/日期/业务ID
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-
-        relativeUrl += (File.separator + module + File.separator);
-        relativeUrl += dateFormat.format(date) + File.separator + businessId;
-
+        //文件存放的格式,根目录/主业务ID/业务模块/文件名
+        relativeUrl += (File.separator + mainType+ File.separator+mainId);
+        //如果有业务模块，则加上业务模块
+        if(Validate.isString(sysBusiType)){
+            relativeUrl += (File.separator+sysBusiType);
+        }
         File isFileExists = new File(url + File.separator + relativeUrl);
+
         if (isFileExists.exists()) {
             if (!isFileExists.isDirectory()) {
                 isFileExists.mkdirs();
