@@ -92,7 +92,7 @@
         vm.gotoMergePage = function () {
         	 vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
              //没保存或者单个发文改成合并发文主项目时候要先进行保存
-            if( vm.dispatchDoc.isMainProject == 9 || !vm.dispatchDoc.id){
+            if( vm.dispatchDoc.isMainProject == 9 && !vm.dispatchDoc.id){
                 bsWin.alert("请先保存！");
             }else{
                 //初始化合并评审信息

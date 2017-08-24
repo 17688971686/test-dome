@@ -1,14 +1,14 @@
 <meta charset="UTF-8">
-<!--  S 项目建议书-->
+<!--  S 资金申请报告-->
  <!-- s form -->
-
+    <form id="dispatch_form" name="dispatch_form">
         <!-- s table -->
         <table class="table table-bordered"  >
        
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
                 <span>
-                	 QR-4.3-10-A3
+                	 QR-4.11-03-A0
                   	  发文方式：
                     <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
                         <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
@@ -126,7 +126,7 @@
             </tr>
 
 
-            <tr>
+          <!--   <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
@@ -150,9 +150,9 @@
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
                 </td>
-            </tr> 
+            </tr> -->
             
-            <tr>
+                       <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
                 <td colspan="5">
                     <!--前一阶段-->
@@ -308,6 +308,5 @@
             </tr>
             </tbody>
         </table>    <!-- end table -->
-    
-<!--  E 项目建议书-->
-
+    </form> <!-- end form -->
+<!--  E 资金申请报告-->

@@ -243,6 +243,14 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String sugOrgReqCopy;
 
+    //资金申请报告份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer capitalAppReportCount;
+    
+    //资金申请报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private Integer capitalAppReportOriginal;
+    
     //项目建议书份数
     @Column(columnDefinition = "INTEGER")
     private Integer sugProAdviseCount;
@@ -2319,6 +2327,23 @@ public class Sign extends DomainBase {
     public void setMinisterId(String ministerId) {
         this.ministerId = ministerId;
     }
+
+	public Integer getCapitalAppReportCount() {
+		return capitalAppReportCount;
+	}
+
+	public void setCapitalAppReportCount(Integer capitalAppReportCount) {
+		this.capitalAppReportCount = capitalAppReportCount;
+	}
+
+	public Integer getCapitalAppReportOriginal() {
+		return capitalAppReportOriginal;
+	}
+
+	public void setCapitalAppReportOriginal(Integer capitalAppReportOriginal) {
+		this.capitalAppReportOriginal = capitalAppReportOriginal;
+	}
+    
 
     
 }

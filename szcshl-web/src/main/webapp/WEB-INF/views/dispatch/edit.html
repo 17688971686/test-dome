@@ -18,7 +18,7 @@
     <!-- s form -->
     <form id="dispatch_form" name="dispatch_form">
         <!-- s table -->
-    <!--     <table class="table table-bordered" ng-show="vm.dispatchDoc.dispatchStage=='可行研究报告' || vm.dispatchDoc.dispatchStage=='提前介入'">
+       <!--  <table class="table table-bordered" ng-show="vm.dispatchDoc.dispatchStage=='可行研究报告' || vm.dispatchDoc.dispatchStage=='提前介入'">
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
                 <span>
@@ -356,7 +356,8 @@
                 </td>
             </tr>
             </tbody>
-        </table>  -->   <!-- end table -->
+        </table>    -->
+         <!-- end table -->
     
 	<!--S 发文编辑页面 -->
 	
@@ -365,9 +366,13 @@
         <!-- S 项目建议书 -->
        
         <!-- S 可行性研究报告 -->
-            <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
+           <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
          <!-- E 可行性研究报告 -->
          
+          <!-- S 资金申请报告 -->
+            <div ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/capitalAppReportEdit.html'"></div>
+         <!-- E 资金申请报告 -->
+        
          <!-- S 项目概算 -->
             <div ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/projectBudgetEdit.html'"></div>
          <!-- E 项目概算 -->
@@ -382,6 +387,7 @@
          
        <!--S 发文编辑页面 -->
 </form> <!-- end form -->
+
     <div id="mwindow" style="display: none">
         <div class="toolbar">
             <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>

@@ -151,13 +151,13 @@
                               ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
                 </td>
             </tr>
-            <tr>
+               <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
                 <td colspan="5">
                     <!--前一阶段-->
                     <table ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()" class="table table-bordered" style="text-align: center;">
                         <tr>
-                            <td width="20%">项目建议书阶段</td>
+                            <td width="20%">{{dispatchDoc.signDto.reviewstage}}</td>
                             <td width="14%">申报</td>
                             <td width="14%">审定</td>
                             <td width="14%">核减（增）</td>
@@ -187,11 +187,40 @@
                             </td>
                         </tr>
 
+                        <tr>
+                            <td>项目建设必要性</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.projectBuildNecess}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>审定建设规模及内容</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.buildSizeContent}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>投资匡算及资金来源</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.fundTotalOrigin}}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>下一阶段工作要求</td>
+                            <td colspan="6" class="text-left">
+                                {{dispatchDoc.nextWorkPlan}}
+                            </td>
+                        </tr>
+
                     </table>
+
 
                     <table class="table table-bordered" style="text-align: center;">
                         <tr>
-                            <td width="20%">项目建议书阶段</td>
+                            <td width="20%">{{vm.sign.reviewstage}}</td>
                             <td width="14%">申报<span class="required">*</span></td>
                             <td width="14%">审定<span class="required">*</span></td>
                             <td width="14%">核减（增）</td>
@@ -274,130 +303,6 @@
                         </tr>
 
                     </table>
-                    
-                    <!-- 可行性研究报告 -->
-                    <!--前二阶段-->
-                    <table ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()" class="table table-bordered" style="text-align: center;">
-                        <tr>
-                            <td width="20%">可研究阶段</td>
-                            <td width="14%">申报</td>
-                            <td width="14%">审定</td>
-                            <td width="14%">核减（增）</td>
-                            <td width="14%">核减（增）率</td>
-                            <td width="14%">批复金额</td>
-                            <td width="14%">备注</td>
-                        </tr>
-                        <tr>
-                            <td>投资额（万元）</td>
-                            <td>
-                                {{dispatchDoc.declareValue}}
-                            </td>
-                            <td>
-                                {{dispatchDoc.authorizeValue}}
-                            </td>
-                            <td>
-                                {{dispatchDoc.extraValue}}
-                            </td>
-                            <td>
-                                {{dispatchDoc.extraRate}}<span>%</span>
-                            </td>
-                            <td>
-                                {{dispatchDoc.approveValue}}
-                            </td>
-                            <td>
-                                {{dispatchDoc.remark}}
-                            </td>
-                        </tr>
-
-
-                    </table>
-
-
-                    <table class="table table-bordered" style="text-align: center;">
-                        <tr>
-                            <td width="20%">可研阶段</td>
-                            <td width="14%">申报<span class="required">*</span></td>
-                            <td width="14%">审定<span class="required">*</span></td>
-                            <td width="14%">核减（增）</td>
-                            <td width="14%">核减（增）率</td>
-                            <td width="14%">批复金额</td>
-                            <td width="14%">备注</td>
-                        </tr>
-
-                        <tr>
-                            <td>投资额（万元）</td>
-                            <td>
-                                <input type="number" maxlength="200" class="form-control input-sm "
-                                       ng-model="vm.dispatchDoc.declareValue" id="declareValue" name="declareValue"
-                                       ng-blur="vm.count()"
-                                       data-val-regex="金额格式不正确"
-                                       data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
-                                       data-val-required="必填">
-                                <span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors" ></span>
-                            </td>
-                            <td>
-                                <input type="number" maxlength="200" class="form-control input-sm "
-                                       ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
-                                       ng-blur="vm.count()"
-                                       data-val-regex="金额格式不正确"
-                                       data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
-                                       data-val-required="必填">
-                                <span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.extraValue}}
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.extraRate}}<span>%</span>
-                            </td>
-                            <td>
-                                <input type="text" maxlength="200" class="form-control input-sm "
-                                       ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue">
-                            </td>
-                            <td>
-                                <input type="text" maxlength="200" class="form-control input-sm "
-                                       ng-model="vm.dispatchDoc.remark" id="remark" name="remark">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>项目建设依据<span class="required">*</span></td>
-                            <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                          ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.projectBuildNecess"
-                                          id="projectBuildNecess" name="projectBuildNecess" data-val="true"
-                                          data-val-required="必填"/>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>审定建设规模及内容<span class="required">*</span></td>
-                            <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent"
-                                          name="buildSizeContent" data-val="true" data-val-required="必填"/>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>投资匡算及资金来源<span class="required">*</span></td>
-                            <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin"
-                                          name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>下一阶段工作要求<span class="required">*</span></td>
-                            <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
-                                          name="nextWorkPlan" data-val="true" data-val-required="必填"/>
-                            </td>
-                        </tr>
-
-                    </table> 
                 </td>
             </tr>
             </tbody>
