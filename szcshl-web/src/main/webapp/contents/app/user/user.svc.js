@@ -17,13 +17,13 @@
             updateUser: updateUser,
             getOrg: getOrg,
             queryUser: queryUser,
-            initUserNo : initUserNo//初始化 员工工号
+            //initUserNo : initUserNo//初始化 员工工号
         };
 
         return service;
         
         //begin initUserNo
-        function initUserNo(vm){
+        /*function initUserNo(vm){
         
         	var httpOptions={
         		method : "get",
@@ -43,7 +43,7 @@
                     success: httpSuccess
                 });
         	
-        }//end initUserNo
+        }*///end initUserNo
 
         // begin#updateUser
         function updateUser(vm) {
@@ -138,75 +138,42 @@
         }
 
         // begin#createUser
-        function createUser(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                // zTree
-                var nodes = getZtreeChecked();
-                var nodes_roles = $linq(nodes).where(function (x) {
-                    return x.isParent == false;
-                }).select(function (x) {
-                    return {
-                        id: x.id,
-                        roleName: x.name
-                    };
-                }).toArray();
-                vm.model.roleDtoList = nodes_roles;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_user,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                    location.href = url_back;
-                                }
-                            })
-                        }
-
-                    });
-
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
+        function createUser(userModel,isSubmit,callBack) {
+            isSubmit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/user",
+                data: userModel
             }
+
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function(){
+                    isSubmit = false;
+                }
+            });
         }
 
         //获取部门信息
-        function getOrg(vm) {
+        function getOrg(callBack) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/org/listAll",
             }
             var httpSuccess = function success(response) {
-                vm.org = {};
-                vm.org = response.data;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

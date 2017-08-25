@@ -24,9 +24,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(AddSuppLetter.class, "登记补充资料");
+        CRUDGanConfig config = new CRUDGanConfig(AddRegisterFile.class, "登记补充资料");
         config.setAuthor("sjy");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AddSuppLetter");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AddRegisterFile");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());

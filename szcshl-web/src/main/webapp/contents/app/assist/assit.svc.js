@@ -126,7 +126,7 @@
                     response:response,
                     fn:function() {
                         vm.planList = new Array();
-                        if(response.data.signList){
+                        if(response.data.signList && response.data.signList.length > 0){
                             vm.assistSign = response.data.signList;
                         }
                         if(response.data.planList && response.data.planList.length > 0){
@@ -151,80 +151,48 @@
 		}//E_initPlanPage
 
         //S_saveAssistPlan
-        function saveAssistPlan(vm){
-        	vm.model.isDrawed="0";
-            var url = rootPath+"/assistPlan";
+        function saveAssistPlan(planModel,isCommit,callBack){
+            isCommit = true;
             var httpOptions = {
                 method : 'post',
-                url : url,
-                data : vm.model
+                url : rootPath+"/assistPlan",
+                data : planModel
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm:vm,
-                    response:response,
-                    fn:function() {
-                        vm.iscommit = false;
-                        //如果是新增，则重新刷新列表
-                        if(!vm.showPlan.id){
-                            vm.gridOptions.dataSource.read();
-                        }
-                        vm.showPlan = response.data;
-                        initPlanPage(vm);
-
-                        //如果是合并对象，则选择次项目
-                        if(vm.plan.assistType == '合并项目'){
-                            vm.showPickLowSign(vm.model.signId);
-                        }else{
-                            common.alert({
-                                vm:vm,
-                                msg:"操作成功！",
-                                closeDialog:true
-                            })
-                        }
-                    }
-                });
-            }
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm:vm,
                 $http:$http,
                 httpOptions:httpOptions,
-                success:httpSuccess
+                success:httpSuccess,
+                onError:function(){
+                    isCommit = false;
+                }
             });
         }//E_saveAssistPlan
 
         //S_deletePlan
-        function deletePlan(vm){
+        function deletePlan(showPlanId,isCommit,callBack){
+            isCommit = true;
             var httpOptions = {
                 method : 'delete',
                 url : rootPath+"/assistPlan",
-                data : vm.showPlan.id,
+                data : showPlanId,
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm:vm,
-                    response:response,
-                    fn:function() {
-                        vm.iscommit = false;
-                        common.alert({
-                            vm:vm,
-                            msg:"操作成功！",
-                            fn : function() {
-                                $('.alertDialog').modal('hide');
-                                initPlanPage(vm);
-                                //刷新列表信息
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            }
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm:vm,
                 $http:$http,
                 httpOptions:httpOptions,
                 success:httpSuccess,
-                onError:function(){vm.iscommit = false;}
+                onError:function(){isCommit = false;}
             });
         }//E_deletePlan
 
@@ -268,7 +236,7 @@
                 $http:$http,
                 httpOptions:httpOptions,
                 success:httpSuccess,
-                onError:function(){vm.iscommit = false;}
+                onError:function(){vm.isCommit = false;}
             });
         }//E_findPlanSign
 
@@ -301,7 +269,7 @@
                 $http:$http,
                 httpOptions:httpOptions,
                 success:httpSuccess,
-                onError:function(){vm.iscommit = false;}
+                onError:function(){vm.isCommit = false;}
             });
         }//E_cancelPlanSign
 
@@ -324,7 +292,7 @@
 
            vm.model = vm.showPlan;
            vm.model.assistPlanSignDtoList = saveLowSignArr;
-           vm.iscommit = true;
+           vm.isCommit = true;
            var httpOptions = {
                 method : 'post',
                 url : rootPath+"/assistPlan/saveLowPlanSign",
@@ -335,7 +303,7 @@
                     vm:vm,
                     response:response,
                     fn:function() {
-                        vm.iscommit = false;
+                        vm.isCommit = false;
                         vm.initPickLowSign = true;
                         initPlanPage(vm);
                         common.alert({
@@ -351,13 +319,13 @@
                 $http:$http,
                 httpOptions:httpOptions,
                 success:httpSuccess,
-                onError:function(){vm.iscommit = false;}
+                onError:function(){vm.isCommit = false;}
             });
         }//E_saveLowPlanSign
 
         //S_cancelLowPlanSign
         function cancelLowPlanSign(vm,signIds){
-            vm.iscommit = true;
+            vm.isCommit = true;
             var httpOptions = {
                 method : 'delete',
                 url : rootPath+"/assistPlan/cancelLowPlanSign",
@@ -371,7 +339,7 @@
                     vm:vm,
                     response:response,
                     fn:function() {
-                        vm.iscommit = false;
+                        vm.isCommit = false;
                         vm.initPickLowSign = true;
                         initPlanPage(vm);
                         common.alert({
@@ -387,7 +355,7 @@
                 $http:$http,
                 httpOptions:httpOptions,
                 success:httpSuccess,
-                onError:function(){vm.iscommit = false;}
+                onError:function(){vm.isCommit = false;}
             });
         }//E_cancelLowPlanSign
 
@@ -398,7 +366,6 @@
                     if(ps.id == vm.selectPlanId){
                         vm.showPlan = ps;
                         vm.drawType=vm.showPlan.drawType;
-                        console.log(vm.drawType);
                     }
                 });
                 findPlanSign(vm,vm.selectPlanId);
@@ -617,7 +584,7 @@
                 });
             }
 
-            vm.iscommit = true;
+            vm.isCommit = true;
             var httpOptions = {
                 method : 'put',
                 url : rootPath+"/assistPlan/saveDrawAssistUnit",
@@ -628,7 +595,7 @@
                     vm:vm,
                     response:response,
                     fn:function() {
-                        vm.iscommit = false;
+                        vm.isCommit = false;
                         vm.isCommited = true;
                         common.alert({
                             closeDialog:true,
@@ -643,7 +610,7 @@
                 $http:$http,
                 httpOptions:httpOptions,
                 success:httpSuccess,
-                onError: function(response){vm.iscommit = false;}
+                onError: function(response){vm.isCommit = false;}
             });
         }
         //end saveDrawAssistUnit

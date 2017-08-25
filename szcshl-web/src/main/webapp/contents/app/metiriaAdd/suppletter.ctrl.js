@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('suppletterCtrl', suppletter);
+    angular.module('app').controller('suppletterCtrls', suppletter);
 
     suppletter.$inject = ['$location','suppletterSvc','$state','$http']; 
 
@@ -15,7 +15,7 @@
         vm.suppletter.id=$state.params.id;
         activate();
         function activate() {
-        	common.initSuppData(vm,{$http:$http,$state:$state});
+        	//signcommon.initSuppData(vm,{$http:$http,$state:$state});
         }
         vm.addSuppContent=function(){
         	vm.showsupp=true;

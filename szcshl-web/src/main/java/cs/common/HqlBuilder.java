@@ -79,17 +79,17 @@ public class HqlBuilder {
     /**
      * id封装方法
      * @param sqlKeyWord(where 、and、 or)等连接关键词
-     * @param idPropoty
-     * @param id
+     * @param propoty
+     * @param values
      * @return
      */
-	public 	HqlBuilder bulidIdString(String sqlKeyWord,String idPropoty,String id){
-        List<String> idList = StringUtil.getSplit(id, ",");
+	public 	HqlBuilder bulidPropotyString(String sqlKeyWord,String propoty,String values){
+        List<String> idList = StringUtil.getSplit(values, ",");
         if(Validate.isString(sqlKeyWord)){
             hqlBuilder.append(sqlKeyWord +" ");
         }
         if (idList.size() > 1) {
-            hqlBuilder.append(idPropoty + " in ( ");
+            hqlBuilder.append(propoty + " in ( ");
             for (int i = 0,l=idList.size(); i < l; i++) {
                 if (i > 0) {
                     hqlBuilder.append(",");
@@ -99,7 +99,7 @@ public class HqlBuilder {
             }
             hqlBuilder.append(" )");
         } else {
-            hqlBuilder.append(idPropoty + " = :id ");
+            hqlBuilder.append(propoty + " = :id ");
             setParam("id", idList.get(0));
         }
         return this;

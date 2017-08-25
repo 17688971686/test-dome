@@ -1,36 +1,8 @@
 package cs.controller.sys;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLDecoder;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cs.domain.flow.RuProcessTask;
-import org.apache.log4j.Logger;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
-import cs.common.utils.FileUtils;
+import cs.common.ResultMsg;
 import cs.common.utils.SysFileUtil;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
@@ -38,6 +10,25 @@ import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
 import cs.service.sys.SysFileService;
+import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLDecoder;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lqs
@@ -66,44 +57,45 @@ public class FileController {
         return sysFileDtos;
     }
 
-    @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.GET)
+    @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.POST)
     public @ResponseBody
     List<SysFileDto> findByBusinessId(@RequestParam(required = true) String businessId) {
         List<SysFileDto> sysfileDto = fileService.findByBusinessId(businessId);
         return sysfileDto;
     }
 
-    @RequestMapping(name = "根据收文ID获取附件", path = "findBySysFileSignId", method = RequestMethod.GET)
+    @RequestMapping(name = "根据收文ID获取附件", path = "findByMainId", method = RequestMethod.POST)
     public @ResponseBody
-    List<SysFileDto> findByFileSignId(@RequestParam(required = true) String signid) {
-        List<SysFileDto> sysfileDto = fileService.findBySysFileSignId(signid);
+    List<SysFileDto> findByMainId(@RequestParam(required = true) String mainId) {
+        List<SysFileDto> sysfileDto = fileService.findByMainId(mainId);
         return sysfileDto;
     }
 
-    @RequestMapping(name = "获取一个项目下的所有附件列表", path = "initFileUploadlist", method = RequestMethod.GET)
-    public @ResponseBody
-    Map<String, Object> initFileUploadlist(@RequestParam(required = true) String signid) {
-        return fileService.initFileUploadlist(signid);
-    }
-
-
+    /**
+     *
+     * @param request
+     * @param multipartFile
+     * @param businessId 业务ID
+     * @param mainId     主ID
+     * @param sysfileType 附件模块类型
+     * @param sysBusiType 附件业务类型
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
-    public @ResponseBody
-    SysFileDto upload(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
-                      @RequestParam(required = true) String businessId, String sysSignId,
-                      String sysfileType,String sysMinType) throws IOException {
-        SysFileDto sysFileDto = null;
+    @ResponseBody
+    public  ResultMsg upload(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
+                     @RequestParam(required = true) String businessId, String mainId,String mainType,
+                     String sysfileType, String sysBusiType) throws IOException {
+
         String fileName = multipartFile.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
 
         if (!multipartFile.isEmpty()) {
-            sysFileDto = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, sysSignId, sysfileType,sysMinType);
+           return  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
         } else {
-            logger.info("文件上传失败，无法获取文件信息！");
-            throw new IOException(Constant.ERROR_MSG);
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
         }
-
-        return sysFileDto;
     }
 
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
@@ -161,36 +153,6 @@ public class FileController {
                     response.setContentType("application/octet-stream");
 
             }
-            /*if (fileType.equals(".jpg")) {
-				response.setHeader("Content-type", "application/.jpg");
-			}
-			else if (fileType.equals(".png")) {
-				response.setHeader("Content-type", "application/.png");
-			} 
-			else if(fileType.equals(".gif")){
-				response.setHeader("Content-type", "application/.gif");
-			}
-			else if(fileType.equals(".docx")){
-				response.setHeader("Content-type", "application/.docx");
-			}
-			else if(fileType.equals(".doc")){
-				response.setHeader("Content-type", "application/.doc");
-			}
-			else if(fileType.equals(".xlsx")){
-				response.setHeader("Content-type", "application/.xlsx");
-			}
-			else if(fileType.equals(".xls")){
-				response.setHeader("Content-type", "application/.xls");
-			}
-			else if(fileType.equals(".pdf")){
-				response.setHeader("Content-type", "application/.pdf");
-			}
-			else if (fileType.equals("xls")) {
-				response.setContentType("applicationnd.ms-excel;charset=GBK");
-				response.setHeader("Content-type", "application/x-msexcel");
-			} else {
-				response.setContentType("application/octet-stream");
-			}*/
 
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(filename.getBytes("GB2312"), "ISO8859-1"));

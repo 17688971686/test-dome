@@ -47,6 +47,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +77,9 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     private HiProcessTaskRepo hiProcessTaskRepo;
 
+    @Autowired
+    @Qualifier("signFlowBackImpl")
+    private IFlowBack signFlowBackImpl;
     /**
      * 回退到上一环节
      *
@@ -86,17 +90,12 @@ public class FlowServiceImpl implements FlowService {
     @Transactional
     public ResultMsg rollBackLastNode(FlowDto flowDto) {
         // 取得当前任务
-        HistoricTaskInstance currTask = historyService
-                .createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId())
-                .singleResult();
+        HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
         if (currTask == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
         }
         // 取得流程实例
-        ProcessInstance instance = runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(currTask.getProcessInstanceId())
-                .singleResult();
+        ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(currTask.getProcessInstanceId()).singleResult();
         //流程结束
         if (instance == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程已结束！");
@@ -124,43 +123,23 @@ public class FlowServiceImpl implements FlowService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
         }
 
+        String backActivitiId = "";
         // 建立新出口
         List<TransitionImpl> newTransitions = new ArrayList<TransitionImpl>();
-        Map<String,Object> valiables = new HashMap<>();
-        String backActivitiId = "";
-        //如果是排他网关，则只能回退到前一个处理人环节，而不是多人
-        /*if(flowDto.getBusinessMap().get("ExclusiveGateWay") != null && Boolean.parseBoolean(flowDto.getBusinessMap().get("ExclusiveGateWay").toString())){
-            switch (task.getTaskDefinitionKey()){
-                case Constant.FLOW_BMLD_QR_GD://确认归档 -》第二负责人确认归档 或者 第一负责人归档
-                    Sign sign = signRepo.findById(Sign_.signid.getName(),instance.getBusinessKey());
-                    //如果存在第二负责人，则交给第二负责人处理，否则交给第一负责人处理
-                    if(Validate.isString(sign.getSecondPriUser())){
-                        backActivitiId = Constant.FLOW_AZFR_SP_GD;
-                        valiables.put("user",sign.getSecondPriUser());
-                    }else{
-                        backActivitiId = Constant.FLOW_MFZR_GD;
-                        User priUser = signPrincipalService.getMainPriUser(instance.getBusinessKey(), Constant.EnumState.YES.getValue());
-                        valiables.put("user",priUser.getLoginName());
-                    }
-                    break;
-                //协审确认归档环节
-                case Constant.FLOW_XS_QRGD://确认归档 -》第二负责人确认归档 或者 第一负责人归档
-                    Sign xsSign = signRepo.findById(Sign_.signid.getName(),instance.getBusinessKey());
-                    //如果存在第二负责人，则交给第二负责人处理，否则交给第一负责人处理
-                    if(Validate.isString(xsSign.getSecondPriUser())){
-                        backActivitiId = Constant.FLOW_XS_FZR_SP;
-                        valiables.put("user",xsSign.getSecondPriUser());
-                    }else{
-                        backActivitiId = Constant.FLOW_XS_FZR_GD;
-                        User priUser = signPrincipalService.getMainPriUser(instance.getBusinessKey(), Constant.EnumState.YES.getValue());
-                        valiables.put("user",priUser.getLoginName());
-                    }
-                    break;
-            }
+        switch (instance.getProcessDefinitionKey()){
+            case Constant.SIGN_FLOW:
+                backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(),task.getTaskDefinitionKey());
+                break;
+            default:
+                backActivitiId = "";
+        }
+        //如果有指定回退环节，则回退到指定环节
+        if(Validate.isString(backActivitiId)){
             ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition).findActivity(backActivitiId);
             TransitionImpl newTransition = currActivity.createOutgoingTransition();
             newTransition.setDestination(nextActivityImpl);
             newTransitions.add(newTransition);
+        //没有指定环节，则回退到上一个环节
         }else{
             List<PvmTransition> nextTransitionList = currActivity.getIncomingTransitions();
             for (PvmTransition nextTransition : nextTransitionList) {
@@ -170,14 +149,10 @@ public class FlowServiceImpl implements FlowService {
                 newTransition.setDestination(nextActivityImpl);
                 newTransitions.add(newTransition);
             }
-        }*/
+        }
 
-        if(!Validate.isMap(valiables)) {
-            valiables = getLastNodeUser(task.getTaskDefinitionKey(), instance.getProcessDefinitionKey(), instance.getBusinessKey(), flowDto.getBusinessMap());
-        }
-        if(!Validate.isMap(valiables)){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取环节处理人！");
-        }
+        //取得之前定义的环节处理人信息，不用重新赋值，用之前的就行了（前提是 用户参数是唯一的）
+        Map<String,Object> valiables = taskService.getVariables(task.getId());
         taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption());    //添加处理信息
         taskService.complete(task.getId(),valiables );
 
@@ -190,159 +165,6 @@ public class FlowServiceImpl implements FlowService {
         }
 
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
-    }
-
-    /**
-     * 根据环节定义获取上一环节处理人
-     * @param taskDefinitionKey
-     * @return
-     */
-    private Map<String,Object> getLastNodeUser(String taskDefinitionKey,String processKey,String businessKey,Map<String,Object> valiables) {
-        if(Validate.isEmpty(taskDefinitionKey)){
-            return null;
-        }
-        Map<String,Object> resultMap = new HashMap<>();
-        String assigneeValue = "",otherKey = "";
-        List<User> priUserList = null;
-        User priUser = null;
-
-        Sign sign = null;
-        WorkProgram wk = null;
-        DispatchDoc dp = null;
-        /*
-        switch (taskDefinitionKey){
-            case Constant.FLOW_ZHB_SP_SW: //综合部部长-》签收
-                sign = signRepo.findById(Sign_.signid.getName(),businessKey);
-                resultMap.put("user",sign.getCreatedBy());
-                break;
-
-            case Constant.FLOW_FGLD_SP_SW: //分管副主任审批-》综合部部长
-                sign = signRepo.findById(Sign_.signid.getName(),businessKey);
-                resultMap.put("user",sign.getComprehensiveName());
-                break;
-
-            case Constant.FLOW_BZ_SP_GZAN1: //部长审批工作方案（主）-》项目负责人承办（主）
-                //查找项目负责人
-                priUserList = signPrincipalService.getSignPriUser(businessKey, Constant.EnumState.YES.getValue());
-                for (int i = 0, l = priUserList.size(); i < l; i++) {
-                    if (i == 0) {
-                        assigneeValue = priUserList.get(i).getLoginName();
-                    } else {
-                        assigneeValue += "," + priUserList.get(i).getLoginName();
-                    }
-                }
-                resultMap.put("users",assigneeValue);
-                break;
-            case Constant.FLOW_BZ_SP_GZAN2: //部长审批工作方案（协）-》项目负责人承办（协）
-                //查找项目负责人
-                priUserList = signPrincipalService.getSignPriUser(businessKey, Constant.EnumState.NO.getValue());
-                for (int i = 0, l = priUserList.size(); i < l; i++) {
-                    if (i == 0) {
-                        assigneeValue = priUserList.get(i).getLoginName();
-                    } else {
-                        assigneeValue += "," + priUserList.get(i).getLoginName();
-                    }
-                }
-                resultMap.put("users",assigneeValue);
-                break;
-
-            case Constant.FLOW_FGLD_SP_GZFA1: //分管副主任审批工作方案（主）-》部长审批工作方案（主）
-                otherKey = valiables.get("M_WP_ID").toString();
-                wk = workProgramRepo.findById(WorkProgram_.id.getName(),otherKey);
-                resultMap.put("user",wk.getMinisterName());
-                break;
-
-            case Constant.FLOW_FGLD_SP_GZFA2: //分管副主任审批工作方案（协）-》部长审批工作方案（协）
-                otherKey = valiables.get("A_WP_ID").toString();
-                wk = workProgramRepo.findById(WorkProgram_.id.getName(),otherKey);
-                resultMap.put("user",wk.getMinisterName());
-                break;
-
-            case Constant.FLOW_BZ_SP_FW://部长审批发文 -》发文填写
-                priUserList = signPrincipalService.getSignPriUser(businessKey, Constant.EnumState.YES.getValue());
-                for (int i = 0, l = priUserList.size(); i < l; i++) {
-                    if (i == 0) {
-                        assigneeValue = priUserList.get(i).getLoginName();
-                    } else {
-                        assigneeValue += "," + priUserList.get(i).getLoginName();
-                    }
-                }
-                resultMap.put("users",assigneeValue);
-                break ;
-
-            case Constant.FLOW_FGLD_SP_FW:  //分管领导审批发文 -》部长审批工作方案（发文）
-                otherKey = valiables.get("DIS_ID").toString();
-                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(),otherKey);
-                resultMap.put("user",dp.getMinisterName());
-                break;
-
-            case Constant.FLOW_ZR_SP_FW: //主任审批发文 -》 分管领导审批发文
-                otherKey = valiables.get("DIS_ID").toString();
-                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(),otherKey);
-                resultMap.put("user",dp.getViceDirectorName());
-                break;
-
-            case Constant.FLOW_AZFR_SP_GD: //第二负责人审批归档 -》第一负责人归档
-                priUser = signPrincipalService.getMainPriUser(businessKey, Constant.EnumState.YES.getValue());
-                resultMap.put("user",priUser.getLoginName());
-                break;
-            *//**********************************   项目签收流程 end  ****************************************//*
-
-            *//**********************************   项目概算流程 begin  ****************************************//*
-            case Constant.FLOW_XS_ZHBBL: //综合部审批 -》 项目签收
-                sign = signRepo.findById(Sign_.signid.getName(),businessKey);
-                resultMap.put("user",sign.getCreatedBy());
-                break;
-            case Constant.FLOW_XS_FGLD_SP://分管副主任 -》 综合部审批
-                sign = signRepo.findById(Sign_.signid.getName(),businessKey);
-                resultMap.put("user",sign.getComprehensiveName());
-                break;
-            case Constant.FLOW_XS_BZSP_GZFA://部长审批工作方案 -》 填报工作方案
-                priUserList = signPrincipalService.getSignPriUser(businessKey, Constant.EnumState.YES.getValue());
-                for (int i = 0, l = priUserList.size(); i < l; i++) {
-                    if (i == 0) {
-                        assigneeValue = priUserList.get(i).getLoginName();
-                    } else {
-                        assigneeValue += "," + priUserList.get(i).getLoginName();
-                    }
-                }
-                resultMap.put("users",assigneeValue);
-                break;
-            case Constant.FLOW_XS_FGLDSP_GZFA://分管领导审批工作方案 -》 部长审批工作方案
-                otherKey = valiables.get("WP_ID").toString();
-                wk = workProgramRepo.findById(WorkProgram_.id.getName(),otherKey);
-                resultMap.put("user",wk.getMinisterName());
-                break;
-            case Constant.FLOW_XS_BZSP_FW://部长审批发文 -》 负责人填报发文
-                priUserList = signPrincipalService.getSignPriUser(businessKey, Constant.EnumState.YES.getValue());
-                for (int i = 0, l = priUserList.size(); i < l; i++) {
-                    if (i == 0) {
-                        assigneeValue = priUserList.get(i).getLoginName();
-                    } else {
-                        assigneeValue += "," + priUserList.get(i).getLoginName();
-                    }
-                }
-                resultMap.put("users",assigneeValue);
-                break;
-            case Constant.FLOW_XS_FGLDSP_FW://分管领导审批发文 -》 部长审批发文
-                otherKey = valiables.get("DIS_ID").toString();
-                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(),otherKey);
-                resultMap.put("user",dp.getMinisterName());
-                break;
-            case Constant.FLOW_XS_ZRSP_FW://主任审批发文 -》 分管领导审批发文
-                otherKey = valiables.get("DIS_ID").toString();
-                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(),otherKey);
-                resultMap.put("user",dp.getViceDirectorName());
-                break;
-            case Constant.FLOW_XS_FZR_SP://第二负责人审批归档 -》 第一负责人归档
-                priUser = signPrincipalService.getMainPriUser(businessKey, Constant.EnumState.YES.getValue());
-                resultMap.put("user",priUser.getLoginName());
-                break;
-            *//**********************************   项目概算流程 end  ****************************************//*
-            default:
-                resultMap = null;
-        }*/
-        return resultMap;
     }
 
 

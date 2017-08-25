@@ -2,6 +2,7 @@ package cs.service.sys;
 
 import java.util.*;
 
+import cs.common.ResultMsg;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
@@ -85,14 +86,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUser(UserDto userDto) {
+    public ResultMsg createUser(UserDto userDto) {
         User findUser = userRepo.findUserByName(userDto.getLoginName());
         // 用户不存在
         if (findUser == null) {
+            boolean isSLeader = false;  //是否是分管领导
             User user = new User();
             BeanCopierUtils.copyProperties(userDto, user);
 
             user.setId(UUID.randomUUID().toString());
+            if(!Validate.isString(user.getUserNo())){
+                user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo())+1));
+            }
             user.setCreatedBy(SessionUtil.getLoginName());
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
@@ -104,6 +109,9 @@ public class UserServiceImpl implements UserService {
             for (RoleDto roleDto : userDto.getRoleDtoList()) {
                 Role role = roleRepo.findById(Role_.id.getName(),roleDto.getId());
                 if (role != null) {
+                    if(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())){
+                        isSLeader = true;
+                    }
                     user.getRoles().add(role);
                     roleNames.add(role.getRoleName());
                 }
@@ -112,24 +120,16 @@ public class UserServiceImpl implements UserService {
             if (Validate.isString(userDto.getOrgId())) {
                 Org o = orgRepo.findById(Org_.id.getName(),userDto.getOrgId());
                 user.setOrg(o);
-            }
-
-            //添加分管部门类型
-            HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append("select "+ User_.mngOrgType.getName()+ " from cs_user where "+ User_.id.getName()+"=(");
-            hqlBuilder.append("select "+ Org_.orgSLeader.getName()+ " from cs_org where "+ Org_.id.getName()+"=:orgId)");
-            hqlBuilder.setParam("orgId",userDto.getOrgId());
-            List<Map> list = userRepo.findMapListBySql(hqlBuilder);
-            if(!list.isEmpty()){
-                Object obj = list.get(0);
-                user.setMngOrgType((String)obj);
+                //如果是分管领导，则设置默认分管部门类型
+                if(isSLeader){
+                    user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
+                }
             }
             userRepo.save(user);
-
-            createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
-            logger.info(String.format("创建用户,登录名:%s", userDto.getLoginName()));
+            //createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),user.getId(),"创建成功",null);
         } else {
-            throw new IllegalArgumentException(String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
         }
 
     }
@@ -156,25 +156,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(UserDto userDto) {
+    public ResultMsg updateUser(UserDto userDto) {
+        boolean isSLeader = false;
+
         User user = userRepo.findById(userDto.getId());
-        user.setRemark(userDto.getRemark());
-        user.setDisplayName(userDto.getDisplayName());
-        user.setModifiedBy(SessionUtil.getLoginName());
-
-        user.setUserSex(userDto.getUserSex());
-        user.setUserPhone(userDto.getUserPhone());
-        user.setUserMPhone(userDto.getUserMPhone());
-        user.setEmail(userDto.getEmail());
-        user.setJobState(userDto.getJobState());
-        user.setUseState(userDto.getUseState());
-        user.setPwdState(userDto.getPwdState());
-
-        //添加部门
-        if (Validate.isString(userDto.getOrgId())) {
-            Org o = orgRepo.findById(userDto.getOrgId());
-            user.setOrg(o);
-        }
+        BeanCopierUtils.copyPropertiesIgnoreNull(userDto,user);
 
         // 清除已有role
         user.getRoles().clear();
@@ -185,30 +171,29 @@ public class UserServiceImpl implements UserService {
             roleNames.add(roleDto.getRoleName());
             if (role != null) {
                 user.getRoles().add(role);
+                if(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())){
+                    isSLeader = true;
+                }
+            }
+        }
+        //添加部门
+        if (Validate.isString(userDto.getOrgId())) {
+            Org o = orgRepo.findById(userDto.getOrgId());
+            user.setOrg(o);
+            //如果是分管领导，则设置默认分管部门类型
+            if(isSLeader){
+                user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
             }
         }
 
-        //修改分管部门类型
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select "+ User_.mngOrgType.getName()+ " from cs_user where "+ User_.id.getName()+"=(");
-        hqlBuilder.append("select "+ Org_.orgSLeader.getName()+ " from cs_org where "+ Org_.id.getName()+"=(");
-        hqlBuilder.append("select orgid from cs_user where "+ User_.id.getName()+"=:userId))");
-        hqlBuilder.setParam("userId",userDto.getId());
-        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
-        if(!list.isEmpty()){
-            Object obj = list.get(0);
-            user.setMngOrgType((String)obj);
-        }
-
         userRepo.save(user);
-        this.updateActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
-        logger.info(String.format("更新用户,用户名:%s", userDto.getLoginName()));
+        //this.updateActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"修改成功！");
     }
 
     @Override
     public Set<String> findPermissions(String userName) {
         return userRepo.getUserPermission(userName);
-
     }
 
     @Override
@@ -462,11 +447,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int findMaxUserNo() {
-		
 		HqlBuilder sql=HqlBuilder.create();
-		
 		sql.append("select max(to_number(userNo)) from cs_user");
-		
 		return userRepo.returnIntBySql(sql);
 	}
 

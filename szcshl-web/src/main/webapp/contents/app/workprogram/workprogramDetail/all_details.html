@@ -1,8 +1,9 @@
 <meta charset="UTF-8">
 <!-- start 主项目（项目建议书/可行性研究报告） -->
 <table ng-repeat="w in vm.model.workProgramDtoList" class="table table-bordered" style="margin-bottom: 0px;"
-       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='提前介入' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
+       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
     <caption class="text-center h3"><strong>{{w.titleName}}</strong></caption>
+    <span style="float:content;">QR-4.3-02-A3</span>
     <caption style="width:100%;">
         <span style="float:left;">评审方式: {{w.reviewType}}  {{w.isSigle}}</span>
         <span style="float:right;">收文日期:{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
@@ -106,10 +107,10 @@
         <td colspan="7">{{w.expertCost}}</td>
     </tr>
     <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
-        <td class="text-center" style="width:10%;">评审会日期</td>
+        <td class="text-center" style="width:20%;">评审会日期</td>
         <td class="text-center" style="width:15%;">会议室名称</td>
         <td class="text-center" style="width:10%;">开始时间</td>
-        <td class="text-center" style="width:15%;">结束时间</td>
+        <td class="text-center" style="width:10%;">结束时间</td>
         <td class="text-center" style="width:10%;">主持人</td>
         <td class="text-center" colspan="3">会议内容</td>
     </tr>
@@ -173,7 +174,7 @@
 <!-- end 主项目 （项目建议书/可行性研究报告）table -->
 <!-- start 协审项目（项目建议书/可行性研究报告） -->
 <table ng-repeat="w in vm.model.workProgramDtoList  | orderBy:w.branchId" class="table table-bordered" style="margin-bottom: 0px;"
-       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='提前介入' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '4' || w.branchId == 4 || w.branchId == '2' || w.branchId == 2 || w.branchId == '3' || w.branchId == 3)">
+       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '4' || w.branchId == 4 || w.branchId == '2' || w.branchId == 2 || w.branchId == '3' || w.branchId == 3)">
     <tr>
         <td rowspan="100" valign="baseline" style="width:8%;">协审[{{w.branchId}}]<br>工作方案</td>
         <td style="width:10%;" >评审方式</td>

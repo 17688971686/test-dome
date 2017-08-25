@@ -1,19 +1,13 @@
 package cs.domain.expert;
 
+import cs.domain.DomainBase;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
-import javax.persistence.*;
-
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
-import org.hibernate.annotations.DynamicUpdate;
-
-import cs.domain.DomainBase;
-import cs.domain.project.WorkProgram;
-import org.hibernate.annotations.GenericGenerator;
 
 /**
  * 专家评审方案

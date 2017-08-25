@@ -31,7 +31,7 @@
 
         //业务控制对象
         vm.businessFlag = {
-
+            expertReviews : [],         // 专家评审方案
         }
 
         active();
@@ -47,14 +47,16 @@
 
             //初始化流程信息
             flowSvc.initFlowData(vm);
-        	//初始化业务信息
-        	signSvc.initFlowPageData(vm.model.signid,function(data){
+            // 初始化业务信息
+            signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
                 //有关联，则显示项目
                 if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                    vm.showFlag.tabAssociateSigns = true;
                     signSvc.initAssociateSigns(vm,vm.model.signid);
                     //没有则初始化关联表格
                 }
+
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
@@ -72,14 +74,17 @@
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
+
                 //初始化专家评分
-                if (vm.model.processState > 2) {
-                    signSvc.paymentGrid(vm);
-                }
-                //更改状态,并初始化业务参数
-                vm.businessFlag.isLoadSign = true;
-                if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
-                    signFlowSvc.initBusinessParams(vm);
+                if (vm.model.processState > 1) {
+                    vm.showFlag.tabWorkProgram=true;        //显示工作方案
+                    //初始化专家评分
+                    signSvc.paymentGrid(vm.model.signid,function(data){
+                        vm.businessFlag.expertReviews = data.value;
+                        if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
+                            vm.showFlag.tabExpert = true;   //显示专家信息tab
+                        }
+                    });
                 }
             });
         }

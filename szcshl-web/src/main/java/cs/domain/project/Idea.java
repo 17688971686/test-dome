@@ -1,13 +1,11 @@
 package cs.domain.project;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicUpdate;
 
 import cs.domain.DomainBase;
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -20,15 +18,17 @@ import cs.domain.DomainBase;
 @Table(name="cs_idea")
 @DynamicUpdate(true)
 public class Idea extends DomainBase{
-	
+
 	@Id
+	@GeneratedValue(generator= "ideaGenerator")
+	@GenericGenerator(name= "ideaGenerator",strategy = "uuid")
 	private String ideaID;  //审批意见id
 	
 	@Column(columnDefinition="VARCHAR(2000)")
 	private String ideaContent;  //意见内容
 	
-	@Column(columnDefinition="VARCHAR(100)")
-	private String ideaType;  //意见类型
+	@Column(columnDefinition="VARCHAR(2)")
+	private String ideaType;  //意见类型（1：表示个人常用意见）
 
 	public String getIdeaID() {
 		return ideaID;

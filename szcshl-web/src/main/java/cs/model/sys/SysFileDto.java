@@ -1,7 +1,5 @@
 package cs.model.sys;
 
-import javax.persistence.Column;
-
 import cs.model.BaseDto;
             
 /**
@@ -11,20 +9,43 @@ import cs.model.BaseDto;
  */
 public class SysFileDto extends BaseDto {
 
+    //主键
     private String sysFileId;
+
     private String businessId;
+
     private String fileUrl;
+
     private String showName;
+
     private Integer fileSize;
+
     private String fileType;
-    private String processInstanceId;
-  	private String sysSingId;  //系统收文ID
-  	private String sysfileType;//系统文件类型
-  	private String sysMinType;	//小类
+
+    /**
+     * 主键ID，例如，收文为收文ID，课题研究为课题研究ID
+     */
+    private String mainId;
+
+    /**
+     * 主要业务名称，所有统一类型的附件，放在同一个文件夹（例如：收文为sign,课题为 topic,....）
+     */
+    private String mainType;
+
+    /**
+     * 文件模块类型（例如，收文环节，为收文，工作方案环节，为工作方案，跟businessId对应）
+     */
+    private String sysfileType;
+
+    /**
+     * 文件业务类型（例如，评审方案，会签准备材料等）
+     */
+    private String sysBusiType;
+
 
     public SysFileDto() {
     }
-   
+
     public String getSysFileId() {
         return sysFileId;
     }
@@ -32,6 +53,7 @@ public class SysFileDto extends BaseDto {
     public void setSysFileId(String sysFileId) {
         this.sysFileId = sysFileId;
     }
+
     public String getBusinessId() {
         return businessId;
     }
@@ -39,6 +61,7 @@ public class SysFileDto extends BaseDto {
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
     }
+
     public String getFileUrl() {
         return fileUrl;
     }
@@ -46,6 +69,7 @@ public class SysFileDto extends BaseDto {
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
     }
+
     public String getShowName() {
         return showName;
     }
@@ -53,6 +77,7 @@ public class SysFileDto extends BaseDto {
     public void setShowName(String showName) {
         this.showName = showName;
     }
+
     public Integer getFileSize() {
         return fileSize;
     }
@@ -60,6 +85,7 @@ public class SysFileDto extends BaseDto {
     public void setFileSize(Integer fileSize) {
         this.fileSize = fileSize;
     }
+
     public String getFileType() {
         return fileType;
     }
@@ -68,36 +94,35 @@ public class SysFileDto extends BaseDto {
         this.fileType = fileType;
     }
 
-    public String getProcessInstanceId() {
-		return processInstanceId;
-	}
-	public void setProcessInstanceId(String processInstanceId) {
-		this.processInstanceId = processInstanceId;
-	}
+    public String getMainId() {
+        return mainId;
+    }
 
-	public String getSysSingId() {
-		return sysSingId;
-	}
+    public void setMainId(String mainId) {
+        this.mainId = mainId;
+    }
 
-	public void setSysSingId(String sysSingId) {
-		this.sysSingId = sysSingId;
-	}
+    public String getSysfileType() {
+        return sysfileType;
+    }
 
-	public String getSysfileType() {
-		return sysfileType;
-	}
+    public void setSysfileType(String sysfileType) {
+        this.sysfileType = sysfileType;
+    }
 
-	public void setSysfileType(String sysfileType) {
-		this.sysfileType = sysfileType;
-	}
+    public String getSysBusiType() {
+        return sysBusiType;
+    }
 
-	public String getSysMinType() {
-		return sysMinType;
-	}
+    public void setSysBusiType(String sysBusiType) {
+        this.sysBusiType = sysBusiType;
+    }
 
-	public void setSysMinType(String sysMinType) {
-		this.sysMinType = sysMinType;
-	}	
-	
-	
+    public String getMainType() {
+        return mainType;
+    }
+
+    public void setMainType(String mainType) {
+        this.mainType = mainType;
+    }
 }

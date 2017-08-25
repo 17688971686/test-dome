@@ -8,23 +8,12 @@
 <div class="well well-sm" style="background:white;overflow:auto;">
     <form id="form" name="form">
         <div class="toolbar">
-
             <button class="btn btn-sm btn-success" ng-click="vm.createDict()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
             <button class="btn btn-sm btn-success" ng-click="vm.updateDict()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
-
-           <!--  <button class="btn btn-sm btn-success" ng-click="vm.createDictGroup()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
-            <button class="btn btn-sm btn-success" ng-click="vm.updateDictGroup()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button> -->
-
          </div>
         <table style="width:100%;overflow:auto;">
-            <tr>
-                <td class="formAlignRight" style="width:150px;"></td>
-                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                <td></td>
-            </tr>
-          
              <tr>
-                <td class="formAlignRight">字典值： <span class="required">*</span></td>
+                <td class="formAlignRight"  width="20%;">字典值： <span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="200" class="form-control input-sm"   ng-model="vm.model.dictKey" id="dictKey" name="dictKey" data-val="true" data-val-required="必填">
                 </td>
@@ -39,8 +28,7 @@
                 <td><span data-valmsg-for="dictName" data-valmsg-replace="true" class="errors"></span>
                     <span class="errors" ng-show="vm.isDictNameExist">分组名称已存在</span></td>
             </tr>
-           
-           
+
              <tr>
                 <td class="formAlignRight">字典编码： <span class="required">*</span> </td>
                 <td>

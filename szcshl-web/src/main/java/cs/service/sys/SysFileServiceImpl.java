@@ -1,9 +1,12 @@
 package cs.service.sys;
 
+import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.SysFileUtil;
+import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
@@ -13,6 +16,8 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,24 +39,23 @@ public class SysFileServiceImpl implements SysFileService {
 
     @Override
     @Transactional
-    public SysFileDto save(byte[] bytes, String fileName, String businessId, String fileType, String sysSignId, String sysfileType, String sysMinType) {
-        SysFileDto sysFileDto = new SysFileDto();
-        SysFile sysFile = new SysFile();
-        logger.debug("Begin save file " + fileName + "-" + businessId);
-
+    public ResultMsg save(byte[] bytes, String fileName, String businessId, String fileType,
+                          String mainId,String mainType, String sysfileType, String sysBusiType) {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
-            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, sysSignId, businessId, fileName);
+            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
 
+            SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
             sysFile.setBusinessId(businessId);
             sysFile.setFileSize(bytes.length);
             sysFile.setShowName(fileName);
             sysFile.setFileType(fileType);
             sysFile.setFileUrl(relativeFileUrl);
-            sysFile.setSysSingId(sysSignId);
             sysFile.setSysfileType(sysfileType);
-            sysFile.setSysMinType(sysMinType);
+            sysFile.setMainId(mainId);
+            sysFile.setMainType(mainType);
+            sysFile.setSysBusiType(sysBusiType);
 
             Date now = new Date();
             sysFile.setCreatedBy(SessionUtil.getLoginName());
@@ -65,11 +69,13 @@ public class SysFileServiceImpl implements SysFileService {
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
             stream.write(bytes);
             stream.close();
-            BeanUtils.copyProperties(sysFile, sysFileDto);
+            SysFileDto sysFileDto = new SysFileDto();
+            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！",sysFileDto);
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传错误，请联系系统管理员确认！");
         }
-        return sysFileDto;
     }
 
     @Override
@@ -114,18 +120,27 @@ public class SysFileServiceImpl implements SysFileService {
         }
     }
 
+    /**
+     * 根据ID获取附件信息
+     * @param sysfileId
+     * @return
+     */
     @Override
     public SysFile findFileById(String sysfileId) {
         SysFile sysFile = sysFileRepo.findById(sysfileId);
         return sysFile;
     }
 
+    /**
+     * 根据主业务ID获取附件信息
+     * @param mainId
+     * @return
+     */
     @Override
-    public List<SysFileDto> findBySysFileSignId(String signid) {
-        HqlBuilder hql = HqlBuilder.create();
-        hql.append(" from " + SysFile.class.getSimpleName() + " where " + SysFile_.sysSingId.getName());
-        hql.append("=:sysSingId").setParam("sysSingId", signid);
-        List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
+    public List<SysFileDto> findByMainId(String mainId) {
+        Criteria criteria = sysFileRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(SysFile_.mainId.getName(),mainId));
+        List<SysFile> sysFiles = criteria.list();
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
         if (sysFiles != null) {
             sysFiles.forEach(sf -> {
@@ -137,14 +152,21 @@ public class SysFileServiceImpl implements SysFileService {
         return sysFileDtoList;
     }
 
+    /**
+     * 根据业务ID获取附件信息
+     */
+    /**
+     * 根据业务ID获取相应的附件信息
+     * @param businessId
+     * @return
+     */
     @Override
     public List<SysFileDto> findByBusinessId(String businessId) {
-        HqlBuilder hql = HqlBuilder.create();
-        hql.append(" from " + SysFile.class.getSimpleName() + " where " + SysFile_.businessId.getName());
-        hql.append("=:businessId").setParam("businessId", businessId);
-        List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
+        Criteria criteria = sysFileRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(SysFile_.businessId.getName(),businessId));
+        List<SysFile> sysFiles = criteria.list();
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
-        if (sysFiles != null) {
+        if (Validate.isString(sysFiles)) {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
@@ -154,43 +176,4 @@ public class SysFileServiceImpl implements SysFileService {
         return sysFileDtoList;
     }
 
-    @Override
-    public Map<String, Object> initFileUploadlist(String signid) {
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        Sign sign = signRepo.findById(signid);
-
-        HqlBuilder hql = HqlBuilder.create();
-        hql.append(" from " + SysFile.class.getSimpleName() + " where " + SysFile_.sysSingId.getName()).append("=:sysSingId").setParam("sysSingId", sign.getSignid());
-        List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
-        List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>();
-        for (SysFile item : sysFiles) {
-            SysFileDto sysFileDto = new SysFileDto();
-            sysFileDto.setSysFileId(item.getSysFileId());
-            sysFileDto.setBusinessId(item.getBusinessId());
-            sysFileDto.setFileUrl(item.getFileUrl());
-            sysFileDto.setShowName(item.getShowName());
-            sysFileDto.setFileType(item.getFileType());
-            sysFileDto.setSysfileType(item.getSysfileType());
-            sysFileDto.setCreatedDate(item.getCreatedDate());
-            sysFileDto.setCreatedBy(SessionUtil.getLoginName());
-            sysFileDto.setModifiedBy(SessionUtil.getLoginName());
-            sysFileDtoList.add(sysFileDto);
-        }
-
-        //收文
-        if (sysFileDtoList != null) {
-            map.put("sysFileDtoList", sysFileDtoList);
-        }
-
-        return map;
-    }
-
-    @Override
-    public List<SysFile> sysFileByIds(String signid) {
-        HqlBuilder hql = HqlBuilder.create();
-        hql.append(" from "+SysFile.class.getSimpleName()+" where "+SysFile_.businessId.getName()).append("=:businessId").setParam("businessId", signid);
-        List<SysFile> sysFiles = sysFileRepo.findByHql(hql);
-        return sysFiles;
-    }
 }

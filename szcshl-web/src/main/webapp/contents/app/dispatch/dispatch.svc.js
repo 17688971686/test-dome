@@ -57,17 +57,7 @@
                 vm.proofread = data.mainUserList;   //校对人
 
                 //初始化附件上传
-                if (vm.dispatchDoc.id) {
-                    vm.showFlag.buttSysFile = true;
-                    sysfileSvc.initUploadOptions({
-                        businessId: vm.dispatchDoc.id,
-                        sysSignId: vm.dispatchDoc.signId,
-                        sysfileType: "发文",
-                        uploadBt: "upload_file_bt",
-                        detailBt: "detail_file_bt",
-                        vm: vm
-                    });
-                }
+                vm.initFileUpload();
             }
             common.http({
                 vm: vm,
@@ -98,16 +88,6 @@
 
                     if(!vm.dispatchDoc.id){
                         vm.dispatchDoc.id = response.data.reObj.id;
-                        //初始化附件上传
-                        vm.showFlag.buttSysFile = true;
-                        sysfileSvc.initUploadOptions({
-                            businessId: vm.dispatchDoc.id,
-                            sysSignId: vm.dispatchDoc.signId,
-                            sysfileType: "发文",
-                            uploadBt: "upload_file_bt",
-                            detailBt: "detail_file_bt",
-                            vm: vm
-                        });
                     }
                 }
                 bsWin.alert(response.data.reMsg);

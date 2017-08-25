@@ -50,4 +50,5 @@ public interface ExpertReviewService {
 
     void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 
+	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview);
 }

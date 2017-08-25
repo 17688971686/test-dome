@@ -9,7 +9,7 @@
 <form id="fileRecord_form" name="fileRecord_form" >	
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
-	<a  class="btn btn-sm btn-danger" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+	<a  class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
 	<button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button>
 	<button class="btn btn-sm btn-primary" id="detail_file_bt" >查看附件</button>
 </div>
@@ -22,10 +22,11 @@
 	 <div>	
 	   <div ng-show="vm.fileRecord.fileReviewstage=='可行性研究报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileFeasibilityEdit.html'"></div>
 	   <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetIdeaEdit.html'"></div>
+	    <div ng-show="vm.fileRecord.fileReviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/filecapitalAppReportEdit.html'"></div>
 	   <div ng-show="vm.fileRecord.fileReviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEdit.html'"></div>
 	   <div ng-show="vm.fileRecord.fileReviewstage=='进口设备'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
-	   <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
-	   <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileImportEdit.html'"></div>
+	   <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
+	  <!--  <div ng-show="vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileImportEdit.html'"></div> -->
 	 </div> 
  <!--E 编辑页面/项目概算/进口设备/设备清单（进口）/设备清单（国产） -->
  

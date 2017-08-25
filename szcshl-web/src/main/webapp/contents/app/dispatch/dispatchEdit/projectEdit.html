@@ -1,14 +1,15 @@
 <meta charset="UTF-8">
 <!--  S 项目建议书-->
  <!-- s form -->
-    <form id="dispatch_form" name="dispatch_form">
+
         <!-- s table -->
         <table class="table table-bordered"  >
-        QR-4.3-10-A3
+       
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
                 <span>
-                    发文方式：
+                	 QR-4.3-10-A3
+                  	  发文方式：
                     <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
                         <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
                                 ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
@@ -73,12 +74,12 @@
 
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
-                    <select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm" style="width:100px;"
-                             data-val="true" data-val-required="必填">
-                        <option ng-repeat="x in DICT.ISRELATED.dicts" value="{{x.dictName}}"
-                                ng-selected="vm.dispatchDoc.isRelated==x.dictName">{{x.dictName}}
-                        </option>
-                    </select>
+                     <label>
+                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                    </label>
                 </td>
             </tr>
 
@@ -133,8 +134,7 @@
                               name="ministerSuggesttion"/>
                 </td>
             </tr>
-
-
+            
             <tr>
                 <td style="width:150px;" class="text-center">分管副主任意见</td>
                 <td colspan="5">
@@ -150,7 +150,8 @@
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
                 </td>
-            </tr>
+            </tr> 
+            
             <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
                 <td colspan="5">
@@ -307,5 +308,6 @@
             </tr>
             </tbody>
         </table>    <!-- end table -->
-    </form> <!-- end form -->
+    
 <!--  E 项目建议书-->
+

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,12 +45,10 @@ public class OrgController {
         return orgDtos;
     }
 
-    @RequiresPermissions("org#html/getOrgById#get")
-    @RequestMapping(name = "根据ID获取部门数据", path = "html/getOrgById", method = RequestMethod.GET)
-    public @ResponseBody
-    OrgDto get(@RequestParam(required = true) String id) throws ParseException {
+    @RequiresPermissions("org#getOrgById#post")
+    @RequestMapping(name = "根据ID获取部门数据", path = "getOrgById", method = RequestMethod.POST)
+    public @ResponseBody OrgDto get(@RequestParam(required = true) String id) throws ParseException {
         OrgDto orgDto = orgService.findById(id);
-
         return orgDto;
     }
 
@@ -64,16 +63,16 @@ public class OrgController {
 
     @RequiresPermissions("org##post")
     @RequestMapping(name = "创建部门", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody OrgDto orgDto) {
-        orgService.createOrg(orgDto);
+    @ResponseBody
+    public ResultMsg post(@RequestBody OrgDto orgDto) {
+        return orgService.createOrg(orgDto);
     }
 
     @RequiresPermissions("org##put")
     @RequestMapping(name = "更新部门", path = "", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody OrgDto orgDto) {
-        orgService.updateOrg(orgDto);
+    @ResponseBody
+    public ResultMsg update(@RequestBody OrgDto orgDto) {
+        return orgService.updateOrg(orgDto);
     }
 
     @RequiresPermissions("org##delete")
@@ -119,10 +118,9 @@ public class OrgController {
         }
     }
 
-    @RequiresPermissions("org#listAll#get")
-    @RequestMapping(name = "所有部门查询", path = "listAll", method = RequestMethod.GET)
-    public @ResponseBody
-    List<OrgDto> listAll() {
+    @RequiresPermissions("org#listAll#post")
+    @RequestMapping(name = "所有部门查询", path = "listAll", method = RequestMethod.POST)
+    public @ResponseBody  List<OrgDto> listAll() {
         return orgService.listAll();
     }
 

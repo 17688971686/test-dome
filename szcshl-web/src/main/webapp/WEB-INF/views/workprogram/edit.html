@@ -14,8 +14,8 @@
     </button>
     <button class="btn btn-sm btn-danger" ng-click="backtoflow();"><span class="glyphicon glyphicon-chevron-left"></span>返回流程
     </button>
-    <button class="btn btn-sm btn-primary" id="upload_file_bt">上传附件</button>
-    <button class="btn btn-sm btn-primary" id="detail_file_bt">查看附件</button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
 </div>
 
 <div class="well well-sm" style="background:white;">
@@ -31,20 +31,37 @@
         <div class="well well-sm tab-pane fade in active" style="background:white;" id="wp_edit">
 
             <!-- S 项目建议书/可行性研究报告 -->
-            <div ng-show="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='资金申请报告'|| vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='提前介入' || vm.work.workreviveStage=='其它'">
+            <div ng-show="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'">
                 <div ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEdit.html'"></div>
                 <div ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEdit.html'"></div>
             </div>
             <!-- E 项目建议书/可行性研究报告 -->
+            
+            <!--S 资金申请报告 -->
+             <div ng-show="vm.work.workreviveStage=='资金申请报告'">
+                <div ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainCapitalAppReportEdit.html'"></div>
+                <div ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistCapitalAppReportEdit.html'"></div>
+            </div>
+            <!--E 资金申请报告 -->
+             
+            <!-- S 进口设备 -->
+             <div ng-show="vm.work.workreviveStage=='进口设备'">
+                <div ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainForeignEdit.html'"></div>
+                <div ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistForeignEdit.html'"></div>
+            </div>
+            <!-- E 进口设备 -->
+            
             <!-- S 设备清单（进口） -->
-            <div ng-show="vm.work.workreviveStage=='设备清单（进口）'" ng-include
-                 src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div>
+           <!--  <div ng-show="vm.work.workreviveStage=='设备清单（进口）'" ng-include
+                 src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div> -->
             <!-- E 设备清单（进口） -->
 
-            <!-- S 设备清单（国产） -->
-            <div ng-show="vm.work.workreviveStage=='设备清单（国产）'" ng-include
-                 src="'${path}/contents/app/workprogram/workprogramEdit/equipmentImportEdit.html'"></div>
-            <!-- S 设备清单（国产） -->
+            <!-- S 设备清单（国产）  /设备清单（进口）-->
+            <div ng-show="vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）'">
+                 <div ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEquipmentImportEdit.html'"></div>
+                 <div ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEquipmentImportEdit.html'"></div>
+             </div>
+            <!-- S 设备清单（国产）/设备清单（进口） -->
         </div>
         <!--E 编辑页面 -->
         <!--S 工作方案查看页面 -->
@@ -53,6 +70,7 @@
         </div>
         <!--E 工作方案查看页面 -->
     </div>
+    
     <!--S 项目关联弹窗 -->
     <div class="mergeSignWP" id="mergeSignWP" style="background:white;display:none;">
         <form id="searchformi" name="searchformi">

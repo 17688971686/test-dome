@@ -36,7 +36,7 @@
                 <td class="formAlignRight">所在办事处：</td>
                 <td>
                      <select ng-model="vm.model.departId" id="departId" name="departId"class="form-control input-sm " data-val="true" data-val-required="必填">
-						<option ng-repeat="x in vm.depts" ng-selected="vm.model.dept.deptId == x.deptId"  value="{{x.deptId}}" >{{x.deptName}}</option>
+						<option ng-repeat="x in vm.depts" ng-selected="vm.model.sysDept.deptId == x.deptId"  value="{{x.deptId}}" >{{x.deptName}}</option>
 					</select>
                 </td>
                 <td><span data-valmsg-for="officeUserName" data-valmsg-replace="true" class="errors"></span></td>

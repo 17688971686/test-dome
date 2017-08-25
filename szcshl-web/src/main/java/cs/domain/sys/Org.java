@@ -1,18 +1,9 @@
 package cs.domain.sys;
 
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import cs.domain.DomainBase;
-import cs.domain.sharing.SharingPlatlform;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "cs_org")
@@ -37,7 +28,7 @@ public class Org extends DomainBase {
 
     @Column(columnDefinition = "varchar(255)")
     private String orgFunction; //职能
-    //编号
+
     @Column(columnDefinition = "varchar(255)")
     private String orgFirst; //上级部门
 
@@ -73,7 +64,7 @@ public class Org extends DomainBase {
     private String orgAssistantName; //副科长名称
 
     @Column(columnDefinition = "varchar(255)")
-    private String orgMLeaderName; //署长名称
+    private String orgMLeaderName; //主任名称
 
     @Column(columnDefinition = "varchar(255)")
     private String orgSLeaderName;  //分管署长名称

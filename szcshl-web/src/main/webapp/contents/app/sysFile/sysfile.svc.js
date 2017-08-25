@@ -3,50 +3,101 @@
 
     angular.module('app').factory('sysfileSvc', sysfile);
 
-    sysfile.$inject = ['$http'];
-    function sysfile($http) {
+    sysfile.$inject = ['$http','bsWin'];
+    function sysfile($http,bsWin) {
         var service = {
             initUploadOptions: initUploadOptions,       // 初始化上传附件控件
-            commonDelSysFile: commonDelSysFile,         // 删除系统文件
-            commonDownloadFile: commonDownloadFile,     // 系统文件下载
+            delSysFile: delSysFile,                     // 删除系统文件
+            downloadFile: downloadFile,                 // 系统文件下载
             queryPluginfile :queryPluginfile,           // 查询系统安装包
+            findByMianId    : findByMianId,             // 根据主业务ID获取所有的附件信息
+            findByBusinessId : findByBusinessId,        // 根据业务ID 获取上传附件
+            mainTypeValue   : mainTypeValue,            // 各大模块附件根目录
         };
         return service;
 
+        // 各大模块附件根目录(跟后台Constant.SysFileMainType 同步)
+        function mainTypeValue(){
+            return {
+                SIGN:"项目附件",
+                FILLSIGN:"审批登记",
+                TOPIC:"课题附件",
+                HUMAN:"人事附件",
+                BOOKS:"图书附件",
+                NOTICE:"通知公告",
+                SHARE:"资料共享",
+                MEETTINGROOM:"会议室预定",
+                WORKPROGRAM:"工作方案",
+                DISPATCH:"发文",
+                DOFILE:"归档",
+                MEETING:"会前准备材料",
+                SUPPLEMENT:"补充函",
+                STAGEMEETING:"评审会会议",
+            }
+        }
 
         // 系统文件下载
-        function commonDownloadFile(vm, id) {
-            var sysfileId = id;
+        function downloadFile(id) {
             window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
         }
 
-        // S 删除系统文件
-        function commonDelSysFile(vm, id) {
+        //根据主业务获取所有的附件信息
+        function findByBusinessId(businessId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/file/findByBusinessId",
+                params: {
+                    businessId: businessId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //根据主业务获取所有的附件信息
+        function findByMianId(mainId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/file/findByMainId",
+                params: {
+                    mainId: mainId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // S 删除系统文件,自己实现回调方法
+        function delSysFile(sysFileId,callBack) {
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/file/deleteSysFile",
                 params: {
-                    id: id
+                    id: sysFileId
                 }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        window.parent.$("#commonQueryWindow").data("kendoWindow").close();
-                        common.alert({
-                            vm: vm,
-                            msg: "删除成功",
-                            closeDialog : true
-                        })
-                    }
-
-                });
-
-            }
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -56,28 +107,31 @@
 
         // S 初始化上传附件控件
         /**
-         * options 属性
-         *  businessId: 业务ID    （必须）
-         *  sysSignId: 收文ID,
-         *  sysfileType: 模块,
-         *  sysMinType: 文件类型,
+         * options 属性 options.vm.sysFile 一定要有，这个是附件对象
          *  uploadBt : 上传按钮
          *  detailBt : 查看按钮
+         *  inputId : "sysfileinput",
+         *  mainType : 主要业务模块，业务的根目录
          * @param options
          */
         function initUploadOptions(options) {
+            options.vm.initUploadOptionSuccess = false;
+            //options.vm.sysFile 为定义好的附件对象
             var sysFileDefaults = {
-                width: "800px",
-                height: "480px",
-                sysMinType: "",
-                sysfileType: "",
-                sysSignId: "",
+                width: "70%",
+                height: "460px",
                 uploadBt : "upload_file_bt",
                 detailBt : "detail_file_bt",
-                vm  : options.vm,
+                inputId : "sysfileinput",
+                mainType : "没有归类附件",
+                sysBusiType : "",
             };
-            if(options.businessId){
-                sysFileDefaults.businessId = options.businessId;
+            if(!options.vm.sysFile){
+                bsWin.alert("初始化附件控件失败，请先定义附件对象！");
+                return ;
+            }
+            if(options.sysBusiType){
+                sysFileDefaults.sysBusiType = options.sysBusiType;
             }
             if (options.width) {
                 sysFileDefaults.width = options.width;
@@ -85,112 +139,59 @@
             if (options.height) {
                 sysFileDefaults.height = options.height;
             }
-            if (options.sysSignId) {
-                sysFileDefaults.sysSignId = options.sysSignId;
-            }
-            if (options.sysfileType) {
-                sysFileDefaults.sysfileType = options.sysfileType;
-            }
-            if (options.sysMinType) {
-                sysFileDefaults.sysMinType = options.sysMinType;
-            }
             //附件下载方法
-            sysFileDefaults.vm.downloadSysFile = function(id){
-                window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
+            options.vm.downloadSysFile = function(id){
+                downloadFile(id);
             }
             //附件删除方法
-            sysFileDefaults.vm.delSysFile = function(id){
-                var httpOptions = {
-                    method: 'delete',
-                    url: rootPath + "/file/deleteSysFile",
-                    params: {
-                        id: id
-                    }
-                }
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: sysFileDefaults.vm,
-                        response: response,
-                        fn: function () {
-                            window.parent.$("#commonQueryWindow").data("kendoWindow").close();
-                            common.alert({
-                                vm: sysFileDefaults.vm,
-                                msg: "删除成功",
-                                closeDialog : true
-                            })
+            options.vm.delSysFile = function(id){
+                delSysFile(id,function(){
+                    bsWin.alert("删除成功！");
+                    $.each(options.vm.sysFilelists,function(i,sf){
+                        if(sf.sysFileId == id){
+                            options.vm.sysFilelists.splice(i, 1);
                         }
-                    });
-                }
-                common.http({
-                    vm: sysFileDefaults.vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
+                    })
                 });
             }
+            options.vm.clickUploadBt = function(){
+                if(!options.vm.sysFile.businessId){
+                    bsWin.alert("请先保存业务数据！");
+                }else{
+                    $("#commonUploadWindow").kendoWindow({
+                        width: sysFileDefaults.width,
+                        height: sysFileDefaults.height,
+                        title: "附件上传",
+                        visible: false,
+                        modal: true,
+                        closable: true,
+                        actions: ["Pin", "Minimize", "Maximize", "Close"]
+                    }).data("kendoWindow").center().open();
+                }
+            }
 
-            if (options.uploadBt) {
-                sysFileDefaults.uploadBt = options.uploadBt;
-                $("#"+sysFileDefaults.uploadBt).click(function(){
-                	if(angular.isUndefined(options.businessId)){
-                		common.alert({
-                            vm: sysFileDefaults.vm,
-                            msg: "请先保存业务数据！",
-                            closeDialog : true
-                        })
-                	}else{
-                		$("#commonuploadWindow").kendoWindow({
-                            width: sysFileDefaults.width,
-                            height: sysFileDefaults.height,
-                            title: "附件上传",
+            options.vm.clickDetailBt =function () {
+                if(!options.vm.sysFile.businessId){
+                    bsWin.alert("请先保存业务数据！");
+                    return ;
+                }else{
+                    findByBusinessId(options.vm.sysFile.businessId,function(data){
+                        options.vm.sysFilelists = [];
+                        options.vm.sysFilelists = data;
+                        $("#commonQueryWindow").kendoWindow({
+                            width: "800px",
+                            height: "500px",
+                            title: "附件上传列表",
                             visible: false,
                             modal: true,
                             closable: true,
                             actions: ["Pin", "Minimize", "Maximize", "Close"]
                         }).data("kendoWindow").center().open();
-                	}            
-                });
-            }
-            if (options.detailBt) {
-                sysFileDefaults.detailBt = options.detailBt;
-                $("#"+sysFileDefaults.detailBt).click(function(){
-                	if(angular.isUndefined(options.businessId)){
-                		common.alert({
-                            vm: sysFileDefaults.vm,
-                            msg: "请先保存业务数据！",
-                            closeDialog : true
-                        })
-                	}else{
-                		var httpOptions = {
-                            method: 'get',
-                            url: rootPath + "/file/findByBusinessId",
-                            params: {
-                                businessId: sysFileDefaults.businessId
-                            }
-                        }
-                        var httpSuccess = function success(response) {
-                            sysFileDefaults.vm.sysFilelists = response.data;
-                            $("#commonQueryWindow").kendoWindow({
-                                width: "800px",
-                                height: "500px",
-                                title: "附件上传列表",
-                                visible: false,
-                                modal: true,
-                                closable: true,
-                                actions: ["Pin", "Minimize", "Maximize", "Close"]
-                            }).data("kendoWindow").center().open();
-                        }
-                        common.http({
-                            vm: sysFileDefaults.vm,
-                            $http: $http,
-                            httpOptions: httpOptions,
-                            success: httpSuccess
-                        });
-                	}                   
-                });
+                    });
+                }
             }
             //有业务数据才能初始化
-            if(sysFileDefaults.businessId){
+            if(options.vm.sysFile.businessId){
                 var projectfileoptions = {
                     language: 'zh',
                     allowedPreviewTypes: ['image'],
@@ -200,26 +201,30 @@
                     uploadUrl: rootPath + "/file/fileUpload",
                     uploadExtraData: function(previewId, index) {
                         var result={};
-                        result.businessId=sysFileDefaults.businessId;
-                        result.sysSignId=sysFileDefaults.sysSignId;
-                        result.sysfileType=sysFileDefaults.sysfileType;
-                        result.sysMinType=$("#sysMinType option:selected").val();
+                        result.businessId=options.vm.sysFile.businessId;
+                        result.mainId= options.vm.sysFile.mainId;
+                        result.mainType= options.vm.sysFile.mainType || sysFileDefaults.mainType;
+                        result.sysfileType=options.vm.sysFile.sysfileType;
+                        result.sysBusiType= options.vm.sysFile.sysBusiType || sysFileDefaults.sysBusiType;
                         return result;
-                        // businessId: sysFileDefaults.businessId,
-                        // sysSignId: sysFileDefaults.sysSignId,
-                        // sysfileType: sysFileDefaults.sysfileType,
-                        // sysMinType: sysFileDefaults.sysMinType
                     }
                 };
-                $("#sysfileinput").fileinput(projectfileoptions)
+
+                var filesCount = 0;
+                $("#"+options.inputId||sysFileDefaults.inputId).fileinput(projectfileoptions)
                     .on("filebatchselected", function (event, files) {
-
-                    }).on("fileuploaded", function (event, data) {
-                        console.log(555);
-                    projectfileoptions.sysMinType=$("#sysMinType").val();
+                        filesCount = files.length;
+                    }).on("fileuploaded", function (event, data, previewId, index) {
+                        projectfileoptions.sysBusiType = options.vm.sysFile.sysBusiType;
+                        if (filesCount == (index + 1)) {
+                            if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
+                                options.uploadSuccess(event, data, previewId, index);
+                            }
+                        }
                 });
+                //表示初始化控件成功
+                options.vm.initUploadOptionSuccess = true;
             }
-
         }
         // E 初始化上传附件控件
 

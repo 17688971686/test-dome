@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.domain.project.AddSuppLetter;
@@ -160,6 +162,12 @@ public class SignDto extends BaseDto {
     //建议书项目单位请示报告是否有复印件
     private String sugOrgReqCopy;
 
+  //资金申请报告份数
+    private Integer capitalAppReportCount;
+    
+    //资金申请报告是否有原件
+    private Integer capitalAppReportOriginal;
+    
     //项目建议书份数
     private Integer sugProAdviseCount;
 
@@ -2203,5 +2211,22 @@ public class SignDto extends BaseDto {
     public void setHasExpertReview(String hasExpertReview) {
         this.hasExpertReview = hasExpertReview;
     }
+
+	public Integer getCapitalAppReportCount() {
+		return capitalAppReportCount;
+	}
+
+	public void setCapitalAppReportCount(Integer capitalAppReportCount) {
+		this.capitalAppReportCount = capitalAppReportCount;
+	}
+
+	public Integer getCapitalAppReportOriginal() {
+		return capitalAppReportOriginal;
+	}
+
+	public void setCapitalAppReportOriginal(Integer capitalAppReportOriginal) {
+		this.capitalAppReportOriginal = capitalAppReportOriginal;
+	}
+    
 
 }

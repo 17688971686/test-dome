@@ -1,34 +1,22 @@
 package cs.controller.expert;
 
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertSelected;
+import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
+import cs.repository.odata.ODataObj;
+import cs.service.expert.ExpertReviewService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.repository.odata.ODataObj;
-import cs.service.expert.ExpertReviewService;
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 专家评审 控制层
@@ -158,11 +146,18 @@ public class ExpertReviewController {
         return expertReviewService.getExpertReviewCost(expertIds,month);
     }
 
-    //保存评审费用
+    //保存评审费用(多个)
     @RequestMapping(name = "保存评审费用", path = "html/saveExpertReviewCost", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void saveExpertReviewCost(@RequestBody ExpertReviewDto[] expertReviews) throws ParseException {
         expertReviewService.saveExpertReviewCost(expertReviews);
+    }
+
+    //保存评审费用(单个)
+    @RequestMapping(name = "保存评审费用", path = "saveExpertReviewCostSingle", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewDto expertReview) {
+        return expertReviewService.saveExpertReviewCost(expertReview);
     }
 
     // begin#html

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,12 +90,12 @@ public class UserController {
     
     @RequiresPermissions("user##post")
     @RequestMapping(name = "创建用户", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody UserDto userDto) {
-        userService.createUser(userDto);
+    @ResponseBody
+    public ResultMsg post(@RequestBody UserDto userDto) {
+        return userService.createUser(userDto);
     }
 
-    @RequestMapping(name = "部门编辑角色初始化", path = "initRoleUsers", method = RequestMethod.GET)
+    @RequestMapping(name = "部门编辑角色初始化", path = "initRoleUsers", method = RequestMethod.POST)
     @ResponseBody
     public Map<String,List<UserDto>> initRoleUsers() {
     	Map<String,List<UserDto>> resultMap = new HashMap<String,List<UserDto>>(3);
@@ -114,9 +115,9 @@ public class UserController {
 
     @RequiresPermissions("user##put")
     @RequestMapping(name = "更新用户", path = "", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void put(@RequestBody UserDto userDto) {
-        userService.updateUser(userDto);
+    @ResponseBody
+    public ResultMsg put(@RequestBody UserDto userDto) {
+        return userService.updateUser(userDto);
     }
     
     @RequestMapping(name = "获取副主任信息", path = "getViceDirector", method = RequestMethod.GET)

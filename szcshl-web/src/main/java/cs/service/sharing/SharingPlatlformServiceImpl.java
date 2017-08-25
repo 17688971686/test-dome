@@ -131,8 +131,11 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         criteria = odataObj.buildFilterToCriteria(criteria);
         //查询个人接收到的记录信息（全局、部分和个人）
         StringBuilder linkSql = new StringBuilder("(isnopermission = '9' or sharid in ");
-        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserInfo().getId()+"') ");
-        linkSql.append(" or (businesstype = '1' and  businessId ='"+SessionUtil.getUserInfo().getOrg().getId()+"') ) )");
+        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserId()+"') ");
+        if(Validate.isObject(SessionUtil.getUserInfo().getOrg()) && Validate.isString(SessionUtil.getUserInfo().getOrg().getId())){
+            linkSql.append(" or (businesstype = '1' and  businessId ='"+SessionUtil.getUserInfo().getOrg().getId()+"')" );
+        }
+        linkSql.append(" ) )");
 
         criteria.add(Restrictions.sqlRestriction(linkSql.toString()));
 
@@ -281,7 +284,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //3、删除附件
         HqlBuilder queryHql = HqlBuilder.create();
         queryHql.append(" from "+SysFile.class.getSimpleName());
-        queryHql.bulidIdString("where",SysFile_.businessId.getName(),id);
+        queryHql.bulidPropotyString("where",SysFile_.businessId.getName(),id);
 
         List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
         if(fileList != null && fileList.size() > 0){
@@ -307,7 +310,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
             hqlBuilder.append(","+SharingPlatlform_.publishDate.getName()+"=sysdate ");
             hqlBuilder.append(","+SharingPlatlform_.publishUsername.getName()+"= :issueUser ").setParam("issueUser",SessionUtil.getLoginName());
         }
-        hqlBuilder.bulidIdString("where",SharingPlatlform_.sharId.getName(),ids);
+        hqlBuilder.bulidPropotyString("where",SharingPlatlform_.sharId.getName(),ids);
         sharingPlatlformRepo.executeHql(hqlBuilder);
     }
 

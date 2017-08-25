@@ -27,7 +27,7 @@
 
         //业务控制对象
         vm.businessFlag = {
-
+            expertReviews : []
         }
         active();
         function active(){
@@ -46,25 +46,20 @@
                 vm.model = data;
                 //有关联，则显示项目
                 if(vm.model.isAssociate && vm.model.isAssociate == 1){
+                    vm.showFlag.tabAssociateSigns = true;
                     signSvc.initAssociateSigns(vm,vm.model.signid);
                 }
-                //发文
-                if (vm.model.dispatchDocDto) {
-                    vm.showFlag.tabDispatch = true;
-                    vm.dispatchDoc = vm.model.dispatchDocDto;
-                    //如果是合并发文次项目，则不用生成发文编号
-                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
-                        || vm.dispatchDoc.fileNum){
-                        vm.businessFlag.isCreateDisFileNum = true;
-                    }else{
-                        vm.showFlag.buttDisFileNum = true;
+                //按钮显示控制，全部归为这个对象控制
+                vm.showFlag.tabWorkProgram = true;
+                vm.showFlag.tabDispatch = true;
+                vm.showFlag.tabFilerecord = true;
+                //初始化专家评分
+                signSvc.paymentGrid(vm.model.signid,function(data){
+                    vm.businessFlag.expertReviews = data.value;
+                    if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
+                        vm.showFlag.tabExpert = true;   //显示专家信息tab
                     }
-                }
-                //归档
-                if (vm.model.fileRecordDto) {
-                    vm.showFlag.tabFilerecord = true;
-                    vm.fileRecord = vm.model.fileRecordDto;
-                }
+                });
             });
         }
         //获取专家评星

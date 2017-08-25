@@ -12,7 +12,6 @@
 
         // begin#grid
         function grid(vm) {
-        	
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',

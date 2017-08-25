@@ -3,10 +3,16 @@ package cs.domain.project;
 
 import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.hibernate.annotations.DynamicUpdate;
 
 import cs.domain.DomainBase;
@@ -28,8 +34,20 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(200)")
 	private String fileReviewstage;
 	
+	/**
+     * 存档类型（评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD）
+     */
+    @Column(columnDefinition = "VARCHAR(8)")
+    private String fileType;
+
+    /**
+     * 存档顺序号（每年从1开始递增）
+     */
+    @Column(columnDefinition = "INTEGER")
+    private Integer fileSeq;
+	
 	//档案编号
-	@Column(columnDefinition="VARCHAR(50)")
+	@Column(columnDefinition="VARCHAR(16)")
 	private String fileNo;
 	
 	//项目单位
@@ -48,6 +66,9 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(100)")
 	private String fileNumber;
 	
+	//报审登记表份数
+	@Column(columnDefinition="INTEGER")
+	private Integer recordFormCount;
 	
 	//报审登记表是否有原件0表示没有，9表示有
 	@Column(columnDefinition="VARCHAR(2)")
@@ -592,6 +613,50 @@ public class FileRecord extends DomainBase{
 	private String energyCopy;
 	
 	//S 项目概算
+	//项目申报基本情况表是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectBaseOriginal;
+	
+	//项目申报基本情况表是否有电子版/扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectBaseCopy;
+	
+	//项目指标分析表是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectTargetOriginal;
+	
+	//项目指标分析表是否有电子版/扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectTargetCopy;
+	
+	//工程量计算书是否原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectComputeOriginal;
+	
+	//工程量计算书是否电子版/扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectComputeCopy;
+		
+	//沟通会签到表是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String communicateMeetingOriginal;
+	
+	//沟通会签到表是否有扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String communicateMeetingCopy;
+	
+	//调概项目转评审请示是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String probableTurnStageOriginal;
+	
+	//调概项目转评审请示是否复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String probableTurnStageCopy;
+	
+	//调概项目转评审请示是否扫描件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String probableTurnStageRmb;
+	
 	//专家审核概算书
 	@Column(columnDefinition="INTEGER")
 	private Integer expertBookCount;
@@ -2126,12 +2191,118 @@ public class FileRecord extends DomainBase{
 	public void setExpertBookCountScan(String expertBookCountScan) {
 		this.expertBookCountScan = expertBookCountScan;
 	}
-	
-	
-	
-	
-	
-	
+
+	public String getProbableTurnStageOriginal() {
+		return probableTurnStageOriginal;
+	}
+
+	public void setProbableTurnStageOriginal(String probableTurnStageOriginal) {
+		this.probableTurnStageOriginal = probableTurnStageOriginal;
+	}
+
+	public String getProbableTurnStageCopy() {
+		return probableTurnStageCopy;
+	}
+
+	public void setProbableTurnStageCopy(String probableTurnStageCopy) {
+		this.probableTurnStageCopy = probableTurnStageCopy;
+	}
+
+	public String getProbableTurnStageRmb() {
+		return probableTurnStageRmb;
+	}
+
+	public void setProbableTurnStageRmb(String probableTurnStageRmb) {
+		this.probableTurnStageRmb = probableTurnStageRmb;
+	}
+
+	public String getCommunicateMeetingOriginal() {
+		return communicateMeetingOriginal;
+	}
+
+	public void setCommunicateMeetingOriginal(String communicateMeetingOriginal) {
+		this.communicateMeetingOriginal = communicateMeetingOriginal;
+	}
+
+	public String getCommunicateMeetingCopy() {
+		return communicateMeetingCopy;
+	}
+
+	public void setCommunicateMeetingCopy(String communicateMeetingCopy) {
+		this.communicateMeetingCopy = communicateMeetingCopy;
+	}
+
+	public String getProjectBaseOriginal() {
+		return projectBaseOriginal;
+	}
+
+	public void setProjectBaseOriginal(String projectBaseOriginal) {
+		this.projectBaseOriginal = projectBaseOriginal;
+	}
+
+	public String getProjectBaseCopy() {
+		return projectBaseCopy;
+	}
+
+	public void setProjectBaseCopy(String projectBaseCopy) {
+		this.projectBaseCopy = projectBaseCopy;
+	}
+
+	public String getProjectTargetOriginal() {
+		return projectTargetOriginal;
+	}
+
+	public void setProjectTargetOriginal(String projectTargetOriginal) {
+		this.projectTargetOriginal = projectTargetOriginal;
+	}
+
+	public String getProjectTargetCopy() {
+		return projectTargetCopy;
+	}
+
+	public void setProjectTargetCopy(String projectTargetCopy) {
+		this.projectTargetCopy = projectTargetCopy;
+	}
+
+	public String getProjectComputeOriginal() {
+		return projectComputeOriginal;
+	}
+
+	public void setProjectComputeOriginal(String projectComputeOriginal) {
+		this.projectComputeOriginal = projectComputeOriginal;
+	}
+
+	public String getProjectComputeCopy() {
+		return projectComputeCopy;
+	}
+
+	public void setProjectComputeCopy(String projectComputeCopy) {
+		this.projectComputeCopy = projectComputeCopy;
+	}
+
+	public Integer getRecordFormCount() {
+		return recordFormCount;
+	}
+
+	public void setRecordFormCount(Integer recordFormCount) {
+		this.recordFormCount = recordFormCount;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public Integer getFileSeq() {
+		return fileSeq;
+	}
+
+	public void setFileSeq(Integer fileSeq) {
+		this.fileSeq = fileSeq;
+	}
 	
 	
 }

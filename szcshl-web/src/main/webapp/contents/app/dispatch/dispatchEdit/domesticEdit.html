@@ -1,0 +1,165 @@
+<meta charset="UTF-8">
+<!--  S 设备清单（国产）/设备清单（进口）-->
+ <!-- s form -->
+    <form id="dispatch_form" name="dispatch_form">
+        <!-- s table -->
+        <table class="table table-bordered"  >
+       
+            <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
+            <caption >
+                <span>
+                  QR-4.9-09-A0<br>
+                    	发文方式：
+                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
+                        <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
+                                ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
+                    </select>
+                </span>
+				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                           ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
+
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                           ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
+
+					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
+                            ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
+                            ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
+				</span>
+
+                <span style="float:right;">发文类型： <span class="required">*</span>
+		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
+                        data-val-required="必填">
+					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}"
+                            ng-selected="vm.dispatchDoc.dispatchType==x.dictName">{{x.dictName}}</option>
+				</select>
+			</span>
+            </caption>
+            <tbody>
+           
+
+            <tr>
+                <td style="width:150px;" rowspan='2' class="text-center">发文部门</br>拟稿人</td>
+                <td class="text-center">
+                    {{vm.dispatchDoc.orgName}}
+                </td>
+                <td style="width:150px;" rowspan='2' class="text-center">校对人</td>
+                <td rowspan='2' class="text-center">
+            	    {{vm.dispatchDoc.userName}}
+                </td>
+                <td rowspan='2' style="width:150px;" class="text-center">拟稿时间</td>
+                <td rowspan='2' class="text-center">
+                    {{vm.dispatchDoc.draftDate | date:'yyyy年MM月dd日'}}
+                </td>
+            </tr>
+             <tr>
+                <td style="width:150px;" class="text-center"> {{vm.dispatchDoc.userName}}</td>
+            </tr>
+            
+            <tr>
+                <td style="width:150px;" class="text-center">秘密等级</td>
+                <td> {{vm.dispatchDoc.secretLevel}}</td>
+
+                <td style="width:150px;" class="text-center">紧急程度</td>
+                <td>{{vm.dispatchDoc.urgentLevel}}</td>
+
+                <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
+                <td>
+                     <label>
+                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                    </label>
+                </td>
+            </tr>
+              <tr>
+                <td style="width:150px;" class="text-center">发文日期</td>
+                <td>
+                  <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:80%;"class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  name="dispatchDate">
+                </td>
+
+                <td style="width:150px;" class="text-center">文件字号</td>
+                <td colspan="3">{{vm.dispatchDoc.fileNum}}</td>
+
+            </tr>
+			 <tr>
+                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td colspan="5">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                           ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true"
+                           data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
+                </td>
+            </tr>
+          
+            <tr>
+                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                              ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
+                              data-val="true" data-val-required="必填" placeholder="徐安良主任、邱健明副主任、委秘书处........"/>
+                    <span style="float: right;">(印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)</span>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="width:150px;" class="text-center">项目概况</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
+                              ng-model="vm.dispatchDoc.description" id="description" name="description"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
+                <td colspan="3">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
+                              name="mianChargeSuggest" placeholder="第一负责人"/>
+                </td>
+                <td colspan="2">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
+                              name="secondChargeSuggest" placeholder="第二负责人"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">评审意见摘要</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+                </td>
+            </tr>
+
+          <!--   <tr>
+                <td style="width:150px;" class="text-center">部长审核意见</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
+                              name="ministerSuggesttion"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">分管副主任意见</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
+                              name="viceDirectorSuggesttion"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">主任签发</td>
+                <td colspan="5">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
+                </td>
+            </tr> -->
+            
+            </tbody>
+        </table>    <!-- end table -->
+    </form> <!-- end form -->
+<!--  E 设备清单（国产）/设备清单（进口）-->

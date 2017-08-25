@@ -25,14 +25,9 @@ public interface SignService {
 
     ResultMsg initFillPageData(String signId);
 
-    void claimSignFlow(String taskId);
-
     List<OrgDto> selectSign(ODataObj odataObj);
 
-    void deleteSign(String signid);
-
-    public void deleteSigns(String[] signids);
-
+    ResultMsg deleteSign(String signid);
 
     SignDto findById(String signid, boolean queryAll);
 
@@ -52,7 +47,7 @@ public interface SignService {
 
     List<SignDto> findByPlanId(String planId);
 
-    void updateAssistState(String signIds, String status, boolean isSingle);
+    void updateAssistState(String signIds, String status);
 
     void associate(String signId, String associateId);
 
@@ -93,4 +88,6 @@ public interface SignService {
     boolean updateSignState(String signId,String state);
 
     boolean updateSignProcessState(String signId,Integer processState);
+
+    PageModelDto<SignDto> findBySignUser(ODataObj odataObj);
 }

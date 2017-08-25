@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-
     angular.module('app').controller('signCtrl', sign);
 
     sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin'];
@@ -11,28 +10,36 @@
        
         active();
         function active() {
-            signSvc.grid(vm);
+            signSvc.signGrid(vm);
         }
 
         //收文查询
         vm.querySign = function(){
-        	signSvc.querySign(vm);
+            vm.gridOptions.dataSource.read();
         }
+
         vm.check=function(){
-      	 		vm.isAssociate = vm.ischeck?9:0;
+            vm.isAssociate = vm.ischeck?9:0;
       	 }
         
         //start 收文删除
-        vm.del = function (signid) {       	   
-             common.confirm({
-              	 vm:vm,
-              	 title:"",
-              	 msg:"确认删除数据吗？",
-              	 fn:function () {
-                    	$('.confirmDialog').modal('hide');             	
-                    	signSvc.deleteSign(vm,signid);
-                 }
-              })
+        vm.del = function (signid) {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除该条项目数据吗？删除数据不可恢复，请慎重！",
+                onOk: function () {
+                    $('.confirmDialog').modal('hide');
+                    signSvc.deleteSign(signid,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("删除成功！",function(){
+                                vm.gridOptions.dataSource.read();
+                            })
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }
+            });
          }//end 收文删除
         
          //start 收文删除
@@ -62,8 +69,9 @@
                      $('.confirmDialog').modal('hide');
                      signFlowSvc.startFlow(signid,function(data){
                          if(data.flag || data.reCode == 'ok'){
-                             vm.gridOptions.dataSource.read();
-                             bsWin.success("操作成功！");
+                             bsWin.success("操作成功！",function(){
+                                 vm.gridOptions.dataSource.read();
+                             });
                          }else{
                              bsWin.error(data.reMsg);
                          }
@@ -77,17 +85,23 @@
          * @param signId
          */
         vm.realSign = function(signid){
-            common.confirm({
-                vm:vm,
-                title:"",
-                msg:"确认正式签收了么？",
-                fn:function () {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认正式签收了么？",
+                onOk: function () {
                     $('.confirmDialog').modal('hide');
-                    signSvc.realSign(vm,signid);
+                    signSvc.realSign(signid,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.success("操作成功！",function(){
+                                vm.gridOptions.dataSource.read();
+                            });
+                        }else{
+                            bsWin.error(data.reMsg);
+                        }
+                    });
                 }
-            })
+            });
         }
-         //************************** S 以下是新流程处理js **************************//
 
     }
 })();

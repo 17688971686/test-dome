@@ -183,6 +183,12 @@ public class User extends DomainBase {
     @JoinColumn(name = "orgID")
     private Org org;
 
+    /**
+     * 组（内部部门）
+     */
+    @ManyToMany(mappedBy="userList",fetch = FetchType.LAZY)
+    private List<SysDept> sysDeptList = new ArrayList<>();
+
     public Org getOrg() {
         return org;
     }
@@ -422,5 +428,13 @@ public class User extends DomainBase {
 
     public void setMngOrgType(String mngOrgType) {
         this.mngOrgType = mngOrgType;
+    }
+
+    public List<SysDept> getSysDeptList() {
+        return sysDeptList;
+    }
+
+    public void setSysDeptList(List<SysDept> sysDeptList) {
+        this.sysDeptList = sysDeptList;
     }
 }

@@ -20,7 +20,7 @@ public class AssistPlan extends DomainBase {
     private String id;
 
     /**
-     * 计划名称
+     * 计划名称(时间+序号命名  yyyymmdd01)
      */
     @Column(columnDefinition="VARCHAR(64)")
     private String planName;

@@ -3,15 +3,16 @@
 
     angular.module('app').controller('dispatchEditCtrl', dispatch);
 
-    dispatch.$inject = ['$location', 'dispatchSvc', '$state', 'bsWin'];
+    dispatch.$inject = [ 'dispatchSvc','sysfileSvc', '$state', 'bsWin','$scope'];
 
-    function dispatch($location, dispatchSvc, $state, bsWin) {
+    function dispatch(dispatchSvc,sysfileSvc, $state, bsWin,$scope) {
         var vm = this;
         vm.title = '项目发文编辑';
         vm.sign = {};
         vm.searchSign = {};        //发文查询对象
         vm.dispatchDoc = {};       //发文对象
         vm.dispatchDoc.signId = $state.params.signid;
+        vm.dispatchDoc.id = "";
 
         vm.showFlag = {
             buttSysFile : false,        //显示附件按钮
@@ -24,6 +25,29 @@
         activate();
         function activate() {
             dispatchSvc.initDispatchData(vm);
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.dispatchDoc.id){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.dispatchDoc.id",function (newValue, oldValue) {
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            vm.sysFile = {
+                businessId : vm.dispatchDoc.id,
+                mainId : vm.dispatchDoc.signId,
+                mainType : sysfileSvc.mainTypeValue().SIGN,
+                sysfileType:sysfileSvc.mainTypeValue().DISPATCH,
+                sysBusiType:sysfileSvc.mainTypeValue().DISPATCH,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId:"sysfileinput",
+                vm:vm
+            });
         }
 
         //发文方式改变事件
@@ -92,7 +116,7 @@
         vm.gotoMergePage = function () {
         	 vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
              //没保存或者单个发文改成合并发文主项目时候要先进行保存
-            if( vm.dispatchDoc.isMainProject == 9 || !vm.dispatchDoc.id){
+            if( vm.dispatchDoc.isMainProject == 9 && !vm.dispatchDoc.id){
                 bsWin.alert("请先保存！");
             }else{
                 //初始化合并评审信息

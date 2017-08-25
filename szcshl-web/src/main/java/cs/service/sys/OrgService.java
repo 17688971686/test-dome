@@ -1,5 +1,6 @@
 package cs.service.sys;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.CompanyDto;
 import cs.model.sys.OrgDto;
@@ -11,8 +12,8 @@ import java.util.List;
 public interface OrgService {
 
 	PageModelDto<OrgDto> get(ODataObj odataObj);
-	void createOrg(OrgDto orgDto);
-	void updateOrg(OrgDto orgDto);
+	ResultMsg createOrg(OrgDto orgDto);
+	ResultMsg updateOrg(OrgDto orgDto);
 	void deleteOrg(String id) ;
 	PageModelDto<UserDto> getOrgUsers(String id) ;
 	PageModelDto<UserDto> getUsersNotInOrg(String id,ODataObj oDataObj);

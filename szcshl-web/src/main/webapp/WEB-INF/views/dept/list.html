@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/dept">处室管理</a></li>
+        <li><a href="#/sysDept">处室管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
    <form id="formDept" name="formDept">
@@ -20,22 +20,22 @@
 				ng-click="vm.queryDept()">查询</a>
 		
 	
-        <@shiro.hasPermission name="dept##post">
+        <@shiro.hasPermission name="sysDept##post">
             <a class="btn btn-sm btn-primary" href="#/deptEdit/"><span class="glyphicon glyphicon-plus"></span>新增</a>
         </@shiro.hasPermission>
-        <@shiro.hasPermission name="dept##delete">
+        <@shiro.hasPermission name="sysDept##delete">
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
         </@shiro.hasPermission>
         </div>
         </form>
         <script type="text/template" id="columnBtns">
-            <@shiro.hasPermission name="dept##delete">
+            <@shiro.hasPermission name="sysDept##delete">
             <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
             </@shiro.hasPermission>
-            <@shiro.hasPermission name="dept##put">
+            <@shiro.hasPermission name="sysDept##put">
             <a class="btn btn-xs btn-primary" href="#/deptEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
             </@shiro.hasPermission>
-			<@shiro.hasPermission name="dept#deptId/getDeptOfficeUsers#get"> 
+			<@shiro.hasPermission name="sysDept#deptId/getDeptOfficeUsers#get">
 			<a class="btn btn-xs btn-primary" href="#/deptOfficeUser/{2}"><span class="glyphicon glyphicon-pencil"></span>查看成员</a>
  			</@shiro.hasPermission> 
         </script>

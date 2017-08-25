@@ -1,0 +1,294 @@
+<meta charset="UTF-8">
+<!--  主流程编辑的工作方案  -->
+<!-- S 资金申请报告 -->
+<form id="work_program_form" name="work_program_form">
+<!--  s table-->
+<table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
+    <caption class="text-center h3"><strong>{{vm.work.titleName}}</strong></caption>
+    <caption style="width:100%;color: #333;">
+            <span>
+                评审方式：
+                <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType">
+                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
+                            value="{{x.dictName}}">{{x.dictName}}</option>
+                </select>
+                <select ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle">
+                    <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
+                            value="{{x.dictName}}">{{x.dictName}}</option>
+                </select>
+            </span>
+        <span ng-show="vm.work.isSigle=='合并评审'" style="margin-left:10px;">
+                <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"
+                       ng-checked="vm.work.isMainProject == 9">主项目
+                <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="0"
+                       ng-checked="vm.work.isMainProject == 0">次项目
+                <button class="btn btn-xs btn-default" ng-click="vm.initMergeWP()"
+                        ng-show="vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审'">关联项目</button>
+            </span>
+    </caption>
+    
+    <tbody>
+
+	 <tr>
+        <td tyle="width:20%;" class="text-center">QR-4.11-02-A0</td>
+        <td colspan="3">
+        </td>
+        <td style="width:10%;" class="text-center"></td>
+        <td colspan="3">
+        {{vm.work.titleDate | date:'yyyy年MM月dd日'}}
+        </td>
+    </tr>
+
+	<tr>
+        <td style="width:10%;" class="text-center">项目名称</td>
+        <td colspan="7">
+            {{vm.work.projectName}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">来文单位</td>
+        <td colspan="3">
+            <input type="text" maxlength="200" class="form-control input-sm " value="{{vm.work.sendFileUnit}}"
+                   ng-model="vm.work.sendFileUnit" id="sendFileUnit" name="sendFileUnit" data-val="true"
+                   data-val-required="必填">
+        </td>
+        <td style="width:10%;" class="text-center">来文单位联系人</td>
+        <td colspan="3">
+            <input type="text" maxlength="100" class="form-control input-sm " value="{{vm.work.sendFileUser}}"
+                   ng-model="vm.work.sendFileUser" id="sendFileUser" name="sendFileUser">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">建设单位</td>
+        <td colspan="3">
+            {{vm.work.buildCompany}}
+        </td>
+        <td class="text-center">编制单位</td>
+        <td colspan="3">
+            {{vm.work.designCompany}}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="text-center">主管部门</td>
+        <td colspan="3">
+            <select ng-model="vm.work.mainDeptName" name="mainDeptName" style="width:220px;height:26px;">
+                <option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+            </select>
+            <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
+        </td>
+        <td class="text-center">是否有环评</td>
+        <td colspan="3">
+            <input type="radio" ng-value="9" ng-model="vm.work.isHaveEIA" name="isHaveEIA">是
+            <input type="radio" ng-value="0" ng-model="vm.work.isHaveEIA" name="isHaveEIA">否
+        </td>
+    </tr>
+    <tr>
+        <td style="width:10%;" class="text-center">项目类别<span class="required">*</span></td>
+        <td style="width:15%;">
+            <select ng-model="vm.work.projectType"  ng-change="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
+                    name="projectType" id="projectType" data-val-required="必选项" data-val="true">
+                <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}"
+                        ng-selected="vm.work.projectType == x.dictName">{{x.dictName}}
+                </option>
+            </select>
+            <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        <td style="width:10%;" class="text-center">小类<span class="required">*</span></td>
+        <td style="width:15%;">
+            <select ng-model="vm.work.projectSubType" name="projectSubType" data-val="true" id="projectSubType">
+                <option ng-repeat="x in vm.work.projectTypeDicts" value="{{x.dictName}}"
+                        ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}
+                </option>
+            </select>
+            <span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        <td class="text-center">行业类别<span class="required">*</span></td>
+        <td colspan="3">
+            <select ng-model="vm.work.industryType" name="industryType" id="industryType" data-val="true" data-val-required="必填">
+                <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}"
+                        ng-selected="vm.work.industryType == x.dictKey">{{x.dictName}}
+                </option>
+            </select>
+            <span data-valmsg-for="industryType" data-valmsg-replace="true" class="errors"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">联系人<span class="required">*</span></td>
+        <td colspan="3">
+            <input type="text" class="form-control input-sm " maxlength="16" ng-model="vm.work.contactPerson"
+                   id="contactPerson" name="contactPerson" data-val="true" data-val-length-max="16"
+                   data-val-required="必填" style="max-width: 200px;">
+            <span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        <td class="text-center">手机<span class="required">*</span></td>
+        <td colspan="3">
+            <input type="text" class="form-control input-sm" ng-model="vm.work.contactPersonPhone" name="contactPersonPhone"
+                   data-val="true" data-val-digits="手机号码只能为数字" data-val-required="必填" style="max-width: 200px;" id="contactPersonPhone">
+            <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">电话<span class="required">*</span></td>
+        <td colspan="3">
+            <input type="text"  class="form-control input-sm " style="max-width: 200px;"
+                   ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel"
+                   data-val-digits="电话号码只能为数字" data-val="true" data-val-required="必填">
+            <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        <td class="text-center">传真<span class="required">*</span></td>
+        <td colspan="3">
+            <input type="text" class="form-control input-sm " style="max-width: 200px;"
+                   ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax"
+                   data-val-digits="传真只能为数字" data-val="true" data-val-required="必填">
+            <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
+        <td class="text-center">申报投资<span class="required">*</span></td>
+        <td colspan="6">
+            <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
+                   id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+            万元
+            <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        
+    </tr>
+    <tr>
+        <td class="text-center">申报建设规模<span class="required">*</span></td>
+        <td colspan="6">
+            <textarea rows="3" ng-model="vm.work.buildSize" name="buildSize" cols="" style="width:98%;" data-val="true" data-val-required="必填">{{vm.work.buildSize}}</textarea>
+            <span data-valmsg-for="buildSize" data-valmsg-replace="true" class="errors"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">申报建设内容</td>
+        <td colspan="6">
+            <textarea rows="3" ng-model="vm.work.buildContent" name="buildContent" cols="" style="width:98%;">{{vm.work.buildContent}}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">项目背景</td>
+        <td colspan="6">
+            <textarea rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"  style="width:98%;">{{vm.work.projectBackGround}}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2"  class="text-center">评审部门</td>
+        <td rowspan="2" colspan="3">
+            {{vm.work.reviewOrgName}}
+        </td>
+        <td class="text-center">第一负责人</td>
+        <td colspan="3">
+            {{vm.work.mianChargeUserName}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">第二负责人</td>
+        <td colspan="3">
+            {{vm.work.secondChargeUserName}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">是否有补充资料函</td>
+        <td colspan="3">
+            <input type="radio" ng-value="9" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">是
+            <input type="radio" ng-value="0" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter">否
+        </td>
+        <td class="text-center">补充资料函发文日期</td>
+        <td colspan="3">
+            <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.suppLetterDate" value="" type="text"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">调研开始时间</td>
+        <td colspan="3">
+            <input name="studyBeginTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyBeginTime" type="text"/>
+        </td>
+        <td class="text-center">调研结束时间</td>
+        <td colspan="3">
+            <input name="studyEndTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyEndTime" type="text"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">专家费用</td>
+        <td colspan="7">
+            <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-digits="只能为数字">
+            万元
+            <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
+        </td>
+    </tr>
+    <tr>
+        <td>评审会时间</td>
+        <td colspan="7">
+            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        </td>
+    </tr>
+    <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
+        <td class="text-center" style="width:15%;">评审会日期</td>
+        <td class="text-center" style="width:20%;">会议名称</td>
+        <td class="text-center" style="width:10%;">会议地点</td>
+        <td class="text-center" style="width:8%;">开始时间</td>
+        <td class="text-center" style="width:8%;">结束时间</td>
+        <td class="text-center" style="width:6%;">主持人</td>
+        <td class="text-center" style="width:15%;">会议内容</td>
+        <td class="text-center" >操作</td>
+    </tr>
+    <tr ng-repeat="r in vm.work.roomBookingDtos track by $index" ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0">
+        <td class="text-center">{{r.rbDate}}</td>
+        <td class="text-center">{{r.rbName}}</td>
+        <td class="text-center">{{r.addressName}}</td>
+        <td class="text-center">{{r.beginTimeStr}}</td>
+        <td class="text-center">{{r.endTimeStr}}</td>
+        <td class="text-center">{{r.host}}</td>
+        <td class="text-center" >{{r.content}}</td>
+        <td class="text-center" >
+            <button class="btn btn-xs btn-primary" ng-click="vm.updateBookRoom(r.id);"><span class="glyphicon glyphicon-pencil">修改</span></button>
+            <button class="btn btn-xs btn-danger" ng-click="vm.deleteBookRoom(r.id)"><span class="glyphicon glyphicon-remove">删除</span></button>
+        </td>
+    </tr>
+    <tr>
+        <td>拟聘请专家</td>
+        <td colspan="7">
+            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();">
+                <span class="glyphicon glyphicon-pencil"></span>编辑
+            </button>
+        </td>
+    </tr>
+    <tr ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+        <td class="text-center" style="width:10%;">拟聘请专家</td>
+        <td class="text-center" style="width:15%;">工作单位</td>
+        <td class="text-center" style="width:10%;">职务</td>
+        <td class="text-center" style="width:15%;">职称</td>
+        <td class="text-center" style="width:10%;">专业</td>
+        <td class="text-center" style="width:15%;">联系电话</td>
+        <td class="text-center" style="width:10%;">专家类别</td>
+        <td class="text-center" style="width:15%;">备注</td>
+    </tr>
+    <tr ng-repeat="x in vm.work.expertDtoList track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+        <td class="text-center">{{x.name}}</td>
+        <td class="text-center">{{x.comPany}}</td>
+        <td class="text-center">{{x.job}}</td>
+        <td class="text-center">{{x.post}}</td>
+        <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+        <td class="text-center">{{x.userPhone}}</td>
+        <td class="text-center">{{x.expeRttype}}</td>
+        <td class="text-center">{{x.remark}}</td>
+    </tr>
+    <tr>
+        <td class="text-center">拟邀请单位及领导</td>
+        <td colspan="7">
+            <textarea rows="3" ng-model="vm.work.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">拟评审重点问题</td>
+        <td colspan="7">
+            <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
+        </td>
+    </tr>
+    </tbody>
+</table>    <!--  	end table -->
+</form>  <!-- end form -->
+<!-- E 资金申请报告 -->

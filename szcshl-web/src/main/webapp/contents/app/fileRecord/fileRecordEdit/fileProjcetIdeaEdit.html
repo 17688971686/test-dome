@@ -1,5 +1,6 @@
+<!-- S 项目建议书 -->
 <meta charset="UTF-8">
-		QR-4.3-11-A5 
+		
 		<table class="table table-bordered"  >
 		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>
 		    {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
@@ -7,15 +8,38 @@
 		
 		    <tbody>
 		    <tr>
-		      <td width="15%" class="text-center">项目名称</td>
+		      <td width="15%" class="text-center">QR-4.3-11-A6 </td>
 		      <td>
-				 	{{vm.fileRecord.projectName}}
 				 	
-				
 			  </td>
 		       <td width="15%" class="text-center">档案编号</td>
 		      <td>
 		      	 	{{vm.fileRecord.fileNo}}
+		      </td>
+		    </tr>
+		    <tr>
+		      <td  width="15%" class="text-center">项目名称</td>
+		      <td>
+				 	{{vm.fileRecord.projectName}}
+				 	
+			  </td>
+		       <td   width="15%" class="text-center"></td>
+		      <td>
+		      	是否曾经暂停 :
+		      	 <label>
+                        <input type="radio" ng-value="9" ng-model="vm.work.isHaveEIA" name="isHaveEIA">是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.work.isHaveEIA" name="isHaveEIA">否
+                    </label>
+                    </br>
+                               是否有补充资料:
+                     <label>
+                        <input type="radio" ng-value="9" ng-model="vm.work.isHaveEIA" name="isHaveEIA">是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.work.isHaveEIA" name="isHaveEIA">否
+                    </label>
 		      </td>
 		    </tr>
 		    
@@ -46,7 +70,6 @@
 		    	<td width="15%" class="text-center" rowspan="2">项目建议书申报资料</td>
 		    	<td colspan="3">
 		    		<table class="table" style="border: 0px solid transparent !important;">
-					    <caption>(一) 项目建议书申报资料</caption>					    
 					    <tbody>
 					      <tr>
 					        <td style="border-top:none;width:40%;">
@@ -55,7 +78,7 @@
 							      <tr>
 							        <td style="border-top:none;width:40%;">&nbsp;</td>
 							        <td style="border-top:none;">原件</td>
-							        <td style="border-top:none;">附件</td>
+							        <td style="border-top:none;">复印件</td>
 							        <td style="border-top:none;">扫描件</td>
 							      </tr>	
 							      <tr>
@@ -79,7 +102,7 @@
 							      <tr>
 							        <td style="border-top:none;text-align:right;">项目单位申报表</td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproCompanyFormOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.ugproCompanyFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproCompanyFormCopy" ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproCompanyFormScan" ng-true-value="9" ng-false-value="0"></td>
 							      </tr>
 							        <tr>
@@ -99,7 +122,7 @@
 							        <td style="border-top:none;width:40%;">&nbsp;</td>
 							        <td style="border-top:none;">份数</td>
 							        <td style="border-top:none;">原件</td>
-							        <td style="border-top:none;">附件</td>
+							        <td style="border-top:none;">复印件</td>
 							        <td style="border-top:none;">扫描件</td>
 							      </tr>	
 							    
@@ -162,7 +185,6 @@
 		    <tr>
 		    	<td colspan="3">
 		    		<table class="table">
-					    <caption>(二)项目建议书申报资料</caption>					    
 					    <tbody>
 					      <tr>
 					        <td style="border-top:none;width:40%;">
@@ -170,7 +192,7 @@
 							    <tbody>
 							      <tr>
 							        <td style="border-top:none;width:60%;">&nbsp;</td>
-							        <td style="border-top:none;">附件</td>
+							        <td style="border-top:none;">复印件</td>
 							        <td style="border-top:none;">扫描件</td>
 							        
 							      </tr>	
@@ -194,7 +216,7 @@
 							      <tr>
 							        <td style="border-top:none;width:40%;">&nbsp;</td>
 							        <td style="border-top:none;">份数</td>
-							        <td style="border-top:none;">附件</td>
+							        <td style="border-top:none;">复印件</td>
 							        <td style="border-top:none;">电子版</td>
 							      </tr>
 							      <tr>
@@ -217,30 +239,31 @@
 							      </tr>			
 							    </tbody>
 							  </table>
-							</td>					        					      
+							</td>	
+							</tr>				        					      
 					    </tbody>
+					    
 					  </table>
 		    	</td>
 		    </tr>
 		    
-		    <tr>
+		     <tr>
 		      <td width="15%" class="text-center">专家评审资料</td>
 		      <td colspan="3">
-			  	<table class="table">
-					    <caption>(三)专家评审资料</caption>					    
+			  	<table class="table" style="border: 0px solid transparent !important;">
 					    <tbody>
 					      <tr>
-					        <td style="border-top:none;width:40%;">
-							<table class="table" style="border: 0px solid transparent !important;">							    				    
+					        <td style="border-top:none;width:50%;">
+								<table class="table" style="border: 0px solid transparent !important;">							    				    
 							    <tbody>
 							      <tr>
-							        <td style="border-top:none;width:30%;">&nbsp;</td>
+							        <td style="border-top:none;width:48%;">&nbsp;</td>
 							        <td style="border-top:none;">份数</td>
 							        <td style="border-top:none;">原件</td>
-							        <td style="border-top:none;">附件</td>
+							        <td style="border-top:none;">复印件</td>
 							        <td style="border-top:none;">扫描件</td>
-							      </tr>	
-							        <tr>
+							      </tr>
+							      <tr>
 							        <td style="border-top:none;text-align:right;">评审工作方案</td>
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.planCount" name="planCount" id="planCount">
@@ -251,15 +274,40 @@
 							        <td style="border-top:none;"> <span data-valmsg-for="planCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							      <tr>
-							        <td style="border-top:none;text-align:right;">评审会专家意见</td>
+							        <td style="border-top:none;text-align:right;">专家评审会意见</td>
 							        <td style="border-top:none;">
-                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true"  data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertCount" name="expertCount" id="expertCount">
-                                    </td>
+										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertCount" name="expertCount" id="expertCount">
+									</td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertOriginal" ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertCopy" ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertScan" ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="expertCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
+							       <tr>
+							        <td style="border-top:none;text-align:right;">专家个人意见书</td>
+							        <td style="border-top:none;">
+										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertAmanCount" name="expertAmanCount" id="expertAmanCount">
+									</td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="expertAmanCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>				
+							    
+							    </tbody>
+							  </table>
+							</td>
+							
+					        <td style="border-top:none;">
+								<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:40%;">&nbsp;</td>
+							        <td style="border-top:none;">份数</td>
+							        <td style="border-top:none;">原件</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">扫描件</td>
+							      </tr>
 							      <tr>
 							        <td style="border-top:none;text-align:right;">会议签到表</td>
 							        <td style="border-top:none;">
@@ -270,32 +318,8 @@
 							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.meetingScan" ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="meetingSignCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
-							      			        					      
-							    </tbody>
-							  </table>
-							</td>
-					        <td style="border-top:none;">
-								<table class="table" style="border: 0px solid transparent !important;">							    				    
-							    <tbody>
 							      <tr>
-							        <td style="border-top:none;width:40%;">&nbsp;</td>
-							        <td style="border-top:none;">份数</td>
-							        <td style="border-top:none;">原件</td>
-							        <td style="border-top:none;">附件</td>
-							        <td style="border-top:none;">扫描件</td>
-							      </tr>
-							      <tr>
-							        <td style="border-top:none;text-align:right;">专家个人意见书</td>
-							        <td style="border-top:none;">
-                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertAmanCount" name="expertAmanCount" id="expertAmanCount">
-                                    </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanCopy" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanScan" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"> <span data-valmsg-for="expertAmanCount" data-valmsg-replace="true" class="errors"></span></td>
-							      </tr>	
-							      <tr>
-							        <td style="border-top:none;text-align:right;">评审费发放</td>
+							        <td style="border-top:none;text-align:right;">评审费发放表</td>
 							        <td style="border-top:none;">
 										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.stageCostCount" name="stageCostCount" id="stageCostCount">
 									</td>
@@ -307,15 +331,17 @@
 							    
 							    </tbody>
 							  </table>
-							</td>					        					      
+							</td>	
+						</tr>				        					      
 					    </tbody>
 					  </table>
 			  </td>		      
-		    </tr>
+		    </tr> 
+		    
+		    
 		    <tr>
 		      <td width="15%" class="text-center">其他资料</td>
 		      <td colspan="3">
-			  	<a class="btn btn-xs btn-primary" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
 			  </td>		      
 		    </tr>		    
 		      <tr>
@@ -323,10 +349,19 @@
 		      <td>		   		 
 				 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectChargeUser" name="projectChargeUser">
 		      </td>
-		       <td width="15%" class="text-center">表格打印日期</td>
-		      <td>
-					<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.printDate" name="printDate">
+		       <td width="15%" rowspan='2' class="text-center">发送存档日期</td>
+		      <td rowspan='2'>
+					<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:50%;"class="form-control input-sm " ng-model="vm.fileRecord.printDate" name="printDate">
 			  </td>
+			  
+		    </tr>	
+		      <tr>
+		      <td width="15%" class="text-center">项目第二负责人（签名）</td>
+		      <td>		   		 
+				 <input type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectChargeUser" name="projectChargeUser">
+		      </td>
+		      
+			  
 		    </tr>	
 		    
 		    <tr>
@@ -340,10 +375,10 @@
 		      </td>
 		      <td width="15%" class="text-center">存档日期</td>
 		      <td>
-					<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.fileDate"  name="fileDate">
+					<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:50%;"class="form-control input-sm " ng-model="vm.fileRecord.fileDate"  name="fileDate">
 			  </td>
 		    </tr>	   
 		  </tbody>			  		  	  
 		</table>	<!--  end table		-->		
 	
-<!-- E 项目建议书/可行性研究 报告-->
+<!-- E 项目建议书-->

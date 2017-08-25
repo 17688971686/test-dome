@@ -7,8 +7,7 @@
 
     function sign($http, $state,bsWin) {
         var service = {
-            grid: grid,						//初始化项目列表
-            querySign: querySign,			//查询
+            signGrid: signGrid,				//初始化项目列表
             createSign: createSign,			//新增
             initFillData: initFillData,		//初始化表单填写页面（可编辑）
             initDetailData: initDetailData,	//初始化详情页（不可编辑）
@@ -21,50 +20,20 @@
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             paymentGrid: paymentGrid,           //专家评审费
-            uploadFilelist: uploadFilelist,		//上传附件列表
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
             realSign : realSign ,               //正式签收
         };
         return service;
 
-        //S 上传附件列表
-        function uploadFilelist(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/file/findBySysFileSignId",
-                params: {
-                    signid: vm.model.signid
-                }
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        if (response.data && response.data.length > 0) {
-                            vm.sysFileDtoList = response.data;
-                            vm.showFlag.tabSysFile = true;
-                        }
-                    }
-                })
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
         //E 上传附件列表
-        
-        //S_初始化grid(过滤掉已经签收的项目)
-        function grid(vm) {
+
+        //S_初始化grid(过滤已签收和已经完成的项目)
+        function signGrid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchform"),{filter: "issign eq (isNull,0)"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -84,16 +53,16 @@
             });
             // End:dataSource
             //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
             //S_序号
             // Begin:column
             var columns = [
@@ -106,29 +75,29 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
-                {  
-				    field: "rowNumber",  
-				    title: "序号",  
+                {
+				    field: "rowNumber",
+				    title: "序号",
 				    width: 50,
 				    filterable : false,
-				    template: "<span class='row-number'></span>"  
+				    template: "<span class='row-number'></span>"
 				 },
                 {
                     field: "projectname",
                     title: "项目名称",
-                    width: 160,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "filecode",
                     title: "收文编号",
-                    width: 120,
+                    width: 80,
                     filterable: false,
                 },
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 150,
+                    width: 100,
                     filterable: false,
                 },
                 {
@@ -140,13 +109,13 @@
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 120,
+                    width: 80,
                     filterable: false,
                 },
                 {
-                    field: "receivedate",
-                    title: "收文时间",
-                    width: 160,
+                    field: "signdate",
+                    title: "签收日期",
+                    width: 100,
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
 
@@ -181,12 +150,12 @@
                     title: "操作",
                     width: 180,
                     template: function (item) {
-                        var isStartFlow = angular.isString(item.processInstanceId);
+                        var isStartFlow = angular.isString(item.processInstanceId);  //如果已经发起流程，则不能编辑
                         var isRealSign = (item.issign && item.issign == 9)?true:false;
 
                         //如果已经发起流程，则只能查看
-                        return common.format($('#columnBtns').html(), item.signid, false,
-                            item.signid + "/" + item.processInstanceId, 
+                        return common.format($('#columnBtns').html(), item.signid, isStartFlow,
+                            item.signid + "/" + item.processInstanceId,
                             "vm.del('" + item.signid + "')", isStartFlow,
                             "vm.startNewFlow('" + item.signid + "')", isStartFlow,
                             "vm.realSign('" + item.signid + "')", isRealSign);
@@ -206,10 +175,6 @@
             };
         }//E_初始化grid
 
-        //S_查询grid
-        function querySign(vm) {
-            vm.gridOptions.dataSource.read();
-        }//E_查询grid
 
         //S_创建收文
         function createSign(model,callBack) {
@@ -279,8 +244,7 @@
         //End 申报登记编辑
 
         //Start 删除收文
-        function deleteSign(vm, signid) {
-            vm.isSubmit = true;
+        function deleteSign(signid,callBack) {
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/sign",
@@ -288,23 +252,12 @@
                 	signid:signid
                 }
             }
-
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isSubmit = false;
-                        vm.gridOptions.dataSource.read();
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",                            
-                        })
-                    }
-                });
-            }
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -565,29 +518,18 @@
         //end initAssociateSigns
 
         // begin#remarkGrid
-        function paymentGrid(vm) {
-            var signId = vm.model.signid;
-            var url = rootPath + "/expertReview/html/getBySignId/" + signId;
+        function paymentGrid(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: url
+                url: rootPath + "/expertReview/html/getBySignId/" + signId
             }
-
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.businessFlag.expertReviews = response.data.value;
-                        if (vm.businessFlag.expertReviews != undefined && vm.businessFlag.expertReviews.length > 0) {
-                            vm.showFlag.tabExpert = true;   //显示专家信息tab
-                        }
-                    }
-                })
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -608,7 +550,7 @@
                         wpId = vm.assistwork.id;
                     }
                     break;
-                    
+
                 case "XS_XMFZR_GZFA":
                     if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
                         wpId = vm.mainwork.id;
@@ -656,9 +598,9 @@
                 })
             }
         }//E_meetingDoc
-        
-      
-  //S_createDispatchFileNum
+
+
+        //S_createDispatchFileNum
         function createDispatchFileNum(signId,dispatchId,callBack){
             var httpOptions = {
                 method: 'post',
@@ -682,7 +624,6 @@
 
         //S_项目正式签收
         function realSign(vm,signid){
-            vm.isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/sign/realSign",
@@ -691,34 +632,14 @@
                 }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isCommit = false;
-                        common.alert({
-                            vm: vm,
-                            msg: response.data.reMsg,
-                            closeDialog: true,
-                            fn: function () {
-                                if (response.data.reCode == "error") {
-
-                                } else {
-                                    vm.gridOptions.dataSource.read();
-                                }
-                            }
-                        })
-                    }
-                })
-            }
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
-                onError : function () {
-                    vm.isCommit = false;
-                }
             });
         }//E_realSign
 

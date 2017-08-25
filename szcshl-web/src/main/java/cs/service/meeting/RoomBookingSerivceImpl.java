@@ -115,7 +115,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("rbNamelist",roomDtos);
 
 		showName = Constant.Template.THIS_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-		relativeFileUrl = SysFileUtil.generatRelativeUrl(path,roomId+"本周评审会议安排", roomId,showName);
+		//String fileLocation,String mainType,String mainId, String sysBusiType, String fileName
+		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
 		String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.THIS_STAGE_MEETING.getKey(),pathFile);
 		if(docFile != null){
@@ -200,9 +201,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("roomlist",room);
 
 		showName = Constant.Template.NEXT_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, roomId+"下周评审会议安排", roomId, showName);
-
-		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
+        docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
 
 		if(docFile !=null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),roomId,relativeFileUrl,showName,
@@ -420,8 +420,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("END",end);
 		dataMap.put("contentList",rbNameList);
 		showName = Constant.Template.EXPORTROOM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-		relativeFileUrl = SysFileUtil.generatRelativeUrl(path,roomId+"本周评审会议安排", roomId,showName);
-		String pathFile = path + File.separator + relativeFileUrl;
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
+        String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.EXPORTROOM.getKey(),pathFile);
 		if(docFile != null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),UUID.randomUUID().toString(),relativeFileUrl,showName,

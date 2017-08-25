@@ -395,10 +395,17 @@ public class Constant {
     }
 
     /**
-     * 系统文件类型
+     * 系统文件类型（跟sysfile.svc.js mainTypeValue同步）
      */
     public static enum SysFileType {
-        SIGN("收文"),
+        SIGN("项目附件"),
+        FILLSIGN("审批登记"),
+        TOPIC("课题附件"),
+        HUMAN("人事附件"),
+        BOOKS("图书附件"),
+        NOTICE("通知公告"),
+        SHARE("资料共享"),
+        MEETTINGROOM("会议室预定"),
         WORKPROGRAM("工作方案"),
         DISPATCH("发文"),
         DOFILE("归档"),
@@ -499,6 +506,51 @@ public class Constant {
 
         public String getValue() {
             return value;
+        }
+    }
+
+    /**
+     * 部门对应的类型
+     */
+    public static enum OrgType{
+        ORGZHB("综合部",""),
+        ORGPGYB("评估一部","PD"),
+        ORGPGEB("评估二部","PD"),
+        ORGGSYB("概算一部","GD"),
+        ORGGSEB("概算二部","GD");
+
+        private String key;
+        private String value;
+
+        OrgType(String key,String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public static String getValue(String key) {
+            OrgType[] enums = OrgType.values();
+            for (int i = 0; i < enums.length; i++) {
+                if (enums[i].getKey().equals(key)) {
+                    return enums[i].getValue();
+                }
+            }
+            return "";
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 

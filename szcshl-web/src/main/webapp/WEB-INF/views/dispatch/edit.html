@@ -10,15 +10,15 @@
     </button>
     <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
     </button>
-    <button class="btn btn-sm btn-primary" id="upload_file_bt" ng-show="vm.showFlag.buttSysFile" ng-disabled="vm.isCommit">上传附件</button>
-    <button class="btn btn-sm btn-primary" id="detail_file_bt" ng-show="vm.showFlag.buttSysFile" ng-disabled="vm.isCommit">查看附件</button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
 </div>
 
 <div class="well well-sm" style="background:white;">
     <!-- s form -->
     <form id="dispatch_form" name="dispatch_form">
         <!-- s table -->
-        <table class="table table-bordered" ng-show="vm.dispatchDoc.dispatchStage=='可行研究报告' || vm.dispatchDoc.dispatchStage=='提前介入'">
+       <!--  <table class="table table-bordered" ng-show="vm.dispatchDoc.dispatchStage=='可行研究报告' || vm.dispatchDoc.dispatchStage=='提前介入'">
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
                 <span>
@@ -86,25 +86,25 @@
                 <td style="width:150px;" class="text-center">秘密等级</td>
                 <td>
                     {{vm.dispatchDoc.secretLevel}}
-                    <!-- <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
+                    <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
                           <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
-                      </select> -->
+                      </select>
                 </td>
 
                 <td style="width:150px;" class="text-center">年度计划</td>
                 <td>
                     {{vm.dispatchDoc.yearPlan}}
-                    <!-- <select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm ">
+                    <select ng-model="vm.dispatchDoc.yearPlan"  name="yearPlan" id="yearPlan" class="form-control input-sm ">
                       <option ng-repeat="x in DICT.YEAR_PLAN.dicts" value="{{x.dictName}}"  ng-selected="true">{{x.dictName}}</option>
-                  </select> -->
+                  </select>
                 </td>
 
                 <td style="width:150px;" class="text-center">紧急程度</td>
                 <td>
                     {{vm.dispatchDoc.urgentLevel}}
-                    <!-- 	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel">
+                    	<select ng-model="vm.dispatchDoc.urgentLevel" class="form-control input-sm " name="urgentLevel">
                           <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="true">{{x.dictName}}</option>
-                      </select>			 -->
+                      </select>			
                 </td>
             </tr>
             <tr>
@@ -204,7 +204,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
                 <td colspan="5">
-                    <!--前一阶段-->
+                    前一阶段
                     <table ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()" class="table table-bordered" style="text-align: center;">
                         <tr>
                             <td width="20%">{{dispatchDoc.signDto.reviewstage}}</td>
@@ -356,20 +356,37 @@
                 </td>
             </tr>
             </tbody>
-        </table>    <!-- end table -->
-    </form> <!-- end form -->
-
+        </table>    -->
+         <!-- end table -->
+    
+	<!--S 发文编辑页面 -->
+	
  		<!-- S 项目建议书  -->
            <div  ng-include ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'"  src="'${path}/contents/app/dispatch/dispatchEdit/projectEdit.html'"></div>
         <!-- S 项目建议书 -->
        
         <!-- S 可行性研究报告 -->
-            <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
+           <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
          <!-- E 可行性研究报告 -->
          
+          <!-- S 资金申请报告 -->
+            <div ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/capitalAppReportEdit.html'"></div>
+         <!-- E 资金申请报告 -->
+        
          <!-- S 项目概算 -->
             <div ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/projectBudgetEdit.html'"></div>
          <!-- E 项目概算 -->
+         
+         <!-- S 进口设备 -->
+            <div ng-show="vm.dispatchDoc.dispatchStage=='进口设备'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/foreignEdit.html'"></div>
+         <!-- E 进口设备 -->
+         
+          <!-- S 设备清单（国产）/设备清单（进口） -->
+            <div ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' " ng-include src="'${path}/contents/app/dispatch/dispatchEdit/domesticEdit.html'"></div>
+         <!-- E 设备清单（国产）/设备清单（进口） -->
+         
+       <!--S 发文编辑页面 -->
+</form> <!-- end form -->
 
     <div id="mwindow" style="display: none">
         <div class="toolbar">

@@ -45,6 +45,15 @@ public class SignController {
         return signDtos;
     }
 
+    @RequiresPermissions("sign#findBySignUser#post")
+    @RequestMapping(name = "签收人项目列表", path = "findBySignUser", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<SignDto> findBySignUser(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<SignDto> signDtos = signService.findBySignUser(odataObj);
+        return signDtos;
+    }
+
     //编辑收文
     @RequiresPermissions("sign##put")
     @RequestMapping(name = "更新收文", path = "", method = RequestMethod.PUT)
@@ -157,14 +166,9 @@ public class SignController {
 
     @RequiresPermissions("sign##delete")
     @RequestMapping(name = "删除收文", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteSign(@RequestParam String signid) {
-        String[] ids = signid.split(",");
-        if (ids.length > 1) {
-            signService.deleteSigns(ids);
-        } else {
-            signService.deleteSign(signid);
-        }
+    @ResponseBody
+    public ResultMsg deleteSign(@RequestParam String signid) {
+       return signService.deleteSign(signid);
     }
 
     @RequiresPermissions("sign#deleteReserve#delete")

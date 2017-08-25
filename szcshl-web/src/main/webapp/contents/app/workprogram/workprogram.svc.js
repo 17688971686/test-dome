@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = ['sysfileSvc', '$http', '$state','$rootScope'];
-    function workprogram(sysfileSvc, $http, $state,$rootScope) {
+    workprogram.$inject = [ '$http', '$state','$rootScope'];
+    function workprogram( $http, $state,$rootScope) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				        //初始化页面参数
@@ -269,18 +269,9 @@
                     if(vm.work.isMainProject == "9"){
                         vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
                     }
-                    if (vm.work.id) {
-                        var sysfileType = "工作方案";
-                        //初始化附件上传
-                        sysfileSvc.initUploadOptions({
-                            businessId: vm.work.id,
-                            sysSignId: vm.work.signId,
-                            sysfileType: sysfileType,
-                            uploadBt: "upload_file_bt",
-                            detailBt: "detail_file_bt",
-                            vm: vm
-                        });
-                    }
+
+                    //初始化控件
+                    vm.initFileUpload();
                 }
             }
             common.http({

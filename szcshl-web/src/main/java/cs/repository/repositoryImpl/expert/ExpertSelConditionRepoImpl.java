@@ -23,7 +23,7 @@ public class ExpertSelConditionRepoImpl extends AbstractRepository<ExpertSelCond
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("update cs_expert_condition set "+ ExpertSelCondition_.selectIndex.getName()+" = (");
         sqlBuilder.append(ExpertSelCondition_.selectIndex.getName()+"+1) ");
-        sqlBuilder.bulidIdString("where",ExpertSelCondition_.id.getName(),ids);
+        sqlBuilder.bulidPropotyString("where",ExpertSelCondition_.id.getName(),ids);
 
         executeSql(sqlBuilder);
     }

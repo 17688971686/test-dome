@@ -1,13 +1,11 @@
 <meta charset="UTF-8">
 <!--S 上传附件弹窗 -->
-<div id="commonuploadWindow" class="well well-sm" style="background:white;display:none;">
-
-        <input type="file" id="sysfileinput" name="file" multiple="multiple" id="file"/>
-<br/>
+<div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
+    <input type="file" id="sysfileinput" name="file" multiple="multiple" id="file" class="file-loading"/>
     <div >
         <span >文件类型：</span>
         <span >
-           <select id="sysMinType" name="sysMinType" ng-model="vm.sysFile.sysMinType" style="width:100px;" >
+           <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType" style="min-width:200px;margin-top:10px;">
                <option value="">请选择</option>
                <option  ng-repeat="x in DICT.SYS_MIN_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
            </select>
@@ -36,12 +34,12 @@
                 <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
             </td>
             <td style="text-align: center;">{{ x.sysfileType }}</td>
-            <td style="text-align: center;">{{ x.sysMinType }}</td>
+            <td style="text-align: center;">{{ x.sysBusiType }}</td>
             <td style="text-align: center;">{{ x.createdBy }}</td>
             <td style="text-align: center;">{{ x.createdDate }}</td>
             <td style="text-align: center;">
                 <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
-                <button class="btn btn-sm btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+                <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
             </td>
         </tr>
     </table>

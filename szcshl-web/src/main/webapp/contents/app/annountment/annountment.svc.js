@@ -3,9 +3,9 @@
 
     angular.module('app').factory('annountmentSvc', annountment);
 
-    annountment.$inject = ['$http', 'sysfileSvc'];
+    annountment.$inject = ['$http', 'bsWin','sysfileSvc'];
 
-    function annountment($http, sysfileSvc) {
+    function annountment($http, bsWin,sysfileSvc) {
 
         var url_annountment = rootPath + "/annountment";
         var url_back = "#/annountment";
@@ -17,12 +17,9 @@
             updateIssueState: updateIssueState,         //更改通知公告的发布状态
             updateAnnountment: updateAnnountment,	    //更新通知公告
             deleteAnnountment: deleteAnnountment,	    //删除通知公告
-            initFileOption: initFileOption,             //初始化附件参数
-            findFileList: findFileList,                 //查询附件列表
             findDetailById: findDetailById,	            //通过id获取通过公告
             postArticle: postArticle,	                //访问上一篇文章
             nextArticle: nextArticle,	                //访问下一篇文章
-
         };
 
         return service;
@@ -53,27 +50,19 @@
         //begin findAnnountmentById
         function findAnnountmentById(vm) {
             var httpOptions = {
-                method: "get",
+                method: "post",
                 url: url_annountment + "/findAnnountmentById",
-                params: {anId: vm.annountment.anId}
+                params: {
+                    anId: vm.annountment.anId
+                }
             }
 
             var httpSuccess = function success(response) {
                 vm.annountment = response.data;
                 $("#froalaEditor").froalaEditor('html.set', vm.annountment.anContent);
-                //初始化附件上传
-                if (vm.businessFlag.isInitFileOption == false) {
-                    initFileOption({
-                        businessId: vm.annountment.anId,
-                        sysfileType: "通知公告",
-                        uploadBt: "upload_file_bt",
-                        sysMinType:$("#sysMinType").val(),
-                        vm: vm
-                    });
-                }
+                vm.initFileUpload();
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -86,49 +75,31 @@
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
+                vm.isSubmit = true;
                 var httpOptions = {
                     method: "post",
                     url: url_annountment,
                     data: vm.annountment
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            vm.isSubmit = false;
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog: true
-                            })
-                        }
-                    })
+                    vm.isSubmit = false;
                     vm.annountment.anId = response.data.anId;
-                    //初始化附件上传
-                    if (vm.businessFlag.isInitFileOption == false) {
-                        initFileOption({
-                            businessId: vm.annountment.anId,
-                            sysfileType: "通知公告",
-                            uploadBt: "upload_file_bt",
-                            sysMinType:$("#sysMinType").val(),
-                            vm: vm
-                        });
-                    }
+                    bsWin.alert("保存成功！");
                 }
-
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
-                    success: httpSuccess
+                    success: httpSuccess,
+                    onError:function(){
+                        vm.isSubmit = false;
+                    }
                 });
             }
-
         }//end createAnnountment
 
         //begin updateAnnountment
         function updateAnnountment(vm) {
+            vm.isSubmit = true;
         	vm.annountment.anContent=$("#froalaEditor").val();
             var httpOptions = {
                 method: "put",
@@ -137,46 +108,34 @@
             }
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            fn: function () {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                                $('.modal-backdrop').remove();
-                            }
-                        })
-                    }
-                })
+                vm.isSubmit = false;
+                bsWin.alert("操作成功！");
             }
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError:function(){
+                    vm.isSubmit = false;
+                }
             });
 
         }//end updateAnnountment
 
 
         //begin deleteAnnountment
-        function deleteAnnountment(vm, anId) {
+        function deleteAnnountment(vm,anId) {
             var httpOptions = {
                 method: "delete",
                 url: url_annountment,
                 data: anId
             }
-
             var httpSuccess = function success(response) {
                 vm.gridOptions.dataSource.read();
-            }
+                bsWin.alert("删除成功！");
+            };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -304,123 +263,7 @@
                 columns: columns,
                 resizable: true
             };
-
         }// end fun grid
-
-
-        //S_initFileOption
-        function initFileOption(option) {
-            if (option.uploadBt) {
-                $("#" + option.uploadBt).click(function () {
-                    if (!option.businessId) {
-                        common.alert({
-                            vm: option.vm,
-                            msg: "请先保存数据！",
-                            closeDialog: true
-                        })
-                    } else {
-                        $("#commonuploadWindow").kendoWindow({
-                            width: "800px",
-                            height: "500px",
-                            title: "附件上传",
-                            visible: false,
-                            modal: true,
-                            closable: true,
-                            actions: ["Pin", "Minimize", "Maximize", "Close"]
-                        }).data("kendoWindow").center().open();
-                    }
-                });
-            }
-            if (option.businessId) {
-                //附件下载方法
-                option.vm.downloadSysFile = function (id) {
-                    window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
-                }
-                //附件删除方法
-                option.vm.delSysFile = function (id) {
-                    var httpOptions = {
-                        method: 'delete',
-                        url: rootPath + "/file/deleteSysFile",
-                        params: {
-                            id: id
-                        }
-                    }
-                    var httpSuccess = function success(response) {
-                        common.requestSuccess({
-                            vm: option.vm,
-                            response: response,
-                            fn: function () {
-                                findFileList(option.vm);
-                                common.alert({
-                                    vm: option.vm,
-                                    msg: "删除成功",
-                                    closeDialog: true
-                                })
-                            }
-                        });
-                    }
-                    common.http({
-                        vm: option.vm,
-                        $http: $http,
-                        httpOptions: httpOptions,
-                        success: httpSuccess
-                    });
-                }
-                var projectfileoptions = {
-                    language: 'zh',
-                    allowedPreviewTypes: ['image'],
-                    allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf", "ppt", "zip", "rar"],
-                    maxFileSize: 2000,
-                    showRemove: false,
-                    uploadUrl: rootPath + "/file/fileUpload",
-                    uploadExtraData: function(previewId, index) {
-                        var result={};
-                        result.businessId=option.businessId;
-                        result.sysSignId="通知公告";
-                        result.sysfileType=angular.isUndefined(option.sysfileType) ? "通知公告" : option.sysfileType;
-                        result.sysMinType=$("#sysMinType option:selected").val();
-                        return result;
-                        // businessId: option.businessId,
-                        // sysSignId:"通知公告",
-                        // sysfileType: angular.isUndefined(option.sysfileType) ? "通知公告" : option.sysfileType,
-                        // sysMinType :$("#sysMinType option:selected").val()
-                    }
-                };
-
-                var filesCount = 0;
-                $("#sysfileinput").fileinput(projectfileoptions)
-                    .on("filebatchselected", function (event, files) {
-                        filesCount = files.length;
-                    }).on("fileuploaded", function (event, data, previewId, index) {
-                    if (filesCount == (index + 1)) {
-                        findFileList(option.vm);
-                    }
-                });
-                option.vm.businessFlag.isInitFileOption = true;
-            }
-
-        }//E_initFileOption
-
-        //S_findFileList
-        function findFileList(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/file/findByBusinessId",
-                params: {
-                    businessId: vm.annountment.anId
-                }
-            }
-            var httpSuccess = function success(response) {
-                vm.sysFilelists = response.data;
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_findFileList
-
 
         //S_updateIssueState
         function updateIssueState(vm, state) {
@@ -470,7 +313,7 @@
 
         function findDetailById(vm,id) {
             var httpOptions = {
-                method: "get",
+                method: "post",
                 url: url_annountment + "/findAnnountmentById",
                 params: {
                     anId: id
@@ -478,7 +321,9 @@
             }
             var httpSuccess = function success(response) {
                 vm.annountment = response.data;
-                findFileList(vm)
+                sysfileSvc.findByBusinessId(id,function(data){
+                    vm.sysFilelists = data;
+                });
                 postArticle(vm, id);
                 nextArticle(vm, id);
             }

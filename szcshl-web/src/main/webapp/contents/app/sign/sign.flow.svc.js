@@ -79,17 +79,47 @@
                 //项目负责人办理
                 case flowcommon.getSignFlowNode().SIGN_XMFZR1:
                     vm.businessFlag.isMainBranch = true;
+                    vm.businessFlag.curBranchId = "1";
                 case flowcommon.getSignFlowNode().SIGN_XMFZR2:
+                    if(!vm.businessFlag.curBranchId){
+                        vm.businessFlag.curBranchId = "2";
+                    }
                 case flowcommon.getSignFlowNode().SIGN_XMFZR3:
+                    if(!vm.businessFlag.curBranchId){
+                        vm.businessFlag.curBranchId = "3";
+                    }
                 case flowcommon.getSignFlowNode().SIGN_XMFZR4:
+                    if(!vm.businessFlag.curBranchId){
+                        vm.businessFlag.curBranchId = "4";          //计算当前分支，主要是为了控制评审方案的编辑
+                    }
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true;
                     vm.businessFlag.isFinishWP = vm.flow.businessMap.isFinishWP;
                     //已经在做工作方案，则显示
-                    if(vm.model.processState >= 2){
+                    if(vm.model.processState >= 2 && vm.model.workProgramDtoList){
+                        $.each(vm.model.workProgramDtoList,function(i,wp){
+                            if(wp.branchId ==  vm.businessFlag.curBranchId){
+                                vm.businessFlag.editEPReviewId = wp.expertReviewId;
+                            }
+                        })
+                        vm.businessFlag.editExpertSC = true;        //显示专家评分按钮
                         vm.showFlag.tabWorkProgram = true;
                         $("#show_workprogram_a").click();
                     }
+                    break;
+                //部长审核工作方案
+                case flowcommon.getSignFlowNode().SIGN_BMLD_SPW1:
+                case flowcommon.getSignFlowNode().SIGN_BMLD_SPW2:
+                case flowcommon.getSignFlowNode().SIGN_BMLD_SPW3:
+                case flowcommon.getSignFlowNode().SIGN_BMLD_SPW4:
+                //分管领导审批工作方案
+                case flowcommon.getSignFlowNode().SIGN_FGLD_SPW1:
+                case flowcommon.getSignFlowNode().SIGN_FGLD_SPW2:
+                case flowcommon.getSignFlowNode().SIGN_FGLD_SPW3:
+                case flowcommon.getSignFlowNode().SIGN_FGLD_SPW4:
+                    vm.showFlag.buttBack = true;
+                    vm.showFlag.tabWorkProgram = true;
+                    $("#show_workprogram_a").click();
                     break;
                 //发文
                 case flowcommon.getSignFlowNode().SIGN_FW:
@@ -119,8 +149,14 @@
                 case flowcommon.getSignFlowNode().SIGN_FGLD_QRFW:
                 //主任审批发文
                 case flowcommon.getSignFlowNode().SIGN_ZR_QRFW:
+                    vm.showFlag.buttBack = true;
+                    vm.showFlag.tabWorkProgram = true;
+                    vm.showFlag.tabDispatch = true;
+                    $("#show_dispatch_a").click();
+                    break;
                 //生成发文编号
                 case flowcommon.getSignFlowNode().SIGN_FWBH:
+                    vm.showFlag.tabWorkProgram = true;
                     vm.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     vm.showFlag.businessTr = true;
@@ -128,11 +164,15 @@
                     break;
                 //财务办理
                 case flowcommon.getSignFlowNode().SIGN_CWBL:
+                    vm.showFlag.tabWorkProgram = true;
+                    vm.showFlag.tabDispatch = true;
                 	vm.showFlag.businessTr = true;
                 	vm.showFlag.financialCode = true;
                     break;
                 //归档
                 case flowcommon.getSignFlowNode().SIGN_GD:
+                    vm.showFlag.tabWorkProgram = true;
+                    vm.showFlag.tabDispatch = true;
                     //有第二负责人确认
                     if(vm.flow.businessMap.checkFileUser){
                         vm.showFlag.businessNext = true;
@@ -146,14 +186,19 @@
                     break;
                 //第二负责人确认归档
                 case flowcommon.getSignFlowNode().SIGN_DSFZR_QRGD:
+                    vm.showFlag.tabWorkProgram = true;
+                    vm.showFlag.tabDispatch = true;
                     vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
+                    vm.showFlag.buttBack = true;
                     break;
                 //最终归档
                 case flowcommon.getSignFlowNode().SIGN_QRGD:
+                    vm.showFlag.tabWorkProgram = true;
+                    vm.showFlag.tabDispatch = true;
                     vm.showFlag.tabFilerecord = true;
                     $("#show_filerecord_a").click();
-
+                    vm.showFlag.buttBack = true;
                     vm.showFlag.nodeNext = false;
                     break;
                 default:

@@ -85,6 +85,8 @@
         }
        // E 初始化登记补充资料
         
+        
+
         // begin#deleteAddRegisterFile
         function deleteAddRegisterFile(vm, id) {
             vm.isSubmit = true;

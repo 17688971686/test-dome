@@ -1,5 +1,6 @@
 package cs.service.sys;
 
+import cs.common.ResultMsg;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -14,11 +15,11 @@ public interface UserService {
 
     PageModelDto<UserDto> get(ODataObj odataObj);
 
-    void createUser(UserDto userDto);
+    ResultMsg createUser(UserDto userDto);
 
     void deleteUser(String id);
 
-    void updateUser(UserDto userDto);
+    ResultMsg updateUser(UserDto userDto);
 
     Set<String> findPermissions(String username);
 
