@@ -494,6 +494,25 @@
                 controller: 'takeUserCtrl',
                 controllerAs: 'vm'
             })
+            //质量管理文件库
+            .state('fileLibrary',{
+                url : '/fileLibrary',
+                templateUrl : rootPath + '/fileLibrary/html/fileLibrary.html',
+                controller : 'fileLibraryCtrl',
+                controllerAs : 'vm'
+            })
+            .state('fileLibrary.fileList',{ //文件列表
+                url : '/fileList/:parentId/:fileId',
+                templateUrl : rootPath + '/fileLibrary/html/fileList.html',
+                controller : 'fileLibraryCtrl',
+                controllerAs : 'vm'
+            })
+            .state('fileLibrary.fileEdit',{//新建文件
+                url : '/fileEdit/:parentId/:fileId',
+                templateUrl : rootPath + '/fileLibrary/html/fileEdit.html',
+                controller : 'fileLibraryEditCtrl',
+                controllerAs : 'vm'
+            })
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
@@ -567,5 +586,23 @@
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     });
+
+})();
+
+/**
+ *
+ *定配置angular应用指令
+ *@author lqs
+ */
+(function(){
+
+    'use strict';
+    angular.module('app')
+        .directive('goBack', function() {//返回指令
+            return {
+                restrict : 'AE',
+                template : '<a class="btn btn-sm btn-primary" href="javascript:void(0);" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>'
+            };
+        });
 
 })();

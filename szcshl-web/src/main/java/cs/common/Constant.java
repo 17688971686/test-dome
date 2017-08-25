@@ -502,4 +502,47 @@ public class Constant {
         }
     }
 
+    /**
+     * 文件夹类型
+     */
+    public static enum folderType{
+
+        FILE_LIBRARY("1"),//文件库
+
+        POLICY_LIBRARY("2");//政策库
+
+        private String value;
+
+        folderType(String value){
+            this.value=value;
+        }
+
+        public String getValue(){
+            return value;
+        }
+
+    }
+
+    /**
+     * 文件类型
+     */
+    public static enum fileNatrue{
+
+        FOLDER_TYPE("1"),//文件夹
+
+        FILE_TYPE("2");//文件
+
+        private String value;
+
+        fileNatrue(String value){
+            this.value=value;
+        }
+
+        public String getValue(){
+            return value;
+        }
+
+    }
+
+
 }

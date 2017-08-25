@@ -1,0 +1,57 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/fileLibrary">质量管理文件库</a></li>
+    </ol>
+    <form>
+        <div style="width:20%;min-height:800px;border-right:1px solid #888888;float:left;">
+            <div class="toolbar">
+                <button class="btn btn-sm btn-primary" ng-click="vm.addFolderWindow('addRootFolder')"><span class="glyphicon glyphicon-plus"></span>新建文件夹</button>
+            </div>
+            <ul id="fileTree" class="ztree"></ul>
+        </div>
+        <div style="width:80%;min-height:800px;border-right:1px solid #888888;float:left;">
+            <div ui-view></div>
+        </div>
+        <div style="clear:both;"></div>
+
+    </form>
+
+</div>
+
+<!--新建文件夹 弹出框-->
+<div id="addRootFolder" class="well well-sm" style="background:white;display:none;">
+    <form id="form" name="form">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveFolder()" ng-hide="vm.isSubmit()">添加</button>
+            <!--<button class="btn btn-sm btn-success" ng-click="vm.saveFolder()" ng-show="vm.isSubmit()">更新</button>-->
+        </div>
+        <table class="table table-bordered seleteTable">
+            <tr>
+                <td class="formAlignRight">排序序号：</td>
+                <td>
+                    <input type="number" ng-model="vm.fileLibrary.fileSort"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">文件夹名称：<span class="required">*</span></td>
+                <td>
+                    <input type="text" name="fileName" id="fileName" ng-model="vm.fileLibrary.fileName" data-val="true" data-val-required="必填"/>
+
+                </td>
+                <td>
+                    <span data-valmsg-for="fileName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>

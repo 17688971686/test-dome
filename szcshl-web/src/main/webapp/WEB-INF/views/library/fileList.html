@@ -1,0 +1,85 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/fileLibrary">文件管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" , name="form">
+        <div class="well">
+            <button class="btn btn-sm btn-primary" ng-click="vm.addFile()">新建文件</button>
+        </div>
+    </form>
+    <script type="text/template" id="columnList">
+        <div ng-repeat="x in {0}">
+            <p >
+                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+            </p>
+        </div>
+
+    </script>
+    <script type="text/template" id="columnBtns">
+        <@shiro.hasPermission name="fileLibrary##delete">
+        <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="fileLibrary##put">
+        <button class="btn btn-xs btn-primary"  ng-click="{1}" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        </@shiro.hasPermission>
+
+    </script>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+
+    <div class="well">
+        <table>
+            <tr>
+                <td>文件夹管理：</td>
+                <td>
+                    <button class="btn btn-xs btn-primary" ng-click=" vm.addFolderWindow('addChildFolder')">新建文件夹</button>
+                    <button class="btn btn-xs btn-danger" ng-click=" vm.deleteRootDirectory()">删除根目录</button>
+                    <button class="btn btn-xs btn-primary"  ng-click="vm.addFolderWindow()" >编辑</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+
+</div>
+
+
+<!--新建文件夹 弹出框-->
+<div id="addChildFolder" class="well well-sm" style="background:white;display:none;">
+    <form id="form" name="form">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveFolder()" ng-hide="vm.isSubmit()">添加</button>
+            <!--<button class="btn btn-sm btn-success" ng-click="vm.saveFolder()" ng-show="vm.isSubmit()">更新</button>-->
+        </div>
+        <table class="table table-bordered seleteTable">
+            <tr>
+                <td class="formAlignRight">排序序号：</td>
+                <td>
+                    <input type="number" ng-model="vm.fileLibrary.fileSort"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">文件夹名称：<span class="required">*</span></td>
+                <td>
+                    <input type="text" name="fileName" id="fileName" ng-model="vm.fileLibrary.fileName" data-val="true" data-val-required="必填"/>
+
+                </td>
+                <td>
+                    <span data-valmsg-for="fileName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
