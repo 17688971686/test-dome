@@ -112,12 +112,12 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		projectStop.setModifiedDate(new Date());
 		projectStop.setStopid(UUID.randomUUID().toString());
 		projectStop.setSign(sign);
-		if(SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!= null){
+		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!= null){
 			projectStop.setDirectorName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());//部长
 		}else{
 			projectStop.setDirectorName(SessionUtil.getLoginName());
 		}
-		if(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName()!=null){
+		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgSLeaderName()!=null){
 			projectStop.setLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());//分管副主任
 		}else{
 			projectStop.setLeaderName(SessionUtil.getLoginName());

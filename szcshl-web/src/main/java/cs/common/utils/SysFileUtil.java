@@ -35,7 +35,11 @@ public class SysFileUtil {
             mainType = "NO_MAIN_TYPE_FILE";
         }
         //文件存放的格式,根目录/主业务ID/业务模块/文件名
-        relativeUrl += (File.separator + mainType+ File.separator+mainId);
+        relativeUrl += (File.separator + mainType);
+        //如果有主业务ID ，则加上
+        if(Validate.isString(mainId)){
+            relativeUrl += (File.separator+mainId);
+        }
         //如果有业务模块，则加上业务模块
         if(Validate.isString(sysBusiType)){
             relativeUrl += (File.separator+sysBusiType);
@@ -49,8 +53,11 @@ public class SysFileUtil {
         } else {
             isFileExists.mkdirs();
         }
-
-        String extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        String extendName = fileName;
+        //若是文件夹，则不需要切割
+        if(fileName.indexOf(".") >0){
+            extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        }
         String distFileName = UUID.randomUUID().toString().replaceAll("-", "").concat(extendName);
         relativeUrl += File.separator + distFileName;
 

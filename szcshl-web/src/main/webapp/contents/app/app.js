@@ -525,7 +525,7 @@
             .state('fileLibrary.fileList',{ //文件列表
                 url : '/fileList/:parentId/:fileId',
                 templateUrl : rootPath + '/fileLibrary/html/fileList.html',
-                controller : 'fileLibraryCtrl',
+                controller : 'fileLibraryEditCtrl',
                 controllerAs : 'vm'
             })
             .state('fileLibrary.fileEdit',{//新建文件

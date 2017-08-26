@@ -83,24 +83,18 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
         FileLibrary findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
         if(findFile ==null) {
             FileLibrary fileLibrary = new FileLibrary();
-//            String libraryPath = getPath();
-            String fileUrl = "";
-//            File file = null;
+
+            //创建文件目录格式 ：根目录/质量管理文件库/文件夹名
+            String fileLibraryPath = SysFileUtil.getUploadPath();//获取根目录
+            String url = "";
             if (fileLibraryDto.getParentFileId() != null) {
-//                fileUrl = File.separator + findFileUrlById(fileLibraryDto.getFileId()) + File.separator + fileLibraryDto.getFileName();
+                url = File.separator + findFileUrlById(fileLibraryDto.getParentFileId()) + File.separator + fileLibraryDto.getFileName();
                 fileLibrary.setParentFileId(fileLibraryDto.getParentFileId());
             } else {
-                fileUrl = File.separator + fileLibraryDto.getFileName();
+                url = File.separator + Constant.SysFileType.FILELIBRARY.getValue()+ File.separator + fileLibraryDto.getFileName();
             }
-//            file = new File(libraryPath + File.separator + fileUrl);
-//
-//            if (file.exists()) {
-//                if (!file.isDirectory()) {
-//                    file.mkdirs();
-//                }
-//            } else {
-//                file.mkdirs();
-//            }
+
+            String fileUrl = SysFileUtil.generatRelativeUrl(fileLibraryPath , url ,null ,null ,fileLibraryDto.getFileName());
 
             BeanCopierUtils.copyPropertiesIgnoreNull(fileLibraryDto, fileLibrary);
             fileLibrary.setFileId(UUID.randomUUID().toString());
@@ -109,7 +103,7 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
             fileLibrary.setModifiedBy(SessionUtil.getLoginName());
             fileLibrary.setModifiedDate(new Date());
             fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
-            fileLibrary.setFileUrl(findFileUrlById(fileLibraryDto.getFileId()) + fileUrl);
+            fileLibrary.setFileUrl( url);
             fileLibrary.setFileNature(Constant.fileNatrue.FOLDER_TYPE.getValue());
             fileLibraryRepo.save(fileLibrary);
         }else{
@@ -127,24 +121,13 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
         FileLibrary findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FILE_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
         if(findFile ==null) {
         FileLibrary fileLibrary = new FileLibrary();
-//        String libraryPath = getPath();
         String fileUrl="";
-//        File file=null;
         if(fileLibraryDto.getFileId()!=null){
-//            fileUrl=File.separator + findFileUrlById(fileLibraryDto.getParentFileId()) + File.separator + fileLibraryDto.getFileName();
             fileLibrary.setParentFileId(fileLibraryDto.getParentFileId());
         }else{
             fileUrl=File.separator + fileLibraryDto.getFileName();
         }
-//        file = new File(libraryPath + File.separator + fileUrl);
 
-//        if(file.exists()){
-//            if(!file.isDirectory()){
-//                file.mkdirs();
-//            }
-//        }else{
-//            file.mkdirs();
-//        }
         BeanCopierUtils.copyPropertiesIgnoreNull(fileLibraryDto,fileLibrary);
         fileLibrary.setFileId(UUID.randomUUID().toString());
         fileLibrary.setCreatedBy(SessionUtil.getLoginName());

@@ -411,7 +411,8 @@ public class Constant {
         DOFILE("归档"),
         MEETING("会前准备材料"),
         SUPPLEMENT("补充函"),
-        STAGEMEETING("评审会会议");
+        STAGEMEETING("评审会会议"),
+        FILELIBRARY("质量管理文件库");
 
         private String value;
 

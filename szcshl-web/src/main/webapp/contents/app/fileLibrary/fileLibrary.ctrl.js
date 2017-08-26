@@ -6,26 +6,53 @@
 
     function fileLibrary($scope,$state,$location,fileLibrarySvc){
         var vm = this;
-        vm.title="";
-        vm.fileLibrary={};
+        // vm.title="";
         vm.parentId = $state.params.parentId;
         vm.fileId = $state.params.fileId;
+        vm.fileLibrary={};
         activate();
         function activate(){
-            fileLibrarySvc.initFolder(vm);
-            fileLibrarySvc.initFileList(vm);
+            fileLibrarySvc.initFolder(function(data){
+                var zTreeObj;
+                var setting = {
+                    callback:{
+                        onClick : zTreeOnClick
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true,
+                            idKey: "id",
+                            pIdKey: "pId"
+                        }
+                    }
+                };
+                function zTreeOnClick(event, treeId, treeNode) {
+                    $state.go('fileLibrary.fileList',{parentId : treeNode.id,fileId : ''});
+                };
+
+                var zNodes = $linq(data).select(
+                    function(x){
+                        var isParent = false;
+                        var pId =null;
+                        if(x.parentFileId){
+                            pId = x.parentFileId;
+                        }
+                        return {
+                            id : x.fileId,
+                            name : x.fileName,
+                            pId : pId,
+                        };
+                    }).toArray();
+                zTreeObj = $.fn.zTree.init($("#zTree"),setting,zNodes);
+                vm.folderTree = zTreeObj;
+            });
         }
 
         /**
          * 新建文件夹弹出窗
          * */
-        vm.addFolderWindow=function(target){
-            vm.fileLibrary={};
-            vm.target = target;
-            if(target == "addChildFolder"){
-                vm.fileLibrary.parentFileId = vm.parentId;
-            }
-            $("#"+target).kendoWindow({
+        vm.addFolderWindow=function(){
+            $("#addRootFolder").kendoWindow({
                 width: "500px",
                 height: "300px",
                 title: "新建文件夹",
@@ -39,46 +66,10 @@
         /**
          * 保存新建文件夹
          */
-        vm.saveFolder = function(){
-            fileLibrarySvc.saveFolder(vm);
+        vm.saveRootFolder = function(){
+            fileLibrarySvc.saveRootFolder(vm);
         }
 
-        vm.addFile = function(){
-            $state.go('fileLibrary.fileEdit',{parentId : vm.parentId,fileId : ''});
-        }
-
-        vm.update  = function(fileId){
-            $state.go('fileLibrary.fileEdit',{parentId :vm.parentId ,fileId : fileId});
-        }
-
-        vm.del = function(fileId){
-            common.alert({
-                vm : vm ,
-                msg : "删除的数据将无法恢复，确定要删除？",
-                fn : function (){
-                    $('.alertDialog').modal('hide');
-                    $('.modal-backdrop').remove();
-                    fileLibrarySvc.deleteFile(vm,fileId);
-                }
-            });
-        }
-
-        /**
-         * 删除根目录
-         */
-        vm.deleteRootDirectory=function(){
-            fileLibrarySvc.deleteRootDirectory(vm);
-
-        }
-
-        /**
-         * 更新根目录
-         */
-        vm.updateRootDirectory = function(){
-            // vm.isSubmit=true;
-            // fileLibrarySvc.folderById(vm,vm.parentId);
-
-        }
 
     }
 })();

@@ -92,6 +92,15 @@ public class FileLibraryController {
         fileLibraryService.deleteRootDirectory(parentFileId);
     }
 
+    @RequiresPermissions("fileLibrary#getFileUrlById#get")
+    @RequestMapping(name="获取文件路径",path="getFileUrlById",method = RequestMethod.GET)
+    @ResponseBody
+    public FileLibraryDto getFileUrlById(@RequestParam String fileId){
+        String fileUrl = fileLibraryService.findFileUrlById(fileId);
+        FileLibraryDto fileLibraryDto = new FileLibraryDto();
+        fileLibraryDto.setFileUrl(fileUrl);
+        return fileLibraryDto ;
+    }
 
     /**
      * begin html

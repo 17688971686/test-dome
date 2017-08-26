@@ -38,7 +38,7 @@
             <tr>
                 <td class="formAlignRight">附件： </td>
                 <td colspan="2">
-                    <p><button class="btn btn-sm btn-primary" id="upload_file_bt" >上传附件</button></p>
+                    <p><button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" >上传附件</button></p>
                     <div ng-repeat="x in vm.sysFilelists">
                         <p >
                             <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
@@ -50,7 +50,6 @@
                         </p>
                     </div>
                 </td>
-                <td></td>
             </tr>
         </table>
     </form>
