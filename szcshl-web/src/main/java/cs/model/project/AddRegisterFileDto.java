@@ -29,7 +29,8 @@ public class AddRegisterFileDto extends BaseDto {
     @JSONField(format = "yyyy-MM-dd")
     private Date suppleDate;
     private String signid;
-    
+    private String fileRecordId;
+    private String workId;
     public String getSignid() {
 		return signid;
 	}
@@ -91,5 +92,22 @@ public class AddRegisterFileDto extends BaseDto {
         this.suppleDate = suppleDate;
     }
 
+	public String getFileRecordId() {
+		return fileRecordId;
+	}
+
+	public void setFileRecordId(String fileRecordId) {
+		this.fileRecordId = fileRecordId;
+	}
+
+	public String getWorkId() {
+		return workId;
+	}
+
+	public void setWorkId(String workId) {
+		this.workId = workId;
+	}
+
+	
 
 }

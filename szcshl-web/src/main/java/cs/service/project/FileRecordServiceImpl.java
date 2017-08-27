@@ -106,12 +106,14 @@ public class FileRecordServiceImpl implements FileRecordService {
         } else {
             //如果是新增，则要初始化
             User priUser = signPrincipalService.getMainPriUser(signid);
+           
             Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
             fileRecordDto.setProjectName(sign.getProjectname());
             fileRecordDto.setProjectCode(sign.getProjectcode());
             fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
             fileRecordDto.setProjectCompany(sign.getDesigncompanyName());//编制单位名称
             fileRecordDto.setFileNumber(sign.getDocnum());//文号
+            fileRecordDto.setIsStachProject(sign.getIsProjectState());//项目是否曾经暂停
             fileRecordDto.setProjectChargeUser(priUser == null ? "" : priUser.getDisplayName());
             //设置默认文件标题
             String fileTitle = "《";

@@ -1,34 +1,33 @@
 package cs.service.project;
 
-import cs.common.HqlBuilder;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
-import cs.domain.financial.FinancialManager;
-import cs.domain.project.AddRegisterFile;
-import cs.domain.project.AddRegisterFile_;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.model.PageModelDto;
-import cs.model.financial.FinancialManagerDto;
-import cs.model.project.AddRegisterFileDto;
-import cs.model.project.AddSuppLetterDto;
-import cs.model.project.SignDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.domain.project.AddRegisterFile;
+import cs.domain.project.AddRegisterFile_;
+import cs.domain.project.FileRecord;
+import cs.domain.project.Sign;
+import cs.model.PageModelDto;
+import cs.model.project.AddRegisterFileDto;
+import cs.model.project.FileRecordDto;
+import cs.model.project.SignDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 
 /**
  * Description: 登记补充资料 业务操作实现类
@@ -42,6 +41,8 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
 	private AddRegisterFileRepo addRegisterFileRepo;
 	@Autowired
 	private SignRepo signRepo;
+	@Autowired
+	private FileRecordRepo fileRecordRepo;
 	@Override
 	public PageModelDto<AddRegisterFileDto> get(ODataObj odataObj) {
 		PageModelDto<AddRegisterFileDto> pageModelDto = new PageModelDto<AddRegisterFileDto>();
@@ -74,7 +75,14 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
 		registerFile.setCreatedDate(now);
 		registerFile.setModifiedDate(now);
 		addRegisterFileRepo.save(registerFile);
-		
+		FileRecord file = fileRecordRepo.getById(addRegisterFileDtos.getSignid());
+		if(file != null){
+			FileRecordDto fileDto = new FileRecordDto();
+			BeanCopierUtils.copyPropertiesIgnoreNull(file, fileDto);
+			file.setIsSupplementary(Constant.EnumState.YES.getValue());
+			fileRecordRepo.save(file);
+		}
+
 	}
 
 	@Override

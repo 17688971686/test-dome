@@ -12,11 +12,14 @@
        vm.addRegister = {};			//登记补充材料
        vm.addRegisters = new Array;//登记补充材料集合
        vm.addRegister.signid =$state.params.signid;
+       vm.addRegister.fileRecordId = $state.params.signid;
         //新建登记补充材料
         vm.addRegisterFile = function(){
         	var signid = vm.addRegister.signid;
+        	var fileRecordId = vm.addRegister.fileRecordId;
         	 vm.addRegister = {};	
         	 vm.addRegister.signid = signid;
+        	 vm.addRegister.fileRecordId = fileRecordId;
         	 vm.addRegisters.push(vm.addRegister);
         	 vm.i++;
         }
@@ -60,6 +63,7 @@
         activate();
         function activate() {
             addRegisterFileSvc.initAddRegisterFile(vm);
+           // addRegisterFileSvc.initRegisterWinDow(vm);
         }
     }
 })();

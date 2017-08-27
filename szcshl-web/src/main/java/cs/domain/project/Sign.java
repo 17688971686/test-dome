@@ -766,9 +766,13 @@ public class Sign extends DomainBase {
     @Column(columnDefinition="VARCHAR(2)")
     private String isLightUp;
 
-    //项目状态
+    //项目状态 
     @Column(columnDefinition = "VARCHAR(2)")
     private String signState;
+    
+    //项目是否曾经暂停 9:表示项目曾经暂停,0:表示未暂停
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isProjectState;
 
     //进程状态(1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
     @Column(columnDefinition = "Integer")
@@ -2342,6 +2346,14 @@ public class Sign extends DomainBase {
 
 	public void setCapitalAppReportOriginal(Integer capitalAppReportOriginal) {
 		this.capitalAppReportOriginal = capitalAppReportOriginal;
+	}
+
+	public String getIsProjectState() {
+		return isProjectState;
+	}
+
+	public void setIsProjectState(String isProjectState) {
+		this.isProjectState = isProjectState;
 	}
     
 

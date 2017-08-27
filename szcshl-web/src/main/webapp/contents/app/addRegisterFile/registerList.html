@@ -1,10 +1,5 @@
-<#assign path=request.contextPath/>
-<meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-register-print.html'"></div>
-
-<div class="well well-sm" style="background:white;margin: auto;overflow: auto">
+<!-- S 登记补充资料弹窗 -->
+<div id="addRegister" class="well well-sm" style="background:white;display:none;">
     <ol class="breadcrumb">
        	<li><a href="#/">登记补充资料</a></li>
         <!-- <li class="active">{{vm.titles}}</li> -->
@@ -22,7 +17,7 @@
     <form id="financialForm" name="financialForm">
 
 				
-    <table class="table table-bordered seleteTable">
+    <!-- <table class="table table-bordered seleteTable">
 					<tr>
 						<td>
 							<span>登记补充资料</span>
@@ -79,10 +74,7 @@
 					</tr>
 				</table>
 			</div>
-     </form>
-	
+     </form> -->
 	
 </div>
-
-
-
+<!-- E 登记补充资料弹窗 -->

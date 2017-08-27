@@ -340,6 +340,9 @@ public class SignDto extends BaseDto {
     //收文状态
     private String signState;
 
+    //项目是否曾经暂停 9:表示项目曾经暂停,0:表示未暂停
+    private String isProjectState;
+    
     //项目流程状态信息
     private Integer processState;
 
@@ -2227,6 +2230,15 @@ public class SignDto extends BaseDto {
 	public void setCapitalAppReportOriginal(Integer capitalAppReportOriginal) {
 		this.capitalAppReportOriginal = capitalAppReportOriginal;
 	}
+
+	public String getIsProjectState() {
+		return isProjectState;
+	}
+
+	public void setIsProjectState(String isProjectState) {
+		this.isProjectState = isProjectState;
+	}
+	
     
 
 }

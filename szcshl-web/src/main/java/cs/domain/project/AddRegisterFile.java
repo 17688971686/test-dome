@@ -47,9 +47,17 @@ public class AddRegisterFile extends DomainBase {
 	@Column(columnDefinition = "Date")
 	private Date suppleDate;
 	
-	//收文编号
+	//收文编号ID
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String signid;
+	
+	//归档编号ID
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String fileRecordId;
+	
+	//工作方案ID
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String workId;
 	
 
 	public String getSignid() {
@@ -114,6 +122,22 @@ public class AddRegisterFile extends DomainBase {
 
 	public void setSuppleDate(Date suppleDate) {
 		this.suppleDate = suppleDate;
+	}
+
+	public String getFileRecordId() {
+		return fileRecordId;
+	}
+
+	public void setFileRecordId(String fileRecordId) {
+		this.fileRecordId = fileRecordId;
+	}
+
+	public String getWorkId() {
+		return workId;
+	}
+
+	public void setWorkId(String workId) {
+		this.workId = workId;
 	}
 	
 	

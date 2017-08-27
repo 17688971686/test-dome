@@ -12,10 +12,22 @@
             initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
             saveRegisterFile:saveRegisterFile,				//保存登记补充材料
             isUnsignedInteger:isUnsignedInteger,			//	数字校验
+            initRegisterWinDow:initRegisterWinDow,			//	初始化登记补充资料页面
         };
 
         return service;
-
+        
+     function initRegisterWinDow(vm,opation){
+    	 $("#addRegister").kendoWindow({
+             width: "70%",
+             height: "660px",
+             title: "意见选择",
+             visible: false,
+             modal: true,
+             closable: true,
+             actions: ["Pin", "Minimize", "Maximize", "close"]
+         }).data("kendoWindow").center().open();
+     }
       //检查是否为正整数
         function isUnsignedInteger(value){
             if((/^(\+|-)?\d+$/.test(value)) && value>0 ){
@@ -69,12 +81,15 @@
         //S 初始化登记补充资料
         function initAddRegisterFile(vm){
         	var httpOptions = {
-                    method: 'get',
-                    url: rootPath + "/addRegisterFile/initFindByOData",
+                    method: 'post',
+                    url: rootPath + "/addRegisterFile/initRegisterData",
+                    params:{
+                    	signid:vm.addRegister.fileRecordId
+                    }
                 };
                 var httpSuccess = function success(response) {
-                    vm.addRegisters = response.data;
-                    
+                    vm.addRegisters = response.data.financiallist;
+                    console.log(vm.addRegisters);
                 };
                 common.http({
                     vm: vm,

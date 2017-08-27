@@ -4,9 +4,9 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-        '$http','bsWin'];
+      'addRegisterFileSvc',  '$http','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc, $http,bsWin) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc, $http,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -440,10 +440,16 @@
         	$state.go('addSupp', {signid: vm.model.signid});
         }// E_跳转到 拟补充资料函 编辑页面
         
-        //S_链接到登记表补充资料
-        vm.addRegisterFile = function () {
-        	$state.go('registerFile', {signid: vm.model.signid});
-        }// E_链接到登记表补充资料
+        //S_工作方案  --链接到  登记表补充资料 
+        vm.addRegisterFile = function (options) {
+        	if(!vm.model.signid){
+        		bsWin.alert("请保存工作方案再操作！");
+        	}else{
+        		$state.go('registerFile', {signid: vm.model.signid});
+        		//addRegisterFileSvc.initRegisterWinDow(vm,options);
+        		
+        	}
+        }// E_工作方案  --链接到  登记表补充资料
         
         //S_跳转到 工作方案 基本信息
         vm.addBaseWP = function(){
@@ -470,6 +476,16 @@
                 signid: vm.model.signid
             });
         }
+        
+        //S_归档登记表补充资料
+        vm.addRegisterFileRecord = function () {
+        	if(!vm.fileRecord.fileRecordId){
+        		bsWin.alert("请保存归档再操作！");
+        	}else{
+        		$state.go('registerFile', {signid: vm.fileRecord.fileRecordId});
+        	}
+        }// E_归档到登记表补充资料
+        
 
         // 业务判断
         vm.mainOrg = function ($event) {

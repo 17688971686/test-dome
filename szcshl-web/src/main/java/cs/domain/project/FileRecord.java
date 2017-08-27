@@ -66,6 +66,14 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(100)")
 	private String fileNumber;
 	
+	//是否曾经暂停项目
+	@Column(columnDefinition="VARCHAR(4)")
+	private String isStachProject;
+	
+	//是否有补充资料
+	@Column(columnDefinition="VARCHAR(4)")
+	private String isSupplementary;
+	
 	//报审登记表份数
 	@Column(columnDefinition="INTEGER")
 	private Integer recordFormCount;
@@ -330,9 +338,13 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String stageCostScan;
 	
-	//项目负责人
+	//项目第一负责人
 	@Column(columnDefinition="VARCHAR(64)")
 	private String projectChargeUser;
+	
+	//项目第二负责人
+	@Column(columnDefinition="VARCHAR(64)")
+	private String projectTwoUser;
 	
 	//表格打印日期
 	@Column(columnDefinition="DATE")
@@ -2303,6 +2315,31 @@ public class FileRecord extends DomainBase{
 	public void setFileSeq(Integer fileSeq) {
 		this.fileSeq = fileSeq;
 	}
+
+	public String getProjectTwoUser() {
+		return projectTwoUser;
+	}
+
+	public void setProjectTwoUser(String projectTwoUser) {
+		this.projectTwoUser = projectTwoUser;
+	}
+
+	public String getIsStachProject() {
+		return isStachProject;
+	}
+
+	public void setIsStachProject(String isStachProject) {
+		this.isStachProject = isStachProject;
+	}
+
+	public String getIsSupplementary() {
+		return isSupplementary;
+	}
+
+	public void setIsSupplementary(String isSupplementary) {
+		this.isSupplementary = isSupplementary;
+	}
+	
 	
 	
 }

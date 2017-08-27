@@ -33,6 +33,11 @@ public class FileRecordDto extends BaseDto{
 	private String fileTitle;
 	
 	private String fileNumber;
+	//是否曾经暂停项目
+	private String isStachProject;
+
+	//是否有补充资料
+	private String isSupplementary;
 	//报审登记表份数
 	private Integer recordFormCount;
 	
@@ -502,6 +507,8 @@ public class FileRecordDto extends BaseDto{
 	private String fieOther;
 	//E 项目概算
 	
+	//项目第二负责人
+	private String projectTwoUser;
 
 	public String getFileRecordId() {
 		return fileRecordId;
@@ -2008,5 +2015,30 @@ public class FileRecordDto extends BaseDto{
 	public void setProbableTurnStageRmb(String probableTurnStageRmb) {
 		this.probableTurnStageRmb = probableTurnStageRmb;
 	}
+
+	public String getProjectTwoUser() {
+		return projectTwoUser;
+	}
+
+	public void setProjectTwoUser(String projectTwoUser) {
+		this.projectTwoUser = projectTwoUser;
+	}
+
+	public String getIsStachProject() {
+		return isStachProject;
+	}
+
+	public void setIsStachProject(String isStachProject) {
+		this.isStachProject = isStachProject;
+	}
+
+	public String getIsSupplementary() {
+		return isSupplementary;
+	}
+
+	public void setIsSupplementary(String isSupplementary) {
+		this.isSupplementary = isSupplementary;
+	}
+	
 
 }
