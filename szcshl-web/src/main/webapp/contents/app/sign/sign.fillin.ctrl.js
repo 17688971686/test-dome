@@ -194,12 +194,19 @@
         
         //申报登记编辑
         vm.updateFillin = function () {
-            vm.isSubmit = true;
-            vm.model.leaderhandlesug = $("#leaderhandlesug").val();
-            signSvc.updateFillin(vm.model,function (data) {
-                vm.isSubmit = false;
-                bsWin.alert("操作成功！");
-            });
+            common.initJqValidation($('#sign_fill_form'));
+            var isValid = $('#sign_fill_form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.leaderhandlesug = $("#leaderhandlesug").val();
+                signSvc.updateFillin(vm.model,function (data) {
+                    vm.isSubmit = false;
+                    bsWin.alert("操作成功！");
+                });
+            }else{
+                bsWin.alert("项目填报内容不完整或者填报信息不正确，请检查之后再提交！");
+            }
+
         }
 
         //根据协办部门查询用户

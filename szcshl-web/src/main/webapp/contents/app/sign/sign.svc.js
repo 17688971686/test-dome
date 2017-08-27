@@ -17,6 +17,7 @@
             initFlowPageData: initFlowPageData, //初始化流程收文信息
             removeWP: removeWP,             //删除工作方案
             associateGrid: associateGrid,   //项目关联列表
+            getAssociateSign : getAssociateSign, //获取项目关联阶段信息
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             paymentGrid: paymentGrid,           //专家评审费
@@ -220,26 +221,22 @@
 
         //Start 申报登记编辑
         function updateFillin(signObj,callBack) {
-            common.initJqValidation($('#sign_fill_form'));
-            var isValid = $('#sign_fill_form').valid();
-            if (isValid) {
-                var httpOptions = {
-                    method: 'put',
-                    url: rootPath + "/sign",
-                    data: signObj,
-                }
-                var httpSuccess = function success(response) {
-                    //关闭项目关联窗口
-                    if (callBack != undefined && typeof callBack == 'function') {
-                        callBack(response.data);
-                    }
-                }
-                common.http({
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
+            var httpOptions = {
+                method: 'put',
+                url: rootPath + "/sign",
+                data: signObj,
             }
+            var httpSuccess = function success(response) {
+                //关闭项目关联窗口
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
         //End 申报登记编辑
 
@@ -358,7 +355,7 @@
             });
         }//E_removeWP
 
-        //associateGrid
+        //associateGrid（停用，2017-08-27，改用List的方式）
         function associateGrid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
@@ -414,14 +411,6 @@
                     title: "项目代码",
                     width: 140,
                     filterable: false,
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 60,
-                    template: function (item) {
-                        return '<button class="btn btn btn-xs" ng-click="vm.saveAssociateSign(\''+item.signid+'\')" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-resize-small">关联</button>';
-                    }
                 }
             ];
             // End:column
@@ -434,6 +423,26 @@
                 resizable: true
             };
         }//E_初始化associateGrid
+
+        //S_获取关联项目
+        function getAssociateSign(signModel,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/sign/findAssociateSign",
+                data:signModel
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getAssociateSign
 
         //start saveAssociateSign
         //如果associateSignId为空，解除关联

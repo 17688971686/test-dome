@@ -179,7 +179,7 @@ public class DispatchDoc extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2000)")
     private String nextWorkPlan;
 
-    //是否有其他关联
+    //是否有其他关联(9:是有关联，0：没有关联)
     @Column(columnDefinition = "VARCHAR(30)")
     private String isRelated;
 

@@ -65,17 +65,11 @@
 
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
-                   <!--  <select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm" style="width:100px;"
-                             data-val="true" data-val-required="必填">
-                        <option ng-repeat="x in DICT.ISRELATED.dicts" value="{{x.dictName}}"
-                                ng-selected="vm.dispatchDoc.isRelated==x.dictName">{{x.dictName}}
-                        </option>
-                    </select> -->
                      <label>
-                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9" name="isRelated">是
                     </label>
                     <label>
-                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0" name="isRelated">否
                     </label>
                 </td>
             </tr>

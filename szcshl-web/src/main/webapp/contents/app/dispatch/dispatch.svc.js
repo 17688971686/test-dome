@@ -46,6 +46,7 @@
                 var data = response.data;
                 vm.sign = data.sign;
                 vm.dispatchDoc = data.dispatch;     //可编辑的发文对象
+
                 vm.dispatchDoc.signId = $state.params.signid;
                 if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
                     vm.busiFlag.isMerge = true;     //合并发文

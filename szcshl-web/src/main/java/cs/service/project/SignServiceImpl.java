@@ -1,29 +1,12 @@
 package cs.service.project;
 
-import com.alibaba.fastjson.JSON;
-import cs.common.Constant;
-import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
-import cs.common.utils.*;
-import cs.domain.external.Dept;
-import cs.domain.project.*;
-import cs.domain.sys.*;
-import cs.model.PageModelDto;
-import cs.model.external.DeptDto;
-import cs.model.external.OfficeUserDto;
-import cs.model.flow.FlowDto;
-import cs.model.project.*;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.external.DeptRepo;
-import cs.repository.repositoryImpl.project.*;
-import cs.repository.repositoryImpl.sys.*;
-import cs.service.external.OfficeUserService;
-import cs.service.flow.FlowService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -31,7 +14,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -39,7 +21,73 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import com.alibaba.fastjson.JSON;
+
+import cs.common.Constant;
+import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.Constant.EnumState;
+import cs.common.Constant.MsgCode;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
+import cs.domain.external.Dept;
+import cs.domain.project.AssistPlanSign;
+import cs.domain.project.AssistPlanSign_;
+import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
+import cs.domain.project.FileRecord;
+import cs.domain.project.FileRecord_;
+import cs.domain.project.ProjectStop;
+import cs.domain.project.Sign;
+import cs.domain.project.SignBranch;
+import cs.domain.project.SignDispaWork;
+import cs.domain.project.SignDispaWork_;
+import cs.domain.project.SignMerge;
+import cs.domain.project.SignMerge_;
+import cs.domain.project.SignPrincipal;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.domain.sys.Company;
+import cs.domain.sys.Org;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
+import cs.model.PageModelDto;
+import cs.model.external.DeptDto;
+import cs.model.external.OfficeUserDto;
+import cs.model.flow.FlowDto;
+import cs.model.project.DispatchDocDto;
+import cs.model.project.FileRecordDto;
+import cs.model.project.ProjectStopDto;
+import cs.model.project.SignDto;
+import cs.model.project.WorkProgramDto;
+import cs.model.sys.OrgDto;
+import cs.model.sys.UserDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.external.DeptRepo;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.ProjectStopRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignPrincipalRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.CompanyRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.external.OfficeUserService;
+import cs.service.flow.FlowService;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -101,44 +149,42 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public ResultMsg createSign(SignDto signDto) {
-        Sign sign = new Sign();
-        BeanCopierUtils.copyProperties(signDto, sign);
-        if (!Validate.isString(sign.getSignid())) {
-            sign.setSignid(UUID.randomUUID().toString());
-        }
+        //1、根据收文编号获取项目信息
+        Sign sign = signRepo.findByFilecode(signDto.getFilecode());
         Date now = new Date();
-        //1、如果未签收，改为正式签收，状态改为正常状态
-        if (sign.getSigndate() == null) {
+        if(sign == null){
+            sign = new Sign();
+            BeanCopierUtils.copyProperties(signDto,sign);
             sign.setSignState(EnumState.NORMAL.getValue());
             sign.setSigndate(now);
+            sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+            //是否是项目概算流程
+            if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
+                sign.setIsassistflow(EnumState.YES.getValue());
+            } else {
+                sign.setIsassistflow(EnumState.NO.getValue());
+            }
             sign.setCreatedDate(now);
             sign.setModifiedDate(now);
+            sign.setCreatedBy(SessionUtil.getDisplayName());
+            sign.setModifiedBy(SessionUtil.getDisplayName());
+        }else{
+            BeanCopierUtils.copyPropertiesIgnoreNull(signDto,sign);
+        }
+        //算是正式签收
+        if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
+            sign.setSigndate(now);
             sign.setIssign(EnumState.YES.getValue());       //正式签收
-            boolean is15Days = (Validate.isString(sign.getReviewstage()) && ("可行性研究报告".equals(sign.getReviewstage()) || "项目概算".equals(sign.getReviewstage())));
+            boolean is15Days = (Validate.isString(sign.getReviewstage()) &&
+                    (Constant.ProjectStage.STAGE_STUDY.getValue().equals(sign.getReviewstage())
+                            || Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())));
             if (is15Days) {
                 sign.setSurplusdays(Constant.WORK_DAY_15);
             } else {
                 sign.setSurplusdays(Constant.WORK_DAY_12);
             }
         }
-        //2、默认为不亮灯
-        if (!Validate.isString(sign.getIsLightUp())) {
-            sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-        }
-        //3、送件人默认魏俊辉(可以更改)
-        if (!Validate.isString(sign.getSendusersign())) {
-            sign.setSendusersign(SessionUtil.getDisplayName());
-        }
-        //4、创建时间
-        sign.setCreatedBy(SessionUtil.getUserId());
-        sign.setModifiedBy(SessionUtil.getUserId());
 
-        //5、判断是否为协审
-        if ("项目概算".equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
-            sign.setIsassistflow(EnumState.YES.getValue());
-        } else {
-            sign.setIsassistflow(EnumState.NO.getValue());
-        }
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
@@ -485,6 +531,7 @@ public class SignServiceImpl implements SignService {
         Sign sign = null;
         WorkProgram wk = null;
         DispatchDoc dp = null;
+        FileRecord fileRecord = null;
         List<User> userList = null;
         List<SignPrincipal> signPriList = null;     //项目负责人
         User dealUser = null;
@@ -984,13 +1031,24 @@ public class SignServiceImpl implements SignService {
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 sign.setSecondPriUser(SessionUtil.getUserId());
                 saveSignFlag = true;
+
+                /**
+                 * TODO 第二负责人名称
+                 */
+
+                //第二负责人确认
+                businessId = flowDto.getBusinessMap().get("GD_ID").toString();
+                fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName(), businessId);
+                fileRecord.setProjectTwoUser(SessionUtil.getDisplayName());
+                fileRecordRepo.save(fileRecord);
                 break;
             //确认归档
             case Constant.FLOW_SIGN_QRGD:
                 businessId = flowDto.getBusinessMap().get("GD_ID").toString();
-                FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName(), businessId);
+                fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName(), businessId);
                 fileRecord.setFileDate(new Date());
-                fileRecord.setSignUserid(SessionUtil.getUserInfo().getId());
+                fileRecord.setSignUserid(SessionUtil.getUserId());
+                fileRecord.setSignUserName(SessionUtil.getDisplayName());
                 fileRecordRepo.save(fileRecord);
 
                 //更改项目状态
@@ -1507,6 +1565,28 @@ public class SignServiceImpl implements SignService {
         return pageModelDto;
     }
 
+    /**
+     * 根据项目名称，查询未关联阶段的项目（查询视图）
+     * * @param projectName
+     * @return
+     */
+    @Override
+    public List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from "+SignDispaWork.class.getSimpleName()+" where "+SignDispaWork_.isAssociate.getName()+" = 0 ");
+        hqlBuilder.append(" and "+SignDispaWork_.signid.getName()+" != :signid ");
+        hqlBuilder.setParam("signid",signDispaWork.getSignid());
+        if(Validate.isString(signDispaWork.getProjectname())){
+            hqlBuilder.append(" and "+SignDispaWork_.projectname.getName()+" like :projectName");
+            hqlBuilder.setParam("projectName","%"+signDispaWork.getProjectname()+"%");
+        }
+
+        List<SignDispaWork> signList = signDispaWorkRepo.findByHql(hqlBuilder);
+
+        return signList;
+    }
+
+
     @Override
     public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
@@ -1583,14 +1663,76 @@ public class SignServiceImpl implements SignService {
         return pageModelDto;
     }
 
+    /**
+     * 删除预签收项目
+     * @param signid
+     */
     @Override
     @Transactional
     public void deleteReserveSign(String signid) {
-        Sign sign = signRepo.findById(signid);
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signid);
         if (sign != null) {
             signRepo.delete(sign);
             log.info(String.format("删除预签收项目", sign.getProjectname()));
         }
+    }
+
+    /***********************   以下是对接接口部分  ****************************/
+    /**
+     * 项目推送
+     * @param signDto
+     * @return
+     */
+    @Override
+    public ResultMsg pushProject(SignDto signDto) {
+        if(signDto == null){
+            return new ResultMsg(false,MsgCode.OBJ_NULL.getValue(),"获取对象为空！");
+        }
+        if(!Validate.isString(signDto.getFilecode())){
+            return new ResultMsg(false,MsgCode.MAIN_VALUE_NULL.getValue(),"收文编号为空！");
+        }
+        //1、根据收文编号获取项目信息
+        Sign sign = signRepo.findByFilecode(signDto.getFilecode());
+        Date now = new Date();
+        if(sign == null){
+            sign = new Sign();
+            BeanCopierUtils.copyProperties(signDto,sign);
+
+            //是否是项目概算流程
+            if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
+                sign.setIsassistflow(EnumState.YES.getValue());
+            } else {
+                sign.setIsassistflow(EnumState.NO.getValue());
+            }
+            sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+            sign.setCreatedDate(now);
+            sign.setModifiedDate(now);
+            sign.setCreatedBy("委里推送");
+            sign.setModifiedBy("委里推送");
+        }else{
+            BeanCopierUtils.copyPropertiesIgnoreNull(signDto,sign);
+        }
+        //2、推送过来的项目，算是正式签收
+        if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
+            sign.setSigndate(now);
+            sign.setIssign(EnumState.YES.getValue());       //正式签收
+            boolean is15Days = (Validate.isString(sign.getReviewstage()) &&
+                    (Constant.ProjectStage.STAGE_STUDY.getValue().equals(sign.getReviewstage())
+                            || Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())));
+            if (is15Days) {
+                sign.setSurplusdays(Constant.WORK_DAY_15);
+            } else {
+                sign.setSurplusdays(Constant.WORK_DAY_12);
+            }
+        }
+        //保存
+        try{
+            signRepo.save(sign);
+            return new ResultMsg(true,MsgCode.SUCCESS.getValue(),"推送成功！");
+        }catch (Exception e){
+            return new ResultMsg(false,MsgCode.MAIN_VALUE_NULL.getValue(),"保存异常！",e);
+        }
+
     }
 
 }

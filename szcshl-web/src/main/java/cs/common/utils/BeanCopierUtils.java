@@ -1,18 +1,13 @@
 package cs.common.utils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import cs.domain.project.Sign;
+import cs.model.project.SignDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.cglib.beans.BeanCopier;
 
-import cs.domain.project.Sign;
-import cs.model.project.SignDto;
+import java.util.*;
 
 /**
  * 对象拷贝工具类

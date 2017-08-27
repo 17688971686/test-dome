@@ -329,7 +329,14 @@ public class Constant {
      * @author ldm
      */
     public static enum MsgCode {
-        OK("ok"), ERROR("error"), TIMEOUT("timeout");
+        OK("ok"),
+        ERROR("error"),
+        TIMEOUT("timeout"),
+        //以下主要用于接口对接
+        SUCCESS("01"),                  //成功
+        OBJ_NULL("02"),                 //空对象
+        MAIN_VALUE_NULL("03"),          //关键属性为空
+        SAVE_ERROR("04");               //保存异常
 
         private String value;
 
@@ -598,4 +605,26 @@ public class Constant {
     }
 
 
+    /**
+     * 项目阶段
+     */
+    public static enum ProjectStage{
+        STAGE_SUG("项目建议书"),
+        STAGE_STUDY("可行性研究报告"),
+        STAGE_BUDGET("项目概算"),
+        APPLY_REPORT ("资金申请报告"),
+        OTHERS("其它"),
+        DEVICE_BILL_HOMELAND("设备清单（国产）"),
+        DEVICE_BILL_IMPORT("设备清单（进口）"),
+        IMPORT_DEVICE("进口设备");
+
+        private String value;
+
+        ProjectStage(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
 }

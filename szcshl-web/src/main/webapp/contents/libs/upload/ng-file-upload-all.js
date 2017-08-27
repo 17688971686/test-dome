@@ -421,7 +421,7 @@ if (!window.FileReader) {
 }
 
 /**!
- * AngularJS file upload directives and services. Supoorts: file upload/drop/paste, resume, cancel/abort,
+ * AngularJS file upload directives and service. Supoorts: file upload/drop/paste, resume, cancel/abort,
  * progress, resize, thumbnail, preview, validation and CORS
  * @author  Danial  <danial.farid@gmail.com>
  * @version 12.0.4

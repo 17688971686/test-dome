@@ -15,7 +15,7 @@ import cs.repository.odata.ODataObj;
 /**
  * @author lqs
  *         <p>
- *         dictionary services
+ *         dictionary service
  */
 public interface DictService {
 

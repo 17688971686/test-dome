@@ -54,6 +54,12 @@ public class SignController {
         return signDtos;
     }
 
+    @RequiresPermissions("sign#findAssociateSign#post")
+    @RequestMapping(name = "获取待关联的项目", path = "findAssociateSign", method = RequestMethod.POST)
+    public @ResponseBody List<SignDispaWork> findAssociateSign(@RequestBody SignDispaWork signDispaWork){
+        return signService.findAssociateSign(signDispaWork);
+    }
+
     //编辑收文
     @RequiresPermissions("sign##put")
     @RequestMapping(name = "更新收文", path = "", method = RequestMethod.PUT)
@@ -115,13 +121,14 @@ public class SignController {
     	PageModelDto<SignDto> signlist = signService.findAllReserve(odataObj);
     	return signlist;
     }
+
     /**
      * 获取项目关联
      *
      * @param signId      项目ID
      */
     @RequiresPermissions("sign#associate#get")
-    @RequestMapping(name = "项目关联", path = "associate", method = RequestMethod.GET)
+    @RequestMapping(name = "获取已关联阶段项目", path = "associate", method = RequestMethod.GET)
     public @ResponseBody
     List<SignDto> associateGet(@RequestParam(required = true) String signId) {
         return signService.getAssociateDtos(signId);

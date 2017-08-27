@@ -1,10 +1,14 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.common.HqlBuilder;
+import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class SignRepoImpl extends AbstractRepository<Sign, String> implements SignRepo {
@@ -40,6 +44,26 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         hqlBuilder.append(" where " + Sign_.signid.getName() + " =:signid ");
         hqlBuilder.setParam("signid", signId);
         return executeHql(hqlBuilder) >= 0 ? true : false;
+    }
+
+    /**
+     * 根据委里收文编号，获取项目信息
+     * @param filecode
+     * @return
+     */
+    @Override
+    public Sign findByFilecode(String filecode) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from  " + Sign.class.getSimpleName());
+        hqlBuilder.append(" where " + Sign_.filecode.getName() + " = :filecode ");
+        hqlBuilder.setParam("filecode", filecode);
+
+        List<Sign> signList = findByHql(hqlBuilder);
+        if(Validate.isList(signList)){
+            return signList.get(0);
+        }else{
+            return null;
+        }
     }
 
 }

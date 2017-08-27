@@ -458,11 +458,72 @@
 
         // S_跳转到 发文 编辑页面
         vm.addDisPatch = function () {
-            $state.go('dispatchEdit', {
-                signid: vm.model.signid
-            });
+            //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
+            if((!vm.model.isAssociate || vm.model.isAssociate == 0) && (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage ||
+                signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)){
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "该项目还没进行项目关联，是否需要进行关联设置？",
+                    onOk: function () {
+                        //根据项目名称，查询要关联阶段的项目
+                        if(!vm.searchAssociateSign){
+                            vm.searchAssociateSign = {
+                                signid : vm.model.signid,
+                                projectname : vm.model.projectname,
+                            };
+                        }
+                        signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+                            vm.associateSignList = [];
+                            if(data){
+                                vm.associateSignList = data;
+                            }
+                            //选中要关联的项目
+                            $("#associateWindow").kendoWindow({
+                                width: "80%",
+                                height: "620px",
+                                title: "项目关联",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "close"]
+                            }).data("kendoWindow").center().open();
+                        });
+                    },
+                    onCancel : function(){
+                        $state.go('dispatchEdit', {signid: vm.model.signid});
+                    }
+                });
+            }else{
+                $state.go('dispatchEdit', {signid: vm.model.signid});
+            }
         }// E_跳转到 发文 编辑页面
-        
+
+        //关联项目条件查询
+        vm.associateQuerySign = function(){
+            signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+                vm.associateSignList = [];
+                if(data){
+                    vm.associateSignList = data;
+                }
+            });
+        }
+
+        //start 保存项目关联
+        vm.saveAssociateSign = function(associateSignId){
+            if(vm.model.signid == associateSignId){
+                bsWin.alert("不能关联自身项目");
+                return ;
+            }
+            signSvc.saveAssociateSign(vm.model.signid,associateSignId,function(){
+                if(associateSignId){
+                    vm.model.isAssociate = 1;
+                }
+                bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功");
+                window.parent.$("#associateWindow").data("kendoWindow").close();
+            });
+        }
+        //end 保存项目关联
+
         // S 财务报销
         vm.addFinancialApply = function(){
         	  $state.go('financialManager', {

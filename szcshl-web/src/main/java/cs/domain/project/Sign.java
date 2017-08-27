@@ -88,7 +88,7 @@ public class Sign extends DomainBase {
     private String designcompanyid;
 
     //编制单位名称
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String designcompanyName;
 
     //建设单位ID
@@ -96,7 +96,7 @@ public class Sign extends DomainBase {
     private String builtcompanyid;
 
     //建设单位名称
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String builtcompanyName;
 
     //缓急程度
@@ -249,7 +249,7 @@ public class Sign extends DomainBase {
     
     //资金申请报告是否有原件
     @Column(columnDefinition = "VARCHAR(2)")
-    private Integer capitalAppReportOriginal;
+    private String capitalAppReportOriginal;
     
     //项目建议书份数
     @Column(columnDefinition = "INTEGER")
@@ -493,7 +493,7 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "INTEGER")
     private Integer importProductCount;
 
-    //进口产品目录分数
+    //进口产品目录是否有原件
     @Column(columnDefinition = "VARCHAR(2)")
     private String importProductOriginal;
 
@@ -2340,22 +2340,20 @@ public class Sign extends DomainBase {
 		this.capitalAppReportCount = capitalAppReportCount;
 	}
 
-	public Integer getCapitalAppReportOriginal() {
-		return capitalAppReportOriginal;
-	}
+    public String getCapitalAppReportOriginal() {
+        return capitalAppReportOriginal;
+    }
 
-	public void setCapitalAppReportOriginal(Integer capitalAppReportOriginal) {
-		this.capitalAppReportOriginal = capitalAppReportOriginal;
-	}
-
+    public void setCapitalAppReportOriginal(String capitalAppReportOriginal) {
+        this.capitalAppReportOriginal = capitalAppReportOriginal;
+    }
+    
 	public String getIsProjectState() {
 		return isProjectState;
 	}
 
 	public void setIsProjectState(String isProjectState) {
 		this.isProjectState = isProjectState;
-	}
-    
-
+	} 
     
 }

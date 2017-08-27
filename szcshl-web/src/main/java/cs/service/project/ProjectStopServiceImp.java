@@ -202,12 +202,15 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
 		HqlBuilder sqlBuilder = HqlBuilder.create();
 		sqlBuilder.append("update "+ProjectStop.class.getSimpleName()+" set ");
-		if(SessionUtil.hashRole("部门负责人") || SessionUtil.hashRole("综合部部长")){
+		//部长审核
+		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+				|| SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
 			sqlBuilder.append(ProjectStop_.directorIdeaContent.getName()+"=:directorIdeaContent , "+ProjectStop_.approveStatus.getName()+"=:approveStatus");
 			sqlBuilder.setParam("directorIdeaContent",projectStopDto.getDirectorIdeaContent());
 			sqlBuilder.setParam("approveStatus",Constant.EnumState.PROCESS.getValue());
 		}
-		if(SessionUtil.hashRole("副主任")){
+		//分管副主任办理
+		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			sqlBuilder.append(ProjectStop_.leaderIdeaContent.getName()+"=:leaderIdeaContent ,"+ProjectStop_.approveStatus.getName()+"=:approveStatus ,"+ ProjectStop_.isactive.getName()+"=:isactive");
 			sqlBuilder.setParam("leaderIdeaContent",projectStopDto.getLeaderIdeaContent());
 			sqlBuilder.setParam("approveStatus",Constant.EnumState.YES.getValue());

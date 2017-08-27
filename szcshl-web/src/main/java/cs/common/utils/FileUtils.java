@@ -1,9 +1,6 @@
 package cs.common.utils;
 
-import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 附件工具类，只显示文件，文件夹过滤

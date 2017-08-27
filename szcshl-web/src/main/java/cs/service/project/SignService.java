@@ -90,4 +90,11 @@ public interface SignService {
     boolean updateSignProcessState(String signId,Integer processState);
 
     PageModelDto<SignDto> findBySignUser(ODataObj odataObj);
+
+    List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork);
+
+    /***********************   以下是对接接口部分  ****************************/
+    ResultMsg pushProject(SignDto signDto);
+
+
 }

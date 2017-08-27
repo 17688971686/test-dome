@@ -179,13 +179,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             if (isMerge) {
                 dispatch.setDispatchWay(Constant.MergeWay.MERGE.getValue());   //合并发文
                 dispatch.setIsMainProject(EnumState.YES.getValue());
-                dispatch.setIsRelated("是");
             } else {
                 dispatch.setDispatchWay(Constant.MergeWay.SINGLE.getValue());    //单个发文
                 dispatch.setIsMainProject(EnumState.NO.getValue());
-                dispatch.setIsRelated("否");     //是否有关联
             }
-
+            //是否已经有阶段关联
+            dispatch.setIsRelated(sign.getIsAssociate()==1?EnumState.YES.getValue():EnumState.NO.getValue());
             dispatch.setDraftDate(now);
             dispatch.setDispatchDate(now);
             dispatch.setDispatchType("项目发文");

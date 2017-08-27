@@ -65,11 +65,11 @@
 
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
-                     <label>
-                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                    <label>
+                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9" name="isRelated">是
                     </label>
                     <label>
-                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0" name="isRelated">否
                     </label>
                 </td>
             </tr>

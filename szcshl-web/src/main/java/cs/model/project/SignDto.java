@@ -42,7 +42,7 @@ public class SignDto extends BaseDto {
     private String filecode;
 
     private String projectcode;
-    
+
     private BigDecimal declaration;
 
     private String reviewstage;
@@ -83,12 +83,6 @@ public class SignDto extends BaseDto {
 
     private String secrectlevel;
 
-    private String comprehensivehandlesugid;
-
-    private String leaderhandlesugid;
-
-    private String ministerhandlesugid;
-
     private String sendusersign;
 
     private String issign;
@@ -117,15 +111,6 @@ public class SignDto extends BaseDto {
     private String filenum;
 
     private String docnum;
-
-    private String ispause;
-
-    private Float pausedays;
-
-    @JSONField(format = "yyyy-MM-dd")
-    private Date pausetime;
-
-    private String pasedescription;
 
     //建议书项目处理表份数
     private Integer sugProDealCount;
@@ -162,12 +147,12 @@ public class SignDto extends BaseDto {
     //建议书项目单位请示报告是否有复印件
     private String sugOrgReqCopy;
 
-  //资金申请报告份数
+    //资金申请报告份数
     private Integer capitalAppReportCount;
-    
+
     //资金申请报告是否有原件
-    private Integer capitalAppReportOriginal;
-    
+    private String capitalAppReportOriginal;
+
     //项目建议书份数
     private Integer sugProAdviseCount;
 
@@ -298,72 +283,8 @@ public class SignDto extends BaseDto {
     //可研节能报告是否有原件
     private String energyOriginal;
 
-    public String getComprehensiveId() {
-        return comprehensiveId;
-    }
-
-    public void setComprehensiveId(String comprehensiveId) {
-        this.comprehensiveId = comprehensiveId;
-    }
-
-    public String getLeaderId() {
-        return leaderId;
-    }
-
-    public void setLeaderId(String leaderId) {
-        this.leaderId = leaderId;
-    }
-
-    public String getMinisterId() {
-        return ministerId;
-    }
-
-    public void setMinisterId(String ministerId) {
-        this.ministerId = ministerId;
-    }
-
     //可研节能报告是否有复印件
     private String energyCopy;
-    //综合部拟办意见
-    private String comprehensivehandlesug;
-    //综合部部长ID
-    private String comprehensiveId;
-    //中心领导审批意见
-    private String leaderhandlesug;
-    //中心领导ID
-    private String leaderId;
-    //部长处理意见
-    private String ministerhandlesug;
-    //部长ID
-    private String ministerId;
-
-    //收文状态
-    private String signState;
-
-    //项目是否曾经暂停 9:表示项目曾经暂停,0:表示未暂停
-    private String isProjectState;
-    
-    //项目流程状态信息
-    private Integer processState;
-
-    //部门
-    private OrgDto orgDto;
-
-    //流程实例ID
-    private String processInstanceId;
-
-    //第二负责人
-    private String secondPriUser;
-
-    //开始时间
-    @JSONField(format = "yyyy-MM-dd")
-    private Date startTime;
-
-    //结束时间
-    @JSONField(format = "yyyy-MM-dd")
-    private Date endTime;
-
-    private String isNeedWrokPrograml;
 
     //S (进口设备) 政府采购进口产品申报份数
     private Integer governmentPurchasCount;
@@ -413,7 +334,7 @@ public class SignDto extends BaseDto {
     //进口产品目录分数
     private Integer importProductCount;
 
-    //进口产品目录分数
+    //进口产品目录是否有原件
     private String importProductOriginal;
 
     //进口产品目录是否复印件
@@ -581,6 +502,44 @@ public class SignDto extends BaseDto {
     private String constructionDrawingsCopy;
     //E (项目概算)
 
+    //综合部拟办意见
+    private String comprehensivehandlesug;
+
+    //综合部部长ID
+    private String comprehensiveId;
+
+    //中心领导审批意见
+    private String leaderhandlesug;
+
+    //中心领导ID
+    private String leaderId;
+
+    //部长处理意见
+    private String ministerhandlesug;
+
+    //部长ID
+    private String ministerId;
+
+    //收文状态
+    private String signState;
+
+    //项目流程状态信息
+    private Integer processState;
+
+    //流程实例ID
+    private String processInstanceId;
+
+    //第二负责人
+    private String secondPriUser;
+
+    //开始时间
+    @JSONField(format = "yyyy-MM-dd")
+    private Date startTime;
+
+    //结束时间
+    @JSONField(format = "yyyy-MM-dd")
+    private Date endTime;
+
     //项目是否已关联,0未关联，1已关联，默认未关联
     private Integer isAssociate = 0;
 
@@ -594,34 +553,20 @@ public class SignDto extends BaseDto {
     private SignDto associateSign;
 
     /**
+     * 项目是否曾经暂停（9：是暂停过，0：否）
+     */
+    private String isProjectState;
+    /**
      * 默认办理类型
      */
     private String dealOrgType;
 
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public OrgDto getOrgDto() {
-        return orgDto;
-    }
+    //拟补充资料编号
+    private String suppletterid;
 
     //工作方案
     private List<WorkProgramDto> workProgramDtoList;
-    
-    
+
     //发文
     private DispatchDocDto dispatchDocDto;
 
@@ -636,36 +581,82 @@ public class SignDto extends BaseDto {
 
     //抽取专家
     private List<ExpertSelectedDto> expertSelectedDtoList;
-    
-    //拟补充资料编号
-    private String suppletterid;
 
-    public FileRecordDto getFileRecordDto() {
-        return fileRecordDto;
+    public SignDto() {
     }
 
-    public void setFileRecordDto(FileRecordDto fileRecordDto) {
-        this.fileRecordDto = fileRecordDto;
+    /*********************************** 以下是set get 方法 *****************************************/
+
+    public String getComprehensiveName() {
+        return comprehensiveName;
     }
 
-    public DispatchDocDto getDispatchDocDto() {
-        return dispatchDocDto;
+    public void setComprehensiveName(String comprehensiveName) {
+        this.comprehensiveName = comprehensiveName;
     }
 
-    public void setDispatchDocDto(DispatchDocDto dispatchDocDto) {
-        this.dispatchDocDto = dispatchDocDto;
+    public String getIsLightUp() {
+        return isLightUp;
     }
 
-    public List<WorkProgramDto> getWorkProgramDtoList() {
-        return workProgramDtoList;
+    public void setIsLightUp(String isLightUp) {
+        this.isLightUp = isLightUp;
     }
 
-    public void setWorkProgramDtoList(List<WorkProgramDto> workProgramDtoList) {
-        this.workProgramDtoList = workProgramDtoList;
+    public String getIsSendFileRecord() {
+        return isSendFileRecord;
     }
 
-    public void setOrgDto(OrgDto orgDto) {
-        this.orgDto = orgDto;
+    public void setIsSendFileRecord(String isSendFileRecord) {
+        this.isSendFileRecord = isSendFileRecord;
+    }
+
+    public Date getComprehensiveDate() {
+        return comprehensiveDate;
+    }
+
+    public void setComprehensiveDate(Date comprehensiveDate) {
+        this.comprehensiveDate = comprehensiveDate;
+    }
+
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
+
+    public Date getLeaderDate() {
+        return leaderDate;
+    }
+
+    public void setLeaderDate(Date leaderDate) {
+        this.leaderDate = leaderDate;
+    }
+
+    public String getMinisterName() {
+        return ministerName;
+    }
+
+    public void setMinisterName(String ministerName) {
+        this.ministerName = ministerName;
+    }
+
+    public Date getMinisterDate() {
+        return ministerDate;
+    }
+
+    public void setMinisterDate(Date ministerDate) {
+        this.ministerDate = ministerDate;
+    }
+
+    public Date getPresignDate() {
+        return presignDate;
+    }
+
+    public void setPresignDate(Date presignDate) {
+        this.presignDate = presignDate;
     }
 
     public String getSignid() {
@@ -692,6 +683,14 @@ public class SignDto extends BaseDto {
         this.projectcode = projectcode;
     }
 
+    public BigDecimal getDeclaration() {
+        return declaration;
+    }
+
+    public void setDeclaration(BigDecimal declaration) {
+        this.declaration = declaration;
+    }
+
     public String getReviewstage() {
         return reviewstage;
     }
@@ -716,12 +715,36 @@ public class SignDto extends BaseDto {
         this.projectname = projectname;
     }
 
+    public String getIschangeEstimate() {
+        return ischangeEstimate;
+    }
+
+    public void setIschangeEstimate(String ischangeEstimate) {
+        this.ischangeEstimate = ischangeEstimate;
+    }
+
     public String getMaindepetid() {
         return maindepetid;
     }
 
     public void setMaindepetid(String maindepetid) {
         this.maindepetid = maindepetid;
+    }
+
+    public String getMaindeptName() {
+        return maindeptName;
+    }
+
+    public void setMaindeptName(String maindeptName) {
+        this.maindeptName = maindeptName;
+    }
+
+    public String getMainDeptUserName() {
+        return mainDeptUserName;
+    }
+
+    public void setMainDeptUserName(String mainDeptUserName) {
+        this.mainDeptUserName = mainDeptUserName;
     }
 
     public String getMaindepetcontactuserid() {
@@ -740,6 +763,22 @@ public class SignDto extends BaseDto {
         this.assistdeptid = assistdeptid;
     }
 
+    public String getAssistdeptName() {
+        return assistdeptName;
+    }
+
+    public void setAssistdeptName(String assistdeptName) {
+        this.assistdeptName = assistdeptName;
+    }
+
+    public String getAssistDeptUserName() {
+        return assistDeptUserName;
+    }
+
+    public void setAssistDeptUserName(String assistDeptUserName) {
+        this.assistDeptUserName = assistDeptUserName;
+    }
+
     public String getAssistdeptcontactuserid() {
         return assistdeptcontactuserid;
     }
@@ -756,12 +795,28 @@ public class SignDto extends BaseDto {
         this.designcompanyid = designcompanyid;
     }
 
+    public String getDesigncompanyName() {
+        return designcompanyName;
+    }
+
+    public void setDesigncompanyName(String designcompanyName) {
+        this.designcompanyName = designcompanyName;
+    }
+
     public String getBuiltcompanyid() {
         return builtcompanyid;
     }
 
     public void setBuiltcompanyid(String builtcompanyid) {
         this.builtcompanyid = builtcompanyid;
+    }
+
+    public String getBuiltcompanyName() {
+        return builtcompanyName;
+    }
+
+    public void setBuiltcompanyName(String builtcompanyName) {
+        this.builtcompanyName = builtcompanyName;
     }
 
     public String getUrgencydegree() {
@@ -788,30 +843,6 @@ public class SignDto extends BaseDto {
         this.secrectlevel = secrectlevel;
     }
 
-    public String getComprehensivehandlesugid() {
-        return comprehensivehandlesugid;
-    }
-
-    public void setComprehensivehandlesugid(String comprehensivehandlesugid) {
-        this.comprehensivehandlesugid = comprehensivehandlesugid;
-    }
-
-    public String getLeaderhandlesugid() {
-        return leaderhandlesugid;
-    }
-
-    public void setLeaderhandlesugid(String leaderhandlesugid) {
-        this.leaderhandlesugid = leaderhandlesugid;
-    }
-
-    public String getMinisterhandlesugid() {
-        return ministerhandlesugid;
-    }
-
-    public void setMinisterhandlesugid(String ministerhandlesugid) {
-        this.ministerhandlesugid = ministerhandlesugid;
-    }
-
     public String getSendusersign() {
         return sendusersign;
     }
@@ -826,6 +857,14 @@ public class SignDto extends BaseDto {
 
     public void setIssign(String issign) {
         this.issign = issign;
+    }
+
+    public String getIsassistflow() {
+        return isassistflow;
+    }
+
+    public void setIsassistflow(String isassistflow) {
+        this.isassistflow = isassistflow;
     }
 
     public String getIshasreviewcost() {
@@ -884,14 +923,6 @@ public class SignDto extends BaseDto {
         this.reviewdays = reviewdays;
     }
 
-    public Float getPausedays() {
-        return pausedays;
-    }
-
-    public void setPausedays(Float pausedays) {
-        this.pausedays = pausedays;
-    }
-
     public String getIsassistproc() {
         return isassistproc;
     }
@@ -916,30 +947,6 @@ public class SignDto extends BaseDto {
         this.docnum = docnum;
     }
 
-    public String getIspause() {
-        return ispause;
-    }
-
-    public void setIspause(String ispause) {
-        this.ispause = ispause;
-    }
-
-
-    public Date getPausetime() {
-        return pausetime;
-    }
-
-    public void setPausetime(Date pausetime) {
-        this.pausetime = pausetime;
-    }
-
-    public String getPasedescription() {
-        return pasedescription;
-    }
-
-    public void setPasedescription(String pasedescription) {
-        this.pasedescription = pasedescription;
-    }
 
     public Integer getSugProDealCount() {
         return sugProDealCount;
@@ -1037,6 +1044,22 @@ public class SignDto extends BaseDto {
         this.sugOrgReqCopy = sugOrgReqCopy;
     }
 
+    public Integer getCapitalAppReportCount() {
+        return capitalAppReportCount;
+    }
+
+    public void setCapitalAppReportCount(Integer capitalAppReportCount) {
+        this.capitalAppReportCount = capitalAppReportCount;
+    }
+
+    public String getCapitalAppReportOriginal() {
+        return capitalAppReportOriginal;
+    }
+
+    public void setCapitalAppReportOriginal(String capitalAppReportOriginal) {
+        this.capitalAppReportOriginal = capitalAppReportOriginal;
+    }
+
     public Integer getSugProAdviseCount() {
         return sugProAdviseCount;
     }
@@ -1083,6 +1106,14 @@ public class SignDto extends BaseDto {
 
     public void setProSugEledocCopy(String proSugEledocCopy) {
         this.proSugEledocCopy = proSugEledocCopy;
+    }
+
+    public BigDecimal getAppalyInvestment() {
+        return appalyInvestment;
+    }
+
+    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+        this.appalyInvestment = appalyInvestment;
     }
 
     public Integer getSugMeetCount() {
@@ -1373,222 +1404,6 @@ public class SignDto extends BaseDto {
         this.energyCopy = energyCopy;
     }
 
-    public String getComprehensivehandlesug() {
-        return comprehensivehandlesug;
-    }
-
-    public void setComprehensivehandlesug(String comprehensivehandlesug) {
-        this.comprehensivehandlesug = comprehensivehandlesug;
-    }
-
-    public String getLeaderhandlesug() {
-        return leaderhandlesug;
-    }
-
-    public void setLeaderhandlesug(String leaderhandlesug) {
-        this.leaderhandlesug = leaderhandlesug;
-    }
-
-    public String getMinisterhandlesug() {
-        return ministerhandlesug;
-    }
-
-    public void setMinisterhandlesug(String ministerhandlesug) {
-        this.ministerhandlesug = ministerhandlesug;
-    }
-
-    public String getMaindeptName() {
-        return maindeptName;
-    }
-
-    public void setMaindeptName(String maindeptName) {
-        this.maindeptName = maindeptName;
-    }
-
-    public String getMainDeptUserName() {
-        return mainDeptUserName;
-    }
-
-    public void setMainDeptUserName(String mainDeptUserName) {
-        this.mainDeptUserName = mainDeptUserName;
-    }
-
-    public String getAssistdeptName() {
-        return assistdeptName;
-    }
-
-    public void setAssistdeptName(String assistdeptName) {
-        this.assistdeptName = assistdeptName;
-    }
-
-    public String getAssistDeptUserName() {
-        return assistDeptUserName;
-    }
-
-    public void setAssistDeptUserName(String assistDeptUserName) {
-        this.assistDeptUserName = assistDeptUserName;
-    }
-
-    public String getSignState() {
-        return signState;
-    }
-
-    public void setSignState(String signState) {
-        this.signState = signState;
-    }
-
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
-
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    public String getDesigncompanyName() {
-        return designcompanyName;
-    }
-
-    public void setDesigncompanyName(String designcompanyName) {
-        this.designcompanyName = designcompanyName;
-    }
-
-    public String getBuiltcompanyName() {
-        return builtcompanyName;
-    }
-
-    public void setBuiltcompanyName(String builtcompanyName) {
-        this.builtcompanyName = builtcompanyName;
-    }
-
-    public String getIschangeEstimate() {
-        return ischangeEstimate;
-    }
-
-    public void setIschangeEstimate(String ischangeEstimate) {
-        this.ischangeEstimate = ischangeEstimate;
-    }
-
-    public String getComprehensiveName() {
-        return comprehensiveName;
-    }
-
-    public void setComprehensiveName(String comprehensiveName) {
-        this.comprehensiveName = comprehensiveName;
-    }
-
-    public Date getComprehensiveDate() {
-        return comprehensiveDate;
-    }
-
-    public void setComprehensiveDate(Date comprehensiveDate) {
-        this.comprehensiveDate = comprehensiveDate;
-    }
-
-    public String getLeaderName() {
-        return leaderName;
-    }
-
-    public void setLeaderName(String leaderName) {
-        this.leaderName = leaderName;
-    }
-
-    public Date getLeaderDate() {
-        return leaderDate;
-    }
-
-    public void setLeaderDate(Date leaderDate) {
-        this.leaderDate = leaderDate;
-    }
-
-    public String getMinisterName() {
-        return ministerName;
-    }
-
-    public void setMinisterName(String ministerName) {
-        this.ministerName = ministerName;
-    }
-
-    public Date getMinisterDate() {
-        return ministerDate;
-    }
-
-    public void setMinisterDate(Date ministerDate) {
-        this.ministerDate = ministerDate;
-    }
-
-    public String getIsassistflow() {
-        return isassistflow;
-    }
-
-    public void setIsassistflow(String isassistflow) {
-        this.isassistflow = isassistflow;
-    }
-
-    public String getIsNeedWrokPrograml() {
-        return isNeedWrokPrograml;
-    }
-
-    public void setIsNeedWrokPrograml(String isNeedWrokPrograml) {
-        this.isNeedWrokPrograml = isNeedWrokPrograml;
-    }
-
-    public AssistPlanDto getAssistPlanDto() {
-        return assistPlanDto;
-    }
-
-    public void setAssistPlanDto(AssistPlanDto assistPlanDto) {
-        this.assistPlanDto = assistPlanDto;
-    }
-
-    public List<AssistPlanSignDto> getPlanSignDtoList() {
-        return planSignDtoList;
-    }
-
-    public void setPlanSignDtoList(List<AssistPlanSignDto> planSignDtoList) {
-        this.planSignDtoList = planSignDtoList;
-    }
-
-    public Integer getIsAssociate() {
-        return isAssociate;
-    }
-
-    public void setIsAssociate(Integer isAssociate) {
-        this.isAssociate = isAssociate;
-    }
-
-    public SignDto getAssociateSign() {
-        return associateSign;
-    }
-
-    public void setAssociateSign(SignDto associateSign) {
-        this.associateSign = associateSign;
-    }
-
-    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
-        return expertSelectedDtoList;
-    }
-
-    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
-        this.expertSelectedDtoList = expertSelectedDtoList;
-    }
-
-    public String getIsAdvanced() {
-        return isAdvanced;
-    }
-
-    public void setIsAdvanced(String isAdvanced) {
-        this.isAdvanced = isAdvanced;
-    }
-
-    public BigDecimal getAppalyInvestment() {
-        return appalyInvestment;
-    }
-
-    public void setAppalyInvestment(BigDecimal appalyInvestment) {
-        this.appalyInvestment = appalyInvestment;
-    }
-
     public Integer getGovernmentPurchasCount() {
         return governmentPurchasCount;
     }
@@ -1733,30 +1548,6 @@ public class SignDto extends BaseDto {
         this.importProductCopy = importProductCopy;
     }
 
-    public Integer getSprcialDevicesCount() {
-        return sprcialDevicesCount;
-    }
-
-    public void setSprcialDevicesCount(Integer sprcialDevicesCount) {
-        this.sprcialDevicesCount = sprcialDevicesCount;
-    }
-
-    public String getSprcialDevicesOriginal() {
-        return sprcialDevicesOriginal;
-    }
-
-    public void setSprcialDevicesOriginal(String sprcialDevicesOriginal) {
-        this.sprcialDevicesOriginal = sprcialDevicesOriginal;
-    }
-
-    public String getSprcialDevicesCopy() {
-        return sprcialDevicesCopy;
-    }
-
-    public void setSprcialDevicesCopy(String sprcialDevicesCopy) {
-        this.sprcialDevicesCopy = sprcialDevicesCopy;
-    }
-
     public Integer getOrtherProjectCount() {
         return ortherProjectCount;
     }
@@ -1779,6 +1570,30 @@ public class SignDto extends BaseDto {
 
     public void setOrtherProjectCopy(String ortherProjectCopy) {
         this.ortherProjectCopy = ortherProjectCopy;
+    }
+
+    public Integer getSprcialDevicesCount() {
+        return sprcialDevicesCount;
+    }
+
+    public void setSprcialDevicesCount(Integer sprcialDevicesCount) {
+        this.sprcialDevicesCount = sprcialDevicesCount;
+    }
+
+    public String getSprcialDevicesOriginal() {
+        return sprcialDevicesOriginal;
+    }
+
+    public void setSprcialDevicesOriginal(String sprcialDevicesOriginal) {
+        this.sprcialDevicesOriginal = sprcialDevicesOriginal;
+    }
+
+    public String getSprcialDevicesCopy() {
+        return sprcialDevicesCopy;
+    }
+
+    public void setSprcialDevicesCopy(String sprcialDevicesCopy) {
+        this.sprcialDevicesCopy = sprcialDevicesCopy;
     }
 
     public Integer getProjectDeclareCount() {
@@ -2141,21 +1956,76 @@ public class SignDto extends BaseDto {
         this.constructionDrawingsCopy = constructionDrawingsCopy;
     }
 
-
-    public String getIsLightUp() {
-        return isLightUp;
+    public String getComprehensivehandlesug() {
+        return comprehensivehandlesug;
     }
 
-    public void setIsLightUp(String isLightUp) {
-        this.isLightUp = isLightUp;
+    public void setComprehensivehandlesug(String comprehensivehandlesug) {
+        this.comprehensivehandlesug = comprehensivehandlesug;
     }
 
-    public String getIsSendFileRecord() {
-        return isSendFileRecord;
+    public String getComprehensiveId() {
+        return comprehensiveId;
     }
 
-    public void setIsSendFileRecord(String isSendFileRecord) {
-        this.isSendFileRecord = isSendFileRecord;
+    public void setComprehensiveId(String comprehensiveId) {
+        this.comprehensiveId = comprehensiveId;
+    }
+
+    public String getLeaderhandlesug() {
+        return leaderhandlesug;
+    }
+
+    public void setLeaderhandlesug(String leaderhandlesug) {
+        this.leaderhandlesug = leaderhandlesug;
+    }
+
+    public String getLeaderId() {
+        return leaderId;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public String getMinisterhandlesug() {
+        return ministerhandlesug;
+    }
+
+    public void setMinisterhandlesug(String ministerhandlesug) {
+        this.ministerhandlesug = ministerhandlesug;
+    }
+
+    public String getMinisterId() {
+        return ministerId;
+    }
+
+    public void setMinisterId(String ministerId) {
+        this.ministerId = ministerId;
+    }
+
+    public String getSignState() {
+        return signState;
+    }
+
+    public void setSignState(String signState) {
+        this.signState = signState;
+    }
+
+    public Integer getProcessState() {
+        return processState;
+    }
+
+    public void setProcessState(Integer processState) {
+        this.processState = processState;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public String getSecondPriUser() {
@@ -2166,45 +2036,28 @@ public class SignDto extends BaseDto {
         this.secondPriUser = secondPriUser;
     }
 
-    public Date getPresignDate() {
-        return presignDate;
-    }
-    
-
-	public void setPresignDate(Date presignDate) {
-        this.presignDate = presignDate;
-    }
-    
-    public String getDealOrgType() {
-		return dealOrgType;
-	}
-
-	public void setDealOrgType(String dealOrgType) {
-		this.dealOrgType = dealOrgType;
-	}
-	
-	public BigDecimal getDeclaration() {
-		return declaration;
-	}
-
-	public void setDeclaration(BigDecimal declaration) {
-		this.declaration = declaration;
-	}
-
-	public String getSuppletterid() {
-		return suppletterid;
-	}
-
-	public void setSuppletterid(String suppletterid) {
-		this.suppletterid = suppletterid;
-	}
-
-    public Integer getProcessState() {
-        return processState;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setProcessState(Integer processState) {
-        this.processState = processState;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getIsAssociate() {
+        return isAssociate;
+    }
+
+    public void setIsAssociate(Integer isAssociate) {
+        this.isAssociate = isAssociate;
     }
 
     public String getHasExpertReview() {
@@ -2215,21 +2068,85 @@ public class SignDto extends BaseDto {
         this.hasExpertReview = hasExpertReview;
     }
 
-	public Integer getCapitalAppReportCount() {
-		return capitalAppReportCount;
-	}
+    public String getIsAdvanced() {
+        return isAdvanced;
+    }
 
-	public void setCapitalAppReportCount(Integer capitalAppReportCount) {
-		this.capitalAppReportCount = capitalAppReportCount;
-	}
+    public void setIsAdvanced(String isAdvanced) {
+        this.isAdvanced = isAdvanced;
+    }
 
-	public Integer getCapitalAppReportOriginal() {
-		return capitalAppReportOriginal;
-	}
+    public SignDto getAssociateSign() {
+        return associateSign;
+    }
 
-	public void setCapitalAppReportOriginal(Integer capitalAppReportOriginal) {
-		this.capitalAppReportOriginal = capitalAppReportOriginal;
-	}
+    public void setAssociateSign(SignDto associateSign) {
+        this.associateSign = associateSign;
+    }
+
+    public String getDealOrgType() {
+        return dealOrgType;
+    }
+
+    public void setDealOrgType(String dealOrgType) {
+        this.dealOrgType = dealOrgType;
+    }
+
+    public String getSuppletterid() {
+        return suppletterid;
+    }
+
+    public void setSuppletterid(String suppletterid) {
+        this.suppletterid = suppletterid;
+    }
+
+    public List<WorkProgramDto> getWorkProgramDtoList() {
+        return workProgramDtoList;
+    }
+
+    public void setWorkProgramDtoList(List<WorkProgramDto> workProgramDtoList) {
+        this.workProgramDtoList = workProgramDtoList;
+    }
+
+    public DispatchDocDto getDispatchDocDto() {
+        return dispatchDocDto;
+    }
+
+    public void setDispatchDocDto(DispatchDocDto dispatchDocDto) {
+        this.dispatchDocDto = dispatchDocDto;
+    }
+
+    public FileRecordDto getFileRecordDto() {
+        return fileRecordDto;
+    }
+
+    public void setFileRecordDto(FileRecordDto fileRecordDto) {
+        this.fileRecordDto = fileRecordDto;
+    }
+
+    public AssistPlanDto getAssistPlanDto() {
+        return assistPlanDto;
+    }
+
+    public void setAssistPlanDto(AssistPlanDto assistPlanDto) {
+        this.assistPlanDto = assistPlanDto;
+    }
+
+    public List<AssistPlanSignDto> getPlanSignDtoList() {
+        return planSignDtoList;
+    }
+
+    public void setPlanSignDtoList(List<AssistPlanSignDto> planSignDtoList) {
+        this.planSignDtoList = planSignDtoList;
+    }
+
+    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
+        return expertSelectedDtoList;
+    }
+
+    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
+        this.expertSelectedDtoList = expertSelectedDtoList;
+    }
 
 	public String getIsProjectState() {
 		return isProjectState;
@@ -2238,7 +2155,5 @@ public class SignDto extends BaseDto {
 	public void setIsProjectState(String isProjectState) {
 		this.isProjectState = isProjectState;
 	}
-	
     
-
 }

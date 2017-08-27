@@ -1,6 +1,7 @@
 package cs.common.utils;
 
 import org.apache.log4j.Logger;
+
 import javax.persistence.Id;
 import java.lang.reflect.*;
 import java.util.Collection;
