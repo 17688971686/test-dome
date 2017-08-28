@@ -1,5 +1,6 @@
 package cs.controller.sys;
 
+import cs.common.Constant;
 import cs.model.PageModelDto;
 import cs.model.sys.FileLibraryDto;
 import cs.repository.odata.ODataObj;
@@ -15,12 +16,12 @@ import java.text.ParseException;
 import java.util.List;
 
 /**
- * Description: 质量管理文件库
+ * Description: 文件库
  * Author: mcl
  * Date: 2017/8/21 14:53
  */
 @Controller
-@RequestMapping(name="质量管理文件库",path="fileLibrary")
+@RequestMapping(name="文件库",path="fileLibrary")
 public class FileLibraryController {
 
     private String ctrlName = "library";
@@ -28,14 +29,21 @@ public class FileLibraryController {
     @Autowired
     private FileLibraryService fileLibraryService;
 
-    @RequiresPermissions("fileLibrary#initFolder#get")
-    @RequestMapping(name="初始化文件夹",path="initFolder",method = RequestMethod.GET)
+    @RequiresPermissions("fileLibrary#initFileFolder#get")
+    @RequestMapping(name="初始化质量管理文件库-文件夹",path="initFileFolder",method = RequestMethod.GET)
     @ResponseBody
-    public List<FileLibraryDto> initFolder(HttpServletRequest request) throws ParseException {
+    public List<FileLibraryDto> initFileFolder(HttpServletRequest request) throws ParseException {
         ODataObj oDataObj = new ODataObj(request);
-        return fileLibraryService.initFolder(oDataObj);
+        return fileLibraryService.initFolder(oDataObj,Constant.folderType.FILE_LIBRARY.getValue());
     }
 
+    @RequiresPermissions("fileLibrary#initPolicyFolder#get")
+    @RequestMapping(name="初始化政策标准库-文件夹",path="initPolicyFolder",method = RequestMethod.GET)
+    @ResponseBody
+    public List<FileLibraryDto> initPolicyFolder(HttpServletRequest request) throws ParseException {
+        ODataObj oDataObj = new ODataObj(request);
+        return fileLibraryService.initFolder(oDataObj,Constant.folderType.POLICY_LIBRARY.getValue());
+    }
 
     @RequiresPermissions("fileLibrary#initFileList#post")
     @RequestMapping(name="获取文件夹下所有文件",path="initFileList",method = RequestMethod.POST)
@@ -55,19 +63,34 @@ public class FileLibraryController {
     }
 
 
-    @RequiresPermissions("fileLibrary#addFolder#post")
-    @RequestMapping(name="新建文件夹",path ="addFolder",method=RequestMethod.POST)
+    @RequiresPermissions("fileLibrary#addFileFolder#post")
+    @RequestMapping(name="新建文件夹-质量管理文件库",path ="addFileFolder",method=RequestMethod.POST)
     @ResponseStatus(value= HttpStatus.CREATED)
-    public void addFolder(@RequestBody  FileLibraryDto fileLibraryDto){
-        fileLibraryService.addFolder(fileLibraryDto);
+    public void addFileFolder(@RequestBody  FileLibraryDto fileLibraryDto){
+        fileLibraryService.addFolder(fileLibraryDto,Constant.folderType.FILE_LIBRARY.getValue());
+
+    }
+
+    @RequiresPermissions("fileLibrary#addPolicyFolder#post")
+    @RequestMapping(name="新建文件夹-政策标准库",path ="addPolicyFolder",method=RequestMethod.POST)
+    @ResponseStatus(value= HttpStatus.CREATED)
+    public void addPolicyFolder(@RequestBody  FileLibraryDto fileLibraryDto){
+        fileLibraryService.addFolder(fileLibraryDto,Constant.folderType.POLICY_LIBRARY.getValue());
 
     }
 
     @RequiresPermissions("fileLibrary#saveFile#post")
-    @RequestMapping(name="新建文件",path ="saveFile",method=RequestMethod.POST)
+    @RequestMapping(name="新建文件-质量管理文件库",path ="saveFile",method=RequestMethod.POST)
     @ResponseBody
     public FileLibraryDto saveFile(@RequestBody  FileLibraryDto fileLibraryDto){
-       return  fileLibraryService.saveFile(fileLibraryDto);
+       return  fileLibraryService.saveFile(fileLibraryDto,Constant.folderType.FILE_LIBRARY.getValue());
+    }
+
+    @RequiresPermissions("fileLibrary#savePolicyFile#post")
+    @RequestMapping(name="新建文件-政策标准库",path ="savePolicyFile",method=RequestMethod.POST)
+    @ResponseBody
+    public FileLibraryDto savePolicyFile(@RequestBody  FileLibraryDto fileLibraryDto){
+        return  fileLibraryService.saveFile(fileLibraryDto,Constant.folderType.POLICY_LIBRARY.getValue());
     }
 
     @RequiresPermissions("fileLibrary#updateFile#put")
@@ -106,21 +129,40 @@ public class FileLibraryController {
      * begin html
      */
     @RequiresPermissions("fileLibrary#html/fileLibrary#get")
-    @RequestMapping(name="文件库列表", path ="html/fileLibrary",method= RequestMethod.GET)
+    @RequestMapping(name="质量管理文件库列表", path ="html/fileLibrary",method= RequestMethod.GET)
     public String list(){
         return ctrlName + "/fileLibrary";
     }
 
 
     @RequiresPermissions("fileLibrary#html/fileList#get")
-    @RequestMapping(name="文件列表",path ="html/fileList",method=RequestMethod.GET)
+    @RequestMapping(name="质量管理文件库-文件列表",path ="html/fileList",method=RequestMethod.GET)
     public String fileList(){
         return ctrlName + "/fileList";
     }
 
     @RequiresPermissions("fileLibrary#html/fileEdit#get")
-    @RequestMapping(name="新建文件",path="html/fileEdit",method=RequestMethod.GET)
+    @RequestMapping(name="质量管理文件库-新建文件",path="html/fileEdit",method=RequestMethod.GET)
     public String fileEdit(){
+        return ctrlName + "/fileEdit";
+    }
+
+
+    @RequiresPermissions("fileLibrary#html/policyLibrary#get")
+    @RequestMapping(name="政策标准库—文件库列表",path="html/policyLibrary",method=RequestMethod.GET)
+    public String policyLibrary(){
+        return ctrlName + "/policyLibrary";
+    }
+
+    @RequiresPermissions("fileLibrary#html/policyList#get")
+    @RequestMapping(name="政策标准库-文件列表",path ="html/policyList",method=RequestMethod.GET)
+    public String policyList(){
+        return ctrlName + "/fileList";
+    }
+
+    @RequiresPermissions("fileLibrary#html/policyEdit#get")
+    @RequestMapping(name="政策标准库-新建文件",path="html/policyEdit",method=RequestMethod.GET)
+    public String policyEdit(){
         return ctrlName + "/fileEdit";
     }
 }

@@ -55,11 +55,15 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
      * @return
      */
     @Override
-    public List<FileLibraryDto> initFolder(ODataObj oDataObj) {
+    public List<FileLibraryDto> initFolder(ODataObj oDataObj,String libraryType) {
         Criteria criteria = fileLibraryRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-
-        criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(),Constant.folderType.FILE_LIBRARY.getValue()));
+        if((Constant.folderType.POLICY_LIBRARY.getValue()).equals(libraryType)){//政策标准库
+            criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(),Constant.folderType.POLICY_LIBRARY.getValue()));
+        }
+        if((Constant.folderType.FILE_LIBRARY.getValue()).equals(libraryType)){//质量管理文件库
+            criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(),Constant.folderType.FILE_LIBRARY.getValue()));
+        }
         criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),Constant.fileNatrue.FOLDER_TYPE.getValue()));
 
         List<FileLibrary> fileLibraryList = criteria.list();
@@ -79,8 +83,15 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
      * @param fileLibraryDto
      */
     @Override
-    public void addFolder(FileLibraryDto fileLibraryDto) {
-        FileLibrary findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
+    public void addFolder(FileLibraryDto fileLibraryDto,String libraryType) {
+        FileLibrary findFile=new FileLibrary();
+        if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
+          findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.POLICY_LIBRARY.getValue());
+        }
+        if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
+            findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
+        }
+
         if(findFile ==null) {
             FileLibrary fileLibrary = new FileLibrary();
 
@@ -89,9 +100,13 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
             String url = "";
             if (fileLibraryDto.getParentFileId() != null) {
                 url = File.separator + findFileUrlById(fileLibraryDto.getParentFileId()) + File.separator + fileLibraryDto.getFileName();
-                fileLibrary.setParentFileId(fileLibraryDto.getParentFileId());
             } else {
-                url = File.separator + Constant.SysFileType.FILELIBRARY.getValue()+ File.separator + fileLibraryDto.getFileName();
+                if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
+                    url = File.separator + Constant.SysFileType.POLICYLIBRARY.getValue()+ File.separator + fileLibraryDto.getFileName();
+                }
+                if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
+                    url = File.separator + Constant.SysFileType.FILELIBRARY.getValue()+ File.separator + fileLibraryDto.getFileName();
+                }
             }
 
             String fileUrl = SysFileUtil.generatRelativeUrl(fileLibraryPath , url ,null ,null ,fileLibraryDto.getFileName());
@@ -102,9 +117,15 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
             fileLibrary.setCreatedDate(new Date());
             fileLibrary.setModifiedBy(SessionUtil.getLoginName());
             fileLibrary.setModifiedDate(new Date());
-            fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
             fileLibrary.setFileUrl( url);
             fileLibrary.setFileNature(Constant.fileNatrue.FOLDER_TYPE.getValue());
+
+            if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
+                fileLibrary.setFileType(Constant.folderType.POLICY_LIBRARY.getValue());
+            }
+            if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
+                fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
+            }
             fileLibraryRepo.save(fileLibrary);
         }else{
             throw new IllegalArgumentException(String.format("文件夹：%s 已经存在，请重新输入",fileLibraryDto.getFileName()));
@@ -117,8 +138,14 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
      * @param fileLibraryDto
      */
     @Override
-    public FileLibraryDto saveFile(FileLibraryDto fileLibraryDto) {
-        FileLibrary findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FILE_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
+    public FileLibraryDto saveFile(FileLibraryDto fileLibraryDto,String libraryType) {
+        FileLibrary findFile=new FileLibrary();
+        if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
+            findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.POLICY_LIBRARY.getValue());
+        }
+        if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
+            findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
+        }
         if(findFile ==null) {
         FileLibrary fileLibrary = new FileLibrary();
         String fileUrl="";
@@ -134,7 +161,12 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
         fileLibrary.setCreatedDate(new Date());
         fileLibrary.setModifiedBy(SessionUtil.getLoginName());
         fileLibrary.setModifiedDate(new Date());
-        fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
+        if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
+            fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
+        }
+        if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
+            fileLibrary.setFileType(Constant.folderType.POLICY_LIBRARY.getValue());
+        }
         fileLibrary.setFileUrl(findFileUrlById(fileLibraryDto.getParentFileId()) + fileUrl);
         fileLibrary.setFileNature(Constant.fileNatrue.FILE_TYPE.getValue());
         fileLibraryRepo.save(fileLibrary);

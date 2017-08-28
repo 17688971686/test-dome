@@ -13,10 +13,10 @@ import java.util.List;
  */
 public interface FileLibraryService {
 
-    List<FileLibraryDto> initFolder(ODataObj oDataObj);
-    void addFolder(FileLibraryDto fileLibraryDto);
+    List<FileLibraryDto> initFolder(ODataObj oDataObj,String libraryType);
+    void addFolder(FileLibraryDto fileLibraryDto,String libraryType);
     PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj ,String fileId);
-    FileLibraryDto saveFile(FileLibraryDto fileLibraryDto);
+    FileLibraryDto saveFile(FileLibraryDto fileLibraryDto,String libraryType);
 
     String findFileUrlById(String fileId);
 

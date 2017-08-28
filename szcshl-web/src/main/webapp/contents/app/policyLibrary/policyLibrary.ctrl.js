@@ -1,10 +1,10 @@
 (function(){
     'use strict';
-    angular.module('app').controller('fileLibraryCtrl',fileLibrary);
+    angular.module('app').controller('policyLibraryCtrl',policyLibrary);
 
-    fileLibrary.$inject=['$scope','$state','$location','fileLibrarySvc'];
+    policyLibrary.$inject=['$scope','$state','$location','policyLibrarySvc'];
 
-    function fileLibrary($scope,$state,$location,fileLibrarySvc){
+    function policyLibrary($scope,$state,$location,policyLibrarySvc){
         var vm = this;
         // vm.title="";
         vm.parentId = $state.params.parentId;
@@ -12,7 +12,7 @@
         vm.fileLibrary={};
         activate();
         function activate(){
-            fileLibrarySvc.initFileFolder(function(data){
+            policyLibrarySvc.initPolicyFolder(function(data){
                 var zTreeObj;
                 var setting = {
                     callback:{
@@ -27,7 +27,7 @@
                     }
                 };
                 function zTreeOnClick(event, treeId, treeNode) {
-                    $state.go('fileLibrary.fileList',{parentId : treeNode.id,fileId : ''});
+                    $state.go('policyLibrary.policyList',{parentId : treeNode.id,fileId : ''});
                 };
 
                 var zNodes = $linq(data).select(
@@ -67,7 +67,7 @@
          * 保存新建文件夹
          */
         vm.saveRootFolder = function(){
-            fileLibrarySvc.saveRootFolder(vm);
+            policyLibrarySvc.saveRootFolder(vm);
         }
 
 

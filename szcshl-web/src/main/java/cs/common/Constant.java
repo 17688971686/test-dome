@@ -410,7 +410,8 @@ public class Constant {
         MEETING("会前准备材料"),
         SUPPLEMENT("补充函"),
         STAGEMEETING("评审会会议"),
-        FILELIBRARY("质量管理文件库");
+        FILELIBRARY("质量管理文件库"),
+        POLICYLIBRARY("政策标准库");
 
         private String value;
 

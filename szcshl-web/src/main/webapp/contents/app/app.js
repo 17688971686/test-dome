@@ -558,6 +558,27 @@
                 controllerAs : 'vm'
             })
 
+        //政策标准库
+            .state('policyLibrary',{
+                url : '/policyLibrary',
+                templateUrl : rootPath + '/fileLibrary/html/policyLibrary.html',
+                controller : 'policyLibraryCtrl',
+                controllerAs : 'vm'
+            })
+            .state('policyLibrary.policyList',{ //文件列表
+                url : '/policyList/:parentId/:fileId',
+                templateUrl : rootPath + '/fileLibrary/html/policyList.html',
+                controller : 'policyLibraryEditCtrl',
+                controllerAs : 'vm'
+            })
+            .state('policyLibrary.policyEdit',{//新建文件
+                url : '/policyEdit/:parentId/:fileId',
+                templateUrl : rootPath + '/fileLibrary/html/policyEdit.html',
+                controller : 'policyLibraryEditCtrl',
+                controllerAs : 'vm'
+            })
+
+
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
         //获取表头名称

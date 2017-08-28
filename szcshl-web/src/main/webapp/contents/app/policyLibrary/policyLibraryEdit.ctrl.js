@@ -1,8 +1,8 @@
 (function(){
     'use strict';
-    angular.module('app').controller('fileLibraryEditCtrl',fileLibraryEdit);
-    fileLibraryEdit.$inject=['$state','fileLibrarySvc','sysfileSvc','$scope'];
-    function fileLibraryEdit($state,fileLibrarySvc,sysfileSvc,$scope){
+    angular.module('app').controller('policyLibraryEditCtrl',policyLibraryEdit);
+    policyLibraryEdit.$inject=['$state','policyLibrarySvc','sysfileSvc','$scope'];
+    function policyLibraryEdit($state,policyLibrarySvc,sysfileSvc,$scope){
         var vm = this;
         vm.parentId = $state.params.parentId;
         vm.fileLibrary={};
@@ -29,8 +29,8 @@
             vm.sysFile = {
                 businessId : vm.fileId,
                 mainId : '',
-                mainType : sysfileSvc.mainTypeValue().FILELIBRARY,
-                sysBusiType :vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().FILELIBRARY),vm.fileUrl.lastIndexOf(vm.fileName))
+                mainType : sysfileSvc.mainTypeValue().POLICYLIBRARY,
+                sysBusiType :vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().POLICYLIBRARY),vm.fileUrl.lastIndexOf(vm.fileName))
             };
             sysfileSvc.initUploadOptions({
                 inputId : "sysfileinput",
@@ -46,18 +46,18 @@
 
         activate();
         function activate(){
+            if(vm.parentId){
+                policyLibrarySvc.getFileUrlById(vm,vm.parentId);
+                policyLibrarySvc.initFileList(vm);
+            }
             if(vm.fileId){
                 vm.isUpdate=true;
-                fileLibrarySvc.findFileById(vm , vm.fileId);
+                policyLibrarySvc.findFileById(vm , vm.fileId);
                 sysfileSvc.findByBusinessId(vm.fileId,function(data){
                     vm.sysFilelists = data;
                 });
             }
 
-            if(vm.parentId){
-                fileLibrarySvc.getFileUrlById(vm,vm.parentId);
-                fileLibrarySvc.initFileList(vm);
-            }
         }
 
 
@@ -81,21 +81,21 @@
          * 保存新建文件夹
          */
         vm.saveChildFolder = function(){
-            fileLibrarySvc.saveChildFolder(vm);
+            policyLibrarySvc.saveChildFolder(vm);
         }
 
         /**
          * 新建文件跳转页
          */
         vm.addFile = function(){
-            $state.go('fileLibrary.fileEdit',{parentId : vm.parentId,fileId : ''});
+            $state.go('policyLibrary.policyEdit',{parentId : vm.parentId,fileId : ''});
         }
 
         /**
          * 保存新建文件
          */
         vm.createFile=function(){
-            fileLibrarySvc.saveFile(vm);
+            policyLibrarySvc.saveFile(vm);
         }
 
         /**
@@ -103,14 +103,14 @@
          * @param fileId
          */
         vm.update  = function(fileId){
-            $state.go('fileLibrary.fileEdit',{parentId :vm.parentId ,fileId : fileId});
+            $state.go('policyLibrary.policyEdit',{parentId :vm.parentId ,fileId : fileId});
         }
 
         /**
          * 更新文件
          */
         vm.updateFile = function (){
-            fileLibrarySvc.updateFile(vm);
+            policyLibrarySvc.updateFile(vm);
         }
 
 
@@ -125,7 +125,7 @@
                 fn : function (){
                     $('.alertDialog').modal('hide');
                     $('.modal-backdrop').remove();
-                    fileLibrarySvc.deleteFile(vm,fileId);
+                    policyLibrarySvc.deleteFile(vm,fileId);
                 }
             });
         }
@@ -135,22 +135,14 @@
          * 删除文件根目录
          */
         vm.deleteRootDirectory=function(){
-            fileLibrarySvc.deleteRootDirectory(vm);
+            policyLibrarySvc.deleteRootDirectory(vm);
 
         }
 
-        /**
-         * 更新根目录，未实现
-         */
-        vm.updateRootDirectory = function(){
-            // vm.isSubmit=true;
-            // fileLibrarySvc.folderById(vm,vm.parentId);
-
-        }
 
         //模糊查询
         vm.queryUser=function(){
-            fileLibrarySvc.queryUser(vm);
+            policyLibrarySvc.queryUser(vm);
         };
 
 

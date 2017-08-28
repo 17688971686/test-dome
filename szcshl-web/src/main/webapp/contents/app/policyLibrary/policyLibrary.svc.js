@@ -1,23 +1,23 @@
-(function(){
+(function() {
     'use strict';
-    angular.module('app').factory('fileLibrarySvc',fileLibrary);
+    angular.module('app').factory('policyLibrarySvc', policyLibrary);
 
-    fileLibrary.$inject=['$http','$state','$location','sysfileSvc'];
+    policyLibrary.$inject = ['$http', '$state', '$location', 'sysfileSvc'];
 
-    function fileLibrary($http,$state,$location,sysfileSvc){
-        var service={
-            saveRootFolder : saveRootFolder,//新建根目录文件夹
-            saveChildFolder : saveChildFolder,//新建子目录
-            initFileFolder : initFileFolder ,//初始化质量管理文件库-文件夹
-            initFileList : initFileList,//初始化文件夹下所有文件
-            saveFile : saveFile,//保存文件
-            findFileById : findFileById ,//通过id查询文件
-            updateFile : updateFile,//更新文件
-            deleteFile : deleteFile,//删除文件
-            deleteRootDirectory : deleteRootDirectory ,//删除根目录
-            folderById : folderById , //通过id查询文件夹
-            queryUser : queryUser,//模糊查询
-            getFileUrlById : getFileUrlById ,//获取路径
+    function policyLibrary($http, $state, $location, sysfileSvc) {
+        var service = {
+            saveRootFolder: saveRootFolder,//新建根目录文件夹
+            saveChildFolder: saveChildFolder,//新建子目录
+            initPolicyFolder: initPolicyFolder,//初始化政策标准库-文件夹
+            initFileList: initFileList,//初始化文件夹下所有文件
+            saveFile: saveFile,//保存文件
+            findFileById: findFileById,//通过id查询文件
+            updateFile: updateFile,//更新文件
+            deleteFile: deleteFile,//删除文件
+            deleteRootDirectory: deleteRootDirectory,//删除根目录
+            folderById: folderById, //通过id查询文件夹
+            queryUser: queryUser,//模糊查询
+            getFileUrlById: getFileUrlById,//获取路径
         }
 
         return service;
@@ -70,7 +70,7 @@
                                 $('.alertDialog').modal('hide');
                                 $('.modal-backdrop').remove();
                                 // initFolder(vm);
-                                $state.go('fileLibrary',{},{reload:true});
+                                $state.go('policyLibrary',{},{reload:true});
                                 // location.href = rootPath + "/admin/index#/fileLibrary";
                             }
                         })
@@ -124,7 +124,7 @@
                         vm.isSubmit = false;
                         $('.alertDialog').modal('hide');
                         $('.modal-backdrop').remove();
-                        $state.go('fileLibrary.fileList',{parentId : vm.parentId,fileId : vm.fileLibrary.fileId});
+                        $state.go('policyLibrary.policyList',{parentId : vm.parentId,fileId : vm.fileLibrary.fileId});
                     }
                 })
             }
@@ -191,7 +191,7 @@
             if (isValid) {
                 var httpOptions = {
                     method: 'post',
-                    url: rootPath + "/fileLibrary/saveFile",
+                    url: rootPath + "/fileLibrary/savePolicyFile",
                     data: vm.fileLibrary
                 }
                 var httpSuccess = function success(response) {
@@ -227,11 +227,12 @@
         }
         //end saveFile
 
-        //begin initFolder
-        function initFileFolder(callBack){
+
+        //begin initPolicyFolder
+        function initPolicyFolder(callBack){
             var httpOptions={
                 method : "get",
-                url : rootPath + "/fileLibrary/initFileFolder"
+                url : rootPath + "/fileLibrary/initPolicyFolder"
             }
             var httpSuccess = function success(response){
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -243,17 +244,14 @@
                 httpOptions : httpOptions,
                 success : httpSuccess
             });
-
-        }//end initFolder
-
+        }//end initPolicyFolder
 
         //begin saveRootFolder
         function saveRootFolder(vm){
             if (vm.fileLibrary.fileName !=undefined) {
-            // vm.fileLibrary.fileName !=undefined
                 var httpOptions = {
                     method: 'post',
-                    url: rootPath + "/fileLibrary/addFileFolder",
+                    url: rootPath + "/fileLibrary/addPolicyFolder",
                     data: vm.fileLibrary
                 };
                 var httpSuccess = function success(response) {
@@ -269,7 +267,7 @@
                                     $('.alertDialog').modal('hide');
                                     $('.modal-backdrop').remove();
                                     window.parent.$("#addRootFolder").data("kendoWindow").close();
-                                    $state.go('fileLibrary',{},{reload:true});
+                                    $state.go('policyLibrary',{},{reload:true});
                                 }
                             })
                         }
@@ -296,13 +294,10 @@
 
         //begin saveChildFolder
         function saveChildFolder(vm){
-            // common.initJqValidation();
-            // var isValid = $('#form').valid();
-            // if (isValid) {
             if (vm.fileLibrary.fileName !=undefined) {
                 var httpOptions = {
                     method: 'post',
-                    url: rootPath + "/fileLibrary/addFileFolder",
+                    url: rootPath + "/fileLibrary/addPolicyFolder",
                     data: vm.fileLibrary
                 };
                 var httpSuccess = function success(response) {
@@ -318,7 +313,7 @@
                                     $('.alertDialog').modal('hide');
                                     $('.modal-backdrop').remove();
                                     window.parent.$("#addChildFolder").data("kendoWindow").close();
-                                    $state.go('fileLibrary',{},{reload:true});
+                                    $state.go('policyLibrary',{},{reload:true});
                                     // initFolder(vm);
                                 }
                             })
@@ -395,7 +390,7 @@
                     width: 300,
                     filterable: false,
                     template : function(item){
-                       if(item.sysFileDtoList.length>0){
+                        if(item.sysFileDtoList.length>0){
                             var sysFileDtoList = "";
                             for (var i = 0, l = item.sysFileDtoList.length; i < l; i++) {
                                 sysFileDtoList += "<li>"+item.sysFileDtoList[i].showName+"</li>"
@@ -430,5 +425,4 @@
 
 
     }
-
 })();
