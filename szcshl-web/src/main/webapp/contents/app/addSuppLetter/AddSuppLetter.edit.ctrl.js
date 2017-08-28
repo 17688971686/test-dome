@@ -16,6 +16,10 @@
             vm.title = '更新登记补充资料';
         }
 
+      //根据ID查看拟补充资料函
+        vm.findByIdAddSuppLetter = function(id){
+        	$state.go('getAddSuppLetterById', {id: id});
+        }
         vm.create = function () {
             addSuppLetterSvc.createAddSuppLetter(vm);
         };
@@ -25,9 +29,8 @@
 
         activate();
         function activate() {
-            if (vm.isUpdate) {
-                addSuppLetterSvc.getAddSuppLetterById(vm);
-            }
+        	//查看补充资料详细信息
+            addSuppLetterSvc.getAddSuppLetterById(vm);
         }
     }
 })();

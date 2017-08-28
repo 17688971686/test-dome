@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.util.List;
 import java.util.Map;
 
 import cs.common.ResultMsg;
@@ -19,7 +20,7 @@ public interface AddSuppLetterService {
     
     ResultMsg addSupp(AddSuppLetterDto addSuppLetterDto,Boolean isaddSuppLettr);
     
-    AddSuppLetterDto initSupp(String signid,String id);
+  //  AddSuppLetterDto initSupp(String signid,String id);
 
 	void delete(String id);
 	
@@ -30,5 +31,7 @@ public interface AddSuppLetterService {
 	AddSuppLetterDto initSuppLetter(String signid,String id);
 
 	AddSuppLetterDto findByIdSuppLetter(String id);
+
+	List<AddSuppLetterDto> initSuppList(String signid);
 
 }

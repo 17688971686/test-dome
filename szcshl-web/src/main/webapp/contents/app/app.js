@@ -38,6 +38,23 @@
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
             })//end#addSuppletter
+            
+             //begin#拟补充资料函列表
+            .state('addSuppletterList', {
+                url: '/addSuppletterList/:signid',
+                templateUrl: rootPath + '/addSuppLetter/list.html',
+                controller: 'addSuppLetterCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函列表
+            
+             //begin#拟补充资料函详细信息
+            .state('getAddSuppLetterById', {
+                url: '/getAddSuppLetterById/:id',
+                templateUrl: rootPath + '/addSuppLetter/detail.html',
+                controller: 'addSuppLetterEditCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函详细信息
+           
              //begin#registerFile
             .state('registerFile', {
                 url: '/registerFile/:signid/:id',

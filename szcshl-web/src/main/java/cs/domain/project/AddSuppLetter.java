@@ -59,7 +59,7 @@ public class AddSuppLetter extends DomainBase {
 	private String userId;
 	
 	//文件标题
-	@Column(columnDefinition = "VARCHAR(64)")
+	@Column(columnDefinition = "VARCHAR(200)")
 	private String title;
 	
 	//发行范围

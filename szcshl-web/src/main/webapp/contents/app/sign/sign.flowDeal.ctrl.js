@@ -4,9 +4,9 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-      'addRegisterFileSvc',  '$http','bsWin'];
+      'addRegisterFileSvc','workprogramSvc',  '$http','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc, $http,bsWin) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,workprogramSvc, $http,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -71,7 +71,7 @@
         vm.model.signid = $state.params.signid;
         vm.flow.taskId = $state.params.taskId; // 流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
-
+        
         active();
         function active() {
             $('#myTab li').click(function (e) {
@@ -439,6 +439,12 @@
         	//$state.go('addSupp', {signid: vm.model.signid,id:vm.model.suppletterid });
         	$state.go('addSupp', {signid: vm.model.signid});
         }// E_跳转到 拟补充资料函 编辑页面
+        
+        //S 拟补充资料函列表
+        vm.addSuppLetterList = function(){
+        	$state.go('addSuppletterList',{signid: vm.model.signid});
+        }
+      //E 拟补充资料函列表
         
         //S_工作方案  --链接到  登记表补充资料 
         vm.addRegisterFile = function (options) {

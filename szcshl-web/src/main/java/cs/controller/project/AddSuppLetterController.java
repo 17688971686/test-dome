@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,11 +33,11 @@ public class AddSuppLetterController {
     @Autowired
     private AddSuppLetterService addSuppLetterService;
     
-    @RequiresPermissions("addSuppLetter##get")
-    @RequestMapping(name = "初始化拟补充资料函", path = "", method = RequestMethod.GET)
-    public @ResponseBody AddSuppLetterDto initSupp(@RequestParam String signid){
-    	//AddSuppLetterDto addSuppLetterDto=addSuppLetterService.initSupp(signid,id);
-    	return null;
+    @RequiresPermissions("addSuppLetter#initSuppListDate#post")
+    @RequestMapping(name = "初始化拟补充资料函列表", path = "initSuppListDate", method = RequestMethod.POST)
+    public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String signid){
+    	List<AddSuppLetterDto> addSuppLetterDtos=addSuppLetterService.initSuppList(signid);
+    	return addSuppLetterDtos;
     }
     
     @RequiresPermissions("addSuppLetter#initaddSuppLetterData#get")
@@ -65,8 +66,8 @@ public class AddSuppLetterController {
     	addSuppLetterService.updateSupp(addSuppLetterDto);
     }
     
-    @RequiresPermissions("addSuppLetter#add#get")
-    @RequestMapping(name = "根据id获取拟补充资料函", path = "getbyId", method = RequestMethod.GET)
+    @RequiresPermissions("addSuppLetter#findById#get")
+    @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.GET)
     public @ResponseBody AddSuppLetterDto getbyId(@RequestParam String id){
     	AddSuppLetterDto addSuppLetterDto = addSuppLetterService.getbyId(id);
     	return addSuppLetterDto;
@@ -83,6 +84,18 @@ public class AddSuppLetterController {
     @RequestMapping(name = "编辑页面", path = "edit", method = RequestMethod.GET)
     public String edit(Model model) {
         return ctrlName+"/edit"; 
+    }
+    
+    @RequiresPermissions("addSuppLetter#html/list#get")
+    @RequestMapping(name = "拟补充资料函列表页面", path = "list", method = RequestMethod.GET)
+    public String addSuppLetterList() {
+        return ctrlName+"/list"; 
+    }
+    
+    @RequiresPermissions("addSuppLetter#html/detail#get")
+    @RequestMapping(name = "拟补充资料函详细信息页面", path = "detail", method = RequestMethod.GET)
+    public String addSuppLetterDetail() {
+        return ctrlName+"/detail"; 
     }
 
 }

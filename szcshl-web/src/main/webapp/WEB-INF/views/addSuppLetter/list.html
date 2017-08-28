@@ -1,0 +1,57 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/user">拟补充资料函列表</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+   <!--  <form id="usersform" name="usersform">
+    		 
+       <div class="well">
+        <span class="help-inline">文件标题：</span>
+	    	<input type="text" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入">
+	    	<span class="help-inline" style="margin-left:10px;">拟稿人：</span>
+	    	<input type="text" ng-model="vm.model.userPhone" operator="eq" name="userPhone" id="userPhone" placeholder="请输入">
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a>
+	    	<button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+   			 </button>
+        </div>
+     </form> -->
+     <div>
+       <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+     </div>
+      <div class="well">
+      <table border="1" >
+		<tr>
+			<td class="text-center" style="width: 15%; ">文件标题</td>
+			<td class="text-center" style="width: 15%;">拟稿部门</td>
+			<td class="text-center" style="width: 15%;">拟稿人</td>
+			<td class="text-center" style="width: 15%;">拟稿时间</td>
+			<td class="text-center" style="width: 15%;">文件字号</td>
+			<td class="text-center" style="width: 15%;">发行范围</td>
+			<td class="text-center">操作</td>
+		</tr>
+		<tr ng-repeat="a in vm.suppletterlist">
+			<td class="text-center">{{a.title}}</td>
+			<td class="text-center">{{a.orgName}}</td>
+			<td class="text-center">{{a.userName}}</td>
+			<td class="text-center">{{a.suppLetterTime}}</td>
+			<td class="text-center">{{a.filenum}}</td>
+			<td class="text-center">{{a.dispaRange}}</td>
+			<td class="text-center">
+				<button class="btn btn-xs btn-primary"
+					ng-click="vm.findByIdAddSuppLetter(a.id);">
+					<span class="glyphicon glyphicon-pencil">查看</span>
+				</button>
+				
+			</td>
+		</tr>
+	</table>
+	</div>
+     
+     
+</div>
+

@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 	@Autowired
 	private SignPrincipalService signPrincipalService;
 	
-	@Override
+	/*@Override
 	public AddSuppLetterDto initSupp(String signid,String id) {
 		AddSuppLetterDto addSuppLetterDto=new AddSuppLetterDto();
 		if(Validate.isString(id)){
@@ -58,7 +59,7 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 			addSuppLetterDto.setSignid(signid);
 		}
 		return addSuppLetterDto;
-	}
+	}*/
 	/**
 	 * 保存补充资料函
 	 */
@@ -112,10 +113,10 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 	
 	@Override
 	public AddSuppLetterDto getbyId(String id) {
-		AddSuppLetter addSuppLetter = addSuppLetterRepo.getById(id);
+		AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(id);
 		AddSuppLetterDto addSuppLetterDto=new AddSuppLetterDto();
 		BeanCopierUtils.copyPropertiesIgnoreNull(addSuppLetter, addSuppLetterDto);
-			return addSuppLetterDto;
+		return addSuppLetterDto;
 	}
 	
     
@@ -144,14 +145,14 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 	@Override
 	public AddSuppLetterDto initSuppLetter(String signid,String id) {
 		AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
-		HqlBuilder hql = HqlBuilder.create();
+	/*	HqlBuilder hql = HqlBuilder.create();
 		hql.append(" from "+AddSuppLetter.class.getSimpleName() +" where "+ AddSuppLetter_.signid.getName() +" = :signid ");
 		hql.setParam("signid", signid);
 		List<AddSuppLetter> suppletterlist = addSuppLetterRepo.findByHql(hql);
 		if(suppletterlist !=null && suppletterlist.size() > 0){
 			AddSuppLetter suppletter =suppletterlist.get(0);
 			BeanCopierUtils.copyProperties(suppletter, suppletterDto);
-		}else{
+		}else{*/
 			Sign sign = signRepo.findById(signid);
 		    User mainUser = signPrincipalService.getMainPriUser(signid);
 		    //suppletterDto.setUserName(mainUser.getDisplayName());
@@ -159,7 +160,9 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 		    suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
 		    suppletterDto.setSignid(sign.getSignid());
 		    suppletterDto.setTitle("《"+sign.getProjectname()+sign.getReviewstage()+"》");
-		}
+		    suppletterDto.setSecretLevel(sign.getSecrectlevel());
+		    suppletterDto.setMergencyLevel(sign.getUrgencydegree());
+		//}
 		return suppletterDto;
 	}
 
@@ -185,6 +188,26 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 			BeanCopierUtils.copyProperties(addSuppletter, suppletterDto);
 		}
 		return suppletterDto;
+	}
+	/**
+	 * 拟补充资料函列表
+	 */
+	@Override
+	public List<AddSuppLetterDto> initSuppList(String signid) {
+		HqlBuilder hql = HqlBuilder.create();
+		hql.append(" from "+AddSuppLetter.class.getSimpleName() +" where "+ AddSuppLetter_.signid.getName() +" = :signid ");
+		hql.setParam("signid", signid);
+		List<AddSuppLetter> suppletterlist = addSuppLetterRepo.findByHql(hql);
+		List<AddSuppLetterDto> AddSuppLetterDtos = new ArrayList<AddSuppLetterDto>();
+		if(suppletterlist !=null && suppletterlist.size() > 0){
+			suppletterlist.forEach(a ->{
+				AddSuppLetterDto addDto = new AddSuppLetterDto();
+				BeanCopierUtils.copyProperties(a, addDto);
+				AddSuppLetterDtos.add(addDto);
+			});
+		}
+		
+		return AddSuppLetterDtos;
 	}
 
 

@@ -10,6 +10,7 @@
         vm.suppletter.signid=$state.params.signid;
         vm.title = '登记补充资料';
       
+        
        //保存补充资料函
         vm.saveAddSuppletter = function(){
         	/* vm.isSubmit = true;
@@ -17,15 +18,23 @@
         		  vm.isSubmit = false;
         		  bsWin.alert("保存成功！");
         	 });*/
-        	 addSuppLetterSvc.createAddSuppLetter(vm);
+        	 common.confirm({
+                 vm: vm,
+                 title: "",
+                 msg: "确认为最终保存数据吗？",
+                 fn: function () {
+                     $('.confirmDialog').modal('hide');
+                     addSuppLetterSvc.createAddSuppLetter(vm);
+                 }
+             });
         }
         //生成发文字号
         vm.getFilenum = function(){
-        	if(!vm.suppletter.id){
-        		bsWin.alert("请先保存拟补充资料函");
-        	}else{
-        		addSuppLetterSvc.createFilenum(vm);
-        	}
+	        if(!vm.suppletter.id){
+	        		bsWin.alert("请先保存拟补充资料函");
+	        	}else{
+	        		addSuppLetterSvc.createFilenum(vm);
+	        }
         }
         
         //拟补充资料函正文
@@ -74,6 +83,7 @@
         function activate() {
             //addSuppLetterSvc.grid(vm);
             addSuppLetterSvc.initSuppLetter(vm);
+            addSuppLetterSvc.initSuppListDate(vm);
         }
     }
 })();
