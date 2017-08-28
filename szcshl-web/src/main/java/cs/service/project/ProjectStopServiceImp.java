@@ -145,12 +145,14 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		Criteria criteria = projectStopRepo.getExecutableCriteria();
 		criteria = oDataObj.buildFilterToCriteria(criteria);
 		Boolean b=false;
-		if(SessionUtil.hashRole("部门负责人") || SessionUtil.hashRole("综合部部长")){
+		//部长审核
+		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			b=true;
 			criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(),SessionUtil.getLoginName()));
 			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.NO.getValue()));
 		}
-		if(SessionUtil.hashRole("副主任")){
+		//分管副主任办理
+		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(),SessionUtil.getLoginName()));
 			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
 			b=true;

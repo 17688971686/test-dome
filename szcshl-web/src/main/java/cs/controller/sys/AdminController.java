@@ -54,10 +54,17 @@ public class AdminController {
 
 
     @RequiresPermissions("admin#dtasks#get")
-    @RequestMapping(name = "办结事项", path = "dtasks")
+    @RequestMapping(name = "在办任务", path = "dtasks")
     public String dtasks(Model model) {
 
         return ctrlName + "/dtasks";
+    }
+
+    @RequiresPermissions("admin#personDtasks#get")
+    @RequestMapping(name = "个人在办任务", path = "personDtasks")
+    public String personDtasks(Model model) {
+
+        return ctrlName + "/personDtasks";
     }
 
     @RequiresPermissions("admin#etasks#get")

@@ -11,6 +11,7 @@
             gtasksGrid: gtasksGrid,		//个人待办
             etasksGrid: etasksGrid,		//个人办结
             dtasksGrid: dtasksGrid,        //在办任务
+            persontasksGrid : persontasksGrid,//个人在办
             countWorakday: countWorakday,	//计算工作日
 
             initFile: initFile,	        //初始化附件
@@ -838,5 +839,171 @@
             });
         } //end_initSignList
 
+        //begin persontasksGrid
+        function  persontasksGrid(vm) {
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/personDtasks"),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model: {
+                        id: "id"
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "",
+                    width: 30,
+                    template: function (item) {
+                        switch (item.lightState) {
+                            case "4":          //暂停
+                                return $('#span1').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
+                                break;
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "6":          	//发文超期
+                                return $('#span3').html();
+                                break;
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
+                                break;
+                            case "1":          //在办
+                                return "";
+                                break;
+                            case "2":           //已发文
+                                return "";
+                                break;
+                            case "3":           //已发送存档
+                                return "";
+                                break;
+                            default:
+                                return "";
+                                ;
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },
+                {
+                    field: "projectName",
+                    title: "项目名称",
+                    filterable: false,
+                    width: 150
+                },
+                {
+                    field: "reviewStage",
+                    title: "项目阶段",
+                    filterable: false,
+                    width: 150
+                },
+                {
+                    field: "nodeName",
+                    title: "当前环节",
+                    width: 120,
+                    filterable: false
+                },
+                {
+                    field: "preSignDate",
+                    title: "预签收时间",
+                    width: 120,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "signDate",
+                    title: "正式签收时间",
+                    width: 120,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "surplusDays",
+                    title: "剩余工作日",
+                    width: 100,
+                    filterable: false,
+                },
+                {
+                    field: "displayName",
+                    title: "处理人",
+                    width: 100,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: 80,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processState && item.processState == 2) {
+                            return '<span style="color:orange;">已暂停</span>';
+                        } else {
+                            return '<span style="color:green;">进行中</span>';
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 150,
+                    template: function (item) {
+                        var isstart = false;
+                        if (item.processState == "2") {
+                            isstart = true;//显示已暂停，提示启动
+                        } else {
+                            isstart = false;//显示暂停
+                        }
+                        //项目签收流程，则跳转到项目签收流程处理野人
+                        if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
+                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,
+                                "vm.pauseProject('"+item.businessKey+"')",isstart,"vm.startProject('"+item.businessKey+"')",isstart);
+                        } else {
+                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+                        }
+                    }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+
+            };
+        }
+        //end persontasksGrid
     }
 })();

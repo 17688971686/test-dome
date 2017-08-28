@@ -78,6 +78,15 @@ public class FlowController {
         return pageModelDto;
     }
 
+    @RequiresPermissions("flow#html/personDtasks#post")
+    @RequestMapping(name="个人在办任务",path="html/personDtasks",method=RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<RuProcessTask> personDtasks(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<RuProcessTask> pageModelDto = flowService.queryPersonTasks(odataObj);
+        return pageModelDto;
+    }
+
     @RequiresPermissions("flow#html/doingtasks#post")
     @RequestMapping(name = "在办任务", path = "html/doingtasks", method = RequestMethod.POST)
     public @ResponseBody

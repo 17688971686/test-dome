@@ -123,6 +123,17 @@ public class RuProcessTask {
     @Column
     private String signState;
 
+    //第一负责人ID
+    @Column
+    private String mainUserId;
+
+    public String getMainUserId() {
+        return mainUserId;
+    }
+
+    public void setMainUserId(String mainUserId) {
+        this.mainUserId = mainUserId;
+    }
 
     public String getIspause() {
 		return ispause;

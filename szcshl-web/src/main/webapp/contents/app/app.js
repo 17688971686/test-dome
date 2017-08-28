@@ -51,6 +51,12 @@
                 controller: 'adminDoingCtrl',
                 controllerAs: 'vm'
             })
+            .state('personDtasks', {
+                url: '/personDtasks',
+                templateUrl: rootPath + '/admin/personDtasks.html',
+                controller: 'adminPersonDoingCtrl',
+                controllerAs: 'vm'
+            })
             .state('etasks', {
                 url: '/etasks',
                 templateUrl: rootPath + '/admin/etasks.html',

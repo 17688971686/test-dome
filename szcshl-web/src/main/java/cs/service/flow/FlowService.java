@@ -42,4 +42,6 @@ public interface FlowService {
     List<RuProcessTask> queryMyRunProcessTasks();
 
     List<TaskDto> queryMyEndTasks();
+
+    PageModelDto<RuProcessTask> queryPersonTasks(ODataObj oDataObj);
 }

@@ -433,4 +433,27 @@ public class FlowServiceImpl implements FlowService {
         return list;
     }
 
+    @Override
+    public PageModelDto<RuProcessTask> queryPersonTasks(ODataObj oDataObj) {
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        criteria = oDataObj.buildFilterToCriteria(criteria);
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuProcessTask_.mainUserId.getName(), SessionUtil.getUserId()));
+        criteria.add(dis);
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (oDataObj.getSkip() > 0) {
+            criteria.setFirstResult(oDataObj.getSkip());
+        }
+        if (oDataObj.getTop() > 0) {
+            criteria.setMaxResults(oDataObj.getTop());
+        }
+        List<RuProcessTask> runProcessList = criteria.list();
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
+
 }
