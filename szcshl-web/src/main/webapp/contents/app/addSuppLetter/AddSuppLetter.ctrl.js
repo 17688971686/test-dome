@@ -10,7 +10,9 @@
         vm.suppletter.signid=$state.params.signid;
         vm.title = '登记补充资料';
       
-        
+        vm.findByIdAddSuppLetter = function(id){
+        	$state.go('getAddSuppLetterById', {id: id});
+        }
        //保存补充资料函
         vm.saveAddSuppletter = function(){
         	/* vm.isSubmit = true;
@@ -29,12 +31,9 @@
              });
         }
         //生成发文字号
-        vm.getFilenum = function(){
-	        if(!vm.suppletter.id){
-	        		bsWin.alert("请先保存拟补充资料函");
-	        	}else{
-	        		addSuppLetterSvc.createFilenum(vm);
-	        }
+        vm.getFilenum = function(id){
+	        addSuppLetterSvc.createFilenum(vm,id);
+	        
         }
         
         //拟补充资料函正文

@@ -15,18 +15,13 @@
             vm.isUpdate = true;
             vm.title = '更新登记补充资料';
         }
-
-      //根据ID查看拟补充资料函
-        vm.findByIdAddSuppLetter = function(id){
-        	$state.go('getAddSuppLetterById', {id: id});
-        }
+       
         vm.create = function () {
             addSuppLetterSvc.createAddSuppLetter(vm);
         };
         vm.update = function () {
             addSuppLetterSvc.updateAddSuppLetter(vm);
         };
-
         activate();
         function activate() {
         	//查看补充资料详细信息

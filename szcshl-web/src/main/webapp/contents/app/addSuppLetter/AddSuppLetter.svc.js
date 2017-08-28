@@ -43,11 +43,11 @@
         }
     //E 初始化拟补充资料函列表
         //S 生成文件字号 
-        function createFilenum(vm){
+        function createFilenum(vm,id){
         	var httpOptions = {
                     method: 'post',
                     url: url_addSuppLetter + "/createFileNum",
-                    params:{id:vm.suppletter.id}
+                    params:{id:id}
                 };
         	
                 var httpSuccess = function success(response) {

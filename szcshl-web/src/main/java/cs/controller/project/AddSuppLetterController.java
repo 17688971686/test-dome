@@ -45,11 +45,8 @@ public class AddSuppLetterController {
     public @ResponseBody Map<String ,Object> initSuppLetterData(@RequestParam String signid, String id){
     	Map<String,Object> resultMap = new HashMap<String,Object>();
     	resultMap.put("suppletterDto", addSuppLetterService.initSuppLetter(signid,id));
-    	//AddSuppLetterDto suppletter = addSuppLetterService.findByIdSuppLetter(id);
-    	//resultMap.put("suppletter", suppletter);
     	return resultMap;
     }
-    
     
     @RequiresPermissions("addSuppLetter#add#post")
     @RequestMapping(name = "添加拟补充资料函", path = "add", method = RequestMethod.POST)
@@ -77,7 +74,6 @@ public class AddSuppLetterController {
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
     public @ResponseBody void createFileNum(@RequestParam String id) throws Exception {
         addSuppLetterService.fileNum(id);
-       // return returnMsg;
     }
     
     @RequiresPermissions("addSuppLetter#html/edit#get")

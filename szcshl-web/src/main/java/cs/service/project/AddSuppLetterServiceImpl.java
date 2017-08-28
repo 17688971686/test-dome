@@ -45,21 +45,6 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 	@Autowired
 	private SignPrincipalService signPrincipalService;
 	
-	/*@Override
-	public AddSuppLetterDto initSupp(String signid,String id) {
-		AddSuppLetterDto addSuppLetterDto=new AddSuppLetterDto();
-		if(Validate.isString(id)){
-			AddSuppLetter addSuppLetter = addSuppLetterRepo.getById(id);
-			BeanCopierUtils.copyPropertiesIgnoreNull(addSuppLetter, addSuppLetterDto);
-		}else{
-			Date now = new Date();
-			addSuppLetterDto.setUserName(SessionUtil.getLoginName());
-			addSuppLetterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
-			addSuppLetterDto.setSuppLetterTime(now);
-			addSuppLetterDto.setSignid(signid);
-		}
-		return addSuppLetterDto;
-	}*/
 	/**
 	 * 保存补充资料函
 	 */
@@ -78,18 +63,17 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 				addSuppLetter.setId(UUID.randomUUID().toString());
 				addSuppLetter.setCreatedBy(SessionUtil.getUserInfo().getId());
 				addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
-				//addSuppLetter.setUserId(SessionUtil.getUserInfo().getId());
 			}
 			addSuppLetter.setModifiedDate(now);
 			addSuppLetter.setCreatedDate(now);
 		
 			addSuppLetterRepo.save(addSuppLetter);
-			//addSuppLetterDto.setId(addSuppLetter.getId());
 			return new ResultMsg(true,Constant.MsgCode.OK.getValue(),"操作成功！",addSuppLetterDto);
 		}else{
 			 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，获取项目信息失败，请联系相关人员处理！");
 		}
 	}
+	
 	@Override
 	@Transactional
 	public void updateSupp(AddSuppLetterDto addSuppLetterDto) {
@@ -145,24 +129,14 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 	@Override
 	public AddSuppLetterDto initSuppLetter(String signid,String id) {
 		AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
-	/*	HqlBuilder hql = HqlBuilder.create();
-		hql.append(" from "+AddSuppLetter.class.getSimpleName() +" where "+ AddSuppLetter_.signid.getName() +" = :signid ");
-		hql.setParam("signid", signid);
-		List<AddSuppLetter> suppletterlist = addSuppLetterRepo.findByHql(hql);
-		if(suppletterlist !=null && suppletterlist.size() > 0){
-			AddSuppLetter suppletter =suppletterlist.get(0);
-			BeanCopierUtils.copyProperties(suppletter, suppletterDto);
-		}else{*/
 			Sign sign = signRepo.findById(signid);
 		    User mainUser = signPrincipalService.getMainPriUser(signid);
-		    //suppletterDto.setUserName(mainUser.getDisplayName());
 		    suppletterDto.setUserName(SessionUtil.getLoginName());
 		    suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
 		    suppletterDto.setSignid(sign.getSignid());
 		    suppletterDto.setTitle("《"+sign.getProjectname()+sign.getReviewstage()+"》");
 		    suppletterDto.setSecretLevel(sign.getSecrectlevel());
 		    suppletterDto.setMergencyLevel(sign.getUrgencydegree());
-		//}
 		return suppletterDto;
 	}
 
@@ -179,15 +153,6 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 		addSuppLetter.setFilenum(filenum);
 		addSuppLetter.setFileSeq((curYearMaxSeq + 1));
 		addSuppLetterRepo.save(addSuppLetter);
-	}
-	@Override
-	public AddSuppLetterDto findByIdSuppLetter(String id) {
-		AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
-		if(Validate.isString(id)){
-			AddSuppLetter addSuppletter = addSuppLetterRepo.findById(id);
-			BeanCopierUtils.copyProperties(addSuppletter, suppletterDto);
-		}
-		return suppletterDto;
 	}
 	/**
 	 * 拟补充资料函列表
