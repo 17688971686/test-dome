@@ -41,12 +41,10 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
      */
     @Override
     public List<Org> getReviewOrg(String signId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from "+Org.class.getSimpleName()+" where ");
-        hqlBuilder.append(Org_.id.getName()+" in (select "+ SignBranch_.orgId.getName()+" from "+SignBranch.class.getSimpleName());
-        hqlBuilder.append(" where "+SignBranch_.signId.getName()+" =:signId )");
-        hqlBuilder.setParam("signId",signId);
-        return orgRepo.findByHql(hqlBuilder);
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("SELECT co.* FROM cs_org co, CS_SIGN_BRANCH csb WHERE CO.ID = csb.ORGID AND csb.signid = :signid ORDER BY TO_NUMBER (csb.ISMAINBRABCH) DESC");
+        sqlBuilder.setParam("signid",signId);
+        return orgRepo.findBySql(sqlBuilder);
     }
 
     /**

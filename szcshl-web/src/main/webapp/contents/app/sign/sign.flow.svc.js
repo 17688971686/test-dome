@@ -342,6 +342,7 @@
                     break;
                 //第二负责人确认归档
                 case flowcommon.getSignFlowNode().SIGN_DSFZR_QRGD:
+                    vm.flow.businessMap.GD_ID = vm.fileRecord.fileRecordId;
                     break;
                 //最终归档
                 case flowcommon.getSignFlowNode().SIGN_QRGD:

@@ -383,6 +383,8 @@
                         bsWin.success("操作成功！",function(){
                             $state.go('gtasks');
                         })
+                    }else{
+                        bsWin.alert(data.reMsg);
                     }
                 });
             } else {

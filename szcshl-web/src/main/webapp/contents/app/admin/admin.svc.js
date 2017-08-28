@@ -564,7 +564,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 150,
+                    width: 80,
                     template: function (item) {
                         //项目签收流程，则跳转到项目签收流程处理野人
                         if (item.processKey == "FINAL_SIGN_FLOW") {

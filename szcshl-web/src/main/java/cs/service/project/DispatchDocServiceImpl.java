@@ -53,20 +53,19 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //获取发文最大编号
         int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());
         String fileNum = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+(curYearMaxSeq + 1);
+        dispatchDoc.setFileNum(fileNum);
+        dispatchDoc.setFileSeq((curYearMaxSeq + 1));
+        dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
         if(Constant.MergeWay.MERGE.getValue().equals(dispatchDoc.getDispatchWay())){
             HqlBuilder sqlBuilder = HqlBuilder.create();
-            sqlBuilder.append(" update cs_dispatch_doc set "+DispatchDoc_.fileNum.getName()+" =:fileNum ").setParam("fileNum",fileNum);
-            sqlBuilder.append(" ,"+DispatchDoc_.fileSeq.getName()+" =:fileSeq").setParam("fileSeq",(curYearMaxSeq + 1));
+            sqlBuilder.append(" update cs_dispatch_doc set "+DispatchDoc_.fileNum.getName()+" =:fileNum ").setParam("fileNum",dispatchDoc.getFileNum());
+            sqlBuilder.append(" ,"+DispatchDoc_.fileSeq.getName()+" =:fileSeq").setParam("fileSeq",dispatchDoc.getFileSeq());
             sqlBuilder.append(" where signId in (select mergeId from cs_sign_merge where signId = :signId ");
             sqlBuilder.setParam("signId",signId);
             sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType",Constant.MergeType.DISPATCH.getValue());
 
             dispatchDocRepo.executeSql(sqlBuilder);
-        }else{
-            dispatchDoc.setFileNum(fileNum);
-            dispatchDoc.setFileSeq((curYearMaxSeq + 1));
-            dispatchDocRepo.save(dispatchDoc);
         }
         //更改项目信息
         Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
