@@ -3,6 +3,9 @@ package cs.controller.sys;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
+import cs.service.rtx.SendRTXService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -21,6 +24,9 @@ public class HomeController {
 
 	@Autowired
 	private RepositoryService repositoryService;
+
+	@Autowired
+	private SendRTXService sendRTXService;
 	
 	@RequestMapping(name = "登录", path = "/")
 	public String login() {
@@ -28,10 +34,26 @@ public class HomeController {
 		return this.ctrlName + "/login";
 	}
 
+    /**
+     * 腾讯通测试
+     * http://172.18.225.26:8000/sendnotify.cgi?msg=hello&receiver=%E4%BD%86%E9%BE%99
+     * @return
+     */
+	@RequestMapping(name = "腾讯通测试",path = "testRTX",method = RequestMethod.GET)
+    @ResponseBody
+	public ResultMsg testRTX(){
+        String reStr = sendRTXService.testSendRTXMsg();
+        if(reStr == null || "null".equals(reStr)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"发送失败！");
+        }else{
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"发送成功！");
+        }
+	}
+
 	//初始化流程
 	@RequestMapping(name = "项目签收流程",path = "initProjectFlow",method = RequestMethod.GET)
 	@Transactional
-	public @ResponseBody String initProccess(){	
+	public @ResponseBody String initProjectFlow(){
 		//部署下一个版本
 		logger.info("开始部署项目签收流程...");
 		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/signflow.zip");

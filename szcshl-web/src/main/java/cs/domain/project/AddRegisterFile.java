@@ -1,22 +1,18 @@
 package cs.domain.project;
 
-import java.util.Date;
+import cs.domain.DomainBase;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.domain.DomainBase;
+import java.util.Date;
 /*
  * 登记补充资料
  */
 @Entity
-@Table(name = "cs_add_Registerfile")
+@Table(name = "cs_add_registerfile")
 @DynamicUpdate(true)
 public class AddRegisterFile extends DomainBase {
 	//登记补充资料编号

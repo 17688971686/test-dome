@@ -1,13 +1,13 @@
 package cs.domain.financial;
 
 
+import cs.domain.DomainBase;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.*;
-import cs.domain.DomainBase;
 
 
 /**
@@ -16,7 +16,7 @@ import cs.domain.DomainBase;
  * Date: 2017-8-7 11:49:16
  */
 @Entity
-@Table(name ="cs_Financial_Manager")
+@Table(name ="cs_financial_manager")
 public class FinancialManager extends DomainBase {
 
 	@Id

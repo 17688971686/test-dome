@@ -285,7 +285,7 @@
                     width: 80,
                     template: function (item) {
                         //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
+                        if (item.processKey == "FINAL_SIGN_FLOW") {
                             if(item.processState == 2){
                                 return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
                             }else{
@@ -409,7 +409,7 @@
                     title: "操作",
                     width: 80,
                     template: function (item) {
-                        if ((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0 || (item.processDefinitionId).indexOf("SIGN_XS_FLOW") >= 0) {
+                        if ((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0) {
                             return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId);
                         } else {
                             return '';
@@ -566,16 +566,9 @@
                     title: "操作",
                     width: 150,
                     template: function (item) {
-                    	 var isstart = false;
-                        if (item.processState == "2") {
-                            isstart = true;//显示已暂停，提示启动
-                        } else {
-                            isstart = false;//显示暂停
-                        }
                         //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,
-                                "vm.pauseProject('"+item.businessKey+"')",isstart,"vm.startProject('"+item.businessKey+"')",isstart);
+                        if (item.processKey == "FINAL_SIGN_FLOW") {
+                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
                         } else {
                             return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
                         }

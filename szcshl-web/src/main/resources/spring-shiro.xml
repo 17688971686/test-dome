@@ -127,6 +127,7 @@
                 <!-- ** = anon所有url都可以匿名访问 -->
                 /contents/**    =anon
                 /sys/init       =anon
+                /testRTX        =anon
                 /intfc/*        =anon       <!--接口-->
                 /account/login =authc
                 /account/logout =logout
