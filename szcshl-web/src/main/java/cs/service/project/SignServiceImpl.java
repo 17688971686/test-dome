@@ -155,6 +155,7 @@ public class SignServiceImpl implements SignService {
         if(sign == null){
             sign = new Sign();
             BeanCopierUtils.copyProperties(signDto,sign);
+            sign.setSignid(UUID.randomUUID().toString());
             sign.setSignState(EnumState.NORMAL.getValue());
             sign.setSigndate(now);
             sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
