@@ -615,7 +615,7 @@
         	if($rootScope.previousState_name ){
         		$state.go($rootScope.previousState_name, $rootScope.previousState_params);
         	}else{
-        		window.history.back();
+                $state.go('welcome');
         	}           
         };
         $rootScope.backtoflow = function () {

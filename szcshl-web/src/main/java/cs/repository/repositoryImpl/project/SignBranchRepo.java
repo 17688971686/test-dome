@@ -24,4 +24,6 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
     boolean allBranchFinish(String signId);
 
     boolean allWPFinish(String signid);
+
+    boolean isHaveWP(String signId);
 }

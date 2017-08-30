@@ -95,8 +95,6 @@ public class StringUtil extends StringUtils {
 
 
 	public static void main(String[] args){
-		Random random = new Random();
-		int s = random.nextInt(10);
-		System.out.print(s);
+		System.out.print("李安".substring(0,1));
 	}
 }

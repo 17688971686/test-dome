@@ -1,8 +1,11 @@
 package cs.controller.sys;
 
 import com.alibaba.fastjson.JSON;
+import cs.common.Constant;
 import cs.common.utils.DateUtils;
+import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
+import cs.service.rtx.RTXService;
 import cs.service.sys.DictService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -23,13 +26,20 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private DictService dictService;
-
+    @Autowired
+    private RTXService rtxService;
 
     @RequiresPermissions("admin#index#get")
     @RequestMapping(name = "首页", path = "index")
     public String index(Model model) {
         model.addAttribute("user", SessionUtil.getLoginName());
         model.addAttribute("DICT_ITEMS", JSON.toJSONString(dictService.getDictItemByCode(null)));
+        /*String userState = rtxService.queryUserState(null,SessionUtil.getLoginName());
+        if("0".equals(userState) || "2".equals(userState)){
+            model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null,SessionUtil.getLoginName()));
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
+        }*/
         return ctrlName + "/index";
     }
 

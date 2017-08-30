@@ -23,7 +23,8 @@
 			
 			<tr>
 				<td width="15%" class="text-center">项目名称</td>
-				<td>{{vm.model.projectname}}</td>
+				<td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.projectname" name="projectname" id="projectname" data-val="true" data-val-required="必填">
+					<span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span></td>
 				<td width="15%" class="text-center">收文编号</td>
 				<td>{{vm.model.filecode}} </td>
 			</tr>
@@ -344,7 +345,7 @@
 			<tr>
 				<td width="15%" class="text-center">中心领导签批意见</td>
 				<td colspan="3">
-					 <textarea rows="3"  name="leaderhandlesug" id="leaderhandlesug" value="" style="width: 98%">请概算（一 、二）部按（自审、协审、评审、函评）程序办理。</textarea>
+					 <textarea rows="3"  name="leaderhandlesug" id="leaderhandlesug" value="" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
 				</td>
 			</tr>
 			<tr>

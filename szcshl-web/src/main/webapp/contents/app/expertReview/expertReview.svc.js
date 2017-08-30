@@ -84,7 +84,7 @@
                     width: 100,
                     filterable: false
                 }, {
-                    field: "expeRttype",
+                    field: "expertSort",
                     title: "专家类别",
                     width: 100,
                     filterable: false

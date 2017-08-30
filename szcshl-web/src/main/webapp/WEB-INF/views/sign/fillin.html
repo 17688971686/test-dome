@@ -40,18 +40,6 @@
 	.tableBOX table>tbody>tr>td{white-space : nowrap; padding:0px !important; text-align: center;}
 </style>
 <div class="well well-sm" style="background:white;min-height: 900px;">
-    <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.updateFillin()">
-            <span class="glyphicon glyphicon-ok"></span>保存
-        </button>
-        <button class="btn btn-sm btn-primary" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
-
-        <button id="linksbtn" class="btn btn-sm btn-primary"  ng-click="vm.signPreview()" >打印预览</button>
-        <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印" onclick="javascript:window.print();" />
-        <button class="btn btn-sm btn-primary" ng-click="vm.otherPrintln()" ng-hide="true">其他资料打印</button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
-    </div>
     <!-- s form -->
     <form id="sign_fill_form" name="sign_fill_form">
 		<!-- S 编辑页面 -->
@@ -84,11 +72,15 @@
 
 	<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
         <div class="text-center" style="line-height: 50px;">
-            默认办理部门：<input type="radio" value="PD" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span> <input type="radio" value="GD" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>概算</span>
-           	<span ng-hide="vm.model.ispresign == '0' || vm.model.processInstanceId ">
-                <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  >发起流程</button>
-            </span>         
-            </span>
+            默认办理部门：<input type="radio" value="PX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span> <input type="radio" value="GX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>概算</span>
+            <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  ng-hide="vm.model.ispresign == '0' || vm.model.processInstanceId ">发起流程</button>
+            <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">保存</button>
+            <button class="btn btn-sm btn-default" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+            <button id="linksbtn" class="btn btn-sm btn-default"  ng-click="vm.signPreview()" >打印预览</button>
+            <input id="btnPrint" class="btn btn-sm btn-default" type="button" value="打印" onclick="javascript:window.print();" />
+            <button class="btn btn-sm btn-default" ng-click="vm.otherPrintln()" ng-hide="true">其他资料打印</button>
+            <button class="btn btn-sm btn-default" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+            <button class="btn btn-sm btn-default" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
            <!--  <button class="btn btn-sm btn-default"  ng-click="vm.startNewFlow()" >发起流程</button> -->
         </div>
 	</div>

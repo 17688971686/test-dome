@@ -131,7 +131,7 @@ public class ExpertReviewController {
         return expertSelectedPageModelDto;
     }
 
-    @RequestMapping(name = "查询评审方案", path = "html/getBySignId/{signId}", method = RequestMethod.POST)
+    @RequestMapping(name = "查询评审方案", path = "getBySignId/{signId}", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ExpertReviewDto> getBySignId(@PathVariable("signId") String signId, HttpServletRequest request) throws ParseException {
         PageModelDto<ExpertReviewDto> expertReviewDtoPageModelDto = expertReviewService.getBySignId(signId);

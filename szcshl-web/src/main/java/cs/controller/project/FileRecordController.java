@@ -46,8 +46,8 @@ private  String ctrlName = "fileRecord";
 		return ctrlName + "/edit";
 	}
 	
-	@RequiresPermissions("fileRecord#html/initFillPage#get")
-	@RequestMapping(name = "初始归档编辑页面", path = "html/initFillPage",method=RequestMethod.GET)	
+	@RequiresPermissions("fileRecord#initFillPage#get")
+	@RequestMapping(name = "初始归档编辑页面", path = "initFillPage",method=RequestMethod.GET)
 	public @ResponseBody Map<String,Object> initFillPage(@RequestParam(required = true)String signId){		
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		resultMap.put("file_record", fileRecordService.initBySignId(signId));

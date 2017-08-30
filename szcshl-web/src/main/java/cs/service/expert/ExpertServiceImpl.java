@@ -413,10 +413,17 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     public ResultMsg autoExpertReview(String workprogramId, String reviewId, ExpertSelConditionDto[] paramArrary) {
         String conditionIds = "";       //条件ID，用于更新抽取次数
+        boolean notFirstTime = false;    //是否是第一次抽取
+        int selectedEPCount = -1;       //符合条件的专家
         List<ExpertDto> officialEPList = new ArrayList<>(),alternativeEPList = new ArrayList<>(),allEPList = new ArrayList<>();
         ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(),reviewId);
+        //如果是再次抽取(再次抽取是单个条件抽取)，要判断选定的专家是否已经满足条件，如已经满足，则不允许再次抽取
+        if(expertReview.getSelCount() != null && expertReview.getSelCount() > 0 && paramArrary.length == 1){
+            notFirstTime = true;
+        }
         List<ExpertSelected> saveList = new ArrayList<>();
-        //1、遍历所有抽取条件，每个条件单独抽取
+
+        //2、遍历所有抽取条件，每个条件单独抽取
         ResultMsg resultMsg = null;
         for(ExpertSelConditionDto epConditon : paramArrary){
             if(!Validate.isString(epConditon.getId())){
@@ -427,6 +434,18 @@ public class ExpertServiceImpl implements ExpertService {
             if(resultMsg != null && resultMsg.isFlag() == false){
                 return resultMsg;
             }
+            int chooseCount = epConditon.getOfficialNum();
+            //如果是再次抽取，则要计算已经确认的专家数
+            if(notFirstTime){
+                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId,epConditon.getMaJorBig(),epConditon.getMaJorSmall(),epConditon.getExpeRttype());
+                chooseCount = (selectedEPCount > -1)?(chooseCount-selectedEPCount):chooseCount;
+                if(chooseCount < 1){
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),
+                            "专业大类【"+epConditon.getMaJorBig()+"】,专业小类【"+epConditon.getMaJorSmall()+"】，专家类型【"+epConditon.getExpeRttype()+"】抽取并确认的专家数已经满足，不用再次抽取！");
+                    return resultMsg;
+                }
+            }
+
             //2、获取所有符合条件的专家
             List<ExpertDto> matchEPList = countExpert(workprogramId,reviewId, epConditon);
             if(!Validate.isList(matchEPList)){
@@ -442,6 +461,7 @@ public class ExpertServiceImpl implements ExpertService {
                     alternativeList.add(ep);
                 }
             });
+
             if(epConditon.getOfficialNum() > officialList.size()){
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                 break;
@@ -450,8 +470,9 @@ public class ExpertServiceImpl implements ExpertService {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
             }
             allEPList.addAll(matchEPList);
+
             //4、开始抽取
-            for(int i = 0;i<epConditon.getOfficialNum();i++){
+            for(int i = 0;i<chooseCount;i++){
                 if(!addAutoExpert(officialEPList,officialList,saveList,epConditon,expertReview)){
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;

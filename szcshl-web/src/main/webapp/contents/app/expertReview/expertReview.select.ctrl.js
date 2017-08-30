@@ -179,6 +179,11 @@
             }
         }
 
+        //自选专家查询
+        vm.querySelfExpert = function(){
+            vm.selfExpertOptions.dataSource.read();
+        }
+
         //境外专家
         vm.showOutExpertGrid = function () {
             vm.outExpertOptions.dataSource.read();
@@ -249,6 +254,11 @@
             }
         }
 
+        //境外专家查询
+        vm.queryOutExpert = function(){
+            vm.outExpertOptions.dataSource.read();
+        }
+
         //计算符合条件的专家
         vm.countMatchExperts = function (sortIndex) {
             if (vm.expertReview.id) {
@@ -278,9 +288,9 @@
             vm.matchExpertList = [];
             vm.matchExpertList = vm.matchEPMap[sortIndex];
             $("#matchExpertDiv").kendoWindow({
-                width: "800px",
-                height: "500px",
-                title: "专家信息",
+                width: "70%",
+                height: "600px",
+                title: "统计专家信息列表",
                 visible: false,
                 modal: true,
                 closable: true,
@@ -301,7 +311,7 @@
 
         //添加随机抽取条件
         vm.addCondition = function () {
-            if (vm.expertReview.isComfireResult == '9' || vm.expertReview.isComfireResult == 9) {
+            if (vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
                 vm.condition = {};
@@ -447,6 +457,8 @@
 
         //（整体方案抽取）开始随机抽取
         vm.startAutoExpertWin = function () {
+            //整体专家抽取前，先保存抽取方案
+
             if (buildCondition(true)) {
                 if(vm.expertReview.selCount > 0){
                     bsWin.alert("您已经进行整体专家抽取，不能再进行整体方案的抽取！");
@@ -455,25 +467,41 @@
                 if (vm.expertReview.isComfireResult == 9 || vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0) {
                     bsWin.alert("该方案已经进行整体专家方案的抽取，不能在继续抽取！");
                 } else {
-                    expertReviewSvc.queryAutoExpert(vm.conditions,vm.workProgramId,vm.expertReview.id,function(data){
+                    expertConditionSvc.saveCondition(vm.workProgramId,vm.conditions,function(data){
                         if(data.flag || data.reCode == 'ok'){
-                            //刷新页面抽取的专家
-                            vm.reFleshSelEPInfo(data.reObj.autoEPList);
-                            //抽取次数加一
-                            vm.expertReview.selCount = data.reObj.selCount;
-                            //抽取结果数组
-                            vm.autoSelectedEPList = [];
-                            vm.autoSelectedEPList = data.reObj.autoEPList;
-                            //刷新抽取次数
-                            vm.updateSelectedIndex();
-                            //弹框
-                            vm.showAutoExpertWin();
-                            //显示抽取效果
-                            expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                            vm.conditions = data.reObj;
+                            if(!vm.expertReview.id){
+                                vm.expertReview.id = vm.conditions[0].expertReviewId;
+                            }
+                            //抽取方案ID
+                            $.each(vm.conditions, function (i, obj) {
+                                obj.expertReviewDto = {};
+                                obj.expertReviewDto.id = vm.expertReview.id;
+                            });
+                            expertReviewSvc.queryAutoExpert(vm.conditions,vm.workProgramId,vm.expertReview.id,function(data){
+                                if(data.flag || data.reCode == 'ok'){
+                                    //刷新页面抽取的专家
+                                    vm.reFleshSelEPInfo(data.reObj.autoEPList);
+                                    //抽取次数加一
+                                    vm.expertReview.selCount = data.reObj.selCount;
+                                    //抽取结果数组
+                                    vm.autoSelectedEPList = [];
+                                    vm.autoSelectedEPList = data.reObj.autoEPList;
+                                    //刷新抽取次数
+                                    vm.updateSelectedIndex();
+                                    //弹框
+                                    vm.showAutoExpertWin();
+                                    //显示抽取效果
+                                    expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                                }else{
+                                    bsWin.error(data.reMsg);
+                                }
+                            });
                         }else{
                             bsWin.error(data.reMsg);
                         }
                     });
+
                 }
             } else {
                 bsWin.alert("请先保存编辑的抽取方案！");
@@ -483,8 +511,8 @@
         //显示随机抽取框
         vm.showAutoExpertWin = function () {
             $("#aotuExpertDiv").kendoWindow({
-                width: "1024px",
-                height: "600px",
+                width: "90%",
+                height: "700px",
                 title: "专家抽取",
                 visible: false,
                 modal: true,
@@ -496,8 +524,8 @@
         //显示随机抽取结果
         vm.showAutoMatchResultWin = function () {
             $("#aotuMatchResultDiv").kendoWindow({
-                width: "1024px",
-                height: "500px",
+                width: "90%",
+                height: "700px",
                 title: "专家抽取结果",
                 visible: false,
                 modal: true,

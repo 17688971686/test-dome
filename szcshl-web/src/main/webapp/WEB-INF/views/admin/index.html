@@ -75,6 +75,10 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
+<!-- S_腾讯通控件 -->
+<OBJECT classid=clsid:5EEEA87D-160E-4A2D-8427-B6C333FEDA4D id=RTXAX style="display: none;"></OBJECT>
+<!-- E_腾讯通控件 -->
+
 <body class="hold-transition skin-green sidebar-mini" ng-app="app">
 <div id="loading-bar-container" ></div>
 <div class="wrapper">
@@ -133,8 +137,7 @@ desired effect
                <li class="treeview menu" style="height: 52px;"><a href="javascript:void(0)"> <span class="title">菜单</span> 
 					</a>
 			   </li>
-            
-            
+
                 <li class="treeview active">
                     <a href="javascript:void(0)">
                         <img style="width: 20px; height: 20px" src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
@@ -155,7 +158,7 @@ desired effect
                         </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="personDtasks">
-                                <i class="glyphicon glyphicon-tasks"></i>个人在办任务
+                                <i class="glyphicon glyphicon-tasks"></i>个人主办项目
                             </a>
                         </li>
                         <li>
@@ -376,8 +379,6 @@ desired effect
         <section class="content">
             <!-- Your Page Content Here -->
             <div ui-view></div>
-
-
         </section>
         <!-- /.content -->
     </div>
@@ -464,6 +465,20 @@ desired effect
 <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
 <script type="text/javascript">
     common.initDictItems(${DICT_ITEMS});
+    var rtxSessionKey = "${RTX_SEESION_KEY}";
+    if(rtxSessionKey){
+        try{
+            var ip="${RTX_IP}";
+            var objProp = RTXAX.GetObject("Property");
+            objProp.value("RTXUsername") = "${user}";
+            objProp.value("LoginSessionKey") = rtxSessionKey;
+            objProp.value("ServerAddress") = ip; //RTX Server IP地址
+            objProp.value("ServerPort") = 8000;
+            RTXAX.Call(2,objProp);               //2表示通过SessionKey登录
+        }catch(e){
+            alert("该浏览器不支持腾讯通登录：");
+        }
+    }
 </script>
 <!--<script src="${path}/contents/app/common/common.js?version = ${.now}"></script>-->
 <!--<script src="${path}/contents/app/app.js?version = ${.now}"></script>-->

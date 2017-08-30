@@ -1,18 +1,13 @@
 package cs.model.project;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.model.BaseDto;
+import cs.model.expert.ExpertSelectedDto;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.domain.project.AddSuppLetter;
-import cs.model.BaseDto;
-import cs.model.expert.ExpertSelectedDto;
-import cs.model.sys.OrgDto;
 
 public class SignDto extends BaseDto {
 
@@ -40,6 +35,16 @@ public class SignDto extends BaseDto {
     private String signid;
 
     private String filecode;
+
+    /**
+     * 收文编号(年份+收文类型+序号[序号保留3位数])
+     */
+    private String signNum;
+
+    /**
+     * 收文序号
+     */
+    private Integer signSeq;
 
     private String projectcode;
 
@@ -557,7 +562,7 @@ public class SignDto extends BaseDto {
      */
     private String isProjectState;
     /**
-     * 默认办理类型
+     * 默认办理类型,项目类型（评估类：PX，概算类:GX）
      */
     private String dealOrgType;
 
@@ -2155,5 +2160,20 @@ public class SignDto extends BaseDto {
 	public void setIsProjectState(String isProjectState) {
 		this.isProjectState = isProjectState;
 	}
-    
+
+    public String getSignNum() {
+        return signNum;
+    }
+
+    public void setSignNum(String signNum) {
+        this.signNum = signNum;
+    }
+
+    public Integer getSignSeq() {
+        return signSeq;
+    }
+
+    public void setSignSeq(Integer signSeq) {
+        this.signSeq = signSeq;
+    }
 }

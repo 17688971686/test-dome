@@ -530,7 +530,7 @@
         function paymentGrid(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/expertReview/html/getBySignId/" + signId
+                url: rootPath + "/expertReview/getBySignId/" + signId
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {

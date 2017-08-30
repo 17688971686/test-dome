@@ -7,37 +7,22 @@
         QR-4.4-08-A3
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
-                <span>
-                    发文方式：
-                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
-                        <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
-                                ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
-                    </select>
-                </span>
-				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="true"
                            ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
 
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="true"
                            ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
-
-					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
-                            ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
-                            ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
 				</span>
 
-                <span style="float:right;">发文类型： <span class="required">*</span>
-		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
-                        data-val-required="必填">
-					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}"
-                            ng-selected="vm.dispatchDoc.dispatchType==x.dictName">{{x.dictName}}</option>
-				</select>
-			</span>
+                <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
             </caption>
             <tbody>
            
             <tr>
-                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td style="width:150px;" class="text-center">文件标题</td>
                 <td colspan="5">
                     <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                            ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true"
@@ -73,12 +58,12 @@
 
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
-                    <select ng-model="vm.dispatchDoc.isRelated" class="form-control input-sm" style="width:100px;"
-                             data-val="true" data-val-required="必填">
-                        <option ng-repeat="x in DICT.ISRELATED.dicts" value="{{x.dictName}}"
-                                ng-selected="vm.dispatchDoc.isRelated==x.dictName">{{x.dictName}}
-                        </option>
-                    </select>
+                    <label>
+                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                    </label>
+                    <label>
+                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                    </label>
                 </td>
             </tr>
 
@@ -148,7 +133,7 @@
                 <td style="width:150px;" class="text-center">主任签发</td>
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
+                              ng-model="vm.dispatchDoc.directorSuggesttion" id="directorIssue" name="directorIssue"/>
                 </td>
             </tr>
 <tr>

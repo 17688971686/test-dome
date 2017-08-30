@@ -82,10 +82,10 @@
                             <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
                         </select>
                     </p>
-                    <p>
-                        <span>项目负责人：</span>
+                    <p id="p_assistUser">
+                        <span>其他负责人：</span>
                         <span ng-repeat="u in vm.users" id="principalAssistUser">
-                            <span style="margin-right: 10px;"><input type="checkbox" selectType="assistUser" value="{{u.id}}" /> {{u.displayName}}</span>
+                            <span style="margin-right: 10px;"><input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/> {{u.displayName}}</span>
                         </span>
                     </p>
                 </div>
@@ -106,7 +106,7 @@
                         <caption class="text-center">*必须要选择1个总负责人，最多只能选3个负责人</caption>
                         <tr>
                             <td>
-                                <span ng-repeat="u in vm.xsusers | filter:{isSelected:false}" style="width:14%;">
+                                <span ng-repeat="u in vm.users | filter:{isSelected:false}" style="width:14%;">
                                     <span ><input type="checkbox" name="unSelPriUser"  value="{{u.id}}"/>{{u.displayName}}</span>
                                 </span>
                             </td>
@@ -200,7 +200,7 @@
                     <ol class="breadcrumb" style="font-size: 12px;" >
                         <li class="active">温馨提示：合并发文次项目，不用生成发文编号！</li>
                     </ol>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.createDispatchFileNum()" ng-disabled="vm.isCommit" ng-hide="(vm.dispatchDoc.fileNum && vm.model.processState >= 6) || (vm.dispatchDoc.dispatchWay=='2'&& vm.dispatchDoc.isMainProject=='0') "><span class="glyphicon glyphicon-edit"></span>{{vm.dispatchDoc.fileNum}}生成发文字号</button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.createDispatchFileNum()" ng-disabled="vm.isCommit" ng-hide="vm.dispatchDoc.fileNum  || (vm.dispatchDoc.dispatchWay=='2'&& vm.dispatchDoc.isMainProject=='0') "><span class="glyphicon glyphicon-edit"></span>生成发文字号</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>登记补充资料</button>

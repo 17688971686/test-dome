@@ -17,7 +17,7 @@
         function initFileRecordData(vm) {
             var httpOptions = {
                 method: 'get',
-                url: rootPath + "/fileRecord/html/initFillPage",
+                url: rootPath + "/fileRecord/initFillPage",
                 params: {signId: vm.fileRecord.signId}
             }
             var httpSuccess = function success(response) {

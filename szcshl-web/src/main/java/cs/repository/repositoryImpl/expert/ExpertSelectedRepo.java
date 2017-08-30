@@ -9,4 +9,13 @@ import cs.repository.IRepository;
  * Date: 2017-6-14 14:26:49
  */
 public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> {
+    /**
+     * 根据大类，小类和专家类别确认已经抽取的专家
+     * @param reviewId
+     * @param maJorBig
+     * @param maJorSmall
+     * @param expeRttype
+     * @return
+     */
+    int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype);
 }

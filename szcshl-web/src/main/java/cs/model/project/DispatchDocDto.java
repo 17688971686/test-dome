@@ -139,9 +139,6 @@ public class DispatchDocDto extends BaseDto {
     //签收ID
     private String signId;
 
-    //主任签发
-    private String directorIssue;
-
     //是否与其他表关联
     private String isRelated;
 
@@ -479,14 +476,6 @@ public class DispatchDocDto extends BaseDto {
 
     public void setDirectorSuggesttion(String directorSuggesttion) {
         this.directorSuggesttion = directorSuggesttion;
-    }
-
-    public String getDirectorIssue() {
-        return directorIssue;
-    }
-
-    public void setDirectorIssue(String directorIssue) {
-        this.directorIssue = directorIssue;
     }
 
     public String getDirectorDate() {

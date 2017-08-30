@@ -60,9 +60,9 @@
                 <td style="width:20%;min-width:150px;" align="center">操作</td>
             </tr>
             <tr ng-repeat="x in vm.conditions">
-                <td align="center"><input ng-disabled="vm.expertReview.isSelete == 9 " type='checkbox'
-                                          name="epConditionSort"
-                                          ng-checked="epCondtion" value="{{x.sort}}"/></td>
+                <td align="center">
+                    <input ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 "
+                           type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{x.sort}}"/></td>
                 <td align="center">{{x.sort}}</td>
                 <td align="center">
                     <select ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="maJorBig{{x.sort}}"
@@ -95,7 +95,7 @@
                     </select>
                 </td>
                 <td align="center">
-                    <input id="officialNum{{x.sort}}" class="form-control input-sm"
+                    <input ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="officialNum{{x.sort}}" class="form-control input-sm"
                            ng-init="$parent.condition[$index].officialNum = x.officialNum"
                            ng-model="$parent.condition[$index].officialNum"
                            ng-keyup="vm.checkIntegerValue($parent.condition[$index].officialNum,'alternativeNum',x.sort)">
@@ -103,7 +103,7 @@
                           class="errors"></span>
                 </td>
                 <td align="center">
-                    <input id="alternativeNum{{x.sort}}" class="form-control input-sm"
+                    <input ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="alternativeNum{{x.sort}}" class="form-control input-sm"
                            ng-init="$parent.condition[$index].alternativeNum = x.alternativeNum"
                            ng-model="$parent.condition[$index].alternativeNum"
                            ng-keyup="vm.checkIntegerValue($parent.condition[$index].alternativeNum,'officialNum',x.sort)">
@@ -267,15 +267,6 @@
     </div>
     <!-- S 专家自选 DIV -->
     <div class="toolbar" style="min-height: 200px;">
-        <!-- S 隐藏表单 设置排除已选择的ID -->
-        <form id="selfSelExpertForm">
-            <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
-            <input name="state" type="text" ng-hide="true" operator="in" value="2,3">
-            <!-- 专家规避-->
-            <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
-            <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
-        </form>
-        <!-- E 隐藏表单 设置排除已选择的ID -->
         <p>
             <span>2、专家自选（自选专家，只能选择一名）</span>
             <button class="btn btn-xs btn-success" ng-click="vm.showSelfExpertGrid()" ng-disabled="vm.isCommit"><span
@@ -306,7 +297,7 @@
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
                 <td align="center">{{x.expertDto.userPhone}}</td>
-                <td align="center">{{x.expertDto.expeRttype}}</td>
+                <td align="center">{{x.expertDto.expertSort}}</td>
                 <td align="center">{{x.expertDto.remark}}</td>
             </tr>
         </table>
@@ -314,11 +305,35 @@
 
         <div id="selfExpertDiv" class="well well-sm" style="display:none;">
             <div class="toolbar">
-                <button class="btn btn-sm btn-success" ng-disabled="vm.isCommit"
-                        ng-click="vm.saveSelfExpert()">
+                <button class="btn btn-sm btn-success" ng-disabled="vm.isCommit"  ng-click="vm.saveSelfExpert()">
                     <span class="glyphicon glyphicon-ok">保存</span>
                 </button>
+                <button class="btn btn-sm btn-primary" ng-disabled="vm.isCommit"  ng-click="vm.querySelfExpert()">
+                    <span  class="glyphicon glyphicon-search">查询</span>
+                </button>
             </div>
+            <!-- S 隐藏表单 设置排除已选择的ID -->
+            <div class="well well-sm">
+            <form id="selfSelExpertForm">
+                <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
+                <input name="state" type="text" ng-hide="true" operator="in" value="2,3">
+                <!-- 专家规避-->
+                <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
+                <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
+                <!--以下是查询字段-->
+                <span class="help-inline">专家名称：</span>
+                <input type="text" operator="like" name="name"  placeholder="请输入">
+
+                <span class="help-inline" style="margin-left:10px;">专家类别：</span>
+                <select name="expertSort" operator="eq" data-val="true" data-val-required="必填">
+                    <option value=""></option>
+                    <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
+                            value="{{x.dictName}}">{{x.dictName}}
+                    </option>
+                </select>
+            </form>
+            </div>
+            <!-- E 隐藏表单 设置排除已选择的ID -->
             <div id="selfExpertGrid" class="grid" kendo-grid="grid" k-options="vm.selfExpertOptions"></div>
         </div>
     </div>
@@ -327,14 +342,6 @@
 
     <!-- S 自选新专家、市外、境外专家 DIV -->
     <div class="toolbar" style="min-height: 200px;">
-        <!-- S 隐藏表单 设置排除已选择的ID -->
-        <form id="outSelExpertForm">
-            <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
-            <!-- 专家规避-->
-            <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
-            <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
-        </form>
-        <!-- E 隐藏表单 设置排除已选择的ID -->
         <p>
             <span>3、自选新专家、市外、境外专家</span>
             <button class="btn btn-xs btn-success" ng-click="vm.showOutExpertGrid()"><span
@@ -377,7 +384,32 @@
                 <button class="btn btn-sm btn-success" ng-disabled="vm.isCommit" ng-click="vm.saveOutExpert()">
                     <span class="glyphicon glyphicon-ok">保存</span>
                 </button>
+                <button class="btn btn-sm btn-primary" ng-disabled="vm.isCommit"  ng-click="vm.queryOutExpert()">
+                    <span  class="glyphicon glyphicon-search">查询</span>
+                </button>
             </div>
+
+            <!-- S 隐藏表单 设置排除已选择的ID -->
+            <div class="well well-sm">
+            <form id="outSelExpertForm">
+                <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
+                <!-- 专家规避-->
+                <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
+                <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
+                <!--以下是查询字段-->
+                <span class="help-inline">专家名称：</span>
+                <input type="text" operator="like" name="name"  placeholder="请输入">
+
+                <span class="help-inline" style="margin-left:10px;">专家类别：</span>
+                <select name="expertSort" operator="eq" data-val="true" data-val-required="必填">
+                    <option value=""></option>
+                    <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
+                            value="{{x.dictName}}">{{x.dictName}}
+                    </option>
+                </select>
+            </form>
+            </div>
+            <!-- E 隐藏表单 设置排除已选择的ID -->
             <div id="outExpertGrid" class="grid" kendo-grid="grid" k-options="vm.outExpertOptions"></div>
         </div>
     </div>
@@ -465,7 +497,7 @@
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
                 <td align="center">{{x.expertDto.userPhone}}</td>
-                <td align="center">{{x.expertDto.expeRttype}}</td>
+                <td align="center">{{x.expertDto.expertSort}}</td>
             </tr>
         </table>
     </div>

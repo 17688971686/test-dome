@@ -96,12 +96,9 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Override
     public FileRecordDto initBySignId(String signid) {
         FileRecordDto fileRecordDto = new FileRecordDto();
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + FileRecord.class.getSimpleName() + " where " + FileRecord_.sign.getName() + "." + Sign_.signid.getName() + " = :signId ");
-        hqlBuilder.setParam("signId", signid);
-        List<FileRecord> list = fileRecordRepo.findByHql(hqlBuilder);
-        if (list != null && list.size() > 0) {
-            FileRecord fileRecord = list.get(0);
+        //根据属性查找ID
+        FileRecord fileRecord = fileRecordRepo.findById("signid",signid);
+        if (fileRecord != null && Validate.isString(fileRecord.getFileRecordId())) {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
         } else {
             //如果是新增，则要初始化
@@ -111,9 +108,10 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setProjectName(sign.getProjectname());
             fileRecordDto.setProjectCode(sign.getProjectcode());
             fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
-            fileRecordDto.setProjectCompany(sign.getDesigncompanyName());//编制单位名称
+            fileRecordDto.setProjectCompany(sign.getBuiltcompanyName());//编制单位名称
             fileRecordDto.setFileNumber(sign.getDocnum());//文号
-            fileRecordDto.setIsStachProject(sign.getIsProjectState());//项目是否曾经暂停
+            //项目是否曾经暂停
+            fileRecordDto.setIsStachProject(sign.getIsProjectState()==null? Constant.EnumState.NO.getValue():sign.getIsProjectState());
             fileRecordDto.setProjectChargeUser(priUser == null ? "" : priUser.getDisplayName());
             //设置默认文件标题
             String fileTitle = "《";

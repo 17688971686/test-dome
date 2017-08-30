@@ -5,8 +5,8 @@
      * 项目业务类型
      */
     var signBusinessType = {
-        PD : "PD",      //评估
-        GD : "GD",      //概算
+        PX : "PX",      //评估
+        GX : "GX",      //概算
     }
 
     /**

@@ -171,7 +171,7 @@ public class User extends DomainBase {
     private String takeUserId;
 
     /**
-     * 分管部门类型（PD:评估，GD:概算）
+     * 分管部门类型（PX:评估，GX:概算）
      */
     @Column(columnDefinition = "varchar(8)")
     private String mngOrgType;

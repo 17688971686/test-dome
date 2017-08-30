@@ -297,21 +297,13 @@
                         }
                     }
                 }
-            ];
-            // End:column
-
-            $("#grid").on('dblclick','.k-grid-content tr',function(){
-                var row =  $("#grid").data("kendoGrid").select();
-                var data =  $("#grid").data("kendoGrid").dataItem(row);
-                window.location.href = rootPath + "/admin/index#/signFlowDeal/"+data.businessKey+"/"+data.taskId+"/"+data.processInstanceId;
-            })
+            ];// End:column
 
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
-                selectable : true,
                 columns: columns,
                 resizable: true,
                 dataBound: function () {
@@ -799,7 +791,6 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                selectable: "multiple cell",
                 resizable: true,
                 dataBound: function () {
                     var rows = this.items();

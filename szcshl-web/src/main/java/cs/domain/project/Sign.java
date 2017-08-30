@@ -32,6 +32,18 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(30)")
     private String filecode;
 
+    /**
+     * 收文编号(年份+收文类型+序号[序号保留3位数])
+     */
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String signNum;
+
+    /**
+     * 收文序号
+     */
+    @Column(columnDefinition = "Integer")
+    private Integer signSeq;
+
     //项目代码
     @Column(columnDefinition = "VARCHAR(20)")
     private String projectcode;
@@ -722,7 +734,7 @@ public class Sign extends DomainBase {
     private String suppletterid;
     
     /**
-     * 默认办理类型
+     * 默认办理类型[收文类型（评估类：PX，概算类:GX）]
      */
     @Column(columnDefinition = "VARCHAR(5)")
     private String dealOrgType;
@@ -2354,6 +2366,21 @@ public class Sign extends DomainBase {
 
 	public void setIsProjectState(String isProjectState) {
 		this.isProjectState = isProjectState;
-	} 
-    
+	}
+
+    public String getSignNum() {
+        return signNum;
+    }
+
+    public void setSignNum(String signNum) {
+        this.signNum = signNum;
+    }
+
+    public Integer getSignSeq() {
+        return signSeq;
+    }
+
+    public void setSignSeq(Integer signSeq) {
+        this.signSeq = signSeq;
+    }
 }

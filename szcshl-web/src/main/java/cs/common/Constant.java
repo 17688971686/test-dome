@@ -346,7 +346,7 @@ public class Constant {
      * @author ldm
      */
     public static enum SignBusinessType {
-        GD("GD"), PD("PD");
+        GX("GX"), PX("PX");
 
         private String value;
 
@@ -514,10 +514,10 @@ public class Constant {
      */
     public static enum OrgType{
         ORGZHB("综合部",""),
-        ORGPGYB("评估一部","PD"),
-        ORGPGEB("评估二部","PD"),
-        ORGGSYB("概算一部","GD"),
-        ORGGSEB("概算二部","GD");
+        ORGPGYB("评估一部","PX"),
+        ORGPGEB("评估二部","PX"),
+        ORGGSYB("概算一部","GX"),
+        ORGGSEB("概算二部","GX");
 
         private String key;
         private String value;

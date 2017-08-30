@@ -182,4 +182,19 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         return (totalResult>0)?false:true;
     }
 
+    /**
+     * 判断分支是否有工作方案
+     * @param signId
+     * @return
+     */
+    @Override
+    public boolean isHaveWP(String signId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
+        criteria.add(Restrictions.eq(SignBranch_.isNeedWP.getName(), Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.eq(SignBranch_.isEndWP.getName(), Constant.EnumState.YES.getValue()));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return (totalResult>0)?true:false;
+    }
+
 }

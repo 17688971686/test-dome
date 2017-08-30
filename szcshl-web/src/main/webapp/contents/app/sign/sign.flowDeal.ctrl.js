@@ -156,24 +156,6 @@
             ideaSvc.initIdea(vm);
         }
 
-        //检查项目负责人
-        vm.checkPrincipal = function(){
-            var selUserId = $("#selPrincipalMainUser").val();
-            if(selUserId){
-                $('#principalAssistUser input[selectType="assistUser"]').each(
-                    function () {
-                        var value = $(this).attr("value");
-                        if (value == selUserId) {
-                            $(this).removeAttr("checked");
-                            $(this).attr("disabled", "disabled");
-                        } else {
-                            $(this).removeAttr("disabled");
-                        }
-                    }
-                );
-            }
-        }
-
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
             vm.businessFlag.expertScore = {};
@@ -591,6 +573,53 @@
             if(selOrg.length > 0){
                 vm.flow.dealOption = "请（"+selOrg.join('，')+"）组织评审";
             }
+        }
+
+        //检查项目负责人
+        vm.checkPrincipal = function(){
+            var selUserId = $("#selPrincipalMainUser").val();
+            if(selUserId){
+                $('#principalAssistUser input[selectType="assistUser"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value == selUserId) {
+                            $(this).removeAttr("checked");
+                            $(this).attr("disabled", "disabled");
+                        } else {
+                            $(this).removeAttr("disabled");
+                        }
+                    }
+                );
+            }
+            vm.initUserOption();
+        }
+        //部门领导分办，选择用户的默认处理意见
+        vm.initUserOption = function(){
+            var selUserId = $("#selPrincipalMainUser").val();
+            var isSelMainUser = false;
+            var defaultOption = "请（"
+            if(selUserId){
+                $.each(vm.users,function(i,u){
+                    if(u.id == selUserId){
+                        defaultOption += u.displayName;
+                        isSelMainUser = true;
+                    }
+                })
+            }
+            var selUser = []
+            $('#p_assistUser input[selectType="assistUser"]:checked').each(function () {
+                selUser.push($(this).attr("tit"));
+            });
+
+            if(selUser.length > 0){
+                if(isSelMainUser){
+                    defaultOption += ', ';
+                }
+                defaultOption += selUser.join(', ');
+            }
+            defaultOption += " )组织办理。";
+
+            vm.flow.dealOption = defaultOption;
         }
 
         // checkbox 单选

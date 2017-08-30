@@ -135,10 +135,6 @@ public class DispatchDoc extends DomainBase {
     @Column(columnDefinition = "VARCHAR(100)")
     private String directorName;//局长名称
 
-    //主任签发
-    @Column(columnDefinition = "VARCHAR(2000)")
-    private String DirectorIssue;
-
     //申报金额
     @Column(columnDefinition = "NUMBER")
     private BigDecimal declareValue;
@@ -235,14 +231,6 @@ public class DispatchDoc extends DomainBase {
 
     public void setIsRelated(String isRelated) {
         this.isRelated = isRelated;
-    }
-
-    public String getDirectorIssue() {
-        return DirectorIssue;
-    }
-
-    public void setDirectorIssue(String directorIssue) {
-        DirectorIssue = directorIssue;
     }
 
     public BigDecimal getDeclareValue() {

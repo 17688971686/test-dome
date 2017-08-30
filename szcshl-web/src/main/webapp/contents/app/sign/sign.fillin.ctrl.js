@@ -53,66 +53,64 @@
             var checkboxValue = checkbox.value;
             if(checked){
                 vm.model.leaderName = signcommon.getDefaultLeader(checkboxValue);
-                vm.model.comprehensivehandlesug = signcommon.getDefaultZHBYJ(checkboxValue);
-                vm.model.comprehensiveName = '综合部';
                 //设置综合部和分管领导ID
                 $.each(vm.busiObj.leaderList,function(i,leader){
                     if(leader.mngOrgType == checkboxValue){
                         vm.model.leaderId = leader.id;
                         vm.model.leaderName = leader.displayName;
-                        // vm.model.comprehensivehandlesug = "请"+(leader.displayName)+"主任阅示。";
                         vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,1)+"主任阅示。";
                     }
                 })
+                if(checkboxValue == signcommon.getBusinessType().PX){
+                    vm.model.leaderhandlesug="请（概算一部         概算二部）组织评审。";
+                }else{
+                    vm.model.leaderhandlesug="请（评估一部         评估二部         综合部）组织评审。";
+                }
                 if(!vm.model.leaderId){
                     bsWin.alert("选择的默认办理部门没有合适的分管领导，请先设置分管领导角色用户！");
                 }
-                var date = new Date();
-                var monthValue = (date.getMonth()+1) < 10 ?"0"+(date.getMonth()+1):(date.getMonth()+1);
-                var dayValue = (date.getDate()) < 10 ?"0"+(date.getDate()):(date.getDate());
-                vm.model.comprehensiveDate = (date.getFullYear()+"-"+monthValue+"-"+dayValue);
             }
         }
 
-
-        //发起流程
+        //发起流程，发起流程先保存数据
         vm.startNewFlow = function(){
-            bsWin.confirm({
-                title: "询问提示",
-                message: "确定发起流程么，请确保填写的信息已经保存正确！",
-                onOk: function () {
-                    $('.confirmDialog').modal('hide');
-                    var httpOptions = {
-                        method : 'post',
-                        url : rootPath+"/sign/startNewFlow",
-                        params : {
-                            signid:vm.model.signid
-                        }
-                    }
-                    var httpSuccess = function success(response) {
-                        if(response.data.reCode == "ok"){
-                            bsWin.success("操作成功！");
-                        }else{
-                            if(response.data.reMsg == "操作失败，请先设置默认办理部门！"){
-                                common.alert({
-                                    vm : vm,
-                                    title : "温馨提示",
-                                    msg : "请先设置默认办理部门，并保存数据",
-                                    closeDialog: true
-                                });
-                            }else{
-                                bsWin.error(response.data.reMsg);
+            common.initJqValidation($('#sign_fill_form'));
+            var isValid = $('#sign_fill_form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确定发起流程么，请确保填写的信息已经保存正确！",
+                    onOk: function () {
+                        $('.confirmDialog').modal('hide');
+                        signSvc.updateFillin(vm.model,function (data) {
+                            var httpOptions = {
+                                method : 'post',
+                                url : rootPath+"/sign/startNewFlow",
+                                params : {
+                                    signid:vm.model.signid
+                                }
                             }
-                        }
+                            var httpSuccess = function success(response) {
+                                vm.isSubmit = false;
+                                if(response.data.reCode == "ok"){
+                                    bsWin.success("操作成功！");
+                                }else{
+                                    bsWin.error(response.data.reMsg);
+                                }
+                            }
+                            common.http({
+                                $http : $http,
+                                httpOptions : httpOptions,
+                                success : httpSuccess
+                            });
+                        });
                     }
-                    common.http({
-                        vm : vm,
-                        $http : $http,
-                        httpOptions : httpOptions,
-                        success : httpSuccess
-                    });
-                }
-            });
+                });
+            }else{
+                bsWin.alert("项目填报内容不完整或者填报信息不正确，请检查之后再提交！");
+            }
+
         }
 
         //打印预览

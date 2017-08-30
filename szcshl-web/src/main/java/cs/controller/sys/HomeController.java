@@ -1,11 +1,8 @@
 package cs.controller.sys;
 
-import java.io.InputStream;
-import java.util.zip.ZipInputStream;
-
 import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.service.rtx.SendRTXService;
+import cs.service.rtx.RTXService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -17,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
+
 @Controller
 public class HomeController {
 	private String ctrlName = "home";
@@ -26,7 +26,7 @@ public class HomeController {
 	private RepositoryService repositoryService;
 
 	@Autowired
-	private SendRTXService sendRTXService;
+	private RTXService rtxService;
 	
 	@RequestMapping(name = "登录", path = "/")
 	public String login() {
@@ -42,8 +42,9 @@ public class HomeController {
 	@RequestMapping(name = "腾讯通测试",path = "testRTX",method = RequestMethod.GET)
     @ResponseBody
 	public ResultMsg testRTX(){
-        String reStr = sendRTXService.testSendRTXMsg();
-        if(reStr == null || "null".equals(reStr)){
+		String isLoging = rtxService.queryUserState(null,"但龙");
+        String reStr = rtxService.sendRTXMsg(null,"消息测试","但龙");
+        if(reStr == null || "false".equals(reStr)|| "null".equals(reStr)){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"发送失败！");
         }else{
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"发送成功！");

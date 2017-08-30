@@ -7,25 +7,17 @@
        
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
-                <span>
-                  QR-4.10-03-A0<br>
-                    发文方式：{{vm.dispatchDoc.dispatchWay}}
-                </span>
-				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+                <span> QR-4.10-03-A0</span>
+                <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="true"
                            ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
 
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="true"
                            ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
-
-					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
-                            ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
-                            ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
 				</span>
 
-                <span style="float:right;">发文类型：
-                {{vm.dispatchDoc.dispatchType}}
-			</span>
+                <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
             </caption>
             <tbody>
            
@@ -58,10 +50,10 @@
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
                     <label>
-                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
+                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
                     </label>
                     <label>
-                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
+                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
                     </label>
                 </td>
             </tr>
@@ -136,7 +128,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">主任签发</td>
                 <td colspan="5">
-                {{vm.dispatchDoc.directorIssue}}
+                {{vm.dispatchDoc.directorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
                 </td>

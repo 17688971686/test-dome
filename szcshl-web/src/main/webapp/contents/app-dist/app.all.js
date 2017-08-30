@@ -615,7 +615,7 @@
         	if($rootScope.previousState_name ){
         		$state.go($rootScope.previousState_name, $rootScope.previousState_params);
         	}else{
-        		window.history.back();
+                $state.go('welcome');
         	}           
         };
         $rootScope.backtoflow = function () {
@@ -1958,21 +1958,13 @@
                         }
                     }
                 }
-            ];
-            // End:column
-
-            $("#grid").on('dblclick','.k-grid-content tr',function(){
-                var row =  $("#grid").data("kendoGrid").select();
-                var data =  $("#grid").data("kendoGrid").dataItem(row);
-                window.location.href = rootPath + "/admin/index#/signFlowDeal/"+data.businessKey+"/"+data.taskId+"/"+data.processInstanceId;
-            })
+            ];// End:column
 
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
-                selectable : true,
                 columns: columns,
                 resizable: true,
                 dataBound: function () {
@@ -2460,7 +2452,6 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                selectable: "multiple cell",
                 resizable: true,
                 dataBound: function () {
                     var rows = this.items();
@@ -10434,6 +10425,11 @@
             }
         }
 
+        //自选专家查询
+        vm.querySelfExpert = function(){
+            vm.selfExpertOptions.dataSource.read();
+        }
+
         //境外专家
         vm.showOutExpertGrid = function () {
             vm.outExpertOptions.dataSource.read();
@@ -10504,6 +10500,11 @@
             }
         }
 
+        //境外专家查询
+        vm.queryOutExpert = function(){
+            vm.outExpertOptions.dataSource.read();
+        }
+
         //计算符合条件的专家
         vm.countMatchExperts = function (sortIndex) {
             if (vm.expertReview.id) {
@@ -10533,9 +10534,9 @@
             vm.matchExpertList = [];
             vm.matchExpertList = vm.matchEPMap[sortIndex];
             $("#matchExpertDiv").kendoWindow({
-                width: "800px",
-                height: "500px",
-                title: "专家信息",
+                width: "70%",
+                height: "600px",
+                title: "统计专家信息列表",
                 visible: false,
                 modal: true,
                 closable: true,
@@ -10556,7 +10557,7 @@
 
         //添加随机抽取条件
         vm.addCondition = function () {
-            if (vm.expertReview.isComfireResult == '9' || vm.expertReview.isComfireResult == 9) {
+            if (vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
                 vm.condition = {};
@@ -10702,6 +10703,8 @@
 
         //（整体方案抽取）开始随机抽取
         vm.startAutoExpertWin = function () {
+            //整体专家抽取前，先保存抽取方案
+
             if (buildCondition(true)) {
                 if(vm.expertReview.selCount > 0){
                     bsWin.alert("您已经进行整体专家抽取，不能再进行整体方案的抽取！");
@@ -10710,25 +10713,41 @@
                 if (vm.expertReview.isComfireResult == 9 || vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0) {
                     bsWin.alert("该方案已经进行整体专家方案的抽取，不能在继续抽取！");
                 } else {
-                    expertReviewSvc.queryAutoExpert(vm.conditions,vm.workProgramId,vm.expertReview.id,function(data){
+                    expertConditionSvc.saveCondition(vm.workProgramId,vm.conditions,function(data){
                         if(data.flag || data.reCode == 'ok'){
-                            //刷新页面抽取的专家
-                            vm.reFleshSelEPInfo(data.reObj.autoEPList);
-                            //抽取次数加一
-                            vm.expertReview.selCount = data.reObj.selCount;
-                            //抽取结果数组
-                            vm.autoSelectedEPList = [];
-                            vm.autoSelectedEPList = data.reObj.autoEPList;
-                            //刷新抽取次数
-                            vm.updateSelectedIndex();
-                            //弹框
-                            vm.showAutoExpertWin();
-                            //显示抽取效果
-                            expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                            vm.conditions = data.reObj;
+                            if(!vm.expertReview.id){
+                                vm.expertReview.id = vm.conditions[0].expertReviewId;
+                            }
+                            //抽取方案ID
+                            $.each(vm.conditions, function (i, obj) {
+                                obj.expertReviewDto = {};
+                                obj.expertReviewDto.id = vm.expertReview.id;
+                            });
+                            expertReviewSvc.queryAutoExpert(vm.conditions,vm.workProgramId,vm.expertReview.id,function(data){
+                                if(data.flag || data.reCode == 'ok'){
+                                    //刷新页面抽取的专家
+                                    vm.reFleshSelEPInfo(data.reObj.autoEPList);
+                                    //抽取次数加一
+                                    vm.expertReview.selCount = data.reObj.selCount;
+                                    //抽取结果数组
+                                    vm.autoSelectedEPList = [];
+                                    vm.autoSelectedEPList = data.reObj.autoEPList;
+                                    //刷新抽取次数
+                                    vm.updateSelectedIndex();
+                                    //弹框
+                                    vm.showAutoExpertWin();
+                                    //显示抽取效果
+                                    expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                                }else{
+                                    bsWin.error(data.reMsg);
+                                }
+                            });
                         }else{
                             bsWin.error(data.reMsg);
                         }
                     });
+
                 }
             } else {
                 bsWin.alert("请先保存编辑的抽取方案！");
@@ -10738,8 +10757,8 @@
         //显示随机抽取框
         vm.showAutoExpertWin = function () {
             $("#aotuExpertDiv").kendoWindow({
-                width: "1024px",
-                height: "600px",
+                width: "90%",
+                height: "700px",
                 title: "专家抽取",
                 visible: false,
                 modal: true,
@@ -10751,8 +10770,8 @@
         //显示随机抽取结果
         vm.showAutoMatchResultWin = function () {
             $("#aotuMatchResultDiv").kendoWindow({
-                width: "1024px",
-                height: "500px",
+                width: "90%",
+                height: "700px",
                 title: "专家抽取结果",
                 visible: false,
                 modal: true,
@@ -10947,7 +10966,7 @@
                     width: 100,
                     filterable: false
                 }, {
-                    field: "expeRttype",
+                    field: "expertSort",
                     title: "专家类别",
                     width: 100,
                     filterable: false
@@ -12081,7 +12100,7 @@
         function initFileRecordData(vm) {
             var httpOptions = {
                 method: 'get',
-                url: rootPath + "/fileRecord/html/initFillPage",
+                url: rootPath + "/fileRecord/initFillPage",
                 params: {signId: vm.fileRecord.signId}
             }
             var httpSuccess = function success(response) {
@@ -18916,9 +18935,15 @@
             if(isValid){
                 signSvc.createSign(vm.model,function(data){
                     if (data.flag || data.reCode == "ok") {
-                        bsWin.success("操作成功，请继续填写项目审核登记表",function(){
-                            $state.go('fillSign', {signid: data.reObj.signid}, {reload: true});
-                        });
+                        //如果已经发起流程，则不允许再修改
+                        if(data.reObj.processInstanceId){
+                            bsWin.alert("操作成功！");
+                        }
+                        else{
+                            bsWin.success("操作成功，请继续填写项目审核登记表",function(){
+                                $state.go('fillSign', {signid: data.reObj.signid}, {reload: true});
+                            });
+                        }
                     }else{
                         bsWin.error(data.reMsg);
                     }
@@ -19092,66 +19117,64 @@
             var checkboxValue = checkbox.value;
             if(checked){
                 vm.model.leaderName = signcommon.getDefaultLeader(checkboxValue);
-                vm.model.comprehensivehandlesug = signcommon.getDefaultZHBYJ(checkboxValue);
-                vm.model.comprehensiveName = '综合部';
                 //设置综合部和分管领导ID
                 $.each(vm.busiObj.leaderList,function(i,leader){
                     if(leader.mngOrgType == checkboxValue){
                         vm.model.leaderId = leader.id;
                         vm.model.leaderName = leader.displayName;
-                        // vm.model.comprehensivehandlesug = "请"+(leader.displayName)+"主任阅示。";
                         vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,1)+"主任阅示。";
                     }
                 })
+                if(checkboxValue == signcommon.getBusinessType().PX){
+                    vm.model.leaderhandlesug="请（概算一部         概算二部）组织评审。";
+                }else{
+                    vm.model.leaderhandlesug="请（评估一部         评估二部         综合部）组织评审。";
+                }
                 if(!vm.model.leaderId){
                     bsWin.alert("选择的默认办理部门没有合适的分管领导，请先设置分管领导角色用户！");
                 }
-                var date = new Date();
-                var monthValue = (date.getMonth()+1) < 10 ?"0"+(date.getMonth()+1):(date.getMonth()+1);
-                var dayValue = (date.getDate()) < 10 ?"0"+(date.getDate()):(date.getDate());
-                vm.model.comprehensiveDate = (date.getFullYear()+"-"+monthValue+"-"+dayValue);
             }
         }
 
-
-        //发起流程
+        //发起流程，发起流程先保存数据
         vm.startNewFlow = function(){
-            bsWin.confirm({
-                title: "询问提示",
-                message: "确定发起流程么，请确保填写的信息已经保存正确！",
-                onOk: function () {
-                    $('.confirmDialog').modal('hide');
-                    var httpOptions = {
-                        method : 'post',
-                        url : rootPath+"/sign/startNewFlow",
-                        params : {
-                            signid:vm.model.signid
-                        }
-                    }
-                    var httpSuccess = function success(response) {
-                        if(response.data.reCode == "ok"){
-                            bsWin.success("操作成功！");
-                        }else{
-                            if(response.data.reMsg == "操作失败，请先设置默认办理部门！"){
-                                common.alert({
-                                    vm : vm,
-                                    title : "温馨提示",
-                                    msg : "请先设置默认办理部门，并保存数据",
-                                    closeDialog: true
-                                });
-                            }else{
-                                bsWin.error(response.data.reMsg);
+            common.initJqValidation($('#sign_fill_form'));
+            var isValid = $('#sign_fill_form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确定发起流程么，请确保填写的信息已经保存正确！",
+                    onOk: function () {
+                        $('.confirmDialog').modal('hide');
+                        signSvc.updateFillin(vm.model,function (data) {
+                            var httpOptions = {
+                                method : 'post',
+                                url : rootPath+"/sign/startNewFlow",
+                                params : {
+                                    signid:vm.model.signid
+                                }
                             }
-                        }
+                            var httpSuccess = function success(response) {
+                                vm.isSubmit = false;
+                                if(response.data.reCode == "ok"){
+                                    bsWin.success("操作成功！");
+                                }else{
+                                    bsWin.error(response.data.reMsg);
+                                }
+                            }
+                            common.http({
+                                $http : $http,
+                                httpOptions : httpOptions,
+                                success : httpSuccess
+                            });
+                        });
                     }
-                    common.http({
-                        vm : vm,
-                        $http : $http,
-                        httpOptions : httpOptions,
-                        success : httpSuccess
-                    });
-                }
-            });
+                });
+            }else{
+                bsWin.alert("项目填报内容不完整或者填报信息不正确，请检查之后再提交！");
+            }
+
         }
 
         //打印预览
@@ -19320,18 +19343,38 @@
                 if(vm.model.isAssociate && vm.model.isAssociate == 1){
                     vm.showFlag.tabAssociateSigns = true;
                     signSvc.initAssociateSigns(vm,vm.model.signid);
+                    //没有则初始化关联表格
                 }
-                //按钮显示控制，全部归为这个对象控制
-                vm.showFlag.tabWorkProgram = true;
-                vm.showFlag.tabDispatch = true;
-                vm.showFlag.tabFilerecord = true;
-                //初始化专家评分
-                signSvc.paymentGrid(vm.model.signid,function(data){
-                    vm.businessFlag.expertReviews = data.value;
-                    if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
-                        vm.showFlag.tabExpert = true;   //显示专家信息tab
+
+                //发文
+                if (vm.model.dispatchDocDto) {
+                    vm.showFlag.tabDispatch = true;
+                    vm.dispatchDoc = vm.model.dispatchDocDto;
+                    //如果是合并发文次项目，则不用生成发文编号
+                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
+                        || vm.dispatchDoc.fileNum){
+                        vm.businessFlag.isCreateDisFileNum = true;
+                    }else{
+                        vm.showFlag.buttDisFileNum = true;
                     }
-                });
+                }
+                //归档
+                if (vm.model.fileRecordDto) {
+                    vm.showFlag.tabFilerecord = true;
+                    vm.fileRecord = vm.model.fileRecordDto;
+                }
+
+                //初始化专家评分
+                if (vm.model.processState > 1) {
+                    vm.showFlag.tabWorkProgram=true;        //显示工作方案
+                    //初始化专家评分
+                    signSvc.paymentGrid(vm.model.signid,function(data){
+                        vm.businessFlag.expertReviews = data.value;
+                        if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
+                            vm.showFlag.tabExpert = true;   //显示专家信息tab
+                        }
+                    });
+                }
             });
         }
         //获取专家评星
@@ -19961,24 +20004,6 @@
             ideaSvc.initIdea(vm);
         }
 
-        //检查项目负责人
-        vm.checkPrincipal = function(){
-            var selUserId = $("#selPrincipalMainUser").val();
-            if(selUserId){
-                $('#principalAssistUser input[selectType="assistUser"]').each(
-                    function () {
-                        var value = $(this).attr("value");
-                        if (value == selUserId) {
-                            $(this).removeAttr("checked");
-                            $(this).attr("disabled", "disabled");
-                        } else {
-                            $(this).removeAttr("disabled");
-                        }
-                    }
-                );
-            }
-        }
-
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
             vm.businessFlag.expertScore = {};
@@ -20396,6 +20421,53 @@
             if(selOrg.length > 0){
                 vm.flow.dealOption = "请（"+selOrg.join('，')+"）组织评审";
             }
+        }
+
+        //检查项目负责人
+        vm.checkPrincipal = function(){
+            var selUserId = $("#selPrincipalMainUser").val();
+            if(selUserId){
+                $('#principalAssistUser input[selectType="assistUser"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value == selUserId) {
+                            $(this).removeAttr("checked");
+                            $(this).attr("disabled", "disabled");
+                        } else {
+                            $(this).removeAttr("disabled");
+                        }
+                    }
+                );
+            }
+            vm.initUserOption();
+        }
+        //部门领导分办，选择用户的默认处理意见
+        vm.initUserOption = function(){
+            var selUserId = $("#selPrincipalMainUser").val();
+            var isSelMainUser = false;
+            var defaultOption = "请（"
+            if(selUserId){
+                $.each(vm.users,function(i,u){
+                    if(u.id == selUserId){
+                        defaultOption += u.displayName;
+                        isSelMainUser = true;
+                    }
+                })
+            }
+            var selUser = []
+            $('#p_assistUser input[selectType="assistUser"]:checked').each(function () {
+                selUser.push($(this).attr("tit"));
+            });
+
+            if(selUser.length > 0){
+                if(isSelMainUser){
+                    defaultOption += ', ';
+                }
+                defaultOption += selUser.join(', ');
+            }
+            defaultOption += " )组织办理。";
+
+            vm.flow.dealOption = defaultOption;
         }
 
         // checkbox 单选
@@ -21700,7 +21772,7 @@
         function paymentGrid(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/expertReview/html/getBySignId/" + signId
+                url: rootPath + "/expertReview/getBySignId/" + signId
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -21832,8 +21904,8 @@
      * 项目业务类型
      */
     var signBusinessType = {
-        PD : "PD",      //评估
-        GD : "GD",      //概算
+        PX : "PX",      //评估
+        GX : "GX",      //概算
     }
 
     /**

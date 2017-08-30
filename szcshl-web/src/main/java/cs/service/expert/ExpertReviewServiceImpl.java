@@ -391,26 +391,25 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
                 //设置评审方案的专家
                 List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
-                List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>();
-
-                if (expertSelecteds != null && expertSelecteds.size() > 0) {
+                if (Validate.isList(expertSelecteds)) {
+                    List<ExpertSelectedDto> expertSelectedDtos = new ArrayList<ExpertSelectedDto>(expertSelecteds.size());
+                    //只有经过确认的专家才显示
                     expertSelecteds.forEach(expertSelected -> {
-                        ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
-                        BeanUtils.copyProperties(expertSelected, expertSelectedDto,
-                                new String[]{ExpertSelected_.expertReview.getName()});
-
-                        //======================设置专家======================================================
-                        expertSelectedDto.setExpertDto(new ExpertDto());
-                        BeanUtils.copyProperties(expertSelected.getExpert(), expertSelectedDto.getExpertDto(),
-                                new String[]{Expert_.photo.getName(), Expert_.work.getName(),
-                                        Expert_.project.getName(), Expert_.expertSelectedList.getName()});
-                        //===================================================================================
-
-                        expertSelectedDtos.add(expertSelectedDto);
+                        if(Constant.EnumState.YES.getValue().equals(expertSelected.getIsConfrim())){
+                            ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                            BeanUtils.copyProperties(expertSelected, expertSelectedDto,
+                                    new String[]{ExpertSelected_.expertReview.getName()});
+                            //======================设置专家======================================================
+                            expertSelectedDto.setExpertDto(new ExpertDto());
+                            BeanUtils.copyProperties(expertSelected.getExpert(), expertSelectedDto.getExpertDto(),
+                                    new String[]{Expert_.photo.getName(), Expert_.work.getName(),
+                                            Expert_.project.getName(), Expert_.expertSelectedList.getName()});
+                            //===================================================================================
+                            expertSelectedDtos.add(expertSelectedDto);
+                        }
                     });
-
+                    expertReviewDto.setExpertSelectedDtoList(expertSelectedDtos);
                 }
-                expertReviewDto.setExpertSelectedDtoList(expertSelectedDtos);
                 expertReviewDtos.add(expertReviewDto);
             }
         }

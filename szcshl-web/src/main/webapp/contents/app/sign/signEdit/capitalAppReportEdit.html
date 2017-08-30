@@ -23,7 +23,10 @@
 
 	 <tr>
         <td width="15%" class="text-center">项目名称</td>
-        <td>{{vm.model.projectname}}</td>
+        <td>
+            <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.projectname" name="projectname" id="projectname" data-val="true" data-val-required="必填">
+            <span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span>
+        </td>
         <td width="15%" class="text-center">收文编号</td>
         <td> {{vm.model.filecode}}</td>
     </tr>
@@ -206,7 +209,7 @@
     <tr>
         <td width="15%" class="text-center">中心领导签批意见</td>
         <td colspan="3">
-            <textarea rows="3"  name="leaderhandlesug" id="leaderhandlesug" value="" style="width: 98%">请（评估一部 □  评估一部信息化组□   评估二部 □）组织评审。</textarea>
+            <textarea rows="3"  name="leaderhandlesug" id="leaderhandlesug" value="" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
         </td>
     </tr>
     <tr>
@@ -218,7 +221,7 @@
     <tr>
         <td width="15%" class="text-center">送件人：</td>
         <td colspan="3">
-            <input style="width:100px;" class="form-control input-sm"  ng-model="vm.model.sendusersign" name="sendusersign" id="sendusersign" data-val="true" data-val-required="必填">
+            <input style="width:80%;" class="form-control input-sm"  ng-model="vm.model.sendusersign" name="sendusersign" id="sendusersign" data-val="true" data-val-required="必填">
             <span data-valmsg-for="sendusersign" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
