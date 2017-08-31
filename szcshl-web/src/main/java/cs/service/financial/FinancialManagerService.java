@@ -1,11 +1,10 @@
 package cs.service.financial;
 
-import java.util.List;
 import java.util.Map;
 
-import cs.domain.financial.FinancialManager;
 import cs.model.PageModelDto;
 import cs.model.financial.FinancialManagerDto;
+import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 
 /**
@@ -15,7 +14,7 @@ import cs.repository.odata.ODataObj;
  */
 public interface FinancialManagerService {
     
-    PageModelDto<FinancialManagerDto> get(ODataObj odataObj);
+    PageModelDto<SignDto> get(ODataObj odataObj);
 
 	void save(FinancialManagerDto record);
 

@@ -75,12 +75,12 @@ public class AddRegisterFileServiceImpl  implements AddRegisterFileService {
 		registerFile.setCreatedDate(now);
 		registerFile.setModifiedDate(now);
 		addRegisterFileRepo.save(registerFile);
-		FileRecord file = fileRecordRepo.getById(addRegisterFileDtos.getSignid());
-		if(file != null){
-			FileRecordDto fileDto = new FileRecordDto();
-			BeanCopierUtils.copyPropertiesIgnoreNull(file, fileDto);
-			file.setIsSupplementary(Constant.EnumState.YES.getValue());
-			fileRecordRepo.save(file);
+		Sign sign = signRepo.findById(addRegisterFileDtos.getSignid());
+		if(sign != null){
+			SignDto fileDto = new SignDto();
+			BeanCopierUtils.copyPropertiesIgnoreNull(sign, fileDto);
+			sign.setIsSupplementary(Constant.EnumState.YES.getValue());
+			signRepo.save(sign);
 		}
 
 	}

@@ -6,6 +6,8 @@ import cs.model.BaseDto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+
 import com.alibaba.fastjson.annotation.JSONField;
     
     
@@ -42,6 +44,8 @@ public class AddSuppLetterDto extends BaseDto {
     private String leaderSuggest;
     private Integer fileSeq;
     private String userId;
+    private String businessId;
+	private String businessIdType;
     
     
     public Date getDisapDate() {
@@ -176,7 +180,22 @@ public class AddSuppLetterDto extends BaseDto {
 	public void setSignid(String signid) {
 		this.signid = signid;
 	}
-	
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
+
+	public String getBusinessIdType() {
+		return businessIdType;
+	}
+
+	public void setBusinessIdType(String businessIdType) {
+		this.businessIdType = businessIdType;
+	}
 	
 
 }

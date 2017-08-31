@@ -35,11 +35,13 @@
         //添加报销记录
        vm.addFinancial =  function () {
     	   	var projectName = $("#projectName").val();
+    	   	var paymentData = $("#paymentData").val();
     	    var signid =vm.financial.signid;
         	vm.financial = {};
         	vm.financial.chargeType ="评审项目"; 
         	vm.financial.signid = signid ;
         	vm.financial.projectName= projectName;
+        	vm.financial.paymentData= paymentData;
             vm.financials.push(vm.financial);
             vm.i++;
         }// end
@@ -73,7 +75,6 @@
     
         activate();
         function activate() {
-            financialManagerSvc.grid(vm);
             financialManagerSvc.sumFinancial(vm);
             financialManagerSvc.initFinancialProject(vm);
         }

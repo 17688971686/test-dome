@@ -1042,6 +1042,10 @@ public class SignServiceImpl implements SignService {
                 break;
             //财务办理
             case Constant.FLOW_SIGN_CWBL:
+            	sign = signRepo.findById(Sign_.signid.getName(), signid);
+            	//财务办理状态9已办理
+            	sign.setFinanciaStatus(Constant.EnumState.YES.getValue());
+            	
                 dealUser = signPrincipalService.getMainPriUser(signid);
                 variables.put(Constant.FlowUserName.USER_M.getValue(), Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
                 break;

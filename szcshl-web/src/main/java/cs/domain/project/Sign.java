@@ -122,6 +122,14 @@ public class Sign extends DomainBase {
     //秘密登记
     @Column(columnDefinition = "VARCHAR(16)")
     private String secrectlevel;
+    
+    //财务办理状态 :9表示已办理,0表示未办理
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String financiaStatus;
+    
+    //是否有登记补充资料:9表示是,0表示否
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String IsSupplementary;
 
     //综合部拟办意见
     @Column(columnDefinition = "VARCHAR(255)")
@@ -2383,4 +2391,21 @@ public class Sign extends DomainBase {
     public void setSignSeq(Integer signSeq) {
         this.signSeq = signSeq;
     }
+	public String getFinanciaStatus() {
+		return financiaStatus;
+	}
+
+	public void setFinanciaStatus(String financiaStatus) {
+		this.financiaStatus = financiaStatus;
+	}
+
+	public String getIsSupplementary() {
+		return IsSupplementary;
+	}
+
+	public void setIsSupplementary(String isSupplementary) {
+		IsSupplementary = isSupplementary;
+	} 
+	
+    
 }

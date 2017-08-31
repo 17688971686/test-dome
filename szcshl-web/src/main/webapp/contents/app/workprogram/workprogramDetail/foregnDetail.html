@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
-<!-- start 主项目（项目建议书/可行性研究报告） -->
+<!-- start 主项目（进口设备） -->
 <table ng-repeat="w in vm.model.workProgramDtoList" class="table table-bordered" style="margin-bottom: 0px;"
-       ng-if="(w.workreviveStage=='进口设备' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
+       ng-if="(w.workreviveStage=='进口设备')&&(w.branchId == '1' || w.branchId == 1)">
     <caption class="text-center h3"><strong>{{w.titleName}}</strong></caption>
     <span style="float:content;">QR-4.10-05-A0</span>
     <caption style="width:100%;">
@@ -141,10 +141,10 @@
         </td>
     </tr>
 </table>
-<!-- end 主项目 （项目建议书/可行性研究报告）table -->
-<!-- start 协审项目（项目建议书/可行性研究报告） -->
+<!-- end 主项目 （进口设备）table -->
+<!-- start 协审项目（进口设备） -->
 <table ng-repeat="w in vm.model.workProgramDtoList  | orderBy:w.branchId" class="table table-bordered" style="margin-bottom: 0px;"
-       ng-if="(w.workreviveStage=='进口设备' || w.workreviveStage=='资金申请报告')&&(w.branchId == '4' || w.branchId == 4 || w.branchId == '2' || w.branchId == 2 || w.branchId == '3' || w.branchId == 3)">
+       ng-if="(w.workreviveStage=='进口设备')&&(w.branchId == '4' || w.branchId == 4 || w.branchId == '2' || w.branchId == 2 || w.branchId == '3' || w.branchId == 3)">
     <tr>
         <td rowspan="100" valign="baseline" style="width:8%;">协审[{{w.branchId}}]<br>工作方案</td>
         <td style="width:10%;" >评审方式</td>
@@ -246,7 +246,7 @@
         </td>
     </tr>
 </table>
-<!-- end 协审项目 （项目建议书/可行性研究报告）table -->
+<!-- end 协审项目 （进口设备）table -->
 
 
 

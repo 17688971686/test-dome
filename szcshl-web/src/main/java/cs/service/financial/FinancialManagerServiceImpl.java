@@ -7,12 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.activiti.engine.impl.bpmn.data.Data;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.HqlBuilder;
+import cs.common.Constant.EnumState;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
@@ -22,9 +27,11 @@ import cs.domain.financial.FinancialManager_;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
 import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.financial.FinancialManagerDto;
+import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -43,24 +50,33 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 	private SignRepo signRepo;
 	
 	@Override
-	public PageModelDto<FinancialManagerDto> get(ODataObj odataObj) {
-		PageModelDto<FinancialManagerDto> pageModelDto = new PageModelDto<FinancialManagerDto>();
-		List<FinancialManager> resultList = financialManagerRepo.findByOdata(odataObj);
-		List<FinancialManagerDto> resultDtoList = new ArrayList<FinancialManagerDto>(resultList.size());
+	public PageModelDto<SignDto> get(ODataObj odataObj) {
+		PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
+		Criteria criteria = signRepo.getExecutableCriteria();
+		criteria =odataObj.buildFilterToCriteria(criteria);
+		criteria.add(Restrictions.eq(Sign_.financiaStatus.getName(),EnumState.YES.getValue()));
+	    Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+	    pageModelDto.setCount(totalResult);
+	    criteria.setProjection(null);
+	    if(odataObj.getSkip() > 0){
+	    	criteria.setFirstResult(odataObj.getTop());
+	    }
+	    if(odataObj.getTop() > 0){
+	    	criteria.setMaxResults(odataObj.getTop());
+	    }
+	    List<Sign> signlist =criteria.list();
+		List<SignDto> signDtos = new ArrayList<SignDto>(signlist == null ? 0 : signlist.size());
 		
-		if(resultList != null && resultList.size() > 0){
-            resultList.forEach(x->{
-				FinancialManager modelDto = new FinancialManager();
-				BeanCopierUtils.copyProperties(x, modelDto);
-				//cannot copy 
-				modelDto.setCreatedDate(x.getCreatedDate());
-				modelDto.setModifiedDate(x.getModifiedDate());
+		if(signlist != null && signlist.size() > 0){
+			signlist.forEach(x->{
+				 SignDto signDto = new SignDto();
+				BeanCopierUtils.copyProperties(x, signDto);
 				
-				//resultDtoList.add(modelDto);
+				signDtos.add(signDto);
 			});						
 		}		
-		pageModelDto.setCount(odataObj.getCount());
-	//	pageModelDto.setValue(FinancialManagerDtoList);		
+		pageModelDto.setValue(signDtos);	
+		
 		return pageModelDto;
 	}
 
@@ -131,10 +147,12 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		 FinancialManagerDto financialDto = new FinancialManagerDto();
 		 financialDto.setProjectName(sign.getProjectname());
 		 financialDto.setSignid(sign.getSignid());
+		 financialDto.setPaymentData(new Date());
 		 HqlBuilder hqlBuilder = HqlBuilder.create();
 		 hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+FinancialManager_.signid.getName()+ " =:signid");
 		 hqlBuilder.setParam("signid", signid);
 		 List<FinancialManager> financiallist= financialManagerRepo.findByHql(hqlBuilder);
+		
 		 map.put("financiallist", financiallist);
 		 map.put("financialDto", financialDto);
 		return map;

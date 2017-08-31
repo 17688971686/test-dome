@@ -10,7 +10,7 @@
         <!-- <li class="active">{{vm.titles}}</li> -->
    	</ol>
     		 
-       <div class="toolbar">
+       <div class="toolbar" ng-show="false">
 		    <button class="btn btn-sm btn-primary" ng-click="vm.print()">打印</button>
 			<button class="btn btn-sm btn-primary" ng-click="back()" >返回</button>
 	   </div>
@@ -65,8 +65,14 @@
 											<input type="checkbox" style="width:50px;" ng-model="vm.addRegisters[$index].isHasCopyfile"id="isHasCopyfile" name="isHasCopyfile" ng-true-value="9" ng-false-value="0">
 										</td>
 										<td >
-										<input type="text" class="form-control input-sm " style="width: 160px;"
-											ng-model="vm.addRegisters[$index].suppleDeclare"  />
+										 <select ng-model="vm.addRegisters[$index].suppleDeclare" class="form-control input-sm ">
+					                            
+					                        <option ng-repeat="d in DICT.BCSM_01.dicts" value="{{d.dictName}}"
+					                                ng-selected="x.suppleDeclare == d.dictName" >{{d.dictName}}
+					                        </option>
+					                    </select>
+										<!-- <input type="text" class="form-control input-sm " style="width: 160px;"
+											ng-model="vm.addRegisters[$index].suppleDeclare"  /> -->
 										</td>
 										<td >
 										<input type="text" class="form-control input-sm " style="width: 100px;"

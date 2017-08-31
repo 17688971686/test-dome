@@ -1,7 +1,6 @@
 package cs.controller.financial;
 
 import java.text.ParseException;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.domain.financial.FinancialManager;
 import cs.model.PageModelDto;
 import cs.model.financial.FinancialManagerDto;
+import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.financial.FinancialManagerService;
 
@@ -37,11 +36,11 @@ public class FinancialManagerController {
     private FinancialManagerService financialManagerService;
 
     @RequiresPermissions("financialManager#findByOData#post")
-    @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
+    @RequestMapping(name = "获取已办理项目评审费数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<FinancialManagerDto> get(HttpServletRequest request) throws ParseException {
+    public PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<FinancialManagerDto> financialManagerDtos = financialManagerService.get(odataObj);	
+        PageModelDto<SignDto> financialManagerDtos = financialManagerService.get(odataObj);	
         return financialManagerDtos;
     }
     

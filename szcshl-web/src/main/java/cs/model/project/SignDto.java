@@ -53,7 +53,13 @@ public class SignDto extends BaseDto {
     private String reviewstage;
 
     private String ispresign;
-
+    
+    //财务办理状态
+    private String financiaStatus; 
+    
+    //是否有登记补充资料:9表示是,0表示否
+    private String IsSupplementary;
+    
     private String projectname;
 
     private String ischangeEstimate;
@@ -1977,7 +1983,16 @@ public class SignDto extends BaseDto {
         this.comprehensiveId = comprehensiveId;
     }
 
-    public String getLeaderhandlesug() {
+    
+    public String getFinanciaStatus() {
+		return financiaStatus;
+	}
+
+	public void setFinanciaStatus(String financiaStatus) {
+		this.financiaStatus = financiaStatus;
+	}
+
+	public String getLeaderhandlesug() {
         return leaderhandlesug;
     }
 
@@ -2176,4 +2191,13 @@ public class SignDto extends BaseDto {
     public void setSignSeq(Integer signSeq) {
         this.signSeq = signSeq;
     }
+
+	public String getIsSupplementary() {
+		return IsSupplementary;
+	}
+
+	public void setIsSupplementary(String isSupplementary) {
+		IsSupplementary = isSupplementary;
+	}
+    
 }

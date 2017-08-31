@@ -9,11 +9,11 @@
         var url_financialManager = rootPath + "/financialManager", url_back = '#/financialManagerList';
         var service = {
             grid: grid,
-            deleteFinancialManager: deleteFinancialManager,
-            savefinancial:savefinancial,//保存报销记录
-            sumFinancial:sumFinancial,//统计评审费用总和
-            initFinancialProject:initFinancialProject,//初始化关联项目评审费
-            isUnsignedInteger:isUnsignedInteger,	//	数字校验
+            deleteFinancialManager: deleteFinancialManager,			//删除报销记录
+            savefinancial:savefinancial,							//保存报销记录
+            sumFinancial:sumFinancial,								//统计评审费用总和
+            initFinancialProject:initFinancialProject,				//初始化关联项目评审费
+            isUnsignedInteger:isUnsignedInteger,					//	数字校验
         };
 
         return service;
@@ -37,7 +37,6 @@
                 var httpSuccess = function success(response) {
                     vm.model = response.data.financialDto;
                     vm.financials = response.data.financiallist;
-                    
                 };
                 common.http({
                     vm: vm,
@@ -150,15 +149,14 @@
         }
         // end#deleteFinancialManager
 
-        // begin#grid
+        //S_初始化grid(过滤已签收和已经完成的项目)
         function grid(vm) {
-
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_financialManager),
+                transport: common.kendoGridConfig().transport(rootPath + "/financialManager/findByOData", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
+                    id: "signid",
                     fields: {
                         createdDate: {
                             type: "date"
@@ -174,51 +172,76 @@
                     dir: "desc"
                 }
             });
-
             // End:dataSource
-
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
             // Begin:column
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
                     },
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
                 },
                 {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
+				    field: "rowNumber",
+				    title: "序号",
+				    width: 50,
+				    filterable : false,
+				    template: "<span class='row-number'></span>"
+				 },
+                {
+                    field: "projectname",
+                    title: "项目名称",
+                    width: 160,
+                    filterable: false
                 },
                 {
-                    field: "chargeName",
-                    title: "chargeName",
-                    width: 100,
-                    filterable: true
+                    field: "filecode",
+                    title: "收文编号",
+                    width: 80,
+                    filterable: false,
                 },
                 {
-                    field: "charge",
-                    title: "charge",
+                    field: "designcompanyName",
+                    title: "项目单位",
                     width: 100,
-                    filterable: true
+                    filterable: false,
                 },
                 {
-                    field: "remarke",
-                    title: "remarke",
-                    width: 100,
-                    filterable: true
+                    field: "reviewstage",
+                    title: "项目阶段",
+                    width: 80,
+                    filterable: false,
                 },
+                {
+                    field: "projectcode",
+                    title: "项目代码",
+                    width: 120,
+                    filterable: false,
+                },
+               
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: 100,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                             item.signid 
+                            );
                     }
                 }
             ];
@@ -230,10 +253,10 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound:dataBound,
                 resizable: true
             };
-
-        }// end fun grid
+        }//E_初始化grid
 
     }
 })();

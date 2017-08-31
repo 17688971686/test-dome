@@ -86,6 +86,13 @@ public class AddSuppLetter extends DomainBase {
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String signid;
 	
+	//业务ID
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String businessId;
+	
+	//业务类型
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String businessIdType;
 	
 	//文字序号
     @Column(columnDefinition = "INTEGER")
@@ -227,6 +234,23 @@ public class AddSuppLetter extends DomainBase {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
+
+	public String getBusinessIdType() {
+		return businessIdType;
+	}
+
+	public void setBusinessIdType(String businessIdType) {
+		this.businessIdType = businessIdType;
+	}
+	
 	
 	
 }

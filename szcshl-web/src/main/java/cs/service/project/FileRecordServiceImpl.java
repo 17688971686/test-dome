@@ -112,6 +112,8 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setFileNumber(sign.getDocnum());//文号
             //项目是否曾经暂停
             fileRecordDto.setIsStachProject(sign.getIsProjectState()==null? Constant.EnumState.NO.getValue():sign.getIsProjectState());
+           //是否有登记补充资料
+            fileRecordDto.setIsSupplementary(sign.getIsSupplementary()==null? Constant.EnumState.NO.getValue():sign.getIsSupplementary() );
             fileRecordDto.setProjectChargeUser(priUser == null ? "" : priUser.getDisplayName());
             //设置默认文件标题
             String fileTitle = "《";

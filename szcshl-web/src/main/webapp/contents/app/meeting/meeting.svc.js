@@ -279,7 +279,7 @@
                     width: 80,
                     filterable: false
                 },
-                {
+              /*  {
                     field: "userName",
                     title: "负责人",
                     width: 70,
@@ -290,7 +290,7 @@
                     title: "负责人电话",
                     width: 120,
                     filterable: false
-                },
+                },*/
                 {
                     field : "",
                     title : "状态",

@@ -22,7 +22,7 @@ public class FinancialManagerDto extends BaseDto {
     private String chargeName;
     private Integer charge;
 	private Integer stageCount;
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JSONField(format = "yyyy-MM-dd")
 	private Date paymentData;
 	private String projectName;
 	private String signid;

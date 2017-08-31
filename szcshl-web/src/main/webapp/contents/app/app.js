@@ -510,12 +510,21 @@
             })
             //end#sharing
              //S 财务管理
+            //添加页面
              .state('financialManager', {
                 url: '/financialManager/:signid',
                 templateUrl: rootPath + '/financialManager/html/add.html',
                 controller: 'financialManagerCtrl',
                 controllerAs: 'vm'
             })
+            //列表页面
+             .state('financialManagerList', {
+                url: '/financialManagerList',
+                templateUrl: rootPath + '/financialManager/html/list.html',
+                controller: 'financialManagerEditCtrl',
+                controllerAs: 'vm'
+            })
+             //E 财务管理
               //begin#dispatch
            /* .state('financialEdit', {
                 url: '/financialEdit/:signid',

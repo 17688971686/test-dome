@@ -8,7 +8,7 @@
     function financialManager($location, financialManagerSvc, $state) {
         /* jshint validthis:true */
         var vm = this;
-        vm.title = '添加财务管理';
+        vm.title = '财务管理';
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.isuserExist = false;
@@ -30,6 +30,7 @@
     
         activate();
         function activate() {
+        	  financialManagerSvc.grid(vm);
             if (vm.isUpdate) {
                 financialManagerSvc.getFinancialManagerById(vm);
             }
