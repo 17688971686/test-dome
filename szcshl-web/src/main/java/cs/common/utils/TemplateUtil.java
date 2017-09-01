@@ -71,111 +71,11 @@ public class TemplateUtil {
 
     public static void main(String[] args){
     	
-    	/*Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //获取本周一的日期
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        Date  monday=cal.getTime();
-        String MONDAY =df.format(monday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-        Date tuseday = cal.getTime();
-        String TUESDAY = df.format(tuseday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-        Date wednesday =cal.getTime();
-        String WEDNESDAY = df.format(wednesday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-        Date thursday = cal.getTime();
-        String THURSDAY = df.format(thursday);
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-        Date friday = cal.getTime();
-        String FRIDAT = df.format(friday);*/
-    /*	
-		Calendar cal =Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        //增加一个星期，才是我们中国人理解的本周日的日期
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        //星期一
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextMonday=cal.getTime();
-        String MONDAY = df.format(nextMonday);
-        
-        //星期二
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextTuesday = cal.getTime();
-        String TUESDAY = df.format(nextTuesday);
-        //星期三
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextWednesday = cal.getTime();
-        String WEDNESDAY =df.format(nextWednesday);
-        
-        //星期四
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextThursday = cal.getTime();
-        String THURSDAY =   df.format(nextThursday);
-        
-        //星期五
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextFriday = cal.getTime();
-        String FRIDAY = df.format(nextFriday);
-        
-        //星期六
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-        cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextSatday = cal.getTime();
-      
-        //获取下周星期日
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        cal.add(Calendar.WEEK_OF_YEAR, 1);
-        Date nextSunday=cal.getTime();
-        
-        Map<String,Object> dataMap = new HashMap<>();
-        Map<String,Object> dataMap1 = new HashMap<>();
-        dataMap.put("projectName","系统测试项目");
-        dataMap.put("reviewStage","科研究型阶段");
-        TemplateUtil.createDoc(dataMap,"notice","E:\\szcshl_upload\\test.doc");
-      
-        dataMap.put("MONDAY",MONDAY);
-        dataMap.put("TUESDAY",TUESDAY);
-        dataMap.put("WEDNESDAY",WEDNESDAY);
-        dataMap.put("THURSDAY",THURSDAY);
-        dataMap.put("FRIDAY",FRIDAY);
-        dataMap.put("stageProject","资金申请报告书");
-        
-       File docFile =  TemplateUtil.createDoc(dataMap,"nextStageMeeting","E:\\szcshl_upload\\nexstmeeating.doc");
-*/
-//        System.out.print(docFile);
-//    	nextWeekMeeting();
+
     	
     	 Map<String,Object> dataMap = new HashMap<>();
-    	 List<String> timeList=new ArrayList<String>();
-    	 timeList.add("星期一");
-    	 timeList.add("星期二");
-    	 timeList.add("星期三");
-    	 timeList.add("星期四");
-    	 timeList.add("星期五");
-    	 timeList.add("星期六");
-    	 timeList.add("星期日");
-    	 List<String> contentList=new ArrayList<String>();
-    	 contentList.add("aaa1");
-    	 contentList.add("aaa2");
-    	 contentList.add("aaa3");
-    	 contentList.add("aaa4");
-    	 contentList.add("aaa5");
-    	 contentList.add("aaa6");
-    	 contentList.add("aaa7");
-       
-         dataMap.put("TITLE","评审会");
-         dataMap.put("START","2017-07-10");
-         dataMap.put("END","2017-07-14");
-         dataMap.put("contentList",contentList);
-         dataMap.put("timeList", timeList);
-         TemplateUtil.createDoc(dataMap,"exportRoom","E:\\szcshl_upload\\1234.doc");
+
+         TemplateUtil.createDoc(dataMap,"report/opinion","G:\\test\\资金申请—评审意见.doc");
         
     }
     
