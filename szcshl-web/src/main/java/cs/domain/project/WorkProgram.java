@@ -162,7 +162,7 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "DATE")
     private Date studyEndTime;
 
-    //专家费用
+    //专家费用(单位为元)
     @Column(columnDefinition = "NUMBER")
     private BigDecimal expertCost;
 

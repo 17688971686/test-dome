@@ -75,7 +75,7 @@
                     <ol class="breadcrumb" style="font-size: 12px;">
                         <li class="active">温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个！</li>
                     </ol>
-                    <p ng-show="vm.businessFlag.isMainBranch">
+                    <p ng-if="vm.businessFlag.isMainBranch">
                         <span>第一负责人：</span>
                         <select ng-model="vm.mainPriUser" id="selPrincipalMainUser" ng-change="vm.checkPrincipal();">
                             <option value="">请选择</option>
@@ -131,7 +131,7 @@
                                             class="glyphicon glyphicon-arrow-up"></span>删除
                                     </button>
                                 </span>
-                                <span style="text-align:center;margin: 0px 20px;">
+                                <span ng-if="vm.businessFlag.isMainBranch" style="text-align:center;margin: 0px 20px;">
                                     是否总负责人<input ng-model="vm.isMainPriUser" type="checkbox" ng-true-value="9" ng-false-value="0" id="isMainPriUser" ng-checked="vm.isMainPriUser==9"/>
                                 </span>
                             </td>

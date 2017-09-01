@@ -94,10 +94,8 @@
                               ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
                               name="mianChargeSuggest" placeholder="第一负责人"/>
                 </td>
-                <td colspan="2">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
-                              name="secondChargeSuggest" placeholder="第二负责人"/>
+                <td colspan="2" >
+                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
                 </td>
             </tr>
 

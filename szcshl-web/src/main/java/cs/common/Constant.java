@@ -41,6 +41,16 @@ public class Constant {
     public static final String SEND_SIGN_NAME = "魏俊辉";
 
     /**
+     * 发文范围默认值
+     */
+    public static final String DIS_SCOPE_XSY = "艾传荣副巡视员" ;
+
+    /**
+     * 发文范围默认值
+     */
+    public static final String DIS_SCOPE_ZXLD = "中心领导" ;
+
+    /**
      * 发文编号前缀
      */
     public static String DISPATCH_PREFIX = "深投审";

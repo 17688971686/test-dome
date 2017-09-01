@@ -226,50 +226,57 @@
                     field: "projectName",
                     title: "项目名称",
                     filterable: false,
-                    width: "10%"
+                    width: "18%",
+                    template: function (item) {
+                        if(item.processState == 2){
+                            return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        }else{
+                            return '<a href="#/signFlowDeal/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        }
+                    }
                 },
                 {
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: "10%"
+                    width: "12%"
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: 120,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "preSignDate",
                     title: "预签收时间",
-                    width: 120,
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
-                    title: "正式签收时间",
-                    width: 120,
+                    title: "签收时间",
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "surplusDays",
                     title: "剩余工作日",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: 100,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "",
                     title: "流程状态",
-                    width: 80,
+                    width: "8%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -282,18 +289,12 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: "6%",
                     template: function (item) {
-                        //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW") {
-                            if(item.processState == 2){
-                                return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
-                            }else{
-                                return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
-                            }
-
-                        } else {
-                            return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
+                        if(item.processState == 2){
+                            return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
+                        }else{
+                            return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
                         }
                     }
                 }
@@ -430,7 +431,7 @@
             };
         }//E_etasksGrid
 
-        //S_dtasksGrid
+        //S_在办项目
         function dtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
@@ -500,50 +501,54 @@
                     field: "projectName",
                     title: "项目名称",
                     filterable: false,
-                    width: 150
+                    width: "18%",
+                    template: function (item) {
+                        return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                    }
+
                 },
                 {
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: 150
+                    width: "10%"
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: 120,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "preSignDate",
                     title: "预签收时间",
-                    width: 120,
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
-                    title: "正式签收时间",
-                    width: 120,
+                    title: "签收时间",
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "surplusDays",
                     title: "剩余工作日",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "",
                     title: "流程状态",
-                    width: 80,
+                    width: "10%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -556,14 +561,9 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: "10%",
                     template: function (item) {
-                        //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
-                        } else {
-                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
-                        }
+                        return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
                     }
                 }
             ];
