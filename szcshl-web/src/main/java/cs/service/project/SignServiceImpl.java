@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.utils.*;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
+import org.apache.regexp.RE;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -29,12 +32,6 @@ import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
 import cs.domain.external.Dept;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
@@ -1784,6 +1781,355 @@ public class SignServiceImpl implements SignService {
         }catch (Exception e){
             return new ResultMsg(false,MsgCode.MAIN_VALUE_NULL.getValue(),"保存异常！",e);
         }
+
+    }
+
+    /*****************评审阶段模板****************/
+
+    /**
+     * 1、可行性研究报告模板
+     * @param signId
+     */
+    @Override
+    public void createStudyTemplate(String signId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+        Map<String , Object> dataMap = new HashMap<>();
+
+        String path = SysFileUtil.getUploadPath();
+        String showName ="";
+        String relativeFileUrl ="";
+        File  docFile = null;
+        List<SysFile> sysFileList = new ArrayList<>();
+
+
+        if(sign !=null){
+            String[] str = sign.getDocnum().split("]");
+            dataMap.put("projectName",sign.getProjectname());
+            dataMap.put("number1",str[0].substring(str[0].length()-2));
+            dataMap.put("number2",str[1]);
+            dataMap.put("explain","xxxxx");
+            dataMap.put("title1","xxxxx");
+            dataMap.put("content1","xxxxx");
+            dataMap.put("title2","xxxxx");
+            dataMap.put("content2","xxxxx");
+            dataMap.put("year","");
+            dataMap.put("month","");
+            dataMap.put("day","");
+            dataMap.put("sgnum","");
+            dataMap.put("mdnum","");
+        }
+
+//    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
+//                    String mainId,String mainType, String sysfileType, String sysBusiType)
+            //评审意见
+            showName = Constant.Template.STUDY_OPINION.getValue().split("_")[1] + Constant.Template.OUTPUT_SUFFIX.getKey();
+            relativeFileUrl = SysFileUtil.generatRelativeUrl(path,Constant.SysFileType.SIGN.getValue(),signId,Constant.ProjectStage.STAGE_STUDY.getValue(),showName);
+            docFile = TemplateUtil.createDoc(dataMap,Constant.Template.STUDY_OPINION.getKey() , path + File.separator + relativeFileUrl);
+            if(docFile !=null){
+                SysFile sysFile = new SysFile(UUID.randomUUID().toString(),signId,relativeFileUrl,showName,
+                        Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
+                        signId,Constant.SysFileType.SIGN.getValue(),Constant.ProjectStage.STAGE_STUDY.getValue(),Constant.SysFileType.TEMOLATE.getValue());
+                sysFileList.add(sysFile);
+            }
+
+            //投资估算表
+            showName = Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1] + Constant.Template.OUTPUT_SUFFIX_XLS.getKey();
+            relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_STUDY.getValue() , showName);
+            docFile = TemplateUtil.createDoc(dataMap , Constant.Template.STUDY_ESTIMATE.getKey() , path + File.separator + relativeFileUrl);
+            if(docFile !=null){
+                SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                        Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX_XLS.getKey() ,
+                        signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_STUDY.getValue() , Constant.SysFileType.TEMOLATE.getValue());
+                sysFileList.add(sysFile);
+            }
+
+            //评审组名单
+            showName = Constant.Template.STUDY_ROLL.getValue().split("_")[1] + Constant.Template.OUTPUT_SUFFIX.getKey();
+            relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_STUDY.getValue() , showName);
+            docFile = TemplateUtil.createDoc(dataMap , Constant.Template.STUDY_ROLL.getKey() , path + File.separator + relativeFileUrl);
+            if(docFile !=null){
+                SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                        Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX.getKey(),
+                        signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_STUDY.getValue() , Constant.SysFileType.TEMOLATE.getValue());
+                sysFileList.add(sysFile);
+            }
+
+
+        if(sysFileList!=null && sysFileList.size()>0){
+
+            sysFileList.forEach(sysFile -> {
+                sysFile.setCreatedBy(SessionUtil.getLoginName());
+                sysFile.setCreatedDate(new Date());
+                sysFile.setModifiedBy(SessionUtil.getLoginName());
+                sysFile.setModifiedDate(new Date());
+            });
+
+            sysFileRepo.bathUpdate(sysFileList);
+        }
+
+    }
+
+    /**
+     * 资金申请报告模板
+     * @param signId
+     */
+    @Override
+    public void createReportTemplate(String signId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
+
+        String path = SysFileUtil.getUploadPath();
+
+        String showName = "";
+        String relativeFileUrl ="";
+        File docFile = null;
+        Map<String , Object> dataMap = new HashMap<>();
+        List<SysFile> sysFileList = new ArrayList<>();
+
+        if(sign !=null){
+            //数据初始化
+            String[] str = sign.getDocnum().split("]");
+            dataMap.put("projectName",sign.getProjectname());
+            dataMap.put("number1",str[0].substring(str[0].length()-2));
+            dataMap.put("number2",str[1]);
+            dataMap.put("explain","xxxxx");
+            dataMap.put("title1","xxxxx");
+            dataMap.put("content1","xxxxx");
+            dataMap.put("title2","xxxxx");
+            dataMap.put("content2","xxxxx");
+            dataMap.put("year","");
+            dataMap.put("month","");
+            dataMap.put("day","");
+            dataMap.put("sgnum","");
+            dataMap.put("mdnum","");
+        }
+
+        //评审意见书
+        showName = Constant.Template.REPORT_OPINION.getValue().split("_")[1] + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.APPLY_REPORT.getValue() , showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.REPORT_OPINION.getKey() , path + File.separator + relativeFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.APPLY_REPORT.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+            sysFileList.add(sysFile);
+        }
+
+        //评审组名单
+        showName = Constant.Template.REPORT_ROLL.getValue().split("_")[1] + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.APPLY_REPORT.getValue() , showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.REPORT_ROLL.getKey() , path + File.separator + relativeFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey(),
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.APPLY_REPORT.getValue(),
+                    Constant.SysFileType.TEMOLATE.getValue());
+            sysFileList.add(sysFile);
+        }
+
+        //资金估算表
+        showName = Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1] +Constant.Template.OUTPUT_SUFFIX_XLS.getKey();
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.APPLY_REPORT.getValue() ,showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.REPORT_ESTIMATE.getKey() , path + File.separator + relativeFileUrl);
+        if(docFile!=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                     Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX_XLS.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.APPLY_REPORT.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+
+            sysFileList.add(sysFile);
+        }
+
+        if(sysFileList!=null && sysFileList.size()>0){
+            sysFileList.forEach(sysFile -> {
+                sysFile.setModifiedDate(new Date());
+                sysFile.setModifiedBy(SessionUtil.getLoginName());
+                sysFile.setCreatedDate(new Date());
+                sysFile.setCreatedBy(SessionUtil.getLoginName());
+            });
+
+            sysFileRepo.bathUpdate(sysFileList);
+        }
+    }
+
+    /**
+     * 项目建议书模板
+     * @param signId
+     */
+    @Override
+    public void createSugTemplate(String signId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
+
+        String path = SysFileUtil.getUploadPath();
+
+        String showName="";
+        String relativeFileUrl="";
+        File docFile = null;
+        List<SysFile> sysFileList = new ArrayList<>();
+        Map<String , Object> dataMap = new HashMap<>();
+
+        if(sign !=null){
+            //初始化数据
+            String[] str = sign.getDocnum().split("]");
+            dataMap.put("projectName",sign.getProjectname());
+            dataMap.put("number1",str[0].substring(str[0].length()-2));
+            dataMap.put("number2",str[1]);
+            dataMap.put("explain","xxxxx");
+            dataMap.put("title1","xxxxx");
+            dataMap.put("content1","xxxxx");
+            dataMap.put("title2","xxxxx");
+            dataMap.put("content2","xxxxx");
+            dataMap.put("year","");
+            dataMap.put("month","");
+            dataMap.put("day","");
+            dataMap.put("sgnum","");
+            dataMap.put("mdnum","");
+        }
+
+        //评审意见书
+        showName = Constant.Template.SUG_OPINION.getValue() + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_SUG.getValue() , showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.SUG_OPINION.getKey() , path + File.separator + relativeFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_SUG.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+
+            sysFileList.add(sysFile);
+        }
+
+        //评审组名单
+        showName = Constant.Template.SUG_ROLL.getValue() + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_SUG.getValue() ,showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.SUG_ROLL.getKey() , path + File.separator + relativeFileUrl);
+        if(docFile!=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_SUG.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+            sysFileList.add(sysFile);
+        }
+
+
+        //投资匡算表
+        showName = Constant.Template.SUG_ESTIMATE.getValue() + Constant.Template.OUTPUT_SUFFIX_XLS.getKey() ;
+        relativeFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_SUG.getValue() , showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.SUG_ESTIMATE.getKey() , path + File.separator + relativeFileUrl );
+        if(docFile!=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                     Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX_XLS.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_SUG.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+            sysFileList.add(sysFile);
+        }
+
+        if(sysFileList!=null && sysFileList.size()>0){
+            sysFileList.forEach(sysFile -> {
+                sysFile.setCreatedDate(new Date());
+                sysFile.setCreatedBy(SessionUtil.getLoginName());
+                sysFile.setModifiedBy(SessionUtil.getLoginName());
+                sysFile.setModifiedDate(new Date());
+            });
+            sysFileRepo.bathUpdate(sysFileList);
+        }
+    }
+
+    /**
+     * 项目概算模板
+     * @param signId
+     */
+    @Override
+    public void createBudgetTemplate(String signId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
+
+        String path = SysFileUtil.getUploadPath();
+
+        String showName ="";
+        String relativaFileUrl ="";
+        File docFile = null;
+        List<SysFile> sysFileList = new ArrayList<>();
+        Map<String , Object> dataMap = new HashMap<>();
+
+        if(sign !=null){
+            //数据初始化
+            String[] str = sign.getDocnum().split("]");
+            dataMap.put("projectName",sign.getProjectname());
+            dataMap.put("number1",str[0].substring(str[0].length()-2));
+            dataMap.put("number2",str[1]);
+            dataMap.put("explain","xxxxx");
+            dataMap.put("title1","xxxxx");
+            dataMap.put("content1","xxxxx");
+            dataMap.put("title2","xxxxx");
+            dataMap.put("content2","xxxxx");
+            dataMap.put("year","");
+            dataMap.put("month","");
+            dataMap.put("day","");
+            dataMap.put("jagcfynum","");
+            dataMap.put("gsnum1","");
+            dataMap.put("gsnum2","");
+        }
+
+        //审核意见
+        showName = Constant.Template.BUDGET_OPINION.getValue() + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativaFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_BUDGET.getValue() , showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.BUDGET_OPINION.getKey() , path + File.separator + relativaFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativaFileUrl , showName,
+                    Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_BUDGET.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+
+            sysFileList.add(sysFile);
+        }
+
+        //审核组名单
+        showName = Constant.Template.BUDGET_ROLL.getValue() + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativaFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_BUDGET.getValue() ,showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.BUDGET_ROLL.getKey() , path + File.separator + relativaFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativaFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_BUDGET.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue());
+
+            sysFileList.add(sysFile);
+        }
+
+        //建安工程用费
+        showName = Constant.Template.BUDGET_PROJECTCOST.getValue()  + Constant.Template.OUTPUT_SUFFIX.getKey();
+        relativaFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_BUDGET.getValue() , showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.BUDGET_PROJECTCOST.getKey() , path + File.separator + relativaFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativaFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())) , Constant.Template.OUTPUT_SUFFIX.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_BUDGET.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue() );
+            sysFileList.add(sysFile);
+        }
+
+        //概算汇总表和审核对照表
+        showName = Constant.Template.BUDGET_ESTIMATE.getValue() + Constant.Template.OUTPUT_SUFFIX_XLS.getKey();
+        relativaFileUrl = SysFileUtil.generatRelativeUrl(path , Constant.SysFileType.SIGN.getValue() , signId , Constant.ProjectStage.STAGE_BUDGET.getValue() ,showName);
+        docFile = TemplateUtil.createDoc(dataMap , Constant.Template.BUDGET_ESTIMATE.getKey() , path + File.separator + relativaFileUrl);
+        if(docFile !=null){
+            SysFile sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativaFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())), Constant.Template.OUTPUT_SUFFIX_XLS.getKey() ,
+                    signId , Constant.SysFileType.SIGN.getValue() , Constant.ProjectStage.STAGE_BUDGET.getValue() ,
+                    Constant.SysFileType.TEMOLATE.getValue() );
+            sysFileList.add(sysFile);
+        }
+
+        if(sysFileList!=null && sysFileList.size()>0){
+            sysFileList.forEach(sysFile -> {
+                sysFile.setModifiedDate(new Date());
+                sysFile.setModifiedBy(SessionUtil.getLoginName());
+                sysFile.setCreatedBy(SessionUtil.getLoginName());
+                sysFile.setCreatedDate(new Date());
+            });
+            sysFileRepo.bathUpdate(sysFileList);
+        }
+
 
     }
 
