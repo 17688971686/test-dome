@@ -509,7 +509,7 @@
                 controllerAs: 'vm'
             })
             //end#sharing
-             //S 财务管理
+             //S 项目费用管理
             //添加页面
              .state('financialManager', {
                 url: '/financialManager/:signid',
@@ -517,14 +517,42 @@
                 controller: 'financialManagerCtrl',
                 controllerAs: 'vm'
             })
-            //列表页面
+            .state('assistCostAdd', {
+                url: '/assistCostAdd/:signid',
+                templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
+                controller: 'assistCostCountCtrl',
+                controllerAs: 'vm'
+            })
+             .state('assistCostCountList', {
+                url: '/assistCostCountList',
+                templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
+                controller: 'assistCostCountSvcEditCtrl',
+                controllerAs: 'vm'
+            })
+            //评审费统计列表
              .state('financialManagerList', {
                 url: '/financialManagerList',
                 templateUrl: rootPath + '/financialManager/html/list.html',
                 controller: 'financialManagerEditCtrl',
                 controllerAs: 'vm'
             })
-             //E 财务管理
+            
+            //专家缴费统计列表
+            .state('expertPaymentCountList', {
+                url: '/expertPaymentCountList',
+                templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
+                controller: 'expertPaymentCountCtrl',
+                controllerAs: 'vm'
+            })
+            //专家费统计列表
+             .state('exportCountList', {
+                url: '/exportCountList',
+                templateUrl: rootPath + '/financialManager/html/expertCount.html',
+                controller: 'exportCountCtrl',
+                controllerAs: 'vm'
+            })
+           
+             //E 项目费用管理
               //begin#dispatch
            /* .state('financialEdit', {
                 url: '/financialEdit/:signid',

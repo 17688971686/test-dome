@@ -1,21 +1,21 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('financialManagerSvc', financialManager);
+    angular.module('app').factory('assistCostCountSvc', assistCostCount);
 
-    financialManager.$inject = ['$http'];
+    assistCostCount.$inject = ['$http'];
 
-    function financialManager($http) {
-        var url_financialManager = rootPath + "/financialManager", url_back = '#/financialManagerList';
+    function assistCostCount($http) {
+        var url_assistCostCount = rootPath + "/financialManager", url_back = '#/assistCostCountList';
         var service = {
             grid: grid,
-            deleteFinancialManager: deleteFinancialManager,			//删除报销记录
-            savefinancial:savefinancial,							//保存报销记录
-            sumFinancial:sumFinancial,								//统计评审费用总和
-            initFinancialProject:initFinancialProject,				//初始化关联项目评审费
+            deleteassistCostCount: deleteassistCostCount,			//删除协审费用记录
+            saveAssistCost:saveAssistCost,							//协审费用保存
+            sumAssistCount:sumAssistCount,								//统计评审费用总和
+            initAssistlProject:initAssistlProject,					//初始化协审费用关联的项目
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
         };
-
+        
         return service;
       //检查是否为正整数
         function isUnsignedInteger(value){
@@ -25,8 +25,8 @@
                 return false;
             }
         }
-       //S 初始化关联项目评审费
-        function initFinancialProject(vm){
+       //S 初始化协审费用关联的项目
+        function initAssistlProject(vm){
         	var httpOptions = {
                     method: 'get',
                     url: rootPath + "/financialManager/initfinancial",
@@ -45,10 +45,10 @@
                     success: httpSuccess
                 });            
         }
-       // E 初始化关联项目评审费
+       // E 初始化协审费用关联的项目
         
         //S 统计评审费用总和
-       function  sumFinancial(vm){
+       function  sumAssistCount(vm){
     		var httpOptions = {
                     method: 'get',
                     url: rootPath + "/financialManager/html/sumfinancial",
@@ -72,7 +72,7 @@
      //E 统计评审费用总和
        
        //S 保存报销记录
-       function savefinancial(vm){
+       function saveAssistCost(vm){
     		   var httpOptions = {
     				   method : 'post',
     				   url : rootPath + "/financialManager",
@@ -113,12 +113,12 @@
         	 window.location.reload();
         }
 
-        // begin#deleteFinancialManager
-        function deleteFinancialManager(vm, id) {
+        // begin#删除协审费用记录
+        function deleteassistCostCount(vm, id) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
-                url: url_financialManager,
+                url: url_assistCostCount,
                 data: id
             };
 
@@ -147,14 +147,14 @@
                 success: httpSuccess
             });
         }
-        // end#deleteFinancialManager
+        // end#删除协审费用记录
 
-        //S_初始化grid(过滤已签收和已经完成的项目)
+        //S_初始化grid
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/financialManager/findByOData", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/financialManager/assistCostCountList", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -211,54 +211,46 @@
                 },
                
                 {
-                    field: "designcompanyName",
-                    title: "建设单位",
+                    field: "builtcompanyName",
+                    title: "协审单位",
+                    width: 100,
+                    filterable: false,
+                },
+               
+                {
+                    field: "aUserName",
+                    title: "项目负责人",
                     width: 100,
                     filterable: false,
                 },
                 {
-                    field: "reviewstage",
-                    title: "项目阶段",
-                    width: 80,
-                    filterable: false,
-                },
-                {
-                    field: "aUserName",
-                    title: "项目负责人",
-                    width: 120,
-                    filterable: false,
-                },
-                {
-                    field: "projectcode",
-                    title: "项目评审费（元）",
-                    width: 160,
-                    filterable: false,
-                    template: function (item) {
-                    	return '<a href="#/financialManager/'+item.signid+'" >'+item.projectcode+'</a>';
-                    }
-                },
-                {
-                    field: "projectcode",
-                    title: "付款日期",
-                    width: 120,
-                    filterable: false,
-                },
-                {
-                    field: "appalyInvestment",
-                    title: "申报投资（万元）",
-                    width: 160,
+                    field: "filecode",
+                    title: "协审登记号",
+                    width: 100,
                     filterable: false,
                 },
                 {
                     field: "declaration",
-                    title: "审定投资（万元）",
-                    width: 160,
+                    title: "计划协审费用",
+                    width: 120,
+                    filterable: false,
+                },
+                {
+                    field: "declaration",
+                    title: "实付协审费用",
+                    width: 120,
                     filterable: false,
                 },
                 {
                     field: "signdate",
-                    title: "签收日期",
-                    width: 120,
+                    title: "付款日期",
+                    width: 100,
+                    filterable: false,
+                },
+                {
+                    field: "declaration",
+                    title: "申报金额",
+                    width: 100,
                     filterable: false,
                 },
                 {

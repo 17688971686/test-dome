@@ -36,7 +36,7 @@ public class FinancialManagerController {
     private FinancialManagerService financialManagerService;
 
     @RequiresPermissions("financialManager#findByOData#post")
-    @RequestMapping(name = "获取已办理项目评审费数据", path = "findByOData", method = RequestMethod.POST)
+    @RequestMapping(name = "获取评审费统用计列表数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -44,6 +44,14 @@ public class FinancialManagerController {
         return financialManagerDtos;
     }
     
+    @RequiresPermissions("financialManager#assistCostCountList#post")
+    @RequestMapping(name = "获取协审费用统计列表数据", path = "assistCostCountList", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<SignDto> assistCostCountList(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<SignDto> financialManagerDtos = financialManagerService.assistCostCountGet(odataObj);	
+        return financialManagerDtos;
+    }
     @RequiresPermissions("financialManager#initfinancial#get")
     @RequestMapping(name = "初始化财务页面", path = "initfinancial", method = RequestMethod.GET)
     public @ResponseBody
@@ -89,15 +97,38 @@ public class FinancialManagerController {
 
     // begin#html
     @RequiresPermissions("financialManager#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "评审费统计页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
 
     @RequiresPermissions("financialManager#html/add#get")
-    @RequestMapping(name = "评审费用报销", path = "html/add", method = RequestMethod.GET)
+    @RequestMapping(name = "评审费用录入", path = "html/add", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/add";
+    }
+    
+    @RequiresPermissions("financialManager#html/assistCostAdd#get")
+    @RequestMapping(name = "协审费用录入", path = "html/assistCostAdd", method = RequestMethod.GET)
+    public String assistCostAdd() {
+        return ctrlName+"/assistCostAdd";
+    }
+    @RequiresPermissions("financialManager#html/expertCount#get")
+    @RequestMapping(name = "专家费统计页面", path = "html/expertCount", method = RequestMethod.GET)
+    public String expertCount() {
+        return ctrlName+"/expertCount";
+    }
+    
+    @RequiresPermissions("financialManager#html/expertPaymentCount#get")
+    @RequestMapping(name = "专家缴税统计页面", path = "html/expertPaymentCount", method = RequestMethod.GET)
+    public String expertPaymentCount() {
+        return ctrlName+"/expertPaymentCount";
+    }
+    
+    @RequiresPermissions("financialManager#html/assistCostCount#get")
+    @RequestMapping(name = "协审费用统计页面", path = "html/assistCostCount", method = RequestMethod.GET)
+    public String assistCostCount() {
+        return ctrlName+"/assistCostCount";
     }
     
    

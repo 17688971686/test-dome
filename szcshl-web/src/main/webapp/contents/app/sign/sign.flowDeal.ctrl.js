@@ -514,13 +514,22 @@
         }
         //end 保存项目关联
 
-        // S 财务报销
+        // S 评审费录入
         vm.addFinancialApply = function(){
         	  $state.go('financialManager', {
                   signid: vm.model.signid
               });
         }
-        // E 财务报销
+        // E 评审费录入
+        
+        // S 评审费录入
+        vm.assistCostAdd = function(){
+        	  $state.go('assistCostAdd', {
+                  signid: vm.model.signid
+              });
+        }
+        // E 评审费录入
+        
         
         vm.addDoFile = function () {
             $state.go('fileRecordEdit', {

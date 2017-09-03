@@ -1,15 +1,15 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('financialManagerSvc', financialManager);
+    angular.module('app').factory('exportCountSvc', exportCount);
 
-    financialManager.$inject = ['$http'];
+    exportCount.$inject = ['$http'];
 
-    function financialManager($http) {
-        var url_financialManager = rootPath + "/financialManager", url_back = '#/financialManagerList';
+    function exportCount($http) {
+        var url_exportCount = rootPath + "/exportCount", url_back = '#/exportCountList';
         var service = {
             grid: grid,
-            deleteFinancialManager: deleteFinancialManager,			//删除报销记录
+            deleteexportCount: deleteexportCount,			//删除报销记录
             savefinancial:savefinancial,							//保存报销记录
             sumFinancial:sumFinancial,								//统计评审费用总和
             initFinancialProject:initFinancialProject,				//初始化关联项目评审费
@@ -29,7 +29,7 @@
         function initFinancialProject(vm){
         	var httpOptions = {
                     method: 'get',
-                    url: rootPath + "/financialManager/initfinancial",
+                    url: rootPath + "/exportCount/initfinancial",
                     params:{
                     	signid: vm.financial.signid
                     }
@@ -51,7 +51,7 @@
        function  sumFinancial(vm){
     		var httpOptions = {
                     method: 'get',
-                    url: rootPath + "/financialManager/html/sumfinancial",
+                    url: rootPath + "/exportCount/html/sumfinancial",
                     params:{
                     	signId: vm.financial.signid
                     }
@@ -75,7 +75,7 @@
        function savefinancial(vm){
     		   var httpOptions = {
     				   method : 'post',
-    				   url : rootPath + "/financialManager",
+    				   url : rootPath + "/exportCount",
     				   headers:{
     					   "contentType":"application/json;charset=utf-8"  //设置请求头信息
     				   },
@@ -113,12 +113,12 @@
         	 window.location.reload();
         }
 
-        // begin#deleteFinancialManager
-        function deleteFinancialManager(vm, id) {
+        // begin#deleteexportCount
+        function deleteexportCount(vm, id) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
-                url: url_financialManager,
+                url: url_exportCount,
                 data: id
             };
 
@@ -147,14 +147,14 @@
                 success: httpSuccess
             });
         }
-        // end#deleteFinancialManager
+        // end#deleteexportCount
 
         //S_初始化grid(过滤已签收和已经完成的项目)
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/financialManager/findByOData", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/exportCount/findByOData", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -205,59 +205,62 @@
 				 },
                 {
                     field: "projectname",
-                    title: "项目名称",
+                    title: "姓名",
                     width: 100,
                     filterable: false
                 },
                
                 {
                     field: "designcompanyName",
-                    title: "建设单位",
+                    title: "身份证号",
                     width: 100,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
-                    title: "项目阶段",
+                    title: "开户行",
                     width: 80,
                     filterable: false,
                 },
                 {
-                    field: "aUserName",
-                    title: "项目负责人",
+                    field: "projectcode",
+                    title: "银行账号",
                     width: 120,
                     filterable: false,
                 },
                 {
                     field: "projectcode",
-                    title: "项目评审费（元）",
+                    title: "评审费（元）",
                     width: 160,
                     filterable: false,
-                    template: function (item) {
-                    	return '<a href="#/financialManager/'+item.signid+'" >'+item.projectcode+'</a>';
-                    }
                 },
                 {
                     field: "projectcode",
-                    title: "付款日期",
+                    title: "应缴税",
                     width: 120,
                     filterable: false,
                 },
                 {
                     field: "appalyInvestment",
-                    title: "申报投资（万元）",
+                    title: "项目名称",
                     width: 160,
                     filterable: false,
                 },
                 {
                     field: "declaration",
-                    title: "审定投资（万元）",
+                    title: "评审时间",
                     width: 160,
                     filterable: false,
                 },
                 {
                     field: "signdate",
-                    title: "签收日期",
+                    title: "函评时间",
+                    width: 120,
+                    filterable: false,
+                },
+                {
+                    field: "signdate",
+                    title: "负责人",
                     width: 120,
                     filterable: false,
                 },

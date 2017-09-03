@@ -200,11 +200,11 @@ public class WorkProgram extends DomainBase {
     
     //S 设备清单（进口）
     //项目概况
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "varchar(1024)")
     private String projectSurvey;
     
     //评审重点
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "varchar(1024)")
     private String stageEmphasis;
     
     //申报总额
