@@ -1,8 +1,19 @@
 <#if layer??>package ${layer};</#if>
 
 import cs.common.service.ServiceImpl;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import ${info.beanPackage}.${info.beanName};
 import cs.model.PageModelDto;
+import cs.repository.odata.ODataObj;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Date;
 <#if info.dto??>
 import ${info.DtoLayer}.${info.Dto};
 </#if>
@@ -26,8 +37,6 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 
 	@Autowired
 	private ${info.beanName}Repo ${info.beanName?uncap_first}Repo;
-	@Autowired
-	private ICurrentUser currentUser;
 	
 	@Override
 	public PageModelDto<${info.beanName}Dto> get(ODataObj odataObj) {
@@ -39,15 +48,11 @@ public class ${fileName!''}  implements ${info.beanName}Service {
             resultList.forEach(x->{
 				${info.beanName}Dto modelDto = new ${info.beanName}Dto();
 				BeanCopierUtils.copyProperties(x, modelDto);
-				//cannot copy 
-				modelDto.setCreatedDate(x.getCreatedDate());
-				modelDto.setModifiedDate(x.getModifiedDate());
-				
 				resultDtoList.add(modelDto);
 			});						
 		}		
 		pageModelDto.setCount(odataObj.getCount());
-		pageModelDto.setValue(${info.beanName}DtoList);		
+		pageModelDto.setValue(resultDtoList);
 		return pageModelDto;
 	}
 
@@ -57,8 +62,8 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 		${info.beanName} domain = new ${info.beanName}(); 
 		BeanCopierUtils.copyProperties(record, domain); 
 		Date now = new Date();
-		domain.setCreatedBy(currentUser.getLoginName());
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setCreatedBy(SessionUtil.getDisplayName());
+		domain.setModifiedBy(SessionUtil.getDisplayName());
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
 		${info.beanName?uncap_first}Repo.save(domain);
@@ -69,7 +74,7 @@ public class ${fileName!''}  implements ${info.beanName}Service {
 	public void update(${info.beanName}Dto record) {
 		${info.beanName} domain = ${info.beanName?uncap_first}Repo.findById(record.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(currentUser.getLoginName());
+		domain.setModifiedBy(SessionUtil.getDisplayName());
 		domain.setModifiedDate(new Date());
 		
 		${info.beanName?uncap_first}Repo.save(domain);

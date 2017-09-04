@@ -7,17 +7,6 @@ package cs.common;
  * @author MCL
  * @date 2017年7月28日 下午2:12:53
  */
-/**
- * @author MCL
- *@date 2017年7月28日 下午2:12:53 
- */
-
-import java.util.Date;
-
-/**
- * @author MCL
- *@date 2017年7月28日 下午2:12:55 
- */
 public class Constant {
     /**
      * 企业名称
