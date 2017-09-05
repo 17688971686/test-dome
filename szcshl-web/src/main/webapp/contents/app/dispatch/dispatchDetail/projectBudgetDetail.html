@@ -105,7 +105,9 @@
             <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
                 <td colspan="5">
-                {{vm.dispatchDoc.ministerSuggesttion}}
+                <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
                 </td>
             </tr>
 
@@ -113,7 +115,9 @@
             <tr>
                 <td style="width:150px;" class="text-center">分管副主任意见</td>
                 <td colspan="5">
-                {{vm.dispatchDoc.viceDirectorSuggesttion}}
+                  {{vm.dispatchDoc.viceDirectorSuggesttion}}
+                 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
                 </td>
             </tr>
 
@@ -121,6 +125,8 @@
                 <td style="width:150px;" class="text-center">主任签发</td>
                 <td colspan="5">
                 {{vm.dispatchDoc.directorSuggesttion}}
+                <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
+             	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
                 </td>
             </tr>
              <tr>
