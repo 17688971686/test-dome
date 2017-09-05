@@ -63,6 +63,13 @@ public class WorkProgramController {
         return workProgramService.deleteBySignId(signId);
     }
 
+    @RequiresPermissions("workprogram#findByPrincipalUser#get")
+    @RequestMapping(name="通过收文ID获取工作方案", path="findByPrincipalUser" ,method=RequestMethod.GET)
+    @ResponseBody
+    public WorkProgramDto findByPrincipalUser(@RequestParam  String signId){
+        return workProgramService.findByPrincipalUser(signId);
+    }
+
     @RequiresPermissions("workprogram#createMeetingDoc#get")
     @RequestMapping(name = "生成会前准备材料", path = "createMeetingDoc", method = RequestMethod.GET)
     @ResponseBody

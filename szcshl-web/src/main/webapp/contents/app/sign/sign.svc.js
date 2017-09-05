@@ -3,9 +3,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['$http', '$state','bsWin'];
+    sign.$inject = ['$http', '$state','bsWin','sysfileSvc'];
 
-    function sign($http, $state,bsWin) {
+    function sign($http, $state,bsWin,sysfileSvc) {
         var service = {
             signGrid: signGrid,				//初始化项目列表
             createSign: createSign,			//新增
@@ -24,8 +24,32 @@
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
             realSign : realSign ,               //正式签收
+            findWorkProgramBySignId : findWorkProgramBySignId,   //通过收文Id获取工作方案
+            createDispatchTemplate : createDispatchTemplate ,//生成发文模板
+
         };
         return service;
+
+        //negin createDispatchTemplate
+        function createDispatchTemplate(vm){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/dispatch/createDispatchTemplate",
+                params : {signId : vm.model.signid }
+            }
+
+            var httpSuccess = function success(response){
+                // bsWin.success("操作成功！");
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+        }
+        //end createDispatchTemplate
 
         //E 上传附件列表
 
@@ -545,25 +569,46 @@
             });
         }// end fun grid
 
+        //begin findWorkProgramBySignId
+        function findWorkProgramBySignId(vm,callBack){
+            var httpOptions = {
+                method : "get",
+                url : rootPath + "/workprogram/findByPrincipalUser",
+                params : {signId : vm.model.signid}
+            }
+
+            var httpSuccess = function success(response){
+                vm.workProgramId = response.data.id;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack();
+                }
+            }
+            common.http({
+                vm : vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end findWorkProgramBySignId
+
         //S_meetingDoc
         function meetingDoc(vm) {
             var wpId = "";
             switch (vm.flow.curNode.activitiId) {
-                case "XMFZR_SP_GZFA1":
-                    if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
-                        wpId = vm.mainwork.id;
+                case flowcommon.getSignFlowNode().SIGN_XMFZR1:
+                case flowcommon.getSignFlowNode().SIGN_XMFZR2:
+                case flowcommon.getSignFlowNode().SIGN_XMFZR3:
+                case flowcommon.getSignFlowNode().SIGN_XMFZR4:
+                    if ( !angular.isUndefined(vm.workProgramId) && vm.workProgramId) {
+                        wpId = vm.workProgramId;
                     }
+
                     break;
-                case "XMFZR_SP_GZFA2":
-                    if (!angular.isUndefined(vm.assistwork) && !angular.isUndefined(vm.assistwork.id) && vm.assistwork.id) {
-                        wpId = vm.assistwork.id;
-                    }
+                default :
+                    wpId="";
                     break;
 
-                case "XS_XMFZR_GZFA":
-                    if (!angular.isUndefined(vm.mainwork) && !angular.isUndefined(vm.mainwork.id) && vm.mainwork.id) {
-                        wpId = vm.mainwork.id;
-                    }
             }
             if (wpId) {
                 var httpOptions = {
@@ -587,7 +632,14 @@
                                     if (response.data.reCode == "error") {
                                         vm.isCommit = false;
                                     } else {
-                                        uploadFilelist(vm);
+
+                                        // 初始化上传附件
+                                        sysfileSvc.findByMianId(vm.model.signid,function(data){
+                                            if(data || data.length > 0){
+                                                vm.showFlag.tabSysFile = true;
+                                                vm.sysFileList = data;
+                                            }
+                                        });
                                     }
                                 }
                             })

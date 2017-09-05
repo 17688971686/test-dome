@@ -97,14 +97,5 @@ public interface SignService {
     ResultMsg pushProject(SignDto signDto);
 
 
-    /************ 项目阶段模板生成*************/
-    void createStudyTemplate(String signId); //可行性研究报告
-
-    void createReportTemplate(String signId);//资金申请报告
-
-    void createSugTemplate(String signId);//项目建议书
-
-    void createBudgetTemplate(String signId);//项目概算
-
 
 }

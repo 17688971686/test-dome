@@ -40,8 +40,6 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "VARCHAR(20)")
     private String isSigle;
 
-    //是否主项目
-    private String isMainProject;
 
     //项目名称
     @Column(columnDefinition = "VARCHAR(256)")
@@ -559,13 +557,6 @@ public class WorkProgram extends DomainBase {
         this.leaderName = leaderName;
     }
 
-    public String getIsMainProject() {
-        return isMainProject;
-    }
-
-    public void setIsMainProject(String isMainProject) {
-        this.isMainProject = isMainProject;
-    }
 
 	public String getProjectSurvey() {
 		return projectSurvey;

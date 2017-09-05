@@ -222,9 +222,9 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String meetingSummaryScan;
 	
-	//其他重要资料分数
-	@Column(columnDefinition="VARCHAR(2)")
-	private String otherImportFileCount;
+	//其他重要资料份数
+	@Column(columnDefinition="INTEGER")
+	private Integer otherImportFileCount;
 	
 	//其他重要资料是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
@@ -1804,11 +1804,11 @@ public class FileRecord extends DomainBase{
 		this.sugproHandleFormCount = sugproHandleFormCount;
 	}
 
-	public String getOtherImportFileCount() {
+	public Integer getOtherImportFileCount() {
 		return otherImportFileCount;
 	}
 
-	public void setOtherImportFileCount(String otherImportFileCount) {
+	public void setOtherImportFileCount(Integer otherImportFileCount) {
 		this.otherImportFileCount = otherImportFileCount;
 	}
 

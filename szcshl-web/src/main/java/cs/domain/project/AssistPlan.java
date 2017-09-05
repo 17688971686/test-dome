@@ -57,27 +57,32 @@ public class AssistPlan extends DomainBase {
     /**
      * 部长审核意见
      */
+    @Column(columnDefinition = "VARCHAR(1000)")
     private String ministerOpinion;
 
     /**
      * 分管副主任意见
      */
+    @Column(columnDefinition = "VARCHAR(1000)")
     private String viceDirectorOpinion;
 
     /**
      * 主任意见
      */
+    @Column(columnDefinition = "VARCHAR(1000)")
     private String directorOpinion;
 
     /**
      * 计划状态
      */
+    @Column(columnDefinition = "VARCHAR(100)")
     private String planState;
 
     /**
      * 是否已抽签,9是已抽签
      *
      * */
+    @Column(columnDefinition = "VARCHAR(2)")
     private String isDrawed;
 
     /**

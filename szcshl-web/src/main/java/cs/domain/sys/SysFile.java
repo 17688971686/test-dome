@@ -46,13 +46,13 @@ public class SysFile extends DomainBase {
     /**
      * 文件模块类型（例如，收文环节，为收文，工作方案环节，为工作方案，跟businessId对应）
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(255)")
     private String sysfileType;
 
     /**
      * 文件业务类型（例如，评审方案，会签准备材料等）
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(255)")
     private String sysBusiType;
 
 

@@ -1,6 +1,7 @@
 package cs.common.utils;
 
 import com.ibm.icu.text.SimpleDateFormat;
+import cs.domain.sys.SysFile;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -127,5 +128,36 @@ public class TemplateUtil {
         System.out.println(nextFriday);
         System.out.println(nextSunday);
 
+    }
+
+    /**
+     * 生成模板并且同时生成附件
+     * @param signId   收文ID
+     * @param workProjectId   工作方案ID
+     * @param mainType   附件模块
+     * @param businessType   附件业务
+     * @param reviewStage  评审阶段(项目阶段)
+     * @param templateUrl  模板路径
+     * @param fileName   文件名称
+     * @param fileType   文件类型
+     * @param dataMap    数据
+     * @return
+     */
+    public static SysFile createTemplate(String signId , String workProjectId , String mainType , String businessType , String reviewStage,
+                                        String templateUrl , String fileName , String fileType , Map<String , Object> dataMap){
+
+        String  showName = fileName + fileType;
+        String path = SysFileUtil.getUploadPath();
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path ,  mainType ,signId , businessType , showName);
+
+        File docFile = createDoc(dataMap , templateUrl , path + File.separator + relativeFileUrl);
+        SysFile sysFile = null;
+        if(docFile !=null){
+//    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
+//                    String mainId,String mainType, String sysfileType, String sysBusiType)
+           sysFile = new SysFile(UUID.randomUUID().toString() , workProjectId , relativeFileUrl , showName ,
+                    Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
+        }
+        return sysFile;
     }
 }

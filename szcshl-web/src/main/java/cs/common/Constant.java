@@ -379,23 +379,23 @@ public class Constant {
         //可行性研究报告
         STUDY_OPINION("report/opinion","可行性研究报告_评审意见"),
         STUDY_ESTIMATE("report/estimate","可行性研究报告_投资估算表"),
-        STUDY_ROLL("report/roll","可行性研究报告_评审组名单"),
+        STUDY_ROSTER("report/roster","可行性研究报告_评审组名单"),
 
         //资金申请报告
         REPORT_OPINION("report/opinion","资金申请报告_评审意见"),
         REPORT_ESTIMATE("report/estimate","资金申请报告_投资估算表"),
-        REPORT_ROLL("report/roll","资金申请报告_评审组名单"),
+        REPORT_ROSTER("report/roster","资金申请报告_评审组名单"),
 
         //项目建议书
         SUG_OPINION("sug/opinion","项目建议书_评审意见"),
         SUG_ESTIMATE("sug/estimate","项目建议书_投资匡算表"),
-        SUG_ROLL("sug/roll","项目建议书_评审组名单"),
+        SUG_ROSTER("sug/roster","项目建议书_评审组名单"),
 
         //项目概算
         BUDGET_OPINION("budget/opinion","项目概算_审核意见"),
         BUDGET_ESTIMATE("budget/estimate","项目概算_概算汇总表和审核对照表"),
         BUDGET_PROJECTCOST("budget/projectCost","项目概算_建安工程费用"),
-        BUDGET_ROLL("budget/roll", "项目概算_审核组名单");
+        BUDGET_ROSTER("budget/roster", "项目概算_审核组名单");
 
 
 

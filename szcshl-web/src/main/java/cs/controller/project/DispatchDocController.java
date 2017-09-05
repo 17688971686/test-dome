@@ -51,6 +51,15 @@ public class DispatchDocController {
         return dispatchDocService.initDispatchBySignId(signId);
     }
 
+    @RequiresPermissions("dispatch#createDispatchTemplate#post")
+    @RequestMapping(name="生成发文模板" , path="createDispatchTemplate" , method = RequestMethod.POST )
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void createDispatchTemplate(@RequestParam  String signId){
+
+        dispatchDocService.createDisPatchTemplate(signId );
+    }
+
+
     @RequiresPermissions("dispatch#html/edit#get")
     @RequestMapping(name = "发文编辑", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
