@@ -16,8 +16,6 @@ import javax.persistence.*;
 public class TopicInfo extends DomainBase {
 
     @Id
-    @GeneratedValue(generator= "topicInfoGenerator")
-    @GenericGenerator(name= "topicInfoGenerator",strategy = "uuid")
     private String id;
 
     /**
@@ -45,16 +43,16 @@ public class TopicInfo extends DomainBase {
     private String state;
 
     /**
-     * 课题负责人IDs
+     * 流程实例ID
      */
-    @Column(columnDefinition="VARCHAR(1024)")
-    private String prinIds;
+    @Column(columnDefinition="VARCHAR(64)")
+    private String processInstanceId;
 
     /**
-     * 课题负责人名称
+     * 备注信息
      */
-    @Column(columnDefinition="VARCHAR(256)")
-    private String prinNames;
+    @Column(columnDefinition="VARCHAR(512)")
+    private String remark;
 
     /**
      * 工作方案
@@ -124,19 +122,19 @@ public class TopicInfo extends DomainBase {
         this.state = state;
     }
 
-    public String getPrinIds() {
-        return prinIds;
+    public String getProcessInstanceId() {
+        return processInstanceId;
     }
 
-    public void setPrinIds(String prinIds) {
-        this.prinIds = prinIds;
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
-    public String getPrinNames() {
-        return prinNames;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setPrinNames(String prinNames) {
-        this.prinNames = prinNames;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

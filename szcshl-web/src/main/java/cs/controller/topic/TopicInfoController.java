@@ -1,5 +1,6 @@
 package cs.controller.topic;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.topic.TopicInfoDto;
 import cs.repository.odata.ODataObj;
@@ -39,11 +40,17 @@ public class TopicInfoController {
 
     @RequiresPermissions("topicInfo##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody TopicInfoDto record) {
-        topicInfoService.save(record);
+    @ResponseBody
+    public ResultMsg post(@RequestBody TopicInfoDto record) {
+        return topicInfoService.save(record);
     }
 
+    @RequiresPermissions("topicInfo#startFlow#post")
+    @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startFlow(@RequestBody TopicInfoDto record) {
+        return topicInfoService.startFlow(record);
+    }
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody TopicInfoDto findById(@RequestParam(required = true)String id){		
 		return topicInfoService.findById(id);
@@ -68,6 +75,12 @@ public class TopicInfoController {
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
+    }
+
+    @RequiresPermissions("topicInfo#html/add#get")
+    @RequestMapping(name = "新增页面", path = "html/add", method = RequestMethod.GET)
+    public String add() {
+        return ctrlName+"/add";
     }
 
     @RequiresPermissions("topicInfo#html/edit#get")

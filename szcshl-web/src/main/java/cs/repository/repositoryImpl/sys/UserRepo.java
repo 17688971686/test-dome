@@ -9,10 +9,23 @@ import cs.repository.IRepository;
 import cs.repository.odata.ODataObj;
 
 public interface UserRepo extends IRepository<User, String> {
-	User findUserByName(String userName);
-	List<User> getUsersNotIn(List<String> userIds, ODataObj oDataObj);
-	Set<String> getUserPermission(String userName);
-	Set<String> getUserRoles(String userName);
-	List<User> findUserByRoleName(String roleName);
-	List<User> findUserByOrgId(String orgId);
+    User findUserByName(String userName);
+
+    List<User> getUsersNotIn(List<String> userIds, ODataObj oDataObj);
+
+    Set<String> getUserPermission(String userName);
+
+    Set<String> getUserRoles(String userName);
+
+    List<User> findUserByRoleName(String roleName);
+
+    List<User> findUserByOrgId(String orgId);
+
+    User getCacheUserById(String userId);
+
+    List<User> getCacheUserListById(String userIds);
+
+    List<User> findAllPostUser();
+
+    void fleshPostUserCache();
 }

@@ -62,6 +62,12 @@ public class AdminController {
         return ctrlName + "/gtasks";
     }
 
+    @RequiresPermissions("admin#agendaTasks#get")
+    @RequestMapping(name = "待办任务", path = "agendaTasks")
+    public String agendaTasks(Model model) {
+
+        return ctrlName + "/agendaTasks";
+    }
 
     @RequiresPermissions("admin#dtasks#get")
     @RequestMapping(name = "在办任务", path = "dtasks")

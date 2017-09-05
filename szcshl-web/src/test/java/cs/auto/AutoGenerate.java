@@ -7,6 +7,7 @@ import cs.auto.core.config.FileConst;
 import cs.domain.expert.ExpertOffer;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.flow.FlowPrincipal;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.project.*;
 import cs.domain.sys.Quartz;
@@ -27,9 +28,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(Filing.class, "课题归档");
+        CRUDGanConfig config = new CRUDGanConfig(FlowPrincipal.class, "流程负责人");
         config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\Filing");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\FlowPrincipal");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());

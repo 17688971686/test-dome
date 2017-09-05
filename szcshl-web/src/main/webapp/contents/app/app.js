@@ -31,6 +31,18 @@
                 controller: 'adminCtrl',
                 controllerAs: 'vm'
             })
+            .state('agendaTasks', {
+                url: '/agendaTasks',
+                templateUrl: rootPath + '/admin/agendaTasks.html',
+                controller: 'adminAgendaCtrl',
+                controllerAs: 'vm'
+            })
+            .state('flowDeal', {
+                url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
+                templateUrl: function($routeParams){return rootPath + '/flow/flowDeal/'+$routeParams.processKey+'.html';},
+                controller: 'flowDealCtrl',
+                controllerAs: 'vm'
+            })
              //begin#addSuppletter
             .state('addSupp', {
                 url: '/addSupp/:signid',
@@ -568,7 +580,7 @@
                 controller: 'pluginfileCtrl',
                 controllerAs: 'vm'
             })
-        //个人中心
+            //个人中心
             .state('takeUser',{
                 url:'/takeUser',
                 templateUrl: rootPath + '/personalCenter/html/takeUser.html',
@@ -594,8 +606,7 @@
                 controller : 'fileLibraryEditCtrl',
                 controllerAs : 'vm'
             })
-
-        //政策标准库
+            //政策标准库
             .state('policyLibrary',{
                 url : '/policyLibrary',
                 templateUrl : rootPath + '/fileLibrary/html/policyLibrary.html',
@@ -615,6 +626,13 @@
                 controllerAs : 'vm'
             })
 
+            //课题研究流程
+            .state('addTopic',{
+                url : '/topicInfo',
+                templateUrl : rootPath + '/topicInfo/html/add.html',
+                controller : 'topicAddCtrl',
+                controllerAs : 'vm'
+            })
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {

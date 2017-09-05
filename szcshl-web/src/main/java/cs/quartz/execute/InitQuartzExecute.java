@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+@Deprecated
 public class InitQuartzExecute {
 
     @Autowired
     private QuartzService quartzService;
 
+    @Deprecated
     public void initQuartzExecute() {
         List<Quartz> quartzList = quartzService.findDefaultQuartz();
         try {

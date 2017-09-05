@@ -5,10 +5,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.flow.HiProcessTask;
-import cs.domain.flow.HiProcessTask_;
-import cs.domain.flow.RuProcessTask;
-import cs.domain.flow.RuProcessTask_;
+import cs.domain.flow.*;
 import cs.domain.project.*;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -18,6 +15,7 @@ import cs.model.flow.TaskDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
+import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -74,6 +72,8 @@ public class FlowServiceImpl implements FlowService {
     private RepositoryService repositoryService;
     @Autowired
     private RuProcessTaskRepo ruProcessTaskRepo;
+    @Autowired
+    private RuTaskRepo ruTaskRepo;
     @Autowired
     private HiProcessTaskRepo hiProcessTaskRepo;
 
@@ -451,6 +451,35 @@ public class FlowServiceImpl implements FlowService {
             criteria.setMaxResults(oDataObj.getTop());
         }
         List<RuProcessTask> runProcessList = criteria.list();
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
+
+    /**
+     * 查询我的待办任务（除项目签收流程外）
+     * @param oDataObj
+     * @return
+     */
+    @Override
+    public PageModelDto<RuTask> queryMyAgendaTask(ODataObj oDataObj) {
+        PageModelDto<RuTask> pageModelDto = new PageModelDto<RuTask>();
+        Criteria criteria = ruTaskRepo.getExecutableCriteria();
+        criteria = oDataObj.buildFilterToCriteria(criteria);
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuTask_.assignee.getName(), SessionUtil.getUserId()));
+        dis.add(Restrictions.like(RuTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
+        criteria.add(dis);
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (oDataObj.getSkip() > 0) {
+            criteria.setFirstResult(oDataObj.getSkip());
+        }
+        if (oDataObj.getTop() > 0) {
+            criteria.setMaxResults(oDataObj.getTop());
+        }
+        List<RuTask> runProcessList = criteria.list();
         pageModelDto.setCount(totalResult);
         pageModelDto.setValue(runProcessList);
         return pageModelDto;

@@ -157,6 +157,11 @@ desired effect
 	                        </a>
                         </li>
                         <li>
+                            <a href="javascript:void(0)"  ui-sref="agendaTasks">
+                                <i class="fa fa-flag-o"></i>待办任务
+                            </a>
+                        </li>
+                        <li>
                             <a href="javascript:void(0)"  ui-sref="personDtasks">
                                 <i class="glyphicon glyphicon-tasks"></i>个人主办项目
                             </a>
@@ -178,8 +183,23 @@ desired effect
                         </li>
                     </ul>
                 </li>
-                
-                  <!-- start 项目管理-->
+
+                <!-- start 流程管理-->
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-cloud-download"></i><span class="title">课题研究管理</span>
+                        <span class="pull-right-container">
+							<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li ><a href="javascript:void(0)" ui-sref="addTopic">创建课题研究流程</a></li>
+
+                    </ul>
+                </li>
+                <!-- end 项目签收-->
+
+                <!-- start 项目管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cloud-download"></i><span class="title">项目签收管理</span>

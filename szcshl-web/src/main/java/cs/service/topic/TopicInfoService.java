@@ -1,5 +1,6 @@
 package cs.service.topic;
 
+import cs.common.ResultMsg;
 import cs.domain.topic.TopicInfo;
 import cs.model.PageModelDto;
 import cs.model.topic.TopicInfoDto;
@@ -14,7 +15,9 @@ public interface TopicInfoService {
     
     PageModelDto<TopicInfoDto> get(ODataObj odataObj);
 
-	void save(TopicInfoDto record);
+    ResultMsg save(TopicInfoDto record);
+
+	ResultMsg startFlow(TopicInfoDto record);
 
 	void update(TopicInfoDto record);
 
