@@ -614,6 +614,12 @@
                 controller : 'policyLibraryEditCtrl',
                 controllerAs : 'vm'
             })
+            .state('booksBuyEdit', {//图书管理
+                url: '/booksBuyEdit/:id',
+                templateUrl: rootPath + '/expert/html/edit.html',
+                controller: 'expertEditCtrl',
+                controllerAs: 'vm'
+            })
 
 
         ;

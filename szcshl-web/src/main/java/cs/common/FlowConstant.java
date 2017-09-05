@@ -11,6 +11,7 @@ public class FlowConstant {
      *课题研究流程
      */
     public final static String TOP_FLOW = "TOPIC_FLOW";
+    public final static String BOOK_FLOW = "BOOKS_BUY_FLOW";           //图书购买流程
 
     /*************** S 课题研究流程 环节名称  ****************/
     public static final String TOPIC_JHTC = "TOPIC_JHTC";                //计划提出
@@ -39,4 +40,32 @@ public class FlowConstant {
     public static final String TOPIC_ZLGD = "TOPIC_ZLGD";                //资料归档
 
     /*************** E 课题研究流程 环节名称  ****************/
+
+    /**
+     * 图书购买流程环节名称
+     */
+    public static final String FLOW_BOOK_LEADER = "BOOK_LEADER"; //各项目负责人/部门提出购买图书请求
+    public static final String FLOW_BOOK_BZSP = "BOOK_BZSP"; //部长审批
+    public static final String FLOW_BOOK_FGFZRSP = "BOOK_FGFZRSP"; //分管副主任审批
+    public static final String FLOW_BOOK_ZXZRSP = "BOOK_ZXZRSP"; //中心主任审批
+    public static final String FLOW_BOOK_YSRK = "BOOK_YSRK"; //购买后档案员验收并入库
+
+
+    /**
+     * 图书购买流程定义名称
+     */
+    public static enum FlowBooksBuyName{
+        USER_APPLY("user_apply"), //项目负责人
+        USER_BZSP("user_bzsp"),  //部长
+        USER_FGFZR("user_fgfzr"),//分管副主任
+        USER_ZXZR("user_zxzr"), //中心主任
+        USER_DNY("user_dny");//档案员
+        private String value;
+        FlowBooksBuyName(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
 }
