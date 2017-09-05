@@ -4,6 +4,7 @@ import javax.persistence.Column;
 
 import org.activiti.engine.impl.bpmn.data.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -25,6 +26,8 @@ public class FinancialManagerDto extends BaseDto {
 	@JSONField(format = "yyyy-MM-dd")
 	private Date paymentData;
 	private String projectName;
+	private String assistBuiltcompanyName;
+	private BigDecimal assissCost;
 	private String signid;
 	private String chargeType;//费用类型
     private String remarke;
@@ -104,6 +107,22 @@ public class FinancialManagerDto extends BaseDto {
 
 	public void setSignid(String signid) {
 		this.signid = signid;
+	}
+
+	public String getAssistBuiltcompanyName() {
+		return assistBuiltcompanyName;
+	}
+
+	public void setAssistBuiltcompanyName(String assistBuiltcompanyName) {
+		this.assistBuiltcompanyName = assistBuiltcompanyName;
+	}
+
+	public BigDecimal getAssissCost() {
+		return assissCost;
+	}
+
+	public void setAssissCost(BigDecimal assissCost) {
+		this.assissCost = assissCost;
 	}
 	
     

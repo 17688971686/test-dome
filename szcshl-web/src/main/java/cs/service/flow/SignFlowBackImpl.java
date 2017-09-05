@@ -69,14 +69,9 @@ public class SignFlowBackImpl implements IFlowBack {
             case Constant.FLOW_SIGN_DSFZR_QRGD:
                 backActivitiId = Constant.FLOW_SIGN_GD;
                 break;
-            //最终归档(如果存在第二负责人，则交给第二负责人处理，否则交给第一负责人处理)
+            //最终归档(回退到第一负责人处理)
             case Constant.FLOW_SIGN_QRGD:
-                Sign sign = signRepo.findById(Sign_.signid.getName(),businessKey);
-                if(Validate.isString(sign.getSecondPriUser())){
-                    backActivitiId = Constant.FLOW_SIGN_DSFZR_QRGD;
-                }else{
-                    backActivitiId = Constant.FLOW_SIGN_GD;
-                }
+                backActivitiId = Constant.FLOW_SIGN_GD;
                 break;
         }
         return backActivitiId;

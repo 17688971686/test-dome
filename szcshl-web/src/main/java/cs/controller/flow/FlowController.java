@@ -2,11 +2,15 @@ package cs.controller.flow;
 
 import cs.common.Constant;
 import cs.common.Constant.MsgCode;
+import cs.common.FlowConstant;
 import cs.common.ResultMsg;
+import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
+import cs.domain.flow.RuTask;
+import cs.domain.topic.TopicInfo;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -18,6 +22,7 @@ import cs.service.flow.FlowService;
 import cs.service.flow.IFlow;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
+import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
 import org.activiti.engine.impl.RepositoryServiceImpl;
@@ -44,6 +49,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -65,11 +71,13 @@ public class FlowController {
     @Autowired
     private TaskService taskService;
     @Autowired
+    private TopicInfoService topicInfoService;
+    @Autowired
     @Qualifier("signFlowImpl")
     private IFlow signFlowImpl;
 
     @RequiresPermissions("flow#html/tasks#post")
-    @RequestMapping(name = "待办任务", path = "html/tasks", method = RequestMethod.POST)
+    @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -77,8 +85,23 @@ public class FlowController {
         return pageModelDto;
     }
 
+    /**
+     * 查询我的待办任务（除项目流程外）
+     * @param request
+     * @return
+     * @throws ParseException
+     */
+    @RequiresPermissions("flow#queryMyAgendaTask#post")
+    @RequestMapping(name = "待办任务", path = "queryMyAgendaTask", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
+        return pageModelDto;
+    }
+
     @RequiresPermissions("flow#html/personDtasks#post")
-    @RequestMapping(name="个人在办任务",path="html/personDtasks",method=RequestMethod.POST)
+    @RequestMapping(name="个人在办项目",path="html/personDtasks",method=RequestMethod.POST)
     @ResponseBody
     public PageModelDto<RuProcessTask> personDtasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -87,7 +110,7 @@ public class FlowController {
     }
 
     @RequiresPermissions("flow#html/doingtasks#post")
-    @RequestMapping(name = "在办任务", path = "html/doingtasks", method = RequestMethod.POST)
+    @RequestMapping(name = "在办项目", path = "html/doingtasks", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -105,7 +128,7 @@ public class FlowController {
     }
 
     @RequiresPermissions("flow#html/endTasks#post")
-    @RequestMapping(name = "办结任务", path = "html/endTasks", method = RequestMethod.POST)
+    @RequestMapping(name = "办结项目", path = "html/endTasks", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<TaskDto> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -307,5 +330,19 @@ public class FlowController {
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
         return resultMsg;
+    }
+
+    /******************************   以下是页面处理  ******************************/
+    @RequestMapping(name = "待办任务页面", path = "flowDeal/{processKey}", method = RequestMethod.GET)
+    public String ruProcessTask(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.TOP_FLOW:
+                resultPage = "topicInfo/flowDeal";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
     }
 }

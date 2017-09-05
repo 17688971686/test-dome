@@ -80,4 +80,18 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         hqlBuilder.setParam("wpId",wpId);
         executeHql(hqlBuilder);
     }
+
+    /**
+     * 初始化专家评审费，默认每个专家1000元
+     * @param id
+     */
+    @Override
+    public void initExpertCost(String id) {
+        //1、统计已经确认的专家个数
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_WORK_PROGRAM wp SET wp.expertCost = 1000 * (SELECT COUNT (ID) FROM CS_EXPERT_SELECTED es WHERE es.EXPERTREVIEWID = wp.EXPERTREVIEWID AND es.ISCONFRIM = '9') " );
+        sqlBuilder.append(" WHERE wp.id = :id");
+        sqlBuilder.setParam("id",id);
+        executeSql(sqlBuilder);
+    }
 }

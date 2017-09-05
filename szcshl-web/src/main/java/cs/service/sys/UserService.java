@@ -62,4 +62,12 @@ public interface UserService {
     UserDto getTakeUserByLoginName();
 
     void cancelTakeUser();
+
+    User getCacheUserById(String userId);
+
+    List<User> getCacheUserListById(String userIds);
+
+    List<User> findAllPostUser();
+
+    void fleshPostUserCache();
 }

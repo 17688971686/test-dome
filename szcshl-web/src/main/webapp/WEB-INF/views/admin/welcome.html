@@ -34,7 +34,7 @@
                                 <span  ng-if="t.processState == '1'" style="color:green;">进行中</span>
                                 <span  ng-if="t.processState == '2'" style="color:orange;">已暂停</span>
                             </td>
-                            <td><span class="badge bg-red">{{t.createTime | FormatStrDate}}</span></td>
+                            <td><span class="badge bg-red">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -60,7 +60,7 @@
                         <tr ng-repeat="e in vm.endTasksList|limitTo:6">
                              <td ng-bind="$index+1">1</td>
                             <td><a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}">{{e.businessName}}</a></td>
-                            <td><span class="badge bg-red">{{e.createDate | FormatStrDate }}</span></td>
+                            <td><span class="badge bg-red">{{e.createDate}}</span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -114,7 +114,7 @@
                             <td>{{$index +1}}.</td>
                             <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
                             <td>{{x.issueUser}}</td>
-                            <td><span class="badge bg-green">{{x.issueDate | FormatStrDate}}</span></td>
+                            <td><span class="badge bg-green">{{x.issueDate}}</span></td>
                         </tr>
                         </tbody>
                     </table>

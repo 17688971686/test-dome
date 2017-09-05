@@ -75,10 +75,10 @@
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
                     <label>
-                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9" name="isRelated">是
+                        <input type="radio" ng-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated" />是
                     </label>
                     <label>
-                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0" name="isRelated">否
+                        <input type="radio" ng-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated" />否
                     </label>
                 </td>
             </tr>
@@ -89,7 +89,7 @@
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
-                              data-val="true" data-val-required="必填" placeholder="徐安良主任、邱健明副主任、委秘书处........"/>
+                              data-val="true" data-val-required="必填">
                     <span style="float: right;">(印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)</span>
                 </td>
             </tr>
@@ -126,7 +126,7 @@
             </tr>
 
 
-          <!--   <tr>
+             <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
@@ -150,7 +150,7 @@
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
                 </td>
-            </tr> -->
+            </tr>
             
                        <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>

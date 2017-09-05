@@ -8,7 +8,7 @@
     function expertReview(expertReviewSvc, expertConditionSvc, $state,bsWin) {
         var vm = this;
         vm.title = '选择专家';
-        vm.conMaxIndex = 1;                   //条件号
+        vm.conMaxIndex = 0;                   //条件号
         vm.conditions = new Array();         //条件列表
         vm.customCondition = new Array();
         vm.expertReview = {};                 //评审方案对象

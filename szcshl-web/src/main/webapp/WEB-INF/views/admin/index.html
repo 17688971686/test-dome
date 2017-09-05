@@ -152,9 +152,14 @@ desired effect
                         </li>
                     	<li>
 	                        <a href="javascript:void(0)"  ui-sref="gtasks"> 
-	                        	<i class="fa fa-flag-o"></i>待办任务
+	                        	<i class="fa fa-flag-o"></i>待办项目
 	                        	<span class="label label-danger" id="GtasksCount">0</span>
 	                        </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"  ui-sref="agendaTasks">
+                                <i class="fa fa-flag-o"></i>待办任务
+                            </a>
                         </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="personDtasks">
@@ -163,7 +168,7 @@ desired effect
                         </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="dtasks">
-                                <i class="glyphicon glyphicon-tasks"></i>在办任务
+                                <i class="glyphicon glyphicon-tasks"></i>在办项目
                             </a>
                         </li>
                          <li>
@@ -173,13 +178,28 @@ desired effect
                          </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="etasks">
-                                <i class="glyphicon glyphicon-thumbs-up"></i>办结任务
+                                <i class="glyphicon glyphicon-thumbs-up"></i>办结项目
                             </a>
                         </li>
                     </ul>
                 </li>
-                
-                  <!-- start 项目管理-->
+
+                <!-- start 流程管理-->
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-cloud-download"></i><span class="title">课题研究管理</span>
+                        <span class="pull-right-container">
+							<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li ><a href="javascript:void(0)" ui-sref="addTopic">创建课题研究流程</a></li>
+
+                    </ul>
+                </li>
+                <!-- end 项目签收-->
+
+                <!-- start 项目管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cloud-download"></i><span class="title">项目签收管理</span>
@@ -214,11 +234,11 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                    	<!-- <li><a href="javascript:void(0)" ui-sref="financialManagerList">协审费录入</a></li>
-                    	<li><a href="javascript:void(0)" ui-sref="financialManagerList">协审费用统计</a></li> -->
+                       <!--  <li><a href="javascript:void(0)" ui-sref="assistCostAdd">协审费录入</a></li> -->
+                    	<li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
                         <li><a href="javascript:void(0)" ui-sref="financialManagerList">评审费用统计</a></li>
-                       <!--  <li><a href="javascript:void(0)" ui-sref="financialManagerList">专家缴税统计</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="financialManagerList">专家费用统计</a></li> -->
+                         <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li> 
+                         <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li> 
                     </ul>
                 </li>
               <!-- end 项目费用管理 -->

@@ -72,8 +72,11 @@
                 case flowcommon.getSignFlowNode().SIGN_BMFB4:
                     vm.showFlag.businessNext = true;
                     vm.showFlag.nodeSelPrincipal = true;
-                    if (vm.flow.businessMap) {
+                    if (vm.flow.businessMap && vm.flow.businessMap.users) {
                         vm.users = vm.flow.businessMap.users;
+                        vm.users.forEach(function(u,index){
+                            u.isSelected = false;
+                        });
                     }
                     break;
                 //项目负责人办理
@@ -249,36 +252,70 @@
                     break;
                 //部门分办，要选择办理人员
                 case flowcommon.getSignFlowNode().SIGN_BMFB1:
-                    //主办才有第一负责人，协办的全是第二负责人
-                    var selUserId = $("#selPrincipalMainUser").val();
-                    if (!selUserId) {
-                        resultObj.resultTag = false;
-                        resultObj.resultMsg = "必须要选择一个第一负责人！";
-                        break;
-                    }
-                    resultObj.resultTag = true;
-                    vm.flow.businessMap.M_USER_ID = selUserId;
-                    //判断选择第二负责人
-                    var assistIdArr = [];
-                    $('#principalAssistUser input[selectType="assistUser"]:checked').each(function () {
-                        assistIdArr.push($(this).val());
-                    });
-                    if (assistIdArr.length > 0) {
-                        vm.flow.businessMap.A_USER_ID = assistIdArr.join(',');
+                    //如果是协审流程
+                    if(vm.model.isassistflow && (vm.model.isassistflow == 9 || vm.model.isassistflow == '9')){
+                        if(!vm.businessFlag.principalUsers || vm.businessFlag.principalUsers.length == 0){
+                            resultObj.resultTag = false;
+                            resultObj.resultMsg = "请先选择项目负责人！";
+                        }else{
+                            resultObj.resultTag = false;
+                            $.each(vm.businessFlag.principalUsers,function(i,pu){
+                                if(pu.isMainUser == '9' || pu.isMainUser == 9){
+                                    resultObj.resultTag = true;
+                                }
+                            })
+                            if(!resultObj.resultTag){
+                                resultObj.resultMsg = "必须要选择一个第一负责人！";
+                            }
+                        }
+                        if(resultObj.resultTag){
+                            vm.flow.businessMap.PRINCIPAL = vm.businessFlag.principalUsers;
+                        }
+                    //如果不是
+                    }else{
+                        //主办才有第一负责人，协办的全是第二负责人
+                        var selUserId = $("#selPrincipalMainUser").val();
+                        if (!selUserId) {
+                            resultObj.resultTag = false;
+                            resultObj.resultMsg = "必须要选择一个第一负责人！";
+                            break;
+                        }
+                        resultObj.resultTag = true;
+                        vm.flow.businessMap.M_USER_ID = selUserId;
+                        //判断选择第二负责人
+                        var assistIdArr = [];
+                        $('#principalAssistUser input[selectType="assistUser"]:checked').each(function () {
+                            assistIdArr.push($(this).val());
+                        });
+                        if (assistIdArr.length > 0) {
+                            vm.flow.businessMap.A_USER_ID = assistIdArr.join(',');
+                        }
                     }
                     break;
                 case flowcommon.getSignFlowNode().SIGN_BMFB2:
                 case flowcommon.getSignFlowNode().SIGN_BMFB3:
                 case flowcommon.getSignFlowNode().SIGN_BMFB4:
-                    var assistIdArr = [];
-                    $('#principalAssistUser input[selectType="assistUser"]:checked').each(function () {
-                        assistIdArr.push($(this).val());
-                    });
-                    if (assistIdArr.length > 0) {
-                        vm.flow.businessMap.A_USER_ID = assistIdArr.join(',');
-                    }else{
-                        resultObj.resultTag = false;
-                        resultObj.resultMsg = "必须要选择负责人！";
+                    //如果是协审流程
+                    if(vm.model.isassistflow && (vm.model.isassistflow == 9 || vm.model.isassistflow == '9')){
+                        if(!vm.businessFlag.principalUsers || vm.businessFlag.principalUsers.length == 0){
+                            resultObj.resultTag = false;
+                            resultObj.resultMsg = "请先选择项目负责人！";
+                        }
+                        if(resultObj.resultTag){
+                            vm.flow.businessMap.PRINCIPAL = vm.businessFlag.principalUsers;
+                        }
+                    //如果不是
+                    }else {
+                        var assistIdArr = [];
+                        $('#principalAssistUser input[selectType="assistUser"]:checked').each(function () {
+                            assistIdArr.push($(this).val());
+                        });
+                        if (assistIdArr.length > 0) {
+                            vm.flow.businessMap.A_USER_ID = assistIdArr.join(',');
+                        }else{
+                            resultObj.resultTag = false;
+                            resultObj.resultMsg = "必须要选择负责人！";
+                        }
                     }
                     break;
                 case flowcommon.getSignFlowNode().SIGN_XMFZR1:
@@ -309,6 +346,7 @@
                         resultObj.resultTag = false;
                         resultObj.resultMsg = "您还没完成发文操作，不能进行下一步操作！";
                     }
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
                     break;
                 //项目负责人确认发文
                 case flowcommon.getSignFlowNode().SIGN_QRFW:
@@ -317,6 +355,7 @@
                     }else{
                         vm.flow.businessMap.AGREE = '0';
                     }
+                    vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
                     break;
                 //部长审批发文
                 case flowcommon.getSignFlowNode().SIGN_BMLD_QRFW:

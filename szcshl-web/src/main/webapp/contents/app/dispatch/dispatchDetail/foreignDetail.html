@@ -92,10 +92,12 @@
             <tr>
                 <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
                 <td colspan="3">
-                {{vm.dispatchDoc.mianChargeSuggest}}
+                    第一负责人意见：
+                    <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
                 </td>
                 <td colspan="2">
-                {{vm.dispatchDoc.secondChargeSuggest}}
+                    第二负责人意见：
+                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
                 </td>
             </tr>
 

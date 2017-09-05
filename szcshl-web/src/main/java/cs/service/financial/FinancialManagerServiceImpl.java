@@ -148,6 +148,9 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		 financialDto.setProjectName(sign.getProjectname());
 		 financialDto.setSignid(sign.getSignid());
 		 financialDto.setPaymentData(new Date());
+		 financialDto.setAssissCost(sign.getDeclaration());//计划协审费用
+		 financialDto.setAssistBuiltcompanyName(sign.getBuiltcompanyName());//协审单位
+		 
 		 HqlBuilder hqlBuilder = HqlBuilder.create();
 		 hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+FinancialManager_.signid.getName()+ " =:signid");
 		 hqlBuilder.setParam("signid", signid);
@@ -156,6 +159,40 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		 map.put("financiallist", financiallist);
 		 map.put("financialDto", financialDto);
 		return map;
+	}
+
+	/**
+	 * 获取协审费用统计列表数据
+	 */
+	@Override
+	public PageModelDto<SignDto> assistCostCountGet(ODataObj odataObj) {
+		PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
+		Criteria criteria = signRepo.getExecutableCriteria();
+		criteria =odataObj.buildFilterToCriteria(criteria);
+		criteria.add(Restrictions.eq(Sign_.assistStatus.getName(),EnumState.YES.getValue()));
+	    Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+	    pageModelDto.setCount(totalResult);
+	    criteria.setProjection(null);
+	    if(odataObj.getSkip() > 0){
+	    	criteria.setFirstResult(odataObj.getTop());
+	    }
+	    if(odataObj.getTop() > 0){
+	    	criteria.setMaxResults(odataObj.getTop());
+	    }
+	    List<Sign> signlist =criteria.list();
+		List<SignDto> signDtos = new ArrayList<SignDto>(signlist == null ? 0 : signlist.size());
+		
+		if(signlist != null && signlist.size() > 0){
+			signlist.forEach(x->{
+				 SignDto signDto = new SignDto();
+				BeanCopierUtils.copyProperties(x, signDto);
+				
+				signDtos.add(signDto);
+			});						
+		}		
+		pageModelDto.setValue(signDtos);	
+		
+		return pageModelDto;
 	}
 	
 }

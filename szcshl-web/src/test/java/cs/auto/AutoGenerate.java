@@ -7,10 +7,14 @@ import cs.auto.core.config.FileConst;
 import cs.domain.expert.ExpertOffer;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.flow.FlowPrincipal;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.project.*;
 import cs.domain.sys.Quartz;
 import cs.domain.sys.SysConfig;
+import cs.domain.topic.Filing;
+import cs.domain.topic.TopicInfo;
+import cs.domain.topic.WorkPlan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +28,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(AddRegisterFile.class, "登记补充资料");
-        config.setAuthor("sjy");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\AddRegisterFile");
+        CRUDGanConfig config = new CRUDGanConfig(FlowPrincipal.class, "流程负责人");
+        config.setAuthor("ldm");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\FlowPrincipal");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());
@@ -47,11 +51,11 @@ public class AutoGenerate {
         fileConfs.add(new FileConfig(FileConst.serviceImplCls));
         fileConfs.add(new FileConfig(FileConst.controllerCls));
 
-        fileConfs.add(new FileConfig(FileConst.listHtml));
+        /*fileConfs.add(new FileConfig(FileConst.listHtml));
         fileConfs.add(new FileConfig(FileConst.listCtrlJs));
         fileConfs.add(new FileConfig(FileConst.listSvcJs));
         fileConfs.add(new FileConfig(FileConst.editHtml));
-        fileConfs.add(new FileConfig(FileConst.editCtrJs));
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));*/
         return fileConfs;
     }
 

@@ -8,11 +8,13 @@
     function admin($rootScope, $http) {
 
         var service = {
-            gtasksGrid: gtasksGrid,		//个人待办
-            etasksGrid: etasksGrid,		//个人办结
-            dtasksGrid: dtasksGrid,        //在办任务
-            persontasksGrid : persontasksGrid,//个人在办
-            countWorakday: countWorakday,	//计算工作日
+            gtasksGrid: gtasksGrid,		                //个人待办项目
+            etasksGrid: etasksGrid,		                //个人办结项目
+            dtasksGrid: dtasksGrid,                     //在办项目
+            persontasksGrid : persontasksGrid,          //个人在办项目
+            countWorakday: countWorakday,	            //计算工作日
+
+            agendaTaskGrid:agendaTaskGrid,              //个人待办任务（除项目流程外）
 
             initFile: initFile,	        //初始化附件
             upload: upload,	            //	下载附件
@@ -23,6 +25,7 @@
             findendTasks: findendTasks,             //已办项目列表
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
+
         }
         return service;
 
@@ -226,50 +229,57 @@
                     field: "projectName",
                     title: "项目名称",
                     filterable: false,
-                    width: "10%"
+                    width: "18%",
+                    template: function (item) {
+                        if(item.processState == 2){
+                            return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        }else{
+                            return '<a href="#/signFlowDeal/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        }
+                    }
                 },
                 {
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: "10%"
+                    width: "12%"
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: 120,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "preSignDate",
                     title: "预签收时间",
-                    width: 120,
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
-                    title: "正式签收时间",
-                    width: 120,
+                    title: "签收时间",
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "surplusDays",
                     title: "剩余工作日",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: 100,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "",
                     title: "流程状态",
-                    width: 80,
+                    width: "8%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -282,18 +292,12 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: "6%",
                     template: function (item) {
-                        //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW") {
-                            if(item.processState == 2){
-                                return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
-                            }else{
-                                return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
-                            }
-
-                        } else {
-                            return "<a class='btn btn-xs btn-danger' >流程已停用</a>";
+                        if(item.processState == 2){
+                            return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
+                        }else{
+                            return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
                         }
                     }
                 }
@@ -430,7 +434,7 @@
             };
         }//E_etasksGrid
 
-        //S_dtasksGrid
+        //S_在办项目
         function dtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
@@ -500,50 +504,54 @@
                     field: "projectName",
                     title: "项目名称",
                     filterable: false,
-                    width: 150
+                    width: "18%",
+                    template: function (item) {
+                        return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                    }
+
                 },
                 {
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: 150
+                    width: "10%"
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: 120,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "preSignDate",
                     title: "预签收时间",
-                    width: 120,
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
-                    title: "正式签收时间",
-                    width: 120,
+                    title: "签收时间",
+                    width: "10%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "surplusDays",
                     title: "剩余工作日",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "",
                     title: "流程状态",
-                    width: 80,
+                    width: "10%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -556,14 +564,9 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: "10%",
                     template: function (item) {
-                        //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
-                        } else {
-                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
-                        }
+                        return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
                     }
                 }
             ];
@@ -989,5 +992,103 @@
             };
         }
         //end persontasksGrid
+
+        //S_个人待办任务
+        function agendaTaskGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask"),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model: {
+                        id: "taskId"
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createTime",
+                    dir: "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },
+                {
+                    field: "instanceName",
+                    title: "流程名称",
+                    filterable: false,
+                    width: "20%"
+                },
+                {
+                    field: "nodeName",
+                    title: "当前环节",
+                    width: "10%",
+                    filterable: false
+                },
+                {
+                    field: "displayName",
+                    title: "处理人",
+                    width: "10%",
+                    filterable: false,
+                },
+                {
+                    field: "processName",
+                    title: "流程类别",
+                    width: "20%",
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: "5%",
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processState && item.processState == 2) {
+                            return '<span style="color:orange;">已暂停</span>';
+                        } else {
+                            return '<span style="color:green;">进行中</span>';
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: "15%",
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(), item.businessKey,item.processKey,item.taskId,item.instanceId);
+                    }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+
+            };
+        }//E_agendaTaskGrid
     }
 })();

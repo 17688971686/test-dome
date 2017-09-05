@@ -206,18 +206,13 @@
                 {
                     field: "projectname",
                     title: "项目名称",
-                    width: 160,
+                    width: 100,
                     filterable: false
                 },
-                {
-                    field: "filecode",
-                    title: "收文编号",
-                    width: 80,
-                    filterable: false,
-                },
+               
                 {
                     field: "designcompanyName",
-                    title: "项目单位",
+                    title: "建设单位",
                     width: 100,
                     filterable: false,
                 },
@@ -228,12 +223,44 @@
                     filterable: false,
                 },
                 {
-                    field: "projectcode",
-                    title: "项目代码",
+                    field: "aUserName",
+                    title: "项目负责人",
                     width: 120,
                     filterable: false,
                 },
-               
+                {
+                    field: "projectcode",
+                    title: "项目评审费（元）",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                    	return '<a href="#/financialManager/'+item.signid+'" >'+item.projectcode+'</a>';
+                    }
+                },
+                {
+                    field: "projectcode",
+                    title: "付款日期",
+                    width: 120,
+                    filterable: false,
+                },
+                {
+                    field: "appalyInvestment",
+                    title: "申报投资（万元）",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "declaration",
+                    title: "审定投资（万元）",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "signdate",
+                    title: "签收日期",
+                    width: 120,
+                    filterable: false,
+                },
                 {
                     field: "",
                     title: "操作",
