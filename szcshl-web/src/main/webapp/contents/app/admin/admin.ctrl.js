@@ -7,7 +7,7 @@
 
     function admin($location, adminSvc) {
         var vm = this;
-        vm.title = '待办事项';
+        vm.title = '待办项目';
         activate();
         function activate() {
         	adminSvc.gtasksGrid(vm);

@@ -6,10 +6,15 @@ import cs.repository.IRepository;
 
 import java.util.List;
 
-public interface WorkProgramRepo extends IRepository<WorkProgram, String>{
+public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
 
     WorkProgram findByPrincipalUser(String signId);
+
     List<Org> getReviewOrg(String signId);
-    WorkProgram findBySignIdAndBranchId(String signId,String branchId);
-    void updateReviewId(String wpId,String reviewId);
+
+    WorkProgram findBySignIdAndBranchId(String signId, String branchId);
+
+    void updateReviewId(String wpId, String reviewId);
+
+    void initExpertCost(String id);
 }

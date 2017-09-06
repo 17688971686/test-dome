@@ -110,8 +110,7 @@
 			<property name="jobFactory" ref="jobFactory"></property>
 	</bean>
 	
-	
-	<bean id="initQuartzExecute" class="cs.quartz.execute.InitQuartzExecute" init-method="initQuartzExecute">
-	</bean>
-
+	<!-- 系统启动执行方法
+	<bean id="initQuartzExecute" class="cs.quartz.execute.InitQuartzExecute" init-method="initQuartzExecute"></bean>
+	-->
 </beans>

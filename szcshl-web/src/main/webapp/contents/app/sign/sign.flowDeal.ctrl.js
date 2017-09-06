@@ -147,7 +147,7 @@
 
             // 初始化上传附件
             sysfileSvc.findByMianId(vm.model.signid,function(data){
-                if(data || data.length > 0){
+                if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
                 }
@@ -514,13 +514,22 @@
         }
         //end 保存项目关联
 
-        // S 财务报销
+        // S 评审费录入
         vm.addFinancialApply = function(){
         	  $state.go('financialManager', {
                   signid: vm.model.signid
               });
         }
-        // E 财务报销
+        // E 评审费录入
+        
+        // S 评审费录入
+        vm.assistCostAdd = function(){
+        	  $state.go('assistCostAdd', {
+                  signid: vm.model.signid
+              });
+        }
+        // E 评审费录入
+        
         
         vm.addDoFile = function () {
             $state.go('fileRecordEdit', {
@@ -663,37 +672,24 @@
         vm.addPriUser = function () {
             var isCheck = $("#xs_bmfb input[name='unSelPriUser']:checked");
             if (isCheck.length < 1) {
-                common.alert({
-                    vm: vm,
-                    msg: "请选择负责人"
-                })
+                bsWin.alert("请选择负责人");
             }else{
-                if(vm.isMainPriUser == 9 && isCheck.length > 1){
-                    common.alert({
-                        vm: vm,
-                        msg: "总负责人只能选一个"
-                    })
-                    return ;
-                }
-                if(vm.businessFlag.isSelMainPriUser == false && (angular.isUndefined(vm.isMainPriUser) || vm.isMainPriUser == 0)){
-                    common.alert({
-                        vm: vm,
-                        msg: "请先选择总负责人！"
-                    })
-                    return ;
-                }
-                if(vm.businessFlag.isSelMainPriUser == true && vm.isMainPriUser == 9){
-                    common.alert({
-                        vm: vm,
-                        msg: "你已经选择了一个总负责人，不能再次选择负责人"
-                    })
-                    return ;
+                if(vm.businessFlag.isMainBranch){
+                    if(vm.isMainPriUser == 9 && isCheck.length > 1){
+                        bsWin.alert("总负责人只能选一个");
+                        return ;
+                    }
+                    if(vm.businessFlag.isSelMainPriUser == false && (angular.isUndefined(vm.isMainPriUser) || vm.isMainPriUser == 0)){
+                        bsWin.alert("请先选择总负责人");
+                        return ;
+                    }
+                    if(vm.businessFlag.isSelMainPriUser == true && vm.isMainPriUser == 9){
+                        bsWin.alert("你已经选择了一个总负责人，不能再次选择负责人！");
+                        return ;
+                    }
                 }
                 if(vm.businessFlag.principalUsers && (vm.businessFlag.principalUsers.length + isCheck.length) > 3){
-                    common.alert({
-                        vm: vm,
-                        msg: "最多只能选择3个负责人，请重新选择！"
-                    })
+                    bsWin.alert("最多只能选择3个负责人，请重新选择！");
                     return ;
                 }
 
@@ -708,10 +704,11 @@
                     }else{
                         priUser.isMainUser = 0;
                     }
-                    vm.xsusers.forEach(function(u,index){
+                    vm.users.forEach(function(u,index){
                        if(u.id == isCheck[i].value){
                            u.isSelected = true;
-                           priUser.userName = u.loginName;
+                           priUser.userId = u.id;
+                           priUser.userName = u.displayName;
                        }
                     });
                     vm.businessFlag.principalUsers.push(priUser);
@@ -724,13 +721,10 @@
         vm.delPriUser = function () {
             var isCheck = $("#xs_bmfb input[name='selPriUser']:checked");
             if (isCheck.length < 1) {
-                common.alert({
-                    vm: vm,
-                    msg: "请选择取消的负责人"
-                })
+                bsWin.alert("请选择取消的负责人");
             }else{
                 for (var i = 0; i < isCheck.length; i++) {
-                    vm.xsusers.forEach(function(u,index){
+                    vm.users.forEach(function(u,index){
                         if(u.id == isCheck[i].value){
                             u.isSelected = false;
                         }

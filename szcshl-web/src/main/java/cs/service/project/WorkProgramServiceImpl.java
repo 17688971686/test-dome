@@ -1,14 +1,15 @@
 package cs.service.project;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import cs.common.utils.*;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -73,6 +74,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private SignBranchRepo signBranchRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;
+    @Autowired
+    private ExpertSelectedRepo expertSelectedRepo;
 
     @Override
     @Transactional
@@ -154,6 +157,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
             for(WorkProgram wp : wpList){
                 if((signPrincipal.getFlowBranch()).equals(wp.getBranchId())){
+                    //如果还没有专家评审费，则初始化，默认，每个专家1000元
+                    if(wp.getExpertCost() == null || wp.getExpertCost().compareTo(BigDecimal.valueOf(0))== 0){
+                        workProgramRepo.initExpertCost(wp.getId());
+                    }
                     initWorkProgramDto(wp,workProgramDto);
                     isHaveCurUserWP = true;
                 }else{
@@ -170,6 +177,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
             workProgramDto.setBranchId(signPrincipal.getFlowBranch());
             workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
+            workProgramDto.setProjectName(sign.getProjectname());
 
             if(signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(),signId)){
                 //判断是否是关联次项目
@@ -430,12 +438,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
     }
 
-    @Override
-    public WorkProgramDto initWorkProgramById(String workId) {
-        WorkProgram work = workProgramRepo.findById(workId);
-        WorkProgramDto workDto = new WorkProgramDto();
-        BeanCopierUtils.copyProperties(work, workDto);
-        return workDto;
-    }
+	@Override
+	public WorkProgramDto initWorkProgramById(String workId) {
+		WorkProgram work = workProgramRepo.findById(workId);
+		WorkProgramDto workDto = new WorkProgramDto();
+		BeanCopierUtils.copyProperties(work, workDto);
+		return workDto;
+	}
 
 }

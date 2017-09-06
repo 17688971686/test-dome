@@ -61,7 +61,7 @@
                         vm.model.comprehensivehandlesug = "请"+(leader.displayName).substring(0,1)+"主任阅示。";
                     }
                 })
-                if(checkboxValue == signcommon.getBusinessType().PX){
+                if(checkboxValue == signcommon.getBusinessType().GX){
                     vm.model.leaderhandlesug="请（概算一部         概算二部）组织评审。";
                 }else{
                     vm.model.leaderhandlesug="请（评估一部         评估二部         综合部）组织评审。";

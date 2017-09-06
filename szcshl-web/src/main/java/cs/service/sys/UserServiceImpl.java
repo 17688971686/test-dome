@@ -548,6 +548,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getCacheUserById(String userId) {
+        return userRepo.getCacheUserById(userId);
+    }
+
+    @Override
+    public List<User> getCacheUserListById(String userIds) {
+        return userRepo.getCacheUserListById(userIds);
+    }
+
+    @Override
+    public List<User> findAllPostUser() {
+        return userRepo.findAllPostUser();
+    }
+
+    @Override
+    public void fleshPostUserCache() {
+        userRepo.findAllPostUser();
+    }
+
+    @Override
     public void saveUser(User user) {
         userRepo.save(user);
     }

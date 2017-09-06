@@ -1,0 +1,59 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/sharingPlatlform">专家缴税统计</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+       <div class="well">
+			 <input name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+			至
+			<input name="endTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" />
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">保存</a>
+	     <button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
+		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>
+		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看详细</button>
+		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">导出EXCLE</button>
+        </div>
+        <div class="well">
+        	<table border="1px">
+        	 <caption class="text-center h3">
+        	 <strong>深圳市政府投资项目评审中心<br>
+ 				2017年8月专家评审费交税统计汇总表
+ 			 </strong>
+ 			 </caption>
+				<tr >
+					<td rowspan="2" style="width:5%"  class="text-center">序号</td>
+					<td rowspan="2" style="width:10%"  class="text-center">姓名</td>
+					<td rowspan="2" style="width:25%"  class="text-center">身份证号码</td>
+					<td rowspan="2" style="width:15%"  class="text-center">手机号码</td>
+					<td colspan="2" style="width:25%"  class="text-center">本月合计</td>
+					<td colspan="2" style="width:25%"  class="text-center">本年累计</td>
+					
+				</tr>
+
+				<tr>
+					<td class="text-center">应缴所得税额</td>
+					<td class="text-center">应缴税额</td>
+					<td class="text-center">应缴所得税额</td>
+					<td class="text-center">应缴税额 </td>
+					
+				</tr>
+				<tr>
+					<td class="text-center" >1</td>
+					<td class="text-center">张三</td>
+					<td class="text-center">45242419903333412</td>
+					<td class="text-center">1233444</td>
+					<td class="text-center">6900</td>
+					<td class="text-center">34333</td>
+					<td class="text-center">22</td>
+					<td class="text-center">2222</td>
+				</tr>
+        </div>
+    </form>
+</div>
+

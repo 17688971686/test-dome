@@ -1,0 +1,73 @@
+<meta charset="UTF-8">
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li class="active">新增课题研究流程</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.startFlow()" ng-disabled="vm.isCommit" ng-hide="vm.model.processInstanceId">
+            <span class="glyphicon glyphicon-ok"></span>发起流程</button>
+    </div>
+    <form id="topicform" name="topicform">
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>课题研究计划书</strong></h3></caption>
+            <tr>
+                <td class="formAlignRight" style="width:15%;max-width:180px;">课题名称： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="128" class="form-control input-sm " ng-model="vm.model.topicName"
+                            id="topicName" name="topicName" data-val="true"  data-val-required="必填" data-val-length-max="128">
+                    <span data-valmsg-for="topicName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">合作研究单位： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.cooperator"
+                            id="cooperator" name="cooperator" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="cooperator" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">主要负责人： <span class="required">*</span></td>
+                <td >
+                    <select ng-model="vm.model.mainPrinUserId" name="mainPrinUserId" id="mainPrinUserId" ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in vm.principalUsers" value="{{x.id}}">{{x.displayName}}</option>
+                    </select>
+                    <span data-valmsg-for="mainPrinUserId" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">课题负责人：</td>
+                <td>
+                    <ul id="principalUser_ul">
+                        <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
+                            <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/>{{u.displayName}}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">是否委里立项：</td>
+                <td >
+                    <label>
+                        <input type="radio" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 9 || vm.model.fgwlx == '9'" name="fgwlx" />是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 0 || vm.model.fgwlx == '0'" name="isRelated" />否
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">备注信息：</td>
+                <td >
+                    <textarea cols="100" rows="5"  name="remark" id="remark" ng-model="vm.model.remark" maxlength="512"
+                              class="form-control input-sm " ></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -1,5 +1,7 @@
 package cs.domain.flow;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -35,6 +37,7 @@ public class RuProcessTask {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date createTime;
 
     /**
@@ -111,10 +114,12 @@ public class RuProcessTask {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date preSignDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date signDate;
 
     @Column

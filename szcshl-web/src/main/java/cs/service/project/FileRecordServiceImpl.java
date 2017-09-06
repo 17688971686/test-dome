@@ -108,7 +108,7 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setProjectName(sign.getProjectname());
             fileRecordDto.setProjectCode(sign.getProjectcode());
             fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
-            fileRecordDto.setProjectCompany(sign.getBuiltcompanyName());//编制单位名称
+            fileRecordDto.setProjectCompany(sign.getDesigncompanyName());//编制单位名称
             fileRecordDto.setFileNumber(sign.getDocnum());//文号
             //项目是否曾经暂停
             fileRecordDto.setIsStachProject(sign.getIsProjectState()==null? Constant.EnumState.NO.getValue():sign.getIsProjectState());

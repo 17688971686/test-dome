@@ -200,10 +200,16 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setDraftDate(now);
             dispatch.setDispatchDate(now);
             dispatch.setDispatchType("项目发文");
-
+            //年度计划、紧急程度
+            dispatch.setYearPlan(sign.getYearplantype());
+            dispatch.setSecretLevel(sign.getSecrectlevel());
+            dispatch.setUrgentLevel(sign.getUrgencydegree());
             //申报金额，与工作方案的、收文的一致，任何一个地方改了，都要同步更新
             dispatch.setDeclareValue(sign.getAppalyInvestment());
-
+            //发文范围(艾传荣副巡视员（默认） + 投资处（获取收文主办室处） + 中心领导（默认）)
+            dispatch.setDispatchScope(Constant.DIS_SCOPE_XSY+" "+sign.getMaindeptName()+" "+Constant.DIS_SCOPE_ZXLD);
+            dispatch.setPrintCount(5);
+            //发文标题
             String fileTitle = "《";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
             fileTitle += (sign.getReviewstage() == null ? "" : sign.getReviewstage());
@@ -213,13 +219,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
            
 
             // 获取当前用户信息
-            dispatch.setUserName(SessionUtil.getLoginName());
-            dispatch.setUserId(SessionUtil.getUserInfo().getId());
+            dispatch.setUserName(SessionUtil.getDisplayName());
+            dispatch.setUserId(SessionUtil.getUserId());
             dispatch.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
             dispatch.setOrgId(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getId());
-            dispatch.setYearPlan(sign.getYearplantype());
-            dispatch.setSecretLevel(sign.getSecrectlevel());
-            dispatch.setUrgentLevel(sign.getUrgencydegree());
+
         }
         dispatch.setDispatchStage(sign.getReviewstage());//评审阶段
         BeanCopierUtils.copyProperties(dispatch, dispatchDto);
@@ -260,16 +264,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     public DispatchDocDto initDispatchBySignId(String signId) {
         DispatchDocDto dispatchDocDto = new DispatchDocDto();
 
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + DispatchDoc.class.getSimpleName() + " where " + DispatchDoc_.sign.getName() + "."
-                + Sign_.signid.getName() + " = :signId ");
-        hqlBuilder.setParam("signId", signId);
+        DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid",signId);
+       if(dispatchDoc != null){
+           BeanCopierUtils.copyProperties(dispatchDoc, dispatchDocDto);
+       }
 
-        List<DispatchDoc> list = dispatchDocRepo.findByHql(hqlBuilder);
-        if (list != null && list.size() > 0) {
-            DispatchDoc dispatchDoc = list.get(0);
-            BeanCopierUtils.copyProperties(dispatchDoc, dispatchDocDto);
-        }
         return dispatchDocDto;
     }
 

@@ -64,7 +64,6 @@
                     </label>
                 </td>
             </tr>
-
           
             <tr>
                 <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
@@ -81,16 +80,16 @@
                 </td>
             </tr>
 
-            <tr>
+             <tr>
                 <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
-                <td colspan="3">
-                第一负责人意见：
-                {{vm.dispatchDoc.mianChargeSuggest}}
-                </td>
-                <td colspan="2"> 
-                第二负责人意见：
-                {{vm.dispatchDoc.secondChargeSuggest}}
-                </td>
+                 <td colspan="3">
+                     第一负责人意见：
+                     <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
+                 </td>
+                 <td colspan="2">
+                     第二负责人意见：
+                     <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
+                 </td>
             </tr>
 
             <tr>
@@ -100,8 +99,7 @@
                 </td>
             </tr>
 
-
-                       <tr>
+            <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
                 <td colspan="5">
                
@@ -212,7 +210,7 @@
                             <td>
                                 <input type="number" maxlength="200" class="form-control input-sm "
                                        ng-model="vm.dispatchDoc.declareValue" id="declareValue" name="declareValue"
-                                       ng-blur="vm.count()"
+                                       ng-blur="vm.count()" ng-readonly="true"
                                        data-val-regex="金额格式不正确"
                                        data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
                                        data-val-required="必填">
@@ -221,7 +219,7 @@
                             <td>
                                 <input type="number" maxlength="200" class="form-control input-sm "
                                        ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
-                                       ng-blur="vm.count()"
+                                       ng-blur="vm.count()" ng-readonly="true"
                                        data-val-regex="金额格式不正确"
                                        data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
                                        data-val-required="必填">
@@ -234,11 +232,11 @@
                                 {{vm.dispatchDoc.extraRate}}<span>%</span>
                             </td>
                             <td>
-                                <input type="text" maxlength="200" class="form-control input-sm "
+                                <input type="text" maxlength="200" class="form-control input-sm " ng-readonly="true"
                                        ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue">
                             </td>
                             <td>
-                                <input type="text" maxlength="200" class="form-control input-sm "
+                                <input type="text" maxlength="200" class="form-control input-sm " ng-readonly="true"
                                        ng-model="vm.dispatchDoc.remark" id="remark" name="remark">
                             </td>
                         </tr>
@@ -246,37 +244,28 @@
                         <tr>
                             <td>项目建设必要性<span class="required">*</span></td>
                             <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                          ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.projectBuildNecess"
-                                          id="projectBuildNecess" name="projectBuildNecess" data-val="true"
-                                          data-val-required="必填"/>
+                            {{vm.dispatchDoc.projectBuildNecess}}
                             </td>
                         </tr>
 
                         <tr>
                             <td>审定建设规模及内容<span class="required">*</span></td>
                             <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent"
-                                          name="buildSizeContent" data-val="true" data-val-required="必填"/>
+                            {{vm.dispatchDoc.buildSizeContent}}
                             </td>
                         </tr>
 
                         <tr>
                             <td>投资匡算及资金来源<span class="required">*</span></td>
                             <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin"
-                                          name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
+                            {{vm.dispatchDoc.fundTotalOrigin}}
                             </td>
                         </tr>
 
                         <tr>
                             <td>下一阶段工作要求<span class="required">*</span></td>
                             <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
-                                          name="nextWorkPlan" data-val="true" data-val-required="必填"/>
+                            {{vm.dispatchDoc.nextWorkPlan}}
                             </td>
                         </tr>
 

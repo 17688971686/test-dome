@@ -768,6 +768,7 @@ public class SignServiceImpl implements SignService {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
                     }
                 }
+
                 //设定下一环节处理人
                 if (Constant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                     variables.put(Constant.FlowUserName.USER_FZR1.getValue(), assigneeValue);
@@ -934,6 +935,14 @@ public class SignServiceImpl implements SignService {
                 }
 
                 dispatchDocService.createDisPatchTemplate(signid);//自动生成发文模板
+
+                //修改第一负责人意见
+                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                dp.setMianChargeSuggest(flowDto.getDealOption()+"           "+SessionUtil.getDisplayName()+" 日期："+DateUtils.converToString(new Date(),"yyyy年MM月dd日"));
+                dp.setSecondChargeSuggest("");
+                dispatchDocRepo.save(dp);
+
                 //有项目负责人，则项目负责人审核
                 List<User> prilUserList = signPrincipalService.getAllSecondPriUser(processInstance.getBusinessKey());
                 if (Validate.isList(prilUserList)) {
@@ -958,6 +967,13 @@ public class SignServiceImpl implements SignService {
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
+                //修改第二负责人意见
+                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                dp.setSecondChargeSuggest(Validate.isString(dp.getSecondChargeSuggest())?dp.getSecondChargeSuggest()+"<br>":""
+                        +flowDto.getDealOption()+"           "+SessionUtil.getDisplayName()+" 日期："+DateUtils.converToString(new Date(),"yyyy年MM月dd日"));
+                dispatchDocRepo.save(dp);
+
                 //如果同意
                 if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
                     variables.put(Constant.SignFlowParams.UNPASS.getValue(), false);
@@ -974,6 +990,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(Constant.FlowUserName.USER_FZR1.getValue(), Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：不通过】");
                 }
+
                 break;
             //部长审批发文
             case Constant.FLOW_SIGN_BMLD_QRFW:
@@ -1045,9 +1062,13 @@ public class SignServiceImpl implements SignService {
             //财务办理
             case Constant.FLOW_SIGN_CWBL:
             	sign = signRepo.findById(Sign_.signid.getName(), signid);
-            	//财务办理状态9已办理
-            	sign.setFinanciaStatus(Constant.EnumState.YES.getValue());
-            	
+            	if(sign.getReviewstage().equals("项目概算")){
+            		////协审费录入状态 9 表示已办理
+            		sign.setAssistStatus(Constant.EnumState.YES.getValue());
+            	}else{
+            		//评审费录入状态 9 表示已办理
+            		sign.setFinanciaStatus(Constant.EnumState.YES.getValue());
+            	}
                 dealUser = signPrincipalService.getMainPriUser(signid);
                 variables.put(Constant.FlowUserName.USER_M.getValue(), Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
                 break;

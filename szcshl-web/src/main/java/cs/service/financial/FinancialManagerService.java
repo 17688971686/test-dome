@@ -29,4 +29,6 @@ public interface FinancialManagerService {
 
 	Map<String, Object> initfinancialData(String signid);
 
+	PageModelDto<SignDto> assistCostCountGet(ODataObj odataObj);
+
 }

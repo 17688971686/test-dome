@@ -123,9 +123,13 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(16)")
     private String secrectlevel;
     
-    //财务办理状态 :9表示已办理,0表示未办理
+    //评审费录入状态 :9表示已办理,0表示未办理
     @Column(columnDefinition = "VARCHAR(4)")
     private String financiaStatus;
+    
+    //协审费录入状态 :9表示已办理,0表示未办理
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String assistStatus;
     
     //是否有登记补充资料:9表示是,0表示否
     @Column(columnDefinition = "VARCHAR(4)")
@@ -2405,7 +2409,16 @@ public class Sign extends DomainBase {
 
 	public void setIsSupplementary(String isSupplementary) {
 		IsSupplementary = isSupplementary;
+	}
+
+	public String getAssistStatus() {
+		return assistStatus;
+	}
+
+	public void setAssistStatus(String assistStatus) {
+		this.assistStatus = assistStatus;
 	} 
+	
 	
     
 }

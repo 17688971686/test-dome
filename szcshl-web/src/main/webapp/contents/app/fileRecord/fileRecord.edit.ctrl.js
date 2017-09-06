@@ -14,15 +14,6 @@
         vm.fileRecord.fileRecordId = "";
         vm.signId = $state.params.signid;
 
-        activate();
-        function activate(){
-            fileRecordSvc.initFileRecordData(vm);
-        }
-
-        vm.create = function(){
-            fileRecordSvc.saveFileRecord(vm);
-        }
-
         //初始化附件上传控件
         vm.initFileUpload = function(){
             if(!vm.fileRecord.fileRecordId){
@@ -45,5 +36,16 @@
                 vm:vm
             });
         }
+
+        activate();
+        function activate(){
+            fileRecordSvc.initFileRecordData(vm);
+        }
+
+        vm.create = function(){
+            fileRecordSvc.saveFileRecord(vm);
+        }
+
+
     }
 })();

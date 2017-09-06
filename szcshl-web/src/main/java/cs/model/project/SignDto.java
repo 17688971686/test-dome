@@ -54,8 +54,11 @@ public class SignDto extends BaseDto {
 
     private String ispresign;
     
-    //财务办理状态
+    //评审费录入状态 :9表示已办理,0表示未办理
     private String financiaStatus; 
+    
+    //协审费录入状态 :9表示已办理,0表示未办理
+    private String assistStatus;
     
     //是否有登记补充资料:9表示是,0表示否
     private String IsSupplementary;
@@ -2199,5 +2202,14 @@ public class SignDto extends BaseDto {
 	public void setIsSupplementary(String isSupplementary) {
 		IsSupplementary = isSupplementary;
 	}
+
+	public String getAssistStatus() {
+		return assistStatus;
+	}
+
+	public void setAssistStatus(String assistStatus) {
+		this.assistStatus = assistStatus;
+	}
+	
     
 }

@@ -7,17 +7,6 @@ package cs.common;
  * @author MCL
  * @date 2017年7月28日 下午2:12:53
  */
-/**
- * @author MCL
- *@date 2017年7月28日 下午2:12:53 
- */
-
-import java.util.Date;
-
-/**
- * @author MCL
- *@date 2017年7月28日 下午2:12:55 
- */
 public class Constant {
     /**
      * 企业名称
@@ -39,6 +28,16 @@ public class Constant {
      * 默认送件人
      */
     public static final String SEND_SIGN_NAME = "魏俊辉";
+
+    /**
+     * 发文范围默认值
+     */
+    public static final String DIS_SCOPE_XSY = "艾传荣副巡视员" ;
+
+    /**
+     * 发文范围默认值
+     */
+    public static final String DIS_SCOPE_ZXLD = "中心领导" ;
 
     /**
      * 发文编号前缀

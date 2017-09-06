@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -21,27 +23,44 @@ public class FinancialManager extends DomainBase {
 
 	@Id
     private String id;
+	
+	//费用名称
 	@Column(columnDefinition = "varchar(100)")
     private String chargeName;
 	
+	//费用
 	@Column(columnDefinition = "INTEGER")
     private Integer charge;
 	
+	//费用总和
 	@Column(columnDefinition = "INTEGER")
 	private Integer stageCount;
 	
+	//付款时间
 	@Column(columnDefinition="date")
 	private Date paymentData;
 	
-	@Column(columnDefinition = "varchar(100)")
+	//项目名称
+	@Column(columnDefinition = "varchar(200)")
 	private String projectName;
 	
+	//协审单位
+	@Column(columnDefinition = "varchar(200)")
+	private String assistBuiltcompanyName;
+	
+	//计划协审费用
+	@Column(columnDefinition = "NUMBER")
+	private BigDecimal assissCost;
+	
+	//收文ID
 	@Column(columnDefinition = "varchar(50)")
 	private String signid;
 	
+	//费用类型：协审费用录入8,评审费用录入9
 	@Column(columnDefinition = "varchar(20)")
-	private String chargeType;//费用类型
+	private String chargeType;
 	
+	//备注
 	@Column(columnDefinition = "varchar(200)")
     private String remarke;
 
@@ -120,6 +139,22 @@ public class FinancialManager extends DomainBase {
 
 	public void setSignid(String signid) {
 		this.signid = signid;
+	}
+
+	public String getAssistBuiltcompanyName() {
+		return assistBuiltcompanyName;
+	}
+
+	public void setAssistBuiltcompanyName(String assistBuiltcompanyName) {
+		this.assistBuiltcompanyName = assistBuiltcompanyName;
+	}
+
+	public BigDecimal getAssissCost() {
+		return assissCost;
+	}
+
+	public void setAssissCost(BigDecimal assissCost) {
+		this.assissCost = assissCost;
 	}
 	
     

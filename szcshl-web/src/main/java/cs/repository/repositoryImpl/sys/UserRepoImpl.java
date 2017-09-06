@@ -1,12 +1,14 @@
 package cs.repository.repositoryImpl.sys;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import cs.common.HqlBuilder;
+import cs.common.cache.CacheConstant;
+import cs.common.cache.CacheManager;
+import cs.common.cache.ICache;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import cs.domain.sys.*;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -99,6 +101,80 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         List<User> list = criteria.createAlias(User_.org.getName(), User_.org.getName())
                 .add(Restrictions.eq(User_.org.getName() + "." + Org_.id.getName(), orgId)).list();
         return list;
+    }
+
+    /**
+     * 从缓存获取用户信息（主要用户流程处理，用到用户ID和用户登录名等信息）
+     * @param userId
+     * @return
+     */
+    @Override
+    public User getCacheUserById(String userId) {
+        User cacheUser = null;
+        ICache cache = CacheManager.getCache();
+        List<User> userList = (List<User>) cache.get(CacheConstant.USER_CACHE);
+        //查询所有在职用户
+        if(!Validate.isList(userList)){
+            userList = findAllPostUser();
+            cache.put(CacheConstant.USER_CACHE,userList);
+        }
+        for(User user:userList){
+            if(user.getId().equals(userId)){
+                cacheUser = user;
+                break;
+            }
+        }
+        if(cacheUser == null){
+            cacheUser = findById(User_.id.getName(),userId);
+            userList.add(cacheUser);
+            cache.put(CacheConstant.USER_CACHE,userList);
+        }
+        return cacheUser;
+    }
+
+    /**
+     * 查询所有在职员工
+     * @return
+     */
+    public List<User> findAllPostUser() {
+        ICache cache = CacheManager.getCache();
+        List<User> resultList = (List<User>)cache.get(CacheConstant.USER_CACHE);
+        if(!Validate.isList(resultList)){
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.jobState.getName()+" = :jobState ");
+            hqlBuilder.setParam("jobState","t");
+            resultList = findByHql(hqlBuilder);
+            cache.put(CacheConstant.USER_CACHE,resultList);
+        }
+        return resultList;
+    }
+
+    /**
+     * 刷新所有在职用户细腻系
+     */
+    @Override
+    public void fleshPostUserCache() {
+        ICache cache = CacheManager.getCache();
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.jobState.getName()+" = :jobState ");
+        hqlBuilder.setParam("jobState","t");
+        List<User> resultList = findByHql(hqlBuilder);
+        cache.put(CacheConstant.USER_CACHE,resultList);
+    }
+
+    /**
+     * 根据多个ID获取用户列表信息
+     * @param userIds
+     * @return
+     */
+    @Override
+    public List<User> getCacheUserListById(String userIds) {
+        List<User> userList = new ArrayList<>();
+        List<String> ids = StringUtil.getSplit(userIds,",");
+        for(String id : ids){
+            userList.add(getCacheUserById(id));
+        }
+        return userList;
     }
 
 }
