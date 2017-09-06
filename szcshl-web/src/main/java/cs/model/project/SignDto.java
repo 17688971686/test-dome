@@ -63,6 +63,9 @@ public class SignDto extends BaseDto {
     //是否有登记补充资料:9表示是,0表示否
     private String IsSupplementary;
     
+    //审定投资
+    private BigDecimal authorizeValue;
+    
     private String projectname;
 
     private String ischangeEstimate;
@@ -2209,6 +2212,14 @@ public class SignDto extends BaseDto {
 
 	public void setAssistStatus(String assistStatus) {
 		this.assistStatus = assistStatus;
+	}
+
+	public BigDecimal getAuthorizeValue() {
+		return authorizeValue;
+	}
+
+	public void setAuthorizeValue(BigDecimal authorizeValue) {
+		this.authorizeValue = authorizeValue;
 	}
 	
     

@@ -149,14 +149,15 @@
         }
         // end#deleteexportCount
 
+
         //S_初始化grid(过滤已签收和已经完成的项目)
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/exportCount/findByOData", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/expertReview/findByOData", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
-                    id: "signid",
+                    id: "id",
                     fields: {
                         createdDate: {
                             type: "date"
@@ -204,62 +205,62 @@
 				    template: "<span class='row-number'></span>"
 				 },
                 {
-                    field: "projectname",
+                    field: "expretCount",
                     title: "姓名",
                     width: 100,
                     filterable: false
                 },
                
                 {
-                    field: "designcompanyName",
+                    field: "expretCount",
                     title: "身份证号",
                     width: 100,
                     filterable: false,
                 },
                 {
-                    field: "reviewstage",
+                    field: "expretCount",
                     title: "开户行",
                     width: 80,
                     filterable: false,
                 },
                 {
-                    field: "projectcode",
+                    field: "expretCount",
                     title: "银行账号",
                     width: 120,
                     filterable: false,
                 },
                 {
-                    field: "projectcode",
+                    field: "reviewCost",
                     title: "评审费（元）",
                     width: 160,
                     filterable: false,
                 },
                 {
-                    field: "projectcode",
+                    field: "reviewTaxes",
                     title: "应缴税",
                     width: 120,
                     filterable: false,
                 },
                 {
-                    field: "appalyInvestment",
+                    field: "reviewTitle",
                     title: "项目名称",
                     width: 160,
                     filterable: false,
                 },
                 {
-                    field: "declaration",
+                    field: "reviewDate",
                     title: "评审时间",
                     width: 160,
                     filterable: false,
                 },
                 {
-                    field: "signdate",
+                    field: "reviewDate",
                     title: "函评时间",
                     width: 120,
                     filterable: false,
                 },
                 {
-                    field: "signdate",
+                    field: "reviewDate",
                     title: "负责人",
                     width: 120,
                     filterable: false,

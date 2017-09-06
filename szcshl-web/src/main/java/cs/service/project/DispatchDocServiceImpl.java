@@ -157,6 +157,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
             }
             sign.setAppalyInvestment(dispatchDocDto.getDeclareValue());
+            sign.setAuthorizeValue(dispatchDocDto.getAuthorizeValue());
             sign.setWorkProgramList(workProgrmList);
             dispatchDoc.setSign(sign);
             dispatchDocRepo.save(dispatchDoc);
