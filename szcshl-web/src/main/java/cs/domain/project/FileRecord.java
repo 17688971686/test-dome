@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import org.hibernate.annotations.DynamicUpdate;
 
 import cs.domain.DomainBase;
@@ -222,8 +223,8 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String meetingSummaryScan;
 	
-	//其他重要资料份数
-	@Column(columnDefinition="INTEGER")
+	//其他重要资料分数
+	@Column(columnDefinition="VARCHAR(2)")
 	private Integer otherImportFileCount;
 	
 	//其他重要资料是否有原件
@@ -362,7 +363,23 @@ public class FileRecord extends DomainBase{
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column
 	private Date fileDate;
-	
+
+	/**
+	 * 发送存档日期为第二负责人审批意见后的日期
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column
+	@JSONField(format = "yyyy-MM-dd")
+	private Date sendStoreDate;
+
+	/**
+	 * 纸质文件接受日期 ：为归档员陈春燕确认的归档日期
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column
+	@JSONField(format = "yyyy-MM-dd")
+	private Date pageDate;
+
 	//S （进口设备）
 	//政府采购进口产品申报份数
 	@Column(columnDefinition="INTEGER")
@@ -1804,15 +1821,15 @@ public class FileRecord extends DomainBase{
 		this.sugproHandleFormCount = sugproHandleFormCount;
 	}
 
-	public Integer getOtherImportFileCount() {
-		return otherImportFileCount;
-	}
+    public Integer getOtherImportFileCount() {
+        return otherImportFileCount;
+    }
 
-	public void setOtherImportFileCount(Integer otherImportFileCount) {
-		this.otherImportFileCount = otherImportFileCount;
-	}
+    public void setOtherImportFileCount(Integer otherImportFileCount) {
+        this.otherImportFileCount = otherImportFileCount;
+    }
 
-	public String getFileReviewstage() {
+    public String getFileReviewstage() {
 		return fileReviewstage;
 	}
 
@@ -2339,7 +2356,20 @@ public class FileRecord extends DomainBase{
 	public void setIsSupplementary(String isSupplementary) {
 		this.isSupplementary = isSupplementary;
 	}
-	
-	
-	
+
+	public Date getSendStoreDate() {
+		return sendStoreDate;
+	}
+
+	public void setSendStoreDate(Date sendStoreDate) {
+		this.sendStoreDate = sendStoreDate;
+	}
+
+	public Date getPageDate() {
+		return pageDate;
+	}
+
+	public void setPageDate(Date pageDate) {
+		this.pageDate = pageDate;
+	}
 }

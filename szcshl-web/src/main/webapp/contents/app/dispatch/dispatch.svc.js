@@ -46,7 +46,6 @@
                 var data = response.data;
                 vm.sign = data.sign;
                 vm.dispatchDoc = data.dispatch;     //可编辑的发文对象
-                console.log(vm.dispatchDoc);
 
                 vm.dispatchDoc.signId = $state.params.signid;
                 if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
@@ -60,6 +59,9 @@
 
                 //初始化附件上传
                 vm.initFileUpload();
+
+                //监听是否关联选项
+                vm.watchIsRelated();
             }
             common.http({
                 vm: vm,

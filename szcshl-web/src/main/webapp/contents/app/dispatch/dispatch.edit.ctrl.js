@@ -25,6 +25,9 @@
         activate();
         function activate() {
             dispatchSvc.initDispatchData(vm);
+        }
+        //监听是否关联按钮
+        vm.watchIsRelated = function(){
             //监听是否关联事件
             $scope.$watch("vm.dispatchDoc.isRelated",function (newValue, oldValue) {
                 //由关联改成未关联
@@ -80,7 +83,6 @@
                 }
             });
         }
-
         //关联项目条件查询
         vm.associateQuerySign = function(){
             signSvc.getAssociateSign(vm.searchAssociateSign,function(data){

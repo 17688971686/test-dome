@@ -9,14 +9,20 @@ import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
+import cs.domain.flow.RuProcessTask;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
+import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.sys.UserServiceImpl;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,18 +45,71 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Override
     public PageModelDto<ExpertDto> get(ODataObj odataObj) {
-        List<Expert> listExpert = expertRepo.findByOdata(odataObj);
         PageModelDto<ExpertDto> pageModelDto = new PageModelDto<>();
         List<ExpertDto> listExpertDto = new ArrayList<>();
+        String maJorBigParam = "",maJorSamllParam="",expertTypeParam="";
+        //Criteria 查询
+        Criteria criteria = expertRepo.getExecutableCriteria();
+        if (Validate.isList(odataObj.getFilter())) {
+            Object value;
+            for (ODataFilterItem item : odataObj.getFilter()) {
+                value = item.getValue();
+                if (null == value) {
+                    continue;
+                }
+                if("maJorBigParam".equals(item.getField())){
+                    maJorBigParam = item.getValue().toString();
+                    continue;
+                }
+                if("maJorSamllParam".equals(item.getField())){
+                    maJorSamllParam = item.getValue().toString();
+                    continue;
+                }
+                if("expertTypeParam".equals(item.getField())){
+                    expertTypeParam = item.getValue().toString();
+                    continue;
+                }
+                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
+            }
+        }
+        //关联专家大类、小类和专业类型查询
+        if(Validate.isString(maJorBigParam) || Validate.isString(maJorSamllParam) || Validate.isString(expertTypeParam)){
+            StringBuffer sqlSB = new StringBuffer();
+            sqlSB.append(" (select count(ept.ID) from CS_EXPERT_TYPE ept where EPT.EXPERTID = "+criteria.getAlias()+"_.EXPERTID ");
+            //突出专业，大类
+            if (Validate.isString(maJorBigParam)) {
+                sqlSB.append(" and ept.maJorBig = '"+maJorBigParam+"' ");
+            }
+            //突出专业，小类
+            if (Validate.isString(maJorSamllParam)) {
+                sqlSB.append(" and ept.maJorSmall = '"+maJorSamllParam+"' ");
+            }
+            //专家类型
+            if (Validate.isString(expertTypeParam)) {
+                sqlSB.append(" and ept.expertType = '"+expertTypeParam+"' ");
+            }
+            sqlSB.append(" ) > 0 ");
+            criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
+        }
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+
+        List<Expert> listExpert = criteria.list();
         for (Expert item : listExpert) {
             //把图片设置为空
             item.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(item, expertDto);
-
             listExpertDto.add(expertDto);
         }
-        pageModelDto.setCount(odataObj.getCount());
+        pageModelDto.setCount(totalResult);
         pageModelDto.setValue(listExpertDto);
         return pageModelDto;
     }

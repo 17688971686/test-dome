@@ -4,6 +4,8 @@ package cs.domain.flow;
  * Created by ldm
  */
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -45,12 +47,14 @@ public class HiProcessTask {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date startTime;
     /**
      * 结束日期
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date endTime;
     /**
      * 处理时长

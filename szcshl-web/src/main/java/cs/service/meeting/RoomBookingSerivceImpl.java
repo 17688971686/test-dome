@@ -4,6 +4,7 @@ import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.expert.ExpertReview;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
@@ -15,6 +16,7 @@ import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.meeting.MeetingRoomRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -41,12 +43,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	private MeetingRoomRepo meetingRoomRepo;
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
-
 	@Autowired
 	private SysFileRepo sysFileRepo;
-
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private ExpertReviewRepo expertReviewRepo;
 
 	@Override
 	public List<RoomBookingDto> getRoomList() {
@@ -340,6 +340,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			//如果有关联,则要加上
 			if(Validate.isString(roomDto.getWorkProgramId())){
                 WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),roomDto.getWorkProgramId());
+				ExpertReview expertReview = expertReviewRepo.findByWPId(wp.getId());
+				if(expertReview.getReviewDate() == null){
+                    expertReview.setReviewDate(roomDto.getRbDay());
+                    expertReviewRepo.save(expertReview);
+				}
                 rb.setWorkProgram(wp);
             }
 

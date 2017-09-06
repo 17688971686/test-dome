@@ -321,14 +321,26 @@
                 <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
                 <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
                 <!--以下是查询字段-->
-                <span class="help-inline">专家名称：</span>
-                <input type="text" operator="like" name="name"  placeholder="请输入">
-
-                <span class="help-inline" style="margin-left:10px;">专家类别：</span>
-                <select name="expertSort" operator="eq" data-val="true" data-val-required="必填">
-                    <option value=""></option>
-                    <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
-                            value="{{x.dictName}}">{{x.dictName}}
+                <!--以下是查询字段-->
+                <span>突出专业（大类）</span>
+                <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
+                    <option value="">请选择</option>
+                    <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
+                            ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
+                    </option>
+                </select>
+                <span style="margin-left: 10px;">突出专业（小类）</span>
+                <select name="maJorSamllParam" ng-model="vm.maJorSamll">
+                    <option value="">请选择</option>
+                    <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}"
+                            ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
+                    </option>
+                </select>
+                <span style="margin-left: 10px;">专家类别</span>
+                <select name="expertTypeParam">
+                    <option value="">请选择</option>
+                    <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
+                            value="{{dt.dictName}}">{{dt.dictName}}
                     </option>
                 </select>
             </form>
@@ -397,14 +409,25 @@
                 <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
                 <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
                 <!--以下是查询字段-->
-                <span class="help-inline">专家名称：</span>
-                <input type="text" operator="like" name="name"  placeholder="请输入">
-
-                <span class="help-inline" style="margin-left:10px;">专家类别：</span>
-                <select name="expertSort" operator="eq" data-val="true" data-val-required="必填">
-                    <option value=""></option>
-                    <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
-                            value="{{x.dictName}}">{{x.dictName}}
+                <span>突出专业（大类）</span>
+                <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
+                    <option value="">请选择</option>
+                    <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
+                            ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
+                    </option>
+                </select>
+                <span style="margin-left: 10px;">突出专业（小类）</span>
+                <select name="maJorSamllParam" ng-model="vm.maJorSamll">
+                    <option value="">请选择</option>
+                    <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}"
+                            ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
+                    </option>
+                </select>
+                <span style="margin-left: 10px;">专家类别</span>
+                <select name="expertTypeParam">
+                    <option value="">请选择</option>
+                    <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
+                            value="{{dt.dictName}}">{{dt.dictName}}
                     </option>
                 </select>
             </form>

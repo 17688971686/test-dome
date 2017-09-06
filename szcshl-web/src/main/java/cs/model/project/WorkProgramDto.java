@@ -89,17 +89,11 @@ public class WorkProgramDto extends BaseDto {
     @JSONField(format = "yyyy-MM-dd")
     private Date suppLetterDate;
 
-    //评审会时间
-   /* @JSONField(format = "yyyy-MM-dd")
-    private Date stageTime;
+    /**
+     * 调研时间段（AM:表示上午，PM:表示下午，DAY:表示全天）
+     */
+    private String studyQuantum;
 
-    //评审时间
-    private String workStageTime;
-
-    //会议地点
-    private String meetingAddress;
-
-    private String meetingId;*/
     //调研开始时间
     @JSONField(format = "yyyy-MM-dd")
     private Date studyBeginTime;
@@ -589,5 +583,13 @@ public class WorkProgramDto extends BaseDto {
 
     public void setExpertReviewId(String expertReviewId) {
         this.expertReviewId = expertReviewId;
+    }
+
+    public String getStudyQuantum() {
+        return studyQuantum;
+    }
+
+    public void setStudyQuantum(String studyQuantum) {
+        this.studyQuantum = studyQuantum;
     }
 }

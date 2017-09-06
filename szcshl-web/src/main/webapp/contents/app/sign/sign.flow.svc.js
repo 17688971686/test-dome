@@ -83,6 +83,7 @@
                 case flowcommon.getSignFlowNode().SIGN_XMFZR1:
                     vm.businessFlag.isMainBranch = true;
                     vm.businessFlag.curBranchId = "1";
+                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
                 case flowcommon.getSignFlowNode().SIGN_XMFZR2:
                     if(!vm.businessFlag.curBranchId){
                         vm.businessFlag.curBranchId = "2";
@@ -128,6 +129,7 @@
                 case flowcommon.getSignFlowNode().SIGN_FW:
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeDispatch = true;
+                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
                     if(vm.flow.businessMap.prilUserList){
                         vm.businessFlag.principalUsers = vm.flow.businessMap.prilUserList;
                         vm.showFlag.businessNext = true;
@@ -140,6 +142,7 @@
                     break;
                 //项目负责人确认发文
                 case flowcommon.getSignFlowNode().SIGN_QRFW:
+                    vm.watchPassDis();
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeConfirmDis = true;
                     vm.businessFlag.passDis = '9';  //默认通过
@@ -164,6 +167,7 @@
                     $("#show_dispatch_a").click();
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeCreateDisNum = true;
+                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
                     break;
                 //财务办理
                 case flowcommon.getSignFlowNode().SIGN_CWBL:
@@ -176,6 +180,7 @@
                 case flowcommon.getSignFlowNode().SIGN_GD:
                     vm.showFlag.tabWorkProgram = true;
                     vm.showFlag.tabDispatch = true;
+                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
                     //有第二负责人确认
                     if(vm.flow.businessMap.checkFileUser){
                         vm.showFlag.businessNext = true;
