@@ -68,4 +68,25 @@ public class FlowConstant {
             return value;
         }
     }
+    /**
+     * 流程参数
+     */
+    public static enum FlowParams{
+        USER("user"),                    //单个用户
+        USERS("users"),                  //多个用户
+        USER_BZ("user_bz"),              //部长
+        USER_FGLD("user_fgld"),          //分管领导
+        USER_ZR("user_zr"),              //主任
+        USER_ADMIN("admin");             //系统管理员
+
+        private String value;
+
+        FlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }
