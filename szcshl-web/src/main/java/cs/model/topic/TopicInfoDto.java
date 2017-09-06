@@ -1,8 +1,10 @@
 package cs.model.topic;
 
+import cs.domain.flow.FlowPrincipal;
 import cs.model.BaseDto;
 
 import javax.persistence.Column;
+import java.util.List;
 
 
 /**
@@ -32,16 +34,39 @@ public class TopicInfoDto extends BaseDto {
     private String state;
 
     /**
-     * 课题负责人IDs
+     * 备注信息
      */
-    private String prinIds;
+    private String remark;
 
     /**
-     * 课题负责人名称
+     * 流程实例
      */
-    private String prinNames;
+    private String processInstanceId;
+
+    /**
+     * 工作方案
+     */
     private WorkPlanDto workPlanDto;
+
+    /**
+     * 归档
+     */
     private FilingDto filingDto;
+
+    /*******************  以下参数只是为了方便显示，并不是数据表字段 ********************/
+    /**
+     * 主要负责人ID
+     */
+    private String mainPrinUserId;
+
+    /**
+     * 项目负责人ID（多个）
+     */
+    private String prinUserIds;
+    /**
+     * 流程负责人
+     */
+    private List<FlowPrincipal> flowPrincipal;
 
     public TopicInfoDto() {
     }
@@ -101,19 +126,43 @@ public class TopicInfoDto extends BaseDto {
         this.state = state;
     }
 
-    public String getPrinIds() {
-        return prinIds;
+    public String getProcessInstanceId() {
+        return processInstanceId;
     }
 
-    public void setPrinIds(String prinIds) {
-        this.prinIds = prinIds;
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
-    public String getPrinNames() {
-        return prinNames;
+    public List<FlowPrincipal> getFlowPrincipal() {
+        return flowPrincipal;
     }
 
-    public void setPrinNames(String prinNames) {
-        this.prinNames = prinNames;
+    public void setFlowPrincipal(List<FlowPrincipal> flowPrincipal) {
+        this.flowPrincipal = flowPrincipal;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getMainPrinUserId() {
+        return mainPrinUserId;
+    }
+
+    public void setMainPrinUserId(String mainPrinUserId) {
+        this.mainPrinUserId = mainPrinUserId;
+    }
+
+    public String getPrinUserIds() {
+        return prinUserIds;
+    }
+
+    public void setPrinUserIds(String prinUserIds) {
+        this.prinUserIds = prinUserIds;
     }
 }

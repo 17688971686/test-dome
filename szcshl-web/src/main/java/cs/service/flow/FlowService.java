@@ -3,6 +3,7 @@ package cs.service.flow;
 import cs.common.ResultMsg;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
+import cs.domain.flow.RuTask;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
@@ -33,7 +34,7 @@ public interface FlowService {
     PageModelDto<TaskDto> queryETasks(ODataObj odataObj);
 
     /**
-     * 20170706 新增
+     * 20170706 项目签收流程接口
      **/
     PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal);
 
@@ -44,4 +45,9 @@ public interface FlowService {
     List<TaskDto> queryMyEndTasks();
 
     PageModelDto<RuProcessTask> queryPersonTasks(ODataObj oDataObj);
+
+    /**
+     * 20170905 查询个人待办事项（除项目签收流程外）
+     **/
+    PageModelDto<RuTask> queryMyAgendaTask(ODataObj oDataObj);
 }
