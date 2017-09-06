@@ -95,7 +95,7 @@
 		//end getExpertTypeById
 		
 		//begin createExpertType
-		function createExpertType(vm){
+		function createExpertType(vm,callBack){
 			common.initJqValidation($('#expertTypeForm'));
 			var isValid = $('#expertTypeForm').valid();
 			if (isValid) {
@@ -110,14 +110,15 @@
 						vm : vm,
 						response : response,
 						fn : function() {
-							window.parent.$("#addExpertType").data("kendoWindow").close();
-							cleanValue();
-//							getExpertType(vm);
-							expertSvc.getExpertById(vm);
 							common.alert({
 								vm : vm,
 								msg : "操作成功",
 								fn : function() {
+                                    window.parent.$("#addExpertType").data("kendoWindow").close();
+                                    cleanValue();
+                                    // getExpertType(vm);
+                                    expertSvc.getExpertById(vm);
+                                    // vm.showExpertType = false;
 									vm.projectTypeList = true;
 									$('.alertDialog').modal('hide');
 									$('.modal-backdrop').remove();

@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.HqlBuilder;
 import cs.common.utils.SessionUtil;
+import cs.domain.expert.Expert_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +34,15 @@ public class ExpertTypeServiceImpl implements ExpertTypeService{
 	@Override
 	@Transactional
 	public void saveExpertType(ExpertTypeDto expertTypeDto) {
-		boolean isExpertTypeExist=expertTypeRepo.isExpertTypeExist(expertTypeDto.getExpertType());
-		if(!isExpertTypeExist){
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+		hqlBuilder.append(" select et from " + ExpertType.class.getSimpleName() );
+		hqlBuilder.append(" et where "+ ExpertType_.expert.getName()+"."+ Expert_.expertID.getName() + "=:expertId and ");
+		hqlBuilder.append(ExpertType_.expertType.getName() + "=:expertType");
+		hqlBuilder.setParam("expertId" , expertTypeDto.getExpertID());
+		hqlBuilder.setParam("expertType" , expertTypeDto.getExpertType());
+		List<ExpertType> expertTypeList = expertTypeRepo.findByHql(hqlBuilder);
+//		int isExpertTypeExist=expertTypeRepo.isExpertTypeExist(expertTypeDto.getExpertType() , expertTypeDto.getExpertID());
+		if(expertTypeList== null || expertTypeList.size()==0){
 			
 			ExpertType expertType=new ExpertType();
 			BeanCopierUtils.copyProperties(expertTypeDto, expertType);

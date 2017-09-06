@@ -7,7 +7,7 @@ import cs.model.expert.ExpertTypeDto;
 import cs.repository.odata.ODataObj;
 
 public interface ExpertTypeService {
-	
+
 	void saveExpertType(ExpertTypeDto expertTypeDto);
 	
 	List<ExpertTypeDto> getExpertType(ODataObj odataObj);

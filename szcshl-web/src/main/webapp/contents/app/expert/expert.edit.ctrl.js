@@ -121,6 +121,7 @@
 
 //专家类型-业务处理
         vm.gotoExpertType=function(expertID){
+            vm.expertType={};
         	vm.isUpdate=false;
         	expertTypeSvc.gotoExpertType(vm);
         }
@@ -131,14 +132,14 @@
         }
         
         vm.createExpertType=function(){
-        	vm.createExpertType=true;
+        	// vm.createExpertType=true;
         	vm.expertType.expertID=vm.model.expertID;
-        	expertTypeSvc.createExpertType(vm)
+        	expertTypeSvc.createExpertType(vm);
         }
         
         vm.updateProjectType=function(){
         	vm.isUpdate=true;
-        	vm.createExpertType=false;
+        	vm.showExpertType=true;
         	expertTypeSvc.updateExpertType(vm);
         }
         
@@ -152,6 +153,7 @@
 
         //专家聘书弹窗
         vm.gotoOfferPage = function(){
+            vm.expertOffer={};
             $("#ep_offer_div").kendoWindow({
                 width : "800px",
                 height : "600px",
@@ -180,14 +182,20 @@
         }
         //查看专家聘书
         vm.showOffer = function(id){
-            vm.expertOffer = {};        //专家聘书
+            // vm.expertOffer = {};        //专家聘书
+            vm.showProjectOffer = true;
+            vm.gotoOfferPage();
             vm.expertOfferList.forEach(function(o,index){
                 if(o.id == id){
-                   vm.expertOffer = o;
-                   return ;
-               }
+                    vm.expertOffer = o;
+                    return ;
+                }
             });
-            vm.gotoOfferPage();
+        }
+
+        //更新专家聘书
+        vm.updateOffer = function (){
+            expertOfferSvc.updateOffer(vm);
         }
         
         vm.chooseMW=function(){
