@@ -109,7 +109,7 @@ public class FileRecordDto extends BaseDto {
 
     private String meetingSummaryScan;
 
-    private String otherImportFileCount;
+    private Integer otherImportFileCount;
 
     private String otherImportFileOriginal;
 
@@ -1297,11 +1297,11 @@ public class FileRecordDto extends BaseDto {
         this.sugproHandleFormCount = sugproHandleFormCount;
     }
 
-    public String getOtherImportFileCount() {
+    public Integer getOtherImportFileCount() {
         return otherImportFileCount;
     }
 
-    public void setOtherImportFileCount(String otherImportFileCount) {
+    public void setOtherImportFileCount(Integer otherImportFileCount) {
         this.otherImportFileCount = otherImportFileCount;
     }
 
