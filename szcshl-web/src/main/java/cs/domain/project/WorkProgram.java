@@ -137,20 +137,11 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "DATE")
     private Date suppLetterDate;
 
-    //评审会时间
-   /* @Column(columnDefinition = "DATE")
-    private Date stageTime;
-
-    //评审时间
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String workStageTime;
-
-    //会议地点
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String meetingAddress;
-
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String meetingId;*/
+    /**
+     * 调研时间段（AM:表示上午，PM:表示下午，DAY:表示全天）
+     */
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String studyQuantum;
 
     //调研开始时间
     @Column(columnDefinition = "DATE")
@@ -629,5 +620,13 @@ public class WorkProgram extends DomainBase {
 
     public void setExpertReviewId(String expertReviewId) {
         this.expertReviewId = expertReviewId;
+    }
+
+    public String getStudyQuantum() {
+        return studyQuantum;
+    }
+
+    public void setStudyQuantum(String studyQuantum) {
+        this.studyQuantum = studyQuantum;
     }
 }

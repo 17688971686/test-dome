@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signEndCtrl', sign);
 
-    sign.$inject = ['$location','signSvc','$state','flowSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc'];
 
-    function sign($location,signSvc,$state,flowSvc) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc) {
         var vm = this;
         vm.title = "已办结项目详情";
         vm.model = {};
@@ -78,7 +78,22 @@
                         if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
                             vm.showFlag.tabExpert = true;   //显示专家信息tab
                         }
+                        //获取评分专家
+                        vm.selectedDtoList = [];
+                        $.each(vm.businessFlag.expertReviews,function(i,epReview){
+                            $.each(epReview.expertSelectedDtoList,function(k,epSlist){
+                                vm.selectedDtoList.push(epSlist);
+                            })
+                        })
                     });
+                }
+            });
+
+            // 初始化上传附件
+            sysfileSvc.findByMianId(vm.model.signid,function(data){
+                if(data && data.length > 0){
+                    vm.showFlag.tabSysFile = true;
+                    vm.sysFileList = data;
                 }
             });
         }

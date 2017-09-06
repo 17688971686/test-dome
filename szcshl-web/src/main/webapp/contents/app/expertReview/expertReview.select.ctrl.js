@@ -116,8 +116,8 @@
         vm.showSelfExpertGrid = function () {
             vm.selfExpertOptions.dataSource.read();
             $("#selfExpertDiv").kendoWindow({
-                width: "860px",
-                height: "500px",
+                width: "70%",
+                height: "680px",
                 title: "自选评审专家",
                 visible: false,
                 modal: true,
@@ -188,8 +188,8 @@
         vm.showOutExpertGrid = function () {
             vm.outExpertOptions.dataSource.read();
             $("#outExpertDiv").kendoWindow({
-                width: "860px",
-                height: "500px",
+                width: "70%",
+                height: "680px",
                 title: "自选新专家、市外、境外专家",
                 visible: false,
                 modal: true,

@@ -4,9 +4,9 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-      'addRegisterFileSvc','workprogramSvc',  '$http','bsWin'];
+      'addRegisterFileSvc','workprogramSvc', '$scope','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,workprogramSvc, $http,bsWin) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,workprogramSvc, $scope,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -120,6 +120,13 @@
                         if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
                             vm.showFlag.tabExpert = true;   //显示专家信息tab
                         }
+                        //获取评分专家
+                        vm.selectedDtoList = [];
+                        $.each(vm.businessFlag.expertReviews,function(i,epReview){
+                            $.each(epReview.expertSelectedDtoList,function(k,epSlist){
+                                vm.selectedDtoList.push(epSlist);
+                            })
+                        })
                     });
                 }
 
