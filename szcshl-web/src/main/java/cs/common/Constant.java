@@ -117,6 +117,7 @@ public class Constant {
         GO_DISPATCH("godispatch"),              //直接发文
         PRIN_USER("principaluser"),             //项目负责人确认
         SECOND_USER("seconduser"),              //第二负责人确认
+        NO_EP_COST("mypsf"),                    //没有专家评审费
         UNPASS("unpass"),                       //项目负责人确认不通过
         BRANCH1("branch1"),                     //项目分支1
         BRANCH2("branch2"),                     //项目分支2

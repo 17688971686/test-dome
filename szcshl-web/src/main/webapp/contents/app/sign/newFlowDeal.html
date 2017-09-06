@@ -73,7 +73,7 @@
                 <!-- 选择负责人 -->
                 <div ng-if="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow != 9">
                     <ol class="breadcrumb" style="font-size: 12px;">
-                        <li class="active">温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个！</li>
+                        <li class="active">选择项目负责人（温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个）</li>
                     </ol>
                     <p ng-if="vm.businessFlag.isMainBranch">
                         <span>第一负责人：</span>
@@ -82,12 +82,11 @@
                             <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
                         </select>
                     </p>
-                    <p id="p_assistUser">
-                        <span>其他负责人：</span>
-                        <span ng-repeat="u in vm.users" id="principalAssistUser">
-                            <span style="margin-right: 10px;"><input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/> {{u.displayName}}</span>
-                        </span>
-                    </p>
+                    <ul id="p_assistUser">
+                        <li ng-repeat="u in vm.users" id="principalAssistUser" style="float: left;width: 80px;">
+                            <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/> {{u.displayName}}
+                        </li>
+                    </ul>
                 </div>
                 <!--第二负责人-->
                 <div ng-if= "vm.flow.businessMap.checkFileUser">

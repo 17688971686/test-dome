@@ -157,10 +157,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
             for(WorkProgram wp : wpList){
                 if((signPrincipal.getFlowBranch()).equals(wp.getBranchId())){
-                    //如果还没有专家评审费，则初始化，默认，每个专家1000元
-                    if(wp.getExpertCost() == null || wp.getExpertCost().compareTo(BigDecimal.valueOf(0))== 0){
-                        workProgramRepo.initExpertCost(wp.getId());
-                    }
                     initWorkProgramDto(wp,workProgramDto);
                     isHaveCurUserWP = true;
                 }else{
@@ -263,6 +259,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 expertDtoList.add(expertDto);
             });
             workProgramDto.setExpertDtoList(expertDtoList);
+        }
+        //如果还没有专家评审费，则初始化，默认，每个专家1000元,如果当前评审费少于选定专家的个数，则更新专家评审费
+        BigDecimal compareCost = BigDecimal.valueOf(Validate.isList(expertList)?1000*expertList.size():0);
+        if(workProgram.getExpertCost() == null || workProgram.getExpertCost().compareTo(compareCost) <= 0){
+            workProgramRepo.initExpertCost(workProgram.getId());
         }
     }
 

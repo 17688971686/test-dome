@@ -1045,19 +1045,28 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(dp.getFileNum())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，该项目还没有发文编号，不能进行下一步操作！");
                 }
-                userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FINANCIAL.getValue());
-                if (!Validate.isList(userList)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
-                }
-                assigneeValue = "";
-                for (int i = 0, l = userList.size(); i < l; i++) {
-                    if (i > 0) {
-                        assigneeValue += ",";
+                //判断是否有评审费，如果有，则给财务部办理，没有，则直接到归档环节
+                if(signRepo.isHaveEPReviewCost(signid)){
+                    userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FINANCIAL.getValue());
+                    if (!Validate.isList(userList)) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
                     }
-                    dealUser = userList.get(i);
-                    assigneeValue += Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    assigneeValue = "";
+                    for (int i = 0, l = userList.size(); i < l; i++) {
+                        if (i > 0) {
+                            assigneeValue += ",";
+                        }
+                        dealUser = userList.get(i);
+                        assigneeValue += Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    }
+                    variables.put(Constant.FlowUserName.USER_CW.getValue(), assigneeValue);
+                    variables.put(Constant.SignFlowParams.NO_EP_COST.getValue(), EnumState.NO.getValue());
+                //没有评审费，则直接到归档环节(还是当前人处理)
+                }else{
+                    variables.put(Constant.SignFlowParams.NO_EP_COST.getValue(), EnumState.YES.getValue());
+                    variables.put(Constant.FlowUserName.USER_M.getValue(), SessionUtil.getUserId());
                 }
-                variables.put(Constant.FlowUserName.USER_CW.getValue(), assigneeValue);
+
                 break;
             //财务办理
             case Constant.FLOW_SIGN_CWBL:
@@ -1074,6 +1083,11 @@ public class SignServiceImpl implements SignService {
                 break;
             //第一负责人归档
             case Constant.FLOW_SIGN_GD:
+                //如果没有完成专家评分，则不可以提交到下一步
+                if(!signRepo.isFinishEPGrade(signid)){
+                    return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还未对专家进行评分,不能提交到下一步操作！");
+                }
+
                 if (flowDto.getBusinessMap().get("checkFileUser") != null) {
                     dealUser = JSON.parseObject(flowDto.getBusinessMap().get("checkFileUser").toString(), User.class);
                     variables.put(Constant.SignFlowParams.SECOND_USER.getValue(), EnumState.YES.getValue());
@@ -1113,6 +1127,8 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("GD_ID").toString();
                 fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName(), businessId);
                 fileRecord.setProjectTwoUser(SessionUtil.getDisplayName());
+                //发送存档日期为第二负责人审批意见后的日期，
+                fileRecord.setSendStoreDate(new Date());
                 fileRecordRepo.save(fileRecord);
                 break;
             //确认归档
@@ -1122,6 +1138,9 @@ public class SignServiceImpl implements SignService {
                 fileRecord.setFileDate(new Date());
                 fileRecord.setSignUserid(SessionUtil.getUserId());
                 fileRecord.setSignUserName(SessionUtil.getDisplayName());
+                //纸质文件接受日期 ：为归档员陈春燕确认的归档日期
+                fileRecord.setPageDate(new Date());
+
                 fileRecordRepo.save(fileRecord);
 
                 //更改项目状态

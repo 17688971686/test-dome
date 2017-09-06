@@ -137,38 +137,30 @@
 
     <!-- start 专家评分 -->
     <div class="tab-pane fade" style="background: white;" id="sign_remark">
-        <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
-            <tbody>
+        <table class="table table-bordered">
+            <caption class="text-center h3"><strong>专家评分</strong></caption><!--第一负责人才能评分-->
             <tr>
-                <td>
-                    <table class="table table-bordered">
-                        <caption class="text-center h3"><strong>专家评分</strong></caption>
-                            <tr>
-                                <td style="width: 5%;max-width: 70px;">序号</td>
-                                <td width="8%">姓名</td>
-                                <td width="20%">工作单位</td>
-                                <td width="20%">职位/职称</td>
-                                <td width="15%">专业</td>
-                                <td width="10%">专家评分</td>
-                                <td width="15%">评分描述</td>
-                                <td width="15%" ng-if="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">操作</td>
-                            </tr>
-                            <tr ng-repeat="x in expertReview.expertSelectedDtoList">
-                                <td>{{$index+1}}</td>
-                                <td>{{x.expertDto.name}}</td>
-                                <td>{{x.expertDto.comPany}}</td>
-                                <td>{{x.expertDto.job}}/{{x.expertDto.post}}</td>
-                                <td>{{x.expertDto.majorStudy}}</td>
-                                <td>{{vm.getExpertStar(x.id,x.score)}}<span id="{{x.id}}_starhtml"></span></td>
-                                <td>{{x.describes}}</td>
-                                <td ng-if="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)" >
-                                    <button class="btn btn-xs btn-primary" ng-click="vm.editSelectExpert(x.id)" >
-                                        <span class="glyphicon glyphicon-pencil"></span>编辑
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <td style="width: 5%;max-width: 70px;">序号</td>
+                <td width="8%">姓名</td>
+                <td width="20%">工作单位</td>
+                <td width="20%">职位/职称</td>
+                <td width="15%">专业</td>
+                <td width="10%">专家评分</td>
+                <td width="15%">评分描述</td>
+                <td width="15%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.selectedDtoList track by $index">
+                <td>{{$index+1}}</td>
+                <td>{{x.expertDto.name}}</td>
+                <td>{{x.expertDto.comPany}}</td>
+                <td>{{x.expertDto.job}}/{{x.expertDto.post}}</td>
+                <td>{{x.expertDto.majorStudy}}</td>
+                <td>{{vm.getExpertStar(x.id,x.score)}}<span id="{{x.id}}_starhtml"></span></td>
+                <td>{{x.describes}}</td>
+                <td ng-if="vm.showFlag.isMainPrinUser" >
+                    <button class="btn btn-xs btn-primary" ng-click="vm.editSelectExpert(x.id)" >
+                        <span class="glyphicon glyphicon-pencil"></span>编辑
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -193,21 +185,33 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="20%">评审费发放日期 <span class="required">*</span></td>
-                    <td>
-                        <input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
-                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-                               ng-model="expertReview.payDate" data-val-date="必须为日期">
-                        <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                    <td class="formAlignRight">评审费发放日期 </td>
+                    <td >
+                        <div ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                            <input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
+                                   class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                                   ng-model="expertReview.payDate" data-val-date="必须为日期">
+                            <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                        </div>
+                        <div ng-hide="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                           {{expertReview.payDate}}
+                        </div>
                     </td>
-                    <td width="20%">评审/函评日期</td>
-                    <td>{{expertReview.reviewDate}}</td>
+                    <td class="formAlignRight">评审/函评日期</td>
+                    <td>
+                        {{expertReview.reviewDate}}
+                    </td>
                 </tr>
                 <tr>
-                    <td>评审费发放标题</td>
+                    <td class="formAlignRight">评审费发放标题</td>
                     <td colspan="3">
-                        <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
+                        <div ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                            <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
                                class="form-control input-sm " ng-model="expertReview.reviewTitle">
+                        </div>
+                        <div ng-hide="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                            {{expertReview.reviewTitle}}
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -229,11 +233,16 @@
                                 <td>{{x.expertDto.idCard}}</td>
                                 <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                                 <td>
-                                    <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
-                                           class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
-                                           data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
-                                           data-val="true" data-val-required="必填">
-                                    <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                    <div ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                                        <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                               class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
+                                               data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
+                                               data-val="true" data-val-required="必填">
+                                        <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                    </div>
+                                    <div ng-hide="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                                        {{x.reviewCost}}
+                                    </div>
                                 </td>
                                 <td> {{x.reviewTaxes}}</td>
                                 <td> {{x.totalCost}}</td>
