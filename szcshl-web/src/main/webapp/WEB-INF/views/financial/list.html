@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/sharingPlatlform">财务管理</a></li>
+        <li><a href="#/sharingPlatlform">评审费统计管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
      <div class="toolbar">
@@ -72,7 +72,7 @@
         
  		 <div style="text-align:center" >
  				<h3> 深圳市政府投资项目评审中心<br>
- 					项目评审费交税统计表</h3>
+ 					项目评审费统计表</h3>
  		 </div>
        
         <script type="text/template" id="columnBtns">
@@ -80,8 +80,69 @@
             <a class="btn btn-xs btn-primary" href="#/financialManager/{0}"><span class="glyphicon glyphicon-pencil"></span>财务办理</a>
             </@shiro.hasPermission>
         </script>
+        
+ <!--       <table border="1px">
+			<tbody>
+				<tr >
+					<td >序号</td>
+					<td >项目名称</td>
+					<td>建设单位</td>
+					<td>评审阶段 </td>
+					<td>项目负责人</td>
+					<td>项目评审费（元）</td>
+					<td>付款日期</td>
+					<td>申报投资 </td>
+					<td>审定投资</td>
+					<td>签收日期</td>
+				</tr>
+			
+				<tr ng-repeat="stageCount in vm.stageCountList">
+					<td >{{$index+1}}</td>
+					<td >{{stageCount.projectname}}</td>
+					<td >{{stageCount.designcompanyName}}</td>
+					<td>{{stageCount.reviewstage}}
+					 </td>
+					<td>{{stageCount.aUserName}}</td>
+					<td>{{stageCount.projectcode}}</td>
+					<td>{{stageCount.signdate}}</td>
+					<td>{{stageCount.appalyInvestment}} </td>
+					<td>{{stageCount.authorizeValue}}</td>
+					<td>{{stageCount.signdate}}</td>
+				</tr>
+				<tr>
+					<td rowspan="4">1rowspan={{index+4}}</td>
+					<td rowspan="4">深圳市政府投资项目评审中心</td>
+					<td rowspan="4">深圳公安局单位</td>
+					<td>可行性研究报告 </td>
+					<td>但龙</td>
+					<td>6000</td>
+					<td>2017/09/04</td>
+					<td>500万元 </td>
+					<td>400万元</td>
+					<td>2017/09/03</td>
+				</tr>
+				<tr>
+					<td>1 </td>
+					<td>评审费用</td>
+					<td >3500</td>
+					<td colspan="4"></td>
+				</tr>
+				<tr>
+					<td>2 </td>
+					<td>路费</td>
+					<td>500</td>
+					<td colspan="4"></td>
+				</tr>
+				<tr>
+					<td>3 </td>
+					<td>餐费</td>
+					<td>2000</td>
+					<td colspan="4"></td>
+				</tr>
+			</tbody>
+		</table> -->
 
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+       <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
     </form>
 </div>
 

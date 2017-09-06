@@ -12,7 +12,6 @@
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.financial.signid = $state.params.signid;
-        
         //S 输入数字校验
         vm.inputIntegerValue = function(checkValue,idSort){
         	if(expertPaymentCountSvc.isUnsignedInteger(checkValue)){

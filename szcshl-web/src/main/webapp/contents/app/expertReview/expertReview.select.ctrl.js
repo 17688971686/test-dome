@@ -299,6 +299,7 @@
         }
 
         vm.checkIntegerValue = function (checkValue, idStr, idSort) {
+        
             if (expertConditionSvc.isUnsignedInteger(checkValue)) {
                 $("#" + idStr + idSort).val(checkValue);
                 $("#errorsOfficialNum" + idSort).html("");

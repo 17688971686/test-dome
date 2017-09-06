@@ -108,6 +108,9 @@ public class WorkProgram extends DomainBase {
     //申报投资
     @Column(columnDefinition = "NUMBER")
     private BigDecimal appalyInvestment;
+    
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal declaration;
 
     //申报建设内容
     @Column(columnDefinition = "VARCHAR(2048)")
@@ -613,8 +616,17 @@ public class WorkProgram extends DomainBase {
     public void setInviteUnitLeader(String inviteUnitLeader) {
         this.inviteUnitLeader = inviteUnitLeader;
     }
+    
 
-    public String getExpertReviewId() {
+    public BigDecimal getDeclaration() {
+		return declaration;
+	}
+
+	public void setDeclaration(BigDecimal declaration) {
+		this.declaration = declaration;
+	}
+
+	public String getExpertReviewId() {
         return expertReviewId;
     }
 

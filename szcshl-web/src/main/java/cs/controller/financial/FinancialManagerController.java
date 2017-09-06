@@ -131,5 +131,11 @@ public class FinancialManagerController {
         return ctrlName+"/assistCostCount";
     }
     
+    @RequiresPermissions("financialManager#html/stageCostTable#get")
+    @RequestMapping(name = "评审费发放表页面", path = "html/stageCostTable", method = RequestMethod.GET)
+    public String stageCostTable() {
+        return ctrlName+"/stageCostTable";
+    }
+    
    
 }

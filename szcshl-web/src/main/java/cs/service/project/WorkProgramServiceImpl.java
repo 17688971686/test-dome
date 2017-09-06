@@ -186,6 +186,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgramDto.setProjectName(sign.getProjectname());
                 workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
                 workProgramDto.setDesignCompany(sign.getDesigncompanyName());
+                workProgramDto.setAppalyInvestment(sign.getDeclaration());
                 workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
 
                 workProgramDto.setTitleDate(new Date());

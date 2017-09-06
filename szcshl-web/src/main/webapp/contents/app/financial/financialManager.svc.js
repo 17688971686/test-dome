@@ -14,9 +14,52 @@
             sumFinancial:sumFinancial,								//统计评审费用总和
             initFinancialProject:initFinancialProject,				//初始化关联项目评审费
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
+            stageCostCountList:stageCostCountList,		 //评审费用统计列表
+            findStageCostTableList:findStageCostTableList, //查看评审费发放表
         };
 
         return service;
+        vm.businessFlag = {
+        expertReviews : [], 
+        }
+        //S 查看评审费发放表
+        function findStageCostTableList (signId,callBack){
+        	 var httpOptions = {
+                     method: 'post',
+                     url: rootPath + "/expertReview/getBySignId/" + signId
+                 }
+                 var httpSuccess = function success(response) {
+	        		 if (callBack != undefined && typeof callBack == 'function') {
+	                     callBack(response.data);
+	                 }
+                 }
+
+                 common.http({
+                     $http: $http,
+                     httpOptions: httpOptions,
+                     success: httpSuccess
+                 });
+        }
+      // E 查看评审费发放表
+        
+       //S 评审费用统计列表
+        function stageCostCountList(vm){
+        	var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/financialManager/findByOData",
+                };
+                var httpSuccess = function success(response) {
+                    vm.stageCountList = response.data.value;
+                    
+                };
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });          
+        }
+      //E 评审费用统计列表
       //检查是否为正整数
         function isUnsignedInteger(value){
             if((/^(\+|-)?\d+$/.test(value)) && value>0 ){
@@ -250,7 +293,7 @@
                     filterable: false,
                 },
                 {
-                    field: "declaration",
+                    field: "authorizeValue",
                     title: "审定投资（万元）",
                     width: 160,
                     filterable: false,

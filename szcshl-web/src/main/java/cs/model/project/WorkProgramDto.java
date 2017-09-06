@@ -66,7 +66,8 @@ public class WorkProgramDto extends BaseDto {
     private String buildSize;
     //申报投资
     private BigDecimal appalyInvestment;
-
+    //报审概算
+    private BigDecimal declaration;
     //申报建设内容
     private String buildContent;
 
