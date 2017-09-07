@@ -108,6 +108,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setId(UUID.randomUUID().toString());
                 workProgram.setCreatedBy(SessionUtil.getUserInfo().getId());
                 workProgram.setCreatedDate(now);
+                workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());//调研时间段
             }
             workProgram.setModifiedBy(SessionUtil.getUserInfo().getId());
             workProgram.setModifiedDate(now);
