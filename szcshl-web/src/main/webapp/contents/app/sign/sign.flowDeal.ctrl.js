@@ -47,6 +47,7 @@
             expertRemark:false,         // 专家评分弹窗内容显示
             expertpayment:false,        // 专家费用弹窗内容显示
             expertEdit:true,            // 专家评分费用编辑权限
+            isMainPrinUser:false        // 是否是第一负责人
         };
 
         //业务控制对象

@@ -383,7 +383,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchAssociateform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByOData", $("#searchAssociateform"),{filter: "isAssociate eq 0"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
