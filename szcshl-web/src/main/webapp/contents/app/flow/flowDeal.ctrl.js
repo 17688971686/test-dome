@@ -64,16 +64,47 @@
         }
         /***************  E_个人意见  ***************/
 
-        /***************  S_课题流程处理  ***************/
-        vm.commitTopicFlow = function () {
-            alert("功能未开发");
+        /***************  S_流程处理  ***************/
+        vm.commitFlow = function () {
+            if(vm.flow.isSuspended){
+                bsWin.error("该流程目前为暂停状态，不能进行流转操作！");
+                return ;
+            }
+            flowSvc.commit(vm.isCommit,vm.flow,function(data){
+                if (data.flag || data.reCode == "ok") {
+                    bsWin.success("操作成功！",function(){
+                        $state.go('agendaTasks');
+                    })
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
         }
 
         //S_流程回退
-        vm.backTopicFlow = function () {
-            alert("功能未开发");
+        vm.backFlow = function () {
+            common.initJqValidation($("#flow_form"));
+            var isValid = $("#flow_form").valid();
+            if(isValid){
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认回退吗？",
+                    onOk: function () {
+                        flowSvc.rollBackToLast(vm.flow,vm.isCommit,function(data){
+                            vm.isCommit = false;
+                            if (data.flag || data.reCode == "ok") {
+                                bsWin.alert("回退成功！",function(){
+                                    $state.go('agendaTasks');
+                                });
+                            } else {
+                                bsWin.alert(data.reMsg);
+                            }
+                        }); // 回退到上一个环节
+                    }
+                });
+            }
         }
-        /***************  E_课题流程处理  ***************/
+        /***************  E_流程处理  ***************/
     }
 })();
 
