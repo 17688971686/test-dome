@@ -522,12 +522,12 @@ public class CreateTemplateUtils {
         if(rbList!=null && rbList.size()>0) {
             Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
             for (RoomBooking roomBooking : rbList) {
-                String[] str = roomBooking.getRbDate().split("-");
-                String[] str2 = str[2].split("\\(");
-                dataMap.put("rbDate", str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]);
-                dataMap.put("beginTime", DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"));
+//                String[] str = roomBooking.getRbDate().split("-");
+//                String[] str2 = str[2].split("\\(");
+//                dataMap.put("rbDate", str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]);
+//                dataMap.put("beginTime", DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"));
                 dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
-                dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));
+//                dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));
 
                 if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1 &&
                         DateUtils.compareIgnoreSecond(roomBooking.getEndTime(), compareDate) == -1) {
