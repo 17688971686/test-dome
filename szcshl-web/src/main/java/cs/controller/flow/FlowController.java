@@ -17,9 +17,7 @@ import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
-import cs.service.flow.FlowNextNodeFilter;
-import cs.service.flow.FlowService;
-import cs.service.flow.IFlow;
+import cs.service.flow.*;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
 import cs.service.topic.TopicInfoService;
@@ -72,10 +70,13 @@ public class FlowController {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private TopicInfoService topicInfoService;
-    @Autowired
     @Qualifier("signFlowImpl")
     private IFlow signFlowImpl;
+    @Autowired
+    @Qualifier("topicFlowImpl")
+    private IFlow topicFlowImpl;
+    @Autowired
+    private TopicInfoService topicInfoService;
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
@@ -229,6 +230,8 @@ public class FlowController {
             case Constant.SIGN_FLOW:
                 flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.TOPIC_BFGW:
+                flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
             default:
                     ;
         }
@@ -261,6 +264,9 @@ public class FlowController {
         switch (processInstance.getProcessDefinitionKey()){
             case Constant.SIGN_FLOW:
                 resultMsg = signService.dealFlow(processInstance, flowDto);
+                break;
+            case FlowConstant.TOPIC_BFGW:
+                resultMsg = topicInfoService.dealFlow(processInstance, flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");

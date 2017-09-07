@@ -812,5 +812,17 @@
             signSvc.createDispatchTemplate(vm);
         }
 
+        //监听是否通过
+        vm.watchPassDis = function(){
+            //监听是否关联事件
+            $scope.$watch("vm.businessFlag.passDis",function (newValue, oldValue) {
+                if(newValue == 9){
+                    vm.flow.dealOption = "通过";
+                }else{
+                    vm.flow.dealOption = "不通过";
+                }
+
+            });
+        }
     }
 })();

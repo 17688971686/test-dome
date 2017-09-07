@@ -6,8 +6,6 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.*;
-import cs.domain.project.*;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -16,12 +14,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.service.project.SignPrincipalService;
 import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -52,7 +45,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
@@ -76,10 +68,10 @@ public class FlowServiceImpl implements FlowService {
     private RuTaskRepo ruTaskRepo;
     @Autowired
     private HiProcessTaskRepo hiProcessTaskRepo;
-
     @Autowired
     @Qualifier("signFlowBackImpl")
     private IFlowBack signFlowBackImpl;
+
     /**
      * 回退到上一环节
      *
