@@ -232,7 +232,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
      * @return ResultMsg
      */
     @Override
-    public ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) {
+    public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 

@@ -10,6 +10,7 @@ import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public interface SignService {
 
     ResultMsg endFlow(String signid);
 
-    ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto);
+    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
     //流程处理end
 
     List<SignDto> findAssistSign();

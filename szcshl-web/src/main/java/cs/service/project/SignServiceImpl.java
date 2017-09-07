@@ -554,20 +554,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     @Transactional
-    public ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) {
-        Task task = null;
-        if (Validate.isString(flowDto.getTaskId())) {
-            task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
-        } else {
-            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        }
-        if (task == null) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
-        }
-        if (task.isSuspended()) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
-        }
-
+    public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
         //参数定义
         String signid = processInstance.getBusinessKey(), businessId = "", assigneeValue = "", branchIndex = "";
         Sign sign = null;

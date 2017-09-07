@@ -7,6 +7,7 @@ import cs.model.flow.FlowDto;
 import cs.model.topic.TopicInfoDto;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 /**
  * Description: 课题研究 业务操作接口
@@ -29,5 +30,5 @@ public interface TopicInfoService {
 
     TopicInfoDto findDetailById(String id);
 
-    ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto);
+    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
 }

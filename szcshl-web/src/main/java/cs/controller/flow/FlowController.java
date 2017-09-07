@@ -261,12 +261,24 @@ public class FlowController {
     ResultMsg flowCommit(@RequestBody FlowDto flowDto) throws Exception {
         ResultMsg resultMsg = null;
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
+        Task task = null;
+        if (Validate.isString(flowDto.getTaskId())) {
+            task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
+        } else {
+            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        }
+        if (task == null) {
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+        }
+        if (task.isSuspended()) {
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
+        }
         switch (processInstance.getProcessDefinitionKey()){
             case Constant.SIGN_FLOW:
-                resultMsg = signService.dealFlow(processInstance, flowDto);
+                resultMsg = signService.dealFlow(processInstance, task,flowDto);
                 break;
             case FlowConstant.TOPIC_BFGW:
-                resultMsg = topicInfoService.dealFlow(processInstance, flowDto);
+                resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
