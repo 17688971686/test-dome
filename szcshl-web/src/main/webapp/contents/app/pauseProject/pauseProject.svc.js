@@ -239,9 +239,9 @@
                     data: "value",
                     total: function (data) {
                         if (data['count']) {
-                            $("#pauseCount").html(data['count']);
+                            $("#PAUSE_COUNT").html(data['count']);
                         } else {
-                            $("#pauseCount").html(0);
+                            $("#PAUSE_COUNT").html(0);
                         }
                         return data['count'];
                     },

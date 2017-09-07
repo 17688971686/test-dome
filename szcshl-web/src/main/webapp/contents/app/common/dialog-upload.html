@@ -2,7 +2,7 @@
 <!--S 上传附件弹窗 -->
 <div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
     <input type="file" id="sysfileinput" name="file" multiple="multiple" id="file" class="file-loading"/>
-    <div >
+    <div ng-show="vm.sysFile.showBusiType">
         <span >文件类型：</span>
         <span >
            <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType" style="min-width:200px;margin-top:10px;">

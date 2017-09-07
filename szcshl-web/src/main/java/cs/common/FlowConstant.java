@@ -10,7 +10,7 @@ public class FlowConstant {
     /**
      *课题研究流程
      */
-    public final static String TOP_FLOW = "TOPIC_FLOW";
+    public final static String TOPIC_FLOW = "TOPIC_FLOW";
 
     /*************** S 课题研究流程 环节名称  ****************/
     public static final String TOPIC_JHTC = "TOPIC_JHTC";                //计划提出

@@ -100,11 +100,4 @@ public class ProjectStopController {
 		}
 		return result;
 	}
-
-	@RequestMapping(name="获取待办暂停项目个数",path= "pauseProjectCount" ,method=RequestMethod.GET)
-    @ResponseBody
-	public long getCount(HttpServletRequest request) throws ParseException{
-		ODataObj oDataObj=new ODataObj(request);
-		return projectStopService.findProjectStopByStopId(oDataObj).getCount();
-	}
 }

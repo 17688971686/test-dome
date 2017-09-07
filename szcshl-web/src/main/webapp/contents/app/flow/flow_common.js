@@ -67,13 +67,20 @@
         TOPIC_ZLGD : "TOPIC_ZLGD",                //资料归档
     }
 
+    //流程定义值
+    var flowDefinedKey = {
+        TOPIC_FLOW : "TOPIC_FLOW",                  //课题研究流程
+    }
     var service = {
+        getFlowDefinedKey : function(){
+            return flowDefinedKey;               //流程定义值
+        },
         getSignFlowNode: function(){
             return signNode;
-        },               //项目签收流程环节
+        },                                        //项目签收流程环节
         getTopicFlowNode: function(){
             return topicNode;
-        },             //课题研究流程
+        },                                        //课题研究流程
     };
     window.flowcommon = service;
 

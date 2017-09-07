@@ -37,6 +37,12 @@
                 controller: 'adminAgendaCtrl',
                 controllerAs: 'vm'
             })
+            .state('doingTasks', {
+                url: '/doingTasks',
+                templateUrl: rootPath + '/admin/doingTasks.html',
+                controller: 'adminDoTaskCtrl',
+                controllerAs: 'vm'
+            })
             .state('flowDeal', {
                 url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
                 templateUrl: function($routeParams){return rootPath + '/flow/flowDeal/'+$routeParams.processKey+'.html';},
@@ -628,9 +634,15 @@
 
             //课题研究流程
             .state('addTopic',{
-                url : '/topicInfo',
+                url : '/topicInfo/:id',
                 templateUrl : rootPath + '/topicInfo/html/add.html',
                 controller : 'topicAddCtrl',
+                controllerAs : 'vm'
+            })
+            .state('myTopic',{
+                url : '/myTopic',
+                templateUrl : rootPath + '/topicInfo/html/myList.html',
+                controller : 'myTopicCtrl',
                 controllerAs : 'vm'
             })
 
@@ -705,23 +717,5 @@
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     });
-
-})();
-
-/**
- *
- *定配置angular应用指令
- *@author lqs
- */
-(function(){
-
-    'use strict';
-    angular.module('app')
-        .directive('goBack', function() {//返回指令
-            return {
-                restrict : 'AE',
-                template : '<a class="btn btn-sm btn-primary" href="javascript:void(0);" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>'
-            };
-        });
 
 })();

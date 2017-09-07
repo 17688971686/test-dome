@@ -7,7 +7,7 @@
 
     function admin($location, adminSvc, flowSvc,pauseProjectSvc) {
         var vm = this;
-        vm.title = '在办任务';
+        vm.title = '在办项目';
         vm.model = {};
         activate();
         function activate() {

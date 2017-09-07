@@ -1,0 +1,37 @@
+<meta charset="UTF-8">
+
+<div class="well well-sm" style="background:white;">
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>课题研究计划书</strong></h3></caption>
+            <tr>
+                <td class="formAlignRight" style="width:15%;max-width:180px;">课题名称：</td>
+                <td>
+                    {{vm.topic.topicName}}
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">合作研究单位： </td>
+                <td>
+                    {{vm.topic.cooperator}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">是否委里立项：</td>
+                <td >
+                    <label>
+                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.topic.fgwlx == 9 || vm.topic.fgwlx == '9'" name="fgwlx" />是
+                    </label>
+                    <label>
+                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.topic.fgwlx == 0 || vm.topic.fgwlx == '0'" name="isRelated" />否
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">备注信息：</td>
+                <td>
+                    <div style="min-height: 60px;">{{vm.topic.remark}}</div>
+                </td>
+            </tr>
+        </table>
+</div>

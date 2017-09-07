@@ -1,13 +1,17 @@
 <meta charset="UTF-8">
+<#assign path=request.contextPath/>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
+        <li><a>课题研究管理</a></li>
         <li class="active">新增课题研究流程</li>
     </ol>
     <div class="toolbar">
         <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
         <button class="btn btn-sm btn-success" ng-click="vm.startFlow()" ng-disabled="vm.isCommit" ng-hide="vm.model.processInstanceId">
             <span class="glyphicon glyphicon-ok"></span>发起流程</button>
+        <flow-file-button></flow-file-button>   <!--附件上传按钮-->
     </div>
     <form id="topicform" name="topicform">
         <table class="table table-bordered">
@@ -30,13 +34,12 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">主要负责人： <span class="required">*</span></td>
+                <td class="formAlignRight">主要负责人：</td>
                 <td >
                     <select ng-model="vm.model.mainPrinUserId" name="mainPrinUserId" id="mainPrinUserId" ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in vm.principalUsers" value="{{x.id}}">{{x.displayName}}</option>
+                        <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId">{{x.displayName}}</option>
                     </select>
-                    <span data-valmsg-for="mainPrinUserId" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
 
@@ -45,7 +48,10 @@
                 <td>
                     <ul id="principalUser_ul">
                         <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
-                            <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/>{{u.displayName}}
+                            <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}"
+                                   ng-checked="vm.model.prinUserIds && (vm.model.prinUserIds).indexOf(u.id)>-1"
+                                   ng-disabled="vm.model.mainPrinUserId == u.id"
+                                   ng-click="vm.initUserOption()"/>{{u.displayName}}
                         </li>
                     </ul>
                 </td>

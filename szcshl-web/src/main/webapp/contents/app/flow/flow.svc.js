@@ -7,26 +7,27 @@
 
     function flow($http, $state, bsWin) {
         var service = {
-            initFlowData: initFlowData, // 初始化流程数据
-            getFlowInfo: getFlowInfo, // 获取流程信息
-            commit: commit, // 提交
-            rollBackToLast: rollBackToLast, // 回退到上一环节
-            rollBack: rollBack, // 回退到选定环节
-            initBackNode: initBackNode, // 初始化回退环节信息
-            suspendFlow: suspendFlow, // 流程挂起
-            activeFlow: activeFlow, // 重启流程
-            deleteFlow: deleteFlow, // 流程终止
-            saveMark: saveMark, // 保存专家评分
-            savePayment: savePayment, // 保存专家费用
-            countTaxes: countTaxes, // 计算应纳税额
-            gotopayment: gotopayment,
+            initFlowData: initFlowData,         // 初始化流程数据
+            getFlowInfo: getFlowInfo,           // 获取流程信息
+            commit: commit,                     // 提交
+            rollBackToLast: rollBackToLast,     // 回退到上一环节
+            rollBack: rollBack,                 // 回退到选定环节
+            initBackNode: initBackNode,         // 初始化回退环节信息
+            suspendFlow: suspendFlow,           // 流程挂起
+            activeFlow: activeFlow,             // 重启流程
+            deleteFlow: deleteFlow,             // 流程终止
+            saveMark: saveMark,                 // 保存专家评分
+            savePayment: savePayment,           // 保存专家费用
+            countTaxes: countTaxes,             // 计算应纳税额
+            gotopayment: gotopayment,           // 编辑专家费用
+            historyData: historyData,           // 获取流程处理数据
         };
         return service;
 
         // S_初始化流程数据
         function initFlowData(vm) {
             var dataSource={};
-            if(vm.flow !=undefined){
+            if(vm.flow != undefined){
                 var processInstanceId = vm.flow.processInstanceId;
                 if (angular.isUndefined(vm.flow.hideFlowImg)|| vm.flow.hideFlowImg == false) {
                     vm.picture = rootPath + "/flow/processInstance/img/"+ processInstanceId;
@@ -99,6 +100,72 @@
             };
             // vm.historygrid.dataSource.read();
         }// E_初始化流程数据
+
+        // S_获取流程处理记录
+        function historyData(vm){
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath+ "/flow/processInstance/history/" + vm.instanceId),
+                schema: common.kendoGridConfig().schema({
+                    id: "hctId"
+                }),
+                rowNumber: true,
+                headerCenter: true
+            });
+            var columns = [{
+                field: "",
+                title: "序号",
+                template: "<span class='row-number'></span>",
+                width: 40
+            }, {
+                field: "nodeName",
+                title: "环节名称",
+                width: 120,
+                filterable: false
+            }, {
+                field: "displayName",
+                title: "处理人",
+                width: 80,
+                filterable: false
+            }, {
+                field: "startTime",
+                title: "开始时间",
+                width: 120,
+                filterable: false,
+                format: "{0: yyyy-MM-dd HH:mm:ss}"
+            }, {
+                field: "endTime",
+                title: "结束时间",
+                width: 120,
+                filterable: false,
+                format: "{0: yyyy-MM-dd HH:mm:ss}"
+            }, {
+                field: "durationStr",
+                title: "处理时长",
+                width: 120,
+                filterable: false
+            }, {
+                field: "message",
+                title: "处理信息",
+                width: 300,
+                filterable: false
+            }];
+            // End:column
+
+            vm.historygrid = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    $(rows).each(function (i) {
+                        $(this).find(".row-number").html(i + 1);
+                    });
+                }
+            };
+        }// E_historyData
 
         // S_getFlowInfo
         function getFlowInfo(taskId,processInstanceId,callBack) {

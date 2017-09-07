@@ -6,11 +6,6 @@
 </div>
 
 <form id="flow_form" name="flow_form" >
-    <input type="hidden" ng-model="vm.flow.end" value="{{vm.flow.end}}" /> <!-- hidden taskId -->
-    <input type="hidden" ng-model="vm.flow.taskId" value="{{vm.flow.taskId}}" /> <!-- hidden taskId 任务ID-->
-    <input type="hidden" ng-model="vm.flow.processInstanceId" value="{{vm.flow.processInstanceId}}" /><!-- hidden processInstanceId 流程实例ID-->
-    <input type="hidden" ng-model="vm.flow.curNode.activitiId" value="{{vm.flow.curNode.activitiId}}" /><!-- hidden activitiId 环节定义ID-->
-
     <table class="table table-bordered">
         <tbody>
         <tr>
@@ -20,7 +15,7 @@
             </td>
         </tr>
         <tr>
-            <td width="10%" class="text-center">审批意见</td>
+            <td width="10%" class="text-center">处理意见</td>
             <td>
                 <select ng-model="vm.chooseIdea" ng-change="vm.selectedIdea()" style="min-width:10%;max-width: 100%;margin:5px 0px;">
                     <option value="">-- 个人常用意见列表 --</option>
@@ -33,15 +28,14 @@
         <tr ng-show="vm.flow.nextNode && (vm.flow.nextNode.length > 0) ">
             <td width="10%" class="text-center">
                 下一环节名称
-                <p style="font-size: 12px;color:#8c8c8c;">(分支或跳转时有多个)</p>
             </td>
             <td>
                 <div ng-repeat="x in vm.flow.nextNode">
-                    <span>{{$index+1}}、{{x.activitiName}}</span>
+                    <span>{{x.activitiName}}</span>
                 </div>
             </td>
         </tr>
-        <tr ng-if = "vm.showFlag.businessNext">
+        <tr ng-if ="vm.showFlag.businessNext">
             <td width="10%" class="text-center">
                 下一环节处理人[部门]
             </td>
