@@ -13,6 +13,10 @@
         vm.financial = {};//财务对象
         vm.financial.signid = $state.params.signid;
         
+        //查看协审费用发放表
+        vm.findAssistCostTable = function(){
+        	$state.go('findAssistCostTable',{signid: vm.financial.signid});
+        }
         //S 输入数字校验
         vm.inputIntegerValue = function(checkValue,idSort){
         	if(assistCostCountSvc.isUnsignedInteger(checkValue)){

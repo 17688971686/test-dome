@@ -341,10 +341,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			if(Validate.isString(roomDto.getWorkProgramId())){
                 WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),roomDto.getWorkProgramId());
 				ExpertReview expertReview = expertReviewRepo.findByWPId(wp.getId());
-				if(expertReview.getReviewDate() == null){
+				/*if(expertReview.getReviewDate() == null){
                     expertReview.setReviewDate(roomDto.getRbDay());
                     expertReviewRepo.save(expertReview);
-				}
+				}*/
                 rb.setWorkProgram(wp);
             }
 

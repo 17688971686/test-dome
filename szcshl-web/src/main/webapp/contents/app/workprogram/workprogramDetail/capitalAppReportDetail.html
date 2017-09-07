@@ -90,8 +90,12 @@
     <tr>
         <td class="text-center">是否有补充资料函</td>
         <td colspan="3">
-            <input type="radio" ng-value="9" ng-model="w.isHaveSuppLetter" name="isHaveSuppLetter">是
-            <input type="radio" ng-value="0" ng-model="w.isHaveSuppLetter" name="isHaveSuppLetter">否
+              <label>
+				<input type="checkbox" style="width:50px;" ng-model="w.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9" >是
+			</label>
+			 <label>
+			  <input type="checkbox" style="width:50px;" ng-model="w.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==0"  ng-true-value="0">否
+			</label>
         </td>
         <td class="text-center">补充资料函发文日期</td>
         <td colspan="3">{{w.suppLetterDate}}</td>

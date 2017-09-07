@@ -133,7 +133,7 @@ public class WorkProgram extends DomainBase {
     private String secondChargeUserName;
 
     //是否有补充函
-    @Column(columnDefinition = "VARCHAR(2)")
+    @Column(columnDefinition = "VARCHAR(4)")
     private String isHaveSuppLetter;
 
     //补充资料函发文日期
@@ -146,6 +146,10 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "VARCHAR(5)")
     private String studyQuantum;
 
+    //调研日期
+    @Column(columnDefinition = "DATE")
+    private Date studyAllDay;
+    
     //调研开始时间
     @Column(columnDefinition = "DATE")
     private Date studyBeginTime;
@@ -633,8 +637,17 @@ public class WorkProgram extends DomainBase {
     public void setExpertReviewId(String expertReviewId) {
         this.expertReviewId = expertReviewId;
     }
+    
 
-    public String getStudyQuantum() {
+    public Date getStudyAllDay() {
+		return studyAllDay;
+	}
+
+	public void setStudyAllDay(Date studyAllDay) {
+		this.studyAllDay = studyAllDay;
+	}
+
+	public String getStudyQuantum() {
         return studyQuantum;
     }
 
