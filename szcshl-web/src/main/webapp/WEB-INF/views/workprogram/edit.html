@@ -12,13 +12,11 @@
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span
             class="glyphicon glyphicon-ok"></span>保存
     </button>
-    <button class="btn btn-sm btn-danger" ng-click="backtoflow();"><span class="glyphicon glyphicon-chevron-left"></span>返回流程
-    </button>
-    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
-    <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+    <go-back-signflow></go-back-signflow>   <!--流程回退按钮-->
+    <flow-file-button></flow-file-button>   <!--附件上传按钮-->
 </div>
 
-<div class="well well-sm" style="background:white;">
+<div class="well well-sm" style="background:white; min-height: 700px;">
     <ul id="wpTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="wp_edit">编辑页面</a></li>
         <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0"><a data-toggle="tab" for-div="wp_list">项目其它工作方案</a></li>

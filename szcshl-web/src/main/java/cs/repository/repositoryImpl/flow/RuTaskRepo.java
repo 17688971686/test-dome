@@ -9,4 +9,5 @@ import cs.repository.IRepository;
  * Date: 2017-6-6 14:48:31
  */
 public interface RuTaskRepo extends IRepository<RuTask, String> {
+    int findMyDoingTask();
 }

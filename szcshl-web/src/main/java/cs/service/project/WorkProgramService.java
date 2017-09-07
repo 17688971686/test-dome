@@ -21,4 +21,6 @@ public interface WorkProgramService {
     WorkProgramDto initWorkProgramById(String workId);
 
     void initWorkProgramDto(WorkProgram workProgram, WorkProgramDto workProgramDto);
+
+    WorkProgramDto findByPrincipalUser(String signId);
 }

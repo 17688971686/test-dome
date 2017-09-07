@@ -7,12 +7,16 @@
 
     function financialManager($location, financialManagerSvc,$state,$http) {
         var vm = this;
-        vm.title = '财务管理';
+        vm.title = '评审费录入';
         vm.financials = new Array;
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.financial.signid = $state.params.signid;
-        
+      
+        //跳转到评审会发放表页面
+        vm.findStageCostTable = function(){
+        	$state.go('findStageCostTable',{signid: vm.financial.signid});
+        }
         //S 输入数字校验
         vm.inputIntegerValue = function(checkValue,idSort){
         	if(financialManagerSvc.isUnsignedInteger(checkValue)){

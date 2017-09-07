@@ -4,9 +4,9 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-      'addRegisterFileSvc','workprogramSvc',  '$http','bsWin'];
+      'addRegisterFileSvc','workprogramSvc', '$scope','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,workprogramSvc, $http,bsWin) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,workprogramSvc, $scope,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -120,6 +120,13 @@
                         if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
                             vm.showFlag.tabExpert = true;   //显示专家信息tab
                         }
+                        //获取评分专家
+                        vm.selectedDtoList = [];
+                        $.each(vm.businessFlag.expertReviews,function(i,epReview){
+                            $.each(epReview.expertSelectedDtoList,function(k,epSlist){
+                                vm.selectedDtoList.push(epSlist);
+                            })
+                        })
                     });
                 }
 
@@ -777,7 +784,10 @@
                 msg:"如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
                 fn:function () {
                     $('.confirmDialog').modal('hide');
-                    signSvc.meetingDoc(vm);
+
+                    signSvc.findWorkProgramBySignId(vm,function(){
+                        signSvc.meetingDoc(vm);
+                    });
                 }
             })
         }
@@ -795,6 +805,11 @@
                 }
                 bsWin.alert(data.reMsg);
             });
+        }
+
+        //生成发文模板
+        vm.dispatchTemplate = function(){
+            signSvc.createDispatchTemplate(vm);
         }
 
     }

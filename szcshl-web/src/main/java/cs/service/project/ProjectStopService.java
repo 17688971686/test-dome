@@ -30,4 +30,6 @@ public interface ProjectStopService {
     List<ProjectStop> findPauseProjectSuccess();
 
     void updateProjectStopStatus(List<ProjectStop> projectStopList);
+
+    int findMyPauseCount();
 }

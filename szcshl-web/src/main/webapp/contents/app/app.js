@@ -37,6 +37,12 @@
                 controller: 'adminAgendaCtrl',
                 controllerAs: 'vm'
             })
+            .state('doingTasks', {
+                url: '/doingTasks',
+                templateUrl: rootPath + '/admin/doingTasks.html',
+                controller: 'adminDoTaskCtrl',
+                controllerAs: 'vm'
+            })
             .state('flowDeal', {
                 url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
                 templateUrl: function($routeParams){return rootPath + '/flow/flowDeal/'+$routeParams.processKey+'.html';},
@@ -522,19 +528,28 @@
             })
             //end#sharing
              //S 项目费用管理
-            //添加页面
+            //评审费录入页面
              .state('financialManager', {
                 url: '/financialManager/:signid',
                 templateUrl: rootPath + '/financialManager/html/add.html',
                 controller: 'financialManagerCtrl',
                 controllerAs: 'vm'
             })
+            //查看评审费发放表
+            .state('findStageCostTable', {
+                url: '/findStageCostTable/:signid',
+                templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
+                controller: 'financialManagerEditCtrl',
+                controllerAs: 'vm'
+            })
+            //协审费录入页面
             .state('assistCostAdd', {
                 url: '/assistCostAdd/:signid',
                 templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
                 controller: 'assistCostCountCtrl',
                 controllerAs: 'vm'
             })
+            //协审费统计列表
              .state('assistCostCountList', {
                 url: '/assistCostCountList',
                 templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
@@ -634,9 +649,15 @@
 
             //课题研究流程
             .state('addTopic',{
-                url : '/topicInfo',
+                url : '/topicInfo/:id',
                 templateUrl : rootPath + '/topicInfo/html/add.html',
                 controller : 'topicAddCtrl',
+                controllerAs : 'vm'
+            })
+            .state('myTopic',{
+                url : '/myTopic',
+                templateUrl : rootPath + '/topicInfo/html/myList.html',
+                controller : 'myTopicCtrl',
                 controllerAs : 'vm'
             })
 
@@ -711,23 +732,5 @@
         common.getTaskCount({$http: $http});
     	common.initDictData({$http: $http, scope: $rootScope});
     });
-
-})();
-
-/**
- *
- *定配置angular应用指令
- *@author lqs
- */
-(function(){
-
-    'use strict';
-    angular.module('app')
-        .directive('goBack', function() {//返回指令
-            return {
-                restrict : 'AE',
-                template : '<a class="btn btn-sm btn-primary" href="javascript:void(0);" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>'
-            };
-        });
 
 })();

@@ -149,7 +149,7 @@
         <td class="text-center">申报投资<span class="required">*</span></td>
         <td colspan="6">
             <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
-                   id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+                   id="appalyInvestment" data-val="true" data-val-required="必填">
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
@@ -201,6 +201,17 @@
             <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.suppLetterDate" value="" type="text"/>
         </td>
     </tr>
+     <tr>
+         <td class="text-center">调研时间</td>
+         <td colspan="7">
+             <select name="studyQuantum" ng-model ="vm.work.studyQuantum" style="width: 120px;">
+                 <option value="am" ng-selected="(vm.work.studyQuantum == 'am' || !vm.work.studyQuantum)">上午</option>   <!--默认选中上午-->
+                 <option value="pm" ng-selected="vm.work.studyQuantum == 'pm'">下午</option>
+                 <option value="day" ng-selected="vm.work.studyQuantum == 'day'">全天</option>
+             </select>
+         </td>
+     </tr>
+    <!--
     <tr>
         <td class="text-center">调研开始时间</td>
         <td colspan="3">
@@ -211,6 +222,7 @@
             <input name="studyEndTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyEndTime" type="text"/>
         </td>
     </tr>
+    -->
     <tr>
         <td class="text-center">专家费用（元）</td>
         <td colspan="7">
@@ -219,7 +231,7 @@
         </td>
     </tr>
     <tr>
-        <td>评审会时间</td>
+        <td><span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span><span ng-if="vm.work.reviewType == '专家函评'">函评会日期</span></td>
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
         </td>

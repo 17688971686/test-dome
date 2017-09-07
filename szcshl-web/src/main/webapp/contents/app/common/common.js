@@ -21,7 +21,6 @@
         initDictData: initDictData,                 // 初始化数字字典
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
-        getPauseProjectCount:getPauseProjectCount,  // 待办暂停项目个数
         initDictItems: function (dictList) {
             DICT_ITEMS = dictList;
         }
@@ -463,24 +462,22 @@
         }
     }//end
 
-    // S_获取待办总数
+    // S_获取项目待办总数
     function getTaskCount(options) {
         options.$http({
             method: 'get',
-            url: rootPath + '/flow/html/tasksCount'
+            url: rootPath + '/admin/myCountInfo'
         }).then(function (response) {
-            $('#GtasksCount').html(response.data);
+            if(response.data.DO_SIGN_COUNT){
+                $('#DO_SIGN_COUNT').html(response.data.DO_SIGN_COUNT);
+            }
+            if(response.data.DO_TASK_COUNT){
+                $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
+            }
+            if(response.data.PAUSE_COUNT){
+                $('#PAUSE_COUNT').html(response.data.PAUSE_COUNT);
+            }
         });
     }// E_获取待办总数
-
-    // begin 获取项目暂停待办个数
-    function getPauseProjectCount(options) {
-        options.$http({
-            method : "get",
-            url : rootPath + "/projectStop/pauseProjectCount"
-        }).then(function(response) {
-            $("#pauseCount").html(response.data);
-        });
-    }// end 获取项目暂停待办个数
 
 })();

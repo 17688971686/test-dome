@@ -436,10 +436,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     @Override
     @Transactional
     public void saveExpertReviewCost(ExpertReviewDto[] expertReviews) {
-
         if (expertReviews != null && expertReviews.length > 0) {
             for (int i = 0; i < expertReviews.length; i++) {
-
                 ExpertReviewDto expertReviewDto = expertReviews[i];
                 List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
                 //保存评审费用

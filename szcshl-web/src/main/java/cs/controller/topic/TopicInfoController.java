@@ -25,7 +25,7 @@ import java.util.Date;
 @RequestMapping(name = "课题研究", path = "topicInfo")
 public class TopicInfoController {
 
-	String ctrlName = "topicInfo";
+    String ctrlName = "topicInfo";
     @Autowired
     private TopicInfoService topicInfoService;
 
@@ -34,7 +34,7 @@ public class TopicInfoController {
     @ResponseBody
     public PageModelDto<TopicInfoDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<TopicInfoDto> topicInfoDtos = topicInfoService.get(odataObj);	
+        PageModelDto<TopicInfoDto> topicInfoDtos = topicInfoService.get(odataObj);
         return topicInfoDtos;
     }
 
@@ -51,16 +51,23 @@ public class TopicInfoController {
     public ResultMsg startFlow(@RequestBody TopicInfoDto record) {
         return topicInfoService.startFlow(record);
     }
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
-	public @ResponseBody TopicInfoDto findById(@RequestParam(required = true)String id){		
-		return topicInfoService.findById(id);
-	}
-	
+
+    @RequestMapping(name = "主键查询", path = "findById", method = RequestMethod.POST)
+    public @ResponseBody
+    TopicInfoDto findById(@RequestParam(required = true) String id) {
+        return topicInfoService.findById(id);
+    }
+
+    @RequestMapping(name = "查询详情", path = "findDetailById", method = RequestMethod.POST)
+    public @ResponseBody TopicInfoDto findDetailById(@RequestParam(required = true) String id) {
+        return topicInfoService.findDetailById(id);
+    }
+
     @RequiresPermissions("topicInfo##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	topicInfoService.delete(id);      
+        topicInfoService.delete(id);
     }
 
     @RequiresPermissions("topicInfo##put")
@@ -74,19 +81,25 @@ public class TopicInfoController {
     @RequiresPermissions("topicInfo#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName + "/list";
     }
 
     @RequiresPermissions("topicInfo#html/add#get")
     @RequestMapping(name = "新增页面", path = "html/add", method = RequestMethod.GET)
     public String add() {
-        return ctrlName+"/add";
+        return ctrlName + "/add";
     }
 
     @RequiresPermissions("topicInfo#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return ctrlName + "/edit";
+    }
+
+    @RequiresPermissions("topicInfo#html/myList#get")
+    @RequestMapping(name = "我的课题页面", path = "html/myList", method = RequestMethod.GET)
+    public String myList() {
+        return ctrlName + "/myList";
     }
     // end#html
 

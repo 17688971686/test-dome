@@ -40,8 +40,6 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "VARCHAR(20)")
     private String isSigle;
 
-    //是否主项目
-    private String isMainProject;
 
     //项目名称
     @Column(columnDefinition = "VARCHAR(256)")
@@ -110,6 +108,9 @@ public class WorkProgram extends DomainBase {
     //申报投资
     @Column(columnDefinition = "NUMBER")
     private BigDecimal appalyInvestment;
+    
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal declaration;
 
     //申报建设内容
     @Column(columnDefinition = "VARCHAR(2048)")
@@ -139,20 +140,11 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "DATE")
     private Date suppLetterDate;
 
-    //评审会时间
-   /* @Column(columnDefinition = "DATE")
-    private Date stageTime;
-
-    //评审时间
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String workStageTime;
-
-    //会议地点
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String meetingAddress;
-
-    @Column(columnDefinition = "VARCHAR(128)")
-    private String meetingId;*/
+    /**
+     * 调研时间段（AM:表示上午，PM:表示下午，DAY:表示全天）
+     */
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String studyQuantum;
 
     //调研开始时间
     @Column(columnDefinition = "DATE")
@@ -559,13 +551,6 @@ public class WorkProgram extends DomainBase {
         this.leaderName = leaderName;
     }
 
-    public String getIsMainProject() {
-        return isMainProject;
-    }
-
-    public void setIsMainProject(String isMainProject) {
-        this.isMainProject = isMainProject;
-    }
 
 	public String getProjectSurvey() {
 		return projectSurvey;
@@ -631,12 +616,29 @@ public class WorkProgram extends DomainBase {
     public void setInviteUnitLeader(String inviteUnitLeader) {
         this.inviteUnitLeader = inviteUnitLeader;
     }
+    
 
-    public String getExpertReviewId() {
+    public BigDecimal getDeclaration() {
+		return declaration;
+	}
+
+	public void setDeclaration(BigDecimal declaration) {
+		this.declaration = declaration;
+	}
+
+	public String getExpertReviewId() {
         return expertReviewId;
     }
 
     public void setExpertReviewId(String expertReviewId) {
         this.expertReviewId = expertReviewId;
+    }
+
+    public String getStudyQuantum() {
+        return studyQuantum;
+    }
+
+    public void setStudyQuantum(String studyQuantum) {
+        this.studyQuantum = studyQuantum;
     }
 }

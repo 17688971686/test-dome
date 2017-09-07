@@ -1,10 +1,5 @@
 package cs.service.project;
 
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.engine.runtime.ProcessInstance;
-
 import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
@@ -14,6 +9,9 @@ import cs.model.project.ProjectStopDto;
 import cs.model.project.SignDto;
 import cs.model.sys.OrgDto;
 import cs.repository.odata.ODataObj;
+import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.List;
 
 public interface SignService {
 
@@ -95,6 +93,7 @@ public interface SignService {
 
     /***********************   以下是对接接口部分  ****************************/
     ResultMsg pushProject(SignDto signDto);
+
 
 
 }

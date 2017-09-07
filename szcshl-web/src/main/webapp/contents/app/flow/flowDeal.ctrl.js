@@ -6,14 +6,50 @@
 
     angular.module('app').controller('flowDealCtrl', flowDeal);
 
-    flowDeal.$inject = ['ideaSvc','bsWin'];
+    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc'];
 
-    function flowDeal(ideaSvc, bsWin) {
+    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc) {
         var vm = this;
         vm.title = '待办任务处理';
+        vm.businessKey = $state.params.businessKey;            // 业务ID
+        vm.processKey = $state.params.processKey;              // 流程定义值
+        vm.taskId = $state.params.taskId;                      // 任务ID
+        vm.instanceId = $state.params.instanceId;              // 流程实例ID
+
+        vm.showFlag={
+            businessNext : false,                              //是否显示下一环节处理人tr
+            businessTr : false,                                //是否显示业务处理tr
+        }
+
         activate();
         function activate() {
-
+            $('#myTab li').click(function (e) {
+                var aObj = $("a", this);
+                e.preventDefault();
+                aObj.tab('show');
+                var showDiv = aObj.attr("for-div");
+                $(".tab-pane").removeClass("active").removeClass("in");
+                $("#" + showDiv).addClass("active").addClass("in").show(500);
+            })
+            //共用方法
+            //1、显示流程图
+            vm.picture = rootPath + "/flow/processInstance/img/"+ vm.instanceId;
+            //2、历史处理记录
+            flowSvc.historyData(vm);
+            //3、查询当前环节信息
+            flowSvc.getFlowInfo(vm.taskId,vm.instanceId,function(data){
+                vm.flow = data;
+                //如果是结束环节，则不显示下一环节信息
+                if (vm.flow.end) {
+                    vm.showFlag.nodeNext = false;
+                }
+            });
+            //4、各自显示模块
+            switch (vm.processKey){
+                case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
+                    topicSvc.initFlowDeal(vm);
+                    break;
+            }
         }
 
         /***************  S_个人意见  ***************/
@@ -28,7 +64,7 @@
         }
         /***************  E_个人意见  ***************/
 
-        /***************  S_流程处理  ***************/
+        /***************  S_课题流程处理  ***************/
         vm.commitTopicFlow = function () {
             alert("功能未开发");
         }
@@ -37,7 +73,7 @@
         vm.backTopicFlow = function () {
             alert("功能未开发");
         }
-        /***************  E_流程处理  ***************/
+        /***************  E_课题流程处理  ***************/
     }
 })();
 

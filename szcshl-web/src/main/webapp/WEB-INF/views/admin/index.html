@@ -153,13 +153,8 @@ desired effect
                     	<li>
 	                        <a href="javascript:void(0)"  ui-sref="gtasks"> 
 	                        	<i class="fa fa-flag-o"></i>待办项目
-	                        	<span class="label label-danger" id="GtasksCount">0</span>
+	                        	<span class="label label-danger" id="DO_SIGN_COUNT">0</span>
 	                        </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)"  ui-sref="agendaTasks">
-                                <i class="fa fa-flag-o"></i>待办任务
-                            </a>
                         </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="personDtasks">
@@ -171,14 +166,20 @@ desired effect
                                 <i class="glyphicon glyphicon-tasks"></i>在办项目
                             </a>
                         </li>
-                         <li>
-                         	<a href="javascript:void(0)" ui-sref="listSign">
-                         		<i class="glyphicon glyphicon-list"></i>项目列表
-                         	</a>
-                         </li>
                         <li>
                             <a href="javascript:void(0)"  ui-sref="etasks">
                                 <i class="glyphicon glyphicon-thumbs-up"></i>办结项目
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"  ui-sref="agendaTasks">
+                                <i class="fa fa-flag-o"></i>待办任务
+                                <span class="label label-danger" id="DO_TASK_COUNT">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"  ui-sref="doingTasks">
+                                <i class="glyphicon glyphicon-tasks"></i>在办任务
                             </a>
                         </li>
                     </ul>
@@ -193,8 +194,8 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li ><a href="javascript:void(0)" ui-sref="addTopic">创建课题研究流程</a></li>
-
+                        <li ><a href="javascript:void(0)" ui-sref="addTopic({id:null})">创建课题</a></li>
+                        <li ><a href="javascript:void(0)" ui-sref="myTopic">我的课题</a></li>
                     </ul>
                 </li>
                 <!-- end 项目签收-->
@@ -208,11 +209,16 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <li>
+                            <a href="javascript:void(0)" ui-sref="listSign">
+                                <i class="glyphicon glyphicon-list"></i>项目列表
+                            </a>
+                        </li>
                         <li ><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
                         <li>
                             <a href="javascript:void(0)" ui-sref="pauseProject">
                                 项目暂停审批
-                                <span class="label label-danger" id="pauseCount">0</span>
+                                <span class="label label-danger" id="PAUSE_COUNT">0</span>
                             </a>
                         </li>
                         <li><a href="javascript:void(0)" ui-sref="reserveAdd">项目预签收</a></li>
@@ -488,6 +494,7 @@ desired effect
 
 <!-- AdminLTE App -->
 <script src="${path}/contents/libs/adminLTE/dist/js/app.js"></script>
+
 <!--upload-->
 <script src="${path}/contents/libs/fileinput/fileinput.js"></script>
 <script src="${path}/contents/libs/fileinput/zh.js"></script>

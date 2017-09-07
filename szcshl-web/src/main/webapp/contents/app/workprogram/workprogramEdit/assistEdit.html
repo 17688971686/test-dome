@@ -47,6 +47,17 @@
         </td>
     </tr>
     <tr>
+        <td class="text-center">调研时间</td>
+        <td colspan="7">
+            <select name="studyQuantum" ng-model ="vm.work.studyQuantum" style="width: 120px;">
+                <option value="am" ng-selected="(vm.work.studyQuantum == 'am' || !vm.work.studyQuantum)">上午</option>   <!--默认选中上午-->
+                <option value="pm" ng-selected="vm.work.studyQuantum == 'pm'">下午</option>
+                <option value="day" ng-selected="vm.work.studyQuantum == 'day'">全天</option>
+            </select>
+        </td>
+    </tr>
+    <!--
+    <tr>
         <td class="formAlignRight">调研开始时间</td>
         <td colspan="3">
             <input name="studyBeginTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyBeginTime" type="text"/>
@@ -56,6 +67,7 @@
             <input name="studyEndTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyEndTime" type="text"/>
         </td>
     </tr>
+    -->
     <tr>
         <td class="formAlignRight">专家费用（元）</td>
         <td colspan="3">
@@ -68,7 +80,7 @@
         </td>
     </tr>
     <tr>
-        <td class="formAlignRight">评审会时间</td>
+        <td class="formAlignRight"><span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span><span ng-if="vm.work.reviewType == '专家函评'">函评会日期</span></td>
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
         </td>

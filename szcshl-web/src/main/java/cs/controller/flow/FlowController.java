@@ -49,6 +49,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -92,11 +93,20 @@ public class FlowController {
      * @throws ParseException
      */
     @RequiresPermissions("flow#queryMyAgendaTask#post")
-    @RequestMapping(name = "待办任务", path = "queryMyAgendaTask", method = RequestMethod.POST)
+    @RequestMapping(name = "我的待办任务", path = "queryMyAgendaTask", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
+        return pageModelDto;
+    }
+
+    @RequiresPermissions("flow#queryAgendaTask#post")
+    @RequestMapping(name = "所有待办任务", path = "queryAgendaTask", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
         return pageModelDto;
     }
 
@@ -116,15 +126,6 @@ public class FlowController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,false);
         return pageModelDto;
-    }
-
-    @RequiresPermissions("flow#html/tasksCount#get")
-    @RequestMapping(name = "待办流程", path = "html/tasksCount", method = RequestMethod.GET)
-    public @ResponseBody
-    long tasksCount(HttpServletRequest request) throws ParseException {
-        TaskQuery taskQuery = taskService.createTaskQuery();
-        taskQuery.taskCandidateOrAssigned(SessionUtil.getUserId());
-        return taskQuery.count();
     }
 
     @RequiresPermissions("flow#html/endTasks#post")
@@ -337,7 +338,7 @@ public class FlowController {
     public String ruProcessTask(@PathVariable("processKey") String processKey) {
         String resultPage = "";
         switch (processKey){
-            case FlowConstant.TOP_FLOW:
+            case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowDeal";
                 break;
             default:

@@ -50,4 +50,6 @@ public interface FlowService {
      * 20170905 查询个人待办事项（除项目签收流程外）
      **/
     PageModelDto<RuTask> queryMyAgendaTask(ODataObj oDataObj);
+
+    PageModelDto<RuTask> queryAgendaTask(ODataObj odataObj);
 }

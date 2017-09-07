@@ -485,4 +485,18 @@ public class FlowServiceImpl implements FlowService {
         return pageModelDto;
     }
 
+    /**
+     * 所有在办任务
+     * @param odataObj
+     * @return
+     */
+    @Override
+    public PageModelDto<RuTask> queryAgendaTask(ODataObj odataObj) {
+        PageModelDto<RuTask> pageModelDto = new PageModelDto<RuTask>();
+        List<RuTask> runProcessList = ruTaskRepo.findByOdata(odataObj);
+        pageModelDto.setCount(odataObj.getCount());
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
+
 }

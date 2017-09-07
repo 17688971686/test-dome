@@ -18,4 +18,8 @@ public interface FlowPrincipalRepo extends IRepository<FlowPrincipal, String> {
     List<User> getFlowPrinByBusiId(String busiId);
 
     User getFlowMainPrinByBusiId(String busiId);
+
+    List<FlowPrincipal> getFlowPrinInfoByBusiId(String busiId);
+
+    void deletePriUserByUserId(String id);
 }

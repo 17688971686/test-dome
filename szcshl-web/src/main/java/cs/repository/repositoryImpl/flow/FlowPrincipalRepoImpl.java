@@ -6,10 +6,13 @@ import cs.domain.flow.FlowPrincipal;
 import cs.domain.flow.FlowPrincipal_;
 import cs.domain.project.SignPrincipal;
 import cs.domain.project.SignPrincipal_;
+import cs.domain.sys.SysFile_;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -75,5 +78,30 @@ public class FlowPrincipalRepoImpl extends AbstractRepository<FlowPrincipal, Str
         }else{
             return null;
         }
+    }
+
+    /**
+     * 查询负责人信息
+     * @param busiId
+     * @return
+     */
+    @Override
+    public List<FlowPrincipal> getFlowPrinInfoByBusiId(String busiId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(FlowPrincipal_.busiId.getName(),busiId));
+        return criteria.list();
+    }
+
+    /**
+     * 根据业务ID删除流程负责人
+     * @param busiId
+     */
+    @Override
+    public void deletePriUserByUserId(String busiId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" delete from "+FlowPrincipal.class.getSimpleName()+" where ");
+        hqlBuilder.append(FlowPrincipal_.busiId.getName()+" =:busiId ");
+        hqlBuilder.setParam("busiId",busiId);
+        executeHql(hqlBuilder);
     }
 }

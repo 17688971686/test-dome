@@ -73,7 +73,7 @@
                 <!-- 选择负责人 -->
                 <div ng-if="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow != 9">
                     <ol class="breadcrumb" style="font-size: 12px;">
-                        <li class="active">温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个！</li>
+                        <li class="active">选择项目负责人（温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个）</li>
                     </ol>
                     <p ng-if="vm.businessFlag.isMainBranch">
                         <span>第一负责人：</span>
@@ -82,12 +82,11 @@
                             <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
                         </select>
                     </p>
-                    <p id="p_assistUser">
-                        <span>其他负责人：</span>
-                        <span ng-repeat="u in vm.users" id="principalAssistUser">
-                            <span style="margin-right: 10px;"><input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/> {{u.displayName}}</span>
-                        </span>
-                    </p>
+                    <ul id="p_assistUser">
+                        <li ng-repeat="u in vm.users" id="principalAssistUser" style="float: left;width: 80px;">
+                            <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/> {{u.displayName}}
+                        </li>
+                    </ul>
                 </div>
                 <!--第二负责人-->
                 <div ng-if= "vm.flow.businessMap.checkFileUser">
@@ -174,7 +173,7 @@
                 <div ng-if="vm.showFlag.nodeWorkProgram">
                     <p>是否做工作方案：<input class="formAlignRight" type="checkbox" style="width:20px;"  ng-checked="vm.businessFlag.isNeedWP == 9" ng-true-value="9" ng-false-value="0" ng-click="vm.checkNeedWP($event)"></p>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit"  ng-show="vm.businessFlag.isNeedWP == 9 " ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="false " ><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="vm.businessFlag.isNeedWP == 9 " ><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
                      <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>登记补充资料</button>
@@ -209,13 +208,15 @@
                  <!-- 财务报销 -->
                 <div ng-if="vm.showFlag.financialCode">
                 	<!-- 评审项目阶段 -->
-                	<div ng-show="vm.model.reviewstage =='项目建议书' || vm.model.reviewstage =='可行性研究报告' || vm.model.reviewstage =='资金申请报告' || vm.model.reviewstage =='进口设备' || vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' || vm.model.reviewstage =='其他'">
+                	<!-- <div ng-show="vm.model.reviewstage =='项目建议书' || vm.model.reviewstage =='可行性研究报告' || vm.model.reviewstage =='资金申请报告' || vm.model.reviewstage =='进口设备' || vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' || vm.model.reviewstage =='其他'">
+                   </div> -->
+                   
                     <button class="btn btn-xs btn-primary" ng-click="vm.addFinancialApply()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>评审费用录入</button>
-                   </div>
+                  
                    <!-- 协审项目阶段 -->
-                  	<div ng-show="vm.model.reviewstage =='项目概算'">
+                  <!-- 	<div ng-show="vm.model.reviewstage =='项目概算'">
                     <button class="btn btn-xs btn-primary" ng-click="vm.assistCostAdd()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>协审费用录入</button>
-              	 	</div>
+              	 	</div> -->
                 </div>
                 <!-- 归档 -->
                 <div ng-if="vm.showFlag.nodeFileRecord">

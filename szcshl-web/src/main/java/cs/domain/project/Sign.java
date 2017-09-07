@@ -451,6 +451,10 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private BigDecimal appalyInvestment;
     
+    //审定投资
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal authorizeValue;
+    
    //S (进口设备)政府采购进口产品申报份数
     @Column(columnDefinition = "INTEGER")
     private Integer governmentPurchasCount;
@@ -2417,6 +2421,14 @@ public class Sign extends DomainBase {
 
 	public void setAssistStatus(String assistStatus) {
 		this.assistStatus = assistStatus;
+	}
+
+	public BigDecimal getAuthorizeValue() {
+		return authorizeValue;
+	}
+
+	public void setAuthorizeValue(BigDecimal authorizeValue) {
+		this.authorizeValue = authorizeValue;
 	} 
 	
 	

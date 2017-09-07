@@ -21,7 +21,6 @@
             return {
                 SIGN:"项目附件",
                 FILLSIGN:"审批登记",
-                TOPIC:"课题附件",
                 HUMAN:"人事附件",
                 BOOKS:"图书附件",
                 NOTICE:"通知公告",
@@ -35,6 +34,8 @@
                 STAGEMEETING:"评审会会议",
                 FILELIBRARY : "质量管理文件库",
                 POLICYLIBRARY : "政策标准库",
+                TOPIC:"课题附件",
+                TOPIC_PLAN:"课题计划书"
             }
         }
 
@@ -127,6 +128,7 @@
                 inputId : "sysfileinput",
                 mainType : "没有归类附件",
                 sysBusiType : "",
+                showBusiType: true,
             };
             if(!options.vm.sysFile){
                 bsWin.alert("初始化附件控件失败，请先定义附件对象！");
@@ -141,6 +143,12 @@
             if (options.height) {
                 sysFileDefaults.height = options.height;
             }
+
+            //是否显示业务下来框
+            if(angular.isUndefined(options.vm.sysFile.showBusiType)){
+                options.vm.sysFile.showBusiType = sysFileDefaults.showBusiType;
+            }
+            console.log(options.vm.sysFile.showBusiType)
             //附件下载方法
             options.vm.downloadSysFile = function(id){
                 downloadFile(id);

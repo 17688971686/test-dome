@@ -5,8 +5,12 @@ import cs.common.Constant;
 import cs.common.utils.DateUtils;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
+import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
+import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.service.project.ProjectStopService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.DictService;
+import org.activiti.engine.task.TaskQuery;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import cs.model.sys.UserDto;
 import cs.service.sys.UserService;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping(name = "管理界面", path = "admin")
@@ -28,6 +39,12 @@ public class AdminController {
     private DictService dictService;
     @Autowired
     private RTXService rtxService;
+    @Autowired
+    private RuTaskRepo ruTaskRepo;
+    @Autowired
+    private RuProcessTaskRepo ruProcessTaskRepo;
+    @Autowired
+    private ProjectStopService projectStopService;
 
     @RequiresPermissions("admin#index#get")
     @RequestMapping(name = "首页", path = "index")
@@ -51,8 +68,23 @@ public class AdminController {
             model.addAttribute("user", user.getLoginName());
             model.addAttribute("lastLoginDate", DateUtils.toStringDay(user.getLastLoginDate()));
         }
-
         return ctrlName + "/welcome";
+    }
+
+    @RequiresPermissions("admin#myCountInfo#get")
+    @RequestMapping(name = "个人待办信息查询", path = "myCountInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> tasksCount(HttpServletRequest request) throws ParseException {
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        resultMap.put("DO_SIGN_COUNT",ruProcessTaskRepo.findMyDoingTask());
+        resultMap.put("DO_TASK_COUNT",ruTaskRepo.findMyDoingTask());
+
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+            resultMap.put("PAUSE_COUNT",projectStopService.findMyPauseCount());
+        }
+
+        return resultMap;
     }
 
     @RequiresPermissions("admin#gtasks#get")
@@ -68,23 +100,29 @@ public class AdminController {
 
         return ctrlName + "/agendaTasks";
     }
+    @RequiresPermissions("admin#doingTasks#get")
+    @RequestMapping(name = "在任务", path = "doingTasks")
+    public String doingTasks(Model model) {
+
+        return ctrlName + "/doingTasks";
+    }
 
     @RequiresPermissions("admin#dtasks#get")
-    @RequestMapping(name = "在办任务", path = "dtasks")
+    @RequestMapping(name = "在办项目", path = "dtasks")
     public String dtasks(Model model) {
 
         return ctrlName + "/dtasks";
     }
 
     @RequiresPermissions("admin#personDtasks#get")
-    @RequestMapping(name = "个人在办任务", path = "personDtasks")
+    @RequestMapping(name = "个人在办项目", path = "personDtasks")
     public String personDtasks(Model model) {
 
         return ctrlName + "/personDtasks";
     }
 
     @RequiresPermissions("admin#etasks#get")
-    @RequestMapping(name = "办结事项", path = "etasks")
+    @RequestMapping(name = "办结项目", path = "etasks")
     public String etasks(Model model) {
 
         return ctrlName + "/etasks";

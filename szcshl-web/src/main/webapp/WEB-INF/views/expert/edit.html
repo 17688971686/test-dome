@@ -567,11 +567,11 @@
     <div id="addExpertType" class="well well-sm" style="background:white;display:none;">
         <form id="expertTypeForm" name="expertTypeForm">
             <div class="toolbar">
-                <button class="btn btn-sm btn-success" ng-click="vm.createExpertType()" ng-disabled="vm.isSubmit"
-                        ng-show="vm.createExpertType"><span class="glyphicon glyphicon-ok"></span>保存
+                <button class="btn btn-sm btn-success" ng-click="vm.createExpertType()"
+                        ng-hide="vm.showExpertType"><span class="glyphicon glyphicon-ok"></span>保存
                 </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.saveUpdateExpertType()" ng-disabled="vm.isSubmit"
-                        ng-hide="vm.createExpertType"><span class="glyphicon glyphicon-ok"></span>更新
+                <button class="btn btn-sm btn-success" ng-click="vm.saveUpdateExpertType()"
+                        ng-show="vm.showExpertType"><span class="glyphicon glyphicon-ok"></span>更新
                 </button>
                 <button class="btn btn-sm btn-primary" ng-click=" vm.onETlose()"><span
                         class="glyphicon glyphicon-chevron-left"></span>返回
@@ -632,7 +632,9 @@
 <!--   S_专家聘书 div   -->
 <div id="ep_offer_div" class="well well-sm" style="background:white;display:none;">
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.saveOffer()"><span class="glyphicon glyphicon-ok"></span>保存
+        <button class="btn btn-sm btn-success" ng-click="vm.saveOffer()" ng-hide="vm.showProjectOffer"><span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.updateOffer()" ng-show="vm.showProjectOffer"><span class="glyphicon glyphicon-ok"></span>更新
         </button>
         <button class="btn btn-sm btn-danger" ng-click="vm.closeOffer()"><span class="glyphicon glyphicon-ok"></span>关闭
         </button>

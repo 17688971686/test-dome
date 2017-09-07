@@ -28,7 +28,7 @@
     <userTask id="SIGN_BMLD_QRFW" name="部长审批" activiti:assignee="${user_bz1}"></userTask>
     <userTask id="SIGN_FGLD_QRFW" name="分管领导审批" activiti:assignee="${user_fgld1}"></userTask>
     <userTask id="SIGN_ZR_QRFW" name="主任审批" activiti:assignee="${user_zr}"></userTask>
-    <userTask id="SIGN_FWBH" name="生成发文编号" activiti:assignee="${user_m}"></userTask>
+    <userTask id="SIGN_FWBH" name="生成发文编号" default="flow32" activiti:assignee="${user_m}"></userTask>
     <userTask id="SIGN_CWBL" name="财务办理" activiti:candidateUsers="${users_cw}"></userTask>
     <userTask id="SIGN_GD" name="归档" default="flow37" activiti:assignee="${user_m}"></userTask>
     <userTask id="SIGN_DSFZR_QRGD" name="第二负责人确认" activiti:assignee="${user_a}"></userTask>
@@ -107,6 +107,9 @@
     </sequenceFlow>
     <sequenceFlow id="flow50" sourceRef="exclusivegateway1" targetRef="SIGN_FW">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${unpass == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow51" sourceRef="SIGN_FWBH" targetRef="SIGN_GD">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${mypsf==9}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_FINAL_SIGN_FLOW">
@@ -408,6 +411,13 @@
         <omgdi:waypoint x="440.0" y="502.0"></omgdi:waypoint>
         <omgdi:waypoint x="177.0" y="502.0"></omgdi:waypoint>
         <omgdi:waypoint x="176.0" y="520.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+        <omgdi:waypoint x="905.0" y="675.0"></omgdi:waypoint>
+        <omgdi:waypoint x="881.0" y="697.0"></omgdi:waypoint>
+        <omgdi:waypoint x="672.0" y="697.0"></omgdi:waypoint>
+        <omgdi:waypoint x="605.0" y="697.0"></omgdi:waypoint>
+        <omgdi:waypoint x="541.0" y="675.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

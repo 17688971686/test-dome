@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -122,8 +121,6 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileTitle += "》";
             fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             fileRecordDto.setFileTitle(fileTitle);
-
-
         }
         return fileRecordDto;
     }

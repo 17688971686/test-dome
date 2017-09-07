@@ -23,6 +23,7 @@ public interface TopicInfoService {
 
 	TopicInfoDto findById(String deptId);
 
-	void delete(String id);
+	ResultMsg delete(String id);
 
+    TopicInfoDto findDetailById(String id);
 }

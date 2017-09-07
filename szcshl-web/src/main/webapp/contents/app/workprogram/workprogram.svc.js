@@ -248,8 +248,11 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
-                    if(!vm.work.expertCost && (vm.work.expertDtoList && vm.work.expertDtoList.length > 0)){
-                        vm.work.expertCost = 1000*(vm.work.expertDtoList.length);
+                    //如果选了专家，并且评审费有变动，则更改
+                    if(vm.work.expertDtoList && vm.work.expertDtoList.length > 0){
+                        if(!vm.work.expertCost || vm.work.expertCost < 1000*(vm.work.expertDtoList.length) ){
+                            vm.work.expertCost = 1000*(vm.work.expertDtoList.length);
+                        }
                     }
                     vm.model.workProgramDtoList = {};
                     if(response.data.WPList && response.data.WPList.length > 0){

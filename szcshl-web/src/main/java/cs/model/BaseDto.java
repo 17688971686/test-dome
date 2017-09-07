@@ -1,8 +1,5 @@
 package cs.model;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.util.Assert;
-
 import java.util.Date;
 
 public class BaseDto {

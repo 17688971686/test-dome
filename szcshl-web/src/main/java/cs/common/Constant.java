@@ -117,6 +117,7 @@ public class Constant {
         GO_DISPATCH("godispatch"),              //直接发文
         PRIN_USER("principaluser"),             //项目负责人确认
         SECOND_USER("seconduser"),              //第二负责人确认
+        NO_EP_COST("mypsf"),                    //没有专家评审费
         UNPASS("unpass"),                       //项目负责人确认不通过
         BRANCH1("branch1"),                     //项目分支1
         BRANCH2("branch2"),                     //项目分支2
@@ -372,9 +373,33 @@ public class Constant {
         INVITATION("invitation", "邀请函"),
         UNIT_NOTICE("notice", "项目单位会议通知"),
         THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
-        NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排");
+        NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排"),
+        OUTPUT_SUFFIX_XLS(".xls","xls表格"),//生成xls表格
 
-        private String key;
+        //可行性研究报告
+        STUDY_OPINION("report/opinion","可行性研究报告_评审意见"),
+        STUDY_ESTIMATE("report/estimate","可行性研究报告_投资估算表"),
+        STUDY_ROSTER("report/roster","可行性研究报告_评审组名单"),
+
+        //资金申请报告
+        REPORT_OPINION("report/opinion","资金申请报告_评审意见"),
+        REPORT_ESTIMATE("report/estimate","资金申请报告_投资估算表"),
+        REPORT_ROSTER("report/roster","资金申请报告_评审组名单"),
+
+        //项目建议书
+        SUG_OPINION("sug/opinion","项目建议书_评审意见"),
+        SUG_ESTIMATE("sug/estimate","项目建议书_投资匡算表"),
+        SUG_ROSTER("sug/roster","项目建议书_评审组名单"),
+
+        //项目概算
+        BUDGET_OPINION("budget/opinion","项目概算_审核意见"),
+        BUDGET_ESTIMATE("budget/estimate","项目概算_概算汇总表和审核对照表"),
+        BUDGET_PROJECTCOST("budget/projectCost","项目概算_建安工程费用"),
+        BUDGET_ROSTER("budget/roster", "项目概算_审核组名单");
+
+
+
+      private String key;
         private String value;
 
         Template(String key, String value) {
@@ -410,7 +435,8 @@ public class Constant {
         SUPPLEMENT("补充函"),
         STAGEMEETING("评审会会议"),
         FILELIBRARY("质量管理文件库"),
-        POLICYLIBRARY("政策标准库");
+        POLICYLIBRARY("政策标准库"),
+        TEMOLATE("发文模板");
 
         private String value;
 

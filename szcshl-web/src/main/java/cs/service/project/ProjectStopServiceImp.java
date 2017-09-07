@@ -21,10 +21,7 @@ import cs.service.flow.FlowService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.hql.internal.ast.HqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -263,5 +260,26 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		projectStopRepo.bathUpdate(projectStopList);
 	}
 
+    /**
+     * 查询我的暂停项目待办总数
+     * @return
+     */
+	@Override
+	public int findMyPauseCount() {
+		Criteria criteria = projectStopRepo.getExecutableCriteria();
+		//部长审核
+		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+			criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(),SessionUtil.getLoginName()));
+			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.NO.getValue()));
+		}
+		//分管副主任办理
+		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+			criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(),SessionUtil.getLoginName()));
+			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
+		}else{
+		    return 0;
+        }
+		return ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+	}
 
 }
