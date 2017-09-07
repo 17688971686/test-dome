@@ -108,6 +108,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setId(UUID.randomUUID().toString());
                 workProgram.setCreatedBy(SessionUtil.getUserInfo().getId());
                 workProgram.setCreatedDate(now);
+                workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());//调研时间段
             }
             workProgram.setModifiedBy(SessionUtil.getUserInfo().getId());
             workProgram.setModifiedDate(now);
@@ -186,6 +187,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgramDto.setProjectName(sign.getProjectname());
                 workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
                 workProgramDto.setDesignCompany(sign.getDesigncompanyName());
+                workProgramDto.setAppalyInvestment(sign.getDeclaration());
                 workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
 
                 workProgramDto.setTitleDate(new Date());

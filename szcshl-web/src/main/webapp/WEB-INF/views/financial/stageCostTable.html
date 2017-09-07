@@ -1,0 +1,130 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<!-- start 专家费用 -->
+  <div class="well">
+  评审费发放日期： <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" 
+                           ng-model="vm.model.paymentData"     id="paymentData" name="paymentData"  data-val="true"
+                               data-val-required="必填">
+  <button  class="btn btn-sm btn-primary" ng-click=""><span class="glyphicon glyphicon-chevron-left"></span>导出EXCEL</button>
+  <button  class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+  </div>
+  
+        <form id="payform" name="payform">
+              <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
+                <tbody>
+               <!--  <tr ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                    <td colspan="4">
+                        <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(expertReview)" ng-disabled="vm.isCommit"
+                                ng-hide="btnHide">
+                            <span class="glyphicon glyphicon-ok"></span>计算应纳税额
+                        </button>
+                        <button class="btn btn-sm btn-success" ng-click="vm.savePayment(expertReview)" ng-disabled="vm.isCommit" ng-hide="btnHide">
+                            <span class="glyphicon glyphicon-ok"></span>保存
+                        </button>
+                    </td>
+                </tr> -->
+              <!--   <tr>
+                    <td width="20%">评审费发放日期 <span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="expertReview.payDate" data-val-date="必须为日期">
+                        <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td width="20%">评审/函评日期</td>
+                    <td>{{expertReview.reviewDate}}</td>
+                </tr>
+                <tr>
+                    <td>评审费发放标题</td>
+                    <td colspan="3">
+                        <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
+                               class="form-control input-sm " ng-model="expertReview.reviewTitle">
+                    </td>
+                </tr> -->
+                <tr>
+                    <td colspan="4">
+                        <table class="table table-bordered">
+                            <caption class="text-center h3"><strong>{{expertReview.reviewTitle}}</strong></caption>
+                            <tr>
+                                <td>序号</td>
+                                <td>姓名</td>
+                                <td>身份证号码</td>
+                                <td>开户行/银行账号</td>
+                                <td>评审费</td>
+                                <td>应纳税额</td>
+                                <td>合计（元）</td>
+                                <td>是否函评</td>
+                            </tr>
+                            <tr ng-repeat="x in expertReview.expertSelectedDtoList">
+                                <td>{{$index+1}}</td>
+                                <td>{{x.expertDto.name}}</td>
+                                <td>{{x.expertDto.idCard}}</td>
+                                <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
+                                <td>
+                                    <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                           class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
+                                           data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
+                                           data-val="true" data-val-required="必填">
+                                    <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                </td>
+                                <td> {{x.reviewTaxes}}</td>
+                                <td> {{x.totalCost}}</td>
+                                <td>
+									  <input type="checkbox"  ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9" >是
+									  <input type="checkbox"  ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==0"  ng-true-value="0">否
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td>{{expertReview.reviewCost}}</td>
+                                <td>{{expertReview.reviewTaxes}}</td>
+                                <td>{{expertReview.totalCost}}</td>
+                                 
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table> 
+            
+            <!--  <table class="table table-bordered">
+                            <caption class="text-center h3"><strong>{{expertReview.reviewTitle}}</strong></caption>
+                            <tr>
+                                <td>序号</td>
+                                <td>姓名</td>
+                                <td>身份证号码</td>
+                                <td>开户行/银行账号</td>
+                                <td>评审费</td>
+                                <td>应纳税额</td>
+                                <td>合计（元）</td>
+                                <td>是否函评</td>
+                            </tr>
+                     <tr ng-repeat="x in vm.expertReviews.expertSelectedDtoList">
+                                <td>{{$index+1}}</td>
+                                
+                                <td>{{x.reviewTitle}}</td>
+                                <td>{{x.expertDto.name}}</td>
+                                <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
+                                <td>
+                                    <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                           class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
+                                           data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
+                                           data-val="true" data-val-required="必填">
+                                    <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                </td>
+                                <td> {{x.reviewTaxes}}</td>
+                                <td> {{x.totalCost}}</td>
+                            </tr>
+                            <tr >
+                                <td colspan="4">{{d.expertDto.name}}</td>
+                                <td>{{expertReview.reviewCost}}</td>
+                                <td>{{expertReview.reviewTaxes}}</td>
+                                <td>{{expertReview.totalCost}}</td>
+                            </tr>
+                        </table> -->
+        </form>
+ 
+  

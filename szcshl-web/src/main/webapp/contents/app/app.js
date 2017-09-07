@@ -528,19 +528,28 @@
             })
             //end#sharing
              //S 项目费用管理
-            //添加页面
+            //评审费录入页面
              .state('financialManager', {
                 url: '/financialManager/:signid',
                 templateUrl: rootPath + '/financialManager/html/add.html',
                 controller: 'financialManagerCtrl',
                 controllerAs: 'vm'
             })
+            //查看评审费发放表
+            .state('findStageCostTable', {
+                url: '/findStageCostTable/:signid',
+                templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
+                controller: 'financialManagerEditCtrl',
+                controllerAs: 'vm'
+            })
+            //协审费录入页面
             .state('assistCostAdd', {
                 url: '/assistCostAdd/:signid',
                 templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
                 controller: 'assistCostCountCtrl',
                 controllerAs: 'vm'
             })
+            //协审费统计列表
              .state('assistCostCountList', {
                 url: '/assistCostCountList',
                 templateUrl: rootPath + '/financialManager/html/assistCostCount.html',

@@ -39,7 +39,7 @@ public class ExpertTypeController {
 	@RequestMapping(name = "添加专家类型", path = "",method=RequestMethod.POST)	
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public void  createType(@RequestBody ExpertTypeDto expertTypeDto)  {
-		expertTypeService.saveExpertType(expertTypeDto);	
+		expertTypeService.saveExpertType(expertTypeDto);
 	}
 	
 	
