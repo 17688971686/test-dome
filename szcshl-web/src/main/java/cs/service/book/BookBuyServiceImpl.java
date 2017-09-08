@@ -1,7 +1,6 @@
 package cs.service.book;
 
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.book.BookBuy;
 import cs.model.PageModelDto;
@@ -17,9 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Description:  图书模型业务操作实现类
+ * Description: 图书信息 业务操作实现类
  * author: zsl
- * Date: 2017-9-5 16:16:22
+ * Date: 2017-9-8 10:24:51
  */
 @Service
 public class BookBuyServiceImpl  implements BookBuyService {
@@ -51,10 +50,10 @@ public class BookBuyServiceImpl  implements BookBuyService {
 		BookBuy domain = new BookBuy(); 
 		BeanCopierUtils.copyProperties(record, domain); 
 		Date now = new Date();
-		domain.setCreatedBy(SessionUtil.getDisplayName());
+/*		domain.setCreatedBy(SessionUtil.getDisplayName());
 		domain.setModifiedBy(SessionUtil.getDisplayName());
 		domain.setCreatedDate(now);
-		domain.setModifiedDate(now);
+		domain.setModifiedDate(now);*/
 		bookBuyRepo.save(domain);
 	}
 
@@ -63,8 +62,8 @@ public class BookBuyServiceImpl  implements BookBuyService {
 	public void update(BookBuyDto record) {
 		BookBuy domain = bookBuyRepo.findById(record.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		domain.setModifiedBy(SessionUtil.getDisplayName());
-		domain.setModifiedDate(new Date());
+	/*	domain.setModifiedBy(SessionUtil.getDisplayName());
+		domain.setModifiedDate(new Date());*/
 		
 		bookBuyRepo.save(domain);
 	}

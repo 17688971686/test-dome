@@ -640,10 +640,10 @@
                 controller : 'policyLibraryEditCtrl',
                 controllerAs : 'vm'
             })
-            .state('booksBuyEdit', {//图书管理
-                url: '/booksBuyEdit/:id',
-                templateUrl: rootPath + '/expert/html/edit.html',
-                controller: 'expertEditCtrl',
+            .state('bookBuyBusinessEdit', {//图书管理
+                url: '/bookBuyBusinessEdit/:id',
+                templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
+                controller: 'bookBuyBusinessEditCtrl',
                 controllerAs: 'vm'
             })
 

@@ -4,9 +4,9 @@ import cs.domain.book.BookBuy;
 import cs.repository.IRepository;
 
 /**
- * Description: 图书数据操作实现接口
+ * Description: 图书信息 数据操作实现接口
  * author: zsl
- * Date: 2017-9-5 16:16:21
+ * Date: 2017-9-8 10:24:51
  */
 public interface BookBuyRepo extends IRepository<BookBuy, String> {
 }

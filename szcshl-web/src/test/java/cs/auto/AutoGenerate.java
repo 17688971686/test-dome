@@ -4,17 +4,7 @@ import cs.auto.core.CRUDGenerate;
 import cs.auto.core.config.CRUDGanConfig;
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
-import cs.domain.expert.ExpertOffer;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelected;
-import cs.domain.flow.FlowPrincipal;
-import cs.domain.flow.RuProcessTask;
-import cs.domain.project.*;
-import cs.domain.sys.Quartz;
-import cs.domain.sys.SysConfig;
-import cs.domain.topic.Filing;
-import cs.domain.topic.TopicInfo;
-import cs.domain.topic.WorkPlan;
+import cs.domain.book.BookBuy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +18,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(FlowPrincipal.class, "流程负责人");
-        config.setAuthor("ldm");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\FlowPrincipal");
+        CRUDGanConfig config = new CRUDGanConfig(BookBuy.class, "图书详细信息");
+        config.setAuthor("zsl");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\BookBuy");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());
@@ -43,7 +33,7 @@ public class AutoGenerate {
      * @return
      */
     public static List<FileConfig> getFileConf() {
-        List<FileConfig> fileConfs = new ArrayList<FileConfig>();
+       List<FileConfig> fileConfs = new ArrayList<FileConfig>();
         fileConfs.add(new FileConfig(FileConst.dtoCls));
         fileConfs.add(new FileConfig(FileConst.repoCls));
         fileConfs.add(new FileConfig(FileConst.repoImplCls));
@@ -51,11 +41,11 @@ public class AutoGenerate {
         fileConfs.add(new FileConfig(FileConst.serviceImplCls));
         fileConfs.add(new FileConfig(FileConst.controllerCls));
 
-        /*fileConfs.add(new FileConfig(FileConst.listHtml));
+        fileConfs.add(new FileConfig(FileConst.listHtml));
         fileConfs.add(new FileConfig(FileConst.listCtrlJs));
         fileConfs.add(new FileConfig(FileConst.listSvcJs));
         fileConfs.add(new FileConfig(FileConst.editHtml));
-        fileConfs.add(new FileConfig(FileConst.editCtrJs));*/
+        fileConfs.add(new FileConfig(FileConst.editCtrJs));
         return fileConfs;
     }
 
