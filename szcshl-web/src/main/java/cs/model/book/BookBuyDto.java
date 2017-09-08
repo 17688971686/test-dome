@@ -1,12 +1,15 @@
 package cs.model.book;
 
+import cs.domain.book.BookBuyBusiness;
 import cs.model.BaseDto;
+
+import java.util.Date;
 
 
 /**
- * Description: 图书管理模型
+ * Description: 图书详细信息 页面数据模型
  * author: zsl
- * Date: 2017-9-5 16:16:21
+ * Date: 2017-9-8 14:16:17
  */
 public class BookBuyDto extends BaseDto {
 
@@ -22,12 +25,14 @@ public class BookBuyDto extends BaseDto {
     private String publishingCompany;
     private String bookNo;
     private String author;
-    private String publishingTime;
+    private Date publishingTime;
     private String bookNumber;
+    private String storeConfirm;
+    private BookBuyBusiness bookBuyBusiness;
 
     public BookBuyDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -112,11 +117,11 @@ public class BookBuyDto extends BaseDto {
     public void setAuthor(String author) {
         this.author = author;
     }
-    public String getPublishingTime() {
+    public Date getPublishingTime() {
         return publishingTime;
     }
 
-    public void setPublishingTime(String publishingTime) {
+    public void setPublishingTime(Date publishingTime) {
         this.publishingTime = publishingTime;
     }
     public String getBookNumber() {
@@ -125,6 +130,20 @@ public class BookBuyDto extends BaseDto {
 
     public void setBookNumber(String bookNumber) {
         this.bookNumber = bookNumber;
+    }
+    public String getStoreConfirm() {
+        return storeConfirm;
+    }
+
+    public void setStoreConfirm(String storeConfirm) {
+        this.storeConfirm = storeConfirm;
+    }
+    public BookBuyBusiness getBookBuyBusiness() {
+        return bookBuyBusiness;
+    }
+
+    public void setBookBuyBusiness(BookBuyBusiness bookBuyBusiness) {
+        this.bookBuyBusiness = bookBuyBusiness;
     }
 
 }

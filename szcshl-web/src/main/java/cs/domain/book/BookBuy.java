@@ -12,37 +12,57 @@ import java.util.Date;
 @Table(name = "cs_books_buy")
 public class BookBuy extends DomainBase {
     @Id
-    private String id;//专家
+    private String id;//
+    //图书条码号
     @Column(columnDefinition = "varchar(64) ")
-    private String booksBarCode;//图书条码号
+    private String booksBarCode;
+    //图书编号（图书分类号+顺序号）
     @Column(columnDefinition = "varchar(64) ")
-    private String booksCode;//图书编号（图书分类号+顺序号）
+    private String booksCode;
+    //图书名称
     @Column(columnDefinition = "varchar(255) ")
-    private String booksName;//图书名称
+    private String booksName;
+    //图书价格
     @Column(columnDefinition="NUMBER")
-    private String booksPrice;//图书价格
+    private String booksPrice;
+    //图书分类
     @Column(columnDefinition="varchar(6)")
-    private String booksType;//图书分类
+    private String booksType;
+    //专业类别
     @Column(columnDefinition="varchar(6)")
-    private String professionalType;//专业类别
+    private String professionalType;
+    //存放位置
     @Column(columnDefinition="varchar(30)")
-    private String storePosition;//存放位置
+    private String storePosition;
+    //购买人员
     @Column(columnDefinition="varchar(30)")
-    private String buyer;//购买人员
+    private String buyer;
+    //出版社
     @Column(columnDefinition="varchar(64)")
-    private String publishingCompany;//出版社
+    private String publishingCompany;
+    //书号/刊号
     @Column(columnDefinition="varchar(128)")
-    private String bookNo;//书号/刊号
+    private String bookNo;
+    //作者
     @Column(columnDefinition="varchar(255)")
-    private String author;//作者
+    private String author;
     /**
      * 出版时间
      */
     @Temporal(TemporalType.DATE)
     @Column
     private Date publishingTime;
+    //图书数量
     @Column(columnDefinition="NUMBER")
-    private String bookNumber;//图书价格
+    private String bookNumber;
+
+    //库存确认
+    @Column(columnDefinition="varchar(30)")
+    private String storeConfirm;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "businessId")
+    private BookBuyBusiness bookBuyBusiness;
 
     public String getId() {
         return id;
@@ -154,5 +174,21 @@ public class BookBuy extends DomainBase {
 
     public void setPublishingTime(Date publishingTime) {
         this.publishingTime = publishingTime;
+    }
+
+    public BookBuyBusiness getBookBuyBusiness() {
+        return bookBuyBusiness;
+    }
+
+    public void setBookBuyBusiness(BookBuyBusiness bookBuyBusiness) {
+        this.bookBuyBusiness = bookBuyBusiness;
+    }
+
+    public String getStoreConfirm() {
+        return storeConfirm;
+    }
+
+    public void setStoreConfirm(String storeConfirm) {
+        this.storeConfirm = storeConfirm;
     }
 }

@@ -79,4 +79,18 @@ public class HomeController {
 
 		return "init Topic Flow success";
 	}
+
+	@RequestMapping(name = "图书采购流程",path = "initBooksBuyFlow",method = RequestMethod.GET)
+	@Transactional
+	public @ResponseBody String initBooksBuyFlow(){
+		//部署下一个版本
+		logger.info("开始部署图书采购流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/booksbuyflow.zip");
+		ZipInputStream zipIn=new ZipInputStream(in);
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("图书购买流程").deploy();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+		logger.info("图书采购流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+
+		return "init BooksBuy Flow success";
+	}
 }
