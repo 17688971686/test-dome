@@ -486,11 +486,38 @@ public class UserServiceImpl implements UserService {
     */
     @Override
     public List<UserDto> getAllUserDisplayName() {
+//       User u =  userRepo.findById(SessionUtil.getUserId());
+
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select " +User_.id.getName() +"," + User_.displayName.getName()+" from cs_user where "+User_.loginName.getName()+"<>:loginName");
+
         hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
-        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+
         List<UserDto> userDtoList = new ArrayList<>();
+
+        if(SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||
+                SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()) ||
+                SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                ) {//如果是领导，则根据所属角色选择代办代理人
+            hqlBuilder.append(" and " + User_.id.getName() + " in(select users_id from CS_USER_CS_ROLE where roles_id =(");
+            hqlBuilder.append("select "+ Role_.id.getName()+ " from cs_role where ");
+            hqlBuilder.append(Role_.roleName.getName() +"=:roleName))");
+            if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue())) {//主任
+                hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DIRECTOR.getValue());
+            }
+
+            if (SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {//副主任
+                hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+            }
+            if (SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//部门负责人
+                hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DEPT_LEADER.getValue());
+            }
+        }else{//其他，则只能选择本部门工作人员作为代办代理
+            hqlBuilder.append(" and orgId=(");
+            hqlBuilder.append("select orgId from cs_user where " + User_.id.getName()+"=:userId)" );
+            hqlBuilder.setParam("userId" , SessionUtil.getUserId());
+        }
+        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
         if(!list.isEmpty()){
             for(int i=0 ; i<list.size();i++){
                 Object obj=list.get(i);
