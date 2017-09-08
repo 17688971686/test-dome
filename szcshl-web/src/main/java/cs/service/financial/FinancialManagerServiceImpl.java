@@ -148,6 +148,7 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		 financialDto.setProjectName(sign.getProjectname());
 		 financialDto.setSignid(sign.getSignid());
 		 financialDto.setPaymentData(new Date());
+		 
 		 financialDto.setAssissCost(sign.getDeclaration());//计划协审费用
 		 financialDto.setAssistBuiltcompanyName(sign.getBuiltcompanyName());//协审单位
 		 

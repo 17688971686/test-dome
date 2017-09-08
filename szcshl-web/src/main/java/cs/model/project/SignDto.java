@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 public class SignDto extends BaseDto {
 
     private String comprehensiveName;//综合部拟办人名称
@@ -63,6 +65,12 @@ public class SignDto extends BaseDto {
     //是否有登记补充资料:9表示是,0表示否
     private String IsSupplementary;
     
+    //是否有拟补充资料函:9表示是,0表示否
+    private String isHaveSuppLetter;
+    
+    //拟补充资料函发文日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date suppLetterDate;
     //审定投资
     private BigDecimal authorizeValue;
     
@@ -2220,6 +2228,22 @@ public class SignDto extends BaseDto {
 
 	public void setAuthorizeValue(BigDecimal authorizeValue) {
 		this.authorizeValue = authorizeValue;
+	}
+
+	public String getIsHaveSuppLetter() {
+		return isHaveSuppLetter;
+	}
+
+	public void setIsHaveSuppLetter(String isHaveSuppLetter) {
+		this.isHaveSuppLetter = isHaveSuppLetter;
+	}
+
+	public Date getSuppLetterDate() {
+		return suppLetterDate;
+	}
+
+	public void setSuppLetterDate(Date suppLetterDate) {
+		this.suppLetterDate = suppLetterDate;
 	}
 	
     

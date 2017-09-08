@@ -1,6 +1,8 @@
 package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
+
+import cs.common.utils.DateUtils;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview;
 import cs.model.BaseDto;
@@ -94,15 +96,23 @@ public class WorkProgramDto extends BaseDto {
      * 调研时间段（AM:表示上午，PM:表示下午，DAY:表示全天）
      */
     private String studyQuantum;
+    
+    //调研日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date studyAllDay;
 
     //调研开始时间
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date studyBeginTime;
 
     //调研结束时间
-    @JSONField(format = "yyyy-MM-dd")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date studyEndTime;
-
+    
+    //字符串日期格式
+    private String studyBeginTimeStr;
+    private String studyEndTimeStr;
+    
     //专家费用
     private BigDecimal expertCost;
 
@@ -593,4 +603,38 @@ public class WorkProgramDto extends BaseDto {
     public void setStudyQuantum(String studyQuantum) {
         this.studyQuantum = studyQuantum;
     }
+
+	public BigDecimal getDeclaration() {
+		return declaration;
+	}
+
+	public void setDeclaration(BigDecimal declaration) {
+		this.declaration = declaration;
+	}
+
+	public Date getStudyAllDay() {
+		return studyAllDay;
+	}
+
+	public void setStudyAllDay(Date studyAllDay) {
+		this.studyAllDay = studyAllDay;
+	}
+
+	public String getStudyBeginTimeStr() {
+		 return DateUtils.converToString(this.studyBeginTime, "HH:mm");
+	}
+
+	public void setStudyBeginTimeStr(String studyBeginTimeStr) {
+		this.studyBeginTimeStr = studyBeginTimeStr;
+	}
+
+	public String getStudyEndTimeStr() {
+		 return DateUtils.converToString(this.studyEndTime, "HH:mm");
+	}
+
+	public void setStudyEndTimeStr(String studyEndTimeStr) {
+		this.studyEndTimeStr = studyEndTimeStr;
+	}
+	
+    
 }

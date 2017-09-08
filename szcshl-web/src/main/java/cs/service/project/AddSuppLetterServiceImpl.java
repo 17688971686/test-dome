@@ -24,6 +24,7 @@ import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.User;
 import cs.model.project.AddSuppLetterDto;
+import cs.model.project.SignDto;
 import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 
@@ -66,8 +67,15 @@ public class AddSuppLetterServiceImpl  implements AddSuppLetterService {
 			}
 			addSuppLetter.setModifiedDate(now);
 			addSuppLetter.setCreatedDate(now);
-		
 			addSuppLetterRepo.save(addSuppLetter);
+			Sign sign = signRepo.findById(addSuppLetterDto.getSignid());
+			if(sign != null){
+				SignDto fileDto = new SignDto();
+				BeanCopierUtils.copyPropertiesIgnoreNull(sign, fileDto);
+				sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+				sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
+				signRepo.save(sign);
+			}
 			return new ResultMsg(true,Constant.MsgCode.OK.getValue(),"操作成功！",addSuppLetterDto);
 		}else{
 			 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，获取项目信息失败，请联系相关人员处理！");

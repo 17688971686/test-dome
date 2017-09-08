@@ -47,6 +47,7 @@
             expertRemark:false,         // 专家评分弹窗内容显示
             expertpayment:false,        // 专家费用弹窗内容显示
             expertEdit:true,            // 专家评分费用编辑权限
+            isMainPrinUser:false        // 是否是第一负责人
         };
 
         //业务控制对象
@@ -812,5 +813,17 @@
             signSvc.createDispatchTemplate(vm);
         }
 
+        //监听是否通过
+        vm.watchPassDis = function(){
+            //监听是否关联事件
+            $scope.$watch("vm.businessFlag.passDis",function (newValue, oldValue) {
+                if(newValue == 9){
+                    vm.flow.dealOption = "通过";
+                }else{
+                    vm.flow.dealOption = "不通过";
+                }
+
+            });
+        }
     }
 })();

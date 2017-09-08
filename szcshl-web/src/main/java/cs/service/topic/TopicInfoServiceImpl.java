@@ -9,6 +9,7 @@ import cs.domain.sys.User;
 import cs.domain.topic.TopicInfo;
 import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
 import cs.model.topic.TopicInfoDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.FlowPrincipalRepo;
@@ -222,6 +223,17 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             });
         }
         return topicInfoDto;
+    }
+
+    /**
+     * 流程处理
+     * @param processInstance
+     * @param flowDto
+     * @return ResultMsg
+     */
+    @Override
+    public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
 }

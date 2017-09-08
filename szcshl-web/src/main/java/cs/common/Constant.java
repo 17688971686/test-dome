@@ -395,7 +395,16 @@ public class Constant {
         BUDGET_OPINION("budget/opinion","项目概算_审核意见"),
         BUDGET_ESTIMATE("budget/estimate","项目概算_概算汇总表和审核对照表"),
         BUDGET_PROJECTCOST("budget/projectCost","项目概算_建安工程费用"),
-        BUDGET_ROSTER("budget/roster", "项目概算_审核组名单");
+        BUDGET_ROSTER("budget/roster", "项目概算_审核组名单"),
+
+        //课题研究
+        SUBJECT_STUDY_NOVICE("subjectStudy/subjectNovice" , "课题研究_会议通知"),
+        SUBJECT_STUDY_SIGNIN("subjectStudy/subjectSignIn","课题研究_签到表"),
+        SUBJECT_STUDY_EXPERTAIGNATURE("subjectStudy/expertSignature" , "课题研究_专家签名"),
+        SUBJECT_STUDY_INVITATION("subjectStudy/subjectInvitation" , "课题研究_邀请函"),
+        SUBJECT_STUDY_MEETINGAM("subjectStudy/subjectMeetingAM" ,"课题研究_会议议程（上午）"),
+        SUBJECT_STUDY_MEETINGPM("subjectStudy/subjectMeetingPM" , "课题研究_会议议程（下午）");
+
 
 
 
@@ -436,6 +445,7 @@ public class Constant {
         STAGEMEETING("评审会会议"),
         FILELIBRARY("质量管理文件库"),
         POLICYLIBRARY("政策标准库"),
+        SUBJECT_STUDY("课题研究"),
         TEMOLATE("发文模板");
 
         private String value;

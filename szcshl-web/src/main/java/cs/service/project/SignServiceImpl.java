@@ -554,20 +554,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     @Transactional
-    public ResultMsg dealFlow(ProcessInstance processInstance, FlowDto flowDto) {
-        Task task = null;
-        if (Validate.isString(flowDto.getTaskId())) {
-            task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
-        } else {
-            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        }
-        if (task == null) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
-        }
-        if (task.isSuspended()) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
-        }
-
+    public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
         //参数定义
         String signid = processInstance.getBusinessKey(), businessId = "", assigneeValue = "", branchIndex = "";
         Sign sign = null;
@@ -709,28 +696,6 @@ public class SignServiceImpl implements SignService {
             case Constant.FLOW_SIGN_BMFB1:
                 branchIndex = Constant.SignFlowParams.BRANCH_INDEX1.getValue();
                 isMainBranch = true;
-                if (flowDto.getBusinessMap().get("M_USER_ID") == null || !Validate.isString(flowDto.getBusinessMap().get("M_USER_ID").toString())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择第一负责人！");
-                }
-                //查询是否有代办
-                dealUser = userRepo.findById(User_.id.getName(), flowDto.getBusinessMap().get("M_USER_ID").toString());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-
-                //设置项目负责人
-                signPriList = new ArrayList<>();
-                SignPrincipal mainPri = new SignPrincipal();
-                mainPri.setSignId(signid);
-                mainPri.setUserId(dealUser.getId());
-                mainPri.setIsMainUser(EnumState.YES.getValue());
-                mainPri.setFlowBranch(branchIndex);
-                signPriList.add(mainPri);
-
-                sign = signRepo.findById(Sign_.signid.getName(), signid);
-                sign.setMinisterhandlesug(flowDto.getDealOption());
-                sign.setMinisterDate(new Date());
-                sign.setMinisterId(SessionUtil.getUserId());
-                sign.setMinisterName(SessionUtil.getDisplayName());
-                saveSignFlag = true;
                 //部门分办2
             case Constant.FLOW_SIGN_BMFB2:
                 if (!Validate.isString(branchIndex)) {
@@ -746,26 +711,86 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = Constant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                if (flowDto.getBusinessMap().get("A_USER_ID") != null && Validate.isString(flowDto.getBusinessMap().get("A_USER_ID").toString())) {
-                    userList = userRepo.findByIds(User_.id.getName(), flowDto.getBusinessMap().get("A_USER_ID").toString(), null);
-                    if (signPriList == null) {
-                        signPriList = new ArrayList<>();
-                    }
-                    for (User user : userList) {
-                        //下一环节处理人
-                        assigneeValue += "," + (Validate.isString(user.getTakeUserId()) ? user.getTakeUserId() : user.getId());
-                        //项目负责人对象
-                        SignPrincipal secondPri = new SignPrincipal();
-                        secondPri.setSignId(signid);
-                        secondPri.setUserId(user.getId());
-                        secondPri.setIsMainUser(EnumState.NO.getValue());
-                        secondPri.setFlowBranch(branchIndex);
-                        signPriList.add(secondPri);
-                    }
-                } else {
-                    //协流程必须要选择第二负责人
-                    if (isMainBranch == false) {
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                boolean isassistflow = (EnumState.YES.getValue().equals(sign.getIsassistflow()))?true:false;
+                //1、如果是协审项目
+                if(isassistflow){
+                    //主流程处理，一定要有第一负责人
+                    if (flowDto.getBusinessMap().get("PRINCIPAL") == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                    }
+                    List<SignPrincipal> principalUserList = JSON.parseArray(flowDto.getBusinessMap().get("PRINCIPAL").toString(), SignPrincipal.class);
+                    if (!Validate.isList(principalUserList)) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                    }
+                    signPriList = new ArrayList<>();
+                    for (int i = 0,l=principalUserList.size();i<l; i++) {
+                        SignPrincipal obj = principalUserList.get(i);
+                        if (i > 0) {
+                            assigneeValue += ",";
+                        }
+                        assigneeValue += obj.getUserId();
+                        obj.setSignId(signid);
+                        obj.setFlowBranch(branchIndex);
+                        signPriList.add(obj);
+                    }
+
+                    //检查是否有代办
+                    userList = userRepo.findByIds(User_.id.getName(), assigneeValue, null);
+                    assigneeValue = "";
+                    for (int i = 0,l=userList.size();i<l; i++) {
+                        if (i > 0) {
+                            assigneeValue += ",";
+                        }
+                        assigneeValue += userList.get(i).getId();
+                    }
+                    //2、不是协审项目
+                }else{
+                    //主流程处理，一定要有第一负责人
+                    if(isMainBranch){
+                        if (flowDto.getBusinessMap().get("M_USER_ID") == null || !Validate.isString(flowDto.getBusinessMap().get("M_USER_ID").toString())) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择第一负责人！");
+                        }
+                        //查询是否有代办
+                        dealUser = userRepo.findById(User_.id.getName(), flowDto.getBusinessMap().get("M_USER_ID").toString());
+                        assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+
+                        //设置项目负责人
+                        signPriList = new ArrayList<>();
+                        SignPrincipal mainPri = new SignPrincipal();
+                        mainPri.setSignId(signid);
+                        mainPri.setUserId(dealUser.getId());
+                        mainPri.setIsMainUser(EnumState.YES.getValue());
+                        mainPri.setFlowBranch(branchIndex);
+                        signPriList.add(mainPri);
+
+                        sign.setMinisterhandlesug(flowDto.getDealOption());
+                        sign.setMinisterDate(new Date());
+                        sign.setMinisterId(SessionUtil.getUserId());
+                        sign.setMinisterName(SessionUtil.getDisplayName());
+                        saveSignFlag = true;
+                    }
+                    if (flowDto.getBusinessMap().get("A_USER_ID") != null && Validate.isString(flowDto.getBusinessMap().get("A_USER_ID").toString())) {
+                        userList = userRepo.findByIds(User_.id.getName(), flowDto.getBusinessMap().get("A_USER_ID").toString(), null);
+                        if (signPriList == null) {
+                            signPriList = new ArrayList<>();
+                        }
+                        for (User user : userList) {
+                            //下一环节处理人
+                            assigneeValue += "," + (Validate.isString(user.getTakeUserId()) ? user.getTakeUserId() : user.getId());
+                            //项目负责人对象
+                            SignPrincipal secondPri = new SignPrincipal();
+                            secondPri.setSignId(signid);
+                            secondPri.setUserId(user.getId());
+                            secondPri.setIsMainUser(EnumState.NO.getValue());
+                            secondPri.setFlowBranch(branchIndex);
+                            signPriList.add(secondPri);
+                        }
+                    } else {
+                        //协流程必须要选择第二负责人
+                        if (isMainBranch == false) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                        }
                     }
                 }
 
@@ -933,8 +958,8 @@ public class SignServiceImpl implements SignService {
                 if (!signPrincipalService.isMainPri(SessionUtil.getUserInfo().getId(), signid)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您不是第一负责人，不能进行下一步操作！");
                 }
-
-                dispatchDocService.createDisPatchTemplate(signid);//自动生成发文模板
+                //自动生成发文模板
+                dispatchDocService.createDisPatchTemplate(signid);
 
                 //修改第一负责人意见
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
