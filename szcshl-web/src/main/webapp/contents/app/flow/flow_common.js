@@ -67,9 +67,21 @@
         TOPIC_ZLGD : "TOPIC_ZLGD",                //资料归档
     }
 
+    /**
+     * 图书采购流程环节参数
+     */
+    var booksBuyNode ={
+        BOOK_LEADER_CGQQ : "BOOK_LEADER_CGQQ",    //各项目负责人/部门提出购买图书请求
+        BOOK_BZSP : "BOOK_BZSP",                 //部长审核
+        BOOK_FGFZRSP : "BOOK_FGFZRSP",          //分管副主任审批
+        BOOK_ZXZRSP : "BOOK_ZXZRSP",            //中心主任审批
+        BOOK_YSRK : "BOOK_YSRK"                 //中心主任审批
+    }
+
     //流程定义值
     var flowDefinedKey = {
-        TOPIC_FLOW : "TOPIC_FLOW",                  //课题研究流程
+        TOPIC_FLOW : "TOPIC_FLOW",                 //课题研究流程
+        BOOKS_BUY_FLOW:"BOOKS_BUY_FLOW"            //图书采购流程
     }
     var service = {
         getFlowDefinedKey : function(){
@@ -81,6 +93,9 @@
         getTopicFlowNode: function(){
             return topicNode;
         },                                        //课题研究流程
+        getBooksBuyFlowNode: function(){
+            return booksBuyNode;                 //图书采购流程环节
+        }
     };
     window.flowcommon = service;
 

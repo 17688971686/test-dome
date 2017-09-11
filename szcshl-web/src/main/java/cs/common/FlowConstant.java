@@ -11,6 +11,10 @@ public class FlowConstant {
      *课题研究流程
      */
     public final static String TOPIC_FLOW = "TOPIC_FLOW";
+    /**
+     *图书采购流程
+     */
+    public final static String BOOKS_BUY_FLOW = "BOOKS_BUY_FLOW";
 
     /*************** S 课题研究流程 环节名称  ****************/
     public static final String TOPIC_JHTC = "TOPIC_JHTC";                //计划提出
@@ -40,6 +44,16 @@ public class FlowConstant {
 
     /*************** E 课题研究流程 环节名称  ****************/
 
+    /*************** S 图书采购流程 环节名称  ****************/
+    public static final String BOOK_LEADER_CGQQ = "BOOK_LEADER_CGQQ";                //各项目负责人/部门提出购买图书请求
+    public static final String BOOK_BZSP = "BOOK_BZSP";                              //部长审批
+    public static final String BOOK_FGFZRSP = "BOOK_FGFZRSP";                       //分管副主任审批
+    public static final String BOOK_ZXZRSP = "BOOK_ZXZRSP";                         //中心主任审批
+    public static final String BOOK_YSRK = "BOOK_YSRK";                            //购买后档案员验收并入库
+
+    /*************** E 图书采购流程 环节名称  ****************/
+
+
     /**
      * 流程参数
      */
@@ -54,6 +68,27 @@ public class FlowConstant {
         private String value;
 
         FlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 图书采购流程参数
+     */
+    public static enum BooksBuyFlowParams{
+        USER_APPLY("user_apply"),         //用户申请
+        USER_BZ("user_bz"),              //部长
+        USER_FGLD("user_fgld"),          //分管领导
+        USER_ZR("user_zr"),              //主任
+        USER_DAY("user_day");             //档案员
+
+        private String value;
+
+        BooksBuyFlowParams(String value) {
             this.value = value;
         }
 
