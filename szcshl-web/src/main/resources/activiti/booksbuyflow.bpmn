@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="szec_book_buy_flow">
-  <process id="booksbuyflow" name="图书购买流程" isExecutable="true">
+  <process id="BOOKS_BUY_FLOW" name="图书购买流程" isExecutable="true">
     <startEvent id="BOOK_BUY_START" name="图书购买流程开始"></startEvent>
-    <userTask id="BOOK_LEADER" name="各项目负责人/部门提出购买图书请求" activiti:assignee="${user_apply}"></userTask>
-    <sequenceFlow id="flow1" sourceRef="BOOK_BUY_START" targetRef="BOOK_LEADER"></sequenceFlow>
-    <userTask id="BOOK_BZSP" name="部长审批" activiti:assignee="${userID}"></userTask>
-    <sequenceFlow id="flow2" sourceRef="BOOK_LEADER" targetRef="BOOK_BZSP"></sequenceFlow>
+    <userTask id="BOOK_LEADER_CGQQ" name="各项目负责人/部门提出购买图书请求" activiti:assignee="${user_apply}"></userTask>
+    <sequenceFlow id="flow1" sourceRef="BOOK_BUY_START" targetRef="BOOK_LEADER_CGQQ"></sequenceFlow>
+    <userTask id="BOOK_BZSP" name="部长审批" activiti:assignee="${user_bz}"></userTask>
+    <sequenceFlow id="flow2" sourceRef="BOOK_LEADER_CGQQ" targetRef="BOOK_BZSP"></sequenceFlow>
     <userTask id="BOOK_FGFZRSP" name="分管副主任审批" activiti:assignee="${user_fgfzr}"></userTask>
     <sequenceFlow id="flow3" sourceRef="BOOK_BZSP" targetRef="BOOK_FGFZRSP"></sequenceFlow>
-    <userTask id="BOOK_ZXZRSP" name="中心主任审批" activiti:assignee="${user_zxzrsp}"></userTask>
+    <userTask id="BOOK_ZXZRSP" name="中心主任审批" activiti:assignee="${user_zxzr}"></userTask>
     <sequenceFlow id="flow4" sourceRef="BOOK_FGFZRSP" targetRef="BOOK_ZXZRSP"></sequenceFlow>
-    <userTask id="BOOK_YSRK" name="购买后档案员验收并入库" activiti:assignee="${user_ysrk}"></userTask>
+    <userTask id="BOOK_YSRK" name="购买后档案员验收并入库" activiti:assignee="${admin}"></userTask>
     <sequenceFlow id="flow5" sourceRef="BOOK_ZXZRSP" targetRef="BOOK_YSRK"></sequenceFlow>
     <endEvent id="BOOK_BUY_END" name="图书购买流程结束"></endEvent>
     <sequenceFlow id="flow6" sourceRef="BOOK_YSRK" targetRef="BOOK_BUY_END"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_booksbuyflow">
-    <bpmndi:BPMNPlane bpmnElement="booksbuyflow" id="BPMNPlane_booksbuyflow">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_BOOKS_BUY_FLOW">
+    <bpmndi:BPMNPlane bpmnElement="BOOKS_BUY_FLOW" id="BPMNPlane_BOOKS_BUY_FLOW">
       <bpmndi:BPMNShape bpmnElement="BOOK_BUY_START" id="BPMNShape_BOOK_BUY_START">
         <omgdc:Bounds height="35.0" width="35.0" x="620.0" y="20.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="BOOK_LEADER" id="BPMNShape_BOOK_LEADER">
+      <bpmndi:BPMNShape bpmnElement="BOOK_LEADER_CGQQ" id="BPMNShape_BOOK_LEADER_CGQQ">
         <omgdc:Bounds height="71.0" width="116.0" x="580.0" y="90.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="BOOK_BZSP" id="BPMNShape_BOOK_BZSP">

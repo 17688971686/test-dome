@@ -6,19 +6,24 @@
 
     angular.module('app').controller('flowDealCtrl', flowDeal);
 
-    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc'];
+    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc','bookBuyBusinessSvc'];
 
-    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc) {
+    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc,bookBuyBusinessSvc) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
         vm.processKey = $state.params.processKey;              // 流程定义值
         vm.taskId = $state.params.taskId;                      // 任务ID
         vm.instanceId = $state.params.instanceId;              // 流程实例ID
-
+        vm.currentFlow;//当前流程信息
         vm.showFlag={
             businessNext : false,                              //是否显示下一环节处理人tr
             businessTr : false,                                //是否显示业务处理tr
+            bookBuyApplyTr:true,
+            bookBuyBzTr:true,
+            bookBuyFgzrTr:true,
+            bookBuyZrTr:true,
+            bookBuyYsrk:true
         }
 
         activate();
@@ -39,6 +44,7 @@
             //3、查询当前环节信息
             flowSvc.getFlowInfo(vm.taskId,vm.instanceId,function(data){
                 vm.flow = data;
+                vm.currentFlow = data;
                 //如果是结束环节，则不显示下一环节信息
                 if (vm.flow.end) {
                     vm.showFlag.nodeNext = false;
@@ -48,6 +54,23 @@
             switch (vm.processKey){
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
                     topicSvc.initFlowDeal(vm);
+                    break;
+                case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:     //图书采购流程
+                    flowSvc.getFlowInfo(vm.taskId,vm.instanceId,function(data){
+                        vm.currentFlow = data;
+                       if(data.curNode.activitiId=='BOOK_LEADER_CGQQ'){
+                           vm.showFlag.bookBuyApplyTr = false;
+                       }else if(data.curNode.activitiId=='BOOK_BZSP'){
+                           vm.showFlag.bookBuyBzTr = false;
+                       }else if(data.curNode.activitiId=='BOOK_FGFZRSP'){
+                           vm.showFlag.bookBuyFgzrTr = false;
+                       }else if(data.curNode.activitiId=='BOOK_ZXZRSP'){
+                           vm.showFlag.bookBuyZrTr = false;
+                       }else if(data.curNode.activitiId=='BOOK_YSRK'){
+                           vm.showFlag.bookBuyYsrk = false;
+                       }
+                        bookBuyBusinessSvc.initFlowDeal(vm);
+                    });
                     break;
             }
         }

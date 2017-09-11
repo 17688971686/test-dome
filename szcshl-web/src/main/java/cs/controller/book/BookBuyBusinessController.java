@@ -1,6 +1,7 @@
 package cs.controller.book;
 
 import cs.common.ResultMsg;
+import cs.domain.book.BookBuyBusiness;
 import cs.model.PageModelDto;
 import cs.model.book.BookBuyBusinessDto;
 import cs.model.book.BookBuyDto;
@@ -66,8 +67,15 @@ public class BookBuyBusinessController {
     @RequiresPermissions("bookBuyBusiness#saveBooksDetailList#post")
     @RequestMapping(name = "图书详细信息录入", path = "saveBooksDetailList", method = RequestMethod.POST)
     public @ResponseBody
-    ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] BookBuyDtoArrary){
-       return bookBuyBusinessService.saveBooksDetailList(BookBuyDtoArrary);
+    ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] BookBuyDtoArrary,BookBuyBusiness bookBuyBus){
+       return bookBuyBusinessService.saveBooksDetailList(BookBuyDtoArrary,bookBuyBus);
+    }
+
+    @RequiresPermissions("bookBuyBusiness#startFlow#post")
+    @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startFlow(@RequestBody BookBuyDto[] BookBuyDtoArrary,BookBuyBusiness bookBuyBus) {
+        return bookBuyBusinessService.startFlow(BookBuyDtoArrary,bookBuyBus);
     }
 
     // begin#html

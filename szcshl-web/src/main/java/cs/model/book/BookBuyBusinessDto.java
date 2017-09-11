@@ -1,6 +1,5 @@
 package cs.model.book;
 
-import cs.domain.book.BookBuy;
 import cs.model.BaseDto;
 
 import java.util.Date;
@@ -8,13 +7,14 @@ import java.util.List;
 
 
 /**
- * Description: 图书采购申请业务信息 页面数据模型
+ * Description: 图书采购流程 页面数据模型
  * author: zsl
- * Date: 2017-9-8 10:26:20
+ * Date: 2017-9-11 10:25:15
  */
 public class BookBuyBusinessDto extends BaseDto {
 
     private String businessId;
+    private String businessName;
     private String applyDept;
     private String operator;
     private String buyChannel;
@@ -34,17 +34,25 @@ public class BookBuyBusinessDto extends BaseDto {
     private String filer;
     private String filerHandlesug;
     private Date filerDate;
-    private List<BookBuy> bookBuyList;
+    private List bookBuyList;
+    private String processInstanceId;
 
     public BookBuyBusinessDto() {
     }
-   
+
     public String getBusinessId() {
         return businessId;
     }
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
     public String getApplyDept() {
         return applyDept;
@@ -185,6 +193,13 @@ public class BookBuyBusinessDto extends BaseDto {
 
     public void setBookBuyList(List bookBuyList) {
         this.bookBuyList = bookBuyList;
+    }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
 }

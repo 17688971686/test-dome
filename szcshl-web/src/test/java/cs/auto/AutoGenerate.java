@@ -4,7 +4,7 @@ import cs.auto.core.CRUDGenerate;
 import cs.auto.core.config.CRUDGanConfig;
 import cs.auto.core.config.FileConfig;
 import cs.auto.core.config.FileConst;
-import cs.domain.book.BookBuy;
+import cs.domain.book.BookBuyBusiness;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,9 @@ public class AutoGenerate {
 
     public static void main(String[] args) {
 
-        CRUDGanConfig config = new CRUDGanConfig(BookBuy.class, "图书详细信息");
+        CRUDGanConfig config = new CRUDGanConfig(BookBuyBusiness.class, "图书采购流程");
         config.setAuthor("zsl");
-        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\BookBuy");
+        config.setOuputPath("C:\\Users\\Administrator\\Desktop\\BookBuyBusiness");
         config.setFileOverride(true);
         config.setOpen(true);
         config.setFileConfs(getFileConf());

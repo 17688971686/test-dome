@@ -1,0 +1,32 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/agendaTasks">任务待办</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <!-- 流程处理页面 -->
+<!--    <#include "/topicInfo/dealOption.html"/>-->
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">图书采购流程详细信息</a></li>
+        <li ><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
+        <li ><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
+                <#include "/bookBuyBusiness/flowDetail.html"/>
+        </div><!-- end tab -->
+
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram">
+            <img style="" src="{{vm.picture}}">
+        </div><!-- end tab -->
+
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
+            <div class="grid" kendo-grid="grid" k-options="vm.historygrid" k-data-source="vm.historygrid.dataSource"></div>
+        </div>
+        <!-- end tab -->
+    </div>
+</div>

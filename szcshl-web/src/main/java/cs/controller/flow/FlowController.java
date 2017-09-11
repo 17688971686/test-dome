@@ -4,20 +4,20 @@ import cs.common.Constant;
 import cs.common.Constant.MsgCode;
 import cs.common.FlowConstant;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
-import cs.domain.topic.TopicInfo;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
-import cs.service.flow.*;
+import cs.service.book.BookBuyBusinessService;
+import cs.service.flow.FlowNextNodeFilter;
+import cs.service.flow.FlowService;
+import cs.service.flow.IFlow;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
 import cs.service.topic.TopicInfoService;
@@ -30,7 +30,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -47,8 +46,6 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -73,10 +70,15 @@ public class FlowController {
     @Qualifier("signFlowImpl")
     private IFlow signFlowImpl;
     @Autowired
+    @Qualifier("booksBuyBusFlowImpl")
+    private IFlow booksBuyBusFlowImpl;
+    @Autowired
     @Qualifier("topicFlowImpl")
     private IFlow topicFlowImpl;
     @Autowired
     private TopicInfoService topicInfoService;
+    @Autowired
+    private BookBuyBusinessService bookBuyBusinessService;
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
@@ -232,6 +234,10 @@ public class FlowController {
                 break;
             case FlowConstant.TOPIC_BFGW:
                 flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
+            case FlowConstant.BOOKS_BUY_FLOW:
+                flowDto.setBusinessMap(booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -279,6 +285,9 @@ public class FlowController {
                 break;
             case FlowConstant.TOPIC_BFGW:
                 resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
+                break;
+            case FlowConstant.BOOKS_BUY_FLOW:
+                resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -358,6 +367,9 @@ public class FlowController {
         switch (processKey){
             case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowDeal";
+                break;
+            case FlowConstant.BOOKS_BUY_FLOW:
+                resultPage = "bookBuyBusiness/flowDeal";
                 break;
             default:
                 ;

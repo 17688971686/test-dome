@@ -68,7 +68,7 @@
              //begin#拟补充资料函详细信息
             .state('getAddSuppLetterById', {
                 url: '/getAddSuppLetterById/:id',
-                templateUrl: rootPath + '/addSuppLetter/detail.html',
+                templateUrl: rootPath + '/addSuppLetter/flowDetail.html',
                 controller: 'addSuppLetterEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函详细信息
@@ -490,7 +490,7 @@
              //通知公告详情页
              .state('annountmentDetail', {
                 url: '/annountmentDetail/:id',
-                templateUrl: rootPath + '/annountment/html/detail.html',
+                templateUrl: rootPath + '/annountment/html/flowDetail.html',
                 controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
@@ -516,7 +516,7 @@
              //资料共享详情页
              .state('sharingDetil', {
                 url: '/sharingDetil/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
+                templateUrl: rootPath + '/sharingPlatlform/html/flowDetail.html',
                 controller: 'sharingDetailCtrl',
                 controllerAs: 'vm'
             })
@@ -647,11 +647,18 @@
                 controller : 'policyLibraryEditCtrl',
                 controllerAs : 'vm'
             })
-            .state('bookBuyBusinessEdit', {//图书管理
+            //图书采购流程
+            .state('bookBuyBusinessEdit', {
                 url: '/bookBuyBusinessEdit/:id',
                 templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
                 controller: 'bookBuyBusinessEditCtrl',
                 controllerAs: 'vm'
+            })
+            .state('myBookBuyBusiness',{
+                url : '/myBookBuyBusiness',
+                templateUrl : rootPath + '/bookBuyBusiness/html/bookBuyBusinessList.html',
+                controller : 'bookBuyBusinessCtrl',
+                controllerAs : 'vm'
             })
 
             //课题研究流程

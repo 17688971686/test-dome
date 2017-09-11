@@ -15,6 +15,9 @@ public class BookBuyBusiness extends DomainBase {
     //业务id
     @Id
     private String businessId;
+    //业务流程名字
+    @Column(columnDefinition = "varchar(64) ")
+    private String businessName;
     //申请部门
     @Column(columnDefinition = "varchar(64) ")
     private String applyDept;
@@ -75,6 +78,12 @@ public class BookBuyBusiness extends DomainBase {
     //图书
     @OneToMany(mappedBy = "bookBuyBusiness", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<BookBuy> bookBuyList;
+
+    /**
+     * 流程实例ID
+     */
+    @Column(columnDefinition="VARCHAR(64)")
+    private String processInstanceId;
 
     public String getBusinessId() {
         return businessId;
@@ -242,5 +251,21 @@ public class BookBuyBusiness extends DomainBase {
 
     public void setBookBuyList(List<BookBuy> bookBuyList) {
         this.bookBuyList = bookBuyList;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 }

@@ -1,0 +1,152 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<!--<head>
+    <style>
+        .bookBuyInfo td{
+            border-top: 0px;
+        }
+    </style>
+</head>-->
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">图书管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <div class="toolbar">
+        <a class="btn btn-sm btn-primary" href="#/bookBuy"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+
+        <button class="btn btn-sm btn-success" ng-click="vm.saveCondition()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate">
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.startFlow()"  ng-hide="vm.isUpdate">
+            <span class="glyphicon glyphicon-ok"></span>发起流程
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.addCondition()" ng-disabled="vm.isCommit"><span
+                class="glyphicon glyphicon-ok"></span>添加条件
+        </button>
+        <button class="btn btn-sm btn-danger" ng-click="vm.removeCondition()" ng-disabled="vm.isCommit"><span
+                class="glyphicon glyphicon-remove"></span>删除条件
+        </button>
+    </div>
+    <p class="pro_title_1" style="margin:10px;margin-left:0px;">图书管理信息</p>
+
+    <form id="form" name="form">
+        <table class="" style="width: 90%;">
+            <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
+            <tr>
+                <input type="hidden" name="businessId" id="businessId"  ng-model="vm.model.businessId" value="{{vm.model.businessId}}"/>
+                <td class="formAlignRight" width="10%">申请部门</td>
+                <td width="20%">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
+                           id="loginName" name="name" >
+                </td>
+                <td class="formAlignRight" width="10%">经办人</td>
+                <td width="20%">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
+                           id="loginName" name="name" >
+                </td>
+
+                <td class="formAlignRight" width="10%">购买渠道</td>
+                <td width="30%">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="loginName" name="name" ng-disabled="true" ng-disabled="true">
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">申请事由及发放范围</td>
+                <td width="90%" colspan="5" >
+                      <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
+                                id="projectBuildNecess" name="projectBuildNecess"
+                      />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight" width="10%">分管副主任审核</td>
+                <td width="40%"  >
+                      <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
+                                id="projectBuildNecess" name="projectBuildNecess"
+                      />
+                </td>
+                <td class="formAlignRight" width="10%">主任审批</td>
+                <td width="40%" colspan="3" >
+                      <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
+                                id="projectBuildNecess" name="projectBuildNecess"
+                      />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight" width="10%">购买后档案员验收并入库</td>
+                <td width="90%" colspan="5" >
+                      <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
+                                id="projectBuildNecess" name="projectBuildNecess"
+                      />
+                </td>
+            </tr>
+        </table>
+        <table style="width: 90%;">
+            <tr class="bookBuyInfo">
+                <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
+                <td style="width:7%;min-width:50px;" align="center">序号</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">书刊名称</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">图书\期刊分类</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">出版社</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">书号\刊号</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">作者</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">购买数量</td>
+                <td class="text-center" style="width:8%;border-top: 0px;">库存确认</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">价格</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">合计</td>
+            </tr>
+            <tr ng-repeat="x in vm.conditions">
+                <td align="center">
+                    <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{x.sort}}"/></td>
+                <td align="center">{{x.sort}}</td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="booksName{{x.sort}}" />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="booksType{{x.sort}}"  />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="publishingCompany{{x.sort}}"  />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="bookNo{{x.sort}}"  />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="author{{x.sort}}"  />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="bookNumber{{x.sort}}"  />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="storeConfirm{{x.sort}}" />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="booksPrice{{x.sort}}"/>
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="total" name="total"  />
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
