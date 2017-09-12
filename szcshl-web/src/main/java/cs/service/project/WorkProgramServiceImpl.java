@@ -175,7 +175,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setBranchId(signPrincipal.getFlowBranch());
             workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
             workProgramDto.setProjectName(sign.getProjectname());
-            workProgramDto.setAppalyInvestment(sign.getAppalyInvestment());//申报投资
+            workProgramDto.setAppalyInvestment(sign.getDeclaration());//申报投资
+            //是否有拟补充资料函
+            workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null?  Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
+            //拟补充资料函发文日期
+            workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
             if(signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(),signId)){
                 //判断是否是关联次项目
                 boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());

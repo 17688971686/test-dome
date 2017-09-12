@@ -1,0 +1,79 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/monthlyNewsletterList">添加月报简报历史数据</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/monthlyNewsletter"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.createHistory()" ng-disabled="vm.isSubmit"
+                    ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
+            </button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
+                    ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
+            </button>
+        </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">开始日期：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.startDay"
+                           id="startDay" name="startDay"  />
+                </td>
+                <td><span data-valmsg-for="Multiyear" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">截止日期：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endDay"
+                           id="endDay" name="endDay"  />
+                </td>
+                <td><span data-valmsg-for="endDay" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">已评审项目数：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.stageMunber"
+                           id="stageMunber" name="stageMunber"  />
+                </td>
+                <td><span data-valmsg-for="stageMunber" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">申报总投资：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.declarationSum"
+                           id="declarationSum" name="declarationSum"  />
+                </td>
+                <td><span data-valmsg-for="declarationSum" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">核审总投资：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.assessorSum"
+                           id="assessorSum" name="assessorSum"  />
+                </td>
+                <td><span data-valmsg-for="assessorSum" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            
+            <tr>
+                <td class="formAlignRight">备注：</td>
+                <td>
+                           <textarea class="form-control input-sm " ng-model="vm.model.remark" rows="" cols="" id="remark" name="remark">
+                           </textarea>
+                </td>
+                <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>

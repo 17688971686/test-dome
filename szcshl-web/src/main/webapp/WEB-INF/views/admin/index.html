@@ -171,12 +171,12 @@ desired effect
                                 <i class="glyphicon glyphicon-thumbs-up"></i>办结项目
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="javascript:void(0)"  ui-sref="agendaTasks">
                                 <i class="fa fa-flag-o"></i>待办任务
                                 <span class="label label-danger" id="DO_TASK_COUNT">0</span>
                             </a>
-                        </li>
+                        </li> -->
                         <li>
                             <a href="javascript:void(0)"  ui-sref="doingTasks">
                                 <i class="glyphicon glyphicon-tasks"></i>在办任务
@@ -186,7 +186,7 @@ desired effect
                 </li>
 
                 <!-- start 流程管理-->
-                <li class="treeview">
+                <!-- <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cloud-download"></i><span class="title">课题研究管理</span>
                         <span class="pull-right-container">
@@ -197,7 +197,7 @@ desired effect
                         <li ><a href="javascript:void(0)" ui-sref="addTopic({id:null})">创建课题</a></li>
                         <li ><a href="javascript:void(0)" ui-sref="myTopic">我的课题</a></li>
                     </ul>
-                </li>
+                </li> -->
                 <!-- end 项目签收-->
 
                 <!-- start 项目管理-->
@@ -230,7 +230,7 @@ desired effect
                 </li>
                 <!-- end 项目签收-->
                 
-                  <!-- start 项目费用管理 -->
+                 <!-- start 项目费用管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-archive" aria-hidden="true"></i>
@@ -243,11 +243,28 @@ desired effect
                        <!--  <li><a href="javascript:void(0)" ui-sref="assistCostAdd">协审费录入</a></li> -->
                     	<li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
                         <li><a href="javascript:void(0)" ui-sref="financialManagerList">评审费用统计</a></li>
-                         <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li> 
+                        <!--  <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li>  -->
                          <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li> 
                     </ul>
                 </li>
               <!-- end 项目费用管理 -->
+              
+               <!-- start 月报简报管理 -->
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-archive" aria-hidden="true"></i>
+                        <span class="title">月报简报管理</span>
+                        <span class="pull-right-container"> 
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                    	<li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="theMonthsList">月报简报</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
+                    </ul>
+                </li>
+              <!-- end 月报简报管理 -->
                 
 				<!-- begin 用户部门管理 -->
 				<!-- <li class="treeview">

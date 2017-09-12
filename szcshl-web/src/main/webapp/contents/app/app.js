@@ -599,8 +599,62 @@
                 controller: 'exportCountCtrl',
                 controllerAs: 'vm'
             })
-           
              //E 项目费用管理
+            
+             //S 月报简报管理
+             //月报简报管理列表
+             .state('monthlyNewsletterList', {
+                url: '/monthlyNewsletterList',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterList.html',
+                controller: 'monthlyNewsletterCtrl',
+                controllerAs: 'vm'
+            })
+            //新建月报简报管理
+            .state('monthlyEdit', {
+                url: '/monthlyEdit/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterEdit.html',
+                controller: 'monthlyNewsletterEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+             //月报管理列表  
+             .state('theMonthsList', {
+                url: '/theMonthsList',
+                templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
+                controller: 'monthlyNewsletterCtrl',
+                controllerAs: 'vm'
+            })
+             //根据年度查找列表页面
+             .state('monthlyFindByMultiyear', {
+                url: '/monthlyFindByMultiyear/:reportMultiyear',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
+                controller: 'monthlyMultiyearCtrl',
+                controllerAs: 'vm'
+            })
+            //新建年度月报简报页面
+             .state('monthlyMultiyearEdit', {
+                url: '/monthlyMultiyearEdit/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
+                controller: 'monthlyMultiyearEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+            //月报简报历史数据列表  
+             .state('monthlyHistoryList', {
+                url: '/monthlyHistoryList',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryList.html',
+                controller: 'monthlyHistoryCtrl',
+                controllerAs: 'vm'
+            })
+             //新建月报简报历史数据
+            .state('monthlyHistoryEdit', {
+                url: '/monthlyHistoryEdit/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryAdd.html',
+                controller: 'monthlyHistoryEditCtrl',
+                controllerAs: 'vm'
+            })
+            //E 月报简报管理 
+            
               //begin#dispatch
            /* .state('financialEdit', {
                 url: '/financialEdit/:signid',
