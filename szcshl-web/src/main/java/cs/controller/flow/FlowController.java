@@ -301,21 +301,6 @@ public class FlowController {
         return resultMsg;
     }
 
-    @RequestMapping(name = "回退到指定环节", path = "rollback", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg rollback(@RequestBody FlowDto flowDto) {
-        ResultMsg resultMsg = new ResultMsg();
-        if (Validate.isString(flowDto.getTaskId())) {
-            flowService.rollBackByActiviti(flowDto);
-            resultMsg.setReCode(MsgCode.OK.getValue());
-            resultMsg.setReMsg("回退成功！");
-        } else {
-            resultMsg.setReCode(MsgCode.ERROR.getValue());
-            resultMsg.setReMsg(Constant.ERROR_MSG);
-            log.info("流程回退到上一步异常：无法获取任务ID(TaskId)");
-        }
-        return resultMsg;
-    }
 
     @Transactional
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
