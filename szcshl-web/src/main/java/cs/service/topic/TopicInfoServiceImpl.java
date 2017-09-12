@@ -393,8 +393,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),
-                        Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
+                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
                 break;
             //主任审核
             case FlowConstant.TOPIC_ZRSH_BG :
@@ -444,8 +444,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(),
-                        Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
+                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(),assigneeValue);
 
                 filing = filingRepo.findById("topId", businessId);
                 filing.setDirector(SessionUtil.getDisplayName());
