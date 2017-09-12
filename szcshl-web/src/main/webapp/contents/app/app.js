@@ -556,6 +556,13 @@
                 controller: 'financialManagerEditCtrl',
                 controllerAs: 'vm'
             })
+            //查看协审费发放表
+            .state('findAssistCostTable', {
+                url: '/findAssistCostTable/:signid',
+                templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
+                controller: 'assistCostCountCtrl',
+                controllerAs: 'vm'
+            })
             //协审费录入页面
             .state('assistCostAdd', {
                 url: '/assistCostAdd/:signid',

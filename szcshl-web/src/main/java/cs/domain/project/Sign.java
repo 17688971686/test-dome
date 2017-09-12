@@ -134,7 +134,15 @@ public class Sign extends DomainBase {
     //是否有登记补充资料:9表示是,0表示否
     @Column(columnDefinition = "VARCHAR(4)")
     private String IsSupplementary;
-
+    
+   //是否有拟补充资料函:9表示是,0表示否
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String isHaveSuppLetter;
+    
+    //拟补充资料函发文日期
+    @Column(columnDefinition = "Date")
+    private Date suppLetterDate;
+    
     //综合部拟办意见
     @Column(columnDefinition = "VARCHAR(255)")
     private String comprehensivehandlesug;
@@ -2429,7 +2437,24 @@ public class Sign extends DomainBase {
 
 	public void setAuthorizeValue(BigDecimal authorizeValue) {
 		this.authorizeValue = authorizeValue;
+	}
+
+	public String getIsHaveSuppLetter() {
+		return isHaveSuppLetter;
+	}
+
+	public void setIsHaveSuppLetter(String isHaveSuppLetter) {
+		this.isHaveSuppLetter = isHaveSuppLetter;
+	}
+
+	public Date getSuppLetterDate() {
+		return suppLetterDate;
+	}
+
+	public void setSuppLetterDate(Date suppLetterDate) {
+		this.suppLetterDate = suppLetterDate;
 	} 
+	
 	
 	
     
