@@ -1,5 +1,6 @@
 package cs.service.topic;
 
+import cs.common.ResultMsg;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
 import cs.model.topic.WorkPlanDto;
@@ -11,15 +12,16 @@ import cs.repository.odata.ODataObj;
  * Date: 2017-9-4 15:33:03
  */
 public interface WorkPlanService {
-    
+
     PageModelDto<WorkPlanDto> get(ODataObj odataObj);
 
-	void save(WorkPlanDto record);
+    ResultMsg save(WorkPlanDto record);
 
-	void update(WorkPlanDto record);
+    void update(WorkPlanDto record);
 
-	WorkPlanDto findById(String deptId);
+    WorkPlanDto findById(String deptId);
 
-	void delete(String id);
+    void delete(String id);
 
+    WorkPlanDto initByTopicId(String topicId);
 }

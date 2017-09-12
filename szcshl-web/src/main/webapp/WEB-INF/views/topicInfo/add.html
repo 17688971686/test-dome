@@ -10,7 +10,9 @@
     <div class="toolbar">
         <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
         <button class="btn btn-sm btn-success" ng-click="vm.startFlow()" ng-disabled="vm.isCommit" ng-hide="vm.model.processInstanceId">
-            <span class="glyphicon glyphicon-ok"></span>发起流程</button>
+            <span class="glyphicon glyphicon-ok"></span>发起流程
+        </button>
+        <go-back-flow ng-if="vm.model.processInstanceId"></go-back-flow>
         <flow-file-button></flow-file-button>   <!--附件上传按钮-->
     </div>
     <form id="topicform" name="topicform">
@@ -32,7 +34,35 @@
                     <span data-valmsg-for="cooperator" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
-
+            <tr>
+                <td class="formAlignRight">申报部门： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" class="form-control input-sm " ng-hide="true" ng-model="vm.model.orgId" ng-init="vm.model.orgId = '${CURRENT_USER.org.id}'">
+                    <input  type="text" class="form-control input-sm " ng-disabled="true" ng-model="vm.model.orgName" ng-init="vm.model.orgName = '${CURRENT_USER.org.name}'" >
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">是否报发改委审批：<span class="required">*</span></td>
+                <td >
+                    <label>
+                        <input type="radio" ng-value="9" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 9 || vm.model.sendFgw == '9'" name="sendFgw" />是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 0 || vm.model.sendFgw == '0'" name="sendFgw" />否
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">是否委里立项：<span class="required">*</span></td>
+                <td >
+                    <label>
+                        <input type="radio" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 9 || vm.model.fgwlx == '9'" name="fgwlx" />是
+                    </label>
+                    <label>
+                        <input type="radio" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 0 || vm.model.fgwlx == '0'" name="fgwlx" />否
+                    </label>
+                </td>
+            </tr>
             <tr>
                 <td class="formAlignRight">主要负责人：</td>
                 <td >
@@ -56,17 +86,7 @@
                     </ul>
                 </td>
             </tr>
-            <tr>
-                <td class="formAlignRight">是否委里立项：</td>
-                <td >
-                    <label>
-                        <input type="radio" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 9 || vm.model.fgwlx == '9'" name="fgwlx" />是
-                    </label>
-                    <label>
-                        <input type="radio" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 0 || vm.model.fgwlx == '0'" name="isRelated" />否
-                    </label>
-                </td>
-            </tr>
+
             <tr>
                 <td class="formAlignRight">备注信息：</td>
                 <td >

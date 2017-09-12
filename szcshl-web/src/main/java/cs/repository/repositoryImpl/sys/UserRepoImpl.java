@@ -1,21 +1,22 @@
 package cs.repository.repositoryImpl.sys;
 
-import java.util.*;
-
 import cs.common.HqlBuilder;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.sys.*;
+import cs.domain.sys.Org_;
+import cs.domain.sys.Role_;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
+import cs.repository.AbstractRepository;
+import cs.repository.odata.ODataObj;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import cs.repository.AbstractRepository;
-import cs.repository.odata.ODataObj;
+import java.util.*;
 
 @Repository
 public class UserRepoImpl extends AbstractRepository<User, String> implements UserRepo {
@@ -101,6 +102,46 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         List<User> list = criteria.createAlias(User_.org.getName(), User_.org.getName())
                 .add(Restrictions.eq(User_.org.getName() + "." + Org_.id.getName(), orgId)).list();
         return list;
+    }
+
+    /**
+     * 根据用户ID查询部门领导
+     * @param userId
+     * @return
+     */
+    @Override
+    public User findOrgDirector(String userId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select u.* from cs_user u where u."+User_.id.getName()+" = ");
+        sqlBuilder.append(" (select o."+Org_.orgDirector.getName()+" from cs_org o ");
+        sqlBuilder.append(" where o."+Org_.id.getName()+" = ");
+        sqlBuilder.append(" (select cu.orgid from cs_user cu where cu."+User_.id.getName()+" =:userId ))");
+        sqlBuilder.setParam("userId",userId);
+        List<User> list = findBySql(sqlBuilder);
+        if(Validate.isList(list)){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * 根据用户ID查询分管领导
+     * @param userId
+     * @return
+     */
+    @Override
+    public User findOrgSLeader(String userId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select u.* from cs_user u where u."+User_.id.getName()+" = ");
+        sqlBuilder.append(" (select o."+Org_.orgSLeader.getName()+" from cs_org o ");
+        sqlBuilder.append(" where o."+Org_.id.getName()+" = ");
+        sqlBuilder.append(" (select cu.orgid from cs_user cu where cu."+User_.id.getName()+" =:userId ))");
+        sqlBuilder.setParam("userId",userId);
+        List<User> list = findBySql(sqlBuilder);
+        if(Validate.isList(list)){
+            return list.get(0);
+        }
+        return null;
     }
 
     /**

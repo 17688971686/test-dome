@@ -1,6 +1,9 @@
 package cs.repository.repositoryImpl.sys;
 
 import cs.common.HqlBuilder;
+import cs.common.cache.CacheConstant;
+import cs.common.cache.CacheManager;
+import cs.common.cache.ICache;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
@@ -60,5 +63,35 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
         sqlBuilder.setParam("signid2",signId).setParam("branchid2",branchId);
         sqlBuilder.append(" order by "+User_.userSort.getName()+" nulls last");
         return userRepo.findBySql(sqlBuilder);
+    }
+
+    /**
+     * 缓存所有的部门信息
+     */
+    @Override
+    public void fleshOrgDeptCache() {
+        ICache cache = CacheManager.getCache();
+        List<OrgDept> allList = findAll();
+        cache.put(CacheConstant.ORG_DEPT_CACHE,allList);
+    }
+
+    @Override
+    public OrgDept findOrgDeptById(String id) {
+        OrgDept result = null;
+        ICache cache = CacheManager.getCache();
+        List<OrgDept> list = (List<OrgDept>) cache.get(CacheConstant.ORG_DEPT_CACHE);
+        for(OrgDept l : list){
+            if(id.equals(l.getId())){
+                result = l;
+                break;
+            }
+        }
+        if(result == null){
+            result = findById(id);
+            list.add(result);
+            cache.put(CacheConstant.ORG_DEPT_CACHE,list);
+        }
+
+        return result;
     }
 }

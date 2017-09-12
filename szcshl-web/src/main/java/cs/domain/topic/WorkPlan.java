@@ -73,6 +73,11 @@ public class WorkPlan extends DomainBase {
     private Date researchDate;
 
     /**
+     * 调研时间段
+     */
+    @Column(columnDefinition="VARCHAR(5)")
+    private String studyQuantum;
+    /**
      * 拟要求单位及领导
      */
     @Column(columnDefinition="VARCHAR(512)")
@@ -256,5 +261,13 @@ public class WorkPlan extends DomainBase {
 
     public void setTopicInfo(TopicInfo topicInfo) {
         this.topicInfo = topicInfo;
+    }
+
+    public String getStudyQuantum() {
+        return studyQuantum;
+    }
+
+    public void setStudyQuantum(String studyQuantum) {
+        this.studyQuantum = studyQuantum;
     }
 }

@@ -31,4 +31,5 @@ public interface TopicInfoService {
     TopicInfoDto findDetailById(String id);
 
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
 }

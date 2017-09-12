@@ -31,6 +31,8 @@ public class WorkPlanDto extends BaseDto {
     private String leaderName;
     private Date leaderDate;
     private TopicInfoDto topicInfoDto;
+    //课题研究ID
+    private String topicId;
 
     public WorkPlanDto() {
     }
@@ -154,5 +156,13 @@ public class WorkPlanDto extends BaseDto {
 
     public void setTopicInfoDto(TopicInfoDto topicInfoDto) {
         this.topicInfoDto = topicInfoDto;
+    }
+
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
     }
 }

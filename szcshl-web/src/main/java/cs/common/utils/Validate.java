@@ -189,7 +189,7 @@ public class Validate {
 
 	/**
 	 * 判断是否包含html代码，是返回true，没有返回false
-	 * @param bulletin
+	 * @param s
 	 * @return
 	 * @author HZH
 	 */

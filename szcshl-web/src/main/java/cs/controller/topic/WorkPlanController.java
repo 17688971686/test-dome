@@ -1,5 +1,6 @@
 package cs.controller.topic;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
@@ -24,7 +25,6 @@ import java.util.Date;
 @RequestMapping(name = "", path = "workPlan")
 public class WorkPlanController {
 
-	String ctrlName = "workPlan";
     @Autowired
     private WorkPlanService workPlanService;
 
@@ -39,15 +39,20 @@ public class WorkPlanController {
 
     @RequiresPermissions("workPlan##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody WorkPlanDto record) {
-        workPlanService.save(record);
+    @ResponseBody
+    public ResultMsg post(@RequestBody WorkPlanDto record) {
+        return workPlanService.save(record);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody WorkPlanDto findById(@RequestParam(required = true)String id){		
 		return workPlanService.findById(id);
 	}
+
+    @RequestMapping(name = "根据课题ID查询", path = "initByTopicId",method=RequestMethod.POST)
+    public @ResponseBody WorkPlanDto initByTopicId(@RequestParam(required = true)String topicId){
+        return workPlanService.initByTopicId(topicId);
+    }
 	
     @RequiresPermissions("workPlan##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
@@ -64,16 +69,11 @@ public class WorkPlanController {
     }
 
     // begin#html
-    @RequiresPermissions("workPlan#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
-    public String list() {
-        return ctrlName+"/list"; 
-    }
 
     @RequiresPermissions("workPlan#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return "topicInfo/planEdit";
     }
     // end#html
 

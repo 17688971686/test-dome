@@ -87,8 +87,8 @@ public class AddRegisterFileController {
 	@RequiresPermissions("addRegisterFile#deleteFile#delete")
 	@RequestMapping(name = "删除记录", path = "deleteFile", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void delete(@RequestBody String id) {
-		addRegisterFileService.deleteRegisterFile(id);
+	public void delete(@RequestParam String ids) {
+		addRegisterFileService.deleteRegisterFile(ids);
 	}
 
 	@RequiresPermissions("addRegisterFile#update#put")

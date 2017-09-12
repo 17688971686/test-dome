@@ -1,10 +1,13 @@
 package cs.service.rtx;
 
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
+import cs.domain.sys.User;
+import cs.repository.repositoryImpl.sys.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rtx.RTXSvrApi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +16,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
 
 @Service
@@ -21,6 +25,9 @@ public class RTXService {
     private final static String RTX_MSG_NOTICE = "/sendnotify.cgi?";
     private final static String RTX_GETSESSION = "/GetSession.cgi?";
     private final static String RTX_GETSTATUS = "/getstatus.php?";
+
+    @Autowired
+    private UserRepo userRepo;
     /**
      * 获取腾讯通的sessionKey
      * @param url           腾讯通URL
@@ -71,6 +78,36 @@ public class RTXService {
             userState = "3";
         }
         return userState;
+    }
+
+    /**
+     * 发送消息缓冲池
+     * @param taskId
+     * @param resultMsg
+     * @return
+     */
+    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg){
+        if(resultMsg.isFlag()){
+            String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
+            List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
+            if(Validate.isList(receiverList)){
+                String rtxNames = "";
+                for(User u : receiverList){
+                    if(Validate.isString(rtxNames)){
+                        rtxNames += ",";
+                    }
+                    rtxNames += u.getLoginName();
+                }
+                if(Validate.isString(rtxNames)){
+                    sendRTXMsg(null,"您有一条待办任务待处理！",rtxNames);
+                    return true;
+                }
+            }
+            return false;
+        }else{
+            RTXSendMsgPool.getInstance().removeCache(taskId);
+        }
+        return true;
     }
 
     /**

@@ -9,7 +9,8 @@
         var vm = this;
         vm.title = '新增课题研究';
         vm.model = {};
-        vm.model.fgwlx = 0;
+        vm.model.fgwlx = 0;             //默认不是发改委立项
+        vm.model.sendFgw = 0;           //默认不报发改委审批
         if($state.params.id){
             vm.model.id = $state.params.id;
         }

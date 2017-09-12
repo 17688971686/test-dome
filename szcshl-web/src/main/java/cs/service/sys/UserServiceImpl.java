@@ -379,17 +379,18 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-
     /**
      * 获取当前用户的部门领导
      */
     @Override
-    public UserDto getOrgDirector() {
-        UserDto user = findById(SessionUtil.getUserInfo().getOrg().getOrgDirector(),false);
-        if (user != null && Validate.isString(user.getId())) {
-            return user;
+    public UserDto getOrgDirector(String userId) {
+        User user = userRepo.findOrgDirector(userId);
+        if(user == null){
+           return null;
         }
-        return null;
+        UserDto userDto = new UserDto();
+        BeanCopierUtils.copyProperties(user,userDto);
+        return userDto;
     }
 
 
@@ -397,17 +398,14 @@ public class UserServiceImpl implements UserService {
      * 获取当前用户的分管主任
      */
     @Override
-    public UserDto getOrgSLeader() {
-        Org org = orgRepo.findById(SessionUtil.getUserInfo().getOrg().getId());
-        List<UserDto> userList = findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
-        if (userList == null || userList.size() == 0) {
+    public UserDto getOrgSLeader(String userId) {
+        User user = userRepo.findOrgSLeader(userId);
+        if(user == null){
             return null;
         }
-        UserDto user = filterOrgSLeader(userList, org);
-        if (user != null && Validate.isString(user.getLoginName())) {
-            return user;
-        }
-        return null;
+        UserDto userDto = new UserDto();
+        BeanCopierUtils.copyProperties(user,userDto);
+        return userDto;
     }
 
     /**

@@ -26,6 +26,8 @@ import cs.repository.repositoryImpl.sys.RoleRepo;
 import cs.repository.repositoryImpl.sys.SysConfigRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 
+import static cs.common.Constant.SUPER_USER;
+
 @Service
 public class SysServiceImpl implements SysService {
     private static Logger logger = Logger.getLogger(SysServiceImpl.class);
@@ -122,9 +124,9 @@ public class SysServiceImpl implements SysService {
 
             // 初始化用户
             User user = new User();
-            user.setLoginName("admin");
+            user.setLoginName(SUPER_USER);
             user.setId(UUID.randomUUID().toString());
-            user.setPassword("admin");
+            user.setPassword(SUPER_USER);
             user.setRemark("系统初始化创建,不可删除");
             user.setDisplayName("超级管理员");
             user.getRoles().add(role);

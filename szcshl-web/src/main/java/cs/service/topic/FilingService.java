@@ -1,5 +1,6 @@
 package cs.service.topic;
 
+import cs.common.ResultMsg;
 import cs.domain.topic.Filing;
 import cs.model.PageModelDto;
 import cs.model.topic.FilingDto;
@@ -14,7 +15,7 @@ public interface FilingService {
     
     PageModelDto<FilingDto> get(ODataObj odataObj);
 
-	void save(FilingDto record);
+	ResultMsg save(FilingDto record);
 
 	void update(FilingDto record);
 
@@ -22,4 +23,5 @@ public interface FilingService {
 
 	void delete(String id);
 
+    FilingDto initByTopicId(String topicId);
 }

@@ -45,8 +45,9 @@
       				   }
       				   ids.push(isCheked[i].value);
       			   });
-      				var idsStr = ids.join(",");
-      				addRegisterFileSvc.deleteAddRegisterFile(vm,idsStr);
+                    addRegisterFileSvc.deleteByIds(ids.join(","),function(data){
+                        bsWin.alert("删除成功！");
+                    });
         		}
         	}
         }

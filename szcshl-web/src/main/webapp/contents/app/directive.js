@@ -13,7 +13,7 @@
         };
     });
     //返回项目签收流程
-    appModule.directive('goBackSignflow', function() {
+    appModule.directive('goBackFlow', function() {
         return {
             restrict : 'AE',
             template : '<button class="btn btn-sm btn-danger" ng-click="backtoflow();"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</button>'

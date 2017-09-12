@@ -1,0 +1,100 @@
+<meta charset="UTF-8">
+<#assign path=request.contextPath/>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a>课题研究管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveWorkPlan()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <go-back-flow></go-back-flow>
+    </div>
+    <form id="topicform" name="topicform">
+        <table class="table table-bordered">
+            <caption>QR-4.1-03-A3</caption>
+            <caption class="text-center"><h3><strong>课题研究成果鉴定（论证）会工作方案</strong></h3></caption>
+            <tr>
+                <td class="text-center">课题名称</td>
+                <td colspan="8">{{vm.workplan.topicName}}</td>
+            </tr>
+            <tr>
+                <td class="text-center">合作单位</td>
+                <td colspan="8">{{vm.workplan.cooperator}}</td>
+            </tr>
+            <tr>
+                <td width="11%" class="text-center">联系人 <span class="required">*</span></td>
+                <td colspan="2" width="22%" >
+                    <input  type="text" maxlength="64" class="form-control input-sm "  ng-model="vm.workplan.contactName"
+                            id="contactName" name="contactName" data-val="true" data-val-required="必填" data-val-length-max="64">
+                    <span data-valmsg-for="contactName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td width="11%" class="text-center">联系电话 <span class="required">*</span></td>
+                <td colspan="2" width="22%">
+                    <input  type="text" maxlength="128" class="form-control input-sm "  ng-model="vm.workplan.tellPhone"
+                            id="tellPhone" name="tellPhone" data-val="true" data-val-required="必填" data-val-length-max="128">
+                    <span data-valmsg-for="contactName" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                <td width="11%" class="text-center">传真</td>
+                <td colspan="2" width="22%">
+                    <input  type="text" maxlength="16" class="form-control input-sm "  ng-model="vm.workplan.fax"
+                            id="fax" name="fax" >
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">课题主要研究
+                    <br>内容和研究成果</td>
+                <td colspan="8">
+                    <textarea ng-model="vm.workplan.topicContent" style="width: 100%;" rows="5" name="topicContent" id="topicContent">{{vm.workplan.topicContent}}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td width="11%" class="text-center">会议时间</td>
+                <td colspan="3" width="33%">xxxx</td>
+                <td width="11%" class="text-center">会期</td>
+                <td colspan="4" width="44%">xxxx</td>
+            </tr>
+            <tr>
+                <td class="text-center">会议地点</td>
+                <td colspan="3" >xxxx</td>
+                <td class="text-center">经费估算</td>
+                <td colspan="4" >xxxx</td>
+            </tr>
+            <tr>
+                <td class="text-center">调研时间</td>
+                <td colspan="3" >
+                    <select name="studyQuantum" ng-model ="vm.workplan.studyQuantum" style="width: 120px;">
+                        <option value="am" ng-selected="(vm.workplan.studyQuantum == 'am' || !vm.workplan.studyQuantum)">上午</option>   <!--默认选中上午-->
+                        <option value="pm" ng-selected="vm.workplan.studyQuantum == 'pm'">下午</option>
+                        <option value="day" ng-selected="vm.workplan.studyQuantum == 'day'">全天</option>
+                    </select>
+                </td>
+                <td class="text-center">会议议程</td>
+                <td colspan="4" >见附件一</td>
+            </tr>
+            <tr>
+                <td class="text-center">拟聘请专家</td>
+                <td colspan="8" >见附件二</td>
+            </tr>
+            <tr>
+                <td class="text-center">拟邀请单位及领导</td>
+                <td colspan="8" >
+                    <textarea ng-model="vm.workplan.unitAndLeader" style="width: 100%;" rows="5" name="unitAndLeader" id="unitAndLeader">{{vm.workplan.unitAndLeader}}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">部门主管意见</td>
+                <td colspan="8" >
+                    <textarea ng-disabled="true" ng-model="vm.workplan.directorOption" style="width: 100%;" rows="2" name="directorOption" id="directorOption">{{vm.workplan.directorOption}}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">领导批示</td>
+                <td colspan="8" >
+                    <textarea ng-disabled="true" ng-model="vm.workplan.directorName" style="width: 100%;" rows="2" name="directorName" id="directorName">{{vm.workplan.topicContent}}</textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

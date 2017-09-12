@@ -16,4 +16,8 @@ public interface OrgDeptService {
     List<User> queryOrgDeptUser(String id);
 
     List<User> queryOrgDeptUser(String signId,String branchId);
+
+    void fleshOrgDeptCache();
+
+    OrgDept findOrgDeptById(String id);
 }

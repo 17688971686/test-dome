@@ -3,6 +3,7 @@ package cs.listener;
 import cs.common.utils.QuartzManager;
 import cs.domain.sys.Quartz;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.sys.OrgDeptService;
 import cs.service.sys.QuartzService;
 import cs.service.sys.UserService;
 import cs.service.sys.UserServiceImpl;
@@ -31,6 +32,8 @@ public class SysStartUpListener implements ApplicationListener {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private OrgDeptService orgDeptService;
 
     private boolean isInit = false;
     @Override
@@ -41,8 +44,9 @@ public class SysStartUpListener implements ApplicationListener {
                 try {
                     //1、添加用户缓存
                     userService.fleshPostUserCache();
-
-                    //2、启动默认启动的定时器
+                    //2、添加部门缓存
+                    orgDeptService.fleshOrgDeptCache();
+                    //3、启动默认启动的定时器
                     List<Quartz> quartzList = quartzService.findDefaultQuartz();
                     for (Quartz quartz : quartzList) {
                         SchedulerFactory schedulderFactory = new StdSchedulerFactory();

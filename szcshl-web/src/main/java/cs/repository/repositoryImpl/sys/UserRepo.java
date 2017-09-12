@@ -28,4 +28,8 @@ public interface UserRepo extends IRepository<User, String> {
     List<User> findAllPostUser();
 
     void fleshPostUserCache();
+
+    User findOrgDirector(String userId);
+
+    User findOrgSLeader(String userId);
 }

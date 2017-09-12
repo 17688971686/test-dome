@@ -15,15 +15,31 @@
                     {{vm.topic.cooperator}}
                 </td>
             </tr>
-
+            <tr>
+                <td class="formAlignRight">申报部门：</td>
+                <td>
+                    {{vm.topic.orgName}}
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">是否报发改委审批：</td>
+                <td >
+                    <label>
+                        <input type="radio"  ng-disabled="true" ng-value="9" ng-model="vm.topic.sendFgw" ng-checked="vm.topic.sendFgw == 9 || vm.topic.sendFgw == '9'" name="sendFgw" />是
+                    </label>
+                    <label>
+                        <input type="radio"  ng-disabled="true" ng-value="0" ng-model="vm.topic.sendFgw" ng-checked="vm.topic.sendFgw == 0 || vm.topic.sendFgw == '0'" name="sendFgw" />否
+                    </label>
+                </td>
+            </tr>
             <tr>
                 <td class="formAlignRight">是否委里立项：</td>
                 <td >
                     <label>
-                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.topic.fgwlx == 9 || vm.topic.fgwlx == '9'" name="fgwlx" />是
+                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.topic.fgwlx" ng-checked="vm.topic.fgwlx == 9 || vm.topic.fgwlx == '9'" name="fgwlx" />是
                     </label>
                     <label>
-                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.topic.fgwlx == 0 || vm.topic.fgwlx == '0'" name="isRelated" />否
+                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.topic.fgwlx" ng-checked="vm.topic.fgwlx == 0 || vm.topic.fgwlx == '0'" name="fgwlx" />否
                     </label>
                 </td>
             </tr>

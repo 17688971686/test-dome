@@ -21,8 +21,6 @@ public interface FlowService {
 
     ResultMsg rollBackLastNode(FlowDto flowDto);
 
-    void rollBackByActiviti(FlowDto flowDto);
-
     void nextTaskDefinition(List<Node> nextNodeList, ActivityImpl activityImpl, String activityId);
 
     void deployementProcessByName(String path, String sourceName, String flowName);

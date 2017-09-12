@@ -1,9 +1,11 @@
 package cs.model.topic;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.flow.FlowPrincipal;
 import cs.model.BaseDto;
 
 import javax.persistence.Column;
+import java.util.Date;
 import java.util.List;
 
 
@@ -27,7 +29,30 @@ public class TopicInfoDto extends BaseDto {
      * 发改委立项课题（9:是，0：否，默认为0）
      */
     private String fgwlx;
+    /**
+     * 是否报发改委审批（9:是，0：否，默认为0）
+     */
+    private String sendFgw;
 
+    /**
+     * 申报部门
+     */
+    private String orgId;
+
+    /**
+     * 申报部门名称
+     */
+    private String orgName;
+
+    /**
+     * 是否完成成果鉴定会方案（9:是，0：否，默认为0）
+     */
+    private String isFinishPlan;
+
+    /**
+     * 是否完成归档（9:是，0：否，默认为0）
+     */
+    private String isFinishFiling;
     /**
      * 状态
      */
@@ -42,6 +67,27 @@ public class TopicInfoDto extends BaseDto {
      * 流程实例
      */
     private String processInstanceId;
+
+    /**
+     * 任务ID
+     */
+    private String taskId;
+
+    /**
+     * 课题结题时间
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date endTime;
+
+    /**
+     * 课题序号
+     */
+    private Integer topicSeq;
+
+    /**
+     * 课题代码
+     */
+    private String topicCode;
 
     /**
      * 工作方案
@@ -70,7 +116,7 @@ public class TopicInfoDto extends BaseDto {
 
     public TopicInfoDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -78,6 +124,7 @@ public class TopicInfoDto extends BaseDto {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getTopicName() {
         return topicName;
     }
@@ -85,6 +132,7 @@ public class TopicInfoDto extends BaseDto {
     public void setTopicName(String topicName) {
         this.topicName = topicName;
     }
+
     public String getCooperator() {
         return cooperator;
     }
@@ -164,5 +212,77 @@ public class TopicInfoDto extends BaseDto {
 
     public void setPrinUserIds(String prinUserIds) {
         this.prinUserIds = prinUserIds;
+    }
+
+    public String getSendFgw() {
+        return sendFgw;
+    }
+
+    public void setSendFgw(String sendFgw) {
+        this.sendFgw = sendFgw;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public String getIsFinishPlan() {
+        return isFinishPlan;
+    }
+
+    public void setIsFinishPlan(String isFinishPlan) {
+        this.isFinishPlan = isFinishPlan;
+    }
+
+    public String getIsFinishFiling() {
+        return isFinishFiling;
+    }
+
+    public void setIsFinishFiling(String isFinishFiling) {
+        this.isFinishFiling = isFinishFiling;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getTopicSeq() {
+        return topicSeq;
+    }
+
+    public void setTopicSeq(Integer topicSeq) {
+        this.topicSeq = topicSeq;
+    }
+
+    public String getTopicCode() {
+        return topicCode;
+    }
+
+    public void setTopicCode(String topicCode) {
+        this.topicCode = topicCode;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 }
