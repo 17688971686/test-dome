@@ -79,10 +79,10 @@ public class BookBuyBusinessController {
     }
 
     // begin#html
-    @RequiresPermissions("bookBuyBusiness#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequiresPermissions("bookBuyBusiness#html/bookBuyBusinessList#get")
+    @RequestMapping(name = "列表页面", path = "html/bookBuyBusinessList", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/bookBuyBusinessList";
     }
 
     @RequiresPermissions("bookBuyBusiness#html/bookBuyBusinessEdit#get")

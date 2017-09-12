@@ -9,6 +9,7 @@ import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.book.BookBuy;
 import cs.domain.book.BookBuyBusiness;
+import cs.domain.book.BookBuyBusiness_;
 import cs.domain.book.BookBuy_;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
@@ -213,9 +214,46 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 		User dealUser = null;
 		Org org = null;
 		Map<String, Object> variables = processInstance.getProcessVariables();
+		boolean saveFlag = false;
 
 		//以下是流程环节处理
-		return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+		switch (task.getTaskDefinitionKey()) {
+			//各项目负责人/部门提出购买图书请求
+			case FlowConstant.BOOK_LEADER_CGQQ:
+				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
+				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+				taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+				taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_BZ.getValue(), SessionUtil.getUserId()));
+				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+				//todo:设置购买渠道后saveFlag置为true
+				break;
+			case FlowConstant.BOOK_BZSP:
+
+				break;
+			case FlowConstant.BOOK_FGFZRSP:
+
+				break;
+
+			case FlowConstant.BOOK_ZXZRSP:
+
+				break;
+			case FlowConstant.BOOK_YSRK:
+				break;
+				default:
+					;
+		}
+		if (bookBuyBusiness != null && saveFlag) {
+			//todo:设置购买渠道购买渠道
+			//bookBuyBusiness.setBuyChannel();
+			bookBuyBusinessRepo.save(bookBuyBusiness);
+		}
+		taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+		if (flowDto.isEnd()) {
+			taskService.complete(task.getId());
+		} else {
+			taskService.complete(task.getId(), variables);
+		}
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
 	}
 
 }
