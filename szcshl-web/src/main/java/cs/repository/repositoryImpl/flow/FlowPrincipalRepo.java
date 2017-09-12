@@ -21,5 +21,7 @@ public interface FlowPrincipalRepo extends IRepository<FlowPrincipal, String> {
 
     List<FlowPrincipal> getFlowPrinInfoByBusiId(String busiId);
 
-    void deletePriUserByUserId(String id);
+    void deletePriUserByBusiId(String busiId);
+
+    boolean isHavePriUserByBusiId(String busiId);
 }

@@ -10,6 +10,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.*;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -31,22 +32,24 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 
 @Service
 public class OrgServiceImpl implements OrgService {
-	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
-	@Autowired
-	private UserRepo userRepo;
-	@Autowired
-	private OrgRepo orgRepo;
-	@Autowired
-	private CompanyRepo companyRepo;
-	
-	@Override
-	public PageModelDto<OrgDto> get(ODataObj odataObj) {
-		List<Org> orgList = orgRepo.findByOdata(odataObj);
-		List<OrgDto> orgDtoList = new ArrayList<>();
-		orgList.forEach(o ->{
-			OrgDto orgDto = new OrgDto();	
-			BeanCopierUtils.copyProperties(o, orgDto);
-			/*List<User> userList = o.getUsers();
+    private static Logger logger = Logger.getLogger(UserServiceImpl.class);
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private OrgRepo orgRepo;
+    @Autowired
+    private CompanyRepo companyRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+
+    @Override
+    public PageModelDto<OrgDto> get(ODataObj odataObj) {
+        List<Org> orgList = orgRepo.findByOdata(odataObj);
+        List<OrgDto> orgDtoList = new ArrayList<>();
+        orgList.forEach(o -> {
+            OrgDto orgDto = new OrgDto();
+            BeanCopierUtils.copyProperties(o, orgDto);
+            /*List<User> userList = o.getUsers();
 			if(userList != null && userList.size() > 0){
 				List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
 				userList.forEach(u ->{
@@ -56,198 +59,201 @@ public class OrgServiceImpl implements OrgService {
 				});
 				orgDto.setUserDtos(userDtoList);
 			}*/
-			orgDtoList.add(orgDto);
-		});
-		
-		PageModelDto<OrgDto> pageModelDto = new PageModelDto<>();
-		pageModelDto.setCount(odataObj.getCount());
-		pageModelDto.setValue(orgDtoList);
+            orgDtoList.add(orgDto);
+        });
 
-		logger.info("查询部门数据");		
-		return pageModelDto;
-	}
+        PageModelDto<OrgDto> pageModelDto = new PageModelDto<>();
+        pageModelDto.setCount(odataObj.getCount());
+        pageModelDto.setValue(orgDtoList);
 
-	@Override
-	@Transactional
-	public ResultMsg createOrg(OrgDto orgDto) {
-		// 判断部门是否已经存在
-		Criteria criteria = orgRepo.getExecutableCriteria();		
-		criteria.setProjection(Projections.rowCount());  
-		criteria.add(Restrictions.eq(Org_.orgIdentity.getName(), orgDto.getOrgIdentity()));
-		
-		int orgCount = Integer.parseInt(criteria.uniqueResult().toString());
-		// 部门不存在
-		if (orgCount < 1) {
-			Org org = new Org();						
-			BeanCopierUtils.copyProperties(orgDto, org);
-			Date now = new Date();
-			org.setId(UUID.randomUUID().toString());
-			org.setCreatedBy(SessionUtil.getLoginName());
-			org.setCreatedDate(now);
-			org.setModifiedBy(SessionUtil.getLoginName());
-			org.setModifiedDate(now);
-			if(Validate.isString(org.getOrgSLeader())){
-                User user = userRepo.findById(User_.id.getName(),org.getOrgSLeader());
+        logger.info("查询部门数据");
+        return pageModelDto;
+    }
+
+    @Override
+    @Transactional
+    public ResultMsg createOrg(OrgDto orgDto) {
+        // 判断部门是否已经存在
+        Criteria criteria = orgRepo.getExecutableCriteria();
+        criteria.setProjection(Projections.rowCount());
+        criteria.add(Restrictions.eq(Org_.orgIdentity.getName(), orgDto.getOrgIdentity()));
+
+        int orgCount = Integer.parseInt(criteria.uniqueResult().toString());
+        // 部门不存在
+        if (orgCount < 1) {
+            Org org = new Org();
+            BeanCopierUtils.copyProperties(orgDto, org);
+            Date now = new Date();
+            org.setId(UUID.randomUUID().toString());
+            org.setCreatedBy(SessionUtil.getLoginName());
+            org.setCreatedDate(now);
+            org.setModifiedBy(SessionUtil.getLoginName());
+            org.setModifiedDate(now);
+            if (Validate.isString(org.getOrgSLeader())) {
+                User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
                 user.setMngOrgType(Constant.OrgType.getValue(org.getName()));
                 userRepo.save(user);
             }
-			
-			orgRepo.save(org);
-			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),org.getId(),"操作成功！",null);
-			//logger.info(String.format("创建部门,部门名:%s", orgDto.getOrgIdentity()));
-		} else{
-			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
-			//throw new IllegalArgumentException(String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
-		}
-	}
 
-	@Override
-	@Transactional
-	public ResultMsg updateOrg(OrgDto orgDto) {
-		Org org = orgRepo.findById(Org_.id.getName(),orgDto.getId());
-		BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);						
-		org.setModifiedBy(SessionUtil.getLoginName());
-		org.setModifiedDate(new Date());
-        if(Validate.isString(org.getOrgSLeader())){
-            User user = userRepo.findById(User_.id.getName(),org.getOrgSLeader());
+            orgRepo.save(org);
+            orgDeptRepo.fleshOrgDeptCache();
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), org.getId(), "操作成功！", null);
+            //logger.info(String.format("创建部门,部门名:%s", orgDto.getOrgIdentity()));
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
+            //throw new IllegalArgumentException(String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResultMsg updateOrg(OrgDto orgDto) {
+        Org org = orgRepo.findById(Org_.id.getName(), orgDto.getId());
+        BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);
+        org.setModifiedBy(SessionUtil.getLoginName());
+        org.setModifiedDate(new Date());
+        if (Validate.isString(org.getOrgSLeader())) {
+            User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
             user.setMngOrgType(Constant.OrgType.getValue(org.getName()));
             userRepo.save(user);
         }
-		orgRepo.save(org);
-		return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
-	}
+        orgRepo.save(org);
+        orgDeptRepo.fleshOrgDeptCache();
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
 
-	@Override
-	@Transactional
-	public void deleteOrg(String id) {
-		orgRepo.deleteById(Org_.id.getName(), id);		
-		logger.info(String.format("删除部门,部门identity:%s", id));		
-	}
+    @Override
+    @Transactional
+    public void deleteOrg(String id) {
+        orgRepo.deleteById(Org_.id.getName(), id);
+        orgDeptRepo.fleshOrgDeptCache();
+        logger.info(String.format("删除部门,部门identity:%s", id));
+    }
 
-	@Override
-	@Transactional
-	public PageModelDto<UserDto> getOrgUsers(String id) {
-		PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
-		List<UserDto> userDtos = new ArrayList<>();
-		Org org = orgRepo.findById(id);
-		if (org != null) {
-			org.getUsers().forEach(x -> {
-				UserDto userDto = new UserDto();
-				userDto.setId(x.getId());
-				userDto.setRemark(x.getRemark());
-				userDto.setLoginName(x.getLoginName());
-				userDto.setDisplayName(x.getDisplayName());
-				userDtos.add(userDto);
-			});
-			pageModelDto.setValue(userDtos);
-			pageModelDto.setCount(userDtos.size());
-			logger.info(String.format("查找部门用户，部门%s", org.getOrgIdentity()));
-		}
+    @Override
+    @Transactional
+    public PageModelDto<UserDto> getOrgUsers(String id) {
+        PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
+        List<UserDto> userDtos = new ArrayList<>();
+        Org org = orgRepo.findById(id);
+        if (org != null) {
+            org.getUsers().forEach(x -> {
+                UserDto userDto = new UserDto();
+                userDto.setId(x.getId());
+                userDto.setRemark(x.getRemark());
+                userDto.setLoginName(x.getLoginName());
+                userDto.setDisplayName(x.getDisplayName());
+                userDtos.add(userDto);
+            });
+            pageModelDto.setValue(userDtos);
+            pageModelDto.setCount(userDtos.size());
+            logger.info(String.format("查找部门用户，部门%s", org.getOrgIdentity()));
+        }
 
-		return pageModelDto;
-	}
+        return pageModelDto;
+    }
 
-	@Override
-	@Transactional
-	public PageModelDto<UserDto> getUsersNotInOrg(String id, ODataObj oDataObj) {
-		PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
-		List<UserDto> userDtos = new ArrayList<>();
-		Org org = orgRepo.findById(id);
-		List<String> userIds = new ArrayList<>();
-		if (org != null) {
+    @Override
+    @Transactional
+    public PageModelDto<UserDto> getUsersNotInOrg(String id, ODataObj oDataObj) {
+        PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
+        List<UserDto> userDtos = new ArrayList<>();
+        Org org = orgRepo.findById(id);
+        List<String> userIds = new ArrayList<>();
+        if (org != null) {
 //			org.getUsers().forEach(x -> {
 //				userIds.add(x.getId());
 //			});
-			List<User> users = userRepo.getUsersNotIn(userIds, oDataObj);
-			users.forEach(x -> {
-				UserDto userDto = new UserDto();
-				userDto.setId(x.getId());
-				userDto.setRemark(x.getRemark());
-				userDto.setLoginName(x.getLoginName());
-				userDto.setDisplayName(x.getDisplayName());
-				userDtos.add(userDto);
+            List<User> users = userRepo.getUsersNotIn(userIds, oDataObj);
+            users.forEach(x -> {
+                UserDto userDto = new UserDto();
+                userDto.setId(x.getId());
+                userDto.setRemark(x.getRemark());
+                userDto.setLoginName(x.getLoginName());
+                userDto.setDisplayName(x.getDisplayName());
+                userDtos.add(userDto);
 
-			});
-			pageModelDto.setValue(userDtos);
-			pageModelDto.setCount(userDtos.size());
+            });
+            pageModelDto.setValue(userDtos);
+            pageModelDto.setCount(userDtos.size());
 
-			logger.info(String.format("查找非部门用户,部门%s", org.getOrgIdentity()));
-		}
+            logger.info(String.format("查找非部门用户,部门%s", org.getOrgIdentity()));
+        }
 
-		return pageModelDto;
-	}
+        return pageModelDto;
+    }
 
-	@Override
-	@Transactional
-	public void addUserToOrg(String userId, String orgId) {
-		Org org = orgRepo.findById(orgId);
-		if (org != null) {
-			User user = userRepo.findById(userId);
-			if (user != null) {
-				user.setOrg(org);
-			}
-			userRepo.save(user);
-			logger.info(String.format("添加用户到部门,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));			
-		}
-	}
+    @Override
+    @Transactional
+    public void addUserToOrg(String userId, String orgId) {
+        Org org = orgRepo.findById(orgId);
+        if (org != null) {
+            User user = userRepo.findById(userId);
+            if (user != null) {
+                user.setOrg(org);
+            }
+            userRepo.save(user);
+            logger.info(String.format("添加用户到部门,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
+        }
+    }
 
-	@Override
-	@Transactional
-	public void removeOrgUser(String userId, String orgId) {
-		Org org = orgRepo.findById(orgId);
-		if (org != null) {
-			User user = userRepo.findById(userId);
-			if (user != null) {
-				user.setOrg(null);
-			}
-			userRepo.save(user);
-			logger.info(String.format("从部门移除用户,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
-		}
-	}
+    @Override
+    @Transactional
+    public void removeOrgUser(String userId, String orgId) {
+        Org org = orgRepo.findById(orgId);
+        if (org != null) {
+            User user = userRepo.findById(userId);
+            if (user != null) {
+                user.setOrg(null);
+            }
+            userRepo.save(user);
+            logger.info(String.format("从部门移除用户,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
+        }
+    }
 
-	@Override
-	@Transactional
-	public void removeOrgUsers(String[] userIds, String orgId) {
-		Org org = orgRepo.findById(orgId);
-		if (org != null) {
-			for (String id : userIds) {
-				this.removeOrgUser(id,orgId);
-			}
-			logger.info(String.format("批量删除部门用户,部门%s", org.getOrgIdentity()));
-		}
-	}
+    @Override
+    @Transactional
+    public void removeOrgUsers(String[] userIds, String orgId) {
+        Org org = orgRepo.findById(orgId);
+        if (org != null) {
+            for (String id : userIds) {
+                this.removeOrgUser(id, orgId);
+            }
+            logger.info(String.format("批量删除部门用户,部门%s", org.getOrgIdentity()));
+        }
+    }
 
-	@Override
-	@Transactional
-	public List<CompanyDto> getCompany(ODataObj odataObj) {	
-		List<Company> com	=companyRepo.findByOdata(odataObj);	
-		List<CompanyDto> comDtoList= new ArrayList<>();
-		
-		for(Company item : com){		
-			CompanyDto comDto =new CompanyDto();
-			
-			comDto.setId(item.getId());
-			comDto.setCoAddress(item.getCoAddress());
-			comDto.setCoDept(item.getCoDept());
-			comDto.setCoDeptName(item.getCoDeptName());
-			comDto.setCoFax(item.getCoFax());
-			comDto.setCoName(item.getCoName());
-			comDto.setCoPC(item.getCoPC());
-			comDto.setCoPhone(item.getCoPhone());
-			comDto.setCoSite(item.getCoSite());
-			comDto.setCoSynopsis(item.getCoSynopsis());
-	
-			comDtoList.add(comDto);
-		
-		}
-		return comDtoList;
-	}
+    @Override
+    @Transactional
+    public List<CompanyDto> getCompany(ODataObj odataObj) {
+        List<Company> com = companyRepo.findByOdata(odataObj);
+        List<CompanyDto> comDtoList = new ArrayList<>();
 
-	@Override
-	public OrgDto findById(String id) {
-		Org org = orgRepo.findById(id);
-		OrgDto orgDto = new OrgDto();	
-		BeanCopierUtils.copyProperties(org, orgDto);
+        for (Company item : com) {
+            CompanyDto comDto = new CompanyDto();
+
+            comDto.setId(item.getId());
+            comDto.setCoAddress(item.getCoAddress());
+            comDto.setCoDept(item.getCoDept());
+            comDto.setCoDeptName(item.getCoDeptName());
+            comDto.setCoFax(item.getCoFax());
+            comDto.setCoName(item.getCoName());
+            comDto.setCoPC(item.getCoPC());
+            comDto.setCoPhone(item.getCoPhone());
+            comDto.setCoSite(item.getCoSite());
+            comDto.setCoSynopsis(item.getCoSynopsis());
+
+            comDtoList.add(comDto);
+
+        }
+        return comDtoList;
+    }
+
+    @Override
+    public OrgDto findById(String id) {
+        Org org = orgRepo.findById(id);
+        OrgDto orgDto = new OrgDto();
+        BeanCopierUtils.copyProperties(org, orgDto);
 		/*List<User> userList = org.getUsers();
 		if(userList != null && userList.size() > 0){
 			List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
@@ -273,26 +279,26 @@ public class OrgServiceImpl implements OrgService {
 			}
 			orgDto.setUserDtos(userDtoList);
 		}*/
-		return orgDto;
-	}
+        return orgDto;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<OrgDto> listAll() {
-		Criteria criteria = orgRepo.getExecutableCriteria();
-		criteria.addOrder(Order.asc(Org_.sort.getName()));		
-		List<Org> orgList = criteria.list();
-		if(orgList != null){
-			List<OrgDto> orgDtoList = new ArrayList<OrgDto>(orgList.size());
-			orgList.forEach( o ->{
-				OrgDto orgDto = new OrgDto();
-				BeanCopierUtils.copyProperties(o, orgDto);
-				orgDto.setCharge((SessionUtil.getUserInfo().getId().equals(o.getOrgSLeader()))?true:false);
-				orgDtoList.add(orgDto);
-			});
-			return orgDtoList;
-		}
-		return null;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<OrgDto> listAll() {
+        Criteria criteria = orgRepo.getExecutableCriteria();
+        criteria.addOrder(Order.asc(Org_.sort.getName()));
+        List<Org> orgList = criteria.list();
+        if (orgList != null) {
+            List<OrgDto> orgDtoList = new ArrayList<OrgDto>(orgList.size());
+            orgList.forEach(o -> {
+                OrgDto orgDto = new OrgDto();
+                BeanCopierUtils.copyProperties(o, orgDto);
+                orgDto.setCharge((SessionUtil.getUserInfo().getId().equals(o.getOrgSLeader())) ? true : false);
+                orgDtoList.add(orgDto);
+            });
+            return orgDtoList;
+        }
+        return null;
+    }
 
 }

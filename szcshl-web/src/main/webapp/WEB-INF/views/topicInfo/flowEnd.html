@@ -1,0 +1,38 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/agendaTasks">任务待办</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">课题研究计划</a></li>
+        <li ng-show="vm.topic.workPlanDto"><a id="show_workprogram_a" data-toggle="tab"  for-div="busi_workplan">工作方案</a></li>
+        <li ng-show="vm.topic.filingDto"><a id="show_filerecord_a" data-toggle="tab" for-div="busi_filerecord">归档信息</a></li>
+        <li ng-show="vm.showFlag.showUploadFile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
+        <li ><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
+            <#include "/topicInfo/detail.html"/>
+        </div><!-- end tab -->
+        <div class="tab-pane fade" style="background:white;" id="busi_workplan">
+            <#include "/topicInfo/planDetail.html"/>
+        </div><!-- end tab -->
+
+        <div class="tab-pane fade" style="background:white;" id="busi_filerecord">
+            <#include "/topicInfo/filingDetail.html"/>
+        </div><!-- end tab -->
+
+        <div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
+            <div class="grid" kendo-grid="grid" k-options="vm.historygrid" k-data-source="vm.historygrid.dataSource"></div>
+        </div>
+        <!-- end tab -->
+
+    </div>
+</div>

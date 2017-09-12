@@ -28,11 +28,11 @@ public class AddRegisterFile extends DomainBase {
 	private Integer totalNum;
 	
 	//是否有原件
-	@Column(columnDefinition = "VARCHAR(10)")
+	@Column(columnDefinition = "VARCHAR(2)")
 	private String isHasOriginfile;
 	
 	//是否有复印件
-	@Column(columnDefinition = "VARCHAR(10)")
+	@Column(columnDefinition = "VARCHAR(2)")
 	private String isHasCopyfile;
 	
 	//补充说明
@@ -42,27 +42,12 @@ public class AddRegisterFile extends DomainBase {
 	//补充日期
 	@Column(columnDefinition = "Date")
 	private Date suppleDate;
-	
-	//收文编号ID
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String signid;
-	
-	//归档编号ID
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String fileRecordId;
-	
-	//工作方案ID
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String workId;
-	
 
-	public String getSignid() {
-		return signid;
-	}
-
-	public void setSignid(String signid) {
-		this.signid = signid;
-	}
+	/**
+	 * 业务ID
+	 */
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String businessId;
 
 	public String getId() {
 		return id;
@@ -120,23 +105,11 @@ public class AddRegisterFile extends DomainBase {
 		this.suppleDate = suppleDate;
 	}
 
-	public String getFileRecordId() {
-		return fileRecordId;
-	}
+    public String getBusinessId() {
+        return businessId;
+    }
 
-	public void setFileRecordId(String fileRecordId) {
-		this.fileRecordId = fileRecordId;
-	}
-
-	public String getWorkId() {
-		return workId;
-	}
-
-	public void setWorkId(String workId) {
-		this.workId = workId;
-	}
-	
-	
-
-	
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
 }

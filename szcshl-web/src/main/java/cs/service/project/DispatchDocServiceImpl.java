@@ -102,8 +102,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
      */
     private int findCurMaxSeq(Date dispatchDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max("+DispatchDoc_.fileSeq.getName()+") from cs_dispatch_doc where TO_CHAR("+DispatchDoc_.dispatchDate.getName()+",'yyyy') = :dispatchDate ");
-        sqlBuilder.setParam("dispatchDate",DateUtils.converToString(dispatchDate,"yyyy"));
+        sqlBuilder.append("select max("+DispatchDoc_.fileSeq.getName()+") from cs_dispatch_doc where "+DispatchDoc_.dispatchDate.getName()+" between ");
+        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
+        sqlBuilder.setParam("beginTime", DateUtils.converToString(dispatchDate,"yyyy")+"-01-01 00:00:00");
+        sqlBuilder.setParam("endTime", DateUtils.converToString(dispatchDate,"yyyy")+"-12-31 23:59:59");
         return dispatchDocRepo.returnIntBySql(sqlBuilder);
     }
 

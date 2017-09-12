@@ -1,9 +1,10 @@
 package cs.model.topic;
 
 import cs.model.BaseDto;
+import cs.model.project.AddRegisterFileDto;
 
 import java.util.Date;
-    
+import java.util.List;
 
 
 /**
@@ -60,6 +61,12 @@ public class FilingDto extends BaseDto {
     private String filingUser;
     private Date filingDate;
     private TopicInfoDto topicInfoDto;
+    private String topicId;
+
+    /**
+     * 拟补充资料函列表
+     */
+    private List<AddRegisterFileDto> registerFileDto;
 
     public FilingDto() {
     }
@@ -417,5 +424,21 @@ public class FilingDto extends BaseDto {
 
     public void setTopicInfoDto(TopicInfoDto topicInfoDto) {
         this.topicInfoDto = topicInfoDto;
+    }
+
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
+    }
+
+    public List<AddRegisterFileDto> getRegisterFileDto() {
+        return registerFileDto;
+    }
+
+    public void setRegisterFileDto(List<AddRegisterFileDto> registerFileDto) {
+        this.registerFileDto = registerFileDto;
     }
 }

@@ -59,4 +59,22 @@ public class OrgDeptServiceImpl implements OrgDeptService {
     public List<User> queryOrgDeptUser(String signId, String branchId) {
         return orgDeptRepo.queryOrgDeptUser(signId,branchId);
     }
+
+    /**
+     * 刷新缓存
+     */
+    @Override
+    public void fleshOrgDeptCache() {
+        orgDeptRepo.fleshOrgDeptCache();
+    }
+
+    /**
+     * 根据ID查询（先从缓存找，再从数据库找）
+     * @param id
+     * @return
+     */
+    @Override
+    public OrgDept findOrgDeptById(String id) {
+        return orgDeptRepo.findOrgDeptById(id);
+    }
 }

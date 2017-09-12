@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowDealCtrl', flowDeal);
 
-    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc'];
+    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc','sysfileSvc','$scope'];
 
-    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc) {
+    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc,sysfileSvc,$scope) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -19,8 +19,10 @@
         vm.showFlag={
             businessNext : false,                              //是否显示下一环节处理人tr
             businessTr : false,                                //是否显示业务处理tr
+            showUploadBT : false,                              //显示附件上传按钮
+            showUploadFile : false,                            //显示附件
+            buttBack : false,                                  //显示回退按钮
         }
-
         activate();
         function activate() {
             $('#myTab li').click(function (e) {
@@ -36,12 +38,20 @@
             vm.picture = rootPath + "/flow/processInstance/img/"+ vm.instanceId;
             //2、历史处理记录
             flowSvc.historyData(vm);
+
             //3、查询当前环节信息
             flowSvc.getFlowInfo(vm.taskId,vm.instanceId,function(data){
                 vm.flow = data;
                 //如果是结束环节，则不显示下一环节信息
                 if (vm.flow.end) {
                     vm.showFlag.nodeNext = false;
+                }else{
+                    //初始化环节信息
+                    switch (vm.processKey){
+                        case flowcommon.getFlowDefinedKey().TOPIC_FLOW:
+                            topicSvc.initFlowNode(vm.flow,vm.showFlag,vm);
+                            break;
+                    }
                 }
             });
             //4、各自显示模块
@@ -50,7 +60,34 @@
                     topicSvc.initFlowDeal(vm);
                     break;
             }
+            //5、附件
+            sysfileSvc.findByBusinessId(vm.businessKey,function(data){
+                if(data && data.length > 0){
+                    vm.sysFileList = data;
+                    vm.showFlag.showUploadFile = true;
+                }
+            })
         }
+
+        /***************  S_初始化附件上传控件  ***************/
+        vm.initFileUpload = function(mainType,sysfileType,sysBusiType){
+            vm.sysFile = {
+                businessId : vm.businessKey,
+                mainId : vm.businessKey,
+                mainType : mainType,
+                sysfileType : sysfileType,
+                sysBusiType : sysBusiType,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId:"sysfileinput",
+                vm:vm
+            });
+        }
+        //附件下载
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.downloadFile(sysFileId);
+        }
+        /***************  E_初始化附件上传控件  ***************/
 
         /***************  S_个人意见  ***************/
         vm.ideaEdit = function (options) {

@@ -207,7 +207,7 @@ public class SignServiceImpl implements SignService {
         }
         //6、收文编号
         if(!Validate.isString(sign.getSignNum())){
-            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType());
+            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(),sign.getSigndate());
             sign.setSignSeq(maxSeq+1);
             String signSeqString = (maxSeq+1)>999?(maxSeq+1)+"":String.format("%03d", Integer.valueOf(maxSeq+1));
             sign.setSignNum(DateUtils.converToString(new Date(),"yyyy")+sign.getDealOrgType()+signSeqString);
@@ -1799,12 +1799,17 @@ public class SignServiceImpl implements SignService {
      * @param signType
      * @return
      */
-    private int findSignMaxSeqByType(String signType) {
+    private int findSignMaxSeqByType(String signType,Date signdate) {
+        if(signdate == null){
+            signdate = new Date();
+        }
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max("+Sign_.signSeq.getName()+") from cs_sign ");
-        sqlBuilder.append("where "+Sign_.dealOrgType.getName()+" =:signType and TO_CHAR("+Sign_.signdate.getName()+",'yyyy') = :signdate ");
+        sqlBuilder.append("where "+Sign_.dealOrgType.getName()+" =:signType and ("+Sign_.signdate.getName()+" between ");
+        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )) ");
         sqlBuilder.setParam("signType",signType);
-        sqlBuilder.setParam("signdate",DateUtils.converToString(new Date(),"yyyy"));
+        sqlBuilder.setParam("beginTime", DateUtils.converToString(signdate,"yyyy")+"-01-01 00:00:00");
+        sqlBuilder.setParam("endTime", DateUtils.converToString(signdate,"yyyy")+"-12-31 23:59:59");
         return dispatchDocRepo.returnIntBySql(sqlBuilder);
     }
 

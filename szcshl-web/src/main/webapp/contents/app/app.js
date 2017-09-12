@@ -43,13 +43,27 @@
                 controller: 'adminDoTaskCtrl',
                 controllerAs: 'vm'
             })
+            //begin#流程公共页面
             .state('flowDeal', {
                 url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
                 templateUrl: function($routeParams){return rootPath + '/flow/flowDeal/'+$routeParams.processKey+'.html';},
                 controller: 'flowDealCtrl',
                 controllerAs: 'vm'
             })
-             //begin#addSuppletter
+            .state('flowDetail', {
+                url: '/flowDetail/:businessKey/:processKey/:taskId/:instanceId',
+                templateUrl: function($routeParams){return rootPath + '/flow/flowDetail/'+$routeParams.processKey+'.html';},
+                controller: 'flowDetailCtrl',
+                controllerAs: 'vm'
+            })
+            .state('flowEnd', {
+                url: '/flowEnd/:businessKey/:processKey/:instanceId',
+                templateUrl: function($routeParams){return rootPath + '/flow/flowEnd/'+$routeParams.processKey+'.html';},
+                controller: 'flowEndCtrl',
+                controllerAs: 'vm'
+            })
+            //end#流程公共页面
+            //begin#addSuppletter
             .state('addSupp', {
                 url: '/addSupp/:signid',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
@@ -654,6 +668,18 @@
                 controller : 'myTopicCtrl',
                 controllerAs : 'vm'
             })
+            .state('editWorkPlan',{
+                url : '/editWorkPlan/:topicId',
+                templateUrl : rootPath + '/workPlan/html/edit.html',
+                controller : 'workPlanEditCtrl',
+                controllerAs : 'vm'
+            })
+            .state('editFiling',{
+                url : '/editFiling/:topicId',
+                templateUrl : rootPath + '/filing/html/edit.html',
+                controller : 'filingEditCtrl',
+                controllerAs : 'vm'
+            })
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams) {
@@ -681,7 +707,7 @@
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
-            if(fromState.name == 'signFlowDeal'){
+            if(fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal'){
                 $rootScope.$flowUrl = fromState.name;
                 $rootScope.$flowParams = fromParams;
             }

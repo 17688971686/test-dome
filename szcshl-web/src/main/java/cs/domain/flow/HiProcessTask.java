@@ -47,14 +47,12 @@ public class HiProcessTask {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
-    @JSONField(format = "yyyy-MM-dd")
     private Date startTime;
     /**
      * 结束日期
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
-    @JSONField(format = "yyyy-MM-dd")
     private Date endTime;
     /**
      * 处理时长

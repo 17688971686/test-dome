@@ -65,10 +65,13 @@
         TOPIC_ZRSH_JT : "TOPIC_ZRSH_JT",          //主任审定
         TOPIC_YFZL : "TOPIC_YFZL",                //印发资料
         TOPIC_ZLGD : "TOPIC_ZLGD",                //资料归档
+        TOPIC_BZSH_GD : "TOPIC_BZSH_GD",          //部长审核归档
+        TOPIC_GDY_QR : "TOPIC_GDY_QR",            //归档员确认
     }
 
     //流程定义值
     var flowDefinedKey = {
+        FINAL_SIGN_FLOW:"FINAL_SIGN_FLOW",          //项目签收流程
         TOPIC_FLOW : "TOPIC_FLOW",                  //课题研究流程
     }
     var service = {

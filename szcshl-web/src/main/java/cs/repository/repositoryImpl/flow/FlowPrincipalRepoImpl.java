@@ -12,6 +12,7 @@ import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -97,11 +98,19 @@ public class FlowPrincipalRepoImpl extends AbstractRepository<FlowPrincipal, Str
      * @param busiId
      */
     @Override
-    public void deletePriUserByUserId(String busiId) {
+    public void deletePriUserByBusiId(String busiId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" delete from "+FlowPrincipal.class.getSimpleName()+" where ");
         hqlBuilder.append(FlowPrincipal_.busiId.getName()+" =:busiId ");
         hqlBuilder.setParam("busiId",busiId);
         executeHql(hqlBuilder);
+    }
+
+    @Override
+    public boolean isHavePriUserByBusiId(String busiId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(FlowPrincipal_.busiId.getName(),busiId));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return (totalResult==null||totalResult==0)?false:true;
     }
 }

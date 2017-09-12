@@ -35,7 +35,9 @@
                 FILELIBRARY : "质量管理文件库",
                 POLICYLIBRARY : "政策标准库",
                 TOPIC:"课题附件",
-                TOPIC_PLAN:"课题计划书"
+                TOPIC_PLAN:"课题计划书",
+                TOPIC_WORKPLAN:"课题工作方案",
+                TOPIC_FILING:"课题归档"
             }
         }
 
@@ -148,7 +150,7 @@
             if(angular.isUndefined(options.vm.sysFile.showBusiType)){
                 options.vm.sysFile.showBusiType = sysFileDefaults.showBusiType;
             }
-            console.log(options.vm.sysFile.showBusiType)
+
             //附件下载方法
             options.vm.downloadSysFile = function(id){
                 downloadFile(id);

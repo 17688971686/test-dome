@@ -132,8 +132,10 @@ public class FileRecordServiceImpl implements FileRecordService {
      */
     private int findCurMaxSeq(Date fileRecordDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max("+ FileRecord_.fileSeq.getName()+") from cs_file_record where TO_CHAR("+FileRecord_.fileDate.getName()+",'yyyy') = :fileRecordDate ");
-        sqlBuilder.setParam("fileRecordDate", DateUtils.converToString(fileRecordDate,"yyyy"));
+        sqlBuilder.append("select max("+ FileRecord_.fileSeq.getName()+") from cs_file_record where "+FileRecord_.fileDate.getName()+" between ");
+        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
+        sqlBuilder.setParam("beginTime", DateUtils.converToString(fileRecordDate,"yyyy")+"-01-01 00:00:00");
+        sqlBuilder.setParam("endTime", DateUtils.converToString(fileRecordDate,"yyyy")+"-12-31 23:59:59");
         return fileRecordRepo.returnIntBySql(sqlBuilder);
     }
 }

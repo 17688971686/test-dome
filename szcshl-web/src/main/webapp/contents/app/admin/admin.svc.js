@@ -406,10 +406,12 @@
                     title: "操作",
                     width: 80,
                     template: function (item) {
-                        if ((item.processDefinitionId).indexOf("FINAL_SIGN_FLOW") >= 0) {
+                        if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
                             return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId);
-                        } else {
-                            return '';
+                        }else if(item.flowKey){
+                            return common.format($('#columnBtns').html(), "flowEnd/"+item.businessKey, item.flowKey, item.processInstanceId);
+                        }else{
+                            return "";
                         }
                     }
                 }

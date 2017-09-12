@@ -1,7 +1,9 @@
 package cs.controller.topic;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.topic.FilingDto;
+import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
 import cs.service.topic.FilingService;
 
@@ -39,16 +41,22 @@ public class FilingController {
 
     @RequiresPermissions("filing##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody FilingDto record) {
-        filingService.save(record);
+    @ResponseBody
+    public ResultMsg post(@RequestBody FilingDto record) {
+
+        return filingService.save(record);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody FilingDto findById(@RequestParam(required = true)String id){		
 		return filingService.findById(id);
 	}
-	
+
+    @RequestMapping(name = "根据课题ID查询", path = "initByTopicId",method=RequestMethod.POST)
+    public @ResponseBody
+    FilingDto initByTopicId(@RequestParam(required = true)String topicId){
+        return filingService.initByTopicId(topicId);
+    }
     @RequiresPermissions("filing##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -73,7 +81,7 @@ public class FilingController {
     @RequiresPermissions("filing#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return "topicInfo/filingEdit";
     }
     // end#html
 

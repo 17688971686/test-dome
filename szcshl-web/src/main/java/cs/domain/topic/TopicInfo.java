@@ -1,10 +1,10 @@
 package cs.domain.topic;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.DomainBase;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 课题研究基本信息
@@ -37,7 +37,37 @@ public class TopicInfo extends DomainBase {
     private String fgwlx;
 
     /**
-     * 状态
+     * 是否报发改委审批（9:是，0：否，默认为0）
+     */
+    @Column(columnDefinition="VARCHAR(2)")
+    private String sendFgw;
+
+    /**
+     * 申报部门
+     */
+    @Column(columnDefinition="VARCHAR(64)")
+    private String orgId;
+
+    /**
+     * 申报部门名称
+     */
+    @Column(columnDefinition="VARCHAR(255)")
+    private String orgName;
+
+    /**
+     * 是否完成成果鉴定会方案（9:是，0：否，默认为0）
+     */
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isFinishPlan;
+
+    /**
+     * 是否完成归档（9:是，0：否，默认为0）
+     */
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isFinishFiling;
+
+    /**
+     * 流程状态
      */
     @Column(columnDefinition="VARCHAR(2)")
     private String state;
@@ -54,6 +84,25 @@ public class TopicInfo extends DomainBase {
     @Column(columnDefinition="VARCHAR(512)")
     private String remark;
 
+    /**
+     * 课题结题时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    @JSONField(format = "yyyy-MM-dd")
+    private Date endTime;
+
+    /**
+     * 课题序号
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer topicSeq;
+
+    /**
+     * 课题代码(课题代码2017KT001，归档编号2016KD17001)
+     */
+    @Column(columnDefinition="VARCHAR(16)")
+    private String topicCode;
     /**
      * 工作方案
      */
@@ -136,5 +185,69 @@ public class TopicInfo extends DomainBase {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getSendFgw() {
+        return sendFgw;
+    }
+
+    public void setSendFgw(String sendFgw) {
+        this.sendFgw = sendFgw;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public String getIsFinishPlan() {
+        return isFinishPlan;
+    }
+
+    public void setIsFinishPlan(String isFinishPlan) {
+        this.isFinishPlan = isFinishPlan;
+    }
+
+    public String getIsFinishFiling() {
+        return isFinishFiling;
+    }
+
+    public void setIsFinishFiling(String isFinishFiling) {
+        this.isFinishFiling = isFinishFiling;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getTopicSeq() {
+        return topicSeq;
+    }
+
+    public void setTopicSeq(Integer topicSeq) {
+        this.topicSeq = topicSeq;
+    }
+
+    public String getTopicCode() {
+        return topicCode;
+    }
+
+    public void setTopicCode(String topicCode) {
+        this.topicCode = topicCode;
     }
 }

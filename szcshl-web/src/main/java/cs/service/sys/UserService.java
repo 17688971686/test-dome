@@ -41,9 +41,9 @@ public interface UserService {
 
     UserDto filterOrgSLeader(List<UserDto> userList, Org org);
 
-    UserDto getOrgDirector();
+    UserDto getOrgDirector(String userId);
 
-    UserDto getOrgSLeader();
+    UserDto getOrgSLeader(String userId);
 
     List<UserDto> findAllusers();
 

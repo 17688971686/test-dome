@@ -1,0 +1,311 @@
+<meta charset="UTF-8">
+<#assign path=request.contextPath/>
+<style>
+   #filingtable ul li{
+        width: 48%;
+        float: left;
+        list-style:none;
+        display:inline;
+       word-wrap: break-word;
+       word-break: normal;
+    }
+   #filingtable ul li span{
+        float:left;
+        width: 30%;
+        min-width: 50px;
+    }
+</style>
+<div class="well well-sm" style="background:white;">
+    <table class="table table-bordered" id="filingtable">
+        <caption>QR-4.1-11-A2</caption>
+        <caption class="text-center">
+            <h3><strong>深圳市政府投资项目评审中心<br>课题研究存档表</strong></h3>
+        </caption>
+        <caption class="text-right" style="padding-right:100px;">归档编号：{{vm.topic.filingDto.fileNo}}</span></caption>
+        <tr>
+            <td class="text-center" width="15%">课题名称</td>
+            <td colspan="3" >{{vm.topic.filingDto.topicName}}</td>
+        </tr>
+        <tr>
+            <td class="text-center" width="15%">合作单位</td>
+            <td width="35%">{{vm.topic.filingDto.cooperator}}</td>
+            <td class="text-center" width="15%">课题编号</td>
+            <td width="35%">{{vm.topic.filingDto.topicCode}}</td>
+        </tr>
+        <tr>
+            <td colspan="4">一、课题前期资料</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li>&nbsp;</li>
+                    <li><span >份数</span><span>原件</span><span>复印件</span></li>
+                </ul>
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li>&nbsp;</li>
+                    <li><span >份数</span><span>原件</span><span>复印件</span></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">课题研究计划书</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.planCount" name="planCount" id="planCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.planOrig" name="planOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.planCopy" name="planCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">电子文档</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.eleDocCount" name="eleDocCount" id="eleDocCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.eleDocOrig" name="eleDocOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.eleDocCopy" name="eleDocCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">课题合作研究合同</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.contract" name="contract" id="contract" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.contractOrig" name="contractOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.contractCopy" name="contractCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+            <td colspan="2">
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">二、课题结题资料</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li>&nbsp;</li>
+                    <li><span >份数</span><span>原件</span><span>复印件</span></li>
+                </ul>
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li>&nbsp;</li>
+                    <li><span >份数</span><span>原件</span><span>复印件</span></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">鉴定（论证）会工作方案</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.wplanCount" name="wplanCount" id="wplanCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.wplanOrig" name="wplanOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.wplanCopy" name="wplanCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">研究课题成果文本</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm " ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.studyCount" name="studyCount" id="studyCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.studyOrig" name="studyOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.studyCopy" name="studyCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">课题研究成果鉴定（论证）意见</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm " ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.studyIdeaCount" name="studyIdeaCount" id="studyIdeaCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.studyIdeaOrig" name="studyIdeaOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.studyIdeaCopy" name="studyIdeaCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">研究课题电子文档</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.studyEleCount" name="studyEleCount" id="studyEleCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.studyEleOrig" name="studyEleOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.studyEleCopy" name="studyEleCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">会议签到表</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm " ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.signinCount" name="signinCount" id="signinCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.signinOrig" name="signinOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.signinCopy" name="signinCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">课题完成报告</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm " ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.reportCount" name="reportCount" id="reportCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.reportOrig" name="reportOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.reportCopy" name="reportCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+
+            </td>
+            <td colspan="2">
+                <ul>
+                    <li class="text-center">专家费发放表</li>
+                    <li>
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm " ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.epCostCount" name="epCostCount" id="epCostCount" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.epCostOrig" name="epCostOrig" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.epCostCopy" name="epCostCopy" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">项目负责人签名</td>
+            <td>{{vm.topic.filingDto.principal}}</td>
+            <td class="text-center">负责部门部长审核</td>
+            <td>{{vm.topic.filingDto.director}}</td>
+        </tr>
+        <tr>
+            <td class="text-center">档案员签收</td>
+            <td>{{vm.topic.filingDto.filingUser}}</td>
+            <td class="text-center">归档日期</td>
+            <td>{{vm.topic.filingDto.filingDate | date:'yyyy年MM月dd日' }}</td>
+        </tr>
+        <tr>
+            <td colspan="4">三、其他资料
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <ul>
+                    <li style="width: 75%">
+                        <span  style="width: 90%">&nbsp;</span>
+                    </li>
+                    <li style="width: 25%">
+                        <span >份数</span>
+                        <span>原件</span>
+                        <span>复印件</span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr ng-repeat="f in vm.topic.filingDto.registerFileDto">
+            <td colspan="4">
+                <ul>
+                    <li style="width: 75%">
+                        <span style="width: 90%">
+                        {{vm.topic.filingDto.registerFileDto[$index].fileName}}
+                        </span>
+                    </li>
+                    <li style="width: 25%">
+                            <span >
+                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
+                                       ng-model="vm.topic.filingDto.registerFileDto[$index].totalNum" >
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
+                            </span>
+                        <span>
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.topic.filingDto.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
+                            </span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>

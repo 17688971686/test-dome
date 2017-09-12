@@ -41,7 +41,7 @@ public class Filing extends DomainBase {
     private Integer filingSeq;
 
     /**
-     * 课题代码
+     * 课题代码(课题代码2017KT001，归档编号2016KD17001)
      */
     @Column(columnDefinition="VARCHAR(16)")
     private String filingCode;

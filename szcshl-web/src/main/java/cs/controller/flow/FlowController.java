@@ -20,6 +20,7 @@ import cs.repository.odata.ODataObj;
 import cs.service.flow.*;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
+import cs.service.rtx.RTXService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
@@ -77,6 +78,9 @@ public class FlowController {
     private IFlow topicFlowImpl;
     @Autowired
     private TopicInfoService topicInfoService;
+    @Autowired
+    private RTXService rtxService;
+
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
@@ -277,12 +281,14 @@ public class FlowController {
             case Constant.SIGN_FLOW:
                 resultMsg = signService.dealFlow(processInstance, task,flowDto);
                 break;
-            case FlowConstant.TOPIC_BFGW:
+            case FlowConstant.TOPIC_FLOW:
                 resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
         }
+        //腾讯通发送消息，先注释
+        //rtxService.dealPoolRTXMsg(task.getId(),resultMsg);
         return resultMsg;
     }
 
@@ -292,21 +298,6 @@ public class FlowController {
         return resultMsg;
     }
 
-    @RequestMapping(name = "回退到指定环节", path = "rollback", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg rollback(@RequestBody FlowDto flowDto) {
-        ResultMsg resultMsg = new ResultMsg();
-        if (Validate.isString(flowDto.getTaskId())) {
-            flowService.rollBackByActiviti(flowDto);
-            resultMsg.setReCode(MsgCode.OK.getValue());
-            resultMsg.setReMsg("回退成功！");
-        } else {
-            resultMsg.setReCode(MsgCode.ERROR.getValue());
-            resultMsg.setReMsg(Constant.ERROR_MSG);
-            log.info("流程回退到上一步异常：无法获取任务ID(TaskId)");
-        }
-        return resultMsg;
-    }
 
     @Transactional
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
@@ -351,9 +342,9 @@ public class FlowController {
         return resultMsg;
     }
 
-    /******************************   以下是页面处理  ******************************/
+    /******************************   以下是通用流程页面处理  ******************************/
     @RequestMapping(name = "待办任务页面", path = "flowDeal/{processKey}", method = RequestMethod.GET)
-    public String ruProcessTask(@PathVariable("processKey") String processKey) {
+    public String flowDeal(@PathVariable("processKey") String processKey) {
         String resultPage = "";
         switch (processKey){
             case FlowConstant.TOPIC_FLOW:
@@ -364,4 +355,30 @@ public class FlowController {
         }
         return resultPage;
     }
+    @RequestMapping(name = "在办任务详情页面", path = "flowDetail/{processKey}", method = RequestMethod.GET)
+    public String flowDetail(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.TOPIC_FLOW:
+                resultPage = "topicInfo/flowDetail";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
+    }
+
+    @RequestMapping(name = "办结任务列表", path = "flowEnd/{processKey}", method = RequestMethod.GET)
+    public String flowEnd(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.TOPIC_FLOW:
+                resultPage = "topicInfo/flowEnd";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
+    }
+
 }

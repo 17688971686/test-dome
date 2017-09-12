@@ -8,11 +8,11 @@
     function addRegisterFile($http) {
         var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
         var service = {
-            deleteAddRegisterFile: deleteAddRegisterFile,	//删除登记补充材料
             initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
             saveRegisterFile:saveRegisterFile,				//保存登记补充材料
-            isUnsignedInteger:isUnsignedInteger,			//	数字校验
-            initRegisterWinDow:initRegisterWinDow,			//	初始化登记补充资料页面
+            isUnsignedInteger:isUnsignedInteger,			//数字校验
+            initRegisterWinDow:initRegisterWinDow,			//初始化登记补充资料页面
+            deleteByIds : deleteByIds,                      // 根据ID删除补充资料函
         };
 
         return service;
@@ -89,7 +89,6 @@
                 };
                 var httpSuccess = function success(response) {
                     vm.addRegisters = response.data.financiallist;
-                    console.log(vm.addRegisters);
                 };
                 common.http({
                     vm: vm,
@@ -99,43 +98,28 @@
                 });       
         }
        // E 初始化登记补充资料
-        
-        
 
-        // begin#deleteAddRegisterFile
-        function deleteAddRegisterFile(vm, id) {
-            vm.isSubmit = true;
+        //S_根据ID删除补充资料函
+        function deleteByIds(ids,callBack){
             var httpOptions = {
                 method: 'delete',
                 url: url_addRegisterFile+"/deleteFile",
-                data:id
+                params:{
+                    ids : ids
+                }
             };
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                            	//myrefresh();
-                            }
-                        })
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
         }
-
 
     }
 })();

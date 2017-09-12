@@ -11,6 +11,10 @@ public class Constant {
     /**
      * 企业名称
      */
+    public static final String SUPER_USER = "admin";
+    /**
+     * 企业名称
+     */
     public static final String COMPANY_NAME = "深圳市政府投资项目评审中心";
     /**
      * 默认错误信息

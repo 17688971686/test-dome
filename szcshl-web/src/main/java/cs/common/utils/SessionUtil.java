@@ -16,6 +16,14 @@ import java.util.List;
  */
 public class SessionUtil {
 
+    public static void setSessionCache(Object key,Object value) {
+        Subject subject = SecurityUtils.getSubject();
+        Session session = (subject != null) ? subject.getSession() : null;
+        if(session != null){
+            session.setAttribute(key,value);
+        }
+    }
+
     public static Session getSession() {
         Subject subject = SecurityUtils.getSubject();
         return subject != null ? subject.getSession() : null;

@@ -1,6 +1,7 @@
 package cs.service.flow;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
@@ -71,9 +72,11 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("signFlowBackImpl")
     private IFlowBack signFlowBackImpl;
-
+    @Autowired
+    @Qualifier("topicFlowBackImpl")
+    private IFlowBack topicFlowBackImpl;
     /**
-     * 回退到上一环节
+     * 回退到上一环节或者指定环节
      *
      * @param flowDto
      * @return
@@ -122,6 +125,9 @@ public class FlowServiceImpl implements FlowService {
             case Constant.SIGN_FLOW:
                 backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(),task.getTaskDefinitionKey());
                 break;
+            case FlowConstant.TOPIC_FLOW:
+                backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(),task.getTaskDefinitionKey());
+                break;
             default:
                 backActivitiId = "";
         }
@@ -136,8 +142,10 @@ public class FlowServiceImpl implements FlowService {
             List<PvmTransition> nextTransitionList = currActivity.getIncomingTransitions();
             for (PvmTransition nextTransition : nextTransitionList) {
                 PvmActivity nextActivity = nextTransition.getSource();
-                ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition).findActivity(nextActivity.getId());
-                TransitionImpl newTransition = currActivity.createOutgoingTransition();
+                ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition)
+                        .findActivity(nextActivity.getId());
+                TransitionImpl newTransition = currActivity
+                        .createOutgoingTransition();
                 newTransition.setDestination(nextActivityImpl);
                 newTransitions.add(newTransition);
             }
@@ -159,69 +167,6 @@ public class FlowServiceImpl implements FlowService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
-
-    @Override
-    public void rollBackByActiviti(FlowDto flowDto) {
-        // 取得当前任务.当前任务节点
-        HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery()
-                .taskId(flowDto.getTaskId()).singleResult();
-        // 取得流程实例，流程实例
-        ProcessInstance instance = runtimeService.createProcessInstanceQuery()
-                .processInstanceId(currTask.getProcessInstanceId()).singleResult();
-        if (instance == null) {
-            log.error("流程回退异常，流程已经结束了！");
-            return;
-        }
-
-        // 取得流程定义
-        ProcessDefinitionEntity definition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-                .getDeployedProcessDefinition(currTask.getProcessDefinitionId());
-        if (definition == null) {
-            log.error("流程回退异常，流程定义未找到");
-            return;
-        }
-        //取得当前活动节点
-        ActivityImpl currActivity = ((ProcessDefinitionImpl) definition).findActivity(currTask.getTaskDefinitionKey());
-
-        //也就是节点间的连线
-        //获取来源节点的关系
-        List<PvmTransition> nextTransitionList = currActivity.getIncomingTransitions();
-        // 清除当前活动的出口
-        List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
-        //新建一个节点连线关系集合
-        //获取出口节点的关系
-        List<PvmTransition> pvmTransitionList = currActivity.getOutgoingTransitions();
-        //
-        for (PvmTransition pvmTransition : pvmTransitionList) {
-            oriPvmTransitionList.add(pvmTransition);
-        }
-        pvmTransitionList.clear();
-
-        // 建立新出口
-        List<TransitionImpl> newTransitions = new ArrayList<TransitionImpl>();
-        for (PvmTransition nextTransition : nextTransitionList) {
-            ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition).findActivity(flowDto.getRollBackActiviti());
-            TransitionImpl newTransition = currActivity.createOutgoingTransition();
-            newTransition.setDestination(nextActivityImpl);
-            newTransitions.add(newTransition);
-        }
-
-        // 完成任务
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(instance.getId())
-                .taskDefinitionKey(currTask.getTaskDefinitionKey()).list();
-        for (Task task : tasks) {
-            taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption());    //添加处理信息
-            taskService.complete(task.getId(), ActivitiUtil.flowArguments(null, flowDto.getBackNodeDealUser(), "", false));
-            historyService.deleteHistoricTaskInstance(task.getId());
-        }
-        // 恢复方向
-        for (TransitionImpl transitionImpl : newTransitions) {
-            currActivity.getOutgoingTransitions().remove(transitionImpl);
-        }
-        for (PvmTransition pvmTransition : oriPvmTransitionList) {
-            pvmTransitionList.add(pvmTransition);
-        }
-    }
 
     @Override
     public void nextTaskDefinition(List<Node> nextNodeList, ActivityImpl activityImpl, String activityId) {
@@ -325,6 +270,7 @@ public class FlowServiceImpl implements FlowService {
                 taskDto.setEndDate(h.getEndTime());
                 taskDto.setDurationInMillis(h.getDurationInMillis());
                 taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
+                taskDto.setFlowKey(h.getProcessDefinitionId().substring(0,h.getProcessDefinitionId().indexOf(":")));
                 list.add(taskDto);
             });
             pageModelDto.setValue(list);
