@@ -41,6 +41,9 @@ public class FlowConstant {
     public static final String TOPIC_ZRSH_JT = "TOPIC_ZRSH_JT";          //主任审定
     public static final String TOPIC_YFZL = "TOPIC_YFZL";                //印发资料
     public static final String TOPIC_ZLGD = "TOPIC_ZLGD";                //资料归档
+    public static final String TOPIC_BZSH_GD = "TOPIC_BZSH_GD";          //部长审核归档
+    public static final String TOPIC_GDY_QR = "TOPIC_GDY_QR";            //归档员确认
+
 
     /*************** E 课题研究流程 环节名称  ****************/
 
@@ -63,6 +66,8 @@ public class FlowConstant {
         USER_BZ("user_bz"),              //部长
         USER_FGLD("user_fgld"),          //分管领导
         USER_ZR("user_zr"),              //主任
+        USER_GDY("user_gdy"),            //归档员
+        SEND_FGW("send_fgw"),            //送发改委
         USER_ADMIN("admin");             //系统管理员
 
         private String value;
@@ -89,6 +94,24 @@ public class FlowConstant {
         private String value;
 
         BooksBuyFlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 流程参数
+     */
+    public static enum CodeKey{
+        TOPIC_INFO_CODE("KT"),                    //课题编号
+        TOPIC_FILING_CODE("KD");                  //课题归档编号
+
+        private String value;
+
+        CodeKey(String value) {
             this.value = value;
         }
 
