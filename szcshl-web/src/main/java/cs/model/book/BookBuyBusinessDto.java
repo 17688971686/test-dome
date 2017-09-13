@@ -36,7 +36,9 @@ public class BookBuyBusinessDto extends BaseDto {
     private Date filerDate;
     private List bookBuyList;
     private String processInstanceId;
-
+    private String isFinishFiling;
+    private String state;
+    private String remark;
     public BookBuyBusinessDto() {
     }
 
@@ -202,4 +204,27 @@ public class BookBuyBusinessDto extends BaseDto {
         this.processInstanceId = processInstanceId;
     }
 
+    public String getIsFinishFiling() {
+        return isFinishFiling;
+    }
+
+    public void setIsFinishFiling(String isFinishFiling) {
+        this.isFinishFiling = isFinishFiling;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }

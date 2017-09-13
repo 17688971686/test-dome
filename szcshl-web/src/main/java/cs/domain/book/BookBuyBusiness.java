@@ -68,7 +68,7 @@ public class BookBuyBusiness extends DomainBase {
     private String filerId;
     //档案员
     @Column(columnDefinition = "varchar(255)")
-    private String filer; //主任
+    private String filer;
     //档案员处理意见
     @Column(columnDefinition = "varchar(255)")
     private String filerHandlesug;
@@ -78,6 +78,23 @@ public class BookBuyBusiness extends DomainBase {
     //图书
     @OneToMany(mappedBy = "bookBuyBusiness", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
     private List<BookBuy> bookBuyList;
+    /**
+     * 是否完成归档（9:是，0：否，默认为0）
+     */
+    @Column(columnDefinition="VARCHAR(2)")
+    private String isFinishFiling;
+
+    /**
+     * 流程状态
+     */
+    @Column(columnDefinition="VARCHAR(2)")
+    private String state;
+
+    /**
+     * 备注信息
+     */
+    @Column(columnDefinition="VARCHAR(512)")
+    private String remark;
 
     /**
      * 流程实例ID
@@ -267,5 +284,29 @@ public class BookBuyBusiness extends DomainBase {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
+    }
+
+    public String getIsFinishFiling() {
+        return isFinishFiling;
+    }
+
+    public void setIsFinishFiling(String isFinishFiling) {
+        this.isFinishFiling = isFinishFiling;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

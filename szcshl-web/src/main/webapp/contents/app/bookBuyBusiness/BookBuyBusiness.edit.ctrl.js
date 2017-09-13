@@ -8,6 +8,7 @@
     function bookBuyBusiness($location, bookBuyBusinessSvc, $state,bsWin) {
         /* jshint validthis:true */
         var vm = this;
+        vm.model = {};
         vm.conMaxIndex = 0;                   //条件号
         vm.conditions = new Array();         //条件列表
         vm.title = '添加图书采购申请业务信息';
@@ -16,6 +17,14 @@
         if (vm.businessId) {
             vm.isUpdate = true;
             vm.title = '更新图书采购申请业务信息';
+        }
+
+        vm.showFlag={
+            bookBuyApplyTr:false,
+            bookBuyBzTr:true,
+            bookBuyFgzrTr:true,
+            bookBuyZrTr:true,
+            bookBuyYsrk:true
         }
 
         vm.create = function () {
@@ -105,6 +114,9 @@
                     p.bookNumber = $("#bookNumber" + p.sort).val();
                     p.storeConfirm = $("#storeConfirm" + p.sort).val();
                     p.booksPrice = $("#booksPrice" + p.sort).val();
+                    p.applyDept= vm.model.applyDept;
+                    p.operator= vm.model.operator;
+                    p.buyChannel= vm.model.buyChannel;
                 });
                 return validateResult;
             } else {

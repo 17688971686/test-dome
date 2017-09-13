@@ -28,37 +28,33 @@
             <tr>
                 <td class="formAlignRight" width="10%">申请事由及发放范围</td>
                 <td width="90%" colspan="5" >
-                      <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="vm.showFlag.bookBuyBzTr" ng-model="vm.model.applyReason"
-                                id="applyReason" name="applyReason"
-                      />
+                    <p> {{vm.model.applyReason}}</p>
+                    <p class="text-right" ng-if="vm.model.orgDirector">签名：{{vm.model.orgDirector}}</p>
+                    <p class="text-right" ng-if="vm.model.orgDirectorDate">日期：{{vm.model.orgDirectorDate}}</p>
                 </td>
             </tr>
 
             <tr>
                 <td class="formAlignRight" width="10%">分管副主任审核</td>
-                <td width="40%"  >
-                      <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.orgSLeader"
-                                id="orgSLeader" name="orgSLeader"
-                      />
+                <td width="40%" >
+                    <p> {{vm.model.orgSLeaderHandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.orgSLeader">签名：{{vm.model.orgSLeader}}</p>
+                    <p class="text-right" ng-if="vm.model.orgSLeaderDate">日期：{{vm.model.orgSLeaderDate}}</p>
                 </td>
                 <td class="formAlignRight" width="10%">主任审批</td>
                 <td width="40%" colspan="3" >
-                      <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="vm.showFlag.bookBuyZrTr" ng-model="vm.model.orgMLeader"
-                                id="orgMLeader" name="orgMLeader"
-                      />
+                    <p> {{vm.model.orgMLeaderHandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.orgMLeader">签名：{{vm.model.orgMLeader}}</p>
+                    <p class="text-right" ng-if="vm.model.orgMLeaderDate">日期：{{vm.model.orgMLeaderDate}}</p>
                 </td>
             </tr>
 
             <tr>
                 <td class="formAlignRight" width="10%">购买后档案员验收并入库</td>
                 <td width="90%" colspan="5" >
-                      <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="vm.showFlag.bookBuyYsrk" ng-model="vm.model.filer"
-                                id="filer" name="filer"
-                      />
+                    <p> {{vm.model.filerHandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.filer">签名：{{vm.model.filer}}</p>
+                    <p class="text-right" ng-if="vm.model.filerDate">日期：{{vm.model.filerDate}}</p>
                 </td>
             </tr>
         </table>
