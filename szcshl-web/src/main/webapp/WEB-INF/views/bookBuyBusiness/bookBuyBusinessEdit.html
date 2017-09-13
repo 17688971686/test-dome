@@ -31,7 +31,6 @@
         </button>
     </div>
     <p class="pro_title_1" style="margin:10px;margin-left:0px;">图书管理信息</p>
-
     <form id="form" name="form">
         <table class="" style="width: 90%;">
             <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
@@ -39,27 +38,27 @@
                 <input type="hidden" name="businessId" id="businessId"  ng-model="vm.model.businessId" value="{{vm.model.businessId}}"/>
                 <td class="formAlignRight" width="10%">申请部门</td>
                 <td width="20%">
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
-                           id="loginName" name="name" >
+                    <input type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"
+                           ng-model="vm.model.applyDept" ng-init="vm.model.applyDept = '${CURRENT_USER.org.name}'"  id="applyDept" name="applyDept">
                 </td>
                 <td class="formAlignRight" width="10%">经办人</td>
                 <td width="20%">
                     <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
-                           id="loginName" name="name" >
+                           ng-model="vm.model.operator" ng-init="vm.model.operator = '${CURRENT_USER.loginName}'" id="operator" name="operator">
                 </td>
 
                 <td class="formAlignRight" width="10%">购买渠道</td>
                 <td width="30%">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="loginName" name="name" ng-disabled="true" ng-disabled="true">
+                           ng-model="vm.model.buyChannel"  id="buyChannel" name="buyChannel" ng-disabled="vm.showFlag.bookBusApplyTr">
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight" width="10%">申请事由及发放范围</td>
                 <td width="90%" colspan="5" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
-                                id="projectBuildNecess" name="projectBuildNecess"
+                                ng-disabled="vm.showFlag.bookBuyBzTr" ng-model="vm.model.applyReason"
+                                id="applyReason" name="applyReason"
                       />
                 </td>
             </tr>
@@ -68,15 +67,15 @@
                 <td class="formAlignRight" width="10%">分管副主任审核</td>
                 <td width="40%"  >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
-                                id="projectBuildNecess" name="projectBuildNecess"
+                                ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.orgSLeader"
+                                id="orgSLeader" name="orgSLeader"
                       />
                 </td>
                 <td class="formAlignRight" width="10%">主任审批</td>
                 <td width="40%" colspan="3" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
-                                id="projectBuildNecess" name="projectBuildNecess"
+                                ng-disabled="vm.showFlag.bookBuyZrTr" ng-model="vm.model.orgMLeader"
+                                id="orgMLeader" name="orgMLeader"
                       />
                 </td>
             </tr>
@@ -85,8 +84,8 @@
                 <td class="formAlignRight" width="10%">购买后档案员验收并入库</td>
                 <td width="90%" colspan="5" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="true" ng-model="vm.dispatchDoc.projectBuildNecess"
-                                id="projectBuildNecess" name="projectBuildNecess"
+                                ng-disabled="vm.showFlag.bookBuyYsrk" ng-model="vm.model.filer"
+                                id="filer" name="filer"
                       />
                 </td>
             </tr>
@@ -145,8 +144,10 @@
                     <input type="text" maxlength="200" class="form-control input-sm "
                            id="total" name="total"  />
                 </td>
+                <input type="hidden"  id="applyDept{{x.sort}}"/>
+                <input type="hidden"  id="operator{{x.sort}}"/>
+                <input type="hidden"  id="buyChannel{{x.sort}}"/>
             </tr>
         </table>
     </form>
-
 </div>

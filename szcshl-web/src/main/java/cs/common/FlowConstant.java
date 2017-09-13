@@ -87,9 +87,9 @@ public class FlowConstant {
     public static enum BooksBuyFlowParams{
         USER_APPLY("user_apply"),         //用户申请
         USER_BZ("user_bz"),              //部长
-        USER_FGLD("user_fgld"),          //分管领导
-        USER_ZR("user_zr"),              //主任
-        USER_DAY("user_day");             //档案员
+        USER_FGLD("user_fgfzr"),          //分管领导
+        USER_ZR("user_zxzr"),              //主任
+        USER_DAY("admin");             //档案员
 
         private String value;
 

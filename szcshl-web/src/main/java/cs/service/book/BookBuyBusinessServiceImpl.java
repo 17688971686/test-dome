@@ -21,6 +21,7 @@ import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.book.BookBuyBusinessRepo;
 import cs.repository.repositoryImpl.book.BookBuyRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -53,6 +54,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 	private TaskService taskService;
 	@Autowired
 	private UserRepo userRepo;
+	@Autowired
+	private OrgDeptRepo orgDeptRepo;
 	@Override
 	public PageModelDto<BookBuyBusinessDto> get(ODataObj odataObj) {
 		PageModelDto<BookBuyBusinessDto> pageModelDto = new PageModelDto<BookBuyBusinessDto>();
@@ -122,6 +125,9 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
 				bookBuyBusiness.setCreatedDate(now);
 				bookBuyBusiness.setModifiedDate(now);
+				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
+				bookBuyBusiness.setOperator(bookList[0].getOperator());
+				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
 				bookBuyBusinessRepo.save(bookBuyBusiness);
 			}else{
 				//bookBuyBusiness = bookBuyBusinessRepo.findById(bookBuyBus.getBusinessId());
@@ -133,8 +139,9 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 					bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
 					bookBuyBusiness.setCreatedDate(now);
 					bookBuyBusiness.setModifiedDate(now);
-					bookBuyBusiness.setApplyDept(SessionUtil.getUserInfo().getOrg().getName());
-					bookBuyBusiness.setOperator(SessionUtil.getUserInfo().getDisplayName());
+					bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
+					bookBuyBusiness.setOperator(bookList[0].getOperator());
+					bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
 					bookBuyBusinessRepo.save(bookBuyBusiness);
 				}else{   //保存后发起流程
 					bookBuyRepoRepo.deleteById(BookBuy_.bookBuyBusiness.getName(),bookBuyBus.getBusinessId());
@@ -176,6 +183,11 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 					ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_APPLY.getValue(), SessionUtil.getUserId()));
 			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), bookBuyBus.getBusinessName());
 			bookBuyBus.setProcessInstanceId(processInstance.getId());
+			bookBuyBus.setState(Constant.EnumState.PROCESS.getValue());
+			//跳过第一环节
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+			taskService.addComment(task.getId(), processInstance.getId(), "");
+			taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector()));
 		}
 		return saveBooksDetailList(bookList,bookBuyBus);
 	}
@@ -210,43 +222,66 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 	public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
 		String businessKey = processInstance.getBusinessKey(), businessId = "", assigneeValue = "", branchIndex = "";
 		BookBuyBusiness bookBuyBusiness = null;
-		List<User> userList = null;
+		List<User> dealUserList = null;
 		User dealUser = null;
 		Org org = null;
 		Map<String, Object> variables = processInstance.getProcessVariables();
 		boolean saveFlag = false;
-
 		//以下是流程环节处理
 		switch (task.getTaskDefinitionKey()) {
-			//各项目负责人/部门提出购买图书请求
-			case FlowConstant.BOOK_LEADER_CGQQ:
-				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
-				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-				taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
-				taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_BZ.getValue(), SessionUtil.getUserId()));
-				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-				//todo:设置购买渠道后saveFlag置为true
-				break;
 			case FlowConstant.BOOK_BZSP:
-
+				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
+				bookBuyBusiness.setOrgDirectorId(SessionUtil.getUserInfo().getOrg().getOrgDirector());
+				bookBuyBusiness.setOrgDirector(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());
+				bookBuyBusiness.setOrgDirectorDate(new Date());
+				bookBuyBusiness.setApplyReason(flowDto.getDealOption());
+				bookBuyBusinessRepo.save(bookBuyBusiness);
+				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_FGLD.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
 				break;
 			case FlowConstant.BOOK_FGFZRSP:
-
+				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
+				bookBuyBusiness.setOrgSLeaderId(SessionUtil.getUserInfo().getId());
+				bookBuyBusiness.setOrgSLeader(SessionUtil.getLoginName());
+				bookBuyBusiness.setOrgSLeaderDate(new Date());
+				bookBuyBusiness.setOrgSLeaderHandlesug(flowDto.getDealOption());
+				bookBuyBusinessRepo.save(bookBuyBusiness);
+				dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
+				if (!Validate.isList(dealUserList)) {
+					return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+				}
+				dealUser = dealUserList.get(0);
+				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_ZR.getValue(), Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
 				break;
-
 			case FlowConstant.BOOK_ZXZRSP:
-
+				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
+				bookBuyBusiness.setOrgMLeader(SessionUtil.getUserInfo().getLoginName());
+				bookBuyBusiness.setOrgMLeaderId(SessionUtil.getUserInfo().getId());
+				bookBuyBusiness.setOrgMLeaderDate(new Date());
+				bookBuyBusiness.setOrgMLeaderHandlesug(flowDto.getDealOption());
+				bookBuyBusinessRepo.save(bookBuyBusiness);
+				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+				dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
+				if (!Validate.isList(dealUserList)) {
+					return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+				}
+				dealUser = dealUserList.get(0);
+				assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_DAY.getValue(), assigneeValue);
 				break;
 			case FlowConstant.BOOK_YSRK:
+				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
+				bookBuyBusiness.setFilerId(SessionUtil.getUserInfo().getId());
+				bookBuyBusiness.setFiler(SessionUtil.getUserInfo().getLoginName());
+				bookBuyBusiness.setFilerDate(new Date());
+				bookBuyBusiness.setFilerHandlesug(flowDto.getDealOption());
+				bookBuyBusinessRepo.save(bookBuyBusiness);
+				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
 				break;
-				default:
-					;
+				default:;
 		}
-		if (bookBuyBusiness != null && saveFlag) {
-			//todo:设置购买渠道购买渠道
-			//bookBuyBusiness.setBuyChannel();
-			bookBuyBusinessRepo.save(bookBuyBusiness);
-		}
+
 		taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
 		if (flowDto.isEnd()) {
 			taskService.complete(task.getId());

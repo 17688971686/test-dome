@@ -28,6 +28,9 @@ public class BookBuyDto extends BaseDto {
     private Date publishingTime;
     private String bookNumber;
     private String storeConfirm;
+    private String applyDept;
+    private String operator;
+    private String buyChannel;
     private BookBuyBusiness bookBuyBusiness;
 
     public BookBuyDto() {
@@ -140,6 +143,30 @@ public class BookBuyDto extends BaseDto {
     }
     public BookBuyBusiness getBookBuyBusiness() {
         return bookBuyBusiness;
+    }
+
+    public String getApplyDept() {
+        return applyDept;
+    }
+
+    public void setApplyDept(String applyDept) {
+        this.applyDept = applyDept;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public String getBuyChannel() {
+        return buyChannel;
+    }
+
+    public void setBuyChannel(String buyChannel) {
+        this.buyChannel = buyChannel;
     }
 
     public void setBookBuyBusiness(BookBuyBusiness bookBuyBusiness) {
