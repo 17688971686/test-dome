@@ -18,12 +18,7 @@
         vm.currentFlow;//当前流程信息
         vm.showFlag={
             businessNext : false,                              //是否显示下一环节处理人tr
-            businessTr : false,                                //是否显示业务处理tr
-            bookBuyApplyTr:true,
-            bookBuyBzTr:true,
-            bookBuyFgzrTr:true,
-            bookBuyZrTr:true,
-            bookBuyYsrk:true
+            businessTr : false                              //是否显示业务处理tr
         }
 
         activate();
@@ -56,21 +51,7 @@
                     topicSvc.initFlowDeal(vm);
                     break;
                 case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:     //图书采购流程
-                    flowSvc.getFlowInfo(vm.taskId,vm.instanceId,function(data){
-                        vm.currentFlow = data;
-                       if(data.curNode.activitiId=='BOOK_LEADER_CGQQ'){
-                           vm.showFlag.bookBuyApplyTr = false;
-                       }else if(data.curNode.activitiId=='BOOK_BZSP'){
-                           vm.showFlag.bookBuyBzTr = false;
-                       }else if(data.curNode.activitiId=='BOOK_FGFZRSP'){
-                           vm.showFlag.bookBuyFgzrTr = false;
-                       }else if(data.curNode.activitiId=='BOOK_ZXZRSP'){
-                           vm.showFlag.bookBuyZrTr = false;
-                       }else if(data.curNode.activitiId=='BOOK_YSRK'){
-                           vm.showFlag.bookBuyYsrk = false;
-                       }
-                        bookBuyBusinessSvc.initFlowDeal(vm);
-                    });
+                    bookBuyBusinessSvc.initFlowDeal(vm);
                     break;
             }
         }

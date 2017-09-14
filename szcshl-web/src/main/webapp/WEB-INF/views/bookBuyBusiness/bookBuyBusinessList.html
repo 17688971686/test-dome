@@ -16,27 +16,19 @@
             <input name="createdBy" value="${CURRENT_USER.displayName}" ng-hide="true">
             <table style="width:100%">
                 <tr>
-                    <td class="formAlignRight">课题名称：</td>
-                    <td><input name="topicName" type="text" operator="like" ng-model="vm.searchModel.topicName" class="form-control input-sm "/></td>
-                    <td class="formAlignRight">合作单位：</td>
-                    <td><input name="cooperator" type="text" operator="like" ng-model="vm.searchModel.cooperator"  class="form-control input-sm "/></td>
-                    <td class="formAlignRight">是否委里立项：</td>
-                    <td>
-                        <select name="fgwlx" operator="eq" ng-model="vm.searchModel.fgwlx">
-                            <option value="">请选择</option>
-                            <option value="9">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </td>
+                    <td class="formAlignRight">图书采购流程名称：</td>
+                    <td><input name="businessName" type="text" operator="like" ng-model="vm.searchModel.businessName" class="form-control input-sm "/></td>
+                    <td class="formAlignRight">购买渠道：</td>
+                    <td><input name="buyChannel" type="text" operator="like" ng-model="vm.searchModel.buyChannel"  class="form-control input-sm "/></td>
                 </tr>
             </table>
         </form>
     </div>
-  <!--  <div class="grid" kendo-grid="grid" k-options="vm.myTopicOptions"></div>-->
+   <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/topicInfo/{0}" ng-hide="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <a class="btn btn-xs btn-primary" href="#/bookBuyBusinessEdit/{0}" ng-hide="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
     <a class="btn btn-xs btn-info" href="javascript:void(0)" ><span class="glyphicon glyphicon-comment"></span>查看详情</a>
 </script>
 

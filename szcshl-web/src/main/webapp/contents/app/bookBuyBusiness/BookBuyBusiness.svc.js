@@ -2,8 +2,8 @@
     'use strict';
 
     angular.module('app').factory('bookBuyBusinessSvc', bookBuyBusiness);
-
-    bookBuyBusiness.$inject = ['$http'];
+    ;
+    bookBuyBusiness.$inject = ['$http']
 
     function bookBuyBusiness($http) {
         var url_bookBuyBusiness = rootPath + "/bookBuyBusiness", url_back = '#/bookBuyBusinessList';
@@ -198,9 +198,6 @@
 
         //S_初始化图书采购流程信息
         function initFlowDeal(vm){
-            if(null!=vm.currentFlow){
-
-            }
             //vm.businessKey,vm.taskId,vm.instanceId
             var httpOptions = {
                 method: 'get',
@@ -222,14 +219,16 @@
 
 
         // begin#getBookBuyBusinessById
-        function getBookBuyBusinessById(vm) {
+        function getBookBuyBusinessById(vm,callBack) {
         	var httpOptions = {
                 method: 'get',
                 url: rootPath + "/bookBuyBusiness/html/findById",
-                params:{id:vm.id}
+                params:{id:vm.businessId}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
@@ -246,7 +245,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_bookBuyBusiness),
+                transport: common.kendoGridConfig().transport(rootPath + "/bookBuyBusiness/findByOData", $("#myTopicForm"),{filter: "createdBy eq ${CURRENT_USER.id}"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -267,154 +266,76 @@
 
             // End:dataSource
 
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+
             // Begin:column
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
                 },
                 {
-                    field: "businessId",
-                    title: "businessId",
-                    width: 100,
-                    filterable: true
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "applyDept",
-                    title: "applyDept",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "operator",
-                    title: "operator",
-                    width: 100,
-                    filterable: true
+                    field: "businessName",
+                    title: "业务流程名称",
+                    width: "20%",
+                    filterable: false
                 },
                 {
                     field: "buyChannel",
-                    title: "buyChannel",
-                    width: 100,
-                    filterable: true
+                    title: "购买渠道",
+                    width: "15%",
+                    filterable: false
                 },
                 {
-                    field: "applyReason",
-                    title: "applyReason",
-                    width: 100,
-                    filterable: true
+                    field: "createdDate",
+                    title: "创建日期",
+                    width: "15%",
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd HH:mm:ss}"
                 },
                 {
-                    field: "orgDirectorId",
-                    title: "orgDirectorId",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgDirector",
-                    title: "orgDirector",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgDirectorDate",
-                    title: "orgDirectorDate",
-                    width: 100,
-                    filterable: true,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "orgSLeaderId",
-                    title: "orgSLeaderId",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgSLeader",
-                    title: "orgSLeader",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgSLeaderHandlesug",
-                    title: "orgSLeaderHandlesug",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgSLeaderDate",
-                    title: "orgSLeaderDate",
-                    width: 100,
-                    filterable: true,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "orgMLeaderId",
-                    title: "orgMLeaderId",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgMLeader",
-                    title: "orgMLeader",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgMLeaderHandlesug",
-                    title: "orgMLeaderHandlesug",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "orgMLeaderDate",
-                    title: "orgMLeaderDate",
-                    width: 100,
-                    filterable: true,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "filerId",
-                    title: "filerId",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "filer",
-                    title: "filer",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "filerHandlesug",
-                    title: "filerHandlesug",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "filerDate",
-                    title: "filerDate",
-                    width: 100,
-                    filterable: true,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "bookBuyList",
-                    title: "bookBuyList",
-                    width: 100,
-                    filterable: true
+                    field: "",
+                    title: "已发起流程",
+                    width: "15%",
+                    filterable: false,
+                    template: function (item) {
+                        if(item.processInstanceId){
+                            return "是";
+                        }else{
+                            return "否";
+                        }
+                    }
                 },
                 {
                     field: "",
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.businessId + "')", item.businessId);
+                        var isStartFlow = item.processInstanceId?true:false;
+                        return common.format($('#columnBtns').html(), item.businessId, isStartFlow);
                     }
                 }
             ];
@@ -426,6 +347,7 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound:dataBound,
                 resizable: true
             };
 

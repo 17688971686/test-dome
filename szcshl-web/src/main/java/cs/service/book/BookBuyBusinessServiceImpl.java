@@ -2,6 +2,7 @@ package cs.service.book;
 
 import cs.common.Constant;
 import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
@@ -10,7 +11,6 @@ import cs.common.utils.Validate;
 import cs.domain.book.BookBuy;
 import cs.domain.book.BookBuyBusiness;
 import cs.domain.book.BookBuyBusiness_;
-import cs.domain.book.BookBuy_;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -115,12 +115,28 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 	}
 
 	@Override
+	@Transactional
+	public void deleteByBusinessId(String businessId) {
+		HqlBuilder sqlBuilder = HqlBuilder.create();
+		sqlBuilder.append(" delete from cs_books_buy where businessid = '"+businessId+"'");
+		bookBuyBusinessRepo.executeSql(sqlBuilder);
+	}
+
+	@Override
 	public ResultMsg saveBooksDetailList(BookBuyDto[] bookList,BookBuyBusiness bookBuyBus) {
 		if(bookList != null && bookList.length > 0){
 			Date now = new Date();
 			BookBuyBusiness bookBuyBusiness = new BookBuyBusiness();
-			if (!Validate.isString(bookBuyBus.getBusinessId())) {
-				bookBuyBusiness.setBusinessId(UUID.randomUUID().toString());
+			//第一次保存/发起流程
+			if (!Validate.isString(bookList[0].getBusinessId())) {
+				if( null!= bookBuyBus && Validate.isString(bookBuyBus.getProcessInstanceId())){
+					bookBuyBusiness.setBusinessId(bookBuyBus.getBusinessId());
+					bookBuyBusiness.setProcessInstanceId(bookBuyBus.getProcessInstanceId());
+					bookBuyBusiness.setState(bookBuyBus.getState());
+					bookBuyBusiness.setBusinessName(bookBuyBus.getBusinessName());
+				}else{
+					bookBuyBusiness.setBusinessId(UUID.randomUUID().toString());
+				}
 				bookBuyBusiness.setCreatedBy(SessionUtil.getDisplayName());
 				bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
 				bookBuyBusiness.setCreatedDate(now);
@@ -128,24 +144,23 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
-				bookBuyBusinessRepo.save(bookBuyBusiness);
+				//bookBuyBusinessRepo.save(bookBuyBusiness);
 			}else{
-				//bookBuyBusiness = bookBuyBusinessRepo.findById(bookBuyBus.getBusinessId());
-				bookBuyBusiness = bookBuyBusinessRepo.getById(bookBuyBus.getBusinessId());
-				if(null == bookBuyBusiness){//直接发起流程
-					bookBuyBusiness = new BookBuyBusiness();
-					BeanCopierUtils.copyProperties(bookBuyBus,bookBuyBusiness);
-					bookBuyBusiness.setCreatedBy(SessionUtil.getDisplayName());
-					bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
-					bookBuyBusiness.setCreatedDate(now);
-					bookBuyBusiness.setModifiedDate(now);
-					bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
-					bookBuyBusiness.setOperator(bookList[0].getOperator());
-					bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
-					bookBuyBusinessRepo.save(bookBuyBusiness);
-				}else{   //保存后发起流程
-					bookBuyRepoRepo.deleteById(BookBuy_.bookBuyBusiness.getName(),bookBuyBus.getBusinessId());
+				//多次保存或者保存后在发起流程
+				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(),bookList[0].getBusinessId());
+				bookBuyBusiness.setCreatedBy(SessionUtil.getDisplayName());
+				bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
+				bookBuyBusiness.setCreatedDate(now);
+				bookBuyBusiness.setModifiedDate(now);
+				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
+				bookBuyBusiness.setOperator(bookList[0].getOperator());
+				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
+				if( null!= bookBuyBus && Validate.isString(bookBuyBus.getProcessInstanceId())){
+					bookBuyBusiness.setProcessInstanceId(bookBuyBus.getProcessInstanceId());
+					bookBuyBusiness.setState(bookBuyBus.getState());
+					bookBuyBusiness.setBusinessName(bookBuyBus.getBusinessName());
 				}
+
 			}
 			List<BookBuy> bookBuyList = new ArrayList<BookBuy>();
 			for(int i=0,l=bookList.length;i<l;i++){
@@ -160,9 +175,16 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuy.setModifiedDate(now);
 				bookBuyList.add(bookBuy);
 			}
-			if (bookBuyList.size()>0)
-			bookBuyRepoRepo.bathUpdate(bookBuyList);
-			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"保存成功！");
+			if (bookBuyList.size()>0){
+				if (null != bookBuyBusiness.getBookBuyList()){
+					bookBuyBusiness.getBookBuyList().clear();
+					bookBuyBusiness.getBookBuyList().addAll(bookBuyList);
+				}else{
+					bookBuyBusiness.setBookBuyList(bookBuyList);
+				}
+			}
+			bookBuyBusinessRepo.save(bookBuyBusiness);
+			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"保存成功！",bookBuyBusiness);
 		}else{
 			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请添加图书信息后，再进行保存！");
 		}
@@ -175,10 +197,12 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 		}
 		//2、判断是否已经发起流程，如果未发起，则发起流程
 		if (!Validate.isString(bookBuyBus.getProcessInstanceId())) {
-			if (!Validate.isString(bookBuyBus.getBusinessId())) {
+			if(!Validate.isString(bookList[0].getBusinessId())){
 				bookBuyBus.setBusinessId(UUID.randomUUID().toString());
+			}else{
+				bookBuyBus.setBusinessId(bookList[0].getBusinessId());
 			}
-			bookBuyBus.setBusinessName("图书采购流程"+bookBuyBusinessRepo.findAll().size()+1);
+			bookBuyBus.setBusinessName("图书采购流程"+(bookBuyBusinessRepo.findAll().size()+1));
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.BOOKS_BUY_FLOW, bookBuyBus.getBusinessId(),
 					ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_APPLY.getValue(), SessionUtil.getUserId()));
 			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), bookBuyBus.getBusinessName());
@@ -189,7 +213,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			taskService.addComment(task.getId(), processInstance.getId(), "");
 			taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector()));
 		}
-		return saveBooksDetailList(bookList,bookBuyBus);
+
+		return  saveBooksDetailList(bookList,bookBuyBus);
 	}
 
 	@Override

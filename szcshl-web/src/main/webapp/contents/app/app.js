@@ -717,7 +717,7 @@
             })
             //图书采购流程
             .state('bookBuyBusinessEdit', {
-                url: '/bookBuyBusinessEdit/:id',
+                url: '/bookBuyBusinessEdit/:businessId',
                 templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
                 controller: 'bookBuyBusinessEditCtrl',
                 controllerAs: 'vm'

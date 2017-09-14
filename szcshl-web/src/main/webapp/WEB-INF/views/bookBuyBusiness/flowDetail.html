@@ -72,41 +72,41 @@
                 <td class="text-center" style="width:10%;border-top: 0px;">价格</td>
                 <td class="text-center" style="width:10%;border-top: 0px;">合计</td>
             </tr>
-            <tr ng-repeat="x in vm.conditions">
+            <tr ng-repeat="x in vm.model.bookBuyList">
                 <td align="center">
-                    <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{x.sort}}"/></td>
-                <td align="center">{{x.sort}}</td>
+                    <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{$index+1}}"/></td>
+                <td align="center">{{$index+1}}</td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksName{{x.sort}}" />
+                           id="booksName" name="booksName" value="{{x.booksName}}"/>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksType{{x.sort}}"  />
+                           id="booksType" value="{{x.booksType}}" />
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="publishingCompany{{x.sort}}"  />
+                           id="publishingCompany" value="{{x.publishingCompany}}"  />
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="bookNo{{x.sort}}"  />
+                           id="bookNo" value="{{x.bookNo}}" />
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="author{{x.sort}}"  />
+                           id="author" value="{{x.author}}" />
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="bookNumber{{x.sort}}"  />
+                           id="bookNumber" value="{{x.bookNumber}}" />
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="storeConfirm{{x.sort}}" />
+                           id="storeConfirm" value="{{x.storeConfirm}}"/>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksPrice{{x.sort}}"/>
+                           id="booksPrice" value="{{x.booksPrice}}"/>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "

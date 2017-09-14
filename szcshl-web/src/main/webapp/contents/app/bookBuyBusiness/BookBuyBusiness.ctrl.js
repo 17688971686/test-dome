@@ -41,5 +41,15 @@
         function activate() {
             bookBuyBusinessSvc.grid(vm);
         }
+
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource.read();
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
     }
 })();

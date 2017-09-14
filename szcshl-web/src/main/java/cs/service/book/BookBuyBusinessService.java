@@ -28,6 +28,8 @@ public interface BookBuyBusinessService {
 
 	void delete(String id);
 
+	void deleteByBusinessId(String businessId);
+
 	ResultMsg saveBooksDetailList(BookBuyDto[] bookList,BookBuyBusiness bookBuyBus);
 
 	ResultMsg startFlow(BookBuyDto[] bookList,BookBuyBusiness bookBuyBus);

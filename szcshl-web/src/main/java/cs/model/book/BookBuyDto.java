@@ -29,6 +29,7 @@ public class BookBuyDto extends BaseDto {
     private String bookNumber;
     private String storeConfirm;
     private String applyDept;
+    private String businessId;
     private String operator;
     private String buyChannel;
     private BookBuyBusiness bookBuyBusiness;
@@ -173,4 +174,11 @@ public class BookBuyDto extends BaseDto {
         this.bookBuyBusiness = bookBuyBusiness;
     }
 
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
 }

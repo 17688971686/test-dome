@@ -14,19 +14,25 @@
         vm.title = '添加图书采购申请业务信息';
         vm.isuserExist = false;
         vm.businessId = $state.params.businessId;
-        if (vm.businessId) {
-            vm.isUpdate = true;
-            vm.title = '更新图书采购申请业务信息';
-        }
-
         vm.showFlag={
+            addBooksDeatail:true,
+            modBooksDetail:true,
             bookBuyApplyTr:false,
             bookBuyBzTr:true,
             bookBuyFgzrTr:true,
             bookBuyZrTr:true,
             bookBuyYsrk:true
         }
-
+        if (vm.businessId) {
+            vm.isUpdate = true;
+            vm.showFlag.modBooksDetail=true;
+            vm.showFlag.addBooksDeatail=false;
+            vm.title = '更新图书采购申请业务信息';
+            $("#businessId").val(vm.businessId);
+        }else{
+            vm.showFlag.modBooksDetail=false;
+            vm.showFlag.addBooksDeatail=true;
+        }
         vm.create = function () {
             bookBuyBusinessSvc.createBookBuyBusiness(vm);
         };
@@ -36,7 +42,12 @@
         //添加图书详细信息
         vm.addCondition = function () {
             vm.condition = {};
-            vm.condition.sort = vm.conMaxIndex+1;
+            if(vm.showFlag.addBooksDeatail){
+                vm.condition.sort = vm.conMaxIndex+1;
+            }else{
+                vm.conMaxIndex = vm.conditions.length;
+                vm.condition.sort = vm.conditions.length+1;
+            }
             vm.conditions.push(vm.condition);
             vm.conMaxIndex++;
         }
@@ -91,6 +102,7 @@
                 if (buildCondition(false)) {
                     bookBuyBusinessSvc.saveBookBuyBusinessDetail(vm.conditions,function(data){
                         if(data.flag || data.reCode == 'ok'){
+                            $("#businessId").val(data.reObj.businessId);
                             bsWin.success("保存成功！");
                         }else{
                             bsWin.error(data.reMsg);
@@ -117,13 +129,13 @@
                     p.applyDept= vm.model.applyDept;
                     p.operator= vm.model.operator;
                     p.buyChannel= vm.model.buyChannel;
+                    p.businessId= $("#businessId").val();
                 });
                 return validateResult;
             } else {
                 return false;
             }
         }
-
         //发起流程
         vm.startFlow = function(){
           /*  common.initJqValidation($('#topicform'));
@@ -148,10 +160,51 @@
                     }
                 });
         }
+
+        //校验图书数量
+        vm.checkBookNum = function (sort){
+            var bookNumber = "bookNumber"+sort;
+            if(!isUnsignedInteger($("#"+bookNumber).val())){
+                $("span[data-valmsg-for='"+bookNumber+"']").html("图书数量只能输入正整数！");
+                return ;
+            }
+            $("span[data-valmsg-for='"+bookNumber+"']").html("");
+        }
+
+        //校验价格
+        vm.checkPrice = function(sort){
+            var pc = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
+            var priceId = "booksPrice"+sort;
+            var bookNumberId = "bookNumber"+sort;
+            if(!pc.test( $("#"+priceId).val())){
+                $("#"+priceId).val("");
+                $("span[data-valmsg-for='"+priceId+"']").html("价格只能输入数字！");
+                return ;
+            }
+            $("span[data-valmsg-for='"+priceId+"']").html("");
+            var price = $("#"+priceId).val();
+            var num = $("#"+bookNumberId).val();
+            $("#total"+sort).val(parseFloat(price)*num);
+        }
+
+        //检查是否为正整数
+        function isUnsignedInteger(value) {
+            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
         activate();
         function activate() {
             if (vm.isUpdate) {
-                bookBuyBusinessSvc.getBookBuyBusinessById(vm);
+                bookBuyBusinessSvc.getBookBuyBusinessById(vm,function(data){
+                    vm.model = data;
+                    vm.conditions = vm.model.bookBuyList;
+                    for(var i=0;i<vm.conditions.length;i++){
+                        vm.conditions[i]["sort"]= (i+1);
+                    }
+                });
             }
         }
     }

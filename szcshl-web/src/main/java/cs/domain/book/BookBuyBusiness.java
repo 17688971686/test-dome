@@ -1,5 +1,6 @@
 package cs.domain.book;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.DomainBase;
 
 import javax.persistence.*;
@@ -77,6 +78,7 @@ public class BookBuyBusiness extends DomainBase {
     private Date filerDate;
     //图书
     @OneToMany(mappedBy = "bookBuyBusiness", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
+    @JSONField(serialize = false)
     private List<BookBuy> bookBuyList;
     /**
      * 是否完成归档（9:是，0：否，默认为0）
