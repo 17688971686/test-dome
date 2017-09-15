@@ -728,7 +728,19 @@
                 controller : 'bookBuyBusinessCtrl',
                 controllerAs : 'vm'
             })
-
+            //固定资产申购流程
+            .state('assertStorageBusinessEdit', {
+                url: '/assertStorageBusinessEdit/:businessId',
+                templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessEdit.html',
+                controller: 'assertStorageBusinessEditCtrl',
+                controllerAs: 'vm'
+            })
+            .state('myAssertStorageBusiness',{
+                url : '/myAssertStorageBusiness',
+                templateUrl : rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
+                controller : 'assertStorageBusinessCtrl',
+                controllerAs : 'vm'
+            })
             //课题研究流程
             .state('addTopic',{
                 url : '/topicInfo/:id',

@@ -1,0 +1,189 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/assertStorageBusinessList">固定资产申购流程</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/assertStorageBusiness"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit"
+                    ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建
+            </button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
+                    ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
+            </button>
+        </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:150px;"></td>
+                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">businessName：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.businessName"
+                           id="businessName" name="businessName"  />
+                </td>
+                <td><span data-valmsg-for="businessName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">applyDept：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.applyDept"
+                           id="applyDept" name="applyDept"  />
+                </td>
+                <td><span data-valmsg-for="applyDept" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">operator：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.operator"
+                           id="operator" name="operator"  />
+                </td>
+                <td><span data-valmsg-for="operator" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">applyReason：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.applyReason"
+                           id="applyReason" name="applyReason"  />
+                </td>
+                <td><span data-valmsg-for="applyReason" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">orgDirectorId：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.orgDirectorId"
+                           id="orgDirectorId" name="orgDirectorId"  />
+                </td>
+                <td><span data-valmsg-for="orgDirectorId" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">orgDirector：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.orgDirector"
+                           id="orgDirector" name="orgDirector"  />
+                </td>
+                <td><span data-valmsg-for="orgDirector" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">orgDirectorDate：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.orgDirectorDate"
+                           id="orgDirectorDate" name="orgDirectorDate"  />
+                </td>
+                <td><span data-valmsg-for="orgDirectorDate" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">comprehensivehandlesug：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.comprehensivehandlesug"
+                           id="comprehensivehandlesug" name="comprehensivehandlesug"  />
+                </td>
+                <td><span data-valmsg-for="comprehensivehandlesug" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">comprehensiveId：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.comprehensiveId"
+                           id="comprehensiveId" name="comprehensiveId"  />
+                </td>
+                <td><span data-valmsg-for="comprehensiveId" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">comprehensiveName：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.comprehensiveName"
+                           id="comprehensiveName" name="comprehensiveName"  />
+                </td>
+                <td><span data-valmsg-for="comprehensiveName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">comprehensiveDate：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.comprehensiveDate"
+                           id="comprehensiveDate" name="comprehensiveDate"  />
+                </td>
+                <td><span data-valmsg-for="comprehensiveDate" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">leaderhandlesug：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.leaderhandlesug"
+                           id="leaderhandlesug" name="leaderhandlesug"  />
+                </td>
+                <td><span data-valmsg-for="leaderhandlesug" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">leaderId：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.leaderId"
+                           id="leaderId" name="leaderId"  />
+                </td>
+                <td><span data-valmsg-for="leaderId" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">leaderName：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.leaderName"
+                           id="leaderName" name="leaderName"  />
+                </td>
+                <td><span data-valmsg-for="leaderName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">leaderDate：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.leaderDate"
+                           id="leaderDate" name="leaderDate"  />
+                </td>
+                <td><span data-valmsg-for="leaderDate" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">goodsDetailList：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.goodsDetailList"
+                           id="goodsDetailList" name="goodsDetailList"  />
+                </td>
+                <td><span data-valmsg-for="goodsDetailList" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">isFinishFiling：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.isFinishFiling"
+                           id="isFinishFiling" name="isFinishFiling"  />
+                </td>
+                <td><span data-valmsg-for="isFinishFiling" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">state：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.state"
+                           id="state" name="state"  />
+                </td>
+                <td><span data-valmsg-for="state" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">remark：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.remark"
+                           id="remark" name="remark"  />
+                </td>
+                <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">processInstanceId：</td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.processInstanceId"
+                           id="processInstanceId" name="processInstanceId"  />
+                </td>
+                <td><span data-valmsg-for="processInstanceId" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>

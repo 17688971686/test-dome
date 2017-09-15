@@ -53,8 +53,12 @@
                 case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:     //图书采购流程
                     bookBuyBusinessSvc.initFlowDeal(vm);
                     break;
+                case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
+
+                    break;
+
             }
-        }
+    }
 
         /***************  S_个人意见  ***************/
         vm.ideaEdit = function (options) {

@@ -93,4 +93,18 @@ public class HomeController {
 
 		return "init BooksBuy Flow success";
 	}
+
+	@RequestMapping(name = "资产入库流程",path = "initAFlow",method = RequestMethod.GET)
+	@Transactional
+	public @ResponseBody String initAssertStorageFlow(){
+		//部署下一个版本
+		logger.info("开始部署资产流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/assetstorage.zip");
+		ZipInputStream zipIn=new ZipInputStream(in);
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("资产入库流程").deploy();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+		logger.info("资产入库流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+
+		return "init AssertStorage Flow success";
+	}
 }

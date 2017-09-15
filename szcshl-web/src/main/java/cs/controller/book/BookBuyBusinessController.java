@@ -67,15 +67,15 @@ public class BookBuyBusinessController {
     @RequiresPermissions("bookBuyBusiness#saveBooksDetailList#post")
     @RequestMapping(name = "图书详细信息录入", path = "saveBooksDetailList", method = RequestMethod.POST)
     public @ResponseBody
-    ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] BookBuyDtoArrary,BookBuyBusiness bookBuyBus){
-       return bookBuyBusinessService.saveBooksDetailList(BookBuyDtoArrary,bookBuyBus);
+    ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus){
+       return bookBuyBusinessService.saveBooksDetailList(bookBuyDtoArrary,bookBuyBus);
     }
 
     @RequiresPermissions("bookBuyBusiness#startFlow#post")
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg startFlow(@RequestBody BookBuyDto[] BookBuyDtoArrary,BookBuyBusiness bookBuyBus) {
-        return bookBuyBusinessService.startFlow(BookBuyDtoArrary,bookBuyBus);
+    public ResultMsg startFlow(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus) {
+        return bookBuyBusinessService.startFlow(bookBuyDtoArrary,bookBuyBus);
     }
 
     // begin#html

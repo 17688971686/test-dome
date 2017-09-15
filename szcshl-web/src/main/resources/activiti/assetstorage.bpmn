@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="ASSERT_STORAGE_FLOW" name="资产入库流程" isExecutable="true">
+    <startEvent id="ASSERT_STORAGE_START" name="开始"></startEvent>
+    <userTask id="ASSERT_STORAGE_APPLY" name="资产入库申请" activiti:assignee="${user}"></userTask>
+    <sequenceFlow id="flow1" sourceRef="ASSERT_STORAGE_START" targetRef="ASSERT_STORAGE_APPLY"></sequenceFlow>
+    <userTask id="ASSERT_STORAGE_BZSH" name="部长审批" activiti:assignee="${user_bz}"></userTask>
+    <sequenceFlow id="flow2" sourceRef="ASSERT_STORAGE_APPLY" targetRef="ASSERT_STORAGE_BZSH"></sequenceFlow>
+    <userTask id="ASSERT_STORAGE_ZHBSH" name="综合部意见" activiti:assignee="${user_zhb}"></userTask>
+    <sequenceFlow id="flow3" sourceRef="ASSERT_STORAGE_BZSH" targetRef="ASSERT_STORAGE_ZHBSH"></sequenceFlow>
+    <userTask id="ASSERT_STORAGE_ZXLDSH" name="中心领导审批" activiti:assignee="${user_zxld}"></userTask>
+    <sequenceFlow id="flow4" sourceRef="ASSERT_STORAGE_ZHBSH" targetRef="ASSERT_STORAGE_ZXLDSH"></sequenceFlow>
+    <endEvent id="ASSERT_STORAGE_END" name="结束"></endEvent>
+    <sequenceFlow id="flow5" sourceRef="ASSERT_STORAGE_ZXLDSH" targetRef="ASSERT_STORAGE_END"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ASSERT_STORAGE_FLOW">
+    <bpmndi:BPMNPlane bpmnElement="ASSERT_STORAGE_FLOW" id="BPMNPlane_ASSERT_STORAGE_FLOW">
+      <bpmndi:BPMNShape bpmnElement="ASSERT_STORAGE_START" id="BPMNShape_ASSERT_STORAGE_START">
+        <omgdc:Bounds height="35.0" width="35.0" x="600.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ASSERT_STORAGE_APPLY" id="BPMNShape_ASSERT_STORAGE_APPLY">
+        <omgdc:Bounds height="55.0" width="105.0" x="565.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ASSERT_STORAGE_BZSH" id="BPMNShape_ASSERT_STORAGE_BZSH">
+        <omgdc:Bounds height="55.0" width="105.0" x="565.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ASSERT_STORAGE_ZHBSH" id="BPMNShape_ASSERT_STORAGE_ZHBSH">
+        <omgdc:Bounds height="55.0" width="105.0" x="565.0" y="340.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ASSERT_STORAGE_ZXLDSH" id="BPMNShape_ASSERT_STORAGE_ZXLDSH">
+        <omgdc:Bounds height="55.0" width="105.0" x="565.0" y="460.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ASSERT_STORAGE_END" id="BPMNShape_ASSERT_STORAGE_END">
+        <omgdc:Bounds height="35.0" width="35.0" x="600.0" y="570.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="617.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="617.0" y="120.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="617.0" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="617.0" y="220.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="617.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="617.0" y="340.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="617.0" y="395.0"></omgdi:waypoint>
+        <omgdi:waypoint x="617.0" y="460.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="617.0" y="515.0"></omgdi:waypoint>
+        <omgdi:waypoint x="617.0" y="570.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

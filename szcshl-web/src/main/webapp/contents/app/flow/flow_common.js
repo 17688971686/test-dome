@@ -68,6 +68,16 @@
     }
 
     /**
+     * 资产入库流程环节参数
+     */
+    var assertStorageNode ={
+            ASSERT_STORAGE_APPLY : "ASSERT_STORAGE_APPLY",    //资产入库申请
+        ASSERT_STORAGE_BZSH : "ASSERT_STORAGE_BZSH",          //部长审批
+        ASSERT_STORAGE_ZHBSH : "ASSERT_STORAGE_ZHBSH",        //综合部意见
+        ASSERT_STORAGE_ZXLDSH : "ASSERT_STORAGE_ZXLDSH"       //中心领导审批
+        }
+
+    /**
      * 图书采购流程环节参数
      */
     var booksBuyNode ={
@@ -81,7 +91,8 @@
     //流程定义值
     var flowDefinedKey = {
         TOPIC_FLOW : "TOPIC_FLOW",                 //课题研究流程
-        BOOKS_BUY_FLOW:"BOOKS_BUY_FLOW"            //图书采购流程
+        BOOKS_BUY_FLOW:"BOOKS_BUY_FLOW",            //图书采购流程
+        ASSERT_STORAGE_FLOW:"ASSERT_STORAGE_FLOW"   //资产入库流程
     }
     var service = {
         getFlowDefinedKey : function(){
@@ -95,6 +106,9 @@
         },                                        //课题研究流程
         getBooksBuyFlowNode: function(){
             return booksBuyNode;                 //图书采购流程环节
+        },
+        getAssertStorageFlowNode: function(){
+            return booksBuyNode;                 //资产入库流程环节
         }
     };
     window.flowcommon = service;

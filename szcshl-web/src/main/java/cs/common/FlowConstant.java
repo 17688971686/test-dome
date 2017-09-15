@@ -16,6 +16,11 @@ public class FlowConstant {
      */
     public final static String BOOKS_BUY_FLOW = "BOOKS_BUY_FLOW";
 
+    /**
+     *资产入库流程
+     */
+    public final static String ASSERT_STORAGE_FLOW = "ASSERT_STORAGE_FLOW";
+
     /*************** S 课题研究流程 环节名称  ****************/
     public static final String TOPIC_JHTC = "TOPIC_JHTC";                //计划提出
     public static final String TOPIC_BZSH_JH = "TOPIC_BZSH_JH";          //部长审核
@@ -47,6 +52,15 @@ public class FlowConstant {
 
     /*************** E 课题研究流程 环节名称  ****************/
 
+    /*************** S 资产入库流程环节名称  ****************/
+    public static final String ASSERT_STORAGE_APPLY = "ASSERT_STORAGE_APPLY";         //资产入库申请
+    public static final String ASSERT_STORAGE_BZSH = "ASSERT_STORAGE_BZSH";          //部长审批
+    public static final String ASSERT_STORAGE_ZHBSH = "ASSERT_STORAGE_ZHBSH";        //综合部意见
+    public static final String ASSERT_STORAGE_ZXLDSH = "ASSERT_STORAGE_ZXLDSH";      //中心领导审批
+
+    /*************** E 资产入库流程 环节名称  ****************/
+
+
     /*************** S 图书采购流程 环节名称  ****************/
     public static final String BOOK_LEADER_CGQQ = "BOOK_LEADER_CGQQ";                //各项目负责人/部门提出购买图书请求
     public static final String BOOK_BZSP = "BOOK_BZSP";                              //部长审批
@@ -55,6 +69,7 @@ public class FlowConstant {
     public static final String BOOK_YSRK = "BOOK_YSRK";                            //购买后档案员验收并入库
 
     /*************** E 图书采购流程 环节名称  ****************/
+
 
 
     /**
@@ -94,6 +109,26 @@ public class FlowConstant {
         private String value;
 
         BooksBuyFlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 资产入库流程参数
+     */
+    public static enum AssertStorageFlowParams{
+        USER("user"),         //用户申请
+        USER_BZ("user_bz"),    //部长
+        USER_ZHB("user_zhb"),  //分管领导
+        USER_ZXLD("user_zxld"); //中心领导
+
+        private String value;
+
+        AssertStorageFlowParams(String value) {
             this.value = value;
         }
 
