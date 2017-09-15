@@ -10,17 +10,17 @@
                 </strong>
             </caption>
          <!--  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption> -->
-        <caption class="text-right">  
+        <caption class="text-right">
         <tr>
 	        <td width="15%" class="text-center">QR-4.7-01-A2</td>
 	        <td></td>
 	        <td width="20%" class="text-center"></td>
 	        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
   	    </tr>
-    </caption> 
-    
+    </caption>
+
 			<tbody>
-			
+
 			<tr>
 				<td width="15%" class="text-center">项目名称</td>
 				<td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.projectname" name="projectname" id="projectname" data-val="true" data-val-required="必填">
@@ -31,13 +31,13 @@
 			<tr>
 				<td width="15%" class="text-center">建设单位</td>
 				<td>
-				
+
 					<select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" style="width:220px;height:26px;">
 							<option ng-repeat="x in vm.companyList|filter:{coType:'建设单位'}"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
 					</select>
 					<input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName"
 							  style="width:200px;height:26px;margin-left:-224px;">
-					
+
 					</td>
 				<td width="15%" class="text-center">项目代码</td>
 				<td>{{vm.model.projectcode}} </td>
@@ -50,14 +50,14 @@
 					</select>
 					<input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName"
 							    style="width:200px;height:26px;margin-left:-224px;">
-					
+
 				</td>
 				<td width="15%" class="text-center">报审概算</td>
 				<td>
 				<input type="text" style="width: 210px;" ng-model="vm.model.declaration"  name="Declaration"  >万元
 				</td>
 			</tr>
-			
+
 		<tr>
 				<td width="15%" class="text-center">主办处室</td>
 				<td>
@@ -83,7 +83,7 @@
 						<select ng-model="vm.model.assistdeptName" ng-change="vm.findOfficeUsersByDeptName('assist')"  name="assistdeptName" id="assistdeptName"style="width:220px;height:26px;">
 							<option ng-repeat="ad in vm.deptlist" ng-selected="vm.model.assistdeptName == ad.deptName" value="{{ad.deptName}}">{{ad.deptName}}</option>
 						</select>
-							
+
 						<input type="text" ng-model="vm.model.assistdeptName" name="assistdeptName" id="assistdeptName"
 							    style="width:200px;height:26px;margin-left:-224px;">
 				</td>
@@ -129,9 +129,10 @@
 									</tr>
 									<tr>
 										<td style="border-top:none;text-align:right;">委项目处理表</td>
-										<td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm " ng-model="vm.model.sugProDealCount" name="sugProDealCount"
-																			id="sugProDealCount" data-val="true" data-val-digits="只能输入数字"></td>
-										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0"></td>
+										<td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字"
+														ng-model="vm.model.sugProDealCount" name="sugProDealCount"></td>
+										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal"
+																ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)" id="addOriginal" ng-true-value="9" ng-false-value="0"></td>
 										<td style="border-top:none;"><span data-valmsg-for="sugProDealCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
 									<tr>
@@ -144,7 +145,7 @@
 										<td style="border-top:none;"><span data-valmsg-for="sugFileDealCount" data-valmsg-replace="true" class="errors"></span></td>
 
 									</tr>
-								
+
 									</tbody>
 								</table>
 							</td>
@@ -177,7 +178,7 @@
 										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-true-value="9" ng-false-value="0" ></td>
 										<td style="border-top:none;"><span data-valmsg-for="sugMeetCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
-									
+
 									</tbody>
 								</table>
 							</td>
@@ -199,7 +200,7 @@
 										<td style="border-top:none;">份数</td>
 										<td style="border-top:none;">复印件</td>
 									</tr>
-								
+
 									<tr>
 										<td style="border-top:none;text-align:right;">项目建议书批复</td>
 										<td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.studyProSugCount" name="studyProSugCount"
@@ -240,7 +241,7 @@
 										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.landPlanningLicenseOriginal" id="landPlanningLicenseOriginal"ng-true-value="9" ng-false-value="0"></td>
 										<td style="border-top:none;"><span data-valmsg-for="landPlanningLicenseCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
-									
+
 									</tbody>
 								</table>
 							</td>
@@ -248,7 +249,7 @@
 					</table>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td colspan="3">
 					<table class="table" style="border: 0px solid transparent !important;">
@@ -265,8 +266,8 @@
 									</tr>
 									<tr>
 										<td style="border-top:none;text-align:right;">地质勘察报告</td>
-										<td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm " ng-model="vm.model.geologicalSurveyCount" name="geologicalSurveyCount"
-																			id="sugProDealCount" data-val="true" data-val-digits="只能输入数字"></td>
+										<td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字"
+														ng-model="vm.model.geologicalSurveyCount" name="geologicalSurveyCount"></td>
 										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.geologicalSurveyOriginal" name="geologicalSurveyOriginal" id="geologicalSurveyOriginal" ng-true-value="9" ng-false-value="0"></td>
 										<td style="border-top:none;"><span data-valmsg-for="geologicalSurveyCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
@@ -288,7 +289,7 @@
 										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.projectBudgetOriginal"id="projectBudgetOriginal" ng-true-value="9" ng-false-value="0"></td>
 										<td style="border-top:none;"><span data-valmsg-for="projectBudgetCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
-								
+
 									</tbody>
 								</table>
 							</td>
@@ -321,7 +322,7 @@
 										<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.proSugEledocOriginal" id="proSugEledocOriginal" ng-true-value="9" ng-false-value="0" ></td>
 										<td style="border-top:none;"><span data-valmsg-for="proSugEledocCount" data-valmsg-replace="true" class="errors"></span></td>
 									</tr>
-									
+
 									</tbody>
 								</table>
 							</td>
@@ -329,7 +330,7 @@
 					</table>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td width="15%" class="text-center">综合部拟办意见</td>
 				<td colspan="3">
@@ -355,8 +356,8 @@
 					<span data-valmsg-for="sendusersign" data-valmsg-replace="true" class="errors"></span>
 				</td>
 			</tr>
-			
+
 			</tbody>
-		</table> 
+		</table>
 		<!-- end table -->
 <!-- E_项目概算 --> 

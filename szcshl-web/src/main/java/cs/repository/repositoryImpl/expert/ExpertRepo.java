@@ -11,5 +11,5 @@ public interface ExpertRepo extends IRepository<Expert, String> {
 
     List<Expert> findAllRepeat();
 
-    List<Expert> findByWorkProgramId(String wpId);
+    List<Expert> findByBusinessId(String businessId);
 }

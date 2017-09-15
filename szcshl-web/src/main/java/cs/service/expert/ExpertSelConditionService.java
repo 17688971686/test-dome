@@ -26,6 +26,6 @@ public interface ExpertSelConditionService {
 
 	ResultMsg delete(String ids);
 
-	ResultMsg saveConditionList(String workProgramId,ExpertSelConditionDto[] recordList);
+	ResultMsg saveConditionList(String businessId,String minBusinessId,String businessType,String reviewId,ExpertSelConditionDto[] recordList);
 
 }

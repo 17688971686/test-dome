@@ -1,6 +1,9 @@
 package cs.listener;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
+import cs.common.utils.Validate;
+import cs.domain.sys.User_;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -21,13 +24,45 @@ public class ConfirmDisMulitiTask {
         Integer nrOfInstances = (Integer) execution.getVariable("nrOfInstances"),
                 nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
 
-        Boolean unPass = (Boolean) execution.getVariable(Constant.SignFlowParams.UNPASS.getValue());
+        Boolean pass = (Boolean) execution.getVariable(FlowConstant.SignFlowParams.XMFZR_SP.getValue());
         //只要有人不同意，则回退
-        if(unPass != null && unPass){
+        if(pass != null && pass == false){
             return true;
         }
-        //System.out.println("总的会签任务数量：" + execution.getVariable("nrOfInstances") + "当前获取的会签任务数量：" + execution.getVariable("nrOfActiveInstances") + " - " + "已经完成的会签任务数量：" + execution.getVariable("nrOfCompletedInstances"));
-        //System.out.println("I am invoked.");
+        return (nrOfCompletedInstances==nrOfInstances)?true:false;
+    }
+
+    /**
+     * 协办部长审批
+     * @param execution
+     * @return
+     */
+    public boolean directorAudit(DelegateExecution execution) {
+        Integer nrOfInstances = (Integer) execution.getVariable("nrOfInstances"),
+                nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
+
+        Boolean pass = (Boolean) execution.getVariable(FlowConstant.SignFlowParams.XBBZ_SP.getValue());
+        //只要有人不同意，则回退
+        if(pass != null && pass == false){
+            return true;
+        }
+        return (nrOfCompletedInstances==nrOfInstances)?true:false;
+    }
+
+    /**
+     * 协办副主任审批
+     * @param execution
+     * @return
+     */
+    public boolean sLeaderAudit(DelegateExecution execution) {
+        Integer nrOfInstances = (Integer) execution.getVariable("nrOfInstances"),
+                nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
+
+        Boolean pass = (Boolean) execution.getVariable(FlowConstant.SignFlowParams.XBFZR_SP.getValue());
+        //只要有人不同意，则回退
+        if(pass != null && pass == false){
+            return true;
+        }
         return (nrOfCompletedInstances==nrOfInstances)?true:false;
     }
 }

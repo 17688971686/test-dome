@@ -20,31 +20,17 @@ public interface ExpertReviewService {
     
     PageModelDto<ExpertReviewDto> get(ODataObj odataObj);
 
-	void save(ExpertReviewDto record) throws Exception;
-
 	void update(ExpertReviewDto record);
 
 	ExpertReviewDto findById(String deptId);
 
 	void delete(String id);
 
-	ExpertReviewDto initByWorkProgramId(String workProgramId);
+	ExpertReviewDto initBybusinessId(String businessId,String minBusinessId);
 
-	ResultMsg save(String workProgramId,String reviewId, String expertIds, String selectType, boolean isDraw);
+	ResultMsg save(String businessId,String minBusinessId,String businessType,String reviewId, String expertIds, String selectType);
 
-	void updateExpertState(String reviewId,String expertSelId,String state,boolean isConfirm);
-	
-	Map<String,Object> getReviewList(String orgName,String year,String quarter);
-	
-	 void expertMark(ExpertReviewDto expertReviewDto );
-	
-	void savePayment(ExpertReviewDto expertReviewDto)throws Exception;
-
-	void affirmAutoExpert(String reviewId, String state);
-
-    PageModelDto<ExpertSelectedDto> getSelectExpert(String signId);
-
-	PageModelDto<ExpertReviewDto> getBySignId(String signId);
+	void updateExpertState(String minBusinessId,String businessType,String expertSelId,String state,boolean isConfirm);
 
     List<Map<String,Object>> getExpertReviewCost(String expertIds, String month);
 

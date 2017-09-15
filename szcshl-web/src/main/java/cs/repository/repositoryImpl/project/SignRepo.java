@@ -10,8 +10,4 @@ public interface SignRepo extends IRepository<Sign, String> {
     boolean updateSignProcessState(String signId,Integer processState);
 
     Sign findByFilecode(String filecode);
-
-    boolean isFinishEPGrade(String signId);
-
-    boolean isHaveEPReviewCost(String signId);
 }

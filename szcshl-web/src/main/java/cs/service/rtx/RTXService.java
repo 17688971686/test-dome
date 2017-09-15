@@ -87,7 +87,7 @@ public class RTXService {
      * @return
      */
     public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg){
-        if(resultMsg.isFlag()){
+        if(resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null){
             String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
             if(Validate.isList(receiverList)){
@@ -99,7 +99,8 @@ public class RTXService {
                     rtxNames += u.getLoginName();
                 }
                 if(Validate.isString(rtxNames)){
-                    sendRTXMsg(null,"您有一条待办任务待处理！",rtxNames);
+                    sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
+                    RTXSendMsgPool.getInstance().removeCache(taskId);
                     return true;
                 }
             }

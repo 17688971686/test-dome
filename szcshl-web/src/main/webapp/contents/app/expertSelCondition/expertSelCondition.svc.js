@@ -14,7 +14,7 @@
         return service;
 
         //S_saveCondition
-		function saveCondition(workProgramId,conditions,callBack) {
+		function saveCondition(businessId,minBusinessId,businessType,reviewId,conditions,callBack) {
             var httpOptions = {
                 method : 'post',
                 url : rootPath + "/expertSelCondition/saveConditionList",
@@ -25,7 +25,10 @@
                 dataType : "json",
                 data : angular.toJson(conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
                 params:{
-                    workProgramId:workProgramId
+                    businessId:businessId,
+                    minBusinessId:minBusinessId,
+                    reviewId:reviewId,
+                    businessType : businessType,
                 }
             }
             var httpSuccess = function success(response) {

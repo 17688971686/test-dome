@@ -1,7 +1,5 @@
 package cs.model.expert;
 
-import javax.persistence.Column;
-
 /**
  * Description: 专家抽取条件 页面数据模型
  * author: ldm
@@ -10,16 +8,49 @@ import javax.persistence.Column;
 public class ExpertSelConditionDto {
 
     private String id;
+    /**
+     * 突出专业(大类)
+     */
     private String maJorBig;
+    /**
+     * 突出专业(小类)
+     */
     private String maJorSmall;
+    /**
+     * 专家类别
+     */
     private String expeRttype;
+    /**
+     * 正式专家个数
+     */
     private Integer officialNum;
+    /**
+     * 备选专家个数
+     */
     private Integer alternativeNum;
-    private String signId;
+    /**
+     * 排序
+     */
     private Integer sort;
-    private String selectType;
+
+    /**
+     * 抽取次数
+     */
     private Integer selectIndex;
+
+    /**
+     * 业务ID
+     */
+    private String businessId;
+
+    /**
+     * 评审方案ID
+     */
     private String expertReviewId;
+
+    /**
+     * 评审方案对象
+     */
     private ExpertReviewDto expertReviewDto;
 
     public ExpertSelConditionDto() {
@@ -82,13 +113,6 @@ public class ExpertSelConditionDto {
         this.alternativeNum = alternativeNum;
     }
 
-    public String getSignId() {
-        return signId;
-    }
-
-    public void setSignId(String signId) {
-        this.signId = signId;
-    }
 
     public Integer getSort() {
         return sort;
@@ -98,12 +122,12 @@ public class ExpertSelConditionDto {
         this.sort = sort;
     }
 
-    public String getSelectType() {
-        return selectType;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    public void setSelectType(String selectType) {
-        this.selectType = selectType;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 
     public ExpertReviewDto getExpertReviewDto() {

@@ -3,6 +3,7 @@ package cs.service.project;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import cs.domain.project.AddRegisterFile;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
@@ -15,23 +16,22 @@ import cs.repository.odata.ODataObj;
  * Date: 2017-8-3 15:26:51
  */
 public interface AddRegisterFileService {
-    
+
     PageModelDto<AddRegisterFileDto> get(ODataObj odataObj);
 
-	void save(AddRegisterFileDto addRegisterFileDtos);
+    void save(AddRegisterFileDto addRegisterFileDtos);
 
-	void update(AddRegisterFileDto[] addRegisterFileDtos);
+    AddRegisterFileDto findById(String deptId);
 
-	AddRegisterFileDto findById(String deptId);
+    void deleteRegisterFile(String id);
 
-	void deleteRegisterFile(String id);
-	
-	 Map<String,Object> initprint( String signid);
-	 
-	 List<AddRegisterFileDto> findbySuppdate(String suppDate);
+    Map<String, Object> initprint(String signid);
 
-	Map<String, Object> initRegisterFile(String signid);
+    List<AddRegisterFileDto> findbySuppdate(String suppDate);
 
-	List<AddRegisterFileDto> initRegisterFileData(ODataObj odataObj);
+    List<AddRegisterFileDto> findByBusinessId(String businessId);
 
+    List<AddRegisterFileDto> initRegisterFileData(ODataObj odataObj);
+
+    ResultMsg bathSave(AddRegisterFileDto[] addRegisterFileDtos);
 }

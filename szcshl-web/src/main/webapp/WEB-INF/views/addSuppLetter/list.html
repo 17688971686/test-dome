@@ -20,19 +20,18 @@
    			 </button>
         </div>
      </form> -->
-     <div>
-       <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+     <div class="toolbar">
+		 <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left">返回</span></button>
      </div>
-      <div class="well">
-      <table border="1" >
+
+      <table class="table-bordered table">
 		<tr>
-			<td class="text-center" style="width: 15%; ">文件标题</td>
+			<td class="text-center" style="width: 25%;">文件标题</td>
 			<td class="text-center" style="width: 15%;">拟稿部门</td>
 			<td class="text-center" style="width: 15%;">拟稿人</td>
 			<td class="text-center" style="width: 15%;">拟稿时间</td>
 			<td class="text-center" style="width: 15%;">文件字号</td>
-			
-			<td class="text-center">操作</td>
+			<td class="text-center" style="width: 15%;">操作</td>
 		</tr>
 		<tr ng-repeat="a in vm.suppletterlist">
 			<td class="text-center">{{a.title}}</td>
@@ -41,15 +40,8 @@
 			<td class="text-center">{{a.suppLetterTime}}</td>
 			<td class="text-center">{{a.filenum}}</td>
 			<td class="text-center">
-			<button class="btn btn-xs btn-primary"
-					ng-click="vm.getFilenum(a.id);">
-					<span class="glyphicon glyphicon-pencil">生成文件字号</span>
-			</button>
-				<button class="btn btn-xs btn-primary"
-					ng-click="vm.findByIdAddSuppLetter(a.id);">
-					<span class="glyphicon glyphicon-pencil">查看</span>
-				</button>
-				
+				<button class="btn btn-xs btn-primary" ng-hide="a.filenum" ng-click="vm.getFilenum(a.id);"> <span class="glyphicon glyphicon-pencil">生成文件字号</span></button>
+				<button class="btn btn-xs btn-primary" ng-click="vm.findByIdAddSuppLetter(a.id);"><span class="glyphicon glyphicon-pencil">查看</span></button>
 			</td>
 		</tr>
 	</table>

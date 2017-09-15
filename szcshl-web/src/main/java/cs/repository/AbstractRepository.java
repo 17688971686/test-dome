@@ -293,4 +293,20 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         }
         return findByHql(hqlBuilder);
     }
+
+    /**
+     * 取数据库的当前时间
+     * @param format 日期格式
+     * @return
+     */
+    public String getDataBaseTime(String format) {
+        String dataBaseTime = "";
+        String sql = "select to_char(sysdate,'" + format + "') from dual";
+        try {
+            NativeQuery<String> q = this.getCurrentSession().createNativeQuery(sql);
+            dataBaseTime = q.uniqueResult();
+        } catch (Exception ex) {
+        }
+        return dataBaseTime;
+    }
 }

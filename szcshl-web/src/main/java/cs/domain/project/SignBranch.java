@@ -102,4 +102,17 @@ public class SignBranch {
     public void setIsFinished(String isFinished) {
         this.isFinished = isFinished;
     }
+
+    public SignBranch(String signId, String branchId, String isNeedWP, String isEndWP, String isMainBrabch, String orgId, String isFinished) {
+        this.signId = signId;
+        this.branchId = branchId;
+        this.isNeedWP = isNeedWP;
+        this.isEndWP = isEndWP;
+        this.isMainBrabch = isMainBrabch;
+        this.orgId = orgId;
+        this.isFinished = isFinished;
+    }
+
+    public SignBranch() {
+    }
 }

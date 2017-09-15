@@ -42,8 +42,7 @@
                 DEVICE_BILL_IMPORT:"设备清单（进口）",
                 IMPORT_DEVICE:"进口设备"
             }
-        }
-
+        },
     };
     window.signcommon = service;
 

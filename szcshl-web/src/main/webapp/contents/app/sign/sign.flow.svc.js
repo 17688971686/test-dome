@@ -142,6 +142,8 @@
                     break;
                 //项目负责人确认发文
                 case flowcommon.getSignFlowNode().SIGN_QRFW:
+                case flowcommon.getSignFlowNode().SIGN_BMLD_QRFW_XB:
+                case flowcommon.getSignFlowNode().SIGN_FGLD_QRFW_XB:
                     vm.watchPassDis();
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeConfirmDis = true;
@@ -355,6 +357,8 @@
                     break;
                 //项目负责人确认发文
                 case flowcommon.getSignFlowNode().SIGN_QRFW:
+                case flowcommon.getSignFlowNode().SIGN_BMLD_QRFW_XB:
+                case flowcommon.getSignFlowNode().SIGN_FGLD_QRFW_XB:
                     if(vm.businessFlag.passDis == '9' || vm.businessFlag.passDis == 9){
                         vm.flow.businessMap.AGREE = '9';
                     }else{

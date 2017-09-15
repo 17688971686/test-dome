@@ -50,15 +50,14 @@ public class ExpertController {
 
 	@RequestMapping(name = "统计符合条件的专家", path = "countReviewExpert", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ExpertDto> countReviewExpert(@RequestParam String workprogramId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto epSelCondition) {
-		return expertService.countExpert(workprogramId,reviewId,epSelCondition);
+	public List<ExpertDto> countReviewExpert(@RequestParam String minBusinessId,@RequestParam String reviewId,@RequestBody ExpertSelConditionDto epSelCondition) {
+		return expertService.countExpert(minBusinessId,reviewId,epSelCondition);
 	}
 
     @RequestMapping(name = "专家抽取", path = "autoExpertReview", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg findReviewExpert(@RequestParam String workprogramId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto[] paramArrary) {
-
-        return expertService.autoExpertReview(workprogramId,reviewId,paramArrary);
+    public ResultMsg findReviewExpert(@RequestParam String minBusinessId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto[] paramArrary) {
+        return expertService.autoExpertReview(minBusinessId,reviewId,paramArrary);
     }
 
 	@RequiresPermissions("expert##post")

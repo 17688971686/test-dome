@@ -9,15 +9,15 @@
         var vm = this;
         vm.title = '选择专家';
         vm.conMaxIndex = 0;                   //条件号
-        vm.conditions = new Array();         //条件列表
         vm.customCondition = new Array();
         vm.expertReview = {};                 //评审方案对象
         vm.confirmEPList = [];                //拟聘请专家列表（已经经过确认的专家）
-        vm.matchEPMap = {};                  //保存符合条件的专家信息
+        vm.matchEPMap = {};                   //保存符合条件的专家信息
         vm.selectIds = [],                    //已经抽取的专家信息ID（用于排除查询）
         vm.autoSelectedEPList = [];           //抽取结果列表，抽取方法在后面封装
-        vm.workProgramId = $state.params.workProgramId;
-
+        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+        vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
+        vm.businessType = $state.params.businessType;   //专家业务类型
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
@@ -32,7 +32,7 @@
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
-                    if(obj == epObj.id){
+                    if(epObj && obj == epObj.id){
                         vm.confirmEPList.splice(index, 1);
                     }
                 })
@@ -52,7 +52,7 @@
         }
 
         //更新是否确认状态
-        vm.reFleshJoinState = function(ids,state){
+        vm.reFleshConfirmState = function(ids,state){
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
@@ -64,32 +64,23 @@
         }
 
         //更新抽取条件的抽取次数
-        vm.updateSelectedIndex = function(sort){
-            if(sort){
-                $.each(vm.conditions,function(i,con){
-                    if(con.sort == sort){
+        vm.updateSelectedIndex = function(id){
+            if(id){
+                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
+                    if(con.id == id){
                         con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
                     }
                 })
             }else{
-                $.each(vm.conditions,function(i,con){
+                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
                     con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
                 })
             }
         }
 
-        vm.init = function(workProgramId){
-            expertReviewSvc.initReview(workProgramId,function(data){
+        vm.init = function(businessId,minBusinessId){
+            expertReviewSvc.initReview(businessId,minBusinessId,function(data){
                 vm.expertReview = data;
-                //专家抽取条件
-                if (!angular.isUndefined(vm.expertReview.expertSelConditionDtoList) && angular.isArray(vm.expertReview.expertSelConditionDtoList)) {
-                    vm.conditions = vm.expertReview.expertSelConditionDtoList;
-                    $.each(vm.conditions,function(i,scdObj){
-                        if(scdObj.sort > vm.conMaxIndex){
-                            vm.conMaxIndex = scdObj.sort;
-                        }
-                    });
-                }
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
                     $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
@@ -109,7 +100,7 @@
         activate();
         function activate() {
             expertReviewSvc.initExpertGrid(vm);
-            vm.init(vm.workProgramId);
+            vm.init(vm.businessId,vm.minBusinessId);
         }
 
         //弹出自选专家框
@@ -134,7 +125,7 @@
             } else if (selectIds.length > 1) {
                 bsWin.alert("自选专家最多只能选择一个！");
             }else{
-                expertReviewSvc.saveSelfExpert(vm.workProgramId,selectIds[0].value, vm.expertReview.id,vm.isCommit,function(data){
+                expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selectIds[0].value,vm.expertReview.id,vm.isCommit,function(data){
                     if(data.flag || data.reCode == 'ok'){
                         if(!vm.expertReview.id){
                             vm.expertReview.id = data.idCode;
@@ -231,19 +222,17 @@
             var selectIds = common.getKendoCheckId('#outExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
-                //$("#outExpertError").html("请选择一条专家数据才能保存！");
             } else {
                 var selExpertIdArr = [];
                 $.each(selectIds, function (i, obj) {
                     selExpertIdArr.push(obj.value);
                 });
-                expertReviewSvc.saveOutExpert(vm.workProgramId,selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
+                expertReviewSvc.saveOutExpert(vm.businessId,vm.minBusinessId,vm.businessType,selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
                         if(!vm.expertReview.id){
                             vm.expertReview.id = data.idCode;
                         }
                         vm.reFleshSelEPInfo(data.reObj);
-
                         bsWin.success("操作成功！",function(){
                             window.parent.$("#outExpertDiv").data("kendoWindow").close();
                         });
@@ -260,23 +249,17 @@
         }
 
         //计算符合条件的专家
-        vm.countMatchExperts = function (sortIndex) {
+        vm.countMatchExperts = function (id) {
             if (vm.expertReview.id) {
                 var postData = {};
-                vm.conditions.forEach(function (t, number) {
-                    if (t.sort == sortIndex) {
+                vm.expertReview.expertSelConditionDtoList.forEach(function (t, number) {
+                    if (t.id == id) {
                         postData = t;
-                        postData.maJorBig = $("#maJorBig" + t.sort).val();
-                        postData.maJorSmall = $("#maJorSmall" + t.sort).val();
-                        postData.expeRttype = $("#expeRttype" + t.sort).val();
                     }
                 });
-                postData.expertReviewDto = {};
-                postData.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
-
-                expertReviewSvc.countMatchExperts(postData,vm.workProgramId,vm.expertReview.id,function(data){
-                    vm.matchEPMap[sortIndex] = data;
-                    $("#expertCount" + sortIndex).html(data.length);
+                expertReviewSvc.countMatchExperts(postData,vm.minBusinessId,vm.expertReview.id,function(data){
+                    vm.matchEPMap[id] = data;
+                    $("#expertCount" + id).html(data.length);
                 });
             } else {
                 bsWin.alert("请保存整体抽取方案再计算");
@@ -299,37 +282,36 @@
         }
 
         vm.checkIntegerValue = function (checkValue, idStr, idSort) {
-        
             if (expertConditionSvc.isUnsignedInteger(checkValue)) {
-                $("#" + idStr + idSort).val(checkValue);
                 $("#errorsOfficialNum" + idSort).html("");
                 $("#errorsAlternativeNum" + idSort).html("");
+                return checkValue;
             } else {
                 $("#errorsOfficialNum" + idSort).html("只能填写数字");
                 $("#errorsAlternativeNum" + idSort).html("只能填写数字");
+                return ;
             }
         }
 
         //添加随机抽取条件
         vm.addCondition = function () {
-            if (vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0) {
+            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
-                vm.condition = {};
-                vm.condition.sort = vm.conMaxIndex+1;
-                if (vm.expertReview.id) {
-                    vm.condition.expertReviewDto = {};
-                    vm.condition.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
+                if(!vm.expertReview.expertSelConditionDtoList){
+                    vm.expertReview.expertSelConditionDtoList = [];
                 }
-                vm.condition.selectType = "1";    //选择类型，这个一定不能少
-                vm.conditions.push(vm.condition);
-                vm.conMaxIndex++;
+                vm.condition = {};
+                vm.condition.id = common.uuid();            //设置ID
+                vm.condition.businessId = vm.minBusinessId; //设置业务ID
+                vm.condition.selectType = "1";              //选择类型，这个一定不能少
+                vm.expertReview.expertSelConditionDtoList.push(vm.condition);
             }
         }
 
         //删除专家抽取条件
         vm.removeCondition = function () {
-            if (vm.expertReview.isComfireResult == 9 || vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0 ) {
+            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
                 var isCheck = $("#conditionTable input[name='epConditionSort']:checked");
@@ -341,13 +323,9 @@
                             $('.confirmDialog').modal('hide');
                             var ids = [];
                             for (var i = 0; i < isCheck.length; i++) {
-                                $.each(vm.conditions,function(c,con){
-                                    if (isCheck[i].value == con.sort) {
-                                        if (con.id) {
-                                            ids.push(con.id);
-                                        }else{
-                                            vm.conditions.splice(c, 1);     //没有保存抽取条件的直接删除
-                                        }
+                                $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){
+                                    if (isCheck[i].value == con.id) {
+                                        ids.push(con.id);
                                     }
                                 })
                             }
@@ -356,9 +334,9 @@
                                     if(data.flag || data.reCode == 'ok'){
                                         bsWin.success("操作成功！");
                                         $.each(ids,function(i,id){
-                                            $.each(vm.conditions,function(c,con){
-                                                if (id == con.sort) {
-                                                    vm.conditions.splice(c, 1);     //没有保存抽取条件的直接删除
+                                            $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){
+                                                if (id == con.id) {
+                                                    vm.expertReview.expertSelConditionDtoList.splice(c, 1);     //没有保存抽取条件的直接删除
                                                 }
                                             })
                                         })
@@ -388,38 +366,25 @@
 
         /******************************  以下是专家抽取方法 ***********************************/
         //封装专家抽取条件信息
-        function buildCondition(checkId) {
-            if (vm.conditions.length > 0) {
+        function buildCondition() {
+            if (vm.expertReview.expertSelConditionDtoList.length > 0) {
                 var validateResult = true;
-                vm.conditions.forEach(function (t, number) {
-                    if (checkId) {
-                        if (angular.isUndefined(t.id) || t.id == "") {
-                            validateResult = false;
-                        }
-                    }
+                vm.expertReview.expertSelConditionDtoList.forEach(function (t, number) {
                     if (vm.expertReview.id) {
                         t.expertReviewDto = {};
                         t.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
                     }
-                    t.workProgramId = vm.expertReview.workProgramId;
-                    t.maJorBig = $("#maJorBig" + t.sort).val();
-                    t.maJorSmall = $("#maJorSmall" + t.sort).val();
-                    t.expeRttype = $("#expeRttype" + t.sort).val();
-                    if ($("#officialNum" + t.sort).val() && isUnsignedInteger($("#officialNum" + t.sort).val())) {
-                        t.officialNum = $("#officialNum" + t.sort).val();
-                    } else {
-                        $("#errorsOfficialNum" + t.sort).html("必填，且为数字");
+                    if (!t.officialNum || !isUnsignedInteger(t.officialNum)) {
+                        $("#errorsOfficialNum" + t.id).html("必填，且为数字");
                         validateResult = false;
                     }
-                    if ($("#alternativeNum" + t.sort).val() && isUnsignedInteger($("#alternativeNum" + t.sort).val())) {
-                        t.alternativeNum = $("#alternativeNum" + t.sort).val();
-                    } else {
-                        $("#errorsAlternativeNum" + t.sort).html("必填，且为数字");
+                    if (!t.alternativeNum || !isUnsignedInteger(t.alternativeNum)) {
+                        $("#errorsAlternativeNum" + t.id).html("必填，且为数字");
                         validateResult = false;
                     }
                     if (validateResult) {
-                        $("#errorsOfficialNum" + t.sort).html("");
-                        $("#errorsAlternativeNum" + t.sort).html("");
+                        $("#errorsOfficialNum" + t.id).html("");
+                        $("#errorsAlternativeNum" + t.id).html("");
                     }
                 });
                 return validateResult;
@@ -430,21 +395,16 @@
 
         //保存专家抽取条件
         vm.saveCondition = function () {
-            if (vm.expertReview.isComfireResult == '9') {
+            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             }else {
-                if (buildCondition(false)) {
-                    expertConditionSvc.saveCondition(vm.workProgramId,vm.conditions,function(data){
+                if (buildCondition()) {
+                    expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
                         if(data.flag || data.reCode == 'ok'){
-                            vm.conditions = data.reObj;
+                            vm.expertReview.expertSelConditionDtoList = data.reObj;
                             if(!vm.expertReview.id){
-                                vm.expertReview.id = vm.conditions[0].expertReviewId;
+                                vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
                             }
-                            //抽取方案ID
-                            $.each(vm.conditions, function (i, obj) {
-                                obj.expertReviewDto = {};
-                                obj.expertReviewDto.id = vm.expertReview.id;
-                            });
                             bsWin.success("保存成功！");
                         }else{
                             bsWin.error(data.reMsg);
@@ -458,54 +418,44 @@
 
         //（整体方案抽取）开始随机抽取
         vm.startAutoExpertWin = function () {
-            //整体专家抽取前，先保存抽取方案
-
-            if (buildCondition(true)) {
-                if(vm.expertReview.selCount > 0){
-                    bsWin.alert("您已经进行整体专家抽取，不能再进行整体方案的抽取！");
-                    return ;
-                }
-                if (vm.expertReview.isComfireResult == 9 || vm.expertReview.isComfireResult == '9' || vm.expertReview.selCount > 0) {
-                    bsWin.alert("该方案已经进行整体专家方案的抽取，不能在继续抽取！");
-                } else {
-                    expertConditionSvc.saveCondition(vm.workProgramId,vm.conditions,function(data){
-                        if(data.flag || data.reCode == 'ok'){
-                            vm.conditions = data.reObj;
-                            if(!vm.expertReview.id){
-                                vm.expertReview.id = vm.conditions[0].expertReviewId;
-                            }
-                            //抽取方案ID
-                            $.each(vm.conditions, function (i, obj) {
-                                obj.expertReviewDto = {};
-                                obj.expertReviewDto.id = vm.expertReview.id;
-                            });
-                            expertReviewSvc.queryAutoExpert(vm.conditions,vm.workProgramId,vm.expertReview.id,function(data){
-                                if(data.flag || data.reCode == 'ok'){
-                                    //刷新页面抽取的专家
-                                    vm.reFleshSelEPInfo(data.reObj.autoEPList);
-                                    //抽取次数加一
-                                    vm.expertReview.selCount = data.reObj.selCount;
-                                    //抽取结果数组
-                                    vm.autoSelectedEPList = [];
-                                    vm.autoSelectedEPList = data.reObj.autoEPList;
-                                    //刷新抽取次数
-                                    vm.updateSelectedIndex();
-                                    //弹框
-                                    vm.showAutoExpertWin();
-                                    //显示抽取效果
-                                    expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
-                                }else{
-                                    bsWin.error(data.reMsg);
-                                }
-                            });
-                        }else{
-                            bsWin.error(data.reMsg);
+            if(!vm.expertReview.id){
+                bsWin.alert("请先进行整体！");
+                return ;
+            }
+            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
+                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
+                return ;
+            }
+            if (buildCondition()) {
+                expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.expertReview.expertSelConditionDtoList = data.reObj;
+                        if(!vm.expertReview.id){
+                            vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
                         }
-                    });
-
-                }
+                        expertReviewSvc.queryAutoExpert(vm.expertReview.expertSelConditionDtoList,vm.minBusinessId,vm.expertReview.id,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                //刷新页面抽取的专家
+                                vm.reFleshSelEPInfo(data.reObj.autoEPList);
+                                //抽取结果数组
+                                vm.autoSelectedEPList = [];
+                                vm.autoSelectedEPList = data.reObj.autoEPList;
+                                //刷新抽取次数
+                                vm.expertReview.state = '9';
+                                //弹框
+                                vm.showAutoExpertWin();
+                                //显示抽取效果
+                                expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
             } else {
-                bsWin.alert("请先保存编辑的抽取方案！");
+                bsWin.alert("专家抽取条件设置不完整！");
             }
         }
 
@@ -536,10 +486,10 @@
         }
 
         //再次抽取专家
-        vm.repeatAutoExpert = function(conSort) {
+        vm.repeatAutoExpert = function(id) {
             var condition = [];
-            $.each(vm.conditions,function(i,con){
-                if(con.sort == conSort){
+            $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
+                if(con.id == id){
                     condition.push(con);
                 }
             })
@@ -547,17 +497,17 @@
                 bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
                 return ;
             }
-            expertReviewSvc.queryAutoExpert(condition,vm.workProgramId,vm.expertReview.id,function(data){
+            expertReviewSvc.queryAutoExpert(condition,vm.minBusinessId,vm.expertReview.id,function(data){
                 if(data.flag || data.reCode == 'ok'){
                     //刷新页面抽取的专家
                     vm.reFleshSelEPInfo(data.reObj.autoEPList);
                     //抽取次数加一
-                    vm.expertReview.selCount = data.reObj.selCount;
+                    vm.expertReview.state = '9';
                     //抽取结果数组
                     vm.autoSelectedEPList = [];
                     vm.autoSelectedEPList = data.reObj.autoEPList;
                     //刷新抽取次数
-                    vm.updateSelectedIndex(conSort);
+                    vm.updateSelectedIndex(id);
                     //弹框
                     vm.showAutoExpertWin();
                     //显示抽取效果
@@ -579,9 +529,9 @@
             for (var i = 0; i < isCheck.length; i++) {
                 ids.push(isCheck[i].value);
             }
-            expertReviewSvc.affirmAutoExpert(vm.expertReview.id,ids.join(","),'9',function(data){
+            expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
                 bsWin.success("操作成功");
-                vm.reFleshJoinState(ids,"9");
+                vm.reFleshConfirmState(ids,"9");
             })
 
         }
@@ -609,7 +559,7 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState( ids.join(','), '9',vm.isCommit,function(data){
+                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '9',vm.isCommit,function(data){
                     bsWin.success("操作成功！");
                     vm.reFleshJoinState(ids,'9');
                 });
@@ -626,7 +576,7 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState( ids.join(','), '0',vm.isCommit,function(data){
+                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '0',vm.isCommit,function(data){
                     bsWin.success("操作成功！");
                     vm.reFleshJoinState(ids,'0');
                 });

@@ -79,20 +79,20 @@ public class AddSuppLetter extends DomainBase {
 	private String leaderSuggest;
 	
 	//打印份数
-	@Column(columnDefinition = "VARCHAR(10)")
-	private String printnum;
-	
-	//收文id
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String signid;
-	
-	//业务ID
+	@Column(columnDefinition = "INTEGER")
+	private Integer printnum;
+
+	/**
+	 * 业务ID
+	 */
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String businessId;
-	
-	//业务类型
+
+	/**
+	 * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
+	 */
 	@Column(columnDefinition = "VARCHAR(64)")
-	private String businessIdType;
+	private String businessType;
 	
 	//文字序号
     @Column(columnDefinition = "INTEGER")
@@ -105,14 +105,6 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setFileSeq(Integer fileSeq) {
 		this.fileSeq = fileSeq;
-	}
-
-	public String getSignid() {
-		return signid;
-	}
-
-	public void setSignid(String signid) {
-		this.signid = signid;
 	}
 
 	public String getMeetingSuggest() {
@@ -211,15 +203,15 @@ public class AddSuppLetter extends DomainBase {
 		this.suppleterSuggest = suppleterSuggest;
 	}
 
-	public String getPrintnum() {
-		return printnum;
-	}
+    public Integer getPrintnum() {
+        return printnum;
+    }
 
-	public void setPrintnum(String printnum) {
-		this.printnum = printnum;
-	}
+    public void setPrintnum(Integer printnum) {
+        this.printnum = printnum;
+    }
 
-	public Date getDisapDate() {
+    public Date getDisapDate() {
 		return disapDate;
 	}
 
@@ -243,14 +235,11 @@ public class AddSuppLetter extends DomainBase {
 		this.businessId = businessId;
 	}
 
-	public String getBusinessIdType() {
-		return businessIdType;
-	}
+    public String getBusinessType() {
+        return businessType;
+    }
 
-	public void setBusinessIdType(String businessIdType) {
-		this.businessIdType = businessIdType;
-	}
-	
-	
-	
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
 }

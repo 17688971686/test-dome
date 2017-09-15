@@ -20,16 +20,18 @@
             validateAutoExpert: validateAutoExpert,      //显示抽取专家效果(抽取方法已在后台封装)
             affirmAutoExpert: affirmAutoExpert,	         //确认已经抽取的专家
             updateJoinState: updateJoinState,            //更改是否参加状态
+            findByBusinessId : findByBusinessId,         //根据业务ID查询评审方案信息
         };
         return service;
 
         //S_initReview
-        function initReview(workProgramId,callBack) {
+        function initReview(businessId,minBusinessId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/expertReview/initByWPId",
+                url: rootPath + "/expertReview/initBybusinessId",
                 params: {
-                    workProgramId:workProgramId
+                    businessId:businessId,
+                    minBusinessId:minBusinessId
                 }
             };
             var httpSuccess = function success(response) {
@@ -172,13 +174,15 @@
         }
 
         //S_saveSelfExpert
-        function saveSelfExpert(workProgramId,expertId,expertReviewId,isCommit,callBack) {
+        function saveSelfExpert(businessId,minBusinessId,businessType,expertId,expertReviewId,isCommit,callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/saveExpertReview",
                 params: {
-                    workProgramId : workProgramId,
+                    businessId:businessId,
+                    minBusinessId : minBusinessId,
+                    businessType : businessType,
                     reviewId: angular.isUndefined(expertReviewId)?"":expertReviewId,
                     expertIds: expertId,
                     selectType: "2"
@@ -201,13 +205,15 @@
         }//E_saveSelfExpert
 
         //S_保存境外专家
-        function saveOutExpert(workProgramId,selExpertIds,expertReviewId,isCommit,callBack) {
+        function saveOutExpert(businessId,minBusinessId,businessType,selExpertIds,expertReviewId,isCommit,callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/saveExpertReview",
                 params: {
-                    workProgramId:workProgramId,
+                    businessId:businessId,
+                    minBusinessId:minBusinessId,
+                    businessType : businessType,
                     reviewId: angular.isUndefined(expertReviewId)?"":expertReviewId,
                     expertIds: selExpertIds,
                     selectType: "3"
@@ -230,13 +236,13 @@
         }//E_saveOutExpert
 
         //S_countMatchExperts
-        function countMatchExperts(postData,workProgramId,expertReviewId,callBack) {
+        function countMatchExperts(postData,minBusinessId,expertReviewId,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expert/countReviewExpert",
                 data: postData,
                 params: {
-                    workprogramId:workProgramId,
+                    minBusinessId:minBusinessId,
                     reviewId: expertReviewId
                 }
             }
@@ -273,7 +279,7 @@
         }//end##getReviewList
 
         //S_queryAutoExpert
-        function queryAutoExpert(conditionArr,workProgramId,expertReviewId,callBack) {
+        function queryAutoExpert(conditionArr,minBusinessId,expertReviewId,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expert/autoExpertReview",
@@ -284,7 +290,7 @@
                 dataType: "json",
                 data: angular.toJson(conditionArr),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
                 params: {
-                    workprogramId: workProgramId,
+                    minBusinessId: minBusinessId,
                     reviewId: expertReviewId
                 }
             }
@@ -320,18 +326,17 @@
                     }
                 }
             }, 200);
-
-
-
         }//E_validateAutoExpert
 
         //S_updateJoinState
-        function updateJoinState(ids, joinState,isCommit,callBack) {
+        function updateJoinState(minBusinessId,businessType,ids, joinState,isCommit,callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/updateJoinState",
                 params: {
+                    minBusinessId : minBusinessId,
+                    businessType : businessType,
                     expertSelId: ids,
                     state: joinState
                 }
@@ -352,12 +357,13 @@
         }//E_updateJoinState
 
         //S_affirmAutoExpert(确认抽取专家)
-        function affirmAutoExpert(reviewId,seletedIds,joinState,callBack) {
+        function affirmAutoExpert(minBusinessId,businessType,seletedIds,joinState,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/affirmAutoExpert",
                 params: {
-                    reviewId: reviewId,
+                    minBusinessId: minBusinessId,
+                    businessType: businessType,
                     expertSelId:seletedIds,
                     state: joinState
                 }
@@ -404,5 +410,29 @@
             });
         }//E_delSelectedExpert
 
+
+        //S_根据业务ID查询评审方案信息
+        function findByBusinessId(businessId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/initBybusinessId",
+                params: {
+                    businessId: businessId,
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+
+                }
+            });
+        }
     }
 })();

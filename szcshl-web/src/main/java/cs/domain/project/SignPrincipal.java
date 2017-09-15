@@ -97,4 +97,16 @@ public class SignPrincipal {
     public void setIsMainUser(String isMainUser) {
         this.isMainUser = isMainUser;
     }
+
+    public SignPrincipal(String signId, String userId, String flowBranch, String userType, Integer sort, String isMainUser) {
+        this.signId = signId;
+        this.userId = userId;
+        this.flowBranch = flowBranch;
+        this.userType = userType;
+        this.sort = sort;
+        this.isMainUser = isMainUser;
+    }
+
+    public SignPrincipal() {
+    }
 }

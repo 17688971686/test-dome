@@ -3,108 +3,90 @@
 
     angular.module('app').factory('addSuppLetterSvc', addSuppLetter);
 
-    addSuppLetter.$inject = ['$http','$state'];
+    addSuppLetter.$inject = ['$http', 'bsWin'];
 
-    function addSuppLetter($http,$state) {
+    function addSuppLetter($http, bsWin) {
         var url_addSuppLetter = rootPath + "/addSuppLetter", url_back = '#/addSuppLetterList';
         var service = {
             grid: grid,
             deleteAddSuppLetter: deleteAddSuppLetter,
             updateAddSuppLetter: updateAddSuppLetter,
-            getAddSuppLetterById: getAddSuppLetterById,//根据ID查看拟补充资料函
-            createAddSuppLetter: createAddSuppLetter,//保存补充资料函
-            initSuppLetter:initSuppLetter,//初始化补充资料函
-            createFilenum:createFilenum,//生成文件字号
-            initSuppListDate:initSuppListDate,//初始化拟补充资料函列表
+            getAddSuppLetterById: getAddSuppLetterById, //根据ID查看拟补充资料函
+            createAddSuppLetter: createAddSuppLetter,   //保存补充资料函
+            initSuppLetter: initSuppLetter,             //初始化补充资料函
+            createFilenum: createFilenum,               //生成文件字号
+            initSuppListDate: initSuppListDate,         //初始化拟补充资料函列表
         };
 
         return service;
-        
-      //S 初始化拟补充资料函列表
-        function initSuppListDate(vm){
-        	var httpOptions = {
-                    method: 'post',
-                    url: url_addSuppLetter + "/initSuppListDate",
-                    params:{
-                    	signid:vm.suppletter.signid,
-                    }
-                };
-                var httpSuccess = function success(response) {
-                    vm.suppletterlist = response.data;
-                    console.log(vm.suppletterlist );
-                    
-                };
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });     
-        }
-    //E 初始化拟补充资料函列表
-        //S 生成文件字号 
-        function createFilenum(vm,id){
-        	var httpOptions = {
-                    method: 'post',
-                    url: url_addSuppLetter + "/createFileNum",
-                    params:{id:id}
-                };
-        	
-                var httpSuccess = function success(response) {
-                	 common.requestSuccess({
-                         vm: vm,
-                         response: response,
-                         fn: function () {
-                             common.alert({
-                                 vm: vm,
-                                 msg: "操作成功",
-                                 closeDialog :true,
-                                 fn: function () {
-                                     vm.isSubmit = false;
-                                     myrefresh();
-                                 }
-                             });
-                         }
-                     });
-                };
 
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                }); 
+        //S 初始化拟补充资料函列表
+        function initSuppListDate(businessId,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addSuppLetter/initSuppListDate",
+                params: {
+                    businessId: businessId,
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
-      //E 生成文件字号 
-        
-      //刷新页面
-        function myrefresh(){
-        	 window.location.reload();
+
+        //E 初始化拟补充资料函列表
+        //S 生成文件字号 
+        function createFilenum(id,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: url_addSuppLetter + "/createFileNum",
+                params: {id: id}
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
-        
+        //E 生成文件字号
+
+
         //S 初始化补充资料函
-        function initSuppLetter(vm){
-        	var httpOptions = {
-                    method: 'get',
-                    url: url_addSuppLetter + "/initaddSuppLetterData",
-                    params:{
-                    	signid:vm.suppletter.signid,
-                    	id:vm.suppletter.id
-                    }
-                };
-                var httpSuccess = function success(response) {
-                    vm.suppletter = response.data.suppletterDto;
-                    
-                };
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });     
+        function initSuppLetter(businessId,businessType,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addSuppLetter/initSuppLetter",
+                params: {
+                    businessId: businessId,
+                    businessType:businessType,
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
+
         //E 初始化补充资料函
-        
+
         // begin#updateAddSuppLetter
         function updateAddSuppLetter(vm) {
             common.initJqValidation();
@@ -169,12 +151,12 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                    	common.alert({
+                        common.alert({
                             vm: vm,
                             msg: "操作成功",
-                            closeDialog :true,
+                            closeDialog: true,
                             fn: function () {
-                            	vm.isSubmit = false;
+                                vm.isSubmit = false;
                                 vm.gridOptions.dataSource.read();
                             }
                         })
@@ -191,51 +173,36 @@
         }
 
         // begin#createAddSuppLetter
-        function createAddSuppLetter(vm) {
-            common.initJqValidation($('#suppletter_form'));
-            var isValid = $('#suppletter_form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                var httpOptions = {
-                    method: 'post',
-                    url: url_addSuppLetter +"/add",
-                    data: vm.suppletter
-                };
-                var httpSuccess = function success(response) {
-                  common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                 //  vm.isSubmit = false;
-                                 //  myrefresh();
-                                   $state.go('addSuppletterList',{signid: vm.suppletter.signid});
-                                }
-                           });
-                        }
-                    });
-                };
+        function createAddSuppLetter(suppletter, isSubmit,callBack) {
+            isSubmit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addSuppLetter/save",
+                data: suppletter
+            };
+            var httpSuccess = function success(response) {
+                isSubmit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
 
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function(){isSubmit = false}
+            });
 
-            }
+
         }
 
         // begin#getAddSuppLetterById
-        function getAddSuppLetterById(vm,id) {
-        	var httpOptions = {
+        function getAddSuppLetterById(vm, id) {
+            var httpOptions = {
                 method: 'get',
                 url: rootPath + "/addSuppLetter/findById",
-                params:{id:vm.id}
+                params: {id: vm.id}
             };
             var httpSuccess = function success(response) {
                 vm.suppletter = response.data;
@@ -246,7 +213,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
-            });                       
+            });
         }
 
         // begin#grid

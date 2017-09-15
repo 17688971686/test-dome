@@ -26,9 +26,9 @@ public interface ExpertService {
 
     List<ExpertDto> findAllRepeat();
 
-    List<ExpertDto> findExpert(String workprogramId, String reviewId, ExpertSelConditionDto[] epSelCondition);
+    List<ExpertDto> findExpert(String minBusinessId, String reviewId, ExpertSelConditionDto[] epSelCondition);
 
-    List<ExpertDto> countExpert(String workprogramId, String reviewId, ExpertSelConditionDto epSelCondition);
+    List<ExpertDto> countExpert(String minBusinessId, String reviewId, ExpertSelConditionDto epSelCondition);
 
     void savePhone(byte[] bytes, String expertId);
 
@@ -36,5 +36,5 @@ public interface ExpertService {
 
     int findMaxNumber();
 
-    ResultMsg autoExpertReview(String workprogramId, String reviewId, ExpertSelConditionDto[] paramArrary);
+    ResultMsg autoExpertReview(String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary);
 }

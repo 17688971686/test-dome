@@ -5,7 +5,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import cs.common.utils.Validate;
+import cs.domain.meeting.RoomBooking_;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -96,6 +99,23 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         List<RoomBookingDto> roomList= criteria.add(Restrictions.between("rbDay", nextMonday, nextSunday)).list();
 		return roomList;
 	}
+
+    /**
+     * 根据业务ID获取评审会日期
+     * @param businessId
+     * @return
+     */
+    @Override
+    public Date getMeetingDateByBusinessId(String businessId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(RoomBooking_.businessId.getName(),businessId));
+        criteria.addOrder(Order.asc(RoomBooking_.createdDate.getName()));
+        List<RoomBooking> list = criteria.list();
+        if(Validate.isList(list)){
+            return list.get(0).getRbDay();
+        }
+        return null;
+    }
 
 
 }

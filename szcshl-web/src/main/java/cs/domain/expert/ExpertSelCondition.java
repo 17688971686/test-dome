@@ -11,30 +11,55 @@ import javax.persistence.*;
 public class ExpertSelCondition {
 
     @Id
-    @GeneratedValue(generator = "selConditionGenerator")
-    @GenericGenerator(name = "selConditionGenerator", strategy = "uuid")
     private String id;
 
+    /**
+     * 突出专业(大类)
+     */
     @Column(columnDefinition = "varchar(128) ")
-    private String maJorBig;//突出专业(大类)
+    private String maJorBig;
 
+    /**
+     * 突出专业(小类)
+     */
     @Column(columnDefinition = "varchar(128) ")
-    private String maJorSmall;//突出专业(小类)
+    private String maJorSmall;
 
+    /**
+     * 专家类别
+     */
     @Column(columnDefinition = "varchar(30) ")
-    private String expeRttype;//专家类别
+    private String expeRttype;
 
+    /**
+     * 正式专家个数
+     */
     @Column(columnDefinition = "integer")
-    private Integer officialNum;    //正式专家个数
+    private Integer officialNum;
 
+    /**
+     * 备选专家个数
+     */
     @Column(columnDefinition = "integer")
-    private Integer alternativeNum;    //备选专家个数
+    private Integer alternativeNum;
 
+    /**
+     * 排序
+     */
     @Column(columnDefinition = "integer")
     private Integer sort;
 
+    /**
+     * 抽取次数
+     */
     @Column(columnDefinition = "integer default 0")
     private Integer selectIndex;    //抽取次数
+
+    /**
+     * 业务ID，如项目签收工作方案ID，课题工作方案ID等
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String businessId;
     /**
      * 专家评审方案
      */
@@ -112,5 +137,13 @@ public class ExpertSelCondition {
 
     public void setSelectIndex(Integer selectIndex) {
         this.selectIndex = selectIndex;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

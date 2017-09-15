@@ -1,15 +1,12 @@
 package cs.domain.meeting;
 
-import java.util.Date;
-
-import javax.persistence.*;
-
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import cs.domain.project.WorkProgram;
-import org.hibernate.annotations.Formula;
-
 import cs.domain.DomainBase;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.Date;
 /**
  * 会议预定表
  * @author sjy
@@ -18,7 +15,6 @@ import cs.domain.DomainBase;
 @Entity
 @Table(name="cs_room_booking")
 public class RoomBooking extends DomainBase{
-
 	@Id
 	private String id;
 
@@ -61,53 +57,72 @@ public class RoomBooking extends DomainBase{
 	@Column(columnDefinition="varchar(255)")
 	private String remark;//备注
 
-	//工作方案Id
-	@ManyToOne
-	@JoinColumn(name="workProgramId")
-	private WorkProgram workProgram;
-
 	//评审部门
 	@Column(columnDefinition="varchar(100)")
 	private String stageOrgName;
 
-	//评审项目,包含:(时间,评审单位,评审项目,项目类型,评审部门)
+	/**
+	 * 评审项目,包含:(时间,评审单位,评审项目,项目类型,评审部门)
+	 */
 	@Column(columnDefinition="varchar(200)")
 	private String stageProject;
+
+	/**
+	 * 业务ID，如项目工作方案ID，课题研究工作方案ID等
+	 */
+	@Column(columnDefinition="varchar(64)")
+	private String businessId;
+
+    /**
+     * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
+     */
+    @Column(columnDefinition="varchar(16)")
+	private String businessType;
 
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getMrID() {
 		return mrID;
 	}
+
 	public void setMrID(String mrID) {
 		this.mrID = mrID;
 	}
+
 	public String getRbName() {
 		return rbName;
 	}
+
 	public void setRbName(String rbName) {
 		this.rbName = rbName;
 	}
-	@Formula("(select m.addr from cs_meetingRoom m where m.id = mrID)")
+
 	public String getAddressName() {
 		return addressName;
 	}
+
 	public void setAddressName(String addressName) {
 		this.addressName = addressName;
 	}
+
 	public String getDueToPeople() {
 		return dueToPeople;
 	}
+
 	public void setDueToPeople(String dueToPeople) {
 		this.dueToPeople = dueToPeople;
 	}
+
 	public String getHost() {
 		return host;
 	}
+
 	public void setHost(String host) {
 		this.host = host;
 	}
@@ -115,51 +130,17 @@ public class RoomBooking extends DomainBase{
 	public Date getRbDay() {
 		return rbDay;
 	}
+
 	public void setRbDay(Date rbDay) {
 		this.rbDay = rbDay;
 	}
-	public String getRbStatus() {
-		return rbStatus;
-	}
-	public void setRbStatus(String rbStatus) {
-		this.rbStatus = rbStatus;
-	}
-	public String getRbType() {
-		return rbType;
-	}
-	public void setRbType(String rbType) {
-		this.rbType = rbType;
-	}
-	public String getContent() {
-		return content;
-	}
-	public void setContent(String content) {
-		this.content = content;
-	}
-	public String getRemark() {
-		return remark;
-	}
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-	
-	public String getStageOrgName() {
-		return stageOrgName;
-	}
-	public void setStageOrgName(String stageOrgName) {
-		this.stageOrgName = stageOrgName;
-	}
+
 	public String getRbDate() {
 		return rbDate;
 	}
+
 	public void setRbDate(String rbDate) {
 		this.rbDate = rbDate;
-	}
-	public String getStageProject() {
-		return stageProject;
-	}
-	public void setStageProject(String stageProject) {
-		this.stageProject = stageProject;
 	}
 
 	public Date getBeginTime() {
@@ -178,11 +159,67 @@ public class RoomBooking extends DomainBase{
 		this.endTime = endTime;
 	}
 
-	public WorkProgram getWorkProgram() {
-		return workProgram;
+	public String getRbStatus() {
+		return rbStatus;
 	}
 
-	public void setWorkProgram(WorkProgram workProgram) {
-		this.workProgram = workProgram;
+	public void setRbStatus(String rbStatus) {
+		this.rbStatus = rbStatus;
 	}
+
+	public String getRbType() {
+		return rbType;
+	}
+
+	public void setRbType(String rbType) {
+		this.rbType = rbType;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getStageOrgName() {
+		return stageOrgName;
+	}
+
+	public void setStageOrgName(String stageOrgName) {
+		this.stageOrgName = stageOrgName;
+	}
+
+	public String getStageProject() {
+		return stageProject;
+	}
+
+	public void setStageProject(String stageProject) {
+		this.stageProject = stageProject;
+	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
 }

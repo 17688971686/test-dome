@@ -40,7 +40,6 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "VARCHAR(20)")
     private String isSigle;
 
-
     //项目名称
     @Column(columnDefinition = "VARCHAR(256)")
     private String projectName;
@@ -224,16 +223,6 @@ public class WorkProgram extends DomainBase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "signId")
     private Sign sign;
-
-    /**
-     * 专家评审方案ID（这里不做关联了）
-     */
-    @Column(columnDefinition = "varchar(64)")
-    private String expertReviewId;
-
-    //会议预定信息
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workProgram",orphanRemoval=true)
-    private List<RoomBooking> roomBookings;
 
     public Sign getSign() {
         return sign;
@@ -531,14 +520,6 @@ public class WorkProgram extends DomainBase {
         this.titleName = titleName;
     }
 
-    public List<RoomBooking> getRoomBookings() {
-        return roomBookings;
-    }
-
-    public void setRoomBookings(List<RoomBooking> roomBookings) {
-        this.roomBookings = roomBookings;
-    }
-
     public String getMinisterName() {
         return ministerName;
     }
@@ -620,7 +601,6 @@ public class WorkProgram extends DomainBase {
     public void setInviteUnitLeader(String inviteUnitLeader) {
         this.inviteUnitLeader = inviteUnitLeader;
     }
-    
 
     public BigDecimal getDeclaration() {
 		return declaration;
@@ -629,15 +609,6 @@ public class WorkProgram extends DomainBase {
 	public void setDeclaration(BigDecimal declaration) {
 		this.declaration = declaration;
 	}
-
-	public String getExpertReviewId() {
-        return expertReviewId;
-    }
-
-    public void setExpertReviewId(String expertReviewId) {
-        this.expertReviewId = expertReviewId;
-    }
-    
 
     public Date getStudyAllDay() {
 		return studyAllDay;

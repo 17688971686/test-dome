@@ -6,14 +6,14 @@
 <!--  s table-->
 <table class="table table-bordered">
     <tr>
-        <td style="width:10%;" class="formAlignRight">评审方式<span class="required">*</span></td>
+        <td style="width:10%;" class="text-center">评审方式<span class="required">*</span></td>
         <td colspan="3">
             <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType">
                 <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
                         value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
-        <td style="width:10%;" class="formAlignRight">申报投资<span class="required">*</span></td>
+        <td style="width:10%;" class="text-center">申报投资<span class="required">*</span></td>
         <td colspan="3">
             <input type="text" style="width:100px;" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
                    id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
@@ -36,14 +36,14 @@
     <tr>
         <td class="formAlignRight">是否有补充资料函</td>
         <td colspan="3">
-          <label>
-				<input type="checkbox" style="width:50px;" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.work.isHaveSuppLetter==9" ng-true-value="9" >是
+            <label>
+				<input type="checkbox" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.work.isHaveSuppLetter==9" ng-true-value="9" >是
 			</label>
-			 <label>
-			  <input type="checkbox" style="width:50px;" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.work.isHaveSuppLetter==0"  ng-true-value="0">否
+			<label style="margin-left: 10px;">
+			  <input type="checkbox" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!vm.work.isHaveSuppLetter||vm.work.isHaveSuppLetter==0"  ng-true-value="0">否
 			</label>
         </td>
-        <td class="formAlignRight">补充资料函发文日期</td>
+        <td class="text-center">补充资料函发文日期</td>
         <td colspan="3">
             <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.suppLetterDate" value="" type="text"/>
         </td>
@@ -59,8 +59,7 @@
              </select>
             	  <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
 					data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" /> 
-					<span id="errorTime"></span>
+					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" />
 					 至
 				 <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
                                data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
@@ -68,20 +67,8 @@
 				<span id="errorTime"></span>
          </td>
      </tr>
-    <!--
     <tr>
-        <td class="formAlignRight">调研开始时间</td>
-        <td colspan="3">
-            <input name="studyBeginTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyBeginTime" type="text"/>
-        </td>
-        <td class="formAlignRight">调研结束时间</td>
-        <td colspan="3">
-            <input name="studyEndTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.studyEndTime" type="text"/>
-        </td>
-    </tr>
-    -->
-    <tr>
-        <td class="formAlignRight">专家费用（元）</td>
+        <td class="text-center">专家费用（元）</td>
         <td colspan="3">
             <input type="text" style="width:30%;" ng-model="vm.work.expertCost" ng-value="0" name="expertCost"  data-val-digits="只能为数字">
             <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
@@ -92,7 +79,7 @@
         </td>
     </tr>
     <tr>
-        <td class="formAlignRight"><span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span><span ng-if="vm.work.reviewType == '专家函评'">函评会日期</span></td>
+        <td class="text-center"><span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span><span ng-if="vm.work.reviewType == '专家函评'">函评会日期</span></td>
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
         </td>
@@ -116,7 +103,7 @@
         <td class="text-center" colspan="3">{{r.content}}</td>
     </tr>
     <tr>
-        <td class="formAlignRight">拟聘请专家</td>
+        <td class="text-center">拟聘请专家</td>
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
@@ -144,13 +131,13 @@
         <td class="text-center">{{x.remark}}</td>
     </tr>
     <tr>
-        <td class="formAlignRight">拟邀请单位及领导</td>
+        <td class="text-center">拟邀请单位及领导</td>
         <td colspan="7">
             <textarea rows="3" ng-model="vm.work.inviteUnitLeader" name="mainPoint" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
         </td>
     </tr>
     <tr>
-        <td class="formAlignRight">拟评审重点问题</td>
+        <td class="text-center">拟评审重点问题</td>
         <td colspan="7">
             <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
         </td>

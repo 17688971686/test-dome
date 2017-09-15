@@ -20,7 +20,6 @@
             getAssociateSign : getAssociateSign, //获取项目关联阶段信息
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
-            paymentGrid: paymentGrid,           //专家评审费
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
             realSign : realSign ,               //正式签收
@@ -548,25 +547,6 @@
             });
         }
         //end initAssociateSigns
-
-        // begin#remarkGrid
-        function paymentGrid(signId,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/getBySignId/" + signId
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }// end fun grid
 
         //begin findWorkProgramBySignId
         function findWorkProgramBySignId(vm,callBack){

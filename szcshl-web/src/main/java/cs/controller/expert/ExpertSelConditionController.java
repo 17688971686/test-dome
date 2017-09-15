@@ -48,8 +48,9 @@ public class ExpertSelConditionController {
     @RequiresPermissions("expertSelCondition#saveConditionList#post")
     @RequestMapping(name = "保存专家抽取条件", path = "saveConditionList", method = RequestMethod.POST)
     public @ResponseBody
-    ResultMsg saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary,@RequestParam(required = true)String workProgramId){
-        return  expertSelConditionService.saveConditionList(workProgramId,paramArrary);
+    ResultMsg saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary,@RequestParam(required = true)String businessId,
+        @RequestParam(required = true)String minBusinessId, @RequestParam(required = true)String businessType, String reviewId){
+        return  expertSelConditionService.saveConditionList(businessId,minBusinessId,businessType,reviewId,paramArrary);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)

@@ -36,4 +36,5 @@ public interface RoomBookingSerivce {
     List<Map> findWeekRoom(String date, String rbType, String mrId);
 
 
+    RoomBookingDto initDefaultValue(String businessId, String businessType);
 }

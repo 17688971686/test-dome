@@ -78,20 +78,6 @@
                 //初始化专家评分
                 if (vm.model.processState > 1) {
                     vm.showFlag.tabWorkProgram=true;        //显示工作方案
-                    //初始化专家评分
-                    signSvc.paymentGrid(vm.model.signid,function(data){
-                        vm.businessFlag.expertReviews = data.value;
-                        if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
-                            vm.showFlag.tabExpert = true;   //显示专家信息tab
-                        }
-                        //获取评分专家
-                        vm.selectedDtoList = [];
-                        $.each(vm.businessFlag.expertReviews,function(i,epReview){
-                            $.each(epReview.expertSelectedDtoList,function(k,epSlist){
-                                vm.selectedDtoList.push(epSlist);
-                            })
-                        })
-                    });
                 }
             });
 

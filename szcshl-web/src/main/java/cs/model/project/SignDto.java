@@ -3,6 +3,7 @@ package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
 
 import java.math.BigDecimal;
@@ -63,7 +64,7 @@ public class SignDto extends BaseDto {
     private String assistStatus;
     
     //是否有登记补充资料:9表示是,0表示否
-    private String IsSupplementary;
+    private String isSupplementary;
     
     //是否有拟补充资料函:9表示是,0表示否
     private String isHaveSuppLetter;
@@ -136,6 +137,8 @@ public class SignDto extends BaseDto {
     private String filenum;
 
     private String docnum;
+
+    private String belongOrgId;
 
     //建议书项目处理表份数
     private Integer sugProDealCount;
@@ -568,9 +571,6 @@ public class SignDto extends BaseDto {
     //项目是否已关联,0未关联，1已关联，默认未关联
     private Integer isAssociate = 0;
 
-    //是否有专家评审方案
-    private String hasExpertReview;
-
     //是否提前介入
     private String isAdvanced;
 
@@ -604,8 +604,10 @@ public class SignDto extends BaseDto {
     //协审项目信息
     private List<AssistPlanSignDto> planSignDtoList;
 
-    //抽取专家
-    private List<ExpertSelectedDto> expertSelectedDtoList;
+    /**
+     * 专家评审方案信息
+     */
+    private ExpertReviewDto expertReviewDto;
 
     public SignDto() {
     }
@@ -2094,14 +2096,6 @@ public class SignDto extends BaseDto {
         this.isAssociate = isAssociate;
     }
 
-    public String getHasExpertReview() {
-        return hasExpertReview;
-    }
-
-    public void setHasExpertReview(String hasExpertReview) {
-        this.hasExpertReview = hasExpertReview;
-    }
-
     public String getIsAdvanced() {
         return isAdvanced;
     }
@@ -2174,14 +2168,6 @@ public class SignDto extends BaseDto {
         this.planSignDtoList = planSignDtoList;
     }
 
-    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
-        return expertSelectedDtoList;
-    }
-
-    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
-        this.expertSelectedDtoList = expertSelectedDtoList;
-    }
-
 	public String getIsProjectState() {
 		return isProjectState;
 	}
@@ -2206,15 +2192,15 @@ public class SignDto extends BaseDto {
         this.signSeq = signSeq;
     }
 
-	public String getIsSupplementary() {
-		return IsSupplementary;
-	}
+    public String getIsSupplementary() {
+        return isSupplementary;
+    }
 
-	public void setIsSupplementary(String isSupplementary) {
-		IsSupplementary = isSupplementary;
-	}
+    public void setIsSupplementary(String isSupplementary) {
+        this.isSupplementary = isSupplementary;
+    }
 
-	public String getAssistStatus() {
+    public String getAssistStatus() {
 		return assistStatus;
 	}
 
@@ -2245,6 +2231,20 @@ public class SignDto extends BaseDto {
 	public void setSuppLetterDate(Date suppLetterDate) {
 		this.suppLetterDate = suppLetterDate;
 	}
-	
-    
+
+    public String getBelongOrgId() {
+        return belongOrgId;
+    }
+
+    public void setBelongOrgId(String belongOrgId) {
+        this.belongOrgId = belongOrgId;
+    }
+
+    public ExpertReviewDto getExpertReviewDto() {
+        return expertReviewDto;
+    }
+
+    public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
+        this.expertReviewDto = expertReviewDto;
+    }
 }

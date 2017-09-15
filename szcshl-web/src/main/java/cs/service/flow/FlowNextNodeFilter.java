@@ -1,11 +1,12 @@
 package cs.service.flow;
 
-import cs.common.Constant;
-import cs.common.utils.Validate;
-import cs.model.flow.Node;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import cs.common.FlowConstant;
+import cs.common.utils.Validate;
+import cs.model.flow.Node;
 
 /**
  * 下一环节优化，主要是筛出已经确定的项
@@ -20,7 +21,7 @@ public enum FlowNextNodeFilter {
             if(Validate.isMap(businessMap)){
                 if(businessMap.get("prilUserList") != null){
                     for(int i=0;i<nextNodeList.size();i++){
-                        if((nextNodeList.get(i).getActivitiId()).equals(Constant.FLOW_SIGN_BMLD_QRFW))
+                        if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW))
                             nextNodeList.remove(i);
                     }
                 }
@@ -34,11 +35,20 @@ public enum FlowNextNodeFilter {
         public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
             if(businessMap.get("checkFileUser") != null){
                 for(int i=0;i<nextNodeList.size();i++){
-                    if((nextNodeList.get(i).getActivitiId()).equals(Constant.FLOW_SIGN_QRGD))
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_QRGD))
                         nextNodeList.remove(i);
                 }
             }
             return nextNodeList;
+        }
+    },
+    SIGN_FGLD_FB{
+        //部门分办，只显示一个就好
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            resultList.add(nextNodeList.get(0));
+            return resultList;
         }
     };
 
@@ -52,10 +62,12 @@ public enum FlowNextNodeFilter {
      */
     public static FlowNextNodeFilter getInstance(String strategyName) {
         switch (strategyName.toUpperCase()){
-            case Constant.FLOW_SIGN_FW:
-                return FlowNextNodeFilter.valueOf(Constant.FLOW_SIGN_FW);
-            case Constant.FLOW_SIGN_GD:
-                return FlowNextNodeFilter.valueOf(Constant.FLOW_SIGN_GD);
+            case FlowConstant.FLOW_SIGN_FW:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FW);
+            case FlowConstant.FLOW_SIGN_GD:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_GD);
+            case FlowConstant.FLOW_SIGN_FGLD_FB:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FGLD_FB);
             default:
                     return null;
         }

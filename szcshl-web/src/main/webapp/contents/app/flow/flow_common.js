@@ -27,9 +27,11 @@
         SIGN_FGLD_SPW4: "SIGN_FGLD_SPW4",  //分管副主任审批4
         SIGN_FW: "SIGN_FW",                //发文申请
         SIGN_QRFW: "SIGN_QRFW",            //项目负责人确认发文
+        SIGN_BMLD_QRFW_XB:"SIGN_BMLD_QRFW_XB",  //协办部长审批发文
         SIGN_BMLD_QRFW: "SIGN_BMLD_QRFW",  //部长审批发文
+        SIGN_FGLD_QRFW_XB : "SIGN_FGLD_QRFW_XB", //协办分管领导审批发文
         SIGN_FGLD_QRFW: "SIGN_FGLD_QRFW",  //分管领导审批发文
-        SIGN_ZR_QRFW: "SIGN_ZR_QRFW", //主任审批发文
+        SIGN_ZR_QRFW: "SIGN_ZR_QRFW",      //主任审批发文
         SIGN_FWBH: "SIGN_FWBH",            //生成发文编号
         SIGN_CWBL: "SIGN_CWBL",            //财务办理
         SIGN_GD: "SIGN_GD",                //归档
@@ -90,6 +92,7 @@
 
     //流程定义值
     var flowDefinedKey = {
+        FINAL_SIGN_FLOW : "FINAL_SIGN_FLOW",       //项目签收流程
         TOPIC_FLOW : "TOPIC_FLOW",                 //课题研究流程
         BOOKS_BUY_FLOW:"BOOKS_BUY_FLOW",            //图书采购流程
         ASSERT_STORAGE_FLOW:"ASSERT_STORAGE_FLOW"   //资产入库流程

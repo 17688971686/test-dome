@@ -18,16 +18,16 @@ public interface AddSuppLetterService {
     
     AddSuppLetterDto getbyId(String id);
     
-    ResultMsg addSupp(AddSuppLetterDto addSuppLetterDto,Boolean isaddSuppLettr);
+    ResultMsg addSupp(AddSuppLetterDto addSuppLetterDto);
     
 	void delete(String id);
 	
-	void updateSupp(AddSuppLetterDto addSuppLetterDto);
-	
-    void fileNum(String id);
+    ResultMsg fileNum(String id);
 
-	AddSuppLetterDto initSuppLetter(String signid,String id);
+	AddSuppLetterDto initSuppLetter(String businessId, String businessType);
 
-	List<AddSuppLetterDto> initSuppList(String signid);
+	List<AddSuppLetterDto> initSuppList(String businessId);
+
+	boolean isHaveSuppLetter(String businessId);
 
 }

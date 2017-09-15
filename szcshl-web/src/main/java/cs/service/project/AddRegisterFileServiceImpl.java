@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.domain.project.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,24 +77,38 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
         addRegisterFileRepo.save(registerFile);
     }
 
+    /**
+     * 批量保存
+     * @param addRegisterFileDtos
+     * @return
+     */
     @Override
     @Transactional
-    public void update(AddRegisterFileDto[] addRegisterFileDtos) {
+    public ResultMsg bathSave(AddRegisterFileDto[] addRegisterFileDtos) {
         if (addRegisterFileDtos != null && addRegisterFileDtos.length > 0) {
+            List<AddRegisterFileDto> resultList = new ArrayList<>(addRegisterFileDtos.length);
+            List<AddRegisterFile> saveList = new ArrayList<>(addRegisterFileDtos.length);
+            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(),addRegisterFileDtos[0].getBusinessId());
+            Date now = new Date();
             for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
-                AddRegisterFile addRegisterFile = addRegisterFileRepo.findById(addRegisterFileDto.getId());
-                if (addRegisterFile != null) {
-                    BeanCopierUtils.copyProperties(addRegisterFileDto, addRegisterFile);
-                    Date now = new Date();
-                    addRegisterFile.setCreatedDate(now);
-                    addRegisterFile.setModifiedDate(now);
-                    addRegisterFile.setCreatedBy(SessionUtil.getLoginName());
-                    addRegisterFile.setModifiedBy(SessionUtil.getLoginName());
-                    addRegisterFileRepo.save(addRegisterFile);
-                }
+                AddRegisterFile addRegisterFile = new AddRegisterFile();
+                BeanCopierUtils.copyProperties(addRegisterFileDto, addRegisterFile);
+                addRegisterFile.setCreatedDate(now);
+                addRegisterFile.setCreatedBy(SessionUtil.getDisplayName());
+                addRegisterFile.setModifiedDate(now);
+                addRegisterFile.setModifiedBy(SessionUtil.getDisplayName());
+                saveList.add(addRegisterFile);
             }
+            addRegisterFileRepo.bathUpdate(saveList);
+            saveList.forEach(sl ->{
+                AddRegisterFileDto dto = new AddRegisterFileDto();
+                BeanCopierUtils.copyProperties(sl, dto);
+                resultList.add(dto);
+            });
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",resultList);
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请先填写补充资料！");
         }
-
     }
 
     @Override
@@ -131,13 +147,13 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
     }
 
     @Override
-    public Map<String, Object> initprint(String signid) {
+    public Map<String, Object> initprint(String businessId) {
         Date now = new Date();
         Map<String, Object> map = new HashMap<>();
         //根据signid获取所有数据登记补充资料
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + " =:signid");
-        hqlBuilder.setParam("signid", signid);
+        hqlBuilder.append(" from " + AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + " =:businessId");
+        hqlBuilder.setParam("businessId", businessId);
         List<AddRegisterFile> addRegisterFileList = addRegisterFileRepo.findByHql(hqlBuilder);
         List<AddRegisterFileDto> AddRegisterFileDtoList = new ArrayList<>();
         List<Date> suppDate = new ArrayList<>();
@@ -151,7 +167,7 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
         map.put("printDate", now);
 
         //根据signid获取收文相关内容
-        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+        Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
         SignDto signdto = new SignDto();
         signdto.setProjectname(sign.getProjectname());
         signdto.setFilecode(sign.getFilecode());
@@ -163,16 +179,24 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
 
     }
 
+    /**
+     *
+     * @param businessId
+     * @return
+     */
     @Override
-    public Map<String, Object> initRegisterFile(String signid) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + " =:signid");
-        hqlBuilder.setParam("signid", signid);
-        List<AddRegisterFile> financiallist = addRegisterFileRepo.findByHql(hqlBuilder);
-        map.put("financiallist", financiallist);
-
-        return map;
+    public List<AddRegisterFileDto> findByBusinessId(String businessId) {
+        List<AddRegisterFile> fileList = addRegisterFileRepo.findByBusinessId(businessId);
+        if(Validate.isList(fileList)){
+            List<AddRegisterFileDto> resultList = new ArrayList<>(fileList.size());
+            fileList.forEach(fl -> {
+                AddRegisterFileDto rfDto = new AddRegisterFileDto();
+                BeanCopierUtils.copyProperties(fl,rfDto);
+                resultList.add(rfDto);
+            });
+            return resultList;
+        }
+        return null;
     }
 
     @Override

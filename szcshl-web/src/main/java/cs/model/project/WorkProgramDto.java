@@ -1,10 +1,8 @@
 package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
-
 import cs.common.utils.DateUtils;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview;
+import cs.domain.meeting.RoomBooking;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
@@ -162,14 +160,7 @@ public class WorkProgramDto extends BaseDto {
     //邀请单位及领导
     private String inviteUnitLeader;
 
-    private String expertReviewId;
-    //专家评审方案
-    private ExpertReview expertReview;
-
-    //会议室预定
     private List<RoomBookingDto> roomBookingDtos;
-
-
     //拟聘请专家
     private List<ExpertDto> expertDtoList;
 
@@ -437,14 +428,6 @@ public class WorkProgramDto extends BaseDto {
         this.leaderDate = leaderDate;
     }
 
-    public List<RoomBookingDto> getRoomBookingDtos() {
-        return roomBookingDtos;
-    }
-
-    public void setRoomBookingDtos(List<RoomBookingDto> roomBookingDtos) {
-        this.roomBookingDtos = roomBookingDtos;
-    }
-
     public Date getSuppLetterDate() {
         return suppLetterDate;
     }
@@ -483,14 +466,6 @@ public class WorkProgramDto extends BaseDto {
 
     public void setSignDto(SignDto signDto) {
         this.signDto = signDto;
-    }
-
-    public ExpertReview getExpertReview() {
-        return expertReview;
-    }
-
-    public void setExpertReview(ExpertReview expertReview) {
-        this.expertReview = expertReview;
     }
 
     public String getTitleName() {
@@ -588,13 +563,6 @@ public class WorkProgramDto extends BaseDto {
     public void setInviteUnitLeader(String inviteUnitLeader) {
         this.inviteUnitLeader = inviteUnitLeader;
     }
-    public String getExpertReviewId() {
-        return expertReviewId;
-    }
-
-    public void setExpertReviewId(String expertReviewId) {
-        this.expertReviewId = expertReviewId;
-    }
 
     public String getStudyQuantum() {
         return studyQuantum;
@@ -635,6 +603,12 @@ public class WorkProgramDto extends BaseDto {
 	public void setStudyEndTimeStr(String studyEndTimeStr) {
 		this.studyEndTimeStr = studyEndTimeStr;
 	}
-	
-    
+
+    public List<RoomBookingDto> getRoomBookingDtos() {
+        return roomBookingDtos;
+    }
+
+    public void setRoomBookingDtos(List<RoomBookingDto> roomBookingDtos) {
+        this.roomBookingDtos = roomBookingDtos;
+    }
 }

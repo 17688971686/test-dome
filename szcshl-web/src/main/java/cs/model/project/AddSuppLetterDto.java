@@ -36,16 +36,21 @@ public class AddSuppLetterDto extends BaseDto {
     private String title;
     private String dispaRange;
     private String suppleterSuggest;
-    private String printnum;
-    private String signid;
+    private Integer printnum;
     @JSONField(format = "yyyy-MM-dd")
     private Date disapDate;
     private String meetingSuggest;
     private String leaderSuggest;
     private Integer fileSeq;
     private String userId;
+    /**
+     * 业务ID
+     */
     private String businessId;
-	private String businessIdType;
+    /**
+     * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
+     */
+	private String businessType;
     
     
     public Date getDisapDate() {
@@ -148,15 +153,16 @@ public class AddSuppLetterDto extends BaseDto {
     public void setSuppleterSuggest(String suppleterSuggest) {
         this.suppleterSuggest = suppleterSuggest;
     }
-    public String getPrintnum() {
+
+    public Integer getPrintnum() {
         return printnum;
     }
 
-    public void setPrintnum(String printnum) {
+    public void setPrintnum(Integer printnum) {
         this.printnum = printnum;
     }
 
-	public Integer getFileSeq() {
+    public Integer getFileSeq() {
 		return fileSeq;
 	}
 
@@ -164,21 +170,12 @@ public class AddSuppLetterDto extends BaseDto {
 		this.fileSeq = fileSeq;
 	}
 
-
 	public String getUserId() {
 		return userId;
 	}
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-
-	public String getSignid() {
-		return signid;
-	}
-
-	public void setSignid(String signid) {
-		this.signid = signid;
 	}
 
 	public String getBusinessId() {
@@ -189,13 +186,11 @@ public class AddSuppLetterDto extends BaseDto {
 		this.businessId = businessId;
 	}
 
-	public String getBusinessIdType() {
-		return businessIdType;
-	}
+    public String getBusinessType() {
+        return businessType;
+    }
 
-	public void setBusinessIdType(String businessIdType) {
-		this.businessIdType = businessIdType;
-	}
-	
-
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
 }

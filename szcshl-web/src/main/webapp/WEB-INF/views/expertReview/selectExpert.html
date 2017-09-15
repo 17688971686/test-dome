@@ -21,19 +21,20 @@
     <div class="toolbar" style="min-height: 200px;">
         <div>
             <span>1、OA系统随机抽取专家方案</span>
-            <button class="btn btn-xs btn-success" ng-click="vm.addCondition()" ng-disabled="vm.isCommit"><span
-                    class="glyphicon glyphicon-ok"></span>添加条件
+            <button class="btn btn-xs btn-success" ng-click="vm.addCondition()" ng-disabled="vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9'">
+                <span class="glyphicon glyphicon-ok"></span>添加条件
             </button>
-            <button class="btn btn-xs btn-danger" ng-click="vm.removeCondition()" ng-disabled="vm.isCommit"><span
-                    class="glyphicon glyphicon-remove"></span>删除条件
+            <button class="btn btn-xs btn-danger" ng-click="vm.removeCondition()" ng-disabled="vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9'">
+                <span class="glyphicon glyphicon-remove"></span>删除条件
             </button>
-            <button class="btn btn-xs btn-success" ng-click="vm.saveCondition()" ng-disabled="vm.isCommit"><span
-                    class="glyphicon glyphicon-ok"></span>保存
+            <button class="btn btn-xs btn-success" ng-click="vm.saveCondition()" ng-disabled="vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9'">
+                <span class="glyphicon glyphicon-ok"></span>保存
             </button>
             |
             <!--整体抽取方案只能抽取一次-->
-            <button class="btn btn-xs btn-primary" ng-click="vm.startAutoExpertWin()" ng-disabled="vm.isCommit || (vm.expertReview.selCount>=1) "><span
-                    class="glyphicon glyphicon-asterisk"></span>开始随机抽取
+            <button class="btn btn-xs btn-primary" ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'"
+                    ng-click="vm.startAutoExpertWin()" ng-disabled="vm.isCommit || (vm.expertReview.selCount>=1) ">
+                <span class="glyphicon glyphicon-asterisk"></span>开始随机抽取
             </button>
             <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin()">
                 <span class="glyphicon glyphicon-check"></span>查看随机抽取结果
@@ -59,15 +60,15 @@
                 <td style="width:5%;min-width:50px;" align="center">人数</td>
                 <td style="width:20%;min-width:150px;" align="center">操作</td>
             </tr>
-            <tr ng-repeat="x in vm.conditions">
+            <tr ng-repeat="x in vm.expertReview.expertSelConditionDtoList">
                 <td align="center">
-                    <input ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 "
-                           type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{x.sort}}"/></td>
-                <td align="center">{{x.sort}}</td>
+                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'"
+                           type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{x.id}}"/></td>
+                <td align="center">{{$index+1}}</td>
                 <td align="center">
-                    <select ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="maJorBig{{x.sort}}"
-                            ng-model="$parent.condition[$index].maJorBig" class="form-control input-sm "
-                            ng-change="$parent.condition[$index].majobSmallDicts = topSelectChange($parent.condition[$index].maJorBig,DICT.MAJOR.dicts)">
+                    <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="maJorBig{{x.id}}"
+                            ng-change="vm.expertReview.expertSelConditionDtoList[$index].majobSmallDicts = topSelectChange(vm.expertReview.expertSelConditionDtoList[$index].maJorBig,DICT.MAJOR.dicts)"
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].maJorBig"  data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
                                 ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
@@ -75,19 +76,18 @@
                     </select>
                 </td>
                 <td align="center">
-                    <select ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="maJorSmall{{x.sort}}"
-                            ng-init="$parent.condition[$index].majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts)"
-                            ng-model="$parent.maJor[$index].maJorSamll" class="form-control input-sm "
-                            data-val-required="必填" data-val="true">
+                    <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="maJorSmall{{x.id}}"
+                            ng-init="vm.expertReview.expertSelConditionDtoList[$index].majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts)"
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].maJorSmall" data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
-                        <option ng-repeat="ds in $parent.condition[$index].majobSmallDicts" value="{{ds.dictName}}"
+                        <option ng-repeat="ds in vm.expertReview.expertSelConditionDtoList[$index].majobSmallDicts" value="{{ds.dictName}}"
                                 ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
                         </option>
                     </select>
                 </td>
                 <td align="center">
-                    <select ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="expeRttype{{x.sort}}"
-                            class="form-control input-sm ">
+                    <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="expeRttype{{x.id}}"
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].expeRttype" class="form-control input-sm ">
                         <option value="">请选择</option>
                         <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" ng-selected="x.expeRttype == dt.dictName"
                                 value="{{dt.dictName}}">{{dt.dictName}}
@@ -95,31 +95,30 @@
                     </select>
                 </td>
                 <td align="center">
-                    <input ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="officialNum{{x.sort}}" class="form-control input-sm"
-                           ng-init="$parent.condition[$index].officialNum = x.officialNum"
-                           ng-model="$parent.condition[$index].officialNum"
-                           ng-keyup="vm.checkIntegerValue($parent.condition[$index].officialNum,'alternativeNum',x.sort)">
-                    <span id="errorsOfficialNum{{x.sort}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"
+                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'"
+                           id="officialNum{{x.id}}" class="form-control input-sm"
+                           ng-model="vm.expertReview.expertSelConditionDtoList[$index].officialNum"
+                           ng-keyup="vm.expertReview.expertSelConditionDtoList[$index].alternativeNum = vm.checkIntegerValue(vm.expertReview.expertSelConditionDtoList[$index].officialNum,'alternativeNum',x.id)">
+                    <span id="errorsOfficialNum{{x.id}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"
                           class="errors"></span>
                 </td>
                 <td align="center">
-                    <input ng-disabled="vm.expertReview.isComfireResult == 9 || vm.expertReview.selCount > 0 " id="alternativeNum{{x.sort}}" class="form-control input-sm"
-                           ng-init="$parent.condition[$index].alternativeNum = x.alternativeNum"
-                           ng-model="$parent.condition[$index].alternativeNum"
-                           ng-keyup="vm.checkIntegerValue($parent.condition[$index].alternativeNum,'officialNum',x.sort)">
-                    <span id="errorsAlternativeNum{{x.sort}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"
+                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="alternativeNum{{x.id}}" class="form-control input-sm"
+                           ng-model="vm.expertReview.expertSelConditionDtoList[$index].alternativeNum"
+                           ng-keyup="vm.expertReview.expertSelConditionDtoList[$index].officialNum = vm.checkIntegerValue(vm.expertReview.expertSelConditionDtoList[$index].alternativeNum,'officialNum',x.id)">
+                    <span id="errorsAlternativeNum{{x.id}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"
                           class="errors"></span>
                 </td>
-                <td align="center"><span id="expertCount{{x.sort}}"></span></td>
+                <td align="center"><span id="expertCount{{x.id}}"></span></td>
                 <td align="center">
-                    <button class="btn btn-xs btn-primary" ng-click="vm.countMatchExperts(x.sort)"
+                    <button class="btn btn-xs btn-primary" ng-click="vm.countMatchExperts(x.id)"
                             ng-disabled="vm.isCommit">统计人数
                     </button>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.showMatchExperts(x.sort)"
+                    <button class="btn btn-xs btn-primary" ng-click="vm.showMatchExperts(x.id)"
                             ng-disabled="vm.isCommit">查看
                     </button>
-                    <!--整体抽取过的条件才能再次抽取-->
-                    <button class="btn btn-xs btn-primary" ng-show="(vm.expertReview.selCount >= 1)"  ng-click="vm.repeatAutoExpert(x.sort)" ng-disabled="vm.isCommit">
+                    <!--整体抽取过的条件,并且抽取次数未达到3次才能再次抽取-->
+                    <button class="btn btn-xs btn-primary" ng-show="(x.selectIndex > 0 && x.selectIndex < 3)"  ng-click="vm.repeatAutoExpert(x.id)" ng-disabled="vm.isCommit">
                         再次抽取
                     </button>
                 </td>
@@ -408,6 +407,8 @@
                 <!-- 专家规避-->
                 <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
                 <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
+                <!-- 境外专家-->
+                <input name="expertField" type="text" ng-hide="true" operator="in" value="1,2">
                 <!--以下是查询字段-->
                 <span>突出专业（大类）</span>
                 <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">

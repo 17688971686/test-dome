@@ -65,7 +65,7 @@
             //end#流程公共页面
             //begin#addSuppletter
             .state('addSupp', {
-                url: '/addSupp/:signid',
+                url: '/addSupp/:businessId/:businessType',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
@@ -73,23 +73,23 @@
             
              //begin#拟补充资料函列表
             .state('addSuppletterList', {
-                url: '/addSuppletterList/:signid',
+                url: '/addSuppletterList/:businessId',
                 templateUrl: rootPath + '/addSuppLetter/list.html',
-                controller: 'addSuppLetterCtrl',
+                controller: 'addSuppLetterListCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函列表
             
              //begin#拟补充资料函详细信息
-            .state('getAddSuppLetterById', {
-                url: '/getAddSuppLetterById/:id',
-                templateUrl: rootPath + '/addSuppLetter/flowDetail.html',
+            .state('addSuppLetterDetail', {
+                url: '/addSuppLetterDetail/:id',
+                templateUrl: rootPath + '/addSuppLetter/detail.html',
                 controller: 'addSuppLetterEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函详细信息
            
              //begin#registerFile
             .state('registerFile', {
-                url: '/registerFile/:signid/:id',
+                url: '/registerFile/:businessId/',
                 templateUrl: rootPath + '/addRegisterFile/list.html',
                 controller: 'addRegisterFileCtrl',
                 controllerAs: 'vm'
@@ -222,7 +222,7 @@
 
             //begin#room
             .state('room', {
-                url: '/room/:workProgramId',
+                url: '/room/:businessId/:businessType',
                 templateUrl: rootPath + '/room/html/roomlist.html',
                 controller: 'roomCtrl',
                 controllerAs: 'vm'
@@ -306,7 +306,7 @@
                 controllerAs: 'vm'
             })
             .state('expertReviewEdit', {
-                url: '/expertReview/:workProgramId',
+                url: '/expertReview/:businessId/:minBusinessId/:businessType',
                 templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                 controller: 'expertSelectCtrl',
                 controllerAs: 'vm'
@@ -890,6 +890,17 @@
 	            }
         	}
         }
+
+        //S_初始化input框的值
+        $rootScope.initInputValue = function($event,defaultValue){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            if (checked && !defaultValue) {
+                return 1;
+            }else{
+                return defaultValue;
+            }
+        }//E_initInputValue
 
         //kendo 语言
         kendo.culture("zh-CN");

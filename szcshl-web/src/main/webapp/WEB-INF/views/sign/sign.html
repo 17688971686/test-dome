@@ -5,8 +5,8 @@
     <li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
     <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
-    <li ng-show="vm.showFlag.tabExpert"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
-    <li ng-show="vm.showFlag.tabExpert"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
+    <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="sign_remark">专家评分</a></li>
+    <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="sign_payment">评审费发放表</a></li>
     <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
     <li ng-show="vm.model.isAssociate == 1"><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
     <li ng-show="vm.model.processInstanceId && vm.model.processState < 9"><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
@@ -49,8 +49,7 @@
     <!-- end tab3 -->
 
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
-        <!-- <div ng-include src="'${path}/contents/app/workprogram/all_detail.html'"/> -->
-       
+
         <!-- （包含：主、次项目）项目建议书/可行性研究报告/资金申请报告/其它  -->
         <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
              ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
@@ -149,7 +148,7 @@
                 <td width="15%">评分描述</td>
                 <td width="15%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
             </tr>
-            <tr ng-repeat="x in vm.selectedDtoList track by $index">
+            <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                 <td>{{$index+1}}</td>
                 <td>{{x.expertDto.name}}</td>
                 <td>{{x.expertDto.comPany}}</td>
@@ -171,53 +170,52 @@
     <!-- start 专家费用 -->
     <div class="tab-pane fade" style="background: white;margin-top:10px;" id="sign_payment">
         <form id="payform" name="payform">
-            <table ng-repeat="expertReview in vm.businessFlag.expertReviews" class="table table-bordered">
+            <table class="table table-bordered">
                 <tbody>
-                <tr ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                <tr ng-if="vm.showFlag.isMainPrinUser">
                     <td colspan="4">
-                        <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(expertReview)" ng-disabled="vm.isCommit"
+                        <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.model.expertReviewDto)" ng-disabled="vm.isCommit"
                                 ng-hide="btnHide">
                             <span class="glyphicon glyphicon-ok"></span>计算应纳税额
                         </button>
-                        <button class="btn btn-sm btn-success" ng-click="vm.savePayment(expertReview)" ng-disabled="vm.isCommit" ng-hide="btnHide">
+                        <button class="btn btn-sm btn-success" ng-click="vm.savePayment(vm.model.expertReviewDto)" ng-disabled="vm.isCommit" ng-hide="btnHide">
                             <span class="glyphicon glyphicon-ok"></span>保存
                         </button>
                     </td>
                 </tr>
                 <tr>
-                    <td class="formAlignRight">评审费发放日期 </td>
+                    <td class="text-right">评审费发放日期 </td>
                     <td >
-                        <div ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
-                            <input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
+                        <div ng-show="!vm.model.expertReviewDto.payDate">
+                            <input type="text"  style="width: 200px;"
                                    class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-                                   ng-model="expertReview.payDate" data-val-date="必须为日期">
-                            <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                   ng-model="vm.model.expertReviewDto.payDate" data-val-date="必须为日期">
                         </div>
-                        <div ng-hide="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
-                           {{expertReview.payDate}}
+                        <div ng-hide="vm.model.expertReviewDto.payDate">
+                           {{vm.model.expertReviewDto.payDate}}
                         </div>
                     </td>
-                    <td class="formAlignRight">评审/函评日期</td>
+                    <td class="text-right">评审/函评日期</td>
                     <td>
-                        {{expertReview.reviewDate}}
+                        {{vm.model.expertReviewDto.reviewDate}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="formAlignRight">评审费发放标题</td>
+                    <td class="text-right">评审费发放标题</td>
                     <td colspan="3">
-                        <div ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
-                            <input type="text" name="reviewTitle_{{$index}}" id="reviewTitle_{{$index}}" style="width: 600px;"
-                               class="form-control input-sm " ng-model="expertReview.reviewTitle">
+                        <div ng-show="vm.showFlag.isMainPrinUser">
+                            <input type="text" style="width: 600px;"
+                               class="form-control input-sm " ng-model="vm.model.expertReviewDto.reviewTitle">
                         </div>
-                        <div ng-hide="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
-                            {{expertReview.reviewTitle}}
+                        <div ng-hide="vm.showFlag.isMainPrinUser">
+                            {{vm.model.expertReviewDto.reviewTitle}}
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4">
                         <table class="table table-bordered">
-                            <caption class="text-center h3"><strong>{{expertReview.reviewTitle}}</strong></caption>
+                            <caption class="text-center h3"><strong>{{vm.model.expertReviewDto.reviewTitle}}</strong></caption>
                             <tr>
                                 <td>序号</td>
                                 <td>姓名</td>
@@ -227,20 +225,20 @@
                                 <td>应纳税额</td>
                                 <td>合计（元）</td>
                             </tr>
-                            <tr ng-repeat="x in expertReview.expertSelectedDtoList">
+                            <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                                 <td>{{$index+1}}</td>
                                 <td>{{x.expertDto.name}}</td>
                                 <td>{{x.expertDto.idCard}}</td>
                                 <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                                 <td>
-                                    <div ng-show="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                                    <div ng-show="vm.showFlag.isMainPrinUser">
                                         <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
                                                class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
                                                data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
                                                data-val="true" data-val-required="必填">
                                         <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
                                     </div>
-                                    <div ng-hide="vm.businessFlag.editExpertSC && (vm.businessFlag.editEPReviewId == expertReview.id)">
+                                    <div ng-hide="vm.showFlag.isMainPrinUser">
                                         {{x.reviewCost}}
                                     </div>
                                 </td>
@@ -249,9 +247,9 @@
                             </tr>
                             <tr>
                                 <td colspan="4"></td>
-                                <td>{{expertReview.reviewCost}}</td>
-                                <td>{{expertReview.reviewTaxes}}</td>
-                                <td>{{expertReview.totalCost}}</td>
+                                <td>{{vm.model.expertReviewDto.reviewCost}}</td>
+                                <td>{{vm.model.expertReviewDto.reviewTaxes}}</td>
+                                <td>{{vm.model.expertReviewDto.totalCost}}</td>
                             </tr>
                         </table>
                     </td>

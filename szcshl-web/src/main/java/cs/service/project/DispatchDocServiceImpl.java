@@ -1,14 +1,37 @@
 package cs.service.project;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.*;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.CreateTemplateUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.Expert_;
-import cs.domain.project.*;
+import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
@@ -18,13 +41,6 @@ import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
-import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 public class DispatchDocServiceImpl implements DispatchDocService {
@@ -153,7 +169,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             List<WorkProgram> workProgrmList = sign.getWorkProgramList();
             if (Validate.isList(workProgrmList)) {
                 for (WorkProgram workProgram : workProgrmList) {
-                    if( workProgram.getBranchId() == Constant.SignFlowParams.BRANCH_INDEX1.getValue()){
+                    if( workProgram.getBranchId() == FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()){
                        workProgram.setAppalyInvestment(dispatchDocDto.getDeclareValue());
                     }
                 }

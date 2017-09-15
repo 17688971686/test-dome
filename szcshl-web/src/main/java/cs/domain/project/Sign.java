@@ -24,9 +24,12 @@ public class Sign extends DomainBase {
      */
     @Id
     private String signid;
-    
-    @Column(columnDefinition="VARCHAR(2)")
-    private String isSendFileRecord;	//是否已发送存档
+
+    /**
+     * 是否已发送存档
+     */
+    @Column(columnDefinition="VARCHAR(2) COMMENT '是否已发送存档,9是0否'")
+    private String isSendFileRecord;
 
     //委内收文编号
     @Column(columnDefinition = "VARCHAR(30)")
@@ -133,7 +136,7 @@ public class Sign extends DomainBase {
     
     //是否有登记补充资料:9表示是,0表示否
     @Column(columnDefinition = "VARCHAR(4)")
-    private String IsSupplementary;
+    private String isSupplementary;
     
    //是否有拟补充资料函:9表示是,0表示否
     @Column(columnDefinition = "VARCHAR(4)")
@@ -756,12 +759,19 @@ public class Sign extends DomainBase {
     //拟补充资料ID
     @Column(columnDefinition = "VARCHAR(64)")
     private String suppletterid;
-    
+
+   /**
+   * 所属部门（根据主办部门划分）
+   */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String belongOrgId;
+
     /**
      * 默认办理类型[收文类型（评估类：PX，概算类:GX）]
      */
     @Column(columnDefinition = "VARCHAR(5)")
     private String dealOrgType;
+
     /**
      * 预签收日期
      */
@@ -841,10 +851,6 @@ public class Sign extends DomainBase {
 	//是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
     private String isAdvanced;
-
-    //是否有专家评审方案
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String hasExpertReview;
     /**************************  状态字段放这里  ****************************/
 	
     public List<ProjectStop> getProjectStopList() {
@@ -2336,14 +2342,6 @@ public class Sign extends DomainBase {
 		this.processState = processState;
 	}
 
-    public String getHasExpertReview() {
-        return hasExpertReview;
-    }
-
-    public void setHasExpertReview(String hasExpertReview) {
-        this.hasExpertReview = hasExpertReview;
-    }
-
     public String getComprehensiveId() {
         return comprehensiveId;
     }
@@ -2415,15 +2413,15 @@ public class Sign extends DomainBase {
 		this.financiaStatus = financiaStatus;
 	}
 
-	public String getIsSupplementary() {
-		return IsSupplementary;
-	}
+    public String getIsSupplementary() {
+        return isSupplementary;
+    }
 
-	public void setIsSupplementary(String isSupplementary) {
-		IsSupplementary = isSupplementary;
-	}
+    public void setIsSupplementary(String isSupplementary) {
+        this.isSupplementary = isSupplementary;
+    }
 
-	public String getAssistStatus() {
+    public String getAssistStatus() {
 		return assistStatus;
 	}
 
@@ -2453,9 +2451,13 @@ public class Sign extends DomainBase {
 
 	public void setSuppLetterDate(Date suppLetterDate) {
 		this.suppLetterDate = suppLetterDate;
-	} 
-	
-	
-	
-    
+	}
+
+    public String getBelongOrgId() {
+        return belongOrgId;
+    }
+
+    public void setBelongOrgId(String belongOrgId) {
+        this.belongOrgId = belongOrgId;
+    }
 }

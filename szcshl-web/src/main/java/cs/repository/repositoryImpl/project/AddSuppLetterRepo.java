@@ -9,4 +9,5 @@ import cs.repository.IRepository;
  * Date: 2017-8-1 18:05:57
  */
 public interface AddSuppLetterRepo extends IRepository<AddSuppLetter, String> {
+    boolean isHaveSuppLetter(String businessId);
 }

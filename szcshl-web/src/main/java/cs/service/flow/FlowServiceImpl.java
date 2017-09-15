@@ -20,6 +20,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -122,7 +123,7 @@ public class FlowServiceImpl implements FlowService {
         // 建立新出口
         List<TransitionImpl> newTransitions = new ArrayList<TransitionImpl>();
         switch (instance.getProcessDefinitionKey()){
-            case Constant.SIGN_FLOW:
+            case FlowConstant.SIGN_FLOW:
                 backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(),task.getTaskDefinitionKey());
                 break;
             case FlowConstant.TOPIC_FLOW:
@@ -170,15 +171,16 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public void nextTaskDefinition(List<Node> nextNodeList, ActivityImpl activityImpl, String activityId) {
-        TaskDefinition taskDefinition = null;
+        //TaskDefinition taskDefinition = null;
         //如果遍历节点为用户任务并且节点不是当前节点信息   
         if ("userTask".equals(activityImpl.getProperty("type")) && !activityId.equals(activityImpl.getId())) {
-            //获取该节点下一个节点信息   
-            taskDefinition = ((UserTaskActivityBehavior) activityImpl.getActivityBehavior()).getTaskDefinition();
+            //获取该节点下一个节点信息
+            // = ((UserTaskActivityBehavior) activityImpl.getActivityBehavior()).getTaskDefinition();
             Node nextNode = new Node();
-            nextNode.setActivitiId(taskDefinition.getKey());
-            nextNode.setActivitiName(taskDefinition.getNameExpression().getExpressionText());
+            nextNode.setActivitiId(activityImpl.getId());
+            nextNode.setActivitiName(activityImpl.getProperty("name").toString());
             nextNodeList.add(nextNode);
+
         } else {
             //获取节点所有流向线路信息
             List<PvmTransition> outTransitions = activityImpl.getOutgoingTransitions();
@@ -187,7 +189,7 @@ public class FlowServiceImpl implements FlowService {
                 for (PvmTransition tr : outTransitions) {
                     PvmActivity ac = tr.getDestination(); //获取线路的终点节点
                     //如果流向线路为排他网关
-                    if ("exclusiveGateway".equals(ac.getProperty("type")) || "inclusiveGateway".equals(ac.getProperty("type"))||"parallelGateway".equals(ac.getProperty("type"))) {
+                    if ("exclusiveGateway".equals(ac.getProperty("type")) || "inclusiveGateway".equals(ac.getProperty("type")) || "parallelGateway".equals(ac.getProperty("type"))) {
                         outTransitionsTemp = ac.getOutgoingTransitions();
                         if (outTransitionsTemp.size() == 1) {
                             nextTaskDefinition(nextNodeList, (ActivityImpl) outTransitionsTemp.get(0).getDestination(), activityId);

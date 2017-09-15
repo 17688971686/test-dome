@@ -34,7 +34,7 @@ public class AddRegisterFile extends DomainBase {
 	//是否有复印件
 	@Column(columnDefinition = "VARCHAR(2)")
 	private String isHasCopyfile;
-	
+
 	//补充说明
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String suppleDeclare;

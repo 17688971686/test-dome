@@ -1,7 +1,11 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.domain.project.SignBranch;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.User;
 import cs.repository.IRepository;
+
+import java.util.List;
 
 public interface SignBranchRepo extends IRepository<SignBranch, String> {
 
@@ -26,4 +30,10 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
     boolean allWPFinish(String signid);
 
     boolean isHaveWP(String signId);
+
+    List<User> findAssistOrgDirector(String signId);
+
+    List<User> findAssistSLeader(String signId);
+
+    List<OrgDept> getOrgDeptBySignId(String signId);
 }

@@ -35,32 +35,22 @@ public class AddSuppLetterController {
     
     @RequiresPermissions("addSuppLetter#initSuppListDate#post")
     @RequestMapping(name = "初始化拟补充资料函列表", path = "initSuppListDate", method = RequestMethod.POST)
-    public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String signid){
-    	List<AddSuppLetterDto> addSuppLetterDtos=addSuppLetterService.initSuppList(signid);
+    public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String businessId){
+    	List<AddSuppLetterDto> addSuppLetterDtos=addSuppLetterService.initSuppList(businessId);
     	return addSuppLetterDtos;
     }
     
-    @RequiresPermissions("addSuppLetter#initaddSuppLetterData#get")
-    @RequestMapping(name = "初始化补充资料函", path = "initaddSuppLetterData", method = RequestMethod.GET)
-    public @ResponseBody Map<String ,Object> initSuppLetterData(@RequestParam String signid, String id){
-    	Map<String,Object> resultMap = new HashMap<String,Object>();
-    	resultMap.put("suppletterDto", addSuppLetterService.initSuppLetter(signid,id));
-    	return resultMap;
+    @RequiresPermissions("addSuppLetter#initSuppLetter#post")
+    @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)
+    public @ResponseBody AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType){
+        return addSuppLetterService.initSuppLetter(businessId,businessType);
     }
     
-    @RequiresPermissions("addSuppLetter#add#post")
-    @RequestMapping(name = "添加拟补充资料函", path = "add", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @RequiresPermissions("addSuppLetter#save#post")
+    @RequestMapping(name = "保存拟补充资料函", path = "save", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto,Boolean isaddSuppLettr){
-		return  addSuppLetterService.addSupp(addSuppLetterDto,isaddSuppLettr);
-    }
-    
-    @RequiresPermissions("addSuppLetter#update#get")
-    @RequestMapping(name = "更新拟补充资料函", path = "update", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody AddSuppLetterDto addSuppLetterDto){
-    	addSuppLetterService.updateSupp(addSuppLetterDto);
+    public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto){
+		return  addSuppLetterService.addSupp(addSuppLetterDto);
     }
     
     @RequiresPermissions("addSuppLetter#findById#get")
@@ -72,8 +62,8 @@ public class AddSuppLetterController {
     
     @RequiresPermissions("dispatch#createFileNum#post")
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
-    public @ResponseBody void createFileNum(@RequestParam String id) throws Exception {
-        addSuppLetterService.fileNum(id);
+    public @ResponseBody ResultMsg createFileNum(@RequestParam String id) throws Exception {
+        return addSuppLetterService.fileNum(id);
     }
     
     @RequiresPermissions("addSuppLetter#html/edit#get")

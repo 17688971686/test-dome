@@ -29,6 +29,10 @@ public class ExpertSelectedDto {
     private String isConfrim;
     //抽取次数
     private Integer selectIndex;
+    /**
+     * 业务ID，如项目工作方案ID，课题研究工作方案ID
+     */
+    private String businessId;
 
     private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;
@@ -151,5 +155,13 @@ public class ExpertSelectedDto {
 
     public void setExpeRttype(String expeRttype) {
         this.expeRttype = expeRttype;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

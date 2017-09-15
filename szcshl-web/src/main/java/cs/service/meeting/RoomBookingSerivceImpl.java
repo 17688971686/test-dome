@@ -11,6 +11,8 @@ import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 import cs.domain.sys.SysFile;
+import cs.domain.topic.WorkPlan;
+import cs.domain.topic.WorkPlan_;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
@@ -21,6 +23,7 @@ import cs.repository.repositoryImpl.meeting.MeetingRoomRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.sys.RoleServiceImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	private MeetingRoomRepo meetingRoomRepo;
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private WorkPlanRepo workPlanRepo;
 	@Autowired
 	private SysFileRepo sysFileRepo;
 	@Autowired
@@ -318,13 +323,12 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			if(Validate.isString(roomDto.getId())){
 				rb = roomBookingRepo.getById(roomDto.getId());
 				BeanCopierUtils.copyPropertiesIgnoreNull(roomDto,rb);
-				rb.setCreatedDate(now);
-				rb.setModifiedDate(now);
 			}else{
 				BeanCopierUtils.copyProperties(roomDto, rb);
 				rb.setId(UUID.randomUUID().toString());
+                rb.setCreatedBy(SessionUtil.getDisplayName());
+                rb.setCreatedDate(now);
 			}
-			
 			MeetingRoom meeting= meetingRoomRepo.findById(roomDto.getMrID());
 			rb.setAddressName(meeting.getAddr());
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
@@ -332,24 +336,14 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			rb.setRbDate(strdate+"("+stageday+")");//星期几
 			String stageProject = roomDto.getStageProject();
 			rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
-			rb.setCreatedBy(SessionUtil.getLoginName());
-			rb.setModifiedBy(SessionUtil.getLoginName());
-			
-			rb.setCreatedDate(now);
-			rb.setModifiedDate(now);
-			//如果有关联,则要加上
-			if(Validate.isString(roomDto.getWorkProgramId())){
-                WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),roomDto.getWorkProgramId());
-				ExpertReview expertReview = expertReviewRepo.findByWPId(wp.getId());
-				/*if(expertReview.getReviewDate() == null){
-                    expertReview.setReviewDate(roomDto.getRbDay());
-                    expertReviewRepo.save(expertReview);
-				}*/
-                rb.setWorkProgram(wp);
-            }
-
+            rb.setModifiedDate(now);
+            rb.setModifiedBy(SessionUtil.getDisplayName());
 			roomBookingRepo.save(rb);
 
+			//根据业务类型，更新专家评审会事件
+            if(Validate.isString(rb.getBusinessId()) && Validate.isString(rb.getBusinessType())){
+                expertReviewRepo.updateReviewDate(rb.getBusinessId(),rb.getBusinessType(),rb.getRbDay());
+            }
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",rb);
 		}
 	}
@@ -478,5 +472,36 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		List<Map> roomMap=roomBookingRepo.findMapListBySql(sqlBuilder);
 		return roomMap;
 	}
+
+    /**
+     * 根据业务ID和业务类型初始化会议室预定的值
+     * @param businessId
+     * @param businessType
+     * @return
+     */
+    @Override
+    public RoomBookingDto initDefaultValue(String businessId, String businessType) {
+        RoomBookingDto roomBookingDto = new RoomBookingDto();
+        if(Constant.BusinessType.SIGN_WP.getValue().equals(businessType)){
+            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),businessId);
+            roomBookingDto.setStageOrgName(wp.getReviewOrgName());
+            roomBookingDto.setRbName(wp.getProjectName());
+        }else if(Constant.BusinessType.TOPIC.getValue().equals(businessType)){
+            WorkPlan wp = workPlanRepo.findById(WorkPlan_.id.getName(),businessId);
+            roomBookingDto.setStageOrgName(wp.getTopicName());
+        }
+        roomBookingDto.setHost(SessionUtil.getDisplayName());
+        roomBookingDto.setDueToPeople(SessionUtil.getDisplayName());
+        if(Validate.isString(businessId)){
+            roomBookingDto.setBusinessId(businessId);
+        }
+        if(Validate.isString(businessType)){
+            roomBookingDto.setBusinessType(businessType);
+        }
+        roomBookingDto.setBeginTime(null);
+        roomBookingDto.setEndTime(null);
+        roomBookingDto.setRbDate(null);
+        return roomBookingDto;
+    }
 
 }

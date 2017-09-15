@@ -1,11 +1,5 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
- <div ng-include src="'${path}/contents/app/addSuppLetter/dialog-add_suppContent.html'"></div> 
-
-
 
 <div class="well well-sm" style="background:white; color: red">
 <div class="toolbar">
@@ -21,10 +15,6 @@
     <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
     </button>
 </div>
-   		<!--  hidden input -->
-		 <input type="hidden" ng-model="vm.suppletter.id" name="suppletter" value="{{vm.suppletter.id}}"id="suppletterId"  >  
-		<input type="hidden" ng-model="vm.suppletter.signid" value="{{vm.suppletter.signid}}" > 
-		<!--  s table -->
      <!-- s form -->
     <form id="suppletter_form" name="suppletter_form">
         <!-- s table -->

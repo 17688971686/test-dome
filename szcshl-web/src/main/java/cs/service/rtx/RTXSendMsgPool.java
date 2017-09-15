@@ -31,14 +31,18 @@ public class RTXSendMsgPool {
             this.cacheMap.put(key,variables.get(key));
         }
     }
+
     /**
      * 设置发送对象缓冲池
      * @param key
      * @param receivers
      */
     public void sendReceiverIdPool(String key,String receivers){
-        this.cacheMap.put(key,receivers);
+        if(Validate.isString(receivers)){
+            this.cacheMap.put(key,receivers);
+        }
     }
+
     /**
      * 获取缓冲池的接收者
      * @param key

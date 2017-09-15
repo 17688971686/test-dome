@@ -1,21 +1,23 @@
 package cs.service.project;
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
+import java.util.List;
+
 import cs.common.utils.Validate;
-import cs.domain.project.SignPrincipal;
-import cs.domain.project.SignPrincipal_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
-import cs.repository.repositoryImpl.project.SignPrincipalRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import cs.common.Constant;
+import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
+import cs.domain.project.SignPrincipal;
+import cs.domain.project.SignPrincipal_;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
+import cs.repository.repositoryImpl.project.SignPrincipalRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 
 /**
  * Description: 项目-负责人中间表
@@ -77,7 +79,7 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         criteria.setProjection(Projections.rowCount());
         criteria.add(Restrictions.eq(SignPrincipal_.userId.getName(), userId));
         criteria.add(Restrictions.eq(SignPrincipal_.signId.getName(), signId));
-        criteria.add(Restrictions.eq(SignPrincipal_.flowBranch.getName(), Constant.SignFlowParams.BRANCH_INDEX1.getValue()));
+        criteria.add(Restrictions.eq(SignPrincipal_.flowBranch.getName(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()));
         int count = Integer.parseInt(criteria.uniqueResult().toString());
         return count > 0 ? true : false;
     }
@@ -116,8 +118,8 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         hqlBuilder.append(" and pu." + SignPrincipal_.isMainUser.getName() + " =:isMainUser ").setParam("isMainUser", Constant.EnumState.YES.getValue());
         hqlBuilder.append(" )");
         List<User> userList=userRepo.findByHql(hqlBuilder);
-        if(!userList.isEmpty()){
-        	return userRepo.findByHql(hqlBuilder).get(0);
+        if(Validate.isList(userList)){
+        	return userList.get(0);
         }else{
         	return null;
         }

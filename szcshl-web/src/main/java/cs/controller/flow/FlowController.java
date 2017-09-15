@@ -229,7 +229,7 @@ public class FlowController {
          * 流程的一些参数处理
          */
         switch (processInstance.getProcessDefinitionKey()){
-            case Constant.SIGN_FLOW:
+            case FlowConstant.SIGN_FLOW:
                 flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
             case FlowConstant.TOPIC_BFGW:
@@ -280,7 +280,7 @@ public class FlowController {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
         }
         switch (processInstance.getProcessDefinitionKey()){
-            case Constant.SIGN_FLOW:
+            case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.dealFlow(processInstance, task,flowDto);
                 break;
             case FlowConstant.TOPIC_BFGW:
@@ -331,7 +331,7 @@ public class FlowController {
         //流程实例
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
         switch (processInstance.getProcessDefinitionKey()){
-            case Constant.SIGN_FLOW:
+            case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.endFlow(processInstance.getBusinessKey());
                 break;
             default:

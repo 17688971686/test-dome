@@ -8,6 +8,106 @@ public class FlowConstant {
 
     /***************  流程名称  ****************/
     /**
+     * 项目签收流程
+     */
+    public final static String SIGN_FLOW = "FINAL_SIGN_FLOW";           //项目签收流程
+    /**
+     * 项目签收流程环节名称
+     */
+    public static final String FLOW_SIGN_ZR = "SIGN_ZR";                //填报
+    public static final String FLOW_SIGN_QS = "SIGN_QS";                 //签收
+    public static final String FLOW_SIGN_ZHB = "SIGN_ZHB";              //综合部审批
+    public static final String FLOW_SIGN_FGLD_FB = "SIGN_FGLD_FB";      //分管副主任审批
+    public static final String FLOW_SIGN_BMFB1 = "SIGN_BMFB1";          //部门分办1
+    public static final String FLOW_SIGN_BMFB2 = "SIGN_BMFB2";          //部门分办2
+    public static final String FLOW_SIGN_BMFB3 = "SIGN_BMFB3";          //部门分办3
+    public static final String FLOW_SIGN_BMFB4 = "SIGN_BMFB4";          //部门分办4
+    public static final String FLOW_SIGN_XMFZR1 = "SIGN_XMFZR1";        //项目负责人办理1
+    public static final String FLOW_SIGN_XMFZR2 = "SIGN_XMFZR2";        //项目负责人办理2
+    public static final String FLOW_SIGN_XMFZR3 = "SIGN_XMFZR3";        //项目负责人办理3
+    public static final String FLOW_SIGN_XMFZR4 = "SIGN_XMFZR4";        //项目负责人办理4
+    public static final String FLOW_SIGN_BMLD_SPW1 = "SIGN_BMLD_SPW1";  //部长审批1
+    public static final String FLOW_SIGN_BMLD_SPW2 = "SIGN_BMLD_SPW2";  //部长审批2
+    public static final String FLOW_SIGN_BMLD_SPW3 = "SIGN_BMLD_SPW3";  //部长审批3
+    public static final String FLOW_SIGN_BMLD_SPW4 = "SIGN_BMLD_SPW4";  //部长审批4
+    public static final String FLOW_SIGN_FGLD_SPW1 = "SIGN_FGLD_SPW1";  //分管副主任审批1
+    public static final String FLOW_SIGN_FGLD_SPW2 = "SIGN_FGLD_SPW2";  //分管副主任审批2
+    public static final String FLOW_SIGN_FGLD_SPW3 = "SIGN_FGLD_SPW3";  //分管副主任审批3
+    public static final String FLOW_SIGN_FGLD_SPW4 = "SIGN_FGLD_SPW4";  //分管副主任审批4
+    public static final String FLOW_SIGN_FW = "SIGN_FW";                //发文申请
+    public static final String FLOW_SIGN_QRFW = "SIGN_QRFW";            //项目负责人确认发文
+    public static final String FLOW_SIGN_BMLD_QRFW_XB = "SIGN_BMLD_QRFW_XB"; //协办部长审批发文
+    public static final String FLOW_SIGN_BMLD_QRFW = "SIGN_BMLD_QRFW";  //部长审批发文
+    public static final String FLOW_SIGN_FGLD_QRFW_XB = "SIGN_FGLD_QRFW_XB";  //协办分管领导审批发文
+    public static final String FLOW_SIGN_FGLD_QRFW = "SIGN_FGLD_QRFW";  //分管领导审批发文
+    public static final String FLOW_SIGN_ZR_QRFW = "SIGN_ZR_QRFW";      //主任审批发文
+    public static final String FLOW_SIGN_FWBH = "SIGN_FWBH";            //生成发文编号
+    public static final String FLOW_SIGN_CWBL = "SIGN_CWBL";            //财务办理
+    public static final String FLOW_SIGN_GD = "SIGN_GD";                //归档
+    public static final String FLOW_SIGN_DSFZR_QRGD = "SIGN_DSFZR_QRGD";//第二负责人确认
+    public static final String FLOW_SIGN_QRGD = "SIGN_QRGD";            //最终归档
+
+    /**
+     * 项目签收流程参数
+     */
+    public static enum SignFlowParams {
+        BRANCH1("branch1"),                     //项目分支1
+        BRANCH2("branch2"),                     //项目分支2
+        BRANCH3("branch3"),                     //项目分支3
+        BRANCH4("branch4"),                     //项目分支4
+        BRANCH_INDEX1("1"),                     //分支序号1（主分支）
+        BRANCH_INDEX2("2"),                     //分支序号2
+        BRANCH_INDEX3("3"),                     //分支序号3
+        BRANCH_INDEX4("4"),                     //分支序号4
+        WORK_PLAN1("workplan1"),                //是否直接发文
+        WORK_PLAN2("workplan2"),                //是否直接发文
+        WORK_PLAN3("workplan3"),                //是否直接发文
+        WORK_PLAN4("workplan4"),                //是否直接发文
+        HAVE_XMFZR("xmfzr"),                    //是否有项目负责人
+        HAVE_XB("xb"),                          //是否有协办
+        XMFZR_SP("fzrsp"),                      //项目负责人审批
+        XBBZ_SP("xbbzsp"),                      //协办部长审批
+        XBFZR_SP("xbfzrsp"),                    //协办副主任审批
+        HAVE_ZJPSF("zjpsf"),                    //是否有专家评审费
+        /*一下是用户参数*/
+        USER_ZR("user_zr"),              //主任
+        USER_QS("user_qs"),              //项目签收人
+        USER_ZHB("user_zhb"),            //综合部部长
+        USER_FGLD("user_fgld"),          //分管领导
+        USER_BZ1("user_bz1"),            //部门领导1（主分支）
+        USER_BZ2("user_bz2"),            //部门领导2
+        USER_BZ3("user_bz3"),            //部门领导3
+        USER_BZ4("user_bz4"),            //部门领导4
+        USER_FZR1("users1"),             //项目负责人1（主分支）
+        USER_FZR2("users2"),             //项目负责人
+        USER_FZR3("users3"),             //项目负责人
+        USER_FZR4("users4"),             //项目负责人
+        USER_FGLD1("user_fgld1"),        //分管领导1（主分支）
+        USER_FGLD2("user_fgld2"),        //分管领导2
+        USER_FGLD3("user_fgld3"),        //分管领导3
+        USER_FGLD4("user_fgld4"),        //分管领导4
+        USER_HQ_LIST("user_hq_list"),    //项目负责人确认列表
+        USER_HQ("user_hq"),              //项目负责人确认
+        USER_XBBZ_LIST("user_xbbz_list"),//协办部长列表
+        USER_XBBZ("user_xbbz"),          //协办部长
+        USER_XBFGLD_LIST("user_xbfgld_list"),//协办分管领导列表
+        USER_XBFGLD("user_xbbz"),         //协办分管领导
+        USER_M("user_m"),                //项目第一负责人
+        USER_A("user_a"),                //项目第二负责人
+        USER_CW("users_cw"),             //财务
+        USER_QRGD("user_qrgd");          //确认归档人员
+
+        private String value;
+
+        SignFlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+    /**
      *课题研究流程
      */
     public final static String TOPIC_FLOW = "TOPIC_FLOW";

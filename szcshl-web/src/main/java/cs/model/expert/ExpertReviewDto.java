@@ -1,14 +1,8 @@
 package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelected;
 import cs.model.BaseDto;
-import cs.model.project.WorkProgramDto;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -20,33 +14,60 @@ import java.util.List;
  */
 public class ExpertReviewDto extends BaseDto {
 
+    /**
+     * id
+     */
     private String id;
+    /**
+     * 专家个数
+     */
     private Integer expretCount;
-    private Double score;
+    /**
+     * 会议日期
+     */
     @JSONField(format = "yyyy-MM-dd")
     private Date reviewDate;
+    /**
+     * 评审费发送标题
+     */
     private String reviewTitle;
-    private String selectType;
+    /**
+     * 评审费发放日期
+     */
     @JSONField(format = "yyyy-MM-dd")
     private Date payDate;
+    /**
+     * 状态(主要用于前端控制显示，seleted:已经进行专家抽取)
+     */
     private String state;
+    /**
+     * 费用合计
+     */
     private BigDecimal totalCost;
-    //是否已经抽取专家
-    private String isSelete;
-    //抽取结果是否已经确认
-    private String isComfireResult;
-    //专家抽取次数
-    private Integer selCount;
-    //评审费用
+    /**
+     * 评审费用
+     */
     private BigDecimal reviewCost;
-    //税费
+    /**
+     * 缴税费用
+     */
     private BigDecimal reviewTaxes;
-
-    //工作方案【与工作方案一对多关系（合并评审）】
-    private List<WorkProgramDto> workProgramDtoList;
-    //抽取条件【与工作方案一对多关系（合并评审）】
+    /**
+     * 业务ID
+     */
+    private String businessId;
+    /**
+     * 业务类型（SIGN 表示收文，TOPIC表示课题研究）
+     */
+    private String businessType;
+    /**
+     * 抽取条件
+     */
     private List<ExpertSelConditionDto> expertSelConditionDtoList;
-    //抽取的专家信息（一对多）
+
+    /**
+     * 抽取结果
+     */
     private List<ExpertSelectedDto> expertSelectedDtoList;
 
     public ExpertReviewDto() {
@@ -58,14 +79,6 @@ public class ExpertReviewDto extends BaseDto {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
     }
 
     public Date getReviewDate() {
@@ -104,14 +117,6 @@ public class ExpertReviewDto extends BaseDto {
         this.state = state;
     }
 
-    public String getSelectType() {
-        return selectType;
-    }
-
-    public void setSelectType(String selectType) {
-        this.selectType = selectType;
-    }
-
     public BigDecimal getTotalCost() {
         return totalCost;
     }
@@ -124,44 +129,12 @@ public class ExpertReviewDto extends BaseDto {
         this.reviewDate = reviewDate;
     }
 
-    public List<WorkProgramDto> getWorkProgramDtoList() {
-        return workProgramDtoList;
-    }
-
-    public void setWorkProgramDtoList(List<WorkProgramDto> workProgramDtoList) {
-        this.workProgramDtoList = workProgramDtoList;
-    }
-
     public List<ExpertSelConditionDto> getExpertSelConditionDtoList() {
         return expertSelConditionDtoList;
     }
 
     public void setExpertSelConditionDtoList(List<ExpertSelConditionDto> expertSelConditionDtoList) {
         this.expertSelConditionDtoList = expertSelConditionDtoList;
-    }
-
-    public String getIsSelete() {
-        return isSelete;
-    }
-
-    public void setIsSelete(String isSelete) {
-        this.isSelete = isSelete;
-    }
-
-    public String getIsComfireResult() {
-        return isComfireResult;
-    }
-
-    public void setIsComfireResult(String isComfireResult) {
-        this.isComfireResult = isComfireResult;
-    }
-
-    public Integer getSelCount() {
-        return selCount;
-    }
-
-    public void setSelCount(Integer selCount) {
-        this.selCount = selCount;
     }
 
     public List<ExpertSelectedDto> getExpertSelectedDtoList() {
@@ -186,5 +159,21 @@ public class ExpertReviewDto extends BaseDto {
 
     public void setReviewTaxes(BigDecimal reviewTaxes) {
         this.reviewTaxes = reviewTaxes;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
     }
 }

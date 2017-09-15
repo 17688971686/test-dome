@@ -179,7 +179,7 @@
         //会议预定添加弹窗
         vm.addTimeStage = function(){
             if(vm.work.id){
-                $state.go('room', {workProgramId:vm.work.id});
+                $state.go('room',{businessId:vm.work.id,businessType:"SIGN_WP"});
             }else{
                 bsWin.alert("请先保存！");
             }
@@ -304,7 +304,7 @@
         //拟聘请专家
         vm.selectExpert = function(){
             if (vm.work.id) {
-                $state.go('expertReviewEdit', {workProgramId: vm.work.id});
+                $state.go('expertReviewEdit', {businessId:vm.work.signId,minBusinessId: vm.work.id,businessType:"SIGN"});
             } else {
                 bsWin.alert("请先保存当前信息，再继续操作！");
             }

@@ -4,9 +4,9 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-      'addRegisterFileSvc','workprogramSvc', '$scope','bsWin'];
+      'addRegisterFileSvc','expertReviewSvc', '$scope','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,workprogramSvc, $scope,bsWin) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,expertReviewSvc, $scope,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -58,7 +58,6 @@
             isMakeDisNum : false,       // 是否生成发文编号
             principalUsers : [],         // 负责人列表
             isSelMainPriUser:false,     // 是否已经设置主要负责人
-            expertReviews : [],          // 专家评审方案
             editExpertSC : false,       // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
             expertScore:{},              // 专家评分对象
             isNeedWP : 9,                // 是否需要工作方案
@@ -114,21 +113,6 @@
                 //初始化专家评分
                 if (vm.model.processState > 1) {
                     vm.showFlag.tabWorkProgram=true;        //显示工作方案
-
-                    //初始化专家评分
-                    signSvc.paymentGrid(vm.model.signid,function(data){
-                        vm.businessFlag.expertReviews = data.value;
-                        if (vm.businessFlag.expertReviews && vm.businessFlag.expertReviews.length > 0) {
-                            vm.showFlag.tabExpert = true;   //显示专家信息tab
-                        }
-                        //获取评分专家
-                        vm.selectedDtoList = [];
-                        $.each(vm.businessFlag.expertReviews,function(i,epReview){
-                            $.each(epReview.expertSelectedDtoList,function(k,epSlist){
-                                vm.selectedDtoList.push(epSlist);
-                            })
-                        })
-                    });
                 }
 
                 //更改状态,并初始化业务参数
@@ -167,13 +151,11 @@
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
             vm.businessFlag.expertScore = {};
-            $.each(vm.businessFlag.expertReviews,function (index,epRw) {
-                $.each(epRw.expertSelectedDtoList,function (i,epSel) {
-                    if(epSel.id == id){
-                        vm.businessFlag.expertScore = epSel;
-                        return ;
-                    }
-                })
+            $.each(vm.model.expertReviewDto.expertSelectedDtoList,function (i,epSel) {
+                if(epSel.id == id){
+                    vm.businessFlag.expertScore = epSel;
+                    return ;
+                }
             })
 
             $("#star").raty({
@@ -309,8 +291,6 @@
         // S_countNum
         function countNum(reviewCost) {
             reviewCost = reviewCost == undefined ? 0 : reviewCost;
-            // console.log('评审费：'+reviewCost);
-            //var XSum = vm.expertReview.reviewCost;
             var reviewTaxes = 0;
             if (reviewCost > 800 && reviewCost <= 4000) {
                 reviewTaxes = (reviewCost - 800) * 0.2;
@@ -428,25 +408,18 @@
         
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
-        	//$state.go('addSupp', {signid: vm.model.signid,id:vm.model.suppletterid });
-        	$state.go('addSupp', {signid: vm.model.signid});
+        	$state.go('addSupp', {businessId: vm.model.signid,businessType:"SIGN"});
         }// E_跳转到 拟补充资料函 编辑页面
         
         //S 拟补充资料函列表
         vm.addSuppLetterList = function(){
-        	$state.go('addSuppletterList',{signid: vm.model.signid});
+        	$state.go('addSuppletterList',{businessId: vm.model.signid});
         }
       //E 拟补充资料函列表
         
         //S_工作方案  --链接到  登记表补充资料 
-        vm.addRegisterFile = function (options) {
-        	if(!vm.model.signid){
-        		bsWin.alert("请保存工作方案再操作！");
-        	}else{
-        		$state.go('registerFile', {signid: vm.model.signid});
-        		//addRegisterFileSvc.initRegisterWinDow(vm,options);
-        		
-        	}
+        vm.addRegisterFile = function () {
+            $state.go('registerFile', {businessId: vm.model.signid});
         }// E_工作方案  --链接到  登记表补充资料
         
         //S_跳转到 工作方案 基本信息
@@ -785,7 +758,6 @@
                 msg:"如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
                 fn:function () {
                     $('.confirmDialog').modal('hide');
-
                     signSvc.findWorkProgramBySignId(vm,function(){
                         signSvc.meetingDoc(vm);
                     });

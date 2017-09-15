@@ -37,17 +37,17 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     }
 
     /**
-     * 根据工作方案ID 查询对应的拟聘请专家(已经确认的专家)
-     * @param wpId
+     * 根据业务ID获取选取的专家信息
+     * @param businessId
      * @return
      */
     @Override
-    public List<Expert> findByWorkProgramId(String wpId) {
+    public List<Expert> findByBusinessId(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select e.* from cs_expert e where e.expertID in (select expertID from cs_expert_selected ");
-        sqlBuilder.append(" where "+ ExpertSelected_.isConfrim.getName()+" = '"+ Constant.EnumState.YES.getValue()+"' and expertReviewId = ");
-        sqlBuilder.append(" (select expertReviewId from cs_work_program where id =:wpId ) ) ");
-        sqlBuilder.setParam("wpId",wpId);
+        sqlBuilder.append(" where "+ ExpertSelected_.isConfrim.getName()+" = '"+ Constant.EnumState.YES.getValue()+"' ");
+        sqlBuilder.append("  and "+ExpertSelected_.businessId.getName()+" = :businessId )");
+        sqlBuilder.setParam("businessId",businessId);
 
         return findBySql(sqlBuilder);
     }

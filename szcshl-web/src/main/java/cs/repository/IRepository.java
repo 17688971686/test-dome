@@ -59,4 +59,6 @@ public interface IRepository<T, ID> {
     int deleteById(String idPropertyName, String idValue);
 
     List<Map> findMapListBySql(HqlBuilder hqlBuilder);
+
+    String getDataBaseTime(String format);
 }

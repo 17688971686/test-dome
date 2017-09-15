@@ -1,5 +1,6 @@
 package cs.controller.project;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
 import cs.repository.odata.ODataFilterItem;
@@ -58,11 +59,9 @@ public class AddRegisterFileController {
     
 	@RequiresPermissions("addRegisterFile#save#post")
 	@RequestMapping(name = "创建记录", path = "save", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void create(@RequestBody AddRegisterFileDto addRegisterFileDtos[]) throws ParseException {
-		for(AddRegisterFileDto fileDto :addRegisterFileDtos ){
-			addRegisterFileService.save(fileDto);
-		}
+	@ResponseBody
+	public ResultMsg create(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) throws ParseException {
+		return addRegisterFileService.bathSave(addRegisterFileDtos);
 	}
 	
 	@RequiresPermissions("addRegisterFile#initprintdata#post")
@@ -72,11 +71,10 @@ public class AddRegisterFileController {
 		return map;
 	}
 	
-	@RequiresPermissions("addRegisterFile#initRegisterData#post")
-	@RequestMapping(name = "初始化登记补充资料", path = "initRegisterData", method = RequestMethod.POST)
-	public @ResponseBody Map<String,Object> initAddRegisterFile(@RequestParam String signid)throws ParseException{
-		Map<String,Object> map = addRegisterFileService.initRegisterFile(signid);
-		return map;
+	@RequiresPermissions("addRegisterFile#findByBusinessId#post")
+	@RequestMapping(name = "根据业务ID查询补充资料信息", path = "findByBusinessId", method = RequestMethod.POST)
+	public @ResponseBody List<AddRegisterFileDto> findByBusinessId(@RequestParam String businessId){
+		return addRegisterFileService.findByBusinessId(businessId);
 	}
 
 	@RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
@@ -89,13 +87,6 @@ public class AddRegisterFileController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(@RequestParam String ids) {
 		addRegisterFileService.deleteRegisterFile(ids);
-	}
-
-	@RequiresPermissions("addRegisterFile#update#put")
-	@RequestMapping(name = "更新记录", path = "update", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void update(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) {
-		addRegisterFileService.update(addRegisterFileDtos);
 	}
 	
 	@RequiresPermissions("addRegisterFile#findbySuppdate#post")

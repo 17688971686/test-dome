@@ -24,56 +24,76 @@ public class ExpertReview extends DomainBase {
     @GenericGenerator(name = "epReviewGenerator", strategy = "uuid")
     private String id;
 
-    //专家个数
+    /**
+     * 专家个数
+     */
     @Column(columnDefinition = "Integer")
     private Integer expretCount;
 
-    //评审日期
+    /**
+     * 评审日期
+     */
     @Column(columnDefinition = "Date")
     private Date reviewDate;
 
-    //评审费发送标题
+    /**
+     * 评审费发送标题
+     */
     @Column(columnDefinition = "VARCHAR(128)")
     private String reviewTitle;
 
-    //评审费发放日期
+    /**
+     * 评审费发放日期
+     */
     @Column(columnDefinition = "Date")
     private Date payDate;
 
-    //费用合计
+    /**
+     * 费用合计
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal totalCost;
 
-    //评审费用
+    /**
+     * 评审费用
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal reviewCost;
 
-    //税费
+    /**
+     * 税费
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal reviewTaxes;
 
-    //抽取结果是否已经确认
-    @Column(columnDefinition = "varchar(2) ")
-    private String isComfireResult;
-
-    //专家抽取次数
-    @Column(columnDefinition = "Integer default 0")
-    private Integer selCount;
-
-    //状态
+    /**
+     * 状态
+     */
     @Column(columnDefinition = "VARCHAR(2)")
     private String state;
 
     /**
+     * 业务ID（项目ID，或者课题研究ID，唯一）
+     */
+    @Column(columnDefinition = "VARCHAR(64)",unique = true)
+    private String businessId;
+
+    /**
+     * 业务类型（SIGN 表示收文，TOPIC表示课题研究）
+     */
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String businessType;
+
+    /**
      * 抽取条件（一对多）
      */
-    @OneToMany(mappedBy = "expertReview",fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "expertReview", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ExpertSelCondition> expertSelConditionList;
 
     /**
      * 抽取的专家信息（一对多）
      */
-    @OneToMany(mappedBy = "expertReview",fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "expertReview", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ExpertSelected> expertSelectedList;
 
 
@@ -142,22 +162,6 @@ public class ExpertReview extends DomainBase {
         this.expertSelConditionList = expertSelConditionList;
     }
 
-    public String getIsComfireResult() {
-        return isComfireResult;
-    }
-
-    public void setIsComfireResult(String isComfireResult) {
-        this.isComfireResult = isComfireResult;
-    }
-
-    public Integer getSelCount() {
-        return selCount;
-    }
-
-    public void setSelCount(Integer selCount) {
-        this.selCount = selCount;
-    }
-
     public List<ExpertSelected> getExpertSelectedList() {
         return expertSelectedList;
     }
@@ -182,7 +186,23 @@ public class ExpertReview extends DomainBase {
         this.reviewTaxes = reviewTaxes;
     }
 
-    public ExpertReview(){
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
+
+    public ExpertReview() {
 
     }
 }

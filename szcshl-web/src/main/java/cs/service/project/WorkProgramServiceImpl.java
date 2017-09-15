@@ -1,6 +1,5 @@
 package cs.service.project;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,8 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import cs.common.utils.*;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+
+import cs.domain.meeting.RoomBooking_;
+import cs.domain.sys.*;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -19,13 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.CreateTemplateUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.SysFileUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.Expert_;
 import cs.domain.meeting.RoomBooking;
-import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
 import cs.domain.project.AssistUnit;
@@ -34,14 +42,11 @@ import cs.domain.project.SignPrincipal;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
-import cs.domain.sys.Org;
-import cs.domain.sys.SysFile;
-import cs.domain.sys.SysFile_;
-import cs.domain.sys.User;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
 import cs.repository.repositoryImpl.project.AssistUnitRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
@@ -75,7 +80,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private SignMergeRepo signMergeRepo;
     @Autowired
-    private ExpertSelectedRepo expertSelectedRepo;
+    private RoomBookingRepo roomBookingRepo;
 
     @Override
     @Transactional
@@ -118,7 +123,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 sign = signRepo.findById(Sign_.signid.getName(),workProgramDto.getSignId());
             }
             //只有主方案改了，才会更新
-            if((Constant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
+            if((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
                     && sign.getAppalyInvestment() != workProgram.getAppalyInvestment()){
                 sign.setAppalyInvestment(workProgram.getAppalyInvestment());
             }
@@ -193,7 +198,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgramDto.setDesignCompany(sign.getDesigncompanyName());
                 workProgramDto.setAppalyInvestment(sign.getDeclaration());
                 //是否有拟补充资料函
-                workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null?  Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
+                workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter()==null?Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
                 //拟补充资料函发文日期
                 workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
                 workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
@@ -205,7 +210,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgramDto.setSendFileUser(sign.getMainDeptUserName());
 
                 //获取评审部门
-                List<Org> orgList = workProgramRepo.getReviewOrg(signId);
+                List<OrgDept> orgList = signBranchRepo.getOrgDeptBySignId(signId);
                 if(Validate.isList(orgList)){
                     StringBuffer orgName = new StringBuffer();
                     for(int i=0,l=orgList.size();i<l;i++){
@@ -246,7 +251,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     public void initWorkProgramDto(WorkProgram workProgram,WorkProgramDto workProgramDto){
         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
         //1、初始化会议室预定情况
-        List<RoomBooking> roomBookings = workProgram.getRoomBookings();
+        List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(),workProgram.getId(),null);
         if (Validate.isList(roomBookings)) {
             List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
             roomBookings.forEach(r -> {
@@ -259,7 +264,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setRoomBookingDtos(roomBookingDtos);
         }
         //2、拟聘请专家
-        List<Expert> expertList = expertRepo.findByWorkProgramId(workProgram.getId());
+        List<Expert> expertList = expertRepo.findByBusinessId(workProgram.getId());
         if(Validate.isList(expertList)){
             List<ExpertDto> expertDtoList = new ArrayList<>(expertList.size());
             expertList.forEach( el ->{
@@ -269,11 +274,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 expertDtoList.add(expertDto);
             });
             workProgramDto.setExpertDtoList(expertDtoList);
-        }
-        //如果还没有专家评审费，则初始化，默认，每个专家1000元,如果当前评审费少于选定专家的个数，则更新专家评审费
-        BigDecimal compareCost = BigDecimal.valueOf(Validate.isList(expertList)?1000*expertList.size():0);
-        if(workProgram.getExpertCost() == null || workProgram.getExpertCost().compareTo(compareCost) <= 0){
-            workProgramRepo.initExpertCost(workProgram.getId());
         }
     }
 
@@ -383,7 +383,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<Expert> expertList=expertRepo.findBySql(sqlBuilder);
 
         User user = signPrincipalService.getMainPriUser(signId);//获取项目第一负责人
+
         //获得会议信息
+        List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(),workProgram.getId(),null);
 
         //2.1 生成签到表
         saveFile.add(CreateTemplateUtils.createtTemplateSignIn(sign ,workProgram));
@@ -392,7 +394,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         saveFile.add(CreateTemplateUtils.createTemplateCompere(sign , workProgram ,expertList));
 
         //2.3 会议议程
-        List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(sign , workProgram);
+        List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(sign , workProgram,roomBookings);
         if(sList != null && sList.size() >0){
             for(SysFile sysFile : sList){
                 saveFile.add(sysFile);
@@ -401,7 +403,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //2.4 邀请函
         for (Expert expert : expertList) {
-           SysFile  invitation = CreateTemplateUtils.createTemplateInvitation(sign , workProgram , expert,user);
+           SysFile  invitation = CreateTemplateUtils.createTemplateInvitation(sign , workProgram , expert,user,roomBookings);
            if(invitation !=null){
                saveFile.add(invitation);
            }
@@ -409,7 +411,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //2.5 会议通知
 
-        SysFile notice = CreateTemplateUtils.createTemplateNotice(sign ,workProgram,user);
+        SysFile notice = CreateTemplateUtils.createTemplateNotice(sign ,workProgram,user,roomBookings);
         if(notice !=null){
             saveFile.add(notice);
         }

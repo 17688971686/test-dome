@@ -67,6 +67,12 @@ public class ExpertSelected {
     @Column(columnDefinition = "INTEGER default 1")
     private Integer selectIndex;
 
+    /**
+     * 业务ID，如项目签收工作方案ID，课题工作方案ID等
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String businessId;
+
     //抽取评审方案（多对一）
     @ManyToOne
     @JoinColumn(name = "expertReviewId")
@@ -195,5 +201,13 @@ public class ExpertSelected {
 
     public void setExpeRttype(String expeRttype) {
         this.expeRttype = expeRttype;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

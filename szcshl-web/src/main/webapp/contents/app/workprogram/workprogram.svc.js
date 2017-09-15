@@ -291,10 +291,18 @@
         //S_保存操作
         function createWP(work, isNeedWorkProgram,isCommit,callBack) {
             isCommit = true;
-            work.studyBeginTimeStr = $("#studyBeginTime").val();
-            work.studyEndTimeStr = $("#studyEndTime").val();
-            work.studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
-            work.studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
+            if($("#studyBeginTime").val()){
+                work.studyBeginTimeStr = $("#studyBeginTime").val();
+            }
+            if($("#studyEndTime").val()){
+                work.studyEndTimeStr = $("#studyEndTime").val();
+            }
+            if($("#studyAllDay").val() && $("#studyBeginTime").val()){
+                work.studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
+            }
+            if($("#studyAllDay").val() && $("#studyEndTime").val()){
+                work.studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
+            }
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/addWork",
