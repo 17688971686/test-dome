@@ -1,0 +1,89 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm conttent_list" style="background: white;min-height:900px;">
+    <ol class="breadcrumb">
+        <li><a href="#/archivesLibraryList">档案借阅管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            
+        </div>
+		    <table style="width:90%" border="1px">
+		    <caption class="text-center"> <h3><strong>项目档案查阅审批表</strong></h3></caption><br>
+			<tr>
+				<td width="30%" align="center">查阅单位</td>
+				<td colspan="3">
+				{{vm.model.readCompany}}
+				</td>
+			
+			</tr>
+			<tr>
+				<td width="30%" align="center">借阅人</td>
+				<td colspan="3">
+				{{vm.model.readUsername}}
+                </td>
+				
+			</tr>
+			<tr>
+				<td width="30%" align="center">查阅项目名称</td>
+				<td colspan="3">
+				{{vm.model.readProjectName}}
+                  </td>
+				
+			</tr>
+			<tr>
+				<td width="30%" align="center" >存档编号</td>
+				<td colspan="3">
+				{{vm.model.readArchivesCode}}
+                 </td>
+				
+			</tr>
+			<tr>
+				<td rowspan="2" width="30%" align="center" >查阅审批</td>
+				<td align="center">部长审批</td>
+				<td  align="center">分管副主任</td>
+				<td  align="center">主任</td>
+		
+				</td>
+			</tr>
+			<tr>
+				<td >
+				 <p> {{vm.model.deptMinisterIdeaContent}}</p>
+			 	 <p class="text-right" ng-if="vm.model.deptMinister">签名：{{vm.model.deptMinister}}</p>
+			     <p class="text-right" ng-if="vm.model.deptMinisterDate">日期：{{vm.model.deptMinisterDate}}</p>
+                 </td>
+				<td>
+                 <p> {{vm.model.deptSLeaderIdeaContent}}</p>
+			 	 <p class="text-right" ng-if="vm.model.deptSLeader">签名：{{vm.model.deptSLeader}}</p>
+			     <p class="text-right" ng-if="vm.model.deptSleaderDate">日期：{{vm.model.deptSleaderDate}}</p>
+                  </td>
+				<td>
+					<p> {{vm.model.deptDirectorIdeaContent}}</p>
+			 		<p class="text-right" ng-if="vm.model.deptDirector">签名：{{vm.model.deptDirector}}</p>
+			     	<p class="text-right" ng-if="vm.model.deptDirectorDate">日期：{{vm.model.deptDirectorDate}}</p>
+                 </td>
+			</tr>
+			<tr>
+				<td width="30%" align="center">查阅时间</td>
+				<td >
+					{{vm.model.readDate}}
+                  </td>
+				<td width="30%" align="center">归还时间</td>
+				<td>
+                    {{vm.model.resotoreDate}}
+                 </td>
+			</tr>
+			<tr>
+				<td width="30%" align="center">档案管理员签名</td>
+				<td colspan="3">
+				{{vm.model.archivesUserName}}
+                    </td>
+				
+			</tr>
+		</table>
+    </form>
+</div>

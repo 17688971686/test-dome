@@ -655,6 +655,64 @@
             })
             //E 月报简报管理 
             
+            //S 档案借阅管理
+            
+            //中心档案录入页面
+             .state('libraryAdd', {
+                url: '/libraryAdd/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryAdd.html',
+                controller: 'archivesLibraryCtrl',
+                controllerAs: 'vm'
+            })
+            
+            //市档案借阅录入页面
+             .state('archivesCityEdit', {
+                url: '/archivesCityEdit/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesCityEdit.html',
+                controller: 'archivesLibraryCtrl',
+                controllerAs: 'vm'
+            })
+            //项目查阅审批列表
+            .state('archivesProjectRead', {
+                url: '/archivesProjectRead/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesProjectList.html',
+                controller: 'archivesLibraryCtrl',
+                controllerAs: 'vm'
+            })
+            //部长审批处理页面
+            .state('archivesLibraryProjectEdit', {
+                url: '/archivesLibraryProjectEdit/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryEdit.html',
+                controller: 'archivesLibraryEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+            
+            //中心档案查询
+            .state('archivesLibraryList', {
+                url: '/archivesLibraryList/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryList.html',
+                controller: 'archivesLibraryCtrl',
+                controllerAs: 'vm'
+            })
+            //查看中心档案详细
+            .state('archivesLibraryDetail', {
+                url: '/archivesLibraryDetail/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryDetail.html',
+                controller: 'archivesLibraryEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+            //市档案查询
+            .state('archivesCityList', {
+                url: '/archivesCityList/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesCityList.html',
+                controller: 'archivesLibraryCtrl',
+                controllerAs: 'vm'
+            })
+            
+            
+            //E 档案借阅管理
               //begin#dispatch
            /* .state('financialEdit', {
                 url: '/financialEdit/:signid',
