@@ -1,0 +1,92 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div class="well well-sm conttent_list" style="background: white;min-height:900px;">
+    <ol class="breadcrumb">
+        <li><a href="#/archivesLibraryList">档案借阅管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <form id="form" name="form">
+        <div class="toolbar">
+            <a class="btn btn-sm btn-primary" href="#/archivesLibrary"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.createLibrary()" ng-disabled="vm.isSubmit"
+                    ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
+            </button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
+                    ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
+            </button>
+        </div>
+		    <table style="width:98%" >
+		    <caption class="text-center"> <h3><strong>评审中心项目档案查阅审批表</strong></h3></caption><br>
+			<tr>
+				<td width="30%" align="center">查阅单位<span class="required">*</span></td>
+				<td colspan="3">
+				<input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.readCompany"
+                    id="readCompany" name="readCompany" data-val="true" data-val-required="必填"  />
+                    <span data-valmsg-for="readCompany" data-valmsg-replace="true" class="errors"></span>
+				</td>
+				
+			</tr>
+			<tr>
+				<td width="30%" align="center">借阅人<span class="required">*</span></td>
+				<td colspan="3"><input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.readUsername"
+                    id="readUsername" name="readUsername" data-val="true" data-val-required="必填"  />
+                    <span data-valmsg-for="readUsername" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+				
+			</tr>
+			<tr>
+				<td width="30%" align="center">查阅项目名称<span class="required">*</span></td>
+				<td colspan="3"><input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.readProjectName"
+                    id="readProjectName" name="readProjectName" data-val="true" data-val-required="必填"  />
+                    <span data-valmsg-for="readProjectName" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+				
+			</tr>
+			<tr>
+				<td width="30%" align="center" >存档编号</td>
+				<td colspan="3"><input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.readArchivesCode"
+                    id="readArchivesCode" name="readArchivesCode" data-val="true" data-val-required="必填"  /></td>
+				
+			</tr>
+			<tr>
+				<td rowspan="2" width="30%" align="center" >查阅审批</td>
+				<td align="center">部长审批</td>
+				<td  align="center">分管副主任</td>
+				<td  align="center">主任</td>
+		
+				</td>
+			</tr>
+			<tr>
+				
+				<td >
+				<textarea style="width:220px;" name="deptMinister" id="deptMinister" ng-model="vm.model.deptMinister" ng-disabled="vm.projectStop.approveStatus!='1'" data-val="true" data-val-required="必填" disabled="disabled"></textarea>
+                 </td>
+				<td>
+                    <textarea style="width:220px;" name="deptSLeader" id="deptSLeader" ng-model="vm.model.deptSLeader" ng-disabled="vm.projectStop.approveStatus!='1'" data-val="true" data-val-required="必填" disabled="disabled"></textarea>
+                    </td>
+				<td>
+				<textarea style="width:220px;" name="deptDirector" id="deptDirector" ng-model="vm.model.deptDirector" ng-disabled="vm.projectStop.approveStatus!='1'" data-val="true" data-val-required="必填" disabled="disabled"></textarea>
+                    </td>
+			</tr>
+			<tr>
+				<td width="30%" align="center">查阅时间</td>
+				<td >
+				<input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" maxlength="200" class="form-control input-sm " 
+                   ng-model="vm.model.readDate" id="readDate" name="readDate" />
+                  </td>
+				<td width="30%" align="center">归还时间</td>
+				<td><input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" maxlength="200" class="form-control input-sm " ng-model="vm.model.resotoreDate"
+                    id="resotoreDate" name="resotoreDate" data-val="true" data-val-required="必填" ng-disabled="vm.projectStop.approveStatus!='1'"  /></td>
+			</tr>
+			<tr>
+				<td width="30%" align="center">档案管理员签名</td>
+				<td colspan="3"><input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.ArchivesUserName"
+                    id="ArchivesUserName" name="ArchivesUserName"   /></td>
+				
+			</tr>
+		</table>
+    </form>
+</div>
