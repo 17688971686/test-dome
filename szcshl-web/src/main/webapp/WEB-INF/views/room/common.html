@@ -1,0 +1,114 @@
+<meta charset="UTF-8">
+<!-- S 会议预定弹窗 -->
+<div id="stageWindow" style="background:white;display:none;">
+    <form id="stageForm" name="stageForm">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveRoom()"><span
+                    class="glyphicon glyphicon-ok"></span>保存
+            </button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.onRoomClose()"><span
+                    class="glyphicon glyphicon-chevron-left"></span>关闭
+            </button>
+        </div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight">会议名称： <span class="required">*</span></td>
+                <td>
+                    <input type="hidden" class="form-control input-sm " ng-model="vm.roombook.workProgramId"
+                           name="workProgramId" id="workProgramId">
+                    <input type="hidden" class="form-control input-sm " ng-model="vm.roombook.stageOrg"
+                           name="stageOrg" id="stageOrg">
+                    <input type="hidden" class="form-control input-sm " ng-model="vm.roombook.id">
+
+                    <input maxlength="200" class="form-control input-sm " ng-model="vm.roombook.rbName " id="rbName"
+                           name="rbName" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="rbName" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议地点： <span class="required">*</span></td>
+                <td>
+                    <select ng-model="vm.roombook.mrID" name="mrID" id="mrID" data-val="true" data-val-required="必填">
+                        <option ng-repeat="x in vm.roombookingList" value="{{x.id}}"
+                                ng-checked="vm.roombook.mrID == x.id">{{x.addr}}
+                        </option>
+                    </select>
+                </td>
+                <td><span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议类型： <span class="required">*</span></td>
+                <td>
+                    <select ng-model="vm.roombook.rbType" name="rbType" id="rbType">
+                        <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select>
+                </td>
+                <td><span data-valmsg-for="rbType" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议主持人： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.roombook.host "
+                           id="host" name="host" data-val="true" data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">会议预定人： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           ng-model="vm.roombook.dueToPeople " id="dueToPeople" name="dueToPeople" data-val="true"
+                           data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="dueToPeople" data-valmsg-replace="true" class="errors"></span></td>
+
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">会议日期： <span class="required">*</span></td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:40%;"
+                           ng-model="vm.roombook.rbDay" id="rbDay" name="rbDay" data-val="true"
+                           data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="rbDay" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">开始时间： <span class="required">*</span></td>
+                <td>
+                    <input kendo-time-picker k-format="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
+                           style="width:40%;" ng-model="vm.roombook.beginTimeStr" id="beginTime" name="beginTime">
+                </td>
+                <td><span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
+
+            </tr>
+            <tr>
+                <td class="formAlignRight">结束时间： <span class="required">*</span></td>
+                <td>
+                    <input kendo-time-picker k-format="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
+                           style="width:40%;" ng-model="vm.roombook.endTimeStr" id="endTime" name="endTime">
+                <td>
+                    <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">主要内容： <span class="required">*</span></td>
+                <td>
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           ng-model="vm.roombook.content " id="content" name="content" data-val="true"
+                           data-val-required="必填">
+                </td>
+                <td><span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">备注：</td>
+                <td>
+                        <textarea type="text" maxlength="200" class="form-control input-sm "
+                                  ng-model="vm.roombook.remark " id="remark" name="remark"></textarea>
+                </td>
+                <td></td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+<!--  E 会议预定弹窗 -->

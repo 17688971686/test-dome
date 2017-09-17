@@ -3,6 +3,7 @@ package cs.model.topic;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.flow.FlowPrincipal;
 import cs.model.BaseDto;
+import cs.model.expert.ExpertReviewDto;
 
 import javax.persistence.Column;
 import java.util.Date;
@@ -98,6 +99,11 @@ public class TopicInfoDto extends BaseDto {
      * 归档
      */
     private FilingDto filingDto;
+
+    /**
+     * 专家评审方案信息
+     */
+    private ExpertReviewDto expertReviewDto;
 
     /*******************  以下参数只是为了方便显示，并不是数据表字段 ********************/
     /**
@@ -284,5 +290,13 @@ public class TopicInfoDto extends BaseDto {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public ExpertReviewDto getExpertReviewDto() {
+        return expertReviewDto;
+    }
+
+    public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
+        this.expertReviewDto = expertReviewDto;
     }
 }

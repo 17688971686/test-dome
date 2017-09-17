@@ -486,9 +486,9 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
             WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),businessId);
             roomBookingDto.setStageOrgName(wp.getReviewOrgName());
             roomBookingDto.setRbName(wp.getProjectName());
-        }else if(Constant.BusinessType.TOPIC.getValue().equals(businessType)){
+        }else if(Constant.BusinessType.TOPIC_WP.getValue().equals(businessType)){
             WorkPlan wp = workPlanRepo.findById(WorkPlan_.id.getName(),businessId);
-            roomBookingDto.setStageOrgName(wp.getTopicName());
+            roomBookingDto.setRbName(wp.getTopicName());
         }
         roomBookingDto.setHost(SessionUtil.getDisplayName());
         roomBookingDto.setDueToPeople(SessionUtil.getDisplayName());

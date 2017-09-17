@@ -138,8 +138,6 @@ public class SignDto extends BaseDto {
 
     private String docnum;
 
-    private String belongOrgId;
-
     //建议书项目处理表份数
     private Integer sugProDealCount;
     //建议书项目处理表是否有原件
@@ -585,9 +583,6 @@ public class SignDto extends BaseDto {
      * 默认办理类型,项目类型（评估类：PX，概算类:GX）
      */
     private String dealOrgType;
-
-    //拟补充资料编号
-    private String suppletterid;
 
     //工作方案
     private List<WorkProgramDto> workProgramDtoList;
@@ -2120,14 +2115,6 @@ public class SignDto extends BaseDto {
         this.dealOrgType = dealOrgType;
     }
 
-    public String getSuppletterid() {
-        return suppletterid;
-    }
-
-    public void setSuppletterid(String suppletterid) {
-        this.suppletterid = suppletterid;
-    }
-
     public List<WorkProgramDto> getWorkProgramDtoList() {
         return workProgramDtoList;
     }
@@ -2231,14 +2218,6 @@ public class SignDto extends BaseDto {
 	public void setSuppLetterDate(Date suppLetterDate) {
 		this.suppLetterDate = suppLetterDate;
 	}
-
-    public String getBelongOrgId() {
-        return belongOrgId;
-    }
-
-    public void setBelongOrgId(String belongOrgId) {
-        this.belongOrgId = belongOrgId;
-    }
 
     public ExpertReviewDto getExpertReviewDto() {
         return expertReviewDto;

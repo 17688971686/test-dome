@@ -3,14 +3,22 @@ package cs.service.topic;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.expert.Expert;
+import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBooking_;
 import cs.domain.topic.TopicInfo;
 import cs.domain.topic.TopicInfo_;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertDto;
+import cs.model.meeting.RoomBookingDto;
 import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +41,11 @@ public class WorkPlanServiceImpl implements WorkPlanService {
     private WorkPlanRepo workPlanRepo;
     @Autowired
     private TopicInfoRepo topicInfoRepo;
+    @Autowired
+    private RoomBookingRepo roomBookingRepo;
+    @Autowired
+    private ExpertRepo expertRepo;
+
 
     @Override
     public PageModelDto<WorkPlanDto> get(ODataObj odataObj) {
@@ -121,6 +134,7 @@ public class WorkPlanServiceImpl implements WorkPlanService {
      */
     @Override
     public WorkPlanDto initByTopicId(String topicId) {
+        //1、工作方案基本信息
         WorkPlan workPlan = workPlanRepo.findById("topId", topicId);
         if (workPlan == null || !Validate.isString(workPlan.getId())) {
             workPlan = new WorkPlan();
@@ -130,6 +144,31 @@ public class WorkPlanServiceImpl implements WorkPlanService {
         }
         WorkPlanDto result = new WorkPlanDto();
         BeanCopierUtils.copyProperties(workPlan, result);
+        //2、会议室预定情况
+        List<RoomBooking> bookList = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(),workPlan.getId(),null);
+        if (Validate.isList(bookList)) {
+            List<RoomBookingDto> roomBookingDtoList = new ArrayList<>(bookList.size());
+            bookList.forEach(r -> {
+                RoomBookingDto rbDto = new RoomBookingDto();
+                BeanCopierUtils.copyProperties(r, rbDto);
+                rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(), "HH:mm"));
+                rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
+                roomBookingDtoList.add(rbDto);
+            });
+            result.setRoomDtoList(roomBookingDtoList);
+        }
+        //3、拟聘请专家
+        List<Expert> expertList = expertRepo.findByBusinessId(workPlan.getId());
+        if(Validate.isList(expertList)){
+            List<ExpertDto> expertDtoList = new ArrayList<>(expertList.size());
+            expertList.forEach( el ->{
+                ExpertDto expertDto = new ExpertDto();
+                el.setPhoto(null);
+                BeanCopierUtils.copyProperties(el,expertDto);
+                expertDtoList.add(expertDto);
+            });
+            result.setExpertDtoList(expertDtoList);
+        }
         return result;
     }
 

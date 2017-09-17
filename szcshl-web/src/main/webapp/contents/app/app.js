@@ -358,7 +358,7 @@
                 controllerAs: 'vm'
             }).state('signList', { //项目查询统计
                 url: '/signList',
-                templateUrl: rootPath + '/sign/html/signList.html',
+                templateUrl: rootPath + '/signView/html/signList.html',
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList

@@ -269,6 +269,7 @@
                 case flowcommon.getTopicFlowNode().TOPIC_JHTC:
                     showFlag.businessTr = true;
                     showFlag.showUploadBT = true;
+                    console.log(showFlag);
                     break;
                 //工作方案填报环节
                 case flowcommon.getTopicFlowNode().TOPIC_GZFA:

@@ -1,6 +1,8 @@
 <meta charset="UTF-8">
 <#assign path=request.contextPath/>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+<!--会议室公共页面-->
+<#include "/room/common.html"/>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -49,11 +51,36 @@
                     <textarea ng-model="vm.workplan.topicContent" style="width: 100%;" rows="5" name="topicContent" id="topicContent">{{vm.workplan.topicContent}}</textarea>
                 </td>
             </tr>
-            <tr>
-                <td width="11%" class="text-center">会议时间</td>
-                <td colspan="3" width="33%">xxxx</td>
-                <td width="11%" class="text-center">会期</td>
-                <td colspan="4" width="44%">xxxx</td>
+            <tr >
+                <td class="text-center">鉴定会日期</span></td>
+                <td colspan="7">
+                    <button class="btn btn-xs btn-primary" ng-click="vm.bookMeeting();">
+                        <span class="glyphicon glyphicon-pencil"></span>编辑
+                    </button>
+                </td>
+            </tr>
+            <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
+                <td class="text-center" style="width:11%;">评审会日期</td>
+                <td class="text-center" style="width:11%;">会议名称</td>
+                <td class="text-center" style="width:11%;">会议地点</td>
+                <td class="text-center" style="width:11%;">开始时间</td>
+                <td class="text-center" style="width:11%;">结束时间</td>
+                <td class="text-center" style="width:11%;">主持人</td>
+                <td class="text-center" style="width:22%;" colspan="2">会议内容</td>
+                <td class="text-center" style="width:11%;">操作</td>
+            </tr>
+            <tr ng-repeat="r in vm.work.roomDtoList" ng-show="vm.work.roomDtoList && vm.work.roomDtoList.length > 0">
+                <td class="text-center">{{r.rbDate}}</td>
+                <td class="text-center">{{r.rbName}}</td>
+                <td class="text-center">{{r.addressName}}</td>
+                <td class="text-center">{{r.beginTimeStr}}</td>
+                <td class="text-center">{{r.endTimeStr}}</td>
+                <td class="text-center">{{r.host}}</td>
+                <td class="text-center" colspan="2">{{r.content}}</td>
+                <td class="text-center" >
+                    <button class="btn btn-xs btn-primary" ng-click="vm.updateBookRoom(r.id);"><span class="glyphicon glyphicon-pencil">修改</span></button>
+                    <button class="btn btn-xs btn-danger" ng-click="vm.deleteBookRoom(r.id)"><span class="glyphicon glyphicon-remove">删除</span></button>
+                </td>
             </tr>
             <tr>
                 <td class="text-center">会议地点</td>
@@ -72,6 +99,14 @@
                 </td>
                 <td class="text-center">会议议程</td>
                 <td colspan="4" >见附件一</td>
+            </tr>
+            <tr>
+                <td class="text-center">拟聘请专家</td>
+                <td colspan="7">
+                    <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();" >
+                        <span class="glyphicon glyphicon-pencil"></span>编辑
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td class="text-center">拟聘请专家</td>
