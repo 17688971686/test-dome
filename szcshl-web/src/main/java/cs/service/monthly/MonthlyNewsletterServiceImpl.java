@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
+import cs.common.Constant.MsgCode;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -58,10 +60,11 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 
 	/**
 	 * 保存月报简报历史数据
+	 * @return 
 	 */
 	@Override
 	@Transactional
-	public void save(MonthlyNewsletterDto record) {
+	public ResultMsg save(MonthlyNewsletterDto record) {
 		MonthlyNewsletter domain = new MonthlyNewsletter(); 
 		BeanCopierUtils.copyProperties(record, domain); 
 		Date now = new Date();
@@ -75,6 +78,7 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
 		monthlyNewsletterRepo.save(domain);
+		return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", domain);
 	}
 
 	@Override
@@ -186,9 +190,10 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 
 	/**
 	 * 保存月报简报
+	 * @return 
 	 */
 	@Override
-	public void saveTheMonthly(MonthlyNewsletterDto record) {
+	public ResultMsg saveTheMonthly(MonthlyNewsletterDto record) {
 		MonthlyNewsletter domain = new MonthlyNewsletter(); 
 		BeanCopierUtils.copyProperties(record, domain); 
 		Date now = new Date();
@@ -203,7 +208,7 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 		domain.setCreatedDate(now);
 		domain.setModifiedDate(now);
 		monthlyNewsletterRepo.save(domain);
-		
+		return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", domain);
 	}
 
 	/**

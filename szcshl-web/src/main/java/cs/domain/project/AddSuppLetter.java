@@ -94,10 +94,27 @@ public class AddSuppLetter extends DomainBase {
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String businessType;
 	
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String businessIdType;
 	//文字序号
     @Column(columnDefinition = "INTEGER")
 	private Integer fileSeq;
 	
+    //公文类型
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String missiveType;
+    
+    //月报简报类型
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String monthlyType;
+    
+    //存档编号
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String fileCode;
+    
+    //月报简报状态：0.表示为中心文件（稿纸）
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String monthlyStatus;
     
 	public Integer getFileSeq() {
 		return fileSeq;
@@ -242,4 +259,46 @@ public class AddSuppLetter extends DomainBase {
     public void setBusinessType(String businessType) {
         this.businessType = businessType;
     }
+	public void setBusinessIdType(String businessIdType) {
+		this.businessIdType = businessIdType;
+	}
+
+	public String getMissiveType() {
+		return missiveType;
+	}
+
+	public void setMissiveType(String missiveType) {
+		this.missiveType = missiveType;
+	}
+
+	public String getMonthlyType() {
+		return monthlyType;
+	}
+
+	public void setMonthlyType(String monthlyType) {
+		this.monthlyType = monthlyType;
+	}
+
+	public String getFileCode() {
+		return fileCode;
+	}
+
+	public void setFileCode(String fileCode) {
+		this.fileCode = fileCode;
+	}
+
+	public String getMonthlyStatus() {
+		return monthlyStatus;
+	}
+
+	public void setMonthlyStatus(String monthlyStatus) {
+		this.monthlyStatus = monthlyStatus;
+	}
+
+	public String getBusinessIdType() {
+		return businessIdType;
+	}
+	
+	
+	
 }

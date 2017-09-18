@@ -104,34 +104,16 @@
         }
 
         // begin#添加月报简报历史数据
-        function createmonthlyHistory(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
+        function createmonthlyHistory(monthly,callBack) {
                 var httpOptions = {
                     method: 'post',
                     url: url_monthlyHistory+"/savaHistory",
-                    data: vm.model
+                    data:monthly
                 };
-
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
+                	 if (callBack != undefined && typeof callBack == 'function') {
+                         callBack(response.data);
+                     }
                 };
 
                 common.http({
@@ -141,7 +123,6 @@
                     success: httpSuccess
                 });
 
-            }
         }
       //end#添加月报简报历史数据
 

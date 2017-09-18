@@ -70,7 +70,7 @@ public class FinancialManagerController {
     @RequiresPermissions("financialManager##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody FinancialManagerDto record[]) {
+    public void post(@RequestBody FinancialManagerDto []record) {
     	for(FinancialManagerDto financialDto : record){
     		financialManagerService.save(financialDto);
     	}

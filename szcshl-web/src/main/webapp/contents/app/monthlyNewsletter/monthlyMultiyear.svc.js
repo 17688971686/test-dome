@@ -8,8 +8,10 @@
     function monthlyMultiyear($http) {
         var url_monthlyMultiyear = rootPath + "/monthlyNewsletter", url_back = '#/monthlyNewsletterList';
         var service = {
+        	createmonthlyMultiyear: createmonthlyMultiyear,//添加中心文件稿纸
+        	initMonthlyMultiyear:initMonthlyMultiyear,//初始化中心文件稿纸
+        	
             monthlyMultiyearGrid: monthlyMultiyearGrid,//月报简报年度列表
-            createmonthlyMultiyear: createmonthlyMultiyear,//添加月报简报历史数据
             deletemonthlyMultiyear: deletemonthlyMultiyear,//删除月报简报记录
             getmonthlyMultiyearById: getmonthlyMultiyearById,
             updatemonthlyMultiyear: updatemonthlyMultiyear
@@ -17,6 +19,26 @@
 
         return service;
 
+        //S 初始化中心文件稿纸
+        function initMonthlyMultiyear(vm){
+        	 vm.isSubmit = true;
+             var httpOptions = {
+                 method: 'post',
+                 url: url_monthlyMultiyear+"/initMonthlyMultiyear",
+             };
+
+             var httpSuccess = function success(response) {
+            	 vm.suppletter = response.data;
+             };
+             common.http({
+                 vm: vm,
+                 $http: $http,
+                 httpOptions: httpOptions,
+                 success: httpSuccess
+             });
+        }
+        //E 初始化中心文件稿纸
+        
         // begin#updatemonthlyMultiyear
         function updatemonthlyMultiyear(vm) {
             common.initJqValidation();
@@ -102,45 +124,24 @@
             });
         }
 
-        // begin#添加月报简报历史数据
-        function createmonthlyMultiyear(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
+        // begin#添加中心文件稿纸
+        function createmonthlyMultiyear(suppletter,callBack) {
                 var httpOptions = {
                     method: 'post',
-                    url: url_monthlyMultiyear+"/savaHistory",
-                    data: vm.model
+                    url: url_monthlyMultiyear+"/saveMonthlyMultiyear",
+                    data: suppletter
                 };
-
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
+                	if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
                 };
-
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess
                 });
 
-            }
         }
       //end#添加月报简报历史数据
 
@@ -169,7 +170,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyMultiyear+"/mothlyHistoryList"),
+                transport: common.kendoGridConfig().transport(url_monthlyMultiyear+"/monthlyMultiyearList"),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

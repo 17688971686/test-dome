@@ -25,43 +25,43 @@
                 <td></td>
             </tr>
             <tr>
-                <td class="formAlignRight">开始日期：</td>
+                <td class="formAlignRight">开始日期：<span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.startDay"
-                           id="startDay" name="startDay"  />
+                    <input type="text" maxlength="200" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.monthly.startDay"
+                           id="startDay" name="startDay" data-val="true" data-val-required="必填" />
                 </td>
-                <td><span data-valmsg-for="Multiyear" data-valmsg-replace="true" class="errors"></span></td>
+                <td><span data-valmsg-for="startDay" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">截止日期：</td>
+                <td class="formAlignRight">截止日期：<span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endDay"
-                           id="endDay" name="endDay"  />
+                    <input type="text" maxlength="200" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.monthly.endDay"
+                           id="endDay" name="endDay" data-val="true" data-val-required="必填" />
                 </td>
                 <td><span data-valmsg-for="endDay" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             
             <tr>
-                <td class="formAlignRight">已评审项目数：</td>
+                <td class="formAlignRight">已评审项目数：<span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.stageMunber"
-                           id="stageMunber" name="stageMunber"  />
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.monthly.stageMunber"
+                           id="stageMunber" name="stageMunber" data-val="true" data-val-required="必填" />
                 </td>
                 <td><span data-valmsg-for="stageMunber" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">申报总投资：</td>
+                <td class="formAlignRight">申报总投资：<span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.declarationSum"
-                           id="declarationSum" name="declarationSum"  />
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.monthly.declarationSum"
+                           id="declarationSum" name="declarationSum" data-val="true" data-val-required="必填"  />
                 </td>
                 <td><span data-valmsg-for="declarationSum" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">核审总投资：</td>
+                <td class="formAlignRight">核审总投资：<span class="required">*</span></td>
                 <td>
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.assessorSum"
-                           id="assessorSum" name="assessorSum"  />
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.monthly.assessorSum"
+                           id="assessorSum" name="assessorSum" data-val="true" data-val-required="必填" />
                 </td>
                 <td><span data-valmsg-for="assessorSum" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
@@ -69,7 +69,7 @@
             <tr>
                 <td class="formAlignRight">备注：</td>
                 <td>
-                           <textarea class="form-control input-sm " ng-model="vm.model.remark" rows="" cols="" id="remark" name="remark">
+                           <textarea class="form-control input-sm " ng-model="vm.monthly.remark" rows="" cols="" id="remark" name="remark">
                            </textarea>
                 </td>
                 <td><span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>

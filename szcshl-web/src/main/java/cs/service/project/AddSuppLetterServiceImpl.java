@@ -2,29 +2,38 @@ package cs.service.project;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import cs.domain.project.*;
-import cs.repository.repositoryImpl.project.FileRecordRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.common.Constant;
+import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.sys.User;
+import cs.domain.monthly.MonthlyNewsletter_;
+import cs.domain.project.AddSuppLetter;
+import cs.domain.project.AddSuppLetter_;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.model.PageModelDto;
+import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
+import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 
 
 /**
@@ -200,6 +209,70 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     public boolean isHaveSuppLetter(String businessId) {
         return addSuppLetterRepo.isHaveSuppLetter(businessId);
     }
+
+    /**
+     * 保存中心文件稿纸
+     */
+	@Override
+	@Transactional
+	public ResultMsg saveMonthlyMultiyear(MonthlyNewsletterDto record) {
+		Date now = new Date();
+		AddSuppLetter addSuppLetter = new AddSuppLetter();
+		BeanCopierUtils.copyProperties(record, addSuppLetter);
+		addSuppLetter.setId(UUID.randomUUID().toString());
+		addSuppLetter.setCreatedBy(SessionUtil.getUserInfo().getId());
+		addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
+		addSuppLetter.setModifiedDate(now);
+		addSuppLetter.setCreatedDate(now);
+		addSuppLetter.setMonthlyStatus(Constant.EnumState.NO.getValue());
+		addSuppLetterRepo.save(addSuppLetter);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
+	}
+
+	/**
+	 * 获取年度月报简报列表数据
+	 */
+	@Override
+	public PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj) {
+		PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+		Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
+		criteria = odataObj.buildFilterToCriteria(criteria);
+		criteria.add(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName(), EnumState.NO.getValue()));
+		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+	    pageModelDto.setCount(totalResult);
+	    criteria.setProjection(null);
+	    if(odataObj.getSkip() > 0){
+	    	criteria.setFirstResult(odataObj.getTop());
+	    }
+	    if(odataObj.getTop() > 0){
+	    	criteria.setMaxResults(odataObj.getTop());
+	    }
+	    List<AddSuppLetter> addlist =criteria.list();
+		List<AddSuppLetterDto> addDtos = new ArrayList<AddSuppLetterDto>(addlist == null ? 0 : addlist.size());
+		
+		if(addlist != null && addlist.size() > 0){
+			addlist.forEach(x->{
+				AddSuppLetterDto addDto = new AddSuppLetterDto();
+				BeanCopierUtils.copyProperties(x, addDto);
+				addDtos.add(addDto);
+			});						
+		}		
+		pageModelDto.setValue(addDtos);	
+		
+		return pageModelDto;
+	}
+
+	/**
+	 * 初始化中心文件稿纸
+	 */
+	@Override
+	public AddSuppLetterDto initMonthlyMutilyear() {
+		 AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
+	     suppletterDto.setUserName(SessionUtil.getLoginName());
+	      suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
+		return suppletterDto;
+	}
+
 
 
 }
