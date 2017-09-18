@@ -221,6 +221,13 @@ public class SignController {
         PageModelDto<SignDispaWork> pageModelDto = signService.getCommQurySign(odataObj);
         return pageModelDto;
     }
+    @RequiresPermissions("sign#getStatistacalData#get")
+    @RequestMapping(name = "统计", path = "getStatistacalData", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SignDispaWork> getStatistacalData(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        return signService.getStastitacalData(odataObj);
+    }
 
     @RequiresPermissions("sign#unMergeWPSign#post")
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
@@ -312,6 +319,12 @@ public class SignController {
     public String getsignList() {
 
         return ctrlName + "/signList";
+    }
+
+    @RequiresPermissions("sign#html/selectHeader#get")
+    @RequestMapping(name="项目查询统计-选择列表" , path="html/selectHeader" , method = RequestMethod.GET)
+    public String selectHeader(){
+        return ctrlName + "/selectHeader";
     }
     
     @RequiresPermissions("sign#html/ruProcessTask#get")

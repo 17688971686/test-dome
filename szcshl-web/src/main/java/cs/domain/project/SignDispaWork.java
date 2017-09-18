@@ -142,6 +142,39 @@ public class SignDispaWork {
     @Column
     private Date fileDate;
 
+    //项目状态
+    private String signState;
+
+    //是否有登记补充资料:9表示是,0表示否
+    private String isSupplementary;
+
+    //是否有拟补充资料函:9表示是,0表示否
+    private String isHaveSuppLetter;
+
+
+    public String getSignState() {
+        return signState;
+    }
+
+    public void setSignState(String signState) {
+        this.signState = signState;
+    }
+
+    public String getIsSupplementary() {
+        return isSupplementary;
+    }
+
+    public void setIsSupplementary(String isSupplementary) {
+        this.isSupplementary = isSupplementary;
+    }
+
+    public String getIsHaveSuppLetter() {
+        return isHaveSuppLetter;
+    }
+
+    public void setIsHaveSuppLetter(String isHaveSuppLetter) {
+        this.isHaveSuppLetter = isHaveSuppLetter;
+    }
 
     public String getSignid() {
         return signid;

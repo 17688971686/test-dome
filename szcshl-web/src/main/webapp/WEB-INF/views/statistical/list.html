@@ -1,0 +1,15 @@
+<div>
+    <button class="btn btn-xs btn-primary" ng-click="vm.gotoHistogram()">柱状图</button>
+    <button class="btn btn-xs btn-primary" ng-click="vm.gotoLineChart()">折线图</button>
+    <button class="btn btn-xs btn-primary" ng-click="vm.gotoPie()">饼图</button>
+</div>
+
+
+
+<div class="well well-sm" style="background:white;">
+
+    <div id="histogram" ng-show="vm.showHistogram" style="width: 1000px; height: 700px ; margin: auto auto;"></div>
+    <div id="pie" ng-show="vm.showPie" style="width: 1000px; height: 700px ; margin: auto auto;"></div>
+    <div id="lineChart" ng-show="vm.showLineChart" style="width: 1000px; height: 700px ; margin: auto auto;"></div>
+
+</div>

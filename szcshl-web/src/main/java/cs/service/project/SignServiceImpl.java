@@ -1914,4 +1914,12 @@ public class SignServiceImpl implements SignService {
 
     }
 
+    @Override
+    public List<SignDispaWork> getStastitacalData(ODataObj oDataObj) {
+        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        criteria = oDataObj.buildFilterToCriteria(criteria);
+        List<SignDispaWork> signDispaWorks = criteria.list();
+        return signDispaWorks;
+    }
+
 }

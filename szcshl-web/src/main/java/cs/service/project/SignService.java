@@ -96,5 +96,8 @@ public interface SignService {
     ResultMsg pushProject(SignDto signDto);
 
 
+    List<SignDispaWork> getStastitacalData(ODataObj oDataObj);
+
+
 
 }

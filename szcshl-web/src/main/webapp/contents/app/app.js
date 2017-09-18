@@ -362,6 +362,13 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
+            .state('selectHeader',{
+                url : '/selectHeader',
+                templateUrl : rootPath + '/sign/html/selectHeader.html',
+                controller : 'selectHeaderCtrl',
+                controllerAs : 'vm'
+
+            })
             .state('pauseProject', { //项目暂停审批
                 url: '/pauseProject',
                 templateUrl: rootPath + '/sign/html/pauseProjectList.html',
@@ -600,7 +607,7 @@
                 controllerAs: 'vm'
             })
              //E 项目费用管理
-            
+
              //S 月报简报管理
              //月报简报管理列表
              .state('monthlyNewsletterList', {
@@ -616,8 +623,8 @@
                 controller: 'monthlyNewsletterEditCtrl',
                 controllerAs: 'vm'
             })
-            
-             //月报管理列表  
+
+             //月报管理列表
              .state('theMonthsList', {
                 url: '/theMonthsList',
                 templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
@@ -638,8 +645,8 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
-            
-            //月报简报历史数据列表  
+
+            //月报简报历史数据列表
              .state('monthlyHistoryList', {
                 url: '/monthlyHistoryList',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryList.html',
@@ -653,10 +660,10 @@
                 controller: 'monthlyHistoryEditCtrl',
                 controllerAs: 'vm'
             })
-            //E 月报简报管理 
-            
+            //E 月报简报管理
+
             //S 档案借阅管理
-            
+
             //中心档案录入页面
              .state('libraryAdd', {
                 url: '/libraryAdd/:id',
@@ -664,7 +671,7 @@
                 controller: 'archivesLibraryCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //市档案借阅录入页面
              .state('archivesCityEdit', {
                 url: '/archivesCityEdit/:id',
@@ -686,8 +693,8 @@
                 controller: 'archivesLibraryEditCtrl',
                 controllerAs: 'vm'
             })
-            
-            
+
+
             //中心档案查询
             .state('archivesLibraryList', {
                 url: '/archivesLibraryList/:id',
@@ -702,7 +709,7 @@
                 controller: 'archivesLibraryEditCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //市档案查询
             .state('archivesCityList', {
                 url: '/archivesCityList/:id',
@@ -710,8 +717,8 @@
                 controller: 'archivesLibraryCtrl',
                 controllerAs: 'vm'
             })
-            
-            
+
+
             //E 档案借阅管理
               //begin#dispatch
            /* .state('financialEdit', {
@@ -810,6 +817,32 @@
                 url : '/myTopic',
                 templateUrl : rootPath + '/topicInfo/html/myList.html',
                 controller : 'myTopicCtrl',
+                controllerAs : 'vm'
+            })
+                //表头设置
+            .state('header',{
+                url : '/header',
+                templateUrl : rootPath + '/header/html/list.html',
+                controller : 'headerCtrl',
+                controllerAs: 'vm'
+            })
+            .state('headerEdit',{
+                url : '/headerEdit/:headerType',
+                templateUrl : rootPath + '/header/html/selectHeader.html',
+                controller : 'headerEditCtrl',
+                controllerAs: 'vm'
+            })
+            .state('statisticalList',{
+                url : '/statisticalList',
+                templateUrl : rootPath + '/header/html/statisticalList.html',
+                controller : 'statisticalListCtrl',
+                controllerAs: 'vm'
+            })
+        //统计图表
+            .state('statistical',{
+                url : '/statistical',
+                templateUrl : rootPath + "/statistical/html/list.html",
+                controller : 'statisticalCtrl',
                 controllerAs : 'vm'
             })
             .state('editWorkPlan',{

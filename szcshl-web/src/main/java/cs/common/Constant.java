@@ -558,4 +558,20 @@ public class Constant {
             return value;
         }
     }
+
+    /**
+     * 表头类型
+     */
+    public static enum HeaderType{
+
+        TYPE_PROJECT("项目类型"),
+        TYPE_TOPIC("课题类型");
+        private String value;
+        HeaderType(String value){
+            this.value = value ;
+        }
+        public String getValue(){
+            return value;
+        }
+    }
 }
