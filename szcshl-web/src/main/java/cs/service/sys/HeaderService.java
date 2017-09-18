@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface HeaderService {
 
-    void createHeader(HeaderDto headerDto);
+    ResultMsg createHeader(HeaderDto headerDto);
 
     List<HeaderDto> getHeaderList(String headerType);
 
@@ -24,4 +24,8 @@ public interface HeaderService {
     List<HeaderDto> findHeaderListByState();
 
     PageModelDto<HeaderDto> get(ODataObj oDataObj);
+
+    void deleteHeader(String id);
+    HeaderDto getHeaderById(String id);
+    void updateHeader(HeaderDto headerDto);
 }

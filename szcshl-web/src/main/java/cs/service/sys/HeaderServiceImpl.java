@@ -33,17 +33,22 @@ public class HeaderServiceImpl implements  HeaderService {
 
     @Override
     @Transactional
-    public void createHeader(HeaderDto headerDto) {
-        Header header = new Header();
-        BeanCopierUtils.copyProperties(headerDto , header);
-        header.setId(UUID.randomUUID().toString());
-        header.setCreatedBy(SessionUtil.getDisplayName());
-        header.setCreatedDate(new Date());
-        header.setModifiedBy(SessionUtil.getDisplayName());
-        header.setModifiedDate(new Date());
-        header.setHeaderstate(Constant.EnumState.NO.getValue());//默认为未选中状态
-        headerRepo.save(header);
-//        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"创建成功",header);
+    public ResultMsg createHeader(HeaderDto headerDto) {
+        boolean isHeaderExist = headerRepo.isHeaderExist(headerDto.getHeaderType() , headerDto.getHeaderKey());
+        if(!isHeaderExist) {
+            Header header = new Header();
+            BeanCopierUtils.copyProperties(headerDto, header);
+            header.setId(UUID.randomUUID().toString());
+            header.setCreatedBy(SessionUtil.getDisplayName());
+            header.setCreatedDate(new Date());
+            header.setModifiedBy(SessionUtil.getDisplayName());
+            header.setModifiedDate(new Date());
+            header.setHeaderstate(Constant.EnumState.NO.getValue());//默认为未选中状态
+            headerRepo.save(header);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "创建成功", header);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , String.format("表头key值：%s,已经存在，请重新输入！",headerDto.getHeaderKey()));
+        }
     }
 
     @Override
@@ -126,5 +131,34 @@ public class HeaderServiceImpl implements  HeaderService {
         pageModelDto.setValue(headerDtoList);
         pageModelDto.setCount(oDataObj.getCount());
         return pageModelDto;
+    }
+
+    @Override
+    @Transactional
+    public void deleteHeader(String id) {
+        String[] ids = id.split(",");
+        for(String headerId : ids){
+            headerRepo.deleteById(Header_.id.getName()  , headerId);
+        }
+
+    }
+
+    @Override
+    public HeaderDto getHeaderById(String id) {
+        Header header = headerRepo.findById(id);
+        HeaderDto headerDto = new HeaderDto();
+        BeanCopierUtils.copyProperties(header , headerDto);
+        return headerDto;
+    }
+
+    @Override
+    @Transactional
+    public void updateHeader(HeaderDto headerDto) {
+
+            Header header = headerRepo.findById(headerDto.getId());
+            BeanCopierUtils.copyProperties(headerDto , header);
+            header.setModifiedDate(new Date());
+            header.setModifiedBy(SessionUtil.getDisplayName());
+            headerRepo.save(header);
     }
 }

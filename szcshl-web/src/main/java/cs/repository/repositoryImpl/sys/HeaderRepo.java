@@ -8,4 +8,7 @@ import cs.repository.IRepository;
  * 2017/9/12
  */
 public interface HeaderRepo extends IRepository<Header, String>{
+
+    boolean isHeaderExist(String headerType , String headerKdy);
+
 }

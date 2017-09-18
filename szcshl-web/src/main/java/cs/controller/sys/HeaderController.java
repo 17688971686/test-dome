@@ -42,9 +42,9 @@ public class HeaderController {
 
     @RequiresPermissions("header#createHeader#post")
     @RequestMapping(name="创建表头" , path="createHeader" , method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void createHeader(@RequestBody HeaderDto headerDto){
-         headerService.createHeader(headerDto);
+    @ResponseBody
+    public ResultMsg createHeader(@RequestBody HeaderDto headerDto){
+        return headerService.createHeader(headerDto);
     }
 
 
@@ -75,6 +75,30 @@ public class HeaderController {
     public void updateCancelHeader(@RequestParam  String idStr){
         headerService.updateCancelHeader(idStr);
     }
+
+
+    @RequiresPermissions("header##delete")
+    @RequestMapping(name="删除表头" , path="" , method = RequestMethod.DELETE)
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void deleteHeader(@RequestParam String id){
+        headerService.deleteHeader(id);
+    }
+
+
+    @RequiresPermissions("header#getHeaderById#get")
+    @RequestMapping(name="通过id查询表头信息" , path="getHeaderById" , method=RequestMethod.GET)
+    @ResponseBody
+    public HeaderDto getHeaderById(String id){
+        return headerService.getHeaderById(id);
+    }
+
+    @RequiresPermissions("header#updateHeader#put")
+    @RequestMapping(name="更新表头信息" , path="updateHeader" , method= RequestMethod.PUT)
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void updateHeader(@RequestBody  HeaderDto headerDto){
+        headerService.updateHeader(headerDto);
+    }
+
 
     @RequiresPermissions("header#html/list#get")
     @RequestMapping(name="列表" , path="html/list" , method = RequestMethod.GET)

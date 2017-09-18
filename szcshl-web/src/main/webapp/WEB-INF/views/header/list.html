@@ -8,19 +8,29 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <form id="headerform" name="headerform">
+    <form id="headerForm" name="headerForm">
 
         <div class="well">
             <span class="help-inline" style="margin-left:10px;">类型：</span>
-            <select id="types"  operator="eq" name="headerName">
+            <select id="types"  operator="eq" name="headerType">
                 <option value="">请选择</option>
                 <option ng-repeat="x in DICT.HEADER_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
-            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a>
-            <button class="btn btn-sm btn-success" ng-click="vm.create()">创建</button>
+            <a class="btn btn-xs btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a>
+            <button class="btn btn-xs btn-success" ng-click="vm.create()">创建</button>
+            <button class="btn btn-xs btn-danger"  ng-click="vm.dels()" ><span class="glyphicon glyphicon-remove"></span>批量删除</button>
            <#-- <a class="btn btn-sm btn-primary" href="#/headerEdit">设置</a>-->
         </div>
     </form>
+
+    <script type="text/template" id="columnBtns">
+        <@shiro.hasPermission name="header##delete">
+        <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="header##put">
+        <button class="btn btn-xs btn-primary" ng-click="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+        </@shiro.hasPermission>
+    </script>
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
@@ -31,7 +41,9 @@
 
     <form id="form" name="form">
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.save()"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.save()" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+
         </div>
 
         <table class="table table-bordered seleteTable" style="width:100%; ">
@@ -41,10 +53,7 @@
                 </td>
                 <td width="50%">
                     <input type="text" name="headerName" id="headerName" ng-model="vm.header.headerName" data-val="true" data-val-required="必填" />
-                </td>
-                <td>
                     <span data-valmsg-for="headerName" data-valmsg-replace="true" class="errors"></span>
-
                 </td>
             </tr>
             <tr>
@@ -53,10 +62,7 @@
                 </td>
                 <td>
                     <input type="text" name="headerKey" id="headerKey" ng-model="vm.header.headerKey" data-val="true" data-val-required="必填" />
-                </td>
-                <td>
                     <span data-valmsg-for="headerKey" data-valmsg-replace="true" class="errors"></span>
-
                 </td>
             </tr>
 
@@ -70,10 +76,7 @@
                         <option value="项目类型">项目类型</option>
                         <option value="课题类型">课题类型</option>
                     </select>
-                </td>
-                <td>
                     <span data-valmsg-for="headerType" data-valmsg-replace="true" class="errors"></span>
-
                 </td>
             </tr>
         </table>

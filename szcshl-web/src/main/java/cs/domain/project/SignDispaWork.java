@@ -218,12 +218,15 @@ public class SignDispaWork {
     private Date fileDate;
 
     //项目状态
+    @Column
     private String signState;
 
     //是否有登记补充资料:9表示是,0表示否
+    @Column
     private String isSupplementary;
 
     //是否有拟补充资料函:9表示是,0表示否
+    @Column
     private String isHaveSuppLetter;
 
 
