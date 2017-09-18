@@ -1,0 +1,27 @@
+package cs.service.sys;
+
+import cs.common.ResultMsg;
+import cs.domain.sys.Header;
+import cs.model.PageModelDto;
+import cs.model.sys.HeaderDto;
+import cs.repository.odata.ODataObj;
+
+import java.util.List;
+
+/**
+ * Created by MCL
+ * 2017/9/12
+ */
+public interface HeaderService {
+
+    void createHeader(HeaderDto headerDto);
+
+    List<HeaderDto> getHeaderList(String headerType);
+
+    void updateSelectedHeader(String idStr);
+
+    void updateCancelHeader(String idStr);
+    List<HeaderDto> findHeaderListByState();
+
+    PageModelDto<HeaderDto> get(ODataObj oDataObj);
+}

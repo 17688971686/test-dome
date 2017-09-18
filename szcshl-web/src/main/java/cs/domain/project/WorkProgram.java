@@ -108,9 +108,9 @@ public class WorkProgram extends DomainBase {
     //申报投资
     @Column(columnDefinition = "NUMBER")
     private BigDecimal appalyInvestment;
-    
+
     @Column(columnDefinition = "NUMBER")
-    private BigDecimal declaration;
+    private BigDecimal declaration; //报审概算
 
     //申报建设内容
     @Column(columnDefinition = "VARCHAR(2048)")
@@ -149,7 +149,7 @@ public class WorkProgram extends DomainBase {
     //调研日期
     @Column(columnDefinition = "DATE")
     private Date studyAllDay;
-    
+
     //调研开始时间
     @Column(columnDefinition = "DATE")
     private Date studyBeginTime;
@@ -193,16 +193,16 @@ public class WorkProgram extends DomainBase {
     //标题日期
     @Column(columnDefinition = "DATE")
     private Date titleDate;
-    
+
     //S 设备清单（进口）
     //项目概况
     @Column(columnDefinition = "varchar(1024)")
     private String projectSurvey;
-    
+
     //评审重点
     @Column(columnDefinition = "varchar(1024)")
     private String stageEmphasis;
-    
+
     //申报总额
     @Column(columnDefinition = "number")
     private BigDecimal declareCount;

@@ -1,0 +1,82 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/header">表头管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <form id="headerform" name="headerform">
+
+        <div class="well">
+            <span class="help-inline" style="margin-left:10px;">类型：</span>
+            <select id="types"  operator="eq" name="headerName">
+                <option value="">请选择</option>
+                <option ng-repeat="x in DICT.HEADER_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a>
+            <button class="btn btn-sm btn-success" ng-click="vm.create()">创建</button>
+           <#-- <a class="btn btn-sm btn-primary" href="#/headerEdit">设置</a>-->
+        </div>
+    </form>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+
+
+<!--添加表头窗口-->
+<div id ="addHeaderWindow" class="well well-sm" class="well well-sm" style="background:white;display:none;">
+
+    <form id="form" name="form">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.save()"><span class="glyphicon glyphicon-ok"></span>创建</button>
+        </div>
+
+        <table class="table table-bordered seleteTable" style="width:100%; ">
+            <tr>
+                <td class="formAlignRight" width="20%">
+                    名称：<span class="required">*</span>
+                </td>
+                <td width="50%">
+                    <input type="text" name="headerName" id="headerName" ng-model="vm.header.headerName" data-val="true" data-val-required="必填" />
+                </td>
+                <td>
+                    <span data-valmsg-for="headerName" data-valmsg-replace="true" class="errors"></span>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">
+                    key值：<span class="required">*</span>
+                </td>
+                <td>
+                    <input type="text" name="headerKey" id="headerKey" ng-model="vm.header.headerKey" data-val="true" data-val-required="必填" />
+                </td>
+                <td>
+                    <span data-valmsg-for="headerKey" data-valmsg-replace="true" class="errors"></span>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight">
+                    表头类型：<span class="required">*</span>
+                </td>
+                <td>
+                    <select  ng-model="vm.header.headerType" name="headerType" id="headerType" data-val="true" data-val-required="必填">
+                        <option value="">请选择</option>
+                        <option value="项目类型">项目类型</option>
+                        <option value="课题类型">课题类型</option>
+                    </select>
+                </td>
+                <td>
+                    <span data-valmsg-for="headerType" data-valmsg-replace="true" class="errors"></span>
+
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>

@@ -206,6 +206,7 @@ public class DispatchDoc extends DomainBase {
     private String proofreadName;
 
     //是否为主项目(9:主项目，0：次项目)
+    @Column(columnDefinition = "VARCHAR(2)")
     private String isMainProject;
 
 

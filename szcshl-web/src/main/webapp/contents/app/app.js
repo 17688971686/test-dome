@@ -348,6 +348,13 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
+            .state('selectHeader',{
+                url : '/selectHeader',
+                templateUrl : rootPath + '/sign/html/selectHeader.html',
+                controller : 'selectHeaderCtrl',
+                controllerAs : 'vm'
+
+            })
             .state('pauseProject', { //项目暂停审批
                 url: '/pauseProject',
                 templateUrl: rootPath + '/sign/html/pauseProjectList.html',
@@ -659,6 +666,32 @@
                 url : '/myTopic',
                 templateUrl : rootPath + '/topicInfo/html/myList.html',
                 controller : 'myTopicCtrl',
+                controllerAs : 'vm'
+            })
+                //表头设置
+            .state('header',{
+                url : '/header',
+                templateUrl : rootPath + '/header/html/list.html',
+                controller : 'headerCtrl',
+                controllerAs: 'vm'
+            })
+            .state('headerEdit',{
+                url : '/headerEdit/:headerType',
+                templateUrl : rootPath + '/header/html/selectHeader.html',
+                controller : 'headerEditCtrl',
+                controllerAs: 'vm'
+            })
+            .state('statisticalList',{
+                url : '/statisticalList',
+                templateUrl : rootPath + '/header/html/statisticalList.html',
+                controller : 'statisticalListCtrl',
+                controllerAs: 'vm'
+            })
+        //统计图表
+            .state('statistical',{
+                url : '/statistical',
+                templateUrl : rootPath + "/statistical/html/list.html",
+                controller : 'statisticalCtrl',
                 controllerAs : 'vm'
             })
 

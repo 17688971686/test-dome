@@ -375,6 +375,10 @@ desired effect
                         <li><a href="javascript:void(0)" ui-sref="takeUser">代理办理</a></li>
                     </ul>
 
+                   <#-- <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="statistical">统计</a></li>
+                    </ul>-->
+
                 </li>
                 <li class="treeview">
                     <a href="javascript:void(0)">
@@ -387,6 +391,20 @@ desired effect
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="fileLibrary">质量管理文件库</a></li>
                         <li><a href="javascript:void(0)" ui-sref="policyLibrary">政策标准库</a></li>
+                    </ul>
+
+                </li>
+
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        <span class="title">表头管理</span>
+                        <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="header">表头管理</a></li>
                     </ul>
 
                 </li>
@@ -480,6 +498,9 @@ desired effect
 
 <!-- AdminLTE App -->
 <script src="${path}/contents/libs/adminLTE/dist/js/app.js"></script>
+
+<!--echarts图表-->
+<script src="${path}/contents/libs/echarts/echarts.js"></script>
 
 <!--upload-->
 <script src="${path}/contents/libs/fileinput/fileinput.js"></script>

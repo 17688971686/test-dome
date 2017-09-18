@@ -15,6 +15,8 @@
                 class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
+        <a class="btn btn-sm btn-primary" href="#/statisticalList"> 统计</a>
+        <a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表头设置</a>
     </div>
     <ol class="breadcrumb">
         <form id="searchform" name="searchform">
@@ -32,13 +34,13 @@
 
                     <td class="formAlignRight" style="width:10%;">是否有环评</td>
                     <td style="width:15%;">
-                        <input type="checkbox" name="ishaveeia" operator="eq"  ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" name="ishaveeia" operator="eq"  value="9" >
                     </td>
 
                     <td class="formAlignRight" style="width:10%;">是否已关联</td>
                     <td style="width:15%;">
-                        <input type="checkbox" name="isAssociate"  operator="eq" value="{{vm.sign.sisAssociate}}"
-                               ng-true-value="1" ng-false-value="0" data-type="Integer">
+                        <input type="checkbox" name="isAssociate"  operator="eq"
+                               value="1" >
                     </td>
                 </tr>
                 <tr>
@@ -151,6 +153,20 @@
                             <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
                         </select>
+                </tr>
+                <tr>
+                    <td class="formAlignRight">是否暂停</td>
+                    <td>
+                        <input type="checkbox"  operator="eq" name="signState" value="9" />
+                    </td>
+                    <td class="formAlignRight">是否有补充资料函</td>
+                    <td>
+                        <input type="checkbox" name="isHaveSuppLetter" operator="eq"  value="9"/>
+                    </td>
+                    <td class="formAlignRight">是否有补充资料</td>
+                    <td>
+                        <input type="checkbox" name="isSupplementary" operator="eq" value="9"/>
+                    </td>
                 </tr>
             </table>
         </form>
