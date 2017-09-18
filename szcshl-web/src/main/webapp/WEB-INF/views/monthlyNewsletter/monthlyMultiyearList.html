@@ -9,13 +9,16 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="form" name="form">
-            
+          
+         <ol class="breadcrumb">
+         <div align="right">
             <@shiro.hasPermission name="monthlyNewsletter##post">
                 <a class="btn btn-sm btn-primary" href="#/monthlyMultiyearEdit/"><span class="glyphicon glyphicon-plus"></span>新建月报简报</a>
             </@shiro.hasPermission>
             <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryMeeting()">查询</a>
             <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryMeeting()">重置</a>
-         <ol class="breadcrumb">
+      	 </div> 
+      	 <br>
        		 <li> <span class="help-inline">文件名称：</span>
             <input type="text" ng-model="vm.model.mrName" operator="like" name="mrName" id="mrName" placeholder="请输入">
 

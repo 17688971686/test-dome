@@ -1,5 +1,6 @@
 package cs.service.monthly;
 
+import cs.common.ResultMsg;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
@@ -14,7 +15,7 @@ public interface MonthlyNewsletterService {
     
     PageModelDto<MonthlyNewsletterDto> get(ODataObj odataObj);
 
-	void save(MonthlyNewsletterDto record);
+	ResultMsg save(MonthlyNewsletterDto record);
 
 	void update(MonthlyNewsletterDto record);
 
@@ -28,7 +29,7 @@ public interface MonthlyNewsletterService {
 
 	PageModelDto<MonthlyNewsletterDto> mothlyHistoryList(ODataObj odataObj);
 
-	void saveTheMonthly(MonthlyNewsletterDto record);
+	ResultMsg saveTheMonthly(MonthlyNewsletterDto record);
 
 	PageModelDto<MonthlyNewsletterDto> getMonthlyList(ODataObj odataObj);
 

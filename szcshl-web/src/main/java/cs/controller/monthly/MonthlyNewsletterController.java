@@ -1,9 +1,12 @@
 package cs.controller.monthly;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
+import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.monthly.MonthlyNewsletterService;
+import cs.service.project.AddSuppLetterService;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class MonthlyNewsletterController {
     @Autowired
     private MonthlyNewsletterService monthlyNewsletterService;
 
+    @Autowired
+    private AddSuppLetterService addSuppLetterService;
+    
     @RequiresPermissions("monthlyNewsletter#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
@@ -36,6 +42,30 @@ public class MonthlyNewsletterController {
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.get(odataObj);	
         return monthlyNewsletterDtos;
     }
+    
+    @RequiresPermissions("monthlyNewsletter#saveMonthlyMultiyear#post")
+    @RequestMapping(name = "保存中心文件稿纸", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody ResultMsg monthlyMultiyearAdd(@RequestBody MonthlyNewsletterDto record) {
+       return addSuppLetterService.saveMonthlyMultiyear(record);
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#initMonthlyMultiyear#post")
+    @RequestMapping(name = "初始化中心文件稿纸", path = "initMonthlyMultiyear", method = RequestMethod.POST)
+    @ResponseBody
+    public AddSuppLetterDto initMutilyear(){
+    	return addSuppLetterService.initMonthlyMutilyear();
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
+    @RequestMapping(name = "获取年度月报简报列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);	
+        return addSuppLetterDtos;
+    }
+    
     
     @RequiresPermissions("monthlyNewsletter#getMonthlyList#post")
     @RequestMapping(name = "获取月报简报管理数据列表", path = "getMonthlyList", method = RequestMethod.POST)
@@ -58,8 +88,8 @@ public class MonthlyNewsletterController {
     @RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
     @RequestMapping(name = "保存月报简报", path = "savaMonthlyNewsletter", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody MonthlyNewsletterDto record) {
-        monthlyNewsletterService.saveTheMonthly(record);
+    public @ResponseBody ResultMsg post(@RequestBody MonthlyNewsletterDto record) {
+       return monthlyNewsletterService.saveTheMonthly(record);
     }
 
     @RequiresPermissions("monthlyNewsletter#deleteMonthlyData#delete")
@@ -83,8 +113,8 @@ public class MonthlyNewsletterController {
 	@RequiresPermissions("monthlyNewsletter#savaHistory#post")
     @RequestMapping(name = "保存月报简报历史数据", path = "savaHistory", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void savaHistory(@RequestBody MonthlyNewsletterDto record) {
-        monthlyNewsletterService.save(record);
+    public ResultMsg savaHistory(@RequestBody MonthlyNewsletterDto record) {
+       return monthlyNewsletterService.save(record);
     }
 	
 	@RequiresPermissions("monthlyNewsletter#deleteHistoryList#post")
@@ -106,7 +136,7 @@ public class MonthlyNewsletterController {
 	}
 	
 	@RequiresPermissions("monthlyNewsletter#deleteHistory#delete")
-	@RequestMapping(name = "删除月报简报历史记录", path = "deleteHistory", method = RequestMethod.DELETE)
+	@RequestMapping(name = "删除月报简报历史数据记录", path = "deleteHistory", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	String [] ids = id.split(",");

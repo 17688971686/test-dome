@@ -6,6 +6,7 @@ import java.util.Map;
 import cs.common.ResultMsg;
 import cs.domain.project.AddSuppLetter;
 import cs.model.PageModelDto;
+import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 
@@ -29,5 +30,11 @@ public interface AddSuppLetterService {
 	List<AddSuppLetterDto> initSuppList(String businessId);
 
 	boolean isHaveSuppLetter(String businessId);
+
+	ResultMsg saveMonthlyMultiyear(MonthlyNewsletterDto record);
+
+	PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj);
+
+	AddSuppLetterDto initMonthlyMutilyear();
 
 }
