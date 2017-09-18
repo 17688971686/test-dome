@@ -70,28 +70,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 
         addSuppLetterRepo.save(addSuppLetter);
 
-        //根据相应的类型，做对应的操作
-        //如果是收文，则要更新对应的资料信息
-        if(Constant.BusinessType.SIGN.getValue().equals(addSuppLetterDto.getBusinessType())){
-            Sign sign = signRepo.findById(Sign_.signid.getName(),addSuppLetterDto.getBusinessId());
-            if(!Validate.isString(sign.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(sign.getIsHaveSuppLetter())){
-                sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-                sign.setSuppLetterDate(now);
-                signRepo.save(sign);
-            }
-            List<WorkProgram> wpList = workProgramRepo.findByIds(Sign_.signid.getName(),addSuppLetterDto.getBusinessId(),null);
-            if(Validate.isList(wpList)){
-                List<WorkProgram> saveList = new ArrayList<>();
-                for(WorkProgram wp : wpList){
-                    if(!Validate.isString(wp.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(wp.getIsHaveSuppLetter())){
-                        wp.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-                        wp.setSuppLetterDate(now);
-                        saveList.add(wp);
-                    }
-                }
-                workProgramRepo.bathUpdate(saveList);
-            }
-        }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetterDto);
     }
 
@@ -165,6 +143,28 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         addSuppLetter.setFileSeq((curYearMaxSeq + 1));
         addSuppLetterRepo.save(addSuppLetter);
 
+        //如果是收文，则要更新对应的资料信息(如果生成了文件字号，工作方案的是否补充资料函则显示为是，并且显示最新的日期。如果没有，则显示为否)
+        if(Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
+            Date now = new Date();
+            Sign sign = signRepo.findById(Sign_.signid.getName(),addSuppLetter.getBusinessId());
+            if(!Validate.isString(sign.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(sign.getIsHaveSuppLetter())){
+                sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+                sign.setSuppLetterDate(now);
+                signRepo.save(sign);
+            }
+            List<WorkProgram> wpList = workProgramRepo.findByIds(Sign_.signid.getName(),addSuppLetter.getBusinessId(),null);
+            if(Validate.isList(wpList)){
+                List<WorkProgram> saveList = new ArrayList<>();
+                for(WorkProgram wp : wpList){
+                    if(!Validate.isString(wp.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(wp.getIsHaveSuppLetter())){
+                        wp.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+                        wp.setSuppLetterDate(now);
+                        saveList.add(wp);
+                    }
+                }
+                workProgramRepo.bathUpdate(saveList);
+            }
+        }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",addSuppLetter);
     }
 

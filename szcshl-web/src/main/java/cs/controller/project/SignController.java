@@ -213,57 +213,6 @@ public class SignController {
         return signService.initSignList();
     }
 
-    @RequiresPermissions("sign#getSignList#get")
-    @RequestMapping(name = "项目查询统计", path = "getSignList", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDispaWork> pageModelDto = signService.getCommQurySign(odataObj);
-        return pageModelDto;
-    }
-
-    @RequiresPermissions("sign#unMergeWPSign#post")
-    @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDto> unMergeWPSign(@RequestParam(required = true) String signId) {
-        return signService.unMergeWPSign(signId);
-    }
-
-    @RequiresPermissions("sign#getMergeSignBySignId#post")
-    @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDto> getMergeSignBySignId(@RequestParam(required = true) String signId){
-        return signService.getMergeWPSignBySignId(signId);
-    }
-
-    @RequiresPermissions("sign#unMergeDISSign#post")
-    @RequestMapping(name = "待选合并发文项目", path = "unMergeDISSign", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDto> unMergeDISSign(@RequestParam(required = true) String signId) {
-        return signService.unMergeDISSign(signId);
-    }
-
-    @RequiresPermissions("sign#getMergeDISSign#post")
-    @RequestMapping(name = "获取已选合并发文项目", path = "getMergeDISSign", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDto> getMergeDISSign(@RequestParam(required = true) String signId){
-        return signService.getMergeDISSignBySignId(signId);
-    }
-
-    @RequiresPermissions("sign#mergeSign#post")
-    @RequestMapping(name = "保存合并评审发文", path = "mergeSign", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg mergeSign(@RequestParam(required = true) String signId,
-             @RequestParam(required = true) String mergeIds,@RequestParam(required = true) String mergeType) {
-        return signService.mergeSign(signId,mergeIds,mergeType);
-    }
-
-    @RequiresPermissions("sign#cancelMergeSign#post")
-    @RequestMapping(name = "解除合并评审发文", path = "cancelMergeSign", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg cancelMergeSign(@RequestParam(required = true) String signId,
-        String cancelIds,@RequestParam(required = true) String mergeType){
-        return signService.cancelMergeSign(signId,cancelIds,mergeType);
-    }
-
     /***************************************  S 新流程处理的方法     *******************************************/
 
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
@@ -305,13 +254,6 @@ public class SignController {
     public String signEndDetails() {
 
         return ctrlName + "/signEndDetails";
-    }
-
-    @RequiresPermissions("sign#html/getsignList#get")
-    @RequestMapping(name = "项目查询统计", path = "html/signList", method = RequestMethod.GET)
-    public String getsignList() {
-
-        return ctrlName + "/signList";
     }
     
     @RequiresPermissions("sign#html/ruProcessTask#get")

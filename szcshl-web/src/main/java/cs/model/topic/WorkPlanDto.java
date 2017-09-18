@@ -1,10 +1,12 @@
 package cs.model.topic;
 
 import cs.model.BaseDto;
+import cs.model.expert.ExpertDto;
+import cs.model.meeting.RoomBookingDto;
 
 import java.math.BigDecimal;
 import java.util.Date;
-    
+import java.util.List;
 
 
 /**
@@ -33,6 +35,15 @@ public class WorkPlanDto extends BaseDto {
     private TopicInfoDto topicInfoDto;
     //课题研究ID
     private String topicId;
+
+    /**
+     * 会议室预定列表
+     */
+    private List<RoomBookingDto> roomDtoList;
+    /**
+     * 拟聘请专家列表
+     */
+    private List<ExpertDto> expertDtoList;
 
     public WorkPlanDto() {
     }
@@ -164,5 +175,21 @@ public class WorkPlanDto extends BaseDto {
 
     public void setTopicId(String topicId) {
         this.topicId = topicId;
+    }
+
+    public List<RoomBookingDto> getRoomDtoList() {
+        return roomDtoList;
+    }
+
+    public void setRoomDtoList(List<RoomBookingDto> roomDtoList) {
+        this.roomDtoList = roomDtoList;
+    }
+
+    public List<ExpertDto> getExpertDtoList() {
+        return expertDtoList;
+    }
+
+    public void setExpertDtoList(List<ExpertDto> expertDtoList) {
+        this.expertDtoList = expertDtoList;
     }
 }

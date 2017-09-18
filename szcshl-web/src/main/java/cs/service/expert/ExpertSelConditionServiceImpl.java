@@ -167,8 +167,9 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
                 ExpertSelConditionDto dto = new ExpertSelConditionDto();
                 BeanCopierUtils.copyProperties(sl, dto);
                 dto.setExpertReviewId(reviewObj.getId());
+                resultList.add(dto);
             }
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", recordList);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", resultList);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，获取不到抽取条件信息！");
         }

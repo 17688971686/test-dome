@@ -70,6 +70,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private WorkPlanRepo workPlanRepo;
     @Autowired
     private FilingRepo filingRepo;
+    @Autowired
+    private WorkPlanService workPlanService;
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -215,6 +217,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             WorkPlan workPlan = domain.getWorkPlan();
             WorkPlanDto workPlanDto = new WorkPlanDto();
             BeanCopierUtils.copyProperties(workPlan,workPlanDto);
+            workPlanDto = workPlanService.findLinkBusiness(workPlan,workPlanDto);
             modelDto.setWorkPlanDto(workPlanDto);
         }
         //归档

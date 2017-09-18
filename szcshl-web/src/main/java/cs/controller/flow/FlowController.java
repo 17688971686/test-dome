@@ -283,7 +283,7 @@ public class FlowController {
             case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.dealFlow(processInstance, task,flowDto);
                 break;
-            case FlowConstant.TOPIC_BFGW:
+            case FlowConstant.TOPIC_FLOW:
                 resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
@@ -355,6 +355,32 @@ public class FlowController {
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowDeal";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
+    }
+
+    @RequestMapping(name = "在办任务详情页面", path = "flowDetail/{processKey}", method = RequestMethod.GET)
+    public String flowDetail(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.TOPIC_FLOW:
+                resultPage = "topicInfo/flowDetail";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
+    }
+
+    @RequestMapping(name = "办结任务列表", path = "flowEnd/{processKey}", method = RequestMethod.GET)
+    public String flowEnd(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.TOPIC_FLOW:
+                resultPage = "topicInfo/flowEnd";
                 break;
             default:
                 ;

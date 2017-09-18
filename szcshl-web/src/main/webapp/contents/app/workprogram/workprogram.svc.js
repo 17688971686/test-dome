@@ -30,7 +30,7 @@
         function getMergeSignBySignId(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/getMergeSignBySignId",
+                url: rootPath + "/signView/getMergeSignBySignId",
                 params: {
                     signId:signId
                 }
@@ -52,7 +52,7 @@
         function unMergeWPSign(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/unMergeWPSign",
+                url: rootPath + "/signView/unMergeWPSign",
                 params: {
                     signId: signId
                 }
@@ -85,7 +85,7 @@
         function cancelMergeSign(signId,cancelIds,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/cancelMergeSign",
+                url: rootPath + "/signView/cancelMergeSign",
                 params: {
                     signId: signId,
                     cancelIds: cancelIds,
@@ -108,7 +108,7 @@
         function chooseSign(signId,mergeIds,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/mergeSign",
+                url: rootPath + "/signView/mergeSign",
                 params: {
                     signId:signId ,
                     mergeIds: mergeIds,

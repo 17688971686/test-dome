@@ -1,8 +1,6 @@
 package cs.domain.project;
 
 
-import cs.domain.DomainBase;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,120 +22,197 @@ public class SignDispaWork {
     @Id
     private String signid;
 
+    /**
+     * 项目签收日期
+     */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private Date signdate;          //签收日期（收文日期）
+    private Date signdate;
 
+    /**
+     * 项目名称
+     */
     @Column
-    private String projectname;    //项目名称*
+    private String projectname;
 
+    /**
+     * 评审阶段
+     */
     @Column
     private String reviewstage;    //评审阶段*
 
+    /**
+     * 建设单位
+     */
     @Column
-    private String builtcompanyname;//建设单位*
+    private String builtcompanyname;
 
+    /**
+     * 投资申报
+     */
     @Column
-    private String appalyinvestment;//申报投资
+    private String appalyinvestment;
 
+    /**
+     * 是否已关联
+     */
     @Column(columnDefinition = "INTEGER")
-    private String isAssociate;     //是否已关联*
+    private String isAssociate;
 
+    /**
+     * 流程实例ID
+     */
     @Column
-    private String processInstanceId;   //流程实例ID
+    private String processInstanceId;
 
+    /**
+     * 项目进程状态
+     */
+    private String processState;
+
+    /**
+     * 送来日期
+     */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private Date receivedate;       //送来日期
+    private Date receivedate;
 
+    /**
+     * 发文后工作日
+     */
     @Column(columnDefinition = "NUMBER")
-    private Float daysafterdispatch; //发文后工作日
+    private Float daysafterdispatch;
 
-
+    /**
+     * 评审天数
+     */
     @Column(columnDefinition = "NUMBER")
-    private Float reviewdays; //评审天数
+    private Float reviewdays;
 
-    //秘密登记
+    /**
+     * 秘密等级
+     */
     @Column
     private String secrectlevel;
 
-    //缓急程度
+    /**
+     * 缓急程度
+     */
     @Column
     private String urgencydegree;
 
-    //剩余工作日
+    /**
+     * 剩余工作日
+     */
     @Column(columnDefinition = "NUMBER")
     private Float surplusdays;
 
-    //归档编号
+    /**
+     * 归档编号
+     */
     @Column
     private String ffilenum;
 
-    //是否有环评
+    /**
+     * 是否有环评
+     */
     @Column
     private String ishaveeia;
 
-    //项目类别
+    /**
+     * 项目类别
+     */
     @Column
     private String projectType;
 
-    //评审方式
+    /**
+     * 评审方式
+     */
     @Column
     private String reviewType;
 
-    //行业类别
+    /**
+     * 行业类别
+     */
     @Column
     private String industryType;
 
-    //主负责人名称
+    /**
+     * 主负责人名称
+     */
     @Column
     private String mUserName;
 
-    //负责人名称
+    /**
+     * 负责人名称
+     */
     @Column
     private String aUserName;
 
-    //评审部门
+    /**
+     * 评审部门
+     */
     @Column
     private String reviewOrgName;
 
-    //发文编号
+    /**
+     * 发文编号
+     */
     @Column
     private String dfilenum;
 
-    //核减（增）金额
+    /**
+     * 核减（增）金额
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal extraValue;
 
-    //增减（增）率
+    /**
+     * 增减（增）率
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal extraRate;
 
-    //批复金额
+    /**
+     * 批复金额
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal approveValue;
 
-    //审定金额
+    /**
+     * 审定金额
+     */
     @Column(columnDefinition = "NUMBER")
     private BigDecimal authorizeValue;
 
-    //发文类别
+    /**
+     * 发文类别
+     */
     @Column
     private String dispatchType;
 
-    //发文日期
+    /**
+     * 发文日期
+     */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date dispatchDate;
 
-    //主办部门
+    /**
+     * 主办部门名称
+     */
     @Column
     private String mOrgName;
 
-    //主办部门ID
+    /**
+     * 主办部门ID
+     */
     @Column
     private String mOrgId;
 
+    /**
+     * 归档日期
+     */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date fileDate;
@@ -397,5 +472,13 @@ public class SignDispaWork {
 
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
+    }
+
+    public String getProcessState() {
+        return processState;
+    }
+
+    public void setProcessState(String processState) {
+        this.processState = processState;
     }
 }

@@ -58,8 +58,6 @@ public interface SignService {
 
     void bathUpdate(List<Sign> signList);
 
-    PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
-
     ResultMsg initSignList();
 
     ResultMsg realSign(String signId);
@@ -69,19 +67,6 @@ public interface SignService {
 	PageModelDto<SignDto> findAllReserve(ODataObj odataObj);
 
 	void deleteReserveSign(String signid);
-
-    /******************   以下是项目关联操作  *******************/
-    List<SignDto> unMergeWPSign(String signId);
-
-    List<SignDto> getMergeWPSignBySignId(String signId);
-
-    List<SignDto> unMergeDISSign(String signId);
-
-    List<SignDto> getMergeDISSignBySignId(String signId);
-
-    ResultMsg mergeSign(String signId, String mergeIds, String mergeType);
-
-    ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType);
 
     /***********************   更改项目状态  ****************************/
     boolean updateSignState(String signId,String state);

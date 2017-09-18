@@ -9,10 +9,7 @@ import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelected;
 import cs.domain.external.Dept;
 import cs.domain.project.*;
 import cs.domain.sys.*;
@@ -28,7 +25,6 @@ import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
@@ -589,6 +585,7 @@ public class SignServiceImpl implements SignService {
                 if (flowDto.getBusinessMap().get("MAIN_ORG") == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先选择主办部门！");
                 }
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //流程分支
                 List<SignBranch> saveBranchList = new ArrayList<>();
                 businessId = flowDto.getBusinessMap().get("MAIN_ORG").toString();   //主办部门ID
@@ -596,7 +593,6 @@ public class SignServiceImpl implements SignService {
                 saveBranchList.add(signBranch1);
                 //设置流程参数
                 variables.put(FlowConstant.SignFlowParams.BRANCH1.getValue(), true);
-
                 orgDept = orgDeptRepo.findOrgDeptById(businessId);
                 if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
@@ -651,7 +647,6 @@ public class SignServiceImpl implements SignService {
                 }
                 signBranchRepo.bathUpdate(saveBranchList);
                 //更改项目信息
-                sign = signRepo.findById(Sign_.signid.getName(), signid);
                 sign.setLeaderhandlesug(flowDto.getDealOption());
                 sign.setLeaderDate(new Date());
                 sign.setLeaderId(SessionUtil.getUserId());
@@ -917,8 +912,8 @@ public class SignServiceImpl implements SignService {
                 }
                 //选择第一负责人作为下一环节处理人
                 dealUser = signPrincipalService.getMainPriUser(signid);
-                if(dealUser == null){
-                    return new ResultMsg(false,MsgCode.ERROR.getValue(),"项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");
+                if (dealUser == null) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");
                 }
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
@@ -951,8 +946,8 @@ public class SignServiceImpl implements SignService {
                 if (Validate.isList(userList)) {
                     variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
                     assigneeValue = buildUser(userList);
-                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue,","));
-                //没有项目负责人，则部长审核
+                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
+                    //没有项目负责人，则部长审核
                 } else {
                     variables = taskService.getVariables(task.getId()); //获取之前的环节处理人信息
                     variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
@@ -982,7 +977,7 @@ public class SignServiceImpl implements SignService {
                         variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), true);
                         userList = signBranchRepo.findAssistOrgDirector(signid);
                         assigneeValue = buildUser(userList);
-                        variables.put(FlowConstant.SignFlowParams.USER_XBBZ_LIST.getValue(), StringUtil.getSplit(assigneeValue,","));
+                        variables.put(FlowConstant.SignFlowParams.USER_XBBZ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
                     } else {
                         variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);
                         orgDept = orgDeptRepo.queryBySignBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
@@ -991,7 +986,7 @@ public class SignServiceImpl implements SignService {
                         variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                     }
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：通过】");
-                //如果不同意，则流程回到发文申请环节
+                    //如果不同意，则流程回到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
                     //选择第一负责人
@@ -1027,8 +1022,8 @@ public class SignServiceImpl implements SignService {
                 fgldList.add(variables.get(FlowConstant.SignFlowParams.USER_FGLD2.getValue()));
                 fgldList.add(variables.get(FlowConstant.SignFlowParams.USER_FGLD3.getValue()));
                 fgldList.add(variables.get(FlowConstant.SignFlowParams.USER_FGLD4.getValue()));
-                for(Object o : fgldList){
-                    if(o != null && !userId.equals(o.toString())){
+                for (Object o : fgldList) {
+                    if (o != null && !userId.equals(o.toString())) {
                         userId = o.toString();
                         isHaveTwoSLeader = true;
                         break;
@@ -1038,8 +1033,8 @@ public class SignServiceImpl implements SignService {
                 dealUser = userRepo.getCacheUserById(userId);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 if (isHaveTwoSLeader) {
-                    variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue,","));
-                }else{
+                    variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
+                } else {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
                 }
                 //修改发文信息
@@ -1223,7 +1218,7 @@ public class SignServiceImpl implements SignService {
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
-    private String buildUser(List<User> userList){
+    private String buildUser(List<User> userList) {
         StringBuffer assigneeValue = new StringBuffer();
         for (int i = 0, l = userList.size(); i < l; i++) {
             if (i > 0) {
@@ -1233,6 +1228,7 @@ public class SignServiceImpl implements SignService {
         }
         return assigneeValue.toString();
     }
+
     private Map<String, Object> buildMainPriUser(Map<String, Object> variables, String signid, String assigneeValue) {
         User dealUser = signPrincipalService.getMainPriUser(signid);
         assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
@@ -1479,189 +1475,6 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 获取未合并评审的项目信息
-     * (已经发起流程，未完成发文的项目信息,排除自身)
-     *
-     * @param signId
-     * @return
-     */
-    @Override
-    public List<SignDto> unMergeWPSign(String signId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + Sign.class.getSimpleName() + " where " + Sign_.signState.getName() + " =:signState ");
-        hqlBuilder.setParam("signState", EnumState.PROCESS.getValue());
-        hqlBuilder.append(" and " + Sign_.processState.getName() + " > " + Constant.SignProcessState.IS_START.getValue());
-        hqlBuilder.append(" and " + Sign_.processState.getName() + " < " + Constant.SignProcessState.END_WP.getValue());
-        hqlBuilder.append(" and " + Sign_.filenum.getName() + " is null  ");
-        hqlBuilder.append(" and " + Sign_.signid.getName() + " != :self ").setParam("self", signId);
-        hqlBuilder.append(" and " + Sign_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
-        ;
-        List<Sign> signList = signRepo.findByHql(hqlBuilder);
-
-        List<SignDto> resultList = signList == null ? null : new ArrayList<>();
-        if (Validate.isList(signList)) {
-            signList.forEach(sl -> {
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(sl, signDto);
-                resultList.add(signDto);
-            });
-        }
-        return resultList;
-    }
-
-    /**
-     * 获取已合并评审的项目信息
-     *
-     * @param signId
-     * @return
-     */
-    @Override
-    public List<SignDto> getMergeWPSignBySignId(String signId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + Sign.class.getSimpleName() + " where " + Sign_.signid.getName());
-        hqlBuilder.append(" in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
-        List<Sign> signList = signRepo.findByHql(hqlBuilder);
-
-        List<SignDto> resultList = signList == null ? null : new ArrayList<>();
-        if (Validate.isList(signList)) {
-            signList.forEach(sl -> {
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(sl, signDto);
-                resultList.add(signDto);
-            });
-        }
-        return resultList;
-    }
-
-    /**
-     * 获取待合并发文的项目
-     * (已完成工作方案，但是没有生成发文编号的项目)
-     *
-     * @param signId
-     * @return
-     */
-    @Override
-    public List<SignDto> unMergeDISSign(String signId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + Sign.class.getSimpleName() + " where " + Sign_.signState.getName() + " =:signState ");
-        hqlBuilder.setParam("signState", EnumState.PROCESS.getValue());
-        hqlBuilder.append(" and " + Sign_.processState.getName() + " > " + Constant.SignProcessState.END_WP.getValue());
-        hqlBuilder.append(" and " + Sign_.processState.getName() + " < " + Constant.SignProcessState.END_DIS_NUM.getValue());
-        hqlBuilder.append(" and (" + Sign_.filenum.getName() + " is null )");
-        hqlBuilder.append(" and " + Sign_.signid.getName() + " != :self ").setParam("self", signId);
-        hqlBuilder.append(" and " + Sign_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
-        List<Sign> signList = signRepo.findByHql(hqlBuilder);
-
-        List<SignDto> resultList = signList == null ? null : new ArrayList<>();
-        if (Validate.isList(signList)) {
-            signList.forEach(sl -> {
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(sl, signDto);
-                resultList.add(signDto);
-            });
-        }
-        return resultList;
-    }
-
-    /**
-     * 获取已选合并发文的项目
-     *
-     * @param signId
-     * @return
-     */
-    @Override
-    public List<SignDto> getMergeDISSignBySignId(String signId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + Sign.class.getSimpleName() + " where " + Sign_.signid.getName());
-        hqlBuilder.append(" in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
-        List<Sign> signList = signRepo.findByHql(hqlBuilder);
-        List<SignDto> resultList = signList == null ? null : new ArrayList<>();
-        if (Validate.isList(signList)) {
-            signList.forEach(sl -> {
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(sl, signDto);
-                resultList.add(signDto);
-            });
-        }
-        return resultList;
-    }
-
-    /**
-     * 保存合并评审项目
-     *
-     * @param signId
-     * @param mergeIds
-     * @param mergeType
-     * @return
-     */
-    @Override
-    public ResultMsg mergeSign(String signId, String mergeIds, String mergeType) {
-        if (!Validate.isString(signId)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，无法获取主项目信息！");
-        }
-        if (!Validate.isString(mergeIds)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，无法获取合并评审项目信息！");
-        }
-        if (!Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType) && !Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，参数异常，请联系管理员查看！");
-        }
-        List<String> mergeSignIdList = StringUtil.getSplit(mergeIds, ",");
-        List<SignMerge> saveList = new ArrayList<>(mergeSignIdList.size());
-        for (String mergeId : mergeSignIdList) {
-            SignMerge signMerge = new SignMerge();
-            signMerge.setSignId(signId);
-            signMerge.setMergeId(mergeId);
-            signMerge.setMergeType(mergeType);
-            Date now = new Date();
-            signMerge.setCreatedBy(SessionUtil.getLoginName());
-            signMerge.setModifiedBy(SessionUtil.getLoginName());
-            signMerge.setCreatedDate(now);
-            signMerge.setModifiedDate(now);
-            saveList.add(signMerge);
-        }
-        signMergeRepo.bathUpdate(saveList);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
-    }
-
-    /**
-     * 取消合并评审项目
-     *
-     * @param signId
-     * @param cancelIds
-     * @param mergeType
-     * @return
-     */
-    @Override
-    public ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType) {
-        if (!Validate.isString(signId)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，无法获取主项目信息！");
-        }
-        if (!Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType) && !Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，参数异常，请联系管理员查看！");
-        }
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" delete from " + SignMerge.class.getSimpleName() + " where ");
-        hqlBuilder.append(SignMerge_.signId.getName() + " =:signId ").setParam("signId", signId);
-        hqlBuilder.append(" and " + SignMerge_.mergeType.getName() + " =:mergeType ").setParam("mergeType", mergeType);
-        //如果有解除删除，则解除相应的项目，否则解除所有
-        if (Validate.isString(cancelIds)) {
-            hqlBuilder.bulidPropotyString("and", SignMerge_.mergeId.getName(), cancelIds);
-        }
-
-        signMergeRepo.executeHql(hqlBuilder);
-
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
-    }
-
-    /**
      * 更改项目状态
      *
      * @param signId
@@ -1753,33 +1566,6 @@ public class SignServiceImpl implements SignService {
         List<SignDispaWork> signList = signDispaWorkRepo.findByHql(hqlBuilder);
 
         return signList;
-    }
-
-
-    @Override
-    public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
-        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
-        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-
-       /* Disjunction dis = Restrictions.disjunction();
-        dis.add(Restrictions.eq(SignDispaWork_.orgdirectorname.getName(), SessionUtil.getLoginName()));
-        dis.add(Restrictions.eq(SignDispaWork_.orgMLeaderName.getName(), SessionUtil.getLoginName()));
-        dis.add(Restrictions.eq(SignDispaWork_.orgSLeaderName.getName(), SessionUtil.getLoginName()));
-        criteria.add(dis);*/
-
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        criteria.setProjection(null);
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getSkip());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-        List<SignDispaWork> signDispaWork = criteria.list();
-        pageModelDto.setCount(totalResult);
-        pageModelDto.setValue(signDispaWork);
-        return pageModelDto;
     }
 
     @Override
@@ -1903,7 +1689,10 @@ public class SignServiceImpl implements SignService {
         } else {
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
         }
-
+        //送来时间
+        if (sign.getReceivedate() == null) {
+            sign.setReceivedate(now);
+        }
         //保存
         try {
             signRepo.save(sign);

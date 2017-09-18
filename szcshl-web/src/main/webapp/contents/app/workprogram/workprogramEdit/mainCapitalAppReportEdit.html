@@ -216,13 +216,11 @@
              </select>
             	  <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
 					data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" /> 
-					<span id="errorTime"></span>
+					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" />
 					 至
 				 <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
                                data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
                                ng-model="vm.work.studyEndTimeStr" data-datecompare-msg="结束时间必须大于开始时间！"/>
-				<span id="errorTime"></span>
          </td>
      </tr>
     <tr>
@@ -235,7 +233,9 @@
     <tr>
         <td>评审会时间</td>
         <td colspan="7">
-            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();" ng-hide="vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审'">
+                <span class="glyphicon glyphicon-pencil"></span>编辑
+            </button>
         </td>
     </tr>
     <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
@@ -264,7 +264,7 @@
     <tr>
         <td>拟聘请专家</td>
         <td colspan="7">
-            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();">
+            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();" ng-hide="vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审'">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
             </button>
         </td>
