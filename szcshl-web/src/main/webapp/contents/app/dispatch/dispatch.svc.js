@@ -110,7 +110,7 @@
         function chooseProject(signId,mergeIds,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/mergeSign",
+                url: rootPath + "/signView/mergeSign",
                 params: {
                     signId:signId ,
                     mergeIds: mergeIds,
@@ -142,7 +142,7 @@
             }
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/cancelMergeSign",
+                url: rootPath + "/signView/cancelMergeSign",
                 params: paramObj
             }
             var httpSuccess = function success(response) {
@@ -162,7 +162,7 @@
         function getMergeDISSign(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/getMergeDISSign",
+                url: rootPath + "/signView/getMergeDISSign",
                 params: {
                     signId: signId
                 }
@@ -184,7 +184,7 @@
         function unMergeDISSign(signId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/sign/unMergeDISSign",
+                url: rootPath + "/signView/unMergeDISSign",
                 params: {
                     signId: signId
                 }

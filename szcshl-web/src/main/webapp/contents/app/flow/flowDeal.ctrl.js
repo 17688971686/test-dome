@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowDealCtrl', flowDeal);
 
-    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc','bookBuyBusinessSvc'];
+    flowDeal.$inject = ['ideaSvc', '$state', 'bsWin', 'topicSvc', 'flowSvc', 'bookBuyBusinessSvc'];
 
-    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc,bookBuyBusinessSvc) {
+    function flowDeal(ideaSvc, $state, bsWin, topicSvc, flowSvc, bookBuyBusinessSvc) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -16,9 +16,9 @@
         vm.taskId = $state.params.taskId;                      // 任务ID
         vm.instanceId = $state.params.instanceId;              // 流程实例ID
         vm.currentFlow;//当前流程信息
-        vm.showFlag={
-            businessNext : false,                              //是否显示下一环节处理人tr
-            businessTr : false                              //是否显示业务处理tr
+        vm.showFlag = {
+            businessNext: false,                              //是否显示下一环节处理人tr
+            businessTr: false                              //是否显示业务处理tr
         }
 
         activate();
@@ -33,20 +33,27 @@
             })
             //共用方法
             //1、显示流程图
-            vm.picture = rootPath + "/flow/processInstance/img/"+ vm.instanceId;
+            vm.picture = rootPath + "/flow/processInstance/img/" + vm.instanceId;
             //2、历史处理记录
             flowSvc.historyData(vm);
             //3、查询当前环节信息
-            flowSvc.getFlowInfo(vm.taskId,vm.instanceId,function(data){
+            flowSvc.getFlowInfo(vm.taskId, vm.instanceId, function (data) {
                 vm.flow = data;
                 vm.currentFlow = data;
                 //如果是结束环节，则不显示下一环节信息
                 if (vm.flow.end) {
                     vm.showFlag.nodeNext = false;
+                } else {
+                    //初始化环节信息
+                    switch (vm.processKey) {
+                        case flowcommon.getFlowDefinedKey().TOPIC_FLOW:
+                            topicSvc.initFlowNode(vm.flow, vm.showFlag, vm);
+                            break;
+                    }
                 }
             });
             //4、各自显示模块
-            switch (vm.processKey){
+            switch (vm.processKey) {
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
                     topicSvc.initFlowDeal(vm);
                     break;
@@ -58,32 +65,52 @@
                     break;
 
             }
-    }
+        }
+
+        /***************  S_初始化附件上传控件  ***************/
+        vm.initFileUpload = function (mainType, sysfileType, sysBusiType) {
+            vm.sysFile = {
+                businessId: vm.businessKey,
+                mainId: vm.businessKey,
+                mainType: mainType,
+                sysfileType: sysfileType,
+                sysBusiType: sysBusiType,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
+        }
+        //附件下载
+        vm.commonDownloadSysFile = function (sysFileId) {
+            sysfileSvc.downloadFile(sysFileId);
+        }
+        /***************  E_初始化附件上传控件  ***************/
 
         /***************  S_个人意见  ***************/
         vm.ideaEdit = function (options) {
-            if(!angular.isObject(options)){
+            if (!angular.isObject(options)) {
                 options = {};
             }
-            ideaSvc.initIdeaData(vm,options);
+            ideaSvc.initIdeaData(vm, options);
         }
-        vm.selectedIdea = function(){
+        vm.selectedIdea = function () {
             vm.flow.dealOption = vm.chooseIdea;
         }
         /***************  E_个人意见  ***************/
 
         /***************  S_流程处理  ***************/
         vm.commitFlow = function () {
-            if(vm.flow.isSuspended){
+            if (vm.flow.isSuspended) {
                 bsWin.error("该流程目前为暂停状态，不能进行流转操作！");
-                return ;
+                return;
             }
-            flowSvc.commit(vm.isCommit,vm.flow,function(data){
+            flowSvc.commit(vm.isCommit, vm.flow, function (data) {
                 if (data.flag || data.reCode == "ok") {
-                    bsWin.success("操作成功！",function(){
+                    bsWin.success("操作成功！", function () {
                         $state.go('agendaTasks');
                     })
-                }else{
+                } else {
                     bsWin.alert(data.reMsg);
                 }
             });
@@ -93,15 +120,15 @@
         vm.backFlow = function () {
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
-            if(isValid){
+            if (isValid) {
                 bsWin.confirm({
                     title: "询问提示",
                     message: "确认回退吗？",
                     onOk: function () {
-                        flowSvc.rollBackToLast(vm.flow,vm.isCommit,function(data){
+                        flowSvc.rollBackToLast(vm.flow, vm.isCommit, function (data) {
                             vm.isCommit = false;
                             if (data.flag || data.reCode == "ok") {
-                                bsWin.alert("回退成功！",function(){
+                                bsWin.alert("回退成功！", function () {
                                     $state.go('agendaTasks');
                                 });
                             } else {

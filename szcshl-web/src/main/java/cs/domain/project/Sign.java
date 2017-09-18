@@ -755,16 +755,6 @@ public class Sign extends DomainBase {
     //第二负责人
     @Column(columnDefinition = "VARCHAR(64)")
     private String secondPriUser;
-    
-    //拟补充资料ID
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String suppletterid;
-
-   /**
-   * 所属部门（根据主办部门划分）
-   */
-    @Column(columnDefinition = "VARCHAR(64)")
-    private String belongOrgId;
 
     /**
      * 默认办理类型[收文类型（评估类：PX，概算类:GX）]
@@ -1685,14 +1675,6 @@ public class Sign extends DomainBase {
         this.fileRecord = fileRecord;
     }
 
-    public String getSuppletterid() {
-		return suppletterid;
-	}
-
-	public void setSuppletterid(String suppletterid) {
-		this.suppletterid = suppletterid;
-	}
-
     public String getProcessInstanceId() {
         return processInstanceId;
     }
@@ -2452,12 +2434,4 @@ public class Sign extends DomainBase {
 	public void setSuppLetterDate(Date suppLetterDate) {
 		this.suppLetterDate = suppLetterDate;
 	}
-
-    public String getBelongOrgId() {
-        return belongOrgId;
-    }
-
-    public void setBelongOrgId(String belongOrgId) {
-        this.belongOrgId = belongOrgId;
-    }
 }
