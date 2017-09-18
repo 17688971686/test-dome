@@ -144,6 +144,17 @@ public class WorkPlanServiceImpl implements WorkPlanService {
         }
         WorkPlanDto result = new WorkPlanDto();
         BeanCopierUtils.copyProperties(workPlan, result);
+        result = findLinkBusiness(workPlan,result);
+        return result;
+    }
+
+    /**
+     * 查找关联的业务对象
+     * @param workPlan
+     * @return
+     */
+    @Override
+    public WorkPlanDto findLinkBusiness(WorkPlan workPlan,WorkPlanDto workPlanDto) {
         //2、会议室预定情况
         List<RoomBooking> bookList = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(),workPlan.getId(),null);
         if (Validate.isList(bookList)) {
@@ -155,7 +166,7 @@ public class WorkPlanServiceImpl implements WorkPlanService {
                 rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
                 roomBookingDtoList.add(rbDto);
             });
-            result.setRoomDtoList(roomBookingDtoList);
+            workPlanDto.setRoomDtoList(roomBookingDtoList);
         }
         //3、拟聘请专家
         List<Expert> expertList = expertRepo.findByBusinessId(workPlan.getId());
@@ -167,9 +178,9 @@ public class WorkPlanServiceImpl implements WorkPlanService {
                 BeanCopierUtils.copyProperties(el,expertDto);
                 expertDtoList.add(expertDto);
             });
-            result.setExpertDtoList(expertDtoList);
+            workPlanDto.setExpertDtoList(expertDtoList);
         }
-        return result;
+        return workPlanDto;
     }
 
 }

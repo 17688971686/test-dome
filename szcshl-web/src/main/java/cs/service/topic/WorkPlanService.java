@@ -24,4 +24,6 @@ public interface WorkPlanService {
     void delete(String id);
 
     WorkPlanDto initByTopicId(String topicId);
+
+    WorkPlanDto findLinkBusiness(WorkPlan workPlan,WorkPlanDto workPlanDto);
 }
