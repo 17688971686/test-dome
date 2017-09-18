@@ -11,18 +11,15 @@
                 </strong>
             </caption>
            <!--  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption> -->
-			
-		<caption class="text-right">  
+		
+		<tbody>
         <tr>
         <td width="15%" class="text-center">QR-4.10-01-AO</td>
         <td></td>
         <td width="20%" class="text-center"></td>
         <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
   	  </tr>
-   	 </caption> 
     
-			<tbody>
-			
 			<tr>
 				<td width="15%" class="text-center">主办处室</td>
 				<td>
@@ -67,7 +64,7 @@
 				<td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.projectname" name="projectname" id="projectname" data-val="true" data-val-required="必填">
 					<span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span></td>
 				<td width="15%" class="text-center">收文编号</td>
-				<td> {{vm.model.filecode}}</td>
+				<td> {{vm.model.signNum}}</td>
 			</tr>
 			<tr>
 				<td width="15%" class="text-center">项目代码</td>
@@ -122,10 +119,12 @@
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.sugProDealOriginal"
                                                                             name="sugProDealOriginal"
+                                                                             ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
                                                                             id="addOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.sugProDealCopy"
+                                                                             ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
                                                                             name="sugProDealCopy" id="addCopy"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
@@ -147,11 +146,13 @@
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.governmentPurchasOriginal"
                                                                             id="governmentPurchasOriginal"
+                                                                            ng-click="vm.model.governmentPurchasCount = initInputValue($event,vm.model.governmentPurchasCount)"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.governmentPurchasCopy"
                                                                             id="governmentPurchasCopy" ng-true-value="9"
+                                                                            ng-click="vm.model.governmentPurchasCount = initInputValue($event,vm.model.governmentPurchasCount)"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="governmentPurchasCount"
                                                                            data-valmsg-replace="true"
@@ -169,10 +170,12 @@
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.expertArgumentOriginal"
                                                                             id="expertArgumentOriginal"
+                                                                            ng-click="vm.model.expertArgumentCount = initInputValue($event,vm.model.expertArgumentCount)"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.expertArgumentCopy"
+                                                                             ng-click="vm.model.expertArgumentCount = initInputValue($event,vm.model.expertArgumentCount)"
                                                                             id="expertArgumentCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="expertArgumentCount"
@@ -189,10 +192,12 @@
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.developementOriginal"
+                                                                             ng-click="vm.model.developmentCount = initInputValue($event,vm.model.developmentCount)"
                                                                             id="developementOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.developementCopy"
+                                                                            ng-click="vm.model.developmentCount = initInputValue($event,vm.model.developmentCount)"
                                                                             id="developementCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="developmentCount"
@@ -210,11 +215,13 @@
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.ortherProjectOriginal"
                                                                             id="ortherProjectOriginal"
+                                                                            ng-click="vm.model.ortherProjectCount = initInputValue($event,vm.model.ortherProjectCount)"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.ortherProjectCopy"
                                                                             id="ortherProjectCopy" ng-true-value="9"
+                                                                            ng-click="vm.model.ortherProjectCount = initInputValue($event,vm.model.ortherProjectCount)"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="ortherProjectCount"
                                                                            data-valmsg-replace="true"
@@ -242,10 +249,12 @@
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.officialDisposeOriginal"
+                                                                             ng-click="vm.model.officialDisposeCount = initInputValue($event,vm.model.officialDisposeCount)"
                                                                             id="officialDisposeOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.officialDisposeCopy"
+                                                                             ng-click="vm.model.officialDisposeCount = initInputValue($event,vm.model.officialDisposeCount)"
                                                                             id="officialDisposeCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="officialDisposeCount"
@@ -262,10 +271,12 @@
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.managerDeptOriginal"
+                                                                             ng-click="vm.model.managerDeptCount = initInputValue($event,vm.model.managerDeptCount)"
                                                                             id="managerDeptOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.managerDeptCopy"
+                                                                             ng-click="vm.model.managerDeptCount = initInputValue($event,vm.model.managerDeptCount)"
                                                                             id="managerDeptCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="managerDeptCount"
@@ -283,10 +294,12 @@
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.importProductOriginal"
+                                                                             ng-click="vm.model.importProductCount = initInputValue($event,vm.model.importProductCount)"
                                                                             id="importProductOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.importProductCopy"
+                                                                            ng-click="vm.model.importProductCount = initInputValue($event,vm.model.importProductCount)"
                                                                             id="importProductCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="importProductCount"
@@ -303,22 +316,19 @@
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.sprcialDevicesOriginal"
+                                                                            ng-click="vm.model.sprcialDevicesCount = initInputValue($event,vm.model.sprcialDevicesCount)"
                                                                             id="sprcialDevicesOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.sprcialDevicesCopy"
+                                                                             ng-click="vm.model.sprcialDevicesCount = initInputValue($event,vm.model.sprcialDevicesCount)"
                                                                             id="sprcialDevicesCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="sprcialDevicesCount"
                                                                            data-valmsg-replace="true"
                                                                            class="errors"></span></td>
                                     </tr>
-                                      <tr>
-                                        <td style="border-top:none;text-align:right;">其他（名称需要备注）</td>
-                                        <td style="border-top:none;">
-                                            <button type="button" class="btn btn-primary">备注</button>
-                                        </td>
-                                    </tr>
+                                     
 									</tbody>
 								</table>
 							</td>

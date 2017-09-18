@@ -10,16 +10,15 @@
         </strong>
     </caption>
    
-    
-    <caption class="text-right">
+     <tbody>
+   
      	<tr>
 	        <td width="15%" class="text-center"> QR-4.11-03-A0</td>
 	        <td></td>
 	        <td width="20%" class="text-center"></td>
 	        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
   	    </tr>
-     </caption>
-    <tbody>
+   
 
 	 <tr>
         <td width="15%" class="text-center">项目名称</td>
@@ -28,7 +27,7 @@
             <span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td width="15%" class="text-center">收文编号</td>
-        <td> {{vm.model.filecode}}</td>
+        <td> {{vm.model.signNum}}</td>
     </tr>
      <tr>
         <td width="15%" class="text-center">建设单位</td>
@@ -123,7 +122,7 @@
                                 <td style="border-top:none;text-align:right;">委项目处理表</td>
                                 <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm " ng-model="vm.model.sugProDealCount" name="sugProDealCount"
                                                                     id="sugProDealCount" data-val="true" data-val-digits="只能输入数字"></td>
-                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0"></td>
+                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0"></td>
                                 <td style="border-top:none;"><span data-valmsg-for="sugProDealCount" data-valmsg-replace="true" class="errors"></span></td>
                             </tr>
                             <tr>
@@ -133,7 +132,7 @@
                                            data-val="true" data-val-digits="只能输入数字" >
                                 </td>
 
-                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugFileDealOriginal"id="sugFileDealOriginal" ng-true-value="9" ng-false-value="0"></td>
+                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-click="vm.model.sugFileDealCount = initInputValue($event,vm.model.sugFileDealCount)" ng-model="vm.model.sugFileDealOriginal"id="sugFileDealOriginal" ng-true-value="9" ng-false-value="0"></td>
                                 <td style="border-top:none;"><span data-valmsg-for="sugFileDealCount" data-valmsg-replace="true" class="errors"></span></td>
 
                             </tr>
@@ -141,14 +140,14 @@
                                 <td style="border-top:none;text-align:right;">项目单位申报表</td>
                                 <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugOrgApplyCount" name="sugOrgApplyCount"
                                                                     id="sugOrgApplyCount"data-val="true" data-val-digits="只能输入数字" ></td>
-                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgApplyOriginal"id="sugOrgApplyOriginal" ng-true-value="9" ng-false-value="0"></td>
+                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-click="vm.model.sugOrgApplyCount = initInputValue($event,vm.model.sugOrgApplyCount)" ng-model="vm.model.sugOrgApplyOriginal"id="sugOrgApplyOriginal" ng-true-value="9" ng-false-value="0"></td>
                                 <td style="border-top:none;"><span data-valmsg-for="sugOrgApplyCount" data-valmsg-replace="true" class="errors"></span></td>
                             </tr>
                             <tr>
                                 <td style="border-top:none;text-align:right;">项目单位请示报告</td>
                                 <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount"
                                                                     id="sugOrgReqCount"data-val="true" data-val-digits="只能输入数字" ></td>
-                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugOrgReqOriginal" id="sugOrgReqOriginal"ng-true-value="9" ng-false-value="0"></td>
+                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-click="vm.model.sugOrgReqCount = initInputValue($event,vm.model.sugOrgReqCount)"  ng-model="vm.model.sugOrgReqOriginal" id="sugOrgReqOriginal"ng-true-value="9" ng-false-value="0"></td>
                                 <td style="border-top:none;"><span data-valmsg-for="sugOrgReqCount" data-valmsg-replace="true" class="errors"></span></td>
                             </tr>
                             </tbody>
@@ -166,7 +165,7 @@
                                 <td style="border-top:none;text-align:right;">资金申请报告</td>
                                 <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.capitalAppReportCount" name="capitalAppReportCount"
                                                                     id="sugProAdviseCount"data-val="true" data-val-digits="只能输入数字"></td>
-                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.capitalAppReportOriginal" id="capitalAppReportOriginal" ng-true-value="9" ng-false-value="0"></td>
+                                <td style="border-top:none;"><input type="checkbox" style="width:50px;"ng-click="vm.model.capitalAppReportCount = initInputValue($event,vm.model.capitalAppReportCount)" ng-model="vm.model.capitalAppReportOriginal" id="capitalAppReportOriginal" ng-true-value="9" ng-false-value="0"></td>
                                 <td style="border-top:none;"><span data-valmsg-for="capitalAppReportCount" data-valmsg-replace="true" class="errors"></span></td>
                             </tr>
                             <tr>
@@ -179,7 +178,7 @@
                                 <td style="border-top:none;text-align:right;">相关会议纪要</td>
                                 <td style="border-top:none;"><input type="text" style="width:50px;" class="form-control input-sm "  ng-model="vm.model.sugMeetCount" name="sugMeetCount"
                                                                     id="sugMeetCount"data-val="true" data-val-digits="只能输入数字"></td>
-                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-true-value="9" ng-false-value="0" ></td>
+                                <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-click="vm.model.sugMeetCount = initInputValue($event,vm.model.sugMeetCount)" ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-true-value="9" ng-false-value="0" ></td>
                                 <td style="border-top:none;"><span data-valmsg-for="sugMeetCount" data-valmsg-replace="true" class="errors"></span></td>
                             </tr>
                             </tbody>
