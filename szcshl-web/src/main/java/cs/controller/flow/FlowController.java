@@ -299,6 +299,7 @@ public class FlowController {
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
                 resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
+                break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
         }
@@ -394,6 +395,9 @@ public class FlowController {
             case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowEnd";
                 break;
+            case FlowConstant.ASSERT_STORAGE_FLOW:
+                 resultPage = "asserts/assertStorageBusiness/flowEnd";
+                 break;
             default:
                 ;
         }

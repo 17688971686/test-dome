@@ -1,32 +1,35 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/assertStorageBusiness">固定资产申购流程</a></li>
+        <li><a>资产入库申购流程</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
-        <div class="toolbar">
-        <@shiro.hasPermission name="assertStorageBusiness##post">
-            <a class="btn btn-sm btn-primary" href="#/assertStorageBusinessEdit/"><span class="glyphicon glyphicon-plus"></span>新增用户</a>
-        </@shiro.hasPermission>
-        <@shiro.hasPermission name="assertStorageBusiness##delete">
-            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        </@shiro.hasPermission>
-        </div>
-        <script type="text/template" id="columnBtns">
-            <@shiro.hasPermission name="assertStorageBusiness##delete">
-            <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
-            </@shiro.hasPermission>
-            <@shiro.hasPermission name="assertStorageBusiness##put">
-            <a class="btn btn-xs btn-primary" href="#/assertStorageBusinessEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-            </@shiro.hasPermission>
-        </script>
-
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    </form>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.searchForm()" ng-disabled="vm.isSubmit"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
+    </div>
+    <div class="well well-sm">
+        <form id="myTopicForm" name="myTopicForm">
+            <input name="createdBy" value="${CURRENT_USER.displayName}" ng-hide="true">
+            <table style="width:100%">
+                <tr>
+                    <td class="formAlignLeft">资产申购流程名称：</td>
+                    <td><input name="businessName" type="text" operator="like" ng-model="vm.searchModel.businessName" class="form-control input-sm "/></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
+
+<script type="text/template" id="columnBtns">
+    <a class="btn btn-xs btn-primary" href="#/assertStorageBusinessEdit/{0}" ng-hide="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <a class="btn btn-xs btn-info" href="javascript:void(0)" ><span class="glyphicon glyphicon-comment"></span>查看详情</a>
+</script>
+
+
+
 
