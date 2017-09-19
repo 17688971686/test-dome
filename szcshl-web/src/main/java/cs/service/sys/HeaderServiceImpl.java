@@ -52,7 +52,7 @@ public class HeaderServiceImpl implements  HeaderService {
     }
 
     @Override
-    public List<HeaderDto> getHeaderList(String headerType) {
+    public List<HeaderDto> findHeaderListNoSelected(String headerType) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select h from " + Header.class.getSimpleName() + " h where " + Header_.headerType.getName() + "=:headerType ");
         hqlBuilder.append(" and " + Header_.headerstate.getName() + " =:headerState");
@@ -101,10 +101,12 @@ public class HeaderServiceImpl implements  HeaderService {
     }
 
     @Override
-    public List<HeaderDto> findHeaderListByState() {
+    public List<HeaderDto> findHeaderListSelected(String headerType) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select h from " + Header.class.getSimpleName() + " h where "+ Header_.headerstate.getName()+ "=:headerState");
+        hqlBuilder.append("select h from " + Header.class.getSimpleName() + " h where "+ Header_.headerstate.getName()+ "=:headerState and ");
+        hqlBuilder.append(" " + Header_.headerType.getName() + "=:headerType");
         hqlBuilder.setParam("headerState" , Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("headerType" , headerType);
         List<Header> headerList = headerRepo.findByHql(hqlBuilder);
 
         List<HeaderDto> headerDtoList = new ArrayList<>();

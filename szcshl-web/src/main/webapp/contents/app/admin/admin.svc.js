@@ -3,9 +3,9 @@
 
     angular.module('app').factory('adminSvc', admin);
 
-    admin.$inject = ['$rootScope', '$http'];
+    admin.$inject = ['$rootScope', '$http' , 'bsWin'];
 
-    function admin($rootScope, $http) {
+    function admin($rootScope, $http , bsWin) {
 
         var service = {
             gtasksGrid: gtasksGrid,		                //个人待办项目
@@ -26,9 +26,39 @@
             findendTasks: findendTasks,             //已办项目列表
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
+            excelExport : excelExport,//项目统计导出
 
         }
         return service;
+        //begin excelExport
+        function excelExport(vm,exportData , fileName){
+            var httpOptions ={
+                method : 'post',
+                url : rootPath + "/signView/excelExport",
+                headers : {
+                    "contentType" : "application/json;charset=utf-8"
+                },
+                traditional : true,
+                dataType : "json",
+                responseType: 'arraybuffer',
+                data : angular.toJson(exportData),
+                params:{
+                    fileName :fileName
+                }
+
+            }
+            var httpSuccess = function success(response){
+                fileName =fileName + ".xls";
+                common.downloadReport(response.data , fileName);
+            }
+            common.http({
+                vm : vm,
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end excelExport
 
 
         //begin countWorakday

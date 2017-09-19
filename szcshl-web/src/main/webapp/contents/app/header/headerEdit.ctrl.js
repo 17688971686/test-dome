@@ -7,7 +7,7 @@
         var vm = this;
         vm.selectedHeaderList=[];
         vm.selectList={};
-        vm.headerType="";
+        vm.headerType= $state.params.headerType;
 
         //全选
         vm.allChecked =function(){
@@ -83,13 +83,14 @@
         }*/
 
         vm.changeType = function(){
-            headerSvc.getHeaderList(vm,vm.headerType);
+            headerSvc.findHeaderListNoSelected(vm);
             vm.selectedHeaderList=[];
         }
+
         activate();
         function activate(){
-            headerSvc.getHeaderList(vm,vm.headerType);
-            headerSvc.findHeaderListByState(vm);
+            headerSvc.findHeaderListNoSelected(vm);
+            headerSvc.findHeaderListSelected(vm);
         }
     }
 })();

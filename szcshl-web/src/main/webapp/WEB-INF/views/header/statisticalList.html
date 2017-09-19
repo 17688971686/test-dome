@@ -7,14 +7,12 @@
         <div class="well">
             <go-back></go-back>
             <span >标题：</span>
-            <input type="text" ng-model="vm.title"/>
-            <span >小标题：</span>
-            <input type="text" ng-model="vm.smallTitle"/>
-            <button class="btn btn-sm btn-success">确定</button>
+            <input type="text" ng-model="vm.fileName"/>
+            <button class="btn btn-sm btn-success" ng-click="vm.excelExport()">导出</button>
         </div>
         <div class="well well-sm" style="background:white; width: 100%; ">
             <div style="text-align: center; padding: 10px;">
-                <h3>{{vm.title}}统计表</h3>
+                <h3 >{{vm.fileName}}</h3>
                 <span>{{vm.smallTitle}}</span>
             </div>
             <div id="statisticalGrid" class="grid" data-bind="source: dataSource"  ></div>

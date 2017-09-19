@@ -8,10 +8,10 @@
         var service={
             headerGrid : headerGrid,
             createHeader : createHeader ,//创建表头
-            getHeaderList : getHeaderList ,//获取表头列表
+            findHeaderListNoSelected : findHeaderListNoSelected ,//获取表头列表
             updateSelectedHeader : updateSelectedHeader ,//改变表头状态（改为选中）
             updateCancelHeader : updateCancelHeader , //改变表头状态（改为未选中）
-            findHeaderListByState : findHeaderListByState,//查询已选的表头
+            findHeaderListSelected : findHeaderListSelected,//查询已选的表头
             statisticalGrid : statisticalGrid, //生成统计表
             deleteHeader : deleteHeader , //删除表头
             getHeaderById : getHeaderById ,//通过id获取表头信息
@@ -95,10 +95,11 @@
         //end getHeaderById
 
         //begin findHeaderListByState
-        function findHeaderListByState(vm){
+        function findHeaderListSelected(vm){
             var httpOptions={
                 method : 'post',
-                url : rootPath + "/header/findHeaderListByState",
+                url : rootPath + "/header/findHeaderListSelected",
+                params : {headerType : vm.headerType}
             }
             var httpSuccess = function success(response){
                 vm.selectedHeaderList = response.data;
@@ -191,11 +192,11 @@
 
 
         //begin getHeaderList
-        function getHeaderList(vm, headerType){
+        function findHeaderListNoSelected(vm){
             var httpOptions ={
-                method : 'get',
-                url : rootPath + '/header/getHeaderList',
-                params : {headerType : headerType}
+                method : 'post',
+                url : rootPath + '/header/findHeaderListNoSelected',
+                params : {headerType : vm.headerType}
             }
             var httpSuccess = function success(response){
                 vm.allHeaderList = response.data;

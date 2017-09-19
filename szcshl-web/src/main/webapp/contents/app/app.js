@@ -833,7 +833,7 @@
                 controllerAs: 'vm'
             })
             .state('statisticalList',{
-                url : '/statisticalList',
+                url : '/statisticalList/:headerType',
                 templateUrl : rootPath + '/header/html/statisticalList.html',
                 controller : 'statisticalListCtrl',
                 controllerAs: 'vm'

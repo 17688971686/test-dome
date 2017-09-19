@@ -48,18 +48,18 @@ public class HeaderController {
     }
 
 
-    @RequiresPermissions("header#getHeaderList#get")
-    @RequestMapping(name="获取表头列表通过类型" , path="getHeaderList" , method = RequestMethod.GET)
+    @RequiresPermissions("header#findHeaderListNoSelected#post")
+    @RequestMapping(name="获取未选中表头列表" , path="findHeaderListNoSelected" , method = RequestMethod.POST)
     @ResponseBody
-    public List<HeaderDto> getHeaderList(@RequestParam  String headerType){
-        return headerService.getHeaderList(headerType);
+    public List<HeaderDto> findHeaderListNoSelected(@RequestParam  String headerType){
+        return headerService.findHeaderListNoSelected(headerType);
     }
 
-    @RequiresPermissions("header#findHeaderListByState#post")
-    @RequestMapping(name="获取选中的表头" ,path="findHeaderListByState" , method = RequestMethod.POST)
+    @RequiresPermissions("header#findHeaderListSelected#post")
+    @RequestMapping(name="获取选中的表头列表" ,path="findHeaderListSelected" , method = RequestMethod.POST)
     @ResponseBody
-    public List<HeaderDto> findHeaderListByState(){
-        return headerService.findHeaderListByState();
+    public List<HeaderDto> findHeaderListSelected(@RequestParam  String headerType){
+        return headerService.findHeaderListSelected(headerType);
     }
 
     @RequiresPermissions("header#updateSelectedHeader#put")
