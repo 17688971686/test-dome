@@ -1,0 +1,110 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
+    <p class="pro_title_1" style="margin:10px;margin-left:0px;">资产申购信息</p>
+    <form id="form" name="form">
+        <table class="" style="width: 90%;">
+            <caption class="text-center"> <h3><strong>固定资产及办公用品申购单</strong></h3></caption>
+            <tbody>
+            <tr>
+                <input type="hidden" name="businessId" id="businessId"  ng-model="vm.model.businessId" value="{{vm.model.businessId}}"/>
+                <td class="formAlignRight" width="10%">申请部门</td>
+                <td width="20%">
+                    <input type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.showFlag.bookBusApplyTr"
+                           ng-model="vm.model.applyDept"   id="applyDept" name="applyDept">
+                </td>
+                <td class="formAlignRight" width="10%">经办人</td>
+                <td width="20%">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.showFlag.bookBusApplyTr"
+                          ng-model="vm.model.operator" id="operator" name="operator" >
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" >
+                    <table class="assertInfo" style="width: 100%;">
+                        <tr>
+                            <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
+                            <td style="width:7%;min-width:50px;" align="center">序号</td>
+                            <td class="formAlignRight">物品名称</td>
+                            <td class="formAlignRight" >规格</td>
+                            <td class="formAlignRight" >型号</td>
+                            <td class="formAlignRight" >单位</td>
+                            <td class="formAlignRight" >估价</td>
+                            <td class="formAlignRight">数量</td>
+                            <td class="formAlignRight">合计</td>
+                        </tr>
+                        <tr ng-repeat="x in vm.model.goodsDetailList">
+                            <td align="center">
+                                <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{$index+1}}"/></td>
+                            <td align="center">{{$index+1}}</td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="goodsName"  value="{{x.goodsName}}"/>
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="specifications"  value="{{x.specifications}}" />
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="models"  value="{{x.models}}"/>
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="orgCompany"  value="{{x.orgCompany}}"/>
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="evaluate"  value="{{x.evaluate}}"
+                                       ng-blur="vm.checkPrice(x.sort)"/>
+                                <span data-valmsg-for="evaluate{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
+
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="goodsNumber"  value="{{x.goodsNumber}}"
+                                       ng-blur="vm.checkBookNum(x.sort)"  />
+                                <span data-valmsg-for="goodsNumber{{x.sort}}" data-valmsg-replace="true" class="errors" ></span>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="total" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td  class="formAlignRight" width="20%">采购资金合计</td>
+                <td width="80%" colspan="3"></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="20%">申请理由</td>
+                <td width="80%" colspan="3" >
+                    <p> {{vm.model.applyReason}}</p>
+                    <p class="text-right" ng-if="vm.model.orgDirector">签名：{{vm.model.orgDirector}}</p>
+                    <p class="text-right" ng-if="vm.model.orgDirectorDate">日期：{{vm.model.orgDirectorDate}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="20%">综合部意见</td>
+                <td width="80%" colspan="3" >
+                    <p> {{vm.model.comprehensivehandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.comprehensiveName">签名：{{vm.model.comprehensiveName}}</p>
+                    <p class="text-right" ng-if="vm.model.comprehensiveDate">日期：{{vm.model.comprehensiveDate}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="20%">中心领导审批</td>
+                <td width="80%" colspan="3" >
+                    <p> {{vm.model.leaderhandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.leaderName">签名：{{vm.model.leaderName}}</p>
+                    <p class="text-right" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+
+</div>

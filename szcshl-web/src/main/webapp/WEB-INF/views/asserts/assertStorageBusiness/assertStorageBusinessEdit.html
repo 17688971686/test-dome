@@ -1,12 +1,6 @@
 <#assign path=request.contextPath />
 <meta charset="UTF-8">
-<!--<head>
-    <style>
-        .bookBuyInfo td{
-            border-top: 0px;
-        }
-    </style>
-</head>-->
+
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div class="well well-sm conttent_list" style="background: white;min-height:960px;">
     <ol class="breadcrumb">
@@ -16,7 +10,6 @@
 
     <div class="toolbar">
         <a class="btn btn-sm btn-primary" href="#/myAssertStorageBusiness"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-
         <button class="btn btn-sm btn-success" ng-click="vm.saveCondition()" ng-disabled="vm.isSubmit" ng-hide="vm.isCommit">
             <span class="glyphicon glyphicon-ok"></span>保存
         </button>
@@ -32,7 +25,7 @@
     </div>
     <p class="pro_title_1" style="margin:10px;margin-left:0px;">固定资产申购管理信息</p>
     <form id="form" name="form">
-        <table class="" style="width: 70%;">
+        <table class=""style="width: 70%;">
             <caption class="text-center"> <h3><strong>固定资产及办公用品申购单</strong></h3></caption>
             <tbody>
             <tr>
@@ -43,24 +36,99 @@
                            ng-model="vm.model.applyDept" ng-init="vm.model.applyDept = '${CURRENT_USER.org.name}'"  id="applyDept" name="applyDept">
                 </td>
                 <td class="formAlignRight" width="20%">经办人</td>
-                <td width="30%" colspan="4">
+                <td width="30%">
                     <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
                            ng-model="vm.model.operator" ng-init="vm.model.operator = '${CURRENT_USER.loginName}'" id="operator" name="operator">
                 </td>
             </tr>
             <tr>
-                        <td class="formAlignRight" >物品名称</td>
+                <td colspan="4" >
+                    <table class="assertInfo" style="width: 100%;">
+                        <tr>
+                            <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
+                            <td style="width:7%;min-width:50px;" align="center">序号</td>
+                        <td class="formAlignRight">物品名称</td>
                         <td class="formAlignRight" >规格</td>
-                        <td class="formAlignRight" >型号</td>
+                            <td class="formAlignRight" >型号</td>
                         <td class="formAlignRight" >单位</td>
                         <td class="formAlignRight" >估价</td>
-                        <td class="formAlignRight" >数量</td>
+                        <td class="formAlignRight">数量</td>
                         <td class="formAlignRight">合计</td>
+                        </tr>
+                        <tr  ng-repeat="x in vm.conditions">
+                            <td align="center">
+                                <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{x.sort}}"/></td>
+                            <td align="center">{{x.sort}}</td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="goodsName{{x.sort}}"  value="{{x.goodsName}}"/>
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="specifications{{x.sort}}"  value="{{x.specifications}}" />
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="models{{x.sort}}"  value="{{x.models}}"/>
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="orgCompany{{x.sort}}"  value="{{x.orgCompany}}"/>
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="evaluate{{x.sort}}"  value="{{x.evaluate}}"
+                                       ng-blur="vm.checkPrice(x.sort)"/>
+                                <span data-valmsg-for="evaluate{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
 
+                            </td>
+                            <td align="center">
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="goodsNumber{{x.sort}}"  value="{{x.goodsNumber}}"
+                                       ng-blur="vm.checkBookNum(x.sort)"  />
+                                <span data-valmsg-for="goodsNumber{{x.sort}}" data-valmsg-replace="true" class="errors" ></span>
+                            </td>
+                            <td>
+                                <input type="text" maxlength="200" class="form-control input-sm "
+                                       id="total{{x.sort}}" />
+                            </td>
+                            <input type="hidden"  id="applyDept{{x.sort}}"/>
+                            <input type="hidden"  id="operator{{x.sort}}"/>
+                            <input type="hidden"  id="businessId{{x.sort}}"/>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+           <tr>
+                <td  class="formAlignRight" width="20%">采购资金合计</td>
+                <td width="80%" colspan="3"></td>
             </tr>
             <tr>
-                <td  class="formAlignRight" width="20%">采购资金合计</td>
-                <td width="80%" colspan="6"></td>
+                <td class="formAlignRight" width="20%">申请理由</td>
+                <td width="80%" colspan="3" >
+                         <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                   ng-disabled="vm.showFlag.bookBuyBzTr" ng-model="vm.model.applyReason"
+                                   id="applyReason" name="applyReason"
+                         />
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="20%">综合部意见</td>
+                <td width="80%" colspan="3" >
+                      <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.comprehensivehandlesug"
+                                id="comprehensivehandlesug" name="comprehensivehandlesug"
+                      />
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="20%">中心领导审批</td>
+                <td width="80%" colspan="3" >
+                      <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.leaderhandlesug"
+                                id="leaderhandlesug" name="leaderhandlesug"
+                      />
+                </td>
             </tr>
             </tbody>
         </table>

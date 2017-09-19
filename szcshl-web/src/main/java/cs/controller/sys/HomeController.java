@@ -94,7 +94,7 @@ public class HomeController {
 		return "init BooksBuy Flow success";
 	}
 
-	@RequestMapping(name = "资产入库流程",path = "initAFlow",method = RequestMethod.GET)
+	@RequestMapping(name = "资产入库流程",path = "initAssertStorageFlow",method = RequestMethod.GET)
 	@Transactional
 	public @ResponseBody String initAssertStorageFlow(){
 		//部署下一个版本

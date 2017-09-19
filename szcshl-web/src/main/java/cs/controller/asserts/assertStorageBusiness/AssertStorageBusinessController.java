@@ -65,14 +65,14 @@ public class AssertStorageBusinessController {
     }
 
 
-    @RequiresPermissions("bookBuyBusiness#saveBooksDetailList#post")
-    @RequestMapping(name = "图书详细信息录入", path = "saveBooksDetailList", method = RequestMethod.POST)
+    @RequiresPermissions("assertStorageBusiness#saveGoodsDetailList#post")
+    @RequestMapping(name = "资产详细信息录入", path = "saveGoodsDetailList", method = RequestMethod.POST)
     public @ResponseBody
     ResultMsg saveBooksDetailList(@RequestBody GoodsDetailDto[] goodsDetailDtoArrary, AssertStorageBusiness assertStorageBusiness){
         return assertStorageBusinessService.saveGoodsDetailList(goodsDetailDtoArrary,assertStorageBusiness);
     }
 
-    @RequiresPermissions("bookBuyBusiness#startFlow#post")
+    @RequiresPermissions("assertStorageBusiness#startFlow#post")
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestBody GoodsDetailDto[] goodsDetailDtoArrary, AssertStorageBusiness assertStorageBusiness) {

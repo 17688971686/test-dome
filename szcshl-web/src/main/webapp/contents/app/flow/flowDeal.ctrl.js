@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowDealCtrl', flowDeal);
 
-    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc','bookBuyBusinessSvc'];
+    flowDeal.$inject = ['ideaSvc','$state','bsWin','topicSvc','flowSvc','bookBuyBusinessSvc','assertStorageBusinessSvc'];
 
-    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc,bookBuyBusinessSvc) {
+    function flowDeal(ideaSvc,$state, bsWin,topicSvc,flowSvc,bookBuyBusinessSvc,assertStorageBusinessSvc) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -54,9 +54,8 @@
                     bookBuyBusinessSvc.initFlowDeal(vm);
                     break;
                 case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
-
+                    assertStorageBusinessSvc.initFlowDeal(vm);
                     break;
-
             }
     }
 
