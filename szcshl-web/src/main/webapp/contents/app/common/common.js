@@ -22,11 +22,23 @@
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
         uuid : uuid,                                // js
+        downloadReport : downloadReport,            //报表下载
         initDictItems: function (dictList) {
             DICT_ITEMS = dictList;
         }
     };
     window.common = service;
+
+    function downloadReport(data , fileName){
+        var blob = new Blob([data] , {type : "application/vnd.ms-excel"});
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.download = fileName;
+        a.href = URL.createObjectURL(blob);
+        a.click();
+    }
+
+
 
     function initJqValidation(formObj) {
         if (formObj) {
