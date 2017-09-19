@@ -5,6 +5,7 @@ import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.expert.ExpertReview;
 import cs.domain.flow.FlowPrincipal;
 import cs.domain.project.AddRegisterFile;
 import cs.domain.project.AddRegisterFile_;
@@ -15,12 +16,14 @@ import cs.domain.topic.TopicInfo;
 import cs.domain.topic.TopicInfo_;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.AddRegisterFileDto;
 import cs.model.topic.FilingDto;
 import cs.model.topic.TopicInfoDto;
 import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.flow.FlowPrincipalRepo;
 import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
@@ -72,6 +75,9 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private FilingRepo filingRepo;
     @Autowired
     private WorkPlanService workPlanService;
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
+
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -237,7 +243,12 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 filingDto.setRegisterFileDto(dtoList);
             }
             modelDto.setFilingDto(filingDto);
-
+        }
+        //专家评审方案
+        ExpertReview expertReview = expertReviewRepo.findByBusinessId(id);
+        if(Validate.isObject(expertReview)){
+            ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
+            modelDto.setExpertReviewDto(expertReviewDto);
         }
         return modelDto;
     }
@@ -301,6 +312,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
         TopicInfo topicInfo = null;                            //课题研究
+        WorkPlan workPlan = null;                              //工作方案
         Filing filing = null;                                  //资料归档
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
@@ -353,7 +365,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 break;
             //提出成果鉴定会
             case FlowConstant.TOPIC_GZFA :
-                WorkPlan workPlan = workPlanRepo.findById("topId", businessId);
+                workPlan = workPlanRepo.findById("topId", businessId);
                 if(workPlan == null || !Validate.isString(workPlan.getId())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成工作方案，不能进行下一步操作！");
                 }
@@ -361,10 +373,16 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 break;
             //部长审核方案
             case FlowConstant.TOPIC_BZSH_FA :
+                workPlan = workPlanRepo.findById("topId", businessId);
+                workPlan.setDirectorName(SessionUtil.getDisplayName());
+                workPlan.setDirectorOption(flowDto.getDealOption());
+                workPlan.setDirectorDate( new Date());
+                workPlanRepo.save(workPlan);
                 variables = findOrgLeader(businessId,true,assigneeValue);
                 break;
             //分管副主任审核方案
             case FlowConstant.TOPIC_FGLD_FA :
+                variables = findOrgLeader(businessId,true,assigneeValue);
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
@@ -372,10 +390,22 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+
+                workPlan = workPlanRepo.findById("topId", businessId);
+                workPlan.setLeaderName(SessionUtil.getDisplayName());
+                workPlan.setLeaderOption(flowDto.getDealOption());
+                workPlan.setLeaderDate( new Date());
+                workPlanRepo.save(workPlan);
                 break;
             //主任审定
             case FlowConstant.TOPIC_ZRSH_FA :
                 variables = findPrinUser(businessId,assigneeValue);
+
+                workPlan = workPlanRepo.findById("topId", businessId);
+                workPlan.setMleaderName(SessionUtil.getDisplayName());
+                workPlan.setMleaderOption(flowDto.getDealOption());
+                workPlan.setMleaderDate(new Date());
+                workPlanRepo.save(workPlan);
                 break;
             //召开成果鉴定会
             case FlowConstant.TOPIC_CGJD :

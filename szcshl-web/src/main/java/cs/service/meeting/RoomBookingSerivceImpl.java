@@ -334,8 +334,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
 			rb.setRbDate(strdate+"("+stageday+")");//星期几
-			String stageProject = roomDto.getStageProject();
-			rb.setStageProject(stageProject+"("+strdate+"("+stageday+")"+")");
+			rb.setStageProject(Validate.isString(roomDto.getStageProject())?roomDto.getStageProject():""+"("+strdate+"("+stageday+")"+")");
             rb.setModifiedDate(now);
             rb.setModifiedBy(SessionUtil.getDisplayName());
 			roomBookingRepo.save(rb);

@@ -232,7 +232,7 @@ public class FlowController {
             case FlowConstant.SIGN_FLOW:
                 flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
-            case FlowConstant.TOPIC_BFGW:
+            case FlowConstant.TOPIC_FLOW:
                 flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:

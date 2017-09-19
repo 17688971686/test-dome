@@ -11,7 +11,6 @@
             createWP: createWP,				        //新增操作
             findCompanys: findCompanys,		        //查找主管部门
             findUsersByOrgId: findUsersByOrgId,     //查询评估部门
-            saveRoom: saveRoom,					    //添加会议预定
             deleteBookRoom:deleteBookRoom,          //删除会议室
             findAllMeeting: findAllMeeting,         //查找会议室地点
 
@@ -126,42 +125,6 @@
                 success: httpSuccess
             });
         }//E_chooseWP
-
-        //S_会议预定添加
-        function saveRoom(roombook,work,callBack) {
-            common.initJqValidation($('#stageForm'));
-            var isValid = $('#stageForm').valid();
-            if (isValid) {
-                if (new Date(roombook.endTime) < new Date(roombook.beginTime)) {
-                    bsWin.error("开始时间不能大于结束时间!");
-                    return;
-                }
-                roombook.workProgramId = work.id;
-                roombook.stageOrgName = work.reviewOrgName;
-                roombook.stageProject = "项目名称:" + work.projectName + ":" + work.buildCompany + ":" + work.reviewOrgName;
-                roombook.beginTimeStr = $("#beginTime").val();
-                roombook.endTimeStr = $("#endTime").val();
-                roombook.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
-                roombook.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
-
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/room/saveRoom",
-                    data: roombook
-                }
-                var httpSuccess = function success(response) {
-                    if (callBack != undefined && typeof callBack == 'function') {
-                        callBack(response.data);
-                    }
-                }
-                common.http({
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-            }
-        }
-        //E_会议预定添加
 
         //S_查找所有会议室地点
         function findAllMeeting(callBack) {

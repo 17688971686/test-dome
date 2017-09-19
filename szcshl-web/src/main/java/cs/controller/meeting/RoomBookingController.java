@@ -138,7 +138,7 @@ public class RoomBookingController {
     }
 
     @RequiresPermissions("room#saveRoom#post")
-    @RequestMapping(name = "评审会时间", path = "saveRoom", method = RequestMethod.POST)
+    @RequestMapping(name = "保存会议室预定", path = "saveRoom", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveRoom(@RequestBody RoomBookingDto roomDto) {
         return roomBookingSerivce.saveRoom(roomDto);

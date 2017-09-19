@@ -1,11 +1,8 @@
 package cs.repository.repositoryImpl.expert;
 
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
 import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelected_;
+import cs.model.expert.ExpertReviewDto;
 import cs.repository.IRepository;
 
 import java.util.Date;
@@ -19,7 +16,19 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
 
     void updateReviewDate(String businessId, String businessType, Date rbDate);
 
+    /**
+     * 根据业务ID查询评审方案信息
+     * @param businessId
+     * @return
+     */
     ExpertReview findByBusinessId(String businessId);
+
+    /**
+     * 根据domain，初始化dto
+     * @param expertReview
+     * @return
+     */
+    ExpertReviewDto formatReview(ExpertReview expertReview);
 
     /**
      * 根据业务ID判断是否有专家评审费
@@ -36,4 +45,6 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      * @return
      */
     boolean isFinishEPGrade(String businessId);
+
+    void initReviewTitle(ExpertReview expertReview, String businessId, String businessType);
 }

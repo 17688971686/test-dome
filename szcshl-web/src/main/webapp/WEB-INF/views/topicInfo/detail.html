@@ -6,29 +6,29 @@
             <tr>
                 <td class="formAlignRight" style="width:15%;max-width:180px;">课题名称：</td>
                 <td>
-                    {{vm.topic.topicName}}
+                    {{vm.model.topicName}}
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight">合作研究单位： </td>
                 <td>
-                    {{vm.topic.cooperator}}
+                    {{vm.model.cooperator}}
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight">申报部门：</td>
                 <td>
-                    {{vm.topic.orgName}}
+                    {{vm.model.orgName}}
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight">是否报发改委审批：</td>
                 <td >
                     <label>
-                        <input type="radio"  ng-disabled="true" ng-value="9" ng-model="vm.topic.sendFgw" ng-checked="vm.topic.sendFgw == 9 || vm.topic.sendFgw == '9'" name="sendFgw" />是
+                        <input type="radio"  ng-disabled="true" ng-value="9" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 9 || vm.model.sendFgw == '9'" name="sendFgw" />是
                     </label>
                     <label>
-                        <input type="radio"  ng-disabled="true" ng-value="0" ng-model="vm.topic.sendFgw" ng-checked="vm.topic.sendFgw == 0 || vm.topic.sendFgw == '0'" name="sendFgw" />否
+                        <input type="radio"  ng-disabled="true" ng-value="0" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 0 || vm.model.sendFgw == '0'" name="sendFgw" />否
                     </label>
                 </td>
             </tr>
@@ -36,17 +36,17 @@
                 <td class="formAlignRight">是否委里立项：</td>
                 <td >
                     <label>
-                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.topic.fgwlx" ng-checked="vm.topic.fgwlx == 9 || vm.topic.fgwlx == '9'" name="fgwlx" />是
+                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 9 || vm.model.fgwlx == '9'" name="fgwlx" />是
                     </label>
                     <label>
-                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.topic.fgwlx" ng-checked="vm.topic.fgwlx == 0 || vm.topic.fgwlx == '0'" name="fgwlx" />否
+                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 0 || vm.model.fgwlx == '0'" name="fgwlx" />否
                     </label>
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight">备注信息：</td>
                 <td>
-                    <div style="min-height: 60px;">{{vm.topic.remark}}</div>
+                    <div style="min-height: 60px;">{{vm.model.remark}}</div>
                 </td>
             </tr>
         </table>

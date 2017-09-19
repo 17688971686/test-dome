@@ -123,6 +123,26 @@ public class WorkPlan extends DomainBase {
     @JSONField(format = "yyyy-MM-dd")
     private Date leaderDate;
 
+    /**
+     * 主任批示
+     */
+    @Column(columnDefinition="VARCHAR(512)")
+    private String mleaderOption;
+
+    /**
+     * 主任名称
+     */
+    @Column(columnDefinition="VARCHAR(32)")
+    private String mleaderName;
+
+    /**
+     * 主任批示日期
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    @JSONField(format = "yyyy-MM-dd")
+    private Date mleaderDate;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="topId",unique = true)
     private TopicInfo topicInfo;
@@ -269,5 +289,29 @@ public class WorkPlan extends DomainBase {
 
     public void setStudyQuantum(String studyQuantum) {
         this.studyQuantum = studyQuantum;
+    }
+
+    public String getMleaderOption() {
+        return mleaderOption;
+    }
+
+    public void setMleaderOption(String mleaderOption) {
+        this.mleaderOption = mleaderOption;
+    }
+
+    public String getMleaderName() {
+        return mleaderName;
+    }
+
+    public void setMleaderName(String mleaderName) {
+        this.mleaderName = mleaderName;
+    }
+
+    public Date getMleaderDate() {
+        return mleaderDate;
+    }
+
+    public void setMleaderDate(Date mleaderDate) {
+        this.mleaderDate = mleaderDate;
     }
 }

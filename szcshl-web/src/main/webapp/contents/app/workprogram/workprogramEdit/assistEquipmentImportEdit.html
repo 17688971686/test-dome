@@ -58,13 +58,11 @@
              </select>
             	  <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
 					data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" /> 
-					<span id="errorTime"></span>
+					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" />
 					 至
 				 <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
                                data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
                                ng-model="vm.work.studyEndTimeStr" data-datecompare-msg="结束时间必须大于开始时间！"/>
-				<span id="errorTime"></span>
          </td>
      </tr>
     <tr>

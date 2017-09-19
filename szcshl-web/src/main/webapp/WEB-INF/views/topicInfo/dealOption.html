@@ -58,15 +58,15 @@
             <td>
 
                 <div ng-if="vm.flow.curNode.activitiId == 'TOPIC_JHTC'">
-                    <a class="btn btn-xs btn-primary" href="#/topicInfo/{{vm.topic.id}}"><span
+                    <a class="btn btn-xs btn-primary" href="#/topicInfo/{{vm.model.id}}"><span
                             class="glyphicon glyphicon-pencil"></span>编辑课题计划</a>
                 </div>
                 <div ng-if="vm.flow.curNode.activitiId == 'TOPIC_GZFA'">
-                    <a class="btn btn-xs btn-primary" href="#/editWorkPlan/{{vm.topic.id}}"><span
+                    <a class="btn btn-xs btn-primary" href="#/editWorkPlan/{{vm.model.id}}"><span
                             class="glyphicon glyphicon-pencil"></span>编辑工作方案</a>
                 </div>
                 <div ng-if="vm.flow.curNode.activitiId == 'TOPIC_ZLGD'">
-                    <a class="btn btn-xs btn-primary" href="#/editFiling/{{vm.topic.id}}"><span
+                    <a class="btn btn-xs btn-primary" href="#/editFiling/{{vm.model.id}}"><span
                             class="glyphicon glyphicon-pencil"></span>资料归档</a>
                 </div>
             </td>

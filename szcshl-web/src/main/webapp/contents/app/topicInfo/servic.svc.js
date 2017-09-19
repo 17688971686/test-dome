@@ -91,8 +91,8 @@
                 }
             };
             var httpSuccess = function success(response) {
-                vm.topic = {};
-                vm.topic = response.data;
+                vm.model = {};
+                vm.model = response.data;
             };
             common.http({
                 $http: $http,
@@ -254,13 +254,16 @@
                     showFlag.buttBack = true;
                     break;
                 //显示附件上传按钮
+                case flowcommon.getTopicFlowNode().TOPIC_CGJD:
+                case flowcommon.getTopicFlowNode().TOPIC_KTBG:
+                case flowcommon.getTopicFlowNode().TOPIC_KTJT:
+                    if(flow.businessMap) {  //判断是否第一负责人
+                        showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
+                    }
                 case flowcommon.getTopicFlowNode().TOPIC_LXDW:
                 case flowcommon.getTopicFlowNode().TOPIC_QDHT:
                 case flowcommon.getTopicFlowNode().TOPIC_YJSS:
                 case flowcommon.getTopicFlowNode().TOPIC_NBCS:
-                case flowcommon.getTopicFlowNode().TOPIC_CGJD:
-                case flowcommon.getTopicFlowNode().TOPIC_KTBG:
-                case flowcommon.getTopicFlowNode().TOPIC_KTJT:
                 case flowcommon.getTopicFlowNode().TOPIC_YFZL:
                     showFlag.showUploadBT = true;
                     vm.initFileUpload(sysfileSvc.mainTypeValue().TOPIC,sysfileSvc.mainTypeValue().TOPIC,sysfileSvc.mainTypeValue().TOPIC);
@@ -269,12 +272,14 @@
                 case flowcommon.getTopicFlowNode().TOPIC_JHTC:
                     showFlag.businessTr = true;
                     showFlag.showUploadBT = true;
-                    console.log(showFlag);
                     break;
                 //工作方案填报环节
                 case flowcommon.getTopicFlowNode().TOPIC_GZFA:
                     showFlag.businessTr = true;
                     showFlag.showUploadBT = true;
+                    if(flow.businessMap) {  //判断是否第一负责人
+                        showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
+                    }
                     break;
                 //归档环节
                 case flowcommon.getTopicFlowNode().TOPIC_ZLGD:
@@ -283,7 +288,6 @@
                     break;
             }
         }//E_initFlowNode
-
 
     }
 })();

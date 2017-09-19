@@ -53,13 +53,19 @@
             </tr>
             <tr >
                 <td class="text-center">鉴定会日期</span></td>
-                <td colspan="7">
+                <td colspan="3">
                     <button class="btn btn-xs btn-primary" ng-click="vm.bookMeeting();">
                         <span class="glyphicon glyphicon-pencil"></span>编辑
                     </button>
                 </td>
+                <td class="text-center">经费估算</td>
+                <td colspan="4" >
+                    <input class="form-control input-sm" style="width: 100px;"  ng-model="vm.workplan.cost"
+                           id="cost" name="cost" data-val-regex="金额格式不正确"
+                           data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"> （单位：元）
+                </td>
             </tr>
-            <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
+            <tr ng-show="vm.workplan.roomDtoList && vm.workplan.roomDtoList.length > 0" >
                 <td class="text-center" style="width:11%;">评审会日期</td>
                 <td class="text-center" style="width:11%;">会议名称</td>
                 <td class="text-center" style="width:11%;">会议地点</td>
@@ -69,7 +75,7 @@
                 <td class="text-center" style="width:22%;" colspan="2">会议内容</td>
                 <td class="text-center" style="width:11%;">操作</td>
             </tr>
-            <tr ng-repeat="r in vm.work.roomDtoList" ng-show="vm.work.roomDtoList && vm.work.roomDtoList.length > 0">
+            <tr ng-repeat="r in vm.workplan.roomDtoList" ng-show="vm.workplan.roomDtoList && vm.workplan.roomDtoList.length > 0">
                 <td class="text-center">{{r.rbDate}}</td>
                 <td class="text-center">{{r.rbName}}</td>
                 <td class="text-center">{{r.addressName}}</td>
@@ -79,14 +85,7 @@
                 <td class="text-center" colspan="2">{{r.content}}</td>
                 <td class="text-center" >
                     <button class="btn btn-xs btn-primary" ng-click="vm.updateBookRoom(r.id);"><span class="glyphicon glyphicon-pencil">修改</span></button>
-                    <button class="btn btn-xs btn-danger" ng-click="vm.deleteBookRoom(r.id)"><span class="glyphicon glyphicon-remove">删除</span></button>
                 </td>
-            </tr>
-            <tr>
-                <td class="text-center">会议地点</td>
-                <td colspan="3" >xxxx</td>
-                <td class="text-center">经费估算</td>
-                <td colspan="4" >xxxx</td>
             </tr>
             <tr>
                 <td class="text-center">调研时间</td>
@@ -118,7 +117,7 @@
                 <td class="text-center" style="width:11%;">专家类别</td>
                 <td class="text-center" style="width:11%;">备注</td>
             </tr>
-            <tr ng-repeat="x in vm.work.expertDtoList track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+            <tr ng-repeat="x in vm.workplan.expertDtoList track by $index" ng-show="vm.workplan.expertDtoList && vm.workplan.expertDtoList.length > 0">
                 <td class="text-center">{{x.name}}</td>
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>

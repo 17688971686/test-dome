@@ -447,27 +447,11 @@ public class SignServiceImpl implements SignService {
 
             //专家评审方案
             ExpertReview expertReview = expertReviewRepo.findByBusinessId(signid);
-            if (expertReview != null) {
-                ExpertReviewDto expertReviewDto = new ExpertReviewDto();
-                BeanCopierUtils.copyProperties(expertReview, expertReviewDto);
-                List<ExpertSelectedDto> dtoList = new ArrayList<>();
-                //选取的专家
-                if (Validate.isList(expertReview.getExpertSelectedList())) {
-                    expertReview.getExpertSelectedList().forEach(el -> {
-                        ExpertSelectedDto dto = new ExpertSelectedDto();
-                        BeanCopierUtils.copyProperties(el, dto);
-                        //专家信息
-                        if (el.getExpert() != null) {
-                            ExpertDto expertDto = new ExpertDto();
-                            BeanCopierUtils.copyProperties(el.getExpert(), expertDto);
-                            dto.setExpertDto(expertDto);
-                        }
-                        dtoList.add(dto);
-                    });
-                    expertReviewDto.setExpertSelectedDtoList(dtoList);
-                }
+            if(Validate.isObject(expertReview)){
+                ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
                 signDto.setExpertReviewDto(expertReviewDto);
             }
+
         }
         return signDto;
     }

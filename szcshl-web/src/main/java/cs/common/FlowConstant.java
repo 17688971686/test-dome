@@ -183,6 +183,7 @@ public class FlowConstant {
         USER_ZR("user_zr"),              //主任
         USER_GDY("user_gdy"),            //归档员
         SEND_FGW("send_fgw"),            //送发改委
+        MAIN_USER("MAIN_USER"),          //项目主要负责人
         USER_ADMIN("admin");             //系统管理员
 
         private String value;

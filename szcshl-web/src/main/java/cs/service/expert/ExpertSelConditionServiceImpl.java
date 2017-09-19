@@ -12,6 +12,8 @@ import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelCondition_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.topic.TopicInfo;
+import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
@@ -20,6 +22,7 @@ import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,8 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private SignRepo signRepo;
+    @Autowired
+    private TopicInfoRepo topicInfoRepo;
 
     @Override
     public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
@@ -138,10 +143,8 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
                 reviewObj.setCreatedDate(now);
                 reviewObj.setModifiedDate(now);
                 reviewObj.setBusinessType(businessType);
-                if(Constant.BusinessType.SIGN.equals(businessType)){
-                    Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
-                    reviewObj.setReviewTitle("《"+sign.getProjectname()+sign.getReviewstage()+"》专家评审费");
-                }
+                //评审会标题
+                expertReviewRepo.initReviewTitle(reviewObj,businessId,businessType);
                 //获取评审会日期
                 reviewObj.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
                 expertReviewRepo.save(reviewObj);

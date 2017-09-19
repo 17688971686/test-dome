@@ -1,9 +1,13 @@
 package cs.model.topic;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
 
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +36,21 @@ public class WorkPlanDto extends BaseDto {
     private String leaderOption;
     private String leaderName;
     private Date leaderDate;
+    /**
+     * 主任批示
+     */
+    private String mleaderOption;
+
+    /**
+     * 主任名称
+     */
+    private String mleaderName;
+
+    /**
+     * 主任批示日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date mleaderDate;
     private TopicInfoDto topicInfoDto;
     //课题研究ID
     private String topicId;
@@ -191,5 +210,29 @@ public class WorkPlanDto extends BaseDto {
 
     public void setExpertDtoList(List<ExpertDto> expertDtoList) {
         this.expertDtoList = expertDtoList;
+    }
+
+    public String getMleaderOption() {
+        return mleaderOption;
+    }
+
+    public void setMleaderOption(String mleaderOption) {
+        this.mleaderOption = mleaderOption;
+    }
+
+    public String getMleaderName() {
+        return mleaderName;
+    }
+
+    public void setMleaderName(String mleaderName) {
+        this.mleaderName = mleaderName;
+    }
+
+    public Date getMleaderDate() {
+        return mleaderDate;
+    }
+
+    public void setMleaderDate(Date mleaderDate) {
+        this.mleaderDate = mleaderDate;
     }
 }

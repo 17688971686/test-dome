@@ -3,9 +3,9 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['workprogramSvc','$state','bsWin','sysfileSvc','$scope'];
+    workprogram.$inject = ['workprogramSvc','$state','bsWin','sysfileSvc','$scope','meetingSvc','roomSvc'];
 
-    function workprogram(workprogramSvc,$state,bsWin,sysfileSvc,$scope) {
+    function workprogram(workprogramSvc,$state,bsWin,sysfileSvc,$scope,meetingSvc,roomSvc) {
         var vm = this;
     	vm.work = {};						//创建一个form对象
         vm.model = {};                      //项目对象
@@ -176,6 +176,7 @@
             });
         }
      
+        /*********************  S_会议室模块   *************************/
         //会议预定添加弹窗
         vm.addTimeStage = function(){
             if(vm.work.id){
@@ -184,32 +185,58 @@
                 bsWin.alert("请先保存！");
             }
         }
+
+        //修改会议预定信息
+        vm.updateBookRoom = function(id){
+            if(!vm.meetingList){
+                //查找所有会议室地
+                meetingSvc.findAllMeeting(function (data) {
+                    vm.meetingList = data;
+                })
+            }
+            $.each(vm.work.roomBookingDtos, function(key, val) {
+                if(id == val.id){
+                    vm.roombook = val;
+                }
+            } );
+
+            $("#roomBookDetailWindow").kendoWindow({
+                width : "50%",
+                height : "620px",
+                title : "会议预定信息",
+                visible : false,
+                modal : true,
+                closable : true,
+                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+            }).data("kendoWindow").center().open();
+        }
         
         //保存预定会议室信息
         vm.saveRoom = function(){
-            workprogramSvc.saveRoom(vm.roombook,vm.work,function(data){
+            roomSvc.saveRoom(vm.roombook,function(data){
                 if (data.flag || data.reCode == "ok") {
-                    window.parent.$("#stageWindow").data("kendoWindow").close();
-                    bsWin.success("操作成功！");
                     //替换修改的会议信息
                     $.each( vm.work.roomBookingDtos, function(key, val) {
                         if(vm.roombook.id == val.id){
                             val = data.reObj;
                         }
                     } );
+                    bsWin.success("操作成功！",function () {
+                        vm.onRoomClose();
+                    });
                 } else {
                     bsWin.error(data.reMsg);
                 }
 
             })
         }
-        
+
         vm.onRoomClose = function(){
-        	window.parent.$("#stageWindow").data("kendoWindow").close();
+            window.parent.$("#roomBookDetailWindow").data("kendoWindow").close();
         }
 
-        //删除会议室预定情况
-        vm.deleteBookRoom = function(id){
+        //删除会议室预定情况(预定的会议室不能删除)
+        /*vm.deleteBookRoom = function(id){
             bsWin.confirm({
                 title: "询问提示",
                 message: "是否进行该操作！",
@@ -224,49 +251,8 @@
                     })
                 },
             });
-        }
-
-        //修改会议预定信息
-        vm.updateBookRoom = function(id){
-            if(vm.businessFlag.isLoadMeetRoom == false){
-                //查找所有会议室地
-                vm.roombookingList = {};
-                workprogramSvc.findAllMeeting(function (data) {
-                    vm.roombookingList = data;
-                    vm.businessFlag.isLoadMeetRoom = true;
-                    $.each( vm.work.roomBookingDtos, function(key, val) {
-                        if(id == val.id){
-                            vm.roombook = val;
-                        }
-                    } );
-                    $("#stageWindow").kendoWindow({
-                        width : "660px",
-                        height : "550px",
-                        title : "会议预定信息",
-                        visible : false,
-                        modal : true,
-                        closable : true,
-                        actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-                    }).data("kendoWindow").center().open();
-                });
-            }
-            else{
-                $.each( vm.work.roomBookingDtos, function(key, val) {
-                    if(id == val.id){
-                        vm.roombook = val;
-                    }
-                } );
-                $("#stageWindow").kendoWindow({
-                    width : "660px",
-                    height : "550px",
-                    title : "会议预定信息",
-                    visible : false,
-                    modal : true,
-                    closable : true,
-                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-                }).data("kendoWindow").center().open();
-            }
-        }
+        }*/
+        /*********************  E_会议室模块   *************************/
 
         //查询评估部门
         vm.findUsersByOrgId = function(type){

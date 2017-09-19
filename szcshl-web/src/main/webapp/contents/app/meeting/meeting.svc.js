@@ -14,8 +14,9 @@
             createMeeting: createMeeting,
             deleteMeeting: deleteMeeting,
             updateMeeting: updateMeeting,
-            queryMeeting: queryMeeting,		//会议室查询
-            roomUseState: roomUseState
+            queryMeeting: queryMeeting,		            //会议室查询
+            roomUseState: roomUseState,
+            findAllMeeting:findAllMeeting,              //查询所有的会议室
         };
 
         return service;
@@ -27,7 +28,6 @@
 
         // begin#updateUser
         function updateMeeting(vm) {
-
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -64,14 +64,7 @@
                     httpOptions: httpOptions,
                     success: httpSuccess
                 });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
             }
-
         }
 
         // begin#deleteUser
@@ -279,28 +272,28 @@
                     width: 80,
                     filterable: false
                 },
-              /*  {
-                    field: "userName",
-                    title: "负责人",
-                    width: 70,
-                    filterable: false
-                },
+                /*  {
+                 field: "userName",
+                 title: "负责人",
+                 width: 70,
+                 filterable: false
+                 },
+                 {
+                 field: "userPhone",
+                 title: "负责人电话",
+                 width: 120,
+                 filterable: false
+                 },*/
                 {
-                    field: "userPhone",
-                    title: "负责人电话",
-                    width: 120,
-                    filterable: false
-                },*/
-                {
-                    field : "",
-                    title : "状态",
-                    width : 50,
+                    field: "",
+                    title: "状态",
+                    width: 50,
                     template: function (item) {
-                       if(item.mrStatus == "2"){
+                        if (item.mrStatus == "2") {
                             return "停用";
-                       }else{
-                           return "正常";
-                       }
+                        } else {
+                            return "正常";
+                        }
                     }
                 },
                 {
@@ -332,6 +325,25 @@
             };
         }// end fun grid
 
+
+        //S_查询所有的会议室
+        function findAllMeeting(callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/meeting/findAll",
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError : function(){}
+            });
+        }
 
     }
 })();

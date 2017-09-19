@@ -18,6 +18,7 @@
             editRoom: editRoom,                      //编辑
             initDefaultValue : initDefaultValue,     //初始化会议信息
             updateDataSource : updateDataSource,     //重新设置DataSource
+            saveRoom : saveRoom,                     //保存会议预定信息
         };
         return service;
 
@@ -340,6 +341,36 @@
                 success: httpSuccess
             });
         }
+
+        //S_会议预定添加
+        function saveRoom(roombook,callBack) {
+            common.initJqValidation($('#stageForm'));
+            var isValid = $('#stageForm').valid();
+            if (isValid) {
+                roombook.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
+                roombook.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
+                if (new Date(roombook.endTime) < new Date(roombook.beginTime)) {
+                    bsWin.error("开始时间不能大于结束时间!");
+                    return;
+                }
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/room/saveRoom",
+                    data: roombook
+                }
+                var httpSuccess = function success(response) {
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
+                }
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+        }
+        //E_会议预定添加
 
         //start#exportWeek
         //本周评审会议

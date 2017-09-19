@@ -5,19 +5,18 @@ import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
-import cs.domain.flow.RuProcessTask;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
-import cs.repository.repositoryImpl.expert.*;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.service.sys.UserServiceImpl;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -490,7 +489,8 @@ public class ExpertServiceImpl implements ExpertService {
 
         //2、遍历所有抽取条件，每个条件单独抽取
         ResultMsg resultMsg = null;
-        for(ExpertSelConditionDto epConditon : paramArrary){
+        for(int k=0,l=paramArrary.length;k<l;k++){
+            ExpertSelConditionDto epConditon = paramArrary[k];
             if(!Validate.isString(epConditon.getId())){
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请先保存专家抽取条件再进行专家抽取！");
                 break;
@@ -514,7 +514,7 @@ public class ExpertServiceImpl implements ExpertService {
             //2、获取所有符合条件的专家
             List<ExpertDto> matchEPList = countExpert(minBusinessId,reviewId, epConditon);
             if(!Validate.isList(matchEPList)){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
                 break;
             }
             //3、符合条件的正选专家、备选专家分类
@@ -528,22 +528,22 @@ public class ExpertServiceImpl implements ExpertService {
             });
 
             if(epConditon.getOfficialNum() > officialList.size()){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                 break;
             }
             if(epConditon.getAlternativeNum() > alternativeList.size()){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
             }
             allEPList.addAll(matchEPList);
 
             //4、开始抽取
             for(int i = 0;i<chooseCount;i++){
                 if(!addAutoExpert(officialEPList,officialList,saveList,epConditon,expertReview,minBusinessId)){
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
                 if(!addAutoExpert(alternativeEPList,alternativeList,saveList,epConditon,expertReview,minBusinessId)){
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+epConditon.getSort()+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
             }

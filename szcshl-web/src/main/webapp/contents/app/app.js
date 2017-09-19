@@ -935,6 +935,13 @@
             }
         }//E_initInputValue
 
+        //用于循环数字用
+        $rootScope.range = function(n) {
+            if(n){
+                return new Array(n);
+            }
+        }
+
         //kendo 语言
         kendo.culture("zh-CN");
         common.getTaskCount({$http: $http});

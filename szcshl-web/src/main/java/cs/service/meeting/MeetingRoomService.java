@@ -5,6 +5,8 @@ import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.List;
+
 public interface MeetingRoomService {
 
 	PageModelDto<MeetingRoomDto> get(ODataObj odataObj);
@@ -18,4 +20,6 @@ public interface MeetingRoomService {
 	MeetingRoomDto findByIdMeeting(String id);
 	
 	void roomUseState(MeetingRoomDto meetingDto);
+
+    List<MeetingRoomDto> findAll();
 }

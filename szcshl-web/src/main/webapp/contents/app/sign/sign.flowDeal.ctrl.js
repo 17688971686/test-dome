@@ -148,19 +148,35 @@
             ideaSvc.initIdea(vm);
         }
 
+        /***************  S_评审意见管理  ***************/
+        // begin 管理个人意见
+        vm.ideaEdit = function (options) {
+            if(!angular.isObject(options)){
+                options = {};
+            }
+            ideaSvc.initIdeaData(vm,options);
+        }
+
+        //选择个人常用意见
+        vm.selectedIdea = function(){
+            vm.flow.dealOption = vm.chooseIdea;
+        }
+        /***************  E_评审意见管理  ***************/
+
+        /***************  S_专家评分，评审费发放  ***************/
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
-            vm.businessFlag.expertScore = {};
-            $.each(vm.model.expertReviewDto.expertSelectedDtoList,function (i,epSel) {
-                if(epSel.id == id){
-                    vm.businessFlag.expertScore = epSel;
+            vm.scoreExpert = {};
+            $.each(vm.model.expertReviewDto.expertSelectedDtoList,function (i,scopeEP) {
+                if(scopeEP.id == id){
+                    vm.scoreExpert = scopeEP;
                     return ;
                 }
             })
 
             $("#star").raty({
                 score: function () {
-                    $(this).attr("data-num", angular.isUndefined(vm.businessFlag.expertScore.score)?0:vm.businessFlag.expertScore.score);
+                    $(this).attr("data-num", angular.isUndefined(vm.scoreExpert.score)?0:vm.scoreExpert.score);
                     return $(this).attr("data-num");
                 },
                 starOn: '../contents/libs/raty/lib/images/star-on.png',
@@ -170,11 +186,11 @@
                 halfShow: true,
                 size: 34,
                 click: function (score, evt) {
-                    vm.businessFlag.expertScore.score = score;
+                    vm.scoreExpert.score = score;
                 }
             });
 
-            $("#expertmark").kendoWindow({
+            $("#score_win").kendoWindow({
                 width: "820px",
                 height: "365px",
                 title: "编辑-专家星级",
@@ -187,15 +203,15 @@
 
         // 关闭专家评分
         vm.closeEditMark = function () {
-            window.parent.$("#expertmark").data("kendoWindow").close();
+            window.parent.$("#score_win").data("kendoWindow").close();
         }
 
         // 保存专家评分
         vm.saveMark = function () {
-            common.initJqValidation($('#markform'));
-            var isValid = $('#markform').valid();
+            common.initJqValidation($('#expert_score_form'));
+            var isValid = $('#expert_score_form').valid();
             if(isValid){
-                flowSvc.saveMark(vm.businessFlag.expertScore,function(){
+                expertReviewSvc.saveMark(vm.scoreExpert,function(){
                     bsWin.success("保存成功！",function(){
                         vm.closeEditMark();
                     });
@@ -203,22 +219,6 @@
             }else{
                 bsWin.alert("请填写评分和评分内容！");
             }
-        }
-
-        //获取专家评星
-        vm.getExpertStar = function(id ,score){
-            var returnStr = "";
-            if (score != undefined) {
-                for (var i = 0; i <score; i++) {
-                    returnStr += "<span style='color:gold;font-size:20px;'><i class='fa fa-star' aria-hidden='true'></i></span>";
-                }
-            }
-            $("#"+id+"_starhtml").html(returnStr);
-        }
-
-        vm.editpayment = function (id) {
-            vm.expertReview.expertId = id;
-            flowSvc.gotopayment(vm);
         }
 
         // 计算应纳税额
@@ -251,14 +251,13 @@
                 })
                 var payDate = expertReview.payDate;
                 month = payDate.substring(0, payDate.lastIndexOf('-'));
-                flowSvc.countTaxes(ids,month,function (data) {
+                expertReviewSvc.countTaxes(ids,month,function (data) {
                     var allExpertCost = data;
                     expertReview.reviewCost = 0;
                     expertReview.reviewTaxes = 0;
                     expertReview.totalCost = 0;
 
                     $.each(expertReview.expertSelectedDtoList,function(i,v){
-                        var expertDto = v.expertDto;
                         var expertId = v.EXPERTID;
                         var expertSelectedId = v.id;
                         var totalCost = 0;
@@ -314,10 +313,11 @@
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
-                flowSvc.savePayment(expertReview,vm.isCommit,function(data){
+                expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
                     if(data.flag || data.reCode == "ok"){
-                        vm.isCommit = false;
-                        bsWin.alert("操作成功！");
+                        bsWin.alert("操作成功！",function(){
+                            vm.isCommit = false;
+                        });
                     }else{
                         bsWin.alert(data.reMsg);
                     }
@@ -326,20 +326,9 @@
                 bsWin.alert("请正确填写专家评审费信息！");
             }
         }
+        /***************  E_专家评分，评审费发放  ***************/
 
-        // begin 管理个人意见
-        vm.ideaEdit = function (options) {
-            if(!angular.isObject(options)){
-                options = {};
-            }
-            ideaSvc.initIdeaData(vm,options);
-        }
-
-        //选择个人常用意见
-        vm.selectedIdea = function(){
-            vm.flow.dealOption = vm.chooseIdea;
-        }
-
+        /***************  S_流程处理 ***************/
         //流程提交
         vm.commitNextStep = function () {
             if(vm.flow.isSuspended){
@@ -396,6 +385,7 @@
                 }
             });
         }
+        /***************  E_流程处理 ***************/
 
         //编辑审批登记表
         vm.editSign = function(){

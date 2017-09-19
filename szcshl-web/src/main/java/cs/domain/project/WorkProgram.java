@@ -93,11 +93,11 @@ public class WorkProgram extends DomainBase {
     private String contactPersonPhone;
 
     //联系人电话
-    @Column(columnDefinition = "VARCHAR(12)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String contactPersonTel;
 
     //联系人传真
-    @Column(columnDefinition = "VARCHAR(12)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String contactPersonFax;
 
     //申报建设规模
