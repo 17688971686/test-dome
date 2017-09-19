@@ -143,7 +143,7 @@
                         assertStorageBusinessSvc.startFlow(vm.conditions,vm.isCommit,function(data){
                             if(data.flag || data.reCode == 'ok'){
                                 bsWin.alert("保存成功！",function(){
-                                    $state.go('myBookBuyBusiness');
+                                    $state.go('myAssertStorageBusiness');
                                 });
                             }else{
                                 bsWin.alert(data.reMsg);

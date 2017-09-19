@@ -96,7 +96,7 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
 		domain.setModifiedBy(SessionUtil.getDisplayName());
 		domain.setModifiedDate(new Date());
-		
+
 		assertStorageBusinessRepo.save(domain);
 	}
 
@@ -259,20 +259,20 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 				break;
 			case FlowConstant.ASSERT_STORAGE_ZHBSH:
 				goodsDetailBusiness = assertStorageBusinessRepo.findById(AssertStorageBusiness_.businessId.getName(), businessKey);
-				goodsDetailBusiness.setOrgDirectorId(SessionUtil.getUserInfo().getOrg().getOrgDirector());
-				goodsDetailBusiness.setOrgDirector(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());
-				goodsDetailBusiness.setOrgDirectorDate(new Date());
-				goodsDetailBusiness.setApplyReason(flowDto.getDealOption());
+				goodsDetailBusiness.setComprehensiveId(SessionUtil.getUserInfo().getId());
+				goodsDetailBusiness.setComprehensiveName(SessionUtil.getUserInfo().getDisplayName());
+				goodsDetailBusiness.setComprehensiveDate(new Date());
+				goodsDetailBusiness.setComprehensivehandlesug(flowDto.getDealOption());
 				assertStorageBusinessRepo.save(goodsDetailBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
 				variables = ActivitiUtil.setAssigneeValue(FlowConstant.AssertStorageFlowParams.USER_ZXLD.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
 				break;
 			case FlowConstant.ASSERT_STORAGE_ZXLDSH:
 				goodsDetailBusiness = assertStorageBusinessRepo.findById(AssertStorageBusiness_.businessId.getName(), businessKey);
-				goodsDetailBusiness.setOrgDirectorId(SessionUtil.getUserInfo().getOrg().getOrgDirector());
-				goodsDetailBusiness.setOrgDirector(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());
-				goodsDetailBusiness.setOrgDirectorDate(new Date());
-				goodsDetailBusiness.setApplyReason(flowDto.getDealOption());
+				goodsDetailBusiness.setLeaderId(SessionUtil.getUserId());
+				goodsDetailBusiness.setLeaderName(SessionUtil.getUserInfo().getDisplayName());
+				goodsDetailBusiness.setLeaderDate(new Date());
+				goodsDetailBusiness.setLeaderhandlesug(flowDto.getDealOption());
 				assertStorageBusinessRepo.save(goodsDetailBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
 				break;

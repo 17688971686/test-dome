@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowEndCtrl', flowEnd);
 
-    flowEnd.$inject = ['$state','topicSvc','flowSvc','sysfileSvc'];
+    flowEnd.$inject = ['$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc'];
 
-    function flowEnd($state,topicSvc,flowSvc,sysfileSvc) {
+    function flowEnd($state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -34,11 +34,17 @@
             //共用方法
             //1、历史处理记录
             flowSvc.historyData(vm);
-
+            console.log(vm.processKey);
             //2、各自显示模块
             switch (vm.processKey){
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
                     topicSvc.initFlowDeal(vm);
+                    break;
+                case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:
+                    bookBuyBusinessSvc.initFlowDeal(vm);
+                    break;
+                case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
+                    assertStorageBusinessSvc.initFlowDeal(vm);
                     break;
             }
             //5、附件
