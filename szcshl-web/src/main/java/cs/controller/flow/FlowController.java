@@ -1,6 +1,5 @@
 package cs.controller.flow;
 
-import cs.common.Constant;
 import cs.common.Constant.MsgCode;
 import cs.common.FlowConstant;
 import cs.common.ResultMsg;
@@ -14,6 +13,7 @@ import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
+import cs.service.asserts.assertStorageBusiness.AssertStorageBusinessService;
 import cs.service.book.BookBuyBusinessService;
 import cs.service.flow.FlowNextNodeFilter;
 import cs.service.flow.FlowService;
@@ -70,6 +70,9 @@ public class FlowController {
     @Qualifier("signFlowImpl")
     private IFlow signFlowImpl;
     @Autowired
+    @Qualifier("assertStorageFlowImpl")
+    private IFlow assertStorageFlowImpl;
+    @Autowired
     @Qualifier("booksBuyBusFlowImpl")
     private IFlow booksBuyBusFlowImpl;
     @Autowired
@@ -79,6 +82,8 @@ public class FlowController {
     private TopicInfoService topicInfoService;
     @Autowired
     private BookBuyBusinessService bookBuyBusinessService;
+    @Autowired
+    private AssertStorageBusinessService assertStorageBusinessService;
 
     @RequiresPermissions("flow#html/tasks#post")
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
@@ -238,6 +243,9 @@ public class FlowController {
             case FlowConstant.BOOKS_BUY_FLOW:
                 flowDto.setBusinessMap(booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.ASSERT_STORAGE_FLOW:
+                flowDto.setBusinessMap(assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -289,6 +297,8 @@ public class FlowController {
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
                 break;
+            case FlowConstant.ASSERT_STORAGE_FLOW:
+                resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
         }
@@ -356,6 +366,8 @@ public class FlowController {
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowDeal";
                 break;
+            case FlowConstant.ASSERT_STORAGE_FLOW:
+                resultPage = "asserts/assertStorageBusiness/flowDeal";
             default:
                 ;
         }

@@ -1,0 +1,57 @@
+<meta charset="UTF-8">
+<div class="toolbar">
+    <button class="btn btn-sm btn-success" ng-click="vm.commitFlow()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-ok"></span>提交</button>
+    <button class="btn btn-sm btn-warning" ng-click="vm.backFlow()" ng-disabled="vm.isCommit" ng-show="vm.showFlag.buttBack"><span class="glyphicon glyphicon-step-backward"></span>回退</button>
+    <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
+</div>
+
+<form id="flow_form" name="flow_form" >
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td width="10%" class="text-center">本环节名称</td>
+            <td>
+                {{vm.flow.curNode.activitiName}}
+            </td>
+        </tr>
+        <tr>
+            <td width="10%" class="text-center">处理意见</td>
+            <td>
+                <select ng-model="vm.chooseIdea" ng-change="vm.selectedIdea()" style="min-width:10%;max-width: 100%;margin:5px 0px;">
+                    <option value="">-- 个人常用意见列表 --</option>
+                    <option  ng-repeat="x in vm.ideas" value="{{x.ideaContent}}" >{{x.ideaContent}}</option>
+                </select>
+                <textarea rows="3" ng-model="vm.flow.dealOption"  name="dealOption" id="dealOption" style="width:100%" data-val="true" data-val-required="处理意见不能为空！" data-val-length-max="2000" ></textarea>
+                <span data-valmsg-for="dealOption" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr ng-show="vm.flow.nextNode && (vm.flow.nextNode.length > 0) ">
+            <td width="10%" class="text-center">
+                下一环节名称
+            </td>
+            <td>
+                <div ng-repeat="x in vm.flow.nextNode">
+                    <span>{{x.activitiName}}</span>
+                </div>
+            </td>
+        </tr>
+        <tr ng-if ="vm.showFlag.businessNext">
+            <td width="10%" class="text-center">
+                下一环节处理人[部门]
+            </td>
+            <td>
+
+            </td>
+        </tr>
+
+        <tr ng-if="vm.showFlag.businessTr">
+            <td width="10%" class="text-center">
+                业务处理<br>
+            </td>
+            <td >
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>

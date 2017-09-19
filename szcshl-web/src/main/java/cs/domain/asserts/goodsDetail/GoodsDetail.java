@@ -25,9 +25,9 @@ public class GoodsDetail extends DomainBase {
     //型号
     @Column(columnDefinition = "varchar(64) ")
     private String models;
-    //单价
-    @Column(columnDefinition="NUMBER")
-    private String goodsPrice;
+    //单位
+    @Column(columnDefinition = "varchar(255)")
+    private String orgCompany;
     //估价
     @Column(columnDefinition="NUMBER")
     private String evaluate;
@@ -79,12 +79,12 @@ public class GoodsDetail extends DomainBase {
         this.models = models;
     }
 
-    public String getGoodsPrice() {
-        return goodsPrice;
+    public String getOrgCompany() {
+        return orgCompany;
     }
 
-    public void setGoodsPrice(String goodsPrice) {
-        this.goodsPrice = goodsPrice;
+    public void setOrgCompany(String orgCompany) {
+        this.orgCompany = orgCompany;
     }
 
     public String getEvaluate() {
