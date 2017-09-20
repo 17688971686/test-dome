@@ -3,9 +3,9 @@
 
     angular.module('app').controller('assistPlanCtrl', assistPlan);
 
-    assistPlan.$inject = ['$location','$state','assistSvc','$http','$interval','bsWin'];
+    assistPlan.$inject = ['$location','$state','assistSvc','$http','$interval','bsWin','ideaSvc'];
 
-    function assistPlan($location,$state,assistSvc,$http,$interval,bsWin) {
+    function assistPlan($location,$state,assistSvc,$http,$interval,bsWin , ideaSvc) {
         var vm = this;
         vm.model = {};							//创建一个form对象
         vm.filterModel = {};                    //filter对象
@@ -151,6 +151,7 @@
                         }
                     });
                     vm.model.isDrawed="0";
+                    vm.model.assistPlanSignDtoList = vm.showPlan.assistPlanSignDtoList;
                     assistSvc.saveAssistPlan(vm.model,vm.isCommit,function(data){
                         vm.isCommit = false;
                         //如果是新增，则重新刷新列表
@@ -292,16 +293,28 @@
             assistSvc.getPlanSignByPlanId(vm,planId);
         }
         
-        vm.ministerOpinionEdit=function (ministerOpinion){	//部长意见
-        	common.initIdeaData(vm,$http,ministerOpinion);
+        vm.ministerOpinionEdit=function (options){	//部长意见
+            if(!angular.isObject(options)){
+                options = {};
+            }
+            ideaSvc.initIdeaData(vm,options);
+        	// common.initIdeaData(vm,$http,ministerOpinion);
         }
         
-        vm.viceDirectorOpinionEdit=function(viceDirectorOpinion){	//副主任意见
-        	common.initIdeaData(vm,$http,viceDirectorOpinion);
+        vm.viceDirectorOpinionEdit=function(options){	//副主任意见
+            if(!angular.isObject(options)){
+                options = {};
+            }
+            ideaSvc.initIdeaData(vm,options);
+        	// common.initIdeaData(vm,$http,viceDirectorOpinion);
         }
         
-        vm.directorOpinionEdit=function (directorOpinion){	//主任意见
-        	common.initIdeaData(vm,$http,directorOpinion);
+        vm.directorOpinionEdit=function (options){	//主任意见
+            if(!angular.isObject(options)){
+                options = {};
+            }
+            ideaSvc.initIdeaData(vm,options);
+        	// common.initIdeaData(vm,$http,directorOpinion);
         }
         
         vm.assistPlan={};

@@ -85,7 +85,7 @@
                         </tr>
                         </thead>
                         <tbody style="display:block; max-height:300px;overflow-y: auto;">
-                        <tr ng-repeat="sas in vm.pickMainSign">
+                        <tr ng-repeat="sas in vm.pickMainSign track by $index">
                             <td style="width: 60px;"><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
                             <td style="width: 60px;">{{ $index + 1}}</td>
                             <td style="width: 180px;" style="background-color: #0d6aad;" ng-show="sas.assistType == '合并项目'">
