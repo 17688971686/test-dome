@@ -45,7 +45,7 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 	public List<AssistPlanSignDto> getPlanSignByPlanId(String planId) {
 		HqlBuilder hqlBuilder=HqlBuilder.create();
 		hqlBuilder.append("select id,signId,projectName,assistType,mainSignId,assistCost,jiananCost,assistDays,isMain,splitNum,assistUnitId,planId,case when t.estimateCost is null then (");
-		hqlBuilder.append("select wp.appalyinvestment from CS_WORK_PROGRAM wp where wp.signid = t.signid)");
+		hqlBuilder.append("select wp.declaration from CS_WORK_PROGRAM wp where wp.signid = t.signid and wp.branchid='1')");
 		hqlBuilder.append("else t.estimateCost end estimateCost from CS_AS_PLANSIGN t where t.planId=:planId");
 		hqlBuilder.setParam("planId", planId);
 		List<AssistPlanSign> list=assistPlanSignRepo.findBySql(hqlBuilder);
