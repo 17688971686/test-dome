@@ -31,10 +31,11 @@ public interface AddSuppLetterService {
 
 	boolean isHaveSuppLetter(String businessId);
 
-	ResultMsg saveMonthlyMultiyear(MonthlyNewsletterDto record);
+	ResultMsg saveMonthlyMultiyear(AddSuppLetterDto record);
 
 	PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj);
 
 	AddSuppLetterDto initMonthlyMutilyear();
+
 
 }

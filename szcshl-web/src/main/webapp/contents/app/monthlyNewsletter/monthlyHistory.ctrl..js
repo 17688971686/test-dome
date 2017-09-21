@@ -1,13 +1,13 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('monthlyHistoryCtrl', monthlyHistory);
+    angular.module('app').controller('monthlyExcellentCtrl', monthlyExcellent);
 
-    monthlyHistory.$inject = ['$location', 'monthlyHistorySvc'];
+    monthlyExcellent.$inject = ['$location', 'monthlyExcellentSvc'];
 
-    function monthlyHistory($location, monthlyHistorySvc) {
+    function monthlyExcellent($location, monthlyExcellentSvc) {
         var vm = this;
-        vm.title = '月报简报历史数据';
+        vm.title = '优秀评审报告管理';
 
         vm.del = function (id) {
             common.confirm({
@@ -39,8 +39,8 @@
 
         activate();
         function activate() {
-            monthlyHistorySvc.monthlyHistoryGrid(vm);
-            monthlyHistorySvc.deleteGridOptions(vm);
+            monthlyExcellentSvc.monthlyExcellentGrid(vm);
+            //monthlyHistorySvc.deleteGridOptions(vm);
         }
     }
 })();

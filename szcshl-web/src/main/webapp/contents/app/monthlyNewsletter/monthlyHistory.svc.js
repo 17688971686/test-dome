@@ -117,7 +117,6 @@
                 };
 
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess

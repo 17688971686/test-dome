@@ -4,6 +4,7 @@ import cs.common.ResultMsg;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
+import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 
 /**
@@ -38,5 +39,6 @@ public interface MonthlyNewsletterService {
 	void deleteMonthlyDatas(String[] ids);
 
 	void deleteMonthlyData(String id);
+
 
 }

@@ -55,9 +55,14 @@ public class AddSuppLetterDto extends BaseDto {
 	private String businessIdType;
 	
 	
-	//公文类型
+	//1公文类型
     private String missiveType;
     
+    //2公文类型月报简报
+    private String missiveMonthlyType;
+    
+    //3公文类型月报简报
+     private String  missiveOtherType;
     //月报简报类型
     private String monthlyType;
     
@@ -66,6 +71,8 @@ public class AddSuppLetterDto extends BaseDto {
     
     //月报简报状态：0.表示为中心文件（稿纸）
     private String monthlyStatus;
+    
+   
     
     public Date getDisapDate() {
 		return disapDate;
@@ -247,4 +254,21 @@ public class AddSuppLetterDto extends BaseDto {
     public void setBusinessType(String businessType) {
         this.businessType = businessType;
     }
+
+	public String getMissiveMonthlyType() {
+		return missiveMonthlyType;
+	}
+
+	public void setMissiveMonthlyType(String missiveMonthlyType) {
+		this.missiveMonthlyType = missiveMonthlyType;
+	}
+
+	public String getMissiveOtherType() {
+		return missiveOtherType;
+	}
+
+	public void setMissiveOtherType(String missiveOtherType) {
+		this.missiveOtherType = missiveOtherType;
+	}
+    
 }

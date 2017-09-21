@@ -20,7 +20,6 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.monthly.MonthlyNewsletter_;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
 import cs.domain.project.Sign;
@@ -215,16 +214,22 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
 	@Override
 	@Transactional
-	public ResultMsg saveMonthlyMultiyear(MonthlyNewsletterDto record) {
+	public ResultMsg saveMonthlyMultiyear(AddSuppLetterDto record) {
 		Date now = new Date();
 		AddSuppLetter addSuppLetter = new AddSuppLetter();
-		BeanCopierUtils.copyProperties(record, addSuppLetter);
-		addSuppLetter.setId(UUID.randomUUID().toString());
-		addSuppLetter.setCreatedBy(SessionUtil.getUserInfo().getId());
-		addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
-		addSuppLetter.setModifiedDate(now);
-		addSuppLetter.setCreatedDate(now);
-		addSuppLetter.setMonthlyStatus(Constant.EnumState.NO.getValue());
+		if(Validate.isString(record.getId())){
+			addSuppLetter = addSuppLetterRepo.findById(record.getId());
+            BeanCopierUtils.copyPropertiesIgnoreNull(record, addSuppLetter);
+		}else{
+			BeanCopierUtils.copyProperties(record, addSuppLetter);
+			addSuppLetter.setId(UUID.randomUUID().toString());
+			addSuppLetter.setCreatedBy(SessionUtil.getUserInfo().getId());
+			addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
+			addSuppLetter.setModifiedDate(now);
+			addSuppLetter.setCreatedDate(now);
+			addSuppLetter.setMonthlyStatus(Constant.EnumState.NO.getValue());
+		}
+		
 		addSuppLetterRepo.save(addSuppLetter);
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
 	}
@@ -237,7 +242,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
 		Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
 		criteria = odataObj.buildFilterToCriteria(criteria);
-		criteria.add(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName(), EnumState.NO.getValue()));
+		criteria.add(Restrictions.eq(AddSuppLetter_.monthlyStatus.getName(), EnumState.NO.getValue()));
 		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
 	    pageModelDto.setCount(totalResult);
 	    criteria.setProjection(null);

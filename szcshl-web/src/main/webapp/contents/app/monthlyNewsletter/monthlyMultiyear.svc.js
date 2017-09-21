@@ -10,11 +10,11 @@
         var service = {
         	createmonthlyMultiyear: createmonthlyMultiyear,//添加中心文件稿纸
         	initMonthlyMultiyear:initMonthlyMultiyear,//初始化中心文件稿纸
-        	
             monthlyMultiyearGrid: monthlyMultiyearGrid,//月报简报年度列表
+            getmonthlyMultiyearById: getmonthlyMultiyearById,//根据ID查找中心文件稿纸
+            updatemonthlyMultiyear: updatemonthlyMultiyear,//更新中心文件稿纸
+           
             deletemonthlyMultiyear: deletemonthlyMultiyear,//删除月报简报记录
-            getmonthlyMultiyearById: getmonthlyMultiyearById,
-            updatemonthlyMultiyear: updatemonthlyMultiyear
         };
 
         return service;
@@ -40,53 +40,22 @@
         //E 初始化中心文件稿纸
         
         // begin#updatemonthlyMultiyear
-        function updatemonthlyMultiyear(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_monthlyMultiyear,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
+        function updatemonthlyMultiyear(suppletter,callBack) {
+        	   var httpOptions = {
+                       method: 'post',
+                       url: url_monthlyMultiyear+"/saveMonthlyMultiyear",
+                       data: suppletter
+                   };
+                   var httpSuccess = function success(response) {
+                   	if (callBack != undefined && typeof callBack == 'function') {
+                           callBack(response.data);
+                       }
+                   };
+                   common.http({
+                       $http: $http,
+                       httpOptions: httpOptions,
+                       success: httpSuccess
+                   });
         }
 
         // begin#删除月报简报记录
@@ -149,11 +118,11 @@
         function getmonthlyMultiyearById(vm) {
         	var httpOptions = {
                 method: 'get',
-                url: rootPath + "/monthlyMultiyear/html/findById",
+                url: rootPath + "/addSuppLetter/findById",
                 params:{id:vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
+                vm.suppletter = response.data;
             };
 
             common.http({
@@ -222,34 +191,35 @@
 				    template: "<span class='row-number'></span>"
 				 },
                 {
-                    field: "startDay",
+                    field: "title",
                     title: "文件标题",
                     width: 180,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                    filterable : false,
+                    template: function (item) {
+                    	return '<a href="#/monthlyMultiyearEdit/'+item.id+'" >'+item.title+'</a>';
+                    }
                 },
                 {
-                    field: "startDay",
+                    field: "orgName",
                     title: "拟办部门",
                     width: 100,
                     filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
-                    field: "stageMunber",
+                    field: "userName",
                     title: "拟稿人",
                     width: 120,
                     filterable: false
                 },
                 
                 {
-                    field: "declarationSum",
+                    field: "suppLetterTime",
                     title: "拟稿时间",
                     width: 100,
                     filterable: false
                 },
                 {
-                    field: "assessorSum",
+                    field: "secretLevel",
                     title: "秘密等级",
                     width: 100,
                     filterable: false
@@ -258,7 +228,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 100,
+                    width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
                             "vm.del('" + item.id + "')", item.id);

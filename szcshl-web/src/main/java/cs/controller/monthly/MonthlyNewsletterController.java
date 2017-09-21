@@ -44,21 +44,22 @@ public class MonthlyNewsletterController {
     }
     
     @RequiresPermissions("monthlyNewsletter#saveMonthlyMultiyear#post")
-    @RequestMapping(name = "保存中心文件稿纸", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
+    @RequestMapping(name = "保存（中心）文件稿纸", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody ResultMsg monthlyMultiyearAdd(@RequestBody MonthlyNewsletterDto record) {
+    public @ResponseBody ResultMsg monthlyMultiyearAdd(@RequestBody AddSuppLetterDto record) {
        return addSuppLetterService.saveMonthlyMultiyear(record);
     }
     
     @RequiresPermissions("monthlyNewsletter#initMonthlyMultiyear#post")
-    @RequestMapping(name = "初始化中心文件稿纸", path = "initMonthlyMultiyear", method = RequestMethod.POST)
+    @RequestMapping(name = "初始化（中心）文件稿纸", path = "initMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto initMutilyear(){
     	return addSuppLetterService.initMonthlyMutilyear();
     }
     
+    
     @RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
-    @RequestMapping(name = "获取年度月报简报列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
+    @RequestMapping(name = "获取（中心年度）月报简报列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -113,7 +114,7 @@ public class MonthlyNewsletterController {
 	@RequiresPermissions("monthlyNewsletter#savaHistory#post")
     @RequestMapping(name = "保存月报简报历史数据", path = "savaHistory", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResultMsg savaHistory(@RequestBody MonthlyNewsletterDto record) {
+    public @ResponseBody ResultMsg savaHistory(@RequestBody MonthlyNewsletterDto record) {
        return monthlyNewsletterService.save(record);
     }
 	
@@ -195,6 +196,18 @@ public class MonthlyNewsletterController {
     @RequestMapping(name = "编辑页面", path = "html/monthlyNewsletterEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/monthlyNewsletterEdit";
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyExcellentList#get")
+    @RequestMapping(name = "优秀评审报告页面", path = "html/monthlyExcellentList", method = RequestMethod.GET)
+    public String monthlyExcellentList() {
+        return ctrlName+"/monthlyExcellentList";
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyUpload#get")
+    @RequestMapping(name = "上传附件页面", path = "html/monthlyUpload", method = RequestMethod.GET)
+    public String monthlyUpload() {
+        return ctrlName+"/monthlyUpload";
     }
     // end#html
 

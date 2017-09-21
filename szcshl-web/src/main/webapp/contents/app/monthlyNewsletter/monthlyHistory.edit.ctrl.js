@@ -3,9 +3,9 @@
 
     angular.module('app').controller('monthlyHistoryEditCtrl', monthlyHistory);
 
-    monthlyHistory.$inject = ['$location', 'monthlyHistorySvc', '$state'];
+    monthlyHistory.$inject = ['$location', 'monthlyHistorySvc', '$state','bsWin'];
 
-    function monthlyHistory($location, monthlyHistorySvc, $state) {
+    function monthlyHistory($location, monthlyHistorySvc, $state,bsWin) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '添加月报简报历史数据';

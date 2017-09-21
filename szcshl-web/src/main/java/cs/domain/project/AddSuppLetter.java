@@ -100,9 +100,17 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "INTEGER")
 	private Integer fileSeq;
 	
-    //公文类型
+    //1公文类型
     @Column(columnDefinition = "VARCHAR(64)")
     private String missiveType;
+    
+    //2公文类型月报简报
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String missiveMonthlyType;
+    
+   //3公文类型月报简报
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String  missiveOtherType;
     
     //月报简报类型
     @Column(columnDefinition = "VARCHAR(64)")
@@ -297,6 +305,22 @@ public class AddSuppLetter extends DomainBase {
 
 	public String getBusinessIdType() {
 		return businessIdType;
+	}
+
+	public String getMissiveMonthlyType() {
+		return missiveMonthlyType;
+	}
+
+	public void setMissiveMonthlyType(String missiveMonthlyType) {
+		this.missiveMonthlyType = missiveMonthlyType;
+	}
+
+	public String getMissiveOtherType() {
+		return missiveOtherType;
+	}
+
+	public void setMissiveOtherType(String missiveOtherType) {
+		this.missiveOtherType = missiveOtherType;
 	}
 	
 	

@@ -645,6 +645,14 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
+             //上传附件页面
+             .state('uploadMonthly', {
+                url: '/uploadMonthly/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyUpload.html',
+                controller: 'monthlyMultiyearEditCtrl',
+                controllerAs: 'vm'
+            })
+            
 
             //月报简报历史数据列表
              .state('monthlyHistoryList', {
@@ -660,6 +668,14 @@
                 controller: 'monthlyHistoryEditCtrl',
                 controllerAs: 'vm'
             })
+            //优秀评审报告列表
+            .state('monthlyExcellentList', {
+                url: '/monthlyExcellentList/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyExcellentList.html',
+                controller: 'monthlyExcellentCtrl',
+                controllerAs: 'vm'
+            })
+            
             //E 月报简报管理
 
             //S 档案借阅管理
