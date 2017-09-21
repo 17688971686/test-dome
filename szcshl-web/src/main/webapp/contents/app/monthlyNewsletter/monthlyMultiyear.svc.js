@@ -10,15 +10,37 @@
         var service = {
         	createmonthlyMultiyear: createmonthlyMultiyear,//添加中心文件稿纸
         	initMonthlyMultiyear:initMonthlyMultiyear,//初始化中心文件稿纸
-            monthlyMultiyearGrid: monthlyMultiyearGrid,//月报简报年度列表
+            monthlyMultiyearGrid: monthlyMultiyearGrid,//年度（中心）月报简报列表
             getmonthlyMultiyearById: getmonthlyMultiyearById,//根据ID查找中心文件稿纸
             updatemonthlyMultiyear: updatemonthlyMultiyear,//更新中心文件稿纸
-           
-            deletemonthlyMultiyear: deletemonthlyMultiyear,//删除月报简报记录
+            findByBusinessId:findByBusinessId,//根据业务ID获取附件列表
+            
+            deletemonthlyMultiyear: deletemonthlyMultiyear,//删除年度（中心）月报简报记录
         };
 
         return service;
 
+        //S 根据主业务获取所有的附件信息
+        function findByBusinessId(vm){
+        	var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/file/findByBusinessId",
+                    params: {
+                        businessId: vm.suppletter.id
+                    }
+                };
+                var httpSuccess = function success(response) {
+                	vm.sysFilelists =response.data;
+                };
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });            
+        }
+       //E 根据主业务获取所有的附件信息
+        
         //S 初始化中心文件稿纸
         function initMonthlyMultiyear(vm){
         	 vm.isSubmit = true;
@@ -29,6 +51,8 @@
 
              var httpSuccess = function success(response) {
             	 vm.suppletter = response.data;
+            	//初始化附件上传
+                 vm.initFileUpload();
              };
              common.http({
                  vm: vm,
@@ -58,12 +82,12 @@
                    });
         }
 
-        // begin#删除月报简报记录
+        // begin#删除年度(中心)月报简报记录
         function deletemonthlyMultiyear(vm, id) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
-                url: url_monthlyMultiyear+"/deleteHistory",
+                url: url_monthlyMultiyear+"/deleteMutiyear",
                 data: id
             };
 

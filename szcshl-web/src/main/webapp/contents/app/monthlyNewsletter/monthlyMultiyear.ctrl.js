@@ -7,7 +7,7 @@
 
     function monthlyMultiyear($location, monthlyMultiyearSvc) {
         var vm = this;
-        vm.title = '月报简报';
+        vm.title = '年度月报简报';
 
         vm.del = function (id) {
             common.confirm({

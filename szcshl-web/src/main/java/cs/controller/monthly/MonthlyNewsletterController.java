@@ -67,6 +67,17 @@ public class MonthlyNewsletterController {
         return addSuppLetterDtos;
     }
     
+    @RequiresPermissions("monthlyNewsletter#deleteMutiyear#delete")
+ 	@RequestMapping(name = "删除年度（中心）月报简报记录", path = "deleteMutiyear", method = RequestMethod.DELETE)
+     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+     public void deleteMutiyear(@RequestBody String id) {
+     	String [] ids = id.split(",");
+     	if(ids.length > 1){
+     		addSuppLetterService.deletes(ids);
+     	}else{
+     		addSuppLetterService.delete(id);      
+     	}
+     }
     
     @RequiresPermissions("monthlyNewsletter#getMonthlyList#post")
     @RequestMapping(name = "获取月报简报管理数据列表", path = "getMonthlyList", method = RequestMethod.POST)

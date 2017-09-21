@@ -105,12 +105,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         return addSuppLetterRepo.returnIntBySql(sqlBuilder);
     }
 
-    @Override
-    public void delete(String id) {
-        // TODO Auto-generated method stub
-
-    }
-
+    
     /**
      * 根据业务ID和业务类型初始化补充资料函信息
      * @param businessId
@@ -210,7 +205,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     }
 
     /**
-     * 保存中心文件稿纸
+     * 保存（中心）文件稿纸
      */
 	@Override
 	@Transactional
@@ -235,7 +230,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	}
 
 	/**
-	 * 获取年度月报简报列表数据
+	 * 获取年度（中心）月报简报列表数据
 	 */
 	@Override
 	public PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj) {
@@ -268,7 +263,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	}
 
 	/**
-	 * 初始化中心文件稿纸
+	 * 初始化（中心）文件稿纸
 	 */
 	@Override
 	public AddSuppLetterDto initMonthlyMutilyear() {
@@ -277,6 +272,22 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	      suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
 		return suppletterDto;
 	}
+
+	/**
+	 * 删除年度（中心）月报简报记录
+	 */
+	@Override
+    public void delete(String id) {
+		this.delete(id);
+    }
+
+	@Override
+	public void deletes(String[] ids) {
+		for(String id :ids){
+			this.delete(id);
+		}
+	}
+
 
 
 

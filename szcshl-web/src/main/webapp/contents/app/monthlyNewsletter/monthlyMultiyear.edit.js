@@ -3,9 +3,9 @@
 
     angular.module('app').controller('monthlyMultiyearEditCtrl', monthlyMultiyear);
 
-    monthlyMultiyear.$inject = ['$location', 'monthlyMultiyearSvc','sysfileSvc', '$state','bsWin'];
+    monthlyMultiyear.$inject = [ 'monthlyMultiyearSvc','sysfileSvc', '$state','bsWin','$scope'];
 
-    function monthlyMultiyear($location, monthlyMultiyearSvc,sysfileSvc, $state,bsWin) {
+    function monthlyMultiyear( monthlyMultiyearSvc,sysfileSvc, $state,bsWin,$scope) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '添加中心文件稿纸';
@@ -13,7 +13,8 @@
         vm.isSubmit = true;
         vm.suppletter ={};//文件稿纸对象
         vm.id = $state.params.id;
-        vm.fileId = $state.params.id;
+        vm.suppletter.id = $state.params.id;
+       
         if (vm.id) {
             vm.isUpdate = true;
             vm.title = '更新中心文件稿纸';
@@ -22,55 +23,41 @@
          vm.businessFlag ={
                 isInitFileOption : false,   //是否已经初始化附件上传控件
          }
-         
-         
+      
        //初始化附件上传控件
          vm.initFileUpload = function(){
-        	
+             if(!vm.suppletter.id){
                  //监听ID，如果有新值，则自动初始化上传控件
-                 $scope.$watch("vm.fileId",function (newValue , oldValue){
+                 $scope.$watch("vm.suppletter.id",function (newValue, oldValue) {
                      if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
                          vm.initFileUpload();
                      }
                  });
-             //创建附件对象
+             }
              vm.sysFile = {
-                 businessId : vm.fileId,
-                 mainId : '',
-                 mainType : sysfileSvc.mainTypeValue().FILELIBRARY,
-                 sysBusiType :vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().FILELIBRARY),vm.fileUrl.lastIndexOf(vm.fileName))
+                 businessId : vm.suppletter.id,
+                 mainId : vm.suppletter.id,
+                 mainType : sysfileSvc.mainTypeValue().SIGN,
+                 sysfileType:sysfileSvc.mainTypeValue().CENTER_FILE,
+                 sysBusiType:sysfileSvc.mainTypeValue().CENTER_FILE,
              };
-        	 
              sysfileSvc.initUploadOptions({
-                 inputId : "sysfileinput",
-                 vm :vm ,
-                 uploadSuccess : function(){
-                     sysfileSvc.findByBusinessId(vm.fileId,function(data){
-                         vm.sysFilelists = data;
-                     });
-                 }
+                 inputId:"sysfileinput",
+                 vm:vm
              });
          }
         
-        //上传附件页面
+        //跳转上传附件页面
         vm.addSuppContent = function(){
-        	  $state.go('uploadMonthly',{id :  vm.id});
-        	/* $("#addsuppMonthly").kendoWindow({
-                 width : "50%",
-                 height : "620px",
-                 title : "会议预定信息",
-                 visible : false,
-                 modal : true,
-                 closable : true,
-                 actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-             }).data("kendoWindow").center().open();*/
-  		 
+        	if(vm.suppletter.id){
+        		$state.go('uploadMonthly',{id : vm.suppletter.id});
+        	}else{
+        		bsWin.alert("请先保存数据！");
+        	}
      }
-        
         
         //保存中心文件（稿纸）
         vm.saveAddSuppletter = function () {
-           // monthlyMultiyearSvc.createmonthlyMultiyear(vm);
             common.initJqValidation();
             var isValid = $('form').valid();
 	          if(isValid){
@@ -102,13 +89,15 @@
  	           }
         };
 
+        
         activate();
         function activate() {
           if (vm.isUpdate) {
                 monthlyMultiyearSvc.getmonthlyMultiyearById(vm);
             }
             monthlyMultiyearSvc.initMonthlyMultiyear(vm);
-            
+          //根据主业务获取所有的附件信息
+            monthlyMultiyearSvc.findByBusinessId(vm);
         }
     }
 })();

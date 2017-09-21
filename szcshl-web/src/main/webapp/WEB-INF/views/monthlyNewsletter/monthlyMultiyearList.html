@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/monthlyNewsletter">月报简报年度列表</a></li>
+        <li><a href="#/monthlyNewsletter">年度月报简报列表</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="form" name="form">
@@ -43,7 +43,7 @@
             <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
             </@shiro.hasPermission>
             <@shiro.hasPermission name="monthlyNewsletter##put">
-            <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+            <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>审批处理</a>
             </@shiro.hasPermission>
         </script>
  		<ol class="breadcrumb">

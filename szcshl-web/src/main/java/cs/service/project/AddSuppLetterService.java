@@ -37,5 +37,7 @@ public interface AddSuppLetterService {
 
 	AddSuppLetterDto initMonthlyMutilyear();
 
+	void deletes(String[] ids);
+
 
 }

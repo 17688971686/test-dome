@@ -37,7 +37,8 @@
                 TOPIC:"课题附件",
                 TOPIC_PLAN:"课题计划书",
                 TOPIC_WORKPLAN:"课题工作方案",
-                TOPIC_FILING:"课题归档"
+                TOPIC_FILING:"课题归档",
+                CENTER_FILE:"中心文件（稿纸）"
             }
         }
 
