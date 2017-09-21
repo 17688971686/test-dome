@@ -37,7 +37,7 @@
         vm.update = function () {
             assertStorageBusinessSvc.updateAssertStorageBusiness(vm);
         };
-        //添加图书详细信息
+        //添加资产详细信息
         vm.addCondition = function () {
             vm.condition = {};
             if(vm.showFlag.addBooksDeatail){

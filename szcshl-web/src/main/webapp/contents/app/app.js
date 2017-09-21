@@ -801,9 +801,15 @@
                 controllerAs: 'vm'
             })
             .state('myAssertStorageBusiness',{
-                url : '/myAssertStorageBusiness',
-                templateUrl : rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
-                controller : 'assertStorageBusinessCtrl',
+            url : '/myAssertStorageBusiness',
+            templateUrl : rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
+            controller : 'assertStorageBusinessCtrl',
+            controllerAs : 'vm'
+        })
+            .state('assertApplyUse',{
+                url : '/assertApplyUse',
+                templateUrl : rootPath + '/userAssertDetail/html/userAssertDetailAdd.html',
+                controller : 'userAssertDetailAddCtrl',
                 controllerAs : 'vm'
             })
             //课题研究流程

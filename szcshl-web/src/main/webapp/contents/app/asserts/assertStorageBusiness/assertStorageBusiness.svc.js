@@ -199,8 +199,6 @@
 
         //S_初始化资产采购流程信息
         function initFlowDeal(vm){
-            console.log(vm);
-            console.log(8888);
             //vm.businessKey,vm.taskId,vm.instanceId
             var httpOptions = {
                 method: 'get',
@@ -219,7 +217,6 @@
                 onError : function(){}
             });
         }//E_initFlowDeal
-
 
         // begin#getAssertStorageBusinessById
         function getAssertStorageBusinessById(vm) {

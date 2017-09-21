@@ -1,9 +1,13 @@
 package cs.service.asserts.goodsDetail;
 
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.asserts.goodsDetail.GoodsDetail;
+import cs.domain.asserts.goodsDetail.GoodsDetail_;
 import cs.model.PageModelDto;
 import cs.model.asserts.goodsDetail.GoodsDetailDto;
 import cs.repository.odata.ODataObj;
@@ -12,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Description: 物品明细 业务操作实现类
@@ -84,5 +86,24 @@ public class GoodsDetailServiceImpl  implements GoodsDetailService {
 	public void delete(String id) {
 
 	}
-	
+
+	@Override
+	public ResultMsg getStoreAssertData() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		//获取入库资产信息
+		List<GoodsDetailDto> goodsDetailDtoList = new ArrayList<GoodsDetailDto>();
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+		hqlBuilder.append(" select g from "+GoodsDetail.class.getSimpleName()+" g where g."+ GoodsDetail_.storeFlag.getName()+"='1'");
+		List<GoodsDetail> goodsDetailList = goodsDetailRepo.findByHql(hqlBuilder);
+		if (goodsDetailList.size()>0){
+			goodsDetailList.forEach(g ->{
+				GoodsDetailDto goodsDetailDto = new GoodsDetailDto();
+				BeanCopierUtils.copyProperties(g,goodsDetailDto);
+				goodsDetailDtoList.add(goodsDetailDto);
+			});
+		}
+		map.put("goodsDetailDtoList", goodsDetailDtoList);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", map);
+	}
+
 }
