@@ -31,6 +31,7 @@ public class GoodsDetailDto extends BaseDto {
     private String businessId;
     private String applyDept;
     private String operator;
+    private String storeFlag;
     private AssertStorageBusiness assertStorageBusiness;
 
     public GoodsDetailDto() {
@@ -122,5 +123,13 @@ public class GoodsDetailDto extends BaseDto {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public String getStoreFlag() {
+        return storeFlag;
+    }
+
+    public void setStoreFlag(String storeFlag) {
+        this.storeFlag = storeFlag;
     }
 }

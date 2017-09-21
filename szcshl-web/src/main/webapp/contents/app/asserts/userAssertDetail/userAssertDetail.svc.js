@@ -1,25 +1,25 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('goodsDetailSvc', goodsDetail);
+    angular.module('app').factory('userAssertDetailSvc', userAssertDetail);
 
-    goodsDetail.$inject = ['$http'];
+    userAssertDetail.$inject = ['$http'];
 
-    function goodsDetail($http) {
-        var url_goodsDetail = rootPath + "/goodsDetail", url_back = '#/goodsDetailList';
+    function userAssertDetail($http) {
+        var url_userAssertDetail = rootPath + "/userAssertDetail", url_back = '#/userAssertDetailList';
         var service = {
             grid: grid,
-            getGoodsDetailById: getGoodsDetailById,
-            createGoodsDetail: createGoodsDetail,
-            deleteGoodsDetail: deleteGoodsDetail,
-            updateGoodsDetail: updateGoodsDetail,
-            getAllStoreAssert:getAllStoreAssert
+            getUserAssertDetailById: getUserAssertDetailById,
+            createUserAssertDetail: createUserAssertDetail,
+            deleteUserAssertDetail: deleteUserAssertDetail,
+            updateUserAssertDetail: updateUserAssertDetail,
+            initFillData: initFillData
         };
 
         return service;
 
-        // begin#updateGoodsDetail
-        function updateGoodsDetail(vm) {
+        // begin#updateUserAssertDetail
+        function updateUserAssertDetail(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -28,7 +28,7 @@
 
                 var httpOptions = {
                     method: 'put',
-                    url: url_goodsDetail,
+                    url: url_userAssertDetail,
                     data: vm.model
                 }
 
@@ -68,12 +68,12 @@
 
         }
 
-        // begin#deleteGoodsDetail
-        function deleteGoodsDetail(vm, id) {
+        // begin#deleteUserAssertDetail
+        function deleteUserAssertDetail(vm, id) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
-                url: url_goodsDetail,
+                url: url_userAssertDetail,
                 data: id
             };
 
@@ -103,8 +103,8 @@
             });
         }
 
-        // begin#createGoodsDetail
-        function createGoodsDetail(vm) {
+        // begin#createUserAssertDetail
+        function createUserAssertDetail(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -112,7 +112,7 @@
 
                 var httpOptions = {
                     method: 'post',
-                    url: url_goodsDetail,
+                    url: url_userAssertDetail,
                     data: vm.model
                 };
 
@@ -144,11 +144,11 @@
             }
         }
 
-        // begin#getGoodsDetailById
-        function getGoodsDetailById(vm) {
+        // begin#getUserAssertDetailById
+        function getUserAssertDetailById(vm) {
         	var httpOptions = {
                 method: 'get',
-                url: rootPath + "/goodsDetail/html/findById",
+                url: rootPath + "/userAssertDetail/html/findById",
                 params:{id:vm.id}
             };
             var httpSuccess = function success(response) {
@@ -163,26 +163,23 @@
             });                       
         }
 
-        //S_获取取入库资产信息
-        function getAllStoreAssert(callBack){
+        //S_初始化资产申请使用页面数据
+        function initFillData(callBack) {
             var httpOptions = {
-                method: 'get',
-                url: rootPath + "/bookBuyBusiness/html/findById"
-            };
+                method: 'post',
+                url: rootPath + "/userAssertDetail/html/initFillPageData",
+            }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
                     callBack(response.data);
                 }
-            };
-
+            }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }
-        //End_获取入库资产信息
+        }//E_初始化资产申请使用页面数据
 
         // begin#grid
         function grid(vm) {
@@ -190,7 +187,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_goodsDetail),
+                transport: common.kendoGridConfig().transport(url_userAssertDetail),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -229,8 +226,20 @@
                     filterable: true
                 },
                 {
-                    field: "goodsCode",
-                    title: "goodsCode",
+                    field: "userId",
+                    title: "userId",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "userName",
+                    title: "userName",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodId",
+                    title: "goodId",
                     width: 100,
                     filterable: true
                 },
@@ -241,38 +250,8 @@
                     filterable: true
                 },
                 {
-                    field: "specifications",
-                    title: "specifications",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "models",
-                    title: "models",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsPrice",
-                    title: "goodsPrice",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "evaluate",
-                    title: "evaluate",
-                    width: 100,
-                    filterable: true
-                },
-                {
                     field: "goodsNumber",
                     title: "goodsNumber",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "assertStorageBusiness",
-                    title: "assertStorageBusiness",
                     width: 100,
                     filterable: true
                 },

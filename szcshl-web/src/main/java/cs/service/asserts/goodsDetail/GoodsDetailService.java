@@ -1,5 +1,6 @@
 package cs.service.asserts.goodsDetail;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.asserts.goodsDetail.GoodsDetailDto;
 import cs.repository.odata.ODataObj;
@@ -20,5 +21,7 @@ public interface GoodsDetailService {
 	GoodsDetailDto findById(String deptId);
 
 	void delete(String id);
+
+	ResultMsg getStoreAssertData();
 
 }

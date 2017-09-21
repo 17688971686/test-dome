@@ -34,6 +34,9 @@ public class GoodsDetail extends DomainBase {
     //数量
     @Column(columnDefinition="NUMBER")
     private String goodsNumber;
+    //采购入库标志:1.采购流程走完，资产已入库 0:流程没走完，资产未入库
+    @Column(columnDefinition="varchar(1)")
+    private String storeFlag;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "businessId")
@@ -109,5 +112,13 @@ public class GoodsDetail extends DomainBase {
 
     public void setGoodsNumber(String goodsNumber) {
         this.goodsNumber = goodsNumber;
+    }
+
+    public String getStoreFlag() {
+        return storeFlag;
+    }
+
+    public void setStoreFlag(String storeFlag) {
+        this.storeFlag = storeFlag;
     }
 }
