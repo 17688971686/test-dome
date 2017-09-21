@@ -84,15 +84,7 @@
 					    width: 50,
 					    filterable : false,
 					    template: "<span class='row-number'></span>"  
-					 }
-					,
-					
-					{
-						field : "orgIdentity",
-						title : "部门标识",
-						width : 80,						
-						filterable : false
-					}, 
+					 },
 					{
 						field : "name",
 						title : "部门名称",

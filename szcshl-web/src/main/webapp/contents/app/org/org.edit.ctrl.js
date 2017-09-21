@@ -34,17 +34,17 @@
             common.initJqValidation();
             var isValid = $('form').valid();
             if(isValid){
-                $.each(vm.OrgDirectorUsers,function(u, number){
+                $.each(vm.OrgDirectorUsers,function( number , u){
                     if(u.id == vm.model.orgDirector){
                         vm.model.orgDirectorName = u.displayName;
                     }
                 })
-                $.each(vm.orgMLeaderUsers,function(u, number){
+                $.each(vm.orgMLeaderUsers,function( number , u){
                     if(u.id == vm.model.orgMLeader){
                         vm.model.orgMLeaderName = u.displayName;
                     }
                 })
-                $.each(vm.orgSLeaderUser,function(u, number){
+                $.each(vm.orgSLeaderUser,function( number , u){
                     if(u.id == vm.model.orgSLeader){
                         vm.model.orgSLeaderName = u.displayName;
                     }
@@ -70,17 +70,17 @@
             common.initJqValidation();
             var isValid = $('form').valid();
             if(isValid){
-                $.each(vm.OrgDirectorUsers,function(u, number){
+                $.each(vm.OrgDirectorUsers,function( number , u){
                     if(u.id == vm.model.orgDirector){
                         vm.model.orgDirectorName = u.displayName;
                     }
                 })
-                $.each(vm.orgMLeaderUsers,function(u, number){
+                $.each(vm.orgMLeaderUsers,function( number , u){
                     if(u.id == vm.model.orgMLeader){
                         vm.model.orgMLeaderName = u.displayName;
                     }
                 })
-                $.each(vm.orgSLeaderUser,function(u, number){
+                $.each(vm.orgSLeaderUser,function( number , u){
                     if(u.id == vm.model.orgSLeader){
                         vm.model.orgSLeaderName = u.displayName;
                     }
