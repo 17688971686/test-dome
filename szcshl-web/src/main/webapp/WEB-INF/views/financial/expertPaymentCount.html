@@ -20,7 +20,7 @@
 		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">导出EXCLE</button>
         </div>
         <div class="well">
-        	<table border="1px">
+        	<table border="1px" style="width: 100%;">
         	 <caption class="text-center h3">
         	 <strong>深圳市政府投资项目评审中心<br>
  				2017年8月专家评审费交税统计汇总表
@@ -43,16 +43,17 @@
 					<td class="text-center">应缴税额 </td>
 					
 				</tr>
-				<tr>
-					<td class="text-center" >1</td>
-					<td class="text-center">张三</td>
-					<td class="text-center">45242419903333412</td>
-					<td class="text-center">1233444</td>
-					<td class="text-center">6900</td>
-					<td class="text-center">34333</td>
-					<td class="text-center">22</td>
-					<td class="text-center">2222</td>
+				<tr  ng-repeat="x in vm.expertCostTotalInfo">
+					<td align="center">{{$index+1}}</td>
+					<td class="text-center">{{x.name}}</td>
+					<td class="text-center">{{x.idCard}}</td>
+					<td class="text-center">{{x.userPhone}}</td>
+					<td class="text-center">{{x.reviewcost}}</td>
+					<td class="text-center">{{x.reviewtaxes}}</td>
+					<td class="text-center">{{x.yreviewcost}}</td>
+					<td class="text-center">{{x.yreviewtaxes}}</td>
 				</tr>
+			</table>
         </div>
     </form>
 </div>

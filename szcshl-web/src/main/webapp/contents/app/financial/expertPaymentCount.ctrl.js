@@ -74,8 +74,10 @@
     
         activate();
         function activate() {
-            expertPaymentCountSvc.grid(vm);
-            //expertPaymentCountSvc.initFinancialProject(vm);
+            expertPaymentCountSvc.expertCostTotal(vm,function(data){
+                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
+                console.log(vm.expertCostTotalInfo);
+            });
         }
     }
 })();
