@@ -155,23 +155,14 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/expertReview/findByOData", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/expertSelected/findByOData", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
+                    id: "id"
                 }),
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
+                pageSize: 10
             });
             // End:dataSource
             //S_序号
@@ -190,7 +181,7 @@
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
                     width: 40,
@@ -205,75 +196,65 @@
 				    template: "<span class='row-number'></span>"
 				 },
                 {
-                    field: "expretCount",
+                    field: "expertDto.name",
                     title: "姓名",
-                    width: 100,
+                    width: 80,
                     filterable: false
                 },
                
                 {
-                    field: "expretCount",
+                    field: "expertDto.idCard",
                     title: "身份证号",
-                    width: 100,
+                    width: 180,
                     filterable: false,
                 },
                 {
-                    field: "expretCount",
+                    field: "expertDto.openingBank",
                     title: "开户行",
                     width: 80,
                     filterable: false,
                 },
                 {
-                    field: "expretCount",
+                    field: "expertDto.bankAccount",
                     title: "银行账号",
-                    width: 120,
+                    width: 180,
                     filterable: false,
                 },
                 {
                     field: "reviewCost",
-                    title: "评审费（元）",
-                    width: 160,
+                    title: "评审费",
+                    width: 80,
                     filterable: false,
                 },
                 {
                     field: "reviewTaxes",
                     title: "应缴税",
-                    width: 120,
+                    width: 80,
                     filterable: false,
                 },
                 {
-                    field: "reviewTitle",
+                    field: "expertReviewDto.reviewTitle",
                     title: "项目名称",
-                    width: 160,
+                    width: 220,
                     filterable: false,
                 },
                 {
-                    field: "reviewDate",
+                    field: "expertReviewDto.reviewDate",
                     title: "评审时间",
-                    width: 160,
+                    width: 80,
                     filterable: false,
                 },
                 {
-                    field: "reviewDate",
+                    field: "expertReviewDto.reviewDate",
                     title: "函评时间",
-                    width: 120,
+                    width: 80,
                     filterable: false,
                 },
                 {
-                    field: "reviewDate",
+                    field: "expertDto.name",
                     title: "负责人",
-                    width: 120,
+                    width: 80,
                     filterable: false,
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 100,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                             item.signid 
-                            );
-                    }
                 }
             ];
             // End:column

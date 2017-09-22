@@ -1,12 +1,9 @@
 package cs.service.expert;
 
 import cs.common.ResultMsg;
-import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
-
-import java.util.List;
 
 /**
  * Description: 抽取专家 业务操作接口
@@ -22,4 +19,8 @@ public interface ExpertSelectedService {
 	ExpertSelectedDto findById(String deptId);
 
 	ResultMsg delete(String conditionId, String id, boolean deleteAll);
+
+	PageModelDto<ExpertSelectedDto> get(ODataObj odataObj);
+
+	ResultMsg expertCostTotal(ODataObj odataObj);
 }

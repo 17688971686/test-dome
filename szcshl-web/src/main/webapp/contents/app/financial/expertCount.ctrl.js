@@ -76,7 +76,6 @@
         activate();
         function activate() {
             exportCountSvc.grid(vm);
-            //exportCountSvc.initFinancialProject(vm);
         }
     }
 })();

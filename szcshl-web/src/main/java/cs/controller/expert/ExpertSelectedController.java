@@ -2,11 +2,9 @@ package cs.controller.expert;
 
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertSelectedService;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Description: 抽取专家 控制层
@@ -54,6 +50,23 @@ public class ExpertSelectedController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody ExpertSelectedDto record) {
         expertSelectedService.update(record);
+    }
+
+    @RequiresPermissions("expertSelected#findByOData#post")
+    @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<ExpertSelectedDto> findByOData(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<ExpertSelectedDto> expertSelectedDtos = expertSelectedService.get(odataObj);
+        return expertSelectedDtos;
+    }
+
+    @RequiresPermissions("expertSelected#expertCostTotal#post")
+    @RequestMapping(name = "获取数据", path = "expertCostTotal", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg expertCostTotal(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        return  expertSelectedService.expertCostTotal(odataObj);
     }
 
 }
