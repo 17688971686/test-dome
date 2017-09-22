@@ -16,6 +16,8 @@
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00");
         vm.currentDate = "";
+        vm.reportName="会议室安排表";//默认会议室导出文件名
+        vm.mrID = "";//会议室ID
 
         activate();
         function activate() {
@@ -44,12 +46,14 @@
         vm.exportThisWeekStage = function () {
             vm.currentDate = $('.k-sm-date-format').html();
             vm.rbType = "0";//表示评审会
+            vm.reportName = "本周评审会会议安排表";
             roomSvc.exportThisWeekStage(vm);
         }
         //导出本周全部会议安排
         vm.exportThisWeek = function () {
             vm.currentDate = $('.k-sm-date-format').html();
             vm.rbType = "1";//表示全部
+            vm.reportName = "本周全部会议安排表";
             roomSvc.exportThisWeekStage(vm);
         }
         //导出下周全部会议安排
@@ -67,6 +71,7 @@
             var end = new Date(endDate);
             vm.currentDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate() + "-" + end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
             vm.rbType = "1";//表示全部
+            vm.reportName = "下周全部会议安排表";
             roomSvc.exportThisWeekStage(vm);
         }
         //导出下周评审会议安排
@@ -84,6 +89,7 @@
             var end = new Date(endDate);
             vm.currentDate = start.getFullYear() + "/" + (start.getMonth() + 1) + "/" + start.getDate() + "-" + end.getFullYear() + "/" + (end.getMonth() + 1) + "/" + end.getDate();
             vm.rbType = "0";//表示评审会
+            vm.reportName = "下周评审会会议安排表";
             roomSvc.exportThisWeekStage(vm);
         }
         //会议室查询

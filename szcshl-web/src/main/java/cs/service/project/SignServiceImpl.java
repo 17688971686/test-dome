@@ -915,8 +915,12 @@ public class SignServiceImpl implements SignService {
                 /*if (!signPrincipalService.isMainPri(SessionUtil.getUserId(), signid)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您不是第一负责人，不能进行下一步操作！");
                 }*/
-                //自动生成发文模板
-                dispatchDocService.createDisPatchTemplate(signid);
+                //自动生成发文模板 ,如果未生成模板，则生成
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                if(!"9".equals(sign.getIsSignTemplate())){
+
+                    dispatchDocService.createDisPatchTemplate(signid);
+                }
 
                 //修改第一负责人意见
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
@@ -1693,6 +1697,17 @@ public class SignServiceImpl implements SignService {
         criteria = oDataObj.buildFilterToCriteria(criteria);
         List<SignDispaWork> signDispaWorks = criteria.list();
         return signDispaWorks;
+    }
+
+    @Override
+    @Transactional
+    public void updateSignTemplate(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("update cs_sign set " + Sign_.isSignTemplate.getName() + "=:isSignTemplate" + " where signid=:signId");
+        hqlBuilder.setParam("isSignTemplate" , EnumState.YES.getValue());
+        hqlBuilder.setParam("signId" , signId);
+        signRepo.executeSql(hqlBuilder);
+//        signRepo.executeHql(hqlBuilder);
     }
 
 }

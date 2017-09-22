@@ -49,7 +49,8 @@
             }
             var httpSuccess = function success(response){
                 fileName =fileName + ".xls";
-                common.downloadReport(response.data , fileName);
+                var fileType ="vnd.ms-excel";
+                common.downloadReport(response.data , fileName , fileType);
             }
             common.http({
                 vm : vm,

@@ -29,8 +29,14 @@
     };
     window.common = service;
 
-    function downloadReport(data , fileName){
-        var blob = new Blob([data] , {type : "application/vnd.ms-excel"});
+    /**
+     *
+     * @param data 数据
+     * @param fileName 文件名
+     * @param fileType 文件类型
+     */
+    function downloadReport(data , fileName , fileType){
+        var blob = new Blob([data] , {type : "application/" + fileType});
         var a = document.createElement("a");
         document.body.appendChild(a);
         a.download = fileName;

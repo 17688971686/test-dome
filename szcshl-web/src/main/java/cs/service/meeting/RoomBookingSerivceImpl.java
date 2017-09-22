@@ -347,11 +347,15 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		}
 	}
 
+
 	/**
-	 * 导出本周评审会议安排
+	 * 导出会议室安排
+	 * @param date
+	 * @param rbType
+	 * @param mrId
 	 */
 	@Override
-	public void exportRoom(String date,String rbType,String mrId) {
+	public File exportRoom(String date,String rbType,String mrId) {
 		String [] dates=date.split("-");
 		String start=dates[0].replace("/", "-");
 		String end=dates[1].replaceAll("/", "-");
@@ -421,7 +425,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
         relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
         String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.EXPORTROOM.getKey(),pathFile);
-		if(docFile != null){
+		/*if(docFile != null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),UUID.randomUUID().toString(),relativeFileUrl,showName,
 					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
@@ -436,8 +440,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				sf.setModifiedBy(SessionUtil.getLoginName());
 			});
 			sysFileRepo.bathUpdate(sysfile);
-		}
-
+		}*/
+return docFile;
 	}
 
 	/* 
@@ -457,7 +461,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		sqlBuilder.append("select rb."+RoomBooking_.rbName.getName()+",rb."+ RoomBooking_.rbDay.getName()+" from CS_ROOM_BOOKING rb");
 		sqlBuilder.append(" where "+RoomBooking_.rbDay.getName()+" > (trunc(to_date(:dates,'yyyy-mm-dd'),'iw')-1)");
 		sqlBuilder.append(" and "+RoomBooking_.rbDay.getName()+" < (trunc (to_date(:dates,'yyyy-mm-dd'),'iw')+7) ");
-		sqlBuilder.append(" and "+RoomBooking_.mrID.getName()+"=:mrId ");
+		if(mrId !=null && !"".equals(mrId)){
+			sqlBuilder.append(" and "+RoomBooking_.mrID.getName()+"=:mrId ");
+			sqlBuilder.setParam("mrId", mrId);
+		}
 		if("0".equals(rbType)){
 			sqlBuilder.append(" and workProgramId is not null");
 		}
@@ -467,7 +474,6 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		sqlBuilder.append(") rbd ");
 		sqlBuilder.append("group by rbd."+RoomBooking_.rbDay.getName()+") rbdd on rbdd.rbday = dd.wDate order by dd.wDate");
 		sqlBuilder.setParam("dates", date);
-		sqlBuilder.setParam("mrId", mrId);
 		List<Map> roomMap=roomBookingRepo.findMapListBySql(sqlBuilder);
 		return roomMap;
 	}

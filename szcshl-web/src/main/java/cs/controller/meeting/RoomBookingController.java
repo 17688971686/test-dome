@@ -2,6 +2,7 @@ package cs.controller.meeting;
 
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelUtils;
+import cs.common.utils.FileUtils;
 import cs.common.utils.SessionUtil;
 import cs.domain.meeting.RoomBooking;
 import cs.model.PageModelDto;
@@ -20,8 +21,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.ParseException;
 import java.util.List;
 
@@ -90,7 +93,28 @@ public class RoomBookingController {
     public void exportThisWeekStage(HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId) {
 //		roomBookingSerivce.exportThisWeekStage();
         String date = currentDate.replaceAll("/", "-");
-        roomBookingSerivce.exportRoom(currentDate, rbType, mrId);
+        InputStream is = null;
+        ServletOutputStream out = null;
+
+        try {
+            File file =  roomBookingSerivce.exportRoom(currentDate, rbType, mrId);
+            is = new FileInputStream(file);
+            resp.setCharacterEncoding("utf-8");
+            resp.setContentType("application/msword");
+            // 设置浏览器以下载的方式处理该文件默认名为resume.doc
+            resp.addHeader("Content-Disposition", "attachment;filename=resume.doc");
+            out = resp.getOutputStream();
+            byte[] buffer = new byte[512];  // 缓冲区
+            int bytesToRead = -1;
+            // 通过循环将读入的Word文件的内容输出到浏览器中
+            while((bytesToRead = is.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesToRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @RequiresPermissions("room#exportNextWeekStage#get")

@@ -7,6 +7,7 @@ import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.repository.odata.ODataObj;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public interface RoomBookingSerivce {
 
     void exportNextWeekStage();
 
-    void exportRoom(String date, String rbType, String mrId);
+    File exportRoom(String date, String rbType, String mrId);
 
     List<Map> findWeekRoom(String date, String rbType, String mrId);
 
