@@ -217,7 +217,9 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
 			//修改项目状态
 			HqlBuilder hql=HqlBuilder.create();
-			hql.append("update "+ Sign.class.getSimpleName()+" set "+Sign_.signState.getName()+" =:signState ,"+Sign_.isProjectState.getName()+ " =:isProjectState where "+Sign_.signid.getName()+" =:signId");
+			hql.append("update "+ Sign.class.getSimpleName()+" set "+Sign_.signState.getName()+" =:signState ,"+Sign_.isProjectState.getName()+ " =:isProjectState ," + Sign_.isLightUp.getName()+"=:isLightUp");
+			hql.append(" where " + Sign_.signid.getName()+" =:signId");
+			hql.setParam("isLightUp" , Constant.signEnumState.PAUSE.getValue());
 			hql.setParam("signState",Constant.EnumState.STOP.getValue());
 			hql.setParam("isProjectState", Constant.EnumState.YES.getValue());
 			hql.setParam("signId",projectStopDto.getSign().getSignid());

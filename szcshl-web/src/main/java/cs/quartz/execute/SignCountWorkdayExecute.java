@@ -51,143 +51,63 @@ public class SignCountWorkdayExecute implements Job {
 		for (Sign sign : signList) {
 			sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue()); //设置 默认状态（在办）
 
-		// 2、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
+			// 2、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
 			List<ProjectStop> projectStopList=projectStopService.findProjectStopBySign(sign.getSignid());
 			float stopWorkday=0;	//记录总共暂停的工作日
 			for(ProjectStop ps : projectStopList){
 				stopWorkday += ps.getPausedays();
 			}
-		//3、判断该项目是否为暂停状态。 未暂停，计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
-			if (!Constant.EnumState.STOP.getValue().equals(sign.getSignState())) { 
+			//3、判断该项目是否为暂停状态。 未暂停，计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
+			if (!Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
 //				sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
 //			}else{
-				sign.setSurplusdays(sign.getSurplusdays() - 1);     //剩余工作日减一
+//
+//					sign.setSurplusdays(sign.getSurplusdays() - 1);     //剩余工作日减一
 
-				float count = unit.countWorkday(sign.getSigndate())-stopWorkday;
+				float usedWorkDay = unit.countWorkday(sign.getSigndate())-stopWorkday;
 
 				String reviewstage = sign.getReviewstage();//获取评审阶段
 
 				// 已发文状态
-				if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {   
+				if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {
 					sign.setIsLightUp(Constant.signEnumState.DISPA.getValue());
 				}
 
 				// 已发送存档状态
-				if (sign.getIsSendFileRecord() == Constant.EnumState.YES.getValue() && sign.getFilenum().isEmpty()) { 
+				if (sign.getIsSendFileRecord() == Constant.EnumState.YES.getValue() && sign.getFilenum().isEmpty()) {
 					sign.setIsLightUp(Constant.signEnumState.ARCHIVE.getValue());
 				}
 				// 通过不同的项目阶段，判断，设置状态
 				switch (reviewstage) {
-				case "项目建议书":
-					if (count >= 12) {
-						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
-							if (count > 25) {
-								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
-							} else {
-								sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
-							}
-						} else {        //未发文
-							sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
-						}
-					} else {
-						if (12 - count <= 3) {    //少于3个工作日
-							sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
-						}
-					}
+					case "项目建议书":
+						sign.setSurplusdays(12-usedWorkDay);
+						updateLightUpState(sign , usedWorkDay , 12);
+						break;
 
+					case "可行性研究报告":
+						sign.setSurplusdays(15-usedWorkDay);
+						updateLightUpState(sign , usedWorkDay , 15);
+						break;
 
-					break;
+					case "项目概算":
+						sign.setSurplusdays(15-usedWorkDay);
+						updateLightUpState(sign , usedWorkDay , 15);
+						break;
 
-				case "可行性研究报告":
-					if (count >= 15) {
-						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
-							if (count > 25) {
-								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
-							} else {
-								sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
-							}
-						} else {        //未发文
-							sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
-						}
-					} else {
-						if (15 - count <= 3) {    //少于3个工作日
-							sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
-						}
-					}
-					break;
+					case "资金申请报告":
+						sign.setSurplusdays(12-usedWorkDay);
+						updateLightUpState(sign , usedWorkDay , 12);
+						break;
 
-				case "项目概算":
-					if (count >= 15) {
-						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
-							if (count > 25) {
-								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
-							} else {
-								sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
-							}
-						} else {        //未发文
-							sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
-						}
-					} else {
-						if (15 - count <= 3) {    //少于3个工作日
-							sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
-						}
-					}
-					break;
+					case "设备清单（国产）":
+						sign.setSurplusdays(12-usedWorkDay);
+						updateLightUpState(sign , usedWorkDay , 12);
+						break;
 
-				case "资金申请报告":
-					if (count >= 12) {
-						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
-							if (count > 25) {
-								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
-							} else {
-								sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
-							}
-						} else {        //未发文
-							sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
-						}
-					} else {
-						if (12 - count <= 3) {    //少于3个工作日
-							sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
-						}
-					}
-					break;
-
-				case "设备清单（国产）":
-					if (count >= 12 || 12 - count <= 3) {
-						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
-							if (count > 25) {
-								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
-							} else {
-								sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
-							}
-						} else {        //未发文
-							sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
-						}
-					} else {
-						if (12 - count <= 3) {    //少于3个工作日
-							sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
-						}
-					}
-					break;
-
-				case "设备清单（进产）":
-					if (count >= 12) {
-						if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
-							if (count > 25) {
-								sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
-							} else {
-								sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
-							}
-						} else {        //未发文
-							sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
-						}
-					} else {
-						if (12 - count <= 3) {    //少于3个工作日
-							sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
-						}
-					}
-
-					break;
+					case "设备清单（进产）":
+						sign.setSurplusdays(12-usedWorkDay);
+						updateLightUpState(sign , usedWorkDay , 12);
+						break;
 				}
 			}
 
@@ -195,4 +115,27 @@ public class SignCountWorkdayExecute implements Job {
 		signService.bathUpdate(signList);
 	}
 
+	/**
+	 * 修改提示灯的状态
+	 * @param sign 收文
+	 * @param usedWorkDay 已用工作日
+	 * @param totalWorkDay 总共工作日
+	 */
+	public void updateLightUpState( Sign sign , float usedWorkDay , int totalWorkDay){
+		if (usedWorkDay >= totalWorkDay) {
+			if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {    //已发文
+				if (usedWorkDay > 25) {
+					sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());    //超过25个工作日未存档
+				} else {
+					sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());    //存档超期
+				}
+			} else {        //未发文
+				sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());    //发文超期
+			}
+		} else {
+			if (totalWorkDay - usedWorkDay <= 3) {    //少于3个工作日
+				sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
+			}
+		}
+	}
 }
