@@ -337,6 +337,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 sf.setCreatedBy(SessionUtil.getLoginName());
             });
             sysFileRepo.bathUpdate(sysFileList);
+            signService.updateSignTemplate(signId);//修改是否生成发文模板状态
         }
     }
 

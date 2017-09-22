@@ -83,6 +83,8 @@ public interface SignService {
 
     List<SignDispaWork> getStastitacalData(ODataObj oDataObj);
 
+    void updateSignTemplate(String signId);
+
 
 
 }

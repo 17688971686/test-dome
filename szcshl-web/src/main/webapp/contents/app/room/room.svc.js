@@ -381,21 +381,9 @@
                 params: {currentDate: vm.currentDate, rbType: vm.rbType, mrId: vm.mrID}
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            fn: function () {
-                                $('.alertDialog').modal('hide');
-                                $('.modal-backdrop').remove();
-                            }
-                        })
-                    }
-
-                });
+            var fileName =vm.reportName + ".doc";
+                var fileType ="msword";
+                common.downloadReport(response.data , fileName , fileType);
 
             }
             common.http({
