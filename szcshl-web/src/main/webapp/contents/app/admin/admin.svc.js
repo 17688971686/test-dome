@@ -296,10 +296,22 @@
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
-                    field: "surplusDays",
+                    field: "",
                     title: "剩余工作日",
                     width: "10%",
                     filterable: false,
+                    template : function(item){
+                        if(item.surplusDays != undefined){
+                            if(item.surplusDays >=0){
+                                return item.surplusDays;
+                            }else{
+                                return 0;
+                            }
+                        }else{
+                            return "";
+                        }
+
+                    }
                 },
                 {
                     field: "displayName",
@@ -570,10 +582,22 @@
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
-                    field: "surplusDays",
+                    field: "",
                     title: "剩余工作日",
                     width: "10%",
                     filterable: false,
+                    template : function(item){
+                        if(item.surplusDays != undefined){
+                            if(item.surplusDays >=0){
+                                return item.surplusDays;
+                            }else{
+                                return 0;
+                            }
+                        }else{
+                            return "";
+                        }
+
+                    }
                 },
                 {
                     field: "displayName",
@@ -704,10 +728,22 @@
                     filterable: false
                 },
                 {
-                    field: "surplusdays",
+                    field: "",
                     title: "剩余工作日",
                     width: 140,
-                    filterable: false
+                    filterable: false,
+                    template : function(item){
+                        if(item.surplusDays != undefined){
+                            if(item.surplusDays >=0){
+                                return item.surplusDays;
+                            }else{
+                                return 0;
+                            }
+                        }else{
+                            return "";
+                        }
+
+                    }
                 },
                 {
                     field: "reviewOrgName",
@@ -958,10 +994,22 @@
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
-                    field: "surplusDays",
+                    field: "",
                     title: "剩余工作日",
                     width: 100,
                     filterable: false,
+                    template : function(item){
+                        if(item.surplusDays != undefined){
+                            if(item.surplusDays >=0){
+                                return item.surplusDays;
+                            }else{
+                                return 0;
+                            }
+                        }else{
+                            return "";
+                        }
+
+                    }
                 },
                 {
                     field: "displayName",

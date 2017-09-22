@@ -32,7 +32,19 @@ public class QuartzUnit {
 		Calendar c1=Calendar.getInstance();
 		Calendar c2=Calendar.getInstance();
 		c1.setTime(beginTime);
+		//下面是将 时、分、秒、毫秒清零
+		c1.set(Calendar.HOUR_OF_DAY , 0);
+		c1.set(Calendar.MINUTE , 0);
+		c1.set(Calendar.SECOND , 0);
+		c1.set(Calendar.MILLISECOND , 0);
+		c1.getTime();
+
 		c2.setTime(endTime);
+		c2.set(Calendar.HOUR_OF_DAY , 0);
+		c2.set(Calendar.MINUTE , 0);
+		c2.set(Calendar.SECOND , 0);
+		c2.set(Calendar.MILLISECOND , 0);
+		c2.getTime();
 		while(c1.compareTo(c2)<=0){
 			if(c1.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || c1.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){	//判断是否是周末
 				List<Workday> workdayList=workdayService.selectSpecialDays("2");//判断周末是否需要加班的
