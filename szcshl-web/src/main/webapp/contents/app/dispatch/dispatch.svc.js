@@ -20,12 +20,12 @@
         // begin#gotoWPage
         function initMergeInfo(vm,signId) {
             unMergeDISSign(signId,function (data) {
-                vm.signs = [];
-                vm.signs = data;
+                vm.unMergeSign = [];
+                vm.unMergeSign = data;
             });//待选
             getMergeDISSign(signId,function (data) {
-                vm.selectedSign = [];
-                vm.selectedSign = data;
+                vm.mergeSign = [];
+                vm.mergeSign = data;
             });//初始化已选项目
         }
 

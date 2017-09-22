@@ -72,6 +72,7 @@
         //S_initMergeInfo
         function initMergeInfo(vm,signId){
             unMergeWPSign(signId,function (data) {
+                console.log(data);
                 vm.unMergeSign = [];
                 vm.unMergeSign = data;
             });//待选

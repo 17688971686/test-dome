@@ -5,12 +5,15 @@
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 <!--项目阶段关联html-->
 <#include "/sign/signAssociate.html"/>
+<!--合并选择公共页面-->
+<#include "/sign/mergeSign.html"/>
 
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>保存
     </button>
-    <button class="btn btn-sm btn-danger" ng-click="backtoflow();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回流程
+    <button class="btn btn-sm btn-danger" ng-click="backtoflow();" ng-disabled="vm.isCommit"><span
+            class="glyphicon glyphicon-chevron-left"></span>返回流程
     </button>
     <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
     <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
@@ -19,130 +22,38 @@
 <div class="well well-sm" style="background:white;">
     <!-- s form -->
     <form id="dispatch_form" name="dispatch_form">
-	<!--S 发文编辑页面 -->
-	
- 		<!-- S 项目建议书  -->
-           <div  ng-include ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'"  src="'${path}/contents/app/dispatch/dispatchEdit/projectEdit.html'"></div>
-        <!-- S 项目建议书 -->
-       
-        <!-- S 可行性研究报告 -->
-           <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
-         <!-- E 可行性研究报告 -->
-         
-          <!-- S 资金申请报告 -->
-            <div ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/capitalAppReportEdit.html'"></div>
-         <!-- E 资金申请报告 -->
-        
-         <!-- S 项目概算 -->
-            <div ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/projectBudgetEdit.html'"></div>
-         <!-- E 项目概算 -->
-         
-         <!-- S 进口设备 -->
-            <div ng-show="vm.dispatchDoc.dispatchStage=='进口设备'" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/foreignEdit.html'"></div>
-         <!-- E 进口设备 -->
-         
-          <!-- S 设备清单（国产）/设备清单（进口） -->
-            <div ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' " ng-include src="'${path}/contents/app/dispatch/dispatchEdit/domesticEdit.html'"></div>
-         <!-- E 设备清单（国产）/设备清单（进口） -->
-         
-       <!--S 发文编辑页面 -->
-</form> <!-- end form -->
+        <!--S 发文编辑页面 -->
 
-    <div id="mwindow" style="display: none">
-        <div class="toolbar">
-            <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.onClose()"><span
-                    class="glyphicon glyphicon-chevron-left"></span>关闭
-            </button>
-        </div>
-        <ol class="breadcrumb">
-            <form id="searchform" name="searchform">
-                <table style="width:100%">
-                    <tr>
-                        <td class="formAlignRight" style="width:150px;">项目名称</td>
-                        <td>
-                            <input type="text" ng-model="vm.searchSign.projectname" >
-                        </td>
-                        <td class="formAlignRight" style="width:150px;">建设单位</td>
-                        <td>
-                            <input type="text" ng-model="vm.searchSign.builtcompanyName">
-                        </td>
-                        <td class="formAlignRight" style="width:150px;">评审阶段</td>
-                        <td>
-                            <select ng-model="vm.searchSign.reviewstage" name="reviewstage" id="reviewstage"
-                                    style="width:172px;">
-                                <option value="">请选择</option>
-                                <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}
-                                </option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </ol>
-        <table style="width:100%;">
-            <tr>
-                <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
-                <div style="width:500px; height:400px;overflow: auto;">
-                    <table class="table table-bordered" style="width: 500px;">
-                        <tr>
-                            <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
-                        </tr>
-                        <tr ng-repeat="x in vm.signs | filter:vm.filterMergeSign">
-                            <td align="center"><input type="checkbox" name="checksign" value="{{ x.signid }}"/></td>
-                            <td style="text-align: center;">{{ x.projectname }}</td>
-                            <td style="text-align: center;">{{ x.reviewstage }}</td>
-                            <td style="text-align: center;">{{ x.reviewdeptid }}</td>
-                            <td style="text-align: center;">{{ x.builtcompanyid }}</td>
-                            <td style="text-align: center;">{{ x.signdate }}</td>
-                            <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
-                            <td style="text-align: center;">{{ x.mainDeptContactPhone }}</td>
-                            <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
-                        </tr>
-                    </table>
-                </div>
-                </td>
-                <td class="text-center" style="height:200px;width:100px;">
-                    <p><button class="btn btn-xs btn-default" ng-click="vm.chooseProject()" type="button" ><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
-                    <p><button class="btn btn-xs btn-default" ng-click="vm.cancelProject()" type="button" ><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
-                </td>
-                <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
-                <div style="width:500px; height:400px;overflow: auto;">
-                    <table class="table table-bordered" id="workTab" style="width: 500px;overflow: auto;">
-                        <tr>
-                            <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
-                            <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
-                        </tr>
-                        <tr ng-repeat="x in vm.selectedSign">
-                            <td align="center"><input type="checkbox" name="checkss" value="{{ x.signid }}"/></td>
-                            <td style="text-align: center;">{{ x.projectname }}</td>
-                            <td style="text-align: center;">{{ x.reviewstage }}</td>
-                            <td style="text-align: center;">{{ x.reviewdeptid }}</td>
-                            <td style="text-align: center;">{{ x.builtcompanyid }}</td>
-                            <td style="text-align: center;">{{ x.signdate }}</td>
-                            <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
-                            <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
-                            <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
-                        </tr>
-                    </table>
-                </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+        <!-- S 项目建议书  -->
+        <div ng-include ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'"
+             src="'${path}/contents/app/dispatch/dispatchEdit/projectEdit.html'"></div>
+        <!-- S 项目建议书 -->
+
+        <!-- S 可行性研究报告 -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include
+             src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
+        <!-- E 可行性研究报告 -->
+
+        <!-- S 资金申请报告 -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" ng-include
+             src="'${path}/contents/app/dispatch/dispatchEdit/capitalAppReportEdit.html'"></div>
+        <!-- E 资金申请报告 -->
+
+        <!-- S 项目概算 -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" ng-include
+             src="'${path}/contents/app/dispatch/dispatchEdit/projectBudgetEdit.html'"></div>
+        <!-- E 项目概算 -->
+
+        <!-- S 进口设备 -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='进口设备'" ng-include
+             src="'${path}/contents/app/dispatch/dispatchEdit/foreignEdit.html'"></div>
+        <!-- E 进口设备 -->
+
+        <!-- S 设备清单（国产）/设备清单（进口） -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' " ng-include
+             src="'${path}/contents/app/dispatch/dispatchEdit/domesticEdit.html'"></div>
+        <!-- E 设备清单（国产）/设备清单（进口） -->
+
+        <!--S 发文编辑页面 -->
+    </form> <!-- end form -->
 </div>

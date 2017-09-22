@@ -83,7 +83,7 @@
 <script id="customEditorTemplate" type="text/x-kendo-template">
     <form id="formRoom" name="formRoom" style="margin:0px 10px;">
         <!-- 评审部门 -->
-        <input type="hidden" class="form-control input-sm"  name="id" id="id" data-bind="value:bookId">
+        <input type="text" class="form-control input-sm"  name="id" id="bookId" data-bind="value:bookId">
         <input type="hidden" class="form-control input-sm"  name="stageOrgName" id="stageOrgName" data-bind="value:stageOrgName">
 
         <table class="table table-bordered">
@@ -151,14 +151,14 @@
             <tr>
                 <td class="text-center">主要内容<span class="required">*</span></td>
                 <td>
-                    <textarea class="formInput" rows="3"  id="content"  name="content" data-val="true" data-val-required="必填"></textarea>
+                    <textarea class="formInput" rows="3"  id="content"  name="content" data-val="true" data-bind="value:content" data-val-required="必填"></textarea>
                     <span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
                 <td class="text-center">备注</td>
                 <td>
-                    <textarea class="formInput" rows="3"  id="remark" name="remark" ></textarea>
+                    <textarea class="formInput" rows="3"  id="remark" name="remark" data-bind="value:remark" ></textarea>
                     <span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>

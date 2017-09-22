@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.service.project.DispatchDocService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,9 +38,12 @@ public class SignFlowImpl implements IFlow {
     private SignBranchRepo signBranchRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;
-    //部门（小组）列表
     @Autowired
     private OrgDeptService orgDeptService;
+    @Autowired
+    private DispatchDocService dispatchDocService;
+    @Autowired
+    private SignRepo signRepo;
 
     /**
      * 获取流程参数
@@ -108,6 +115,11 @@ public class SignFlowImpl implements IFlow {
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
+                //自动生成发文模板
+                Sign sign = signRepo.findById(Sign_.signid.getName(), businessKey);
+                if(!Constant.EnumState.YES.getValue().equals(sign.getIsSignTemplate())){
+                    dispatchDocService.createDisPatchTemplate(businessKey);
+                }
                 userList = signPrincipalService.getAllSecondPriUser(businessKey);
                 if(Validate.isList(userList)){
                     List<UserDto> userDtoList = new ArrayList<>(userList.size());

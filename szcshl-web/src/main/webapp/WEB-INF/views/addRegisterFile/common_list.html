@@ -1,0 +1,33 @@
+<meta charset="UTF-8">
+<table class="table table-bordered" >
+    <tr>
+        <td style="width:5%;max-width: 60px;" class="text-center">序号</td>
+        <td width="30%">资料名称</td>
+        <td style="width:10%;">份数</td>
+        <td style="width:10%;">原件</td>
+        <td style="width:10%;">复印件</td>
+        <td width="25%">补充说明</td>
+        <td width="10%">补充日期</td>
+    </tr>
+    <tr ng-repeat="x in vm.model.registerFileDtoDtoList">
+        <td class="text-center">{{$index+1}}</td>
+        <td>
+            {{x.fileName}}
+        </td>
+        <td>
+            {{x.totalNum}}
+        </td>
+        <td>
+            <input type="checkbox" ng-disabled="true" ng-checked="x.isHasOriginfile == 9" ng-true-value="9" ng-false-value="0">
+        </td>
+        <td>
+            <input type="checkbox" ng-disabled="true" ng-checked="x.isHasCopyfile == 9" ng-true-value="9" ng-false-value="0">
+        </td>
+        <td>
+            {{x.suppleDeclare}}
+        </td>
+        <td>
+            {{suppleDate}}
+        </td>
+    </tr>
+</table>

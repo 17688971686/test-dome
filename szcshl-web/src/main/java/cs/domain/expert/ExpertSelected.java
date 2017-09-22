@@ -24,7 +24,7 @@ public class ExpertSelected {
     private Double score;
 
     //评审费用
-    @Column(columnDefinition = "NUMBER")
+    @Column(columnDefinition = "NUMBER default 1000")
     private BigDecimal reviewCost;
 
     //缴税

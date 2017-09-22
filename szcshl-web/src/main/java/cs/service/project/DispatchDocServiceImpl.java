@@ -235,7 +235,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             fileTitle += "》";
             fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             dispatch.setFileTitle(fileTitle);
-           
 
             // 获取当前用户信息
             dispatch.setUserName(SessionUtil.getDisplayName());
@@ -251,7 +250,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         //如果评审阶段是可研和概算的，才关联到前一阶段
         String reviewStage = sign.getReviewstage();
-        if (reviewStage != null && (reviewStage.equals("可行性研究报告") || reviewStage.equals("项目概算")) && sign.getAssociateSign() != null) {
+        if (Validate.isString(reviewStage) && sign.getAssociateSign() != null &&
+          (Constant.ProjectStage.STAGE_STUDY.getValue().equals(reviewStage) || Constant.ProjectStage.STAGE_BUDGET.getValue().equals(reviewStage)) ) {
             List<Sign> associateSigns = signService.getAssociates(sign.getAssociateSign().getSignid());
             if (associateSigns != null && associateSigns.size() > 0) {
                 List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());

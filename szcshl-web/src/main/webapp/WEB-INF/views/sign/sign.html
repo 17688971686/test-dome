@@ -7,8 +7,10 @@
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_score">专家评分</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_payment">评审费发放表</a></li>
+    <li ng-show="vm.model.suppLetterDtoList"><a data-toggle="tab" for-div="suppLetter_list">拟补充资料函</a></li>
+    <li ng-show="vm.model.registerFileDtoDtoList"><a data-toggle="tab" for-div="registerFile_list">拟补充资料</a></li>
     <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
-    <li ng-show="vm.model.isAssociate == 1"><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
+    <li ng-show="vm.model.associateSignDtoList"><a data-toggle="tab" for-div="sign_associate">关联项目</a></li>
     <li ng-show="vm.model.processInstanceId && vm.model.processState < 9"><a data-toggle="tab" for-div="sign_diagram">流程图</a></li>
     <li ng-show="vm.model.processInstanceId"><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
 </ul>
@@ -127,7 +129,7 @@
     <!--E 归档 -->
 
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_associate">
-        <div ng-include src="'${path}/contents/app/sign/associate.html'" />
+        <#include "/sign/associate.html"/>
     </div><!--项目关联-->
 
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_upload" >
@@ -143,6 +145,18 @@
     <!-- start 专家费用 -->
     <div class="tab-pane fade" style="background: white;margin-top:10px;" id="expert_payment">
         <#include "/expertReview/expert_payment.html"/>
+    </div>
+    <!-- end tab3 -->
+
+    <!-- start 拟补充资料函 -->
+    <div class="tab-pane fade" style="background: white;margin-top:10px;" id="suppLetter_list">
+        <#include "/addSuppLetter/common.html"/>
+    </div>
+    <!-- end tab3 -->
+
+    <!-- start 拟补充资料 -->
+    <div class="tab-pane fade" style="background: white;margin-top:10px;" id="registerFile_list">
+        <#include "/addRegisterFile/common_list.html"/>
     </div>
     <!-- end tab3 -->
 

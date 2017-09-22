@@ -49,8 +49,8 @@ public class ExpertReviewController {
     @RequiresPermissions("expertReview#updateJoinState#post")
     @RequestMapping(name = "更改专家状态", path = "updateJoinState", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState( @RequestParam(required=true)String minBusinessId,@RequestParam(required=true)String businessType,
-             @RequestParam(required = true) String expertSelId,@RequestParam(required = true) String state) {
+    public void updateExpertState( String minBusinessId,String businessType,@RequestParam(required = true) String expertSelId,
+             @RequestParam(required = true) String state) {
         expertReviewService.updateExpertState(minBusinessId,businessType,expertSelId, state,false);
     }
 

@@ -4,15 +4,17 @@ package cs.model.project;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertReviewDto;
-import cs.model.expert.ExpertSelectedDto;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
+public class SignDto extends BaseDto{
 
-public class SignDto extends BaseDto {
+    /**
+     * 旧项目ID
+     */
+    private Integer oldProjectId;
 
     private String comprehensiveName;//综合部拟办人名称
 
@@ -599,6 +601,19 @@ public class SignDto extends BaseDto {
     //协审项目信息
     private List<AssistPlanSignDto> planSignDtoList;
 
+    /**
+     * 拟补充资料函列表
+     */
+    private List<AddSuppLetterDto> suppLetterDtoList;
+    /**
+     * 拟补充资料列表
+     */
+    private List<AddRegisterFileDto> registerFileDtoDtoList;
+
+    /**
+     * 关联项目列表
+     */
+    private List<SignDto> associateSignDtoList;
     /**
      * 专家评审方案信息
      */
@@ -2225,5 +2240,37 @@ public class SignDto extends BaseDto {
 
     public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
         this.expertReviewDto = expertReviewDto;
+    }
+
+    public List<AddSuppLetterDto> getSuppLetterDtoList() {
+        return suppLetterDtoList;
+    }
+
+    public void setSuppLetterDtoList(List<AddSuppLetterDto> suppLetterDtoList) {
+        this.suppLetterDtoList = suppLetterDtoList;
+    }
+
+    public List<AddRegisterFileDto> getRegisterFileDtoDtoList() {
+        return registerFileDtoDtoList;
+    }
+
+    public void setRegisterFileDtoDtoList(List<AddRegisterFileDto> registerFileDtoDtoList) {
+        this.registerFileDtoDtoList = registerFileDtoDtoList;
+    }
+
+    public List<SignDto> getAssociateSignDtoList() {
+        return associateSignDtoList;
+    }
+
+    public void setAssociateSignDtoList(List<SignDto> associateSignDtoList) {
+        this.associateSignDtoList = associateSignDtoList;
+    }
+
+    public Integer getOldProjectId() {
+        return oldProjectId;
+    }
+
+    public void setOldProjectId(Integer oldProjectId) {
+        this.oldProjectId = oldProjectId;
     }
 }

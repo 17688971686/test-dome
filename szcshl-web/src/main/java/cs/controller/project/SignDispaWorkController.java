@@ -75,8 +75,7 @@ public class SignDispaWorkController {
         return signDispaWorkService.getMergeDISSignBySignId(signId);
     }
 
-    @RequiresPermissions("signView#mergeSign#post")
-    @RequestMapping(name = "保存合并评审发文", path = "mergeSign", method = RequestMethod.POST)
+    @RequestMapping(name = "保存合并项目", path = "mergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg mergeSign(@RequestParam(required = true) String signId,
         @RequestParam(required = true) String mergeIds, @RequestParam(required = true) String mergeType) {

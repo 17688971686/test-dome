@@ -6,14 +6,21 @@ import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.project.SignDispaWork;
-import cs.domain.project.SignDispaWork_;
-import cs.domain.project.SignMerge;
-import cs.domain.project.SignMerge_;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertReview_;
+import cs.domain.expert.ExpertSelCondition;
+import cs.domain.expert.ExpertSelected;
+import cs.domain.meeting.RoomBooking_;
+import cs.domain.project.*;
 import cs.model.PageModelDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -37,7 +44,12 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private SignDispaWorkRepo signDispaWorkRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;
-
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private RoomBookingRepo roomBookingRepo;
     /**
      * 项目综合查询
      * @param odataObj
@@ -65,6 +77,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 合并评审，关联项目显示出同部门，项目工作方案未审批的项目
+     * 同时过滤有分支的项目
      *
      * @param signId
      * @return
@@ -74,13 +87,20 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.processState.getName() + " =:processState ");
+        //已经完成工作方案，但是未评审的项目
         hqlBuilder.setParam("processState", Constant.SignProcessState.END_WP.getValue(), IntegerType.INSTANCE);
+        //只能关联同部门的项目
         hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() +" = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
+        //排除自身
         hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
+        //排除已关联的项目
         hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
         hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
         hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
+        //排除有分支的项目(合并评审的项目一般只有一个分支)
+        hqlBuilder.append(" and (select count("+ SignBranch_.signId.getName()+") from "+SignBranch.class.getSimpleName()+" where "+SignBranch_.signId.getName()+" =:signId ) = 1");
+        hqlBuilder.setParam("signId",signId);
 
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }
@@ -110,11 +130,15 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
      */
     @Override
     public List<SignDispaWork> unMergeDISSign(String signId) {
+        SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where ");
         hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " < :processState2 " );
-        hqlBuilder.setParam("processState1",Constant.SignProcessState.END_WP.getValue(),IntegerType.INSTANCE);
+        hqlBuilder.setParam("processState1",Constant.SignProcessState.DO_WP.getValue(),IntegerType.INSTANCE);
         hqlBuilder.setParam("processState2",Constant.SignProcessState.END_DIS_NUM.getValue(),IntegerType.INSTANCE);
+        //只能关联同部门的项目
+        hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() +" = :mainOrgId ");
+        hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //发文编号为空
         hqlBuilder.append(" and (" + SignDispaWork_.dfilenum.getName() + " is null or " + SignDispaWork_.dfilenum.getName() + " = '') ");
         hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
@@ -174,6 +198,33 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             saveList.add(signMerge);
         }
         signMergeRepo.bathUpdate(saveList);
+
+        //如果是合并评审，还要删除之前的评审方案和预定的会议室信息
+        if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
+            //获取所有合并评审方案信息
+            List<ExpertReview> reviewList = expertReviewRepo.findByIds(ExpertReview_.businessId.getName(),mergeIds,null);
+            if(Validate.isList(reviewList)){
+                for(ExpertReview er : reviewList){
+                    expertReviewRepo.delete(er);        //删除评审方案，顺便删除抽取专家信息(级联删除)
+                }
+            }
+
+            //删除会议室信息
+            List<WorkProgram> workProgramList = workProgramRepo.findByIds("signid",mergeIds,null);
+            if(Validate.isList(workProgramList)){
+                StringBuffer removeIds = new StringBuffer();
+                for(int i=0,l=workProgramList.size();i<l;i++){
+                    WorkProgram wp = workProgramList.get(i);
+                    if(i>0){
+                        removeIds.append(",");
+                    }
+                    removeIds.append(wp.getId());
+                }
+                roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),removeIds.toString());
+            }
+
+            //完成流程分支（与主项目一同审批提交）
+        }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

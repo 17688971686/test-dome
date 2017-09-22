@@ -56,7 +56,12 @@
                 <!-- 选择分管部门 -->
                 <div ng-if="vm.showFlag.nodeSelOrgs" style="width:400px;">
                     <table class="table table-bordered seleteTable" >
-                        <caption class="text-center">主办部门只能选一个，协办部门可以选多个（最多3个）</caption>
+                        <caption class="text-center breadcrumb" style="font-size: 12px;">
+                            <li class="active">
+                                * 主办部门只能选一个，协办部门可以选多个（最多3个）！<br>
+                                * 合并评审的项目只能有一个分支，请注意项目分办情况！
+                            </li>
+                        </caption>
                         <tr>
                             <td width="40%" align="center">部门名称</td>
                             <td width="20%" align="center">主办部门</td>
@@ -175,14 +180,15 @@
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit"  ng-show="vm.businessFlag.isNeedWP == 9 " ><span class="glyphicon glyphicon-edit"></span>工作方案</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit" ng-show="vm.businessFlag.isNeedWP == 9 " ><span class="glyphicon glyphicon-edit"></span>会前准备材料</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
-                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>登记补充资料</button>
                 </div>
                 <!-- 发文 -->
                 <div ng-if="vm.showFlag.nodeDispatch">
-                    <button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>发文</button>
+                     <!--确认抽取的专家之后再显示-->
+                     <button ng-if="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList" ng-hide="vm.model.expertReviewDto.payDate" class="btn btn-xs btn-success" ng-click="vm.affirmJoinExpert();" ng-disabled="vm.isCommit">确认实际参加评审的专家名称</button>
+                     <button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>发文</button>
                      <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
-                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>
+                     <!--<button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>-->
                      <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>登记补充资料</button>
                 </div>
                 <!--项目负责人确认发文-->
@@ -201,7 +207,6 @@
                     </ol>
                     <button class="btn btn-xs btn-primary" ng-click="vm.createDispatchFileNum()" ng-disabled="vm.isCommit" ng-hide="vm.dispatchDoc.fileNum  || (vm.dispatchDoc.dispatchWay=='2'&& vm.dispatchDoc.isMainProject=='0') "><span class="glyphicon glyphicon-edit"></span>生成发文字号</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>登记补充资料</button>
                 </div>
               
@@ -222,7 +227,6 @@
                 <div ng-if="vm.showFlag.nodeFileRecord">
                     <button class="btn btn-xs btn-primary" ng-click="vm.addDoFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>归档</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>拟补充资料函</button>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetterList()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>拟补充资料函列表</button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addRegisterFile()" ng-disabled="vm.isCommit" ><span class="glyphicon glyphicon-edit"></span>登记补充资料</button>
                 </div>
           </td>

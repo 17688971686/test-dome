@@ -508,8 +508,7 @@
                         if (response.data != undefined) {
                             vm.associateSign = response.data;
                             var signs = response.data;
-                            // console.log(signs);
-                            var steps = [];
+
                             var html_ = '';
                             for (var i = (signs.length - 1); i >= 0; i--) {
                                 var s = signs[i];

@@ -1,0 +1,100 @@
+<meta charset="UTF-8">
+<!--S 项目关联弹窗 -->
+<div class="mergeSign" id="mergeSign" style="background:white;display:none;">
+    <ol class="breadcrumb" >
+        <li class="active" style="font-size:12px;">
+            * 待选合并评审的项目，只能是本部门主办，工作方案未审核，并且只有一个分支的项目！<br>
+            * 合并评审的次项目，评审会时间和拟聘专家的信息与主项目的一致。如果次项目之前已经做选择了会议室或者工作方案，则会被删除！<br>
+            * 合并发文的项目，必须是已完成工作方案，但没有生成发文编号的项目！
+        </li>
+    </ol>
+    <form id="searchformi" name="searchformi">
+        <div class="toolbar" ng-hide="true">
+            <button class="btn btn-sm btn-success" ng-click="vm.merge()"><span
+                    class="glyphicon glyphicon-ok"></span>保存
+            </button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.onWorkClose()"><span
+                    class="glyphicon glyphicon-chevron-left"></span>关闭
+            </button>
+        </div>
+        <table class="table table-bordered">
+            <tr>
+                <td class="formAlignRight" style="width:100px;">项目名称</td>
+                <td>
+                    <input type="text" ng-model="vm.searchSign.projectname" >
+                </td>
+                <td class="formAlignRight" style="width:100px;">评审阶段</td>
+                <td>
+                    <input type="text" ng-model="vm.searchSign.reviewstage">
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <p class="label label-success">已选项目列表</p>
+    <div style="width:100%;max-height: 400px;">
+        <table class="table table-bordered" id="seletedSignTable">
+            <tr>
+                <td style="width:80px;" align="center" bgcolor="#eeeeee">请选择</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
+                <td width="20%" align="center" bgcolor="#eeeeee">建设单位</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">主办部门</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">主负责人</td>
+                <td width="15%" align="center" bgcolor="#eeeeee">其他负责人</td>
+            </tr>
+            <tr ng-repeat="x in vm.mergeSign">
+                <td align="center" style="width:80px;"><input type="checkbox" name="cancelMergeSignid" value="{{x.signid}}"/></td>
+                <td style="text-align: center;">{{ x.projectname }}</td>
+                <td style="text-align: center;">{{ x.reviewstage }}</td>
+                <td style="text-align: center;">{{ x.builtcompanyname }}</td>
+                <td style="text-align: center;">{{ x.mOrgName }}</td>
+                <td style="text-align: center;">{{ x.reviewOrgName }}</td>
+                <td style="text-align: center;">{{ x.signdate }}</td>
+                <td style="text-align: center;">{{ x.mUserName }}</td>
+                <td style="text-align: center;">{{ x.aUserName }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="width: 100%;text-align: center;">
+        <button class="btn btn-xs btn-default" ng-click="vm.chooseSign()" type="button" ><i class="glyphicon glyphicon-chevron-up" aria-hidden="true"></i> 挑选项目</button>
+        <button class="btn btn-xs btn-default" ng-click="vm.cancelSign()" type="button" ><i class="glyphicon glyphicon-chevron-down" aria-hidden="true"></i> 取消挑选</button>
+    </div>
+
+    <p class="label label-success">
+        待选项目列表
+    </p>
+    <div style="width:100%;height:400px;overflow: auto; ">
+        <table class="table table-bordered">
+            <tr>
+                <td style="width:80px;" align="center" bgcolor="#eeeeee">请选择</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
+                <td width="20%" align="center" bgcolor="#eeeeee">建设单位</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">主办部门</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
+                <td width="10%" align="center" bgcolor="#eeeeee">主负责人</td>
+                <td width="15%" align="center" bgcolor="#eeeeee">其他负责人</td>
+            </tr>
+            <tr ng-repeat="x in vm.unMergeSign | filter:vm.filterSign ">
+                <td align="center"><input type="checkbox" name="mergeSign" value="{{x.signid }}"/></td>
+                <td style="text-align: center;">{{ x.projectname }}</td>
+                <td style="text-align: center;">{{ x.reviewstage }}</td>
+                <td style="text-align: center;">{{ x.builtcompanyname }}</td>
+                <td style="text-align: center;">{{ x.mOrgName }}</td>
+                <td style="text-align: center;">{{ x.reviewOrgName }}</td>
+                <td style="text-align: center;">{{ x.signdate }}</td>
+                <td style="text-align: center;">{{ x.mUserName }}</td>
+                <td style="text-align: center;">{{ x.aUserName }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!--E 项目关联弹窗 -->

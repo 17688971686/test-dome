@@ -9,7 +9,7 @@ package cs.common;
  */
 public class Constant {
     /**
-     * 企业名称
+     * 超级管理员账号
      */
     public static final String SUPER_USER = "admin";
     /**

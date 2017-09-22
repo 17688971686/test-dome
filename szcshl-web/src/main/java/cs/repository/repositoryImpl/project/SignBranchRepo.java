@@ -33,7 +33,11 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
 
     List<User> findAssistOrgDirector(String signId);
 
+    User findMainOrgDirector(String signId);
+
     List<User> findAssistSLeader(String signId);
+
+    User findMainSLeader(String signId);
 
     List<OrgDept> getOrgDeptBySignId(String signId);
 }

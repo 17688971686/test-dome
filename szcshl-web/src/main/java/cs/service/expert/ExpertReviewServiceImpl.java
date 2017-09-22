@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -205,6 +206,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 }
             }
             ExpertSelected expertSelected = new ExpertSelected();
+            expertSelected.setReviewCost(new BigDecimal(1000)); //每个专家默认评审费1000元
             expertSelected.setBusinessId(minBusinessId);
             expertSelected.setIsJoin(Constant.EnumState.YES.getValue());
             expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
@@ -346,8 +348,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             if(expertReview.getPayDate() != null){
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发送，不能再次保存！");
             }
-            //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存
-            if (expertReview.getReviewDate() != null) {
+            //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员)
+            if (expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
                 String sysDateString = expertReviewRepo.getDataBaseTime("yyyy-mm-dd");
                 long diffDays = DateUtils.daysBetween(DateUtils.converToDate(sysDateString, "yyyy-MM-dd"), expertReview.getReviewDate());
                 if (diffDays > 1 || diffDays < -1) {

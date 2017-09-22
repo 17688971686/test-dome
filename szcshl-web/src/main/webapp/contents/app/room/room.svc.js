@@ -84,94 +84,10 @@
                         });
                     },
                     create: function (options) {
-                        common.initJqValidation($('#formRoom'));
-                        var isValid = $('#formRoom').valid();
-                        if (isValid) {
-                            var model = options.data.models[0];
-                            if($("#id").val()){
-                                model.id =  $("#id").val();
-                            }
-                            model.rbName = $("#rbName").val();
-                            model.stageOrgName = $("#stageOrgName").val();
-                            model.rbDay = $("#rbDay").val();
-                            model.host = $("#host").val();
-                            model.dueToPeople = $("#dueToPeople").val();
-                            model.beginTimeStr = $("#beginTime").val();
-                            model.endTimeStr = $("#endTime").val();
-                            model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
-                            model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
-                            model.businessId = vm.model.businessId;
-                            model.businessType = vm.model.businessType;
-
-                            if (new Date(model.endTime) < new Date(model.beginTime)) {
-                                bsWin.alert("开始时间不能大于结束时间!");
-                                return;
-                            }
-                            var httpOptions = {
-                                method: 'post',
-                                url: rootPath + "/room/addRoom",
-                                data: model
-                            }
-                            var httpSuccess = function success(response) {
-                                if(response.data.flag || response.data.reCode == 'ok'){
-                                    bsWin.alert("操作成功",function(){
-                                        findMeeting(vm);
-                                        $('.alertDialog').modal('hide');
-                                        $('.modal-backdrop').remove();
-                                    });
-                                }else{
-                                    bsWin.alert(response.data.reMsg);
-                                }
-                            }
-                            common.http({
-                                $http: $http,
-                                httpOptions: httpOptions,
-                                success: httpSuccess
-                            });
-                        }
+                        saveBookRoom(vm);
                     },
                     update: function (options) {
-                        common.initJqValidation($('#formRoom'));
-                        var isValid = $('#formRoom').valid();
-                        if (isValid) {
-                            var model = options.data.models[0];
-                            if($("#id").val()){
-                                model.id =  $("#id").val();
-                            }
-                            model.businessId = vm.model.businessId;
-                            model.businessType = vm.model.businessType;
-                            model.rbDay = $("#rbDay").val();
-                            model.beginTimeStr = $("#beginTime").val();
-                            model.endTimeStr = $("#endTime").val();
-                            model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
-                            model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
-
-                            if (new Date(model.endTime) < new Date(model.beginTime)) {
-                                bsWin.alert("开始时间不能大于结束时间!");
-                                return;
-                            }
-                            var httpOptions = {
-                                method: 'put',
-                                url: rootPath + "/room/addRoom",
-                                data: model
-                            }
-                            var httpSuccess = function success(response) {
-                                if(response.data.flag || response.data.reCode == 'ok'){
-                                    bsWin.alert("操作成功",function(){
-                                        findMeeting(vm);
-                                        $('.alertDialog').modal('hide');
-                                        $('.modal-backdrop').remove();
-                                    });
-                                }else{
-                                    bsWin.alert(response.data.reMsg);
-                                }
-                            }
-                            common.http({
-                                $http: $http,
-                                httpOptions: httpOptions,
-                                success: httpSuccess
-                            });
-                        }
+                        saveBookRoom(vm);
                     },
                     destroy: function (options) {
                         var id = options.data.models[0].id;
@@ -216,6 +132,8 @@
                             host :{from: "host", defaultValue: vm.model.host},
                             dueToPeople :{from: "dueToPeople", defaultValue: vm.model.dueToPeople},
                             mrID:{from: "mrID", defaultValue: vm.model.mrID},
+                            content:{from: "content", defaultValue: vm.model.content},
+                            remark:{from: "remark", defaultValue: vm.model.remark},
                         }
                     }
                 },
@@ -227,7 +145,57 @@
             }else{
                 ss.dataSource.read();
             }
+        }
 
+        function saveBookRoom(vm){
+            common.initJqValidation($('#formRoom'));
+            var isValid = $('#formRoom').valid();
+            if (isValid) {
+                var model = {};
+                if($("#bookId").val()){
+                    model.id =  $("#bookId").val();
+                }
+                model.rbName = $("#rbName").val();
+                model.mrID = $("#mrID").val();
+                model.stageOrgName = $("#stageOrgName").val();
+                model.rbDay = $("#rbDay").val();
+                model.host = $("#host").val();
+                model.dueToPeople = $("#dueToPeople").val();
+                model.beginTimeStr = $("#beginTime").val();
+                model.endTimeStr = $("#endTime").val();
+                model.beginTime = $("#rbDay").val() + " " + $("#beginTime").val() + ":00";
+                model.endTime = $("#rbDay").val() + " " + $("#endTime").val() + ":00";
+                model.content = $("#content").val();
+                model.remark = $("#remark").val();
+                model.businessId = vm.model.businessId;
+                model.businessType = vm.model.businessType;
+
+                if (new Date(model.endTime) < new Date(model.beginTime)) {
+                    bsWin.alert("开始时间不能大于结束时间!");
+                    return;
+                }
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/room/addRoom",
+                    data: model
+                }
+                var httpSuccess = function success(response) {
+                    if(response.data.flag || response.data.reCode == 'ok'){
+                        bsWin.alert("操作成功",function(){
+                            $('.alertDialog').modal('hide');
+                            $('.modal-backdrop').remove();
+                        });
+                    }else{
+                        bsWin.alert(response.data.reMsg);
+                    }
+                    findMeeting(vm);
+                }
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
         }
         //start 初始化会议预定页面
         function initRoom(vm) {

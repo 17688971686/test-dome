@@ -50,12 +50,12 @@
 
                 <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
                 <td>
-                    <label>
-                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.dispatchDoc.isRelated" name="isRelated">是
-                    </label>
-                    <label>
-                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.dispatchDoc.isRelated" name="isRelated">否
-                    </label>
+                    <span>
+                        <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated" />是
+                    </span>
+                    <span style="margin-left:10px;">
+                        <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated" />否
+                    </span>
                 </td>
             </tr>
               <tr>
@@ -77,14 +77,14 @@
           
             <tr>
                 <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
-                <td colspan="5">
+                <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.dispatchScope}}
                 </td>
             </tr>
             
             <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
-                <td colspan="5">
+                <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.description}}
                 </td>
             </tr>
@@ -92,18 +92,18 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">相关说明</td>
-                <td colspan="5">
+                <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.description}}
                 </td>
             </tr>
 
             <tr>
                 <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
-                <td colspan="3">
+                <td colspan="3" style="min-height: 30px;">
                     第一负责人意见：
                     <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
                 </td>
-                <td colspan="2">
+                <td colspan="2" style="min-height: 30px;">
                     第二负责人意见：
                     <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
                 </td>
@@ -111,15 +111,14 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">评审意见摘要</td>
-                <td colspan="5">
+                <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.reviewAbstract}}
                 </td>
             </tr>
 
              <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
-                <td colspan="5">
-               
+                <td colspan="5" style="min-height: 30px;">
                  <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -128,7 +127,7 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">分管副主任意见</td>
-                <td colspan="5">
+                <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.viceDirectorSuggesttion}}
                  <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
@@ -137,7 +136,7 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">主任签发</td>
-                <td colspan="5">
+                <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.directorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>

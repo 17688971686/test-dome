@@ -1,0 +1,24 @@
+<meta charset="UTF-8">
+<div >
+    <div>
+        <div class="intro-list-left">项目阶段：{{ vm.model.reviewstage }}<br/>签收时间：{{vm.model.signdate}}</div>
+        <div class="intro-list-right">
+            <span></span>
+            <div class="intro-list-content">
+                名称：<span style="color:red;">{{vm.model.projectname}}</span><br/>
+                送件人：<span style="color:red;">{{vm.model.sendusersign}}</span><br/>
+            </div>
+        </div>
+    </div>
+    <div ng-repeat="s in vm.model.associateSignDtoList">
+        <div class="intro-list-left">项目阶段：{{ s.reviewstage }}<br/>签收时间：{{s.signdate}}</div>
+        <div class="intro-list-right">
+            <span></span>
+            <div class="intro-list-content">
+                名称：<span style="color:red;">{{s.projectname}}</span><br/>
+                送件人：<span style="color:red;">{{s.sendusersign}}</span><br/>
+            </div>
+        </div>
+    </div>
+    <div class="footer-btn"> </div>
+</div>

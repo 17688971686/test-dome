@@ -85,13 +85,6 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
-                //有关联，则显示项目
-                if(vm.model.isAssociate && vm.model.isAssociate == 1){
-                    vm.showFlag.tabAssociateSigns = true;
-                    signSvc.initAssociateSigns(vm,vm.model.signid);
-                    //没有则初始化关联表格
-                }
-
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
@@ -119,6 +112,11 @@
                 vm.businessFlag.isLoadSign = true;
                 if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
                     signFlowSvc.initBusinessParams(vm);
+                }
+
+                //显示拟补充资料函
+                if(vm.model.suppLetterDtoList){
+                    vm.showSupperIndex = 0;
                 }
             });
             // 初始化流程数据
@@ -440,8 +438,8 @@
                             }
                             //选中要关联的项目
                             $("#associateWindow").kendoWindow({
-                                width: "80%",
-                                height: "620px",
+                                width: "75%",
+                                height: "650px",
                                 title: "项目关联",
                                 visible: false,
                                 modal: true,
@@ -787,5 +785,70 @@
 
             });
         }
+
+        //确定实际参加会议的专家
+        vm.affirmJoinExpert = function () {
+            if(vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList){
+                vm.confirmEPList = vm.model.expertReviewDto.expertSelectedDtoList;
+                $("#confirmJoinExpert").kendoWindow({
+                    width: "75%",
+                    height: "600px",
+                    title: "参加评审会专家确认",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }else{
+                bsWin.alert("该项目没有评审专家！");
+            }
+        }
+
+        //未参加改为参加
+        vm.updateToJoin = function () {
+            var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择要改为参加会议的专家");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState("","", ids.join(','), '9',vm.isCommit,function(data){
+                    bsWin.success("操作成功！");
+                    vm.reFleshJoinState(ids,'9');
+                });
+            }
+        }
+
+        //参加改为未参加
+        vm.updateToNotJoin = function () {
+            var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择未参加会议的专家");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState("","", ids.join(','), '0',vm.isCommit,function(data){
+                    bsWin.success("操作成功！");
+                    vm.reFleshJoinState(ids,'0');
+                });
+            }
+        }
+
+        //更新参加未参加状态
+        vm.reFleshJoinState = function(ids,state){
+            $.each(ids,function(i, obj){
+                //1、删除已确认的专家
+                $.each(vm.confirmEPList,function(index, epObj){
+                    if(obj == epObj.id){
+                        epObj.isJoin = state;
+                    }
+                })
+            })
+        }
+
     }
 })();

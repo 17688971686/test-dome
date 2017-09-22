@@ -44,13 +44,6 @@
             //初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
-                //有关联，则显示项目
-                if(vm.model.isAssociate && vm.model.isAssociate == 1){
-                    vm.showFlag.tabAssociateSigns = true;
-                    signSvc.initAssociateSigns(vm,vm.model.signid);
-                    //没有则初始化关联表格
-                }
-
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
@@ -72,6 +65,11 @@
                 //初始化专家评分
                 if (vm.model.processState > 1) {
                     vm.showFlag.tabWorkProgram=true;        //显示工作方案
+                }
+
+                //显示拟补充资料函
+                if(vm.model.suppLetterDtoList){
+                    vm.showSupperIndex = 0;
                 }
             });
 

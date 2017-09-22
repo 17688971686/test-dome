@@ -203,9 +203,9 @@
             }else{
                 //初始化合并评审信息
                 dispatchSvc.initMergeInfo(vm,vm.dispatchDoc.signId);
-                $("#mwindow").kendoWindow({
-                    width: "1200px",
-                    height: "630px",
+                $("#mergeSign").kendoWindow({
+                    width: "75%",
+                    height: "700px",
                     title: "合并发文",
                     visible: false,
                     modal: true,
@@ -216,8 +216,8 @@
         }
 
         // 选择合并发文项目
-        vm.chooseProject = function () {
-            var selIds = $("input[name='checksign']:checked");
+        vm.chooseSign = function () {
+            var selIds = $("input[name='mergeSign']:checked");
             if(selIds.length == 0){
                 bsWin.alert("请选择要合并发文的项目！");
             }else{
@@ -235,8 +235,8 @@
         }
 
         // 取消选择
-        vm.cancelProject = function () {
-            var linkSignId = $("input[name='checkss']:checked");
+        vm.cancelSign = function () {
+            var linkSignId = $("input[name='cancelMergeSignid']:checked");
             if (linkSignId.length < 1){
                 bsWin.alert("请选择要取消合并发文的项目！");
             }else{
@@ -260,15 +260,12 @@
         }
 
         //合并发文待选过滤器
-        vm.filterMergeSign = function(item){
+        vm.filterSign = function(item){
             var isMatch = true;
             if(vm.searchSign.projectname && (item.projectname).indexOf(vm.searchSign.projectname) == -1){
                 isMatch = false;
             }
             if(vm.searchSign.reviewstage && (item.reviewstage != vm.searchSign.reviewstage)){
-                isMatch = false;
-            }
-            if(vm.searchSign.builtcompanyName && (item.builtcompanyName).indexOf(vm.searchSign.builtcompanyName) == -1){
                 isMatch = false;
             }
             if(isMatch){

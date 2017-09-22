@@ -39,7 +39,7 @@ public class SignDispaWork {
      * 评审阶段
      */
     @Column
-    private String reviewstage;    //评审阶段*
+    private String reviewstage;
 
     /**
      * 建设单位

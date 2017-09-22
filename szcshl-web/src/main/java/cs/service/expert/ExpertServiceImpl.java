@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -376,7 +377,8 @@ public class ExpertServiceImpl implements ExpertService {
         //1、关联本周未满2次，本月未满4次的专家
         hqlBuilder.append(" LEFT JOIN (  SELECT er.EXPERTID, COUNT (er.EXPERTID)  FROM ( ");
         hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel LEFT JOIN CS_EXPERT_REVIEW ep_rev ");
-        hqlBuilder.append(" ON EP_SEL.EXPERTREVIEWID = EP_REV.ID WHERE EP_SEL.ISJOIN = '9') er GROUP BY er.EXPERTID ");
+        hqlBuilder.append(" ON EP_SEL.EXPERTREVIEWID = EP_REV.ID WHERE EP_SEL.ISJOIN =:isJoin) er GROUP BY er.EXPERTID ");
+        hqlBuilder.setParam("isJoin", Constant.EnumState.YES.getValue());
         hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-mm')) > 4 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
         hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
         //2、排除跟工作方案单位的专家(保留，不影响)
@@ -386,9 +388,9 @@ public class ExpertServiceImpl implements ExpertService {
         //3、排除本次已经选择的专家
         hqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID AND CURSEL.EXPERTREVIEWID =:reviewId ");
         hqlBuilder.setParam("reviewId", reviewId);
-
-        hqlBuilder.append(" WHERE (ep.STATE = :state1 or ep.STATE = :state2 ) ");
-        hqlBuilder.setParam("state1", EnumExpertState.OFFICIAL.getValue()).setParam("state2", EnumExpertState.ALTERNATIVE.getValue());
+        //4、抽取专家只能是正式专家
+        hqlBuilder.append(" WHERE ep.STATE = :state ");
+        hqlBuilder.setParam("state", EnumExpertState.OFFICIAL.getValue());
         hqlBuilder.append(" AND fep.EXPERTID IS NULL ");
         hqlBuilder.append(" AND lwp.ID IS NULL ");
         hqlBuilder.append(" AND CURSEL.ID IS NULL ");
@@ -517,32 +519,24 @@ public class ExpertServiceImpl implements ExpertService {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
                 break;
             }
-            //3、符合条件的正选专家、备选专家分类
-            List<ExpertDto> officialList = new ArrayList<>(),alternativeList = new ArrayList<>();
-            matchEPList.forEach(ep ->{
-                if(EnumExpertState.OFFICIAL.getValue().equals(ep.getState())){
-                    officialList.add(ep);
-                }else if(EnumExpertState.ALTERNATIVE.getValue().equals(ep.getState())){
-                    alternativeList.add(ep);
-                }
-            });
+            allEPList.addAll(matchEPList);
+            int totalCount = matchEPList.size();
 
-            if(epConditon.getOfficialNum() > officialList.size()){
+            if(epConditon.getOfficialNum() > totalCount){
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                 break;
             }
-            if(epConditon.getAlternativeNum() > alternativeList.size()){
+            if(epConditon.getAlternativeNum() > (totalCount*2)){
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
             }
-            allEPList.addAll(matchEPList);
 
-            //4、开始抽取
+            //3、开始抽取
             for(int i = 0;i<chooseCount;i++){
-                if(!addAutoExpert(officialEPList,officialList,saveList,epConditon,expertReview,minBusinessId)){
+                if(!addAutoExpert(officialEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId)){
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
-                if(!addAutoExpert(alternativeEPList,alternativeList,saveList,epConditon,expertReview,minBusinessId)){
+                if(!addAutoExpert(alternativeEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId)){
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
@@ -551,7 +545,7 @@ public class ExpertServiceImpl implements ExpertService {
         if(resultMsg == null){
             resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
         }
-        //抽取成功，添加相应的抽取记录
+        //4、抽取成功，添加相应的抽取记录
         if(resultMsg.isFlag()){
             Map<String,Object> resultMap = new HashMap<>();
             expertSelectedRepo.bathUpdate(saveList);
@@ -614,6 +608,8 @@ public class ExpertServiceImpl implements ExpertService {
             aExpertSelected.setMaJorSmall(epConditon.getMaJorSmall());
             aExpertSelected.setSelectIndex(epConditon.getSelectIndex()==null?1:(epConditon.getSelectIndex()+1));
             aExpertSelected.setExpeRttype(epConditon.getExpeRttype());
+            //默认专家费用，每个专家1000元
+            aExpertSelected.setReviewCost(new BigDecimal(1000));
             Expert aEP = new Expert();
             BeanCopierUtils.copyProperties(saveEPList.get(saveEPList.size()-1),aEP);
             aExpertSelected.setExpert(aEP);//保存专家映射

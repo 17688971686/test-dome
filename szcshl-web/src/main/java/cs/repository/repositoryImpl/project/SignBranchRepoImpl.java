@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.SignBranch;
 import cs.domain.project.SignBranch_;
@@ -218,13 +219,35 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     public List<User> findAssistOrgDirector(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u where u." + User_.id.getName() + " in ( ");
-        hqlBuilder.append(" select og." + Org_.orgDirector.getName() + " from " + Org.class.getSimpleName() + " og ");
-        hqlBuilder.append(" where og." + Org_.id.getName() + " in (");
+        hqlBuilder.append(" select og." + OrgDept_.directorID.getName() + " from " + OrgDept.class.getSimpleName() + " og ");
+        hqlBuilder.append(" where og." + OrgDept_.id.getName() + " in (");
         hqlBuilder.append(" select bh." + SignBranch_.orgId.getName() + " from " + SignBranch.class.getSimpleName() + " bh ");
         hqlBuilder.append(" where bh."+SignBranch_.signId.getName()+" =:signId ").setParam("signId",signId);
         hqlBuilder.append(" and bh."+SignBranch_.isMainBrabch.getName()+" =:isMain ").setParam("isMain", Constant.EnumState.NO.getValue());
         hqlBuilder.append(" ) )");
         return userRepo.findByHql(hqlBuilder);
+    }
+
+    /**
+     * 查询主办分支的领导
+     * @param signId
+     * @return
+     */
+    @Override
+    public User findMainOrgDirector(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u where u." + User_.id.getName() + " = ( ");
+        hqlBuilder.append(" select og." + OrgDept_.directorID.getName() + " from " + OrgDept.class.getSimpleName() + " og ");
+        hqlBuilder.append(" where og." + OrgDept_.id.getName() + " = (");
+        hqlBuilder.append(" select bh." + SignBranch_.orgId.getName() + " from " + SignBranch.class.getSimpleName() + " bh ");
+        hqlBuilder.append(" where bh."+SignBranch_.signId.getName()+" =:signId ").setParam("signId",signId);
+        hqlBuilder.append(" and bh."+SignBranch_.isMainBrabch.getName()+" =:isMain ").setParam("isMain", Constant.EnumState.YES.getValue());
+        hqlBuilder.append(" ) )");
+        List<User> list = userRepo.findByHql(hqlBuilder);
+        if(Validate.isList(list)){
+            return list.get(0);
+        }
+        return null;
     }
 
     /**
@@ -236,8 +259,8 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     public List<User> findAssistSLeader(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u where u." + User_.id.getName() + " in ( ");
-        hqlBuilder.append(" select og." + Org_.orgSLeader.getName() + " from " + Org.class.getSimpleName() + " og ");
-        hqlBuilder.append(" where og." + Org_.id.getName() + " in (");
+        hqlBuilder.append(" select og." + OrgDept_.sLeaderID.getName() + " from " + OrgDept.class.getSimpleName() + " og ");
+        hqlBuilder.append(" where og." + OrgDept_.id.getName() + " in (");
         hqlBuilder.append(" select bh." + SignBranch_.orgId.getName() + " from " + SignBranch.class.getSimpleName() + " bh ");
         hqlBuilder.append(" where bh."+SignBranch_.signId.getName()+" =:signId ").setParam("signId",signId);
         hqlBuilder.append(" and bh."+SignBranch_.isMainBrabch.getName()+" =:isMain ").setParam("isMain", Constant.EnumState.NO.getValue());
@@ -246,18 +269,51 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     }
 
     /**
-     * 获取项目的评审单位
+     * 查询主办分支的分管领导
+     * @param signId
+     * @return
+     */
+    @Override
+    public User findMainSLeader(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u where u." + User_.id.getName() + " = ( ");
+        hqlBuilder.append(" select og." + OrgDept_.sLeaderID.getName() + " from " + OrgDept.class.getSimpleName() + " og ");
+        hqlBuilder.append(" where og." + OrgDept_.id.getName() + " = (");
+        hqlBuilder.append(" select bh." + SignBranch_.orgId.getName() + " from " + SignBranch.class.getSimpleName() + " bh ");
+        hqlBuilder.append(" where bh."+SignBranch_.signId.getName()+" =:signId ").setParam("signId",signId);
+        hqlBuilder.append(" and bh."+SignBranch_.isMainBrabch.getName()+" =:isMain ").setParam("isMain", Constant.EnumState.YES.getValue());
+        hqlBuilder.append(" ) )");
+        List<User> list = userRepo.findByHql(hqlBuilder);
+        if(Validate.isList(list)){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * 获取项目的评审单位,按主评审排序
      * @param signId
      * @return
      */
     @Override
     public List<OrgDept> getOrgDeptBySignId(String signId) {
-        Criteria criteria = orgDeptRepo.getExecutableCriteria();
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select o from "+OrgDept.class.getSimpleName()+" o left join ");
+        hqlBuilder.append(SignBranch.class.getSimpleName()+" s on o."+OrgDept_.id.getName()+" = s."+SignBranch_.orgId.getName());
+        hqlBuilder.append(" and s."+SignBranch_.signId.getName() +" =:signId ");
+        hqlBuilder.setParam("signId",signId);
+        hqlBuilder.append(" where s."+SignBranch_.signId.getName()+" is not null ");
+        hqlBuilder.append(" order by s."+SignBranch_.branchId.getName());
+
+        /*Criteria criteria = orgDeptRepo.getExecutableCriteria();
         StringBuffer sb = new StringBuffer();
         sb.append(" id in ( select "+SignBranch_.orgId.getName()+" from cs_sign_branch ");
         sb.append(" where "+SignBranch_.signId.getName()+" = '"+signId+"' )");
         criteria.add(Restrictions.sqlRestriction(sb.toString()));
         return criteria.list();
+        */
+
+        return orgDeptRepo.findByHql(hqlBuilder);
     }
 
 

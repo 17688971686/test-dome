@@ -10,6 +10,8 @@
 </style>
 <!--会议室公共页面-->
 <#include "/room/common.html"/>
+<!--合并选择公共页面-->
+<#include "/sign/mergeSign.html"/>
 
 <div class="toolbar">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span
@@ -19,7 +21,7 @@
     <flow-file-button></flow-file-button>   <!--附件上传按钮-->
 </div>
 
-<div class="well well-sm" style="background:white; min-height: 700px;">
+<div style="background:white; min-height: 700px;">
     <ul id="wpTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="wp_edit">编辑页面</a></li>
         <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0"><a data-toggle="tab" for-div="wp_list">项目其它工作方案</a></li>
@@ -72,105 +74,8 @@
             <div  ng-show="vm.work.workreviveStage=='设备清单（国产）' || vm.work.workreviveStage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
         </div>
         <!--E 工作方案查看页面 -->
-        
     </div>
-    
-    <!--S 项目关联弹窗 -->
-    <div class="mergeSignWP" id="mergeSignWP" style="background:white;display:none;">
-        <form id="searchformi" name="searchformi">
-            <div class="toolbar">
-                <button class="btn btn-sm btn-success" ng-click="vm.mergeAddWork()"><span
-                        class="glyphicon glyphicon-ok"></span>保存
-                </button>
-                <button class="btn btn-sm btn-primary" ng-click="vm.onWorkClose()"><span
-                        class="glyphicon glyphicon-chevron-left"></span>关闭
-                </button>
-            </div>
-            <ol class="breadcrumb">
-                <table style="width:100%">
-                    <tr>
-                        <td class="formAlignRight" style="width:100px;">项目名称</td>
-                        <td>
-                            <input type="text" ng-model="vm.serchSign.projectname" >
-                        </td>
-                        <td class="formAlignRight" style="width:100px;">评审阶段</td>
-                        <td>
-                            <input type="text" ng-model="vm.serchSign.reviewstage">
-                        </td>
-                    </tr>
-                </table>
-            </ol>
-        </form>
 
-        <table style="width:100%;">
-            <tr>
-                <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
-                    <p class="label label-success">待选项目列表</p>
-                    <div style="width:500px; height:400px;overflow: auto;">
-                        <table class="table table-bordered" style="width: 500px;">
-                            <tr>
-                                <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
-                            </tr>
-                            <tr ng-repeat="x in vm.unMergeSign | filter:vm.filterSign ">
-                                <td align="center"><input type="checkbox" name="mergeSign" value="{{x.signid }}"/></td>
-                                <td style="text-align: center;">{{ x.projectname }}</td>
-                                <td style="text-align: center;">{{ x.reviewstage }}</td>
-                                <td style="text-align: center;">{{ x.reviewdeptid }}</td>
-                                <td style="text-align: center;">{{ x.builtcompanyid }}</td>
-                                <td style="text-align: center;">{{ x.signdate }}</td>
-                                <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
-                                <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
-                                <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-                <td class="text-center" style="height:200px;width:100px;">
-                    <p><button class="btn btn-xs btn-default" ng-click="vm.chooseSign()" type="button" ><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
-                    <p><button class="btn btn-xs btn-default" ng-click="vm.cancelSign()" type="button" ><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
-                </td>
-
-                <td rowspan="4" valign="top" class="breadcrumb" nowrap="nowrap">
-                    <p class="label label-success">已选项目列表</p>
-                    <div style="width:500px; height:400px;overflow: auto;">
-                        <table class="table table-bordered" id="workTab" style="width: 500px;overflow: auto;">
-                            <tr>
-                                <td width="10%" align="center" bgcolor="#eeeeee">请选择</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">项目名称</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">评审阶段</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">建设单位</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">评审部门</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">项目签收时间</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">联系人</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">联系电话</td>
-                                <td width="10%" align="center" bgcolor="#eeeeee">项目负责人</td>
-                            </tr>
-                            <tr ng-repeat="x in vm.mergeSign">
-                                <td align="center"><input type="checkbox" name="cancelMergeSignid" value="{{x.signid}}"/></td>
-                                <td style="text-align: center;">{{ x.projectname }}</td>
-                                <td style="text-align: center;">{{ x.reviewstage }}</td>
-                                <td style="text-align: center;">{{ x.reviewdeptid }}</td>
-                                <td style="text-align: center;">{{ x.builtcompanyid }}</td>
-                                <td style="text-align: center;">{{ x.signdate }}</td>
-                                <td style="text-align: center;">{{ x.mainDeptUserName }}</td>
-                                <td style="text-align: center;">{{ x.mainDeptContactPhone}}</td>
-                                <td style="text-align: center;">{{ x.mFlowMainUserName }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <!--E 项目关联弹窗 -->
 </div>
 
 

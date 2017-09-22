@@ -94,7 +94,9 @@
                             var httpSuccess = function success(response) {
                                 vm.isSubmit = false;
                                 if(response.data.reCode == "ok"){
-                                    bsWin.success("操作成功！");
+                                    bsWin.success("操作成功！",function(){
+                                        $state.go('gtasks');
+                                    });
                                 }else{
                                     bsWin.error(response.data.reMsg);
                                 }

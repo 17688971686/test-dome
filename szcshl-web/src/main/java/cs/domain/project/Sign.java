@@ -19,2430 +19,2449 @@ import java.util.List;
 @DynamicUpdate(true)
 public class Sign extends DomainBase {
 
- /**
-  * 收文ID
-  */
- @Id
- private String signid;
-
- @Column(columnDefinition = "VARCHAR(2)")
- private String isSignTemplate;//是否已经生成发文模板  9：是 ， 0：否
-
- /**
-  * 是否已发送存档
-  */
- @Column(columnDefinition="VARCHAR(2) COMMENT '是否已发送存档,9是0否'")
- private String isSendFileRecord;
-
- //委内收文编号
- @Column(columnDefinition = "VARCHAR(30)")
- private String filecode;
-
- /**
-  * 收文编号(年份+收文类型+序号[序号保留3位数])
-  */
- @Column(columnDefinition = "VARCHAR(16)")
- private String signNum;
-
- /**
-  * 收文序号
-  */
- @Column(columnDefinition = "Integer")
- private Integer signSeq;
-
- //项目代码
- @Column(columnDefinition = "VARCHAR(20)")
- private String projectcode;
-
- //评审阶段
- @Column(columnDefinition = "VARCHAR(64)")
- private String reviewstage;
-
- //项目名称
- @Column(columnDefinition = "VARCHAR(200)")
- private String projectname;
-
- //主办处室ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String maindepetid;
-
- //主办事处名称
- @Column(columnDefinition = "VARCHAR(128)")
- private String maindeptName;
-
- //主办处室联系人ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String maindepetcontactuserid;
-
- //主办事处联系人
- @Column(columnDefinition = "VARCHAR(64)")
- private String mainDeptUserName;
-
- //主办事处联系电话
- @Column(columnDefinition = "VARCHAR(64)")
- private String mainDeptContactPhone;
-
- //协办处室ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String assistdeptid;
-
- //协办事处名称
- @Column(columnDefinition = "VARCHAR(64)")
- private String assistdeptName;
-
- //协办处室联系人ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String assistdeptcontactuserid;
-
- //协办事处联系人
- private String assistDeptUserName;
-
- //报审概算
- @Column(columnDefinition = "NUMBER")
- private BigDecimal declaration;
-
- //编制单位ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String designcompanyid;
-
- //编制单位名称
- @Column(columnDefinition = "VARCHAR(128)")
- private String designcompanyName;
-
- //建设单位ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String builtcompanyid;
-
- //建设单位名称
- @Column(columnDefinition = "VARCHAR(128)")
- private String builtcompanyName;
-
- //缓急程度
- @Column(columnDefinition = "VARCHAR(16)")
- private String urgencydegree;
-
- //年度计划类别
- @Column(columnDefinition = "VARCHAR(16)")
- private String yearplantype;
-
- //秘密登记
- @Column(columnDefinition = "VARCHAR(16)")
- private String secrectlevel;
-
- //评审费录入状态 :9表示已办理,0表示未办理
- @Column(columnDefinition = "VARCHAR(4)")
- private String financiaStatus;
-
- //协审费录入状态 :9表示已办理,0表示未办理
- @Column(columnDefinition = "VARCHAR(4)")
- private String assistStatus;
-
- //是否有登记补充资料:9表示是,0表示否
- @Column(columnDefinition = "VARCHAR(4)")
- private String isSupplementary;
-
- //是否有拟补充资料函:9表示是,0表示否
- @Column(columnDefinition = "VARCHAR(4)")
- private String isHaveSuppLetter;
-
- //拟补充资料函发文日期
- @Column(columnDefinition = "Date")
- private Date suppLetterDate;
-
- //综合部拟办意见
- @Column(columnDefinition = "VARCHAR(255)")
- private String comprehensivehandlesug;
-
- //综合部部长ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String comprehensiveId;
-
- //综合部拟办人名称
- @Column(columnDefinition = "VARCHAR(100)")
- private String comprehensiveName;
-
- //综合部拟办日期
- @Column(columnDefinition = "DATE")
- private Date comprehensiveDate;
-
- //中心领导审批意见
- @Column(columnDefinition = "VARCHAR(255)")
- private String leaderhandlesug;
-
- //中心领导ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String leaderId;
-
- //中心领导名称
- @Column(columnDefinition = "VARCHAR(32)")
- private String leaderName;
-
- //中心领导审批日期
- @Column(columnDefinition = "DATE")
- private Date leaderDate;
-
- //部长处理意见
- @Column(columnDefinition = "VARCHAR(255)")
- private String ministerhandlesug;
-
- //部长ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String ministerId;
-
- //部长名称
- @Column(columnDefinition = "VARCHAR(32)")
- private String ministerName;
-
- //部长处理日期
- @Column(columnDefinition = "DATE")
- private Date ministerDate;
-
- //送件人签名
- @Column(columnDefinition = "VARCHAR(16)")
- private String sendusersign;
-
- //项目签收时间
- @Column(columnDefinition = "DATE")
- private Date signdate;
-
- //剩余工作日
- @Column(columnDefinition = "NUMBER")
- private Float surplusdays;
-
- //发文时间
- @Column(columnDefinition = "DATE")
- private Date expectdispatchdate;
-
- //送来时间
- @Column(columnDefinition = "DATE")
- private Date receivedate;
-
- //发文后工作日
- @Column(columnDefinition = "NUMBER")
- private Float daysafterdispatch;
-
- //评审天数
- @Column(columnDefinition = "NUMBER")
- private Float reviewdays;
-
- //归档编号
- @Column(columnDefinition = "VARCHAR(100)")
- private String filenum;
-
- //文号
- @Column(columnDefinition = "VARCHAR(100)")
- private String docnum;
-
- //建议书项目处理表份数
- @Column(columnDefinition = "INTEGER")
- private Integer sugProDealCount;
-
- //建议书项目处理表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugProDealOriginal;
-
- //建议书项目处理表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugProDealCopy;
-
- //建议书文件处理表份数
- @Column(columnDefinition = "INTEGER")
- private Integer sugFileDealCount;
-
- //建议书文件处理表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugFileDealOriginal;
-
- //建议书文件处理表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugFileDealCopy;
-
- //建议书项目单位申报表份数
- @Column(columnDefinition = "INTEGER")
- private Integer sugOrgApplyCount;
-
- //建议书项目单位申报表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugOrgApplyOriginal;
-
- //建议书项目单位申报表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugOrgApplyCopy;
-
- //建议书项目单位请示报告份数
- @Column(columnDefinition = "INTEGER")
- private Integer sugOrgReqCount;
-
- //建议书项目单位请示报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugOrgReqOriginal;
-
- //建议书项目单位请示报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugOrgReqCopy;
-
- //资金申请报告份数
- @Column(columnDefinition = "INTEGER")
- private Integer capitalAppReportCount;
-
- //资金申请报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String capitalAppReportOriginal;
-
- //项目建议书份数
- @Column(columnDefinition = "INTEGER")
- private Integer sugProAdviseCount;
-
- //项目建议书是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugProAdviseOriginal;
-
- //项目建议书是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugProAdviseCopy;
-
- //项目建议书电子文档份数
- @Column(columnDefinition = "INTEGER")
- private Integer proSugEledocCount;
-
- //项目建议书电子文档是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String proSugEledocOriginal;
-
- //项目建议书电子文档是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String proSugEledocCopy;
-
- //建议书相关会议纪要份数
- @Column(columnDefinition = "INTEGER")
- private Integer sugMeetCount;
-
- //建议书相关会议纪要是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugMeetOriginal;
-
- //建议书相关会议纪要是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sugMeetCopy;
-
- //可研项目处理表份数
- @Column(columnDefinition = "INTEGER")
- private Integer studyProDealCount;
-
- //可研项目处理表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyPealOriginal;
-
- //可研项目处理表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyProDealCopy;
-
- //可研文件处理表份数
- @Column(columnDefinition = "INTEGER")
- private Integer studyFileDealCount;
-
- //可研文件处理表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyFileDealOriginal;
-
- //可研文件处理表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyFileDealCopy;
-
- //可研项目单位申报表份数
- @Column(columnDefinition = "INTEGER")
- private Integer studyOrgApplyCount;
-
- //可研项目单位申报表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyOrgApplyOriginal;
-
- //可研项目单位申报表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyOrgApplyCopy;
-
- //可研项目单位请示报告份数
- @Column(columnDefinition = "INTEGER")
- private Integer studyOrgReqCount;
-
- //可研项目单位请示报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyOrgReqOriginal;
-
- //可研项目单位请示报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyOrgReqCopy;
-
- //可研项目建议书批复
- @Column(columnDefinition = "Integer")
- private Integer studyProSugCount;
-
- //可研项目建议书批复是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyProSugOriginal;
-
- //可研项目建议书批复是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyProSugCopy;
+    /**
+     * 收文ID
+     */
+    @Id
+    private String signid;
+
+    /**
+     * 是否已经生成发文模板  9：是 ， 0：否
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isSignTemplate;
+
+    /**
+     * 是否已发送存档
+     */
+    @Column(columnDefinition = "VARCHAR(2) COMMENT '是否已发送存档,9是0否'")
+    private String isSendFileRecord;
+
+    //委内收文编号
+    @Column(columnDefinition = "VARCHAR(30)")
+    private String filecode;
+
+    /**
+     * 收文编号(年份+收文类型+序号[序号保留3位数])
+     */
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String signNum;
+
+    /**
+     * 收文序号
+     */
+    @Column(columnDefinition = "Integer")
+    private Integer signSeq;
+
+    //项目代码
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String projectcode;
+
+    //评审阶段
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String reviewstage;
+
+    //项目名称
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String projectname;
+
+    //主办处室ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String maindepetid;
+
+    //主办事处名称
+    @Column(columnDefinition = "VARCHAR(128)")
+    private String maindeptName;
+
+    //主办处室联系人ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String maindepetcontactuserid;
+
+    //主办事处联系人
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mainDeptUserName;
+
+    //主办事处联系电话
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mainDeptContactPhone;
+
+    //协办处室ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String assistdeptid;
+
+    //协办事处名称
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String assistdeptName;
+
+    //协办处室联系人ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String assistdeptcontactuserid;
+
+    //协办事处联系人
+    private String assistDeptUserName;
+
+    //报审概算
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal declaration;
+
+    //编制单位ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String designcompanyid;
+
+    //编制单位名称
+    @Column(columnDefinition = "VARCHAR(128)")
+    private String designcompanyName;
+
+    //建设单位ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String builtcompanyid;
+
+    //建设单位名称
+    @Column(columnDefinition = "VARCHAR(128)")
+    private String builtcompanyName;
+
+    //缓急程度
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String urgencydegree;
 
- //可研相关会议纪要份数
- @Column(columnDefinition = "INTEGER")
- private Integer studyMeetCount;
+    //年度计划类别
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String yearplantype;
 
- //可研相关会议是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyMeetOriginal;
+    //秘密登记
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String secrectlevel;
 
- //可研相关会议是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String studyMeetCopy;
+    //评审费录入状态 :9表示已办理,0表示未办理
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String financiaStatus;
 
- //可研环保批复文件份数
- @Column(columnDefinition = "INTEGER")
- private Integer envproReplyCount;
+    //协审费录入状态 :9表示已办理,0表示未办理
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String assistStatus;
 
- //可研环保批复文件是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String envproReplyOriginal;
+    //是否有登记补充资料:9表示是,0表示否
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String isSupplementary;
 
- //可研环保批复文件是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String envproReplyCopy;
+    //是否有拟补充资料函:9表示是,0表示否
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String isHaveSuppLetter;
 
- //可研规划选址批文份数
- @Column(columnDefinition = "INTEGER")
- private Integer planAddrCount;
+    //拟补充资料函发文日期
+    @Column(columnDefinition = "Date")
+    private Date suppLetterDate;
 
- //可研规划选址批文是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String planAddrOriginal;
+    //综合部拟办意见
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String comprehensivehandlesug;
 
- //可研规划选址批文是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String planAddrCopy;
+    //综合部部长ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String comprehensiveId;
 
- //可研报告份数
- @Column(columnDefinition = "INTEGER")
- private Integer reportCount;
+    //综合部拟办人名称
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String comprehensiveName;
 
- //可研报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String reportOrigin;
+    //综合部拟办日期
+    @Column(columnDefinition = "DATE")
+    private Date comprehensiveDate;
 
- //可研报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String reportCopy;
+    //中心领导审批意见
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String leaderhandlesug;
 
- //可研报告电子文档份数
- @Column(columnDefinition = "INTEGER")
- private Integer eledocCount;
+    //中心领导ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String leaderId;
 
- //可研报告电子文档是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String eledocOriginal;
+    //中心领导名称
+    @Column(columnDefinition = "VARCHAR(32)")
+    private String leaderName;
 
- //可研报告电子文档是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String eledocCopy;
+    //中心领导审批日期
+    @Column(columnDefinition = "DATE")
+    private Date leaderDate;
 
- //可研节能报告份数
- @Column(columnDefinition = "INTEGER")
- private Integer energyCount;
+    //部长处理意见
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String ministerhandlesug;
 
- //可研节能报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String energyOriginal;
+    //部长ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String ministerId;
 
- //可研节能报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String energyCopy;
+    //部长名称
+    @Column(columnDefinition = "VARCHAR(32)")
+    private String ministerName;
 
- //流程实例ID
- @Column(columnDefinition = "VARCHAR(64)")
- private String processInstanceId;
+    //部长处理日期
+    @Column(columnDefinition = "DATE")
+    private Date ministerDate;
 
- //申报投资
- @Column(columnDefinition = "NUMBER")
- private BigDecimal appalyInvestment;
+    //送件人签名
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String sendusersign;
 
- //审定投资
- @Column(columnDefinition = "NUMBER")
- private BigDecimal authorizeValue;
+    //项目签收时间
+    @Column(columnDefinition = "DATE")
+    private Date signdate;
 
- //S (进口设备)政府采购进口产品申报份数
- @Column(columnDefinition = "INTEGER")
- private Integer governmentPurchasCount;
+    //剩余工作日
+    @Column(columnDefinition = "NUMBER")
+    private Float surplusdays;
 
- //政府采购进口产品申报是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String governmentPurchasOriginal;
+    //发文时间
+    @Column(columnDefinition = "DATE")
+    private Date expectdispatchdate;
 
- // 政府采购进口产品申报是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String governmentPurchasCopy;
+    //送来时间
+    @Column(columnDefinition = "DATE")
+    private Date receivedate;
 
+    //发文后工作日
+    @Column(columnDefinition = "NUMBER")
+    private Float daysafterdispatch;
 
- // 专家论证意见份数
- @Column(columnDefinition = "INTEGER")
- private Integer expertArgumentCount;
+    /**
+     * 旧项目ID
+     */
+    @Column(columnDefinition = "INTEGER")
+    private Integer oldProjectId;
+
+    //评审天数
+    @Column(columnDefinition = "NUMBER")
+    private Float reviewdays;
+
+    //归档编号
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String filenum;
+
+    //文号
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String docnum;
+
+    //建议书项目处理表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sugProDealCount;
+
+    //建议书项目处理表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugProDealOriginal;
+
+    //建议书项目处理表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugProDealCopy;
+
+    //建议书文件处理表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sugFileDealCount;
+
+    //建议书文件处理表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugFileDealOriginal;
+
+    //建议书文件处理表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugFileDealCopy;
+
+    //建议书项目单位申报表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sugOrgApplyCount;
+
+    //建议书项目单位申报表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugOrgApplyOriginal;
+
+    //建议书项目单位申报表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugOrgApplyCopy;
+
+    //建议书项目单位请示报告份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sugOrgReqCount;
+
+    //建议书项目单位请示报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugOrgReqOriginal;
+
+    //建议书项目单位请示报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugOrgReqCopy;
+
+    //资金申请报告份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer capitalAppReportCount;
+
+    //资金申请报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String capitalAppReportOriginal;
+
+    //项目建议书份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sugProAdviseCount;
+
+    //项目建议书是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugProAdviseOriginal;
+
+    //项目建议书是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugProAdviseCopy;
+
+    //项目建议书电子文档份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer proSugEledocCount;
+
+    //项目建议书电子文档是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String proSugEledocOriginal;
+
+    //项目建议书电子文档是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String proSugEledocCopy;
+
+    //建议书相关会议纪要份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sugMeetCount;
+
+    //建议书相关会议纪要是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugMeetOriginal;
+
+    //建议书相关会议纪要是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sugMeetCopy;
+
+    //可研项目处理表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer studyProDealCount;
+
+    //可研项目处理表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyPealOriginal;
+
+    //可研项目处理表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyProDealCopy;
+
+    //可研文件处理表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer studyFileDealCount;
+
+    //可研文件处理表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyFileDealOriginal;
+
+    //可研文件处理表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyFileDealCopy;
+
+    //可研项目单位申报表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer studyOrgApplyCount;
+
+    //可研项目单位申报表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyOrgApplyOriginal;
+
+    //可研项目单位申报表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyOrgApplyCopy;
+
+    //可研项目单位请示报告份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer studyOrgReqCount;
+
+    //可研项目单位请示报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyOrgReqOriginal;
+
+    //可研项目单位请示报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyOrgReqCopy;
+
+    //可研项目建议书批复
+    @Column(columnDefinition = "Integer")
+    private Integer studyProSugCount;
+
+    //可研项目建议书批复是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyProSugOriginal;
+
+    //可研项目建议书批复是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyProSugCopy;
 
- //专家论证意见是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String expertArgumentOriginal;
+    //可研相关会议纪要份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer studyMeetCount;
 
- //专家论证意见是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String expertArgumentCopy;
+    //可研相关会议是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyMeetOriginal;
 
- //发改委意见份数
- @Column(columnDefinition = "INTEGER")
- private Integer developmentCount;
+    //可研相关会议是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String studyMeetCopy;
 
- //发改委意见是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String developementOriginal;
+    //可研环保批复文件份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer envproReplyCount;
 
- //发改委意见是否复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String developementCopy;
+    //可研环保批复文件是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String envproReplyOriginal;
 
- //文件处理表份数
- @Column(columnDefinition = "INTEGER")
- private Integer officialDisposeCount;
+    //可研环保批复文件是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String envproReplyCopy;
 
- //文件处理表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String officialDisposeOriginal;
+    //可研规划选址批文份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer planAddrCount;
 
- //文件处理表是否复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String officialDisposeCopy;
+    //可研规划选址批文是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String planAddrOriginal;
 
- //主管部门意见分数
- @Column(columnDefinition = "INTEGER")
- private Integer managerDeptCount;
+    //可研规划选址批文是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String planAddrCopy;
 
- //主管部门意见是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String managerDeptOriginal;
+    //可研报告份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer reportCount;
 
- //主管部门意见是否复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String managerDeptCopy;
+    //可研报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String reportOrigin;
 
+    //可研报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String reportCopy;
 
- //进口产品目录分数
- @Column(columnDefinition = "INTEGER")
- private Integer importProductCount;
+    //可研报告电子文档份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer eledocCount;
 
- //进口产品目录是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String importProductOriginal;
+    //可研报告电子文档是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String eledocOriginal;
 
- //进口产品目录是否复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String importProductCopy;
+    //可研报告电子文档是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String eledocCopy;
 
- //其他项目资料分数
- @Column(columnDefinition = "INTEGER")
- private Integer ortherProjectCount;
+    //可研节能报告份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer energyCount;
 
- //其他项目资料是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String ortherProjectOriginal;
+    //可研节能报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String energyOriginal;
 
- //其他项目资料是否复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String ortherProjectCopy;
+    //可研节能报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String energyCopy;
 
- //设备说明书分数
- @Column(columnDefinition = "INTEGER")
- private Integer sprcialDevicesCount;
+    //流程实例ID
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String processInstanceId;
 
- //设备说明书是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sprcialDevicesOriginal;
+    //申报投资
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal appalyInvestment;
 
+    //审定投资
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal authorizeValue;
 
- //E (进口设备) 设备说明书是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String sprcialDevicesCopy;
+    //S (进口设备)政府采购进口产品申报份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer governmentPurchasCount;
 
- //S (设备清单(国产))
+    //政府采购进口产品申报是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String governmentPurchasOriginal;
 
- //项目申报表是否有分数
- @Column(columnDefinition = "INTEGER")
- private Integer projectDeclareCount;
+    // 政府采购进口产品申报是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String governmentPurchasCopy;
 
- //项目申报表是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  projectDeclareOriginal;
 
- //项目申报表是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  projectDeclareCopy;
+    // 专家论证意见份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer expertArgumentCount;
 
- //项目申请报告分数
- @Column(columnDefinition = "INTEGER")
- private Integer projectApplyReportCount;
+    //专家论证意见是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String expertArgumentOriginal;
 
- //项目申请报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  projectApplyReportOriginal;
+    //专家论证意见是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String expertArgumentCopy;
 
- //项目申请报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  projectApplyReportCopy;
+    //发改委意见份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer developmentCount;
 
- //采购设备清单分数
- @Column(columnDefinition = "INTEGER")
- private Integer purchasDeviceCount;
+    //发改委意见是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String developementOriginal;
 
- //采购设备清单是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  purchasDeviceOriginal;
+    //发改委意见是否复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String developementCopy;
 
- //采购设备清单是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  purchasDeviceCopy;
+    //文件处理表份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer officialDisposeCount;
 
- //电子文档分数
- @Column(columnDefinition = "INTEGER")
- private Integer electronicDocumentCount;
+    //文件处理表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String officialDisposeOriginal;
 
- //电子文档是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  electronicDocumentOriginal;
+    //文件处理表是否复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String officialDisposeCopy;
 
- //电子文档是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String electronicDocumentCopy;
+    //主管部门意见分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer managerDeptCount;
 
- //采购合同书分数
- @Column(columnDefinition = "INTEGER")
- private Integer purchasDevicePactCount;
+    //主管部门意见是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String managerDeptOriginal;
 
- //采购合同书是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  purchasDevicePactOriginal;
+    //主管部门意见是否复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String managerDeptCopy;
 
- //采购合同书是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String purchasDevicePactCopy;
 
- //项目核准文件份数
- @Column(columnDefinition = "INTEGER")
- private Integer projectApproveFileCount;
+    //进口产品目录分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer importProductCount;
 
- //项目核准文件是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String projectApproveFileOriginal;
+    //进口产品目录是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String importProductOriginal;
 
- //项目核准文件是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  projectApproveFileCopy;
+    //进口产品目录是否复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String importProductCopy;
 
- //营业执照分数
- @Column(columnDefinition = "INTEGER")
- private Integer businessLicenseCount;
+    //其他项目资料分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer ortherProjectCount;
 
- //营业执照是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String businessLicenseOriginal;
+    //其他项目资料是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ortherProjectOriginal;
 
- //营业执照是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String businessLicenseCopy;
+    //其他项目资料是否复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ortherProjectCopy;
 
- //法人身份证分数
- @Column(columnDefinition = "INTEGER")
- private Integer legalPersoncCardCount;
+    //设备说明书分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer sprcialDevicesCount;
 
- //法人身份证是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String legalPersoncCardOriginal;
+    //设备说明书是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sprcialDevicesOriginal;
 
- //法人身份证复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String legalPersoncCardCopy;
 
- //E (设备清单(国产))
+    //E (进口设备) 设备说明书是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String sprcialDevicesCopy;
 
- //S (项目概算)
- //环境影响评价报告分数
- @Column(columnDefinition = "INTEGER")
- private Integer environmentalEffectCount;
+    //S (设备清单(国产))
 
- //环境影响评价报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String environmentalEffectOriginal;
+    //项目申报表是否有分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer projectDeclareCount;
 
- //环境影响评价报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String environmentalEffectCopy;
+    //项目申报表是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectDeclareOriginal;
 
- //用地规划许可证分数
- @Column(columnDefinition = "INTEGER")
- private Integer landPlanningLicenseCount;
+    //项目申报表是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectDeclareCopy;
 
- //用地规划许可证是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String landPlanningLicenseOriginal;
+    //项目申请报告分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer projectApplyReportCount;
 
- //用地规划许可证是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String  landPlanningLicenseCopy;
+    //项目申请报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectApplyReportOriginal;
 
- //地质勘察报告分数
- @Column(columnDefinition = "INTEGER")
- private Integer geologicalSurveyCount;
+    //项目申请报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectApplyReportCopy;
 
- //地质勘察报告是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String geologicalSurveyOriginal;
+    //采购设备清单分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer purchasDeviceCount;
 
- //地质勘察报告是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String geologicalSurveyCopy;
+    //采购设备清单是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String purchasDeviceOriginal;
 
- //设计说明分数
- @Column(columnDefinition = "INTEGER")
- private Integer descriptionDesignCount;
+    //采购设备清单是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String purchasDeviceCopy;
 
- //设计说明是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String descriptionDesignOriginal;
+    //电子文档分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer electronicDocumentCount;
 
- //设计说明是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String descriptionDesignCopy;
+    //电子文档是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String electronicDocumentOriginal;
 
- //工程概算书分数
- @Column(columnDefinition = "INTEGER")
- private Integer projectBudgetCount;
+    //电子文档是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String electronicDocumentCopy;
 
- //工程概算书是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String projectBudgetOriginal;
+    //采购合同书分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer purchasDevicePactCount;
 
+    //采购合同书是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String purchasDevicePactOriginal;
 
- //工程概算书是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String projectBudgetCopy;
+    //采购合同书是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String purchasDevicePactCopy;
 
- //初步设计图纸分数
- @Column(columnDefinition = "INTEGER")
- private Integer preliminaryDrawingCount;
+    //项目核准文件份数
+    @Column(columnDefinition = "INTEGER")
+    private Integer projectApproveFileCount;
 
- //初步设计图纸是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String preliminaryDrawingOriginal;
+    //项目核准文件是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectApproveFileOriginal;
 
- //初步设计图纸是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String preliminaryDrawingCopy;
+    //项目核准文件是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectApproveFileCopy;
 
- //施工设计图纸分数
- @Column(columnDefinition = "INTEGER")
- private Integer constructionDrawingsCount;
+    //营业执照分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer businessLicenseCount;
 
- //施工设计图纸是否有原件
- @Column(columnDefinition = "VARCHAR(2)")
- private String constructionDrawingsOriginal;
+    //营业执照是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String businessLicenseOriginal;
 
- //施工设计图纸是否有复印件
- @Column(columnDefinition = "VARCHAR(2)")
- private String constructionDrawingsCopy;
- //E (项目概算)
+    //营业执照是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String businessLicenseCopy;
 
- //第二负责人
- @Column(columnDefinition = "VARCHAR(64)")
- private String secondPriUser;
+    //法人身份证分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer legalPersoncCardCount;
 
- /**
-  * 默认办理类型[收文类型（评估类：PX，概算类:GX）]
-  */
- @Column(columnDefinition = "VARCHAR(5)")
- private String dealOrgType;
+    //法人身份证是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String legalPersoncCardOriginal;
 
- /**
-  * 预签收日期
-  */
- @Column(columnDefinition = "DATE")
- private Date presignDate;
+    //法人身份证复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String legalPersoncCardCopy;
 
- //工作方案
- @OneToMany(mappedBy = "sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
- private List<WorkProgram> workProgramList;
+    //E (设备清单(国产))
 
+    //S (项目概算)
+    //环境影响评价报告分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer environmentalEffectCount;
 
- //暂停项目
- @OneToMany(mappedBy="sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
- private List<ProjectStop> projectStopList;
+    //环境影响评价报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String environmentalEffectOriginal;
 
- //发文
- @OneToOne(mappedBy = "sign", fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
- private DispatchDoc dispatchDoc;
+    //环境影响评价报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String environmentalEffectCopy;
 
- //归档
- @OneToOne(mappedBy = "sign",fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
- private FileRecord fileRecord;
+    //用地规划许可证分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer landPlanningLicenseCount;
 
- //关联下一阶段的项目
- @OneToOne(fetch = FetchType.LAZY,orphanRemoval=true,cascade = CascadeType.ALL)
- @JoinTable(
-         name = "cs_associate_sign",
-         joinColumns = @JoinColumn(name = "signid"),
-         inverseJoinColumns = @JoinColumn(name = "associate_signid"))
- private Sign associateSign;
+    //用地规划许可证是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String landPlanningLicenseOriginal;
 
- /**************************  是否或者 状态字段放这里  ****************************/
- //是否项目预签收
- @Column(columnDefinition = "VARCHAR(1)")
- private String ispresign;
+    //用地规划许可证是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String landPlanningLicenseCopy;
 
- //警示灯状态
- @Column(columnDefinition="VARCHAR(2)")
- private String isLightUp;
+    //地质勘察报告分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer geologicalSurveyCount;
 
- //项目状态
- @Column(columnDefinition = "VARCHAR(2)")
- private String signState;
+    //地质勘察报告是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String geologicalSurveyOriginal;
 
- //项目是否曾经暂停 9:表示项目曾经暂停,0:表示未暂停
- @Column(columnDefinition = "VARCHAR(2)")
- private String isProjectState;
+    //地质勘察报告是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String geologicalSurveyCopy;
 
- //进程状态(1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
- @Column(columnDefinition = "Integer")
- private Integer processState;
+    //设计说明分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer descriptionDesignCount;
 
- //是否有评审费用
- @Column(columnDefinition = "VARCHAR(2)")
- private String ishasreviewcost;
+    //设计说明是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String descriptionDesignOriginal;
 
- //是否协审
- @Column(columnDefinition = "VARCHAR(2)")
- private String isassistproc;
+    //设计说明是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String descriptionDesignCopy;
 
- //是否协审流程
- @Column(columnDefinition = "VARCHAR(2)")
- private String isassistflow;
+    //工程概算书分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer projectBudgetCount;
 
- //是否确认签收
- @Column(columnDefinition = "VARCHAR(2)")
- private String issign;
+    //工程概算书是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectBudgetOriginal;
 
- //项目是否已关联,0未关联，1已关联，默认未关联
- @Column(columnDefinition = "INTEGER")
- private Integer isAssociate;
 
- //是否调概
- @Column(columnDefinition = "VARCHAR(5)")
- private String ischangeEstimate;
+    //工程概算书是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String projectBudgetCopy;
 
- //是否提前介入
- @Column(columnDefinition = "VARCHAR(2)")
- private String isAdvanced;
- /**************************  状态字段放这里  ****************************/
+    //初步设计图纸分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer preliminaryDrawingCount;
 
- public List<ProjectStop> getProjectStopList() {
-  return projectStopList;
- }
+    //初步设计图纸是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String preliminaryDrawingOriginal;
 
- public void setProjectStopList(List<ProjectStop> projectStopList) {
-  this.projectStopList = projectStopList;
- }
+    //初步设计图纸是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String preliminaryDrawingCopy;
 
- public String getSignid() {
-  return signid;
- }
+    //施工设计图纸分数
+    @Column(columnDefinition = "INTEGER")
+    private Integer constructionDrawingsCount;
 
- public void setSignid(String signid) {
-  this.signid = signid;
- }
+    //施工设计图纸是否有原件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String constructionDrawingsOriginal;
 
- public String getFilecode() {
-  return filecode;
- }
+    //施工设计图纸是否有复印件
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String constructionDrawingsCopy;
+    //E (项目概算)
 
- public void setFilecode(String filecode) {
-  this.filecode = filecode;
- }
+    //第二负责人
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String secondPriUser;
 
- public String getProjectcode() {
-  return projectcode;
- }
+    /**
+     * 默认办理类型[收文类型（评估类：PX，概算类:GX）]
+     */
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String dealOrgType;
 
- public void setProjectcode(String projectcode) {
-  this.projectcode = projectcode;
- }
+    /**
+     * 预签收日期
+     */
+    @Column(columnDefinition = "DATE")
+    private Date presignDate;
 
- public String getReviewstage() {
-  return reviewstage;
- }
+    //工作方案
+    @OneToMany(mappedBy = "sign", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<WorkProgram> workProgramList;
 
- public void setReviewstage(String reviewstage) {
-  this.reviewstage = reviewstage;
- }
 
- public String getIspresign() {
-  return ispresign;
- }
+    //暂停项目
+    @OneToMany(mappedBy = "sign", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<ProjectStop> projectStopList;
 
- public void setIspresign(String ispresign) {
-  this.ispresign = ispresign;
- }
+    //发文
+    @OneToOne(mappedBy = "sign", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private DispatchDoc dispatchDoc;
 
- public String getProjectname() {
-  return projectname;
- }
+    //归档
+    @OneToOne(mappedBy = "sign", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private FileRecord fileRecord;
 
- public void setProjectname(String projectname) {
-  this.projectname = projectname;
- }
+    //关联下一阶段的项目
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "cs_associate_sign",
+            joinColumns = @JoinColumn(name = "signid"),
+            inverseJoinColumns = @JoinColumn(name = "associate_signid"))
+    private Sign associateSign;
 
- public String getMaindepetid() {
-  return maindepetid;
- }
+    /**************************  是否或者 状态字段放这里  ****************************/
+    //是否项目预签收
+    @Column(columnDefinition = "VARCHAR(1)")
+    private String ispresign;
 
- public void setMaindepetid(String maindepetid) {
-  this.maindepetid = maindepetid;
- }
+    //警示灯状态
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isLightUp;
 
- public String getMaindeptName() {
-  return maindeptName;
- }
+    //项目状态
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String signState;
 
- public void setMaindeptName(String maindeptName) {
-  this.maindeptName = maindeptName;
- }
+    //项目是否曾经暂停 9:表示项目曾经暂停,0:表示未暂停
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isProjectState;
 
- public String getMaindepetcontactuserid() {
-  return maindepetcontactuserid;
- }
+    //进程状态(1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
+    @Column(columnDefinition = "Integer")
+    private Integer processState;
 
- public void setMaindepetcontactuserid(String maindepetcontactuserid) {
-  this.maindepetcontactuserid = maindepetcontactuserid;
- }
+    //是否有评审费用
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ishasreviewcost;
 
- public String getMainDeptUserName() {
-  return mainDeptUserName;
- }
+    //是否协审
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isassistproc;
 
- public void setMainDeptUserName(String mainDeptUserName) {
-  this.mainDeptUserName = mainDeptUserName;
- }
+    //是否协审流程
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isassistflow;
 
- public String getMainDeptContactPhone() {
-  return mainDeptContactPhone;
- }
+    //是否确认签收
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String issign;
 
- public void setMainDeptContactPhone(String mainDeptContactPhone) {
-  this.mainDeptContactPhone = mainDeptContactPhone;
- }
+    //项目是否已关联,0未关联，1已关联，默认未关联
+    @Column(columnDefinition = "INTEGER")
+    private Integer isAssociate;
 
- public String getAssistdeptid() {
-  return assistdeptid;
- }
+    //是否调概
+    @Column(columnDefinition = "VARCHAR(5)")
+    private String ischangeEstimate;
 
- public void setAssistdeptid(String assistdeptid) {
-  this.assistdeptid = assistdeptid;
- }
+    //是否提前介入
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isAdvanced;
 
- public String getAssistdeptName() {
-  return assistdeptName;
- }
+    /**************************  状态字段放这里  ****************************/
 
- public void setAssistdeptName(String assistdeptName) {
-  this.assistdeptName = assistdeptName;
- }
+    public List<ProjectStop> getProjectStopList() {
+        return projectStopList;
+    }
 
- public String getAssistdeptcontactuserid() {
-  return assistdeptcontactuserid;
- }
+    public void setProjectStopList(List<ProjectStop> projectStopList) {
+        this.projectStopList = projectStopList;
+    }
 
- public void setAssistdeptcontactuserid(String assistdeptcontactuserid) {
-  this.assistdeptcontactuserid = assistdeptcontactuserid;
- }
+    public String getSignid() {
+        return signid;
+    }
 
- public String getAssistDeptUserName() {
-  return assistDeptUserName;
- }
+    public void setSignid(String signid) {
+        this.signid = signid;
+    }
 
- public void setAssistDeptUserName(String assistDeptUserName) {
-  this.assistDeptUserName = assistDeptUserName;
- }
+    public String getFilecode() {
+        return filecode;
+    }
 
- public String getDesigncompanyid() {
-  return designcompanyid;
- }
+    public void setFilecode(String filecode) {
+        this.filecode = filecode;
+    }
 
- public void setDesigncompanyid(String designcompanyid) {
-  this.designcompanyid = designcompanyid;
- }
+    public String getProjectcode() {
+        return projectcode;
+    }
 
- public String getDesigncompanyName() {
-  return designcompanyName;
- }
+    public void setProjectcode(String projectcode) {
+        this.projectcode = projectcode;
+    }
 
- public void setDesigncompanyName(String designcompanyName) {
-  this.designcompanyName = designcompanyName;
- }
+    public String getReviewstage() {
+        return reviewstage;
+    }
 
- public String getBuiltcompanyid() {
-  return builtcompanyid;
- }
+    public void setReviewstage(String reviewstage) {
+        this.reviewstage = reviewstage;
+    }
 
- public void setBuiltcompanyid(String builtcompanyid) {
-  this.builtcompanyid = builtcompanyid;
- }
+    public String getIspresign() {
+        return ispresign;
+    }
 
- public String getBuiltcompanyName() {
-  return builtcompanyName;
- }
+    public void setIspresign(String ispresign) {
+        this.ispresign = ispresign;
+    }
 
- public void setBuiltcompanyName(String builtcompanyName) {
-  this.builtcompanyName = builtcompanyName;
- }
+    public String getProjectname() {
+        return projectname;
+    }
 
- public String getUrgencydegree() {
-  return urgencydegree;
- }
+    public void setProjectname(String projectname) {
+        this.projectname = projectname;
+    }
 
- public void setUrgencydegree(String urgencydegree) {
-  this.urgencydegree = urgencydegree;
- }
+    public String getMaindepetid() {
+        return maindepetid;
+    }
 
- public String getYearplantype() {
-  return yearplantype;
- }
+    public void setMaindepetid(String maindepetid) {
+        this.maindepetid = maindepetid;
+    }
 
- public void setYearplantype(String yearplantype) {
-  this.yearplantype = yearplantype;
- }
+    public String getMaindeptName() {
+        return maindeptName;
+    }
 
- public String getSecrectlevel() {
-  return secrectlevel;
- }
+    public void setMaindeptName(String maindeptName) {
+        this.maindeptName = maindeptName;
+    }
 
- public void setSecrectlevel(String secrectlevel) {
-  this.secrectlevel = secrectlevel;
- }
+    public String getMaindepetcontactuserid() {
+        return maindepetcontactuserid;
+    }
 
- public String getComprehensivehandlesug() {
-  return comprehensivehandlesug;
- }
+    public void setMaindepetcontactuserid(String maindepetcontactuserid) {
+        this.maindepetcontactuserid = maindepetcontactuserid;
+    }
 
- public void setComprehensivehandlesug(String comprehensivehandlesug) {
-  this.comprehensivehandlesug = comprehensivehandlesug;
- }
+    public String getMainDeptUserName() {
+        return mainDeptUserName;
+    }
 
- public String getComprehensiveName() {
-  return comprehensiveName;
- }
+    public void setMainDeptUserName(String mainDeptUserName) {
+        this.mainDeptUserName = mainDeptUserName;
+    }
 
- public void setComprehensiveName(String comprehensiveName) {
-  this.comprehensiveName = comprehensiveName;
- }
+    public String getMainDeptContactPhone() {
+        return mainDeptContactPhone;
+    }
 
- public Date getComprehensiveDate() {
-  return comprehensiveDate;
- }
+    public void setMainDeptContactPhone(String mainDeptContactPhone) {
+        this.mainDeptContactPhone = mainDeptContactPhone;
+    }
 
- public void setComprehensiveDate(Date comprehensiveDate) {
-  this.comprehensiveDate = comprehensiveDate;
- }
+    public String getAssistdeptid() {
+        return assistdeptid;
+    }
 
- public String getLeaderhandlesug() {
-  return leaderhandlesug;
- }
+    public void setAssistdeptid(String assistdeptid) {
+        this.assistdeptid = assistdeptid;
+    }
 
- public void setLeaderhandlesug(String leaderhandlesug) {
-  this.leaderhandlesug = leaderhandlesug;
- }
+    public String getAssistdeptName() {
+        return assistdeptName;
+    }
 
- public String getLeaderName() {
-  return leaderName;
- }
+    public void setAssistdeptName(String assistdeptName) {
+        this.assistdeptName = assistdeptName;
+    }
 
- public void setLeaderName(String leaderName) {
-  this.leaderName = leaderName;
- }
+    public String getAssistdeptcontactuserid() {
+        return assistdeptcontactuserid;
+    }
 
- public Date getLeaderDate() {
-  return leaderDate;
- }
+    public void setAssistdeptcontactuserid(String assistdeptcontactuserid) {
+        this.assistdeptcontactuserid = assistdeptcontactuserid;
+    }
 
- public void setLeaderDate(Date leaderDate) {
-  this.leaderDate = leaderDate;
- }
+    public String getAssistDeptUserName() {
+        return assistDeptUserName;
+    }
 
- public String getMinisterhandlesug() {
-  return ministerhandlesug;
- }
+    public void setAssistDeptUserName(String assistDeptUserName) {
+        this.assistDeptUserName = assistDeptUserName;
+    }
 
- public void setMinisterhandlesug(String ministerhandlesug) {
-  this.ministerhandlesug = ministerhandlesug;
- }
+    public String getDesigncompanyid() {
+        return designcompanyid;
+    }
 
- public String getMinisterName() {
-  return ministerName;
- }
+    public void setDesigncompanyid(String designcompanyid) {
+        this.designcompanyid = designcompanyid;
+    }
 
- public void setMinisterName(String ministerName) {
-  this.ministerName = ministerName;
- }
+    public String getDesigncompanyName() {
+        return designcompanyName;
+    }
 
- public Date getMinisterDate() {
-  return ministerDate;
- }
+    public void setDesigncompanyName(String designcompanyName) {
+        this.designcompanyName = designcompanyName;
+    }
 
- public void setMinisterDate(Date ministerDate) {
-  this.ministerDate = ministerDate;
- }
+    public String getBuiltcompanyid() {
+        return builtcompanyid;
+    }
 
- public String getSendusersign() {
-  return sendusersign;
- }
+    public void setBuiltcompanyid(String builtcompanyid) {
+        this.builtcompanyid = builtcompanyid;
+    }
 
- public void setSendusersign(String sendusersign) {
-  this.sendusersign = sendusersign;
- }
+    public String getBuiltcompanyName() {
+        return builtcompanyName;
+    }
 
- public String getIssign() {
-  return issign;
- }
+    public void setBuiltcompanyName(String builtcompanyName) {
+        this.builtcompanyName = builtcompanyName;
+    }
 
- public void setIssign(String issign) {
-  this.issign = issign;
- }
+    public String getUrgencydegree() {
+        return urgencydegree;
+    }
 
- public String getIshasreviewcost() {
-  return ishasreviewcost;
- }
+    public void setUrgencydegree(String urgencydegree) {
+        this.urgencydegree = urgencydegree;
+    }
 
- public void setIshasreviewcost(String ishasreviewcost) {
-  this.ishasreviewcost = ishasreviewcost;
- }
+    public String getYearplantype() {
+        return yearplantype;
+    }
 
- public Date getSigndate() {
-  return signdate;
- }
+    public void setYearplantype(String yearplantype) {
+        this.yearplantype = yearplantype;
+    }
 
- public void setSigndate(Date signdate) {
-  this.signdate = signdate;
- }
+    public String getSecrectlevel() {
+        return secrectlevel;
+    }
 
- public Float getSurplusdays() {
-  return surplusdays;
- }
+    public void setSecrectlevel(String secrectlevel) {
+        this.secrectlevel = secrectlevel;
+    }
 
- public void setSurplusdays(Float surplusdays) {
-  this.surplusdays = surplusdays;
- }
+    public String getComprehensivehandlesug() {
+        return comprehensivehandlesug;
+    }
 
- public Date getExpectdispatchdate() {
-  return expectdispatchdate;
- }
+    public void setComprehensivehandlesug(String comprehensivehandlesug) {
+        this.comprehensivehandlesug = comprehensivehandlesug;
+    }
 
- public void setExpectdispatchdate(Date expectdispatchdate) {
-  this.expectdispatchdate = expectdispatchdate;
- }
+    public String getComprehensiveName() {
+        return comprehensiveName;
+    }
 
- public Date getReceivedate() {
-  return receivedate;
- }
+    public void setComprehensiveName(String comprehensiveName) {
+        this.comprehensiveName = comprehensiveName;
+    }
 
- public void setReceivedate(Date receivedate) {
-  this.receivedate = receivedate;
- }
+    public Date getComprehensiveDate() {
+        return comprehensiveDate;
+    }
 
- public Float getDaysafterdispatch() {
-  return daysafterdispatch;
- }
+    public void setComprehensiveDate(Date comprehensiveDate) {
+        this.comprehensiveDate = comprehensiveDate;
+    }
 
- public void setDaysafterdispatch(Float daysafterdispatch) {
-  this.daysafterdispatch = daysafterdispatch;
- }
+    public String getLeaderhandlesug() {
+        return leaderhandlesug;
+    }
 
- public Float getReviewdays() {
-  return reviewdays;
- }
+    public void setLeaderhandlesug(String leaderhandlesug) {
+        this.leaderhandlesug = leaderhandlesug;
+    }
 
- public void setReviewdays(Float reviewdays) {
-  this.reviewdays = reviewdays;
- }
+    public String getLeaderName() {
+        return leaderName;
+    }
 
- public String getIsassistproc() {
-  return isassistproc;
- }
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
 
- public void setIsassistproc(String isassistproc) {
-  this.isassistproc = isassistproc;
- }
+    public Date getLeaderDate() {
+        return leaderDate;
+    }
 
- public String getIsassistflow() {
-  return isassistflow;
- }
+    public void setLeaderDate(Date leaderDate) {
+        this.leaderDate = leaderDate;
+    }
 
- public void setIsassistflow(String isassistflow) {
-  this.isassistflow = isassistflow;
- }
+    public String getMinisterhandlesug() {
+        return ministerhandlesug;
+    }
 
- public String getFilenum() {
-  return filenum;
- }
+    public void setMinisterhandlesug(String ministerhandlesug) {
+        this.ministerhandlesug = ministerhandlesug;
+    }
 
- public void setFilenum(String filenum) {
-  this.filenum = filenum;
- }
+    public String getMinisterName() {
+        return ministerName;
+    }
 
- public String getDocnum() {
-  return docnum;
- }
+    public void setMinisterName(String ministerName) {
+        this.ministerName = ministerName;
+    }
 
- public void setDocnum(String docnum) {
-  this.docnum = docnum;
- }
+    public Date getMinisterDate() {
+        return ministerDate;
+    }
 
- public String getIschangeEstimate() {
-  return ischangeEstimate;
- }
+    public void setMinisterDate(Date ministerDate) {
+        this.ministerDate = ministerDate;
+    }
 
- public void setIschangeEstimate(String ischangeEstimate) {
-  this.ischangeEstimate = ischangeEstimate;
- }
+    public String getSendusersign() {
+        return sendusersign;
+    }
 
- public Integer getSugProDealCount() {
-  return sugProDealCount;
- }
+    public void setSendusersign(String sendusersign) {
+        this.sendusersign = sendusersign;
+    }
 
- public void setSugProDealCount(Integer sugProDealCount) {
-  this.sugProDealCount = sugProDealCount;
- }
+    public String getIssign() {
+        return issign;
+    }
 
- public String getSugProDealOriginal() {
-  return sugProDealOriginal;
- }
+    public void setIssign(String issign) {
+        this.issign = issign;
+    }
 
- public void setSugProDealOriginal(String sugProDealOriginal) {
-  this.sugProDealOriginal = sugProDealOriginal;
- }
+    public String getIshasreviewcost() {
+        return ishasreviewcost;
+    }
 
- public String getSugProDealCopy() {
-  return sugProDealCopy;
- }
+    public void setIshasreviewcost(String ishasreviewcost) {
+        this.ishasreviewcost = ishasreviewcost;
+    }
 
- public void setSugProDealCopy(String sugProDealCopy) {
-  this.sugProDealCopy = sugProDealCopy;
- }
+    public Date getSigndate() {
+        return signdate;
+    }
 
- public Integer getSugFileDealCount() {
-  return sugFileDealCount;
- }
+    public void setSigndate(Date signdate) {
+        this.signdate = signdate;
+    }
 
- public void setSugFileDealCount(Integer sugFileDealCount) {
-  this.sugFileDealCount = sugFileDealCount;
- }
+    public Float getSurplusdays() {
+        return surplusdays;
+    }
 
- public String getSugFileDealOriginal() {
-  return sugFileDealOriginal;
- }
+    public void setSurplusdays(Float surplusdays) {
+        this.surplusdays = surplusdays;
+    }
 
- public void setSugFileDealOriginal(String sugFileDealOriginal) {
-  this.sugFileDealOriginal = sugFileDealOriginal;
- }
+    public Date getExpectdispatchdate() {
+        return expectdispatchdate;
+    }
 
- public String getSugFileDealCopy() {
-  return sugFileDealCopy;
- }
+    public void setExpectdispatchdate(Date expectdispatchdate) {
+        this.expectdispatchdate = expectdispatchdate;
+    }
 
- public void setSugFileDealCopy(String sugFileDealCopy) {
-  this.sugFileDealCopy = sugFileDealCopy;
- }
+    public Date getReceivedate() {
+        return receivedate;
+    }
 
- public Integer getSugOrgApplyCount() {
-  return sugOrgApplyCount;
- }
+    public void setReceivedate(Date receivedate) {
+        this.receivedate = receivedate;
+    }
 
- public void setSugOrgApplyCount(Integer sugOrgApplyCount) {
-  this.sugOrgApplyCount = sugOrgApplyCount;
- }
+    public Float getDaysafterdispatch() {
+        return daysafterdispatch;
+    }
 
- public String getSugOrgApplyOriginal() {
-  return sugOrgApplyOriginal;
- }
+    public void setDaysafterdispatch(Float daysafterdispatch) {
+        this.daysafterdispatch = daysafterdispatch;
+    }
 
- public void setSugOrgApplyOriginal(String sugOrgApplyOriginal) {
-  this.sugOrgApplyOriginal = sugOrgApplyOriginal;
- }
+    public Float getReviewdays() {
+        return reviewdays;
+    }
 
- public String getSugOrgApplyCopy() {
-  return sugOrgApplyCopy;
- }
+    public void setReviewdays(Float reviewdays) {
+        this.reviewdays = reviewdays;
+    }
 
- public void setSugOrgApplyCopy(String sugOrgApplyCopy) {
-  this.sugOrgApplyCopy = sugOrgApplyCopy;
- }
+    public String getIsassistproc() {
+        return isassistproc;
+    }
 
- public Integer getSugOrgReqCount() {
-  return sugOrgReqCount;
- }
+    public void setIsassistproc(String isassistproc) {
+        this.isassistproc = isassistproc;
+    }
 
- public void setSugOrgReqCount(Integer sugOrgReqCount) {
-  this.sugOrgReqCount = sugOrgReqCount;
- }
+    public String getIsassistflow() {
+        return isassistflow;
+    }
 
- public String getSugOrgReqOriginal() {
-  return sugOrgReqOriginal;
- }
+    public void setIsassistflow(String isassistflow) {
+        this.isassistflow = isassistflow;
+    }
 
- public void setSugOrgReqOriginal(String sugOrgReqOriginal) {
-  this.sugOrgReqOriginal = sugOrgReqOriginal;
- }
+    public String getFilenum() {
+        return filenum;
+    }
 
- public String getSugOrgReqCopy() {
-  return sugOrgReqCopy;
- }
+    public void setFilenum(String filenum) {
+        this.filenum = filenum;
+    }
 
- public void setSugOrgReqCopy(String sugOrgReqCopy) {
-  this.sugOrgReqCopy = sugOrgReqCopy;
- }
+    public String getDocnum() {
+        return docnum;
+    }
 
- public Integer getSugProAdviseCount() {
-  return sugProAdviseCount;
- }
+    public void setDocnum(String docnum) {
+        this.docnum = docnum;
+    }
 
- public void setSugProAdviseCount(Integer sugProAdviseCount) {
-  this.sugProAdviseCount = sugProAdviseCount;
- }
+    public String getIschangeEstimate() {
+        return ischangeEstimate;
+    }
 
- public String getSugProAdviseOriginal() {
-  return sugProAdviseOriginal;
- }
+    public void setIschangeEstimate(String ischangeEstimate) {
+        this.ischangeEstimate = ischangeEstimate;
+    }
 
- public void setSugProAdviseOriginal(String sugProAdviseOriginal) {
-  this.sugProAdviseOriginal = sugProAdviseOriginal;
- }
+    public Integer getSugProDealCount() {
+        return sugProDealCount;
+    }
 
- public String getSugProAdviseCopy() {
-  return sugProAdviseCopy;
- }
+    public void setSugProDealCount(Integer sugProDealCount) {
+        this.sugProDealCount = sugProDealCount;
+    }
 
- public void setSugProAdviseCopy(String sugProAdviseCopy) {
-  this.sugProAdviseCopy = sugProAdviseCopy;
- }
+    public String getSugProDealOriginal() {
+        return sugProDealOriginal;
+    }
 
- public Integer getProSugEledocCount() {
-  return proSugEledocCount;
- }
+    public void setSugProDealOriginal(String sugProDealOriginal) {
+        this.sugProDealOriginal = sugProDealOriginal;
+    }
 
- public void setProSugEledocCount(Integer proSugEledocCount) {
-  this.proSugEledocCount = proSugEledocCount;
- }
+    public String getSugProDealCopy() {
+        return sugProDealCopy;
+    }
 
- public String getProSugEledocOriginal() {
-  return proSugEledocOriginal;
- }
+    public void setSugProDealCopy(String sugProDealCopy) {
+        this.sugProDealCopy = sugProDealCopy;
+    }
 
- public void setProSugEledocOriginal(String proSugEledocOriginal) {
-  this.proSugEledocOriginal = proSugEledocOriginal;
- }
+    public Integer getSugFileDealCount() {
+        return sugFileDealCount;
+    }
 
- public String getProSugEledocCopy() {
-  return proSugEledocCopy;
- }
+    public void setSugFileDealCount(Integer sugFileDealCount) {
+        this.sugFileDealCount = sugFileDealCount;
+    }
 
- public void setProSugEledocCopy(String proSugEledocCopy) {
-  this.proSugEledocCopy = proSugEledocCopy;
- }
+    public String getSugFileDealOriginal() {
+        return sugFileDealOriginal;
+    }
 
- public Integer getSugMeetCount() {
-  return sugMeetCount;
- }
+    public void setSugFileDealOriginal(String sugFileDealOriginal) {
+        this.sugFileDealOriginal = sugFileDealOriginal;
+    }
 
- public void setSugMeetCount(Integer sugMeetCount) {
-  this.sugMeetCount = sugMeetCount;
- }
+    public String getSugFileDealCopy() {
+        return sugFileDealCopy;
+    }
 
- public String getSugMeetOriginal() {
-  return sugMeetOriginal;
- }
+    public void setSugFileDealCopy(String sugFileDealCopy) {
+        this.sugFileDealCopy = sugFileDealCopy;
+    }
 
- public void setSugMeetOriginal(String sugMeetOriginal) {
-  this.sugMeetOriginal = sugMeetOriginal;
- }
+    public Integer getSugOrgApplyCount() {
+        return sugOrgApplyCount;
+    }
 
- public String getSugMeetCopy() {
-  return sugMeetCopy;
- }
+    public void setSugOrgApplyCount(Integer sugOrgApplyCount) {
+        this.sugOrgApplyCount = sugOrgApplyCount;
+    }
 
- public void setSugMeetCopy(String sugMeetCopy) {
-  this.sugMeetCopy = sugMeetCopy;
- }
+    public String getSugOrgApplyOriginal() {
+        return sugOrgApplyOriginal;
+    }
 
- public Integer getStudyProDealCount() {
-  return studyProDealCount;
- }
+    public void setSugOrgApplyOriginal(String sugOrgApplyOriginal) {
+        this.sugOrgApplyOriginal = sugOrgApplyOriginal;
+    }
 
- public void setStudyProDealCount(Integer studyProDealCount) {
-  this.studyProDealCount = studyProDealCount;
- }
+    public String getSugOrgApplyCopy() {
+        return sugOrgApplyCopy;
+    }
 
- public String getStudyPealOriginal() {
-  return studyPealOriginal;
- }
+    public void setSugOrgApplyCopy(String sugOrgApplyCopy) {
+        this.sugOrgApplyCopy = sugOrgApplyCopy;
+    }
 
- public void setStudyPealOriginal(String studyPealOriginal) {
-  this.studyPealOriginal = studyPealOriginal;
- }
+    public Integer getSugOrgReqCount() {
+        return sugOrgReqCount;
+    }
 
- public String getStudyProDealCopy() {
-  return studyProDealCopy;
- }
+    public void setSugOrgReqCount(Integer sugOrgReqCount) {
+        this.sugOrgReqCount = sugOrgReqCount;
+    }
 
- public void setStudyProDealCopy(String studyProDealCopy) {
-  this.studyProDealCopy = studyProDealCopy;
- }
+    public String getSugOrgReqOriginal() {
+        return sugOrgReqOriginal;
+    }
 
- public Integer getStudyFileDealCount() {
-  return studyFileDealCount;
- }
+    public void setSugOrgReqOriginal(String sugOrgReqOriginal) {
+        this.sugOrgReqOriginal = sugOrgReqOriginal;
+    }
 
- public void setStudyFileDealCount(Integer studyFileDealCount) {
-  this.studyFileDealCount = studyFileDealCount;
- }
+    public String getSugOrgReqCopy() {
+        return sugOrgReqCopy;
+    }
 
- public String getStudyFileDealOriginal() {
-  return studyFileDealOriginal;
- }
+    public void setSugOrgReqCopy(String sugOrgReqCopy) {
+        this.sugOrgReqCopy = sugOrgReqCopy;
+    }
 
- public void setStudyFileDealOriginal(String studyFileDealOriginal) {
-  this.studyFileDealOriginal = studyFileDealOriginal;
- }
+    public Integer getSugProAdviseCount() {
+        return sugProAdviseCount;
+    }
 
- public String getStudyFileDealCopy() {
-  return studyFileDealCopy;
- }
+    public void setSugProAdviseCount(Integer sugProAdviseCount) {
+        this.sugProAdviseCount = sugProAdviseCount;
+    }
 
- public void setStudyFileDealCopy(String studyFileDealCopy) {
-  this.studyFileDealCopy = studyFileDealCopy;
- }
+    public String getSugProAdviseOriginal() {
+        return sugProAdviseOriginal;
+    }
 
- public Integer getStudyOrgApplyCount() {
-  return studyOrgApplyCount;
- }
+    public void setSugProAdviseOriginal(String sugProAdviseOriginal) {
+        this.sugProAdviseOriginal = sugProAdviseOriginal;
+    }
 
- public void setStudyOrgApplyCount(Integer studyOrgApplyCount) {
-  this.studyOrgApplyCount = studyOrgApplyCount;
- }
+    public String getSugProAdviseCopy() {
+        return sugProAdviseCopy;
+    }
 
- public String getStudyOrgApplyOriginal() {
-  return studyOrgApplyOriginal;
- }
+    public void setSugProAdviseCopy(String sugProAdviseCopy) {
+        this.sugProAdviseCopy = sugProAdviseCopy;
+    }
 
- public void setStudyOrgApplyOriginal(String studyOrgApplyOriginal) {
-  this.studyOrgApplyOriginal = studyOrgApplyOriginal;
- }
+    public Integer getProSugEledocCount() {
+        return proSugEledocCount;
+    }
 
- public String getStudyOrgApplyCopy() {
-  return studyOrgApplyCopy;
- }
+    public void setProSugEledocCount(Integer proSugEledocCount) {
+        this.proSugEledocCount = proSugEledocCount;
+    }
 
- public void setStudyOrgApplyCopy(String studyOrgApplyCopy) {
-  this.studyOrgApplyCopy = studyOrgApplyCopy;
- }
+    public String getProSugEledocOriginal() {
+        return proSugEledocOriginal;
+    }
 
- public Integer getStudyOrgReqCount() {
-  return studyOrgReqCount;
- }
+    public void setProSugEledocOriginal(String proSugEledocOriginal) {
+        this.proSugEledocOriginal = proSugEledocOriginal;
+    }
 
- public void setStudyOrgReqCount(Integer studyOrgReqCount) {
-  this.studyOrgReqCount = studyOrgReqCount;
- }
+    public String getProSugEledocCopy() {
+        return proSugEledocCopy;
+    }
 
- public String getStudyOrgReqOriginal() {
-  return studyOrgReqOriginal;
- }
+    public void setProSugEledocCopy(String proSugEledocCopy) {
+        this.proSugEledocCopy = proSugEledocCopy;
+    }
 
- public void setStudyOrgReqOriginal(String studyOrgReqOriginal) {
-  this.studyOrgReqOriginal = studyOrgReqOriginal;
- }
+    public Integer getSugMeetCount() {
+        return sugMeetCount;
+    }
 
- public String getStudyOrgReqCopy() {
-  return studyOrgReqCopy;
- }
+    public void setSugMeetCount(Integer sugMeetCount) {
+        this.sugMeetCount = sugMeetCount;
+    }
 
- public void setStudyOrgReqCopy(String studyOrgReqCopy) {
-  this.studyOrgReqCopy = studyOrgReqCopy;
- }
+    public String getSugMeetOriginal() {
+        return sugMeetOriginal;
+    }
 
- public Integer getStudyProSugCount() {
-  return studyProSugCount;
- }
+    public void setSugMeetOriginal(String sugMeetOriginal) {
+        this.sugMeetOriginal = sugMeetOriginal;
+    }
 
- public void setStudyProSugCount(Integer studyProSugCount) {
-  this.studyProSugCount = studyProSugCount;
- }
+    public String getSugMeetCopy() {
+        return sugMeetCopy;
+    }
 
- public String getStudyProSugOriginal() {
-  return studyProSugOriginal;
- }
+    public void setSugMeetCopy(String sugMeetCopy) {
+        this.sugMeetCopy = sugMeetCopy;
+    }
 
- public void setStudyProSugOriginal(String studyProSugOriginal) {
-  this.studyProSugOriginal = studyProSugOriginal;
- }
+    public Integer getStudyProDealCount() {
+        return studyProDealCount;
+    }
 
- public String getStudyProSugCopy() {
-  return studyProSugCopy;
- }
+    public void setStudyProDealCount(Integer studyProDealCount) {
+        this.studyProDealCount = studyProDealCount;
+    }
 
- public void setStudyProSugCopy(String studyProSugCopy) {
-  this.studyProSugCopy = studyProSugCopy;
- }
+    public String getStudyPealOriginal() {
+        return studyPealOriginal;
+    }
 
- public Integer getStudyMeetCount() {
-  return studyMeetCount;
- }
+    public void setStudyPealOriginal(String studyPealOriginal) {
+        this.studyPealOriginal = studyPealOriginal;
+    }
 
- public void setStudyMeetCount(Integer studyMeetCount) {
-  this.studyMeetCount = studyMeetCount;
- }
+    public String getStudyProDealCopy() {
+        return studyProDealCopy;
+    }
 
- public String getStudyMeetOriginal() {
-  return studyMeetOriginal;
- }
+    public void setStudyProDealCopy(String studyProDealCopy) {
+        this.studyProDealCopy = studyProDealCopy;
+    }
 
- public void setStudyMeetOriginal(String studyMeetOriginal) {
-  this.studyMeetOriginal = studyMeetOriginal;
- }
+    public Integer getStudyFileDealCount() {
+        return studyFileDealCount;
+    }
 
- public String getStudyMeetCopy() {
-  return studyMeetCopy;
- }
+    public void setStudyFileDealCount(Integer studyFileDealCount) {
+        this.studyFileDealCount = studyFileDealCount;
+    }
 
- public void setStudyMeetCopy(String studyMeetCopy) {
-  this.studyMeetCopy = studyMeetCopy;
- }
+    public String getStudyFileDealOriginal() {
+        return studyFileDealOriginal;
+    }
 
- public Integer getEnvproReplyCount() {
-  return envproReplyCount;
- }
+    public void setStudyFileDealOriginal(String studyFileDealOriginal) {
+        this.studyFileDealOriginal = studyFileDealOriginal;
+    }
 
- public void setEnvproReplyCount(Integer envproReplyCount) {
-  this.envproReplyCount = envproReplyCount;
- }
+    public String getStudyFileDealCopy() {
+        return studyFileDealCopy;
+    }
 
- public String getEnvproReplyOriginal() {
-  return envproReplyOriginal;
- }
+    public void setStudyFileDealCopy(String studyFileDealCopy) {
+        this.studyFileDealCopy = studyFileDealCopy;
+    }
 
- public void setEnvproReplyOriginal(String envproReplyOriginal) {
-  this.envproReplyOriginal = envproReplyOriginal;
- }
+    public Integer getStudyOrgApplyCount() {
+        return studyOrgApplyCount;
+    }
 
- public String getEnvproReplyCopy() {
-  return envproReplyCopy;
- }
+    public void setStudyOrgApplyCount(Integer studyOrgApplyCount) {
+        this.studyOrgApplyCount = studyOrgApplyCount;
+    }
 
- public void setEnvproReplyCopy(String envproReplyCopy) {
-  this.envproReplyCopy = envproReplyCopy;
- }
+    public String getStudyOrgApplyOriginal() {
+        return studyOrgApplyOriginal;
+    }
 
- public Integer getPlanAddrCount() {
-  return planAddrCount;
- }
+    public void setStudyOrgApplyOriginal(String studyOrgApplyOriginal) {
+        this.studyOrgApplyOriginal = studyOrgApplyOriginal;
+    }
 
- public void setPlanAddrCount(Integer planAddrCount) {
-  this.planAddrCount = planAddrCount;
- }
+    public String getStudyOrgApplyCopy() {
+        return studyOrgApplyCopy;
+    }
 
- public String getPlanAddrOriginal() {
-  return planAddrOriginal;
- }
+    public void setStudyOrgApplyCopy(String studyOrgApplyCopy) {
+        this.studyOrgApplyCopy = studyOrgApplyCopy;
+    }
 
- public void setPlanAddrOriginal(String planAddrOriginal) {
-  this.planAddrOriginal = planAddrOriginal;
- }
+    public Integer getStudyOrgReqCount() {
+        return studyOrgReqCount;
+    }
 
- public String getPlanAddrCopy() {
-  return planAddrCopy;
- }
+    public void setStudyOrgReqCount(Integer studyOrgReqCount) {
+        this.studyOrgReqCount = studyOrgReqCount;
+    }
 
- public void setPlanAddrCopy(String planAddrCopy) {
-  this.planAddrCopy = planAddrCopy;
- }
+    public String getStudyOrgReqOriginal() {
+        return studyOrgReqOriginal;
+    }
 
- public Integer getReportCount() {
-  return reportCount;
- }
+    public void setStudyOrgReqOriginal(String studyOrgReqOriginal) {
+        this.studyOrgReqOriginal = studyOrgReqOriginal;
+    }
 
- public void setReportCount(Integer reportCount) {
-  this.reportCount = reportCount;
- }
+    public String getStudyOrgReqCopy() {
+        return studyOrgReqCopy;
+    }
 
- public String getReportOrigin() {
-  return reportOrigin;
- }
+    public void setStudyOrgReqCopy(String studyOrgReqCopy) {
+        this.studyOrgReqCopy = studyOrgReqCopy;
+    }
 
- public void setReportOrigin(String reportOrigin) {
-  this.reportOrigin = reportOrigin;
- }
+    public Integer getStudyProSugCount() {
+        return studyProSugCount;
+    }
 
- public String getReportCopy() {
-  return reportCopy;
- }
+    public void setStudyProSugCount(Integer studyProSugCount) {
+        this.studyProSugCount = studyProSugCount;
+    }
 
- public void setReportCopy(String reportCopy) {
-  this.reportCopy = reportCopy;
- }
+    public String getStudyProSugOriginal() {
+        return studyProSugOriginal;
+    }
 
- public Integer getEledocCount() {
-  return eledocCount;
- }
+    public void setStudyProSugOriginal(String studyProSugOriginal) {
+        this.studyProSugOriginal = studyProSugOriginal;
+    }
 
- public void setEledocCount(Integer eledocCount) {
-  this.eledocCount = eledocCount;
- }
+    public String getStudyProSugCopy() {
+        return studyProSugCopy;
+    }
 
- public String getEledocOriginal() {
-  return eledocOriginal;
- }
+    public void setStudyProSugCopy(String studyProSugCopy) {
+        this.studyProSugCopy = studyProSugCopy;
+    }
 
- public void setEledocOriginal(String eledocOriginal) {
-  this.eledocOriginal = eledocOriginal;
- }
+    public Integer getStudyMeetCount() {
+        return studyMeetCount;
+    }
 
- public String getEledocCopy() {
-  return eledocCopy;
- }
+    public void setStudyMeetCount(Integer studyMeetCount) {
+        this.studyMeetCount = studyMeetCount;
+    }
 
- public void setEledocCopy(String eledocCopy) {
-  this.eledocCopy = eledocCopy;
- }
+    public String getStudyMeetOriginal() {
+        return studyMeetOriginal;
+    }
 
- public Integer getEnergyCount() {
-  return energyCount;
- }
+    public void setStudyMeetOriginal(String studyMeetOriginal) {
+        this.studyMeetOriginal = studyMeetOriginal;
+    }
 
- public void setEnergyCount(Integer energyCount) {
-  this.energyCount = energyCount;
- }
+    public String getStudyMeetCopy() {
+        return studyMeetCopy;
+    }
 
- public String getEnergyOriginal() {
-  return energyOriginal;
- }
+    public void setStudyMeetCopy(String studyMeetCopy) {
+        this.studyMeetCopy = studyMeetCopy;
+    }
 
- public void setEnergyOriginal(String energyOriginal) {
-  this.energyOriginal = energyOriginal;
- }
+    public Integer getEnvproReplyCount() {
+        return envproReplyCount;
+    }
 
- public String getEnergyCopy() {
-  return energyCopy;
- }
+    public void setEnvproReplyCount(Integer envproReplyCount) {
+        this.envproReplyCount = envproReplyCount;
+    }
 
- public void setEnergyCopy(String energyCopy) {
-  this.energyCopy = energyCopy;
- }
+    public String getEnvproReplyOriginal() {
+        return envproReplyOriginal;
+    }
 
- public String getSignState() {
-  return signState;
- }
+    public void setEnvproReplyOriginal(String envproReplyOriginal) {
+        this.envproReplyOriginal = envproReplyOriginal;
+    }
 
- public void setSignState(String signState) {
-  this.signState = signState;
- }
+    public String getEnvproReplyCopy() {
+        return envproReplyCopy;
+    }
 
- public List<WorkProgram> getWorkProgramList() {
-  return workProgramList;
- }
+    public void setEnvproReplyCopy(String envproReplyCopy) {
+        this.envproReplyCopy = envproReplyCopy;
+    }
 
- public void setWorkProgramList(List<WorkProgram> workProgramList) {
-  this.workProgramList = workProgramList;
- }
+    public Integer getPlanAddrCount() {
+        return planAddrCount;
+    }
 
- public DispatchDoc getDispatchDoc() {
-  return dispatchDoc;
- }
+    public void setPlanAddrCount(Integer planAddrCount) {
+        this.planAddrCount = planAddrCount;
+    }
 
- public void setDispatchDoc(DispatchDoc dispatchDoc) {
-  this.dispatchDoc = dispatchDoc;
- }
+    public String getPlanAddrOriginal() {
+        return planAddrOriginal;
+    }
 
- public FileRecord getFileRecord() {
-  return fileRecord;
- }
+    public void setPlanAddrOriginal(String planAddrOriginal) {
+        this.planAddrOriginal = planAddrOriginal;
+    }
 
- public void setFileRecord(FileRecord fileRecord) {
-  this.fileRecord = fileRecord;
- }
+    public String getPlanAddrCopy() {
+        return planAddrCopy;
+    }
 
- public String getProcessInstanceId() {
-  return processInstanceId;
- }
+    public void setPlanAddrCopy(String planAddrCopy) {
+        this.planAddrCopy = planAddrCopy;
+    }
 
- public void setProcessInstanceId(String processInstanceId) {
-  this.processInstanceId = processInstanceId;
- }
+    public Integer getReportCount() {
+        return reportCount;
+    }
 
- public Integer getIsAssociate() {
-  return isAssociate;
- }
+    public void setReportCount(Integer reportCount) {
+        this.reportCount = reportCount;
+    }
 
- public void setIsAssociate(Integer isAssociate) {
-  this.isAssociate = isAssociate;
- }
+    public String getReportOrigin() {
+        return reportOrigin;
+    }
 
- public Sign getAssociateSign() {
-  return associateSign;
- }
+    public void setReportOrigin(String reportOrigin) {
+        this.reportOrigin = reportOrigin;
+    }
 
- public void setAssociateSign(Sign associateSign) {
-  this.associateSign = associateSign;
- }
+    public String getReportCopy() {
+        return reportCopy;
+    }
 
- public String getIsAdvanced() {
-  return isAdvanced;
- }
+    public void setReportCopy(String reportCopy) {
+        this.reportCopy = reportCopy;
+    }
 
- public void setIsAdvanced(String isAdvanced) {
-  this.isAdvanced = isAdvanced;
- }
+    public Integer getEledocCount() {
+        return eledocCount;
+    }
 
- public BigDecimal getAppalyInvestment() {
-  return appalyInvestment;
- }
+    public void setEledocCount(Integer eledocCount) {
+        this.eledocCount = eledocCount;
+    }
 
- public void setAppalyInvestment(BigDecimal appalyInvestment) {
-  this.appalyInvestment = appalyInvestment;
- }
+    public String getEledocOriginal() {
+        return eledocOriginal;
+    }
 
- public Integer getGovernmentPurchasCount() {
-  return governmentPurchasCount;
- }
+    public void setEledocOriginal(String eledocOriginal) {
+        this.eledocOriginal = eledocOriginal;
+    }
 
- public void setGovernmentPurchasCount(Integer governmentPurchasCount) {
-  this.governmentPurchasCount = governmentPurchasCount;
- }
+    public String getEledocCopy() {
+        return eledocCopy;
+    }
 
- public String getGovernmentPurchasOriginal() {
-  return governmentPurchasOriginal;
- }
+    public void setEledocCopy(String eledocCopy) {
+        this.eledocCopy = eledocCopy;
+    }
 
- public void setGovernmentPurchasOriginal(String governmentPurchasOriginal) {
-  this.governmentPurchasOriginal = governmentPurchasOriginal;
- }
+    public Integer getEnergyCount() {
+        return energyCount;
+    }
 
- public String getGovernmentPurchasCopy() {
-  return governmentPurchasCopy;
- }
+    public void setEnergyCount(Integer energyCount) {
+        this.energyCount = energyCount;
+    }
 
- public void setGovernmentPurchasCopy(String governmentPurchasCopy) {
-  this.governmentPurchasCopy = governmentPurchasCopy;
- }
+    public String getEnergyOriginal() {
+        return energyOriginal;
+    }
 
- public Integer getExpertArgumentCount() {
-  return expertArgumentCount;
- }
+    public void setEnergyOriginal(String energyOriginal) {
+        this.energyOriginal = energyOriginal;
+    }
 
- public void setExpertArgumentCount(Integer expertArgumentCount) {
-  this.expertArgumentCount = expertArgumentCount;
- }
+    public String getEnergyCopy() {
+        return energyCopy;
+    }
 
- public String getExpertArgumentOriginal() {
-  return expertArgumentOriginal;
- }
+    public void setEnergyCopy(String energyCopy) {
+        this.energyCopy = energyCopy;
+    }
 
- public void setExpertArgumentOriginal(String expertArgumentOriginal) {
-  this.expertArgumentOriginal = expertArgumentOriginal;
- }
+    public String getSignState() {
+        return signState;
+    }
 
- public String getExpertArgumentCopy() {
-  return expertArgumentCopy;
- }
+    public void setSignState(String signState) {
+        this.signState = signState;
+    }
 
- public void setExpertArgumentCopy(String expertArgumentCopy) {
-  this.expertArgumentCopy = expertArgumentCopy;
- }
+    public List<WorkProgram> getWorkProgramList() {
+        return workProgramList;
+    }
 
- public Integer getDevelopmentCount() {
-  return developmentCount;
- }
+    public void setWorkProgramList(List<WorkProgram> workProgramList) {
+        this.workProgramList = workProgramList;
+    }
 
- public void setDevelopmentCount(Integer developmentCount) {
-  this.developmentCount = developmentCount;
- }
+    public DispatchDoc getDispatchDoc() {
+        return dispatchDoc;
+    }
 
- public String getDevelopementOriginal() {
-  return developementOriginal;
- }
+    public void setDispatchDoc(DispatchDoc dispatchDoc) {
+        this.dispatchDoc = dispatchDoc;
+    }
 
- public void setDevelopementOriginal(String developementOriginal) {
-  this.developementOriginal = developementOriginal;
- }
+    public FileRecord getFileRecord() {
+        return fileRecord;
+    }
 
- public String getDevelopementCopy() {
-  return developementCopy;
- }
+    public void setFileRecord(FileRecord fileRecord) {
+        this.fileRecord = fileRecord;
+    }
 
- public void setDevelopementCopy(String developementCopy) {
-  this.developementCopy = developementCopy;
- }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
- public Integer getOfficialDisposeCount() {
-  return officialDisposeCount;
- }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
- public void setOfficialDisposeCount(Integer officialDisposeCount) {
-  this.officialDisposeCount = officialDisposeCount;
- }
+    public Integer getIsAssociate() {
+        return isAssociate;
+    }
 
- public String getOfficialDisposeOriginal() {
-  return officialDisposeOriginal;
- }
+    public void setIsAssociate(Integer isAssociate) {
+        this.isAssociate = isAssociate;
+    }
 
- public void setOfficialDisposeOriginal(String officialDisposeOriginal) {
-  this.officialDisposeOriginal = officialDisposeOriginal;
- }
+    public Sign getAssociateSign() {
+        return associateSign;
+    }
 
- public String getOfficialDisposeCopy() {
-  return officialDisposeCopy;
- }
+    public void setAssociateSign(Sign associateSign) {
+        this.associateSign = associateSign;
+    }
 
- public void setOfficialDisposeCopy(String officialDisposeCopy) {
-  this.officialDisposeCopy = officialDisposeCopy;
- }
+    public String getIsAdvanced() {
+        return isAdvanced;
+    }
 
- public Integer getManagerDeptCount() {
-  return managerDeptCount;
- }
+    public void setIsAdvanced(String isAdvanced) {
+        this.isAdvanced = isAdvanced;
+    }
 
- public void setManagerDeptCount(Integer managerDeptCount) {
-  this.managerDeptCount = managerDeptCount;
- }
+    public BigDecimal getAppalyInvestment() {
+        return appalyInvestment;
+    }
 
- public String getManagerDeptOriginal() {
-  return managerDeptOriginal;
- }
+    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+        this.appalyInvestment = appalyInvestment;
+    }
 
- public void setManagerDeptOriginal(String managerDeptOriginal) {
-  this.managerDeptOriginal = managerDeptOriginal;
- }
+    public Integer getGovernmentPurchasCount() {
+        return governmentPurchasCount;
+    }
 
- public String getManagerDeptCopy() {
-  return managerDeptCopy;
- }
+    public void setGovernmentPurchasCount(Integer governmentPurchasCount) {
+        this.governmentPurchasCount = governmentPurchasCount;
+    }
 
- public void setManagerDeptCopy(String managerDeptCopy) {
-  this.managerDeptCopy = managerDeptCopy;
- }
+    public String getGovernmentPurchasOriginal() {
+        return governmentPurchasOriginal;
+    }
 
- public Integer getImportProductCount() {
-  return importProductCount;
- }
+    public void setGovernmentPurchasOriginal(String governmentPurchasOriginal) {
+        this.governmentPurchasOriginal = governmentPurchasOriginal;
+    }
 
- public void setImportProductCount(Integer importProductCount) {
-  this.importProductCount = importProductCount;
- }
+    public String getGovernmentPurchasCopy() {
+        return governmentPurchasCopy;
+    }
 
- public String getImportProductOriginal() {
-  return importProductOriginal;
- }
+    public void setGovernmentPurchasCopy(String governmentPurchasCopy) {
+        this.governmentPurchasCopy = governmentPurchasCopy;
+    }
 
- public void setImportProductOriginal(String importProductOriginal) {
-  this.importProductOriginal = importProductOriginal;
- }
+    public Integer getExpertArgumentCount() {
+        return expertArgumentCount;
+    }
 
- public String getImportProductCopy() {
-  return importProductCopy;
- }
+    public void setExpertArgumentCount(Integer expertArgumentCount) {
+        this.expertArgumentCount = expertArgumentCount;
+    }
 
- public void setImportProductCopy(String importProductCopy) {
-  this.importProductCopy = importProductCopy;
- }
+    public String getExpertArgumentOriginal() {
+        return expertArgumentOriginal;
+    }
 
- public Integer getSprcialDevicesCount() {
-  return sprcialDevicesCount;
- }
+    public void setExpertArgumentOriginal(String expertArgumentOriginal) {
+        this.expertArgumentOriginal = expertArgumentOriginal;
+    }
 
- public void setSprcialDevicesCount(Integer sprcialDevicesCount) {
-  this.sprcialDevicesCount = sprcialDevicesCount;
- }
+    public String getExpertArgumentCopy() {
+        return expertArgumentCopy;
+    }
 
- public String getSprcialDevicesOriginal() {
-  return sprcialDevicesOriginal;
- }
+    public void setExpertArgumentCopy(String expertArgumentCopy) {
+        this.expertArgumentCopy = expertArgumentCopy;
+    }
 
- public void setSprcialDevicesOriginal(String sprcialDevicesOriginal) {
-  this.sprcialDevicesOriginal = sprcialDevicesOriginal;
- }
+    public Integer getDevelopmentCount() {
+        return developmentCount;
+    }
 
- public String getSprcialDevicesCopy() {
-  return sprcialDevicesCopy;
- }
+    public void setDevelopmentCount(Integer developmentCount) {
+        this.developmentCount = developmentCount;
+    }
 
- public void setSprcialDevicesCopy(String sprcialDevicesCopy) {
-  this.sprcialDevicesCopy = sprcialDevicesCopy;
- }
+    public String getDevelopementOriginal() {
+        return developementOriginal;
+    }
 
- public Integer getOrtherProjectCount() {
-  return ortherProjectCount;
- }
+    public void setDevelopementOriginal(String developementOriginal) {
+        this.developementOriginal = developementOriginal;
+    }
 
- public void setOrtherProjectCount(Integer ortherProjectCount) {
-  this.ortherProjectCount = ortherProjectCount;
- }
+    public String getDevelopementCopy() {
+        return developementCopy;
+    }
 
- public String getOrtherProjectOriginal() {
-  return ortherProjectOriginal;
- }
+    public void setDevelopementCopy(String developementCopy) {
+        this.developementCopy = developementCopy;
+    }
 
- public void setOrtherProjectOriginal(String ortherProjectOriginal) {
-  this.ortherProjectOriginal = ortherProjectOriginal;
- }
+    public Integer getOfficialDisposeCount() {
+        return officialDisposeCount;
+    }
 
- public String getOrtherProjectCopy() {
-  return ortherProjectCopy;
- }
+    public void setOfficialDisposeCount(Integer officialDisposeCount) {
+        this.officialDisposeCount = officialDisposeCount;
+    }
 
- public void setOrtherProjectCopy(String ortherProjectCopy) {
-  this.ortherProjectCopy = ortherProjectCopy;
- }
+    public String getOfficialDisposeOriginal() {
+        return officialDisposeOriginal;
+    }
 
- public Integer getProjectDeclareCount() {
-  return projectDeclareCount;
- }
+    public void setOfficialDisposeOriginal(String officialDisposeOriginal) {
+        this.officialDisposeOriginal = officialDisposeOriginal;
+    }
 
- public void setProjectDeclareCount(Integer projectDeclareCount) {
-  this.projectDeclareCount = projectDeclareCount;
- }
+    public String getOfficialDisposeCopy() {
+        return officialDisposeCopy;
+    }
 
- public String getProjectDeclareOriginal() {
-  return projectDeclareOriginal;
- }
+    public void setOfficialDisposeCopy(String officialDisposeCopy) {
+        this.officialDisposeCopy = officialDisposeCopy;
+    }
 
- public void setProjectDeclareOriginal(String projectDeclareOriginal) {
-  this.projectDeclareOriginal = projectDeclareOriginal;
- }
+    public Integer getManagerDeptCount() {
+        return managerDeptCount;
+    }
 
- public String getProjectDeclareCopy() {
-  return projectDeclareCopy;
- }
+    public void setManagerDeptCount(Integer managerDeptCount) {
+        this.managerDeptCount = managerDeptCount;
+    }
 
- public void setProjectDeclareCopy(String projectDeclareCopy) {
-  this.projectDeclareCopy = projectDeclareCopy;
- }
+    public String getManagerDeptOriginal() {
+        return managerDeptOriginal;
+    }
 
- public Integer getProjectApplyReportCount() {
-  return projectApplyReportCount;
- }
+    public void setManagerDeptOriginal(String managerDeptOriginal) {
+        this.managerDeptOriginal = managerDeptOriginal;
+    }
 
- public void setProjectApplyReportCount(Integer projectApplyReportCount) {
-  this.projectApplyReportCount = projectApplyReportCount;
- }
+    public String getManagerDeptCopy() {
+        return managerDeptCopy;
+    }
 
- public String getProjectApplyReportOriginal() {
-  return projectApplyReportOriginal;
- }
+    public void setManagerDeptCopy(String managerDeptCopy) {
+        this.managerDeptCopy = managerDeptCopy;
+    }
 
- public void setProjectApplyReportOriginal(String projectApplyReportOriginal) {
-  this.projectApplyReportOriginal = projectApplyReportOriginal;
- }
+    public Integer getImportProductCount() {
+        return importProductCount;
+    }
 
- public String getProjectApplyReportCopy() {
-  return projectApplyReportCopy;
- }
+    public void setImportProductCount(Integer importProductCount) {
+        this.importProductCount = importProductCount;
+    }
 
- public void setProjectApplyReportCopy(String projectApplyReportCopy) {
-  this.projectApplyReportCopy = projectApplyReportCopy;
- }
+    public String getImportProductOriginal() {
+        return importProductOriginal;
+    }
 
- public Integer getPurchasDeviceCount() {
-  return purchasDeviceCount;
- }
+    public void setImportProductOriginal(String importProductOriginal) {
+        this.importProductOriginal = importProductOriginal;
+    }
 
- public void setPurchasDeviceCount(Integer purchasDeviceCount) {
-  this.purchasDeviceCount = purchasDeviceCount;
- }
+    public String getImportProductCopy() {
+        return importProductCopy;
+    }
 
- public String getPurchasDeviceOriginal() {
-  return purchasDeviceOriginal;
- }
+    public void setImportProductCopy(String importProductCopy) {
+        this.importProductCopy = importProductCopy;
+    }
 
- public void setPurchasDeviceOriginal(String purchasDeviceOriginal) {
-  this.purchasDeviceOriginal = purchasDeviceOriginal;
- }
+    public Integer getSprcialDevicesCount() {
+        return sprcialDevicesCount;
+    }
 
- public String getPurchasDeviceCopy() {
-  return purchasDeviceCopy;
- }
+    public void setSprcialDevicesCount(Integer sprcialDevicesCount) {
+        this.sprcialDevicesCount = sprcialDevicesCount;
+    }
 
- public void setPurchasDeviceCopy(String purchasDeviceCopy) {
-  this.purchasDeviceCopy = purchasDeviceCopy;
- }
+    public String getSprcialDevicesOriginal() {
+        return sprcialDevicesOriginal;
+    }
 
- public Integer getElectronicDocumentCount() {
-  return electronicDocumentCount;
- }
+    public void setSprcialDevicesOriginal(String sprcialDevicesOriginal) {
+        this.sprcialDevicesOriginal = sprcialDevicesOriginal;
+    }
 
- public void setElectronicDocumentCount(Integer electronicDocumentCount) {
-  this.electronicDocumentCount = electronicDocumentCount;
- }
+    public String getSprcialDevicesCopy() {
+        return sprcialDevicesCopy;
+    }
 
- public String getElectronicDocumentOriginal() {
-  return electronicDocumentOriginal;
- }
+    public void setSprcialDevicesCopy(String sprcialDevicesCopy) {
+        this.sprcialDevicesCopy = sprcialDevicesCopy;
+    }
 
- public void setElectronicDocumentOriginal(String electronicDocumentOriginal) {
-  this.electronicDocumentOriginal = electronicDocumentOriginal;
- }
+    public Integer getOrtherProjectCount() {
+        return ortherProjectCount;
+    }
 
- public String getElectronicDocumentCopy() {
-  return electronicDocumentCopy;
- }
+    public void setOrtherProjectCount(Integer ortherProjectCount) {
+        this.ortherProjectCount = ortherProjectCount;
+    }
 
- public void setElectronicDocumentCopy(String electronicDocumentCopy) {
-  this.electronicDocumentCopy = electronicDocumentCopy;
- }
+    public String getOrtherProjectOriginal() {
+        return ortherProjectOriginal;
+    }
 
- public Integer getPurchasDevicePactCount() {
-  return purchasDevicePactCount;
- }
+    public void setOrtherProjectOriginal(String ortherProjectOriginal) {
+        this.ortherProjectOriginal = ortherProjectOriginal;
+    }
 
- public void setPurchasDevicePactCount(Integer purchasDevicePactCount) {
-  this.purchasDevicePactCount = purchasDevicePactCount;
- }
+    public String getOrtherProjectCopy() {
+        return ortherProjectCopy;
+    }
 
- public String getPurchasDevicePactOriginal() {
-  return purchasDevicePactOriginal;
- }
+    public void setOrtherProjectCopy(String ortherProjectCopy) {
+        this.ortherProjectCopy = ortherProjectCopy;
+    }
 
- public void setPurchasDevicePactOriginal(String purchasDevicePactOriginal) {
-  this.purchasDevicePactOriginal = purchasDevicePactOriginal;
- }
+    public Integer getProjectDeclareCount() {
+        return projectDeclareCount;
+    }
 
- public String getPurchasDevicePactCopy() {
-  return purchasDevicePactCopy;
- }
+    public void setProjectDeclareCount(Integer projectDeclareCount) {
+        this.projectDeclareCount = projectDeclareCount;
+    }
 
- public void setPurchasDevicePactCopy(String purchasDevicePactCopy) {
-  this.purchasDevicePactCopy = purchasDevicePactCopy;
- }
+    public String getProjectDeclareOriginal() {
+        return projectDeclareOriginal;
+    }
 
- public Integer getProjectApproveFileCount() {
-  return projectApproveFileCount;
- }
+    public void setProjectDeclareOriginal(String projectDeclareOriginal) {
+        this.projectDeclareOriginal = projectDeclareOriginal;
+    }
 
- public void setProjectApproveFileCount(Integer projectApproveFileCount) {
-  this.projectApproveFileCount = projectApproveFileCount;
- }
+    public String getProjectDeclareCopy() {
+        return projectDeclareCopy;
+    }
 
- public String getProjectApproveFileOriginal() {
-  return projectApproveFileOriginal;
- }
+    public void setProjectDeclareCopy(String projectDeclareCopy) {
+        this.projectDeclareCopy = projectDeclareCopy;
+    }
 
- public void setProjectApproveFileOriginal(String projectApproveFileOriginal) {
-  this.projectApproveFileOriginal = projectApproveFileOriginal;
- }
+    public Integer getProjectApplyReportCount() {
+        return projectApplyReportCount;
+    }
 
- public String getProjectApproveFileCopy() {
-  return projectApproveFileCopy;
- }
+    public void setProjectApplyReportCount(Integer projectApplyReportCount) {
+        this.projectApplyReportCount = projectApplyReportCount;
+    }
 
- public void setProjectApproveFileCopy(String projectApproveFileCopy) {
-  this.projectApproveFileCopy = projectApproveFileCopy;
- }
+    public String getProjectApplyReportOriginal() {
+        return projectApplyReportOriginal;
+    }
 
- public Integer getBusinessLicenseCount() {
-  return businessLicenseCount;
- }
+    public void setProjectApplyReportOriginal(String projectApplyReportOriginal) {
+        this.projectApplyReportOriginal = projectApplyReportOriginal;
+    }
 
- public void setBusinessLicenseCount(Integer businessLicenseCount) {
-  this.businessLicenseCount = businessLicenseCount;
- }
+    public String getProjectApplyReportCopy() {
+        return projectApplyReportCopy;
+    }
 
- public String getBusinessLicenseOriginal() {
-  return businessLicenseOriginal;
- }
+    public void setProjectApplyReportCopy(String projectApplyReportCopy) {
+        this.projectApplyReportCopy = projectApplyReportCopy;
+    }
 
- public void setBusinessLicenseOriginal(String businessLicenseOriginal) {
-  this.businessLicenseOriginal = businessLicenseOriginal;
- }
+    public Integer getPurchasDeviceCount() {
+        return purchasDeviceCount;
+    }
 
- public String getBusinessLicenseCopy() {
-  return businessLicenseCopy;
- }
+    public void setPurchasDeviceCount(Integer purchasDeviceCount) {
+        this.purchasDeviceCount = purchasDeviceCount;
+    }
 
- public void setBusinessLicenseCopy(String businessLicenseCopy) {
-  this.businessLicenseCopy = businessLicenseCopy;
- }
+    public String getPurchasDeviceOriginal() {
+        return purchasDeviceOriginal;
+    }
 
- public Integer getLegalPersoncCardCount() {
-  return legalPersoncCardCount;
- }
+    public void setPurchasDeviceOriginal(String purchasDeviceOriginal) {
+        this.purchasDeviceOriginal = purchasDeviceOriginal;
+    }
 
- public void setLegalPersoncCardCount(Integer legalPersoncCardCount) {
-  this.legalPersoncCardCount = legalPersoncCardCount;
- }
+    public String getPurchasDeviceCopy() {
+        return purchasDeviceCopy;
+    }
 
- public String getLegalPersoncCardOriginal() {
-  return legalPersoncCardOriginal;
- }
+    public void setPurchasDeviceCopy(String purchasDeviceCopy) {
+        this.purchasDeviceCopy = purchasDeviceCopy;
+    }
 
- public void setLegalPersoncCardOriginal(String legalPersoncCardOriginal) {
-  this.legalPersoncCardOriginal = legalPersoncCardOriginal;
- }
+    public Integer getElectronicDocumentCount() {
+        return electronicDocumentCount;
+    }
 
- public String getLegalPersoncCardCopy() {
-  return legalPersoncCardCopy;
- }
+    public void setElectronicDocumentCount(Integer electronicDocumentCount) {
+        this.electronicDocumentCount = electronicDocumentCount;
+    }
 
- public void setLegalPersoncCardCopy(String legalPersoncCardCopy) {
-  this.legalPersoncCardCopy = legalPersoncCardCopy;
- }
+    public String getElectronicDocumentOriginal() {
+        return electronicDocumentOriginal;
+    }
 
+    public void setElectronicDocumentOriginal(String electronicDocumentOriginal) {
+        this.electronicDocumentOriginal = electronicDocumentOriginal;
+    }
 
- public Integer getEnvironmentalEffectCount() {
-  return environmentalEffectCount;
- }
+    public String getElectronicDocumentCopy() {
+        return electronicDocumentCopy;
+    }
 
- public void setEnvironmentalEffectCount(Integer environmentalEffectCount) {
-  this.environmentalEffectCount = environmentalEffectCount;
- }
+    public void setElectronicDocumentCopy(String electronicDocumentCopy) {
+        this.electronicDocumentCopy = electronicDocumentCopy;
+    }
 
- public String getEnvironmentalEffectOriginal() {
-  return environmentalEffectOriginal;
- }
+    public Integer getPurchasDevicePactCount() {
+        return purchasDevicePactCount;
+    }
 
- public void setEnvironmentalEffectOriginal(String environmentalEffectOriginal) {
-  this.environmentalEffectOriginal = environmentalEffectOriginal;
- }
+    public void setPurchasDevicePactCount(Integer purchasDevicePactCount) {
+        this.purchasDevicePactCount = purchasDevicePactCount;
+    }
 
- public String getEnvironmentalEffectCopy() {
-  return environmentalEffectCopy;
- }
+    public String getPurchasDevicePactOriginal() {
+        return purchasDevicePactOriginal;
+    }
 
- public void setEnvironmentalEffectCopy(String environmentalEffectCopy) {
-  this.environmentalEffectCopy = environmentalEffectCopy;
- }
+    public void setPurchasDevicePactOriginal(String purchasDevicePactOriginal) {
+        this.purchasDevicePactOriginal = purchasDevicePactOriginal;
+    }
 
- public Integer getLandPlanningLicenseCount() {
-  return landPlanningLicenseCount;
- }
+    public String getPurchasDevicePactCopy() {
+        return purchasDevicePactCopy;
+    }
 
- public void setLandPlanningLicenseCount(Integer landPlanningLicenseCount) {
-  this.landPlanningLicenseCount = landPlanningLicenseCount;
- }
+    public void setPurchasDevicePactCopy(String purchasDevicePactCopy) {
+        this.purchasDevicePactCopy = purchasDevicePactCopy;
+    }
 
- public String getLandPlanningLicenseOriginal() {
-  return landPlanningLicenseOriginal;
- }
+    public Integer getProjectApproveFileCount() {
+        return projectApproveFileCount;
+    }
 
- public void setLandPlanningLicenseOriginal(String landPlanningLicenseOriginal) {
-  this.landPlanningLicenseOriginal = landPlanningLicenseOriginal;
- }
+    public void setProjectApproveFileCount(Integer projectApproveFileCount) {
+        this.projectApproveFileCount = projectApproveFileCount;
+    }
 
- public String getLandPlanningLicenseCopy() {
-  return landPlanningLicenseCopy;
- }
+    public String getProjectApproveFileOriginal() {
+        return projectApproveFileOriginal;
+    }
 
- public void setLandPlanningLicenseCopy(String landPlanningLicenseCopy) {
-  this.landPlanningLicenseCopy = landPlanningLicenseCopy;
- }
+    public void setProjectApproveFileOriginal(String projectApproveFileOriginal) {
+        this.projectApproveFileOriginal = projectApproveFileOriginal;
+    }
 
- public Integer getGeologicalSurveyCount() {
-  return geologicalSurveyCount;
- }
+    public String getProjectApproveFileCopy() {
+        return projectApproveFileCopy;
+    }
 
- public void setGeologicalSurveyCount(Integer geologicalSurveyCount) {
-  this.geologicalSurveyCount = geologicalSurveyCount;
- }
+    public void setProjectApproveFileCopy(String projectApproveFileCopy) {
+        this.projectApproveFileCopy = projectApproveFileCopy;
+    }
 
- public String getGeologicalSurveyOriginal() {
-  return geologicalSurveyOriginal;
- }
+    public Integer getBusinessLicenseCount() {
+        return businessLicenseCount;
+    }
 
- public void setGeologicalSurveyOriginal(String geologicalSurveyOriginal) {
-  this.geologicalSurveyOriginal = geologicalSurveyOriginal;
- }
+    public void setBusinessLicenseCount(Integer businessLicenseCount) {
+        this.businessLicenseCount = businessLicenseCount;
+    }
 
- public String getGeologicalSurveyCopy() {
-  return geologicalSurveyCopy;
- }
+    public String getBusinessLicenseOriginal() {
+        return businessLicenseOriginal;
+    }
 
- public void setGeologicalSurveyCopy(String geologicalSurveyCopy) {
-  this.geologicalSurveyCopy = geologicalSurveyCopy;
- }
+    public void setBusinessLicenseOriginal(String businessLicenseOriginal) {
+        this.businessLicenseOriginal = businessLicenseOriginal;
+    }
 
- public Integer getDescriptionDesignCount() {
-  return descriptionDesignCount;
- }
+    public String getBusinessLicenseCopy() {
+        return businessLicenseCopy;
+    }
 
- public void setDescriptionDesignCount(Integer descriptionDesignCount) {
-  this.descriptionDesignCount = descriptionDesignCount;
- }
+    public void setBusinessLicenseCopy(String businessLicenseCopy) {
+        this.businessLicenseCopy = businessLicenseCopy;
+    }
 
- public String getDescriptionDesignOriginal() {
-  return descriptionDesignOriginal;
- }
+    public Integer getLegalPersoncCardCount() {
+        return legalPersoncCardCount;
+    }
 
- public void setDescriptionDesignOriginal(String descriptionDesignOriginal) {
-  this.descriptionDesignOriginal = descriptionDesignOriginal;
- }
+    public void setLegalPersoncCardCount(Integer legalPersoncCardCount) {
+        this.legalPersoncCardCount = legalPersoncCardCount;
+    }
 
- public String getDescriptionDesignCopy() {
-  return descriptionDesignCopy;
- }
+    public String getLegalPersoncCardOriginal() {
+        return legalPersoncCardOriginal;
+    }
 
- public void setDescriptionDesignCopy(String descriptionDesignCopy) {
-  this.descriptionDesignCopy = descriptionDesignCopy;
- }
+    public void setLegalPersoncCardOriginal(String legalPersoncCardOriginal) {
+        this.legalPersoncCardOriginal = legalPersoncCardOriginal;
+    }
 
- public Integer getProjectBudgetCount() {
-  return projectBudgetCount;
- }
+    public String getLegalPersoncCardCopy() {
+        return legalPersoncCardCopy;
+    }
 
- public void setProjectBudgetCount(Integer projectBudgetCount) {
-  this.projectBudgetCount = projectBudgetCount;
- }
+    public void setLegalPersoncCardCopy(String legalPersoncCardCopy) {
+        this.legalPersoncCardCopy = legalPersoncCardCopy;
+    }
 
- public String getProjectBudgetOriginal() {
-  return projectBudgetOriginal;
- }
 
- public void setProjectBudgetOriginal(String projectBudgetOriginal) {
-  this.projectBudgetOriginal = projectBudgetOriginal;
- }
+    public Integer getEnvironmentalEffectCount() {
+        return environmentalEffectCount;
+    }
 
- public String getProjectBudgetCopy() {
-  return projectBudgetCopy;
- }
+    public void setEnvironmentalEffectCount(Integer environmentalEffectCount) {
+        this.environmentalEffectCount = environmentalEffectCount;
+    }
 
- public void setProjectBudgetCopy(String projectBudgetCopy) {
-  this.projectBudgetCopy = projectBudgetCopy;
- }
+    public String getEnvironmentalEffectOriginal() {
+        return environmentalEffectOriginal;
+    }
 
- public Integer getPreliminaryDrawingCount() {
-  return preliminaryDrawingCount;
- }
+    public void setEnvironmentalEffectOriginal(String environmentalEffectOriginal) {
+        this.environmentalEffectOriginal = environmentalEffectOriginal;
+    }
 
- public void setPreliminaryDrawingCount(Integer preliminaryDrawingCount) {
-  this.preliminaryDrawingCount = preliminaryDrawingCount;
- }
+    public String getEnvironmentalEffectCopy() {
+        return environmentalEffectCopy;
+    }
 
- public String getPreliminaryDrawingOriginal() {
-  return preliminaryDrawingOriginal;
- }
+    public void setEnvironmentalEffectCopy(String environmentalEffectCopy) {
+        this.environmentalEffectCopy = environmentalEffectCopy;
+    }
 
- public void setPreliminaryDrawingOriginal(String preliminaryDrawingOriginal) {
-  this.preliminaryDrawingOriginal = preliminaryDrawingOriginal;
- }
+    public Integer getLandPlanningLicenseCount() {
+        return landPlanningLicenseCount;
+    }
 
- public String getPreliminaryDrawingCopy() {
-  return preliminaryDrawingCopy;
- }
+    public void setLandPlanningLicenseCount(Integer landPlanningLicenseCount) {
+        this.landPlanningLicenseCount = landPlanningLicenseCount;
+    }
 
- public void setPreliminaryDrawingCopy(String preliminaryDrawingCopy) {
-  this.preliminaryDrawingCopy = preliminaryDrawingCopy;
- }
+    public String getLandPlanningLicenseOriginal() {
+        return landPlanningLicenseOriginal;
+    }
 
- public Integer getConstructionDrawingsCount() {
-  return constructionDrawingsCount;
- }
+    public void setLandPlanningLicenseOriginal(String landPlanningLicenseOriginal) {
+        this.landPlanningLicenseOriginal = landPlanningLicenseOriginal;
+    }
 
- public void setConstructionDrawingsCount(Integer constructionDrawingsCount) {
-  this.constructionDrawingsCount = constructionDrawingsCount;
- }
+    public String getLandPlanningLicenseCopy() {
+        return landPlanningLicenseCopy;
+    }
 
- public String getConstructionDrawingsOriginal() {
-  return constructionDrawingsOriginal;
- }
+    public void setLandPlanningLicenseCopy(String landPlanningLicenseCopy) {
+        this.landPlanningLicenseCopy = landPlanningLicenseCopy;
+    }
 
- public void setConstructionDrawingsOriginal(String constructionDrawingsOriginal) {
-  this.constructionDrawingsOriginal = constructionDrawingsOriginal;
- }
+    public Integer getGeologicalSurveyCount() {
+        return geologicalSurveyCount;
+    }
 
- public String getConstructionDrawingsCopy() {
-  return constructionDrawingsCopy;
- }
+    public void setGeologicalSurveyCount(Integer geologicalSurveyCount) {
+        this.geologicalSurveyCount = geologicalSurveyCount;
+    }
 
- public void setConstructionDrawingsCopy(String constructionDrawingsCopy) {
-  this.constructionDrawingsCopy = constructionDrawingsCopy;
- }
+    public String getGeologicalSurveyOriginal() {
+        return geologicalSurveyOriginal;
+    }
 
- public String getIsLightUp() {
-  return isLightUp;
- }
+    public void setGeologicalSurveyOriginal(String geologicalSurveyOriginal) {
+        this.geologicalSurveyOriginal = geologicalSurveyOriginal;
+    }
 
- public void setIsLightUp(String isLightUp) {
-  this.isLightUp = isLightUp;
- }
+    public String getGeologicalSurveyCopy() {
+        return geologicalSurveyCopy;
+    }
 
- public String getIsSendFileRecord() {
-  return isSendFileRecord;
- }
+    public void setGeologicalSurveyCopy(String geologicalSurveyCopy) {
+        this.geologicalSurveyCopy = geologicalSurveyCopy;
+    }
 
- public void setIsSendFileRecord(String isSendFileRecord) {
-  this.isSendFileRecord = isSendFileRecord;
- }
+    public Integer getDescriptionDesignCount() {
+        return descriptionDesignCount;
+    }
 
- public String getSecondPriUser() {
-  return secondPriUser;
- }
+    public void setDescriptionDesignCount(Integer descriptionDesignCount) {
+        this.descriptionDesignCount = descriptionDesignCount;
+    }
 
- public void setSecondPriUser(String secondPriUser) {
-  this.secondPriUser = secondPriUser;
- }
+    public String getDescriptionDesignOriginal() {
+        return descriptionDesignOriginal;
+    }
 
- public Date getPresignDate() {
-  return presignDate;
- }
+    public void setDescriptionDesignOriginal(String descriptionDesignOriginal) {
+        this.descriptionDesignOriginal = descriptionDesignOriginal;
+    }
 
- public void setPresignDate(Date presignDate) {
-  this.presignDate = presignDate;
- }
+    public String getDescriptionDesignCopy() {
+        return descriptionDesignCopy;
+    }
 
- public String getDealOrgType() {
-  return dealOrgType;
- }
+    public void setDescriptionDesignCopy(String descriptionDesignCopy) {
+        this.descriptionDesignCopy = descriptionDesignCopy;
+    }
 
- public void setDealOrgType(String dealOrgType) {
-  this.dealOrgType = dealOrgType;
- }
+    public Integer getProjectBudgetCount() {
+        return projectBudgetCount;
+    }
 
- public BigDecimal getDeclaration() {
-  return declaration;
- }
+    public void setProjectBudgetCount(Integer projectBudgetCount) {
+        this.projectBudgetCount = projectBudgetCount;
+    }
 
- public void setDeclaration(BigDecimal declaration) {
-  this.declaration = declaration;
- }
+    public String getProjectBudgetOriginal() {
+        return projectBudgetOriginal;
+    }
 
- public Integer getProcessState() {
-  return processState;
- }
+    public void setProjectBudgetOriginal(String projectBudgetOriginal) {
+        this.projectBudgetOriginal = projectBudgetOriginal;
+    }
 
- public void setProcessState(Integer processState) {
-  this.processState = processState;
- }
+    public String getProjectBudgetCopy() {
+        return projectBudgetCopy;
+    }
 
- public String getComprehensiveId() {
-  return comprehensiveId;
- }
+    public void setProjectBudgetCopy(String projectBudgetCopy) {
+        this.projectBudgetCopy = projectBudgetCopy;
+    }
 
- public void setComprehensiveId(String comprehensiveId) {
-  this.comprehensiveId = comprehensiveId;
- }
+    public Integer getPreliminaryDrawingCount() {
+        return preliminaryDrawingCount;
+    }
 
- public String getLeaderId() {
-  return leaderId;
- }
+    public void setPreliminaryDrawingCount(Integer preliminaryDrawingCount) {
+        this.preliminaryDrawingCount = preliminaryDrawingCount;
+    }
 
- public void setLeaderId(String leaderId) {
-  this.leaderId = leaderId;
- }
+    public String getPreliminaryDrawingOriginal() {
+        return preliminaryDrawingOriginal;
+    }
 
- public String getMinisterId() {
-  return ministerId;
- }
+    public void setPreliminaryDrawingOriginal(String preliminaryDrawingOriginal) {
+        this.preliminaryDrawingOriginal = preliminaryDrawingOriginal;
+    }
 
- public void setMinisterId(String ministerId) {
-  this.ministerId = ministerId;
- }
+    public String getPreliminaryDrawingCopy() {
+        return preliminaryDrawingCopy;
+    }
 
- public Integer getCapitalAppReportCount() {
-  return capitalAppReportCount;
- }
+    public void setPreliminaryDrawingCopy(String preliminaryDrawingCopy) {
+        this.preliminaryDrawingCopy = preliminaryDrawingCopy;
+    }
 
- public void setCapitalAppReportCount(Integer capitalAppReportCount) {
-  this.capitalAppReportCount = capitalAppReportCount;
- }
+    public Integer getConstructionDrawingsCount() {
+        return constructionDrawingsCount;
+    }
 
- public String getCapitalAppReportOriginal() {
-  return capitalAppReportOriginal;
- }
+    public void setConstructionDrawingsCount(Integer constructionDrawingsCount) {
+        this.constructionDrawingsCount = constructionDrawingsCount;
+    }
 
- public void setCapitalAppReportOriginal(String capitalAppReportOriginal) {
-  this.capitalAppReportOriginal = capitalAppReportOriginal;
- }
+    public String getConstructionDrawingsOriginal() {
+        return constructionDrawingsOriginal;
+    }
 
- public String getIsProjectState() {
-  return isProjectState;
- }
+    public void setConstructionDrawingsOriginal(String constructionDrawingsOriginal) {
+        this.constructionDrawingsOriginal = constructionDrawingsOriginal;
+    }
 
- public void setIsProjectState(String isProjectState) {
-  this.isProjectState = isProjectState;
- }
+    public String getConstructionDrawingsCopy() {
+        return constructionDrawingsCopy;
+    }
 
- public String getSignNum() {
-  return signNum;
- }
+    public void setConstructionDrawingsCopy(String constructionDrawingsCopy) {
+        this.constructionDrawingsCopy = constructionDrawingsCopy;
+    }
 
- public void setSignNum(String signNum) {
-  this.signNum = signNum;
- }
+    public String getIsLightUp() {
+        return isLightUp;
+    }
 
- public Integer getSignSeq() {
-  return signSeq;
- }
+    public void setIsLightUp(String isLightUp) {
+        this.isLightUp = isLightUp;
+    }
 
- public void setSignSeq(Integer signSeq) {
-  this.signSeq = signSeq;
- }
- public String getFinanciaStatus() {
-  return financiaStatus;
- }
+    public String getIsSendFileRecord() {
+        return isSendFileRecord;
+    }
 
- public void setFinanciaStatus(String financiaStatus) {
-  this.financiaStatus = financiaStatus;
- }
+    public void setIsSendFileRecord(String isSendFileRecord) {
+        this.isSendFileRecord = isSendFileRecord;
+    }
 
- public String getIsSupplementary() {
-  return isSupplementary;
- }
+    public String getSecondPriUser() {
+        return secondPriUser;
+    }
 
- public void setIsSupplementary(String isSupplementary) {
-  this.isSupplementary = isSupplementary;
- }
+    public void setSecondPriUser(String secondPriUser) {
+        this.secondPriUser = secondPriUser;
+    }
 
- public String getAssistStatus() {
-  return assistStatus;
- }
+    public Date getPresignDate() {
+        return presignDate;
+    }
 
- public void setAssistStatus(String assistStatus) {
-  this.assistStatus = assistStatus;
- }
+    public void setPresignDate(Date presignDate) {
+        this.presignDate = presignDate;
+    }
 
- public BigDecimal getAuthorizeValue() {
-  return authorizeValue;
- }
+    public String getDealOrgType() {
+        return dealOrgType;
+    }
 
- public void setAuthorizeValue(BigDecimal authorizeValue) {
-  this.authorizeValue = authorizeValue;
- }
+    public void setDealOrgType(String dealOrgType) {
+        this.dealOrgType = dealOrgType;
+    }
 
- public String getIsHaveSuppLetter() {
-  return isHaveSuppLetter;
- }
+    public BigDecimal getDeclaration() {
+        return declaration;
+    }
 
- public void setIsHaveSuppLetter(String isHaveSuppLetter) {
-  this.isHaveSuppLetter = isHaveSuppLetter;
- }
+    public void setDeclaration(BigDecimal declaration) {
+        this.declaration = declaration;
+    }
 
- public Date getSuppLetterDate() {
-  return suppLetterDate;
- }
+    public Integer getProcessState() {
+        return processState;
+    }
 
- public void setSuppLetterDate(Date suppLetterDate) {
-  this.suppLetterDate = suppLetterDate;
- }
+    public void setProcessState(Integer processState) {
+        this.processState = processState;
+    }
 
- public String getIsSignTemplate() {
-  return isSignTemplate;
- }
+    public String getComprehensiveId() {
+        return comprehensiveId;
+    }
 
- public void setIsSignTemplate(String isSignTemplate) {
-  this.isSignTemplate = isSignTemplate;
- }
+    public void setComprehensiveId(String comprehensiveId) {
+        this.comprehensiveId = comprehensiveId;
+    }
+
+    public String getLeaderId() {
+        return leaderId;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public String getMinisterId() {
+        return ministerId;
+    }
+
+    public void setMinisterId(String ministerId) {
+        this.ministerId = ministerId;
+    }
+
+    public Integer getCapitalAppReportCount() {
+        return capitalAppReportCount;
+    }
+
+    public void setCapitalAppReportCount(Integer capitalAppReportCount) {
+        this.capitalAppReportCount = capitalAppReportCount;
+    }
+
+    public String getCapitalAppReportOriginal() {
+        return capitalAppReportOriginal;
+    }
+
+    public void setCapitalAppReportOriginal(String capitalAppReportOriginal) {
+        this.capitalAppReportOriginal = capitalAppReportOriginal;
+    }
+
+    public String getIsProjectState() {
+        return isProjectState;
+    }
+
+    public void setIsProjectState(String isProjectState) {
+        this.isProjectState = isProjectState;
+    }
+
+    public String getSignNum() {
+        return signNum;
+    }
+
+    public void setSignNum(String signNum) {
+        this.signNum = signNum;
+    }
+
+    public Integer getSignSeq() {
+        return signSeq;
+    }
+
+    public void setSignSeq(Integer signSeq) {
+        this.signSeq = signSeq;
+    }
+
+    public String getFinanciaStatus() {
+        return financiaStatus;
+    }
+
+    public void setFinanciaStatus(String financiaStatus) {
+        this.financiaStatus = financiaStatus;
+    }
+
+    public String getIsSupplementary() {
+        return isSupplementary;
+    }
+
+    public void setIsSupplementary(String isSupplementary) {
+        this.isSupplementary = isSupplementary;
+    }
+
+    public String getAssistStatus() {
+        return assistStatus;
+    }
+
+    public void setAssistStatus(String assistStatus) {
+        this.assistStatus = assistStatus;
+    }
+
+    public BigDecimal getAuthorizeValue() {
+        return authorizeValue;
+    }
+
+    public void setAuthorizeValue(BigDecimal authorizeValue) {
+        this.authorizeValue = authorizeValue;
+    }
+
+    public String getIsHaveSuppLetter() {
+        return isHaveSuppLetter;
+    }
+
+    public void setIsHaveSuppLetter(String isHaveSuppLetter) {
+        this.isHaveSuppLetter = isHaveSuppLetter;
+    }
+
+    public Date getSuppLetterDate() {
+        return suppLetterDate;
+    }
+
+    public void setSuppLetterDate(Date suppLetterDate) {
+        this.suppLetterDate = suppLetterDate;
+    }
+
+    public String getIsSignTemplate() {
+        return isSignTemplate;
+    }
+
+    public void setIsSignTemplate(String isSignTemplate) {
+        this.isSignTemplate = isSignTemplate;
+    }
+
+    public Integer getOldProjectId() {
+        return oldProjectId;
+    }
+
+    public void setOldProjectId(Integer oldProjectId) {
+        this.oldProjectId = oldProjectId;
+    }
 }

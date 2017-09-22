@@ -1,0 +1,79 @@
+<meta charset="UTF-8">
+<div class="toolbar text-center" ng-show="vm.model.suppLetterDtoList.length > 1">
+    当前项目有{{vm.model.suppLetterDtoList.length}}条补充资料函，当前第{{vm.showSupperIndex+1}}条
+    <button class="btn btn-xs btn-primary" ng-show="vm.showSupperIndex > 0" ng-click="vm.showSupperIndex = vm.showSupperIndex-1">上一篇</button>
+    <button class="btn btn-xs btn-primary" ng-show="vm.showSupperIndex < (vm.model.suppLetterDtoList.length-1)" ng-click="vm.showSupperIndex = vm.showSupperIndex+1">下一篇</button>
+</div>
+<div ng-repeat="x in vm.model.suppLetterDtoList" style="color:red;" ng-show="vm.showSupperIndex == $index">
+    <table class="table table-bordered">
+        <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</strong></caption>
+        <tbody>
+        <tr>
+            <td style="width:15%;max-width:180px;" class="text-center">拟稿部门<br>拟稿人</td>
+            <td>
+                {{x.orgName}}<br>
+                {{x.userName}}
+            </td>
+            <td style="width:15%;max-width:180px;" class="text-center">拟稿时间</td>
+            <td >
+                {{x.suppLetterTime}}
+            </td>
+        </tr>
+        <tr>
+            <td  class="text-center">秘密等级</td>
+            <td>
+                {{x.secretLevel}}
+            </td>
+
+            <td class="text-center">缓急程度</td>
+            <td>
+                {{x.mergencyLevel}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">发文日期</td>
+            <td>
+                {{x.disapDate}}
+            </td>
+
+            <td class="text-center">文件字号</td>
+            <td> {{x.filenum}} </td>
+        </tr>
+
+        <tr>
+            <td class="text-center">文件标题 <span class="required">*</span></td>
+            <td colspan="3">
+                {{x.title}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">发行范围<span class="required">*</span></td>
+            <td colspan="3">
+                <textarea maxlength="200" class="form-control input-sm" rows="3"  >{{x.dispaRange}}</textarea>
+                <span style="float: right;">(印{{x.printnum}}份)</span>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td class="text-center">核稿意见</td>
+            <td colspan="3">
+                <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="true">{{x.suppleterSuggest}}</textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-center">会签意见</td>
+            <td colspan="3">
+                <textarea maxlength="200" class="form-control input-sm " rows="5">{{x.meetingSuggest}}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">领导意见</td>
+            <td colspan="3">
+                <textarea maxlength="200" class="form-control input-sm " rows="5" >{{x.leaderSuggest}}</textarea>
+            </td>
+        </tr>
+        </tbody>
+    </table>    <!-- end table -->
+</div>

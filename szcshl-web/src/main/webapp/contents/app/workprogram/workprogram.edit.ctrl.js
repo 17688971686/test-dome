@@ -78,7 +78,6 @@
                         colseDialog:true,
                     })
                 }
-
             //专家函评不需要会议室
             }else {
                 //合并评审改为单个评审
@@ -121,14 +120,14 @@
 
         //初始化合并评审弹框
         vm.initMergeWP = function(){
-            if (!vm.work.id || vm.businessFlag.isMainWorkProj == false) {
+            if (!vm.work.id) {
                 bsWin.alert("请先保存工作方案！");
             }else{
                 //初始化合并评审信息
                 workprogramSvc.initMergeInfo(vm,vm.work.signId);
-                $("#mergeSignWP").kendoWindow({
-                    width: "1200px",
-                    height: "600px",
+                $("#mergeSign").kendoWindow({
+                    width: "75%",
+                    height: "700px",
                     title: "合并评审",
                     visible: false,
                     modal: true,

@@ -2,7 +2,7 @@
 <form id="payform" name="payform">
     <table class="table table-bordered">
         <tbody>
-        <tr ng-if="vm.showFlag.isMainPrinUser">
+        <tr ng-if="vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit" ng-hide="vm.model.expertReviewDto.payDate">
             <td colspan="4">
                 <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.model.expertReviewDto)" ng-disabled="vm.isCommit">
                     <span class="glyphicon glyphicon-ok"></span>计算应纳税额
@@ -62,9 +62,8 @@
                             <div ng-show="vm.showFlag.isMainPrinUser && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
                                 <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
                                        class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
-                                       data-val-regex="评审费用只能为正数"
-                                       data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
-                                       data-val="true" data-val-required="必填">
+                                       data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
+                                       data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
                                 <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"
                                       class="errors"></span>
                             </div>

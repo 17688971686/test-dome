@@ -130,6 +130,7 @@
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeDispatch = true;
                     vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
+                    vm.showFlag.expertEdit = true;          //评审费编辑
                     if(vm.flow.businessMap.prilUserList){
                         vm.businessFlag.principalUsers = vm.flow.businessMap.prilUserList;
                         vm.showFlag.businessNext = true;
