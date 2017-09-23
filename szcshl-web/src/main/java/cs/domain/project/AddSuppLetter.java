@@ -99,6 +99,50 @@ public class AddSuppLetter extends DomainBase {
 	//文字序号
     @Column(columnDefinition = "INTEGER")
 	private Integer fileSeq;
+    
+    //拟补充资料函状态：0：审批状态，9：查询状态
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String addSuppStatus;
+    
+    //审批状态：0部长审批,1分管领导审批,2主任审批
+    @Column(columnDefinition = "VARCHAR(4)")
+    private String addSuppAppoveStatus;
+    
+   //部门部长名称
+    @Column(columnDefinition = "varchar(30)")
+	private String deptMinisterName;
+    
+    //部长意见
+    @Column(columnDefinition = "varchar(215)")
+    private String deptMinisterIdeaContent;	
+    
+    //部长审批日期
+    @Column(columnDefinition="date")
+    private Date deptMinisterDate;
+
+    //分管副主任名称
+    @Column(columnDefinition = "varchar(30)")
+	private String deptSLeaderName;
+    
+    //分管副主任签批
+    @Column(columnDefinition = "varchar(215)")
+    private String deptSLeaderIdeaContent;	
+    
+    //分管主任审批日期
+    @Column(columnDefinition="date")
+    private Date deptSleaderDate;
+   
+    //主任名称
+    @Column(columnDefinition = "varchar(30)")
+    private String deptDirectorName;
+    
+    //主任意见
+    @Column(columnDefinition = "varchar(215)")
+    private String deptDirectorIdeaContent;
+    
+    //主任审批日期
+    @Column(columnDefinition="date")
+    private Date deptDirectorDate;
 	
     //1公文类型
     @Column(columnDefinition = "VARCHAR(64)")
@@ -321,6 +365,94 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setMissiveOtherType(String missiveOtherType) {
 		this.missiveOtherType = missiveOtherType;
+	}
+
+	public String getAddSuppStatus() {
+		return addSuppStatus;
+	}
+
+	public void setAddSuppStatus(String addSuppStatus) {
+		this.addSuppStatus = addSuppStatus;
+	}
+
+	public String getAddSuppAppoveStatus() {
+		return addSuppAppoveStatus;
+	}
+
+	public void setAddSuppAppoveStatus(String addSuppAppoveStatus) {
+		this.addSuppAppoveStatus = addSuppAppoveStatus;
+	}
+
+	public String getDeptMinisterName() {
+		return deptMinisterName;
+	}
+
+	public void setDeptMinisterName(String deptMinisterName) {
+		this.deptMinisterName = deptMinisterName;
+	}
+
+	public String getDeptMinisterIdeaContent() {
+		return deptMinisterIdeaContent;
+	}
+
+	public void setDeptMinisterIdeaContent(String deptMinisterIdeaContent) {
+		this.deptMinisterIdeaContent = deptMinisterIdeaContent;
+	}
+
+	public Date getDeptMinisterDate() {
+		return deptMinisterDate;
+	}
+
+	public void setDeptMinisterDate(Date deptMinisterDate) {
+		this.deptMinisterDate = deptMinisterDate;
+	}
+
+	public String getDeptSLeaderName() {
+		return deptSLeaderName;
+	}
+
+	public void setDeptSLeaderName(String deptSLeaderName) {
+		this.deptSLeaderName = deptSLeaderName;
+	}
+
+	public String getDeptSLeaderIdeaContent() {
+		return deptSLeaderIdeaContent;
+	}
+
+	public void setDeptSLeaderIdeaContent(String deptSLeaderIdeaContent) {
+		this.deptSLeaderIdeaContent = deptSLeaderIdeaContent;
+	}
+
+	public Date getDeptSleaderDate() {
+		return deptSleaderDate;
+	}
+
+	public void setDeptSleaderDate(Date deptSleaderDate) {
+		this.deptSleaderDate = deptSleaderDate;
+	}
+
+	public String getDeptDirectorName() {
+		return deptDirectorName;
+	}
+
+	public void setDeptDirectorName(String deptDirectorName) {
+		this.deptDirectorName = deptDirectorName;
+	}
+
+	public String getDeptDirectorIdeaContent() {
+		return deptDirectorIdeaContent;
+	}
+
+	public void setDeptDirectorIdeaContent(String deptDirectorIdeaContent) {
+		this.deptDirectorIdeaContent = deptDirectorIdeaContent;
+	}
+
+	public Date getDeptDirectorDate() {
+		return deptDirectorDate;
+	}
+
+	public void setDeptDirectorDate(Date deptDirectorDate) {
+		this.deptDirectorDate = deptDirectorDate;
 	}
 	
 	

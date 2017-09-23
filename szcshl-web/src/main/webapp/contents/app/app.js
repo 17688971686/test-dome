@@ -63,13 +63,16 @@
                 controllerAs: 'vm'
             })
             //end#流程公共页面
-            //begin#addSuppletter
+            
+             //S 拟补充资料函管理 
+            
+            //begin#添加拟补充资料函
             .state('addSupp', {
                 url: '/addSupp/:businessId/:businessType',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
-            })//end#addSuppletter
+            })//end#添加拟补充资料函
             
              //begin#拟补充资料函列表
             .state('addSuppletterList', {
@@ -79,14 +82,51 @@
                 controllerAs: 'vm'
             })//end#拟补充资料函列表
             
-             //begin#拟补充资料函详细信息
+            //begin#拟补充资料函查看流程详细页面
             .state('addSuppLetterDetail', {
-                url: '/addSuppLetterDetail/:id',
+                url: '/addSuppLetterDetail',
                 templateUrl: rootPath + '/addSuppLetter/detail.html',
                 controller: 'addSuppLetterEditCtrl',
                 controllerAs: 'vm'
-            })//end#拟补充资料函详细信息
+            })//end#拟补充资料函查看流程详细页面
+            
+            
+            //begin#拟补充资料函查询
+            .state('suppletterList', {
+                url: '/suppletterList',
+                templateUrl: rootPath + '/addSuppLetter/suppLetterList.html',
+                controller: 'addSuppLetterQueryCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函查询
+            
            
+             //begin#拟补充资料函详细信息
+            .state('querySuppLetterDetail', {
+                url: '/querySuppLetterDetail/:id',
+                templateUrl: rootPath + '/addSuppLetter/detail.html',
+                controller: 'addSuppLetterQueryEditCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函详细信息
+             
+             //begin#拟补充资料函审批
+            .state('suppLetterApproveList', {
+                url: '/suppLetterApproveList',
+                templateUrl: rootPath + '/addSuppLetter/suppLetterApproveList.html',
+                controller: 'addSuppLetterQueryCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函审批
+            
+           
+            //begin#拟补充资料函审批处理页面
+            .state('suppLetterApproveEdit', {
+                url: '/suppLetterApproveEdit/:id',
+                templateUrl: rootPath + '/addSuppLetter/suppLetterApproveEdit.html',
+                controller: 'addSuppLetterQueryEditCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函审批处理页面
+            
+            //E 拟补充资料函管理
+            
              //begin#registerFile
             .state('registerFile', {
                 url: '/registerFile/:businessId/',

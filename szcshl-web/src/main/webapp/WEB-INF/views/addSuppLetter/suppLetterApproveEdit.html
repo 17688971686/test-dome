@@ -1,10 +1,10 @@
+<!--S 审批处理页面 -->
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
  <div ng-include src="'${path}/contents/app/addSuppLetter/dialog-add_suppContent.html'"></div> 
-
 <div class="well well-sm" style="background:white; color: red">
 <div class="toolbar">
     <button ng-show="false" class="btn btn-sm btn-success" ng-click="vm.getFilenum()" ng-disabled="vm.isCommit">
@@ -128,3 +128,4 @@
             </button>
         </div>
 </div>
+<!--E 审批处理页面 -->

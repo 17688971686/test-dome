@@ -9,7 +9,6 @@
         vm.suppletter = {}; //补充资料对象$state
         vm.suppletter.businessId = $state.params.businessId;        //业务ID
         vm.title = '登记补充资料';
-
         activate();
         function activate() {
             addSuppLetterSvc.initSuppListDate(vm.suppletter.businessId,function(data){

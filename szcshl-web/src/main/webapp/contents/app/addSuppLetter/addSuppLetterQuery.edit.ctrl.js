@@ -1,11 +1,11 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('addSuppLetterEditCtrl', addSuppLetter);
+    angular.module('app').controller('addSuppLetterQueryEditCtrl', addSuppLetterQuery);
 
-    addSuppLetter.$inject = ['$location', 'addSuppLetterSvc', '$state'];
+    addSuppLetterQuery.$inject = ['$location', 'addSuppLetterQuerySvc', '$state'];
 
-    function addSuppLetter($location, addSuppLetterSvc, $state) {
+    function addSuppLetterQuery($location, addSuppLetterQuerySvc, $state) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '添加登记补充资料';
@@ -17,15 +17,15 @@
         }
        
         vm.create = function () {
-            addSuppLetterSvc.createAddSuppLetter(vm);
+            addSuppLetterQuerySvc.createaddSuppLetterQuery(vm);
         };
         vm.update = function () {
-            addSuppLetterSvc.updateAddSuppLetter(vm);
+            addSuppLetterQuerySvc.updateaddSuppLetterQuery(vm);
         };
         activate();
         function activate() {
         	//查看补充资料详细信息
-            addSuppLetterSvc.getAddSuppLetterById(vm);
+            addSuppLetterQuerySvc.getaddSuppLetterQueryById(vm);
         }
     }
 })();

@@ -2,6 +2,7 @@ package cs.controller.project;
 
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.Archives.ArchivesLibraryDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
@@ -38,6 +39,22 @@ public class AddSuppLetterController {
     public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String businessId){
     	List<AddSuppLetterDto> addSuppLetterDtos=addSuppLetterService.initSuppList(businessId);
     	return addSuppLetterDtos;
+    }
+    
+    @RequiresPermissions("addSuppLetter#addsuppListData#post")
+    @RequestMapping(name = "获取拟补充资料函查询列表", path = "addsuppListData", method = RequestMethod.POST)
+    public  @ResponseBody PageModelDto<AddSuppLetterDto> getProject(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addsuppListData(odataObj);	
+        return addSuppLetterDtos;
+    }
+    
+    @RequiresPermissions("addSuppLetter#addSuppApproveList#post")
+    @RequestMapping(name = "获取拟补充资料函审批处理列表", path = "addSuppApproveList", method = RequestMethod.POST)
+    public  @ResponseBody PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);	
+        return addSuppLetterDtos;
     }
     
     @RequiresPermissions("addSuppLetter#initSuppLetter#post")
@@ -82,6 +99,18 @@ public class AddSuppLetterController {
     @RequestMapping(name = "拟补充资料函详细信息页面", path = "detail", method = RequestMethod.GET)
     public String addSuppLetterDetail() {
         return ctrlName+"/detail"; 
+    }
+    
+    @RequiresPermissions("addSuppLetter#html/suppLetterList#get")
+    @RequestMapping(name = "拟补充资料函查询列表页面", path = "suppLetterList", method = RequestMethod.GET)
+    public String suppLetterList() {
+        return ctrlName+"/suppLetterList"; 
+    }
+    
+    @RequiresPermissions("addSuppLetter#html/suppLetterApproveList#get")
+    @RequestMapping(name = "拟补充资料函审批列表页面", path = "suppLetterApproveList", method = RequestMethod.GET)
+    public String suppLetterApproveList() {
+        return ctrlName+"/suppLetterApproveList"; 
     }
 
 }

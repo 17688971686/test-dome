@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.activiti.engine.impl.cmd.SetTaskDueDateCmd;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,15 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.Archives.ArchivesLibrary;
+import cs.domain.Archives.ArchivesLibrary_;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.model.PageModelDto;
+import cs.model.Archives.ArchivesLibraryDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
@@ -70,8 +75,29 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             addSuppLetter = new AddSuppLetter();
             BeanCopierUtils.copyProperties(addSuppLetterDto, addSuppLetter);
             addSuppLetter.setId(UUID.randomUUID().toString());
-            addSuppLetter.setCreatedBy(SessionUtil.getUserInfo().getId());
-            addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
+            addSuppLetter.setCreatedBy(SessionUtil.getDisplayName());
+            addSuppLetter.setModifiedBy(SessionUtil.getDisplayName());
+            //部长名称
+            if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!=null){
+            	addSuppLetter.setDeptDirectorName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());
+            }else{
+            	addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
+            }
+          //分管副主任
+    		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgSLeaderName()!=null){
+    			addSuppLetter.setDeptSLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());
+    		}else{
+    			addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
+    		}
+    		//主任
+    		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgMLeaderName()!=null){
+    			addSuppLetter.setDeptDirectorName(SessionUtil.getUserInfo().getOrg().getOrgMLeaderName());
+    		}else{
+    			addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
+    		}
+            //查询列表状态
+            addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
+            addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());
         }
         addSuppLetter.setModifiedDate(now);
         addSuppLetter.setCreatedDate(now);
@@ -286,6 +312,98 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		for(String id :ids){
 			this.delete(id);
 		}
+	}
+
+	/**
+	 * 获取拟补充资料函查询列表
+	 */
+	@Override
+	public PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj) {
+		PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+		Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
+		criteria = odataObj.buildFilterToCriteria(criteria);
+		criteria.add(Restrictions.eq(AddSuppLetter_.addSuppStatus.getName(), EnumState.NO.getValue()));
+		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+	    pageModelDto.setCount(totalResult);
+	    criteria.setProjection(null);
+	    if(odataObj.getSkip() > 0){
+	    	criteria.setFirstResult(odataObj.getTop());
+	    }
+	    if(odataObj.getTop() > 0){
+	    	criteria.setMaxResults(odataObj.getTop());
+	    }
+	    List<AddSuppLetter> allist =criteria.list();
+		List<AddSuppLetterDto> alDtos = new ArrayList<AddSuppLetterDto>(allist == null ? 0 : allist.size());
+		
+		if(allist != null && allist.size() > 0){
+			allist.forEach(x->{
+				AddSuppLetterDto alDto = new AddSuppLetterDto();
+				BeanCopierUtils.copyProperties(x, alDto);
+				alDtos.add(alDto);
+			});						
+		}		
+		pageModelDto.setValue(alDtos);	
+		
+		return pageModelDto;
+	}
+
+	/**
+	 * 获取拟补充资料函审批处理列表
+	 */
+	@Override
+	public PageModelDto<AddSuppLetterDto> addSuppApproveList(ODataObj oDataObj) {
+		PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<>();
+		Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
+		criteria =oDataObj.buildFilterToCriteria(criteria);
+		Boolean falg =false;
+		//部长审批
+		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+			falg = true;
+			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+		}
+		//分管领导
+		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			falg = true;
+		}
+		//主任
+		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			falg = true;
+		}
+		if(falg){
+			Integer totalResult = ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+			pageModelDto.setCount(totalResult);
+
+			criteria.setProjection(null);
+			if(oDataObj.getSkip()>0){
+				criteria.setFirstResult(oDataObj.getSkip());
+			}
+			if(oDataObj.getTop() >0 ){
+				criteria.setMaxResults(oDataObj.getTop());
+			}
+
+			if(Validate.isString(oDataObj.getOrderby())){
+				if(oDataObj.isOrderbyDesc()){
+					criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
+				}else{
+					criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
+				}
+			}
+			List<AddSuppLetter> addSuppList = criteria.list();
+			List<AddSuppLetterDto> addSuppDtoList = new ArrayList<>();
+			for(AddSuppLetter archivesLibrary : addSuppList){
+				AddSuppLetterDto addDto = new AddSuppLetterDto();
+				BeanCopierUtils.copyProperties(archivesLibrary,addDto);
+				addSuppDtoList.add(addDto);
+			}
+
+			pageModelDto.setValue(addSuppDtoList);
+		}
+		return pageModelDto;
 	}
 
 

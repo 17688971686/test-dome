@@ -1,12 +1,12 @@
-
+<meta charset="UTF-8">
 <!-- 拟补资料函弹出框 -->
-<div class="well well-sm" id="addsuppContent" ng-show="vm.showsupp" style="background:white;margin: auto;overflow: auto">
+<div class="well well-sm" id="addsuppMonthly"  style="background:white;margin: auto;overflow: auto">
 
 	<div class="toolbar"> 
-	    <button class="btn btn-xs btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit">新建</button>
-	    <button class="btn btn-xs btn-primary" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><i class="fa fa-cloud-download" aria-hidden="true"></i>上传</button>
-	    <button class="btn btn-xs btn-primary" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><i class="fa fa-cloud-upload" aria-hidden="true"></i>下载</button>
-	    <button class="btn btn-xs btn-danger" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit">删除</button>
+	    <button class="btn btn-xs btn-success" ng-click="vm.searchAudit()" >新建</button>
+	    <button class="btn btn-xs btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-download" aria-hidden="true"></i>上传</button>
+	    <button class="btn btn-xs btn-primary" ng-click="vm.searchAudit()" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>下载</button>
+	    <button class="btn btn-xs btn-danger" ng-click="vm.searchAudit()" >删除</button>
 	</div>
 	<span >地址（D）：</span> 
 	<span><select  style="width:100%;"></select></span>

@@ -1,18 +1,17 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('addSuppLetterSvc', addSuppLetter);
-
-    addSuppLetter.$inject = ['$http', 'bsWin'];
-
-    function addSuppLetter($http, bsWin) {
-        var url_addSuppLetter = rootPath + "/addSuppLetter", url_back = '#/addSuppLetterList';
+    angular.module('app').factory('addSuppLetterQuerySvc', addSuppLetterQuery);
+    addSuppLetterQuery.$inject = ['$http', 'bsWin'];
+    function addSuppLetterQuery($http, bsWin) {
+        var url_addSuppLetterQuery = rootPath + "/addSuppLetter", url_back = '#/addSuppLetterQueryList';
         var service = {
-            grid: grid,
-            deleteAddSuppLetter: deleteAddSuppLetter,
-            updateAddSuppLetter: updateAddSuppLetter,
-            getAddSuppLetterById: getAddSuppLetterById, //根据ID查看拟补充资料函
-            createAddSuppLetter: createAddSuppLetter,   //保存补充资料函
+        	approveGrid: approveGrid,//补充资料函审批列表
+        	addQueryGrid:addQueryGrid,//补充资料函查询列表
+            deleteaddSuppLetterQuery: deleteaddSuppLetterQuery,
+            updateaddSuppLetterQuery: updateaddSuppLetterQuery,
+            getaddSuppLetterQueryById: getaddSuppLetterQueryById, //根据ID查看拟补充资料函
+            createaddSuppLetterQuery: createaddSuppLetterQuery,   //保存补充资料函
             initSuppLetter: initSuppLetter,             //初始化补充资料函
             createFilenum: createFilenum,               //生成文件字号
             initSuppListDate: initSuppListDate,         //初始化拟补充资料函列表
@@ -24,7 +23,7 @@
         function initSuppListDate(businessId,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/addSuppLetter/initSuppListDate",
+                url: rootPath + "/addSuppLetterQuery/initSuppListDate",
                 params: {
                     businessId: businessId,
                 }
@@ -46,7 +45,7 @@
         function createFilenum(id,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: url_addSuppLetter + "/createFileNum",
+                url: url_addSuppLetterQuery + "/createFileNum",
                 params: {id: id}
             };
             var httpSuccess = function success(response) {
@@ -67,7 +66,7 @@
         function initSuppLetter(businessId,businessType,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/addSuppLetter/initSuppLetter",
+                url: rootPath + "/addSuppLetterQuery/initSuppLetter",
                 params: {
                     businessId: businessId,
                     businessType:businessType,
@@ -87,8 +86,8 @@
 
         //E 初始化补充资料函
 
-        // begin#updateAddSuppLetter
-        function updateAddSuppLetter(vm) {
+        // begin#updateaddSuppLetterQuery
+        function updateaddSuppLetterQuery(vm) {
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -97,7 +96,7 @@
 
                 var httpOptions = {
                     method: 'put',
-                    url: url_addSuppLetter,
+                    url: url_addSuppLetterQuery,
                     data: vm.model
                 }
 
@@ -137,12 +136,12 @@
 
         }
 
-        // begin#deleteAddSuppLetter
-        function deleteAddSuppLetter(vm, id) {
+        // begin#deleteaddSuppLetterQuery
+        function deleteaddSuppLetterQuery(vm, id) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
-                url: url_addSuppLetter,
+                url: url_addSuppLetterQuery,
                 data: id
             };
 
@@ -172,12 +171,12 @@
             });
         }
 
-        // begin#createAddSuppLetter
-        function createAddSuppLetter(suppletter, isSubmit,callBack) {
+        // begin#createaddSuppLetterQuery
+        function createaddSuppLetterQuery(suppletter, isSubmit,callBack) {
             isSubmit = true;
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/addSuppLetter/save",
+                url: rootPath + "/addSuppLetterQuery/save",
                 data: suppletter
             };
             var httpSuccess = function success(response) {
@@ -197,8 +196,8 @@
 
         }
 
-        // begin#getAddSuppLetterById
-        function getAddSuppLetterById(vm, id) {
+        // begin#getaddSuppLetterQueryById
+        function getaddSuppLetterQueryById(vm, id) {
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/addSuppLetter/findById",
@@ -216,13 +215,12 @@
             });
         }
 
-        // begin#grid
-        function grid(vm) {
-
-            // Begin:dataSource
+     // begin#补充资料函查询列表
+        function addQueryGrid(vm){
+        	// Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_addSuppLetter),
+                transport: common.kendoGridConfig().transport(url_addSuppLetterQuery+"/addsuppListData"),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -254,104 +252,137 @@
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
                 },
+               
                 {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
+                    field: "title",
+                    title: "文件标题",
+                    width: 180,
+                    filterable: false
                 },
                 {
                     field: "orgName",
-                    title: "orgName",
+                    title: "拟稿部门",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "userName",
-                    title: "userName",
+                    title: "拟稿人",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "suppLetterTime",
-                    title: "suppLetterTime",
+                    title: "拟稿时间",
                     width: 100,
-                    filterable: true,
+                    filterable: false,
                     format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
-                {
-                    field: "disapDate",
-                    title: "disapDate",
-                    width: 100,
-                    filterable: true,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "secretLevel",
-                    title: "secretLevel",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "mergencyLevel",
-                    title: "mergencyLevel",
-                    width: 100,
-                    filterable: true
-                },
+              
                 {
                     field: "filenum",
-                    title: "filenum",
+                    title: "文件字号",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
+              
+                {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.queryGridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }
+        //end# 补充资料函查询列表
+        
+        
+        // begin#补充资料函审批列表
+        function approveGrid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_addSuppLetterQuery+"/addSuppApproveList"),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+               
                 {
                     field: "title",
-                    title: "title",
+                    title: "文件标题",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
-                    field: "dispaRange",
-                    title: "dispaRange",
+                    field: "orgName",
+                    title: "拟稿部门",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
-                    field: "suppleterSuggest",
-                    title: "suppleterSuggest",
+                    field: "userName",
+                    title: "拟稿人",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
-                    field: "meetingSuggest",
-                    title: "meetingSuggest",
+                    field: "suppLetterTime",
+                    title: "拟稿时间",
                     width: 100,
-                    filterable: true
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
+              
                 {
-                    field: "leaderSuggest",
-                    title: "leaderSuggest",
+                    field: "filenum",
+                    title: "文件字号",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
-                {
-                    field: "printnum",
-                    title: "printnum",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "signid",
-                    title: "signid",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "fileSeq",
-                    title: "fileSeq",
-                    width: 100,
-                    filterable: true
-                },
+              
                 {
                     field: "",
                     title: "操作",

@@ -1,0 +1,46 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+<!-- S 中心文件稿纸上传页面 -->
+<div class="well well-sm" id="addsuppMonthly"  style="background:white;margin: auto;overflow: auto">
+
+	<div class="toolbar"> 
+	    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>上传</button>
+		<button  class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>						
+	</div>
+	<!-- <span >地址（D）：</span> 
+	<span><select  style="width:100%;"></select></span> -->
+	<!-- S 附件上传列表 -->
+<div  class="well well-sm" >
+    <table class="table table-bordered">
+        <tr>
+            <td style="width: 150px;" align="center" bgcolor="#eeeeee">文件名称</td>
+            <td style="width: 150px;" align="center" bgcolor="#eeeeee">分类</td>
+            <td style="width: 100px;" align="center" bgcolor="#eeeeee">最近修改人</td>
+            <td style="width: 150px;" align="center" bgcolor="#eeeeee">最近修改时间</td>
+            <td style="width: 150px;" align="center" bgcolor="#eeeeee">操作</td>
+        </tr>
+        <tr ng-repeat="x in vm.sysFilelists ">
+            <td >
+                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+            </td>
+            <td style="text-align: center;">{{ x.sysBusiType }}</td>
+            <td style="text-align: center;">{{ x.createdBy }}</td>
+            <td style="text-align: center;">{{ x.createdDate }}</td>
+            <td style="text-align: center;">
+                <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
+                <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+            </td>
+        </tr>
+    </table>
+    
+</div>
+<!-- E 附件上传列表 -->
+</div>
+<!-- E 中心文件稿纸上传页面 -->

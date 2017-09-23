@@ -39,5 +39,9 @@ public interface AddSuppLetterService {
 
 	void deletes(String[] ids);
 
+	PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj);
+
+	PageModelDto<AddSuppLetterDto> addSuppApproveList(ODataObj odataObj);
+
 
 }
