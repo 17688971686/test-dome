@@ -51,11 +51,19 @@ public class AddSuppLetterController {
     
     @RequiresPermissions("addSuppLetter#addSuppApproveList#post")
     @RequestMapping(name = "获取拟补充资料函审批处理列表", path = "addSuppApproveList", method = RequestMethod.POST)
-    public  @ResponseBody PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public  PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);	
         return addSuppLetterDtos;
     }
+    
+    @RequiresPermissions("addSuppLetter#updateApprove#post")
+    @RequestMapping(name = "领导审批处理", path = "updateApprove", method = RequestMethod.POST)
+    @ResponseBody
+    public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
+		addSuppLetterService.updateApprove(addSuppLetterDto);
+    } 
     
     @RequiresPermissions("addSuppLetter#initSuppLetter#post")
     @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)
@@ -111,6 +119,12 @@ public class AddSuppLetterController {
     @RequestMapping(name = "拟补充资料函审批列表页面", path = "suppLetterApproveList", method = RequestMethod.GET)
     public String suppLetterApproveList() {
         return ctrlName+"/suppLetterApproveList"; 
+    }
+    
+    @RequiresPermissions("addSuppLetter#html/suppLetterApproveEdit#get")
+    @RequestMapping(name = "拟补充资料函审批处理页面", path = "suppLetterApproveEdit", method = RequestMethod.GET)
+    public String suppLetterApproveEdit(){
+    	return ctrlName+"/suppLetterApproveEdit"; 
     }
 
 }

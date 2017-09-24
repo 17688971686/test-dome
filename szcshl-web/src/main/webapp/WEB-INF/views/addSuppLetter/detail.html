@@ -30,38 +30,24 @@
 
                 <td style="width:150px;" class="text-center">拟稿时间</td>
                 <td >
-                    <input type="text" name="suppLetterTime" id="suppLetterTime" style="width: 210px;text-align: center;"
-                           class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-                           ng-model="vm.suppletter.suppLetterTime"
-                           data-val-date="必须为日期">
+                {{vm.suppletter.suppLetterTime}}
                 </td>
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">秘密等级</td>
                 <td>
                 {{vm.suppletter.secretLevel}}
-                    <!-- <select ng-model="vm.suppletter.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
-                        <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="x.dictName == vm.suppletter.secretLevel"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select> -->
                 </td>
 
                 <td style="width:150px;" class="text-center">缓急程度</td>
                 <td>
                 {{vm.suppletter.mergencyLevel}}
-                    <!--  <select ng-model="vm.suppletter.mergencyLevel" name="isSigle" id="mergencyLevel" class="form-control input-sm ">
-                        <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="x.dictName == vm.suppletter.mergencyLevel"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select> -->
                 </td>
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">发文日期</td>
                 <td>
-                	  <input type="text" name="disapDate" id="disapDate" style="width: 210px;text-align: center;"
-                           class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-                           ng-model="vm.suppletter.disapDate"
-                           data-val-date="必须为日期">
+                {{vm.suppletter.disapDate}}
                 </td>
 
                 <td style="width:150px;" class="text-center">文件字号</td>
@@ -71,18 +57,13 @@
             <tr>
                 <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
                 <td colspan="3">
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                           ng-model="vm.suppletter.title" id="title" name="title" data-val="true"
-                           data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
+                {{vm.suppletter.title}}
                 </td>
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
-                              ng-model="vm.suppletter.dispaRange" id="dispaRange" name="dispaRange"
-                              data-val="true" data-val-required="必填" />
-                    <span style="float: right;">(印<input type="text" name="printnum" ng-model="vm.suppletter.printnum" style="width: 50px">份)</span>
+                {{vm.suppletter.dispaRange}}
                 </td>
             </tr>
 
@@ -90,25 +71,26 @@
             <tr>
                 <td style="width:150px;" class="text-center">核稿意见</td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
-                              ng-model="vm.suppletter.suppleterSuggest" id="suppleterSuggest" name="suppleterSuggest"/>
+                <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
+			 	 <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
+			     <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
                 </td>
             </tr>
 
             <tr>
                 <td style="width:150px;" class="text-center">会签意见</td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.suppletter.meetingSuggest" id="meetingSuggest"
-                              name="meetingSuggest"/>
+                 <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
+			 	 <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
+			     <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
                 </td>
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">领导意见</td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.suppletter.leaderSuggest" id="leaderSuggest"
-                              name="leaderSuggest"/>
+                    <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
+			 		<p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>
+			     	<p class="text-right" ng-if="vm.suppletter.deptDirectorDate">日期：{{vm.suppletter.deptDirectorDate}}</p>
                 </td>
             </tr>
             </tbody>

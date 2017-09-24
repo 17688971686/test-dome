@@ -112,7 +112,7 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "varchar(30)")
 	private String deptMinisterName;
     
-    //部长意见
+    //部长意见/核稿意见
     @Column(columnDefinition = "varchar(215)")
     private String deptMinisterIdeaContent;	
     
@@ -124,7 +124,7 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "varchar(30)")
 	private String deptSLeaderName;
     
-    //分管副主任签批
+    //分管副主任签批/会签意见
     @Column(columnDefinition = "varchar(215)")
     private String deptSLeaderIdeaContent;	
     
@@ -136,7 +136,7 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "varchar(30)")
     private String deptDirectorName;
     
-    //主任意见
+    //主任意见/领导意见
     @Column(columnDefinition = "varchar(215)")
     private String deptDirectorIdeaContent;
     

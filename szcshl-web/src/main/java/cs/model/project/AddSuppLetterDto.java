@@ -67,6 +67,7 @@ public class AddSuppLetterDto extends BaseDto {
     private String deptMinisterIdeaContent;	
     
     //部长审批日期
+    @JSONField(format = "yyyy-MM-dd")
     private Date deptMinisterDate;
 
     //分管副主任名称
@@ -76,6 +77,7 @@ public class AddSuppLetterDto extends BaseDto {
     private String deptSLeaderIdeaContent;	
     
     //分管主任审批日期
+    @JSONField(format = "yyyy-MM-dd")
     private Date deptSleaderDate;
    
     //主任名称
@@ -85,6 +87,7 @@ public class AddSuppLetterDto extends BaseDto {
     private String deptDirectorIdeaContent;
     
     //主任审批日期
+    @JSONField(format = "yyyy-MM-dd")
     private Date deptDirectorDate;
     
 	//1公文类型

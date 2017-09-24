@@ -43,5 +43,7 @@ public interface AddSuppLetterService {
 
 	PageModelDto<AddSuppLetterDto> addSuppApproveList(ODataObj odataObj);
 
+	void updateApprove(AddSuppLetterDto addSuppLetterDto);
+
 
 }
