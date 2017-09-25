@@ -138,8 +138,6 @@ public class SignServiceImpl implements SignService {
             sign.setSendusersign(SessionUtil.getDisplayName());
 
             //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
-            //综合部、分管副主任默认办理信息
-            List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
             if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())) {
                 sign.setDealOrgType(Constant.BusinessType.GX.getValue());
                 sign.setLeaderhandlesug("请（概算一部         概算二部）组织评审。");
@@ -147,6 +145,9 @@ public class SignServiceImpl implements SignService {
                 sign.setDealOrgType(Constant.BusinessType.PX.getValue());
                 sign.setLeaderhandlesug("请（评估一部         评估二部         评估一部信息化组）组织评审。");
             }
+
+            //5、综合部、分管副主任默认办理信息
+            List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
             for (User user : roleList) {
                 if (sign.getDealOrgType().equals(user.getMngOrgType())) {
                     sign.setLeaderId(user.getId());
@@ -157,7 +158,7 @@ public class SignServiceImpl implements SignService {
                     break;
                 }
             }
-            //5、创建人信息
+            ///6、创建人信息
             sign.setCreatedDate(now);
             sign.setModifiedDate(now);
             sign.setCreatedBy(SessionUtil.getDisplayName());
@@ -922,14 +923,13 @@ public class SignServiceImpl implements SignService {
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
-                /*if (!signPrincipalService.isMainPri(SessionUtil.getUserId(), signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您不是第一负责人，不能进行下一步操作！");
-                }*/
-                ExpertReview expertReview = expertReviewRepo.findByBusinessId(signid);
-                if(expertReview.getPayDate() == null || expertReview.getTotalCost() == null){
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+                //如果有专家评审费，则要先办理专家评审费
+                if (expertReviewRepo.isHaveEPReviewCost(signid)) {
+                    ExpertReview expertReview = expertReviewRepo.findByBusinessId(signid);
+                    if(expertReview.getPayDate() == null || expertReview.getTotalCost() == null){
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+                    }
                 }
-
                 //修改第一负责人意见
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);

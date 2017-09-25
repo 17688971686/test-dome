@@ -52,6 +52,7 @@
                         <td>评审费</td>
                         <td>应纳税额</td>
                         <td>合计（元）</td>
+                        <td>专家函评（是/否）</td>
                     </tr>
                     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                         <td>{{$index+1}}</td>
@@ -64,8 +65,7 @@
                                        class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
                                        data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
                                        data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
-                                <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"
-                                      class="errors"></span>
+                                <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"class="errors"></span>
                             </div>
                             <div ng-show="vm.model.expertReviewDto.state==9">
                                 {{x.reviewCost}}
@@ -73,6 +73,7 @@
                         </td>
                         <td> {{x.reviewTaxes}}</td>
                         <td> {{x.totalCost}}</td>
+                        <td> <input type="checkbox" ng-model="vm.model.expertReviewDto.expertSelectedDtoList[$index].isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
                     <tr>
                         <td colspan="4"></td>

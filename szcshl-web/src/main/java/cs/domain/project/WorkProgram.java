@@ -31,7 +31,13 @@ public class WorkProgram extends DomainBase {
     //评审方式
     @Column(columnDefinition = "VARCHAR(20)")
     private String reviewType;
-    
+
+    /**
+     * 合并评审，是否是主项目
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isMainProject;
+
     //评审阶段
     @Column(columnDefinition = "VARCHAR(50)")
     private String workreviveStage;
@@ -624,5 +630,13 @@ public class WorkProgram extends DomainBase {
 
     public void setStudyQuantum(String studyQuantum) {
         this.studyQuantum = studyQuantum;
+    }
+
+    public String getIsMainProject() {
+        return isMainProject;
+    }
+
+    public void setIsMainProject(String isMainProject) {
+        this.isMainProject = isMainProject;
     }
 }

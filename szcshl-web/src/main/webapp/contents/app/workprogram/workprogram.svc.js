@@ -72,7 +72,6 @@
         //S_initMergeInfo
         function initMergeInfo(vm,signId){
             unMergeWPSign(signId,function (data) {
-                console.log(data);
                 vm.unMergeSign = [];
                 vm.unMergeSign = data;
             });//待选
@@ -126,6 +125,28 @@
                 success: httpSuccess
             });
         }//E_chooseWP
+
+        //S_删除所有合并评审工作方案
+        function deleteAllMerge(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/signView/deleteAllMerge",
+                params: {
+                    signId: signId,
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_deleteAllMerge
 
         //S_查找所有会议室地点
         function findAllMeeting(callBack) {
@@ -289,39 +310,6 @@
                 }
             });
         }//E_保存操作
-
-
-        //S_删除所有合并评审工作方案
-        function deleteAllMerge(vm){
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/workprogram/deleteMergeWork",
-                params: {
-                    mainBusinessId: vm.work.id,
-                }
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！",
-                            closeDialog: true
-                        });
-                    }
-                });
-            }
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_deleteAllMerge
-
 
         //S_删除会议室
         function deleteBookRoom(bookId,callBack){

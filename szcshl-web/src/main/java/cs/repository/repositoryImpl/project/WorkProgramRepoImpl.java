@@ -75,4 +75,27 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         sqlBuilder.setParam("id",id);
         executeSql(sqlBuilder);
     }
+
+
+    /**
+     * 根据项目ID，更改合并评审状态
+     * @param isSigle
+     * @param isMain
+     * @param mergeIds
+     */
+    @Override
+    public void updateWPReivewType(String isSigle, String isMain, String mergeIds) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_work_program set "+WorkProgram_.isSigle.getName()+" =:isSigle ");
+        sqlBuilder.setParam("isSigle",isSigle);
+        if(Validate.isString(isMain)){
+            sqlBuilder.append(" , "+WorkProgram_.isMainProject.getName()+" =:isMainProject ");
+            sqlBuilder.setParam("isMainProject",isMain);
+        }else{
+            sqlBuilder.append(" , "+WorkProgram_.isMainProject.getName()+" = null ");
+        }
+        sqlBuilder.bulidPropotyString("where","signid",mergeIds);
+
+        executeSql(sqlBuilder);
+    }
 }

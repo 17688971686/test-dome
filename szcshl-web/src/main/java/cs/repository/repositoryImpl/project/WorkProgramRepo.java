@@ -13,4 +13,6 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
     WorkProgram findBySignIdAndBranchId(String signId, String branchId);
 
     void initExpertCost(String id);
+
+    void updateWPReivewType(String isSigle, String isMain, String mergeIds);
 }

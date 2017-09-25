@@ -324,7 +324,9 @@
                     timeCount++;
                     if (timeCount % 10 == 0) {
                         vm.autoSelectedEPList[index].show = true;
+                        vm.autoSelectedEPList[index].official = true;       //正式专家
                         vm.autoSelectedEPList[index+1].show = true;
+                        vm.autoSelectedEPList[index+1].official = false;    //备选专家
                         index = index + 2;
                         totalExpertCount = totalExpertCount-2;
                     }

@@ -144,7 +144,7 @@
                                 <td width="25%" align="center">突出专业<br>（小类）</td>
                                 <td width="20%" align="center">专家类别</td>
                             </tr>
-                            <tr ng-repeat="x in vm.autoSelectedEPList|filter:{isConfrim:'0',show:true} track by $index " ng-show="x.expertDto.state=='2'">
+                            <tr ng-repeat="x in vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:true} track by $index ">
                                 <td align="center">
                                     <input type="checkbox" name="autoEPCheck" ng-checked="autoOfficeExpertList" value="{{x.id}}"/>
                                 </td>
@@ -167,7 +167,7 @@
                                 <td width="25%" align="center">突出专业<br>（小类）</td>
                                 <td width="20%" align="center">专家类别</td>
                             </tr>
-                            <tr ng-repeat="x in  vm.autoSelectedEPList|filter:{isConfrim:'0',show:true} track by $index" ng-show="x.expertDto.state=='3'">
+                            <tr ng-repeat="x in  vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:false} track by $index">
                                 <td align="center">
                                     <input type="checkbox" name="autoEPCheck" ng-checked="autoAntiExpertList" value="{{x.id}}"/>
                                 </td>

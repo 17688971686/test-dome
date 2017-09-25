@@ -34,6 +34,11 @@ public class ExpertSelectedDto {
      */
     private String businessId;
 
+    /**
+     * 是否函评
+     */
+    private String isLetterRw;
+
     private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;
 
@@ -163,5 +168,13 @@ public class ExpertSelectedDto {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    public String getIsLetterRw() {
+        return isLetterRw;
+    }
+
+    public void setIsLetterRw(String isLetterRw) {
+        this.isLetterRw = isLetterRw;
     }
 }

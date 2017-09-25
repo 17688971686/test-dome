@@ -54,11 +54,13 @@
                     </select>
                 </div>
                 <!-- 选择分管部门 -->
-                <div ng-if="vm.showFlag.nodeSelOrgs" style="width:400px;">
-                    <table class="table table-bordered seleteTable" >
-                        <caption class="text-center breadcrumb" style="font-size: 12px;">
+                <div ng-if="vm.showFlag.nodeSelOrgs" style="width:100%;">
+                    <table class="table table-bordered seleteTable" style="max-width: 500px;">
+                        <caption style="font-size: 12px;">
                             <li class="active">
-                                * 主办部门只能选一个，协办部门可以选多个（最多3个）！<br>
+                                * 主办部门只能选一个，协办部门可以选多个（最多3个）！
+                            </li>
+                            <li class="active">
                                 * 合并评审的项目只能有一个分支，请注意项目分办情况！
                             </li>
                         </caption>

@@ -8,6 +8,8 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
@@ -17,6 +19,7 @@ import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.sys.UserServiceImpl;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -35,13 +38,14 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Autowired
     private ExpertRepo expertRepo;
-
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
     @Autowired
     private ExpertSelConditionRepo expertSelConditionRepo;
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
 
     @Override
     public PageModelDto<ExpertDto> get(ODataObj odataObj) {
@@ -474,9 +478,18 @@ public class ExpertServiceImpl implements ExpertService {
     public ResultMsg autoExpertReview(String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary) {
         String conditionIds = "";       //条件ID，用于更新抽取次数
         boolean notFirstTime = false;
+        boolean isLetterRw = false;     //是否专家函评，默认是否
         int selectedEPCount = -1;       //符合条件的专家
         List<ExpertDto> officialEPList = new ArrayList<>(),alternativeEPList = new ArrayList<>(),allEPList = new ArrayList<>();
         ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(),reviewId);
+        //如果是项目，则判断是否是专家函评
+        if(Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())){
+            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
+            if("专家函评".equals(wp.getReviewType())){
+                isLetterRw = true;
+            }
+        }
+
         //如果是再次抽取(再次抽取是单个条件抽取)，要判断选定的专家是否已经满足条件，如已经满足，则不允许再次抽取
         if(paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())){
             ExpertSelCondition  expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(),paramArrary[0].getId());
@@ -532,11 +545,11 @@ public class ExpertServiceImpl implements ExpertService {
 
             //3、开始抽取
             for(int i = 0;i<chooseCount;i++){
-                if(!addAutoExpert(officialEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId)){
+                if(!addAutoExpert(officialEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId,isLetterRw)){
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
-                if(!addAutoExpert(alternativeEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId)){
+                if(!addAutoExpert(alternativeEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId,isLetterRw)){
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
@@ -578,7 +591,7 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     private boolean addAutoExpert(List<ExpertDto> saveEPList,List<ExpertDto> randomEPList,List<ExpertSelected> saveList,
-                                  ExpertSelConditionDto epConditon,ExpertReview expertReview,String minBusinessId){
+                    ExpertSelConditionDto epConditon,ExpertReview expertReview,String minBusinessId,boolean isLetterRw){
         if(randomEPList.size() == 0){
             return false;
         }
@@ -596,7 +609,7 @@ public class ExpertServiceImpl implements ExpertService {
         }
         //如果不满足，则继续抽
         if(success == false){
-            return addAutoExpert(saveEPList,randomEPList,saveList,epConditon,expertReview,minBusinessId);
+            return addAutoExpert(saveEPList,randomEPList,saveList,epConditon,expertReview,minBusinessId,isLetterRw);
         }else{
             saveEPList.add(randomEP);
             //保存抽取记录
@@ -612,9 +625,14 @@ public class ExpertServiceImpl implements ExpertService {
             aExpertSelected.setReviewCost(new BigDecimal(1000));
             Expert aEP = new Expert();
             BeanCopierUtils.copyProperties(saveEPList.get(saveEPList.size()-1),aEP);
-            aExpertSelected.setExpert(aEP);//保存专家映射
-            aExpertSelected.setExpertReview(expertReview); //保存抽取条件映射
+            aExpertSelected.setExpert(aEP);                 //保存专家映射
+            aExpertSelected.setExpertReview(expertReview);  //保存抽取条件映射
             aExpertSelected.setBusinessId(minBusinessId);   //专家抽取业务ID
+            if(isLetterRw){                                 //是否专家函评
+                aExpertSelected.setIsLetterRw(Constant.EnumState.YES.getValue());
+            }else{
+                aExpertSelected.setIsLetterRw(Constant.EnumState.NO.getValue());
+            }
             saveList.add(aExpertSelected);
             return true;
         }

@@ -27,6 +27,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -173,6 +174,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg mergeSign(String signId, String mergeIds, String mergeType) {
         if (!Validate.isString(signId)) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取主项目信息！");
@@ -208,7 +210,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     expertReviewRepo.delete(er);        //删除评审方案，顺便删除抽取专家信息(级联删除)
                 }
             }
-
             //删除会议室信息
             List<WorkProgram> workProgramList = workProgramRepo.findByIds("signid",mergeIds,null);
             if(Validate.isList(workProgramList)){
@@ -222,8 +223,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 }
                 roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),removeIds.toString());
             }
+            //把所有被合并的项目改为合并评审次项目
+            workProgramRepo.updateWPReivewType("合并评审", Constant.EnumState.NO.getValue(),mergeIds);
 
-            //完成流程分支（与主项目一同审批提交）
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
@@ -237,6 +239,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType) {
         if (!Validate.isString(signId)) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取主项目信息！");
@@ -251,11 +254,42 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         //如果有解除删除，则解除相应的项目，否则解除所有
         if (Validate.isString(cancelIds)) {
             hqlBuilder.bulidPropotyString("and", SignMerge_.mergeId.getName(), cancelIds);
+            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
+                //把所有被合并的项目改为单个评审
+                workProgramRepo.updateWPReivewType("单个评审", null,cancelIds);
+            }
         }
 
         signMergeRepo.executeHql(hqlBuilder);
 
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    /**
+     * 根据主项目ID，删除所有的合并项目
+     * @param signId
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg deleteAllMerge(String signId) {
+        List<SignMerge> mergeSignList = signMergeRepo.findByIds(SignMerge_.signId.getName(),signId,null);
+        if(Validate.isList(mergeSignList)){
+            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeSignList.get(0).getMergeType())){
+                StringBuffer sbString = new StringBuffer();
+                for(int i=0,l=mergeSignList.size();i<l;i++){
+                    SignMerge sm = mergeSignList.get(i);
+                    if(i> 0){
+                        sbString.append(",");
+                    }
+                    sbString.append(sm.getMergeId());
+                }
+                signMergeRepo.deleteById(SignMerge_.mergeId.getName(),sbString.toString());
+                //把所有被合并的项目改为合并评审次项目
+                workProgramRepo.updateWPReivewType("单个评审", Constant.EnumState.NO.getValue(),sbString.toString());
+            }
+        }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
     }
 
 }

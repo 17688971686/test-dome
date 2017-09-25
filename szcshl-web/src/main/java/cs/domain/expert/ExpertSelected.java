@@ -73,6 +73,12 @@ public class ExpertSelected {
     @Column(columnDefinition = "VARCHAR(64)")
     private String businessId;
 
+    /**
+     * 是否函评
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isLetterRw;
+
     //抽取评审方案（多对一）
     @ManyToOne
     @JoinColumn(name = "expertReviewId")
@@ -209,5 +215,13 @@ public class ExpertSelected {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    public String getIsLetterRw() {
+        return isLetterRw;
+    }
+
+    public void setIsLetterRw(String isLetterRw) {
+        this.isLetterRw = isLetterRw;
     }
 }

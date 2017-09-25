@@ -65,7 +65,6 @@
                 vm:vm
             });
         }
-
         //评审方式修改
         vm.reviewTypeChange = function(){
             //自评的话，不需要会议和专家
@@ -82,20 +81,25 @@
             }else {
                 //合并评审改为单个评审
                 if( vm.businessFlag.isMainWorkProj && !vm.businessFlag.isSingleReview && "单个评审" == vm.work.isSigle){
-                    common.confirm({
-                        vm:vm,
-                        title:"",
-                        msg:"该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
-                        fn: function () {
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                        onOk: function () {
                             $('.confirmDialog').modal('hide');
                             vm.work.isMainProject = "0";
-                            workprogramSvc.deleteAllMerge(vm);
+                            workprogramSvc.deleteAllMerge($state.params.signid,function(data){
+                                if(data.flag || data.reCode =='ok'){
+                                    bsWin.alert("操作成功！");
+                                }else{
+                                    bsWin.error("操作失败！");
+                                }
+                            });
                         },
-                        cancel:function(){
+                        onCancel:function(){
                             vm.work.isSigle = "合并评审"
                             $('.confirmDialog').modal('hide');
                         }
-                    })
+                    });
                 }
             }
         }

@@ -90,12 +90,16 @@ public class SignDispaWorkController {
         return signDispaWorkService.cancelMergeSign(signId,cancelIds,mergeType);
     }
 
+    @RequiresPermissions("signView#deleteAllMerge#post")
+    @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId){
+        return signDispaWorkService.deleteAllMerge(signId);
+    }
 
     @RequestMapping(name="项目统计导出" , path ="excelExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void excelExport( HttpServletResponse resp ,@RequestBody SignDispaWork[] signDispaWorks ,@RequestParam String fileName){
-
-
         String title = fileName;
         SignDispaWork signDispaWork = new SignDispaWork();
         ExcelTools excelTools = new ExcelTools();
