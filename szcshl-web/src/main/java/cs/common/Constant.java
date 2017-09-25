@@ -154,11 +154,11 @@ public class Constant {
      * @author Administrator
      */
     public static enum EnumExpertState {
-        AUDITTING("1"),            //审核中
-        OFFICIAL("2"),            //正式
-        ALTERNATIVE("3"),        //备选
-        STOP("4"),                //停用
-        REMOVE("5");            //已删除
+        AUDITTING("1"),             //审核中
+        OFFICIAL("2"),              //正式
+        ALTERNATIVE("3"),           //备选
+        STOP("4"),                  //停用
+        REMOVE("5");                //已删除
 
         private String value;
 
@@ -222,6 +222,11 @@ public class Constant {
         OK("ok"),
         ERROR("error"),
         TIMEOUT("timeout"),
+        //流程处理状态
+        FLOW_INSTANCE_NULL("01"),       //流程实例为空
+        FLOW_TASK_NULL("02"),           //任务为空
+        FLOW_ACTIVI_NEQ("03"),          //当前环节名称不对
+        FLOW_NOT_MATCH("04"),           //没有匹配
         //以下主要用于接口对接
         SUCCESS("01"),                  //成功
         OBJ_NULL("02"),                 //空对象
@@ -396,27 +401,15 @@ public class Constant {
      */
     public static enum MergeType {
         WORK_PROGRAM("1"),          //工作方案
-        DISPATCH("2");              //发文
+        DISPATCH("2"),              //发文
+        DIS_SINGLE("1"),            //单个
+        DIS_MERGE("2"),             //合并
+        REVIEW_SELF("自评"),        //自评
+        REVIEW_MERGE("合并评审"),   //合并评审
+        REVIEW_SIGNLE("单个评审");  //单个评审
         private String value;
 
         MergeType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * 发文方式，评审方式
-     */
-    public static enum MergeWay {
-        SINGLE("1"),          //单个
-        MERGE("2");           //合并
-        private String value;
-
-        MergeWay(String value) {
             this.value = value;
         }
 

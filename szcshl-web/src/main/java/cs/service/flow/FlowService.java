@@ -50,4 +50,14 @@ public interface FlowService {
     PageModelDto<RuTask> queryMyAgendaTask(ODataObj oDataObj);
 
     PageModelDto<RuTask> queryAgendaTask(ODataObj odataObj);
+
+    /**
+     * 流程处理，只有一个分支的情况
+     * @param businessKey       业务ID
+     * @param activiName        环节名称
+     * @param flowDto           处理信息
+     * @param definitionKey     流程定义KEY
+     * @return
+     */
+    ResultMsg dealFlowByBusinessKey(String businessKey,String activiName,FlowDto flowDto,String definitionKey);
 }

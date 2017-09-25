@@ -14,6 +14,7 @@
             getMergeDISSign: getMergeDISSign,   // 已选合并发文项目
             chooseProject: chooseProject,       // 选择合并发文项目
             cancelProject: cancelProject,       // 取消选择
+            deleteAllMerge : deleteAllMerge,    // 取消所有的合并项目
         };
         return service;
 
@@ -157,6 +158,29 @@
             });
         }
         // end##chooseProject
+
+        //S_删除所有合并评审工作方案
+        function deleteAllMerge(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/signView/deleteAllMerge",
+                params: {
+                    signId: signId,
+                    mergeType:"2"
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_deleteAllMerge
 
         // begin##getSeleSignBysId
         function getMergeDISSign(signId,callBack) {

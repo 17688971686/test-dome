@@ -8,4 +8,6 @@ import cs.repository.IRepository;
 public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
 	@Deprecated
 	List<DispatchDoc> findDispatchBySignId(String signId);
+
+    void updateRWType(String reviewType, String isMain, String signIds);
 }

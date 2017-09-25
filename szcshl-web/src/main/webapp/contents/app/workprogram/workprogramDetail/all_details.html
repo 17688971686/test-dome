@@ -5,7 +5,12 @@
     <caption>QR-4.3-02-A3</caption>
     <caption class="text-center h3"><strong>{{w.titleName}}</strong></caption>
     <caption style="width:100%;">
-        <span style="float:left;">评审方式: {{w.reviewType}}  {{w.isSigle}}</span>
+        <span style="float:left;">
+            <span>评审方式: {{w.reviewType}}</span>
+            <span style="margin:0px 10px;">{{w.isSigle}}</span>
+            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9" > 主项目 </span>
+            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0" > 次项目 </span>
+        </span>
         <span style="float:right;">收文日期:{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
     </caption>
     <tr>

@@ -90,17 +90,17 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             Date now = new Date();
             if (Validate.isString(workProgramDto.getId())) {
                 //1、自评的工作方案不能选择为合并评审
-                if("自评".equals(workProgramDto.getReviewType()) && "合并评审".equals(workProgramDto.getIsSigle())){
+                if(Constant.MergeType.REVIEW_SELF.getValue().equals(workProgramDto.getReviewType()) && Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgramDto.getIsSigle())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，自评不能选择合并评审，请重新选择评审方式！");
                 }
                 // 2、自评和单个评审不能有关联
-                if ("自评".equals(workProgramDto.getReviewType()) || "单个评审".equals(workProgramDto.getIsSigle())) {
+                if (Constant.MergeType.REVIEW_SELF.getValue().equals(workProgramDto.getReviewType()) || Constant.MergeType.REVIEW_SIGNLE.getValue().equals(workProgramDto.getIsSigle())) {
                     if(signMergeRepo.isHaveMerge(workProgramDto.getSignId(),Constant.MergeType.WORK_PROGRAM.getValue())){
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，自评和单个评审不能关联其他工作方案，请先删除关联关系！");
                     }
                 }
                 // 3、合并评审 次项目
-                if("合并评审".equals(workProgramDto.getIsSigle()) && EnumState.NO.getValue().equals(workProgramDto.getIsMainProject())){
+                if(Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgramDto.getIsSigle()) && EnumState.NO.getValue().equals(workProgramDto.getIsMainProject())){
                     if (!signMergeRepo.checkIsMerege(workProgramDto.getSignId(),Constant.MergeType.WORK_PROGRAM.getValue())) {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为合并评审次项目，请在主工作方案中挑选此工作方案为次工作方案再保存！");
                     }

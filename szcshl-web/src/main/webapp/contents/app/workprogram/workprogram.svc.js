@@ -133,6 +133,7 @@
                 url: rootPath + "/signView/deleteAllMerge",
                 params: {
                     signId: signId,
+                    mergeType:"1"
                 }
             }
             var httpSuccess = function success(response) {

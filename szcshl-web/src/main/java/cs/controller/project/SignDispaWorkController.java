@@ -93,8 +93,8 @@ public class SignDispaWorkController {
     @RequiresPermissions("signView#deleteAllMerge#post")
     @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId){
-        return signDispaWorkService.deleteAllMerge(signId);
+    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId,@RequestParam(required = true) String mergeType){
+        return signDispaWorkService.deleteAllMerge(signId,mergeType);
     }
 
     @RequestMapping(name="项目统计导出" , path ="excelExport" , method = RequestMethod.POST)

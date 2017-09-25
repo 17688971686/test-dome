@@ -22,5 +22,5 @@ public interface SignDispaWorkService {
 
     ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType);
 
-    ResultMsg deleteAllMerge(String signId);
+    ResultMsg deleteAllMerge(String signId,String mergeType);
 }

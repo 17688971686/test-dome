@@ -2,7 +2,7 @@
 <form id="payform" name="payform">
     <table class="table table-bordered">
         <tbody>
-        <tr ng-if="vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit" ng-hide="vm.model.expertReviewDto.payDate">
+        <tr ng-if="vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
             <td colspan="4">
                 <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.model.expertReviewDto)" ng-disabled="vm.isCommit">
                     <span class="glyphicon glyphicon-ok"></span>计算应纳税额
@@ -15,12 +15,12 @@
         <tr>
             <td class="text-right" width="15%">评审费发放日期</td>
             <td width="35%">
-                <div ng-show="vm.showFlag.isMainPrinUser && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
+                <div ng-if="vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
                     <input type="text" style="width: 200px;"
                            class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.model.expertReviewDto.payDate" data-val-date="必须为日期">
                 </div>
-                <div ng-show="vm.model.expertReviewDto.state == 9">
+                <div ng-if="vm.model.expertReviewDto.state == 9">
                     {{vm.model.expertReviewDto.payDate}}
                 </div>
             </td>
@@ -32,10 +32,10 @@
         <tr>
             <td class="text-right">评审费发放标题</td>
             <td colspan="3">
-                <div ng-show="vm.showFlag.isMainPrinUser && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
+                <div ng-if = "vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
                     <input type="text" style="width: 600px;" class="form-control input-sm " ng-model="vm.model.expertReviewDto.reviewTitle">
                 </div>
-                <div ng-show="vm.model.expertReviewDto.state == 9">
+                <div ng-if = "vm.model.expertReviewDto.state == 9">
                     {{vm.model.expertReviewDto.reviewTitle}}
                 </div>
             </td>
@@ -73,7 +73,7 @@
                         </td>
                         <td> {{x.reviewTaxes}}</td>
                         <td> {{x.totalCost}}</td>
-                        <td> <input type="checkbox" ng-model="vm.model.expertReviewDto.expertSelectedDtoList[$index].isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
+                        <td> <input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="vm.model.expertReviewDto.expertSelectedDtoList[$index].isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
                     <tr>
                         <td colspan="4"></td>

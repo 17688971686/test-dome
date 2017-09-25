@@ -9,13 +9,8 @@
             <caption >
                 <span> QR-4.10-03-A0</span>
                 <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
-                <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="true"
-                           ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
-
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="true"
-                           ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
-				</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
 
                 <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
             </caption>

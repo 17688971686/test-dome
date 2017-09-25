@@ -102,6 +102,8 @@ public class SignServiceImpl implements SignService {
     private AddRegisterFileRepo addRegisterFileRepo;
     @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
+    @Autowired
+    private SignMergeRepo signMergeRepo;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -818,7 +820,7 @@ public class SignServiceImpl implements SignService {
                     //注意：1、项目建议书、可研阶段一定要做工作方案；
                     // 2、主分支跳转，则必须要所有协办分支都完成才能跳转。
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                        if (!signBranchRepo.assistFlowFinish(signid)) {
+                        if (signBranchRepo.assistFlowFinish(signid)) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "协审分支还没处理完，您不能进行直接发文操作！");
                         }
                         sign = signRepo.findById(Sign_.signid.getName(), signid);
@@ -840,7 +842,6 @@ public class SignServiceImpl implements SignService {
                     } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branchIndex)) {
                         variables.put(FlowConstant.SignFlowParams.WORK_PLAN4.getValue(), false);
                     }
-
                 }
                 //判断是否完成所有工作方案
                 if (signBranchRepo.allWPFinish(signid)) {
@@ -874,6 +875,30 @@ public class SignServiceImpl implements SignService {
                 wk.setMinisterSuggesttion(flowDto.getDealOption());
                 wk.setMinisterDate(new Date());
                 wk.setMinisterName(SessionUtil.getDisplayName());
+
+                //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
+                if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)){
+                    if(Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject())){
+                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(),signid,null);
+                        if(Validate.isList(mergeList)){
+                            ResultMsg resultMsg = null;
+                            FlowDto flowDto2 = new FlowDto();
+                            flowDto2.setDealOption(flowDto.getDealOption());
+                            for(SignMerge s : mergeList){
+                                resultMsg = flowService.dealFlowByBusinessKey(s.getMergeId(),FlowConstant.FLOW_SIGN_BMLD_SPW1,flowDto2,processInstance.getProcessDefinitionKey());
+                                if(resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
+                                        || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
+                                        || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
+                                        || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())){
+
+                                }else{
+                                    return resultMsg;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 workProgramRepo.save(wk);
 
                 //设定下一环节处理人
@@ -915,6 +940,30 @@ public class SignServiceImpl implements SignService {
 
                 //更改工作方案审核信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+
+                //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
+                if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)){
+                    if(Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject())){
+                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(),signid,null);
+                        if(Validate.isList(mergeList)){
+                            ResultMsg resultMsg = null;
+                            FlowDto flowDto2 = new FlowDto();
+                            flowDto2.setDealOption(flowDto.getDealOption());
+                            for(SignMerge s : mergeList){
+                                resultMsg = flowService.dealFlowByBusinessKey(s.getMergeId(),FlowConstant.FLOW_SIGN_FGLD_SPW1,flowDto2,processInstance.getProcessDefinitionKey());
+                                if(resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
+                                        || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
+                                        || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
+                                        || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())){
+
+                                }else{
+                                    return resultMsg;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 wk.setLeaderSuggesttion(flowDto.getDealOption());
                 wk.setLeaderDate(new Date());
                 wk.setLeaderName(SessionUtil.getDisplayName());
@@ -933,7 +982,7 @@ public class SignServiceImpl implements SignService {
                 //修改第一负责人意见
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                dp.setMianChargeSuggest(flowDto.getDealOption() + "           " + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                dp.setMianChargeSuggest(flowDto.getDealOption() + "<br>" + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 dp.setSecondChargeSuggest("");
                 dispatchDocRepo.save(dp);
 
@@ -961,7 +1010,7 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString = Validate.isString(dp.getSecondChargeSuggest())?(dp.getSecondChargeSuggest() + "<br>"): "";
-                dp.setSecondChargeSuggest(optionString+ flowDto.getDealOption() + "<span style='width:30px;'></span>" + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                dp.setSecondChargeSuggest(optionString+ flowDto.getDealOption() + "<span style='width:30px;'>&nbsp;</span>" + SessionUtil.getDisplayName() + "&nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 dispatchDocRepo.save(dp);
 
                 //如果同意

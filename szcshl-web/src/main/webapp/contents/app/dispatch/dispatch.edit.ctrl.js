@@ -142,7 +142,7 @@
                         message: "该项目已经设为合并发文，并且已经有关联项目，如果现在要取消合并发文，以前的关联信息将被删除，您确定要取消合并发文么?",
                         onOk: function () {
                             $('.confirmDialog').modal('hide');
-                            dispatchSvc.cancelProject(vm.dispatchDoc.signId,null,function (data) {
+                            dispatchSvc.deleteAllMerge(vm.dispatchDoc.signId,function (data) {
                                 if (data.flag || data.reCode == "ok") {
                                     vm.dispatchDoc.isMainProject = "0";
                                     vm.busiFlag.isMerge=false;

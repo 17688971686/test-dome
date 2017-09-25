@@ -15,6 +15,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.service.project.SignService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -70,6 +71,9 @@ public class FlowServiceImpl implements FlowService {
     private RuTaskRepo ruTaskRepo;
     @Autowired
     private HiProcessTaskRepo hiProcessTaskRepo;
+    @Autowired
+    private SignService signService;
+
     @Autowired
     @Qualifier("signFlowBackImpl")
     private IFlowBack signFlowBackImpl;
@@ -437,6 +441,38 @@ public class FlowServiceImpl implements FlowService {
         pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(runProcessList);
         return pageModelDto;
+    }
+
+    /**
+     * 流程处理，只有一个分支的情况
+     * @param businessKey       业务ID
+     * @param activiName        环节名称
+     * @return
+     */
+    @Override
+    public ResultMsg dealFlowByBusinessKey(String businessKey, String activiName, FlowDto flowDto,String definitionKey) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
+        if(processInstance == null){
+            return new ResultMsg(false, Constant.MsgCode.FLOW_INSTANCE_NULL.getValue(),"流程已处理完毕！");
+        }
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        if(task == null){
+            return new ResultMsg(false, Constant.MsgCode.FLOW_TASK_NULL.getValue(),"流程已处理完毕！");
+        }
+        if(!task.getTaskDefinitionKey().equals(activiName)){
+            return new ResultMsg(false, Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue(),"环节名称不一致！");
+        }
+
+        ResultMsg resultMsg = null;
+        switch (processInstance.getProcessDefinitionKey()){
+            case FlowConstant.SIGN_FLOW:
+                resultMsg = signService.dealFlow(processInstance,task,flowDto);
+                break;
+        }
+        if(resultMsg == null){
+            resultMsg = new ResultMsg(false,Constant.MsgCode.FLOW_NOT_MATCH.getValue(),"没有匹配的流程！");
+        }
+        return resultMsg;
     }
 
 }

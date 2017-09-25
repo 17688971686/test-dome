@@ -71,7 +71,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if(dispatchDoc == null || !Validate.isString(dispatchDoc.getId())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取收文信息");
         }
-        if(Constant.MergeWay.MERGE.getValue().equals(dispatchDoc.getDispatchWay())&&
+        if(Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())&&
                 !EnumState.YES.getValue().equals(dispatchDoc.getIsMainProject()) ){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前项目为合并发文次项目，由主项目生成发文编号！");
         }
@@ -86,7 +86,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         dispatchDoc.setFileSeq((curYearMaxSeq + 1));
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
-        if(Constant.MergeWay.MERGE.getValue().equals(dispatchDoc.getDispatchWay())){
+        if(Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())){
             HqlBuilder sqlBuilder = HqlBuilder.create();
             sqlBuilder.append(" update cs_dispatch_doc set "+DispatchDoc_.fileNum.getName()+" =:fileNum ").setParam("fileNum",dispatchDoc.getFileNum());
             sqlBuilder.append(" ,"+DispatchDoc_.fileSeq.getName()+" =:fileSeq").setParam("fileSeq",dispatchDoc.getFileSeq());
@@ -132,12 +132,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if (Validate.isString(dispatchDocDto.getSignId())) {
             //1、先进行业务判断
             // 单个发文
-            if (Constant.MergeWay.SINGLE.getValue().equals(dispatchDocDto.getDispatchWay())) {
+            if (Constant.MergeType.DIS_SINGLE.getValue().equals(dispatchDocDto.getDispatchWay())) {
                 if(signMergeRepo.isHaveMerge(dispatchDocDto.getSignId(),Constant.MergeType.DISPATCH.getValue())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，单个发文不能关联其他项目，请先删除关联项目再操作！");
                 }
             // 合并发文次项目一定要关联
-            }else if(Constant.MergeWay.MERGE.getValue().equals(dispatchDocDto.getDispatchWay())&& EnumState.NO.getValue().equals(dispatchDocDto.getIsMainProject())) {
+            }else if(Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDocDto.getDispatchWay())&& EnumState.NO.getValue().equals(dispatchDocDto.getIsMainProject())) {
                 if(!signMergeRepo.checkIsMerege(dispatchDocDto.getSignId(),Constant.MergeType.DISPATCH.getValue())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文次项目，请在主项目挑选此项目为次项目再发文！");
                 }
@@ -208,10 +208,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //(1)、判断项目是否为关联项目
             boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.DISPATCH.getValue());
             if (isMerge) {
-                dispatch.setDispatchWay(Constant.MergeWay.MERGE.getValue());   //合并发文
+                dispatch.setDispatchWay(Constant.MergeType.DIS_MERGE.getValue());   //合并发文
                 dispatch.setIsMainProject(EnumState.YES.getValue());
             } else {
-                dispatch.setDispatchWay(Constant.MergeWay.SINGLE.getValue());    //单个发文
+                dispatch.setDispatchWay(Constant.MergeType.DIS_SINGLE.getValue());    //单个发文
                 dispatch.setIsMainProject(EnumState.NO.getValue());
             }
             //是否已经有阶段关联

@@ -285,6 +285,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     @Override
     @Transactional
+    @Deprecated
     public void saveExpertReviewCost(ExpertReviewDto[] expertReviews) {
         if (expertReviews != null && expertReviews.length > 0) {
             for (int i = 0; i < expertReviews.length; i++) {
@@ -308,17 +309,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                         if (expertSelecteds != null && expertSelecteds.size() > 0
                                 && expertSelectedDtos != null && expertSelectedDtos.size() > 0) {
                             expertSelecteds.forEach(expertSelected -> {
-
                                 expertSelectedDtos.forEach(expertSelectedDto -> {
                                     if (expertSelectedDto.getId().equals(expertSelected.getId())) {
                                         expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
                                         expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
                                         expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
+                                        expertSelected.setIsLetterRw(expertSelectedDto.getIsLetterRw());
                                         return;
                                     }
 
                                 });
-
                             });
                         }
                         //设置专家评审费用结束s
@@ -378,6 +378,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                                 expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
                                 expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
                                 expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
+                                expertSelected.setIsLetterRw(expertSelectedDto.getIsLetterRw());
                                 return;
                             }
                         });

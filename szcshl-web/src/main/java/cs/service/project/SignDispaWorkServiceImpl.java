@@ -18,6 +18,7 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -51,6 +52,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private RoomBookingRepo roomBookingRepo;
+    @Autowired
+    private DispatchDocRepo dispatchDocRepo;
     /**
      * 项目综合查询
      * @param odataObj
@@ -224,8 +227,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),removeIds.toString());
             }
             //把所有被合并的项目改为合并评审次项目
-            workProgramRepo.updateWPReivewType("合并评审", Constant.EnumState.NO.getValue(),mergeIds);
-
+            workProgramRepo.updateWPReivewType(Constant.MergeType.REVIEW_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
+        }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
+            dispatchDocRepo.updateRWType(Constant.MergeType.DIS_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
@@ -251,12 +255,13 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         hqlBuilder.append(" delete from " + SignMerge.class.getSimpleName() + " where ");
         hqlBuilder.append(SignMerge_.signId.getName() + " =:signId ").setParam("signId", signId);
         hqlBuilder.append(" and " + SignMerge_.mergeType.getName() + " =:mergeType ").setParam("mergeType", mergeType);
-        //如果有解除删除，则解除相应的项目，否则解除所有
+        //如果有解除删除，则解除相应的项目，否则解除所有,把所有被合并的项目改为单个评审
         if (Validate.isString(cancelIds)) {
             hqlBuilder.bulidPropotyString("and", SignMerge_.mergeId.getName(), cancelIds);
             if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
-                //把所有被合并的项目改为单个评审
-                workProgramRepo.updateWPReivewType("单个评审", null,cancelIds);
+                workProgramRepo.updateWPReivewType(Constant.MergeType.REVIEW_SIGNLE.getValue(), null,cancelIds);
+            }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
+                dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null,cancelIds);
             }
         }
 
@@ -272,21 +277,23 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
      */
     @Override
     @Transactional
-    public ResultMsg deleteAllMerge(String signId) {
+    public ResultMsg deleteAllMerge(String signId,String mergeType) {
         List<SignMerge> mergeSignList = signMergeRepo.findByIds(SignMerge_.signId.getName(),signId,null);
         if(Validate.isList(mergeSignList)){
-            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeSignList.get(0).getMergeType())){
-                StringBuffer sbString = new StringBuffer();
-                for(int i=0,l=mergeSignList.size();i<l;i++){
-                    SignMerge sm = mergeSignList.get(i);
-                    if(i> 0){
-                        sbString.append(",");
-                    }
-                    sbString.append(sm.getMergeId());
+            StringBuffer sbString = new StringBuffer();
+            for(int i=0,l=mergeSignList.size();i<l;i++){
+                SignMerge sm = mergeSignList.get(i);
+                if(i> 0){
+                    sbString.append(",");
                 }
-                signMergeRepo.deleteById(SignMerge_.mergeId.getName(),sbString.toString());
-                //把所有被合并的项目改为合并评审次项目
-                workProgramRepo.updateWPReivewType("单个评审", Constant.EnumState.NO.getValue(),sbString.toString());
+                sbString.append(sm.getMergeId());
+            }
+            signMergeRepo.deleteById(SignMerge_.mergeId.getName(),sbString.toString());
+
+            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
+                workProgramRepo.updateWPReivewType(Constant.MergeType.REVIEW_SIGNLE.getValue(), null,sbString.toString());
+            }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
+                dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null,sbString.toString());
             }
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
