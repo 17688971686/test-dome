@@ -76,7 +76,7 @@ public class TemplateUtil {
     	
     	 Map<String,Object> dataMap = new HashMap<>();
 
-         TemplateUtil.createDoc(dataMap,"report/opinion","G:\\test\\资金申请—评审意见.doc");
+         TemplateUtil.createDoc(dataMap,"budget/roster","G:\\test\\test.doc");
         
     }
     

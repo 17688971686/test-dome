@@ -32,6 +32,12 @@ public class Sign extends DomainBase {
     private String isSignTemplate;
 
     /**
+     * 是否是优秀评审项目  9 ： 是    ， 0或其他： 否
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String  isAppraising ;
+
+    /**
      * 是否已发送存档
      */
     @Column(columnDefinition = "VARCHAR(2) COMMENT '是否已发送存档,9是0否'")
@@ -2463,5 +2469,13 @@ public class Sign extends DomainBase {
 
     public void setOldProjectId(Integer oldProjectId) {
         this.oldProjectId = oldProjectId;
+    }
+
+    public String getIsAppraising() {
+        return isAppraising;
+    }
+
+    public void setIsAppraising(String isAppraising) {
+        this.isAppraising = isAppraising;
     }
 }

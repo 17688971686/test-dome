@@ -2,7 +2,7 @@
 <form id="payform" name="payform">
     <table class="table table-bordered">
         <tbody>
-        <tr ng-if="vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit" ng-hide="vm.model.expertReviewDto.payDate">
+        <tr ng-if="vm.showFlag.isMainPrinUser && vm.showFlag.expertEdit && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)" >
             <td colspan="4">
                 <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.model.expertReviewDto)" ng-disabled="vm.isCommit">
                     <span class="glyphicon glyphicon-ok"></span>计算应纳税额
@@ -15,7 +15,7 @@
         <tr>
             <td class="text-right" width="15%">评审费发放日期</td>
             <td width="35%">
-                <div ng-show="vm.showFlag.isMainPrinUser && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
+                <div ng-show="vm.showFlag.expertEdit && vm.showFlag.isMainPrinUser && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
                     <input type="text" style="width: 200px;"
                            class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.model.expertReviewDto.payDate" data-val-date="必须为日期">

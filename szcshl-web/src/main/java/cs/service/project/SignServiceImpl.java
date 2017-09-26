@@ -961,7 +961,7 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString = Validate.isString(dp.getSecondChargeSuggest())?(dp.getSecondChargeSuggest() + "<br>"): "";
-                dp.setSecondChargeSuggest(optionString+ flowDto.getDealOption() + "<span style='width:30px;'></span>" + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                dp.setSecondChargeSuggest(optionString+ flowDto.getDealOption() + "              " + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 dispatchDocRepo.save(dp);
 
                 //如果同意
@@ -982,6 +982,7 @@ public class SignServiceImpl implements SignService {
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：通过】");
                     //如果不同意，则流程回到发文申请环节
                 } else {
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
                     variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
                     //选择第一负责人
                     variables = buildMainPriUser(variables, signid, assigneeValue);
