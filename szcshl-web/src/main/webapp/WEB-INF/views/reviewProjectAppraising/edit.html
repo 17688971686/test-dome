@@ -1,0 +1,20 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/reviewProjectAppraisingEdit">评审项目评优列表</a></li>
+    </ol>
+    <form id="form" name="form">
+        <script type="text/template" id="columnBtns">
+            <@shiro.hasPermission name="reviewProjectAppraising##put">
+            <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>评优</button>
+            </@shiro.hasPermission>
+        </script>
+    </form>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+
+

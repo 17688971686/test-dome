@@ -709,10 +709,17 @@
                 controllerAs: 'vm'
             })
             //优秀评审报告列表
-            .state('monthlyExcellentList', {
-                url: '/monthlyExcellentList/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyExcellentList.html',
-                controller: 'monthlyExcellentCtrl',
+            .state('reviewProjectAppraisingList', {
+                url: '/reviewProjectAppraisingList/:id',
+                templateUrl: rootPath + '/reviewProjectAppraising/html/list.html',
+                controller: 'reviewProjectAppraisingCtrl',
+                controllerAs: 'vm'
+            })
+            //评审项目评优
+            .state('reviewProjectAppraisingEdit', {
+                url: '/reviewProjectAppraisingEdit',
+                templateUrl: rootPath + '/reviewProjectAppraising/html/edit.html',
+                controller: 'reviewProjectAppraisingEditCtrl',
                 controllerAs: 'vm'
             })
             

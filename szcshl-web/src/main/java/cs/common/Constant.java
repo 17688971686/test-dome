@@ -286,9 +286,9 @@ public class Constant {
         OUTPUT_SUFFIX_XLS(".xls","xls表格"),//生成xls表格
 
         //可行性研究报告
-        STUDY_OPINION("report/opinion","可行性研究报告_评审意见"),
-        STUDY_ESTIMATE("report/estimate","可行性研究报告_投资估算表"),
-        STUDY_ROSTER("report/roster","可行性研究报告_评审组名单"),
+        STUDY_OPINION("study/opinion","可行性研究报告_评审意见"),
+        STUDY_ESTIMATE("study/estimate","可行性研究报告_投资估算表"),
+        STUDY_ROSTER("study/roster","可行性研究报告_评审组名单"),
 
         //资金申请报告
         REPORT_OPINION("report/opinion","资金申请报告_评审意见"),

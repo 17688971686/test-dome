@@ -23,6 +23,12 @@ public class SignDispaWork {
     private String signid;
 
     /**
+     * 是否是优秀评审项目 9： 是    0或其他：否
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isAppraising;
+
+    /**
      * 项目签收日期
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -516,5 +522,13 @@ public class SignDispaWork {
 
     public void setProcessState(String processState) {
         this.processState = processState;
+    }
+
+    public String getIsAppraising() {
+        return isAppraising;
+    }
+
+    public void setIsAppraising(String isAppraising) {
+        this.isAppraising = isAppraising;
     }
 }
