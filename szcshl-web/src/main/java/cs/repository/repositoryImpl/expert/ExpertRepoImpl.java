@@ -4,6 +4,7 @@ import java.util.List;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.utils.Validate;
 import cs.domain.expert.ExpertSelected_;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -16,6 +17,25 @@ import cs.repository.AbstractRepository;
 
 @Service
 public class ExpertRepoImpl extends AbstractRepository<Expert, String> implements ExpertRepo {
+
+    /**
+     * 判断专家身份证号 是否已经录入
+     * @param idCard
+     * @param expertId
+     * @return
+     */
+    @Override
+    public boolean checkIsHaveIdCard(String idCard,String expertId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count("+Expert_.expertID.getName()+") from cs_expert ");
+        sqlBuilder.append(" where "+Expert_.idCard.getName()+" =:idCard ").setParam("idCard",idCard);
+        if(Validate.isString(expertId)){
+            sqlBuilder.append(" and "+Expert_.expertID.getName()+" <> :expertId ").setParam("expertId",expertId);
+        }
+        int count = returnIntBySql(sqlBuilder);
+        return (count > 0)?true:false;
+    }
+
     @Override
     public List<Expert> findExpertByIdCard(String idCard) {
         Criteria criteria = getExecutableCriteria();

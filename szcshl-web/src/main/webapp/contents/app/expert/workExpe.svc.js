@@ -7,14 +7,12 @@
 
 	function workExpe($http,expertSvc) {
 		var service = {
-			createWork : createWork,
+            saveWork : saveWork,
 			updateWork : updateWork,
 			deleteWork : deleteWork,
 			updateWorkPage : updateWorkPage,
-			gotoWPage : gotoWPage,
 			getWorkById : getWorkById,
 			getWork : getWork,
-			cleanValue : cleanValue
 		};
 
 		return service;
@@ -42,49 +40,25 @@
 			});
 		}
 
-		// begin#deleteWork
-		function deleteWork(vm) {
-			var isCheck = $("input[name='checkwr']:checked");
-			if (isCheck.length < 1) {
-				common.alert({
-					vm : vm,
-					msg : "请选择操作对象",
-					fn : function() {
-						$('.alertDialog').modal('hide');
-						$('.modal-backdrop').remove();
-						return;
-					}
-				})
-			} else {
-				var ids = "";
-				$.each(isCheck, function(i, obj) {
-					ids += obj.value + ",";
-				});
-
-				vm.isSubmit = true;
-				var httpOptions = {
-					method : 'delete',
-					url : rootPath + "/workExpe/deleteWork",
-					data : ids
+		// begin#根据ID删除工作简历信息
+		function deleteWork(ids,callBack) {
+            var httpOptions = {
+                method : 'delete',
+                url : rootPath + "/workExpe/deleteWork",
+                params : {
+                    ids : ids,
 				}
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.isSubmit = false;
-//							expertSvc.getExpertById(vm);
-							getWork(vm);
-						}
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
 		}
 		// end#delertWork
 
@@ -139,101 +113,25 @@
 				httpOptions : httpOptions,
 				success : httpSuccess
 			});
-
 		}
 
-		// 清空页面数据
-		// begin#cleanValue
-		function cleanValue() {
-			var tab = $("#wrwindow").find('input');
-			$.each(tab, function(i, obj) {
-				obj.value = "";
-			});
-		}
-
-		// begin#gotoWPage
-		function gotoWPage(vm) {
-			var WorkeWindow = $("#wrwindow");
-			WorkeWindow.kendoWindow({
-				width : "690px",
-				height : "330px",
-				title : "添加工作简历",
-				visible : false,
-				modal : true,
-				closable : true,
-				actions : [ "Pin", "Minimize", "Maximize", "Close" ]
-			}).data("kendoWindow").center().open();
-		}
-		// end#gotoWPage
-
-		// begin#getWork
-		/*function getWork(vm) {
-			var httpOptions = {
-				method : 'GET',
-				url : rootPath+ "/workExpe/getWork?$filter=expert.expertID eq '"+ vm.model.expertID + "'"
-			}
-			var httpSuccess = function success(response) {
-				common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.work = response.data;
-					}
-
-				});
-			}
-
-			common.http({
-				vm : vm,
-				$http : $http,
-				httpOptions : httpOptions,
-				success : httpSuccess
-			});
-
-		}*/
-		// begin#createWork
-		function createWork(vm) {
-			common.initJqValidation($('#workForm'));
-			var isValid = $('#workForm').valid();
-			if (isValid) {
-				/*vm.work.beginTime = $('#beginTime').val();
-				vm.work.endTime = $('#endTime').val();*/
-				
-				var httpOptions = {
-					method : 'post',
-					url : rootPath + "/workExpe/workExpe",
-					data : vm.work
-				}
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							cleanValue();
-							window.parent.$("#wrwindow").data("kendoWindow").close();
-							getWork(vm);
-							common.alert({
-								vm : vm,
-								msg : "操作成功",
-								fn : function() {
-									vm.showWorkHistory = true;
-									$('.alertDialog').modal('hide');
-									$('.modal-backdrop').remove();
-								}
-							})
-						}
-
-					});
-
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-
-			}
+		// begin#保存专家工作经历
+		function saveWork(work,callBack) {
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/workExpe/saveWorkExpe",
+                data : work
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
 		}
 
 		// begin#updateWork

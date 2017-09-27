@@ -137,7 +137,7 @@ public class SysFile extends DomainBase {
     }
 
     public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
-                   String mainId,String mainType, String sysfileType, String sysBusiType) {
+                   String mainId, String mainType, String sysfileType, String sysBusiType) {
         this.sysFileId = sysFileId;
         this.businessId = businessId;
         this.fileUrl = fileUrl;

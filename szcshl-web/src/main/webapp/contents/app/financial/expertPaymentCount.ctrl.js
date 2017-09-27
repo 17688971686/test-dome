@@ -76,7 +76,6 @@
         function activate() {
             expertPaymentCountSvc.expertCostTotal(vm,function(data){
                 vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
-                console.log(vm.expertCostTotalInfo);
             });
         }
     }

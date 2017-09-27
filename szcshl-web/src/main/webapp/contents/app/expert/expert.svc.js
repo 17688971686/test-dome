@@ -11,19 +11,15 @@
 			grid : grid,						//初始化综合查询grid
 			auditGrid : auditGrid,				//初始化审核页面的所有grid
 			getExpertById : getExpertById,		//通过ID查询专家信息详情
-			createExpert : createExpert,        //创建专家信息
+			saveExpert : saveExpert,            //保存专家信息
 			deleteExpert : deleteExpert,        //删除专家信息
-			updateExpert : updateExpert,        //更新专辑信息
 			searchMuti : searchMuti,		    //综合查询
 			searchAudit : searchAudit,		    //审核查询
 			repeatGrid : repeatGrid,		    //重复专家查询
 			updateAudit : updateAudit,		    //专家评审
 			toAudit : toAudit,				    //由个状态回到审核状态
 			auditTo : auditTo,				    //由审核状态去到各个状态
-            initUpload : initUpload,             //初始化附件上传
-            formReset : formReset,		//重置页面
-            initUpload : initUpload,            //初始化附件上传
-            initUpload : initUpload            //初始化附件上传
+            formReset : formReset,				//重置页面
 		};
 		return service;	
 		
@@ -31,47 +27,8 @@
 		function formReset(vm){
 			$("#searchform")[0].reset();
 			vm.gridOptions.dataSource.read();
-			
 		}
 		//end formReset
-		
-		// begin#updateExpert
-		function updateExpert(vm) {
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if (true) {
-				vm.isSubmit = true;
-				vm.model.expertID = vm.expertID;// id
-				vm.model.birthDay= $("#birthDay").val();
-				vm.model.createDate= $("#createDate").val();
-
-				var httpOptions = {
-					method : 'put',
-					url : url_expert,
-					data : vm.model
-				}
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.isSubmit = false;
-							common.alert({
-								vm : vm,
-								msg : "操作成功"
-							})
-						}
-
-					})
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}
-		}
 		
 		// begin#deleteUser
 		function deleteExpert(vm, id) {
@@ -107,96 +64,48 @@
 		}
 		// end#searchMuti									
 				
-		// begin#createExpert		
-		function createExpert(vm) {	
-			common.initJqValidation();
-			var isValid = $('form').valid();
-			if(isValid){				
-				vm.isSubmit = true;												
-				vm.model.birthDay=$('#birthDay').val();
-				vm.model.graduateDate=$('#graduateDate').val();
-				
-				var httpOptions = {
-					method : 'post',
-					url : url_expert,
-					data : vm.model
-				}
-				var httpSuccess = function success(response) {
-					common.requestSuccess({
-						vm : vm,
-						response : response,
-						fn : function() {
-							vm.model.expertID = response.data.expertID;
-							vm.isUpdate=true;
-							vm.showBt=true;	
-							vm.isSubmit = false;	
-							common.alert({
-								vm : vm,
-								msg : "操作成功"
-							})							
-						}
+		// S_保存专家信息
+		function saveExpert(expert,isSubmit,callBack) {
+            isSubmit = true;
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expert",
+                data : expert
+            }
+            var httpSuccess = function success(response) {
+                isSubmit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+				onError:function () {
+                    isSubmit = false;
+                }
+            });
 
-					});
-				}
-				common.http({
-					vm : vm,
-					$http : $http,
-					httpOptions : httpOptions,
-					success : httpSuccess
-				});
-			}
+
 		}
-		// end#createExpert
+		// end#saveExpert
 						
 		// begin#getExpertById
-		function getExpertById(vm,expert) {
+		function getExpertById(expertID,callBack) {
 			var httpOptions = {
-				method : 'get',
+				method : 'post',
 				url : url_expert+"/findById",
 				params:{
-					id:vm.expertID
+					id:expertID
 				}
 			}
 			var httpSuccess = function success(response) {
-				vm.showBt = true;
-				vm.model = response.data;
-
-				 if(vm.model.majorWork){
-            		vm.showWS=false;
-        			vm.showWC=true;
-				 }
-        		
-	            if(vm.model.majorStudy){
-	        		vm.showSC=true;
-	            	vm.showSS=false;
-	            }
-				
-				//工作简历
-				if(response.data.workDto && response.data.workDto.length > 0){
-					vm.showWorkHistory = true;
-					vm.workList=response.data.workDto;
-					
-				}
-				//项目经验
-				if(response.data.projectDto && response.data.projectDto.length > 0){
-					vm.projectkHistory = true;
-					vm.projectList=response.data.projectDto;					
-				}
-				
-				if(response.data.expertTypeDtoList && response.data.expertTypeDtoList.length > 0){
-					vm.expertTypeList = true;
-					vm.expertTypeList=response.data.expertTypeDtoList;		
-				}
-				//专家聘书
-				if(response.data.expertOfferDtoList && response.data.expertOfferDtoList.length > 0){
-                    vm.showExpertOffer = true;
-                    vm.expertOfferList = response.data.expertOfferDtoList;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
                 }
-                initUpload(vm);
-                $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
 			} 
 			common.http({
-				vm : vm,
 				$http : $http,
 				httpOptions : httpOptions,
 				success : httpSuccess
@@ -659,27 +568,5 @@
 				success : httpSuccess
 			});
 		}//end updateAudit
-		
-		
-        //S_initUpload
-        function initUpload(vm){
-            var projectfileoptions = {
-                language : 'zh',
-                allowedPreviewTypes : ['image'],
-                allowedFileExtensions : [ 'jpg', 'png', 'gif' ],
-                maxFileSize : 2000,
-                showRemove: false,
-                uploadUrl:rootPath + "/expert/uploadPhoto",
-                uploadExtraData:{expertId:vm.model.expertID}
-            };
-            $("#expertphotofile").fileinput(projectfileoptions).on("filebatchselected", function(event, files){
-
-            }).on("fileuploaded", function(event, data) {
-                $("#expertPhotoSrc").removeAttr("src");
-                $("#expertPhotoSrc").attr("src",rootPath+"/expert/transportImg?expertId="+vm.model.expertID+"&t="+Math.random());
-            });
-        }//E_initUpload
-
-
 	}
 })();

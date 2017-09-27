@@ -130,7 +130,6 @@ public class Expert extends DomainBase {
     private List<ExpertSelected> expertSelectedList;    //专家抽取条件
 
     @OneToMany(mappedBy = "expert")
-
     private List<ExpertType> expertType;//专家类型
 
     @OneToMany(mappedBy = "expert")

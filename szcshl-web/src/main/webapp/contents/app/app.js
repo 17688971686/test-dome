@@ -1045,6 +1045,12 @@
             }
         }
 
+        //打开新窗口
+        $rootScope.openWin = function(sysFileId) {
+            var url = rootPath+"/file/editFile?sysFileId="+sysFileId;
+            window.open(url,"_blank");
+        }
+
         //kendo 语言
         kendo.culture("zh-CN");
         common.getTaskCount({$http: $http});

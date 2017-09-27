@@ -61,17 +61,10 @@ public class ExpertController {
     }
 
 	@RequiresPermissions("expert##post")
-	@RequestMapping(name = "创建专家", path = "",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void  post(@RequestBody ExpertDto expert,HttpServletResponse response)  {
-		  JsonObject jsonObject = new JsonObject();
-		String expertID=expertService.createExpert(expert);	
-		jsonObject.addProperty("expertID",expertID);
-		try {
-			response.getWriter().print(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@RequestMapping(name = "保存专家", path = "",method=RequestMethod.POST)
+	@ResponseBody
+	public ResultMsg  post(@RequestBody ExpertDto expert)  {
+		return expertService.saveExpert(expert);
 	}
 	
 	@RequiresPermissions("expert##delete")
@@ -114,10 +107,8 @@ public class ExpertController {
         }
     }
 
-
-	
 	@RequiresPermissions("expert#findById#post")
-	@RequestMapping(name = "初始化详情页面", path = "findById",method=RequestMethod.GET)	
+	@RequestMapping(name = "初始化详情页面", path = "findById",method=RequestMethod.POST)
 	public @ResponseBody ExpertDto findById(@RequestParam(required = true)String id){
 		return expertService.findById(id);
 	}
@@ -127,13 +118,6 @@ public class ExpertController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void  updateAudit(@RequestParam String ids,String flag)  {
 		expertService.updateAudit(ids,flag);	
-	}
-	
-	@RequiresPermissions("expert##put")
-	@RequestMapping(name = "更新专家", path = "",method=RequestMethod.PUT)	
-	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void  put(@RequestBody ExpertDto expertDto){		
-		expertService.updateExpert(expertDto);	
 	}
 	
 	// begin#html

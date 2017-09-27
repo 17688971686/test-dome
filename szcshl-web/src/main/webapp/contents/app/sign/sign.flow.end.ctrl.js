@@ -81,15 +81,18 @@
                 }
             });
         }
-        //获取专家评星
-        vm.getExpertStar = function(id ,score){
-            var returnStr = "";
-            if (score != undefined) {
-                for (var i = 0; i <score; i++) {
-                    returnStr += "<span style='color:gold;font-size:20px;'><i class='fa fa-star' aria-hidden='true'></i></span>";
-                }
-            }
-            $("#"+id+"_starhtml").html(returnStr);
+        //附件下载
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.downloadFile(sysFileId);
+        }
+
+        //附件在线编辑
+        vm.commonEditSysFile = function(sysFileId){
+            $("#editSysFileWindow").kendoWindow({
+                width: "80%",
+                title: "在线编辑",
+                content: rootPath + "/file/editFile?sysFileId="+sysFileId,
+            });
         }
     }
 })();

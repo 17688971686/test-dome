@@ -183,12 +183,22 @@ public class FileController {
         fileService.deleteById(sysFileId);
     }
 
-    @RequiresPermissions("file#html/pluginfile#get")
-    @RequestMapping(name = "办结事项", path = "html/pluginfile")
-    public String pluginfile(Model model) {
+    @RequestMapping(name = "附件编辑", path = "editFile", method = RequestMethod.GET)
+    public String editFile(Model model,@RequestParam(required = true) String sysFileId){
+        SysFile sysFile = fileService.findFileById(sysFileId);
+        String filePath = SysFileUtil.getUploadPath()+sysFile.getFileUrl();
+        filePath = filePath.replaceAll("\\\\", "/");
+        model.addAttribute("filePath",filePath);
+        model.addAttribute("sysFile",sysFile);
+        return "weboffice/edit_dj";
+    }
 
+    @RequiresPermissions("file#html/pluginfile#get")
+    @RequestMapping(name = "插件文件", path = "html/pluginfile")
+    public String pluginfile(Model model) {
         return ctrlName + "/pluginfile";
     }
+
     @RequestMapping(name = "获取本地插件", path = "getPluginFile", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto listFile() {

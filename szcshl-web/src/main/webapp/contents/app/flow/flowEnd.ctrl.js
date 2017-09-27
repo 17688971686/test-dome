@@ -34,7 +34,7 @@
             //共用方法
             //1、历史处理记录
             flowSvc.historyData(vm);
-            console.log(vm.processKey);
+
             //2、各自显示模块
             switch (vm.processKey){
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程

@@ -57,7 +57,7 @@ public class SignDispaWorkController {
     @RequiresPermissions("signView#getMergeSignBySignId#post")
     @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
     public @ResponseBody
-    List<SignDispaWork> getMergeSignBySignId(@RequestParam(required = true) String signId){
+    List<SignDispaWork> getMergeSignBySignId(@RequestParam(required = true) String signId) {
         return signDispaWorkService.getMergeWPSignBySignId(signId);
     }
 
@@ -71,60 +71,58 @@ public class SignDispaWorkController {
     @RequiresPermissions("signView#getMergeDISSign#post")
     @RequestMapping(name = "获取已选合并发文项目", path = "getMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> getMergeDISSign(@RequestParam(required = true) String signId){
+    public List<SignDispaWork> getMergeDISSign(@RequestParam(required = true) String signId) {
         return signDispaWorkService.getMergeDISSignBySignId(signId);
     }
 
     @RequestMapping(name = "保存合并项目", path = "mergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg mergeSign(@RequestParam(required = true) String signId,
-        @RequestParam(required = true) String mergeIds, @RequestParam(required = true) String mergeType) {
-        return signDispaWorkService.mergeSign(signId,mergeIds,mergeType);
+                               @RequestParam(required = true) String mergeIds, @RequestParam(required = true) String mergeType) {
+        return signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
     }
 
     @RequiresPermissions("signView#cancelMergeSign#post")
     @RequestMapping(name = "解除合并评审发文", path = "cancelMergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg cancelMergeSign(@RequestParam(required = true) String signId, String cancelIds,
-                                     @RequestParam(required = true) String mergeType){
-        return signDispaWorkService.cancelMergeSign(signId,cancelIds,mergeType);
+                                     @RequestParam(required = true) String mergeType) {
+        return signDispaWorkService.cancelMergeSign(signId, cancelIds, mergeType);
     }
 
     @RequiresPermissions("signView#deleteAllMerge#post")
     @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId,@RequestParam(required = true) String mergeType){
-        return signDispaWorkService.deleteAllMerge(signId,mergeType);
+    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId, @RequestParam(required = true) String mergeType) {
+        return signDispaWorkService.deleteAllMerge(signId, mergeType);
     }
 
-    @RequestMapping(name="项目统计导出" , path ="excelExport" , method = RequestMethod.POST)
+    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport( HttpServletResponse resp ,@RequestBody SignDispaWork[] signDispaWorks ,@RequestParam String fileName){
+    public void excelExport(HttpServletResponse resp, @RequestBody SignDispaWork[] signDispaWorks, @RequestParam String fileName) {
         String title = fileName;
-        SignDispaWork signDispaWork = new SignDispaWork();
         ExcelTools excelTools = new ExcelTools();
         List<SignDispaWork> signDispaWorkList = new ArrayList<>();
 
-        for(SignDispaWork sdw : signDispaWorks){
+        for (SignDispaWork sdw : signDispaWorks) {
             signDispaWorkList.add(sdw);
         }
-
         try {
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");
 
-            String [] headerPair =new String[headerDtoList.size()];
-            for(int i = 0 ; i<headerDtoList.size() ; i++){
+            String[] headerPair = new String[headerDtoList.size()];
+            for (int i = 0; i < headerDtoList.size(); i++) {
                 headerPair[i] = headerDtoList.get(i).getHeaderName() + "=" + headerDtoList.get(i).getHeaderKey();
             }
-            HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , signDispaWorkList , SignDispaWork.class);
+            HSSFWorkbook wb = excelTools.createExcelBook(title, headerPair, signDispaWorkList, SignDispaWork.class);
 
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
-            resp.setHeader("Content-type" , "application/x-msexcel");
-            resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
-            String fileName2 = new String((title +".xls").getBytes("GB2312") , "ISO-8859-1");
+            resp.setHeader("Content-type", "application/x-msexcel");
+            resp.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
+            String fileName2 = new String((title + ".xls").getBytes("GB2312"), "ISO-8859-1");
 
-            resp.setHeader("Content-Disposition" , "attachment;filename="+fileName2);
+            resp.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
             wb.write(sos);
             sos.flush();
             sos.close();
@@ -133,13 +131,11 @@ public class SignDispaWorkController {
             e.printStackTrace();
         }
 
-
     }
-
 
     @RequiresPermissions("signView#html/signList#get")
     @RequestMapping(name = "项目查询统计", path = "html/signList", method = RequestMethod.GET)
-    public String getsignList() {
+    public String signList() {
         return "sign/signList";
     }
 }

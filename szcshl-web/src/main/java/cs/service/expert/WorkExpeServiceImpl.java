@@ -5,7 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.expert.WorkExpe_;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,48 +46,40 @@ public class WorkExpeServiceImpl implements WorkExpeService {
 		logger.info("查询工作经验");
 		return listWorktDto;
 	}
-	
+
+	/**
+	 * 保存工作经历
+	 * @param workExpeDto
+	 * @return
+	 */
 	@Override
 	@Transactional
-	public void createWork(WorkExpeDto workExpeDto) {
-		//WorkExpe findWork = workExpeRepo.findWorkByName(workExpeDto.getCompanyName());
-		// 工作经验不存在	
-		//if (findWork==null) {		
-			WorkExpe work = new WorkExpe();
-			BeanCopierUtils.copyProperties(workExpeDto, work);
-			
-			work.setWeID(UUID.randomUUID().toString());										
-			Date now = new Date();
-			work.setCreatedBy(SessionUtil.getLoginName());
-			work.setModifiedBy(SessionUtil.getLoginName());
-			work.setCreatedDate(now);
-			work.setModifiedDate(now);
-			
-			work.setExpert(expertRepo.findById(workExpeDto.getExpertID()));
-			workExpeRepo.save(work);				
-			logger.info(String.format("添加工作经验,单位名称:%s", work.getCompanyName()));
-		//} else {
-		//	throw new IllegalArgumentException(String.format("公司名%s 已经存在", workExpeDto.getCompanyName()));
-		//}
-	}
-		
-	@Override
-	@Transactional
-	public void deleteWork(String id) {		
-		WorkExpe workExpe = workExpeRepo.findById(id);
-		if (workExpe != null) {
-			workExpeRepo.delete(workExpe);
-			logger.info(String.format("删除工作经验,单位名称为:%s", workExpe.getCompanyName()));			
+	public ResultMsg saveWorkExpe(WorkExpeDto workExpeDto) {
+		WorkExpe work = new WorkExpe();
+        Date now = new Date();
+		if(!Validate.isString(workExpeDto.getWeID())){
+            workExpeDto.setWeID(UUID.randomUUID().toString());
+            workExpeDto.setCreatedBy(SessionUtil.getLoginName());
+            workExpeDto.setCreatedDate(now);
 		}
+        workExpeDto.setModifiedBy(SessionUtil.getDisplayName());
+        workExpeDto.setModifiedDate(now);
+
+		BeanCopierUtils.copyProperties(workExpeDto, work);
+		work.setExpert(expertRepo.findById(workExpeDto.getExpertID()));
+		workExpeRepo.save(work);
+
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"保存成功！",workExpeDto);
 	}
-	
+
+	/**
+	 * 删除专家工作经历信息
+	 * @param ids
+	 */
 	@Override
 	@Transactional
-	public void deleteWork(String[] ids) {
-		for (String id : ids) {
-			this.deleteWork(id);
-		}
-		logger.info("删除工作经验");
+	public void deleteWork(String ids) {
+		workExpeRepo.deleteById(WorkExpe_.weID.getName(),ids);
 	}
 	
 	@Override

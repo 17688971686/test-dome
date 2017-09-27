@@ -1,7 +1,9 @@
 package cs.model.expert;
 
 
-public class ExpertTypeDto {
+import cs.model.BaseDto;
+
+public class ExpertTypeDto extends BaseDto {
 
 	private String id;
 	private  Integer seqNum;

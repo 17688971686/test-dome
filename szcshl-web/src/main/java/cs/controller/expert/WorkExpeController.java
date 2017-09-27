@@ -5,15 +5,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import cs.model.expert.WorkExpeDto;
 import cs.repository.odata.ODataObj;
@@ -23,38 +20,39 @@ import cs.service.expert.WorkExpeService;
 @RequestMapping(name = "工作经验", path = "workExpe")
 public class WorkExpeController {
 	private String ctrlName = "expert";
+
 	@Autowired
 	private WorkExpeService  workExpeService;
-	@RequiresPermissions("expert##getWork")	
-	@RequestMapping(name = "查找工作经验", path = "getWork", method = RequestMethod.GET)
-	public @ResponseBody List<WorkExpeDto> getWork(HttpServletRequest request) throws ParseException {
+
+	@RequiresPermissions("workExpe#findByOdata#post")
+	@RequestMapping(name = "查找工作经验", path = "findByOdata", method = RequestMethod.POST)
+    @ResponseBody
+	public List<WorkExpeDto> getWork(HttpServletRequest request) throws ParseException {
 		ODataObj odataObj = new ODataObj(request);
-		List<WorkExpeDto> workDtos = workExpeService.getWork(odataObj);
-		return workDtos;
-	}	
-	@RequiresPermissions("expert##post")
-	@RequestMapping(name = "添加工作经验", path = "workExpe",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void  createWork(@RequestBody WorkExpeDto work)  {
-		workExpeService.createWork(work);		
+		return workExpeService.getWork(odataObj);
 	}
-	@RequiresPermissions("expert##delete")
+
+	@RequiresPermissions("workExpe#saveWorkExpe#post")
+	@RequestMapping(name = "保存工作经验", path = "saveWorkExpe",method=RequestMethod.POST)
+	@ResponseBody
+	public ResultMsg saveWorkExpe(@RequestBody WorkExpeDto work)  {
+	    return workExpeService.saveWorkExpe(work);
+	}
+
+	@RequiresPermissions("workExpe#deleteWork#delete")
 	@RequestMapping(name = "删除工作经验", path = "deleteWork",method=RequestMethod.DELETE)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void  deleteWork(@RequestBody String id)  {		
-		String[] ids=id.split(",");
-		if(ids.length>1){
-			workExpeService.deleteWork(ids);	
-		}else{
-			workExpeService.deleteWork(ids[0]);	
-		}		
+	public void  deleteWork(@RequestParam String ids)  {
+        workExpeService.deleteWork(ids);
 	}
+
 	@RequiresPermissions("expert##put")
 	@RequestMapping(name = "更新工作经验", path = "updateWork",method=RequestMethod.PUT)	
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void  updateWork(@RequestBody WorkExpeDto workExpeDto){		
 		workExpeService.updateWork(workExpeDto);	
 	}
+
 	@RequiresPermissions("expert#html/workExpe#get")
 	@RequestMapping(name = "工作页面", path = "html/workExpe", method = RequestMethod.GET)
 	public String workExpe() {

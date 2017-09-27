@@ -5,7 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,23 +42,29 @@ public class ProjectExpeServiceImpl implements ProjectExpeService {
 		logger.info("查找项目经验");
 		return listProjectDto;
 	}
-     
-    @Override
+
+	/**
+	 * 保存项目经历信息
+	 * @param projectExpeDto
+	 * @return
+	 */
+	@Override
 	@Transactional
-	public void createProject(ProjectExpeDto projectExpeDto) {
+	public ResultMsg saveProject(ProjectExpeDto projectExpeDto) {
 		ProjectExpe project = new ProjectExpe();
+        Date now = new Date();
+		if(!Validate.isString(projectExpeDto.getPeID())){
+            projectExpeDto.setPeID(UUID.randomUUID().toString());
+            projectExpeDto.setCreatedBy(SessionUtil.getDisplayName());
+            projectExpeDto.setCreatedDate(now);
+        }
+        projectExpeDto.setModifiedBy(SessionUtil.getLoginName());
+        projectExpeDto.setModifiedDate(now);
+
 		BeanCopierUtils.copyProperties(projectExpeDto,project);
-		project.setPeID(UUID.randomUUID().toString());
-		
-		Date now = new Date();
-		project.setCreatedBy(SessionUtil.getLoginName());
-		project.setModifiedBy(SessionUtil.getLoginName());
-		project.setCreatedDate(now);
-		project.setModifiedDate(now);
-		
 		project.setExpert(expertRepo.findById(projectExpeDto.getExpertID()));
 		projectExpeRepo.save(project);
-		logger.info(String.format("添加项目经验,项目名称为:%s", project.getProjectName()));
+		return new ResultMsg(true , Constant.MsgCode.OK.getValue(),"保存成功！",projectExpeDto);
 	}
 		
     @Override

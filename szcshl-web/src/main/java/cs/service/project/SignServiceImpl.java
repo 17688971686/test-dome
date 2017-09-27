@@ -1502,18 +1502,9 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg initSignList() {
-        //添加部门
-        List<OrgDto> orgsList = new ArrayList<>();
-        List<Org> orgList = orgRepo.findAll();
-        if (Validate.isList(orgList)) {
-            for (Org org : orgList) {
-                OrgDto orgs = new OrgDto();
-                orgs.setName(org.getName());
-                orgs.setId(org.getId());
-                orgsList.add(orgs);
-            }
-        }
-        return new ResultMsg(true, MsgCode.OK.getValue(), "添加成功", orgsList);
+        List<OrgDept> orgDeptList = orgDeptRepo.findAll();
+
+        return new ResultMsg(true, MsgCode.OK.getValue(), "添加成功", orgDeptList);
     }
 
     /**

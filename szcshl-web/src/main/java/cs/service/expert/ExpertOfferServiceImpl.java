@@ -1,5 +1,7 @@
 package cs.service.expert;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -53,23 +55,33 @@ public class ExpertOfferServiceImpl  implements ExpertOfferService {
 		return pageModelDto;
 	}
 
+	/**
+	 * 保存专家评书信息
+	 * @param record
+	 * @return
+	 */
 	@Override
 	@Transactional
-	public void save(ExpertOfferDto record) {
-	    if(Validate.isString(record.getExpertId())){
-            ExpertOffer domain = new ExpertOffer();
-            BeanCopierUtils.copyProperties(record, domain);
-            Date now = new Date();
-            domain.setCreatedBy(SessionUtil.getLoginName());
-            domain.setModifiedBy(SessionUtil.getLoginName());
-            domain.setCreatedDate(now);
-            domain.setModifiedDate(now);
-
-            domain.setExpert(expertRepo.findById(record.getExpertId()));
-            expertOfferRepo.save(domain);
+	public ResultMsg save(ExpertOfferDto record) {
+        ExpertOffer domain =null;
+        Date now = new Date();
+	    if(Validate.isString(record.getId())){
+            domain = expertOfferRepo.findById(record.getId());
+            BeanCopierUtils.copyPropertiesIgnoreNull(record,domain);
         }else{
-	        throw new IllegalArgumentException("操作失败，获取不到专家信息！");
+            domain = new ExpertOffer();
+            BeanCopierUtils.copyProperties(record, domain);
+            domain.setCreatedBy(SessionUtil.getDisplayName());
+            domain.setCreatedDate(now);
         }
+        domain.setModifiedBy(SessionUtil.getLoginName());
+        domain.setModifiedDate(now);
+
+        domain.setExpert(expertRepo.findById(record.getExpertId()));
+        expertOfferRepo.save(domain);
+
+        BeanCopierUtils.copyProperties(domain, record);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",record);
 	}
 
 	@Override

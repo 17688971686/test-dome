@@ -118,34 +118,43 @@ public class ExpertServiceImpl implements ExpertService {
         return pageModelDto;
     }
 
+    /**
+     * 保存专家信息
+     * @param expertDto
+     * @return
+     */
     @Override
     @Transactional
-    public String createExpert(ExpertDto expertDto) {
-        List<Expert> list = expertRepo.findExpertByIdCard(expertDto.getIdCard());
-
-        if (list == null || list.size() == 0) {// 重复专家查询
-            Expert expert = new Expert();
-            BeanCopierUtils.copyProperties(expertDto, expert);
-            //设置默认属性
-            expert.setState(EnumExpertState.AUDITTING.getValue());
-            expert.setExpertID(UUID.randomUUID().toString());
-            //专家编码，系统自动生成
-            expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber())+1));
-            Date now = new Date();
-            expert.setCreatedDate(now);
-            expert.setCreatedBy(SessionUtil.getLoginName());
-            expert.setModifiedBy(SessionUtil.getLoginName());
-            expert.setModifiedDate(now);
-
-
+    public ResultMsg saveExpert(ExpertDto expertDto) {
+        //重复专家判断
+        boolean isFill = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(),expertDto.getExpertID());
+        if (isFill == false) {
+            Expert expert = null;
+            if(Validate.isString(expertDto.getExpertID())){
+                expert = expertRepo.findById(Expert_.expertID.getName(),expertDto.getExpertID());
+                BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
+            }else{
+                expert = new Expert();
+                BeanCopierUtils.copyProperties(expertDto, expert);
+                //设置默认属性
+                expert.setState(EnumExpertState.AUDITTING.getValue());
+                expert.setExpertID(UUID.randomUUID().toString());
+                //专家编码，系统自动生成
+                expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber())+1));
+                expert.setCreatedDate(new Date());
+                expert.setCreatedBy(SessionUtil.getDisplayName());
+            }
+            expert.setModifiedDate(new Date());
+            expert.setModifiedBy(SessionUtil.getDisplayName());
+            expertRepo.save(expert);
             //设置返回值
             expertDto.setExpertID(expert.getExpertID());
-            expertRepo.save(expert);
-            logger.info(String.format("添加专家,专家名为:%s", expert.getName()));
+            expertDto.setExpertNo(expert.getExpertNo());
+
+            return  new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",expertDto);
         } else {
-            throw new IllegalArgumentException(String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
         }
-        return expertDto.getExpertID();
     }
 
     /**
@@ -160,21 +169,6 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + "=:state where " + Expert_.expertID.getName() + "=:id");
         hqlBuilder.setParam("state", EnumExpertState.REMOVE.getValue()).setParam("id", id);
         expertRepo.executeHql(hqlBuilder);
-
-        /*
-        Expert expert = expertRepo.findById(id);
-        if (expert != null) {
-			List<WorkExpe> workList = expert.getWork();
-            for (WorkExpe workExpe : workList) {
-				workExpeRepo.delete(workExpe);
-			}
-			List<ProjectExpe> projectList = expert.getProject();
-			for (ProjectExpe projectExpe : projectList) {
-				projectExpeRepo.delete(projectExpe);
-			}
-			expertRepo.delete(expert);
-			logger.info(String.format("删除专家,专家名为:%s", expert.getName()));
-        }*/
     }
 
     @Override
@@ -186,6 +180,11 @@ public class ExpertServiceImpl implements ExpertService {
         logger.info("删除专家");
     }
 
+    /**
+     * 专家审核
+     * @param ids
+     * @param state
+     */
     @Override
     @Transactional
     public void updateAudit(String ids, String state) {
@@ -193,36 +192,10 @@ public class ExpertServiceImpl implements ExpertService {
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + " = :state ");
             hqlBuilder.setParam("state", state);
-            String[] idArr = ids.split(",");
-            if (idArr.length > 1) {
-                hqlBuilder.append(" where " + Expert_.expertID.getName() + " in ( ");
-                int totalL = idArr.length;
-                for (int i = 0; i < totalL; i++) {
-                    if (i == totalL - 1) {
-                        hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-                    } else {
-                        hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-                    }
-                }
-                hqlBuilder.append(" )");
-            } else {
-                hqlBuilder.append(" where " + Expert_.expertID.getName() + " = :id ");
-                hqlBuilder.setParam("id", ids);
-            }
-            expertRepo.executeHql(hqlBuilder);
-            logger.info("专家审核");
-        }
-    }
+            hqlBuilder.bulidPropotyString("where",Expert_.expertID.getName(),ids);
 
-    @Override
-    @Transactional
-    public void updateExpert(ExpertDto expertDto) {
-        Expert expert = expertRepo.findById(Expert_.expertID.getName(),expertDto.getExpertID());
-        BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
-        expert.setModifiedDate(new Date());
-        expert.setModifiedBy(SessionUtil.getLoginName());
-        expertRepo.save(expert);
-        logger.info(String.format("更新专家,专家名为:%s", expertDto.getName()));
+            expertRepo.executeHql(hqlBuilder);
+        }
     }
 
     @Override
@@ -241,7 +214,7 @@ public class ExpertServiceImpl implements ExpertService {
                     BeanCopierUtils.copyProperties(ew, workDto);
                     workDtoList.add(workDto);
                 });
-                expertDto.setWorkDto(workDtoList);
+                expertDto.setWorkDtoList(workDtoList);
             }
             //项目经验
             if (expert.getProject() != null && expert.getProject().size() > 0) {
@@ -251,7 +224,7 @@ public class ExpertServiceImpl implements ExpertService {
                     BeanCopierUtils.copyProperties(ep, projectDto);
                     projectDtoList.add(projectDto);
                 });
-                expertDto.setProjectDto(projectDtoList);
+                expertDto.setProjectDtoList(projectDtoList);
             }
 
             //专家类型

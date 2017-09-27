@@ -1,5 +1,6 @@
 package cs.controller.expert;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertOfferDto;
 import cs.repository.odata.ODataObj;
@@ -39,9 +40,9 @@ public class ExpertOfferController {
 
     @RequiresPermissions("expertOffer##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody ExpertOfferDto record) {
-        expertOfferService.save(record);
+    @ResponseBody
+    public ResultMsg post(@RequestBody ExpertOfferDto record) {
+        return expertOfferService.save(record);
     }
 
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)

@@ -842,18 +842,6 @@
                     title: "发文后工作日",
                     width: 140,
                     filterable: false
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        if (item.isAssociate == 0) {
-                            return '<button class="btn btn-xs btn-success" ng-click="vm.showAssociate(\''+item.signid+'\')" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>关联项目</button>';
-                        } else {
-                            return '<button class="btn btn-xs btn-warning" ng-click="vm.disAssociateSign(\''+item.signid+'\')" ng-disabled="vm.isSubmit">  <span class="glyphicon glyphicon-resize-small"></span>取消关联</button>';;
-                        }
-                    }
                 }
             ];
             

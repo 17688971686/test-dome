@@ -357,7 +357,6 @@
         	if(vm.showPlan.drawType=="0"){
         		vm.num=vm.assistPlanSign.length;
         	}else {
-        		console.log(123);
         		vm.num=vm.assistPlanSign.length+1;
         	}
         }

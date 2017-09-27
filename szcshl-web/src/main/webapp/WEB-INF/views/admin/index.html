@@ -188,20 +188,17 @@ desired effect
                 <!-- start 项目管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-cloud-download"></i><span class="title">项目签收管理</span>
+                        <i class="fa fa-cloud-download"></i><span class="title">项目管理</span>
                         <span class="pull-right-container">
 							<i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li>
-                            <a href="javascript:void(0)" ui-sref="listSign">项目列表</a>
-                        </li>
+                        <li><a href="javascript:void(0)" ui-sref="listSign">项目列表</a></li>
                         <li ><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
                         <li>
                             <a href="javascript:void(0)" ui-sref="pauseProject">
-                                项目暂停审批
-                                <span class="label label-danger" id="PAUSE_COUNT">0</span>
+                                项目暂停审批<span class="label label-danger" id="PAUSE_COUNT">0</span>
                             </a>
                         </li>
                         <li><a href="javascript:void(0)" ui-sref="reserveAdd">项目预签收</a></li>
@@ -209,14 +206,60 @@ desired effect
                         <li><a href="javascript:void(0)"  ui-sref="signList">项目查询统计 </a></li>
                         <li><a href="javascript:void(0)" ui-sref="assistPlan">协审计划管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
+                        <!-- start 项目费用管理 -->
+                        <li><a href="javascript:void(0)" ui-sref="assistCostAdd">协审费录入</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="financialManagerList">评审费用统计</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li>
+                        <!-- end 项目费用管理 -->
+                        <!-- start 项目资料函管理 -->
+                        <li>
+                            <a href="javascript:void(0)" ui-sref="suppLetterApproveList">
+                                拟补资料函审批<span class="label label-danger" id="ADDSUPPLETTER_COUNT">0</span>
+                            </a>
+                        </li>
+                        <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
+                        <!-- end 项目资料函管理 -->
+                        <!-- start 优秀评审报告管理 -->
+                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingEdit">评审项目评优</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingList">优秀评审报告查询</a></li>
+                        <!-- end 优秀评审报告管理 -->
+                        <!-- start 月报简报管理 -->
+                        <li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="theMonthsList">月报简报</a></li>
+                        <!-- end 月报简报管理 -->
                     </ul>
                 </li>
                 <!-- end 项目签收-->
 
+                <!-- start 档案借阅管理 -->
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-newspaper-o" aria-hidden="true"></i><span class="title">档案借阅管理</span>
+                        <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="javascript:void(0)" ui-sref="libraryAdd">中心档案借阅</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="archivesCityEdit">市档案借阅</a></li>
+                        <li>
+                            <a href="javascript:void(0)" ui-sref="archivesProjectRead">
+                                项目查阅审批<span class="label label-danger" id="PROJECT_COUNT">0</span>
+                            </a>
+                        </li>
+                        <li><a href="javascript:void(0)" ui-sref="archivesLibraryList">中心档案查询</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="archivesCityList">市档案查询</a></li>
+                    </ul>
+                </li>
+                <!-- end 档案借阅管理 -->
+
                 <!-- start 流程管理-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-cloud-download"></i><span class="title">课题研究管理</span>
+                        <i class="fa fa-object-group" aria-hidden="true"></i><span class="title">课题研究管理</span>
                         <span class="pull-right-container">
 							<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -226,79 +269,7 @@ desired effect
                         <li ><a href="javascript:void(0)" ui-sref="myTopic">我的课题</a></li>
                     </ul>
                 </li>
-                <!-- end 项目签收-->
-                
-                 <!-- start 项目费用管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">项目费用管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                         <li><a href="javascript:void(0)" ui-sref="assistCostAdd">协审费录入</a></li> 
-                    	<li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="financialManagerList">评审费用统计</a></li>
-                         <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li> 
-                         <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li> 
-                    </ul>
-                </li>
-              <!-- end 项目费用管理 -->
-              
-              <!-- start 优秀评审报告管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">优秀评审报告管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingEdit">评审项目评优</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingList">优秀评审报告查询</a></li>
-                    </ul>
-                </li>
-              <!-- end 优秀评审报告管理 -->
-              
-              <!-- start 项目资料函管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">项目资料函管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="suppLetterApproveList">拟补资料函审批
-                    	<span class="label label-danger" id="ADDSUPPLETTER_COUNT">0</span>
-                    	</a>
-                    	</li>
-                    	<li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a>
-                    	</li>
-                    </ul>
-                </li>
-              <!-- end 项目资料函管理 -->
-              
-               <!-- start 月报简报管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">月报简报管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="theMonthsList">月报简报</a></li>
-                    </ul>
-                </li>
-              <!-- end 月报简报管理 -->
+                <!-- end 流程管理-->
               
                <!-- start 中心文件管理 -->
                 <li class="treeview">
@@ -319,42 +290,6 @@ desired effect
                     </ul>
                 </li>
               <!-- end 中心文件管理 -->
-              
-              <!-- start 档案借阅管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">档案借阅管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="libraryAdd">中心档案借阅</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="archivesCityEdit">市档案借阅</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="archivesProjectRead">项目查阅审批
-                        <span class="label label-danger" id="LIBRARY_COUNT">0</span>
-                        </a></li>
-                        <li><a href="javascript:void(0)" ui-sref="archivesLibraryList">中心档案查询</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="archivesCityList">市档案查询</a></li>
-                    </ul>
-                </li>
-              <!-- end 档案借阅管理 -->
-                
-				<!-- begin 用户部门管理 -->
-				<!-- <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i>
-                        <span class="title">用户部门管理</span>
-                        <span class="pull-right-container"> 
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        
-                    </ul>
-                </li> -->
-                <!-- end 用户部门管理 -->
                 
 				<!-- begin 专家管理 -->
                 <li class="treeview">
@@ -389,37 +324,23 @@ desired effect
                 </li>
                 <!-- end -->
 
-
-				<!-- begin 机关单位管理 -->
-				<!-- <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-link"></i> <span class="title">处室管理</span> <span
-                            class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                                              
-                    </ul>
-                </li> -->
-                <!-- end 机关单位管理 -->
-
                 <!-- begin 图书管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-users"></i> <span class="title">图书管理</span>
+                        <i class="fa fa-book" aria-hidden="true"></i><span class="title">图书管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="bookBuyBusinessEdit({id:null})">图书信息录入</a></li>
                         <li><a href="javascript:void(0)" ui-sref="myBookBuyBusiness">图书采购流程查询</a></li>
-            </ul>
+                    </ul>
                 </li>
                 <!-- end 图书管理 -->
 
-                <!-- begin 图书管理 -->
+                <!-- begin 资产管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-users"></i> <span class="title">资产管理</span>
+                        <i class="fa fa-cubes" aria-hidden="true"></i> <span class="title">资产管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
@@ -428,7 +349,7 @@ desired effect
                         <li><a href="javascript:void(0)" ui-sref="assertApplyUse">固定资产申请使用流程</a></li>
                     </ul>
                 </li>
-                <!-- end 图书管理 -->
+                <!-- end 资产管理 -->
                 
                 <!-- begin 系统管理 -->
                 <li class="treeview">
@@ -464,7 +385,7 @@ desired effect
 				<!-- start 共享平台-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
+                        <i class="fa fa-bullhorn" aria-hidden="true"></i>
                         <span class="title">公告资料管理</span>
                         <span class="pull-right-container"> 
                         	<i class="fa fa-angle-left pull-right"></i>
@@ -480,25 +401,24 @@ desired effect
                 </li>
                 <!-- end 共享平台-->
 
-              
 
+                <!--
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="glyphicon glyphicon-cog"></i>
                         <span class="title">个人中心管理</span>
                         <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="takeUser">代理办理</a></li>
                     </ul>
 
-                   <#-- <ul class="treeview-menu">
+                    <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="statistical">统计</a></li>
-                    </ul>-->
-
-                </li>
+                    </ul>
+                </li>-->
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
@@ -516,8 +436,7 @@ desired effect
 
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                        <span class="title">表头管理</span>
+                        <i class="fa fa-cog" aria-hidden="true"></i><span class="title">其它</span>
                         <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -525,9 +444,7 @@ desired effect
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="header">表头管理</a></li>
                     </ul>
-
                 </li>
-             
             </ul>
             <!-- /.sidebar-menu -->
 
@@ -572,7 +489,7 @@ desired effect
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
- <script src="${path}/contents/libs/raty/lib/jquery.raty.js"></script>
+<script src="${path}/contents/libs/raty/lib/jquery.raty.js"></script>
 <script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
 <script src="${path}/contents/libs/angular/angular.js"></script>
 <script src="${path}/contents/libs/angular/sanitize.js"></script>

@@ -12,13 +12,11 @@ public interface ExpertService {
 
     PageModelDto<ExpertDto> get(ODataObj odataObj);
 
-    String createExpert(ExpertDto expertDto);
+    ResultMsg saveExpert(ExpertDto expertDto);
 
     void deleteExpert(String id);
 
     void deleteExpert(String[] ids);
-
-    void updateExpert(ExpertDto expertDto);
 
     void updateAudit(String ids, String flag);
 

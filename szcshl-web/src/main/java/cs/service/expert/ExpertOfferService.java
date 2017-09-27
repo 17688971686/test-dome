@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertOffer;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertOfferDto;
@@ -14,7 +15,7 @@ public interface ExpertOfferService {
     
     PageModelDto<ExpertOfferDto> get(ODataObj odataObj);
 
-	void save(ExpertOfferDto record);
+	ResultMsg save(ExpertOfferDto record);
 
 	void update(ExpertOfferDto record);
 

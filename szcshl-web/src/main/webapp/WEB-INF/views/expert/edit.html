@@ -1,48 +1,23 @@
 <#assign path=request.contextPath />
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
+<div class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;">
     <ol class="breadcrumb">
         <li><a href="#/expertList">专家管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-
-    <div class="toolbar">
-        <a class="btn btn-sm btn-primary" href="#/expert"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-
-        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate">
-            <span class="glyphicon glyphicon-ok"></span>新增专家信息
-        </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate">
-            <span class="glyphicon glyphicon-ok"></span>更改专家信息
-        </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.gotoWPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt">
-            <span class="glyphicon glyphicon-ok"></span>添加工作简历
-        </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.gotoJPage()" ng-disabled="vm.isSubmit" ng-show="vm.showBt">
-            <span class="glyphicon glyphicon-ok"></span>添加项目经验
-        </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.gotoOfferPage()" ng-disabled="vm.isSubmit"
-                ng-show="vm.showBt"><span class="glyphicon glyphicon-ok"></span>添加专家聘书
-        </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.gotoExpertType()" ng-disabled="vm.isSubmit"
-                ng-show="vm.showBt"><span class="glyphicon glyphicon-ok"></span>添加专家类型
-        </button>
-    </div>
-    <p class="pro_title_1" style="margin:10px;margin-left:0px;">专家信息</p>
-
     <form id="form" name="form">
         <table class="">
             <caption class="text-center"> <h3><strong>深圳市政府投资项目咨询专家申请表</strong></h3></caption>
             <tr>
-                <td class="formAlignRight" width="10%">姓名 <span class="required">*</span></td>
+                <td  class="text-center" width="10%">姓名 <span class="required">*</span></td>
                 <td width="15%">
                     <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"
                            ng-model="vm.model.name" id="loginName" name="name" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
                 </td>
 
-                <td class="formAlignRight" width="10%">性别<span class="required">*</span></td>
+                <td  class="text-center" width="10%">性别<span class="required">*</span></td>
                 <td width="15%">
                     <select ng-model="vm.model.sex" class="form-control input-sm " name="sex" data-val-required="必填"
                             data-val="true">
@@ -54,7 +29,7 @@
                     </select>
                     <span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td align="center" class="formAlignRight" width="10%">出生年月<span class="required">*</span></td>
+                <td align="center"  class="text-center" width="10%">出生年月<span class="required">*</span></td>
                 <td width="15%">
                     <input type="text" name="birthDay" id="birthDay" style="width: 100%;" class="form-control input-sm "
                            kendo-date-picker k-format="'yyyy-MM-dd'"
@@ -69,15 +44,15 @@
                 </td>
             </tr>
             <tr>
-                <td align="center" class="formAlignRight">身份证号</td>
+                <td class="text-center">身份证号<span class="required">*</span></td>
                 <td>
                     <input type="text" name="idCard" id="idCard" class="form-control input-sm "
                            ng-model="vm.model.idCard" data-val-regex="身份证格式不正确"
                            data-val-regex-pattern="[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)"
-                           data-val-required="必填">
+                           data-val="true" data-val-required="必填">
                     <span data-valmsg-for="idCard" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">最高学历<span class="required">*</span></td>
+                <td  class="text-center">最高学历<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.qualifiCations" class="form-control input-sm " name="qualifiCations"
                             data-val-required="必填" data-val="true">
@@ -89,7 +64,7 @@
                     </select>
                     <span data-valmsg-for="qualifiCations" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">最高学位<span class="required">*</span></td>
+                <td  class="text-center">最高学位<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.degRee" class="form-control input-sm " name="degRee"
                             data-val-required="必填" data-val="true">
@@ -102,13 +77,13 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">毕业院校<span class="required">*</span></td>
+                <td  class="text-center">毕业院校<span class="required">*</span></td>
                 <td colspan="3">
                     <input type="text" name="acaDemy" id="acaDemy" class="form-control input-sm "
                            ng-model="vm.model.acaDemy" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="acaDemy" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">毕业时间<span class="required">*</span></td>
+                <td  class="text-center">毕业时间<span class="required">*</span></td>
                 <td>
                     <input type="text" ng-model="vm.model.graduateDate" name="graduateDate" id="graduateDate"
                            style="width: 100%"
@@ -118,13 +93,13 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">工作单位<span class="required">*</span></td>
+                <td  class="text-center">工作单位<span class="required">*</span></td>
                 <td colspan="3">
                     <input type="text" name="comPany" id="comPany" class="form-control input-sm "
                            ng-model="vm.model.comPany" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">现任职务<span class="required">*</span></td>
+                <td  class="text-center">现任职务<span class="required">*</span></td>
                 <td>
                     <input ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true"
                            data-val-required="必填">
@@ -132,7 +107,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">手机号码<span class="required">*</span></td>
+                <td  class="text-center">手机号码<span class="required">*</span></td>
                 <td>
                     <input type="text" name="userPhone" id="userPhone" class="form-control input-sm "
                            ng-model="vm.model.userPhone" data-val="true" data-val-required="必填"
@@ -140,7 +115,7 @@
                            class="form-control input-sm ">
                     <span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">职称<span class="required">*</span></td>
+                <td  class="text-center">职称<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true"
                             data-val-required="必填">
@@ -151,13 +126,13 @@
                     </select>
                     <span data-valmsg-for="post" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">电子邮箱</td>
+                <td  class="text-center">电子邮箱</td>
                 <td>
                     <input type="text" name="email" id="email" class="form-control input-sm " ng-model="vm.model.email"
                            data-val="true" data-val-email="必须为Email格式">
                     <span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">办公电话</td>
+                <td  class="text-center">办公电话</td>
                 <td>
                     <input type="text" name="phone" id="phone" class="form-control input-sm " ng-model="vm.model.phone"
                            data-val="true">
@@ -166,19 +141,19 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">通讯地址</td>
+                <td  class="text-center">通讯地址</td>
                 <td colspan="3">
                     <input type="text" name="addRess" id="addRess" class="form-control input-sm "
                            ng-model="vm.model.addRess" data-val="true">
                     <span data-valmsg-for="addRess" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight" width="60">传真</td>
+                <td  class="text-center" width="60">传真</td>
                 <td>
                     <input type="text" name="fax" id="fax" class="form-control input-sm " ng-model="vm.model.fax"
                            ng-maxlength="20" data-val="true">
                     <span data-valmsg-for="fax" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="formAlignRight">邮编</td>
+                <td  class="text-center">邮编</td>
                 <td>
                     <input type="text" name="zipCode" id="zipCode" class="form-control input-sm "
                            ng-model="vm.model.zipCode"
@@ -187,8 +162,8 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">所学专业<span class="required">*</span></td>
-                <td class="formAlignRight" colspan="7" style="text-align:left;">
+                <td  class="text-center">所学专业<span class="required">*</span></td>
+                <td  class="text-center" colspan="7" style="text-align:left;">
                     <div style="float: left;" ng-show="vm.showSS">
                         <span>专业门类：</span>
                         <select name="zyml" ng-model="vm.model.majorSSort" style="width: 100px;"
@@ -223,8 +198,8 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">从事专业<span class="required">*</span></td>
-                <td class="formAlignRight" colspan="7" style="text-align:left;">
+                <td  class="text-center">从事专业<span class="required">*</span></td>
+                <td  class="text-center" colspan="7" style="text-align:left;">
                     <div style="float: left;" ng-show="vm.showWS">
                         <span>专业门类：</span>
                         <select name="zyml" ng-model="vm.model.majorWSort" style="width: 100px;"
@@ -257,9 +232,9 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">专家类别<span class="required">*</span></td>
+                <td  class="text-center">专家类别<span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.expertSort" class="form-control input-sm " name="expertSort"
+                    <select ng-model="vm.model.expertSort" name="expertSort"
                             data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
@@ -269,7 +244,7 @@
                     <span data-valmsg-for="expertType" data-valmsg-replace="true" class="errors"></span>
                 </td>
 
-                <td class="formAlignRight">区域类别<span class="required">*</span></td>
+                <td  class="text-center">区域类别<span class="required">*</span></td>
                 <td colspan="3">
                     <select ng-model="vm.model.expertField" data-val="true" data-val-required="必填" name="expertField">
                         <option value="">请选择</option>
@@ -282,14 +257,14 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">开户行<span class="required">*</span></td>
+                <td  class="text-center">开户行<span class="required">*</span></td>
                 <td colspan="3">
                     <input type="text" name="openingBank" id="openingBank" class="form-control input-sm "
                            ng-model="vm.model.openingBank" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="openingBank" data-valmsg-replace="true" class="errors"></span>
                 </td>
 
-                <td class="formAlignRight">银行账号<span class="required">*</span></td>
+                <td  class="text-center">银行账号<span class="required">*</span></td>
                 <td colspan="3">
                     <input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm "
                            ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填">
@@ -298,193 +273,200 @@
             </tr>
 
             <tr>
-                <td height="97" class="formAlignRight">备注</td>
+                <td height="97"  class="text-center">备注</td>
                 <td colspan="7">
                     <textarea style="width: 100%; height: 95px" name="remark" ng-model="vm.model.remark"
                               class="form-control input-sm " data-bind="value:remark"></textarea>
                 </td>
             </tr>
-        </table>
-    </form>
-
-    <!-- S 工作经历DIV -->
-    <div ng-show="vm.showWorkHistory">
-        <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.updateWorkPage()"><span
-                    class="glyphicon glyphicon-ok"></span>更新
-            </button>
-            <button class="btn btn-sm btn-success" ng-click="vm.deleteWork()"><span
-                    class="glyphicon glyphicon-ok"></span>删除
-            </button>
-        </div>
-        <p class="pro_title_1" style="margin:10px;margin-left:0px;">工作简历</p>
-        <table class="table table-bordered" id="workTab">
+            <tr >
+                <td rowspan="{{vm.model.expertTypeDtoList.length +2}}" class="text-center">
+                    专业类别
+                </td>
+                <td colspan="7">
+                    <button class="btn btn-xs btn-success" ng-click="vm.gotoExpertType()" ng-disabled="vm.isSubmit">
+                        <i class="fa fa-plus" aria-hidden="true"></i>添加
+                    </button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.updateProjectType()"><span
+                            class="glyphicon glyphicon-ok"></span>更新
+                    </button>
+                    <button class="btn btn-xs btn-danger" ng-click="vm.delertProjectType()"><span
+                            class="glyphicon glyphicon-remove"></span>删除
+                    </button>
+                </td>
             <tr>
-                <td style="width: 60px;" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addWork"
-                                                                                 name="workChecked" id="workChecked"/>
+                <td class="text-center"  >
+                    <input type='checkbox' ng-model="ep_type" name="expertTypeChecked" id="expertTypeChecked"/>
                 </td>
-                <td width="10%" align="center" bgcolor="#eeeeee">开始时间</td>
-                <td width="10%" align="center" bgcolor="#eeeeee">结束时间</td>
-                <td align="center" bgcolor="#eeeeee">工作单位</td>
-                <td width="20%" align="center" bgcolor="#eeeeee">职务</td>
+                <td class="text-center"  >序号</td>
+                <td class="text-center" colspan="2"   >突出专业(大类)</td>
+                <td class="text-center" colspan="2"  >突出专业(小类)</td>
+                <td class="text-center"  >专家类型</td>
             </tr>
-            <tr ng-repeat="x in vm.workList">
-                <td align="center"><input type="checkbox" name="checkwr" ng-checked="addWork" value="{{ x.weID }}"/>
+            <tr ng-if="vm.model.expertTypeDtoList" ng-repeat="t in vm.model.expertTypeDtoList">
+                <td class="text-center">
+                    <input type="checkbox" name="checkEType" ng-checked="ep_type" value="{{ t.id }}"/>
                 </td>
-                <td style="text-align: center;">{{ x.beginTime }}</td>
-                <td style="text-align: center;">{{ x.endTime }}</td>
-                <td style="text-align: center;">{{ x.companyName }}</td>
-                <td style="text-align: center;">{{ x.workJob }}</td>
+                <td class="text-center">{{$index+1}}</td>
+                <td class="text-center" colspan="2">{{t.maJorBig}}</td>
+                <td class="text-center" colspan="2">{{t.maJorSmall}}</td>
+                <td class="text-center" >{{t.expertType}}</td>
             </tr>
-        </table>
-    </div>
-    <!-- E 工作经历DIV -->
-
-    <!-- S 项目经历DIV -->
-    <div ng-show="vm.projectkHistory">
-        <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.updateProjectPage()"><span
-                    class="glyphicon glyphicon-ok"></span>更新
-            </button>
-            <button class="btn btn-sm btn-success" ng-click="vm.delertProject()"><span
-                    class="glyphicon glyphicon-ok"></span>删除
-            </button>
-        </div>
-        <p class="pro_title_1" style="margin:10px;margin-left: 0px;">项目经验</p>
-        <table class="table table-bordered">
-            <tr>
-                <td style="width: 60px;" align="center" bgcolor="#eeeeee"><input type='checkbox' ng-model="addProject"
-                                                                                 name="pjallChecked" id="pjallChecked"/>
+            </tr>
+            <tr >
+                <td rowspan="{{vm.model.workDtoList.length +2}}" class="text-center">
+                    工作简历
                 </td>
-                <td align="center" bgcolor="#eeeeee">项目名称</td>
-                <td align="center" bgcolor="#eeeeee">项目类别</td>
-            </tr>
-            <tr ng-repeat="x in vm.projectList">
-                <td align="center"><input type="checkbox" name="checkpj" ng-checked="addProject" value="{{ x.peID }}"/>
-                </td>
-                <td style="text-align: center;">{{x.projectName}}</td>
-                <td style="text-align: center;">{{x.projectType}}</td>
-            </tr>
-        </table>
-    </div>
-    <!-- E 项目经历DIV -->
-
-    <!-- S 专家聘书DIV -->
-    <div ng-show="vm.showExpertOffer">
-        <p class="pro_title_1" style="margin:10px;margin-left:0px;">聘书列表</p>
-        <table class="table table-bordered" id="offerTab">
-            <tr>
-                <td style="width: 60px;" align="center" bgcolor="#eeeeee">序号</td>
-                <td width="12%" align="center" bgcolor="#eeeeee">是否发证</td>
-                <td width="12%" align="center" bgcolor="#eeeeee">发证日期</td>
-                <td width="12%" align="center" bgcolor="#eeeeee">有效期</td>
-                <td width="12%" align="center" bgcolor="#eeeeee">有效期至</td>
-                <td width="12%" align="center" bgcolor="#eeeeee">是否作废</td>
-                <td align="center" bgcolor="#eeeeee">备注</td>
-                <td style="width: 80px;" align="center" bgcolor="#eeeeee">操作</td>
-            </tr>
-            <tr ng-repeat="o in vm.expertOfferList">
-                <td style="text-align: center;">{{$index + 1}}</td>
-                <td style="text-align: center;">{{ o.isSendCcie == 9?'是':'否'}}</td>
-                <td style="text-align: center;">{{ o.sendCcieDate }}</td>
-                <td style="text-align: center;">{{ o.period }}</td>
-                <td style="text-align: center;">{{ o.periodDate }}</td>
-                <td style="text-align: center;">{{ o.isInvalid == 9?'是':'否'}}</td>
-                <td style="text-align: center;">{{ o.descInfo }}</td>
-                <td style="text-align: center;">
-                    <button class="btn btn-xs btn-default" ng-click="vm.showOffer(o.id)" ng-disabled="vm.isSubmit">查看
+                <td colspan="7">
+                    <button class="btn btn-xs btn-success" ng-click="vm.gotoWPage()" ng-disabled="vm.isSubmit" >
+                        <i class="fa fa-plus" aria-hidden="true"></i>添加
+                    </button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.updateWork()">
+                        <span class="glyphicon glyphicon-ok"></span>更改
+                    </button>
+                    <button class="btn btn-xs btn-danger" ng-click="vm.deleteWork()"><span
+                            class="glyphicon glyphicon-remove"></span>删除
                     </button>
                 </td>
             </tr>
-        </table>
-    </div>
-    <!-- E 专家聘书DIV -->
-    <!-- 专家类型显示区 -->
-    <div ng-show="vm.expertTypeList">
-        <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.updateProjectType()"><span
-                    class="glyphicon glyphicon-ok"></span>更新
-            </button>
-            <button class="btn btn-sm btn-success" ng-click="vm.delertProjectType()"><span
-                    class="glyphicon glyphicon-ok"></span>删除
-            </button>
-        </div>
-        <p class="pro_title_1" style="margin:10px;margin-left: 0px;">专家类型</p>
-        <table class="table table-bordered">
-            <tr>
-                <td style="width: 40px;" align="center" bgcolor="#eeeeee">
-                    <input type='checkbox' ng-model="addExpertType" name="expertTypeChecked" id="expertTypeChecked"/>
+            <tr >
+                <td  class="text-center"  >
+                    <input type='checkbox' ng-model="workChecked" />
                 </td>
-                <td style="width: 50px;" align="center" bgcolor="#eeeeee">序号</td>
-                <td  align="center" bgcolor="#eeeeee">突出专业(大类)</td>
-                <td  align="center" bgcolor="#eeeeee">突出专业(小类)</td>
-                <td  align="center" bgcolor="#eeeeee">专家类型</td>
+                <td class="text-center"  >开始时间</td>
+                <td class="text-center"  >结束时间</td>
+                <td class="text-center"   colspan="2">工作单位</td>
+                <td class="text-center"   colspan="2">职务</td>
             </tr>
-            <tr ng-repeat="x in vm.expertTypeList">
-                <td align="center">
-                    <input type="checkbox" name="checkEType" ng-checked="addExpertType" value="{{ x.id }}"/>
+            <tr ng-if="vm.model.workDtoList" ng-repeat="w in vm.model.workDtoList">
+                <td class="text-center"><input type="checkbox" name="checkwr" ng-checked="workChecked" value="{{w.weID}}"/>
                 </td>
-                <td style="text-align: center;">{{$index+1}}</td>
-                <td style="text-align: center;">{{x.maJorBig}}</td>
-                <td style="text-align: center;">{{x.maJorSmall}}</td>
-                <td style="text-align: center;">{{x.expertType}}</td>
+                <td class="text-center">{{ w.beginTime }}</td>
+                <td class="text-center">{{ w.endTime }}</td>
+                <td class="text-center" colspan="2">{{ w.companyName }}</td>
+                <td class="text-center" colspan="2">{{ w.workJob }}</td>
             </tr>
-        </table>
-    </div>
 
-    <!-- 以下我弹窗部分div-->
+            <tr >
+                <td rowspan="{{vm.model.projectDtoList.length +2}}" class="text-center">
+                    项目经历
+                </td>
+                <td colspan="7">
+                    <button class="btn btn-xs btn-success" ng-click="vm.gotoJPage()" ng-disabled="vm.isSubmit" >
+                        <i class="fa fa-plus" aria-hidden="true"></i>添加
+                    </button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.updateProjectPage()"><span
+                            class="glyphicon glyphicon-ok"></span>更新
+                    </button>
+                    <button class="btn btn-xs btn-danger" ng-click="vm.delertProject()"><span
+                            class="glyphicon glyphicon-remove"></span>删除
+                    </button>
+                </td>
+            </tr>
+            <tr >
+                <td class="text-center"  >
+                    <input type='checkbox' ng-model="ep_project" name="pjallChecked" id="pjallChecked"/>
+                </td>
+                <td class="text-center" colspan="3"  >项目名称</td>
+                <td class="text-center" colspan="3"  >项目类别</td>
+            </tr>
+            <tr ng-if="vm.model.projectDtoList" ng-repeat="x in vm.model.projectDtoList">
+                <td align="center"><input type="checkbox" name="checkpj" ng-checked="ep_project" value="{{ x.peID }}"/>
+                </td>
+                <td class="text-center" colspan="3">{{x.projectName}}</td>
+                <td class="text-center" colspan="3">{{x.projectType}}</td>
+            </tr>
+
+            <tr >
+                <td rowspan="{{vm.model.expertOfferDtoList.length +2}}" class="text-center">
+                    专家聘书
+                </td>
+                <td colspan="7">
+                    <button class="btn btn-xs btn-success" ng-click="vm.gotoOfferPage()" >
+                        <i class="fa fa-plus" aria-hidden="true"></i>添加
+                    </button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.showOffer()">
+                        <span class="glyphicon glyphicon-ok"></span>查看
+                    </button>
+                </td>
+            </tr>
+            <tr >
+                <td class="text-center"  >选择</td>
+                <td class="text-center"  >是否发证</td>
+                <td class="text-center"  >发证日期</td>
+                <td class="text-center"  >有效期</td>
+                <td class="text-center"  >有效期至</td>
+                <td class="text-center"  >是否作废</td>
+                <td class="text-center"  >备注</td>
+                <!--<td class="text-center"  >操作</td>-->
+            </tr>
+            <tr ng-if="vm.model.expertOfferDtoList" ng-repeat="o in vm.model.expertOfferDtoList">
+                <td align="center">
+                    <input type="checkbox" name="checkps"  value="{{ o.id }}"/>
+                </td>
+                <td class="text-center">{{ o.isSendCcie == 9?'是':'否'}}</td>
+                <td class="text-center">{{ o.sendCcieDate }}</td>
+                <td class="text-center">{{ o.period }}</td>
+                <td class="text-center">{{ o.periodDate }}</td>
+                <td class="text-center">{{ o.isInvalid == 9?'是':'否'}}</td>
+                <td class="text-center">{{ o.descInfo }}</td>
+                <!--
+                <td class="text-center">
+                    <button class="btn btn-xs btn-default" ng-click="vm.showOffer(o.id)" ng-disabled="vm.isSubmit">查看</button>
+                </td>
+                -->
+            </tr>
+        </table>
+    </form>
+
+    <!-- 以下是弹窗部分div-->
     <!-- S 工作经历弹窗 -->
     <div id="wrwindow" class="well well-sm" style="background:white;display:none;">
-
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.createWorks()" ng-disabled="vm.isSubmit"
-                    ng-show="vm.createWork"><span class="glyphicon glyphicon-ok"></span>保存
+            <button class="btn btn-sm btn-success" ng-click="vm.saveWorks()" ng-disabled="vm.isSubmit">
+                <span class="glyphicon glyphicon-ok"></span>保存
             </button>
-            <button class="btn btn-sm btn-success" ng-click="vm.updateWork()" ng-disabled="vm.isSubmit"
-                    ng-hide="vm.createWork"><span class="glyphicon glyphicon-ok"></span>更新
-            </button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.onWClose()"><span
-                    class="glyphicon glyphicon-chevron-left"></span>返回
+            <button class="btn btn-sm btn-primary" ng-click="vm.onWClose()">
+                <span class="glyphicon glyphicon-chevron-left"></span>关闭
             </button>
         </div>
         <form id="workForm" name="workForm">
-            <table style="width:100%">
+            <table class="table table-bordered" style="width: 100%;">
                 <tr>
-                    <td class="formAlignRight">开始时间： <span class="required">*</span></td>
+                    <td  class="text-center" style="width: 20%;">开始时间： <span class="required">*</span></td>
                     <td>
                         <input type="text" maxlength="20" class="form-control input-sm " kendo-date-picker
                                k-format="'yyyy-MM-dd'" ng-model="vm.work.beginTime" id="beginTime" name="beginTime"
                                data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td><span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
 
                 <tr>
-                    <td class="formAlignRight">结束时间： <span class="required">*</span></td>
+                    <td  class="text-center">结束时间： <span class="required">*</span></td>
                     <td>
                         <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.work.endTime"
                                kendo-date-picker k-format="'yyyy-MM-dd'" id="endTime" name="endTime" data-val="true"
                                data-val-required="必填">
+                        <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td>
-                        <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
                 <tr>
-                    <td class="formAlignRight">工作单位： <span class="required">*</span></td>
+                    <td  class="text-center">工作单位： <span class="required">*</span></td>
                     <td>
-                        <input type="text" maxlength="200" class="form-control input-sm "
-                               ng-model="vm.work.companyName " id="companyName" name="companyName" data-val="true"
-                               data-val-required="必填">
+                        <textarea type="text" maxlength="128" rows="3" style="width: 98%" data-val="true" data-val-required="必填"
+                        ng-model="vm.work.companyName" id="companyName" name="companyName" ></textarea>
+                        <span data-valmsg-for="companyName" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td><span data-valmsg-for="companyName" data-valmsg-replace="true" class="errors"></span></td>
+
                 </tr>
                 <tr>
-                    <td class="formAlignRight">职务： <span class="required">*</span></td>
+                    <td  class="text-center">职务： <span class="required">*</span></td>
                     <td>
-                        <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.work.workJob "
-                               id="workJob" name="workJob" data-val="true" data-val-required="必填">
+                        <textarea type="text" maxlength="128" rows="3" style="width: 98%" ng-model="vm.work.workJob "
+                                  id="workJob" name="workJob" data-val="true" data-val-required="必填"></textarea>
+                        <span data-valmsg-for="workJob" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td><span data-valmsg-for="workJob" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
             </table>
         </form>
@@ -495,63 +477,37 @@
     <div id="pjwindow" class="well well-sm" style="background:white;display:none;">
         <form id="ProjectForm" name="ProjectForm">
             <div class="toolbar">
-                <button class="btn btn-sm btn-success" ng-click="vm.createProjects()" ng-disabled="vm.isSubmit"
-                        ng-show="vm.createProject"><span class="glyphicon glyphicon-ok"></span>保存
-                </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.updateProject()" ng-disabled="vm.isSubmit"
-                        ng-hide="vm.createProject"><span class="glyphicon glyphicon-ok"></span>更新
+                <button class="btn btn-sm btn-success" ng-click="vm.saveProject()" ng-disabled="vm.isSubmit">
+                    <span class="glyphicon glyphicon-ok"></span>保存
                 </button>
                 <button class="btn btn-sm btn-primary" ng-click="vm.onPClose()"><span
                         class="glyphicon glyphicon-chevron-left"></span>返回
                 </button>
             </div>
-            <table style="width:100%">
-                <tr>
-                    <td class="formAlignRight" style="width:150px;"></td>
-                    <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                    <td></td>
-                </tr>
-                <!--  <tr>
-                   <td class="formAlignRight">开始时间： <span class="required">*</span></td>
-                   <td>
-                       <input  type="text" maxlength="20" class="form-control input-sm " ng-model="vm.project.projectbeginTime" kendo-date-picker k-format="'yyyy-MM-dd'"  id="projectbeginTime" name="projectbeginTime" data-val="true" data-val-required="必填">
-                   </td>
-                    <td><span data-valmsg-for="projectbeginTime" data-valmsg-replace="true" class="errors"></span></td>
 
-               </tr>
-
-                 <tr >
-                   <td class="formAlignRight">结束时间： <span class="required">*</span></td>
-                   <td>
-                       <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.project.projectendTime"  kendo-date-picker k-format="'yyyy-MM-dd'"  id="projectendTime" name="projectendTime" data-val="true" data-val-required="必填">
-                   </td>
-                   <td><span data-valmsg-for="projectendTime" data-valmsg-replace="true" class="errors"></span></td>
-               </tr> -->
+            <table class="table table-bordered" style="width:100%">
                 <tr>
-                    <td class="formAlignRight">项目名称： <span class="required">*</span></td>
+                    <td  class="text-center" style="width: 20%;">项目名称： <span class="required">*</span></td>
                     <td>
-                        <input type="text" maxlength="20" class="form-control input-sm "
-                               ng-model="vm.project.projectName" name="projectName" data-val="true"
-                               data-val-required="必填">
+                        <input type="text" maxlength="128" style="width: 80%;" name="projectName" data-val="true"
+                               data-val-required="必填" ng-model="vm.project.projectName" >
+                        <span data-valmsg-for="projectName" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td><span data-valmsg-for="projectName" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
 
                 <tr>
-                    <td class="formAlignRight">项目类别： <span class="required">*</span></td>
+                    <td  class="text-center">项目类别： <span class="required">*</span></td>
                     <td>
-                        <select class="form-control input-sm " ng-model="vm.project.projectType" id="projectType"
+                        <select ng-model="vm.project.projectType" id="projectType" style="width: 80%;"
                                 name="projectType" data-val="true" data-val-required="必填">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in vm.projectTypes" value="{{x.dictName}}"
+                            <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}"
                                     ng-selected="vm.project.projectType==x.dictName">{{x.dictName}}
                             </option>
                         </select>
-                        <!--  <input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.project.projectType" id="projectType" name="projectType" data-val="true" data-val-required="必填"> -->
+                        <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td><span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span></td>
                 </tr>
-
             </table>
         </form>
     </div>
@@ -567,14 +523,11 @@
     <div id="addExpertType" class="well well-sm" style="background:white;display:none;">
         <form id="expertTypeForm" name="expertTypeForm">
             <div class="toolbar">
-                <button class="btn btn-sm btn-success" ng-click="vm.createExpertType()"
+                <button class="btn btn-sm btn-success" ng-click="vm.saveExpertType()"
                         ng-hide="vm.showExpertType"><span class="glyphicon glyphicon-ok"></span>保存
                 </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.saveUpdateExpertType()"
-                        ng-show="vm.showExpertType"><span class="glyphicon glyphicon-ok"></span>更新
-                </button>
-                <button class="btn btn-sm btn-primary" ng-click=" vm.onETlose()"><span
-                        class="glyphicon glyphicon-chevron-left"></span>返回
+                <button class="btn btn-sm btn-primary" ng-click="vm.onETlose()">
+                    <span class="glyphicon glyphicon-chevron-left"></span>关闭
                 </button>
             </div>
             <table class="table table-bordered" style="width: 100%;">
@@ -611,8 +564,8 @@
                     <td style="width: 80px; height: 50px;">突出专业（小类）<span class="required">*</span></td>
                     <td>
                         <select class="form-control input-sm " ng-model="vm.expertType.maJorSmall" style="width: 60%;"
-                                name="small"
-                                data-val-required="必选" data-val="true">
+                                ng-init="vm.expertType.majobSmallDicts = topSelectChange(vm.expertType.maJorBig,DICT.MAJOR.dicts)"
+                                name="small" data-val-required="必选" data-val="true">
                             <option value="">请选择</option>
                             <option ng-repeat="x in vm.expertType.majobSmallDicts" value="{{x.dictName}}"
                                     ng-selected="vm.expertType.maJorSmall == x.dictName">{{x.dictName}}
@@ -632,11 +585,11 @@
 <!--   S_专家聘书 div   -->
 <div id="ep_offer_div" class="well well-sm" style="background:white;display:none;">
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.saveOffer()" ng-hide="vm.showProjectOffer"><span class="glyphicon glyphicon-ok"></span>保存
+        <button class="btn btn-sm btn-success" ng-click="vm.saveOffer()" ng-hide="vm.showProjectOffer">
+            <span class="glyphicon glyphicon-ok"></span>保存
         </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.updateOffer()" ng-show="vm.showProjectOffer"><span class="glyphicon glyphicon-ok"></span>更新
-        </button>
-        <button class="btn btn-sm btn-danger" ng-click="vm.closeOffer()"><span class="glyphicon glyphicon-ok"></span>关闭
+        <button class="btn btn-sm btn-danger" ng-click="vm.closeOffer()">
+            <span class="glyphicon glyphicon-ok"></span>关闭
         </button>
     </div>
 
@@ -644,41 +597,41 @@
         <table class="table table-bordered">
             <caption class="text-center"><strong><h3>深圳市政府投资项目评审专家聘书</h3></strong></caption>
             <tr>
-                <td class="formAlignRight" width="10%">姓名 <span class="required">*</span></td>
+                <td  class="text-center" width="10%">姓名 <span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.name}}
                 </td>
 
-                <td class="formAlignRight" width="10%">性别<span class="required">*</span></td>
+                <td  class="text-center" width="10%">性别<span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.sex}}
                 </td>
 
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">出生年月<span class="required">*</span></td>
+                <td  class="text-center" width="10%">出生年月<span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.birthDay}}
                 </td>
 
-                <td class="formAlignRight" width="10%">身份证号<span class="required">*</span></td>
+                <td  class="text-center" width="10%">身份证号<span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.idCard}}
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">学历<span class="required">*</span></td>
+                <td  class="text-center" width="10%">学历<span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.qualifiCations}}
                 </td>
 
-                <td class="formAlignRight" width="10%">职称<span class="required">*</span></td>
+                <td  class="text-center" width="10%">职称<span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.post}}
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">发证日期<span class="required">*</span></td>
+                <td  class="text-center" width="10%">发证日期<span class="required">*</span></td>
                 <td width="15%">
                     <input type="text" name="sendCcieDate" id="sendCcieDate" style="width: 100%;"
                            class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
@@ -687,9 +640,9 @@
                     <span data-valmsg-for="sendCcieDate" data-valmsg-replace="true" class="errors"></span>
                 </td>
 
-                <td class="formAlignRight" width="10%">有效期<span class="required">*</span></td>
+                <td  class="text-center" width="10%">有效期<span class="required">*</span></td>
                 <td width="15%">
-                    <select nam="period" ng-model="vm.expertOffer.period" id="period">
+                    <select nam="period" ng-model="vm.expertOffer.period" id="period" data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
                         <option value="一年">一年</option>
                         <option value="二年">二年</option>
@@ -701,12 +654,12 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">档案编号<span class="required">*</span></td>
+                <td  class="text-center" width="10%">档案编号<span class="required">*</span></td>
                 <td width="15%">
                     {{vm.model.expertNo}}
                 </td>
 
-                <td class="formAlignRight" width="10%">有效期至<span class="required">*</span></td>
+                <td  class="text-center" width="10%">有效期至<span class="required">*</span></td>
                 <td width="15%">
                     <input type="text" name="periodDate" id="periodDate" style="width: 100%;"
                            class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
@@ -716,7 +669,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">是否发证<span class="required">*</span></td>
+                <td  class="text-center" width="10%">是否发证<span class="required">*</span></td>
                 <td width="15%">
                     <label class="checkbox-inline">
                         <input type="radio" name="isSendCcie" ng-model="vm.expertOffer.isSendCcie" value="9" checked>是
@@ -726,7 +679,7 @@
                     </label>
                 </td>
 
-                <td class="formAlignRight" width="10%">是否作废<span class="required">*</span></td>
+                <td  class="text-center" width="10%">是否作废<span class="required">*</span></td>
                 <td width="15%">
                     <label class="checkbox-inline">
                         <input type="radio" name="isInvalid" ng-model="vm.expertOffer.isInvalid" value="9" checked>是
@@ -737,7 +690,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">备注</td>
+                <td  class="text-center" width="10%">备注</td>
                 <td width="15%" colspan="3">
                     <textarea rows="3" cols="80" name="descInfo" id="descInfo" ng-model="vm.expertOffer.descInfo"
                               data-val="true" data-val-length-max="256" data-val-length="不能超过256个字">{{vm.expertOffer.descInfo}}</textarea>
@@ -748,4 +701,14 @@
     </form>
 </div>
 <!--   E_专家聘书 div   -->
+
+
+<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
+    <div class="text-center" style="line-height: 50px;">
+        <button class="btn btn-sm btn-primary" href="#/expert"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.saveEP()" ng-disabled="vm.isSubmit" >
+            <span class="glyphicon glyphicon-ok"></span>保存专家信息
+        </button>
+    </div>
+</div>
 </div>

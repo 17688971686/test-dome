@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,9 +38,9 @@ public class ExpertTypeController {
 	
 	@RequiresPermissions("expertType##post")
 	@RequestMapping(name = "添加专家类型", path = "",method=RequestMethod.POST)	
-	@ResponseStatus(value = HttpStatus.CREATED)
-	public void  createType(@RequestBody ExpertTypeDto expertTypeDto)  {
-		expertTypeService.saveExpertType(expertTypeDto);
+	@ResponseBody
+	public ResultMsg saveType(@RequestBody ExpertTypeDto expertTypeDto)  {
+		return expertTypeService.saveExpertType(expertTypeDto);
 	}
 	
 	
@@ -60,7 +61,7 @@ public class ExpertTypeController {
 	@RequiresPermissions("expertType##delete")
 	@RequestMapping(name="刪除专家类型",path="",method=RequestMethod.DELETE)
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
-	public void delete(@RequestBody String ids){
+	public void delete(@RequestParam String ids){
 		expertTypeService.deleteExpertType(ids);
 		
 	}

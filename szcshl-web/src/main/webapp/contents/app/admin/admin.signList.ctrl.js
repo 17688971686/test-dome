@@ -18,7 +18,7 @@
             //初始化查询参数
             adminSvc.initSignList(function(data){
                 if(data.flag || data.reCode == 'ok'){
-                    vm.orgsList = data.reObj;
+                    vm.orgDeptList = data.reObj;
                 }
             });
             adminSvc.getSignList(vm);

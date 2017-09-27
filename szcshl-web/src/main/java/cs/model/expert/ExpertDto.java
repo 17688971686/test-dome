@@ -1,14 +1,8 @@
 package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertSelected;
 import cs.model.BaseDto;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToMany;
 import java.util.Date;
 import java.util.List;
 
@@ -56,9 +50,9 @@ public class ExpertDto extends BaseDto {
     private Date applyDate;    //申请日期
     private String unable;                              //是否作废（1为作废，0 为正常）
 
-    private List<WorkExpeDto> workDto;
+    private List<WorkExpeDto> workDtoList;
 
-    private List<ProjectExpeDto> projectDto;
+    private List<ProjectExpeDto> projectDtoList;
 
     private List<ExpertReviewDto> expertReviewDtoList;
 
@@ -299,22 +293,6 @@ public class ExpertDto extends BaseDto {
         this.expertReviewDtoList = expertReviewDtoList;
     }
 
-    public List<ProjectExpeDto> getProjectDto() {
-        return projectDto;
-    }
-
-    public void setProjectDto(List<ProjectExpeDto> projectDto) {
-        this.projectDto = projectDto;
-    }
-
-    public List<WorkExpeDto> getWorkDto() {
-        return workDto;
-    }
-
-    public void setWorkDto(List<WorkExpeDto> workDto) {
-        this.workDto = workDto;
-    }
-
     public List<ExpertTypeDto> getExpertTypeDtoList() {
         return expertTypeDtoList;
     }
@@ -369,5 +347,21 @@ public class ExpertDto extends BaseDto {
 
     public void setUnable(String unable) {
         this.unable = unable;
+    }
+
+    public List<WorkExpeDto> getWorkDtoList() {
+        return workDtoList;
+    }
+
+    public void setWorkDtoList(List<WorkExpeDto> workDtoList) {
+        this.workDtoList = workDtoList;
+    }
+
+    public List<ProjectExpeDto> getProjectDtoList() {
+        return projectDtoList;
+    }
+
+    public void setProjectDtoList(List<ProjectExpeDto> projectDtoList) {
+        this.projectDtoList = projectDtoList;
     }
 }

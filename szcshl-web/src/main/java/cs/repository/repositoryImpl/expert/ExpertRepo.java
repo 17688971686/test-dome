@@ -7,6 +7,8 @@ import cs.repository.IRepository;
 
 public interface ExpertRepo extends IRepository<Expert, String> {
 
+    boolean checkIsHaveIdCard(String idCard,String expertId);
+
     List<Expert> findExpertByIdCard(String idCard);
 
     List<Expert> findAllRepeat();
