@@ -148,7 +148,7 @@ public class WorkProgram extends DomainBase {
     /**
      * 调研时间段（AM:表示上午，PM:表示下午，DAY:表示全天）
      */
-    @Column(columnDefinition = "VARCHAR(5)")
+    @Column(columnDefinition = "VARCHAR(10)")
     private String studyQuantum;
 
     //调研日期

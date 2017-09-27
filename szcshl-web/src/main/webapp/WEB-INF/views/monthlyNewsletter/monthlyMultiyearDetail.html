@@ -1,0 +1,118 @@
+<!-- S 中心文件详细页面 -->
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+<!-- 查看中心文件附件页面 -->
+<#include "/monthlyNewsletter/monthlyUpload.html"/>
+<div class="well well-sm" style="background:white; color: red">
+   <ol class="breadcrumb">
+        <li><a href="#/meeting">中心文件稿纸管理</a></li>       
+        <li class="active" >{{vm.title}}</li>
+    </ol>
+<div class="toolbar">
+    <span ng-show="vm.suppletter.id">
+            <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent()">
+            <span class="glyphicon glyphicon-search"></span>查看附件
+            </button>
+      </sapn>
+    <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+    </button>
+</div>
+   		<!--  hidden input -->
+		 <input type="hidden" ng-model="vm.suppletter.id" name="suppletter" value="{{vm.suppletter.id}}"id="suppletterId"  >  
+		<input type="hidden" ng-model="vm.suppletter.signid" value="{{vm.suppletter.signid}}" > 
+		<!--  s table -->
+     <!-- s form -->
+    <form id="suppletter_form" name="suppletter_form">
+ 
+    公文分类：{{vm.suppletter.missiveType}}
+    
+    
+        <!-- s table -->
+        <table class="table table-bordered">
+            <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）</br><br></strong></caption>
+          
+            <tbody>
+              <tr>
+                <td style="width:150px;" class="text-center">分类</td>
+                <td>
+                {{vm.suppletter.monthlyType}}
+                </td>
+
+                <td style="width:150px;" class="text-center">存档编号</td>
+                <td>
+                {{vm.suppletter.fileCode}}
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">拟稿部门<br>拟稿人</td>
+                <td>
+                   {{vm.suppletter.orgName}}<br>
+                   {{vm.suppletter.userName}}
+                </td>
+
+                <td style="width:150px;" class="text-center">拟稿时间</td>
+                <td >
+                {{vm.suppletter.suppLetterTime}}
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">秘密等级</td>
+                <td>
+                {{vm.suppletter.secretLevel}}
+                </td>
+
+                <td style="width:150px;" class="text-center">缓急程度</td>
+                <td>
+                {{vm.suppletter.mergencyLevel}}
+                </td>
+            </tr>
+           
+
+            <tr>
+                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td colspan="3">
+                {{vm.suppletter.title}}
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td colspan="3">
+                {{vm.suppletter.dispaRange}}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="width:150px;" class="text-center">核稿意见</td>
+                <td colspan="3">
+                    <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
+			 	 <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
+			     <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">会签意见</td>
+                <td colspan="3">
+                   <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
+			 	 <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
+			     <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">领导意见</td>
+                <td colspan="3">
+                    <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
+			 		<p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>
+			     	<p class="text-right" ng-if="vm.suppletter.deptDirectorDate">日期：{{vm.suppletter.deptDirectorDate}}</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>    <!-- end table -->
+    </form> <!-- end form -->
+        
+</div>
+<!-- E 中心文件详细页面 -->

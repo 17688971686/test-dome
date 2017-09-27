@@ -1,3 +1,4 @@
+<!--S 年度月报简报列表  -->
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
@@ -8,48 +9,52 @@
         <li><a href="#/monthlyNewsletter">年度月报简报列表</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
+    <form id="form_monthly" name="form_monthly">
           
          <ol class="breadcrumb">
-         <div align="right">
-            <@shiro.hasPermission name="monthlyNewsletter##post">
-                <a class="btn btn-sm btn-primary" href="#/monthlyMultiyearEdit/"><span class="glyphicon glyphicon-plus"></span>新建月报简报</a>
-            </@shiro.hasPermission>
-           <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent()">
-            <span class="glyphicon glyphicon-search">查询</span>
-            </button>
-            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryMeeting()">重置</a>
-      	 </div> 
-      	 <br>
+      
        		 <li> <span class="help-inline">文件名称：</span>
-            <input type="text" ng-model="vm.model.mrName" operator="like" name="mrName" id="mrName" placeholder="请输入">
+            <input type="text" ng-model="vm.suppletter.title" operator="like" name="title" id="title" operator="like" placeholder="请输入">
 
             <span class="help-inline" style="margin-left:10px;">拟稿部门：</span>
-	          <select>
-	          <option>请选择</option>
+	          <select ng-model="vm.suppletter.orgName" name="orgName" id="orgName" style="width:80px" operator="eq">
+	    	    <option value="">请选择</option>
+				<option ng-repeat="o in vm.orglist" value="{{o.name}}" >{{o.name}}</option>
+			</select>    
+			<span class="help-inline" style="margin-left:10px;">拟稿人：</span>       
+             <select ng-model="vm.suppletter.userName" name="userName" id="userName" style="width:80px">
+	          <option value="">请选择</option>
+	          <option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
 	          </select>
-            <span class="help-inline" style="margin-left:10px;">拟稿人员：</span>
-            	 <select>
-	          <option>请选择</option>
-	          </select>
+	          
             <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
-            <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+            <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.suppletter.suppLetterTime" value="" type="text" operator="and"/>
            	 至
-            <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+            <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.suppletter.suppLetterTime" value="" type="text" operator="and"/>
+           
             </li>
+              </br></br>
+             <div align="right">
+             <@shiro.hasPermission name="monthlyNewsletter##post">
+                <a class="btn btn-sm btn-primary" href="#/monthlyMultiyearEdit/"><span class="glyphicon glyphicon-plus"></span>新建月报简报</a>
+             </@shiro.hasPermission>
+            <button class="btn btn-sm btn-success" ng-click="vm.addSuppQuery()" >
+             <span class="glyphicon glyphicon-search"></span>查询
+             </button>
+             <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetAddSupp()">重置</a>
+      	    </div> 
    		 </ol>
+    </form>
         <script type="text/template" id="columnBtns">
-            <@shiro.hasPermission name="monthlyNewsletter##delete">
-            <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
-            </@shiro.hasPermission>
-            <@shiro.hasPermission name="monthlyNewsletter##put">
-            <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>审批处理</a>
+			<@shiro.hasPermission name="monthlyNewsletter##put">
+            <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
             </@shiro.hasPermission>
         </script>
  		<ol class="breadcrumb">
         <li>2014年度月报简报列表（单击进入详细资料 <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>  正在办理 ）</li>
    		 </ol>
-        <div class="grid" kendo-grid="grid" k-options="vm.multiyearGrid"></div>
-    </form>
+        <div class="grid" kendo-grid="grid" k-options="vm.monthlyYearGrid"></div>
+  
 </div>
 
+<!--E 年度月报简报列表  -->

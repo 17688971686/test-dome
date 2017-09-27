@@ -164,9 +164,16 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "VARCHAR(64)")
     private String fileCode;
     
-    //月报简报状态：0.表示为中心文件（稿纸）
+    /**
+     * 月报简报状态：0表示为中心文件（审批）,9:表示：中心文件查询
+     */
     @Column(columnDefinition = "VARCHAR(4)")
     private String monthlyStatus;
+    /**
+     * 0:部长审批,1:主任审批,2:主任审批
+     * 
+     */
+    private String monthlyAppoveStatus;
     
 	public Integer getFileSeq() {
 		return fileSeq;
@@ -454,6 +461,16 @@ public class AddSuppLetter extends DomainBase {
 	public void setDeptDirectorDate(Date deptDirectorDate) {
 		this.deptDirectorDate = deptDirectorDate;
 	}
+
+	public String getMonthlyAppoveStatus() {
+		return monthlyAppoveStatus;
+	}
+
+	public void setMonthlyAppoveStatus(String monthlyAppoveStatus) {
+		this.monthlyAppoveStatus = monthlyAppoveStatus;
+	}
+	
+	
 	
 	
 	

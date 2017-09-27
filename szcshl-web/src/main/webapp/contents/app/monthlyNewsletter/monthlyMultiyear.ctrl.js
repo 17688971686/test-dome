@@ -9,6 +9,18 @@
         var vm = this;
         vm.title = '年度月报简报';
 
+        //查询
+         vm.addSuppQuery = function(){
+         	 monthlyMultiyearSvc.addSuppQuery(vm);
+         }
+         //重置
+         vm.resetAddSupp = function(){
+        	 var tab = $("#form_monthly").find('input,select');
+ 			$.each(tab, function(i, obj) {
+ 				obj.value = "";
+ 			});
+         }
+         
         vm.del = function (id) {
             common.confirm({
                 vm: vm,
@@ -36,11 +48,14 @@
                 vm.del(idStr);
             }
         };
-        
-
+       
         activate();
         function activate() {
             monthlyMultiyearSvc.monthlyMultiyearGrid(vm);
+            monthlyMultiyearSvc.monthlyAppoveGrid(vm);
+            monthlyMultiyearSvc.monthlyYearGrid(vm);
+            monthlyMultiyearSvc.findAllOrg(vm);
+            monthlyMultiyearSvc.findAllUser(vm);
         }
     }
 })();

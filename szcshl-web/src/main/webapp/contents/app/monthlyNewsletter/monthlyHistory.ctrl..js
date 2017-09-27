@@ -1,11 +1,11 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('monthlyExcellentCtrl', monthlyExcellent);
+    angular.module('app').controller('monthlyHistoryCtrl', monthlyHistory);
 
-    monthlyExcellent.$inject = ['$location', 'monthlyExcellentSvc'];
+    monthlyHistory.$inject = ['$location', 'monthlyHistorySvc'];
 
-    function monthlyExcellent($location, monthlyExcellentSvc) {
+    function monthlyHistory($location, monthlyHistorySvc) {
         var vm = this;
         vm.title = '优秀评审报告管理';
 
@@ -39,8 +39,8 @@
 
         activate();
         function activate() {
-            monthlyExcellentSvc.monthlyExcellentGrid(vm);
-            //monthlyHistorySvc.deleteGridOptions(vm);
+        	monthlyHistorySvc.monthlyHistoryGrid(vm);
+            monthlyHistorySvc.deleteGridOptions(vm);
         }
     }
 })();

@@ -45,5 +45,9 @@ public interface AddSuppLetterService {
 
 	void updateApprove(AddSuppLetterDto addSuppLetterDto);
 
+	PageModelDto<AddSuppLetterDto> monthlyAppoveListData(ODataObj odataObj);
+
+	void monthlyApproveEdit(AddSuppLetterDto addSuppLetterDto);
+
 
 }

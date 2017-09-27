@@ -1,4 +1,4 @@
-<!--S 年度月报简报添加页面 -->
+<!-- S 中心文件领导审批页面 -->
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
@@ -15,11 +15,8 @@
     <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit" ng-hide="vm.isUpdate">
         <span class="glyphicon glyphicon-ok"></span>保存
     </button>
-     <button class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
+     <button class="btn btn-sm btn-success" ng-click="vm.updateApprove()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
         <span class="glyphicon glyphicon-ok"></span>更新
-    </button>
-     <button ng-show="vm.suppletter.id" class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
-        <span class="glyphicon glyphicon-ok"></span>发送到综合部存档
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>打印
@@ -142,7 +139,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">会签意见</td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                       <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.suppletter.deptSLeaderIdeaContent" id="deptSLeaderIdeaContent"
                               name="deptSLeaderIdeaContent"/>
                 </td>
@@ -150,7 +147,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">领导意见</td>
                 <td colspan="3">
-                   <textarea maxlength="200" class="form-control input-sm " rows="5"
+                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.suppletter.deptDirectorIdeaContent" id="deptDirectorIdeaContent"
                               name="deptDirectorIdeaContent"/>
                 </td>
@@ -160,4 +157,5 @@
     </form> <!-- end form -->
         
 </div>
-<!--E 年度月报简报添加页面 -->
+
+<!-- S 中心文件领导审批页面 -->

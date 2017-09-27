@@ -107,6 +107,8 @@ public class AddSuppLetterDto extends BaseDto {
     //月报简报状态：0.表示为中心文件（稿纸）
     private String monthlyStatus;
     
+    private String monthlyAppoveStatus;
+    
    
     
     public Date getDisapDate() {
@@ -392,6 +394,14 @@ public class AddSuppLetterDto extends BaseDto {
 
 	public void setDeptDirectorDate(Date deptDirectorDate) {
 		this.deptDirectorDate = deptDirectorDate;
+	}
+
+	public String getMonthlyAppoveStatus() {
+		return monthlyAppoveStatus;
+	}
+
+	public void setMonthlyAppoveStatus(String monthlyAppoveStatus) {
+		this.monthlyAppoveStatus = monthlyAppoveStatus;
 	}
 	
     

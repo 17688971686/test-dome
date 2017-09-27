@@ -64,7 +64,7 @@
         }
 
 
-        //拟补充资料函正文
+        //拟补充资料函查看附件
         vm.addSuppContent = function () {
         	if(vm.suppletter.id){
             vm.showsupp = true;

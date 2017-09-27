@@ -4,14 +4,11 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 <!-- S 中心文件稿纸上传页面 -->
-<div class="well well-sm" id="addsuppMonthly"  style="background:white;margin: auto;overflow: auto">
+<div class="well well-sm" id="addsuppMonthly"  style="background:white;display:none;">
 
 	<div class="toolbar"> 
 	    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>上传</button>
-		<button  class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>						
 	</div>
-	<!-- <span >地址（D）：</span> 
-	<span><select  style="width:100%;"></select></span> -->
 	<!-- S 附件上传列表 -->
 <div  class="well well-sm" >
     <table class="table table-bordered">

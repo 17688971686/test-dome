@@ -59,13 +59,29 @@ public class MonthlyNewsletterController {
     
     
     @RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
-    @RequestMapping(name = "获取（中心年度）月报简报列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
+    @RequestMapping(name = "获取（中心）文件查询列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);	
         return addSuppLetterDtos;
     }
+    
+    @RequiresPermissions("monthlyNewsletter#monthlyAppoveList#post")
+    @RequestMapping(name = "获取（中心）文件审批列表数据", path = "monthlyAppoveList", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<AddSuppLetterDto> monthlyAppoveList(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyAppoveListData(odataObj);	
+        return addSuppLetterDtos;
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#updateApprove#post")
+    @RequestMapping(name = "领导审批（中心文件）处理", path = "updateApprove", method = RequestMethod.POST)
+    @ResponseBody
+    public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
+		addSuppLetterService.monthlyApproveEdit(addSuppLetterDto);
+    } 
     
     @RequiresPermissions("monthlyNewsletter#deleteMutiyear#delete")
  	@RequestMapping(name = "删除年度（中心）月报简报记录", path = "deleteMutiyear", method = RequestMethod.DELETE)
@@ -192,16 +208,46 @@ public class MonthlyNewsletterController {
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearList#get")
-    @RequestMapping(name = "月报简报年度列表页面", path = "html/monthlyMultiyearList", method = RequestMethod.GET)
+    @RequestMapping(name = "年度月报简报列表页面", path = "html/monthlyMultiyearList", method = RequestMethod.GET)
     public String monthlyMultiyear() {
         return ctrlName+"/monthlyMultiyearList"; 
     } 
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiAppoveEdit#get")
+    @RequestMapping(name = "年度（中心文件）月报简报审批处理页面", path = "html/monthlyMultiAppoveEdit", method = RequestMethod.GET)
+    public String monthlyMultiAppoveEdit() {
+        return ctrlName+"/monthlyMultiAppoveEdit"; 
+    } 
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyFileList#get")
+    @RequestMapping(name = "年度（中心文件）月报简报查询列表页面", path = "html/monthlyMultiyFileList", method = RequestMethod.GET)
+    public String monthlyMultiyFileList() {
+        return ctrlName+"/monthlyMultiyFileList"; 
+    } 
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveList#get")
+    @RequestMapping(name = "年度（中心文件）月报简报审批列表页面", path = "html/monthlyMultiyAppoveList", method = RequestMethod.GET)
+    public String monthlyMultiyAppoveList() {
+        return ctrlName+"/monthlyMultiyAppoveList";
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveEdit#get")
+    @RequestMapping(name = "年度（中心文件）月报简报审批处理页面", path = "html/monthlyMultiyAppoveEdit", method = RequestMethod.GET)
+    public String monthlyMultiyAppoveEdit() {
+        return ctrlName+"/monthlyMultiyAppoveEdit";
+    }
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
     @RequestMapping(name = "新建月报简报年度页面", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
     public String monthlyMultiyearAdd() {
         return ctrlName+"/monthlyMultiyearAdd"; 
     } 
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearDetail#get")
+    @RequestMapping(name = "年度（中心文件）月报简报页面详细页面", path = "html/monthlyMultiyearDetail", method = RequestMethod.GET)
+    public String monthlyMultiyearDetail() {
+        return ctrlName+"/monthlyMultiyearDetail"; 
+    }  
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyNewsletterEdit#get")
     @RequestMapping(name = "编辑页面", path = "html/monthlyNewsletterEdit", method = RequestMethod.GET)

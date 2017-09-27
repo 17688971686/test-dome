@@ -49,7 +49,7 @@
         <tr>
             <td class="text-center">发行范围<span class="required">*</span></td>
             <td colspan="3">
-                <textarea maxlength="200" class="form-control input-sm" rows="3"  >{{x.dispaRange}}</textarea>
+                {{x.dispaRange}}
                 <span style="float: right;">(印{{x.printnum}}份)</span>
             </td>
         </tr>
@@ -58,20 +58,26 @@
         <tr>
             <td class="text-center">核稿意见</td>
             <td colspan="3">
-                <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="true">{{x.suppleterSuggest}}</textarea>
+                 <p>  {{x.deptMinisterIdeaContent}}</p>
+			 	 <p class="text-right" >签名：{{x.deptMinisterName}}</p>
+			     <p class="text-right" >日期：{{x.deptMinisterDate}}</p>
             </td>
         </tr>
 
         <tr>
             <td class="text-center">会签意见</td>
             <td colspan="3">
-                <textarea maxlength="200" class="form-control input-sm " rows="5">{{x.meetingSuggest}}</textarea>
+                 <p> {{x.deptSLeaderIdeaContent}}</p>
+			 	 <p class="text-right" >签名：{{x.deptSLeaderName}}</p>
+			     <p class="text-right" >日期：{{x.deptSleaderDate}}</p>
             </td>
         </tr>
         <tr>
             <td class="text-center">领导意见</td>
             <td colspan="3">
-                <textarea maxlength="200" class="form-control input-sm " rows="5" >{{x.leaderSuggest}}</textarea>
+                   <p> {{x.deptDirectorIdeaContent}}</p>
+			 		<p class="text-right" >签名：{{x.deptDirectorName}}</p>
+			     	<p class="text-right">日期：{{x.deptDirectorDate}}</p>
             </td>
         </tr>
         </tbody>

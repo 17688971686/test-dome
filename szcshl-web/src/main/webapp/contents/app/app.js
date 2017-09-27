@@ -671,13 +671,23 @@
                 controller: 'monthlyNewsletterCtrl',
                 controllerAs: 'vm'
             })
-             //根据年度查找列表页面
+            
+             //年度月报简报列表理页面
              .state('monthlyFindByMultiyear', {
                 url: '/monthlyFindByMultiyear/:reportMultiyear',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
                 controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
             })
+            
+            //年度（中心文件）月报简报审批列表理页面
+             .state('monthlyMultiyAppoveList', {
+                url: '/monthlyMultiyAppoveList/:reportMultiyear',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyAppoveList.html',
+                controller: 'monthlyMultiyearCtrl',
+                controllerAs: 'vm'
+            })
+            
             //新建年度月报简报页面
              .state('monthlyMultiyearEdit', {
                 url: '/monthlyMultiyearEdit/:id',
@@ -685,6 +695,30 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
+            
+            //年度(中心文件)月报简报审批处理页面
+             .state('monthlyMultiAppoveEdit', {
+                url: '/monthlyMultiAppoveEdit/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyAppoveEdit.html',
+                controller: 'monthlyMultiyearEditCtrl',
+                controllerAs: 'vm'
+            })
+            //年度(中心文件)月报简报查询页面
+             .state('monthlyMultiyFileList', {
+                url: '/monthlyMultiyFileList/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
+                controller: 'monthlyMultiyearCtrl',
+                controllerAs: 'vm'
+            })
+            
+             //年度(中心文件)月报简报详细页面
+             .state('monthlyMultiyearDetail', {
+                url: '/monthlyMultiyearDetail/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearDetail.html',
+                controller: 'monthlyMultiyearEditCtrl',
+                controllerAs: 'vm'
+            })
+            
              //上传附件页面
              .state('uploadMonthly', {
                 url: '/uploadMonthly/:id',

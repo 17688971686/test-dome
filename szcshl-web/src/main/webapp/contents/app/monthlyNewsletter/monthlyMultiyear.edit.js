@@ -23,7 +23,11 @@
          vm.businessFlag ={
                 isInitFileOption : false,   //是否已经初始化附件上传控件
          }
-      
+         
+         //领导审批中心文件
+         vm.updateApprove = function(){
+        	 monthlyMultiyearSvc.updateApprove(vm);
+         }
        //初始化附件上传控件
          vm.initFileUpload = function(){
              if(!vm.suppletter.id){
@@ -49,11 +53,23 @@
         
         //跳转上传附件页面
         vm.addSuppContent = function(){
+        
         	if(vm.suppletter.id){
-        		$state.go('uploadMonthly',{id : vm.suppletter.id});
-        	}else{
-        		bsWin.alert("请先保存数据！");
-        	}
+                vm.showsupp = true;
+                var ideaEditWindow = $("#addsuppMonthly");
+                ideaEditWindow.kendoWindow({
+                    width: "60%",
+                    height: "90%",
+                    title: "中心文件附件",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "close"]
+                }).data("kendoWindow").center().open();
+                monthlyMultiyearSvc.findByBusinessId(vm);
+            	}else{
+            		bsWin.alert("请先保存业务数据");
+            	}
      }
         
         //保存中心文件（稿纸）
@@ -98,6 +114,7 @@
             monthlyMultiyearSvc.initMonthlyMultiyear(vm);
           //根据主业务获取所有的附件信息
             monthlyMultiyearSvc.findByBusinessId(vm);
+           // monthlyMultiyearSvc.getmonthlyMultiyearById(vm);
         }
     }
 })();
