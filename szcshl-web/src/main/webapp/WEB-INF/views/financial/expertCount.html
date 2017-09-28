@@ -8,17 +8,18 @@
         <li><a href="#/sharingPlatlform">专家费用统计</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
+    <form id="searchform" name="searchform">
        <div class="well">
-			 <input name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+			 <input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.searchModel.beginTime" value="" type="text" operator="ge"/>
 			至
-			<input name="endTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" />
-	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">重置</a>
-	     <button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
-		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>
-		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">导出EXCLE</button>
+			<input id="endTime" name="endTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.searchModel.endTime" value="" type="text" operator="le" />
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.searchForm()">查询</a>
+	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
+<!--	     <button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
+		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
+		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
         </div>
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+        <div id="statisticalGrid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
     </form>
 </div>
 

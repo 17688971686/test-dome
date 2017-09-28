@@ -14,7 +14,9 @@
             sumFinancial:sumFinancial,								//统计评审费用总和
             initFinancialProject:initFinancialProject,				//初始化关联项目评审费
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
-            expertCostTotal:expertCostTotal                         //专家评审费用统计
+            expertCostTotal:expertCostTotal,                         //专家评审费用统计
+            expertCostDetailTotal:expertCostDetailTotal,            //专家评审明细费用统计
+            excelExport:excelExport                                 //专家汇总统计导出
         };
 
         return service;
@@ -24,6 +26,7 @@
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertSelected/expertCostTotal",
+                data: vm.model
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -36,6 +39,56 @@
                 success: httpSuccess
             });
         }//E_专家评审费用统计
+
+        //S_专家评审费用明细统计
+        function expertCostDetailTotal(vm,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertSelected/expertCostDetailTotal",
+                data: vm.model
+        }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_专家评审费用明细统计
+
+        //begin excelExport
+        function excelExport(vm,exportData,fileName){
+            var httpOptions ={
+                method : 'post',
+                url : rootPath + "/expertSelected/excelExport",
+                headers : {
+                    "contentType" : "application/json;charset=utf-8"
+                },
+                traditional : true,
+                dataType : "json",
+                responseType: 'arraybuffer',
+                data : angular.toJson(exportData),
+                params:{
+                    fileName :fileName
+                }
+
+            }
+            var httpSuccess = function success(response){
+                fileName =fileName + ".xls";
+                var fileType ="vnd.ms-excel";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+            common.http({
+                vm : vm,
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end excelExport
 
       //检查是否为正整数
         function isUnsignedInteger(value){

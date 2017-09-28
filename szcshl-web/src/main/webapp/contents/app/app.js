@@ -634,9 +634,16 @@
             
             //专家缴费统计列表
             .state('expertPaymentCountList', {
-                url: '/expertPaymentCountList',
+                url: '/expertPaymentCountList/:beginTime',
                 templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
                 controller: 'expertPaymentCountCtrl',
+                controllerAs: 'vm'
+            })
+            //专家缴费明细统计列表
+            .state('expertPaymentDetailCountList', {
+                url: '/expertPaymentDetailCountList/:beginTime',
+                templateUrl: rootPath + '/financialManager/html/expertPaymentDetailCount.html',
+                controller: 'expertPaymentDetailCountCtrl',
                 controllerAs: 'vm'
             })
             //专家费统计列表

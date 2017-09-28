@@ -29,6 +29,7 @@ public class ExpertSelectedDto {
     private String isConfrim;
     //抽取次数
     private Integer selectIndex;
+    private String principal;//负责人
     /**
      * 业务ID，如项目工作方案ID，课题研究工作方案ID
      */
@@ -163,5 +164,13 @@ public class ExpertSelectedDto {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    public String getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(String principal) {
+        this.principal = principal;
     }
 }

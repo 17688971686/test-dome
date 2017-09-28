@@ -618,6 +618,29 @@ public class DateUtils {
         return date;  
     }
 
+    /**
+     * 把字符串转为日期
+     * @param strDate
+     * @param dateFormt
+     * @return date
+     */
+    public static Date converToDate1(String strDate,String dateFormt)  {
+        if(!Validate.isString(strDate)){
+            return null;
+        }
+        if(!Validate.isString(dateFormt)){
+            dateFormt = DATE_PATTERN;
+        }
+        Date date = null;
+        SimpleDateFormat df = new SimpleDateFormat(dateFormt,Locale.UK);
+        try {
+            date = df.parse(strDate);
+        } catch (ParseException pe) {
+            log.error("ParseException: " + pe);
+        }
+        return date;
+    }
+
     public static void main(String[] args) throws ParseException {
 		String dateString = "2016年6月30日";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
