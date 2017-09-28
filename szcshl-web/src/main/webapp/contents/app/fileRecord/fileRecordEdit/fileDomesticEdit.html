@@ -117,8 +117,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertCount" name="expertCount" id="expertCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertOriginal" 
+							        ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertCopy"
+							         ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="expertCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							      <tr>
@@ -126,8 +130,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertAmanCount" name="expertAmanCount" id="expertAmanCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanOriginal" ng-true-value="9" ng-false-value="0" ></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanOriginal"
+							         ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
+							         ng-true-value="9" ng-false-value="0" ></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.expertAmanCopy" 
+							         ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="expertAmanCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							      
@@ -136,8 +144,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.meetingSignCount" name="meetingSignCount" id="meetingSignCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.meetingSignOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.meetingSignCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.meetingSignOriginal" 
+							        ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.meetingSignCopy"
+							         ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							      	<td style="border-top:none;"> <span data-valmsg-for="meetingSignCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							       <tr>
@@ -145,16 +157,24 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.stageCostCount" name="stageCostCount" id="stageCostCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.stageCostOriginal" ng-true-value="9" ng-false-value="0" ></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.stageCostCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.stageCostOriginal" 
+							        ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
+							        ng-true-value="9" ng-false-value="0" ></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.stageCostCopy"
+							        ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="stageCostCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>		
 							        <tr>
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.recordFormCount" name="recordFormCount" id="recordFormCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.recordFormOriginal" ng-true-value="9" ng-false-value="0" ></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.recordFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.recordFormOriginal"
+							         ng-click="vm.fileRecord.recordFormCount = initInputValue($event,vm.fileRecord.recordFormCount)"
+							         ng-true-value="9" ng-false-value="0" ></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.recordFormCopy"
+							         ng-click="vm.fileRecord.recordFormCount = initInputValue($event,vm.fileRecord.recordFormCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="recordFormCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>								   
 							      		        					      
@@ -191,8 +211,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.sugfileHandleFormCount" name="sugfileHandleFormCount" id="sugfileHandleFormCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormOriginal"
+							        ng-click="vm.fileRecord.sugfileHandleFormCount = initInputValue($event,vm.fileRecord.sugfileHandleFormCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormCopy" 
+							         ng-click="vm.fileRecord.sugfileHandleFormCount = initInputValue($event,vm.fileRecord.sugfileHandleFormCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="sugfileHandleFormCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>
 							      <tr>
@@ -200,8 +224,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.sugproHandleFormCount" name="sugproHandleFormCount" id="sugproHandleFormCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormOriginal"
+							         ng-click="vm.fileRecord.sugproHandleFormCount = initInputValue($event,vm.fileRecord.sugproHandleFormCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormCopy" 
+							         ng-click="vm.fileRecord.sugproHandleFormCount = initInputValue($event,vm.fileRecord.sugproHandleFormCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="sugproHandleFormCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							      <tr>
@@ -209,8 +237,12 @@
 							        <td style="border-top:none;">
 										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.projectDeclareCount" name="projectDeclareCount" id="projectDeclareCount">
 									</td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectDeclareOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectDeclareCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectDeclareOriginal"
+							         ng-click="vm.fileRecord.projectDeclareCount = initInputValue($event,vm.fileRecord.projectDeclareCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectDeclareCopy" 
+							         ng-click="vm.fileRecord.projectDeclareCount = initInputValue($event,vm.fileRecord.projectDeclareCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="projectDeclareCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							     
@@ -219,8 +251,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.projectApplyReportCount" name="projectApplyReportCount" id="projectApplyReportCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApplyReportOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApplyReportCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApplyReportOriginal"
+							         ng-click="vm.fileRecord.projectApplyReportCount = initInputValue($event,vm.fileRecord.projectApplyReportCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApplyReportCopy"
+							        ng-click="vm.fileRecord.projectApplyReportCount = initInputValue($event,vm.fileRecord.projectApplyReportCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="projectApplyReportCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							       <tr>
@@ -228,8 +264,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.electronicDocumentCount" name="electronicDocumentCount" id="electronicDocumentCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.electronicDocumentOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.electronicDocumentCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.electronicDocumentOriginal" 
+							        ng-click="vm.fileRecord.electronicDocumentCount = initInputValue($event,vm.fileRecord.electronicDocumentCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.electronicDocumentCopy"
+							         ng-click="vm.fileRecord.electronicDocumentCount = initInputValue($event,vm.fileRecord.electronicDocumentCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="electronicDocumentCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							      			        					      
@@ -250,8 +290,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.purchasDeviceCount" name="purchasDeviceCount" id="purchasDeviceCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDeviceOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDeviceCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDeviceOriginal" 
+							         ng-click="vm.fileRecord.purchasDeviceCount = initInputValue($event,vm.fileRecord.purchasDeviceCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDeviceCopy" 
+							        ng-click="vm.fileRecord.purchasDeviceCount = initInputValue($event,vm.fileRecord.purchasDeviceCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="purchasDeviceCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							      <tr>
@@ -259,8 +303,12 @@
 							        <td style="border-top:none;">
 										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.projectApproveFileCount" name="projectApproveFileCount" id="projectApproveFileCount">
 									</td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApproveFileOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApproveFileCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApproveFileOriginal"
+							         ng-click="vm.fileRecord.projectApproveFileCount = initInputValue($event,vm.fileRecord.projectApproveFileCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.projectApproveFileCopy" 
+							        ng-click="vm.fileRecord.projectApproveFileCount = initInputValue($event,vm.fileRecord.projectApproveFileCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="projectApproveFileCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							       <tr>
@@ -268,8 +316,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.sprcialDevicesCount" name="sprcialDevicesCount" id="sprcialDevicesCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sprcialDevicesOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sprcialDevicesCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sprcialDevicesOriginal"
+							         ng-click="vm.fileRecord.sprcialDevicesCount = initInputValue($event,vm.fileRecord.sprcialDevicesCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.sprcialDevicesCopy" 
+							         ng-click="vm.fileRecord.sprcialDevicesCount = initInputValue($event,vm.fileRecord.sprcialDevicesCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="sprcialDevicesCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>
 							       <tr>
@@ -277,8 +329,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.purchasDevicePactCount" name="purchasDevicePactCount" id="purchasDevicePactCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDevicePactOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDevicePactCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDevicePactOriginal" 
+							         ng-click="vm.fileRecord.purchasDevicePactCount = initInputValue($event,vm.fileRecord.purchasDevicePactCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.purchasDevicePactCopy" 
+							        ng-click="vm.fileRecord.purchasDevicePactCount = initInputValue($event,vm.fileRecord.purchasDevicePactCount)"
+							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="purchasDevicePactCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>	
 							        <tr>
@@ -286,8 +342,12 @@
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.businessLicenseCount" name="businessLicenseCount" id="businessLicenseCount">
                                     </td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.businessLicenseOriginal" ng-true-value="9" ng-false-value="0"></td>
-							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.businessLicenseCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.businessLicenseOriginal"
+							         ng-click="vm.fileRecord.businessLicenseCount = initInputValue($event,vm.fileRecord.businessLicenseCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.businessLicenseCopy"
+							         ng-click="vm.fileRecord.businessLicenseCount = initInputValue($event,vm.fileRecord.businessLicenseCount)"
+							         ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="businessLicenseCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>		
 							    
