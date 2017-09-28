@@ -743,17 +743,24 @@
                 controllerAs: 'vm'
             })
             //优秀评审报告列表
-            .state('reviewProjectAppraisingList', {
-                url: '/reviewProjectAppraisingList/:id',
-                templateUrl: rootPath + '/reviewProjectAppraising/html/list.html',
-                controller: 'reviewProjectAppraisingCtrl',
+            .state('reviewProjectAppraiseList', {
+                url: '/reviewProjectAppraiseList/:id',
+                templateUrl: rootPath + '/reviewProjectAppraise/html/list.html',
+                controller: 'reviewProjectAppraiseCtrl',
                 controllerAs: 'vm'
             })
-            //评审项目评优
-            .state('reviewProjectAppraisingEdit', {
-                url: '/reviewProjectAppraisingEdit',
-                templateUrl: rootPath + '/reviewProjectAppraising/html/edit.html',
-                controller: 'reviewProjectAppraisingEditCtrl',
+            //评审项目评优列表
+            .state('reviewProjectAppraiseEdit', {
+                url: '/reviewProjectAppraiseEdit',
+                templateUrl: rootPath + '/reviewProjectAppraise/html/edit.html',
+                controller: 'reviewProjectAppraiseEditCtrl',
+                controllerAs: 'vm'
+            })
+            //优秀评审报告审批列表
+            .state('approveList', {
+                url: '/approveList',
+                templateUrl: rootPath + '/reviewProjectAppraise/html/approveList.html',
+                controller: 'approveListCtrl',
                 controllerAs: 'vm'
             })
             

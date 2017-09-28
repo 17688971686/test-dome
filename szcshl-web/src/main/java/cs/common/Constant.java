@@ -63,6 +63,11 @@ public class Constant {
      */
     public static final String PASSWORD = "123456";
 
+    /**
+     * 评审报告评优 综合部负责人
+     */
+    public static final String GENERALCONDUTOR = "王纯";
+
 
     /**
      * 工作方案表抬头

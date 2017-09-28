@@ -1,24 +1,148 @@
 (function () {
     'use strict';
 
-    angular.module('app').factory('reviewProjectAppraisingSvc', reviewProjectAppraising);
+    angular.module('app').factory('reviewProjectAppraiseSvc', reviewProjectAppraise);
 
-    reviewProjectAppraising.$inject = ['$http'];
+    reviewProjectAppraise.$inject = ['$http', 'bsWin' , '$state'];
 
-    function reviewProjectAppraising($http) {
+    function reviewProjectAppraise($http , bsWin , $state) {
         var service = {
 
             endProjectGrid : endProjectGrid ,//查询办结项目
 
             appraisingProjectGrid : appraisingProjectGrid , //查询优秀评审项目
 
-            monthlyExcellentGrid: monthlyExcellentGrid,//优秀评审报告列表
+            monthlyExcellentGrid: monthlyExcellentGrid,//优秀评审报告列表(停用)
+
+            appraiseWindow : appraiseWindow , //评优弹出窗
+            initProposer : initProposer ,//初始化申请人
+            saveApply : saveApply,//保存评优申请
+            approveListGrid : approveListGrid,//优秀评审报告审批列表
+            getAppraiseById : getAppraiseById , //通过Id查询信息
+            saveApprove : saveApprove,//保存审批意见
 
 
 
         }
-
         return service;
+
+
+        //being saveApprove
+        function saveApprove(vm) {
+            common.initJqValidation();
+            var isValid = $('#form').valid();
+            if (isValid && vm.appraise.ministerOpinion != undefined ) {
+                var httpOptions = {
+                    method: 'put',
+                    url: rootPath + '/reviewProjectAppraise/saveApprove',
+                    data: vm.appraise
+                }
+                var httpSuccess = function success(response) {
+                    bsWin.success("操作成功！" , function (){
+                        window.parent.$("#appraiseWindow").data("kendoWindow").close();
+                        location.reload();
+                        // $state.go('approveList');
+                    });
+
+
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+        }
+        //end saveApprove
+
+
+        //begin getAppraiseById
+        function getAppraiseById(id,callBack){
+            var httpOptions = {
+                method : 'get' ,
+                url : rootPath + '/reviewProjectAppraise/getAppraiseById',
+                params : {id : id}
+            }
+
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end getAppraiseById
+
+        //begin initProposer
+        function initProposer(callBack){
+            var httpOptions = {
+                method : 'get',
+                url : rootPath + "/reviewProjectAppraise/initProposer"
+            }
+
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+
+        }
+        //end
+
+        //begin appraiseWindow
+        function appraiseWindow(vm){
+            $("#appraiseWindow").kendoWindow({
+                width: "800px",
+                height: "400px",
+                title: "评审报告评优申请",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+        //end appraiseWindow
+
+        //begin saveApply
+        function saveApply(vm){
+            common.initJqValidation();
+            var isValid = $('#form').valid();
+            if (isValid && vm.appraise.appraiseReportName !=undefined &&
+                vm.appraise.proposerTime != undefined && vm.appraise.appraiseCause !=undefined) {
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + '/reviewProjectAppraise/saveApply',
+                    data: vm.appraise
+                }
+
+                var httpSuccess = function success(response) {
+                    bsWin.success("保存成功！");
+                    window.parent.$("#appraiseWindow").data("kendoWindow").close();
+                    vm.gridOptions.dataSource.read();
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+        }
+        //end saveApply
+
+
 
         //begin endProjectGrid
         function endProjectGrid(vm){
@@ -26,7 +150,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraising/findEndProject"),
+                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraise/findEndProject"),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -170,9 +294,13 @@
                     template: function (item) {
                         if(item.isAppraising == 9){
                             return "优秀评审项目";
+                        }else if(item.isAppraising == 8){
+                            return "申请未通过";
+                        }else if(item.isAppraising == 1){
+                            return "审核中";
                         }else{
                             return common.format($('#columnBtns').html(),
-                                "vm.appraisingWindow('" + item.id + "')");
+                                "vm.appraisingWindow('" + item.signid + "','"+item.projectname+"')");
                         }
                     }
                 }
@@ -199,7 +327,7 @@
             };
 
         }
-         //end endProjectGrid
+        //end endProjectGrid
 
 
         //beign appraisingProjectGrid
@@ -208,7 +336,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraising/findAppraisingProject"),
+                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraise/findAppraisingProject"),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -371,10 +499,113 @@
         //end appraisingProjectGrid
 
 
+        //begin approveListGrid
+        function approveListGrid(vm){
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraise/getAppraiseReport"),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            // Begin:column
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },
+                {
+                    field: "",
+                    title: "项目名称",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                        if(item.processInstanceId){
+                            return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        }else{
+                            return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectName+'</a>';
+                        }
+
+                    }
+                },
+                {
+                    field: "appraiseReportName",
+                    title: "评审报告名称",
+                    width: 160,
+                    filterable: false,
+
+                },
+                {
+                    field: "proposerName",
+                    title: "申请人",
+                    width: 160,
+                    filterable: false,
+
+                },
+                {
+                    field: "proposerTime",
+                    title: "申请时间",
+                    width: 160,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.dealWindow('" + item.id + "')");
+                    }
+                }
+            ];
+
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+
+        }
+        //end approveListGrid
+
         // begin#grid
         function monthlyExcellentGrid(vm) {
 
-        	 // Begin:dataSource
+            // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList", $("#searchform")),
@@ -559,7 +790,7 @@
                     }
                 }
             ];
-            
+
             // End:column
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
@@ -581,8 +812,8 @@
             };
 
         }// end fun grid
-        
 
-        
+
+
     }
 })();
