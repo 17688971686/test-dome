@@ -4,28 +4,27 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background:white;">
-    <ol class="breadcrumb">
-        <li><a href="#/sharingPlatlform">专家缴税统计</a></li>
-        <li class="active">{{vm.title}}</li>
-    </ol>
-    <form id="form" name="form">
-       <div class="well">
-			 <input name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-			至
-			<input name="endTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" />
-	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">保存</a>
-	     <button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
-		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>
-		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看详细</button>
-		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">导出EXCLE</button>
-        </div>
-        <div class="well">
-        	<table border="1px" style="width: 100%;">
-        	 <caption class="text-center h3">
-        	 <strong>深圳市政府投资项目评审中心<br>
- 				2017年8月专家评审费交税统计汇总表
- 			 </strong>
- 			 </caption>
+	<ol class="breadcrumb">
+		<li><a href="#/sharingPlatlform">专家缴税统计</a></li>
+		<li class="active">{{vm.title}}</li>
+	</ol>
+	<form id="form" name="form">
+		<div class="well">
+			<span>统计月份：</span>
+			<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+			<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.countExpertCost()">统计</a>
+			<button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
+			<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>
+			<button ng-click="vm.getExpertCoustDetail()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看详细</button>
+			<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
+		</div>
+		<div class="well">
+			<table border="1px" style="width: 100%;">
+				<caption class="text-center h3">
+					<strong>深圳市政府投资项目评审中心<br>
+						{{vm.year}}年{{vm.month}}月专家评审费交税统计汇总表
+					</strong>
+				</caption>
 				<tr >
 					<td rowspan="2" style="width:5%"  class="text-center">序号</td>
 					<td rowspan="2" style="width:10%"  class="text-center">姓名</td>
@@ -33,7 +32,7 @@
 					<td rowspan="2" style="width:15%"  class="text-center">手机号码</td>
 					<td colspan="2" style="width:25%"  class="text-center">本月合计</td>
 					<td colspan="2" style="width:25%"  class="text-center">本年累计</td>
-					
+
 				</tr>
 
 				<tr>
@@ -41,7 +40,7 @@
 					<td class="text-center">应缴税额</td>
 					<td class="text-center">应缴所得税额</td>
 					<td class="text-center">应缴税额 </td>
-					
+
 				</tr>
 				<tr  ng-repeat="x in vm.expertCostTotalInfo">
 					<td align="center">{{$index+1}}</td>
@@ -54,7 +53,7 @@
 					<td class="text-center">{{x.yreviewtaxes}}</td>
 				</tr>
 			</table>
-        </div>
-    </form>
+		</div>
+	</form>
 </div>
 

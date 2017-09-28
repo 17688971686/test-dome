@@ -1,26 +1,19 @@
 package cs.controller.financial;
 
-import java.text.ParseException;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import cs.model.PageModelDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.financial.FinancialManagerService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Map;
 
 /**
  * Description: 财务管理 控制层
@@ -123,6 +116,12 @@ public class FinancialManagerController {
     @RequestMapping(name = "专家缴税统计页面", path = "html/expertPaymentCount", method = RequestMethod.GET)
     public String expertPaymentCount() {
         return ctrlName+"/expertPaymentCount";
+    }
+
+    @RequiresPermissions("financialManager#html/expertPaymentDetailCount#get")
+    @RequestMapping(name = "专家缴税统计明细页面", path = "html/expertPaymentDetailCount", method = RequestMethod.GET)
+    public String expertPaymentDetailCount() {
+        return ctrlName+"/expertPaymentDetailCount";
     }
     
     @RequiresPermissions("financialManager#html/assistCostCount#get")

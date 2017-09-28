@@ -9,6 +9,8 @@
         var vm = this;
         vm.title = '专家费统计管理';
         vm.financials = new Array;
+        vm.searchModel = {};
+        vm.model={};
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.financial.signid = $state.params.signid;
@@ -72,7 +74,25 @@
     		   }
     	   }
        }
-    
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource.read();
+        }
+
+        /**
+         * 专家评审费明细导出
+         */
+        vm.excelExport = function(){
+            vm.fileName = "专家评审费明细";
+         //   console.log(vm.model.beginTime);
+            vm.exportData = $("#statisticalGrid").data("kendoGrid")._data;
+            exportCountSvc.excelExport(vm,vm.exportData,vm.fileName);
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
         activate();
         function activate() {
             exportCountSvc.grid(vm);

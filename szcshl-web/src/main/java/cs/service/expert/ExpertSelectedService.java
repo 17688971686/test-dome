@@ -2,8 +2,12 @@ package cs.service.expert;
 
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertCostCountDto;
+import cs.model.expert.ExpertCostDetailCountDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
+
+import java.util.List;
 
 /**
  * Description: 抽取专家 业务操作接口
@@ -22,5 +26,10 @@ public interface ExpertSelectedService {
 
 	PageModelDto<ExpertSelectedDto> get(ODataObj odataObj);
 
-	ResultMsg expertCostTotal(ODataObj odataObj);
+	ResultMsg expertCostTotal(ExpertCostCountDto expertCostCountDto);
+
+	ResultMsg expertCostDetailTotal(ExpertCostDetailCountDto expertCostDetailCountDto);
+
+	List<ExpertCostDetailCountDto> getExpertCostDetailById(String expertId,String beginTime,String endTime);
+
 }

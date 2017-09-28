@@ -14,6 +14,7 @@
             sumFinancial:sumFinancial,								//统计评审费用总和
             initFinancialProject:initFinancialProject,				//初始化关联项目评审费
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
+            excelExport:excelExport
         };
 
         return service;
@@ -149,6 +150,36 @@
         }
         // end#deleteexportCount
 
+        //begin excelExport
+        function excelExport(vm,exportData,fileName){
+            var httpOptions ={
+                method : 'post',
+                url : rootPath + "/expertSelected/expertDetailExport",
+                headers : {
+                    "contentType" : "application/json;charset=utf-8"
+                },
+                traditional : true,
+                dataType : "json",
+                responseType: 'arraybuffer',
+                data : angular.toJson(exportData),
+                params:{
+                    fileName :fileName
+                }
+
+            }
+            var httpSuccess = function success(response){
+                fileName =fileName + ".xls";
+                var fileType ="vnd.ms-excel";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+            common.http({
+                vm : vm,
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end excelExport
 
         //S_初始化grid(过滤已签收和已经完成的项目)
         function grid(vm) {
@@ -235,7 +266,7 @@
                 {
                     field: "expertReviewDto.reviewTitle",
                     title: "项目名称",
-                    width: 220,
+                    width: 225,
                     filterable: false,
                 },
                 {
@@ -251,9 +282,9 @@
                     filterable: false,
                 },
                 {
-                    field: "expertDto.name",
+                    field: "principal",
                     title: "负责人",
-                    width: 80,
+                    width: 75,
                     filterable: false,
                 }
             ];
