@@ -496,6 +496,9 @@
             if(response.data.PAUSE_COUNT){
                 $('#PAUSE_COUNT').html(response.data.PAUSE_COUNT);
             }
+            if(response.data.APPRAISE_COUNT){
+                $('#APPRAISE_COUNT').html(response.data.APPRAISE_COUNT);
+            }
         });
     }// E_获取待办总数
 

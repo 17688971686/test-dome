@@ -8,6 +8,7 @@ import cs.common.utils.SessionUtil;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.service.project.ProjectStopService;
+import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.DictService;
 import org.activiti.engine.task.TaskQuery;
@@ -46,6 +47,9 @@ public class AdminController {
     @Autowired
     private ProjectStopService projectStopService;
 
+    @Autowired
+    private AppraiseService appraiseService;
+
     @RequiresPermissions("admin#index#get")
     @RequestMapping(name = "首页", path = "index")
     public String index(Model model) {
@@ -80,8 +84,11 @@ public class AdminController {
         resultMap.put("DO_TASK_COUNT",ruTaskRepo.findMyDoingTask());
 
         if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())
+                || Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
             resultMap.put("PAUSE_COUNT",projectStopService.findMyPauseCount());
+            resultMap.put("APPRAISE_COUNT" , appraiseService.countApprove());
         }
 
         return resultMap;

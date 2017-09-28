@@ -32,7 +32,7 @@ public class Sign extends DomainBase {
     private String isSignTemplate;
 
     /**
-     * 是否是优秀评审项目  9 ： 是    ， 0或其他： 否
+     * 是否是优秀评审项目  9 ： 是    ， 0或其他： 否 , 8:审核未通过 ， 1：审核中
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String  isAppraising ;
