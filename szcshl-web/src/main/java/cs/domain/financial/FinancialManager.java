@@ -55,6 +55,10 @@ public class FinancialManager extends DomainBase {
 	//收文ID
 	@Column(columnDefinition = "varchar(50)")
 	private String signid;
+
+	//业务ID
+	@Column(columnDefinition = "varchar(50)")
+	private String businessId;
 	
 	//费用类型：协审费用录入8,评审费用录入9
 	@Column(columnDefinition = "varchar(20)")
@@ -156,7 +160,12 @@ public class FinancialManager extends DomainBase {
 	public void setAssissCost(BigDecimal assissCost) {
 		this.assissCost = assissCost;
 	}
-	
-    
 
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
 }

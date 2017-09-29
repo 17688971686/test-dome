@@ -1,15 +1,10 @@
 package cs.model.financial;
 
-import javax.persistence.Column;
-
-import org.activiti.engine.impl.bpmn.data.Data;
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.model.BaseDto;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.model.BaseDto;
 
 
 /**
@@ -31,6 +26,7 @@ public class FinancialManagerDto extends BaseDto {
 	private String signid;
 	private String chargeType;//费用类型
     private String remarke;
+	private String businessId;
 
     public FinancialManagerDto() {
     }
@@ -124,7 +120,12 @@ public class FinancialManagerDto extends BaseDto {
 	public void setAssissCost(BigDecimal assissCost) {
 		this.assissCost = assissCost;
 	}
-	
-    
 
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
 }
