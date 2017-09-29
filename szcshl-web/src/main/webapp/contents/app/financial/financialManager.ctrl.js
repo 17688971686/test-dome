@@ -3,9 +3,9 @@
 
     angular.module('app').controller('financialManagerCtrl', financialManager);
 
-    financialManager.$inject = ['$location', 'financialManagerSvc','$state','$http'];
+    financialManager.$inject = ['$location', 'financialManagerSvc','$state','$http' , 'expertReviewSvc'];
 
-    function financialManager($location, financialManagerSvc,$state,$http) {
+    function financialManager($location, financialManagerSvc,$state,$http , expertReviewSvc) {
         var vm = this;
         vm.title = '评审费录入';
         vm.financials = new Array;
@@ -15,8 +15,34 @@
       
         //跳转到评审会发放表页面
         vm.findStageCostTable = function(){
-        	$state.go('findStageCostTable',{signid: vm.financial.signid});
+            expertReviewSvc.initReview(vm.financial.signid , "", function (data){
+                vm.reviewTitle = data.reviewTitle;
+                vm.payDate = data.payDate;
+                vm.expertSelectedDtoList = data.expertSelectedDtoList;
+                $("#stageCostWindow").kendoWindow({
+                    width: "70%",
+                    height: "600px",
+                    title: "评审费用统计表",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            } )
+        	// $state.go('findStageCostTable',{signid: vm.financial.signid});
         }
+
+
+        /**
+         * 导出excel
+         */
+        vm.exportExcel = function (){
+            var fileName = vm.reviewTitle + "(" + vm.payDate + ")";
+            console.log(vm.expertSelectedDtoList);
+            financialManagerSvc.exportExcel(vm , vm.expertSelectedDtoList ,fileName );
+        }
+
+
         //S 输入数字校验
         vm.inputIntegerValue = function(checkValue,idSort){
         	if(financialManagerSvc.isUnsignedInteger(checkValue)){

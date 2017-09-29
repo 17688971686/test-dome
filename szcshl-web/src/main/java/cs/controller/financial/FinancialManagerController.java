@@ -1,6 +1,8 @@
 package cs.controller.financial;
 
+import cs.domain.expert.Expert;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
@@ -11,9 +13,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.ExcelTools;
+import cs.domain.expert.ExpertSelected;
+import cs.model.expert.ExpertSelectedDto;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
  * Description: 财务管理 控制层
@@ -24,7 +38,7 @@ import java.util.Map;
 @RequestMapping(name = "财务管理", path = "financialManager")
 public class FinancialManagerController {
 
-	String ctrlName = "financial";
+    String ctrlName = "financial";
     @Autowired
     private FinancialManagerService financialManagerService;
 
@@ -33,16 +47,16 @@ public class FinancialManagerController {
     @ResponseBody
     public PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> financialManagerDtos = financialManagerService.get(odataObj);	
+        PageModelDto<SignDto> financialManagerDtos = financialManagerService.get(odataObj);
         return financialManagerDtos;
     }
-    
+
     @RequiresPermissions("financialManager#assistCostCountList#post")
     @RequestMapping(name = "获取协审费用统计列表数据", path = "assistCostCountList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDto> assistCostCountList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> financialManagerDtos = financialManagerService.assistCostCountGet(odataObj);	
+        PageModelDto<SignDto> financialManagerDtos = financialManagerService.assistCostCountGet(odataObj);
         return financialManagerDtos;
     }
     @RequiresPermissions("financialManager#initfinancial#get")
@@ -56,29 +70,29 @@ public class FinancialManagerController {
     @RequestMapping(name = "统计评审总费用", path = "html/sumfinancial", method = RequestMethod.GET)
     @ResponseBody
     public Integer sunFinancial(@RequestParam String signId){
-    	Integer intsumcount = financialManagerService.sunCount(signId);
-    	return intsumcount;
+        Integer intsumcount = financialManagerService.sunCount(signId);
+        return intsumcount;
     }
 
     @RequiresPermissions("financialManager##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody FinancialManagerDto []record) {
-    	for(FinancialManagerDto financialDto : record){
-    		financialManagerService.save(financialDto);
-    	}
+        for(FinancialManagerDto financialDto : record){
+            financialManagerService.save(financialDto);
+        }
     }
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
-	public @ResponseBody FinancialManagerDto findById(@RequestParam(required = true)String id){		
-		return financialManagerService.findById(id);
-	}
-	
+    @RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+    public @ResponseBody FinancialManagerDto findById(@RequestParam(required = true)String id){
+        return financialManagerService.findById(id);
+    }
+
     @RequiresPermissions("financialManager##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	financialManagerService.delete(id);      
+        financialManagerService.delete(id);
     }
 
     @RequiresPermissions("financialManager##put")
@@ -88,11 +102,73 @@ public class FinancialManagerController {
         financialManagerService.update(record);
     }
 
+
+    @RequiresPermissions("financialManager#exportExcel#post")
+    @RequestMapping(name="评审费用统计表导出" , path="exportExcel" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void exportExcel(HttpServletResponse response , @RequestBody ExpertSelectedDto[] expertSelectedDtos , @RequestParam String fileName){
+
+        String title = fileName;
+        ExcelTools excelTools = new ExcelTools();
+//        List<ExpertSelected> expertSelectedList = new ArrayList<>();
+        List<Map> exportMap = new ArrayList<>();
+
+
+        for(ExpertSelectedDto expertSelectedDto : expertSelectedDtos){
+            ExpertSelected expertSelected = new ExpertSelected();
+            BeanCopierUtils.copyProperties(expertSelectedDto , expertSelected);
+//            expertSelectedList.add(expertSelected);
+            ExpertDto expertDto = expertSelectedDto.getExpertDto();
+            Expert expert = new Expert();
+            BeanCopierUtils.copyProperties(expertDto , expert);
+            Map<String , Object> dataMap = new HashMap<>();
+            dataMap.put("NAME" , expert.getName());
+            dataMap.put("IDCARD" , expert.getIdCard() == null ? "" : expert.getIdCard());
+            dataMap.put("OPENINGBANK" , expert.getOpeningBank() == null ? "" : expert.getOpeningBank() + "/" + expert.getBankAccount() == null ? "" : expert.getBankAccount());
+            dataMap.put("REVIEWCOST" , expertSelected.getReviewCost());
+            dataMap.put("REVIEWTAXES" , expertSelected.getReviewTaxes());
+            dataMap.put("TOTALCOST" , expertSelected.getTotalCost() );
+            dataMap.put("ISLETTERRW" , expertSelected.getIsLetterRw() == "9" ? "是" : "否");
+            exportMap.add(dataMap);
+        }
+
+        try{
+
+            ServletOutputStream sos = response.getOutputStream();
+            String[] headerArr= new String[7];
+            headerArr[0] = "姓名" + "=" + "NAME";
+            headerArr[1] = "身份证号码" + "=" + "IDCARD";
+            headerArr[2] = "开户行/银行账号" + "=" + "OPENINGBANK";
+            headerArr[3] = "评审费" + "=" + "REVIEWCOST";
+            headerArr[4] = "应纳税额" + "=" + "REVIEWTAXES";
+            headerArr[5] = "合计（元）" + "=" + "TOTALCOST";
+            headerArr[6] = "是否函评" + "=" + "ISLETTERRW";
+
+            HSSFWorkbook wb = excelTools.createExcelBook(title , headerArr , exportMap , HashMap.class);
+            response.setContentType("application/vnd.ms-excel;charset=GBK");
+            response.setHeader("Content-type", "application/x-msexcel");
+            response.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
+            String fileName2 = new String((title + ".xls").getBytes("GB2312"), "ISO-8859-1");
+
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            wb.write(sos);
+            sos.flush();
+            sos.close();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+
     // begin#html
     @RequiresPermissions("financialManager#html/list#get")
     @RequestMapping(name = "评审费统计页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/list";
     }
 
     @RequiresPermissions("financialManager#html/add#get")
@@ -100,7 +176,7 @@ public class FinancialManagerController {
     public String edit() {
         return ctrlName+"/add";
     }
-    
+
     @RequiresPermissions("financialManager#html/assistCostAdd#get")
     @RequestMapping(name = "协审费用录入", path = "html/assistCostAdd", method = RequestMethod.GET)
     public String assistCostAdd() {
@@ -111,7 +187,7 @@ public class FinancialManagerController {
     public String expertCount() {
         return ctrlName+"/expertCount";
     }
-    
+
     @RequiresPermissions("financialManager#html/expertPaymentCount#get")
     @RequestMapping(name = "专家缴税统计页面", path = "html/expertPaymentCount", method = RequestMethod.GET)
     public String expertPaymentCount() {
@@ -123,18 +199,18 @@ public class FinancialManagerController {
     public String expertPaymentDetailCount() {
         return ctrlName+"/expertPaymentDetailCount";
     }
-    
+
     @RequiresPermissions("financialManager#html/assistCostCount#get")
     @RequestMapping(name = "协审费用统计页面", path = "html/assistCostCount", method = RequestMethod.GET)
     public String assistCostCount() {
         return ctrlName+"/assistCostCount";
     }
-    
+
     @RequiresPermissions("financialManager#html/stageCostTable#get")
     @RequestMapping(name = "评审费发放表页面", path = "html/stageCostTable", method = RequestMethod.GET)
     public String stageCostTable() {
         return ctrlName+"/stageCostTable";
     }
-    
-   
+
+
 }
