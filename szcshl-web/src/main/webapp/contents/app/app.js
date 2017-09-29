@@ -597,12 +597,12 @@
                 controllerAs: 'vm'
             })
             //查看评审费发放表
-            .state('findStageCostTable', {
-                url: '/findStageCostTable/:signid',
-                templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
-                controller: 'financialManagerEditCtrl',
-                controllerAs: 'vm'
-            })
+            // .state('findStageCostTable', {
+            //     url: '/findStageCostTable/:signid',
+            //     templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
+            //     controller: 'financialManagerEditCtrl',
+            //     controllerAs: 'vm'
+            // })
             //查看协审费发放表
             .state('findAssistCostTable', {
                 url: '/findAssistCostTable/:signid',

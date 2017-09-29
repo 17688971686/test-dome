@@ -16,12 +16,47 @@
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
             stageCostCountList:stageCostCountList,		 //评审费用统计列表
             findStageCostTableList:findStageCostTableList, //查看评审费发放表
+            exportExcel : exportExcel , //评审费用统计表导出
         };
 
         return service;
         vm.businessFlag = {
         expertReviews : [], 
         }
+
+        //begin reportExcel
+        function exportExcel(vm , exportData , fileName){
+            var httpOptions = {
+                method : 'post' ,
+                url : rootPath + '/financialManager/exportExcel',
+                headers : {
+                    "contentType" : "application/json;charset=utf-8"
+                },
+                traditional : true,
+                dataType : "json",
+                responseType: 'arraybuffer',
+                data : angular.toJson(exportData),
+                params:{
+                    fileName :fileName
+                }
+            }
+
+            var httpSuccess = function success(response){
+                fileName =fileName + ".xls";
+                var fileType ="vnd.ms-excel";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+
+            common.http({
+                vm : vm ,
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end reportExcel
+
+
         //S 查看评审费发放表
         function findStageCostTableList (signId,callBack){
         	 var httpOptions = {

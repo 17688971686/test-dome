@@ -3,9 +3,9 @@
 
     angular.module('app').controller('financialManagerEditCtrl', financialManager);
 
-    financialManager.$inject = ['$location', 'financialManagerSvc', '$state'];
+    financialManager.$inject = ['$location', 'financialManagerSvc', '$state' , 'signSvc'];
 
-    function financialManager($location, financialManagerSvc, $state) {
+    function financialManager($location, financialManagerSvc, $state , signSvc) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '评审费统计管理';
@@ -31,7 +31,27 @@
         vm.update = function () {
             financialManagerSvc.updateFinancialManager(vm);
         };
-    
+
+
+        /**
+         * 查看评审费用
+         */
+        vm.findStageCostTable = function(){
+          console.log(11111111);
+            signSvc.initFlowPageData(vm.financial.signid , function (){
+                $("#stageCostWindow").kendoWindow({
+                    width: "800px",
+                    height: "400px",
+                    title: "评审费用统计表",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            } )
+        }
+
+
         activate();
         function activate() {
         	  financialManagerSvc.grid(vm);
