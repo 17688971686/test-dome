@@ -152,20 +152,21 @@
 
         //begin excelExport
         function excelExport(vm,exportData,fileName){
+            var paramStr = {fileName:fileName};
+            var url = rootPath + "/expertSelected/expertDetailExport";
+            if ($("#searchform")) {
+                var filterParam = common.buildOdataFilter($("#searchform"));
+                if (filterParam) {
+                    paramStr.$filter = filterParam;
+                }
+            }
             var httpOptions ={
                 method : 'post',
-                url : rootPath + "/expertSelected/expertDetailExport",
-                headers : {
-                    "contentType" : "application/json;charset=utf-8"
-                },
+                url : url,
                 traditional : true,
                 dataType : "json",
                 responseType: 'arraybuffer',
-                data : angular.toJson(exportData),
-                params:{
-                    fileName :fileName
-                }
-
+                params:paramStr
             }
             var httpSuccess = function success(response){
                 fileName =fileName + ".xls";

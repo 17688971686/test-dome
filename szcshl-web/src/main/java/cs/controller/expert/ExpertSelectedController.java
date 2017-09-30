@@ -92,34 +92,37 @@ public class ExpertSelectedController {
 
     @RequestMapping(name="专家明细导出" , path ="expertDetailExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void expertDetailExport(HttpServletResponse resp , @RequestBody ExpertSelectedDto[] expertSelectedDtoArr , @RequestParam String fileName){
-        String title = fileName;
-        ExcelTools excelTools = new ExcelTools();
-        List<ExpertCostDetailDto> expertCostDetailDtoList = new ArrayList<>();
-        for(ExpertSelectedDto esd : expertSelectedDtoArr){
-            ExpertCostDetailDto expertCostDetailDto = new ExpertCostDetailDto();
-            BeanCopierUtils.copyProperties(esd, expertCostDetailDto);
-            BeanCopierUtils.copyProperties(esd.getExpertDto(), expertCostDetailDto);
-            BeanCopierUtils.copyProperties(esd.getExpertReviewDto(), expertCostDetailDto);
-            expertCostDetailDto.setReviewCost(esd.getReviewCost());
-            expertCostDetailDto.setReviewTaxes(esd.getReviewTaxes());
-            if(null != esd.getExpertReviewDto() && null != esd.getExpertReviewDto().getReviewDate()){
-                expertCostDetailDto.setReviewDate(DateUtils.converToString(esd.getExpertReviewDto().getReviewDate(),"yyyy-MM-dd"));
-            }
-            expertCostDetailDtoList.add(expertCostDetailDto);
-        }
+    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp){
         try {
-            ServletOutputStream sos = resp.getOutputStream();
-            String [] headerPair =new String[]{"姓名=name","身份证号=idCard","开户行=openingBank","银行账号=bankAccount","评审费=reviewCost","应缴税=reviewTaxes","项目名称=reviewTitle","评审时间=reviewDate","负责人=principal"};
-            HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , expertCostDetailDtoList , ExpertCostDetailDto.class);
-            resp.setContentType("application/vnd.ms-excel;charset=GBK");
-            resp.setHeader("Content-type" , "application/x-msexcel");
-            resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
-            String fileName2 = new String((title +".xls").getBytes("GB2312") , "ISO-8859-1");
-            resp.setHeader("Content-Disposition" , "attachment;filename="+fileName2);
-            wb.write(sos);
-            sos.flush();
-            sos.close();
+            PageModelDto<ExpertSelectedDto> expertSelectedDtos = findByOData(request);
+            List<ExpertSelectedDto> expertSelectedDtoList = expertSelectedDtos.getValue();
+            String title = request.getParameter("fileName");
+            ExcelTools excelTools = new ExcelTools();
+            List<ExpertCostDetailDto> expertCostDetailDtoList = new ArrayList<>();
+            for(ExpertSelectedDto esd : expertSelectedDtoList){
+                ExpertCostDetailDto expertCostDetailDto = new ExpertCostDetailDto();
+                BeanCopierUtils.copyProperties(esd, expertCostDetailDto);
+                BeanCopierUtils.copyProperties(esd.getExpertDto(), expertCostDetailDto);
+                BeanCopierUtils.copyProperties(esd.getExpertReviewDto(), expertCostDetailDto);
+                expertCostDetailDto.setReviewCost(esd.getReviewCost());
+                expertCostDetailDto.setReviewTaxes(esd.getReviewTaxes());
+                if(null != esd.getExpertReviewDto() && null != esd.getExpertReviewDto().getReviewDate()){
+                    expertCostDetailDto.setReviewDate(DateUtils.converToString(esd.getExpertReviewDto().getReviewDate(),"yyyy-MM-dd"));
+                }
+                expertCostDetailDtoList.add(expertCostDetailDto);
+            }
+                //String title = new String((fileName).getBytes("GB2312") , "ISO-8859-1");
+                ServletOutputStream sos = resp.getOutputStream();
+                String [] headerPair =new String[]{"姓名=name","身份证号=idCard","开户行=openingBank","银行账号=bankAccount","评审费=reviewCost","应缴税=reviewTaxes","项目名称=reviewTitle","评审时间=reviewDate","负责人=principal"};
+                HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , expertCostDetailDtoList , ExpertCostDetailDto.class);
+                resp.setContentType("application/vnd.ms-excel;charset=GBK");
+                resp.setHeader("Content-type" , "application/x-msexcel");
+                resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
+                String fileName2 = new String((title +".xls").getBytes("GB2312") , "ISO-8859-1");
+                resp.setHeader("Content-Disposition" , "attachment;filename="+fileName2);
+                wb.write(sos);
+                sos.flush();
+                sos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,8 +130,7 @@ public class ExpertSelectedController {
 
     @RequestMapping(name="专家评审费统计导出" , path ="excelExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport( HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr ,@RequestParam String fileName){
-        String title = fileName;
+    public void excelExport(HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr ,@RequestParam String fileName){
         ExcelTools excelTools = new ExcelTools();
         List<ExpertCostCountDto> expertCostCountDtoList = new ArrayList<>();
         for(ExpertCostCountDto eccd : expertCostCountDtoArr){
@@ -137,11 +139,11 @@ public class ExpertSelectedController {
         try {
             ServletOutputStream sos = resp.getOutputStream();
             String [] headerPair =new String[]{"姓名=name","身份证号码=idCard","手机号码=userPhone","应缴所得税额(本月)=reviewcost","应缴税额(本月)=reviewtaxes","应缴所得税额(本年)=yreviewcost","应缴税额(本年)=yreviewtaxes"};
-            HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
+            HSSFWorkbook wb = excelTools.createExcelBook(fileName , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type" , "application/x-msexcel");
             resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
-            String fileName2 = new String((title +".xls").getBytes("GB2312") , "ISO-8859-1");
+            String fileName2 = fileName +".xls";
             resp.setHeader("Content-Disposition" , "attachment;filename="+fileName2);
             wb.write(sos);
             sos.flush();
