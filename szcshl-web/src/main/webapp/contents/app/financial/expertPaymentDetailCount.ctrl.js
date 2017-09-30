@@ -160,8 +160,8 @@
                  expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewtaxes;
                  expertCostDetailTr += "</td>"
                  expertCostDetailTr += "</tr>";
-             }
                  expertCostTr += expertCostDetailTr;
+             }
              }
              }
                $("#expertCostHead").after(expertCostTr);

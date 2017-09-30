@@ -33,7 +33,6 @@
                 return false;
             }
         }
-        
         //添加报销记录
        vm.addFinancial =  function () {
     	   	var projectName = $("#projectName").val();
@@ -84,6 +83,8 @@
          */
         vm.excelExport = function(){
             vm.fileName = "专家评审费明细";
+            // Begin:dataSource
+            // End:dataSource
          //   console.log(vm.model.beginTime);
             vm.exportData = $("#statisticalGrid").data("kendoGrid")._data;
             exportCountSvc.excelExport(vm,vm.exportData,vm.fileName);
