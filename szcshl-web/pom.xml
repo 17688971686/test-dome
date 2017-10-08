@@ -280,6 +280,7 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>6.3.1_sn</version>
         </dependency>
+
     </dependencies>
     <build>
         <finalName>szcshl-web</finalName>

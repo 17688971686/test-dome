@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import com.alibaba.fastjson.JSON;
+import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.utils.DateUtils;
 import cs.common.utils.PropertyUtil;
@@ -13,6 +14,7 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.DictService;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(name = "管理界面", path = "admin")
+@MudoleAnnotation(name = "我的工作台",value = "permission#workbench")
 public class AdminController {
     private String ctrlName = "admin";
     private static Logger logger = Logger.getLogger(AdminController.class.getName());
@@ -50,7 +53,8 @@ public class AdminController {
     @Autowired
     private AppraiseService appraiseService;
 
-    @RequiresPermissions("admin#index#get")
+    //@RequiresPermissions("admin#index#get")
+    @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
     public String index(Model model) {
         model.addAttribute("user", SessionUtil.getLoginName());
@@ -64,7 +68,8 @@ public class AdminController {
         return ctrlName + "/index";
     }
 
-    @RequiresPermissions("admin#welcome#get")
+    //@RequiresPermissions("admin#welcome#get")
+    @RequiresAuthentication
     @RequestMapping(name = "欢迎页", path = "welcome")
     public String welcome(Model model) {
         UserDto user = userService.findUserByName(SessionUtil.getLoginName());
@@ -75,7 +80,8 @@ public class AdminController {
         return ctrlName + "/welcome";
     }
 
-    @RequiresPermissions("admin#myCountInfo#get")
+    //@RequiresPermissions("admin#myCountInfo#get")
+    @RequiresAuthentication
     @RequestMapping(name = "个人待办信息查询", path = "myCountInfo", method = RequestMethod.GET)
     @ResponseBody
     public Map<String,Object> tasksCount(HttpServletRequest request) throws ParseException {
@@ -107,6 +113,7 @@ public class AdminController {
 
         return ctrlName + "/agendaTasks";
     }
+
     @RequiresPermissions("admin#doingTasks#get")
     @RequestMapping(name = "在任务", path = "doingTasks")
     public String doingTasks(Model model) {
@@ -134,8 +141,9 @@ public class AdminController {
 
         return ctrlName + "/etasks";
     }
-    
-    @RequiresPermissions("admin#edit#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("admin#edit#get")
     @RequestMapping(name = "拟补充资料函",  path = "edit")
     public String eidt(Model model) {
     	

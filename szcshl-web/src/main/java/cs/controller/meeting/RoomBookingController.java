@@ -1,5 +1,6 @@
 package cs.controller.meeting;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelUtils;
 import cs.common.utils.FileUtils;
@@ -14,6 +15,7 @@ import cs.service.meeting.RoomBookingSerivce;
 import cs.service.sys.UserService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(name = "会议室预定", path = "room")
+@MudoleAnnotation(name = "会议室管理",value = "permission#meeting")
 public class RoomBookingController {
 
     private String ctrlName = "room";
@@ -39,7 +42,8 @@ public class RoomBookingController {
     @Autowired
     private UserService userService;
 
-    @RequiresPermissions("room##get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room##get")
     @RequestMapping(name = "获取会议预定数据", path = "", method = RequestMethod.GET)
     public @ResponseBody
     PageModelDto<RoomBookingDto> get(HttpServletRequest request) throws ParseException {
@@ -48,7 +52,8 @@ public class RoomBookingController {
         return roomDtos;
     }
 
-    @RequiresPermissions("room#fingByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#fingByOData#post")
     @RequestMapping(name = "获取会议预定数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<RoomBookingDto> getCountList(HttpServletRequest request) throws ParseException {
@@ -57,7 +62,8 @@ public class RoomBookingController {
         return roomDtos;
     }
 
-    @RequiresPermissions("room#meeting#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#meeting#get")
     @RequestMapping(name = "会议室查询", path = "meeting", method = RequestMethod.GET)
     @ResponseBody
     public List<MeetingRoomDto> meetingList(String mrID, HttpServletRequest request, ModelMap model) throws ParseException {
@@ -65,7 +71,8 @@ public class RoomBookingController {
         return meeting;
     }
 
-    @RequiresPermissions("room#roomNamelist#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#roomNamelist#get")
     @RequestMapping(name = "会议室预定查询", path = "roomNamelist", method = RequestMethod.GET)
     @ResponseBody
     public List<RoomBookingDto> roomList(HttpServletRequest request) throws ParseException {
@@ -73,13 +80,15 @@ public class RoomBookingController {
         return roomlist;
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "会议室预定初始化值", path = "initDefaultValue", method = RequestMethod.POST)
     @ResponseBody
     public RoomBookingDto initDefaultValue(String businessId,String businessType) {
         return roomBookingSerivce.initDefaultValue(businessId,businessType);
     }
 
-    @RequiresPermissions("room#findUser#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#findUser#get")
     @RequestMapping(name = "获取会议室预定人", path = "findUser", method = RequestMethod.GET)
     @ResponseBody
     public UserDto userObj() {
@@ -87,8 +96,9 @@ public class RoomBookingController {
         return user;
     }
 
+    @RequiresAuthentication
     @SuppressWarnings("unused")
-    @RequiresPermissions("room#exportThisWeekStage#get")
+    //@RequiresPermissions("room#exportThisWeekStage#get")
     @RequestMapping(name = "导出本周评审会议安排", path = "exportThisWeekStage", method = RequestMethod.GET)
     public void exportThisWeekStage(HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId) {
 //		roomBookingSerivce.exportThisWeekStage();
@@ -117,14 +127,16 @@ public class RoomBookingController {
 
     }
 
-    @RequiresPermissions("room#exportNextWeekStage#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#exportNextWeekStage#get")
     @RequestMapping(name = "导出下周评审会议安排", path = "exportNextWeekStage", method = RequestMethod.GET)
     public void exportsNext(HttpServletRequest req, HttpServletResponse resp) {
         roomBookingSerivce.exportNextWeekStage();
     }
 
     //导出本周全部会议安排
-    @RequiresPermissions("room#exportWeek#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#exportWeek#get")
     @RequestMapping(name = "导出本周全部会议安排", path = "exportWeek", method = RequestMethod.GET)
     public void exportWeek(HttpServletRequest req, HttpServletResponse resp) {
         try {
@@ -139,7 +151,8 @@ public class RoomBookingController {
     }
 
     //导出下周全部会议安排
-    @RequiresPermissions("room#exportNextWeek#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#exportNextWeek#get")
     @RequestMapping(name = "导出下周全部会议安排", path = "exportNextWeek", method = RequestMethod.GET)
     public void exportNextWeek(HttpServletRequest req, HttpServletResponse resp) {
         try {
@@ -154,21 +167,24 @@ public class RoomBookingController {
         }
     }
 
-    @RequiresPermissions("room#addRoom#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#addRoom#post")
     @RequestMapping(name = "创建会议室预定", path = "addRoom", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg save(@RequestBody RoomBookingDto roomDto) {
         return roomBookingSerivce.saveRoom(roomDto);
     }
 
-    @RequiresPermissions("room#saveRoom#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#saveRoom#post")
     @RequestMapping(name = "保存会议室预定", path = "saveRoom", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveRoom(@RequestBody RoomBookingDto roomDto) {
         return roomBookingSerivce.saveRoom(roomDto);
     }
 
-    @RequiresPermissions("room##delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("room##delete")
     @RequestMapping(name = "删除会议室预定", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestParam String id) {
@@ -176,7 +192,7 @@ public class RoomBookingController {
     }
 
     @RequiresPermissions("room#html/roomlist#get")
-    @RequestMapping(name = "预定会议室列表", path = "html/roomlist", method = RequestMethod.GET)
+    @RequestMapping(name = "会议室预定详情", path = "html/roomlist", method = RequestMethod.GET)
     public String roomlist(HttpServletRequest request, ModelMap model) {
         UserDto user = userService.findUserByName(SessionUtil.getLoginName());
         if (user != null) {
@@ -185,7 +201,8 @@ public class RoomBookingController {
         return ctrlName + "/roomlist";
     }
 
-    @RequiresPermissions("room#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("room#html/edit#get")
     @RequestMapping(name = "会议室预定编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName + "/edit";

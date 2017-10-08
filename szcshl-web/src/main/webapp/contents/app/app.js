@@ -976,7 +976,7 @@
             })
 
         ;
-    }]).run(function ($rootScope, $http, $state, $stateParams) {
+    }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {
         //获取表头名称
         $rootScope.getTBHeadName = function(stageName,isAdvanced,type){
             //项目建议书、可行性  提前介入称为评估论证
@@ -1059,10 +1059,38 @@
             }
         }
 
-        //打开新窗口
-        $rootScope.openWin = function(sysFileId) {
-            var url = rootPath+"/file/editFile?sysFileId="+sysFileId;
-            window.open(url,"_blank");
+        //文件预览
+        $rootScope.previewFile = function(sysFileId,fileType) {
+            var url,width,height;
+
+            if("office" == fileType){
+                url = rootPath+"/file/editFile?sysFileId="+sysFileId;
+                width = "82%";
+                height = "830px";
+            }else if("pdf" == fileType){
+                url =  rootPath+"/contents/libs/pdfjs-dist/web/viewer.html?file="+rootPath+"/file/preview/" + sysFileId;
+                width = "82%";
+                height = "830px";
+
+            }else if("image" == fileType){
+                url = rootPath+"/file/preview/" + sysFileId;
+                width = "75%";
+                height = "auto";
+            }
+            if(url){
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: width,
+                    height: height,
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }else{
+                bsWin.alert("该文件不支持在线预览");
+            }
         }
 
         //kendo 语言

@@ -6,41 +6,162 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <title>深圳市评审中心文件编辑</title>
     <style>
-        .button{
-            background-color:#3c8dbc;
-            border-color:#3c8dbc;
-            border-radius:3px;
-            color:#fff;
-            padding:5px 10px;
-            line-height:1.5;
-            text-align:center;
-            white-space:nowrap;
-            vertical-align:middle;
+        .TableBlock {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #a55257 1px solid; LINE-HEIGHT: 20px; BORDER-BOTTOM: #a55257 1px solid; BORDER-COLLAPSE: collapse
+        }
+        .TableBlock TD {
+            PADDING-RIGHT: 3px; PADDING-LEFT: 3px; PADDING-BOTTOM: 3px; COLOR: #000000; PADDING-TOP: 3px
+        }
+        .TableBlock .TableHeader TD {
+            BORDER-RIGHT: #a55257 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #a55257 1px solid; PADDING-LEFT: 0px; FONT-WEIGHT: bold; BACKGROUND: #e5ecf9; PADDING-BOTTOM: 0px; BORDER-LEFT: #a55257 1px solid; COLOR: #000; LINE-HEIGHT: 23px; PADDING-TOP: 0px; BORDER-BOTTOM: #a55257 1px solid
+        }
+        .TableBlock TD.TableHeader {
+            BORDER-RIGHT: #a55257 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #a55257 1px solid; PADDING-LEFT: 0px; FONT-WEIGHT: bold; BACKGROUND: #e5ecf9; PADDING-BOTTOM: 0px; BORDER-LEFT: #a55257 1px solid; COLOR: #000; LINE-HEIGHT: 23px; PADDING-TOP: 0px; BORDER-BOTTOM: #a55257 1px solid
+        }
+        .TableBlock .TableLine1 TD {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #f8f8f8
+        }
+        .TableBlock TD.TableLine1 {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #f8f8f8
+        }
+        .TableBlock .TableLine2 TD {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #ffffff
+        }
+        .TableBlock TD.TableLine2 {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #ffffff
+        }
+        .TableBlock .TableData TD {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #ffffff
+        }
+        .TableBlock TD.TableData {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #ffffff
+        }
+        .TableBlock TD.leftTableData {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #6699ff
+        }
+        .TableBlock .TableContent TD {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #f0f0f0
+        }
+        .TableBlock TD.TableContent {
+            BORDER-RIGHT: #a55257 1px solid; BORDER-TOP: #a55257 1px solid; BACKGROUND: #f0f0f0
+        }
+        .TableBlock .TableFooter TD {
+            BORDER-RIGHT: #cfddea 1px solid; BORDER-TOP: #cfddea 1px solid; BACKGROUND: #fff; BORDER-LEFT: #cfddea 1px solid; BORDER-BOTTOM: #cfddea 1px solid
+        }
+        .TableBlock .TableControl TD {
+            BORDER-RIGHT: #cfddea 1px solid; BORDER-TOP: #cfddea 1px solid; BACKGROUND: #fff; BORDER-LEFT: #cfddea 1px solid; BORDER-BOTTOM: #cfddea 1px solid
+        }
+        .TableBlock TD.TableFooter {
+            BORDER-RIGHT: #cfddea 1px solid; BORDER-TOP: #cfddea 1px solid; BACKGROUND: #fff; BORDER-LEFT: #cfddea 1px solid; BORDER-BOTTOM: #cfddea 1px solid
+        }
+        .TableBlock TD.TableControl {
+            BORDER-RIGHT: #cfddea 1px solid; BORDER-TOP: #cfddea 1px solid; BACKGROUND: #fff; BORDER-LEFT: #cfddea 1px solid; BORDER-BOTTOM: #cfddea 1px solid
+        }
+        .TableBlock .TableRed TD {
+            BACKGROUND: #ffebeb
+        }
+        .TableBlock TD.TableRed {
+            BACKGROUND: #ffebeb
+        }
+        .btn {
+            BORDER-RIGHT: #0066cc 1px solid; BORDER-TOP: #3366ff 1px solid; FONT-SIZE: 12px; PADDING: 3px 5px; MARGIN: 1px 0px 2px 3px; BORDER-LEFT: #0066cc 1px solid; WIDTH: 80px; COLOR: #ffffff;  BORDER-BOTTOM: #3366ff 1px solid; FONT-STYLE: normal; BACKGROUND-COLOR: #638eef
         }
     </style>
 </head>
 <body onunload="return window_onunload()">
-<div style="width: 100%;text-align: center; padding: 10px;">
-    <span style="line-height:1.5;font-size: 1.5em; font-weight: bold;">《${sysFile.showName}》</span>
-    <span style="line-height:1.5;margin-left:30px;margin-bottom:10px;"><input type=button  class="button" value="保存" onclick="WebSave();"></span>
+<div style="max-width:1366px;margin:10px auto;">
+    <table class="TableBlock" width="100%">
+        <tbody>
+        <tr class="TableHeader">
+            <td style="text-align: center;">
+                <p style="padding: 0px; margin: 0px;">
+                    <span >温馨提示：</span><span>在线编辑插件只支持IE浏览器; 如果页面无法显示在线编辑控件，请先<a href="${path}/${pluginFilePath}">下载</a>控件并安装，重新刷新页面即可！</span>
+                </p>
+            </td>
+        </tr>
+        <tr >
+            <td style="text-align: center;">
+                <span style="font-size: 16px">文件名：${sysFile.showName}</span>
+                <span style="margin-left:20px;">
+                     <button type=button  class="btn" onclick="WebSave();">保存</button>
+                    <button type=button  class="btn" onclick="showPrintDialog();">打印</button>
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-<div style="width: 100%;">
+<div style="max-width:1366px;margin:10px auto;">
     <script language=javascript src="${path}/contents/libs/weboffice/LoadWebOffice.js" charset="utf-8"></script>
 </div>
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
 <script src="${path}/contents/libs/weboffice/main.js"></script>
+<!-- --------------------=== 调用Weboffice初始化方法 ===--------------------- -->
+<SCRIPT language=javascript event=NotifyCtrlReady for=WebOffice>
+    /****************************************************
+     *
+     *	在装载完Weboffice(执行<object>...</object>)
+     *	控件后执行 "WebOffice1_NotifyCtrlReady"方法
+     *
+     ****************************************************/
+    WebOffice_OpenOfficeFile();
+</SCRIPT>
+
 <script type="text/javascript">
-    console.log('${filePath}');
-    $(document).ready(function() {
+    var filePath = '${filePath}';
+    var fileType = '${fileType}';
+    function WebOffice_OpenOfficeFile(){
+        if(filePath){
+            try{
+                document.all.WebOffice.LoadOriginalFile(filePath, "xls");
+            }catch(e){
+                alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
+            }
+        }
+    }
+    /****************************************************
+     *
+     *					保存文件，保存在原路径
+     *
+     ****************************************************/
+    function WebSave(){
+        document.all.WebOffice.Save();
+    }
+    /****************************************************
+     *
+     *				显示打印对话框
+     *
+     /***************************************************/
+    function showPrintDialog(){
         try{
-            document.all.WebOffice.LoadOriginalFile("D://szec_uploadfile/项目附件/40c9492f-73e1-47c4-8805-fb378617a696/发文模板/9596f807a0144ace949074b6ec1e8a60.doc", "doc");
+            document.all.WebOffice.PrintDoc(1);
         }catch(e){
             alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
         }
-    });
-    //保存操作
-    function WebSave(){
-
+    }
+    /****************************************************
+     *
+     *					直接打印
+     *
+     ****************************************************/
+    function zhiPrint(){
+        try{
+            document.all.WebOffice.PrintDoc(0);
+        }catch(e){
+            alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
+        }
+    }
+    /****************************************************
+     *
+     *			关闭页面时调用此函数，关闭文件
+     *
+     ****************************************************/
+    function window_onunload() {
+        try{
+            document.all.WebOffice.Close();
+        }catch(e){
+            alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
+        }
     }
 </script>
 </body>

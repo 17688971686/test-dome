@@ -127,7 +127,7 @@ public class Sign extends DomainBase {
     private String builtcompanyName;
 
     //缓急程度
-    @Column(columnDefinition = "VARCHAR(16)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String urgencydegree;
 
     //年度计划类别

@@ -1,5 +1,6 @@
 package cs.controller.sys;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.service.rtx.RTXService;
@@ -7,6 +8,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
 @Controller
+@IgnoreAnnotation
 public class HomeController {
 	private String ctrlName = "home";
 	private static Logger logger = Logger.getLogger(HomeController.class.getName());
@@ -39,6 +42,7 @@ public class HomeController {
      * http://172.18.225.26:8000/sendnotify.cgi?msg=hello&receiver=%E4%BD%86%E9%BE%99
      * @return
      */
+	@RequiresAuthentication
 	@RequestMapping(name = "腾讯通测试",path = "testRTX",method = RequestMethod.GET)
     @ResponseBody
 	public ResultMsg testRTX(){
@@ -52,6 +56,7 @@ public class HomeController {
 	}
 
 	//初始化流程
+    @RequiresAuthentication
 	@RequestMapping(name = "项目签收流程",path = "initProjectFlow",method = RequestMethod.GET)
 	@Transactional
 	public @ResponseBody String initProjectFlow(){
@@ -66,6 +71,7 @@ public class HomeController {
 		return "init Project Flow success";
 	}
 
+    @RequiresAuthentication
 	@RequestMapping(name = "课题研究流程",path = "initTopicFlow",method = RequestMethod.GET)
 	@Transactional
 	public @ResponseBody String initTopicFlow(){
@@ -80,6 +86,7 @@ public class HomeController {
 		return "init Topic Flow success";
 	}
 
+    @RequiresAuthentication
 	@RequestMapping(name = "图书采购流程",path = "initBooksBuyFlow",method = RequestMethod.GET)
 	@Transactional
 	public @ResponseBody String initBooksBuyFlow(){
@@ -94,6 +101,7 @@ public class HomeController {
 		return "init BooksBuy Flow success";
 	}
 
+    @RequiresAuthentication
 	@RequestMapping(name = "资产入库流程",path = "initAssertStorageFlow",method = RequestMethod.GET)
 	@Transactional
 	public @ResponseBody String initAssertStorageFlow(){

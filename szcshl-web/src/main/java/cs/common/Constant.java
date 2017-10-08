@@ -561,7 +561,6 @@ public class Constant {
      * 表头类型
      */
     public static enum HeaderType{
-
         TYPE_PROJECT("项目类型"),
         TYPE_TOPIC("课题类型");
         private String value;
@@ -570,6 +569,45 @@ public class Constant {
         }
         public String getValue(){
             return value;
+        }
+    }
+
+    /**
+     * 菜单类型
+     */
+    public static enum menu {
+        EXPERT("expert","专家库");
+        private String key;
+        private String value;
+
+        menu(String key,String value) {
+            this.key = key;
+            this.value = value;
+        }
+        public static menu getByKey(String key) {
+            menu[] enums = menu.values();
+            for (int i = 0; i < enums.length; i++) {
+                if (enums[i].getKey().equals(key)) {
+                    return enums[i];
+                }
+            }
+            return null;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }

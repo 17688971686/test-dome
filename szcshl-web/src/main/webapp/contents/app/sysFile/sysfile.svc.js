@@ -13,8 +13,13 @@
             findByMianId    : findByMianId,             // 根据主业务ID获取所有的附件信息
             findByBusinessId : findByBusinessId,        // 根据业务ID 获取上传附件
             mainTypeValue   : mainTypeValue,            // 各大模块附件根目录
+            previewFile : previewFile,                  // pdf 预览
         };
         return service;
+
+        function previewFile(){
+            alert(12);
+        }
 
         // 各大模块附件根目录(跟后台Constant.SysFileMainType 同步)
         function mainTypeValue(){
@@ -209,8 +214,8 @@
                 var projectfileoptions = {
                     language: 'zh',
                     allowedPreviewTypes: ['image'],
-                    allowedFileExtensions: ['jpg', 'png', 'gif', "xlsx", "docx", "doc", "xls", "pdf","ppt","zip","rar"],
-                    maxFileSize: 2000,
+                    allowedFileExtensions: ['jpg', 'png', 'gif', "docx", "doc", "xls","xlsx", "pdf","ppt","pptx","zip","rar"],
+                    maxFileSize: 5000,
                     showRemove: false,
                     uploadUrl: rootPath + "/file/fileUpload",
                     uploadExtraData: function(previewId, index) {

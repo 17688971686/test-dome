@@ -1,5 +1,6 @@
 package cs.controller.flow;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant.MsgCode;
 import cs.common.FlowConstant;
 import cs.common.ResultMsg;
@@ -32,6 +33,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,6 +51,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
+@MudoleAnnotation(name = "我的工作台")
 public class FlowController {
     private static Logger log = Logger.getLogger(SignServiceImpl.class);
 
@@ -85,10 +88,10 @@ public class FlowController {
     @Autowired
     private AssertStorageBusinessService assertStorageBusinessService;
 
-    @RequiresPermissions("flow#html/tasks#post")
+    //@RequiresPermissions("flow#html/tasks#post")
+    @RequiresAuthentication
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
+    public @ResponseBody PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,true);
         return pageModelDto;
@@ -100,7 +103,8 @@ public class FlowController {
      * @return
      * @throws ParseException
      */
-    @RequiresPermissions("flow#queryMyAgendaTask#post")
+    //@RequiresPermissions("flow#queryMyAgendaTask#post")
+    @RequiresAuthentication
     @RequestMapping(name = "我的待办任务", path = "queryMyAgendaTask", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
@@ -109,7 +113,8 @@ public class FlowController {
         return pageModelDto;
     }
 
-    @RequiresPermissions("flow#queryAgendaTask#post")
+    //@RequiresPermissions("flow#queryAgendaTask#post")
+    @RequiresAuthentication
     @RequestMapping(name = "所有待办任务", path = "queryAgendaTask", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
@@ -118,7 +123,8 @@ public class FlowController {
         return pageModelDto;
     }
 
-    @RequiresPermissions("flow#html/personDtasks#post")
+    //@RequiresPermissions("flow#html/personDtasks#post")
+    @RequiresAuthentication
     @RequestMapping(name="个人在办项目",path="html/personDtasks",method=RequestMethod.POST)
     @ResponseBody
     public PageModelDto<RuProcessTask> personDtasks(HttpServletRequest request) throws ParseException {
@@ -127,7 +133,8 @@ public class FlowController {
         return pageModelDto;
     }
 
-    @RequiresPermissions("flow#html/doingtasks#post")
+    //@RequiresPermissions("flow#html/doingtasks#post")
+    @RequiresAuthentication
     @RequestMapping(name = "在办项目", path = "html/doingtasks", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
@@ -136,7 +143,8 @@ public class FlowController {
         return pageModelDto;
     }
 
-    @RequiresPermissions("flow#html/endTasks#post")
+    //@RequiresPermissions("flow#html/endTasks#post")
+    @RequiresAuthentication
     @RequestMapping(name = "办结项目", path = "html/endTasks", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<TaskDto> endTasks(HttpServletRequest request) throws ParseException {
@@ -145,20 +153,23 @@ public class FlowController {
         return pageModelDto;
     }
 
-    @RequiresPermissions("flow#getMyHomeTasks#post")
+    //@RequiresPermissions("flow#getMyHomeTasks#post")
+    @RequiresAuthentication
     @RequestMapping(name = "查询主页我的待办任务", path = "getMyHomeTasks", method = RequestMethod.POST)
     @ResponseBody
     public  List<RuProcessTask> getMyHomeTasks() {
         return flowService.queryMyRunProcessTasks();
     }
 
-    @RequiresPermissions("flow#getMyHomeEndTask#postt")
+    //@RequiresPermissions("flow#getMyHomeEndTask#post")
+    @RequiresAuthentication
     @RequestMapping(name = "获取主页上的办结任务", path = "getMyHomeEndTask", method = RequestMethod.POST)
     @ResponseBody
     public List<TaskDto> getMyHomeEndTask() {
         return flowService.queryMyEndTasks();
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "读取流程图", path = "processInstance/img/{processInstanceId}", method = RequestMethod.GET)
     public void readProccessInstanceImg(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response)
             throws Exception {
@@ -197,6 +208,7 @@ public class FlowController {
     }
 
     @RequestMapping(name = "读取流程历史记录", path = "processInstance/history/{processInstanceId}", method = RequestMethod.POST)
+    @RequiresAuthentication
     public @ResponseBody
     PageModelDto<HiProcessTask> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId) {
         List<HiProcessTask> list = flowService.getProcessHistory(processInstanceId);
@@ -207,6 +219,7 @@ public class FlowController {
     }
 
     @RequestMapping(name = "获取流程处理信息", path = "processInstance/flowNodeInfo", method = RequestMethod.POST)
+    @RequiresAuthentication
     public @ResponseBody
     FlowDto flowNodeInfo(@RequestParam(required = true) String taskId, @RequestParam(required = true) String processInstanceId) {
         FlowDto flowDto = new FlowDto();
@@ -270,6 +283,7 @@ public class FlowController {
     }
 
 
+    @RequiresAuthentication
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
     public @ResponseBody
     ResultMsg flowCommit(@RequestBody FlowDto flowDto) throws Exception {
@@ -306,6 +320,7 @@ public class FlowController {
         return resultMsg;
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
     public @ResponseBody ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
@@ -313,6 +328,7 @@ public class FlowController {
     }
 
 
+    @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
     public @ResponseBody ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
@@ -325,6 +341,7 @@ public class FlowController {
      * @param businessKey
      * @return
      */
+    @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "挂起流程", path = "suspend/{businessKey}", method = RequestMethod.POST)
     @ResponseBody
@@ -334,6 +351,7 @@ public class FlowController {
 
     }
 
+    @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "终止流程", path = "deleteFLow", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -357,6 +375,8 @@ public class FlowController {
     }
 
     /******************************   以下是页面处理  ******************************/
+    //@RequiresPermissions("flow#flowDeal/processKey#get")
+    @RequiresAuthentication
     @RequestMapping(name = "待办任务页面", path = "flowDeal/{processKey}", method = RequestMethod.GET)
     public String ruProcessTask(@PathVariable("processKey") String processKey) {
         String resultPage = "";
@@ -375,7 +395,9 @@ public class FlowController {
         return resultPage;
     }
 
-    @RequestMapping(name = "在办任务详情页面", path = "flowDetail/{processKey}", method = RequestMethod.GET)
+    //@RequiresPermissions("flow#flowDetail/processKey#get")
+    @RequiresAuthentication
+    @RequestMapping(name = "在办任务", path = "flowDetail/{processKey}", method = RequestMethod.GET)
     public String flowDetail(@PathVariable("processKey") String processKey) {
         String resultPage = "";
         switch (processKey){
@@ -388,7 +410,9 @@ public class FlowController {
         return resultPage;
     }
 
-    @RequestMapping(name = "办结任务列表", path = "flowEnd/{processKey}", method = RequestMethod.GET)
+    //@RequiresPermissions("flow#flowEnd/processKey#get")
+    @RequiresAuthentication
+    @RequestMapping(name = "办结任务", path = "flowEnd/{processKey}", method = RequestMethod.GET)
     public String flowEnd(@PathVariable("processKey") String processKey) {
         String resultPage = "";
         switch (processKey){

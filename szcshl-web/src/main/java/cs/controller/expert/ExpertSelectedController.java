@@ -1,5 +1,7 @@
 package cs.controller.expert;
 
+import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
@@ -13,6 +15,7 @@ import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,7 @@ import java.util.List;
  * Date: 2017-6-14 14:26:49
  */
 @Controller
+@IgnoreAnnotation
 @RequestMapping(name = "抽取专家", path = "expertSelected")
 public class ExpertSelectedController {
     @Autowired
@@ -40,34 +44,39 @@ public class ExpertSelectedController {
     @Autowired
     private HeaderService headerService;
 
-    @RequiresPermissions("expertSelected##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody ExpertSelectedDto record) {
         expertSelectedService.save(record);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
     public @ResponseBody
     ExpertSelectedDto findById(@RequestParam(required = true) String id) {
         return expertSelectedService.findById(id);
     }
 
-    @RequiresPermissions("expertSelected##delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg delete(@RequestParam(required = true)String reviewId, @RequestParam(required = true) String id, boolean deleteAll) {
         return expertSelectedService.delete(reviewId,id,deleteAll);
     }
 
-    @RequiresPermissions("expertSelected##put")
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody ExpertSelectedDto record) {
         expertSelectedService.update(record);
     }
 
-    @RequiresPermissions("expertSelected#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ExpertSelectedDto> findByOData(HttpServletRequest request) throws ParseException {
@@ -76,20 +85,23 @@ public class ExpertSelectedController {
         return expertSelectedDtos;
     }
 
-    @RequiresPermissions("expertSelected#expertCostTotal#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "专家评审费汇总", path = "expertCostTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertCostTotal(@RequestBody ExpertCostCountDto expertCostCountDto) throws ParseException {
         return  expertSelectedService.expertCostTotal(expertCostCountDto);
     }
 
-    @RequiresPermissions("expertSelected#expertCostDetailTotal#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostDetailTotal#post")
     @RequestMapping(name = "专家评审费明细汇总", path = "expertCostDetailTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertCostDetailTotal(@RequestBody ExpertCostDetailCountDto expertCostDetailCountDto) throws ParseException {
         return  expertSelectedService.expertCostDetailTotal(expertCostDetailCountDto);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name="专家明细导出" , path ="expertDetailExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp){
@@ -128,6 +140,7 @@ public class ExpertSelectedController {
         }
     }
 
+    @RequiresAuthentication
     @RequestMapping(name="专家评审费统计导出" , path ="excelExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void excelExport(HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr ,@RequestParam String fileName){

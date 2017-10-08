@@ -4,6 +4,9 @@ import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
@@ -27,6 +30,7 @@ import cs.service.sys.WorkdayService;
 
 @Controller
 @RequestMapping(name="工作日管理",path="workday")
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class WorkdayController {
 
 	private String urlName="workday";
@@ -37,8 +41,9 @@ public class WorkdayController {
 	@Autowired
 	private SignService signService;
 
-	@RequiresPermissions("workday#findByOdataObj#post")
-	@RequestMapping(name="获取工作日所有数据",path="findByOdataObj",method=RequestMethod.POST)
+	//@RequiresPermissions("workday#findByOdataObj#post")
+    @RequiresAuthentication
+    @RequestMapping(name="获取工作日所有数据",path="findByOdataObj",method=RequestMethod.POST)
 	@ResponseBody
 	public PageModelDto<WorkdayDto> getWorkday(HttpServletRequest request) throws ParseException{
 
@@ -47,30 +52,34 @@ public class WorkdayController {
 		return workdayService.getWorkday(odataObj);
 	}
 
-	@RequiresPermissions("workday#getWorkdayById#get")
-	@RequestMapping(name="通过id获取单个对象",path="getWorkdayById",method=RequestMethod.GET)
+	//@RequiresPermissions("workday#getWorkdayById#get")
+    @RequiresAuthentication
+    @RequestMapping(name="通过id获取单个对象",path="getWorkdayById",method=RequestMethod.GET)
 	@ResponseBody
 	public WorkdayDto getWorkdayById(@RequestParam String id){
 
 		return workdayService.getWorkdayById(id);
 	}
 
-	@RequiresPermissions("workday#createWorkday#post")
+    @RequiresAuthentication
+	//@RequiresPermissions("workday#createWorkday#post")
 	@RequestMapping(name="新增工作日",path="createWorkday",method=RequestMethod.POST)
 	@ResponseStatus(value=HttpStatus.CREATED)
 	public void cresateWorkday(@RequestBody WorkdayDto workdayDto){
 		workdayService.createWorkday(workdayDto);
 	}
 
-	@RequiresPermissions("workday##put")
-	@RequestMapping(name="更新",path="",method=RequestMethod.PUT)
+	//@RequiresPermissions("workday##put")
+    @RequiresAuthentication
+    @RequestMapping(name="更新",path="",method=RequestMethod.PUT)
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
 	public void update(@RequestBody WorkdayDto workdayDto){
 		workdayService.updateWorkday(workdayDto);
 	}
 
-	@RequiresPermissions("workday##delete")
-	@RequestMapping(name="删除",path="",method=RequestMethod.DELETE)
+	//@RequiresPermissions("workday##delete")
+    @RequiresAuthentication
+    @RequestMapping(name="删除",path="",method=RequestMethod.DELETE)
 	@ResponseStatus(value=HttpStatus.NO_CONTENT)
 	public void delete(@RequestBody String id){
 		workdayService.deleteWorkday(id);
@@ -78,32 +87,30 @@ public class WorkdayController {
 
 	//begin html
 	@RequiresPermissions("workday#html/list#get")
-	@RequestMapping(name="工作日列表",path="html/list",method=RequestMethod.GET)
+	@RequestMapping(name="工作日管理",path="html/list",method=RequestMethod.GET)
 	public String  list(){
 		return urlName+"/list";
 
 	}
 
-	@RequiresPermissions("workday#html/edit#get")
-	@RequestMapping(name="工作日列编辑",path="html/edit",method=RequestMethod.GET)
+	//@RequiresPermissions("workday#html/edit#get")
+    @RequiresAuthentication
+    @RequestMapping(name="工作日列编辑",path="html/edit",method=RequestMethod.GET)
 	public String  edit(){
 		return urlName+"/edit";
 
 	}
 
-	@RequiresPermissions("workday#countWorkday#get")
-	@RequestMapping(name="计算工作日",path="countWorkday",method=RequestMethod.GET)
+	//@RequiresPermissions("workday#countWorkday#get")
+    @RequiresAuthentication
+    @RequestMapping(name="计算工作日",path="countWorkday",method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void countWorkday() throws Exception{
-//		signService.selectSignNotFinish();
 		SchedulerFactory schedulderFactory=new StdSchedulerFactory();
 		Scheduler sched=schedulderFactory.getScheduler();
 		String cls="cs.quartz.execute.SignCountWorkdayExecute";
 		String jobName="工作日计算";
 		String time="0/10 * * * * ?";
 		QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
-		
-		
-
 	}
 }

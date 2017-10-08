@@ -60,7 +60,7 @@
                 <span style="margin-left:10px;">
                         <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9"
                                ng-model="vm.dispatchDoc.isRelated"
-                               ng-checked="vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
+                               ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
                                name="isRelated"/>否
                     </span>
             </td>

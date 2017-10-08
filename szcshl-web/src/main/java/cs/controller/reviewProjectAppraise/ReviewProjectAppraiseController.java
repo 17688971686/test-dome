@@ -1,10 +1,12 @@
 package cs.controller.reviewProjectAppraise;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.project.AppraiseReportDto;
 import cs.repository.odata.ODataObj;
 import cs.service.reviewProjectAppraise.AppraiseService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,15 +23,16 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name="优秀评审报告" , path="reviewProjectAppraise")
+@MudoleAnnotation(name = "项目管理",value = "permission#sign")
 public class ReviewProjectAppraiseController {
-
 
     private String ctrlName = "reviewProjectAppraise";
 
     @Autowired
     private AppraiseService appraiseService;
 
-    @RequiresPermissions("reviewProjectAppraise#findEndProject#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#findEndProject#post")
     @RequestMapping(name="获取已办结项目" , path="findEndProject" , method= RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDispaWork> findEndProject(HttpServletRequest request) throws ParseException {
@@ -37,7 +40,8 @@ public class ReviewProjectAppraiseController {
         return appraiseService.findEndProject(oDataObj);
     }
 
-    @RequiresPermissions("reviewProjectAppraise#findAppraisingProject#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#findAppraisingProject#post")
     @RequestMapping(name="获取优秀评审项目" , path="findAppraisingProject" , method=RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDispaWork> findAppraisingProject(HttpServletRequest request ) throws ParseException{
@@ -45,31 +49,33 @@ public class ReviewProjectAppraiseController {
         return appraiseService.findAppraisingProject(oDataObj);
     }
 
-
-    @RequiresPermissions("reviewProjectAppraise#saveAppraisingProject#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#saveAppraisingProject#post")
     @RequestMapping(name="保存评优项目信息" , path="saveAppraisingProject" , method=RequestMethod.POST)
     @ResponseStatus(value= HttpStatus.NO_CONTENT)
     public void saveAppraisingProject(@RequestParam String signId){
 
         appraiseService.updateIsAppraising(signId);
-
     }
 
-    @RequiresPermissions("reviewProjectAppraise#initProposer#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#initProposer#get")
     @RequestMapping(name="初始化评审报告申请人" , path="initProposer" , method = RequestMethod.GET)
     @ResponseBody
     public AppraiseReportDto initProposer(){
         return appraiseService.initProposer();
     }
 
-    @RequiresPermissions("reviewProjectAppraise#saveApply#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#saveApply#post")
     @RequestMapping(name="保存申请信息" , path="saveApply" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void saveApply(@RequestBody  AppraiseReportDto appraiseReportDto){
         appraiseService.saveApply(appraiseReportDto);
     }
 
-    @RequiresPermissions("reviewProjectAppraise#getAppraiseReport#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#getAppraiseReport#post")
     @RequestMapping(name="查询优秀评审报告审批列表" , path="getAppraiseReport" , method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AppraiseReportDto> getAppraiseReport(HttpServletRequest request) throws ParseException {
@@ -77,14 +83,16 @@ public class ReviewProjectAppraiseController {
         return appraiseService.getAppraiseReport(oDataObj);
     }
 
-    @RequiresPermissions("reviewProjectAppraise#getAppraiseById#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#getAppraiseById#get")
     @RequestMapping(name="通过id查询优秀评审报告信息" , path="getAppraiseById" , method = RequestMethod.GET)
     @ResponseBody
     public AppraiseReportDto getAppraiseById(@RequestParam String id){
         return  appraiseService.getAppraiseById(id);
     }
 
-    @RequiresPermissions("reviewProjectAppraise#saveApprove#put")
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#saveApprove#put")
     @RequestMapping(name="保存审批内容" , path="saveApprove" , method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void saveApprove(@RequestBody AppraiseReportDto appraiseReportDto){
@@ -92,20 +100,19 @@ public class ReviewProjectAppraiseController {
     }
 
     @RequiresPermissions("reviewProjectAppraise#html/list#get")
-    @RequestMapping(name="优秀评审项目查询" , path="html/list" , method = RequestMethod.GET)
+    @RequestMapping(name="优秀评审报告查询" , path="html/list" , method = RequestMethod.GET)
     public String list(){
         return ctrlName + "/list";
     }
 
-
     @RequiresPermissions("reviewProjectAppraise#html/edit#get")
-    @RequestMapping(name="评审项目评优列表" , path="html/edit" , method = RequestMethod.GET)
+    @RequestMapping(name="评审项目评优" , path="html/edit" , method = RequestMethod.GET)
     public String edit(){
         return ctrlName + "/edit";
     }
 
     @RequiresPermissions("reviewProjectAppraise#html/approveList#get")
-    @RequestMapping(name="优秀评审报告审批列表" , path="html/approveList" , method = RequestMethod.GET)
+    @RequestMapping(name="优秀评审报告审批" , path="html/approveList" , method = RequestMethod.GET)
     public String approveList(){
         return ctrlName + "/approveList";
     }

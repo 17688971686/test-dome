@@ -48,7 +48,7 @@ public class FileRecord extends DomainBase{
     private Integer fileSeq;
 	
 	//档案编号
-	@Column(columnDefinition="VARCHAR(16)")
+	@Column(columnDefinition="VARCHAR(32)")
 	private String fileNo;
 	
 	//项目单位
@@ -60,7 +60,7 @@ public class FileRecord extends DomainBase{
 	private String projectCode;
 	
 	//文件标题
-	@Column(columnDefinition="VARCHAR(100)")
+	@Column(columnDefinition="VARCHAR(180)")
 	private String fileTitle;
 	
 	//文号

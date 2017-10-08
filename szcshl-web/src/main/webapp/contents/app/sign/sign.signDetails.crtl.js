@@ -9,7 +9,7 @@
         var vm = this;
     	vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
-        vm.title = '查看详情信息';        			//标题
+        vm.title = '项目综合查询';        			//标题
         vm.model.signid = $state.params.signid;	    //收文ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
         //按钮显示控制，全部归为这个对象控制
@@ -40,7 +40,9 @@
             })
 
             //流程图和流程处理记录信息
-            flowSvc.initFlowData(vm);
+            if($state.params.processInstanceId){
+                flowSvc.initFlowData(vm);
+            }
 
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
@@ -80,17 +82,6 @@
                     vm.sysFileList = data;
                 }
             });
-        }
-
-        //获取专家评星
-        vm.getExpertStar = function(id ,score){
-            var returnStr = "";
-            if (score != undefined) {
-                for (var i = 0; i <score; i++) {
-                    returnStr += "<span style='color:gold;font-size:20px;'><i class='fa fa-star' aria-hidden='true'></i></span>";
-                }
-            }
-            $("#"+id+"_starhtml").html(returnStr);
         }
     }
 })();

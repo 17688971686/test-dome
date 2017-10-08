@@ -95,11 +95,11 @@ public class WorkProgram extends DomainBase {
     private String contactPerson;
 
     //联系人手机
-    @Column(columnDefinition = "VARCHAR(12)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String contactPersonPhone;
 
     //联系人电话
-    @Column(columnDefinition = "VARCHAR(32)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String contactPersonTel;
 
     //联系人传真
@@ -201,7 +201,7 @@ public class WorkProgram extends DomainBase {
 
     //S 设备清单（进口）
     //项目概况
-    @Column(columnDefinition = "varchar(1024)")
+    @Column(columnDefinition = "varchar(1500)")
     private String projectSurvey;
 
     //评审重点

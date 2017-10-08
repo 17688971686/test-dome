@@ -8,9 +8,13 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
+import cs.common.utils.Validate;
 import cs.model.sys.SysConfigDto;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +24,8 @@ import cs.common.sysResource.ClassFinder;
 import cs.common.sysResource.SysResourceDto;
 import cs.domain.sys.Resource;
 import cs.domain.sys.Role;
-import cs.domain.sys.SysConfig;
 import cs.domain.sys.User;
 import cs.repository.repositoryImpl.sys.RoleRepo;
-import cs.repository.repositoryImpl.sys.SysConfigRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 
 import static cs.common.Constant.SUPER_USER;
@@ -48,40 +50,85 @@ public class SysServiceImpl implements SysService {
         List<Class<?>> classes = ClassFinder.find("cs.controller");
         for (Class<?> obj : classes) {
             if (obj.isAnnotationPresent(RequestMapping.class)) {
-                SysResourceDto resource = new SysResourceDto();
+                //如果是忽略模块，则返回
+                Annotation ignoreAnnotation = obj.getAnnotation(IgnoreAnnotation.class);
+                if(Validate.isObject(ignoreAnnotation)){
+                    continue;
+                }
+                //先找到模块名称
+                Annotation moduleAnnotation = obj.getAnnotation(MudoleAnnotation.class);
+                MudoleAnnotation mudoleAnnotation = (MudoleAnnotation) moduleAnnotation;
+                //构建模块
+                SysResourceDto moduleResourceDto = buildSysResource(resources, mudoleAnnotation);
 
+                //具体某个子模块
                 Annotation classAnnotation = obj.getAnnotation(RequestMapping.class);
                 RequestMapping classAnnotationInfo = (RequestMapping) classAnnotation;
-
+                SysResourceDto resource = new SysResourceDto();
                 resource.setName(classAnnotationInfo.name());
                 resource.setPath(classAnnotationInfo.path()[0]);
 
                 List<SysResourceDto> operations = new ArrayList<SysResourceDto>();
 
                 for (Method method : obj.getDeclaredMethods()) {
-
-                    if (method.isAnnotationPresent(RequestMapping.class)) {
+                    //过滤不是页面的方法
+                    if (method.isAnnotationPresent(RequestMapping.class) && method.isAnnotationPresent(RequiresPermissions.class)) {
                         SysResourceDto operation = new SysResourceDto();
-
                         Annotation methodAnnotation = method.getAnnotation(RequestMapping.class);
                         RequestMapping methodAnnotationInfo = (RequestMapping) methodAnnotation;
 
-                        String httpMethod = methodAnnotationInfo.method().length == 0 ? "GET"
-                                : methodAnnotationInfo.method()[0].name();
-                        operation.setPath(String.format("%s#%s#%s", resource.getPath(), methodAnnotationInfo.path()[0].replace("{", "").replace("}", ""),
-                                httpMethod));
+                        String httpMethod = methodAnnotationInfo.method().length == 0 ? "GET": methodAnnotationInfo.method()[0].name();
+                        operation.setPath(String.format("%s#%s#%s", resource.getPath(), Validate.isArray(methodAnnotationInfo.path())?
+                                methodAnnotationInfo.path()[0].replace("{", "").replace("}", ""):"", httpMethod));
                         operation.setName(String.format("%s(%s)", methodAnnotationInfo.name(), operation.getPath()));
                         operation.setMethod(httpMethod);
                         operations.add(operation);
 
                     }
                 }
-                resource.setChildren(operations);
-                resources.add(resource);
+
+                if(moduleResourceDto != null){
+                    moduleResourceDto.getChildren().addAll(operations);
+                }else{
+                    resource.setChildren(operations);
+                    resources.add(resource);
+                }
             }
 
         }
         return resources;
+    }
+
+    /**
+     * 创建资源文件
+     * @param resources
+     * @param moduleAnnotation
+     * @return
+     */
+    private SysResourceDto buildSysResource(List<SysResourceDto> resources, MudoleAnnotation moduleAnnotation) {
+        if(null == moduleAnnotation){
+            return null;
+        }
+        String moduleName = moduleAnnotation.name();
+        String modulePath = moduleAnnotation.value();
+        boolean isExists = false;
+        SysResourceDto resourceDto = null;
+        if(Validate.isList(resources)){
+            for(SysResourceDto rd:resources){
+                if(rd.getName().equals(moduleName)){
+                    resourceDto = rd;
+                    isExists = true;
+                    break;
+                }
+            }
+        }
+        if(!isExists){
+            resourceDto = new SysResourceDto();
+            resourceDto.setName(moduleName);
+            resourceDto.setPath(modulePath);
+            resources.add(resourceDto);
+        }
+        return resourceDto;
     }
 
     /**

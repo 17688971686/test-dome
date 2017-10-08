@@ -1,5 +1,6 @@
 package cs.controller.project;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelTools;
 import cs.domain.project.SignDispaWork;
@@ -9,6 +10,7 @@ import cs.repository.odata.ODataObj;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name = "收文", path = "signView")
+@IgnoreAnnotation
 public class SignDispaWorkController {
 
     @Autowired
@@ -38,7 +41,8 @@ public class SignDispaWorkController {
     private HeaderService headerService;
 
 
-    @RequiresPermissions("signView#getSignList#post")
+    //@RequiresPermissions("signView#getSignList#post")
+    @RequiresAuthentication
     @RequestMapping(name = "项目查询统计", path = "getSignList", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
@@ -47,34 +51,39 @@ public class SignDispaWorkController {
         return pageModelDto;
     }
 
-    @RequiresPermissions("signView#unMergeWPSign#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("signView#unMergeWPSign#post")
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeWPSign(@RequestParam(required = true) String signId) {
         return signDispaWorkService.unMergeWPSign(signId);
     }
 
-    @RequiresPermissions("signView#getMergeSignBySignId#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("signView#getMergeSignBySignId#post")
     @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
     public @ResponseBody
     List<SignDispaWork> getMergeSignBySignId(@RequestParam(required = true) String signId) {
         return signDispaWorkService.getMergeWPSignBySignId(signId);
     }
 
-    @RequiresPermissions("signView#unMergeDISSign#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("signView#unMergeDISSign#post")
     @RequestMapping(name = "待选合并发文项目", path = "unMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeDISSign(@RequestParam(required = true) String signId) {
         return signDispaWorkService.unMergeDISSign(signId);
     }
 
-    @RequiresPermissions("signView#getMergeDISSign#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("signView#getMergeDISSign#post")
     @RequestMapping(name = "获取已选合并发文项目", path = "getMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> getMergeDISSign(@RequestParam(required = true) String signId) {
         return signDispaWorkService.getMergeDISSignBySignId(signId);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "保存合并项目", path = "mergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg mergeSign(@RequestParam(required = true) String signId,
@@ -82,7 +91,8 @@ public class SignDispaWorkController {
         return signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
     }
 
-    @RequiresPermissions("signView#cancelMergeSign#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("signView#cancelMergeSign#post")
     @RequestMapping(name = "解除合并评审发文", path = "cancelMergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg cancelMergeSign(@RequestParam(required = true) String signId, String cancelIds,
@@ -90,13 +100,15 @@ public class SignDispaWorkController {
         return signDispaWorkService.cancelMergeSign(signId, cancelIds, mergeType);
     }
 
-    @RequiresPermissions("signView#deleteAllMerge#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("signView#deleteAllMerge#post")
     @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId, @RequestParam(required = true) String mergeType) {
         return signDispaWorkService.deleteAllMerge(signId, mergeType);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void excelExport(HttpServletResponse resp, @RequestBody SignDispaWork[] signDispaWorks, @RequestParam String fileName) {

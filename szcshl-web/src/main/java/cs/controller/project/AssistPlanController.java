@@ -6,7 +6,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ import cs.service.project.AssistPlanService;
  */
 @Controller
 @RequestMapping(name = "协审方案", path = "assistPlan")
+@MudoleAnnotation(name = "项目管理",value = "permission#sign")
 public class AssistPlanController {
 
 	String ctrlName = "assist";
@@ -38,7 +41,8 @@ public class AssistPlanController {
     @Autowired
     private AssistPlanService assistPlanService;
 
-    @RequiresPermissions("assistPlan#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AssistPlanDto> findByOData(HttpServletRequest request) throws ParseException {
@@ -47,12 +51,14 @@ public class AssistPlanController {
         return assistPlanDtos;
     }
 
-    @RequiresPermissions("assistPlan##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan##post")
     @RequestMapping(name = "新增计划信息", path = "", method = RequestMethod.POST)
     public @ResponseBody ResultMsg post(@RequestBody AssistPlanDto record) {
         return assistPlanService.save(record);
     }
 
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody AssistPlanDto findById(@RequestParam(required = true)String id){		
 		return assistPlanService.findById(id);
@@ -62,36 +68,42 @@ public class AssistPlanController {
      * 初始化协审计划信息
      * @return
      */
+    @RequiresAuthentication
     @RequestMapping(name = "初始化管理页面", path = "initPlanManager",method=RequestMethod.GET)
     public @ResponseBody Map<String,Object> initPlanManager(){
         return assistPlanService.initPlanManager();
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "保存次项目信息", path = "saveLowPlanSign",method=RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void saveLowPlanSign(@RequestBody AssistPlanDto assistPlanDto){
         assistPlanService.saveLowPlanSign(assistPlanDto);
     }
 
-    @RequiresPermissions("assistPlan##delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
         assistPlanService.delete(id);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "删除主项目", path = "cancelPlanSign", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void cancelPlanSign(@RequestParam(required = false) String planId,@RequestParam(required = true)String signIds) {
         assistPlanService.cancelPlanSign(planId,signIds,true);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "删除次项目", path = "cancelLowPlanSign", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void cancelLowPlanSign(@RequestParam(required = false) String planId,@RequestParam(required = true)String signIds) {
         assistPlanService.cancelPlanSign(planId,signIds,false);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "根据项目ID查询", path = "getAssistPlanBySignId", method = RequestMethod.GET)
     @ResponseBody
     public AssistPlanDto getAssistPlanBySignId(@RequestParam(required = true)String signId) {
@@ -102,7 +114,8 @@ public class AssistPlanController {
      * @param drawAssitUnitIds 协审项目抽签，格式AssistPlanSign.id|AssistUnit.id,,,
      * @param unSelectedIds 轮空的单位
      * */
-    @RequiresPermissions("assistPlan#saveDrawAssistUnit#put")
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan#saveDrawAssistUnit#put")
     @RequestMapping(name = "保存协审项目抽签结果", path = "saveDrawAssistUnit", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void saveDrawAssistUnit(@RequestParam(required = true)String planId,@RequestParam(required = true) String drawAssitUnitIds,String unSelectedIds) {
@@ -110,16 +123,18 @@ public class AssistPlanController {
 //        System.out.println(drawAssitUnitIds);
        // assistPlanService.update(record);
     }
-    
-    @RequiresPermissions("assistPlan#initAssistUnit#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan#initAssistUnit#get")
     @RequestMapping(name="初始化项目的协审单位",path="initAssistUnit",method=RequestMethod.GET)
     @ResponseBody
     public List<AssistUnitDto> initAssistUnit(@RequestParam String planId){
     	
     	return assistPlanService.getAssistUnit(planId);
     }
-    
-    @RequiresPermissions("assistPlan#saveChooleUnit#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan#saveChooleUnit#post")
     @RequestMapping(name="保存手动选择的协审单位",path="saveChooleUnit",method=RequestMethod.POST)
     @ResponseStatus(value=HttpStatus.NO_CONTENT)
     public void saveChooleUnit(@RequestParam String unitId,@RequestParam String planId){
@@ -127,7 +142,8 @@ public class AssistPlanController {
     	assistPlanService.addAssistUnit(planId, unitId);
     }
 
-    @RequiresPermissions("assistPlan##put")
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody AssistPlanDto record) {
@@ -141,7 +157,8 @@ public class AssistPlanController {
         return ctrlName+"/manager";
     }
 
-    @RequiresPermissions("assistPlan#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("assistPlan#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/edit";

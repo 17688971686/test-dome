@@ -11,10 +11,13 @@
     </tr>
     <tr ng-repeat="x in vm.sysFileList ">
         <td style="text-align: center;">
-            <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+            <i class="fa fa-file-image-o" aria-hidden="true"
+               ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
             <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
             <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
-            <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show=" x.fileType =='.pdfx' || x.fileType =='.pdf'"></i>
+            <i class="fa fa-file-powerpoint-o" aria-hidden="true"
+               ng-show="x.fileType =='.pptx' || x.fileType =='.ppt'"></i>
+            <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
             <a ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
         </td>
         <td style="text-align: center;">{{ x.sysfileType }}</td>
@@ -22,11 +25,27 @@
         <td style="text-align: center;">{{ x.createdBy }}</td>
         <td style="text-align: center;">{{ x.createdDate }}</td>
         <td style="text-align: center;">
-            <button ng-click="vm.commonDownloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
+            <button ng-click="vm.commonDownloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i
+                    class="fa fa-cloud-download" aria-hidden="true"></i>下载
+            </button>
+            <!-- word 类型，在线编辑-->
+            <span ng-if="x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'">
+                <button ng-click="previewFile(x.sysFileId,'office')" class="btn btn-xs btn-primary"><span
+                        class="glyphicon glyphicon-pencil"></span>编辑</button>
+            </span>
+            <!-- pdf 文件-->
+            <span ng-if="x.fileType =='.pdf'">
+                <button ng-click="previewFile(x.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+            </span>
+            <!-- image 文件-->
+            <span ng-if="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'">
+                <button ng-click="previewFile(x.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+            </span>
         </td>
     </tr>
-
 </table>
-<!-- E 收文上传附件列表 -->
 
-<div id="editSysFileWindow"></div>
+<!-- E 收文上传附件列表 -->
+<div id="previewModal" style="display:none;">
+    <iframe id="iframePreview" width='100%' height='800' allowfullscreen webkitallowfullscreen></iframe>
+</div>

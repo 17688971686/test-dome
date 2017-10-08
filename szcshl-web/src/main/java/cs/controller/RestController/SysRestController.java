@@ -1,5 +1,6 @@
 package cs.controller.RestController;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
@@ -24,7 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by ldm on 2017/8/25.
  */
 @RestController
-@RequestMapping("/intfc")
+@RequestMapping(name = "系统接口", path = "intfc")
+@IgnoreAnnotation
 public class SysRestController {
 
     @Autowired
@@ -42,7 +44,7 @@ public class SysRestController {
      * @param signDto
      * @return
      */
-    @RequestMapping(value = "/pushProject", method = RequestMethod.POST)
+    @RequestMapping(name="项目签收信息",value = "/pushProject", method = RequestMethod.POST)
     public ResultMsg pushProject(@RequestBody SignDto signDto) {
         return signService.pushProject(signDto);
     }
@@ -53,7 +55,7 @@ public class SysRestController {
      * @param resultMsg
      * @return
      */
-    @RequestMapping(value = "/auditTopicResult", method = RequestMethod.POST)
+    @RequestMapping(name="课题研究审核",value = "/auditTopicResult", method = RequestMethod.POST)
     public ResultMsg auditTopicResult(@RequestBody ResultMsg resultMsg) {
         TopicInfoDto topicInfoDto = (TopicInfoDto) resultMsg.getReObj();
         if(topicInfoDto == null){

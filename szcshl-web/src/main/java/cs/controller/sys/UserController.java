@@ -7,8 +7,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ import cs.service.sys.UserService;
 
 @Controller
 @RequestMapping(name = "用户", path = "user")
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class UserController {
 
     private String ctrlName = "user";
@@ -38,8 +41,9 @@ public class UserController {
     private UserService userService;
 
 	
-	@RequiresPermissions("user#fingByOData#post")
-	@RequestMapping(name = "获取用户数据", path = "fingByOData",method=RequestMethod.POST)	
+	//@RequiresPermissions("user#fingByOData#post")
+    @RequiresAuthentication
+    @RequestMapping(name = "获取用户数据", path = "fingByOData",method=RequestMethod.POST)
     @ResponseBody
     public PageModelDto<UserDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -47,7 +51,8 @@ public class UserController {
         return userDtos;
     }
 
-    @RequiresPermissions("user#getOrg#get")
+    //@RequiresPermissions("user#getOrg#get")
+    @RequiresAuthentication
     @RequestMapping(name = "获取机构数据", path = "getOrg", method = RequestMethod.GET)
     @ResponseBody
     public List<OrgDto> getOrg(HttpServletRequest request) throws ParseException {
@@ -56,14 +61,17 @@ public class UserController {
         return orgDto;
     }
     
-    @RequiresPermissions("user#findAllUsers#get")
+    //@RequiresPermissions("user#findAllUsers#get")
+    @RequiresAuthentication
     @RequestMapping(name = "查询所有用户信息", path = "findAllUsers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findAllUsers(){
     	List<UserDto>	userDtos =userService.findAllusers();
     	return userDtos;
     }
-    @RequiresPermissions("user#findUsersByOrgId#get")
+
+    //@RequiresPermissions("user#findUsersByOrgId#get")
+    @RequiresAuthentication
     @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByOrgId", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findUsersByOrgId(@RequestParam(required = true)String orgId){
@@ -72,7 +80,8 @@ public class UserController {
     }
     
      
-    @RequiresPermissions("user#findChargeUsers#get")
+    //@RequiresPermissions("user#findChargeUsers#get")
+    @RequiresAuthentication
     @RequestMapping(name = "获取所在部门的用户", path = "findChargeUsers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findChargeUsers(){
@@ -80,7 +89,8 @@ public class UserController {
     	return userService.findUserByOrgId(curUser.getOrg().getId());
     }
     
-    @RequiresPermissions("user#findByOrgUserName#get")
+    //@RequiresPermissions("user#findByOrgUserName#get")
+    @RequiresAuthentication
     @RequestMapping(name = "根据部门ID获取用户所在部门", path = "findByOrgUserName", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> findByOrgUserNames(@RequestParam(required = true)String orgId){
@@ -88,13 +98,15 @@ public class UserController {
     	return userlist;
     }
     
-    @RequiresPermissions("user##post")
+    //@RequiresPermissions("user##post")
+    @RequiresAuthentication
     @RequestMapping(name = "创建用户", path = "", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg post(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "部门编辑角色初始化", path = "initRoleUsers", method = RequestMethod.POST)
     @ResponseBody
     public Map<String,List<UserDto>> initRoleUsers() {
@@ -106,20 +118,23 @@ public class UserController {
     	return resultMap;
     }
     
-    @RequiresPermissions("user##delete")
+    //@RequiresPermissions("user##delete")
+    @RequiresAuthentication
     @RequestMapping(name = "删除用户", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	userService.deleteUser(id);
     }
 
-    @RequiresPermissions("user##put")
+    //@RequiresPermissions("user##put")
+    @RequiresAuthentication
     @RequestMapping(name = "更新用户", path = "", method = RequestMethod.PUT)
     @ResponseBody
     public ResultMsg put(@RequestBody UserDto userDto) {
         return userService.updateUser(userDto);
     }
-    
+
+    @RequiresAuthentication
     @RequestMapping(name = "获取副主任信息", path = "getViceDirector", method = RequestMethod.GET)
     @ResponseBody
     public List<UserDto> getViceDirector() {
@@ -127,7 +142,8 @@ public class UserController {
     }
 
     
-    @RequiresPermissions("user#createUserNo#get")
+    //@RequiresPermissions("user#createUserNo#get")
+    @RequiresAuthentication
     @RequestMapping(name="生成员工工号",path="createUserNo",method=RequestMethod.GET)
     @ResponseBody
     public String createUserNo(){
@@ -140,37 +156,42 @@ public class UserController {
      * @param userId
      * @return
      */
+    @RequiresAuthentication
     @RequestMapping(name = "根据用户ID查询用户信息", path = "findUserById", method = RequestMethod.POST)
     @ResponseBody
     public UserDto findUserById(@RequestParam String userId){
         return userService.findById(userId,true);
     }
 
-/**
- * 以下代办人处理
- * */
-    @RequiresPermissions("user#getAllUserDisplayName#get")
+    /**
+    * 以下代办人处理
+    * */
+    //@RequiresPermissions("user#getAllUserDisplayName#get")
+    @RequiresAuthentication
     @RequestMapping(name="获取所有用户显示名和id", path="getAllUserDisplayName", method=RequestMethod.GET)
     @ResponseBody
     public List<UserDto> getAllUserDisPlayName(){
         return userService.getAllUserDisplayName();
     }
 
-    @RequiresPermissions("user#getUserByLoginName#get")
+    //@RequiresPermissions("user#getUserByLoginName#get")
+    @RequiresAuthentication
     @RequestMapping(name="通过登录名获取用户信息",path="getUserByLoginName",method=RequestMethod.GET)
     @ResponseBody
     public UserDto getUserByLoginName(){
         return userService.getTakeUserByLoginName();
     }
 
-    @RequiresPermissions("user#saveTakeUser#post")
+    //@RequiresPermissions("user#saveTakeUser#post")
+    @RequiresAuthentication
     @RequestMapping(name="保存代办人",path="saveTakeUser" ,method=RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void saveTkeUser(@RequestParam String takeUserId){
         userService.saveTakeUser(takeUserId);
     }
 
-    @RequiresPermissions("user#cancelTakeUser#get")
+    //@RequiresPermissions("user#cancelTakeUser#get")
+    @RequiresAuthentication
     @RequestMapping(name="取消代办人",path="cancelTakeUser" ,method=RequestMethod.GET)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelTakeUser(){
@@ -179,12 +200,13 @@ public class UserController {
 
     // begin#html
     @RequiresPermissions("user#html/list#get")
-    @RequestMapping(name = "用户列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "用户管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
 
-    @RequiresPermissions("user#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("user#html/edit#get")
     @RequestMapping(name = "编辑用户页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         //userService.createUser(userDto);

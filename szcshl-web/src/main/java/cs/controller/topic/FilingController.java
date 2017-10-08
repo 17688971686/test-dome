@@ -1,5 +1,6 @@
 package cs.controller.topic;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.topic.FilingDto;
@@ -7,6 +8,7 @@ import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
 import cs.service.topic.FilingService;
 
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,13 +26,15 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping(name = "课题归档", path = "filing")
+@IgnoreAnnotation
 public class FilingController {
 
 	String ctrlName = "filing";
     @Autowired
     private FilingService filingService;
 
-    @RequiresPermissions("filing#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("filing#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<FilingDto> get(HttpServletRequest request) throws ParseException {
@@ -39,7 +43,8 @@ public class FilingController {
         return filingDtos;
     }
 
-    @RequiresPermissions("filing##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("filing##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg post(@RequestBody FilingDto record) {
@@ -47,24 +52,29 @@ public class FilingController {
         return filingService.save(record);
     }
 
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody FilingDto findById(@RequestParam(required = true)String id){		
 		return filingService.findById(id);
 	}
 
+    @RequiresAuthentication
     @RequestMapping(name = "根据课题ID查询", path = "initByTopicId",method=RequestMethod.POST)
     public @ResponseBody
     FilingDto initByTopicId(@RequestParam(required = true)String topicId){
         return filingService.initByTopicId(topicId);
     }
-    @RequiresPermissions("filing##delete")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("filing##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	filingService.delete(id);      
     }
 
-    @RequiresPermissions("filing##put")
+    @RequiresAuthentication
+    //RequiresPermissions("filing##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody FilingDto record) {
@@ -72,13 +82,15 @@ public class FilingController {
     }
 
     // begin#html
-    @RequiresPermissions("filing#html/list#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("filing#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
 
-    @RequiresPermissions("filing#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("filing#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return "topicInfo/filingEdit";

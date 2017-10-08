@@ -31,15 +31,17 @@ public class AssistPlan extends DomainBase {
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date reportTime;
-    
-    //报批时间
+
+    /**
+     * 报批时间
+     */
     @Column(columnDefinition="VARCHAR(20)")
     private String approvalTime;
     
     /**
      * 抽签时间
      */
-    @Column(columnDefinition="VARCHAR(20)")
+    @Column(columnDefinition="VARCHAR(100)")
     private String drawTime;
 
     /**

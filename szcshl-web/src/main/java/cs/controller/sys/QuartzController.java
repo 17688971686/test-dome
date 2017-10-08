@@ -4,6 +4,8 @@ import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.ahelper.MudoleAnnotation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.quartz.Job;
 import org.quartz.Scheduler;
@@ -34,6 +36,7 @@ import cs.service.sys.QuartzService;
  */
 @Controller
 @RequestMapping(name = "定时器配置", path = "quartz")
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class QuartzController {
 
 	String ctrlName = "quartz";
@@ -43,7 +46,8 @@ public class QuartzController {
     @Autowired
     private QuartzRepo quartzRepo;
 
-    @RequiresPermissions("quartz#findByOData#post")
+    //@RequiresPermissions("quartz#findByOData#post")
+    @RequiresAuthentication
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<QuartzDto> get(HttpServletRequest request) throws ParseException {
@@ -52,33 +56,38 @@ public class QuartzController {
         return quartzDtos;
     }
 
-    @RequiresPermissions("quartz##post")
+    //@RequiresPermissions("quartz##post")
+    @RequiresAuthentication
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody QuartzDto record) {
         quartzService.save(record);
     }
 
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody QuartzDto findById(@RequestParam(required = true)String id){		
 		return quartzService.findById(id);
 	}
 	
-    @RequiresPermissions("quartz##delete")
+    //@RequiresPermissions("quartz##delete")
+    @RequiresAuthentication
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	quartzService.delete(id);      
     }
 
-    @RequiresPermissions("quartz#updateQuartz#put")
+    //@RequiresPermissions("quartz#updateQuartz#put")
+    @RequiresAuthentication
     @RequestMapping(name = "更新记录", path = "updateQuartz", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody QuartzDto record) {
         quartzService.update(record);
     }
     
-    @RequiresPermissions("quartz#quartzExecute#put")
+    //@RequiresPermissions("quartz#quartzExecute#put")
+    @RequiresAuthentication
     @RequestMapping(name = "执行定时器", path = "quartzExecute", method = RequestMethod.PUT)
     @ResponseBody
     public String quartzExecute(@RequestParam String quartzId) throws Exception{
@@ -99,7 +108,8 @@ public class QuartzController {
     	
     }
     
-    @RequiresPermissions("quartz#quartzStop#put")
+    //@RequiresPermissions("quartz#quartzStop#put")
+    @RequiresAuthentication
     @RequestMapping(name = "停止定时器", path = "quartzStop", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void quartzStop(@RequestParam String quartzId) throws Exception{
@@ -117,12 +127,13 @@ public class QuartzController {
 
     // begin#html
     @RequiresPermissions("quartz#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "定时器管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
 
-    @RequiresPermissions("quartz#html/edit#get")
+    //@RequiresPermissions("quartz#html/edit#get")
+    @RequiresAuthentication
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/edit";

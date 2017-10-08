@@ -1,5 +1,7 @@
 package cs.controller.sys;
 
+import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
@@ -11,6 +13,7 @@ import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name = "文件管理", path = "file")
+@IgnoreAnnotation
 public class FileController {
     private static Logger logger = Logger.getLogger(FileController.class);
     
@@ -49,6 +50,7 @@ public class FileController {
     @Autowired
     private RealPathResolver realPathResolver;
 
+    @RequiresAuthentication
     @RequestMapping(name = "获取文件数据", path = "", method = RequestMethod.GET)
     public @ResponseBody
     PageModelDto<SysFileDto> get(HttpServletRequest request) throws ParseException {
@@ -57,6 +59,7 @@ public class FileController {
         return sysFileDtos;
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.POST)
     public @ResponseBody
     List<SysFileDto> findByBusinessId(@RequestParam(required = true) String businessId) {
@@ -64,6 +67,7 @@ public class FileController {
         return sysfileDto;
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "根据收文ID获取附件", path = "findByMainId", method = RequestMethod.POST)
     public @ResponseBody
     List<SysFileDto> findByMainId(@RequestParam(required = true) String mainId) {
@@ -82,6 +86,7 @@ public class FileController {
      * @return
      * @throws IOException
      */
+    @RequiresAuthentication
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
     public  ResultMsg upload(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
@@ -90,6 +95,7 @@ public class FileController {
 
         String fileName = multipartFile.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        fileType = fileType.toLowerCase();      //统一转成小写
 
         if (!multipartFile.isEmpty()) {
            return  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
@@ -98,6 +104,7 @@ public class FileController {
         }
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
     public @ResponseBody
     void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) throws IOException {
@@ -170,35 +177,121 @@ public class FileController {
         }
     }
 
-    @RequiresPermissions("file#deleteSysFile#delete")
+    //@RequiresPermissions("file#deleteSysFile#delete")
+    @RequiresAuthentication
     @RequestMapping(name = "删除系统文件", path = "deleteSysFile", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteSysFile(@RequestParam String id) {
         fileService.deleteById(id);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "文件删除", path = "delete", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestParam(required = true) String sysFileId) throws IOException {
         fileService.deleteById(sysFileId);
     }
 
+    /**
+     * 针对pdf和图片文件
+     * @param sysFileId
+     * @param response
+     * @throws IOException
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "预览附件", path = "preview/{sysFileId}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void preview(@PathVariable String sysFileId, HttpServletResponse response) throws IOException {
+        SysFile sysFile = fileService.findFileById(sysFileId);
+        String filePath = SysFileUtil.getUploadPath()+sysFile.getFileUrl();
+        File file = new File(filePath);
+        if(!file.exists()){
+            file = new File(realPathResolver.get(plugin_file_path)+File.separator+"nofile.png");
+            sysFile.setFileType(".png");
+        }
+
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        byte[] buffer = new byte[inputStream.available()];
+        inputStream.read(buffer);  //读取文件流
+        inputStream.close();
+
+        response.reset();  //重置结果集
+        switch (sysFile.getFileType()){
+            case ".pdf":
+                response.setContentType("application/pdf");
+                break;
+            case ".png":
+            case ".jpg":
+            case ".gif":
+                response.setContentType("text/html; charset=UTF-8");
+                response.setContentType("image/jpeg");
+                break;
+        }
+        response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
+        response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
+
+        //获取返回体输出权
+        OutputStream os = new BufferedOutputStream(response.getOutputStream());
+        os.write(buffer); // 输出文件
+        os.flush();
+        os.close();
+    }
+
+    /**
+     * 只针对office文件
+     * @param model
+     * @param sysFileId
+     * @return
+     */
+    @RequiresAuthentication
     @RequestMapping(name = "附件编辑", path = "editFile", method = RequestMethod.GET)
     public String editFile(Model model,@RequestParam(required = true) String sysFileId){
         SysFile sysFile = fileService.findFileById(sysFileId);
+        //文件路径
         String filePath = SysFileUtil.getUploadPath()+sysFile.getFileUrl();
         filePath = filePath.replaceAll("\\\\", "/");
         model.addAttribute("filePath",filePath);
+        //文件类型
+        String fileTyp ;
+        switch (sysFile.getFileType().toLowerCase()){
+            case ".doc":
+            case ".docx":
+                fileTyp = "doc";
+                break;
+            case ".xls":
+            case ".xlsx":
+                fileTyp = "xls";
+                break;
+            case ".ppt":
+            case ".pptx":
+                fileTyp = "ppt";
+                break;
+            case ".pdf":
+                fileTyp = "pdf";
+                break;
+            default:
+                fileTyp = "doc";
+        }
+        model.addAttribute("fileType",fileTyp);
+        //附件信息
         model.addAttribute("sysFile",sysFile);
-        return "weboffice/edit_dj";
+        if("pdf".equals(fileTyp)){
+            return "weboffice/reader_pdf";
+        }else{
+            model.addAttribute("pluginFilePath",plugin_file_path+"/weboffice.rar");
+            return "weboffice/edit_dj";
+        }
     }
 
-    @RequiresPermissions("file#html/pluginfile#get")
+    //@RequiresPermissions("file#html/pluginfile#get")
+    @RequiresAuthentication
     @RequestMapping(name = "插件文件", path = "html/pluginfile")
     public String pluginfile(Model model) {
         return ctrlName + "/pluginfile";
     }
 
+
+    @RequiresAuthentication
     @RequestMapping(name = "获取本地插件", path = "getPluginFile", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto listFile() {
@@ -219,6 +312,7 @@ public class FileController {
         return pageModelDto;
 	}
 
+    @RequiresAuthentication
     @RequestMapping(name = "获取首页本地插件", path = "listHomeFile", method = RequestMethod.POST)
     @ResponseBody
     public List<PluginFileDto> listHomeFile() {
@@ -227,7 +321,7 @@ public class FileController {
         if (parent.exists()) {
             File flist[] = parent.listFiles();
             for (File f : flist) {
-                if (!f.isDirectory()) {
+                if (!f.isDirectory() && !".png".endsWith(f.getName())) {
                     list.add(new PluginFileDto(f,plugin_file_path)) ;
                 }
             }

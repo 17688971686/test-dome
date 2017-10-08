@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import cs.ahelper.IgnoreAnnotation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,14 +29,16 @@ import cs.service.external.OfficeUserService;
  
 @Controller
 @RequestMapping(name = "办事处人员", path = "officeUser")
+@IgnoreAnnotation
 public class OfficeUserController {
 
 	String ctrlName ="officeUser";
 	
 	@Autowired
 	private OfficeUserService officeUserService;
-		
-    @RequiresPermissions("officeUser#fingByOData#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser#fingByOData#post")
 	@RequestMapping(name = "获取数据", path = "fingByOData", method = RequestMethod.POST)
 	@ResponseBody
     public PageModelDto<OfficeUserDto> get(HttpServletRequest request) throws ParseException {
@@ -42,7 +46,9 @@ public class OfficeUserController {
 		 PageModelDto<OfficeUserDto> officeUserDtos = officeUserService.get(odataObj);	
 		 return officeUserDtos;
 	}
-    @RequiresPermissions("officeUser#getDepts#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser#getDepts#get")
  	@RequestMapping(name = "获取办事处信息", path = "getDepts", method = RequestMethod.GET)
  	@ResponseBody
     public List<DeptDto> getDepts(){
@@ -50,20 +56,23 @@ public class OfficeUserController {
     	return deptDto;
     }
 
-    @RequiresPermissions("officeUser##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody OfficeUserDto record) {
         officeUserService.save(record);
     }
-   
+
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
 	@Transactional
 	public @ResponseBody OfficeUserDto findById(@RequestParam(required = true)String officeID){		
 		return officeUserService.findById(officeID);
 	}
-	
-	@RequiresPermissions("officeUser#findOfficeUsersByDeptName#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser#findOfficeUsersByDeptName#post")
 	@RequestMapping(name = "根据部门名称获取处室信息", path = "findOfficeUsersByDeptName", method = RequestMethod.POST)
     @ResponseBody
 	public List<OfficeUserDto> findOfficeUserDeptId(@RequestBody SignDto signDto ){
@@ -71,8 +80,9 @@ public class OfficeUserController {
 		List<OfficeUserDto> officeDto =officeUserService.findOfficeUserByDeptId(deptName);
 		return officeDto;
 	}
-	
-    @RequiresPermissions("officeUser##delete")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
@@ -84,7 +94,8 @@ public class OfficeUserController {
 		}     
     }
 
-    @RequiresPermissions("officeUser##put")
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody OfficeUserDto record) {
@@ -92,13 +103,15 @@ public class OfficeUserController {
     }
 
     // begin#html
-    @RequiresPermissions("officeUser#html/list#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
 
-    @RequiresPermissions("officeUser#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("officeUser#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/edit";

@@ -1,8 +1,10 @@
 package cs.controller.sys;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.utils.SysFileUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import java.util.UUID;
  */
 @Controller
 @RequestMapping(name = "富文本编辑器", path = "froala")
+@IgnoreAnnotation
 public class FroalaController {
     private static final String froala_img_path = "contents/upload/froala";
     @Autowired
@@ -33,6 +36,7 @@ public class FroalaController {
      * @return
      * @throws Exception
      */
+    @RequiresAuthentication
     @RequestMapping(name = "富文本图片上传", path = "uploadImg", method = RequestMethod.POST)
     @ResponseBody
     Map<String, String> uploadImg(@RequestParam("file") MultipartFile multipartFile,String rootPath){

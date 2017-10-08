@@ -1,5 +1,6 @@
 package cs.controller.project;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
@@ -7,6 +8,7 @@ import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddRegisterFileService;
 
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +35,15 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping(name = "登记补充资料", path = "addRegisterFile")
+@IgnoreAnnotation
 public class AddRegisterFileController {
 
 	String ctrlName = "addRegisterFile";
 	@Autowired
 	private AddRegisterFileService addRegisterFileService;
 
-	@RequiresPermissions("addRegisterFile#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#findByOData#post")
 	@RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
 	@ResponseBody
 	public PageModelDto<AddRegisterFileDto> get(HttpServletRequest request) throws ParseException {
@@ -47,8 +51,9 @@ public class AddRegisterFileController {
 		PageModelDto<AddRegisterFileDto> addRegisterFileDtos = addRegisterFileService.get(odataObj);
 		return addRegisterFileDtos;
 	}
-	
-	@RequiresPermissions("addRegisterFile#initFindByOData#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#initFindByOData#get")
 	@RequestMapping(name = "初始化登记表数据", path = "initFindByOData", method = RequestMethod.GET)
 	@ResponseBody
 	public List<AddRegisterFileDto> initFindByOData(HttpServletRequest request) throws ParseException {
@@ -56,40 +61,46 @@ public class AddRegisterFileController {
 		List<AddRegisterFileDto> addRegisterFileList = addRegisterFileService.initRegisterFileData(odataObj);
 		return addRegisterFileList;
 	}
-    
-	@RequiresPermissions("addRegisterFile#save#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#save#post")
 	@RequestMapping(name = "创建记录", path = "save", method = RequestMethod.POST)
 	@ResponseBody
 	public ResultMsg create(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) throws ParseException {
 		return addRegisterFileService.bathSave(addRegisterFileDtos);
 	}
-	
-	@RequiresPermissions("addRegisterFile#initprintdata#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#initprintdata#post")
 	@RequestMapping(name = "初始化打印資料頁面", path = "initprintdata", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> initpint(@RequestParam String signid) throws ParseException {
 		 Map<String,Object> map = addRegisterFileService.initprint(signid);
 		return map;
 	}
-	
-	@RequiresPermissions("addRegisterFile#findByBusinessId#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#findByBusinessId#post")
 	@RequestMapping(name = "根据业务ID查询补充资料信息", path = "findByBusinessId", method = RequestMethod.POST)
 	public @ResponseBody List<AddRegisterFileDto> findByBusinessId(@RequestParam String businessId){
 		return addRegisterFileService.findByBusinessId(businessId);
 	}
 
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
 	public @ResponseBody AddRegisterFileDto findById(@RequestParam(required = true) String id) {
 		return addRegisterFileService.findById(id);
 	}
 
-	@RequiresPermissions("addRegisterFile#deleteFile#delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#deleteFile#delete")
 	@RequestMapping(name = "删除记录", path = "deleteFile", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(@RequestParam String ids) {
 		addRegisterFileService.deleteRegisterFile(ids);
 	}
-	
-	@RequiresPermissions("addRegisterFile#findbySuppdate#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#findbySuppdate#post")
 	@RequestMapping(name = "根据日期查找资料", path = "findbySuppdate", method = RequestMethod.POST)
 	public @ResponseBody List<AddRegisterFileDto> findbySuppdate(@RequestParam String suppDate) throws ParseException {
 		List<AddRegisterFileDto> list = addRegisterFileService.findbySuppdate(suppDate);
@@ -97,13 +108,15 @@ public class AddRegisterFileController {
 	}
 
 	// begin#html
-	@RequiresPermissions("addRegisterFile#html/list#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("addRegisterFile#html/list#get")
 	@RequestMapping(name = "列表页面", path = "list", method = RequestMethod.GET)
 	public String list() {
 		return ctrlName + "/list";
 	}
 
-	@RequiresPermissions("addRegisterFile#addRegisterFile/edit#get")
+    @RequiresAuthentication
+	//@RequiresPermissions("addRegisterFile#addRegisterFile/edit#get")
 	@RequestMapping(name = "编辑页面", path = "edit", method = RequestMethod.GET)
 	public String edit() {
 		return ctrlName + "/edit";

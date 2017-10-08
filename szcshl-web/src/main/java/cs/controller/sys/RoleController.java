@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.ahelper.MudoleAnnotation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +25,14 @@ import cs.service.sys.RoleService;
 
 @Controller
 @RequestMapping(name = "角色", path = "role")
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class RoleController {
     private String ctrlName = "role";
     @Autowired
     private RoleService roleService;
 
-    @RequiresPermissions("role#fingByOData#post")
+    //@RequiresPermissions("role#fingByOData#post")
+    @RequiresAuthentication
     @RequestMapping(name = "获取角色数据", path = "fingByOData", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RoleDto> get(HttpServletRequest request) throws ParseException {
@@ -37,34 +41,39 @@ public class RoleController {
         return roleDtos;
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "获取所有角色", path = "findAllRoles", method = RequestMethod.POST)
     public @ResponseBody
     List<RoleDto> findAllRoles() {
         return roleService.findAllRoles();
     }
 
-    @RequiresPermissions("role#findById#post")
+    //@RequiresPermissions("role#findById#post")
+    @RequiresAuthentication
     @RequestMapping(name = "获取角色数据", path = "findById", method = RequestMethod.POST)
     public @ResponseBody
     RoleDto get(@RequestParam(required = true) String roleId) {
         return roleService.findById(roleId);
     }
 
-    @RequiresPermissions("role##post")
+    //@RequiresPermissions("role##post")
+    @RequiresAuthentication
     @RequestMapping(name = "创建角色", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody RoleDto roleDto) {
         roleService.createRole(roleDto);
     }
 
-    @RequiresPermissions("role##put")
+    //@RequiresPermissions("role##put")
+    @RequiresAuthentication
     @RequestMapping(name = "更新角色", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody RoleDto roleDto) throws Exception {
         roleService.updateRole(roleDto);
     }
 
-    @RequiresPermissions("role##delete")
+    //@RequiresPermissions("role##delete")
+    @RequiresAuthentication
     @RequestMapping(name = "删除角色", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
@@ -78,12 +87,13 @@ public class RoleController {
 
     //begin#html
     @RequiresPermissions("role#html/list#get")
-    @RequestMapping(name = "角色列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "角色管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
 
-    @RequiresPermissions("role#html/edit#get")
+    //@RequiresPermissions("role#html/edit#get")
+    @RequiresAuthentication
     @RequestMapping(name = "编辑角色页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName + "/edit";

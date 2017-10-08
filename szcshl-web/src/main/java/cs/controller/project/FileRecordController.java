@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import cs.service.sys.UserService;
 
 @Controller
 @RequestMapping(name = "归档", path = "fileRecord")
+@IgnoreAnnotation
 public class FileRecordController {
 
 private  String ctrlName = "fileRecord";
@@ -32,21 +35,24 @@ private  String ctrlName = "fileRecord";
 	private FileRecordService fileRecordService;
 	@Autowired
 	private UserService userService;
-	
-	@RequiresPermissions("fileRecord##post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("fileRecord##post")
 	@RequestMapping(name = "发文提交", path = "",method=RequestMethod.POST)
 	@ResponseBody
 	public ResultMsg post(@RequestBody FileRecordDto fileRecordDto) throws Exception  {
 		return fileRecordService.save(fileRecordDto);
 	}
-	
-	@RequiresPermissions("fileRecord#html/edit#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("fileRecord#html/edit#get")
 	@RequestMapping(name = "归档编辑", path = "html/edit", method = RequestMethod.GET)
 	public String edit() {		
 		return ctrlName + "/edit";
 	}
-	
-	@RequiresPermissions("fileRecord#initFillPage#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("fileRecord#initFillPage#get")
 	@RequestMapping(name = "初始归档编辑页面", path = "initFillPage",method=RequestMethod.GET)
 	public @ResponseBody Map<String,Object> initFillPage(@RequestParam(required = true)String signId){		
 		Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -54,8 +60,9 @@ private  String ctrlName = "fileRecord";
 		resultMap.put("sign_user_List", userService.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue()));
 		return resultMap;	
 	}
-	
-	@RequiresPermissions("fileRecord#html/initBySignId#get")
+
+    @RequiresAuthentication
+	//@RequiresPermissions("fileRecord#html/initBySignId#get")
 	@RequestMapping(name = "归档详情信息", path = "html/initBySignId",method=RequestMethod.GET)	
 	public @ResponseBody FileRecordDto initBySignId(@RequestParam(required = true)String signId){		
 		return fileRecordService.initBySignId(signId);	

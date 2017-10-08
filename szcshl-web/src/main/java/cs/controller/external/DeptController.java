@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.ahelper.IgnoreAnnotation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import cs.service.external.DeptService;
 
 @Controller
 @RequestMapping(name = "办事处", path = "dept")
+@IgnoreAnnotation
 public class DeptController {
 
 	String ctrlName = "dept";
@@ -34,7 +37,8 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @RequiresPermissions("dept#fingByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#fingByOData#post")
     @RequestMapping(name = "获取数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<DeptDto> get(HttpServletRequest request) throws ParseException {
@@ -42,21 +46,24 @@ public class DeptController {
         PageModelDto<DeptDto> deptDtos = deptService.get(odataObj);	
         return deptDtos;
     }
-    
-    @RequiresPermissions("dept#getDeptOfficeUsers#post")	
+
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#getDeptOfficeUsers#post")
    	@RequestMapping(name = "获取用户所在办事处", path = "getDeptOfficeUsers", method = RequestMethod.POST)
     public @ResponseBody PageModelDto<OfficeUserDto> getDeptOfficeUser(@RequestParam String deptId){
     	return deptService.getDeptOfficeUsers(deptId);
     }
-    
-	@RequiresPermissions("org#addOfficeUser#post")	
+
+    @RequiresAuthentication
+    //@RequiresPermissions("org#addOfficeUser#post")
 	@RequestMapping(name = "添加人员到办事处", path = "addOfficeUser", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
     public void  postOfficeUserToDept(@RequestParam String deptId,@RequestParam String officeId){
 		deptService.addOfficeUserToDept(deptId,officeId);
     }
-    
-	@RequiresPermissions("dept#deleteOfficeUsers#delete")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#deleteOfficeUsers#delete")
 	@RequestMapping(name = "从办事处移除用户", path = "deleteOfficeUsers", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void deleteOfficeUserFromDept(@RequestParam String deptId,@RequestParam String officeId){
@@ -66,10 +73,10 @@ public class DeptController {
 		}else{
 			deptService.removeOfficeUserDept(officeId,deptId);
 		}
-		
 	}
-	
-    @RequiresPermissions("dept#NotInoDeptfficeUsers#post")	
+
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#NotInoDeptfficeUsers#post")
 	@RequestMapping(name = "获取非用户所在办事处", path = "NotInoDeptfficeUsers", method = RequestMethod.POST)
     public @ResponseBody PageModelDto<OfficeUserDto> getNotInofficeUsers(@RequestParam String deptId,HttpServletRequest request) throws ParseException{
     	ODataObj odataObj = new ODataObj(request);
@@ -77,45 +84,53 @@ public class DeptController {
     	return officeDto;
     }
 
-    @RequiresPermissions("dept##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("dept##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody DeptDto record) {
         deptService.save(record);
     }
 
-    @RequiresPermissions("dept##put")
+    @RequiresAuthentication
+    //@RequiresPermissions("dept##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody DeptDto record) {
         deptService.update(record);
     }
-    
+
+    @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)	
 	@Transactional
 	public @ResponseBody DeptDto findById(@RequestParam(required = true)String deptId){		
 		return deptService.findById(deptId);
 	}
 
-    @RequiresPermissions("dept##delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("dept##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	deptService.delete(id);
     }
-    
-    @RequiresPermissions("dept#html/list#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list";
     }
 
-    @RequiresPermissions("dept#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/edit";
     }
-    @RequiresPermissions("dept#html/listOfficeUser#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("dept#html/listOfficeUser#get")
 	@RequestMapping(name = "办事处人员列表", path = "html/listOfficeUser", method = RequestMethod.GET)
 	public String listUser() {
 		return ctrlName + "/listOfficeUser";

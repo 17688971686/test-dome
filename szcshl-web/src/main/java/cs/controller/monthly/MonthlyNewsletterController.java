@@ -1,5 +1,6 @@
 package cs.controller.monthly;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
@@ -8,6 +9,7 @@ import cs.repository.odata.ODataObj;
 import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
 
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping(name = "月报简报", path = "monthlyNewsletter")
+@MudoleAnnotation(name = "项目管理",value = "permission#sign")
 public class MonthlyNewsletterController {
 
 	String ctrlName = "monthlyNewsletter";
@@ -33,8 +36,9 @@ public class MonthlyNewsletterController {
 
     @Autowired
     private AddSuppLetterService addSuppLetterService;
-    
-    @RequiresPermissions("monthlyNewsletter#findByOData#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> get(HttpServletRequest request) throws ParseException {
@@ -42,23 +46,26 @@ public class MonthlyNewsletterController {
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.get(odataObj);	
         return monthlyNewsletterDtos;
     }
-    
-    @RequiresPermissions("monthlyNewsletter#saveMonthlyMultiyear#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#saveMonthlyMultiyear#post")
     @RequestMapping(name = "保存（中心）文件稿纸", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg monthlyMultiyearAdd(@RequestBody AddSuppLetterDto record) {
        return addSuppLetterService.saveMonthlyMultiyear(record);
     }
-    
-    @RequiresPermissions("monthlyNewsletter#initMonthlyMultiyear#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#initMonthlyMultiyear#post")
     @RequestMapping(name = "初始化（中心）文件稿纸", path = "initMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto initMutilyear(){
     	return addSuppLetterService.initMonthlyMutilyear();
     }
-    
-    
-    @RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
+
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
     @RequestMapping(name = "获取（中心）文件查询列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
@@ -66,8 +73,9 @@ public class MonthlyNewsletterController {
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);	
         return addSuppLetterDtos;
     }
-    
-    @RequiresPermissions("monthlyNewsletter#monthlyAppoveList#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#monthlyAppoveList#post")
     @RequestMapping(name = "获取（中心）文件审批列表数据", path = "monthlyAppoveList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> monthlyAppoveList(HttpServletRequest request) throws ParseException {
@@ -75,15 +83,17 @@ public class MonthlyNewsletterController {
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyAppoveListData(odataObj);	
         return addSuppLetterDtos;
     }
-    
-    @RequiresPermissions("monthlyNewsletter#updateApprove#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#updateApprove#post")
     @RequestMapping(name = "领导审批（中心文件）处理", path = "updateApprove", method = RequestMethod.POST)
     @ResponseBody
     public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
 		addSuppLetterService.monthlyApproveEdit(addSuppLetterDto);
-    } 
-    
-    @RequiresPermissions("monthlyNewsletter#deleteMutiyear#delete")
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#deleteMutiyear#delete")
  	@RequestMapping(name = "删除年度（中心）月报简报记录", path = "deleteMutiyear", method = RequestMethod.DELETE)
      @ResponseStatus(value = HttpStatus.NO_CONTENT)
      public void deleteMutiyear(@RequestBody String id) {
@@ -94,8 +104,9 @@ public class MonthlyNewsletterController {
      		addSuppLetterService.delete(id);      
      	}
      }
-    
-    @RequiresPermissions("monthlyNewsletter#getMonthlyList#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#getMonthlyList#post")
     @RequestMapping(name = "获取月报简报管理数据列表", path = "getMonthlyList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(HttpServletRequest request) throws ParseException {
@@ -103,8 +114,9 @@ public class MonthlyNewsletterController {
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.getMonthlyList(odataObj);	
         return monthlyNewsletterDtos;
     }
-    
-    @RequiresPermissions("monthlyNewsletter#deleteMonthlyList#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#deleteMonthlyList#post")
     @RequestMapping(name = "删除月报简报管理数据列表", path = "deleteMonthlyList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> deleteMonthlyList(HttpServletRequest request) throws ParseException {
@@ -113,14 +125,16 @@ public class MonthlyNewsletterController {
         return monthlyNewsletterDtos;
     }
 
-    @RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
     @RequestMapping(name = "保存月报简报", path = "savaMonthlyNewsletter", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg post(@RequestBody MonthlyNewsletterDto record) {
        return monthlyNewsletterService.saveTheMonthly(record);
     }
 
-    @RequiresPermissions("monthlyNewsletter#deleteMonthlyData#delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#deleteMonthlyData#delete")
 	@RequestMapping(name = "删除月报简报记录", path = "deleteMonthlyData", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteMonthlyData(@RequestBody String id) {
@@ -131,21 +145,23 @@ public class MonthlyNewsletterController {
     		monthlyNewsletterService.deleteMonthlyData(id);      
     	}
     }
-    
-    
+
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody MonthlyNewsletterDto findById(@RequestParam(required = true)String id){		
 		return monthlyNewsletterService.findById(id);
 	}
-	
-	@RequiresPermissions("monthlyNewsletter#savaHistory#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#savaHistory#post")
     @RequestMapping(name = "保存月报简报历史数据", path = "savaHistory", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg savaHistory(@RequestBody MonthlyNewsletterDto record) {
        return monthlyNewsletterService.save(record);
     }
-	
-	@RequiresPermissions("monthlyNewsletter#deleteHistoryList#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#deleteHistoryList#post")
 	@RequestMapping(name = "删除月报简报历史列表", path = "deleteHistoryList", method = RequestMethod.POST)
 	@ResponseBody
 	public PageModelDto<MonthlyNewsletterDto> deleteHistoryList(HttpServletRequest request) throws ParseException {
@@ -153,8 +169,9 @@ public class MonthlyNewsletterController {
 		PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.deleteHistoryList(odataObj);	
 		return monthlyNewsletterDtos;
 	}
-	
-	@RequiresPermissions("monthlyNewsletter#mothlyHistoryList#post")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#mothlyHistoryList#post")
 	@RequestMapping(name = "月报简报历史数据列表", path = "mothlyHistoryList", method = RequestMethod.POST)
 	@ResponseBody
 	public PageModelDto<MonthlyNewsletterDto> mothlyHistoryList(HttpServletRequest request) throws ParseException {
@@ -162,8 +179,9 @@ public class MonthlyNewsletterController {
 		PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.mothlyHistoryList(odataObj);	
 		return monthlyNewsletterDtos;
 	}
-	
-	@RequiresPermissions("monthlyNewsletter#deleteHistory#delete")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#deleteHistory#delete")
 	@RequestMapping(name = "删除月报简报历史数据记录", path = "deleteHistory", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
@@ -175,7 +193,8 @@ public class MonthlyNewsletterController {
     	}
     }
 
-    @RequiresPermissions("monthlyNewsletter##put")
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody MonthlyNewsletterDto record) {
@@ -199,8 +218,9 @@ public class MonthlyNewsletterController {
     @RequestMapping(name = "月报简报历史数据列表页面", path = "html/monthlyHistoryList", method = RequestMethod.GET)
     public String monthsHistoryList() {
         return ctrlName+"/monthlyHistoryList"; 
-    } 
-    
+    }
+
+    @RequiresAuthentication
     @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryAdd#get")
     @RequestMapping(name = "月报简报历史数据新建页面", path = "html/monthlyHistoryAdd", method = RequestMethod.GET)
     public String monthsHistoryAdd() {
@@ -236,20 +256,23 @@ public class MonthlyNewsletterController {
     public String monthlyMultiyAppoveEdit() {
         return ctrlName+"/monthlyMultiyAppoveEdit";
     }
-    
+
+
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
     @RequestMapping(name = "新建月报简报年度页面", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
     public String monthlyMultiyearAdd() {
         return ctrlName+"/monthlyMultiyearAdd"; 
-    } 
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearDetail#get")
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearDetail#get")
     @RequestMapping(name = "年度（中心文件）月报简报页面详细页面", path = "html/monthlyMultiyearDetail", method = RequestMethod.GET)
     public String monthlyMultiyearDetail() {
         return ctrlName+"/monthlyMultiyearDetail"; 
-    }  
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyNewsletterEdit#get")
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#html/monthlyNewsletterEdit#get")
     @RequestMapping(name = "编辑页面", path = "html/monthlyNewsletterEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/monthlyNewsletterEdit";
@@ -260,8 +283,9 @@ public class MonthlyNewsletterController {
     public String monthlyExcellentList() {
         return ctrlName+"/monthlyExcellentList";
     }
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyUpload#get")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#html/monthlyUpload#get")
     @RequestMapping(name = "上传附件页面", path = "html/monthlyUpload", method = RequestMethod.GET)
     public String monthlyUpload() {
         return ctrlName+"/monthlyUpload";

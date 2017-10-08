@@ -11,6 +11,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.external.Dept;
+import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
 import cs.model.PageModelDto;
@@ -36,6 +37,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -1569,10 +1571,12 @@ public class SignServiceImpl implements SignService {
         PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
         Criteria criteria = signRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
-        //1、排除已终止、已完成
+        //1、排除旧项目
+        criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        //2、排除已终止、已完成
         criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.YES.getValue()));
         criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.FORCE.getValue()));
-        //2、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
+        //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
         StringBuffer sb = new StringBuffer();
         sb.append("( (" + Sign_.issign.getName() + " is null or " + Sign_.issign.getName() + " = '" + EnumState.NO.getValue() + "' ");
         sb.append(" and " + Sign_.processInstanceId.getName() + " = '" + EnumState.YES.getValue() + "') ");
