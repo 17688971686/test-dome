@@ -215,7 +215,7 @@ public class FinancialManagerController {
     }
 
     @RequiresPermissions("financialManager#html/assistCostCount#get")
-    @RequestMapping(name = "协审费用统计页面", path = "html/assistCostCount", method = RequestMethod.GET)
+    @RequestMapping(name = "协审费用统计", path = "html/assistCostCount", method = RequestMethod.GET)
     public String assistCostCount() {
         return ctrlName+"/assistCostCount";
     }

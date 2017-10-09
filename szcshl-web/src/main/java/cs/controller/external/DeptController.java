@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.service.external.DeptService;
 
 @Controller
-@RequestMapping(name = "办事处", path = "dept")
-@IgnoreAnnotation
+@RequestMapping(name = "处室", path = "dept")
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class DeptController {
 
 	String ctrlName = "dept";
@@ -115,9 +116,8 @@ public class DeptController {
     	deptService.delete(id);
     }
 
-    @RequiresAuthentication
-    //@RequiresPermissions("dept#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequiresPermissions("dept#html/list#get")
+    @RequestMapping(name = "处室管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list";
     }

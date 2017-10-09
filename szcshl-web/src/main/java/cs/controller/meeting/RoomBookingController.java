@@ -192,7 +192,7 @@ public class RoomBookingController {
     }
 
     @RequiresPermissions("room#html/roomlist#get")
-    @RequestMapping(name = "会议室预定详情", path = "html/roomlist", method = RequestMethod.GET)
+    @RequestMapping(name = "会议预定管理", path = "html/roomlist", method = RequestMethod.GET)
     public String roomlist(HttpServletRequest request, ModelMap model) {
         UserDto user = userService.findUserByName(SessionUtil.getLoginName());
         if (user != null) {

@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name = "文件管理", path = "file")
-@IgnoreAnnotation
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class FileController {
     private static Logger logger = Logger.getLogger(FileController.class);
     
@@ -283,9 +283,9 @@ public class FileController {
         }
     }
 
-    //@RequiresPermissions("file#html/pluginfile#get")
-    @RequiresAuthentication
-    @RequestMapping(name = "插件文件", path = "html/pluginfile")
+    @RequiresPermissions("file#html/pluginfile#get")
+    //@RequiresAuthentication
+    @RequestMapping(name = "插件管理", path = "html/pluginfile")
     public String pluginfile(Model model) {
         return ctrlName + "/pluginfile";
     }

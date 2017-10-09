@@ -51,7 +51,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
-@MudoleAnnotation(name = "我的工作台")
+@MudoleAnnotation(name = "我的工作台",value = "permission#workbench")
 public class FlowController {
     private static Logger log = Logger.getLogger(SignServiceImpl.class);
 

@@ -101,24 +101,10 @@ public class AdminController {
     }
 
     @RequiresPermissions("admin#gtasks#get")
-    @RequestMapping(name = "待办事项", path = "gtasks")
+    @RequestMapping(name = "待办项目", path = "gtasks")
     public String gtasks(Model model) {
 
         return ctrlName + "/gtasks";
-    }
-
-    @RequiresPermissions("admin#agendaTasks#get")
-    @RequestMapping(name = "待办任务", path = "agendaTasks")
-    public String agendaTasks(Model model) {
-
-        return ctrlName + "/agendaTasks";
-    }
-
-    @RequiresPermissions("admin#doingTasks#get")
-    @RequestMapping(name = "在任务", path = "doingTasks")
-    public String doingTasks(Model model) {
-
-        return ctrlName + "/doingTasks";
     }
 
     @RequiresPermissions("admin#dtasks#get")
@@ -129,7 +115,7 @@ public class AdminController {
     }
 
     @RequiresPermissions("admin#personDtasks#get")
-    @RequestMapping(name = "个人在办项目", path = "personDtasks")
+    @RequestMapping(name = "个人主办项目", path = "personDtasks")
     public String personDtasks(Model model) {
 
         return ctrlName + "/personDtasks";
@@ -140,6 +126,20 @@ public class AdminController {
     public String etasks(Model model) {
 
         return ctrlName + "/etasks";
+    }
+
+    @RequiresPermissions("admin#agendaTasks#get")
+    @RequestMapping(name = "待办任务", path = "agendaTasks")
+    public String agendaTasks(Model model) {
+
+        return ctrlName + "/agendaTasks";
+    }
+
+    @RequiresPermissions("admin#doingTasks#get")
+    @RequestMapping(name = "在办任务", path = "doingTasks")
+    public String doingTasks(Model model) {
+
+        return ctrlName + "/doingTasks";
     }
 
     @RequiresAuthentication

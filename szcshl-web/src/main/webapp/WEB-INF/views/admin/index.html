@@ -1,5 +1,4 @@
-﻿﻿<#assign path=request.contextPath/>
-
+﻿<#assign path=request.contextPath/>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -95,7 +94,7 @@ desired effect
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
             <!-- Sidebar toggle button-->
-            <a href="javascript:void(0)" class="sidebar-toggle"  data-toggle="offcanvas" role="button"> 
+            <a href="javascript:void(0)" class="sidebar-toggle"  data-toggle="offcanvas" role="button">
             	<span class="sr-only">Toggle navigation</span>
             </a>
             <!-- Navbar Right Menu -->
@@ -104,7 +103,7 @@ desired effect
                     <!-- Notifications Menu -->
                     <!-- User Account Menu -->
                     <li class="dropdown user user-menu">
-                        <!-- Menu Toggle Button --> 
+                        <!-- Menu Toggle Button -->
                         <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" style="height: 55px">
                         <!-- The user image in the navbar-->
                         <img src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
@@ -131,14 +130,14 @@ desired effect
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
-
         <section class="sidebar">
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-               <li class="treeview menu" style="height: 52px;"><a href="javascript:void(0)"> <span class="title">菜单</span> 
-					</a>
+               <li class="treeview menu" style="height: 52px;">
+                   <a href="javascript:void(0)"> <span class="title">菜单</span></a>
 			   </li>
 
+                <@shiro.hasPermission name="permission#workbench">
                 <li class="treeview active">
                     <a href="javascript:void(0)">
                         <img style="width: 20px; height: 20px" src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
@@ -148,45 +147,59 @@ desired effect
                     <ul class="treeview-menu">
                     	<li>
 	                        <a href="javascript:void(0)"  ui-sref="welcome">
-	                        	<i class="fa fa-home" aria-hidden="true"></i>主页	                        	
+	                        	<i class="fa fa-home" aria-hidden="true"></i>主页
 	                        </a>
                         </li>
+                        <@shiro.hasPermission name="admin#gtasks#get">
                     	<li>
-	                        <a href="javascript:void(0)"  ui-sref="gtasks"> 
+	                        <a href="javascript:void(0)"  ui-sref="gtasks">
 	                        	<i class="fa fa-flag-o"></i>待办项目
 	                        	<span class="label label-danger" id="DO_SIGN_COUNT">0</span>
 	                        </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="admin#personDtasks#get">
                         <li>
                             <a href="javascript:void(0)"  ui-sref="personDtasks">
                                 <i class="glyphicon glyphicon-tasks"></i>个人主办项目
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="admin#dtasks#get">
                         <li>
                             <a href="javascript:void(0)"  ui-sref="dtasks">
                                 <i class="glyphicon glyphicon-tasks"></i>在办项目
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="admin#etasks#get">
                         <li>
                             <a href="javascript:void(0)"  ui-sref="etasks">
                                 <i class="glyphicon glyphicon-thumbs-up"></i>办结项目
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="admin#agendaTasks#get">
                         <li>
                             <a href="javascript:void(0)"  ui-sref="agendaTasks">
                                 <i class="fa fa-flag-o"></i>待办任务
                                 <span class="label label-danger" id="DO_TASK_COUNT">0</span>
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="admin#doingTasks#get">
                         <li>
                             <a href="javascript:void(0)"  ui-sref="doingTasks">
                                 <i class="glyphicon glyphicon-tasks"></i>在办任务
                             </a>
                         </li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
-
+                </@shiro.hasPermission>
                 <!-- start 项目管理-->
+
+                <@shiro.hasPermission name="permission#sign">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cloud-download"></i><span class="title">项目管理</span>
@@ -195,48 +208,78 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="sign#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="listSign">项目列表</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sign#html/add#get">
                         <li ><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sign#html/pauseProjectList#get">
                         <li>
                             <a href="javascript:void(0)" ui-sref="pauseProject">
                                 项目暂停审批<span class="label label-danger" id="PAUSE_COUNT">0</span>
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sign#html/reserveAdd#get">
                         <li><a href="javascript:void(0)" ui-sref="reserveAdd">项目预签收</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sign#html/reserveList#get">
                         <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="signView#html/signList#get">
                         <li><a href="javascript:void(0)"  ui-sref="signList">项目查询统计 </a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="assistPlan#html/manager#get">
                         <li><a href="javascript:void(0)" ui-sref="assistPlan">协审计划管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="assistUnit#html/assistUnitList#get">
                         <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
+                        </@shiro.hasPermission>
 
                         <!-- start 项目资料函管理 -->
+                        <@shiro.hasPermission name="addSuppLetter#html/suppLetterApproveList#get">
                         <li>
                             <a href="javascript:void(0)" ui-sref="suppLetterApproveList">
                                 拟补资料函审批<span class="label label-danger" id="ADDSUPPLETTER_COUNT">0</span>
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
                         <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
+                        </@shiro.hasPermission>
+
                         <!-- end 项目资料函管理 -->
                         <!-- start 优秀评审报告管理 -->
+
                         <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingEdit">评审项目评优</a></li>
+
                         <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingList">优秀评审报告查询</a></li>
+
                         <!-- end 优秀评审报告管理 -->
                         <!-- start 月报简报管理 -->
+
                         <li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
+
                         <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
+
                         <li><a href="javascript:void(0)" ui-sref="theMonthsList">月报简报</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">月报简报审批
-                    	<span class="label label-danger" id="LIBRARY_COUNT">0</span>
+						<li>
+						<a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">
+							月报简报审批<span class="label label-danger" id="LIBRARY_COUNT">0</span>
                     	</a>
                     	</li>
-                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">月报简报查询</a>
+                    	<li>
+                    		<a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">月报简报查询</a>
                     	</li>
                         <!-- end 月报简报管理 -->
                     </ul>
                 </li>
+                </@shiro.hasPermission>
                 <!-- end 项目签收-->
 
                 <!-- start 财务管理 -->
-                <shiro:hasPermission name="user:create">
+                <@shiro.hasPermission name="permission#financial">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-money" aria-hidden="true"></i><span class="title">财务管理</span>
@@ -246,15 +289,25 @@ desired effect
                     </a>
                     <ul class="treeview-menu">
                         <!-- start 项目费用管理 -->
+                        <@shiro.hasPermission name="financialManager#html/assistCostAdd#get">
                         <li><a href="javascript:void(0)" ui-sref="assistCostAdd">协审费录入</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="financialManager#html/assistCostCount#get">
                         <li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="financialManager#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="financialManagerList">评审费用统计</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="financialManager#html/expertPaymentCount#get">
                         <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="financialManager#html/expertCount#get">
                         <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li>
+                        </@shiro.hasPermission>
                         <!-- end 项目费用管理 -->
                     </ul>
                 </li>
-                </shiro:hasPermission>
+                </@shiro.hasPermission>
                 <!-- end 财务管理 -->
 
                 <!-- start 档案借阅管理 -->
@@ -279,72 +332,98 @@ desired effect
                 </li>
                 <!-- end 档案借阅管理 -->
 
-                <!-- start 流程管理-->
+                <!-- start 课题管理-->
+                <@shiro.hasPermission name="permission#topicInfo">
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-object-group" aria-hidden="true"></i><span class="title">课题研究管理</span>
+                        <i class="fa fa-object-group" aria-hidden="true"></i><span class="title">课题管理</span>
                         <span class="pull-right-container">
 							<i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="topicInfo#html/add#get">
                         <li ><a href="javascript:void(0)" ui-sref="addTopic({id:null})">创建课题</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="topicInfo#html/myList#get">
                         <li ><a href="javascript:void(0)" ui-sref="myTopic">我的课题</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
-                <!-- end 流程管理-->
-              
+                </@shiro.hasPermission>
+                <!-- end 课题管理-->
+
                <!-- start 中心文件管理 -->
-               <!--  <li class="treeview">
+                <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">月报简报管理</span>
-                        <span class="pull-right-container"> 
+                        <span class="title">中心文件管理</span>
+                        <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">月报简报审批
+                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">中心文件审批
                     	<span class="label label-danger" id="LIBRARY_COUNT">0</span>
                     	</a>
                     	</li>
-                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">月报简报查询</a>
+                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">中心文件查询</a>
                     	</li>
                     </ul>
-                </li> -->
-              <!-- end 中心文件管理 -->
-                
+                </li>
+               <!-- end 中心文件管理 -->
+
 				<!-- begin 专家管理 -->
+                <@shiro.hasPermission name="permission#expert">
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-users"></i> <span class="title">专家库管理</span> 
+                        <i class="fa fa-users"></i> <span class="title">专家库管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="expert#html/edit#get">
                     	<li><a href="javascript:void(0)" ui-sref="expertEdit({id:null})">专家信息录入</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="expert#html/audit#get">
                     	<li><a href="javascript:void(0)" ui-sref="expertAudit">专家信息审核</a></li>
-                    	<li><a href="javascript:void(0)" ui-sref="expertRepeat">重复专家查询</a></li>                          
-                        <li><a href="javascript:void(0)" ui-sref="expert">综合查询</a></li>                     
-                        <li><a href="javascript:void(0)" ui-sref="expertReviewList">专家评分一览表</a></li>                     
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="expert#html/repeat#get">
+                    	<li><a href="javascript:void(0)" ui-sref="expertRepeat">重复专家查询</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="expert#html/queryAllList#get">
+                        <li><a href="javascript:void(0)" ui-sref="expert">综合查询</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="expert#html/reviewList#get">
+                        <li><a href="javascript:void(0)" ui-sref="expertReviewList">专家评分一览表</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
+                </@shiro.hasPermission>
                 <!-- end 专家管理 -->
-                
+
                 <!-- start 会议室管理-->
+                <@shiro.hasPermission name="permission#meeting">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-university"></i>
                         <span class="title">会议室管理</span>
-                        <span class="pull-right-container"> 
+                        <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="meeting#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="meeting">会议室管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="room#html/roomlist#get">
                         <li><a href="javascript:void(0)" ui-sref="room({workProgramId:null})">会议预定管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="room#html/countlist#get">
                         <li><a href="javascript:void(0)" ui-sref="roomCount">会议预定统计情况</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
+                </@shiro.hasPermission>
                 <!-- end -->
 
                 <!-- begin 图书管理 -->
@@ -373,29 +452,51 @@ desired effect
                     </ul>
                 </li>
                 <!-- end 资产管理 -->
-                
+
                 <!-- begin 系统管理 -->
+                <@shiro.hasPermission name="permission#system">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa  fa-wrench"></i>
                         <span class="title">系统管理</span>
-                        <span class="pull-right-container"> 
+                        <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="user#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="org#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="role#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="dict#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sysConfig#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="company#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="company">单位管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="dept#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="listDept">处室管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="officeUser#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="officeUserList">处室人员管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="workday#html/list#get">
  						<li><a href="javascript:void(0)" ui-sref="workday">工作日管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="quartz#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="quartz">定时器管理</a></li>
-                        
-                        <li><a href="javascript:void(0)" ui-sref="pluginfile">安装包管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="file#html/pluginfile#get">
+                        <li><a href="javascript:void(0)" ui-sref="pluginfile">插件管理</a></li>
+                        </@shiro.hasPermission>
                         <!--
                         <li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>
                         <li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
@@ -403,27 +504,36 @@ desired effect
                          -->
                     </ul>
                 </li>
+                </@shiro.hasPermission>
 				<!-- end 系统管理 -->
-				
+
 				<!-- start 共享平台-->
+                <@shiro.hasPermission name="permission#annountment">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-bullhorn" aria-hidden="true"></i>
                         <span class="title">公告资料管理</span>
-                        <span class="pull-right-container"> 
+                        <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="sharingPlatlform#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="sharingPlatlform">共享资料管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sharingPlatlform#html/yetList#get">
                         <li><a href="javascript:void(0)" ui-sref="sharingPlatlformYet">共享资料列表</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="annountment#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="annountment">通知公告管理</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="annountment#html/yetList#get">
                         <li><a href="javascript:void(0)" ui-sref="annountmentYet">通知公告列表</a></li>
+                        </@shiro.hasPermission>
                     </ul>
-                    
                 </li>
+                </@shiro.hasPermission>
                 <!-- end 共享平台-->
-
 
                 <!--
                 <li class="treeview">
@@ -442,6 +552,7 @@ desired effect
                         <li><a href="javascript:void(0)" ui-sref="statistical">统计</a></li>
                     </ul>
                 </li>-->
+                <@shiro.hasPermission name="permission#fileMng">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
@@ -451,12 +562,17 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="fileLibrary#html/fileLibrary#get">
                         <li><a href="javascript:void(0)" ui-sref="fileLibrary">质量管理文件库</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="fileLibrary#html/policyLibrary#get">
                         <li><a href="javascript:void(0)" ui-sref="policyLibrary">政策标准库</a></li>
+                        </@shiro.hasPermission>
                     </ul>
-
                 </li>
+                </@shiro.hasPermission>
 
+                <@shiro.hasPermission name="permission#other">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cog" aria-hidden="true"></i><span class="title">其它</span>
@@ -465,9 +581,12 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="header">表头管理</a></li>
+                        <@shiro.hasPermission name="header#html/list#get">
+                        <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
+                </@shiro.hasPermission>
             </ul>
             <!-- /.sidebar-menu -->
 

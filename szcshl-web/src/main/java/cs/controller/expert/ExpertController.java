@@ -137,25 +137,25 @@ public class ExpertController {
 
     // begin#html
     @RequiresPermissions("expert#html/repeat#get")
-    @RequestMapping(name = "专家重复查询列表页面", path = "html/repeat", method = RequestMethod.GET)
+    @RequestMapping(name = "重复专家查询", path = "html/repeat", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/queryReList";
     }
 
     @RequiresPermissions("expert#html/edit#get")
-    @RequestMapping(name = "编辑专家页面", path = "html/edit", method = RequestMethod.GET)
+    @RequestMapping(name = "专家信息录入", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName + "/edit";
     }
 
     @RequiresPermissions("expert#html/queryAllList#get")
-    @RequestMapping(name = "专家综合查询页面", path = "html/queryAllList", method = RequestMethod.GET)
+    @RequestMapping(name = "综合查询", path = "html/queryAllList", method = RequestMethod.GET)
     public String query() {
         return ctrlName + "/queryAllList";
     }
 
     @RequiresPermissions("expert#html/audit#get")
-    @RequestMapping(name = "专家审核页面", path = "html/audit", method = RequestMethod.GET)
+    @RequestMapping(name = "专家信息审核", path = "html/audit", method = RequestMethod.GET)
     public String audit() {
         return ctrlName + "/audit";
     }

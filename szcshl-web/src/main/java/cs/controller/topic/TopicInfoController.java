@@ -109,7 +109,7 @@ public class TopicInfoController {
     }
 
     @RequiresPermissions("topicInfo#html/myList#get")
-    @RequestMapping(name = "我的课题页面", path = "html/myList", method = RequestMethod.GET)
+    @RequestMapping(name = "我的课题", path = "html/myList", method = RequestMethod.GET)
     public String myList() {
         return ctrlName + "/myList";
     }

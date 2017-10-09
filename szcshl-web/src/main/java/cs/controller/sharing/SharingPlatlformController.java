@@ -138,7 +138,7 @@ public class SharingPlatlformController {
 
     // begin#html
     @RequiresPermissions("sharingPlatlform#html/list#get")
-    @RequestMapping(name = "共享文件列表", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "共享资料管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
@@ -158,7 +158,7 @@ public class SharingPlatlformController {
     }
 
     @RequiresPermissions("sharingPlatlform#html/yetList#get")
-    @RequestMapping(name = "共享历史数据", path = "html/yetList", method = RequestMethod.GET)
+    @RequestMapping(name = "共享资料列表", path = "html/yetList", method = RequestMethod.GET)
     public String sharingYet() {
         return ctrlName + "/yetList";
     }

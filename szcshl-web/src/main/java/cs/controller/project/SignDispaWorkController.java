@@ -1,6 +1,7 @@
 package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelTools;
 import cs.domain.project.SignDispaWork;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name = "收文", path = "signView")
-@IgnoreAnnotation
+@MudoleAnnotation(name = "项目管理",value = "permission#sign")
 public class SignDispaWorkController {
 
     @Autowired

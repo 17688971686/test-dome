@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ import cs.repository.odata.ODataObj;
 import cs.service.external.OfficeUserService;
  
 @Controller
-@RequestMapping(name = "办事处人员", path = "officeUser")
-@IgnoreAnnotation
+@RequestMapping(name = "处室人员", path = "officeUser")
+@MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class OfficeUserController {
 
 	String ctrlName ="officeUser";
@@ -103,9 +104,8 @@ public class OfficeUserController {
     }
 
     // begin#html
-    @RequiresAuthentication
-    //@RequiresPermissions("officeUser#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequiresPermissions("officeUser#html/list#get")
+    @RequestMapping(name = "处室人员管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
