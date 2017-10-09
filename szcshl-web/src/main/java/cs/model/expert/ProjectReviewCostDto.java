@@ -1,0 +1,142 @@
+package cs.model.expert;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.model.financial.FinancialManagerDto;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 项目评审费相关信息
+ *
+ * @author zsl
+ */
+public class ProjectReviewCostDto {
+    //
+    private String projectcode;
+    //项目名称
+    private String projectname;
+    //建设单位
+    private String builtcompanyname;
+    private String reviewstage;
+    //负责人
+    private String principal;
+
+    //评审费用
+    private BigDecimal totalCost;
+    /**
+     * 评审费发放日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date payDate;
+
+    //申报金额
+    private BigDecimal declareValue;
+
+    //审定金额
+    private BigDecimal authorizeValue;
+
+    //签收时间
+    private Date signdate;
+
+    private String businessId;
+
+    List<FinancialManagerDto> financialManagerDtoList;
+
+    public String getProjectcode() {
+        return projectcode;
+    }
+
+    public void setProjectcode(String projectcode) {
+        this.projectcode = projectcode;
+    }
+
+    public String getProjectname() {
+        return projectname;
+    }
+
+    public void setProjectname(String projectname) {
+        this.projectname = projectname;
+    }
+
+    public String getBuiltcompanyname() {
+        return builtcompanyname;
+    }
+
+    public void setBuiltcompanyname(String builtcompanyname) {
+        this.builtcompanyname = builtcompanyname;
+    }
+
+    public String getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(String principal) {
+        this.principal = principal;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public BigDecimal getDeclareValue() {
+        return declareValue;
+    }
+
+    public void setDeclareValue(BigDecimal declareValue) {
+        this.declareValue = declareValue;
+    }
+
+    public BigDecimal getAuthorizeValue() {
+        return authorizeValue;
+    }
+
+    public void setAuthorizeValue(BigDecimal authorizeValue) {
+        this.authorizeValue = authorizeValue;
+    }
+
+    public Date getSigndate() {
+        return signdate;
+    }
+
+    public void setSigndate(Date signdate) {
+        this.signdate = signdate;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public List<FinancialManagerDto> getFinancialManagerDtoList() {
+        return financialManagerDtoList;
+    }
+
+    public void setFinancialManagerDtoList(List<FinancialManagerDto> financialManagerDtoList) {
+        this.financialManagerDtoList = financialManagerDtoList;
+    }
+
+    public String getReviewstage() {
+        return reviewstage;
+    }
+
+    public void setReviewstage(String reviewstage) {
+        this.reviewstage = reviewstage;
+    }
+}

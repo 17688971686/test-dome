@@ -12,6 +12,7 @@ import cs.domain.expert.ExpertSelected_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
+import cs.model.financial.FinancialManagerDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
@@ -397,6 +398,73 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 		}
 		return expertCostCountDetailDtoList1;
+	}
+
+	@Override
+	public ResultMsg projectReviewCost(ProjectReviewCostDto projectReviewCostDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		PageModelDto<ProjectReviewCostDto> pageModelDto = new PageModelDto<ProjectReviewCostDto>();
+		HqlBuilder sqlBuilder = HqlBuilder.create();
+		sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,m.businessid from cs_sign s  ");
+		sqlBuilder.append(" left join cs_expert_review r  ");
+		sqlBuilder.append("on s.signid = r.businessid  ");
+		sqlBuilder.append("left join cs_dispatch_doc d  ");
+		sqlBuilder.append("on s.signid = d.signid  ");
+		sqlBuilder.append("left join  cs_financial_manager m  ");
+		sqlBuilder.append("on s.signid = m.businessid  ");
+		sqlBuilder.append("where 1=1 ");
+		//todo:添加查询条件
+		if(null != projectReviewCostDto){
+
+		}
+		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
+		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
+		if (projectReviewCostList.size() > 0) {
+			for (int i = 0; i < projectReviewCostList.size(); i++) {
+				Object obj = projectReviewCostList.get(i);
+				Object[] projectReviewCost = (Object[]) obj;
+				ProjectReviewCostDto projectReviewCostDto1 = new ProjectReviewCostDto();
+				if (null != projectReviewCost[0]) {
+					projectReviewCostDto1.setProjectcode((String) projectReviewCost[0]);
+				}
+
+				if (null != projectReviewCost[1]) {
+					projectReviewCostDto1.setProjectname((String) projectReviewCost[1]);
+				}else{
+					projectReviewCostDto1.setProjectname(null);
+				}
+				if (null != projectReviewCost[2]) {
+					projectReviewCostDto1.setBuiltcompanyname((String) projectReviewCost[2]);
+				}else{
+					projectReviewCostDto1.setBuiltcompanyname(null);
+				}
+				if (null != projectReviewCost[3]) {
+					projectReviewCostDto1.setReviewstage((String) projectReviewCost[3]);
+				}
+			/*	if (null != expertCostCounts[4]) {
+					expertCostCountDto.setReviewtaxes((BigDecimal) expertCostCounts[4]);
+				}
+				if (null != expertCostCounts[5]) {
+					expertCostCountDto.setMonthTotal((BigDecimal) expertCostCounts[5]);
+				}
+
+				if (null != expertCostCountDto.getExpertId()) {
+					expertCostDetailCountDtoList = getExpertCostDetailById(expertCostCountDto.getExpertId(),beginTime,endTime);
+				}
+				if (expertCostDetailCountDtoList.size() > 0) {
+					expertCostCountDto.setExpertCostDetailCountDtoList(expertCostDetailCountDtoList);
+				}*/
+				projectReviewCostDtoList.add(projectReviewCostDto1);
+			}
+		}
+		resultMap.put("projectReviewCostDtoList", projectReviewCostDtoList);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+	}
+
+	@Override
+	public List<FinancialManagerDto> getFinancialManagerByBusid(String businessId) {
+		return null;
 	}
 
 }

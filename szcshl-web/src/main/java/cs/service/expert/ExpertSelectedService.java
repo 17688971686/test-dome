@@ -5,6 +5,8 @@ import cs.model.PageModelDto;
 import cs.model.expert.ExpertCostCountDto;
 import cs.model.expert.ExpertCostDetailCountDto;
 import cs.model.expert.ExpertSelectedDto;
+import cs.model.expert.ProjectReviewCostDto;
+import cs.model.financial.FinancialManagerDto;
 import cs.repository.odata.ODataObj;
 
 import java.util.List;
@@ -31,5 +33,9 @@ public interface ExpertSelectedService {
 	ResultMsg expertCostDetailTotal(ExpertCostDetailCountDto expertCostDetailCountDto);
 
 	List<ExpertCostDetailCountDto> getExpertCostDetailById(String expertId,String beginTime,String endTime);
+
+	ResultMsg projectReviewCost(ProjectReviewCostDto projectReviewCostDto);
+
+	List<FinancialManagerDto> getFinancialManagerByBusid(String businessId);
 
 }
