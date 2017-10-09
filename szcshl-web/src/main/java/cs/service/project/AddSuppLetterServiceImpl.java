@@ -96,6 +96,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                  //查询列表状态
                  addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
                  addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());
+                 
+                 Sign sign =  signRepo.findById(addSuppLetter.getBusinessId());
+                 sign.setSuppLetterDate(addSuppLetter.getDisapDate());
+                 signRepo.save(sign);
              }
              addSuppLetter.setModifiedDate(now);
              addSuppLetter.setCreatedDate(now);
