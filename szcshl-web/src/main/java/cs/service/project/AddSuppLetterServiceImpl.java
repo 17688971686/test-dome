@@ -97,10 +97,11 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                  addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
                  addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());
                  
-                 Sign sign =  signRepo.findById(addSuppLetter.getBusinessId());
-                 sign.setSuppLetterDate(addSuppLetter.getDisapDate());
-                 signRepo.save(sign);
              }
+             Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
+             sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+             sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
+             signRepo.save(sign);
              addSuppLetter.setModifiedDate(now);
              addSuppLetter.setCreatedDate(now);
              addSuppLetterRepo.save(addSuppLetter);

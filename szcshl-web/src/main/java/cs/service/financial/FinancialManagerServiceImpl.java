@@ -131,19 +131,19 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 
 
 	@Override
-	public Integer sunCount(String signid) {
+	public Integer sunCount(String businessId) {
 		HqlBuilder hql = HqlBuilder.create();
 		hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
-		hql.append(" where " +FinancialManager_.signid.getName()+" =:signid");
-	    hql.setParam("signid", signid);
+		hql.append(" where " +FinancialManager_.businessId.getName()+" =:businessId");
+	    hql.setParam("businessId", businessId);
 		
 		return financialManagerRepo.returnIntBySql(hql);
 	}
 
 	@Override
-	public Map<String, Object> initfinancialData(String signid) {
+	public Map<String, Object> initfinancialData(String businessId) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		 Sign sign = signRepo.findById(signid);
+		 Sign sign = signRepo.findById(businessId);
 		 FinancialManagerDto financialDto = new FinancialManagerDto();
 		 financialDto.setProjectName(sign.getProjectname());
 		 financialDto.setSignid(sign.getSignid());
@@ -153,8 +153,8 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		 financialDto.setAssistBuiltcompanyName(sign.getBuiltcompanyName());//协审单位
 		 
 		 HqlBuilder hqlBuilder = HqlBuilder.create();
-		 hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+FinancialManager_.signid.getName()+ " =:signid");
-		 hqlBuilder.setParam("signid", signid);
+		 hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+FinancialManager_.businessId.getName()+ " =:businessId");
+		 hqlBuilder.setParam("businessId", businessId);
 		 List<FinancialManager> financiallist= financialManagerRepo.findByHql(hqlBuilder);
 		
 		 map.put("financiallist", financiallist);

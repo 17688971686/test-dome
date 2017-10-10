@@ -13,7 +13,7 @@
         vm.financial = {};//财务对象
         vm.isuserExist = false;
         vm.id = $state.params.id;
-        vm.financial.signid = $state.params.signid;
+        vm.financial.businessId = $state.params.businessId;
       
         if (vm.id) {
             vm.isUpdate = true;
@@ -37,8 +37,7 @@
          * 查看评审费用
          */
         vm.findStageCostTable = function(){
-          console.log(11111111);
-            signSvc.initFlowPageData(vm.financial.signid , function (){
+            signSvc.initFlowPageData(vm.financial.businessId , function (){
                 $("#stageCostWindow").kendoWindow({
                     width: "800px",
                     height: "400px",
@@ -55,8 +54,8 @@
         activate();
         function activate() {
         	  financialManagerSvc.grid(vm);
-        	  if(vm.financial.signid){
-        		  financialManagerSvc.findStageCostTableList(vm.financial.signid,function(data){
+        	  if(vm.financial.businessId){
+        		  financialManagerSvc.findStageCostTableList(vm.financial.businessId,function(data){
                       vm.businessFlag.expertReviews = data.value;
                       console.log(vm.businessFlag.expertReviews);
                   });

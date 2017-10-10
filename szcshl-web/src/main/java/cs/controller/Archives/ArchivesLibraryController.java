@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -33,6 +35,7 @@ import cs.service.sys.UserService;
  */
 @Controller
 @RequestMapping(name = "档案借阅管理", path = "archivesLibrary")
+@MudoleAnnotation(name = "档案借阅管理",value = "permission#archives")
 public class ArchivesLibraryController {
 
 	String ctrlName = "archives";
@@ -42,7 +45,8 @@ public class ArchivesLibraryController {
     @Autowired
 	private UserService userService;
     
-    @RequiresPermissions("archivesLibrary#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("archivesLibrary#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ArchivesLibraryDto> get(HttpServletRequest request) throws ParseException {
@@ -51,7 +55,8 @@ public class ArchivesLibraryController {
         return archivesLibraryDtos;
     }
     
-    @RequiresPermissions("archivesLibrary#findByCenterList#post")
+    @RequiresAuthentication
+   // @RequiresPermissions("archivesLibrary#findByCenterList#post")
     @RequestMapping(name = "中心档案查询列表", path = "findByCenterList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ArchivesLibraryDto> findByCenter(HttpServletRequest request) throws ParseException {
@@ -60,7 +65,8 @@ public class ArchivesLibraryController {
         return archivesLibraryDtos;
     }
     
-    @RequiresPermissions("archivesLibrary#findByCityList#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("archivesLibrary#findByCityList#post")
     @RequestMapping(name = "市档案查询列表", path = "findByCityList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ArchivesLibraryDto> findByCityList(HttpServletRequest request) throws ParseException {
@@ -69,7 +75,8 @@ public class ArchivesLibraryController {
         return archivesLibraryDtos;
     }
     
-    @RequiresPermissions("archivesLibrary#findByProjectList#post")
+    @RequiresAuthentication
+   // @RequiresPermissions("archivesLibrary#findByProjectList#post")
     @RequestMapping(name = "查询审批项目列表", path = "findByProjectList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ArchivesLibraryDto> getProject(HttpServletRequest request) throws ParseException {
@@ -78,7 +85,8 @@ public class ArchivesLibraryController {
         return archivesLibraryDtos;
     }
     
-    @RequiresPermissions("archivesLibrary#updateLibrary#put")
+    @RequiresAuthentication
+    //@RequiresPermissions("archivesLibrary#updateLibrary#put")
     @RequestMapping(name = "项目审批处理", path = "updateLibrary", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void  updateLibrary(@RequestBody ArchivesLibraryDto record) {
@@ -86,40 +94,45 @@ public class ArchivesLibraryController {
     }
     
 
-    @RequiresPermissions("archivesLibrary#savaLibrary#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("archivesLibrary#savaLibrary#post")
     @RequestMapping(name = "创建中心借阅记录", path = "savaLibrary", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg post(@RequestBody ArchivesLibraryDto record) {
       return  archivesLibraryService.save(record);
     }
     
-    @RequiresPermissions("archivesLibrary#saveCity#post")
+    @RequiresAuthentication
+   // @RequiresPermissions("archivesLibrary#saveCity#post")
     @RequestMapping(name = "创建市借阅记录", path = "saveCity", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg cityAdd(@RequestBody ArchivesLibraryDto record) {
       return  archivesLibraryService.saveCity(record);
     }
 
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody ArchivesLibraryDto findById(@RequestParam(required = true)String id){		
 		return archivesLibraryService.findById(id);
 	}
 	
+    @RequiresAuthentication
 	@RequestMapping(name = "获取归档员", path = "findByArchivesUser",method=RequestMethod.GET)
 	public @ResponseBody List<UserDto>  findByArchivesUser(){		
 		 List<UserDto> 	users= userService.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue());
 		return users;
 	}
 	
-	
-    @RequiresPermissions("archivesLibrary##delete")
+    @RequiresAuthentication
+    //@RequiresPermissions("archivesLibrary##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	archivesLibraryService.delete(id);      
     }
-
-    @RequiresPermissions("archivesLibrary##put")
+    
+    @RequiresAuthentication
+   // @RequiresPermissions("archivesLibrary##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody ArchivesLibraryDto record) {
@@ -128,7 +141,6 @@ public class ArchivesLibraryController {
    
     // begin#html
    
-
     @RequiresPermissions("archivesLibrary#html/archivesLibraryAdd#get")
     @RequestMapping(name = "中心档案借阅添加页面", path = "html/archivesLibraryAdd", method = RequestMethod.GET)
     public String centerAdd() {
@@ -140,7 +152,6 @@ public class ArchivesLibraryController {
     public String centerEdit() {
         return ctrlName+"/archivesLibraryEdit";
     }
-    
     
     @RequiresPermissions("archivesLibrary#html/archivesCityEdit#get")
     @RequestMapping(name = "市档案借阅添加页面", path = "html/archivesCityEdit", method = RequestMethod.GET)

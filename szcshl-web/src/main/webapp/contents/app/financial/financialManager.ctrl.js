@@ -11,11 +11,11 @@
         vm.financials = new Array;
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
-        vm.financial.signid = $state.params.signid;
+        vm.financial.businessId = $state.params.signid;
       
         //跳转到评审会发放表页面
         vm.findStageCostTable = function(){
-            expertReviewSvc.initReview(vm.financial.signid , "", function (data){
+            expertReviewSvc.initReview(vm.financial.businessId , "", function (data){
                 vm.reviewTitle = data.reviewTitle;
                 vm.payDate = data.payDate;
                 vm.expertSelectedDtoList = data.expertSelectedDtoList;
@@ -66,10 +66,10 @@
        vm.addFinancial =  function () {
     	   	var projectName = $("#projectName").val();
     	   	var paymentData = $("#paymentData").val();
-    	    var signid =vm.financial.signid;
+    	    var businessId =vm.financial.businessId;
         	vm.financial = {};
         	vm.financial.chargeType ="评审项目"; 
-        	vm.financial.signid = signid ;
+        	vm.financial.businessId = businessId ;
         	vm.financial.projectName= projectName;
         	vm.financial.paymentData= paymentData;
             vm.financials.push(vm.financial);

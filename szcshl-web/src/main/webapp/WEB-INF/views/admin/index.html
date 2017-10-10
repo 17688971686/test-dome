@@ -241,7 +241,8 @@ desired effect
                         <@shiro.hasPermission name="addSuppLetter#html/suppLetterApproveList#get">
                         <li>
                             <a href="javascript:void(0)" ui-sref="suppLetterApproveList">
-                                拟补资料函审批<span class="label label-danger" id="ADDSUPPLETTER_COUNT">0</span>
+                               	 拟补资料函审批
+                                <span class="label label-danger" id="ADDSUPPLETTER_COUNT">0</span>
                             </a>
                         </li>
                         </@shiro.hasPermission>
@@ -258,20 +259,30 @@ desired effect
 
                         <!-- end 优秀评审报告管理 -->
                         <!-- start 月报简报管理 -->
-
-                        <li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
-
-                        <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
-
+						 <@shiro.hasPermission name="monthlyNewsletter#html/monthlyNewsletterList#get">
+                         <li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
+						 </@shiro.hasPermission>
+						 
+						 <@shiro.hasPermission name="monthlyNewsletter/html/monthlyHistoryList#get">
+                         <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
+						 </@shiro.hasPermission>
+						 
+					    <@shiro.hasPermission name="monthlyNewsletter#html/theMonthsList#get">
                         <li><a href="javascript:void(0)" ui-sref="theMonthsList">月报简报</a></li>
+                         </@shiro.hasPermission>
+                         
+                         <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyAppoveList#get">
 						<li>
-						<a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">
+						  <a href="javascript:void(0)" ui-sref="monthlyMultiyAppoveList">
 							月报简报审批<span class="label label-danger" id="LIBRARY_COUNT">0</span>
-                    	</a>
+                    	  </a>
                     	</li>
-                    	<li>
-                    		<a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">月报简报查询</a>
-                    	</li>
+                    	 </@shiro.hasPermission>
+                    	 
+                    	  <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyFileList#get">
+                    	   <li><a href="javascript:void(0)" ui-sref="monthlyMultiyFileList">月报简报查询</a>
+                    	  </li>
+                    	 </@shiro.hasPermission>
                         <!-- end 月报简报管理 -->
                     </ul>
                 </li>
@@ -307,6 +318,7 @@ desired effect
                 <!-- end 财务管理 -->
 
                 <!-- start 档案借阅管理 -->
+                <@shiro.hasPermission name="permission#archives">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-newspaper-o" aria-hidden="true"></i><span class="title">档案借阅管理</span>
@@ -315,17 +327,33 @@ desired effect
 						</span>
                     </a>
                     <ul class="treeview-menu">
+                       <@shiro.hasPermission name="archivesLibrary#html/archivesLibraryAdd#get">
                         <li><a href="javascript:void(0)" ui-sref="libraryAdd">中心档案借阅</a></li>
+                       </@shiro.hasPermission>
+                       
+                       <@shiro.hasPermission name="archivesLibrary#html/archivesCityEdit#get">
                         <li><a href="javascript:void(0)" ui-sref="archivesCityEdit">市档案借阅</a></li>
+                       </@shiro.hasPermission>
+                       
+                       <@shiro.hasPermission name="archivesLibrary#html/archivesProjectList#get">
                         <li>
                             <a href="javascript:void(0)" ui-sref="archivesProjectRead">
-                                项目查阅审批<span class="label label-danger" id="PROJECT_COUNT">0</span>
+                           		     项目查阅审批
+                                <span class="label label-danger" id="PROJECT_COUNT">0</span>
                             </a>
                         </li>
+                        </@shiro.hasPermission>
+                        
+                         <@shiro.hasPermission name="archivesLibrary#html/archivesLibraryList#get">
                         <li><a href="javascript:void(0)" ui-sref="archivesLibraryList">中心档案查询</a></li>
+                     	</@shiro.hasPermission>
+                     	
+                     	 <@shiro.hasPermission name="archivesLibrary#html/archivesCityList#get">
                         <li><a href="javascript:void(0)" ui-sref="archivesCityList">市档案查询</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
+                </@shiro.hasPermission>
                 <!-- end 档案借阅管理 -->
 
                 <!-- start 课题管理-->
@@ -349,25 +377,6 @@ desired effect
                 </@shiro.hasPermission>
                 <!-- end 课题管理-->
 
-               <!-- start 中心文件管理 -->
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-archive" aria-hidden="true"></i>
-                        <span class="title">中心文件管理</span>
-                        <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">中心文件审批
-                    	<span class="label label-danger" id="LIBRARY_COUNT">0</span>
-                    	</a>
-                    	</li>
-                    	<li><a href="javascript:void(0)" ui-sref="monthlyFindByMultiyear">中心文件查询</a>
-                    	</li>
-                    </ul>
-                </li>
-               <!-- end 中心文件管理 -->
 
 				<!-- begin 专家管理 -->
                 <@shiro.hasPermission name="permission#expert">

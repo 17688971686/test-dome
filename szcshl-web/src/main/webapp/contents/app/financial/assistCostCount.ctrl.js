@@ -11,11 +11,11 @@
         vm.financials = new Array;
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
-        vm.financial.signid = $state.params.signid;
+        vm.financial.businessId = $state.params.signid;
         
         //查看协审费用发放表
         vm.findAssistCostTable = function(){
-        	$state.go('findAssistCostTable',{signid: vm.financial.signid});
+        	$state.go('findAssistCostTable',{signid: vm.financial.businessId});
         }
         //S 输入数字校验
         vm.inputIntegerValue = function(checkValue,idSort){
@@ -40,10 +40,10 @@
        vm.assistCostAdd =  function () {
     	   	var projectName = $("#projectName").val();
     	   	var paymentData = $("#paymentData").val();
-    	    var signid =vm.financial.signid;
+    	    var businessId =vm.financial.businessId;
         	vm.financial = {};
         	vm.financial.chargeType ="协审费用录入"; 
-        	vm.financial.signid = signid ;
+        	vm.financial.businessId = businessId ;
         	vm.financial.projectName= projectName;
         	vm.financial.paymentData= paymentData;
             vm.financials.push(vm.financial);

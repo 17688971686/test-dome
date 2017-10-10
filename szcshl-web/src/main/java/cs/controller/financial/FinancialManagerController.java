@@ -76,8 +76,8 @@ public class FinancialManagerController {
     //@RequiresPermissions("financialManager#html/sumfinancial#get")
     @RequestMapping(name = "统计评审总费用", path = "html/sumfinancial", method = RequestMethod.GET)
     @ResponseBody
-    public Integer sunFinancial(@RequestParam String signId){
-        Integer intsumcount = financialManagerService.sunCount(signId);
+    public Integer sunFinancial(@RequestParam String businessId){
+        Integer intsumcount = financialManagerService.sunCount(businessId);
         return intsumcount;
     }
 

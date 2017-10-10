@@ -31,7 +31,7 @@
                     method: 'get',
                     url: rootPath + "/financialManager/initfinancial",
                     params:{
-                    	signid: vm.financial.signid
+                    	signid: vm.financial.businessId
                     }
                 };
                 var httpSuccess = function success(response) {
@@ -53,7 +53,7 @@
                     method: 'get',
                     url: rootPath + "/financialManager/html/sumfinancial",
                     params:{
-                    	signId: vm.financial.signid
+                    	businessId: vm.financial.businessId
                     }
                 };
                 var httpSuccess = function success(response) {

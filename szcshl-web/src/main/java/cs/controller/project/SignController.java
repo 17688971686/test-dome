@@ -231,7 +231,7 @@ public class SignController {
     /***************************************  S 新流程处理的方法     *******************************************/
 
     @RequiresAuthentication
-    // @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
+    @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
     public @ResponseBody SignDto initFlowPageData(@RequestParam(required = true) String signid) {
         return signService.findById(signid, true);
