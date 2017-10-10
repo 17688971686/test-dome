@@ -159,7 +159,7 @@ public class Sign extends DomainBase {
     private Date suppLetterDate;
 
     //综合部拟办意见
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String comprehensivehandlesug;
 
     //综合部部长ID
