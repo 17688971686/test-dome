@@ -1,5 +1,6 @@
 package cs.controller.book;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.domain.book.BookBuyBusiness;
 import cs.model.PageModelDto;
@@ -7,6 +8,7 @@ import cs.model.book.BookBuyBusinessDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BookBuyBusinessService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,13 +25,15 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书采购申请业务信息", path = "bookBuyBusiness")
+@MudoleAnnotation(name = "图书采购申请业务管理",value = "permission#bookBuyBusiness")
 public class BookBuyBusinessController {
 
 	String ctrlName = "bookBuyBusiness";
     @Autowired
     private BookBuyBusinessService bookBuyBusinessService;
 
-    @RequiresPermissions("bookBuyBusiness#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuyBusiness#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<BookBuyBusinessDto> get(HttpServletRequest request) throws ParseException {
@@ -38,40 +42,46 @@ public class BookBuyBusinessController {
         return bookBuyBusinessDtos;
     }
 
-    @RequiresPermissions("bookBuyBusiness##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuyBusiness##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody BookBuyBusinessDto record) {
         bookBuyBusinessService.save(record);
     }
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+    @RequiresAuthentication
+	//@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody BookBuyBusinessDto findById(@RequestParam(required = true)String id){		
 		return bookBuyBusinessService.findById(id);
 	}
-	
-    @RequiresPermissions("bookBuyBusiness##delete")
+
+    @RequiresAuthentication
+   // @RequiresPermissions("bookBuyBusiness##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	bookBuyBusinessService.delete(id);      
     }
 
-    @RequiresPermissions("bookBuyBusiness##put")
+    @RequiresAuthentication
+   // @RequiresPermissions("bookBuyBusiness##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody BookBuyBusinessDto record) {
         bookBuyBusinessService.update(record);
     }
 
-    @RequiresPermissions("bookBuyBusiness#saveBooksDetailList#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuyBusiness#saveBooksDetailList#post")
     @RequestMapping(name = "图书详细信息录入", path = "saveBooksDetailList", method = RequestMethod.POST)
     public @ResponseBody
     ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus){
        return bookBuyBusinessService.saveBooksDetailList(bookBuyDtoArrary,bookBuyBus);
     }
 
-    @RequiresPermissions("bookBuyBusiness#startFlow#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuyBusiness#startFlow#post")
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus) {
