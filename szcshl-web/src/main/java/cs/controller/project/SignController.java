@@ -151,10 +151,8 @@ public class SignController {
     //@RequiresPermissions("sign#associate#post")
     @RequestMapping(name = "项目关联", path = "associate", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public @ResponseBody
-    void associatePost(@RequestParam(required = true) String signId, String associateId) {
-        signService.associate(signId, associateId);
-
+    public @ResponseBody ResultMsg associatePost(@RequestParam(required = true) String signId, String associateId) {
+        return signService.associate(signId, associateId);
     }
 
     @RequiresAuthentication
@@ -204,7 +202,7 @@ public class SignController {
     }
 
     @RequiresAuthentication
-    // @RequestMapping(name = "初始化详情页面", path = "html/initDetailPageData", method = RequestMethod.GET)
+    @RequestMapping(name = "初始化详情页面", path = "html/initDetailPageData", method = RequestMethod.GET)
     @Transactional
     public @ResponseBody
     SignDto initDetailPageData(@RequestParam(required = true) String signid, @RequestParam(defaultValue = "false", required = false) boolean queryAll) {
@@ -245,6 +243,7 @@ public class SignController {
         return signService.startNewFlow(signid);
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "正式签收", path = "realSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg realSign(@RequestParam(required = true) String signid) {

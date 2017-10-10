@@ -134,7 +134,7 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(16)")
     private String yearplantype;
 
-    //秘密登记
+    //秘密等级
     @Column(columnDefinition = "VARCHAR(16)")
     private String secrectlevel;
 
@@ -848,7 +848,7 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String issign;
 
-    //项目是否已关联,0未关联，1已关联，默认未关联
+    //项目是否已关联前一阶段,0未关联，1已关联，默认未关联
     @Column(columnDefinition = "INTEGER")
     private Integer isAssociate;
 

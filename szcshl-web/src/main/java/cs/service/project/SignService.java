@@ -48,7 +48,7 @@ public interface SignService {
 
     void updateAssistState(String signIds, String status);
 
-    void associate(String signId, String associateId);
+    ResultMsg associate(String signId, String associateId);
 
     List<SignDto> getAssociateDtos(String signId);
 
@@ -68,6 +68,7 @@ public interface SignService {
 
 	void deleteReserveSign(String signid);
 
+    List<SignDto> findReviewSign(String signid);
     /***********************   更改项目状态  ****************************/
     boolean updateSignState(String signId,String state);
 

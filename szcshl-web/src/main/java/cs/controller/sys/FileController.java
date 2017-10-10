@@ -301,7 +301,7 @@ public class FileController {
 		if (parent.exists()) {			
 			 File flist[] = parent.listFiles();
 			 for (File f : flist) {
-	                if (!f.isDirectory()) {
+	                if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
 	                	list.add(new PluginFileDto(f,plugin_file_path)) ;
 	                } 
 	         }
@@ -321,7 +321,7 @@ public class FileController {
         if (parent.exists()) {
             File flist[] = parent.listFiles();
             for (File f : flist) {
-                if (!f.isDirectory() && !".png".endsWith(f.getName())) {
+                if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
                     list.add(new PluginFileDto(f,plugin_file_path)) ;
                 }
             }

@@ -1,6 +1,7 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -8,6 +9,7 @@ import cs.domain.expert.ExpertSelected_;
 import cs.domain.project.*;
 import cs.domain.sys.Org;
 import cs.domain.sys.Org_;
+import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import org.hibernate.Criteria;
@@ -84,7 +86,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
      * @param mergeIds
      */
     @Override
-    public void updateWPReivewType(String isSigle, String isMain, String mergeIds) {
+    public void updateWPReivewType(String signId,String isSigle, String isMain, String mergeIds) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_work_program set "+WorkProgram_.isSigle.getName()+" =:isSigle ");
         sqlBuilder.setParam("isSigle",isSigle);
@@ -94,8 +96,32 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         }else{
             sqlBuilder.append(" , "+WorkProgram_.isMainProject.getName()+" = null ");
         }
+        //如果是合并评审，则评审方式改为审主项目一致
+        if(Constant.MergeType.REVIEW_MERGE.getValue().equals(isSigle)){
+            sqlBuilder.append(","+WorkProgram_.reviewType.getName()+" = (select wp.reviewType from cs_work_program wp where wp.signid =:signid and wp.branchId = :branchId ) ");
+            sqlBuilder.setParam("signid",signId);
+            sqlBuilder.setParam("branchId", FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+        }
         sqlBuilder.bulidPropotyString("where","signid",mergeIds);
 
         executeSql(sqlBuilder);
+    }
+
+    /**
+     * 根据项目ID获取合并评审主工作方案信息
+     * @param signId
+     * @return
+     */
+    @Override
+    public WorkProgram findMainReviewWP(String signId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.sqlRestriction(" signid = (SELECT signid FROM CS_SIGN_MERGE where mergeid = '"+signId+"' and mergeType = '"+Constant.MergeType.WORK_PROGRAM.getValue()+"')"));
+        criteria.add(Restrictions.eq(WorkProgram_.branchId.getName(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()));
+        List<WorkProgram> wpList = criteria.list();
+        if(Validate.isList(wpList)){
+            return wpList.get(0);
+        }
+
+        return null;
     }
 }

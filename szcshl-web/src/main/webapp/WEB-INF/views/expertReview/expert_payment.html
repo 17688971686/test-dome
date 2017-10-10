@@ -45,14 +45,14 @@
                 <table class="table table-bordered">
                     <caption class="text-center h3"><strong>{{vm.model.expertReviewDto.reviewTitle}}</strong></caption>
                     <tr>
-                        <td>序号</td>
-                        <td>姓名</td>
-                        <td>身份证号码</td>
+                        <td style="max-width: 60px;">序号</td>
+                        <td style="max-width: 180px;">姓名</td>
+                        <td style="max-width: 360px;">身份证号码</td>
                         <td>开户行/银行账号</td>
-                        <td>评审费</td>
-                        <td>应纳税额</td>
-                        <td>合计（元）</td>
-                        <td>专家函评（是/否）</td>
+                        <td style="max-width: 180px;">评审费</td>
+                        <td style="max-width: 180px;">应纳税额</td>
+                        <td style="max-width: 180px;">合计（元）</td>
+                        <td style="max-width: 260px;">是否函评</td>
                     </tr>
                     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                         <td>{{$index+1}}</td>

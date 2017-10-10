@@ -313,6 +313,13 @@ public class FlowServiceImpl implements FlowService {
             criteria.setMaxResults(odataObj.getTop());
         }
         List<RuProcessTask> runProcessList = criteria.list();
+        //合并评审项目处理
+        runProcessList.forEach(rl ->{
+            if(Constant.EnumState.YES.getValue().equals(rl.getReviewType())){
+                rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+            }
+        });
+
         pageModelDto.setCount(totalResult);
         pageModelDto.setValue(runProcessList);
         return pageModelDto;

@@ -108,13 +108,15 @@
                 <!------------  以下为协审流程业务  ------------->
                 <!-- 协审部门分办 -->
                 <div ng-show="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow == 9" id="xs_bmfb">
-                    <table class="table">
+                    <table class="table table-bordered" style="max-width: 800px;">
                         <caption class="text-center">*必须要选择1个总负责人，最多只能选3个负责人</caption>
                         <tr>
-                            <td>
-                                <span ng-repeat="u in vm.users | filter:{isSelected:false}" style="width:14%;">
-                                    <span ><input type="checkbox" name="unSelPriUser"  value="{{u.id}}"/>{{u.displayName}}</span>
-                                </span>
+                            <td class="text-center">
+                                <ul>
+                                    <li ng-repeat="u in vm.users | filter:{isSelected:false}" style="float: left;width: 80px;">
+                                        <span ><input type="checkbox" name="unSelPriUser"  value="{{u.id}}"/>{{u.displayName}}</span>
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
                         <tr>

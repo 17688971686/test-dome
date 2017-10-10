@@ -144,10 +144,10 @@ public class SignServiceImpl implements SignService {
             //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
             if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())) {
                 sign.setDealOrgType(Constant.BusinessType.GX.getValue());
-                sign.setLeaderhandlesug("请（概算一部         概算二部）组织评审。");
+                sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
             } else {
                 sign.setDealOrgType(Constant.BusinessType.PX.getValue());
-                sign.setLeaderhandlesug("请（评估一部         评估二部         评估一部信息化组）组织评审。");
+                sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
             }
 
             //5、综合部、分管副主任默认办理信息
@@ -707,7 +707,7 @@ public class SignServiceImpl implements SignService {
                         sign.setMinisterDate(new Date());
                         sign.setMinisterId(SessionUtil.getUserId());
                         sign.setMinisterName(SessionUtil.getDisplayName());
-                        signRepo.save(sign);
+
                     }
                     //项目负责人
                     if (flowDto.getBusinessMap().get("A_USER_ID") != null) {
@@ -754,6 +754,9 @@ public class SignServiceImpl implements SignService {
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FZR4.getValue(), assigneeValue);
                 }
+                //完成部门分办，表示正在做工作方案
+                sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
+                signRepo.save(sign);
                 break;
 
             //项目负责人办理1
@@ -1443,35 +1446,41 @@ public class SignServiceImpl implements SignService {
      * 项目关联
      *
      * @param signId      项目ID
-     * @param associateId 关联到的项目ID
+     * @param associateId 关联到的项目ID,如果这个为空，则为解除关联
      */
     @Override
     @Transactional
-    public void associate(String signId, String associateId) {
-
+    public ResultMsg associate(String signId, String associateId) {
         if (signId.equals(associateId)) {
-            throw new IllegalArgumentException("不能关联自身项目");
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"不能关联自身项目");
         }
         Sign sign = signRepo.getById(signId);
         if (sign == null) {
-            throw new IllegalArgumentException("项目不存在");
+            return new ResultMsg(false,MsgCode.ERROR.getValue(),"项目不存在");
         }
-
+        boolean isLink = Validate.isString(associateId)?true:false;     //
         //如果associateId为空，解除关联
-        if (!Validate.isString(associateId)) {
-            sign.setIsAssociate(0);
-            sign.setAssociateSign(null);
-        } else {
-            Sign associateSign = signRepo.getById(associateId);
+        if (isLink) {
+            Sign associateSign = signRepo.findById(Sign_.signid.getName(),associateId);
             if (associateSign == null) {
-                throw new IllegalArgumentException("关联项目不存在");
+                return new ResultMsg(false,MsgCode.ERROR.getValue(),"关联项目不存在");
             }
             sign.setAssociateSign(associateSign);
             sign.setIsAssociate(1);
-        }
+        } else {
+            //找出关联项目
+            associateId = sign.getAssociateSign().getSignid();
 
+            sign.setIsAssociate(0);
+            sign.setAssociateSign(null);
+        }
         signRepo.save(sign);
 
+        //更改对应收文的状态
+        dispatchDocRepo.updateIsRelatedState(signId);
+        dispatchDocRepo.updateIsRelatedState(associateId);
+
+        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
     }
 
     /**
@@ -1611,24 +1620,22 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 根据项目名称，查询未关联阶段的项目（查询视图）
+     * 项目关联，每个项目只能关联一个前一阶段
      * * @param projectName
      *
      * @return
      */
     @Override
     public List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.isAssociate.getName() + " = 0 ");
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :signid ");
-        hqlBuilder.setParam("signid", signDispaWork.getSignid());
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select s.* from V_SIGN_DISP_WORK s where s." + SignDispaWork_.signid.getName() + " != :signid ");
+        //sqlBuilder.append(" and (select count(cas.associate_signid) from CS_ASSOCIATE_SIGN cas where cas.signid = s." + SignDispaWork_.signid.getName() + ")=0 ");
+        sqlBuilder.setParam("signid", signDispaWork.getSignid());
         if (Validate.isString(signDispaWork.getProjectname())) {
-            hqlBuilder.append(" and " + SignDispaWork_.projectname.getName() + " like :projectName");
-            hqlBuilder.setParam("projectName", "%" + signDispaWork.getProjectname() + "%");
+            sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like :projectName");
+            sqlBuilder.setParam("projectName", "%" + signDispaWork.getProjectname() + "%");
         }
-
-        List<SignDispaWork> signList = signDispaWorkRepo.findByHql(hqlBuilder);
-
+        List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilder);
         return signList;
     }
 
@@ -1695,6 +1702,27 @@ public class SignServiceImpl implements SignService {
             signRepo.delete(sign);
             log.info(String.format("删除预签收项目", sign.getProjectname()));
         }
+    }
+
+    /**
+     * 获取合并评审项目
+     * @param signid
+     * @return
+     */
+    @Override
+    public List<SignDto> findReviewSign(String signid) {
+        List<Sign> signList = signRepo.findReviewSign(signid);
+        if(Validate.isList(signList)){
+            List<SignDto> resultList = new ArrayList<>(signList.size());
+            signList.forEach(sl ->{
+                SignDto signDto = new SignDto();
+                BeanCopierUtils.copyProperties(sl,signDto);
+                resultList.add(signDto);
+            });
+
+            return resultList;
+        }
+        return null;
     }
 
     /**

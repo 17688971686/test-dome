@@ -16,6 +16,7 @@
 
         vm.showFlag = {
             buttSysFile : false,        //显示附件按钮
+            isReveiwDS : false,         //是否合并发文次项目
         }
         vm.busiFlag = {
             isMerge : false,            //是否合并发文
@@ -39,7 +40,7 @@
                             $('.confirmDialog').modal('hide');
                             signSvc.saveAssociateSign($state.params.signid,null,function(){
                                 bsWin.alert("项目解除关联成功");
-                                vm.sign.isAssociate = 0;
+                                window.location.reload();
                             });
                         },
                         onCancel : function () {

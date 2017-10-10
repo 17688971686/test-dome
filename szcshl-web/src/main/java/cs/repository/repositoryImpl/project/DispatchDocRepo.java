@@ -10,4 +10,6 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
 	List<DispatchDoc> findDispatchBySignId(String signId);
 
     void updateRWType(String reviewType, String isMain, String signIds);
+
+    void updateIsRelatedState(String signId);
 }

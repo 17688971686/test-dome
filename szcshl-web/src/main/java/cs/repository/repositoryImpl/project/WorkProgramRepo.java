@@ -14,5 +14,7 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
 
     void initExpertCost(String id);
 
-    void updateWPReivewType(String isSigle, String isMain, String mergeIds);
+    void updateWPReivewType(String signId,String isSigle, String isMain, String mergeIds);
+
+    WorkProgram findMainReviewWP(String signId);
 }

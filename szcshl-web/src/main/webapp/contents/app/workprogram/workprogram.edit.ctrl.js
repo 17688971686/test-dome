@@ -17,13 +17,14 @@
 
         vm.sign = {};						//创建收文对象
         vm.unSeledWork = {};                //未选择的工作方案
-        vm.serchSign = {};                  //用于过滤
+        vm.searchSign = {};                 //用于过滤
 
         vm.businessFlag={
             isSelfReview : false,          //是否自评
             isSingleReview : true,         //是否单个评审
             isMainWorkProj: false,         //是否是合并评审主项目
             isLoadMeetRoom: false,         //是否已经加载了会议室
+            isReveiwAWP:false,             //是否是合并评审次项目，如果是，则不允许修改，由主项目控制
         }
 
         //页面初始化
@@ -109,12 +110,17 @@
         	window.parent.$(".workPro").data("kendoWindow").close();
         }
 
+        //重置合并发文
+        vm.formReset = function () {
+            vm.searchSign = {};
+        }
+        //过滤器
         vm.filterSign = function(item){
             var isMatch = true;
-            if(vm.serchSign.projectname && (item.projectname).indexOf(vm.serchSign.projectname) == -1){
+            if(vm.searchSign.projectname && (item.projectname).indexOf(vm.searchSign.projectname) == -1){
                 isMatch = false;
             }
-            if(vm.serchSign.reviewstage && (item.reviewstage).indexOf(vm.serchSign.reviewstage) == -1){
+            if(isMatch && vm.searchSign.reviewstage && (item.reviewstage).indexOf(vm.searchSign.reviewstage) == -1){
                 isMatch = false;
             }
             if(isMatch){
@@ -287,7 +293,6 @@
             }else{
                 bsWin.alert("表格填写不正确，请检查相应的必填项信息！");
             }
-
         };
 
         //拟聘请专家

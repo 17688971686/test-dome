@@ -258,12 +258,12 @@
                     width: 50
                 },
                 {
-                    field: "projectName",
+                    field: "",
                     title: "项目名称",
                     filterable: false,
-                    width: "18%",
+                    width: "15%",
                     template: function (item) {
-                        if(item.processState == 2){
+                        if(checkCanEdit(item)){
                             return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
                         }else{
                             return '<a href="#/signFlowDeal/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
@@ -274,13 +274,50 @@
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: "12%"
+                    width: "10%"
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
                     width: "10%",
                     filterable: false
+                },
+                {
+                    field: "",
+                    title: "合并评审",
+                    width: "10%",
+                    filterable: false,
+                    template : function(item){
+                        if(item.reviewType){
+                            if(item.reviewType == 9 || item.reviewType == '9'){
+                                return "合并评审[主项目]";
+                            }else{
+                                return "合并评审[次项目]";
+                            }
+                        }else{
+                            return "否";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "合并项目",
+                    width: "10%",
+                    filterable: false,
+                    template : function(item){
+                        if(item.reviewSignDtoList){
+                            var projectName = '';
+                            angular.forEach(item.reviewSignDtoList, function(data,index,array){
+                                if(index > 0){
+                                    projectName += ",";
+                                }
+                                projectName += data.projectname;
+                            });
+                            return projectName;
+                        }else{
+                            return "";
+                        }
+                    }
                 },
                 {
                     field: "preSignDate",
@@ -303,15 +340,10 @@
                     filterable: false,
                     template : function(item){
                         if(item.surplusDays != undefined){
-                            if(item.surplusDays >=0){
-                                return item.surplusDays;
-                            }else{
-                                return 0;
-                            }
+                            return (item.surplusDays > 0)?item.surplusDays:0;
                         }else{
                             return "";
                         }
-
                     }
                 },
                 {
@@ -322,8 +354,8 @@
                 },
                 {
                     field: "",
-                    title: "流程状态",
-                    width: "8%",
+                    title: "状态",
+                    width: "6%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -338,7 +370,7 @@
                     title: "操作",
                     width: "6%",
                     template: function (item) {
-                        if(item.processState == 2){
+                        if(checkCanEdit(item)){
                             return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
                         }else{
                             return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
@@ -366,6 +398,17 @@
                 }
             };
         }//E_gtasksGrid
+
+        //判断是否显示处理按钮（主要针对合并评审项目,部长审核和分管领导审核两个环节）
+        function checkCanEdit(item){
+            var isDetailBt = (item.processState == 2)?true:false;
+            if(!isDetailBt){
+                if(item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && (item.nodeDefineKey == 'SIGN_BMLD_SPW1' || item.nodeDefineKey =='SIGN_FGLD_SPW1')){
+                    isDetailBt = true;
+                }
+            }
+            return isDetailBt;
+        }
 
         //S_etasksGrid
         function etasksGrid(vm) {
@@ -547,14 +590,13 @@
                     width: 50
                 },
                 {
-                    field: "projectName",
+                    field: "",
                     title: "项目名称",
                     filterable: false,
                     width: "18%",
                     template: function (item) {
                         return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
                     }
-
                 },
                 {
                     field: "reviewStage",
@@ -589,15 +631,10 @@
                     filterable: false,
                     template : function(item){
                         if(item.surplusDays != undefined){
-                            if(item.surplusDays >=0){
-                                return item.surplusDays;
-                            }else{
-                                return 0;
-                            }
+                            return (item.surplusDays > 0)?item.surplusDays:0;
                         }else{
                             return "";
                         }
-
                     }
                 },
                 {
@@ -649,13 +686,6 @@
                 
             };
         }//E_dtasksGrid
-        
-        function on(arg){
-        	var row = this.select();
-            var data = this.dataItem(row);
-            var name = data.name;
-            alert('单击事件【name：' + name + '】');
-        }
 
         //begin_getSignList
         function getSignList(vm) {

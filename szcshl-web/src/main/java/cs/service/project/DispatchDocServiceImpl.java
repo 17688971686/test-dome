@@ -209,13 +209,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.DISPATCH.getValue());
             if (isMerge) {
                 dispatch.setDispatchWay(Constant.MergeType.DIS_MERGE.getValue());   //合并发文
-                dispatch.setIsMainProject(EnumState.YES.getValue());
             } else {
                 dispatch.setDispatchWay(Constant.MergeType.DIS_SINGLE.getValue());    //单个发文
-                dispatch.setIsMainProject(EnumState.NO.getValue());
             }
+            dispatch.setIsMainProject(EnumState.NO.getValue());
             //是否已经有阶段关联
-            dispatch.setIsRelated(sign.getIsAssociate()==1?EnumState.YES.getValue():EnumState.NO.getValue());
+            dispatch.setIsRelated(signRepo.checkIsLink(signId)?EnumState.YES.getValue():EnumState.NO.getValue());
             dispatch.setDraftDate(now);
             dispatch.setDispatchDate(now);
             dispatch.setDispatchType("项目发文");
@@ -242,6 +241,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
             dispatch.setOrgId(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getId());
 
+        }else{
+            String related = signRepo.checkIsLink(signId)?EnumState.YES.getValue():EnumState.NO.getValue();
+            if(!related.equals(dispatch.getIsRelated())){
+                dispatch.setIsRelated(related);
+                dispatchDocRepo.save(dispatch);
+            }
         }
         dispatch.setDispatchStage(sign.getReviewstage());//评审阶段
         BeanCopierUtils.copyProperties(dispatch, dispatchDto);

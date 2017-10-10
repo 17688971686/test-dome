@@ -9,16 +9,16 @@
             <caption >
                 <span>
                     发文方式：
-                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()">
+                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
                         <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
                                 ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
                     </select>
                 </span>
 				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
                            ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
 
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject"
+					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
                            ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
 
 					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"

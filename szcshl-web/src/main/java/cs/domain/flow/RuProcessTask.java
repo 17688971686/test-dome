@@ -1,9 +1,13 @@
 package cs.domain.flow;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import cs.domain.project.Sign;
+import cs.model.project.SignDto;
+import org.apache.ibatis.annotations.Many;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 在办任务列表 on 2017/7/6 0006.
@@ -19,6 +23,12 @@ public class RuProcessTask {
      */
     @Id
     private String taskId;
+
+    /**
+     * 环节定义名
+     */
+    @Column
+    private String nodeDefineKey;
 
     /**
      * 环节名称
@@ -131,6 +141,19 @@ public class RuProcessTask {
     //第一负责人ID
     @Column
     private String mainUserId;
+
+    /**
+     * 评审方式【9表示合并评审主项目，0表示合并评审次项目，空表示单个评审】
+     */
+    @Column
+    private String reviewType;
+
+    /**
+     * 合并评审项目
+     */
+    //这是此注解后该属性不会数据持久化也是本例要说明的注解
+    @Transient
+    private List<SignDto> reviewSignDtoList;
 
     public String getMainUserId() {
         return mainUserId;
@@ -314,5 +337,29 @@ public class RuProcessTask {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getReviewType() {
+        return reviewType;
+    }
+
+    public void setReviewType(String reviewType) {
+        this.reviewType = reviewType;
+    }
+
+    public List<SignDto> getReviewSignDtoList() {
+        return reviewSignDtoList;
+    }
+
+    public void setReviewSignDtoList(List<SignDto> reviewSignDtoList) {
+        this.reviewSignDtoList = reviewSignDtoList;
+    }
+
+    public String getNodeDefineKey() {
+        return nodeDefineKey;
+    }
+
+    public void setNodeDefineKey(String nodeDefineKey) {
+        this.nodeDefineKey = nodeDefineKey;
     }
 }

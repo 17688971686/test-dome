@@ -58,6 +58,11 @@
                 vm.associateDispatchs = data.associateDispatchs;
                 vm.proofread = data.mainUserList;   //校对人
 
+                //合并发文次项目
+                if(vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0){
+                    vm.showFlag.isReveiwDS = true;
+                }
+
                 //初始化附件上传
                 vm.initFileUpload();
 

@@ -189,7 +189,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 //判断是否是关联次项目
                 boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
                 if(isMerge){
-                    workProgramDto.setReviewType("合并评审");
+                    WorkProgram mainWP = workProgramRepo.findMainReviewWP(signId);
+                    if(mainWP != null ){
+                        workProgramDto.setReviewType(mainWP.getReviewType());           //评审方式要跟主项目一致
+                    }
+                    workProgramDto.setIsSigle(Constant.MergeType.REVIEW_MERGE.getValue());
                     workProgramDto.setIsMainProject(EnumState.NO.getValue());
                 }
                 //项目基本信息

@@ -3,12 +3,12 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.project.Sign;
+import cs.domain.project.SignMerge;
+import cs.domain.project.SignMerge_;
 import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -67,6 +67,36 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         }else{
             return null;
         }
+    }
+
+    /**
+     * 根据项目ID获取关联的项目的ID
+     * @param signId
+     * @return
+     */
+    @Override
+    public boolean checkIsLink(String signId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count(*) from cs_associate_sign where signid = :signid or associate_signid=:associate_signid");
+        sqlBuilder.setParam("signid",signId).setParam("associate_signid",signId);
+        return returnIntBySql(sqlBuilder)>0?true:false;
+
+    }
+
+    /**
+     * 查找合并评审项目
+     * @param signId
+     * @return
+     */
+    @Override
+    public List<Sign> findReviewSign(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select s from " + Sign.class.getSimpleName() + " s where s." + Sign_.signid.getName() + " in ");
+        hqlBuilder.append(" ( select m."+ SignMerge_.mergeId.getName() +" from "+SignMerge.class.getSimpleName()+" m where " +
+                "m."+SignMerge_.signId.getName()+" =:signId and m."+SignMerge_.mergeType.getName()+" =:mergeType )");
+        hqlBuilder.setParam("signId",signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
+        List<Sign> signList = findByHql(hqlBuilder);
+        return signList;
     }
 
 }

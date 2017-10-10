@@ -262,6 +262,11 @@
                         vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
                     }
 
+                    //如果是合并评审次项目，则不允许修改
+                    if(vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)){
+                        vm.businessFlag.isReveiwAWP = true;
+                    }
+
                     //初始化控件
                     vm.initFileUpload();
                 }

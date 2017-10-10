@@ -90,11 +90,13 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public List<SignDispaWork> unMergeWPSign(String signId) {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.processState.getName() + " =:processState ");
+        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() );
         //已经完成工作方案，但是未评审的项目
-        hqlBuilder.setParam("processState", Constant.SignProcessState.END_WP.getValue(), IntegerType.INSTANCE);
+        hqlBuilder.append(" where " + SignDispaWork_.processState.getName() + " >=:processState1 and "+ SignDispaWork_.processState.getName() + " <=:processState2 ");
+        hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
+        hqlBuilder.setParam("processState2", Constant.SignProcessState.END_WP.getValue(), IntegerType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() +" = :mainOrgId ");
+        hqlBuilder.append(" and " + SignDispaWork_.mOrgId.getName() +" = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //排除自身
         hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
@@ -137,7 +139,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where ");
-        hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " < :processState2 " );
+        hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " <= :processState2 " );
         hqlBuilder.setParam("processState1",Constant.SignProcessState.DO_WP.getValue(),IntegerType.INSTANCE);
         hqlBuilder.setParam("processState2",Constant.SignProcessState.END_DIS_NUM.getValue(),IntegerType.INSTANCE);
         //只能关联同部门的项目
@@ -226,8 +228,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 }
                 roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),removeIds.toString());
             }
-            //把所有被合并的项目改为合并评审次项目
-            workProgramRepo.updateWPReivewType(Constant.MergeType.REVIEW_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
+            //把所有被合并的项目改为合并评审次项目，同时评审方式也要跟主项目一致
+            workProgramRepo.updateWPReivewType(signId,Constant.MergeType.REVIEW_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
         }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
             dispatchDocRepo.updateRWType(Constant.MergeType.DIS_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
         }
@@ -259,7 +261,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         if (Validate.isString(cancelIds)) {
             hqlBuilder.bulidPropotyString("and", SignMerge_.mergeId.getName(), cancelIds);
             if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
-                workProgramRepo.updateWPReivewType(Constant.MergeType.REVIEW_SIGNLE.getValue(), null,cancelIds);
+                workProgramRepo.updateWPReivewType(signId,Constant.MergeType.REVIEW_SIGNLE.getValue(), null,cancelIds);
             }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
                 dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null,cancelIds);
             }
@@ -291,7 +293,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             signMergeRepo.deleteById(SignMerge_.mergeId.getName(),sbString.toString());
 
             if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
-                workProgramRepo.updateWPReivewType(Constant.MergeType.REVIEW_SIGNLE.getValue(), null,sbString.toString());
+                workProgramRepo.updateWPReivewType(signId,Constant.MergeType.REVIEW_SIGNLE.getValue(), null,sbString.toString());
             }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
                 dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null,sbString.toString());
             }
