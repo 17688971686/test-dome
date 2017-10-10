@@ -17,6 +17,7 @@
             updateUser: updateUser,
             getOrg: getOrg,
             queryUser: queryUser,
+            getZtreeChecked :getZtreeChecked ,
             //initUserNo : initUserNo//初始化 员工工号
         };
 
