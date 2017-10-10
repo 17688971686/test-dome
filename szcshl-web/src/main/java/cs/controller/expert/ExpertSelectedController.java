@@ -1,22 +1,17 @@
 package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertCostCountDto;
-import cs.model.expert.ExpertCostDetailCountDto;
-import cs.model.expert.ExpertCostDetailDto;
-import cs.model.expert.ExpertSelectedDto;
+import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -91,6 +86,14 @@ public class ExpertSelectedController {
     @ResponseBody
     public ResultMsg expertCostTotal(@RequestBody ExpertCostCountDto expertCostCountDto) throws ParseException {
         return  expertSelectedService.expertCostTotal(expertCostCountDto);
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    @RequestMapping(name = "项目评审费统计", path = "projectCostTotal", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg projectCostTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto){
+        return  expertSelectedService.projectReviewCost(projectReviewCostDto);
     }
 
     @RequiresAuthentication

@@ -9,6 +9,8 @@ import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
+import cs.domain.financial.FinancialManager;
+import cs.domain.financial.FinancialManager_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
@@ -19,6 +21,8 @@ import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.ExpertCostCountRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
+import cs.service.financial.FinancialManagerService;
 import cs.service.project.SignPrincipalService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -46,6 +50,10 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	private ExpertCostCountRepo expertCostCountRepo;
 	@Autowired
 	private SignPrincipalService signPrincipalService;
+	@Autowired
+	private FinancialManagerRepo financialManagerRepo;
+	@Autowired
+	private FinancialManagerService financialManagerService;
 
 
 	@Override
@@ -405,14 +413,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		Map<String, Object> resultMap = new HashMap<>();
 		PageModelDto<ProjectReviewCostDto> pageModelDto = new PageModelDto<ProjectReviewCostDto>();
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,m.businessid from cs_sign s  ");
+		sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,r.businessid from cs_sign s  ");
 		sqlBuilder.append(" left join cs_expert_review r  ");
 		sqlBuilder.append("on s.signid = r.businessid  ");
 		sqlBuilder.append("left join cs_dispatch_doc d  ");
 		sqlBuilder.append("on s.signid = d.signid  ");
-		sqlBuilder.append("left join  cs_financial_manager m  ");
-		sqlBuilder.append("on s.signid = m.businessid  ");
-		sqlBuilder.append("where 1=1 ");
+		//sqlBuilder.append("where r.totalcost is not null ");
 		//todo:添加查询条件
 		if(null != projectReviewCostDto){
 
@@ -442,19 +448,36 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				if (null != projectReviewCost[3]) {
 					projectReviewCostDto1.setReviewstage((String) projectReviewCost[3]);
 				}
-			/*	if (null != expertCostCounts[4]) {
-					expertCostCountDto.setReviewtaxes((BigDecimal) expertCostCounts[4]);
+				if (null != projectReviewCost[4]) {
+					projectReviewCostDto1.setTotalCost((BigDecimal) projectReviewCost[4]);
 				}
-				if (null != expertCostCounts[5]) {
-					expertCostCountDto.setMonthTotal((BigDecimal) expertCostCounts[5]);
+				if (null != projectReviewCost[5]) {
+					projectReviewCostDto1.setPayDate((Date) projectReviewCost[5]);
+				}
+				if (null != projectReviewCost[6]) {
+					projectReviewCostDto1.setDeclareValue((BigDecimal) projectReviewCost[6]);
+				}
+				if (null != projectReviewCost[7]) {
+					projectReviewCostDto1.setAuthorizeValue((BigDecimal) projectReviewCost[7]);
+				}
+				if (null != projectReviewCost[8]) {
+					projectReviewCostDto1.setSigndate((Date) projectReviewCost[8]);
+				}
+				if (null != projectReviewCost[9]) {
+					projectReviewCostDto1.setBusinessId((String) projectReviewCost[9]);
 				}
 
-				if (null != expertCostCountDto.getExpertId()) {
-					expertCostDetailCountDtoList = getExpertCostDetailById(expertCostCountDto.getExpertId(),beginTime,endTime);
+				if (null != projectReviewCostDto1.getBusinessId()) {
+					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
+					Integer totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
+					if (null != totalCost){
+						projectReviewCostDto1.setTotalCost(BigDecimal.valueOf(totalCost));
+					}
 				}
-				if (expertCostDetailCountDtoList.size() > 0) {
-					expertCostCountDto.setExpertCostDetailCountDtoList(expertCostDetailCountDtoList);
-				}*/
+
+				if (financialManagerDtoList.size() > 0) {
+					projectReviewCostDto1.setFinancialManagerDtoList(financialManagerDtoList);
+				}
 				projectReviewCostDtoList.add(projectReviewCostDto1);
 			}
 		}
@@ -464,7 +487,19 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 	@Override
 	public List<FinancialManagerDto> getFinancialManagerByBusid(String businessId) {
-		return null;
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+		hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+ FinancialManager_.businessId.getName()+ " =:businessId");
+		hqlBuilder.setParam("businessId", businessId);
+		List<FinancialManager> financialManagerlist= financialManagerRepo.findByHql(hqlBuilder);
+		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
+		if(financialManagerlist.size()>0){
+			for (FinancialManager financialManager:financialManagerlist){
+				FinancialManagerDto financialManagerDto = new FinancialManagerDto();
+				BeanCopierUtils.copyProperties(financialManager,financialManagerDto);
+				financialManagerDtoList.add(financialManagerDto);
+			}
+		}
+		return financialManagerDtoList;
 	}
 
 }
