@@ -2,8 +2,8 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
-<div class="well well-sm" style="background:white;">
+<!--拟补充资料函上传列表页面-->
+<div class="well well-sm" id="addSupplist"style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/user">拟补充资料函列表</a></li>
         <li class="active">{{vm.title}}</li>
@@ -40,8 +40,8 @@
 			<td class="text-center">{{a.suppLetterTime}}</td>
 			<td class="text-center">{{a.filenum}}</td>
 			<td class="text-center">
-				<button class="btn btn-xs btn-primary" ng-hide="a.filenum" ng-click="vm.getFilenum(a.id);"> <span class="glyphicon glyphicon-pencil">生成文件字号</span></button>
-				<button class="btn btn-xs btn-primary" ng-click="vm.findByIdAddSuppLetter(a.id);"><span class="glyphicon glyphicon-pencil">查看</span></button>
+				<!-- <button class="btn btn-xs btn-primary" ng-hide="a.filenum" ng-click="vm.getFilenum(a.id);"> <span class="glyphicon glyphicon-pencil">生成文件字号</span></button> -->
+				<button class="btn btn-xs btn-primary" ng-click="vm.findByIdAddSuppLetter(a.id);"><span class="glyphicon glyphicon-pencil">编辑</span></button>
 			</td>
 		</tr>
 	</table>

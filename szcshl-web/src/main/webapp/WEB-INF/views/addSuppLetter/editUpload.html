@@ -1,0 +1,130 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+<!--拟补充资料函上传列表页面-->
+<#include "/addSuppLetter/addsuppUpload.html"/>
+
+<div class="well well-sm" style="background:white; color: red">
+<div class="toolbar">
+           
+    <button class="btn btn-sm btn-success" ng-click="vm.submitAddSuppletter()" ng-disabled="vm.isCommit">
+        <span class="glyphicon glyphicon-ok"></span>提交
+    </button>
+    <button ng-show='false'class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
+        <span class="glyphicon glyphicon-ok"></span>打印
+    </button>
+      <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>上传附件</button>
+     <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent(vm.suppletter.id)">
+            <span class="glyphicon glyphicon-search"></span>查看附件
+     </button>
+     
+    <button class="btn btn-sm btn-danger" ng-click="vm.comeBack();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+    </button>
+</div>
+   		<!--  hidden input -->
+		 <input type="hidden" ng-model="vm.suppletter.id" name="id" value="{{vm.suppletter.id}}"id="id"  >  
+		<input type="hidden" ng-model="vm.suppletter.businessId" value="{{vm.suppletter.businessId}}" > 
+		<!--  s table -->
+     <!-- s form -->
+    <form id="suppletter_form" name="suppletter_form">
+        <!-- s table -->
+        <table class="table table-bordered">
+            <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</strong></caption>
+            <tbody>
+            <tr>
+                <td style="width:150px;" class="text-center">拟稿部门<br>拟稿人</td>
+                <td>
+                   {{vm.suppletter.orgName}}<br>
+                   {{vm.suppletter.userName}}
+                </td>
+
+                <td style="width:150px;" class="text-center">拟稿时间</td>
+                <td >
+                    <input type="text" name="suppLetterTime" id="suppLetterTime" style="width: 210px;text-align: center;"
+                           class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.suppletter.suppLetterTime"
+                           data-val-date="必须为日期">
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">秘密等级</td>
+                <td>
+                {{vm.suppletter.secretLevel}}
+                    <!-- <select ng-model="vm.suppletter.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-sm ">
+                        <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="x.dictName == vm.suppletter.secretLevel"
+                                value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select> -->
+                </td>
+
+                <td style="width:150px;" class="text-center">缓急程度</td>
+                <td>
+                {{vm.suppletter.mergencyLevel}}
+                    <!--  <select ng-model="vm.suppletter.mergencyLevel" name="isSigle" id="mergencyLevel" class="form-control input-sm ">
+                        <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="x.dictName == vm.suppletter.mergencyLevel"
+                                value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select> -->
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">发文日期</td>
+                <td>
+                	  <input type="text" name="disapDate" id="disapDate" style="width: 210px;text-align: center;"
+                           class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.suppletter.disapDate"
+                           data-val-date="必须为日期">
+                </td>
+
+                <td style="width:150px;" class="text-center">文件字号</td>
+                <td> {{vm.suppletter.filenum}} </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td colspan="3">
+                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                           ng-model="vm.suppletter.title" id="title" name="title" data-val="true"
+                           data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td colspan="3">
+                    <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                              ng-model="vm.suppletter.dispaRange" id="dispaRange" name="dispaRange"
+                              data-val="true" data-val-required="必填" />
+                    <span style="float: right;">(印<input type="text" name="printnum" ng-model="vm.suppletter.printnum" style="width: 50px">份)</span>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="width:150px;" class="text-center">核稿意见</td>
+                <td colspan="3">
+                    <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
+                              ng-model="vm.suppletter.suppleterSuggest" id="suppleterSuggest" name="suppleterSuggest"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:150px;" class="text-center">会签意见</td>
+                <td colspan="3">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.suppletter.meetingSuggest" id="meetingSuggest"
+                              name="meetingSuggest"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">领导意见</td>
+                <td colspan="3">
+                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                              ng-model="vm.suppletter.leaderSuggest" id="leaderSuggest"
+                              name="leaderSuggest"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>    <!-- end table -->
+        
+ 
+</div>

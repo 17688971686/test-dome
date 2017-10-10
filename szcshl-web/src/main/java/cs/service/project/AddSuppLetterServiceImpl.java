@@ -23,7 +23,6 @@ import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.Archives.ArchivesLibrary;
-import cs.domain.Archives.ArchivesLibrary_;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
 import cs.domain.project.Sign;
@@ -68,9 +67,9 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
              Date now = new Date();
              if (Validate.isString(addSuppLetterDto.getId())) {
                  addSuppLetter = addSuppLetterRepo.findById(addSuppLetterDto.getId());
-                 BeanCopierUtils.copyPropertiesIgnoreNull(addSuppLetter,addSuppLetterDto);
+                 BeanCopierUtils.copyPropertiesIgnoreNull(addSuppLetterDto,addSuppLetter);
              } else {
-                 addSuppLetter = new AddSuppLetter();
+               /*  addSuppLetter = new AddSuppLetter();
                  BeanCopierUtils.copyProperties(addSuppLetterDto, addSuppLetter);
                  addSuppLetter.setId(UUID.randomUUID().toString());
                  addSuppLetter.setCreatedBy(SessionUtil.getDisplayName());
@@ -95,7 +94,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
          		}
                  //查询列表状态
                  addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
-                 addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());
+                 addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());*/
                  
              }
              Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
@@ -105,7 +104,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
              addSuppLetter.setModifiedDate(now);
              addSuppLetter.setCreatedDate(now);
              addSuppLetterRepo.save(addSuppLetter);
-             addSuppLetter.setId(addSuppLetter.getId());
              return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetterDto);
         }else{
         	return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，获取项目信息失败，请联系相关人员处理！");
@@ -148,10 +146,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public AddSuppLetterDto initSuppLetter(String businessId, String businessType) {
         AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
-        AddSuppLetter suppletter =  addSuppLetterRepo.findById("businessId",businessId);
+       /* AddSuppLetter suppletter =  addSuppLetterRepo.findById("businessId",businessId);
         if(suppletter !=null && Validate.isString(suppletter.getId())){
         	BeanCopierUtils.copyPropertiesIgnoreNull(suppletter,suppletterDto);
-        }else{
+        }else{*/
         	//新增
         	if(Constant.BusinessType.SIGN.getValue().equals(businessType)){
                 Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
@@ -163,7 +161,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 suppletterDto.setSecretLevel(sign.getSecrectlevel());
                 suppletterDto.setMergencyLevel(sign.getUrgencydegree());
             }
-        }
+      //  }
         
 
         return suppletterDto;
@@ -600,6 +598,59 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		sqlBuilder.setParam("id", addSuppLetterDto.getId());
 		addSuppLetterRepo.executeHql(sqlBuilder);
 		
+	}
+
+	/**
+	 * 保存拟补充资料函
+	 */
+	@Override
+	@Transactional
+	public void saveSupp(AddSuppLetterDto addSuppLetterDto) {
+		 AddSuppLetter addSuppLetter = null;
+         Date now = new Date();
+       /*  if (Validate.isString(addSuppLetterDto.getId())) {
+             addSuppLetter = addSuppLetterRepo.findById(addSuppLetterDto.getId());
+             BeanCopierUtils.copyPropertiesIgnoreNull(addSuppLetter,addSuppLetterDto);
+         } else {*/
+             addSuppLetter = new AddSuppLetter();
+             BeanCopierUtils.copyProperties(addSuppLetterDto, addSuppLetter);
+            // addSuppLetter.setId(UUID.randomUUID().toString());
+             addSuppLetter.setCreatedBy(SessionUtil.getDisplayName());
+             addSuppLetter.setModifiedBy(SessionUtil.getDisplayName());
+             //部长名称
+             if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!=null){
+             	addSuppLetter.setDeptMinisterName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());
+             }else{
+             	addSuppLetter.setDeptMinisterName(SessionUtil.getDisplayName());
+             }
+           //分管副主任
+     		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgSLeaderName()!=null){
+     			addSuppLetter.setDeptSLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());
+     		}else{
+     			addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
+     		}
+     		//主任
+     		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgMLeaderName()!=null){
+     			addSuppLetter.setDeptDirectorName(SessionUtil.getUserInfo().getOrg().getOrgMLeaderName());
+     		}else{
+     			addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
+     		}
+             //查询列表状态
+             addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
+             addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());
+             
+       //  }
+             if(!Validate.isString(addSuppLetter.getId())){
+            	 addSuppLetter.setId(null);
+             }
+         Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
+         sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+         sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
+         signRepo.save(sign);
+         addSuppLetter.setModifiedDate(now);
+         addSuppLetter.setCreatedDate(now);
+         addSuppLetterRepo.save(addSuppLetter);
+         addSuppLetterDto.setId(addSuppLetter.getId());
 	}
 
 	

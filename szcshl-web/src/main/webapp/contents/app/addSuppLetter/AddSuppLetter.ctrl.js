@@ -9,8 +9,12 @@
         vm.suppletter = {}; //补充资料对象$state
         vm.suppletter.businessId = $state.params.businessId;        //业务ID
         vm.suppletter.businessType = $state.params.businessType;    //业务类型
-        vm.suppletter.id = "";
+        vm.suppletter.id = $state.params.id;
         vm.title = '登记补充资料';
+        
+        vm.businessFlag ={
+                isInitFileOption : false,   //是否已经初始化附件上传控件
+        }
         
         activate();
         function activate() {
@@ -45,24 +49,8 @@
         }
         //保存补充资料函
         vm.saveAddSuppletter = function () {
-                   /* common.initJqValidation($('#suppletter_form'));
-                    var isValid = $('#suppletter_form').valid();
-                    if (isValid) {
-                        addSuppLetterSvc.createAddSuppLetter(vm.suppletter,vm.isSubmit,function(data){
-                        	if (data.flag || data.reCode == "ok") {
-                        		vm.suppletter = data.reObj;
-                        		//console.log(vm.suppletter);
-                                bsWin.alert("保存成功！");
-                        	}else{
-                        		bsWin.error(data.reMsg);
-                        	}
-                        })
-                    }else{
-                    	 bsWin.alert("表格填写不正确，请检查相应的必填项信息！");
-                    }*/
         	addSuppLetterSvc.createAddSuppLetter(vm);
         }
-
 
         //拟补充资料函查看附件
         vm.addSuppContent = function () {

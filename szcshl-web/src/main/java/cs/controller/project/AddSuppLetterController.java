@@ -81,13 +81,21 @@ public class AddSuppLetterController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("addSuppLetter#save#post")
-    @RequestMapping(name = "保存拟补充资料函", path = "save", method = RequestMethod.POST)
+    //@RequiresPermissions("addSuppLetter#submitSupp#post")
+    @RequestMapping(name = "保存拟补充资料函", path = "submitSupp", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto){
 		return  addSuppLetterService.addSupp(addSuppLetterDto);
     }
 
+    @RequiresAuthentication
+    //@RequiresPermissions("addSuppLetter#save#post")
+    @RequestMapping(name = "保存拟补充资料函", path = "saveSupp", method = RequestMethod.POST)
+    @ResponseBody
+    public AddSuppLetterDto save(@RequestBody AddSuppLetterDto addSuppLetterDto){
+    	addSuppLetterService.saveSupp(addSuppLetterDto);
+    	return addSuppLetterDto;
+    }
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#findById#get")
     @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.GET)
@@ -110,6 +118,14 @@ public class AddSuppLetterController {
         return ctrlName+"/edit"; 
     }
 
+    
+    @RequiresAuthentication
+    //@RequiresPermissions("addSuppLetter#html/edit#get")
+    @RequestMapping(name = "编辑上传后页面", path = "editUpload", method = RequestMethod.GET)
+    public String editUpload(Model model) {
+        return ctrlName+"/editUpload"; 
+    }
+    
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/list#get")
     @RequestMapping(name = "拟补充资料函列表页面", path = "list", method = RequestMethod.GET)

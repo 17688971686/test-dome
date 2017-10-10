@@ -30,8 +30,9 @@
                 }
             });
         }
+        //跳转到编辑页面
         vm.findByIdAddSuppLetter = function (id) {
-            $state.go('addSuppLetterDetail', {id: id});
+        	$state.go('addSuppLetterEdit', {id: id});
         }
     }
 })();

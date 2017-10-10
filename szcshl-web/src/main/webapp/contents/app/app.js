@@ -83,9 +83,9 @@
             })//end#拟补充资料函列表
             
             //begin#拟补充资料函查看流程详细页面
-            .state('addSuppLetterDetail', {
-                url: '/addSuppLetterDetail',
-                templateUrl: rootPath + '/addSuppLetter/detail.html',
+            .state('addSuppLetterEdit', {
+                url: '/addSuppLetterEdit/:id',
+                templateUrl: rootPath + '/addSuppLetter/editUpload.html',
                 controller: 'addSuppLetterEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函查看流程详细页面

@@ -49,5 +49,7 @@ public interface AddSuppLetterService {
 
 	void monthlyApproveEdit(AddSuppLetterDto addSuppLetterDto);
 
+	void saveSupp(AddSuppLetterDto addSuppLetterDto);
+
 
 }
