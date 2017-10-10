@@ -423,30 +423,42 @@ desired effect
                 <!-- end -->
 
                 <!-- begin 图书管理 -->
+                <@shiro.hasPermission name="permission#bookBuyBusiness">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-book" aria-hidden="true"></i><span class="title">图书管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyBusinessEdit#get">
                         <li><a href="javascript:void(0)" ui-sref="bookBuyBusinessEdit({id:null})">图书信息录入</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyBusinessList#get">
                         <li><a href="javascript:void(0)" ui-sref="myBookBuyBusiness">图书采购流程查询</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
+            </@shiro.hasPermission>
                 <!-- end 图书管理 -->
 
                 <!-- begin 资产管理 -->
+                <@shiro.hasPermission name="permission#assertStorageBusiness">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cubes" aria-hidden="true"></i> <span class="title">资产管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
+                        <@shiro.hasPermission name="assertStorageBusiness#html/assertStorageBusinessEdit#get">
                         <li><a href="javascript:void(0)" ui-sref="assertStorageBusinessEdit({id:null})">固定资产申购信息录入</a></li>
+                        </@shiro.hasPermission>
+                       <@shiro.hasPermission name="assertStorageBusiness#html/assertStorageBusinessList#get">
                         <li><a href="javascript:void(0)" ui-sref="myAssertStorageBusiness">固定资产申购流程查询</a></li>
+                        </@shiro.hasPermission>
                         <li><a href="javascript:void(0)" ui-sref="assertApplyUse">固定资产申请使用流程</a></li>
                     </ul>
                 </li>
+            </@shiro.hasPermission>
                 <!-- end 资产管理 -->
 
                 <!-- begin 系统管理 -->

@@ -1,11 +1,13 @@
 package cs.controller.asserts.userAssertDetail;
 
+import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.asserts.userAssertDetail.UserAssertDetailDto;
 import cs.repository.odata.ODataObj;
 import cs.service.asserts.goodsDetail.GoodsDetailService;
 import cs.service.asserts.userAssertDetail.UserAssertDetailService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "用户资产明细", path = "userAssertDetail")
+@MudoleAnnotation(name = "用户资产明细",value = "permission#userAssertDetail")
 public class UserAssertDetailController {
 
 	String ctrlName = "asserts/userAssertDetail";
@@ -30,7 +33,8 @@ public class UserAssertDetailController {
     @Autowired
     private GoodsDetailService goodsDetailService;
 
-    @RequiresPermissions("userAssertDetail#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("userAssertDetail#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<UserAssertDetailDto> get(HttpServletRequest request) throws ParseException {
@@ -39,33 +43,38 @@ public class UserAssertDetailController {
         return userAssertDetailDtos;
     }
 
-    @RequiresPermissions("userAssertDetail##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("userAssertDetail##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody UserAssertDetailDto record) {
         userAssertDetailService.save(record);
     }
 
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+    @RequiresAuthentication
+	//@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody UserAssertDetailDto findById(@RequestParam(required = true)String id){		
 		return userAssertDetailService.findById(id);
 	}
-	
-    @RequiresPermissions("userAssertDetail##delete")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("userAssertDetail##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	userAssertDetailService.delete(id);      
     }
 
-    @RequiresPermissions("userAssertDetail##put")
+    @RequiresAuthentication
+    //@RequiresPermissions("userAssertDetail##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody UserAssertDetailDto record) {
         userAssertDetailService.update(record);
     }
 
-    @RequiresPermissions("userAssertDetail#html/initFillPageData#post")
+    @RequiresAuthentication
+   // @RequiresPermissions("userAssertDetail#html/initFillPageData#post")
     @RequestMapping(name = "初始化资产使用申请页面", path = "html/initFillPageData", method = RequestMethod.POST)
     public @ResponseBody
     ResultMsg initFillPageData() {

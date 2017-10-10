@@ -1,10 +1,11 @@
 package cs.controller.book;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.model.PageModelDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BookBuyService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,13 +21,15 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书信息", path = "bookBuy")
+@IgnoreAnnotation
 public class BookBuyController {
 
 	String ctrlName = "bookBuy";
     @Autowired
     private BookBuyService bookBuyService;
 
-    @RequiresPermissions("bookBuy#findByOData#post")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuy#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<BookBuyDto> get(HttpServletRequest request) throws ParseException {
@@ -35,26 +38,30 @@ public class BookBuyController {
         return bookBuyDtos;
     }
 
-    @RequiresPermissions("bookBuy##post")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuy##post")
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody BookBuyDto record) {
         bookBuyService.save(record);
     }
 
+    @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody BookBuyDto findById(@RequestParam(required = true)String id){		
 		return bookBuyService.findById(id);
 	}
-	
-    @RequiresPermissions("bookBuy##delete")
+
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuy##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
     	bookBuyService.delete(id);      
     }
 
-    @RequiresPermissions("bookBuy##put")
+    @RequiresAuthentication
+  //  @RequiresPermissions("bookBuy##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody BookBuyDto record) {
@@ -62,13 +69,15 @@ public class BookBuyController {
     }
 
     // begin#html
-    @RequiresPermissions("bookBuy#html/list#get")
+    @RequiresAuthentication
+   // @RequiresPermissions("bookBuy#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
 
-    @RequiresPermissions("bookBuy#html/edit#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("bookBuy#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/edit";

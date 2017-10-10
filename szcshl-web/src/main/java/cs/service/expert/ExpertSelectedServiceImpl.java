@@ -418,7 +418,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("on s.signid = r.businessid  ");
 		sqlBuilder.append("left join cs_dispatch_doc d  ");
 		sqlBuilder.append("on s.signid = d.signid  ");
-		//sqlBuilder.append("where r.totalcost is not null ");
+		sqlBuilder.append("where r.paydate is not null ");
 		//todo:添加查询条件
 		if(null != projectReviewCostDto){
 
