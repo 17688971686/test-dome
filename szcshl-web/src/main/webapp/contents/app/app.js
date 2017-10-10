@@ -653,6 +653,13 @@
                 controller: 'exportCountCtrl',
                 controllerAs: 'vm'
             })
+             //项目评审费统计列表
+            .state('projectCostCountList', {
+                url: '/projectCostCountList',
+                templateUrl: rootPath + '/financialManager/html/projectCostCount.html',
+                controller: 'projectCostCountCtrl',
+                controllerAs: 'vm'
+            })
              //E 项目费用管理
 
              //S 月报简报管理

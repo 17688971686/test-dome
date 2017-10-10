@@ -1,13 +1,18 @@
 package cs.controller.financial;
 
+import cs.ahelper.MudoleAnnotation;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.ExcelTools;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.financial.FinancialManagerService;
-
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cs.ahelper.MudoleAnnotation;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.ExcelTools;
-import cs.domain.expert.ExpertSelected;
-import cs.model.expert.ExpertSelectedDto;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
  * Description: 财务管理 控制层
@@ -182,6 +180,12 @@ public class FinancialManagerController {
     @RequestMapping(name = "评审费统计", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
+    }
+
+    @RequiresPermissions("financialManager#html/projectCostCount#get")
+    @RequestMapping(name = "评审费统计", path = "html/projectCostCount", method = RequestMethod.GET)
+    public String proCostCount() {
+        return ctrlName+"/projectCostCount";
     }
 
     @RequiresPermissions("financialManager#html/add#get")

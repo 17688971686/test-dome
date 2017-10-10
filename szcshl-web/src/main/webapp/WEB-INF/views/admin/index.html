@@ -294,11 +294,7 @@ desired effect
                         </@shiro.hasPermission>
                         <@shiro.hasPermission name="financialManager#html/assistCostCount#get">
                         <li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="financialManager#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="financialManagerList">评审费用统计</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="financialManager#html/expertPaymentCount#get">
+                        <li><a href="javascript:void(0)" ui-sref="projectCostCountList">评审费用统计</a></li>
                         <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li>
                         </@shiro.hasPermission>
                         <@shiro.hasPermission name="financialManager#html/expertCount#get">
@@ -475,8 +471,6 @@ desired effect
                         </@shiro.hasPermission>
                         <@shiro.hasPermission name="dict#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="sysConfig#html/list#get">
                         <li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
                         </@shiro.hasPermission>
                         <@shiro.hasPermission name="company#html/list#get">
