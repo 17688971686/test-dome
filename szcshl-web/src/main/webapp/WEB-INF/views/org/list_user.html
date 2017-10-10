@@ -23,13 +23,7 @@
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>移除</button>
  		</@shiro.hasPermission> 
 		</script>
-        
-        <script type="text/template" id="allUserGridBtns">
-		<@shiro.hasPermission name="org#addUsers#post"> 
-			<button class="btn btn-xs btn-success"  ng-click="{0}" ><span class="glyphicon glyphicon-plus"></span>添加</button>
- 		</@shiro.hasPermission> 
-		</script>
-		
+
          <div class="orgUserGrid" kendo-grid="grid" k-options="vm.gridOptions"></div>
     </form>
 </div>
@@ -43,6 +37,13 @@
                 <h4 class="modal-title text-info">添加成员</h4>
             </div>
             <div class="modal-body">
+
+                <script type="text/template" id="allUserGridBtns">
+                    <@shiro.hasPermission name="org#addUsers#post">
+                    <button class="btn btn-xs btn-success"  ng-click="{0}" ><span class="glyphicon glyphicon-plus"></span>添加</button>
+                    </@shiro.hasPermission>
+                </script>
+
                 <div class="grid" kendo-grid="grid" k-options="vm.orgUserGrid"></div>
             </div>
             <div class="modal-footer">

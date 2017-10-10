@@ -117,7 +117,7 @@
 						filterable : true
 					},
 					{
-						field : "comment",
+						field : "remark",
 						title : "描述",
 						filterable : false
 					},
@@ -127,7 +127,7 @@
 						width : 80,
 						template : function(item) {
 							return common.format($('#allUserGridBtns').html(),
-									"vm.add('" + item.id + "')", item.id);
+									"vm.add('" + item.id + "')");
 
 						}
 
@@ -200,7 +200,7 @@
 						filterable : false
 					},
 					{
-						field : "comment",
+						field : "remark",
 						title : "描述",
 						filterable : false
 					},
@@ -210,7 +210,7 @@
 						width : 180,
 						template : function(item) {
 							return common.format($('#columnBtns').html(),
-									"vm.remove('" + item.id + "')", item.id);
+									"vm.remove('" + item.id + "')");
 
 						}
 

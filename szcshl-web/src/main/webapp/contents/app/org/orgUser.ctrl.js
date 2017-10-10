@@ -51,7 +51,7 @@
         activate();
         function activate() {
         	
-        	orgSvc.getOrgById(vm);
+        	// orgSvc.getOrgById(vm);
         	orgUserSvc.orgUserGrid(vm);
         	orgUserSvc.allUserGrid(vm);
         }

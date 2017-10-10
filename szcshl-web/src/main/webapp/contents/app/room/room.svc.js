@@ -200,11 +200,11 @@
         //start 初始化会议预定页面
         function initRoom(vm) {
             vm.schedulerOptions = {
-                toolbar: ["pdf"],
-                pdf: {
-                    fileName: "会议室一览表.pdf",
-                    proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
-                },
+                // toolbar: ["pdf"],
+                // pdf: {
+                //     fileName: "会议室一览表.pdf",
+                //     proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+                // },
                 date: new Date(),
                 startTime: vm.startDateTime,
                 endTime: vm.endDateTime,
@@ -226,6 +226,9 @@
                     bsWin.alert("已经预定的会议室不能删除！");
                     updateDataSource(vm);
                 },
+                cancel: function() {
+                    updateDataSource(vm);
+                }
             };
         }
 
