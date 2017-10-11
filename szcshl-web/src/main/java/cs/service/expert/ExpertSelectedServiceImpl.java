@@ -5,6 +5,7 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
@@ -418,10 +419,35 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("on s.signid = r.businessid  ");
 		sqlBuilder.append("left join cs_dispatch_doc d  ");
 		sqlBuilder.append("on s.signid = d.signid  ");
+		sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
+		sqlBuilder.append("ON s.signid = mo.bsignid  ");
 		sqlBuilder.append("where r.paydate is not null ");
 		//todo:添加查询条件
 		if(null != projectReviewCostDto){
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getProjectname())){
+				sqlBuilder.append("and s.projectname like '%"+projectReviewCostDto.getProjectname()+"%' ");
+			}
 
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getBuiltcompanyname())){
+				sqlBuilder.append("and s.builtcompanyname like '%"+projectReviewCostDto.getBuiltcompanyname()+"%' ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getReviewstage())){
+				sqlBuilder.append("and s.reviewstage = '"+projectReviewCostDto.getReviewstage()+"' ");
+			}
+
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())){
+				sqlBuilder.append("and r.paydate >= to_date('"+projectReviewCostDto.getBeginTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())){
+				sqlBuilder.append("and r.paydate <= to_date('"+projectReviewCostDto.getEndTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getDeptName())){
+				sqlBuilder.append("and mo.oname = '"+projectReviewCostDto.getDeptName()+"' ");
+			}
 		}
 		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
@@ -478,6 +504,10 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				if (financialManagerDtoList.size() > 0) {
 					projectReviewCostDto1.setFinancialManagerDtoList(financialManagerDtoList);
 				}
+				User u = signPrincipalService.getMainPriUser(projectReviewCostDto1.getBusinessId());
+				if(null != u){
+					projectReviewCostDto1.setPrincipal(u.getDisplayName());
+				}
 				projectReviewCostDtoList.add(projectReviewCostDto1);
 			}
 		}
@@ -520,6 +550,8 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("on s.signid = d.signid  ");
 		sqlBuilder.append("left join cs_financial_manager f  ");
 		sqlBuilder.append("on s.signid = f.businessid  ");
+		sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
+		sqlBuilder.append("ON s.signid = mo.bsignid  ");
 		sqlBuilder.append("where r.paydate is not null  ");
 		sqlBuilder.append("and f.chargename is not null ");
 
@@ -530,13 +562,50 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder1.append("on s.signid = d.signid  ");
 		sqlBuilder1.append("left join cs_financial_manager f  ");
 		sqlBuilder1.append("on s.signid = f.businessid  ");
+		sqlBuilder1.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
+		sqlBuilder1.append("ON s.signid = mo.bsignid  ");
 		sqlBuilder1.append("where r.paydate is not null  ");
 		sqlBuilder1.append("and f.chargename is not null  ");
-		sqlBuilder1.append("group by f.chargename  ");
 		//todo:添加查询条件
 		if(null != projectReviewCostDto){
 
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getChargeName())){
+				//sqlBuilder.append("and f.chargename = '"+projectReviewCostDto.getChargeName()+"' ");
+				sqlBuilder1.append("and f.chargename = '"+projectReviewCostDto.getChargeName()+"' ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getProjectname())){
+				sqlBuilder.append("and s.projectname like '%"+projectReviewCostDto.getProjectname()+"%' ");
+				sqlBuilder1.append("and s.projectname like '%"+projectReviewCostDto.getProjectname()+"%' ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getBuiltcompanyname())){
+				sqlBuilder.append("and s.builtcompanyname like '%"+projectReviewCostDto.getBuiltcompanyname()+"%' ");
+				sqlBuilder1.append("and s.builtcompanyname like '%"+projectReviewCostDto.getBuiltcompanyname()+"%' ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getReviewstage())){
+				sqlBuilder.append("and s.reviewstage = '"+projectReviewCostDto.getReviewstage()+"' ");
+				sqlBuilder1.append("and s.reviewstage = '"+projectReviewCostDto.getReviewstage()+"' ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())){
+				sqlBuilder.append("and r.paydate >= to_date('"+projectReviewCostDto.getBeginTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+				sqlBuilder1.append("and r.paydate >= to_date('"+projectReviewCostDto.getBeginTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())){
+				sqlBuilder.append("and r.paydate <= to_date('"+projectReviewCostDto.getEndTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+				sqlBuilder1.append("and r.paydate <= to_date('"+projectReviewCostDto.getEndTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewCostDto.getDeptName())){
+				sqlBuilder.append("and mo.oname = '"+projectReviewCostDto.getDeptName()+"' ");
+				sqlBuilder1.append("and mo.oname = '"+projectReviewCostDto.getDeptName()+"' ");
+			}
+
 		}
+		sqlBuilder1.append("group by f.chargename  ");
 		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
 		List<Map> projectClassifytList = expertCostCountRepo.findMapListBySql(sqlBuilder1);
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
@@ -594,6 +663,10 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				if (financialManagerDtoList.size() > 0) {
 					projectReviewCostDto1.setFinancialManagerDtoList(financialManagerDtoList);
 				}*/
+				User u = signPrincipalService.getMainPriUser(projectReviewCostDto1.getBusinessId());
+				if(null != u){
+					projectReviewCostDto1.setPrincipal(u.getDisplayName());
+				}
 				projectReviewCostDtoList.add(projectReviewCostDto1);
 			}
 		}

@@ -11,7 +11,7 @@
         vm.financials = new Array;
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
-        vm.financial.businessId = $state.params.signid;
+        vm.financial.businessId = $state.params.businessId;
       
         //跳转到评审会发放表页面
         vm.findStageCostTable = function(){
