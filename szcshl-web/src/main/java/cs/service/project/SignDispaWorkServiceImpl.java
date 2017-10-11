@@ -299,4 +299,27 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
     }
 
+    @Override
+    public List<SignDispaWork> getSignDispaWork(String filters) {
+
+        String[] filterArr = filters.split(",");
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select * from V_SIGN_DISP_WORK  ");
+        if(filterArr.length>1){
+            hqlBuilder.append(" where ");
+            for(int i=0 ; i<filterArr.length ; i++){
+                String filter = filterArr[i];
+                String[] params = filter.split(":");
+                hqlBuilder.append( params[0].substring(1,params[0].length()-1) + "=:" + params[0].substring(1,params[0].length()-1) );
+                hqlBuilder.setParam(params[0].substring(1,params[0].length()-1) , params[1].substring(1,params[1].length()-1));
+                if(i<filterArr.length-1){
+                    hqlBuilder.append(" and ");
+                }
+            }
+        }
+
+        List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findBySql(hqlBuilder);
+        return signDispaWorkList;
+    }
+
 }

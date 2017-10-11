@@ -110,20 +110,22 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.POST)
+    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport(HttpServletResponse resp, @RequestBody SignDispaWork[] signDispaWorks, @RequestParam String fileName) {
-        String title = fileName;
-        ExcelTools excelTools = new ExcelTools();
-        List<SignDispaWork> signDispaWorkList = new ArrayList<>();
+    public void excelExport(HttpServletResponse resp, @RequestParam String filterData, @RequestParam String fileName) {
 
-        for (SignDispaWork sdw : signDispaWorks) {
-            signDispaWorkList.add(sdw);
-        }
+        ExcelTools excelTools = new ExcelTools();
+//        List<SignDispaWork> signDispaWorkList = new ArrayList<>();
+
+//        for (SignDispaWork sdw : signDispaWorks) {
+//            signDispaWorkList.add(sdw);
+//        }
         try {
+            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
+            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");
-
+            List<SignDispaWork> signDispaWorkList = signDispaWorkService.getSignDispaWork(filters);
             String[] headerPair = new String[headerDtoList.size()];
             for (int i = 0; i < headerDtoList.size(); i++) {
                 headerPair[i] = headerDtoList.get(i).getHeaderName() + "=" + headerDtoList.get(i).getHeaderKey();

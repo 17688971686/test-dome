@@ -27,12 +27,16 @@
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
             excelExport : excelExport,//项目统计导出
+            statisticalGrid : statisticalGrid
 
         }
         return service;
+
         //begin excelExport
-        function excelExport(vm,exportData , fileName){
-            var httpOptions ={
+        function excelExport(vm , fileName , project){
+            var fileName = escape(encodeURIComponent(fileName));
+            window.open(rootPath + "/signView/excelExport?filterData=" + project + "&fileName=" +fileName);
+           /* var httpOptions ={
                 method : 'post',
                 url : rootPath + "/signView/excelExport",
                 headers : {
@@ -57,7 +61,7 @@
                 $http : $http ,
                 httpOptions : httpOptions,
                 success : httpSuccess
-            });
+            });*/
         }
         //end excelExport
 
@@ -1263,5 +1267,36 @@
 
             };
         }//S_doingTaskGrid
+
+        /**
+         * 统计
+         * @param vm
+         */
+        //begin statisticalGrid
+        function statisticalGrid(vm) {
+            vm.dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList", $("#searchform")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: false,
+                serverSorting: true,
+                serverFiltering: true,
+                // pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+        }
+
+
     }
 })();

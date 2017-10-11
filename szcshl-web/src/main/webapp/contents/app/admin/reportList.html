@@ -1,0 +1,17 @@
+<meta charset="UTF-8">
+<div id="reportWindow" class="well well-sm" style="background:white; display: none">
+    <div class="toolbar">
+        <div class="well">
+            <span >标题：</span>
+            <input type="text" ng-model="vm.fileName"/>
+            <button class="btn btn-sm btn-success" ng-click="vm.excelExport()">导出</button>
+        </div>
+        <div class="well well-sm" style="background:white; width: 100%; ">
+            <div style="text-align: center; padding: 10px;">
+                <h3 >{{vm.fileName}}</h3>
+                <span>{{vm.smallTitle}}</span>
+            </div>
+            <div id="statisticalGrid" class="grid" data-bind="source: dataSource"  ></div>
+        </div>
+    </div >
+</div>

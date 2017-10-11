@@ -12,7 +12,6 @@
             updateSelectedHeader : updateSelectedHeader ,//改变表头状态（改为选中）
             updateCancelHeader : updateCancelHeader , //改变表头状态（改为未选中）
             findHeaderListSelected : findHeaderListSelected,//查询已选的表头
-            statisticalGrid : statisticalGrid, //生成统计表
             deleteHeader : deleteHeader , //删除表头
             getHeaderById : getHeaderById ,//通过id获取表头信息
             updateHeader : updateHeader ,//更新表头信息
@@ -95,15 +94,18 @@
         //end getHeaderById
 
         //begin findHeaderListByState
-        function findHeaderListSelected(vm){
+        function findHeaderListSelected(vm , callBack){
             var httpOptions={
                 method : 'post',
                 url : rootPath + "/header/findHeaderListSelected",
                 params : {headerType : vm.headerType}
             }
             var httpSuccess = function success(response){
-                vm.selectedHeaderList = response.data;
-                vm.header = true;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+                // vm.selectedHeaderList = response.data;
+                // vm.header = true;
             }
 
             common.http({
@@ -209,34 +211,6 @@
             });
         }
         //end getHeaderList
-        /**
-         * 统计
-         * @param vm
-         */
-        //begin statisticalGrid
-        function statisticalGrid(vm) {
-            vm.dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList", $("#searchform")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: false,
-                serverSorting: true,
-                serverFiltering: true,
-                // pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-        }
 
 
         //begin headerGrid

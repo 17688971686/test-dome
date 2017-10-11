@@ -2,6 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/admin/reportList.html'"></div>
 
 <!-- 项目综合查询页面 -->
 <div class="well well-sm" style="background:white;">
@@ -15,7 +16,8 @@
                 class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
-        <a class="btn btn-sm btn-primary" href="#/statisticalList/{{vm.headerType}}"> 统计</a>
+        <!--<a class="btn btn-sm btn-primary" href="#/statisticalList/{{vm.headerType}}"> 统计</a>-->
+        <button class="btn btn-sm btn-primary" ng-click="vm.statistical()"> 统计</button>
         <a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表头设置</a>
     </div>
     <ol class="breadcrumb">
@@ -24,29 +26,28 @@
                 <tr>
                     <td class="formAlignRight" style="width:10%;">项目名称</td>
                     <td style="width:15%;">
-                        <input name="projectname" type="text" operator="like" class="form-control input-sm "/>
+                        <input name="projectname" type="text" operator="like" ng-model="vm.project.projectname" class="form-control input-sm "/>
                     </td>
 
                     <td class="formAlignRight" style="width:10%;">建设单位</td>
                     <td style="width:15%;">
-                        <input name="builtcompanyName" type="text" operator="like" class="form-control input-sm "/>
+                        <input name="builtcompanyName" type="text" operator="like" ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
                     </td>
 
                     <td class="formAlignRight" style="width:10%;">是否有环评</td>
                     <td style="width:15%;">
-                        <input type="checkbox" name="ishaveeia" operator="eq"  value="9" >
+                        <input type="checkbox" name="ishaveeia" operator="eq" ng-model="vm.project.ishaveeia" value="9" ng-true-value="9">
                     </td>
 
                     <td class="formAlignRight" style="width:10%;">是否已关联</td>
                     <td style="width:15%;">
-                        <input type="checkbox" name="isAssociate"  operator="eq"
-                               value="1" >
+                        <input type="checkbox" name="isAssociate"  operator="eq" ng-model="vm.project.isAssociate"  value="1" ng-true-value="1">
                     </td>
                 </tr>
                 <tr>
                     <td class="formAlignRight">项目类型</td>
                     <td>
-                        <select name="projectType" operator="eq" class="form-control input-sm ">
+                        <select name="projectType" operator="eq" class="form-control input-sm " ng-model="vm.project.projecttype">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -54,15 +55,15 @@
                     </td>
                     <td class="formAlignRight">项目负责人</td>
                     <td>
-                        <input name="aUserName" type="text" operator="like" class="form-control input-sm "/>
+                        <input name="aUserName" type="text" operator="like" ng-model="vm.project.aUserName" class="form-control input-sm "/>
                     </td>
                     <td class="formAlignRight">归档编号</td>
                     <td>
-                        <input name="ffilenum" type="text" operator="like" class="form-control input-sm "/>
+                        <input name="ffilenum" type="text" operator="like" ng-model="vm.project.ffilenum" class="form-control input-sm "/>
                     </td>
                     <td class="formAlignRight">主管部门</td>
                     <td>
-                        <select name="mOrgId"  class="form-control input-sm " operator="eq">
+                        <select name="mOrgId"  class="form-control input-sm " operator="eq" ng-model="vm.project.mOrgId">
                             <option value="">请选择</option>
                             <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}">{{x.name}}</option>
                         </select>
@@ -71,7 +72,7 @@
                 <tr>
                     <td class="formAlignRight">评审阶段</td>
                     <td>
-                        <select name="reviewstage"  operator="eq" class="form-control input-sm ">
+                        <select name="reviewstage"  operator="eq" class="form-control input-sm "  ng-model="vm.project.reviewstage">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
@@ -86,14 +87,14 @@
 
                     <td class="formAlignRight">缓急程度</td>
                     <td>
-                        <select operator="eq" name="urgencydegree" class="form-control input-sm ">
+                        <select operator="eq" name="urgencydegree" class="form-control input-sm " ng-model="vm.project.urgencydegree">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
                     </td>
                     <td class="formAlignRight">评审方式</td>
                     <td>
-                        <select operator="eq" name="reviewtype"  class="form-control input-sm ">
+                        <select operator="eq" name="reviewtype"  class="form-control input-sm " ng-model="vm.project.reviewtype">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -104,29 +105,29 @@
                 <tr>
                     <td class="formAlignRight">文件字号</td>
                     <td>
-                        <input name="dfilenum" type="text" operator="like" class="form-control input-sm "/>
+                        <input name="dfilenum" type="text" operator="like" class="form-control input-sm " ng-model="vm.project.dfilenum"/>
                     </td>
                     <td class="formAlignRight" style="width:150px;">收文日期</td>
                     <td>
-                        <input type="text" name="signdate" class="form-control input-sm "  operator="eq"
+                        <input type="text" name="signdate" class="form-control input-sm "  operator="eq" ng-model="vm.project.signdate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
 
                     <td class="formAlignRight">发文日期</td>
                     <td>
-                        <input type="text" name="dispatchdate" class="form-control input-sm " operator="eq"
+                        <input type="text" name="dispatchdate" class="form-control input-sm " operator="eq" ng-model="vm.project.dispatchdate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
                     <td class="formAlignRight">归档日期</td>
                     <td>
-                        <input type="text" name="filedate" class="form-control input-sm " operator="eq"
+                        <input type="text" name="filedate" class="form-control input-sm " operator="eq" ng-model="vm.project.filedate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
                 <tr>
                     <td class="formAlignRight">发文类型</td>
                     <td>
-                        <select operator="eq" name="dispatchType" class="form-control input-sm ">
+                        <select operator="eq" name="dispatchType" class="form-control input-sm " ng-model="vm.project.dispatchType">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -135,11 +136,11 @@
 
                     <td class="formAlignRight">申报投资</td>
                     <td>
-                        <input name="appalyInvestment" type="text" operator="like" class="form-control input-sm "/>
+                        <input name="appalyInvestment" type="text" operator="like" ng-model="vm.project.appalyInvestment" class="form-control input-sm "/>
                     </td>
                     <td class="formAlignRight">行业类型</td>
                     <td>
-                        <select operator="eq" name="industryType"  class="form-control input-sm ">
+                        <select operator="eq" name="industryType" ng-model="vm.project.industryType"  class="form-control input-sm ">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -147,7 +148,7 @@
                     </td>
                     <td class="formAlignRight">秘密等级</td>
                     <td>
-                        <select operator="eq" name="secrectlevel"
+                        <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel"
                                 class="form-control input-sm ">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}
@@ -157,21 +158,21 @@
                 <tr>
                     <td class="formAlignRight">是否暂停</td>
                     <td>
-                        <input type="checkbox"  operator="eq" name="signState" value="9" />
+                        <input type="checkbox"  operator="eq" name="signState" value="9"  ng-model="vm.project.signState" ng-true-value="9"/>
                     </td>
                     <td class="formAlignRight">是否有补充资料函</td>
                     <td>
-                        <input type="checkbox" name="isHaveSuppLetter" operator="eq"  value="9"/>
+                        <input type="checkbox" name="isHaveSuppLetter" operator="eq"  value="9" ng-model="vm.project.isHaveSuppLetter" ng-true-value="9"/>
                     </td>
                     <td class="formAlignRight">是否有补充资料</td>
                     <td>
-                        <input type="checkbox" name="isSupplementary" operator="eq" value="9"/>
+                        <input type="checkbox" name="isSupplementary" operator="eq" value="9" ng-model="vm.project.isSupplementary" ng-true-value="9"/>
                     </td>
                 </tr>
             </table>
         </form>
     </ol>
-    <div class="grid" kendo-grid="grid" k-options="vm.signListOptions"></div>
+    <div id="signGrid" class="grid" kendo-grid="grid" k-options="vm.signListOptions"></div>
 </div>
 <script type="text/template" id="columnBtns">	
 <@shiro.hasPermission name="sign##put">
