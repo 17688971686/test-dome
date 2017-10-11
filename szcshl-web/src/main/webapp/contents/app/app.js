@@ -591,7 +591,7 @@
              //S 项目费用管理
             //评审费录入页面
              .state('financialManager', {
-                url: '/financialManager/:signid',
+                url: '/financialManager/:businessId',
                 templateUrl: rootPath + '/financialManager/html/add.html',
                 controller: 'financialManagerCtrl',
                 controllerAs: 'vm'

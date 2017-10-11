@@ -45,6 +45,9 @@ public class ProjectReviewCostDto {
     private String chargeName;
     private BigDecimal charge;
     private String remarke;
+    private String beginTime;
+    private String endTime;
+    private String deptName;
 
     List<FinancialManagerDto> financialManagerDtoList;
 
@@ -166,5 +169,29 @@ public class ProjectReviewCostDto {
 
     public void setRemarke(String remarke) {
         this.remarke = remarke;
+    }
+
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 }
