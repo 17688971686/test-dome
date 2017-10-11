@@ -34,13 +34,11 @@
 				<td width="30%" align="center">查阅项目名称</td>
 				<td colspan="3"><input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.readProjectName"
                   ng-disabled="vm.model.hideStatus=='0'"  id="readProjectName" name="readProjectName" data-val="true" data-val-required="必填"  /></td>
-				
 			</tr>
 			<tr>
 				<td width="30%" align="center" >存档编号</td>
 				<td colspan="3"><input type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.readArchivesCode"
-                 ng-disabled="vm.model.hideStatus=='0'"  id="readArchivesCode" name="readArchivesCode" data-val="true" data-val-required="必填"  /></td>
-				
+                 ng-disabled="vm.model.hideStatus=='0'"  id="readArchivesCode" name="readArchivesCode"   /></td>
 			</tr>
 			<tr>
 				<td rowspan="2" width="30%" align="center" >查阅审批</td>
@@ -75,14 +73,13 @@
 			<tr>
 				<td width="30%" align="center">档案管理员签名<span class="required">*</span></td>
 				<td colspan="3">
-				
 					
 					<span ng-hide="vm.model.archivesStatus=='1'">
                       <select ng-model="vm.model.archUserName" id="archivesUserName"  ng-options="o as o.displayName for o in vm.userlist" data-val="true" data-val-required="必填"   >		     			     											
 				 		<option value="">请选择</option>
 					 </select> 
 					</span>
-					{{vm.model.archivesUserName}}
+					
 				 <span data-valmsg-for="archivesUserName" data-valmsg-replace="true" class="errors"></span>
                    </td>
 				

@@ -3,10 +3,10 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
+    sign.$inject = ['sysfileSvc', 'signSvc','workprogramSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
       'addRegisterFileSvc','expertReviewSvc', '$scope','bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,expertReviewSvc, $scope,bsWin) {
+    function sign(sysfileSvc, signSvc,workprogramSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,expertReviewSvc, $scope,bsWin) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -16,6 +16,7 @@
         vm.dispatchDoc = {};    //发文
         vm.fileRecord = {};     //归档
         vm.expertReview = {};   //评审方案
+        vm.work = {};
 
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
@@ -69,6 +70,7 @@
         }
 
         vm.model.signid = $state.params.signid;
+        vm.work.id = $state.params.id;
         vm.flow.taskId = $state.params.taskId; // 流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
         
