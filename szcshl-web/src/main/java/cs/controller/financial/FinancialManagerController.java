@@ -206,6 +206,12 @@ public class FinancialManagerController {
     public String assistCostAdd() {
         return ctrlName+"/assistCostAdd";
     }
+    
+    @RequiresPermissions("financialManager#html/assistCostList#get")
+    @RequestMapping(name = "协审费用录入列表页面", path = "html/assistCostList", method = RequestMethod.GET)
+    public String assistCostList() {
+        return ctrlName+"/assistCostList";
+    }
 
     @RequiresPermissions("financialManager#html/expertCount#get")
     @RequestMapping(name = "专家费统计", path = "html/expertCount", method = RequestMethod.GET)

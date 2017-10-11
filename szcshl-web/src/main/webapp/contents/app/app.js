@@ -610,7 +610,15 @@
                 controller: 'assistCostCountCtrl',
                 controllerAs: 'vm'
             })
-            //协审费录入页面
+            //协审费录入列表页面
+            .state('assistCostlist', {
+                url: '/assistCostlist',
+                templateUrl: rootPath + '/financialManager/html/assistCostList.html',
+                controller: 'assistCostCountSvcEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+             //协审费录入
             .state('assistCostAdd', {
                 url: '/assistCostAdd/:signid',
                 templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
