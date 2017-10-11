@@ -42,6 +42,10 @@ public class ProjectReviewCostDto {
 
     private String businessId;
 
+    private String chargeName;
+    private BigDecimal charge;
+    private String remarke;
+
     List<FinancialManagerDto> financialManagerDtoList;
 
     public String getProjectcode() {
@@ -138,5 +142,29 @@ public class ProjectReviewCostDto {
 
     public void setReviewstage(String reviewstage) {
         this.reviewstage = reviewstage;
+    }
+
+    public String getChargeName() {
+        return chargeName;
+    }
+
+    public void setChargeName(String chargeName) {
+        this.chargeName = chargeName;
+    }
+
+    public BigDecimal getCharge() {
+        return charge;
+    }
+
+    public void setCharge(BigDecimal charge) {
+        this.charge = charge;
+    }
+
+    public String getRemarke() {
+        return remarke;
+    }
+
+    public void setRemarke(String remarke) {
+        this.remarke = remarke;
     }
 }

@@ -660,6 +660,13 @@
                 controller: 'projectCostCountCtrl',
                 controllerAs: 'vm'
             })
+            //项目评审费分类统计列表
+            .state('proCostClassifyCountList', {
+                url: '/proCostClassifyCountList',
+                templateUrl: rootPath + '/financialManager/html/proCostClassifyCount.html',
+                controller: 'proCostClassifyCountCtrl',
+                controllerAs: 'vm'
+            })
              //E 项目费用管理
 
              //S 月报简报管理
