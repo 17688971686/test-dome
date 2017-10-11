@@ -188,6 +188,13 @@ public class FinancialManagerController {
         return ctrlName+"/projectCostCount";
     }
 
+    @RequiresAuthentication
+    //@RequiresPermissions("financialManager#html/projectCostCount#get")
+    @RequestMapping(name = "评审费分类统计", path = "html/proCostClassifyCount", method = RequestMethod.GET)
+    public String proCostClassifyCount() {
+        return ctrlName+"/proCostClassifyCount";
+    }
+
     @RequiresPermissions("financialManager#html/add#get")
     @RequestMapping(name = "评审费用录入", path = "html/add", method = RequestMethod.GET)
     public String edit() {

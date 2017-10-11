@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
-		<li><a href="#/sharingPlatlform">项目评审费统计</a></li>
+		<li><a href="#/sharingPlatlform">项目评审费分类统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<form id="form" name="form">
@@ -15,7 +15,7 @@
 			<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.countExpertCost()">统计</a>
 	<!--		<button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
 			<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
-			<button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看分类统计</button>
+			<button ng-click="vm.projectCostCountList()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看费用统计</button>
 			<!--<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>-->
 		</div>
 		<div class="well">
@@ -26,36 +26,33 @@
 					</strong>
 				</caption>
 				<tr >
-					<td style="width:5%"  class="text-center">序号</td>
-					<td style="width:15%"  class="text-center">项目名称</td>
+					<td style="width:20%"  class="text-center">项目名称</td>
 					<td style="width:15%"  class="text-center">建设单位</td>
-					<td style="width:10%"  class="text-center">评审阶段</td>
-					<td style="width:5%"  class="text-center">项目负责人</td>
-					<td style="width:10%"  class="text-center">项目评审费（元）</td>
+					<td style="width:20%"  class="text-center">评审阶段</td>
+					<td style="width:15%"  class="text-center">项目负责人</td>
+					<td style="width:10%"  class="text-center">费用（元）</td>
 					<td style="width:10%"  class="text-center">付款日期</td>
-					<td style="width:10%"  class="text-center">申报投资（元）</td>
-					<td style="width:10%"  class="text-center">审定投资（元）</td>
-					<td style="width:10%"  class="text-center">签收日期</td>
+					<td style="width:10%"  class="text-center">备注</td>
 				</tr>
-				<tbody ng-if="vm.projectReviewCostDtoList" ng-repeat="x in vm.projectReviewCostDtoList">
+				<tbody ng-repeat="c in vm.proReviewClassifyCountDtoList">
 				<tr>
-					<td rowspan="{{x.financialManagerDtoList.length+1}}">{{$index+1}}</td>
+					<td colspan="7"><strong>{{c.chargeName}}</strong></td>
+				</tr>
+				<tr ng-repeat="x in vm.proReviewClassifyDetailDtoList" ng-if="x.chargeName==c.chargeName">
 					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.projectname}}</td>
 					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.builtcompanyname}}</td>
 					<td class="text-center">{{x.reviewstage}}</td>
 					<td class="text-center">{{x.principal}}</td>
-					<td class="text-center"><strong>{{x.totalCost}}</strong></td>
+					<td class="text-center">{{x.charge}}</td>
 					<td class="text-center">{{x.payDate}}</td>
-					<td class="text-center">{{x.declareValue}}</td>
-					<td class="text-center">{{x.authorizeValue}}</td>
-					<td class="text-center">{{x.signdate}}</td>
+					<td class="text-center">{{x.remarke}}</td>
 				</tr>
-				<tr ng-repeat="f in x.financialManagerDtoList track by $index">
-					<td class="text-center">{{$index+1}}</td>
-					<td class="text-center">{{f.chargeName}}</td>
-					<td class="text-center">{{f.charge}}</td>
+				<tr>
+					<td class="text-center"><strong>合计</strong></td>
+					<td class="text-center"><strong>{{c.totalCharge}}</strong></td>
 				</tr>
 				</tbody>
+
 			</table>
 		</div>
 	</form>

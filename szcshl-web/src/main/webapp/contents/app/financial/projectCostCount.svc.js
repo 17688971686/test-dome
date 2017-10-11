@@ -10,7 +10,7 @@
         var service = {
             grid: grid,
             projectCostTotal:projectCostTotal,                         //项目评审费用统计
-            expertCostDetailTotal:expertCostDetailTotal,            //专家评审明细费用统计
+            projectCostClassifyCout:projectCostClassifyCout,            //项目费用分类统计
             excelExport:excelExport                                 //专家汇总统计导出
         };
 
@@ -34,6 +34,25 @@
                 success: httpSuccess
             });
         }//E_项目评审费用统计
+
+        //项目评审费用分类统计
+        function projectCostClassifyCout(vm,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertSelected/proCostClassifyTotal",
+                data: vm.model
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_项目评审费用分类统计
 
         //S_专家评审费用明细统计
         function expertCostDetailTotal(vm,callBack) {

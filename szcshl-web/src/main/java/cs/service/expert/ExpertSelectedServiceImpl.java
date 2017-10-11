@@ -502,4 +502,125 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return financialManagerDtoList;
 	}
 
+	/**
+	 * 项目评审费分类统计
+	 * @param projectReviewCostDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		PageModelDto<ProjectReviewCostDto> pageModelDto = new PageModelDto<ProjectReviewCostDto>();
+		HqlBuilder sqlBuilder = HqlBuilder.create();
+		HqlBuilder sqlBuilder1 = HqlBuilder.create();
+		sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,r.businessid,f.chargename,f.charge from cs_sign s  ");
+		sqlBuilder.append(" left join cs_expert_review r  ");
+		sqlBuilder.append("on s.signid = r.businessid  ");
+		sqlBuilder.append("left join cs_dispatch_doc d  ");
+		sqlBuilder.append("on s.signid = d.signid  ");
+		sqlBuilder.append("left join cs_financial_manager f  ");
+		sqlBuilder.append("on s.signid = f.businessid  ");
+		sqlBuilder.append("where r.paydate is not null  ");
+		sqlBuilder.append("and f.chargename is not null ");
+
+		sqlBuilder1.append("select f.chargename,sum(f.charge) from cs_sign s  ");
+		sqlBuilder1.append("left join cs_expert_review r  ");
+		sqlBuilder1.append("on s.signid = r.businessid  ");
+		sqlBuilder1.append("left join cs_dispatch_doc d  ");
+		sqlBuilder1.append("on s.signid = d.signid  ");
+		sqlBuilder1.append("left join cs_financial_manager f  ");
+		sqlBuilder1.append("on s.signid = f.businessid  ");
+		sqlBuilder1.append("where r.paydate is not null  ");
+		sqlBuilder1.append("and f.chargename is not null  ");
+		sqlBuilder1.append("group by f.chargename  ");
+		//todo:添加查询条件
+		if(null != projectReviewCostDto){
+
+		}
+		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Map> projectClassifytList = expertCostCountRepo.findMapListBySql(sqlBuilder1);
+		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
+		List<ProReviewClassifyCountDto> proReviewClassifyCountDtoList = new ArrayList<>();
+		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
+		if (projectReviewCostList.size() > 0) {
+			for (int i = 0; i < projectReviewCostList.size(); i++) {
+				Object obj = projectReviewCostList.get(i);
+				Object[] projectReviewCost = (Object[]) obj;
+				ProjectReviewCostDto projectReviewCostDto1 = new ProjectReviewCostDto();
+				if (null != projectReviewCost[0]) {
+					projectReviewCostDto1.setProjectcode((String) projectReviewCost[0]);
+				}
+				if (null != projectReviewCost[1]) {
+					projectReviewCostDto1.setProjectname((String) projectReviewCost[1]);
+				}else{
+					projectReviewCostDto1.setProjectname(null);
+				}
+				if (null != projectReviewCost[2]) {
+					projectReviewCostDto1.setBuiltcompanyname((String) projectReviewCost[2]);
+				}else{
+					projectReviewCostDto1.setBuiltcompanyname(null);
+				}
+				if (null != projectReviewCost[3]) {
+					projectReviewCostDto1.setReviewstage((String) projectReviewCost[3]);
+				}
+				if (null != projectReviewCost[4]) {
+					projectReviewCostDto1.setTotalCost((BigDecimal) projectReviewCost[4]);
+				}
+				if (null != projectReviewCost[5]) {
+					projectReviewCostDto1.setPayDate((Date) projectReviewCost[5]);
+				}
+				if (null != projectReviewCost[6]) {
+					projectReviewCostDto1.setDeclareValue((BigDecimal) projectReviewCost[6]);
+				}
+				if (null != projectReviewCost[7]) {
+					projectReviewCostDto1.setAuthorizeValue((BigDecimal) projectReviewCost[7]);
+				}
+				if (null != projectReviewCost[8]) {
+					projectReviewCostDto1.setSigndate((Date) projectReviewCost[8]);
+				}
+				if (null != projectReviewCost[9]) {
+					projectReviewCostDto1.setBusinessId((String) projectReviewCost[9]);
+				}
+				if (null != projectReviewCost[10]) {
+					projectReviewCostDto1.setChargeName((String) projectReviewCost[10]);
+				}
+				if (null != projectReviewCost[11]) {
+					projectReviewCostDto1.setCharge((BigDecimal) projectReviewCost[11]);
+				}
+			/*	if (null != projectReviewCostDto1.getBusinessId()) {
+					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
+
+				}
+				if (financialManagerDtoList.size() > 0) {
+					projectReviewCostDto1.setFinancialManagerDtoList(financialManagerDtoList);
+				}*/
+				projectReviewCostDtoList.add(projectReviewCostDto1);
+			}
+		}
+
+		if(projectClassifytList.size()>0){
+			for(int i = 0;i<projectClassifytList.size();i++){
+				Object obj = projectClassifytList.get(i);
+				Object[] projectClassifyCost = (Object[]) obj;
+				ProReviewClassifyCountDto proReviewClassifyCountDto = new ProReviewClassifyCountDto();
+				if (null != projectClassifyCost[0]) {
+					proReviewClassifyCountDto.setChargeName((String) projectClassifyCost[0]);
+				}else{
+					proReviewClassifyCountDto.setChargeName(null);
+				}
+
+				if (null != projectClassifyCost[1]) {
+					proReviewClassifyCountDto.setTotalCharge((BigDecimal) projectClassifyCost[1]);
+				}else{
+					proReviewClassifyCountDto.setTotalCharge(null);
+				}
+				proReviewClassifyCountDtoList.add(proReviewClassifyCountDto);
+			}
+
+		}
+		resultMap.put("proReviewClassifyDetailDtoList", projectReviewCostDtoList);
+		resultMap.put("proReviewClassifyCountDtoList",proReviewClassifyCountDtoList);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+	}
+
 }
