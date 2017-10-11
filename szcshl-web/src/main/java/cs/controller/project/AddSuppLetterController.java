@@ -82,7 +82,7 @@ public class AddSuppLetterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#submitSupp#post")
-    @RequestMapping(name = "保存拟补充资料函", path = "submitSupp", method = RequestMethod.POST)
+    @RequestMapping(name = "提交拟补充资料函", path = "submitSupp", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto){
 		return  addSuppLetterService.addSupp(addSuppLetterDto);

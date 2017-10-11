@@ -8,7 +8,7 @@
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
             <caption >
                 <span>
-                	 QR-4.3-10-A3
+                	QR-4.3-10-A3
                   	  发文方式：
                     <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
                         <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"

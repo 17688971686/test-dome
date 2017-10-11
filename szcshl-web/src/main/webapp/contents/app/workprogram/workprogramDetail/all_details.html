@@ -2,7 +2,12 @@
 <!-- start 主项目（项目建议书/可行性研究报告） -->
 <table ng-repeat="w in vm.model.workProgramDtoList" class="table table-bordered" style="margin-bottom: 0px;"
        ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
-    <caption>QR-4.3-02-A3</caption>
+    <caption>
+     <span ng-show="w.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
+     <span ng-show="w.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
+     <span ng-show="w.workreviveStage=='资金申请报告'">QR-4.11-02-A0</span>
+     <span ng-show="w.workreviveStage=='项目概算'">QR-4.7-01-A2</span>
+    </caption>
     <caption class="text-center h3"><strong>{{w.titleName}}</strong></caption>
     <caption style="width:100%;">
         <span style="float:left;">
