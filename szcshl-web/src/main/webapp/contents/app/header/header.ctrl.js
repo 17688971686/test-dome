@@ -17,7 +17,7 @@
             $("#addHeaderWindow").kendoWindow({
                 width: "500px",
                 height: "300px",
-                title: "新建表头",
+                title: "新建表字段",
                 visible: false,
                 modal: true,
                 closable: true,

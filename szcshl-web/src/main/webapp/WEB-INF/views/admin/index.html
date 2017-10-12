@@ -596,6 +596,22 @@ desired effect
                     </ul>
                 </li>
                 </@shiro.hasPermission>
+                <!--系统管理员业务-->
+            <@shiro.hasPermission name="permission#manager">
+                <li class="treeview">
+                    <a href="javascript:void(0)">
+                        <i class="glyphicon glyphicon-user" aria-hidden="true"></i><span class="title">系统管理员</span>
+                        <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <@shiro.hasPermission name="header#html/list#get">
+                            <li><a href="javascript:void(0)" ui-sref="reviewFee">评审费发放</a></li>
+                        </@shiro.hasPermission>
+                    </ul>
+                </li>
+            </@shiro.hasPermission>
 
                 <@shiro.hasPermission name="permission#other">
                 <li class="treeview">

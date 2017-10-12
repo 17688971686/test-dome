@@ -4,7 +4,7 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/header">表头管理</a></li>
+        <li><a href="#/header">表字段管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
@@ -68,7 +68,7 @@
 
             <tr>
                 <td class="formAlignRight">
-                    表头类型：<span class="required">*</span>
+                    表字段类型：<span class="required">*</span>
                 </td>
                 <td>
                     <select  ng-model="vm.header.headerType" name="headerType" id="headerType" data-val="true" data-val-required="必填">

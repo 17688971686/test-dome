@@ -37,6 +37,18 @@ public class SignDispaWork {
     private Date signdate;
 
     /**
+     * 收文编号
+     */
+    @Column
+    private String signnum;
+
+    /**
+     * 项目代码
+     */
+    @Column
+    private String projectcode;
+
+    /**
      * 项目名称
      */
     @Column
@@ -531,5 +543,21 @@ public class SignDispaWork {
 
     public void setIsAppraising(String isAppraising) {
         this.isAppraising = isAppraising;
+    }
+
+    public String getSignnum() {
+        return signnum;
+    }
+
+    public void setSignnum(String signnum) {
+        this.signnum = signnum;
+    }
+
+    public String getProjectcode() {
+        return projectcode;
+    }
+
+    public void setProjectcode(String projectcode) {
+        this.projectcode = projectcode;
     }
 }
