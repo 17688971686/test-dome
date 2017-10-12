@@ -5,6 +5,7 @@ import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelTools;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.Header;
 import cs.model.PageModelDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
@@ -124,11 +125,20 @@ public class SignDispaWorkController {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
             String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
-            List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");
+            List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");//选中的表字段
+            List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
             List<SignDispaWork> signDispaWorkList = signDispaWorkService.getSignDispaWork(filters);
-            String[] headerPair = new String[headerDtoList.size()];
-            for (int i = 0; i < headerDtoList.size(); i++) {
-                headerPair[i] = headerDtoList.get(i).getHeaderName() + "=" + headerDtoList.get(i).getHeaderKey();
+            String[] headerPair ;
+            if(headerDtoList.size()>0) {
+                headerPair = new String[headerDtoList.size()];
+                for (int i = 0; i < headerDtoList.size(); i++) {
+                    headerPair[i] = headerDtoList.get(i).getHeaderName() + "=" + headerDtoList.get(i).getHeaderKey();
+                }
+            }else{
+                headerPair = new String[headerList.size()];
+                for (int i = 0; i < headerList.size(); i++) {
+                    headerPair[i] = headerList.get(i).getHeaderName() + "=" + headerList.get(i).getHeaderKey();
+                }
             }
             HSSFWorkbook wb = excelTools.createExcelBook(title, headerPair, signDispaWorkList, SignDispaWork.class);
 

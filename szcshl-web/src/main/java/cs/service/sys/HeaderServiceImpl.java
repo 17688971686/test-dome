@@ -163,4 +163,13 @@ public class HeaderServiceImpl implements  HeaderService {
             header.setModifiedBy(SessionUtil.getDisplayName());
             headerRepo.save(header);
     }
+
+    @Override
+    public List<Header> findHeaderByType(String type) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("  from " + Header.class.getSimpleName() + " where " + Header_.headerType.getName() + "=:headerType");
+      hqlBuilder.setParam("headerType" , type);
+        List<Header> headerList = headerRepo.findByHql(hqlBuilder);
+        return headerList;
+    }
 }

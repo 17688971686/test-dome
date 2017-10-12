@@ -307,7 +307,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         String[] filterArr = filters.split(",");
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select * from V_SIGN_DISP_WORK  ");
-        if(filterArr.length>1){
+        if(filterArr.length>0 && !"".equals(filterArr[0]) ){
             hqlBuilder.append(" where ");
             for(int i=0 ; i<filterArr.length ; i++){
                 String filter = filterArr[i];
@@ -323,5 +323,16 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findBySql(hqlBuilder);
         return signDispaWorkList;
     }
+
+    @Override
+    public List<SignDispaWork> findOverSignDispaWork() {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.processState.getName() + "=:processState ");
+        hqlBuilder.setParam("processState" , Constant.SignProcessState.DO_DIS.getValue());
+        List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findByHql(hqlBuilder);
+
+        return null;
+    }
+
 
 }

@@ -25,4 +25,7 @@ public interface SignDispaWorkService {
     ResultMsg deleteAllMerge(String signId,String mergeType);
 
     List<SignDispaWork> getSignDispaWork(String filters);
+
+    //查询评审费发放超期的项目信息
+    List<SignDispaWork> findOverSignDispaWork();
 }
