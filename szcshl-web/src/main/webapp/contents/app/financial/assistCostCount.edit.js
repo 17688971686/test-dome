@@ -13,7 +13,7 @@
         vm.financial = {};//财务对象
         vm.isuserExist = false;
         vm.id = $state.params.id;
-        vm.financial.signid = $state.params.signid;
+        vm.financial.businessId = $state.params.businessId;
      
         if (vm.id) {
             vm.isUpdate = true;

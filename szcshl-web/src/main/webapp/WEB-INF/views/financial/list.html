@@ -8,13 +8,7 @@
         <li><a href="#/sharingPlatlform">评审费统计管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-     <div class="toolbar">
-		<button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
-		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>
-		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">分类统计</button>
-		<button  class="btn btn-sm btn-primary" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>						
-							
-    </div>
+  
     <form id="form" name="form">
        <div class="well">
        		<table border="1px">
@@ -69,11 +63,17 @@
 	     
         </div>
        
-        
- 		 <div style="text-align:center" >
- 				<h3> 深圳市政府投资项目评审中心<br>
- 					项目评审费统计表</h3>
- 		 </div>
+          <ol class="breadcrumb">
+        <li class="active">
+            项目列表（颜色说明：
+            <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>在办项目
+            <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>已发文项目
+            <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>已发送存档
+            <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>项目暂停
+            <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>已结办项目）
+        </li>
+    </ol>
+ 		
        
         <script type="text/template" id="columnBtns">
             <@shiro.hasPermission name="#financialManager#put">

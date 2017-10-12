@@ -488,7 +488,7 @@
         // S 评审费录入
         vm.addFinancialApply = function(){
         	  $state.go('financialManager', {
-                  signid: vm.model.signid
+        		  businessId: vm.model.signid
               });
         }
         // E 评审费录入

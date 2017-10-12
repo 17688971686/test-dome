@@ -203,70 +203,70 @@ public class MonthlyNewsletterController {
 
     // begin#html
     @RequiresPermissions("monthlyNewsletter#html/monthlyNewsletterList#get")
-    @RequestMapping(name = "月报简报列表页面", path = "html/monthlyNewsletterList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报列表", path = "html/monthlyNewsletterList", method = RequestMethod.GET)
     public String monthlyNewsletterList() {
         return ctrlName+"/monthlyNewsletterList"; 
     }
 
     @RequiresPermissions("monthlyNewsletter#html/theMonthsList#get")
-    @RequestMapping(name = "月报列表页面", path = "html/theMonthsList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报列表", path = "html/theMonthsList", method = RequestMethod.GET)
     public String theMonthsList() {
         return ctrlName+"/theMonthsList"; 
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryList#get")
-    @RequestMapping(name = "月报简报历史数据列表页面", path = "html/monthlyHistoryList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报历史数据列表", path = "html/monthlyHistoryList", method = RequestMethod.GET)
     public String monthsHistoryList() {
         return ctrlName+"/monthlyHistoryList"; 
     }
 
     @RequiresAuthentication
     @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryAdd#get")
-    @RequestMapping(name = "月报简报历史数据新建页面", path = "html/monthlyHistoryAdd", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报历史数据新建", path = "html/monthlyHistoryAdd", method = RequestMethod.GET)
     public String monthsHistoryAdd() {
         return ctrlName+"/monthlyHistoryAdd"; 
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearList#get")
-    @RequestMapping(name = "年度月报简报列表页面", path = "html/monthlyMultiyearList", method = RequestMethod.GET)
+    @RequestMapping(name = "年度月报简报列表", path = "html/monthlyMultiyearList", method = RequestMethod.GET)
     public String monthlyMultiyear() {
         return ctrlName+"/monthlyMultiyearList"; 
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiAppoveEdit#get")
-    @RequestMapping(name = "年度（中心文件）月报简报审批处理页面", path = "html/monthlyMultiAppoveEdit", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报审批处理", path = "html/monthlyMultiAppoveEdit", method = RequestMethod.GET)
     public String monthlyMultiAppoveEdit() {
         return ctrlName+"/monthlyMultiAppoveEdit"; 
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyFileList#get")
-    @RequestMapping(name = "年度（中心文件）月报简报查询列表页面", path = "html/monthlyMultiyFileList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报查询列表", path = "html/monthlyMultiyFileList", method = RequestMethod.GET)
     public String monthlyMultiyFileList() {
         return ctrlName+"/monthlyMultiyFileList"; 
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveList#get")
-    @RequestMapping(name = "年度（中心文件）月报简报审批列表页面", path = "html/monthlyMultiyAppoveList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报审批列表", path = "html/monthlyMultiyAppoveList", method = RequestMethod.GET)
     public String monthlyMultiyAppoveList() {
         return ctrlName+"/monthlyMultiyAppoveList";
     }
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveEdit#get")
-    @RequestMapping(name = "年度（中心文件）月报简报审批处理页面", path = "html/monthlyMultiyAppoveEdit", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报审批处理", path = "html/monthlyMultiyAppoveEdit", method = RequestMethod.GET)
     public String monthlyMultiyAppoveEdit() {
         return ctrlName+"/monthlyMultiyAppoveEdit";
     }
 
 
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
-    @RequestMapping(name = "新建月报简报年度页面", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
+    @RequestMapping(name = "新建月报简报年度", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
     public String monthlyMultiyearAdd() {
         return ctrlName+"/monthlyMultiyearAdd"; 
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearDetail#get")
-    @RequestMapping(name = "年度（中心文件）月报简报页面详细页面", path = "html/monthlyMultiyearDetail", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报页面详细", path = "html/monthlyMultiyearDetail", method = RequestMethod.GET)
     public String monthlyMultiyearDetail() {
         return ctrlName+"/monthlyMultiyearDetail"; 
     }
@@ -279,7 +279,7 @@ public class MonthlyNewsletterController {
     }
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyExcellentList#get")
-    @RequestMapping(name = "优秀评审报告页面", path = "html/monthlyExcellentList", method = RequestMethod.GET)
+    @RequestMapping(name = "优秀评审报告", path = "html/monthlyExcellentList", method = RequestMethod.GET)
     public String monthlyExcellentList() {
         return ctrlName+"/monthlyExcellentList";
     }

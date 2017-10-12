@@ -8,7 +8,7 @@
     function financialManager($http) {
         var url_financialManager = rootPath + "/financialManager", url_back = '#/financialManagerList';
         var service = {
-            grid: grid,
+            grid: grid, //评审费录入列表
             deleteFinancialManager: deleteFinancialManager,			//删除报销记录
             savefinancial:savefinancial,							//保存报销记录
             sumFinancial:sumFinancial,								//统计评审费用总和
@@ -227,7 +227,7 @@
         }
         // end#deleteFinancialManager
 
-        //S_初始化grid(过滤已签收和已经完成的项目)
+        //S_初始化grid 评审费录入列表
         function grid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
@@ -284,14 +284,14 @@
                 {
                     field: "projectname",
                     title: "项目名称",
-                    width: 100,
+                    width: 140,
                     filterable: false
                 },
                
                 {
                     field: "designcompanyName",
                     title: "建设单位",
-                    width: 100,
+                    width: 180,
                     filterable: false,
                 },
                 {
@@ -308,7 +308,7 @@
                 },
                 {
                     field: "projectcode",
-                    title: "项目评审费（元）",
+                    title: "计划专家费用",
                     width: 160,
                     filterable: false,
                     template: function (item) {
@@ -316,39 +316,12 @@
                     }
                 },
                 {
-                    field: "projectcode",
-                    title: "付款日期",
-                    width: 120,
-                    filterable: false,
-                },
-                {
-                    field: "appalyInvestment",
-                    title: "申报投资（万元）",
-                    width: 160,
-                    filterable: false,
-                },
-                {
-                    field: "authorizeValue",
-                    title: "审定投资（万元）",
-                    width: 160,
-                    filterable: false,
-                },
-                {
                     field: "signdate",
                     title: "签收日期",
                     width: 120,
                     filterable: false,
                 },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 100,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                             item.signid 
-                            );
-                    }
-                }
+              
             ];
             // End:column
 

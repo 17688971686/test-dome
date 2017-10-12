@@ -142,43 +142,43 @@ public class ArchivesLibraryController {
     // begin#html
    
     @RequiresPermissions("archivesLibrary#html/archivesLibraryAdd#get")
-    @RequestMapping(name = "中心档案借阅添加页面", path = "html/archivesLibraryAdd", method = RequestMethod.GET)
+    @RequestMapping(name = "中心档案借阅", path = "html/archivesLibraryAdd", method = RequestMethod.GET)
     public String centerAdd() {
         return ctrlName+"/archivesLibraryAdd";
     }
     
     @RequiresPermissions("archivesLibrary#html/archivesLibraryEdit#get")
-    @RequestMapping(name = "中心档案借阅编辑页面", path = "html/archivesLibraryEdit", method = RequestMethod.GET)
+    @RequestMapping(name = "中心档案借阅", path = "html/archivesLibraryEdit", method = RequestMethod.GET)
     public String centerEdit() {
         return ctrlName+"/archivesLibraryEdit";
     }
     
     @RequiresPermissions("archivesLibrary#html/archivesCityEdit#get")
-    @RequestMapping(name = "市档案借阅添加页面", path = "html/archivesCityEdit", method = RequestMethod.GET)
+    @RequestMapping(name = "市档案借阅", path = "html/archivesCityEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/archivesCityEdit";
     }
     
     @RequiresPermissions("archivesLibrary#html/archivesProjectList#get")
-    @RequestMapping(name = "项目借阅审批列表页面", path = "html/archivesProjectList", method = RequestMethod.GET)
+    @RequestMapping(name = "项目借阅审批", path = "html/archivesProjectList", method = RequestMethod.GET)
     public String archivesProjectRead() {
         return ctrlName+"/archivesProjectList";
     }
     
     @RequiresPermissions("archivesLibrary#html/archivesLibraryList#get")
-    @RequestMapping(name = "中心档案查询列表页面", path = "html/archivesLibraryList", method = RequestMethod.GET)
+    @RequestMapping(name = "中心档案查询", path = "html/archivesLibraryList", method = RequestMethod.GET)
     public String archivesCenterList() {
         return ctrlName+"/archivesLibraryList"; 
     } 
     
     @RequiresPermissions("archivesLibrary#html/archivesCityList#get")
-    @RequestMapping(name = "市档案查询列表页面", path = "html/archivesCityList", method = RequestMethod.GET)
+    @RequestMapping(name = "市档案查询", path = "html/archivesCityList", method = RequestMethod.GET)
     public String archivesCityList() {
         return ctrlName+"/archivesCityList"; 
     }
     
     @RequiresPermissions("archivesLibrary#html/archivesLibraryDetail#get")
-    @RequestMapping(name = "查看档案详细页面", path = "html/archivesLibraryDetail", method = RequestMethod.GET)
+    @RequestMapping(name = "查看档案详细", path = "html/archivesLibraryDetail", method = RequestMethod.GET)
     public String archivesDetail() {
         return ctrlName+"/archivesLibraryDetail"; 
     }
