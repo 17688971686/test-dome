@@ -61,6 +61,7 @@
 
         //begin excelExport
         function excelExport(vm,exportData,fileName){
+            var fileName1 = window.encodeURIComponent(window.encodeURIComponent(fileName));
             var httpOptions ={
                 method : 'post',
                 url : rootPath + "/expertSelected/excelExport",
@@ -72,7 +73,7 @@
                 responseType: 'arraybuffer',
                 data : angular.toJson(exportData),
                 params:{
-                    fileName :fileName
+                    fileName :fileName1
                 }
 
             }
