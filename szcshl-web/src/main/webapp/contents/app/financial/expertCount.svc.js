@@ -152,7 +152,8 @@
 
         //begin excelExport
         function excelExport(vm,exportData,fileName){
-            var paramStr = {fileName:fileName};
+            var fileName1 = window.encodeURIComponent(window.encodeURIComponent(fileName));
+            var paramStr = {fileName:fileName1};
             var url = rootPath + "/expertSelected/expertDetailExport";
             if ($("#searchform")) {
                 var filterParam = common.buildOdataFilter($("#searchform"));

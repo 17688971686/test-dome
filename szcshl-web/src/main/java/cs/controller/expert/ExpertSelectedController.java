@@ -120,6 +120,7 @@ public class ExpertSelectedController {
             PageModelDto<ExpertSelectedDto> expertSelectedDtos = findByOData(request);
             List<ExpertSelectedDto> expertSelectedDtoList = expertSelectedDtos.getValue();
             String title = request.getParameter("fileName");
+            title = java.net.URLDecoder.decode(java.net.URLDecoder.decode(title,"UTF-8"),"UTF-8");
             ExcelTools excelTools = new ExcelTools();
             List<ExpertCostDetailDto> expertCostDetailDtoList = new ArrayList<>();
             for(ExpertSelectedDto esd : expertSelectedDtoList){
@@ -161,6 +162,7 @@ public class ExpertSelectedController {
             expertCostCountDtoList.add(eccd);
         }
         try {
+            fileName = java.net.URLDecoder.decode(java.net.URLDecoder.decode(fileName,"UTF-8"),"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
             String [] headerPair =new String[]{"姓名=name","身份证号码=idCard","手机号码=userPhone","应缴所得税额(本月)=reviewcost","应缴税额(本月)=reviewtaxes","应缴所得税额(本年)=yreviewcost","应缴税额(本年)=yreviewtaxes"};
             HSSFWorkbook wb = excelTools.createExcelBook(fileName , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
