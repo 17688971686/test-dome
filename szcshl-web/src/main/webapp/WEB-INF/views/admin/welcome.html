@@ -1,10 +1,13 @@
 <meta charset="UTF-8">
 <#assign path=request.contextPath/>
 
-<div class="well well-sm" style="background:white;">
+<div class="" style="background:white; margin-bottom: 10px;">
     <div>
-        <span>欢迎您：<b class="text-danger">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}</span>
+        <span><span class="cs-icon-d" style="background-position: -266px -245px;">&nbsp;</span> 欢迎您：<b style="color:#ffae00;">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}</span>
     </div>
+</div>
+<div class="banner">
+   <img src="${path}/contents/images/banner.png" width="100%" />
 </div>
 
 <div class="cared">
@@ -12,8 +15,8 @@
     <div class="col-xs-6">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">项目待办</h3>
-                    <a class="box-tools pull-right" href="#/gtasks">查看更多</a>
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目待办</h3>
+                    <a class="box-tools pull-right" href="#/gtasks"><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -25,7 +28,7 @@
                             <th style="width: 80px" align="center">流程状态</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
-                        <tr ng-repeat="t in vm.tasksList|limitTo:6">
+                        <tr ng-repeat="t in vm.tasksList|limitTo:5">
                             <td ng-bind="$index+1"></td>
                             <td>
                                 <a ng-if="t.processState == '1'" href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
@@ -45,8 +48,8 @@
         <div class="col-xs-6">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">项目办结</h3>
-                    <a class="box-tools pull-right" href="#/etasks">查看更多</a>
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目办结</h3>
+                    <a class="box-tools pull-right" href="#/etasks"><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -57,10 +60,10 @@
                             <th>最新已办</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
-                        <tr ng-repeat="e in vm.endTasksList|limitTo:6">
+                        <tr ng-repeat="e in vm.endTasksList|limitTo:5">
                              <td ng-bind="$index+1">1</td>
                             <td><a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}">{{e.businessName}}</a></td>
-                            <td><span class="badge bg-red">{{e.createDate}}</span></td>
+                            <td><span class="badge bg-yellow">{{e.createDate}}</span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -77,13 +80,13 @@
         <div class="col-xs-6 ">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">安装包管理</h3>
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 安装包管理</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
                     <table class="table">
                         <tbody>
-                        <tr ng-repeat="pf in vm.pluginFileList|limitTo:6">
+                        <tr ng-repeat="pf in vm.pluginFileList|limitTo:5">
                             <td>{{$index +1}}.</td>
                             <td>{{pf.fileName}}</td>
                             <td> <a class="btn btn-xs btn-primary" href="${path}{{'/'+pf.relativePath}}" ><i class="fa fa-download" aria-hidden="true"></i>下载</a></td>
@@ -97,8 +100,8 @@
         <div class="col-xs-6 ">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">公告通知</h3>
-                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment">查看更多</a>
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 公告通知</h3>
+                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment"><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -110,7 +113,7 @@
                             <th>发布人</th>
                             <th style="width: 100px" align="center">日期</th>
                         </tr>
-                        <tr ng-repeat="x in vm.annountmentList|limitTo:6">
+                        <tr ng-repeat="x in vm.annountmentList|limitTo:5">
                             <td>{{$index +1}}.</td>
                             <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
                             <td>{{x.issueUser}}</td>

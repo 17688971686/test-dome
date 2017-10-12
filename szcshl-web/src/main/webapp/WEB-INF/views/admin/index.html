@@ -79,10 +79,11 @@ desired effect
 <OBJECT classid=clsid:5EEEA87D-160E-4A2D-8427-B6C333FEDA4D id=RTXAX style="display: none;"></OBJECT>
 <!-- E_腾讯通控件 -->
 
-<body class="hold-transition skin-green sidebar-mini" ng-app="app">
+<body class="hold-transition skin-black-light sidebar-mini" ng-app="app">
 <div id="loading-bar-container" ></div>
 <div class="wrapper">
     <!-- Main Header -->
+<div class="header">
     <header class="main-header">
         <!-- Logo -->
         <a href="#/admin" class="logo">
@@ -94,7 +95,7 @@ desired effect
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
             <!-- Sidebar toggle button-->
-            <a href="javascript:void(0)" class="sidebar-toggle"  data-toggle="offcanvas" role="button">
+            <a href="javascript:void(0)" class="sidebar-toggle"  data-toggle="offcanvas" role="button" style="color:#fff">
             	<span class="sr-only">Toggle navigation</span>
             </a>
             <!-- Navbar Right Menu -->
@@ -127,15 +128,17 @@ desired effect
             </div>
         </nav>
     </header>
+</div>
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
-               <li class="treeview menu" style="height: 52px;">
-                   <a href="javascript:void(0)"> <span class="title">菜单</span></a>
+               <li class="treeview menu" style="height: 47px;">
+                   <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-业务管理</span></a>
 			   </li>
+
 
                 <@shiro.hasPermission name="permission#workbench">
                 <li class="treeview active">
@@ -252,20 +255,10 @@ desired effect
 
                         <!-- end 项目资料函管理 -->
                         <!-- start 优秀评审报告管理 -->
-                        <@shiro.hasPermission name="reviewProjectAppraise#html/edit#get">
-                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseEdit">评审报告评优</a></li>
-                        </@shiro.hasPermission>
 
-                        <@shiro.hasPermission name="reviewProjectAppraise#html/approveList#get">
-                        <li><a href="javascript:void(0)" ui-sref="approveList">
-                            评审报告评优审批
-                            <span class="label label-danger" id="APPRAISE_COUNT">0</span>
-                        </a></li>
-                        </@shiro.hasPermission>
+                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingEdit">评审项目评优</a></li>
 
-                        <@shiro.hasPermission name="reviewProjectAppraise#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseList">优秀评审报告查询</a></li>
-                        </@shiro.hasPermission>
+                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingList">优秀评审报告查询</a></li>
 
                         <!-- end 优秀评审报告管理 -->
                         <!-- start 月报简报管理 -->
@@ -311,7 +304,7 @@ desired effect
                     <ul class="treeview-menu">
                         <!-- start 项目费用管理 -->
                         <@shiro.hasPermission name="financialManager#html/assistCostAdd#get">
-                        <li><a href="javascript:void(0)" ui-sref="assistCostlist">协审费录入</a></li>
+                        <li><a href="javascript:void(0)" ui-sref="assistCostAdd">协审费录入</a></li>
                         </@shiro.hasPermission>
                         <@shiro.hasPermission name="financialManager#html/assistCostCount#get">
                         <li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
@@ -442,196 +435,190 @@ desired effect
                 <!-- end -->
 
                 <!-- begin 图书管理 -->
-                <@shiro.hasPermission name="permission#bookBuyBusiness">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-book" aria-hidden="true"></i><span class="title">图书管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
-                        <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyBusinessEdit#get">
                         <li><a href="javascript:void(0)" ui-sref="bookBuyBusinessEdit({id:null})">图书信息录入</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyBusinessList#get">
                         <li><a href="javascript:void(0)" ui-sref="myBookBuyBusiness">图书采购流程查询</a></li>
-                        </@shiro.hasPermission>
                     </ul>
                 </li>
-            </@shiro.hasPermission>
                 <!-- end 图书管理 -->
 
                 <!-- begin 资产管理 -->
-                <@shiro.hasPermission name="permission#assertStorageBusiness">
                 <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cubes" aria-hidden="true"></i> <span class="title">资产管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
-                        <@shiro.hasPermission name="assertStorageBusiness#html/assertStorageBusinessEdit#get">
                         <li><a href="javascript:void(0)" ui-sref="assertStorageBusinessEdit({id:null})">固定资产申购信息录入</a></li>
-                        </@shiro.hasPermission>
-                       <@shiro.hasPermission name="assertStorageBusiness#html/assertStorageBusinessList#get">
                         <li><a href="javascript:void(0)" ui-sref="myAssertStorageBusiness">固定资产申购流程查询</a></li>
-                        </@shiro.hasPermission>
                         <li><a href="javascript:void(0)" ui-sref="assertApplyUse">固定资产申请使用流程</a></li>
                     </ul>
                 </li>
-            </@shiro.hasPermission>
                 <!-- end 资产管理 -->
-
-                <!-- begin 系统管理 -->
-                <@shiro.hasPermission name="permission#system">
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa  fa-wrench"></i>
-                        <span class="title">系统管理</span>
-                        <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <@shiro.hasPermission name="user#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="org#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="role#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="dict#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="company#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="company">单位管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="dept#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="listDept">处室管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="officeUser#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="officeUserList">处室人员管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="workday#html/list#get">
- 						<li><a href="javascript:void(0)" ui-sref="workday">工作日管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="quartz#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="quartz">定时器管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="file#html/pluginfile#get">
-                        <li><a href="javascript:void(0)" ui-sref="pluginfile">插件管理</a></li>
-                        </@shiro.hasPermission>
-                        <!--
-                        <li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
-                        <li><a href="javascript:void(0)" ui-sref="workflow">工作流管理(下个版本加入)</a></li>
-                         -->
-                    </ul>
-                </li>
-                </@shiro.hasPermission>
-				<!-- end 系统管理 -->
-
-				<!-- start 共享平台-->
-                <@shiro.hasPermission name="permission#annountment">
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-bullhorn" aria-hidden="true"></i>
-                        <span class="title">公告资料管理</span>
-                        <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <@shiro.hasPermission name="sharingPlatlform#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="sharingPlatlform">共享资料管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="sharingPlatlform#html/yetList#get">
-                        <li><a href="javascript:void(0)" ui-sref="sharingPlatlformYet">共享资料列表</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="annountment#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="annountment">通知公告管理</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="annountment#html/yetList#get">
-                        <li><a href="javascript:void(0)" ui-sref="annountmentYet">通知公告列表</a></li>
-                        </@shiro.hasPermission>
-                    </ul>
-                </li>
-                </@shiro.hasPermission>
-                <!-- end 共享平台-->
-
-                <!--
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="glyphicon glyphicon-cog"></i>
-                        <span class="title">个人中心管理</span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="takeUser">代理办理</a></li>
-                    </ul>
-
-                    <ul class="treeview-menu">
-                        <li><a href="javascript:void(0)" ui-sref="statistical">统计</a></li>
-                    </ul>
-                </li>-->
-                <@shiro.hasPermission name="permission#fileMng">
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                        <span class="title">文件库</span>
-                        <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <@shiro.hasPermission name="fileLibrary#html/fileLibrary#get">
-                        <li><a href="javascript:void(0)" ui-sref="fileLibrary">质量管理文件库</a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="fileLibrary#html/policyLibrary#get">
-                        <li><a href="javascript:void(0)" ui-sref="policyLibrary">政策标准库</a></li>
-                        </@shiro.hasPermission>
-                    </ul>
-                </li>
-                </@shiro.hasPermission>
-                <!--系统管理员业务-->
-            <@shiro.hasPermission name="permission#manager">
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="glyphicon glyphicon-user" aria-hidden="true"></i><span class="title">系统管理员</span>
-                        <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <@shiro.hasPermission name="header#html/list#get">
-                            <li><a href="javascript:void(0)" ui-sref="reviewFee">评审费发放</a></li>
-                        </@shiro.hasPermission>
-                    </ul>
-                </li>
-            </@shiro.hasPermission>
-
-                <@shiro.hasPermission name="permission#other">
-                <li class="treeview">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-cog" aria-hidden="true"></i><span class="title">其它</span>
-                        <span class="pull-right-container">
-                        	<i class="fa fa-angle-left pull-right"></i>
-						</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <@shiro.hasPermission name="header#html/list#get">
-                        <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
-                        </@shiro.hasPermission>
-                    </ul>
-                </li>
-                </@shiro.hasPermission>
             </ul>
             <!-- /.sidebar-menu -->
+           <!--/业务管理-->
+
+<ul class="sidebar-menu box-hide">
+    <li class="treeview menu" style="height: 47px;">
+        <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-系统管理</span></a>
+    </li>
+    <!-- begin 系统管理 -->
+    <@shiro.hasPermission name="permission#system">
+    <li class="treeview active">
+        <a href="javascript:void(0)">
+            <i class="fa  fa-wrench"></i>
+            <span class="title">系统管理</span>
+            <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+        </a>
+        <ul class="treeview-menu">
+            <@shiro.hasPermission name="user#html/list#get">
+            <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="org#html/list#get">
+    <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="role#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="role">角色管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="dict#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
+<li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="company#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="company">单位管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="dept#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="listDept">处室管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="officeUser#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="officeUserList">处室人员管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="workday#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="workday">工作日管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="quartz#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="quartz">定时器管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="file#html/pluginfile#get">
+<li><a href="javascript:void(0)" ui-sref="pluginfile">插件管理</a></li>
+</@shiro.hasPermission>
+<!--
+<li><a href="javascript:void(0)" ui-sref="log">日志管理</a></li>
+<li><a href="javascript:void(0)" ui-sref="upload">文件上传</a></li>
+<li><a href="javascript:void(0)" ui-sref="workflow">工作流管理(下个版本加入)</a></li>
+ -->
+</ul>
+</li>
+</@shiro.hasPermission>
+<!-- end 系统管理 -->
+</ul>
+<!-- /.sidebar-menu -->
+
+
+<ul class="sidebar-menu box-hide">
+    <li class="treeview menu" style="height: 47px;">
+        <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-文件管理</span></a>
+    </li>
+    <!-- start 共享平台-->
+    <@shiro.hasPermission name="permission#annountment">
+    <li class="treeview active">
+        <a href="javascript:void(0)">
+            <i class="fa fa-bullhorn" aria-hidden="true"></i>
+            <span class="title">公告资料管理</span>
+            <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+        </a>
+        <ul class="treeview-menu">
+            <@shiro.hasPermission name="sharingPlatlform#html/list#get">
+            <li><a href="javascript:void(0)" ui-sref="sharingPlatlform">共享资料管理</a></li>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="sharingPlatlform#html/yetList#get">
+    <li><a href="javascript:void(0)" ui-sref="sharingPlatlformYet">共享资料列表</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="annountment#html/list#get">
+<li><a href="javascript:void(0)" ui-sref="annountment">通知公告管理</a></li>
+</@shiro.hasPermission>
+<@shiro.hasPermission name="annountment#html/yetList#get">
+<li><a href="javascript:void(0)" ui-sref="annountmentYet">通知公告列表</a></li>
+</@shiro.hasPermission>
+</ul>
+</li>
+</@shiro.hasPermission>
+<!-- end 共享平台-->
+
+<!--
+<li class="treeview">
+    <a href="javascript:void(0)">
+        <i class="glyphicon glyphicon-cog"></i>
+        <span class="title">个人中心管理</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+        <li><a href="javascript:void(0)" ui-sref="takeUser">代理办理</a></li>
+    </ul>
+
+    <ul class="treeview-menu">
+        <li><a href="javascript:void(0)" ui-sref="statistical">统计</a></li>
+    </ul>
+</li>-->
+<@shiro.hasPermission name="permission#fileMng">
+<li class="treeview">
+    <a href="javascript:void(0)">
+        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+        <span class="title">文件库</span>
+        <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+    </a>
+    <ul class="treeview-menu">
+        <@shiro.hasPermission name="fileLibrary#html/fileLibrary#get">
+        <li><a href="javascript:void(0)" ui-sref="fileLibrary">质量管理文件库</a></li>
+    </@shiro.hasPermission>
+    <@shiro.hasPermission name="fileLibrary#html/policyLibrary#get">
+<li><a href="javascript:void(0)" ui-sref="policyLibrary">政策标准库</a></li>
+</@shiro.hasPermission>
+</ul>
+</li>
+</@shiro.hasPermission>
+</ul>
+<!-- /.sidebar-menu -->
+
+<ul class="sidebar-menu box-hide">
+    <li class="treeview menu" style="height: 47px;">
+        <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-其他</span></a>
+    </li>
+<@shiro.hasPermission name="permission#other">
+<li class="treeview active">
+    <a href="javascript:void(0)">
+        <i class="fa fa-cog" aria-hidden="true"></i><span class="title">其它</span>
+        <span class="pull-right-container">
+                        	<i class="fa fa-angle-left pull-right"></i>
+						</span>
+    </a>
+    <ul class="treeview-menu">
+        <@shiro.hasPermission name="header#html/list#get">
+        <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
+    </@shiro.hasPermission>
+    </ul>
+</li>
+</@shiro.hasPermission>
+</ul>
+<!-- /.sidebar-menu -->
 
         </section>
+
+
         <!-- /.sidebar -->
         <!-- <div id="close" class="main_menu">
 
@@ -644,6 +631,15 @@ desired effect
     </aside>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="content-nav">
+            <ul>
+                <li class="cs-active"><a href="javascript:(0)"><span class="cs-icon-d" style="background-position: -266px 0px;">&nbsp;</span> 业务管理</a> </li>
+                <li><a href="javascript:(0)"><span class="cs-icon-d" style="background-position: -136px -340px;">&nbsp;</span> 系统管理</a> </li>
+                <li><a href="javascript:(0)"><span class="cs-icon-d" style="background-position: -101px -186px;">&nbsp;</span> 文件管理</a> </li>
+                <li><a href="javascript:(0)"><span class="cs-icon-d" style="background-position: -168px -62px;">&nbsp;</span> 其他</a> </li>
+            </ul>
+
+        </div>
         <!-- Main content -->
         <section class="content">
             <!-- Your Page Content Here -->
@@ -736,6 +732,7 @@ desired effect
 
 <!-- Begin:自定义Js -->
 <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
+<script src="${path}/contents/shared/index.js"></script>
 <script type="text/javascript">
     common.initDictItems(${DICT_ITEMS});
     var rtxSessionKey = "${RTX_SEESION_KEY}";
