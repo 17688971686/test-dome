@@ -344,9 +344,13 @@
         //E_会议预定添加
 
         //start#exportWeek
-        //本周评审会议
+        //导出会议室安排
         function exportThisWeekStage(vm) {
-            var httpOptions = {
+            var fileName = escape(encodeURIComponent(vm.reportName));
+            window.open(url_room + "/exportThisWeekStage?currentDate=" + vm.currentDate + "&rbType="
+                + vm.rbType + "&mrId=" + vm.mrID + "&fileName=" + fileName);
+
+           /* var httpOptions = {
                 method: 'get',
                 url: url_room + "/exportThisWeekStage",
                 params: {currentDate: vm.currentDate, rbType: vm.rbType, mrId: vm.mrID}
@@ -362,7 +366,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
-            });
+            });*/
         }
 
         //S 下周评审会议
