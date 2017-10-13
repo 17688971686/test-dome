@@ -49,7 +49,7 @@
          * 统计表
          */
         vm.statistical = function(){
-            vm.i = 1;
+            var num = 1;
             vm.columns = [
                 {
                     field: "",
@@ -57,7 +57,7 @@
                     width: 50,
                     filterable: false,
                     template : function(){
-                        return vm.i ++ ;
+                        return num ++ ;
                     }
                 }
             ];

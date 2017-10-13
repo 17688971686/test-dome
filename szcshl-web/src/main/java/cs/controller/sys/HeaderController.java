@@ -106,9 +106,9 @@ public class HeaderController {
     //@RequiresPermissions("header#updateHeader#put")
     @RequiresAuthentication
     @RequestMapping(name="更新表头信息" , path="updateHeader" , method= RequestMethod.PUT)
-    @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public void updateHeader(@RequestBody  HeaderDto headerDto){
-        headerService.updateHeader(headerDto);
+    @ResponseBody
+    public ResultMsg updateHeader(@RequestBody  HeaderDto headerDto){
+      return   headerService.updateHeader(headerDto);
     }
 
 

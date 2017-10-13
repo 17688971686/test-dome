@@ -27,7 +27,7 @@ public interface HeaderService {
 
     void deleteHeader(String id);
     HeaderDto getHeaderById(String id);
-    void updateHeader(HeaderDto headerDto);
+    ResultMsg updateHeader(HeaderDto headerDto);
 
     List<Header> findHeaderByType(String type);
 }

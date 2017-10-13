@@ -24,7 +24,7 @@
         function updateHeader(vm){
             common.initJqValidation();
             var isValid = $('form').valid();
-            if (isValid && vm.header.headerKey!=undefined || vm.header.headerName!=undefined || vm.headerType!=undefined) {
+            if ( vm.header.headerKey!=undefined && vm.header.headerName!=undefined && vm.header.headerType!=undefined) {
                 var httpOptions = {
                     method: 'put',
                     url: rootPath + "/header/updateHeader",
@@ -164,7 +164,9 @@
         function createHeader(vm){
             common.initJqValidation();
             var isValid = $('form').valid();
-            if (isValid && vm.header.headerKey!=undefined || vm.header.headerName!=undefined || vm.headerType!=undefined) {
+            console.log(vm.header);
+            if (vm.header.headerKey!=undefined && vm.header.headerName!=undefined && vm.header.headerType!=undefined) {
+                console.log(12324);
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + '/header/createHeader',
@@ -279,6 +281,12 @@
                 {
                     field: "headerName",
                     title: "列名",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "headerKey",
+                    title: "key值",
                     width: 100,
                     filterable: false
                 },

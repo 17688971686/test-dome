@@ -155,13 +155,18 @@ public class HeaderServiceImpl implements  HeaderService {
 
     @Override
     @Transactional
-    public void updateHeader(HeaderDto headerDto) {
-
+    public ResultMsg updateHeader(HeaderDto headerDto) {
+        boolean isHeaderExist = headerRepo.isHeaderExist(headerDto.getHeaderType() , headerDto.getHeaderKey());
+        if(!isHeaderExist) {
             Header header = headerRepo.findById(headerDto.getId());
             BeanCopierUtils.copyProperties(headerDto , header);
             header.setModifiedDate(new Date());
             header.setModifiedBy(SessionUtil.getDisplayName());
             headerRepo.save(header);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "创建成功", header);
+    }else{
+        return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , String.format("表头key值：%s,已经存在，请重新输入！",headerDto.getHeaderKey()));
+    }
     }
 
     @Override

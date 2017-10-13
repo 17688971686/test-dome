@@ -73,10 +73,10 @@ public class SignDispaWork {
     private String appalyinvestment;
 
     /**
-     * 是否已关联
+     * 是否有其他关联
      */
     @Column(columnDefinition = "INTEGER")
-    private String isAssociate;
+    private String isRelated;
 
     /**
      * 流程实例ID
@@ -248,6 +248,19 @@ public class SignDispaWork {
     @Column
     private String isHaveSuppLetter;
 
+    /**
+     * 是否协审
+     */
+    @Column
+    private String isassistproc;
+
+    public String getIsassistproc() {
+        return isassistproc;
+    }
+
+    public void setIsassistproc(String isassistproc) {
+        this.isassistproc = isassistproc;
+    }
 
     public String getSignState() {
         return signState;
@@ -321,12 +334,12 @@ public class SignDispaWork {
         this.appalyinvestment = appalyinvestment;
     }
 
-    public String getIsAssociate() {
-        return isAssociate;
+    public String getIsRelated() {
+        return isRelated;
     }
 
-    public void setIsAssociate(String isAssociate) {
-        this.isAssociate = isAssociate;
+    public void setIsRelated(String isRelated) {
+        this.isRelated = isRelated;
     }
 
     public Date getReceivedate() {
@@ -417,11 +430,11 @@ public class SignDispaWork {
         this.mUserName = mUserName;
     }
 
-    public String getaUserName() {
+    public String getAUserName() {
         return aUserName;
     }
 
-    public void setaUserName(String aUserName) {
+    public void setAUserName(String aUserName) {
         this.aUserName = aUserName;
     }
 

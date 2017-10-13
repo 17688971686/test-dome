@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -321,17 +322,52 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         }
 
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findBySql(hqlBuilder);
+        for(SignDispaWork s : signDispaWorkList){
+            s.setIsAppraising( s.getIsAppraising() == "9" ? "是" : "否" );
+            s.setIsassistproc( s.getIsassistproc() == "9" ? "是" : "否");
+            s.setIsRelated( s.getIsRelated() == "9" ? "是" : "否");
+            s.setIshaveeia( s.getIshaveeia() == "9" ? "是" : "否");
+            s.setIsSupplementary( s.getIsSupplementary() == "9" ? "是" : "否");
+            s.setIsHaveSuppLetter( s.getIsHaveSuppLetter() == "9" ? "是" : "否");
+
+        }
         return signDispaWorkList;
     }
 
+    /**
+     * 查询发文申请阶段，发放评审费超时的项目信息
+     * @return
+     */
     @Override
-    public List<SignDispaWork> findOverSignDispaWork() {
+    public PageModelDto<SignDispaWork> findOverSignDispaWork() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.processState.getName() + "=:processState ");
-        hqlBuilder.setParam("processState" , Constant.SignProcessState.DO_DIS.getValue());
+        hqlBuilder.setParam("processState" , Constant.SignProcessState.DO_DIS.getValue().toString());
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findByHql(hqlBuilder);
-
-        return null;
+        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
+        List<SignDispaWork> resoultList = new ArrayList<>();
+        for(SignDispaWork s : signDispaWorkList){
+            HqlBuilder hql = HqlBuilder.create();
+            hql.append(" from " + ExpertReview.class.getSimpleName() + " where " + ExpertReview_.businessId.getName() + "=:businessId");
+            hql.append(" and " + ExpertReview_.reviewDate.getName() + " is not null ");
+            hql.append(" and " + ExpertReview_.payDate.getName() + " is null");
+//            hql.append(" and " + ExpertReview_.state.getName() + "<>:state or " + ExpertReview_.state.getName() + " is null");
+            hql.setParam("businessId" , s.getSignid());
+//            hql.setParam("state" , Constant.EnumState.YES.getValue());
+            List<ExpertReview> expertReviewList = expertReviewRepo.findByHql(hql);
+            if(expertReviewList.size()>0){
+                for(ExpertReview er : expertReviewList){
+                    Date reviewDate = er.getReviewDate();
+                    Date now = new Date();
+                    if((int)((now.getTime() - reviewDate.getTime()) / (24*60*60*1000) ) >1){
+                        resoultList.add(s);
+                    }
+                }
+            }
+        }
+        pageModelDto.setValue(resoultList);
+        pageModelDto.setCount(resoultList.size());
+        return pageModelDto;
     }
 
 

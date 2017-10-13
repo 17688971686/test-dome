@@ -996,6 +996,14 @@
                 controller : 'filingEditCtrl',
                 controllerAs : 'vm'
             })
+            //系统管理员业务
+            //评审费发放
+            .state('reviewFee',{
+                url : '/reviewFee',
+                templateUrl : rootPath + "/reviewFee/html/list.html",
+                controller : 'reviewFeeCtrl',
+                controllerAs : 'vm'
+            })
 
         ;
     }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {
