@@ -303,7 +303,7 @@
                     filterable: false,
                 },
                 {
-                    field: "aUserName",
+                    field: "secondPriUser",
                     title: "项目负责人",
                     width: 120,
                     filterable: false,

@@ -28,6 +28,7 @@ import cs.domain.project.AddSuppLetter_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.Archives.ArchivesLibraryDto;
 import cs.model.monthly.MonthlyNewsletterDto;
@@ -97,10 +98,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                  addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());*/
                  
              }
-             Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
-             sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-             sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
-             signRepo.save(sign);
+             WorkProgram work =  workProgramRepo.findById(addSuppLetterDto.getWorkId());
+             work.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+             work.setSuppLetterDate(addSuppLetterDto.getDisapDate());
+             workProgramRepo.save(work);
              addSuppLetter.setModifiedDate(now);
              addSuppLetter.setCreatedDate(now);
              addSuppLetterRepo.save(addSuppLetter);
@@ -144,7 +145,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      * @return
      */
     @Override
-    public AddSuppLetterDto initSuppLetter(String businessId, String businessType) {
+    public AddSuppLetterDto initSuppLetter(String businessId, String businessType,String workId) {
         AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
        /* AddSuppLetter suppletter =  addSuppLetterRepo.findById("businessId",businessId);
         if(suppletter !=null && Validate.isString(suppletter.getId())){
@@ -162,6 +163,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 suppletterDto.setMergencyLevel(sign.getUrgencydegree());
             }
       //  }
+        	WorkProgram work = workProgramRepo.findById(WorkProgram_.id.getName(),workId);
+        	suppletterDto.setWorkId(work.getId());
         
 
         return suppletterDto;
@@ -643,10 +646,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
              if(!Validate.isString(addSuppLetter.getId())){
             	 addSuppLetter.setId(null);
              }
-         Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
-         sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-         sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
-         signRepo.save(sign);
+         WorkProgram work =  workProgramRepo.findById(addSuppLetterDto.getWorkId());
+         work.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+         work.setSuppLetterDate(addSuppLetterDto.getDisapDate());
+         workProgramRepo.save(work);
          addSuppLetter.setModifiedDate(now);
          addSuppLetter.setCreatedDate(now);
          addSuppLetterRepo.save(addSuppLetter);

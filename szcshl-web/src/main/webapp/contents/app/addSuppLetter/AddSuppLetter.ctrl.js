@@ -9,9 +9,10 @@
         vm.suppletter = {}; //补充资料对象$state
         vm.suppletter.businessId = $state.params.businessId;        //业务ID
         vm.suppletter.businessType = $state.params.businessType;    //业务类型
+        vm.suppletter.workId = $state.params.workId;    			//工作方案ID
         vm.suppletter.id = $state.params.id;
-        vm.title = '登记补充资料';
         
+        vm.title = '登记补充资料';
         vm.businessFlag ={
                 isInitFileOption : false,   //是否已经初始化附件上传控件
         }

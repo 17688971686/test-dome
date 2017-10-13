@@ -398,7 +398,15 @@
         
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
-        	$state.go('addSupp', {businessId: vm.model.signid,businessType:"SIGN"});
+        	 signSvc.findWorkProgramBySignId(vm,function(){
+                // signSvc.meetingDoc(vm);
+        		 console.log(vm.workProgramId);
+        		 if(vm.workProgramId){
+        			 $state.go('addSupp', {businessId: vm.model.signid,businessType:"SIGN",workId:vm.workProgramId});
+        		 }else{
+        			 bsWin.alert("请先保存工作方案");
+        		 }
+             });
         }// E_跳转到 拟补充资料函 编辑页面
         
         //S 拟补充资料函列表

@@ -52,6 +52,12 @@ public class AddSuppLetterDto extends BaseDto {
      */
 	private String businessType;
     
+	/**
+	 * 工作方案ID
+	 */
+	private String workId;
+	
+
 	private String businessIdType;
 	
 	//拟补充资料函状态：0：查询状态 9：审批状态，
@@ -404,5 +410,11 @@ public class AddSuppLetterDto extends BaseDto {
 		this.monthlyAppoveStatus = monthlyAppoveStatus;
 	}
 	
-    
+	public String getWorkId() {
+		return workId;
+	}
+
+	public void setWorkId(String workId) {
+		this.workId = workId;
+	}
 }

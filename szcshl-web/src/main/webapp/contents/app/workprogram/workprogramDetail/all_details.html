@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
-<!-- start 主项目（项目建议书/可行性研究报告） -->
+<!-- start 主项目（项目建议书/可行性研究报告/项目概算/其他） -->
 <table ng-repeat="w in vm.model.workProgramDtoList" class="table table-bordered" style="margin-bottom: 0px;"
-       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
+       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' )&&(w.branchId == '1' || w.branchId == 1)">
     <caption>
      <span ng-show="w.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
      <span ng-show="w.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
@@ -185,10 +185,11 @@
         </td>
     </tr>
 </table>
-<!-- end 主项目 （项目建议书/可行性研究报告）table -->
-<!-- start 协审项目（项目建议书/可行性研究报告） -->
+<!-- end 主项目 （项目建议书/可行性研究报告/项目概算/其他）table -->
+
+<!-- start 协审项目（项目建议书/可行性研究报告/项目概算/其他） -->
 <table ng-repeat="w in vm.model.workProgramDtoList  | orderBy:w.branchId" class="table table-bordered" style="margin-bottom: 0px;"
-       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '4' || w.branchId == 4 || w.branchId == '2' || w.branchId == 2 || w.branchId == '3' || w.branchId == 3)">
+       ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' )&&(w.branchId == '4' || w.branchId == 4 || w.branchId == '2' || w.branchId == 2 || w.branchId == '3' || w.branchId == 3)">
     <tr>
         <td rowspan="100" valign="baseline" style="width:8%;">协审[{{w.branchId}}]<br>工作方案</td>
         <td style="width:10%;" >评审方式</td>
@@ -212,19 +213,22 @@
         <td colspan="3">{{w.suppLetterDate}}</td>
     </tr>
     <tr>
-        <td class="text-center">调研开始时间</td>
-        <td colspan="3">
-            {{w.studyBeginTime}}
-        </td>
-        <td class="text-center">调研结束时间</td>
-        <td colspan="3">
-            {{w.studyEndTime}}
-        </td>
+        <td class="text-center">调研时间</td>
+            <td colspan="7">
+             {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
+           </td>
     </tr>
     <tr>
         <td class="text-center">专家费用</td>
         <td colspan="7">{{w.expertCost}}</td>
     </tr>
+     <tr>
+        <td class="text-center">函评会日期</td>
+        <td colspan="7">
+        {{w.letterDate}}
+        </td>
+    </tr>
+    
     <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
         <td class="text-center" style="width:10%;">评审会日期</td>
         <td class="text-center" style="width:15%;">会议室名称</td>
@@ -241,6 +245,7 @@
         <td class="text-center">{{r.host}}</td>
         <td class="text-center" colspan="3">{{r.content}}</td>
     </tr>
+     
     <tr ng-show="w.expertDtoList && w.expertDtoList.length > 0">
         <td class="text-center" style="width:10%;">拟聘请专家</td>
         <td class="text-center" style="width:15%;">工作单位</td>
@@ -290,7 +295,7 @@
         </td>
     </tr>
 </table>
-<!-- end 协审项目 （项目建议书/可行性研究报告）table -->
+<!-- end 协审项目 （项目建议书/可行性研究报告/项目概算/其他）table -->
 
 
 

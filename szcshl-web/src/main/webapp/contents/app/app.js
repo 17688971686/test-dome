@@ -68,7 +68,7 @@
             
             //begin#添加拟补充资料函
             .state('addSupp', {
-                url: '/addSupp/:businessId/:businessType',
+                url: '/addSupp/:businessId/:businessType/:workId',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'

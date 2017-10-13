@@ -53,8 +53,13 @@
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
 
         <!-- （包含：主、次项目）项目建议书/可行性研究报告/资金申请报告/其它  -->
-        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
+        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
              ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
+       
+       <!--S  资金申请报告  包含：主项目、次项目 -->
+        <div ng-show="vm.model.reviewstage=='资金申请报告'"
+             ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
+       <!--S  资金申请报告  包含：主项目、次项目 -->
        
        <!--S  进口设备  包含：主项目、次项目 -->
         <div ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>

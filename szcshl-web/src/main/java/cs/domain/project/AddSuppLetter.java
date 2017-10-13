@@ -91,6 +91,12 @@ public class AddSuppLetter extends DomainBase {
 	 */
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String businessId;
+	
+	/**
+	 * 工作方案ID
+	 */
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String workId;
 
 	/**
 	 * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
@@ -472,6 +478,14 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setMonthlyAppoveStatus(String monthlyAppoveStatus) {
 		this.monthlyAppoveStatus = monthlyAppoveStatus;
+	}
+
+	public String getWorkId() {
+		return workId;
+	}
+
+	public void setWorkId(String workId) {
+		this.workId = workId;
 	}
 	
 	

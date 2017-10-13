@@ -76,8 +76,8 @@ public class AddSuppLetterController {
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppLetter#post")
     @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)
-    public @ResponseBody AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType){
-        return addSuppLetterService.initSuppLetter(businessId,businessType);
+    public @ResponseBody AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType,String workId){
+        return addSuppLetterService.initSuppLetter(businessId,businessType,workId);
     }
 
     @RequiresAuthentication
