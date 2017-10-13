@@ -182,7 +182,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setAppalyInvestment(sign.getDeclaration());//申报投资
             //是否有拟补充资料函
-           // workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null?  Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
+            workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null?  Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
             //拟补充资料函发文日期
            // workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
             if(signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(),signId)){

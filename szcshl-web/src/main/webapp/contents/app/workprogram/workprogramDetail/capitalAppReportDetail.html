@@ -110,6 +110,10 @@
         <td class="text-center">专家费用（元）</td>
         <td colspan="7">{{w.expertCost}}</td>
     </tr>
+    <tr>
+        <td class="text-center">函评会日期</td>
+        <td colspan="7">{{w.letterDate}}</td>
+     </tr>
     <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
         <td class="text-center" style="width:20%;">评审会日期</td>
         <td class="text-center" style="width:15%;">会议室名称</td>
@@ -201,20 +205,21 @@
         <td class="text-center">补充资料函发文日期</td>
         <td colspan="3">{{w.suppLetterDate}}</td>
     </tr>
-    <tr>
-        <td class="text-center">调研开始时间</td>
-        <td colspan="3">
-            {{w.studyBeginTime}}
-        </td>
-        <td class="text-center">调研结束时间</td>
-        <td colspan="3">
-            {{w.studyEndTime}}
-        </td>
+      <tr>
+        <td class="text-center">调研时间</td>
+            <td colspan="7">
+             {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
+           </td>
     </tr>
     <tr>
         <td class="text-center">专家费用</td>
         <td colspan="7">{{w.expertCost}}</td>
     </tr>
+    
+    <tr>
+        <td class="text-center">函评会日期</td>
+        <td colspan="7">{{w.letterDate}}</td>
+     </tr>
     <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
         <td class="text-center" style="width:10%;">评审会日期</td>
         <td class="text-center" style="width:15%;">会议室名称</td>
