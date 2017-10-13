@@ -51,7 +51,7 @@ public class AssertStorageBusinessController {
     }
 
     @RequiresAuthentication
-	//@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody AssertStorageBusinessDto findById(@RequestParam(required = true)String id){		
 		return assertStorageBusinessService.findById(id);
 	}
@@ -90,13 +90,13 @@ public class AssertStorageBusinessController {
 
     // begin#html
     @RequiresPermissions("assertStorageBusiness#html/assertStorageBusinessList#get")
-    @RequestMapping(name = "列表页面", path = "html/assertStorageBusinessList", method = RequestMethod.GET)
+    @RequestMapping(name = "定资产申购流程查询", path = "html/assertStorageBusinessList", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/assertStorageBusinessList";
     }
 
     @RequiresPermissions("assertStorageBusiness#html/assertStorageBusinessEdit#get")
-    @RequestMapping(name = "编辑页面", path = "html/assertStorageBusinessEdit", method = RequestMethod.GET)
+    @RequestMapping(name = "固定资产申购信息录入", path = "html/assertStorageBusinessEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/assertStorageBusinessEdit";
     }

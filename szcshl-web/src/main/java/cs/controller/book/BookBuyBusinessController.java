@@ -90,13 +90,13 @@ public class BookBuyBusinessController {
 
     // begin#html
     @RequiresPermissions("bookBuyBusiness#html/bookBuyBusinessList#get")
-    @RequestMapping(name = "列表页面", path = "html/bookBuyBusinessList", method = RequestMethod.GET)
+    @RequestMapping(name = "图书采购流程查询", path = "html/bookBuyBusinessList", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/bookBuyBusinessList";
     }
 
     @RequiresPermissions("bookBuyBusiness#html/bookBuyBusinessEdit#get")
-    @RequestMapping(name = "编辑页面", path = "html/bookBuyBusinessEdit", method = RequestMethod.GET)
+    @RequestMapping(name = "图书信息录入", path = "html/bookBuyBusinessEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/bookBuyBusinessEdit";
     }
