@@ -696,4 +696,73 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
 
+	/**
+	 * 项目评审情况统计
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		PageModelDto<ProReviewConditionDto> pageModelDto = new PageModelDto<ProReviewConditionDto>();
+		HqlBuilder sqlBuilder = HqlBuilder.create();
+		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)declarevalue,sum(d.authorizevalue)authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/sum(d.declarevalue),4)*100  hjl  from cs_sign s  ");
+		sqlBuilder.append("left join cs_dispatch_doc d  ");
+		sqlBuilder.append("on s.signid = d.signid  ");
+		sqlBuilder.append("where 1 = 1 ");
+
+		//todo:添加查询条件
+		if(null != projectReviewConditionDto){
+			if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+				sqlBuilder.append("and s.signdate >= to_date('"+projectReviewConditionDto.getBeginTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+
+			if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+				sqlBuilder.append("and s.signdate <= to_date('"+projectReviewConditionDto.getEndTime()+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+		}
+		sqlBuilder.append("group by s.reviewstage");
+		List<Map> projectReviewConList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+
+		if (projectReviewConList.size() > 0) {
+			for (int i = 0; i < projectReviewConList.size(); i++) {
+				Object obj = projectReviewConList.get(i);
+				Object[] projectReviewCon = (Object[]) obj;
+				ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+				if (null != projectReviewCon[0]) {
+					proReviewConditionDto.setReviewStage((String) projectReviewCon[0]);
+				}else{
+					proReviewConditionDto.setReviewStage(null);
+				}
+				if (null != projectReviewCon[1]) {
+					proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[1]);
+				}
+				if (null != projectReviewCon[2]) {
+					proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[2]);
+				}else{
+					proReviewConditionDto.setDeclareValue(null);
+				}
+				if (null != projectReviewCon[3]) {
+					proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[3]);
+				}else{
+					proReviewConditionDto.setAuthorizeValue(null);
+				}
+				if (null != projectReviewCon[4]) {
+					proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[4]);
+				}else{
+					proReviewConditionDto.setLjhj(null);
+				}
+				if (null != projectReviewCon[5]) {
+					proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[5]);
+				}else{
+					proReviewConditionDto.setLjhj(null);
+				}
+				projectReviewConDtoList.add(proReviewConditionDto);
+			}
+		}
+		resultMap.put("protReviewConditionList", projectReviewConDtoList);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+	}
+
 }

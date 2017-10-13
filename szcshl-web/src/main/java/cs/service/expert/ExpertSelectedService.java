@@ -2,10 +2,7 @@ package cs.service.expert;
 
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertCostCountDto;
-import cs.model.expert.ExpertCostDetailCountDto;
-import cs.model.expert.ExpertSelectedDto;
-import cs.model.expert.ProjectReviewCostDto;
+import cs.model.expert.*;
 import cs.model.financial.FinancialManagerDto;
 import cs.repository.odata.ODataObj;
 
@@ -39,5 +36,12 @@ public interface ExpertSelectedService {
 	List<FinancialManagerDto> getFinancialManagerByBusid(String businessId);
 
 	ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto);
+
+	/**
+	 * 项目评审情况统计
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto);
 
 }

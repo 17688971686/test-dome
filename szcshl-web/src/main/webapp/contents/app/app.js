@@ -675,6 +675,13 @@
                 controller: 'proCostClassifyCountCtrl',
                 controllerAs: 'vm'
             })
+            //项目评审情况统计
+            .state('proReviewConCountList', {
+                url: '/proReviewConCountList',
+                templateUrl: rootPath + '/financialManager/html/proReviewConCount.html',
+                controller: 'proReviewConditionCtrl',
+                controllerAs: 'vm'
+            })
              //E 项目费用管理
 
              //S 月报简报管理
