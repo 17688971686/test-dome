@@ -323,12 +323,12 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findBySql(hqlBuilder);
         for(SignDispaWork s : signDispaWorkList){
-            s.setIsAppraising( s.getIsAppraising() == "9" ? "是" : "否" );
-            s.setIsassistproc( s.getIsassistproc() == "9" ? "是" : "否");
-            s.setIsRelated( s.getIsRelated() == "9" ? "是" : "否");
-            s.setIshaveeia( s.getIshaveeia() == "9" ? "是" : "否");
-            s.setIsSupplementary( s.getIsSupplementary() == "9" ? "是" : "否");
-            s.setIsHaveSuppLetter( s.getIsHaveSuppLetter() == "9" ? "是" : "否");
+            s.setIsAppraising( "9".equals(s.getIsAppraising()) ? "是" : "否" );
+            s.setIsassistproc( "9".equals(s.getIsassistproc()) ? "是" : "否");
+            s.setIsRelated( "9".equals(s.getIsRelated()) ? "是" : "否");
+            s.setIshaveeia( "9".equals(s.getIshaveeia()) ? "是" : "否");
+            s.setIsSupplementary( "9".equals(s.getIsSupplementary())? "是" : "否");
+            s.setIsHaveSuppLetter( "9".equals(s.getIsHaveSuppLetter())? "是" : "否");
 
         }
         return signDispaWorkList;

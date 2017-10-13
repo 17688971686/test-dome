@@ -38,8 +38,7 @@
          */
         vm.exportExcel = function (){
             var fileName = vm.reviewTitle + "(" + vm.payDate + ")";
-            console.log(vm.expertSelectedDtoList);
-            financialManagerSvc.exportExcel(vm , vm.expertSelectedDtoList ,fileName );
+            financialManagerSvc.exportExcel(vm , vm.financial.businessId ,fileName );
         }
 
 

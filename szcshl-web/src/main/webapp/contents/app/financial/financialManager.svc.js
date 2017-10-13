@@ -25,8 +25,10 @@
         }
 
         //begin reportExcel
-        function exportExcel(vm , exportData , fileName){
-            var httpOptions = {
+        function exportExcel(vm , businessId , fileName){
+          var   fileName = escape(encodeURIComponent(fileName));
+          window.open(rootPath + '/financialManager/exportExcel?fileName=' + fileName + '&businessId=' + businessId)
+           /* var httpOptions = {
                 method : 'post' ,
                 url : rootPath + '/financialManager/exportExcel',
                 headers : {
@@ -52,7 +54,7 @@
                 $http : $http ,
                 httpOptions : httpOptions,
                 success : httpSuccess
-            });
+            });*/
         }
         //end reportExcel
 

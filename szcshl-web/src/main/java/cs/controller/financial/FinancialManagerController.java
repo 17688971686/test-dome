@@ -7,10 +7,12 @@ import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
+import cs.service.expert.ExpertReviewService;
 import cs.service.financial.FinancialManagerService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -42,6 +44,9 @@ public class FinancialManagerController {
     String ctrlName = "financial";
     @Autowired
     private FinancialManagerService financialManagerService;
+
+    @Autowired
+    private ExpertReviewService expertReviewService;
 
     @RequiresAuthentication
     //@RequiresPermissions("financialManager#findByOData#post")
@@ -115,17 +120,17 @@ public class FinancialManagerController {
 
  	@RequiresAuthentication
     //@RequiresPermissions("financialManager#exportExcel#post")
-    @RequestMapping(name="评审费用统计表导出" , path="exportExcel" , method = RequestMethod.POST)
+    @RequestMapping(name="评审费用统计表导出" , path="exportExcel" , method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void exportExcel(HttpServletResponse response , @RequestBody ExpertSelectedDto[] expertSelectedDtos , @RequestParam String fileName){
+    public void exportExcel(HttpServletResponse response , @RequestParam String fileName , @RequestParam String businessId){
 
-        String title = fileName;
+//        String title = fileName;
         ExcelTools excelTools = new ExcelTools();
 //        List<ExpertSelected> expertSelectedList = new ArrayList<>();
         List<Map> exportMap = new ArrayList<>();
+       ExpertReviewDto expertReviewDto = expertReviewService.initBybusinessId(businessId,"");
 
-
-        for(ExpertSelectedDto expertSelectedDto : expertSelectedDtos){
+        for(ExpertSelectedDto expertSelectedDto : expertReviewDto.getExpertSelectedDtoList()){
             ExpertSelected expertSelected = new ExpertSelected();
             BeanCopierUtils.copyProperties(expertSelectedDto , expertSelected);
 //            expertSelectedList.add(expertSelected);
@@ -135,16 +140,16 @@ public class FinancialManagerController {
             Map<String , Object> dataMap = new HashMap<>();
             dataMap.put("NAME" , expert.getName());
             dataMap.put("IDCARD" , expert.getIdCard() == null ? "" : expert.getIdCard());
-            dataMap.put("OPENINGBANK" , expert.getOpeningBank() == null ? "" : expert.getOpeningBank() + "/" + expert.getBankAccount() == null ? "" : expert.getBankAccount());
+            dataMap.put("OPENINGBANK" , (expert.getOpeningBank() == null ? "" : expert.getOpeningBank()) + "/" + (expert.getBankAccount() == null ? "" : expert.getBankAccount()));
             dataMap.put("REVIEWCOST" , expertSelected.getReviewCost());
             dataMap.put("REVIEWTAXES" , expertSelected.getReviewTaxes());
             dataMap.put("TOTALCOST" , expertSelected.getTotalCost() );
-            dataMap.put("ISLETTERRW" , expertSelected.getIsLetterRw() == "9" ? "是" : "否");
+            dataMap.put("ISLETTERRW" , "9".equals(expertSelected.getIsLetterRw()) ? "是" : "否");
             exportMap.add(dataMap);
         }
 
         try{
-
+            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
             ServletOutputStream sos = response.getOutputStream();
             String[] headerArr= new String[7];
             headerArr[0] = "姓名" + "=" + "NAME";
