@@ -182,6 +182,12 @@ public class FinancialManagerController {
         return ctrlName+"/list"; 
     }
 
+    @RequiresPermissions("financialManager#html/proReviewConCount#get")
+    @RequestMapping(name = "项目评审情况统计", path = "html/proReviewConCount", method = RequestMethod.GET)
+    public String proReviewConditionCount() {
+        return ctrlName+"/proReviewConCount";
+    }
+
     @RequiresPermissions("financialManager#html/projectCostCount#get")
     @RequestMapping(name = "评审费统计", path = "html/projectCostCount", method = RequestMethod.GET)
     public String proCostCount() {
