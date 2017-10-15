@@ -76,7 +76,7 @@
               <tr>
                 <td style="width:150px;" class="text-center">发文日期</td>
                 <td>
-                  <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:80%;"class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  name="dispatchDate">
+                  <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  name="dispatchDate">
                 </td>
 
                 <td style="width:150px;" class="text-center">文件字号</td>
@@ -116,12 +116,12 @@
                 <td colspan="3">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
-                              name="mianChargeSuggest" placeholder="第一负责人"/>
+                              name="mianChargeSuggest" placeholder="第一负责人" ng-disabled="true"/>
                 </td>
                 <td colspan="2">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
-                              name="secondChargeSuggest" placeholder="第二负责人"/>
+                              name="secondChargeSuggest" placeholder="第二负责人" ng-disabled="true"/>
                 </td>
             </tr>
 
@@ -133,12 +133,12 @@
                 </td>
             </tr>
 
-          <!--   <tr>
+           <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
-                              name="ministerSuggesttion"/>
+                              name="ministerSuggesttion" ng-disabled="true"/>
                 </td>
             </tr>
 
@@ -147,7 +147,7 @@
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
-                              name="viceDirectorSuggesttion"/>
+                              name="viceDirectorSuggesttion" ng-disabled="true"/>
                 </td>
             </tr>
 
@@ -155,9 +155,9 @@
                 <td style="width:150px;" class="text-center">主任签发</td>
                 <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"/>
+                              ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue" ng-disabled="true"/>
                 </td>
-            </tr> -->
+            </tr> 
             
             </tbody>
         </table>    <!-- end table -->
