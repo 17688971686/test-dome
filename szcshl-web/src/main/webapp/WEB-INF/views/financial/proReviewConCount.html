@@ -11,17 +11,19 @@
 	<form id="form" name="form">
 		<div class="well">
 			<span>统计月份：</span>
-			<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+			<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
 			至
-			<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" />
-			<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.countExpertCostDetail()">统计</a>
+			<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.endTime" value="" type="text" operator="and" />
+			<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proReviewConCount()">统计</a>
 		</div>
-		<div class="well">
+		<div >
 			<table border="1px" style="width: 100%;">
 				<caption class="text-center h3">
-					<strong ng-if="vm.begMonth && vm.endMonth==''">{{vm.year}}年{{vm.begMonth}}月项目评审情况统计表<br>
+					<strong ng-if="vm.model.beginTime && vm.model.endTime==''">{{vm.year}}年{{vm.begMonth}}月项目评审情况统计表<br>
 					</strong>
-					<strong ng-if="vm.begMonth && vm.endMonth">{{vm.year}}年{{vm.begMonth}}月至{{vm.endMonth}}项目评审情况统计表<br>
+					<strong ng-if="vm.model.beginTime=='' && vm.model.endTime">{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
+					</strong>
+					<strong ng-if="vm.model.beginTime && vm.model.endTime">{{vm.year}}年{{vm.begMonth}}月至{{vm.endMonth}}项目评审情况统计表<br>
 					</strong>
 				</caption>
 				<tr >
@@ -41,7 +43,7 @@
 					<td class="text-center" ng-if="x.hjl">{{x.hjl}}%</td>
 				</tr>
 				<tr ng-if="vm.protReviewConditionList">
-					<td class="text-center" >合计：</td>
+					<td class="text-center" ><strong>合计</strong></td>
 					<td class="text-center" >{{vm.total.projectcount}}</td>
 					<td class="text-center">{{vm.total.declarevalue}}</td>
 					<td class="text-center">{{vm.total.authorizevalue}}</td>
