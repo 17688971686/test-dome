@@ -3,20 +3,31 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected_;
+import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.Org;
 import cs.domain.sys.Org_;
 import cs.domain.sys.User_;
+import cs.model.expert.ExpertDto;
+import cs.model.meeting.RoomBookingDto;
+import cs.model.project.WorkProgramDto;
 import cs.repository.AbstractRepository;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -24,6 +35,10 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
 
     @Autowired
     private OrgRepo orgRepo;
+    @Autowired
+    private RoomBookingRepo roomBookingRepo;
+    @Autowired
+    private ExpertRepo expertRepo;
     /**
      * 根据收文编号，查询对应工作方案
      * @param signId
@@ -123,5 +138,52 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         }
 
         return null;
+    }
+
+    @Override
+    public void initWPMeetingExp(WorkProgramDto workProgramDto, WorkProgram wp) {
+        if(wp != null){
+            //1、初始化会议室预定情况
+            List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(),wp.getId(),null);
+            if (Validate.isList(roomBookings)) {
+                List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
+                roomBookings.forEach(r -> {
+                    RoomBookingDto rbDto = new RoomBookingDto();
+                    BeanCopierUtils.copyProperties(r, rbDto);
+                    rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(), "HH:mm"));
+                    rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
+                    roomBookingDtos.add(rbDto);
+                });
+                workProgramDto.setRoomBookingDtos(roomBookingDtos);
+            }
+            //2、拟聘请专家
+            List<Expert> expertList = expertRepo.findByBusinessId(wp.getId());
+            if(Validate.isList(expertList)){
+                List<ExpertDto> expertDtoList = new ArrayList<>(expertList.size());
+                expertList.forEach( el ->{
+                    ExpertDto expertDto = new ExpertDto();
+                    el.setPhoto(null);
+                    BeanCopierUtils.copyProperties(el,expertDto);
+                    expertDtoList.add(expertDto);
+                });
+                workProgramDto.setExpertDtoList(expertDtoList);
+            }
+        }
+    }
+
+    /**
+     * 根据合并评审主项目ID，获取合并评审次项目的工作方案信息
+     * @param signid
+     * @return
+     */
+    @Override
+    public List<WorkProgram> findMergeWP(String signid) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from "+WorkProgram.class.getSimpleName()+" where "+WorkProgram_.sign.getName()+"."+Sign_.signid.getName()+" in ");
+        hqlBuilder.append(" (select "+SignMerge_.mergeId.getName()+" from "+SignMerge.class.getSimpleName()+" where ");
+        hqlBuilder.append(SignMerge_.signId.getName()+" =:signId and "+SignMerge_.mergeType.getName()+" =:mergeType )");
+        hqlBuilder.setParam("signId",signid).setParam("mergeType",Constant.MergeType.WORK_PROGRAM.getValue());
+
+        return findByHql(hqlBuilder);
     }
 }

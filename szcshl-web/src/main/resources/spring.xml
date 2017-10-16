@@ -14,7 +14,7 @@
             http://www.springframework.org/schema/cache/spring-cache.xsd">
 
 	<!-- 加载配置文件 -->
-	<context:property-placeholder location="classpath:config.properties"/>
+	<context:property-placeholder location="classpath:config.properties,classpath:httpclient.properties"/>
 
 	<!-- 扫描service自动注入为bean -->
 	<!-- <context:component-scan base-package="cs.service,cs.repository.repositoryImpl" /> -->

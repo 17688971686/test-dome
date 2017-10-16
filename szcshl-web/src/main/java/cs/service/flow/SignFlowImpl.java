@@ -7,7 +7,11 @@ import java.util.Map;
 
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.sys.OrgDept;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.DispatchDocService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +48,12 @@ public class SignFlowImpl implements IFlow {
     private DispatchDocService dispatchDocService;
     @Autowired
     private SignRepo signRepo;
-
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
     /**
      * 获取流程参数
      * @param businessKey
@@ -131,10 +140,42 @@ public class SignFlowImpl implements IFlow {
                     businessMap.put("prilUserList", userDtoList);
                 }
                 break;
-            //生成发文编号，如果是合并发文次项目，则不需要关联
+            //项目负责人确认
+            case FlowConstant.FLOW_SIGN_QRFW:
+                //判断是否有协办部门
+                if(signBranchRepo.allAssistCount(businessKey) > 0){
+                    businessMap.put("hasAssistDept", true);
+                }
+                break;
+            //部长审批发文
+            case FlowConstant.FLOW_SIGN_BMLD_QRFW :
+                //获取所有分管领导信息
+                userList = signBranchRepo.findAssistSLeader(businessKey);
+                //排除主办分支的领导
+                if(Validate.isList(userList)){
+                    OrgDept orgDept = orgDeptRepo.queryBySignBranchId(businessKey, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+                    User dealUser = userRepo.getCacheUserById(orgDept.getsLeaderID());
+                    for(int n=0,l=userList.size();n<l;n++){
+                        if((userList.get(n)).getId().equals(dealUser.getId())){
+                            userList.remove(n);
+                            break;
+                        }
+                    }
+                }
+                boolean isHaveTwoSLeader = Validate.isList(userList);       //有两个分管领导
+                if(isHaveTwoSLeader){
+                    businessMap.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), isHaveTwoSLeader);
+                }
+                break;
+            //生成发文编号，
             case FlowConstant.FLOW_SIGN_FWBH:
+                //如果是合并发文次项目，则不生成发文编号
                 boolean isMerge =signMergeRepo.checkIsMerege(businessKey, Constant.MergeType.DISPATCH.getValue());
                 businessMap.put("needDISNum", !isMerge);
+                //如果有专家评审费，则显示财务环节，否则直接跳转到归档环节
+                if (expertReviewRepo.isHaveEPReviewCost(businessKey)){
+                    businessMap.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
+                }
                 break;
             //项目归档
             case FlowConstant.FLOW_SIGN_GD:

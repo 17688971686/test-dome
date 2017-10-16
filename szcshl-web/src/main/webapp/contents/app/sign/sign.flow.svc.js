@@ -146,6 +146,7 @@
                 case flowcommon.getSignFlowNode().SIGN_BMLD_QRFW_XB:
                 case flowcommon.getSignFlowNode().SIGN_FGLD_QRFW_XB:
                     vm.watchPassDis();
+                    vm.showFlag.buttBack = false;
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeConfirmDis = true;
                     vm.businessFlag.passDis = '9';  //默认通过

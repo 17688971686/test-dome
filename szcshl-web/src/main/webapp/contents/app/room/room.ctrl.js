@@ -28,7 +28,8 @@
                 roomSvc.initDefaultValue(vm.model.businessId,vm.model.businessType,function(data){
                     vm.model = data;
                     if(vm.meetings && vm.meetings.length > 0){
-                        vm.model.mrID = vm.meetings[0].id;
+                        vm.mrID = vm.meetings[0].id;
+                        vm.model.mrID = vm.mrID;
                     }
                     roomSvc.updateDataSource(vm);
                 })

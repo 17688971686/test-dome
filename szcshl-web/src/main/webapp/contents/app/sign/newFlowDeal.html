@@ -31,13 +31,14 @@
         </tr>
         <tr ng-show="vm.showFlag.nodeNext">
             <td width="10%" class="text-center">
-                下一环节名称
-                <p style="font-size: 12px;color:#8c8c8c;">(分支或跳转时有多个)</p>
+                                          下一环节名称
             </td>
             <td>
+                <ol class="breadcrumb" style="font-size: 12px;" ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
+                    <li class="active">如果做工作方案，则下一环节是部长审批；否则，下一环节为发文申请</li>
+                </ol>
                 <div ng-repeat="x in vm.flow.nextNode">
                     <span>{{$index+1}}、{{x.activitiName}}</span>
-					
                 </div>
             </td>
         </tr>
@@ -88,9 +89,9 @@
                             <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
                         </select>
                     </p>
-                    <span>其他责人：</span>
-                    </br> </br>
+                 
                     <ul id="p_assistUser">
+                        <li ng-if="vm.users && vm.users.length>0"  style="float: left;width: 90px;">其他负责人：</li>
                         <li ng-repeat="u in vm.users" id="principalAssistUser" style="float: left;width: 80px;">
                            <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()"/> {{u.displayName}}
                         </li>

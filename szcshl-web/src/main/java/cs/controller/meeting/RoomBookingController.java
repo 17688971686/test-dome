@@ -5,6 +5,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.ExcelUtils;
 import cs.common.utils.FileUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
@@ -99,12 +100,14 @@ public class RoomBookingController {
     @SuppressWarnings("unused")
     @RequiresPermissions("room#exportThisWeekStage#get")
     @RequestMapping(name = "导出本周评审会议安排", path = "exportThisWeekStage", method = RequestMethod.GET)
-    public void exportThisWeekStage(HttpServletRequest request , HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId , @RequestParam String fileName) {
+    public void exportThisWeekStage(HttpServletRequest request , HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId , String fileName) {
 //		roomBookingSerivce.exportThisWeekStage();
         String date = currentDate.replaceAll("/", "-");
         InputStream is = null;
         ServletOutputStream out = null;
-
+        if(!Validate.isString(fileName)){
+            fileName = "深圳市政府投资项目评审中心会议安排";
+        }
         try {
 //            String title = new String(fileName.getBytes("ISO-8859-1"),"UTF-8");
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");//解码，需要抛异常

@@ -7,6 +7,9 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.*;
+import cs.domain.project.SignMerge;
+import cs.domain.project.SignMerge_;
+import cs.domain.project.WorkProgram;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -15,6 +18,8 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.project.SignService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -73,6 +78,10 @@ public class FlowServiceImpl implements FlowService {
     private HiProcessTaskRepo hiProcessTaskRepo;
     @Autowired
     private SignService signService;
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private SignMergeRepo signMergeRepo;
 
     @Autowired
     @Qualifier("signFlowBackImpl")
@@ -169,6 +178,29 @@ public class FlowServiceImpl implements FlowService {
             pvmTransitionList.add(pvmTransition);
         }
 
+        //如果是合并评审环节，还要合并回退
+        switch (instance.getProcessDefinitionKey()){
+            case FlowConstant.SIGN_FLOW:
+                if(FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(task.getTaskDefinitionKey())
+                   || FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(task.getTaskDefinitionKey())){
+                   WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+                    if(Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())){
+                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(),instance.getBusinessKey(),null);
+                        if(Validate.isList(mergeList)){
+                            FlowDto flowDto2 = new FlowDto();
+                            flowDto2.setDealOption(flowDto.getDealOption());
+                            for(SignMerge s : mergeList){
+                                Task task2 = taskService.createTaskQuery().processInstanceBusinessKey(instance.getBusinessKey()).active().singleResult();
+                                flowDto2.setTaskId(task2.getId());
+                                rollBackLastNode(flowDto2);
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                ;
+        }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

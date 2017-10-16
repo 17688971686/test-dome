@@ -353,7 +353,12 @@
            /* var httpOptions = {
                 method: 'get',
                 url: url_room + "/exportThisWeekStage",
-                params: {currentDate: vm.currentDate, rbType: vm.rbType, mrId: vm.mrID}
+                params: {
+                    currentDate: vm.currentDate,
+                    rbType: vm.rbType,
+                    mrId: vm.mrID,
+                    fileName :vm.reportName
+                }
             }
             var httpSuccess = function success(response) {
             var fileName =vm.reportName + ".doc";

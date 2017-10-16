@@ -1,6 +1,5 @@
 package cs.service.project;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cs.domain.meeting.RoomBooking_;
-import cs.domain.sys.*;
-import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -25,7 +21,6 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.CreateTemplateUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.SysFileUtil;
@@ -34,6 +29,7 @@ import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.Expert_;
 import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
 import cs.domain.project.AssistUnit;
@@ -42,11 +38,14 @@ import cs.domain.project.SignPrincipal;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
-import cs.model.expert.ExpertDto;
-import cs.model.meeting.RoomBookingDto;
+import cs.domain.sys.Org;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
+import cs.domain.sys.User;
 import cs.model.project.WorkProgramDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
 import cs.repository.repositoryImpl.project.AssistUnitRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
@@ -163,11 +162,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
             for(WorkProgram wp : wpList){
                 if((signPrincipal.getFlowBranch()).equals(wp.getBranchId())){
-                    initWorkProgramDto(wp,workProgramDto);
+                    BeanCopierUtils.copyProperties(wp, workProgramDto);
+                    workProgramRepo.initWPMeetingExp(workProgramDto,wp);
                     isHaveCurUserWP = true;
                 }else{
                     WorkProgramDto wpDto = new WorkProgramDto();
-                    initWorkProgramDto(wp,wpDto);
+                    workProgramRepo.initWPMeetingExp(wpDto,wp);
                     wpDtoList.add(wpDto);
                 }
             }
@@ -184,7 +184,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //是否有拟补充资料函
             workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null?  Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
             //拟补充资料函发文日期
-           // workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
+            workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
             if(signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(),signId)){
                 //判断是否是关联次项目
                 boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
@@ -204,7 +204,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 //是否有拟补充资料函
                 workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter()==null?Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
                 //拟补充资料函发文日期
-               // workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
+                workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
                 workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
 
                 workProgramDto.setTitleDate(new Date());
@@ -246,11 +246,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         return resultMap;
     }
 
-    /**
+ /*   *//**
      * entity 转成 dto
      * @param workProgram
      * @param workProgramDto
-     */
+     *//*
     @Override
     public void initWorkProgramDto(WorkProgram workProgram,WorkProgramDto workProgramDto){
         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
@@ -280,7 +280,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setExpertDtoList(expertDtoList);
         }
     }
-
+*/
     /**
      * 通过收文id获取工作方案
      * @param signId
@@ -297,6 +297,26 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setId("");
         }
         return workProgramDto;
+    }
+
+    /**
+     * 根据合并评审主项目ID，获取合并评审次项目的工作方案信息
+     * @param signid
+     * @return
+     */
+    @Override
+    public List<WorkProgramDto> findMergeWP(String signid) {
+        List<WorkProgram> wpList = workProgramRepo.findMergeWP(signid);
+        if(Validate.isList(wpList)){
+            List<WorkProgramDto> resultList = new ArrayList<>(wpList.size());
+            wpList.forEach(wp ->{
+                WorkProgramDto wpDto = new WorkProgramDto();
+                BeanCopierUtils.copyProperties(wp,wpDto);
+                resultList.add(wpDto);
+            });
+            return resultList;
+        }
+        return null;
     }
 
     /**

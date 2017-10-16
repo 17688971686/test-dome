@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
 <ul id="myTab" class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-    <li ng-show="vm.showFlag.tabWorkProgram"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
-    <li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
+    <li ng-show="vm.model.workProgramDtoList"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+    <!--<li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>-->
     <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_score">专家评分</a></li>
@@ -108,8 +108,6 @@
 
     <!-- S 归档 -->
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
-        <!--   <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' ||  vm.model.reviewstage=='其它'"
-          ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordAllDetails.html'"/> -->
         <!-- 项目建议书 -->
         <div ng-show="vm.model.reviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileProjectIdeaDetail.html'"></div>
        
