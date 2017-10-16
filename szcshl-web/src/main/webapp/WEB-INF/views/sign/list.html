@@ -14,8 +14,21 @@
 	    	<input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
 	    	
 	    	<span class="help-inline" style="margin-left:10px;">项目编号：</span>
-	    	<input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">	    		
-	    	
+	    	<input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+
+            <span class="help-inline" style="margin-left:10px;">流程状态：</span>
+            <select operator="eq" name="signState" id="signState" placeholder="请选择">
+				<option value="">请选择</option>
+				<option value="1">进行中</option>
+                <option value="2">已暂停</option>
+                <option value="8">强制结束</option>
+                <option value="9">已完成</option>
+                <option value="5">未发起</option>
+			</select>
+
+            <span class="help-inline" style="margin-left:10px;">签收日期：</span>
+            <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" operator="eq" name="signdate" id="signdate" placeholder="请输入">
+
 	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>
 	   	</form>      
 	 </div>

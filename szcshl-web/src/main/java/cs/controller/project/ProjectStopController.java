@@ -94,6 +94,12 @@ public class ProjectStopController {
 		projectStopService.updateProjectStop(projectStopDto);
 	}
 
+	@RequiresAuthentication
+	@RequestMapping(name="获取主页上的项目暂停信息" , path = "findHomeProjectStop" , method = RequestMethod.GET)
+	@ResponseBody
+	public List<ProjectStopDto> findHomeProjectStop(){
+		return projectStopService.findHomeProjectStop();
+	}
     @RequiresAuthentication
 	//@RequiresPermissions("projectStop#findPausingProject#get")
 	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.GET)
@@ -108,5 +114,18 @@ public class ProjectStopController {
 			}
 		}
 		return result;
+	}
+
+	@RequiresPermissions("projectStop#html/projectStopForm#get")
+	@RequestMapping(name="项目暂停表单" , path="html/projectStopForm" , method =  RequestMethod.GET)
+	public String projectForm(){
+		return ctrlName + "/projectStopForm";
+	}
+
+
+	@RequiresPermissions("projectStop#html/pauseProjectList#get")
+	@RequestMapping(name="项目暂停审批"  , path="html/pauseProjectList")
+	public String stopApprove(){
+		return ctrlName +"/pauseProjectList";
 	}
 }

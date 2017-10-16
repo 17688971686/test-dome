@@ -32,4 +32,10 @@ public interface ProjectStopService {
     void updateProjectStopStatus(List<ProjectStop> projectStopList);
 
     int findMyPauseCount();
+
+    /**
+     * 获取主页面上的项目暂停申请信息
+     * @return
+     */
+    List<ProjectStopDto> findHomeProjectStop();
 }

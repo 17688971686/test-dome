@@ -63,9 +63,9 @@
                 controllerAs: 'vm'
             })
             //end#流程公共页面
-            
-             //S 拟补充资料函管理 
-            
+
+             //S 拟补充资料函管理
+
             //begin#添加拟补充资料函
             .state('addSupp', {
                 url: '/addSupp/:businessId/:businessType',
@@ -73,7 +73,7 @@
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
             })//end#添加拟补充资料函
-            
+
              //begin#拟补充资料函列表
             .state('addSuppletterList', {
                 url: '/addSuppletterList/:businessId',
@@ -81,7 +81,7 @@
                 controller: 'addSuppLetterListCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函列表
-            
+
             //begin#拟补充资料函查看流程详细页面
             .state('addSuppLetterEdit', {
                 url: '/addSuppLetterEdit/:id',
@@ -89,8 +89,8 @@
                 controller: 'addSuppLetterEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函查看流程详细页面
-            
-            
+
+
             //begin#拟补充资料函查询
             .state('suppletterList', {
                 url: '/suppletterList',
@@ -98,8 +98,8 @@
                 controller: 'addSuppLetterQueryCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函查询
-            
-           
+
+
              //begin#拟补充资料函详细信息
             .state('querySuppLetterDetail', {
                 url: '/querySuppLetterDetail/:id',
@@ -107,7 +107,7 @@
                 controller: 'addSuppLetterQueryEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函详细信息
-             
+
              //begin#拟补充资料函审批
             .state('suppLetterApproveList', {
                 url: '/suppLetterApproveList',
@@ -115,8 +115,8 @@
                 controller: 'addSuppLetterQueryCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函审批
-            
-           
+
+
             //begin#拟补充资料函审批处理页面
             .state('suppLetterApproveEdit', {
                 url: '/suppLetterApproveEdit/:id',
@@ -124,9 +124,9 @@
                 controller: 'addSuppLetterQueryEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函审批处理页面
-            
+
             //E 拟补充资料函管理
-            
+
              //begin#registerFile
             .state('registerFile', {
                 url: '/registerFile/:businessId/',
@@ -236,7 +236,7 @@
                 controllerAs: 'vm'
             })
             //end#config
-            
+
             //begin#upload
         	.state('upload', {
         		url: '/upload/:uploadid',
@@ -245,7 +245,7 @@
         		controllerAs: 'vm'
         	})
         	//end#upload
-        	
+
             //begin#meeting
             .state('meeting', {
                 url: '/meeting',
@@ -319,14 +319,14 @@
                 controllerAs: 'vm'
             })
             //end Dict
-            
+
             //begin expert
             .state('expert', {
             	url: '/expert',
                 templateUrl: rootPath + '/expert/html/queryAllList.html',
                 controller: 'expertCtrl',
                 controllerAs: 'vm'
-            })            
+            })
             .state('expertAudit', {
             	url: '/expertAudit',
                 templateUrl: rootPath + '/expert/html/audit.html',
@@ -338,7 +338,7 @@
                 templateUrl: rootPath + '/expert/html/repeat.html',
                 controller: 'expertRepeatCtrl',
                 controllerAs: 'vm'
-            })            
+            })
             .state('expertEdit', {
                 url: '/expertEdit/:expertID',
                 templateUrl: rootPath + '/expert/html/edit.html',
@@ -358,7 +358,7 @@
                 controllerAs: 'vm'
             })
             //end expert
-            
+
             //begin#sign
             .state('addSign', {
                 url: '/addSign',
@@ -411,8 +411,14 @@
             })
             .state('pauseProject', { //项目暂停审批
                 url: '/pauseProject',
-                templateUrl: rootPath + '/sign/html/pauseProjectList.html',
+                templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
                 controller: 'pauseProjectCtrl',
+                controllerAs: 'vm'
+            })
+            .state('projectStopForm', { //项目暂停表单
+                url: '/projectStopForm/:signId/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormCtrl',
                 controllerAs: 'vm'
             })
             .state('reserveAdd', {	//新增预签收
@@ -482,7 +488,7 @@
             	controllerAs: 'vm'
         	})
         	// end #officeUser
-        	
+
         	//begin#dept
         	.state('listDept', {
                 url: '/listDept',
@@ -551,7 +557,7 @@
              //通知公告详情页
              .state('annountmentDetail', {
                 url: '/annountmentDetail/:id',
-                templateUrl: rootPath + '/annountment/html/flowDetail.html',
+                templateUrl: rootPath + '/annountment/html/detail.html',
                 controller: 'annountmentDetailCtrl',
                 controllerAs: 'vm'
             })
@@ -617,7 +623,7 @@
                 controller: 'assistCostCountSvcEditCtrl',
                 controllerAs: 'vm'
             })
-            
+
              //协审费录入
             .state('assistCostAdd', {
                 url: '/assistCostAdd/:signid',
@@ -639,7 +645,7 @@
                 controller: 'financialManagerEditCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //专家缴费统计列表
             .state('expertPaymentCountList', {
                 url: '/expertPaymentCountList/:beginTime',
@@ -700,7 +706,7 @@
                 controller: 'monthlyNewsletterCtrl',
                 controllerAs: 'vm'
             })
-            
+
              //年度月报简报列表理页面
              .state('monthlyFindByMultiyear', {
                 url: '/monthlyFindByMultiyear/:reportMultiyear',
@@ -708,7 +714,7 @@
                 controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //年度（中心文件）月报简报审批列表理页面
              .state('monthlyMultiyAppoveList', {
                 url: '/monthlyMultiyAppoveList/:reportMultiyear',
@@ -716,7 +722,7 @@
                 controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //新建年度月报简报页面
              .state('monthlyMultiyearEdit', {
                 url: '/monthlyMultiyearEdit/:id',
@@ -724,7 +730,7 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //年度(中心文件)月报简报审批处理页面
              .state('monthlyMultiAppoveEdit', {
                 url: '/monthlyMultiAppoveEdit/:id',
@@ -739,7 +745,7 @@
                 controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
             })
-            
+
              //年度(中心文件)月报简报详细页面
              .state('monthlyMultiyearDetail', {
                 url: '/monthlyMultiyearDetail/:id',
@@ -747,7 +753,7 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
-            
+
              //上传附件页面
              .state('uploadMonthly', {
                 url: '/uploadMonthly/:id',
@@ -755,7 +761,7 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
-            
+
 
             //月报简报历史数据列表
              .state('monthlyHistoryList', {
@@ -771,6 +777,14 @@
                 controller: 'monthlyHistoryEditCtrl',
                 controllerAs: 'vm'
             })
+            //优秀评审报告 处理弹出框
+            .state('approveWindow', {
+                url: '/approveWindow/:signId/:projectName/:id',
+                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                controller: 'approveWindowCtrl',
+                controllerAs: 'vm'
+            })
+
             //优秀评审报告列表
             .state('reviewProjectAppraiseList', {
                 url: '/reviewProjectAppraiseList/:id',
@@ -792,7 +806,7 @@
                 controller: 'approveListCtrl',
                 controllerAs: 'vm'
             })
-            
+
             //E 月报简报管理
 
             //S 档案借阅管理
@@ -1042,7 +1056,7 @@
         		$state.go($rootScope.previousState_name, $rootScope.previousState_params);
         	}else{
                 $state.go('welcome');
-        	}           
+        	}
         };
         $rootScope.backtoflow = function () {
             if($rootScope.$flowUrl ){
@@ -1051,22 +1065,22 @@
                 $state.go('gtasks');
             }
         };
-    	
+
         $rootScope.topSelectChange = function (dictKey, dicts , type) {
-        	if(dicts !=undefined){       		
+        	if(dicts !=undefined){
 	            for (var i = 0; i < dicts.length; i++) {
 	            	//根据code查询
 	            	if(type && type == "code"){
-	            		
+
 	            		if (dicts[i].dictCode == dictKey) {
 	                        return dicts[i].dicts;
 	                    }
-	            	//默认根据name查询	
+	            	//默认根据name查询
 	            	}else{
 	            		if (dicts[i].dictName == dictKey) {
 	                        return dicts[i].dicts;
 	                    }
-	            	}               
+	            	}
 	            }
         	}
         }

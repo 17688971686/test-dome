@@ -22,6 +22,10 @@
             adminSvc.findtasks(vm);
             adminSvc.findendTasks(vm);
             adminSvc.findHomePluginFile(vm);
+            adminSvc.initProjectStop(vm);
+            adminSvc.findHomeAppraise(vm);
+            adminSvc.findHomeAddSuppLetter(vm);
+            adminSvc.findHomeMonthly(vm);
         }
 
     }

@@ -34,7 +34,7 @@ import java.util.Map;
 @MudoleAnnotation(name = "项目管理",value = "permission#sign")
 public class AddSuppLetterController {
 
-	String ctrlName = "addSuppLetter";
+    String ctrlName = "addSuppLetter";
     @Autowired
     private AddSuppLetterService addSuppLetterService;
 
@@ -42,8 +42,8 @@ public class AddSuppLetterController {
     //@RequiresPermissions("addSuppLetter#initSuppListDate#post")
     @RequestMapping(name = "初始化拟补充资料函列表", path = "initSuppListDate", method = RequestMethod.POST)
     public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String businessId){
-    	List<AddSuppLetterDto> addSuppLetterDtos=addSuppLetterService.initSuppList(businessId);
-    	return addSuppLetterDtos;
+        List<AddSuppLetterDto> addSuppLetterDtos=addSuppLetterService.initSuppList(businessId);
+        return addSuppLetterDtos;
     }
 
     @RequiresAuthentication
@@ -51,7 +51,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "获取拟补充资料函查询列表", path = "addsuppListData", method = RequestMethod.POST)
     public  @ResponseBody PageModelDto<AddSuppLetterDto> getProject(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addsuppListData(odataObj);	
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addsuppListData(odataObj);
         return addSuppLetterDtos;
     }
 
@@ -61,7 +61,7 @@ public class AddSuppLetterController {
     @ResponseBody
     public  PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);	
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);
         return addSuppLetterDtos;
     }
 
@@ -70,7 +70,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "领导审批处理", path = "updateApprove", method = RequestMethod.POST)
     @ResponseBody
     public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
-		addSuppLetterService.updateApprove(addSuppLetterDto);
+        addSuppLetterService.updateApprove(addSuppLetterDto);
     }
 
     @RequiresAuthentication
@@ -85,7 +85,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "提交拟补充资料函", path = "submitSupp", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto){
-		return  addSuppLetterService.addSupp(addSuppLetterDto);
+        return  addSuppLetterService.addSupp(addSuppLetterDto);
     }
 
     @RequiresAuthentication
@@ -93,15 +93,22 @@ public class AddSuppLetterController {
     @RequestMapping(name = "保存拟补充资料函", path = "saveSupp", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto save(@RequestBody AddSuppLetterDto addSuppLetterDto){
-    	addSuppLetterService.saveSupp(addSuppLetterDto);
-    	return addSuppLetterDto;
+        addSuppLetterService.saveSupp(addSuppLetterDto);
+        return addSuppLetterDto;
     }
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#findById#get")
     @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.GET)
     public @ResponseBody AddSuppLetterDto getbyId(@RequestParam String id){
-    	AddSuppLetterDto addSuppLetterDto = addSuppLetterService.getbyId(id);
-    	return addSuppLetterDto;
+        AddSuppLetterDto addSuppLetterDto = addSuppLetterService.getbyId(id);
+        return addSuppLetterDto;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name="查询主页上的拟补充资料函信息" , path = "findHomeAddSuppLetter" , method =  RequestMethod.GET)
+    @ResponseBody
+    public List<AddSuppLetterDto> findHomeAddSupletter(){
+        return addSuppLetterService.findHomeAddSuppLetter();
     }
 
     @RequiresAuthentication
@@ -115,49 +122,49 @@ public class AddSuppLetterController {
     //@RequiresPermissions("addSuppLetter#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "edit", method = RequestMethod.GET)
     public String edit(Model model) {
-        return ctrlName+"/edit"; 
+        return ctrlName+"/edit";
     }
 
-    
+
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/edit#get")
     @RequestMapping(name = "编辑上传后页面", path = "editUpload", method = RequestMethod.GET)
     public String editUpload(Model model) {
-        return ctrlName+"/editUpload"; 
+        return ctrlName+"/editUpload";
     }
-    
+
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/list#get")
     @RequestMapping(name = "拟补充资料函列表页面", path = "list", method = RequestMethod.GET)
     public String addSuppLetterList() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/list";
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/detail#get")
     @RequestMapping(name = "拟补充资料函详细信息页面", path = "detail", method = RequestMethod.GET)
     public String addSuppLetterDetail() {
-        return ctrlName+"/detail"; 
+        return ctrlName+"/detail";
     }
 
     @RequiresPermissions("addSuppLetter#html/suppLetterList#get")
     @RequestMapping(name = "拟补充资料函查询", path = "suppLetterList", method = RequestMethod.GET)
     public String suppLetterList() {
-        return ctrlName+"/suppLetterList"; 
+        return ctrlName+"/suppLetterList";
     }
 
 
     @RequiresPermissions("addSuppLetter#html/suppLetterApproveList#get")
     @RequestMapping(name = "拟补充资料函审批", path = "suppLetterApproveList", method = RequestMethod.GET)
     public String suppLetterApproveList() {
-        return ctrlName+"/suppLetterApproveList"; 
+        return ctrlName+"/suppLetterApproveList";
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/suppLetterApproveEdit#get")
     @RequestMapping(name = "拟补充资料函审批处理页面", path = "suppLetterApproveEdit", method = RequestMethod.GET)
     public String suppLetterApproveEdit(){
-    	return ctrlName+"/suppLetterApproveEdit"; 
+        return ctrlName+"/suppLetterApproveEdit";
     }
 
 }

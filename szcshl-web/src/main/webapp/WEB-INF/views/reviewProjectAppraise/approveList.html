@@ -13,7 +13,7 @@
     <form id="form" name="form">
         <script type="text/template" id="columnBtns">
             <@shiro.hasPermission name="reviewProjectAppraise##put">
-            <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>处理</button>
+            <a class="btn btn-xs btn-primary" href="#/approveWindow/{0}/{1}/{2}"><span class="glyphicon glyphicon-pencil"></span>处理</a>
             </@shiro.hasPermission>
         </script>
     </form>

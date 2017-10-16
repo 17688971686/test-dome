@@ -12,12 +12,12 @@
             reviewProjectAppraiseSvc.endProjectGrid(vm);
         }
 
-
-        /**
+/*
+        /!**
          * 评优申请弹出窗
          * @param vm
          * @param signId
-         */
+         *!/
         vm.appraisingWindow = function(signId , projectName){
             vm.appraise = {};
             vm.appraise.signId = signId;
@@ -30,19 +30,19 @@
 
         }
 
-        /**
+        /!**
          * 取消
-         */
+         *!/
         vm.closewin=function(){
             window.parent.$("#appraiseWindow").data("kendoWindow").close()
         }
 
-        /**
+        /!**
          * 提交评优申请
-         */
+         *!/
         vm.commitApprove = function(){
             reviewProjectAppraiseSvc.saveApply(vm);
-        }
+        }*/
 
     }
 })();

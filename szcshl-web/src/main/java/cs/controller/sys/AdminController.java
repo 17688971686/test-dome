@@ -8,6 +8,7 @@ import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
@@ -53,6 +54,9 @@ public class AdminController {
     @Autowired
     private AppraiseService appraiseService;
 
+    @Autowired
+    private AddSuppLetterService addSuppLetterService;
+
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
@@ -95,6 +99,8 @@ public class AdminController {
                 || Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
             resultMap.put("PAUSE_COUNT",projectStopService.findMyPauseCount());
             resultMap.put("APPRAISE_COUNT" , appraiseService.countApprove());
+            resultMap.put("MONTHLY_COUNT" , addSuppLetterService.countMonthly());
+            resultMap.put("SUPPLETTER_COUNT" , addSuppLetterService.countSuppLetter());
         }
 
         return resultMap;

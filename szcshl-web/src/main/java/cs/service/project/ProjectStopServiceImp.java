@@ -284,4 +284,33 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		return ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
 	}
 
+    @Override
+    public List<ProjectStopDto> findHomeProjectStop() {
+
+		List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
+		Criteria criteria = projectStopRepo.getExecutableCriteria();
+		//部长审核
+		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+			criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(),SessionUtil.getLoginName()));
+			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.NO.getValue()));
+		}
+		//分管副主任办理
+		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+			criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(),SessionUtil.getLoginName()));
+			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
+		}else{
+			return projectStopDtoList;
+		}
+		criteria.setMaxResults(6);
+		criteria.addOrder(Order.desc(ProjectStop_.createdDate.getName()));
+		List<ProjectStop> projectStopList = criteria.list();
+
+		for(ProjectStop p : projectStopList){
+			ProjectStopDto projectStopDto = new ProjectStopDto();
+			BeanCopierUtils.copyProperties( p , projectStopDto);
+			projectStopDtoList.add(projectStopDto);
+		}
+        return projectStopDtoList;
+    }
+
 }

@@ -14,6 +14,7 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.reviewProjectAppraise.AppraiseRepo;
 import org.apache.regexp.RE;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
@@ -329,5 +330,34 @@ public class AppraiseServiceImpl implements AppraiseService {
             return 0;
         }
         return ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+    }
+
+    @Override
+    public List<AppraiseReportDto> findHomeAppraise() {
+
+        Criteria criteria = appraiseRepo.getExecutableCriteria();
+        List<AppraiseReportDto> appraiseReportDtoList = new ArrayList<>();
+        //部长审核
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
+            criteria.add(Restrictions.eq(AppraiseReport_.ministerName.getName() , SessionUtil.getDisplayName()));
+            criteria.add(Restrictions.eq(AppraiseReport_.approveStatus.getName() , Constant.EnumState.NO.getValue()));
+        }
+        //综合部
+        else if(Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
+            criteria.add(Restrictions.eq(AppraiseReport_.generalConductorName.getName(),SessionUtil.getLoginName()));
+            criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
+        }else{
+            return appraiseReportDtoList;
+        }
+        criteria.setMaxResults(6);
+        criteria.addOrder(Order.desc(AppraiseReport_.createdDate.getName()));
+        List<AppraiseReport> appraiseReportList = criteria.list();
+        for(AppraiseReport a : appraiseReportList){
+            AppraiseReportDto appraiseReportDto = new AppraiseReportDto();
+            BeanCopierUtils.copyProperties(a , appraiseReportDto);
+            appraiseReportDtoList.add(appraiseReportDto);
+        }
+        return appraiseReportDtoList;
     }
 }

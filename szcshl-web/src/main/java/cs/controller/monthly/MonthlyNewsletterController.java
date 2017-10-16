@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description: 月报简报 控制层
@@ -103,6 +104,13 @@ public class MonthlyNewsletterController {
      	}else{
      		addSuppLetterService.delete(id);      
      	}
+     }
+
+     @RequiresAuthentication
+     @RequestMapping(name="查询主页上的月报简报审批处理信息" , path = "findHomeMonthly" , method = RequestMethod.GET)
+     @ResponseBody
+     public List<AddSuppLetterDto> findHomeMonthly(){
+        return addSuppLetterService.findHomeMonthly();
      }
 
     @RequiresAuthentication

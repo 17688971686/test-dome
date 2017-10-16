@@ -197,6 +197,38 @@ desired effect
                                 </a>
                             </li>
                         </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sign#html/pauseProjectList#get">
+                            <li>
+                                <a href="javascript:void(0)" ui-sref="pauseProject">
+                                    项目暂停审批<span class="label label-danger" id="PAUSE_COUNT">0</span>
+                                </a>
+                            </li>
+                        </@shiro.hasPermission>
+
+                        <@shiro.hasPermission name="addSuppLetter#html/suppLetterApproveList#get">
+                            <li>
+                                <a href="javascript:void(0)" ui-sref="suppLetterApproveList">
+                                    拟补资料函审批
+                                    <span class="label label-danger" id="SUPPLETTER_COUNT">0</span>
+                                </a>
+                            </li>
+                        </@shiro.hasPermission>
+
+                        <@shiro.hasPermission name="reviewProjectAppraise#html/approveList#get">
+                            <li><a href="javascript:void(0)" ui-sref="approveList">
+                                评审报告评优审批
+                                <span class="label label-danger" id="APPRAISE_COUNT">0</span>
+                            </a></li>
+                        </@shiro.hasPermission>
+
+                        <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyAppoveList#get">
+                            <li>
+                                <a href="javascript:void(0)" ui-sref="monthlyMultiyAppoveList">
+                                    月报简报审批<span class="label label-danger" id="MONTHLY_COUNT">0</span>
+                                </a>
+                            </li>
+                        </@shiro.hasPermission>
+
                     </ul>
                 </li>
             </@shiro.hasPermission>
@@ -217,13 +249,7 @@ desired effect
                         <@shiro.hasPermission name="sign#html/add#get">
                             <li ><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
                         </@shiro.hasPermission>
-                        <@shiro.hasPermission name="sign#html/pauseProjectList#get">
-                            <li>
-                                <a href="javascript:void(0)" ui-sref="pauseProject">
-                                    项目暂停审批<span class="label label-danger" id="PAUSE_COUNT">0</span>
-                                </a>
-                            </li>
-                        </@shiro.hasPermission>
+
                         <@shiro.hasPermission name="sign#html/reserveAdd#get">
                             <li><a href="javascript:void(0)" ui-sref="reserveAdd">项目预签收</a></li>
                         </@shiro.hasPermission>
@@ -241,14 +267,7 @@ desired effect
                         </@shiro.hasPermission>
 
                         <!-- start 项目资料函管理 -->
-                        <@shiro.hasPermission name="addSuppLetter#html/suppLetterApproveList#get">
-                            <li>
-                                <a href="javascript:void(0)" ui-sref="suppLetterApproveList">
-                                    拟补资料函审批
-                                    <span class="label label-danger" id="ADDSUPPLETTER_COUNT">0</span>
-                                </a>
-                            </li>
-                        </@shiro.hasPermission>
+
                         <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
                             <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
                         </@shiro.hasPermission>
@@ -256,9 +275,15 @@ desired effect
                         <!-- end 项目资料函管理 -->
                         <!-- start 优秀评审报告管理 -->
 
-                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingEdit">评审项目评优</a></li>
+                        <@shiro.hasPermission name="reviewProjectAppraise#html/edit#get">
+                            <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseEdit">评审报告评优</a></li>
+                        </@shiro.hasPermission>
 
-                        <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraisingList">优秀评审报告查询</a></li>
+
+
+                        <@shiro.hasPermission name="reviewProjectAppraise#html/list#get">
+                            <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseList">优秀评审报告查询</a></li>
+                        </@shiro.hasPermission>
 
                         <!-- end 优秀评审报告管理 -->
                         <!-- start 月报简报管理 -->
@@ -274,13 +299,6 @@ desired effect
                             <li><a href="javascript:void(0)" ui-sref="theMonthsList">月报简报</a></li>
                         </@shiro.hasPermission>
 
-                        <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyAppoveList#get">
-                            <li>
-                                <a href="javascript:void(0)" ui-sref="monthlyMultiyAppoveList">
-                                    月报简报审批<span class="label label-danger" id="LIBRARY_COUNT">0</span>
-                                </a>
-                            </li>
-                        </@shiro.hasPermission>
 
                         <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyFileList#get">
                             <li><a href="javascript:void(0)" ui-sref="monthlyMultiyFileList">月报简报查询</a>

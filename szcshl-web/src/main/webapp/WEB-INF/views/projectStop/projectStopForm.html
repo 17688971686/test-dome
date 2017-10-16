@@ -1,0 +1,125 @@
+
+
+<div id="spwindow" class="well well-sm" style="background:white;">
+    <form id="form" name="form">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.commitProjectStop()" >确定
+            </button>
+            <go-back></go-back>
+        </div>
+        <div><span>编号：WR-4.3-04-01-A0</span></div>
+        <table style="width:100%">
+            <tr>
+                <td class="formAlignRight" style="width:50px;">项目名称: </td>
+                <td colspan="5">
+                    <input type="text" style="width:80%;" ng-model="vm.sign.projectname" readonly/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style="width:50px;">申报单位: </td>
+                <td colspan="5">
+                    <input type="text" style="width:80%;" ng-model="vm.sign.builtcompanyname" readonly/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style="width:50px;">评审部门:</td>
+                <td style="width:400px;">
+                    <input type="text" style="width:55%;" ng-model="vm.sign.mOrgName" readonly/>
+                </td>
+                <td></td>
+
+                <td class="formAlignRight" style="width:100px;" >项目负责人: </td>
+                <td style="width:400px;">
+                    <input type="text" style="width:55%;" ng-model="vm.sign.mUserName" readonly/>
+                </td>
+                <td></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style="width:100px;">收文时间: </td>
+                <td style="width:400px;">
+                    <input type="text" style="width:55%;" ng-model="vm.sign.receivedate" readonly/>
+                </td>
+                <td></td>
+
+                <td class="formAlignRight" style="width:100px;">已用工作日: </td>
+                <td style="width:400px;">
+                    <input type="text" style="width:55%;" name="" ng-model="vm.sign.countUsedWorkday" readonly/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style="width:200px;">项目暂停天数(工作日):<span class="required">*</span></td>
+                <td colspan="5">
+                    <input type="number" style="width:80%;" id="pausedays" name="pausedays" ng-model="vm.projectStop.pausedays" ng-disabled="vm.showIdea" data-val="true" data-val-required="必填"/>
+                </td>
+                <td style="width:50px;"><span data-valmsg-for="pausedays" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style="width:200px;">项目基本情况:<span class="required">*</span></td>
+                <td colspan="5">
+                    <textarea style="width:80%;" name="projectDesc" id="projectDesc" ng-model="vm.projectStop.projectDesc" ng-disabled="vm.showIdea" data-val="true" data-val-required="必填"></textarea>
+                </td>
+                <td><span data-valmsg-for="projectDesc" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" style="width:200px;">要求暂定原因:<span class="required">*</span></td>
+                <td colspan="5">
+                    <textarea style="width:80%;" name="pasedescription" id="pasedescription" ng-model="vm.projectStop.pasedescription" ng-disabled="vm.showIdea" data-val="true" data-val-required="必填"></textarea>
+                </td>
+                <td><span data-valmsg-for="pasedescription" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="5" id="materials">
+                    <p>中心发补充材料函
+                        <input type="checkbox" name="file" id="file1"  value="中心发补充材料函" ng-disabled="vm.showIdea" ng-click="vm.Checked2()"  ng-checked="vm.projectStop.isSupplementMaterial == '9'"/>
+                    </p>
+                    <p>申报单位要求暂停审核函
+                        <input type="checkbox" name="file" id="file2"  value="申报单位要求暂停审核函" ng-disabled="vm.showIdea" ng-click="vm.Checked2()"  ng-checked="vm.projectStop.isPuaseApprove == '9'"/>
+                    </p>
+                    <p>无以上文件
+                        <input type="checkbox" name="file" id="fileNo"  value="无以上文件" ng-disabled="vm.showIdea" ng-click="vm.Checked()" ng-checked="vm.projectStop.isPuaseApprove != '9' && vm.projectStop.isSupplementMaterial!= '9'"/>
+                    </p>
+                </td>
+                <td></td>
+            </tr>
+            <tr ng-show="vm.showIdea">
+                <td class="formAlignRight" style="width:200px;">部长意见:</td>
+                <td colspan="5">
+                    <textarea style="width:500px;" name="directorIdeaContent" id="directorIdeaContent" ng-model="vm.projectStop.directorIdeaContent" ng-disabled="vm.projectStop.approveStatus=='1'" data-val="true" data-val-required="必填"></textarea>
+                    <span>个人意见</span>
+                    <span style="width:300px;">
+			  			<select ng-model="vm.directorIdea" ng-change="vm.selectMinisterIdea()"  ng-disabled="vm.projectStop.approveStatus=='1'">
+			  				<option value="">请选择</option>
+			  				<option  ng-repeat="x in vm.ideas" value="{{x.ideaContent}}" >{{x.ideaContent}}</option>
+			  			</select>
+			  		</span>
+                </td>
+                <td><span data-valmsg-for="directorIdeaContent" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr ng-show="vm.showIdea">
+                <td class="formAlignRight" style="width:200px;">分管副主任签批:</td>
+                <td colspan="5">
+                    <textarea style="width:500px;" name="leaderIdeaContent" id="leaderIdeaContent" ng-model="vm.projectStop.leaderIdeaContent"  ng-disabled="vm.projectStop.approveStatus!='1'" data-val="true" data-val-required="必填"></textarea>
+                    <span>个人意见</span>
+                    <span style="width:300px;">
+			  			<select ng-model="vm.leaderIdea" ng-change="vm.selectDirectorIdea()"  ng-disabled="vm.projectStop.approveStatus!='1'">
+			  				<option value="">请选择</option>
+			  				<option  ng-repeat="x in vm.ideas" value="{{x.ideaContent}}" >{{x.ideaContent}}</option>
+			  			</select>
+			  		</span>
+                </td>
+                <td><span data-valmsg-for="leaderIdeaContent" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+
+        </table>
+        <div class="toolbar">
+            <span>
+                备注：项目暂停申请表与评审中心补充资料函或项目单位要求暂停审核函一并签批；
+                     项目暂停申请表需与补充资料函或要求暂定审核函一起并存。
+            </span>
+        </div>
+    </form>
+</div>

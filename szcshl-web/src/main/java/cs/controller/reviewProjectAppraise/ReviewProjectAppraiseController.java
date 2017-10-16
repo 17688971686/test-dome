@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Description:优秀评审报告
@@ -99,6 +100,13 @@ public class ReviewProjectAppraiseController {
         appraiseService.saveApprove(appraiseReportDto);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name="查询主页上评审报告评优审批的项目信息" , path="findHomeAppraise" , method = RequestMethod.GET)
+    @ResponseBody
+    public List<AppraiseReportDto> findHomeAppraise(){
+        return appraiseService.findHomeAppraise();
+    }
+
     @RequiresPermissions("reviewProjectAppraise#html/list#get")
     @RequestMapping(name="优秀评审报告查询" , path="html/list" , method = RequestMethod.GET)
     public String list(){
@@ -115,5 +123,12 @@ public class ReviewProjectAppraiseController {
     @RequestMapping(name="优秀评审报告审批" , path="html/approveList" , method = RequestMethod.GET)
     public String approveList(){
         return ctrlName + "/approveList";
+    }
+
+
+    @RequiresPermissions("reviewProjectAppraise#html/approveWindow#get")
+    @RequestMapping(name="处理弹出框" , path = "html/approveWindow" , method = RequestMethod.GET)
+    public String approveWindow(){
+        return ctrlName + "/approveWindow";
     }
 }

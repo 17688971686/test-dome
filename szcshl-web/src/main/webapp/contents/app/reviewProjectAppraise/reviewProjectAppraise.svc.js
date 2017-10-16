@@ -39,9 +39,9 @@
                 }
                 var httpSuccess = function success(response) {
                     bsWin.success("操作成功！" , function (){
-                        window.parent.$("#appraiseWindow").data("kendoWindow").close();
-                        location.reload();
-                        // $state.go('approveList');
+                        // window.parent.$("#appraiseWindow").data("kendoWindow").close();
+                        // location.reload();
+                        $state.go('approveList');
                     });
 
 
@@ -128,8 +128,9 @@
 
                 var httpSuccess = function success(response) {
                     bsWin.success("保存成功！");
-                    window.parent.$("#appraiseWindow").data("kendoWindow").close();
-                    vm.gridOptions.dataSource.read();
+                    $state.go('reviewProjectAppraiseEdit');
+                    // window.parent.$("#appraiseWindow").data("kendoWindow").close();
+                    // vm.gridOptions.dataSource.read();
                 }
 
                 common.http({
@@ -299,8 +300,7 @@
                         }else if(item.isAppraising == 1){
                             return "审核中";
                         }else{
-                            return common.format($('#columnBtns').html(),
-                                "vm.appraisingWindow('" + item.signid + "','"+item.projectname+"')");
+                            return common.format($('#columnBtns').html(),item.signid  , item.projectname , '');
                         }
                     }
                 }
@@ -573,8 +573,7 @@
                     title: "操作",
                     width: 100,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.dealWindow('" + item.id + "')");
+                        return common.format($('#columnBtns').html() ,item.signid  , item.projectname, item.id );
                     }
                 }
             ];

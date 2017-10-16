@@ -288,11 +288,6 @@ public class SignController {
     	return ctrlName + "/hiProcessTask";
     }
 
-    @RequiresPermissions("sign#html/pauseProjectList#get")
-    @RequestMapping(name="项目暂停审批"  , path="html/pauseProjectList")
-    public String stopApprove(){
-        return ctrlName +"/pauseProjectList";
-    }
 
     /***************************************  E 新流程处理的方法     *******************************************/
 

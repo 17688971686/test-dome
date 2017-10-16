@@ -51,5 +51,29 @@ public interface AddSuppLetterService {
 
 	void saveSupp(AddSuppLetterDto addSuppLetterDto);
 
+	/**
+	 * 查询主页上的拟补资料函信息
+	 * @return
+	 */
+	List<AddSuppLetterDto> findHomeAddSuppLetter();
+
+	/**
+	 * 查询主页上的月报简报信息列表
+	 * @return
+	 */
+	List<AddSuppLetterDto> findHomeMonthly();
+
+	/**
+	 * 统计 拟补充资料函数审批目
+	 * @return
+	 */
+	int countSuppLetter();
+
+	/**
+	 * 统计 月报简报审批处理数目
+	 * @return
+	 */
+	int countMonthly();
+
 
 }

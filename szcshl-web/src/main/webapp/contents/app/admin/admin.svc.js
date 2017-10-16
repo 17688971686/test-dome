@@ -27,10 +27,86 @@
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
             excelExport : excelExport,//项目统计导出
-            statisticalGrid : statisticalGrid
+            statisticalGrid : statisticalGrid,
+            initProjectStop : initProjectStop ,//初始化项目暂停审批信息
+            findHomeAppraise : findHomeAppraise, //初始化评审报告评优审批 信息
+            findHomeAddSuppLetter : findHomeAddSuppLetter ,//初始化 拟补充资料函信息
+            findHomeMonthly : findHomeMonthly , //初始化主页上的月报简报信息
 
         }
         return service;
+
+        //begin findHomeMonthly
+        function findHomeMonthly(vm){
+            var httpOptions = {
+                method : 'get',
+                url : rootPath + '/monthlyNewsletter/findHomeMonthly'
+            }
+            var httpSuccess = function success(response){
+                vm.monthlyList = response.data;
+            }
+            common.http({
+                vm :vm,
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findHomeMonthly
+
+        //begin findHomeAddSuppLetter
+        function findHomeAddSuppLetter(vm){
+            var httpOptions = {
+                method : 'get',
+                url : rootPath + '/addSuppLetter/findHomeAddSuppLetter'
+            }
+            var httpSuccess = function success(response){
+                vm.addSupLetterList = response.data;
+            }
+            common.http({
+                vm :vm,
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findHomeAddSuppLetter
+
+        //begin initProjectStop
+        function initProjectStop(vm){
+            var httpOptions = {
+                method : 'get',
+                url : rootPath + '/projectStop/findHomeProjectStop'
+            }
+            var httpSuccess = function success(response){
+                vm.projectStopList = response.data;
+            }
+            common.http({
+                vm :vm,
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end initProjectStop
+
+        //begin findHomeAppraise
+        function findHomeAppraise(vm){
+            var httpOptions = {
+                method : 'get',
+                url : rootPath + '/reviewProjectAppraise/findHomeAppraise'
+            }
+            var httpSuccess = function success(response){
+                vm.appraiseList = response.data;
+            }
+            common.http({
+                vm :vm,
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findHomeAppraise
 
         //begin excelExport
         function excelExport(vm , fileName , project){

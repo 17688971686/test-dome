@@ -3,9 +3,9 @@
 
     angular.module('app').factory('pauseProjectSvc', pauseProject);
 
-    pauseProject.$inject = ['$http', '$state'];
+    pauseProject.$inject = ['$http', '$state' , 'bsWin'];
 
-    function pauseProject($http, $state) {
+    function pauseProject($http, $state , bsWin) {
         var service = {
             pauseProjectWindow : pauseProjectWindow,    //项目暂停弹出框
             pauseProject: pauseProject,//保存暂停项目
@@ -41,7 +41,7 @@
         }
 
         //beign findPausingProject
-        function findPausingProject(vm,signId,stopid){
+        function findPausingProject(vm,signId){
             var httpOptions={
                 method : "get",
                 url : rootPath + "/projectStop/findPausingProject",
@@ -50,23 +50,11 @@
 
             var httpSuccess=function success(response){
                 if(response.data !=""){
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "该项目暂停申请正在处理",
-                                fn: function () {
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                }
-                            })
-                        }
+                    bsWin.success("该项目暂停申请正在处理");
 
-                    });
                 }else{
-                    pauseProjectWindow(vm,signId,stopid);
+                    $state.go("projectStopForm" , {signId : signId , stopId : ''} );
+
                 }
             }
             common.http({
@@ -125,8 +113,14 @@
             var isValid = $('#form').valid();
             if (isValid) {
                 var materials = [];
-                materials.push($('#file1').val());
-                materials.push($('#file2').val());
+                if($("#file1").is(":checked")){
+
+                    materials.push($('#file1').val());
+                }
+                if($("#file2").is(":checked")){
+
+                    materials.push($('#file2').val());
+                }
                 var materialStr = materials.join(",");
                 vm.projectStop.material = materialStr;
                 var httpOptions = {
@@ -135,23 +129,8 @@
                     data: vm.projectStop
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            window.parent.$("#spwindow").data("kendoWindow").close();
-                            vm.gridOptions.dataSource.read();
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                }
-                            })
-                        }
-
-                    });
+                    bsWin.success("操作成功");
+                    $state.go("personDtasks");
                 }
 
                 common.http({
@@ -164,7 +143,7 @@
         } //end_pauseProject
 
         //begin getProjectStopByStopId
-        function getProjectStopByStopId(vm,stopId){
+        function getProjectStopByStopId(vm,stopId , callBack){
             var httpOptions={
                 method : "get",
                 url : rootPath + "/projectStop/getProjectStopByStopId",
@@ -172,13 +151,16 @@
             }
 
             var httpSuccess=function success(response){
-                vm.projectStop = response.data;
-                if( vm.projectStop.directorIdeaContent == undefined){
-                    vm.projectStop.directorIdeaContent="";
+                if( callBack != undefined && typeof  callBack == 'function'){
+                    return callBack(response.data);
                 }
-                if(vm.projectStop.leaderIdeaContent == undefined){
-                    vm.projectStop.leaderIdeaContent="";
-                }
+                // vm.projectStop = response.data;
+                // if( vm.projectStop.directorIdeaContent == undefined){
+                //     vm.projectStop.directorIdeaContent="";
+                // }
+                // if(vm.projectStop.leaderIdeaContent == undefined){
+                //     vm.projectStop.leaderIdeaContent="";
+                // }
             }
 
             common.http({
@@ -201,23 +183,9 @@
                     data: vm.projectStop
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            window.parent.$("#spwindow").data("kendoWindow").close();
-                            vm.gridOptions.dataSource.read();
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                }
-                            })
-                        }
+                    bsWin.success("操作成功");
+                    $state.go('pauseProject');
 
-                    });
                 }
                 common.http({
                     vm: vm,
@@ -307,7 +275,7 @@
                     width : 100,
                     filterable : false,
                     template : function(item){
-                            return common.format($("#columnBtns").html(),"vm.pauseProjectWindow('"+item.sign.signid+"','"+item.stopid+"')");
+                            return common.format($("#columnBtns").html(),item.sign.signid , item.stopid );
                     }
                 }
             ];
