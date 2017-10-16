@@ -25,7 +25,7 @@ public interface AddSuppLetterService {
 	
     ResultMsg fileNum(String id);
 
-	AddSuppLetterDto initSuppLetter(String businessId, String businessType);
+	AddSuppLetterDto initSuppLetter(String businessId, String businessType,String workId);
 
 	List<AddSuppLetterDto> initSuppList(String businessId);
 

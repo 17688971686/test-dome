@@ -68,7 +68,7 @@
 
             //begin#添加拟补充资料函
             .state('addSupp', {
-                url: '/addSupp/:businessId/:businessType',
+                url: '/addSupp/:businessId/:businessType/:workId',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
@@ -679,6 +679,13 @@
                 url: '/proCostClassifyCountList',
                 templateUrl: rootPath + '/financialManager/html/proCostClassifyCount.html',
                 controller: 'proCostClassifyCountCtrl',
+                controllerAs: 'vm'
+            })
+            //项目评审情况统计
+            .state('proReviewConCountList', {
+                url: '/proReviewConCountList',
+                templateUrl: rootPath + '/financialManager/html/proReviewConCount.html',
+                controller: 'proReviewConditionCtrl',
                 controllerAs: 'vm'
             })
              //E 项目费用管理

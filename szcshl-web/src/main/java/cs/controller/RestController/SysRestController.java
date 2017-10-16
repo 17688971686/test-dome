@@ -1,5 +1,8 @@
 package cs.controller.RestController;
 
+import com.alibaba.fastjson.JSON;
+import cs.ahelper.HttpClientOperate;
+import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
@@ -15,10 +18,11 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 系统接口controller
@@ -39,13 +43,17 @@ public class SysRestController {
     private TaskService taskService;
     @Autowired
     private FlowService flowService;
+    @Autowired
+    private HttpClientOperate httpClientOperate;
     /**
      * 项目签收信息
-     * @param signDto
+     * @param signDtoJson
      * @return
      */
     @RequestMapping(name="项目签收信息",value = "/pushProject", method = RequestMethod.POST)
-    public ResultMsg pushProject(@RequestBody SignDto signDto) {
+    public ResultMsg pushProject(@RequestParam String signDtoJson) {
+        //json转出对象
+        SignDto signDto = JSON.parseObject(signDtoJson,SignDto.class);
         return signService.pushProject(signDto);
     }
 
@@ -97,5 +105,18 @@ public class SysRestController {
             }
         }
         return resultObj;
+    }
+
+
+    @RequestMapping(name="项目签收信息",value = "/testJson")
+    public void testJson() throws IOException {
+        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/";
+        SignDto signDto = new SignDto();
+        signDto.setSignid("122");
+        signDto.setCreatedBy("系统管理员");
+        Map<String, String> params = new HashMap<>();
+        params.put("signDtoJson",JSON.toJSONString(signDto));
+        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI+"/pushProject", params);
+        System.out.println(hst.toString());
     }
 }

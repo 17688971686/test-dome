@@ -45,6 +45,9 @@
                         },
                         onCancel : function () {
                             vm.dispatchDoc.isRelated = 9;
+                        },
+                        onClose : function () {
+                            vm.dispatchDoc.isRelated = 9;
                         }
                     });
                 }else if((oldValue == 0 || oldValue == '0')&& (newValue == 9 || newValue == '9') && (!vm.sign.isAssociate || vm.sign.isAssociate == 0)){

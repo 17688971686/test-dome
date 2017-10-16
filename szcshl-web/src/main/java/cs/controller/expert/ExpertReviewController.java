@@ -126,7 +126,7 @@ public class ExpertReviewController {
 
     //查找专家当月的评审费用
     @RequiresAuthentication
-    @RequestMapping(name = "获取专家某月的评审费用", path = "html/getExpertReviewCost", method = RequestMethod.GET)
+    @RequestMapping(name = "获取专家某月的评审费用", path = "getExpertReviewCost", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String,Object>> getExpertReviewCost(@RequestParam(required = true) String expertIds,
          @RequestParam(required = true) String month,HttpServletRequest request){

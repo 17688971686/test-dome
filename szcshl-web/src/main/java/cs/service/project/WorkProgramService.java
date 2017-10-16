@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.util.List;
 import java.util.Map;
 
 import cs.common.ResultMsg;
@@ -20,7 +21,12 @@ public interface WorkProgramService {
 
     WorkProgramDto initWorkProgramById(String workId);
 
-    void initWorkProgramDto(WorkProgram workProgram, WorkProgramDto workProgramDto);
-
     WorkProgramDto findByPrincipalUser(String signId);
+
+    /**
+     * 根据合并评审主项目ID，获取合并评审次项目的工作方案信息
+     * @param signid
+     * @return
+     */
+    List<WorkProgramDto> findMergeWP(String signid);
 }

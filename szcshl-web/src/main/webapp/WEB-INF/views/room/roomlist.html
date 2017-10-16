@@ -62,7 +62,6 @@
     <div class="well well-sm" style="margin-bottom: 5px;">
         会议室查询：
         <select ng-model="vm.mrID" name="mrID" ng-change="vm.findMeeting()">
-            <option value="">请选择</option>
             <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.mrID == x.id">{{x.addr}}</option>
         </select>
     </div>

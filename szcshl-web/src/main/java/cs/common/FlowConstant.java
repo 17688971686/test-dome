@@ -37,8 +37,8 @@ public class FlowConstant {
     public static final String FLOW_SIGN_FW = "SIGN_FW";                //发文申请
     public static final String FLOW_SIGN_QRFW = "SIGN_QRFW";            //项目负责人确认发文
     public static final String FLOW_SIGN_BMLD_QRFW_XB = "SIGN_BMLD_QRFW_XB"; //协办部长审批发文
-    public static final String FLOW_SIGN_BMLD_QRFW = "SIGN_BMLD_QRFW";  //部长审批发文
-    public static final String FLOW_SIGN_FGLD_QRFW_XB = "SIGN_FGLD_QRFW_XB";  //协办分管领导审批发文
+    public static final String FLOW_SIGN_BMLD_QRFW = "SIGN_BMLD_QRFW";       //部长审批发文
+    public static final String FLOW_SIGN_FGLD_QRFW_XB = "SIGN_FGLD_QRFW_XB"; //协办分管领导审批发文
     public static final String FLOW_SIGN_FGLD_QRFW = "SIGN_FGLD_QRFW";  //分管领导审批发文
     public static final String FLOW_SIGN_ZR_QRFW = "SIGN_ZR_QRFW";      //主任审批发文
     public static final String FLOW_SIGN_FWBH = "SIGN_FWBH";            //生成发文编号

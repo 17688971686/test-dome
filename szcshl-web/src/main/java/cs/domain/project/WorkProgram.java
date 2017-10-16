@@ -162,6 +162,10 @@ public class WorkProgram extends DomainBase {
     //调研结束时间
     @Column(columnDefinition = "DATE")
     private Date studyEndTime;
+    
+    //函评会日期
+    @Column(columnDefinition = "DATE")
+    private Date letterDate;
 
     //专家费用(单位为元)
     @Column(columnDefinition = "NUMBER")
@@ -639,4 +643,13 @@ public class WorkProgram extends DomainBase {
     public void setIsMainProject(String isMainProject) {
         this.isMainProject = isMainProject;
     }
+
+	public Date getLetterDate() {
+		return letterDate;
+	}
+
+	public void setLetterDate(Date letterDate) {
+		this.letterDate = letterDate;
+	}
+    
 }

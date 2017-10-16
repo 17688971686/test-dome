@@ -490,7 +490,7 @@
 
         // S_计算费用
         function countTaxes(ids,month,callBack) {
-            var url = rootPath + "/expertReview/html/getExpertReviewCost?expertIds={0}&month={1}";
+            var url = rootPath + "/expertReview/getExpertReviewCost?expertIds={0}&month={1}";
             //取得该评审方案评审专家在这个月的所有评审费用
             var httpOptions = {
                 method: 'get',

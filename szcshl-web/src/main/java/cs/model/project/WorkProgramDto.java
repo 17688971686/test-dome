@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 /**
  * 工作方案
  *
@@ -106,6 +108,10 @@ public class WorkProgramDto extends BaseDto {
     //调研结束时间
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date studyEndTime;
+    
+    //函评会日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date letterDate;
     
     //字符串日期格式
     private String studyBeginTimeStr;
@@ -611,4 +617,13 @@ public class WorkProgramDto extends BaseDto {
     public void setRoomBookingDtos(List<RoomBookingDto> roomBookingDtos) {
         this.roomBookingDtos = roomBookingDtos;
     }
+
+	public Date getLetterDate() {
+		return letterDate;
+	}
+
+	public void setLetterDate(Date letterDate) {
+		this.letterDate = letterDate;
+	}
+    
 }

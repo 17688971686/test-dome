@@ -1,35 +1,12 @@
 package cs.service.project;
 
-import com.alibaba.fastjson.JSON;
-import cs.common.Constant;
-import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
-import cs.common.utils.*;
-import cs.domain.expert.ExpertReview;
-import cs.domain.external.Dept;
-import cs.domain.flow.RuProcessTask_;
-import cs.domain.project.*;
-import cs.domain.sys.*;
-import cs.model.PageModelDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.external.DeptDto;
-import cs.model.external.OfficeUserDto;
-import cs.model.flow.FlowDto;
-import cs.model.project.*;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.external.DeptRepo;
-import cs.repository.repositoryImpl.project.*;
-import cs.repository.repositoryImpl.sys.*;
-import cs.service.external.OfficeUserService;
-import cs.service.flow.FlowService;
-import cs.service.rtx.RTXSendMsgPool;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -37,7 +14,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -45,7 +21,86 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import com.alibaba.fastjson.JSON;
+
+import cs.common.Constant;
+import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.Constant.EnumState;
+import cs.common.Constant.MsgCode;
+import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
+import cs.domain.expert.ExpertReview;
+import cs.domain.external.Dept;
+import cs.domain.project.AddRegisterFile;
+import cs.domain.project.AddRegisterFile_;
+import cs.domain.project.AddSuppLetter;
+import cs.domain.project.AddSuppLetter_;
+import cs.domain.project.AssistPlanSign;
+import cs.domain.project.AssistPlanSign_;
+import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
+import cs.domain.project.FileRecord;
+import cs.domain.project.FileRecord_;
+import cs.domain.project.ProjectStop;
+import cs.domain.project.Sign;
+import cs.domain.project.SignBranch;
+import cs.domain.project.SignDispaWork;
+import cs.domain.project.SignDispaWork_;
+import cs.domain.project.SignMerge;
+import cs.domain.project.SignMerge_;
+import cs.domain.project.SignPrincipal;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.domain.sys.Company;
+import cs.domain.sys.Org;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.SysFile;
+import cs.domain.sys.SysFile_;
+import cs.domain.sys.User;
+import cs.domain.sys.User_;
+import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewDto;
+import cs.model.external.DeptDto;
+import cs.model.external.OfficeUserDto;
+import cs.model.flow.FlowDto;
+import cs.model.project.AddRegisterFileDto;
+import cs.model.project.AddSuppLetterDto;
+import cs.model.project.DispatchDocDto;
+import cs.model.project.FileRecordDto;
+import cs.model.project.ProjectStopDto;
+import cs.model.project.SignDto;
+import cs.model.project.WorkProgramDto;
+import cs.model.sys.OrgDto;
+import cs.model.sys.UserDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.external.DeptRepo;
+import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
+import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.ProjectStopRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignPrincipalRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.CompanyRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.external.OfficeUserService;
+import cs.service.flow.FlowService;
+import cs.service.rtx.RTXSendMsgPool;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -398,13 +453,51 @@ public class SignServiceImpl implements SignService {
         //查询所有的属性
         if (queryAll) {
             if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
-                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
-                sign.getWorkProgramList().forEach(workProgram -> {
-                    WorkProgramDto workProgramDto = new WorkProgramDto();
-                    workProgramService.initWorkProgramDto(workProgram, workProgramDto);
-                    workProgramDtoList.add(workProgramDto);
-                });
-                signDto.setWorkProgramDtoList(workProgramDtoList);
+                boolean isMergeReview = false;
+                //判断是否是合并评审项目，如果是，则要获取合并评审信息
+                if(sign.getWorkProgramList().size() == 1){
+                    WorkProgram workProgram = sign.getWorkProgramList().get(0);
+                    // 合并评审
+                    if(Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgram.getIsSigle())) {
+                        isMergeReview = true;
+                        //主项目
+                        if(EnumState.YES.getValue().equals(workProgram.getIsMainProject())){
+                            List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                            workProgramRepo.initWPMeetingExp(workProgramDto,workProgram);
+                            workProgramDtoList.add(workProgramDto);
+                            //还得查找合并评审次项目
+                            List<WorkProgramDto> wpDtoList = workProgramService.findMergeWP(signid);
+                            if(Validate.isList(wpDtoList)){
+                                workProgramDtoList.addAll(wpDtoList);
+                            }
+                            signDto.setWorkProgramDtoList(workProgramDtoList);
+                        //次项目
+                        }else {
+                            List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                            //查找主项目信息，并且获取主项目的会议室信息和专家信息
+                            WorkProgram wp = workProgramRepo.findMainReviewWP(signid);
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                            workProgramRepo.initWPMeetingExp(workProgramDto,wp);
+                            workProgramDtoList.add(workProgramDto);
+                            signDto.setWorkProgramDtoList(workProgramDtoList);
+                        }
+                    }
+
+                }
+
+                if(!isMergeReview){
+                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                    sign.getWorkProgramList().forEach(workProgram -> {
+                        WorkProgramDto workProgramDto = new WorkProgramDto();
+                        BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                        workProgramRepo.initWPMeetingExp(workProgramDto,workProgram);
+                        workProgramDtoList.add(workProgramDto);
+                    });
+                    signDto.setWorkProgramDtoList(workProgramDtoList);
+                }
             }
 
             if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
@@ -784,6 +877,14 @@ public class SignServiceImpl implements SignService {
                 //是否需要做工作方案
                 businessId = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
                 if (EnumState.YES.getValue().equals(businessId)) {
+                    wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                    //如果是合并评审主项目，要合并评审次项目提交才能进行下一步
+                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
+                            && Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
+                            && EnumState.YES.getValue().equals(wk.getIsMainProject())
+                            && !signRepo.isMergeSignEndWP(signid)) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
+                    }
                     //如果做工作方案，则要判断该分支工作方案是否完成
                     if (!signBranchRepo.checkFinishWP(signid, branchIndex)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");

@@ -72,11 +72,11 @@
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.sugProDealOriginal"
-                                                                            name="sugProDealOriginal"
+                                                                            name="sugProDealOriginal" ng-disabled="true"
                                                                             id="addOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugProDealCopy"
+                                                                            ng-model="vm.model.sugProDealCopy"ng-disabled="true"
                                                                             name="sugProDealCopy" id="addCopy"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
@@ -85,7 +85,7 @@
                                                                            class="errors"></span></td>
                                     </tr>
                                     <tr>
-                                        <td style="border-top:none;text-align:right;" class="formAlignRight">
+                                        <td style="border-top:none;text-align:right;">
                                         	    文件处理表
                                         </td>
                                         <td style="border-top:none;">
@@ -97,11 +97,11 @@
 
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
                                                                             ng-model="vm.model.sugFileDealOriginal"
-                                                                            id="sugFileDealOriginal"
+                                                                            id="sugFileDealOriginal" ng-disabled="true"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sugFileDealCopy"
+                                                                            ng-model="vm.model.sugFileDealCopy" ng-disabled="true"
                                                                             id="sugFileDealCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="sugFileDealCount"
@@ -118,12 +118,12 @@
                                                                             id="projectDeclareCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.projectDeclareOriginal"
-                                                                            id="projectDeclareOriginal"
+                                                                            ng-model="vm.model.projectDeclareOriginal" 
+                                                                            id="projectDeclareOriginal" ng-disabled="true"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.projectDeclareCopy"
+                                                                            ng-model="vm.model.projectDeclareCopy" ng-disabled="true"
                                                                             id="projectDeclareCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="projectDeclareCount"
@@ -139,11 +139,11 @@
                                                                             id="projectApplyReportCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.projectApplyReportOriginal"
+                                                                            ng-model="vm.model.projectApplyReportOriginal" ng-disabled="true"
                                                                             id="projectApplyReportOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.projectApplyReportCopy"
+                                                                            ng-model="vm.model.projectApplyReportCopy" ng-disabled="true"
                                                                             id="projectApplyReportCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="projectApplyReportCount"
@@ -159,12 +159,12 @@
                                                                             id="purchasDeviceCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.purchasDeviceOriginal"
+                                                                            ng-model="vm.model.purchasDeviceOriginal" ng-disabled="true"
                                                                             id="purchasDeviceOriginal"
                                                                             ng-true-value="9" ng-false-value="0">
                                         </td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.purchasDeviceCopy"
+                                                                            ng-model="vm.model.purchasDeviceCopy" ng-disabled="true"
                                                                             id="purchasDeviceCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="purchasDeviceCount"
@@ -181,11 +181,11 @@
                                                                             id="ortherProjectCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.ortherProjectOriginal"
+                                                                            ng-model="vm.model.ortherProjectOriginal" ng-disabled="true"
                                                                             id="ortherProjectOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.ortherProjectCopy"
+                                                                            ng-model="vm.model.ortherProjectCopy" ng-disabled="true"
                                                                             id="ortherProjectCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="ortherProjectCount"
@@ -213,11 +213,11 @@
                                                                             id="sprcialDevicesCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sprcialDevicesOriginal"
+                                                                            ng-model="vm.model.sprcialDevicesOriginal" ng-disabled="true"
                                                                             id="sprcialDevicesOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.sprcialDevicesCopy"
+                                                                            ng-model="vm.model.sprcialDevicesCopy" ng-disabled="true"
                                                                             id="sprcialDevicesCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="sprcialDevicesCount"
@@ -234,11 +234,11 @@
                                                                             id="purchasDevicePactCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.purchasDevicePactOriginal"
+                                                                            ng-model="vm.model.purchasDevicePactOriginal" ng-disabled="true"
                                                                             id="purchasDevicePactOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.purchasDevicePactCopy"
+                                                                            ng-model="vm.model.purchasDevicePactCopy" ng-disabled="true"
                                                                             id="purchasDevicePactCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="purchasDevicePactCount"
@@ -254,11 +254,11 @@
                                                                             id="projectApproveFileCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.projectApproveFileOriginal"
+                                                                            ng-model="vm.model.projectApproveFileOriginal" ng-disabled="true"
                                                                             id="projectApproveFileOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.projectApproveFileCopy"
+                                                                            ng-model="vm.model.projectApproveFileCopy" ng-disabled="true"
                                                                             id="projectApproveFileCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="projectApproveFileCount"
@@ -274,11 +274,11 @@
                                                                             id="businessLicenseCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.businessLicenseOriginal"
+                                                                            ng-model="vm.model.businessLicenseOriginal" ng-disabled="true"
                                                                             id="businessLicenseOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.businessLicenseCopy"
+                                                                            ng-model="vm.model.businessLicenseCopy" ng-disabled="true"
                                                                             id="businessLicenseCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="businessLicenseCount"
@@ -294,11 +294,11 @@
                                                                             id="legalPersoncCardCount" data-val="true"
                                                                             data-val-digits="只能输入数字"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.legalPersoncCardOriginal"
+                                                                            ng-model="vm.model.legalPersoncCardOriginal" ng-disabled="true"
                                                                             id="legalPersoncCardOriginal" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><input type="checkbox" style="width:50px;"
-                                                                            ng-model="vm.model.legalPersoncCardCopy"
+                                                                            ng-model="vm.model.legalPersoncCardCopy" ng-disabled="true"
                                                                             id="legalPersoncCardCopy" ng-true-value="9"
                                                                             ng-false-value="0"></td>
                                         <td style="border-top:none;"><span data-valmsg-for="legalPersoncCardCount"

@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
 <ul id="myTab" class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
-    <li ng-show="vm.showFlag.tabWorkProgram"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
-    <li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>
+    <li ng-show="vm.model.workProgramDtoList"><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+    <!--<li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>-->
     <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_score">专家评分</a></li>
@@ -53,8 +53,13 @@
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
 
         <!-- （包含：主、次项目）项目建议书/可行性研究报告/资金申请报告/其它  -->
-        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
+        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
              ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
+       
+       <!--S  资金申请报告  包含：主项目、次项目 -->
+        <div ng-show="vm.model.reviewstage=='资金申请报告'"
+             ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
+       <!--S  资金申请报告  包含：主项目、次项目 -->
        
        <!--S  进口设备  包含：主项目、次项目 -->
         <div ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
@@ -103,8 +108,6 @@
 
     <!-- S 归档 -->
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
-        <!--   <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='提前介入' ||  vm.model.reviewstage=='其它'"
-          ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordAllDetails.html'"/> -->
         <!-- 项目建议书 -->
         <div ng-show="vm.model.reviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileProjectIdeaDetail.html'"></div>
        
@@ -120,7 +123,7 @@
         <!-- 项目概算 -->
         <div ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetail.html'"></div>
         
-        <!-- 设备清单（国产） -->
+        <!-- 设备清单（国产） /设备清单（进口）-->
         <div ng-show="vm.model.reviewstage=='设备清单（进口）' || vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
       
         <!-- 设备清单（进口） -->

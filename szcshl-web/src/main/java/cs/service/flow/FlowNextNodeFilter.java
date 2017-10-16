@@ -50,6 +50,78 @@ public enum FlowNextNodeFilter {
             resultList.add(nextNodeList.get(0));
             return resultList;
         }
+    },
+    SIGN_QRFW{
+        //项目负责人确认发文
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            //有协办部门
+            if(businessMap.get("hasAssistDept") != null){
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW_XB)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
+    },
+    SIGN_BMLD_QRFW{
+        //主办部长审批
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            //有协办分管领导
+            if(businessMap.get(FlowConstant.SignFlowParams.HAVE_XB.getValue()) != null){
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_FGLD_QRFW_XB)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_FGLD_QRFW)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
+    },
+    SIGN_FWBH{
+        //生成发文编号
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            //有协办分管领导
+            if(businessMap.get(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue()) != null){
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_CWBL)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_GD)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
     };
 
     public abstract List<Node> filterNextNode(Map<String,Object> businessMap, List<Node> nextNodeList);
@@ -68,8 +140,14 @@ public enum FlowNextNodeFilter {
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_GD);
             case FlowConstant.FLOW_SIGN_FGLD_FB:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FGLD_FB);
+            case FlowConstant.FLOW_SIGN_QRFW:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_QRFW);
+            case FlowConstant.FLOW_SIGN_BMLD_QRFW:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_BMLD_QRFW);
+            case FlowConstant.FLOW_SIGN_FWBH:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FWBH);
             default:
-                    return null;
+                return null;
         }
 
     }

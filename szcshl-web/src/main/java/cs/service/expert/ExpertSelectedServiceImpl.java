@@ -199,7 +199,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid ");
 		sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
 		sqlBuilder.append("where 1=1 ");
-		String[] timeArr = expertCostDto.getBeginTime().split("-");;
+		String[] timeArr = expertCostDto.getBeginTime().split("-");
 		if(null != expertCostDto && null != expertCostDto.getBeginTime()){
 			String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
 			String bTime = expertCostDto.getBeginTime()+"-01 00:00:00";
@@ -566,7 +566,6 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder1.append("ON s.signid = mo.bsignid  ");
 		sqlBuilder1.append("where r.paydate is not null  ");
 		sqlBuilder1.append("and f.chargename is not null  ");
-		//todo:添加查询条件
 		if(null != projectReviewCostDto){
 
 			if(StringUtil.isNotEmpty(projectReviewCostDto.getChargeName())){
@@ -693,6 +692,90 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		}
 		resultMap.put("proReviewClassifyDetailDtoList", projectReviewCostDtoList);
 		resultMap.put("proReviewClassifyCountDtoList",proReviewClassifyCountDtoList);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+	}
+
+	/**
+	 * 项目评审情况统计
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		PageModelDto<ProReviewConditionDto> pageModelDto = new PageModelDto<ProReviewConditionDto>();
+		HqlBuilder sqlBuilder = HqlBuilder.create();
+		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)declarevalue,sum(d.authorizevalue)authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/sum(d.declarevalue),4)*100  hjl  from cs_sign s  ");
+		sqlBuilder.append("left join cs_dispatch_doc d  ");
+		sqlBuilder.append("on s.signid = d.signid  ");
+		sqlBuilder.append("where 1 = 1 ");
+
+		//todo:添加查询条件
+		if(null != projectReviewConditionDto){
+			if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+				String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+				String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+				String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+				String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+				sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+				sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+				String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+				String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+				String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+				String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+				sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+				sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+				String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+				String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+				String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+				String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+				sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+				sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+		}
+		sqlBuilder.append("group by s.reviewstage");
+		List<Map> projectReviewConList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+
+		if (projectReviewConList.size() > 0) {
+			for (int i = 0; i < projectReviewConList.size(); i++) {
+				Object obj = projectReviewConList.get(i);
+				Object[] projectReviewCon = (Object[]) obj;
+				ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+				if (null != projectReviewCon[0]) {
+					proReviewConditionDto.setReviewStage((String) projectReviewCon[0]);
+				}else{
+					proReviewConditionDto.setReviewStage(null);
+				}
+				if (null != projectReviewCon[1]) {
+					proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[1]);
+				}
+				if (null != projectReviewCon[2]) {
+					proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[2]);
+				}else{
+					proReviewConditionDto.setDeclareValue(null);
+				}
+				if (null != projectReviewCon[3]) {
+					proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[3]);
+				}else{
+					proReviewConditionDto.setAuthorizeValue(null);
+				}
+				if (null != projectReviewCon[4]) {
+					proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[4]);
+				}else{
+					proReviewConditionDto.setLjhj(null);
+				}
+				if (null != projectReviewCon[5]) {
+					proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[5]);
+				}else{
+					proReviewConditionDto.setLjhj(null);
+				}
+				projectReviewConDtoList.add(proReviewConditionDto);
+			}
+		}
+		resultMap.put("protReviewConditionList", projectReviewConDtoList);
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
 

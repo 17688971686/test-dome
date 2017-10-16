@@ -120,6 +120,7 @@
                     params: {
                         businessId: vm.suppletter.businessId,
                         businessType:vm.suppletter.businessType,
+                        workId:vm.suppletter.workId,
                     }
                 }
 

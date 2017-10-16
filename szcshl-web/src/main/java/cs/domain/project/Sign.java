@@ -43,8 +43,10 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2) COMMENT '是否已发送存档,9是0否'")
     private String isSendFileRecord;
 
-    //委内收文编号
-    @Column(columnDefinition = "VARCHAR(30)")
+    /**
+     * 委内收文编号
+     */
+    @Column(columnDefinition = "VARCHAR(32)")
     private String filecode;
 
     /**
@@ -60,7 +62,7 @@ public class Sign extends DomainBase {
     private Integer signSeq;
 
     //项目代码
-    @Column(columnDefinition = "VARCHAR(20)")
+    @Column(columnDefinition = "VARCHAR(32)")
     private String projectcode;
 
     //评审阶段
