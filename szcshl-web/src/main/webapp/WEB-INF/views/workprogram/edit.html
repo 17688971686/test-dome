@@ -24,9 +24,10 @@
 <div style="background:white; min-height: 700px;">
     <ul id="wpTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="wp_edit">编辑页面</a></li>
-        <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0"><a data-toggle="tab" for-div="wp_list">项目其它工作方案</a></li>
+        <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0">
+        <a data-toggle="tab" for-div="wp_list">项目其它工作方案</a></li>
     </ul>
-
+    
 
     <!--S 编辑页面 -->
     <div class="tab-content" style="background:white;">
@@ -70,9 +71,9 @@
         <div class="well well-sm tab-pane fade" style="background:white;" id="wp_list">
             <div  ng-show="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
             <div  ng-show="vm.work.workreviveStage=='资金申请报告'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
-            <div  ng-show="vm.work.workreviveStage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
             <div  ng-show="vm.work.workreviveStage=='设备清单（国产）' || vm.work.workreviveStage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
         </div>
+            <div  ng-show="vm.work.workreviveStage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
         <!--E 工作方案查看页面 -->
     </div>
 
