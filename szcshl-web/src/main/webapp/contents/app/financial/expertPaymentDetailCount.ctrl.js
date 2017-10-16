@@ -122,7 +122,7 @@
                  expertCostTr +="<span style='margin-left: 5%;'><strong>"+expertCostTotalInfo[i].name+"</strong></span>";
              }
              expertCostTr +="<span style='margin-left: 8%;'></span><strong>"+expertCostTotalInfo[i].expertNo+"</strong></span>";
-             expertCostTr +="<span style='margin-left: 65%;'></span><strong>合计:</strong></span>";
+             expertCostTr +="<span style='margin-left: 58%;'></span><strong>合计:</strong></span>";
              expertCostTr +="<span style='margin-left: 4%;'></span><strong>"+expertCostTotalInfo[i].monthTotal+"</strong></span>";
              expertCostTr += "</td>";
              expertCostTr += "<td class='text-center'>";
