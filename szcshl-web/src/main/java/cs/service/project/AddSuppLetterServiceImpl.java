@@ -146,7 +146,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	 * @return
 	 */
 	@Override
-	public AddSuppLetterDto initSuppLetter(String businessId, String businessType) {
+	public AddSuppLetterDto initSuppLetter(String businessId, String businessType,String workId) {
 		AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
        /* AddSuppLetter suppletter =  addSuppLetterRepo.findById("businessId",businessId);
         if(suppletter !=null && Validate.isString(suppletter.getId())){
