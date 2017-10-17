@@ -234,6 +234,7 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
+                 
                     //如果选了专家，并且评审费有变动，则更改
                     if(vm.work.expertDtoList && vm.work.expertDtoList.length > 0){
                         if(!vm.work.expertCost || vm.work.expertCost < 1000*(vm.work.expertDtoList.length) ){
@@ -244,6 +245,7 @@
                     if(response.data.WPList && response.data.WPList.length > 0){
                         vm.model.workProgramDtoList = response.data.WPList;
                     }
+                    console.log(vm.model.workProgramDtoList[0]);
                     if(vm.work.branchId == "1"){
                         findCompanys(vm);//查找主管部门
                     }

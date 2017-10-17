@@ -167,6 +167,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     isHaveCurUserWP = true;
                 }else{
                     WorkProgramDto wpDto = new WorkProgramDto();
+                    BeanCopierUtils.copyProperties(wp, wpDto);
                     workProgramRepo.initWPMeetingExp(wpDto,wp);
                     wpDtoList.add(wpDto);
                 }

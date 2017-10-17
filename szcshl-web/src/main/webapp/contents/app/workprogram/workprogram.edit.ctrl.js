@@ -30,6 +30,7 @@
         //页面初始化
         activate();
         function activate() {
+        	vm.showAll = true;
         	workprogramSvc.initPage(vm);
             $('#wpTab li').click(function (e) {
                 var aObj = $("a", this);

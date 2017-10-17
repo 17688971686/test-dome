@@ -81,6 +81,16 @@ public class ExpertSelectedController {
     }
 
     @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#assistCostList#post")
+    @RequestMapping(name = "协审费用录入列表", path = "assistCostList", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<ProjectReviewCostDto> assistCostList(ProjectReviewCostDto projectReviewCostDto) throws ParseException {
+        //ODataObj odataObj = new ODataObj(request);
+        PageModelDto<ProjectReviewCostDto> projectReviewCostDtos = expertSelectedService.assistCostList(projectReviewCostDto);
+        return projectReviewCostDtos;
+    }
+    
+    @RequiresAuthentication
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "专家评审费汇总", path = "expertCostTotal", method = RequestMethod.POST)
     @ResponseBody

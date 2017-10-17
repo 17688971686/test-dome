@@ -206,15 +206,26 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/financialManager/assistCostCountList", $("#searchform")),
-                schema: common.kendoGridConfig().schema({
-                    id: "signid",
-                    fields: {
-                        createdDate: {
-                            type: "date"
+                transport: common.kendoGridConfig().transport(rootPath + "/expertSelected/assistCostList", $("#searchform")),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                        if (data['count']) {
+                            $('#DO_SIGN_COUNT').html(data['count']);
+                        } else {
+                            $('#DO_SIGN_COUNT').html(0);
+                        }
+                        return data['count'];
+                    },
+                    model: {
+                        id: "id",
+                        fields: {
+                            createdDate: {
+                                type: "date"
+                            }
                         }
                     }
-                }),
+                },
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
@@ -225,36 +236,50 @@
                 }
             });
             // End:dataSource
-            //S_序号
-            var  dataBound=function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
             // Begin:column
             var columns = [
-                {
+            	{
+                    field: "",
+                    title: "",
+                    width: 30,
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
+                        switch (item.lightState) {
+                            case "4":          //暂停
+                                return $('#span1').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
+                                break;
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "6":          	//发文超期
+                                return $('#span3').html();
+                                break;
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
+                                break;
+                            case "1":          //在办
+                                return "";
+                                break;
+                            case "2":           //已发文
+                                return "";
+                                break;
+                            case "3":           //已发送存档
+                                return "";
+                                break;
+                            default:
+                                return "";
+                                ;
+                        }
+                    }
                 },
-                {
-				    field: "rowNumber",
-				    title: "序号",
-				    width: 50,
-				    filterable : false,
-				    template: "<span class='row-number'></span>"
-				 },
+               /* {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },*/
                 {
                     field: "projectname",
                     title: "项目名称",
@@ -263,44 +288,44 @@
                 },
                
                 {
-                    field: "builtcompanyName",
+                    field: "builtcompanyname",
                     title: "协审单位",
                     width: 100,
                     filterable: false,
                 },
                
                 {
-                    field: "aUserName",
+                    field: "principal",
                     title: "项目负责人",
                     width: 100,
                     filterable: false,
                 },
                 {
-                    field: "filecode",
+                    field: "signNum",
                     title: "协审登记号",
                     width: 100,
                     filterable: false,
                 },
                 {
-                    field: "declaration",
+                    field: "totalCost",
                     title: "计划协审费用",
                     width: 120,
                     filterable: false,
                 },
                 {
-                    field: "declaration",
+                    field: "totalCost",
                     title: "实付协审费用",
                     width: 120,
                     filterable: false,
                 },
                 {
-                    field: "signdate",
+                    field: "payDate",
                     title: "付款日期",
                     width: 100,
                     filterable: false,
                 },
                 {
-                    field: "declaration",
+                    field: "declareValue",
                     title: "申报金额",
                     width: 100,
                     filterable: false,
@@ -311,7 +336,7 @@
                     width: 100,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                             item.signid 
+                             item.businessId 
                             );
                     }
                 }
@@ -324,7 +349,16 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound:dataBound,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                },
                 resizable: true
             };
         }//E_初始化grid
