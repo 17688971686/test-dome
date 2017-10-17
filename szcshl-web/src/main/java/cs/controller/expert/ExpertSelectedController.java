@@ -95,7 +95,16 @@ public class ExpertSelectedController {
     public ResultMsg projectCostTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto){
         return  expertSelectedService.projectReviewCost(projectReviewCostDto);
     }
+    
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#assistCostTotal#post")
+    @RequestMapping(name = "项目协审费统计", path = "assistCostTotal", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg assistCostTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto){
+        return  expertSelectedService.assistCostViewTotal(projectReviewCostDto);
+    }
 
+    
     @RequiresAuthentication
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "项目评审费分类统计", path = "proCostClassifyTotal", method = RequestMethod.POST)

@@ -43,5 +43,11 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto);
+	/**
+	 * 项目协申费统计
+	 * @param projectReviewCostDto
+	 * @return
+	 */
+	ResultMsg assistCostViewTotal(ProjectReviewCostDto projectReviewCostDto);
 
 }

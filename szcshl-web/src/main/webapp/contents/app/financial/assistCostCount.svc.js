@@ -14,9 +14,61 @@
             sumAssistCount:sumAssistCount,								//统计评审费用总和
             initAssistlProject:initAssistlProject,					//初始化协审费用关联的项目
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
+            assistExportExcel:assistExportExcel,					//专家协申费用导出
+            assistCostCountList:assistCostCountList,				//协审费用统计列表
+            assistCostList :assistCostList,							//协审费录入列表
+           
         };
         
         return service;
+        
+      //S 协审费录入列表
+       function assistCostList(vm,callBack){
+    	   var httpOptions = {
+                   method: 'post',
+                   url: rootPath + "/expertSelected/assistCostTotal",
+                   data: vm.model
+               }
+               var httpSuccess = function success(response) {
+                   if (callBack != undefined && typeof callBack == 'function') {
+                       callBack(response.data);
+                   }
+               }
+               common.http({
+                   $http: $http,
+                   httpOptions: httpOptions,
+                   success: httpSuccess
+               });  
+       }
+      // E 协审费录入列表
+       
+        //S 专家协申费用导出
+        function assistExportExcel(vm , businessId , fileName){
+        	 var   fileName = escape(encodeURIComponent(fileName));
+             window.open(rootPath + '/financialManager/exportExcel?fileName=' + fileName + '&businessId=' + businessId);
+        }
+      // E 专家协申费用导出
+        
+        //S 协审费用统计列表
+        function assistCostCountList(vm,callBack){
+        	  var httpOptions = {
+                      method: 'post',
+                      url: rootPath + "/expertSelected/assistCostTotal",
+                      data: vm.model
+                  }
+                  var httpSuccess = function success(response) {
+                      if (callBack != undefined && typeof callBack == 'function') {
+                          callBack(response.data);
+                      }
+                  }
+                  common.http({
+                      $http: $http,
+                      httpOptions: httpOptions,
+                      success: httpSuccess
+                  });
+        }
+        //E 协审费用统计列表
+        
       //检查是否为正整数
         function isUnsignedInteger(value){
             if((/^(\+|-)?\d+$/.test(value)) && value>0 ){

@@ -3,9 +3,9 @@
 
     angular.module('app').controller('assistCostCountCtrl', assistCostCount);
 
-    assistCostCount.$inject = ['$location', 'assistCostCountSvc','$state','$http'];
+    assistCostCount.$inject = ['$location', 'assistCostCountSvc','expertReviewSvc','$state','$http'];
 
-    function assistCostCount($location, assistCostCountSvc,$state,$http) {
+    function assistCostCount($location, assistCostCountSvc,expertReviewSvc,$state,$http) {
         var vm = this;
         vm.title = '协审费用统计管理';
         vm.financials = new Array;
@@ -13,9 +13,29 @@
         vm.financial = {};//财务对象
         vm.financial.businessId = $state.params.signid;
         
+        //导出专家协审费用表
+        vm.assistExportExcel =function(){
+        	var fileName = vm.reviewTitle + "(" + vm.payDate + ")";
+        	assistCostCountSvc.assistExportExcel(vm , vm.financial.businessId ,fileName );
+        }
+        
         //查看协审费用发放表
         vm.findAssistCostTable = function(){
-        	$state.go('findAssistCostTable',{signid: vm.financial.businessId});
+        	 expertReviewSvc.initReview(vm.financial.businessId , "", function (data){
+                 vm.reviewTitle = data.reviewTitle;
+                 vm.payDate = data.payDate;
+                 vm.expertSelectedDtoList = data.expertSelectedDtoList;
+                 $("#assistCostWindow").kendoWindow({
+                     width: "70%",
+                     height: "600px",
+                     title: "协审费用统计表",
+                     visible: false,
+                     modal: true,
+                     closable: true,
+                     actions: ["Pin", "Minimize", "Maximize", "Close"]
+                 }).data("kendoWindow").center().open();
+             } )
+        	//$state.go('findAssistCostTable',{signid: vm.financial.businessId});
         }
         //S 输入数字校验
         vm.inputIntegerValue = function(checkValue,idSort){

@@ -39,6 +39,8 @@ public class ProjectReviewCostDto {
 
     //签收时间
     private Date signdate;
+    
+    private String signNum;
 
     private String businessId;
 
@@ -194,4 +196,13 @@ public class ProjectReviewCostDto {
     public void setDeptName(String deptName) {
         this.deptName = deptName;
     }
+
+	public String getSignNum() {
+		return signNum;
+	}
+
+	public void setSignNum(String signNum) {
+		this.signNum = signNum;
+	}
+    
 }
