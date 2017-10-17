@@ -774,6 +774,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 			return 0;
 		}
 		return ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+
 	}
 
 
