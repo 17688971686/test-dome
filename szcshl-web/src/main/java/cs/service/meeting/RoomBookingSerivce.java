@@ -33,8 +33,7 @@ public interface RoomBookingSerivce {
 
     File exportRoom(String date, String rbType, String mrId);
 
-    List<Map> findWeekRoom(String date, String rbType, String mrId);
-
+    List<Object[]> findWeekRoom(String date, String rbType, String mrId);
 
     RoomBookingDto initDefaultValue(String businessId, String businessType);
 }

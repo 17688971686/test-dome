@@ -3,6 +3,7 @@ package cs.service.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
@@ -357,9 +358,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             List<ExpertReview> expertReviewList = expertReviewRepo.findByHql(hql);
             if(expertReviewList.size()>0){
                 for(ExpertReview er : expertReviewList){
-                    Date reviewDate = er.getReviewDate();
-                    Date now = new Date();
-                    if((int)((now.getTime() - reviewDate.getTime()) / (24*60*60*1000) ) >1){
+                    if(DateUtils.daysBetween(er.getReviewDate(),new Date())>1){
                         resoultList.add(s);
                     }
                 }

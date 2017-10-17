@@ -2,11 +2,16 @@ package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
+import cs.service.expert.ExpertSelConditionService;
+import cs.service.expert.ExpertSelectedService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +40,12 @@ public class ExpertReviewController {
     @Autowired
     private ExpertReviewService expertReviewService;
 
+    @Autowired
+    private ExpertSelConditionService expertSelConditionService;
+
+    @Autowired
+    private ExpertSelectedService expertSelectedService;
+
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
@@ -62,10 +73,19 @@ public class ExpertReviewController {
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#affirmAutoExpert#post")
     @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void affirmAutoExpert(@RequestParam(required=true)String minBusinessId,@RequestParam(required=true)String businessType,
+    @ResponseBody
+    public ResultMsg affirmAutoExpert(@RequestParam(required=true)String minBusinessId,@RequestParam(required=true)String businessType,
                                  @RequestParam(required = true) String expertSelId,@RequestParam(required = true) String state){
+        //判断已经确认的专家，和设定的专家人数对比
+        int totalCount = expertSelConditionService.getExtractEPCount(minBusinessId);
+        int selectCount = expertSelectedService.getSelectEPCount(minBusinessId);
+        List<String> ids = StringUtil.getSplit(expertSelId,",");
+        if(selectCount + (Validate.isList(ids)?ids.size():0) > totalCount){
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue(),"操作失败，确认的专家人数超过了抽取设定人数！");
+        }
         expertReviewService.updateExpertState(minBusinessId,businessType,expertSelId,state,true);
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
     @RequiresAuthentication

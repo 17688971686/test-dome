@@ -1,8 +1,10 @@
 package cs.repository.repositoryImpl.expert;
 
+import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelCondition_;
+import cs.domain.expert.ExpertSelected_;
 import cs.repository.AbstractRepository;
 import org.springframework.stereotype.Repository;
 
@@ -26,5 +28,18 @@ public class ExpertSelConditionRepoImpl extends AbstractRepository<ExpertSelCond
         sqlBuilder.bulidPropotyString("where",ExpertSelCondition_.id.getName(),ids);
 
         executeSql(sqlBuilder);
+    }
+
+    /**
+     * 统计专家抽取设定人数
+     * @param businessId
+     * @return
+     */
+    @Override
+    public int getExtractEPCount(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select sum(officialNum) from cs_expert_condition where "+ ExpertSelCondition_.businessId.getName()+"=:businessId ");
+        sqlBuilder.setParam("businessId",businessId);
+        return returnIntBySql(sqlBuilder);
     }
 }

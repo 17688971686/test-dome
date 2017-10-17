@@ -1874,11 +1874,12 @@ public class SignServiceImpl implements SignService {
             } else {
                 sign.setIsassistflow(EnumState.NO.getValue());
             }
+            sign.setSignid(UUID.randomUUID().toString());
             sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
             sign.setCreatedDate(now);
             sign.setModifiedDate(now);
-            sign.setCreatedBy("委里推送");
-            sign.setModifiedBy("委里推送");
+            sign.setCreatedBy("FGW");
+            sign.setModifiedBy("FGW");
         } else {
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
         }

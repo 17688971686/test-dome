@@ -426,6 +426,10 @@ desired effect
                         <@shiro.hasPermission name="expert#html/reviewList#get">
                             <li><a href="javascript:void(0)" ui-sref="expertReviewList">专家评分一览表</a></li>
                         </@shiro.hasPermission>
+
+                        <@shiro.hasPermission name="expert#html/selectHisList#get">
+                        <li><a href="javascript:void(0)" ui-sref="expertSelectHis">专家抽取统计</a></li>
+                        </@shiro.hasPermission>
                     </ul>
                 </li>
             </@shiro.hasPermission>
@@ -725,7 +729,8 @@ desired effect
 <script src="${path}/contents/libs/kendoui/kendo.message.zh-CN.js"></script>
 <script src="${path}/contents/libs/kendoui/kendo.culture.zh-CN.min.js"></script>
 <script src="${path}/contents/libs/jsLinq/jslinq.min.js"></script>
-
+<!--文件下载插件-->
+<script src="${path}/contents/libs/file-save/angular-file-saver.bundle.js"></script>
 <!-- froala 富文本编辑器 -->
 <link href="${path}/contents/libs/froala/css/froala_editor.css" rel="stylesheet"/>
 <link href="${path}/contents/libs/froala/css/froala_style.min.css" rel="stylesheet" />

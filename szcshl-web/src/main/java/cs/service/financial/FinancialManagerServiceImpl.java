@@ -142,14 +142,14 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 
 	@Override
 	public Map<String, Object> initfinancialData(String businessId) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		 Sign sign = signRepo.findById(businessId);
+		 Map<String, Object> map = new HashMap<String, Object>();
+		 Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
 		 FinancialManagerDto financialDto = new FinancialManagerDto();
 		 financialDto.setProjectName(sign.getProjectname());
 		 financialDto.setSignid(sign.getSignid());
 		 financialDto.setPaymentData(new Date());
 		 
-		 financialDto.setAssissCost(sign.getDeclaration());//计划协审费用
+		 financialDto.setAssissCost(sign.getDeclaration());					//计划协审费用
 		 financialDto.setAssistBuiltcompanyName(sign.getBuiltcompanyName());//协审单位
 		 
 		 HqlBuilder hqlBuilder = HqlBuilder.create();

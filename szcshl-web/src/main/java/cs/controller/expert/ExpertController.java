@@ -2,11 +2,14 @@ package cs.controller.expert;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.ExcelTools;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertSelConditionDto;
+import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -41,6 +46,34 @@ public class ExpertController {
         PageModelDto<ExpertDto> expertDtos = expertService.get(odataObj);
         return expertDtos;
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp){
+        try {
+            ODataObj odataObj = new ODataObj(request);
+            odataObj.setTop(0);
+            odataObj.setCount(false);
+            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
+            ExcelTools excelTools = new ExcelTools();
+            String [] headerPair =new String[]{"姓名=name","工作单位=comPany","办公电话=phone","手机号码=userPhone","职位=job","职称=post","专家类型=expertSort"};
+            HSSFWorkbook wb = excelTools.createExcelBook("专家信息" , headerPair , expertDtoList.getValue() , ExpertDto.class);
+            resp.setContentType("application/vnd.ms-excel;charset=GBK");
+            resp.setHeader("Content-type" , "application/x-msexcel");
+            resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
+           /* String fileName = new String((title+".xls").getBytes("GB2312") , "ISO-8859-1");
+            resp.setHeader("Content-Disposition" , "attachment;filename="+fileName);*/
+
+            ServletOutputStream sos = resp.getOutputStream();
+            wb.write(sos);
+            sos.flush();
+            sos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @RequiresAuthentication
     //@RequiresPermissions("expert#findRepeatByOData#post")
@@ -135,6 +168,13 @@ public class ExpertController {
         expertService.updateAudit(ids, flag);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "专家抽取列表", path = "expertSelectHis", method = RequestMethod.POST)
+    @ResponseBody
+    public List<ExpertSelectHis> expertSelectHis(@RequestBody ExpertSelectHis expertSelectHis) {
+        return expertService.expertSelectHis(expertSelectHis);
+    }
+
     // begin#html
     @RequiresPermissions("expert#html/repeat#get")
     @RequestMapping(name = "重复专家查询", path = "html/repeat", method = RequestMethod.GET)
@@ -180,5 +220,12 @@ public class ExpertController {
     public String reviewList() {
 
         return ctrlName + "/reviewList";
+    }
+
+    @RequiresPermissions("expert#html/selectHisList#get")
+    @RequestMapping(name = "专家抽取统计", path = "html/selectHisList", method = RequestMethod.GET)
+    public String selectHisList() {
+
+        return ctrlName + "/selectHisList";
     }
 }

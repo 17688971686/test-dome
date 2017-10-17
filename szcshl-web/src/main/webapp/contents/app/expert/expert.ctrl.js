@@ -57,5 +57,11 @@
             }   
        };
 
+        /**
+         * 导出execl功能
+         */
+        vm.exportToExcel = function(){
+            expertSvc.exportToExcel();
+        }
     }
 })();

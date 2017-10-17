@@ -4,6 +4,7 @@ import java.util.List;
 
 import cs.domain.expert.Expert;
 import cs.repository.IRepository;
+import cs.repository.odata.ODataObj;
 
 public interface ExpertRepo extends IRepository<Expert, String> {
 
@@ -14,4 +15,6 @@ public interface ExpertRepo extends IRepository<Expert, String> {
     List<Expert> findAllRepeat();
 
     List<Expert> findByBusinessId(String businessId);
+
+    List<Expert> get(ODataObj odataObj);
 }

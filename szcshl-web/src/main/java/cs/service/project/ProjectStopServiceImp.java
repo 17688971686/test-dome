@@ -63,11 +63,10 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		HqlBuilder sqlBuilder = HqlBuilder.create();
 		sqlBuilder.append("select signid,projectname,builtcompanyname,mUserName,receivedate,mOrgName from V_SIGN_DISP_WORK where "+SignDispaWork_.signid.getName()+"=:signid");
 		sqlBuilder.setParam("signid",signId);
-		List<Map> signList=signDispaWorkRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> signList=signDispaWorkRepo.getObjectArray(sqlBuilder);
 		SignDispaWork  signDispaWork=new SignDispaWork();
-		if(!signList.isEmpty()){
-			Object obj=signList.get(0);
-			Object[] str = (Object[])obj;
+		if(Validate.isList(signList)){
+			Object[] str = signList.get(0);
 			signDispaWork.setSignid((String) str[0]);
 			signDispaWork.setProjectname((String)str[1]);
 			signDispaWork.setBuiltcompanyname( (String)str[2]);
@@ -83,16 +82,13 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		HqlBuilder sqlBuilder=HqlBuilder.create();
 		sqlBuilder.append("select signdate from cs_sign where signid =:signId");
 		sqlBuilder.setParam("signId",signId);
-		List<Map> signList= signRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> signList= signRepo.getObjectArray(sqlBuilder);
 		int count=0;
-		if(!signList.isEmpty()){
-			if(signList.get(0)!=null){
-				Date signDate=(Date)signList.get(0);
-				QuartzUnit unit=new QuartzUnit();
-				count=unit.countWorkday( signDate );
-			}
+		if(Validate.isList(signList)){
+			Date signDate = (Date)signList.get(0)[0];
+			QuartzUnit unit = new QuartzUnit();
+			count=unit.countWorkday( signDate );
 		}
-
 		return count;
 	}
 
@@ -241,12 +237,11 @@ public class ProjectStopServiceImp implements ProjectStopService {
 		HqlBuilder sqlBuilder = HqlBuilder.create();
 		sqlBuilder.append("select stopid,pausetime,pausedays from cs_projectStop where isactive=:isactive");
 		sqlBuilder.setParam("isactive",Constant.EnumState.YES.getValue());
-		List<Map> map = projectStopRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> map = projectStopRepo.getObjectArray(sqlBuilder);
 		List<ProjectStop> projectStopList = new ArrayList<>();
-		if(!map.isEmpty()){
+		if(Validate.isList(map)){
 			for(int i=0;i<map.size();i++){
-				Object obj = map.get(i);
-				Object[] objs=(Object[])obj;
+				Object[] objs= map.get(i);
 				ProjectStop projectStop = new ProjectStop();
 				projectStop.setStopid((String)objs[0]);
 				projectStop.setPausetime((Date) objs[1]);

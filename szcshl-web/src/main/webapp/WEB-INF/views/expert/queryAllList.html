@@ -13,10 +13,8 @@
     	<a class="btn btn-sm btn-primary" ui-sref="expertEdit({id:null})"><span class="glyphicon glyphicon-plus"></span>新增</a> 
 	    <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
-		<!--
-		 	隐藏批量删除
-			<button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit" ng-hide="true"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-		-->
+		<button class="btn btn-sm btn-danger" ng-click="vm.exportToExcel()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-remove"></span>导出execl</button>
+
 	</div>
 	<ol class="breadcrumb"> 
 	<form id="searchform" name="searchform">
@@ -34,30 +32,33 @@
 				<td>
 					<input name="name" type="text"  operator="like" />
 				</td>
-				<td class="formAlignRight" style="width:150px;">性别</td>
-				<td>
-					<select operator="eq" name="sex" >
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
 				<td class="formAlignRight" style="width:150px;">工作单位</td>
 				<td>
 					<input name="comPany"  type="text" operator="like" />
 				</td>
+				<td class="formAlignRight" style="width:150px;">专家区域</td>
+				<td>
+                    <select name="expertField" operator="eq"  >
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.EXPERT_FIELD.dicts"  value="{{x.dictKey}}">{{x.dictName}}</option>
+                    </select>
+				</td>
 			</tr>
 			<tr>
-				<td class="formAlignRight" style="width:150px;">学位</td>
+				<td class="formAlignRight" style="width:150px;">专业大类</td>
 				<td>
-					<select operator="eq" name="degRee" >
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.DEGREE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
+                    <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
+                        <option value="">请选择</option>
+                        <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}">{{d.dictName}}</option>
+                    </select>
 				</td>
 
-				<td class="formAlignRight" style="width:150px;">职务</td>
+				<td class="formAlignRight" style="width:150px;">专业小类</td>
 				<td>
-					<input name="job"  type="text" operator="like" />
+                    <select name="maJorSamllParam" ng-model="vm.maJorSamll">
+                        <option value="">请选择</option>
+                        <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}">{{ds.dictName}}</option>
+                    </select>
 				</td>
 				<td class="formAlignRight" style="width:150px;">职称</td>
 				<td>
@@ -66,9 +67,12 @@
 						<option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
 					</select>
 				</td>
-				<td class="formAlignRight" style="width:150px;">毕业院校</td>
+				<td class="formAlignRight" style="width:150px;">专家类别</td>
 				<td>
-					<input name="acaDemy"  type="text" operator="like" />
+                    <select name="expertTypeParam" operator="eq">
+                        <option value="">请选择</option>
+                        <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" value="{{dt.dictName}}">{{dt.dictName}}</option>
+                    </select>
 				</td>
 			</tr>			
 		</table>

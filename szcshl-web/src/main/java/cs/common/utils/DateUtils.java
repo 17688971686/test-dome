@@ -644,7 +644,7 @@ public class DateUtils {
     public static void main(String[] args) throws ParseException {
 		String dateString = "2016年6月30日";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
-		System.out.println(daysBetween(new Date(),converToDate("2017-09-21","yyyy-MM-dd")));
+		System.out.println(daysBetween(converToDate("2017-10-14","yyyy-MM-dd"),new Date()));
         System.out.println("KKKKKKKK"+converToString(new Date(),"yy"));
 
 	}

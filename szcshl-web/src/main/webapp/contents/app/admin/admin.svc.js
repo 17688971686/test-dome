@@ -26,7 +26,7 @@
             findendTasks: findendTasks,             //已办项目列表
             findtasks: findtasks,                   //待办项目列表
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
-            excelExport : excelExport,//项目统计导出
+            excelExport : excelExport,              //项目统计导出
             statisticalGrid : statisticalGrid,
             initProjectStop : initProjectStop ,//初始化项目暂停审批信息
             findHomeAppraise : findHomeAppraise, //初始化评审报告评优审批 信息

@@ -3,9 +3,9 @@
 
 	angular.module('app').factory('expertSvc', expert);
 
-	expert.$inject = [ '$http'];
+	expert.$inject = [ '$http','FileSaver', 'Blob'];
 	
-	function expert($http) {
+	function expert($http,FileSaver,Blob) {
 		var url_expert = rootPath + "/expert";
 		var service = {
 			grid : grid,						//初始化综合查询grid
@@ -20,6 +20,8 @@
 			toAudit : toAudit,				    //由个状态回到审核状态
 			auditTo : auditTo,				    //由审核状态去到各个状态
             formReset : formReset,				//重置页面
+            exportToExcel : exportToExcel,      //导出excel功能
+            expertSelectHis : expertSelectHis,	//专家抽取统计
 		};
 		return service;	
 		
@@ -152,66 +154,55 @@
 				    field: "rowNumber",  
 				    title: "序号",  
 				    width: 50,
-				    template: "<span class='row-number'></span>"  
+				    template: "<span class='row-number'></span>",
+                    filterable : false,
 			    },
 				{
 					field : "name",
 					title : "姓名",
-					width : 80,
-					filterable : true
+					width : "7%",
+					filterable : false
 				},
-				{
-					field : "sex",
-					title : "性别",
-					width : 50,
-					filterable : true
-				},
-				{
-					field : "degRee",
-					title : "学位",
-					width : 50,
-					filterable : true
-				},
+                {
+                    field : "comPany",
+                    title : "工作单位",
+                    width : "18%",
+                    filterable : false
+                },
+                {
+                    field : "phone",
+                    title : "办公电话",
+                    width : "15%",
+                    filterable : false
+                },
 				{
 					field : "userPhone",
 					title : "手机号码",
-					width : 100,
-					filterable : true
+					width : "13%",
+					filterable : false
 				},
-				{
-					field : "comPany",
-					title : "工作单位",
-					width : 100,
-					filterable : true
-				},
-				{
-					field : "degRee",
-					title : "职称",
-					width : 100,
-					filterable : true
-				},				
-				{
-					field : "majorWork",
-					title : "现从事专业",
-					width : 100,
-					filterable : true
-				},
-				{
-					field : "acaDemy",
-					title : "毕业院校",
-					width : 100,
-					filterable : true
-				},
-				{
-					field : "expertSort",
-					title : "专家类别",
-					width : 100,
-					filterable : true
-				},
+                {
+                    field : "job",
+                    title : "职位",
+                    width : "15%",
+                    filterable : false
+                },
+                {
+                    field : "post",
+                    title : "职称",
+                    width : "10%",
+                    filterable : false
+                },
+                {
+                    field : "expertSort",
+                    title : "专家类型",
+                    width : "10%",
+                    filterable : false
+                },
 				{
 					field : "",
 					title : "操作",
-					width : 100,
+					width : "8%",
 					template : function(item) {
 						return common.format($('#columnBtns').html(), "vm.del('" + item.expertID + "')", item.expertID);
 					}
@@ -271,7 +262,6 @@
 								if(i==0){
 									resultStr += item.expertTypeDtoList[i].expertType;
 								}else{
-									
 									resultStr += "、"+item.expertTypeDtoList[i].expertType;
 								}
 							}
@@ -557,9 +547,7 @@
 							msg : "操作成功"
 						})	
 					}
-	
 				});
-	
 			}
 			common.http({
 				vm : vm,
@@ -568,5 +556,46 @@
 				success : httpSuccess
 			});
 		}//end updateAudit
+
+        //S_导出综合查询的excel功能
+        function exportToExcel(){
+            var httpOptions ={
+                method : 'post',
+                url : rootPath+"/expert/exportToExcel",
+                responseType: 'arraybuffer',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+                data: $.param({$filter:common.buildOdataFilter($("#searchform")) }),
+            }
+            var httpSuccess = function success(response){
+                var blob = new Blob([response.data] , {type : "application/vnd.ms-excel"});
+                FileSaver.saveAs(blob, "专家信息.xls");
+                //common.downloadReport(response.data , "专家信息.xls" , "vnd.ms-excel");
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+
+        }//E_exportToExcel
+
+        //S_专家抽取统计
+        function expertSelectHis(epSelHis,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expert/expertSelectHis",
+                data : epSelHis
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            });
+        }//E_expertSelectHis
 	}
 })();

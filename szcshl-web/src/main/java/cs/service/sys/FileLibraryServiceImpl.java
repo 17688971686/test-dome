@@ -181,14 +181,18 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
 
     @Override
     public String findFileUrlById(String fileId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select "+ FileLibrary_.fileUrl.getName() + " from cs_fileLibrary where "+ FileLibrary_.fileId.getName()+"=:fileId");
+        /*HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select "+ FileLibrary_.fileUrl.getName() + "，"+ FileLibrary_.fileName.getName() + " from cs_fileLibrary where "+ FileLibrary_.fileId.getName()+"=:fileId");
         hqlBuilder.setParam("fileId",fileId);
-        List<Map>  list = fileLibraryRepo.findMapListBySql(hqlBuilder);
+        List<Object[]>  list = fileLibraryRepo.getObjectArray(hqlBuilder);
         String fileUrl = "";
-        if(list!=null && list.size()>0){
-            Object obj = list.get(0);
-            fileUrl = (String)obj;
+        if(Validate.isList(list)){
+            fileUrl = list.get(0)[0].toString();
+        }*/
+        String fileUrl = "";
+        FileLibrary fileLibrary = fileLibraryRepo.findById( FileLibrary_.fileId.getName(),fileId);
+        if(fileLibrary != null){
+            fileUrl = fileLibrary.getFileUrl();
         }
         return fileUrl;
     }

@@ -1,7 +1,11 @@
 package cs.repository.repositoryImpl.expert;
 
 import cs.domain.expert.ExpertSelected;
+import cs.model.expert.ExpertSelectHis;
 import cs.repository.IRepository;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 抽取专家 数据操作实现接口
@@ -18,4 +22,18 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype);
+
+    /**
+     * 根据业务ID统计已经确认的抽取专家
+     * @param businessId
+     * @return
+     */
+    int getSelectEPCount(String businessId);
+
+    /**
+     * 专家抽取统计
+     * @param expertSelectHis
+     * @return
+     */
+    List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis);
 }

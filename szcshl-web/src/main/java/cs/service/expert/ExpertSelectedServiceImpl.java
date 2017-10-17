@@ -1,5 +1,19 @@
 package cs.service.expert;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
@@ -14,7 +28,14 @@ import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
-import cs.model.expert.*;
+import cs.model.expert.ExpertCostCountDto;
+import cs.model.expert.ExpertCostDetailCountDto;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertReviewDto;
+import cs.model.expert.ExpertSelectedDto;
+import cs.model.expert.ProReviewClassifyCountDto;
+import cs.model.expert.ProReviewConditionDto;
+import cs.model.expert.ProjectReviewCostDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
@@ -25,15 +46,6 @@ import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
 import cs.service.financial.FinancialManagerService;
 import cs.service.project.SignPrincipalService;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * Description: 抽取专家 业务操作实现类
@@ -192,7 +204,6 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public ResultMsg expertCostTotal(ExpertCostCountDto expertCostDto) {
 		//odataObj.getFilter().get(0);
 		Map<String, Object> resultMap = new HashMap<>();
-		PageModelDto<ExpertCostCountDto> pageModelDto = new PageModelDto<ExpertCostCountDto>();
 		HqlBuilder sqlBuilder = HqlBuilder.create();
 		sqlBuilder.append("select t.name,t.idcard,t.userphone,sum(t.reviewcost)reviewcost,sum(t.reviewtaxes)reviewtaxes,sum(t.yreviewcost)yreviewcost,sum(t.yreviewtaxes)yreviewtaxes from( ");
 		sqlBuilder.append("select e.name,e.idcard,e.userphone,sum(s.reviewcost) reviewcost,sum(s.reviewtaxes)reviewtaxes,null yreviewcost,null yreviewtaxes from cs_expert_selected s ");
@@ -224,12 +235,11 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("having sum(s.reviewcost)>0 ) t ");
 		sqlBuilder.append("group by t.name,t.idcard,t.userphone ");
 		//List<ExpertCostCountDto> expertCostCountDtoList = expertCostCountRepo.findBySql(sqlBuilder);
-		List<Map> expertCostCountDtoList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> expertCostCountDtoList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ExpertCostCountDto> expertCostCountDtoList1 = new ArrayList<ExpertCostCountDto>();
 		if (expertCostCountDtoList.size() > 0) {
 			for (int i = 0; i < expertCostCountDtoList.size(); i++) {
-				Object obj = expertCostCountDtoList.get(i);
-				Object[] expertCostCounts = (Object[]) obj;
+				Object[] expertCostCounts = expertCostCountDtoList.get(i);
 				ExpertCostCountDto expertCostCountDto = new ExpertCostCountDto();
 				if (null != expertCostCounts[0]) {
 					expertCostCountDto.setName((String) expertCostCounts[0]);
@@ -267,7 +277,6 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
      */
 	public ResultMsg expertCostDetailTotal(ExpertCostDetailCountDto expertCostDetailCountDto) {
 		Map<String, Object> resultMap = new HashMap<>();
-		PageModelDto<ExpertCostCountDto> pageModelDto = new PageModelDto<ExpertCostCountDto>();
 		String beginTime = "";
 		String endTime = "";
 		HqlBuilder sqlBuilder = HqlBuilder.create();
@@ -292,13 +301,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("group by e.expertid,e.name, e.expertno ");
 		sqlBuilder.append("having sum(s.reviewcost) > 0 ");
 		sqlBuilder.append("order by e.expertno  ");
-		List<Map> expertCostCountDtoList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> expertCostCountDtoList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ExpertCostCountDto> expertCostCountDtoList1 = new ArrayList<ExpertCostCountDto>();
 		List<ExpertCostDetailCountDto> expertCostDetailCountDtoList = new ArrayList<>();
 		if (expertCostCountDtoList.size() > 0) {
 			for (int i = 0; i < expertCostCountDtoList.size(); i++) {
-				Object obj = expertCostCountDtoList.get(i);
-				Object[] expertCostCounts = (Object[]) obj;
+				Object[] expertCostCounts = expertCostCountDtoList.get(i);
 				ExpertCostCountDto expertCostCountDto = new ExpertCostCountDto();
 				if (null != expertCostCounts[0]) {
 					expertCostCountDto.setExpertId((String) expertCostCounts[0]);
@@ -340,7 +348,6 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 	@Override
 	public List<ExpertCostDetailCountDto> getExpertCostDetailById(String expertId,String beginTime,String endTime) {
-		Map<String, Object> resultMap = new HashMap<>();
 		HqlBuilder sqlBuilder = HqlBuilder.create();
 		sqlBuilder.append("select e.expertid,e.name,e.expertno,r.reviewtitle,p.reviewtype,nvl(r.reviewdate,'')reviewdate,nvl(s.reviewcost,0)reviewcost,nvl(s.reviewtaxes,0)reviewtaxes  ");
 		sqlBuilder.append("from cs_expert_selected s ");
@@ -359,12 +366,11 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("and s.isjoin ='9' ");
 		sqlBuilder.append("and s.reviewcost > 0  ");
 		sqlBuilder.append("order by e.expertno  ");
-		List<Map> expertCostCountDetailDtoList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> expertCostCountDetailDtoList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ExpertCostDetailCountDto> expertCostCountDetailDtoList1 = new ArrayList<ExpertCostDetailCountDto>();
 		if (expertCostCountDetailDtoList.size() > 0) {
 			for (int i = 0; i < expertCostCountDetailDtoList.size(); i++) {
-				Object obj = expertCostCountDetailDtoList.get(i);
-				Object[] expertCostDetailCounts = (Object[]) obj;
+				Object[] expertCostDetailCounts = expertCostCountDetailDtoList.get(i);
 				ExpertCostDetailCountDto expertCostDetailCountDto = new ExpertCostDetailCountDto();
 				if (null != expertCostDetailCounts[0]) {
 					expertCostDetailCountDto.setExpertId((String) expertCostDetailCounts[0]);
@@ -452,13 +458,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				sqlBuilder.append("and mo.oname = '"+projectReviewCostDto.getDeptName()+"' ");
 			}
 		}
-		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
 		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
 		if (projectReviewCostList.size() > 0) {
 			for (int i = 0; i < projectReviewCostList.size(); i++) {
-				Object obj = projectReviewCostList.get(i);
-				Object[] projectReviewCost = (Object[]) obj;
+				Object[] projectReviewCost = projectReviewCostList.get(i);
 				ProjectReviewCostDto projectReviewCostDto1 = new ProjectReviewCostDto();
 				if (null != projectReviewCost[0]) {
 					projectReviewCostDto1.setProjectcode((String) projectReviewCost[0]);
@@ -564,13 +569,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				sqlBuilder.append("and s.signNum ='"+projectReviewCostDto.getSignNum()+"' ");
 			}
 		}
-		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
 		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
 		if (projectReviewCostList.size() > 0) {
 			for (int i = 0; i < projectReviewCostList.size(); i++) {
-				Object obj = projectReviewCostList.get(i);
-				Object[] projectReviewCost = (Object[]) obj;
+				Object[] projectReviewCost = projectReviewCostList.get(i);
 				ProjectReviewCostDto projectReviewCostDto1 = new ProjectReviewCostDto();
 				if (null != projectReviewCost[0]) {
 					projectReviewCostDto1.setProjectcode((String) projectReviewCost[0]);
@@ -679,13 +683,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				sqlBuilder.append("and s.signNum ='"+projectReviewCostDto.getSignNum()+"' ");
 			}
 		}
-		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
 		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
 		if (projectReviewCostList.size() > 0) {
 			for (int i = 0; i < projectReviewCostList.size(); i++) {
-				Object obj = projectReviewCostList.get(i);
-				Object[] projectReviewCost = (Object[]) obj;
+				Object[] projectReviewCost = projectReviewCostList.get(i);
 				ProjectReviewCostDto projectReviewCostDto1 = new ProjectReviewCostDto();
 				if (null != projectReviewCost[0]) {
 					projectReviewCostDto1.setProjectcode((String) projectReviewCost[0]);
@@ -840,15 +843,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 		}
 		sqlBuilder1.append("group by f.chargename  ");
-		List<Map> projectReviewCostList = expertCostCountRepo.findMapListBySql(sqlBuilder);
-		List<Map> projectClassifytList = expertCostCountRepo.findMapListBySql(sqlBuilder1);
+		List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
+		List<Object[]> projectClassifytList = expertCostCountRepo.getObjectArray(sqlBuilder1);
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
 		List<ProReviewClassifyCountDto> proReviewClassifyCountDtoList = new ArrayList<>();
 		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
 		if (projectReviewCostList.size() > 0) {
 			for (int i = 0; i < projectReviewCostList.size(); i++) {
-				Object obj = projectReviewCostList.get(i);
-				Object[] projectReviewCost = (Object[]) obj;
+				Object[] projectReviewCost = projectReviewCostList.get(i);
 				ProjectReviewCostDto projectReviewCostDto1 = new ProjectReviewCostDto();
 				if (null != projectReviewCost[0]) {
 					projectReviewCostDto1.setProjectcode((String) projectReviewCost[0]);
@@ -971,13 +973,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 			}
 		}
 		sqlBuilder.append("group by s.reviewstage");
-		List<Map> projectReviewConList = expertCostCountRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> projectReviewConList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
 
 		if (projectReviewConList.size() > 0) {
 			for (int i = 0; i < projectReviewConList.size(); i++) {
-				Object obj = projectReviewConList.get(i);
-				Object[] projectReviewCon = (Object[]) obj;
+				Object[] projectReviewCon = projectReviewConList.get(i);
 				ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
 				if (null != projectReviewCon[0]) {
 					proReviewConditionDto.setReviewStage((String) projectReviewCon[0]);
@@ -1015,6 +1016,15 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	}
 
 	
+	/**
+	 * 根据业务ID统计已经确认的抽取专家
+	 * @param businessId
+	 * @return
+	 */
+	@Override
+	public int getSelectEPCount(String businessId) {
+		return expertSelectedRepo.getSelectEPCount(businessId);
+	}
 
 
 	

@@ -516,11 +516,10 @@ public class UserServiceImpl implements UserService {
             hqlBuilder.append("select orgId from cs_user where " + User_.id.getName()+"=:userId)" );
             hqlBuilder.setParam("userId" , SessionUtil.getUserId());
         }
-        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+        List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
         if(!list.isEmpty()){
             for(int i=0 ; i<list.size();i++){
-                Object obj=list.get(i);
-                Object[] userNames = (Object[]) obj;
+                Object[] userNames = list.get(i);
                 UserDto userDto = new UserDto();
                 userDto.setId((String)userNames[0]);
                 userDto.setDisplayName((String)userNames[1]);
@@ -550,12 +549,11 @@ public class UserServiceImpl implements UserService {
         hqlBuilder.append("select "+User_.displayName.getName()+" from cs_user where id=(");
         hqlBuilder.append("select "+User_.takeUserId.getName()+" from cs_user where "+User_.loginName.getName()+"=:loginName)");
         hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
-        List<Map> list = userRepo.findMapListBySql(hqlBuilder);
+        List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
         UserDto userDto = new UserDto();
         if(!list.isEmpty()){
-            Object obj= list.get(0);
-//            Object[] userName =(Object[]) obj;
-            userDto.setDisplayName((String)obj);
+            Object[] obj= list.get(0);
+            userDto.setDisplayName(obj[0].toString());
         }
         return userDto;
     }

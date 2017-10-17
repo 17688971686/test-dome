@@ -58,4 +58,10 @@ public interface ExpertSelectedService {
 	PageModelDto<ProjectReviewCostDto> assistCostList(ProjectReviewCostDto projectReviewCostDto);
 
 
+	/**
+	 * 根据业务ID统计已经确认的抽取专家
+	 * @param minBusinessId
+	 * @return
+	 */
+	int getSelectEPCount(String minBusinessId);
 }

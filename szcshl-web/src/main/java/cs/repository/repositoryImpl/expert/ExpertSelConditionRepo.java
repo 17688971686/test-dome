@@ -12,4 +12,11 @@ import cs.repository.IRepository;
 public interface ExpertSelConditionRepo extends IRepository<ExpertSelCondition, String> {
 
     void updateSelectIndexById(String ids);
+
+    /**
+     * 统计专家抽取设定人数
+     * @param minBusinessId
+     * @return
+     */
+    int getExtractEPCount(String minBusinessId);
 }

@@ -34,14 +34,16 @@
      * @param data 数据
      * @param fileName 文件名
      * @param fileType 文件类型
+     * 使用{type: "application/vnd.ms-excel"}的写法，可以保存为xls格式的excel文件
+     * 而使用“application/vnd.openxmlformats-officedocument.spreadsheetml.sheet”则会保存为xlsx
      */
     function downloadReport(data , fileName , fileType){
         var blob = new Blob([data] , {type : "application/" + fileType});
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.download = fileName;
-        a.href = URL.createObjectURL(blob);
-        a.click();
+        var objectUrl = URL.createObjectURL(blob);
+        var aForExcel = $("<a><span class='forExcel'>下载</span></a>").attr("href", objectUrl).attr("download", fileName);
+        $("body").append(aForExcel);
+        $(".forExcel").click();
+        aForExcel.remove();
     }
 
 

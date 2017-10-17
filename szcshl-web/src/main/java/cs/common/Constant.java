@@ -191,6 +191,19 @@ public class Constant {
         public String getValue() {
             return value;
         }
+
+        public static String getName(String key) {
+            switch (key){
+                case "1":
+                    return "随机抽取";
+                case "2":
+                    return "自选";
+                case "3":
+                    return "境外、市外专家";
+                default:
+                     return "";
+            }
+        }
     }
 
     /**

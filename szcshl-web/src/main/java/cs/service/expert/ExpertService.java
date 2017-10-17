@@ -6,6 +6,7 @@ import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
+import cs.model.expert.ExpertSelectHis;
 import cs.repository.odata.ODataObj;
 
 public interface ExpertService {
@@ -35,4 +36,11 @@ public interface ExpertService {
     int findMaxNumber();
 
     ResultMsg autoExpertReview(String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary);
+
+    /**
+     * 专家统计信息
+     * @param expertSelectHis
+     * @return
+     */
+    List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis);
 }

@@ -382,6 +382,15 @@ public class FlowServiceImpl implements FlowService {
         dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
         dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
         criteria.add(dis);
+        //排除合并评审阶段的次项目数据
+        Disjunction dis2 = Restrictions.disjunction();
+        dis2.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
+        dis2.add(Restrictions.eq(RuProcessTask_.reviewType.getName(),""));
+        dis2.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
+        dis2.add(Restrictions.sqlRestriction(" ( {alias}."+RuProcessTask_.reviewType.getName()+"= '"+ Constant.EnumState.NO.getValue()
+                +"' and {alias}."+RuProcessTask_.nodeDefineKey.getName()+" != '"+FlowConstant.FLOW_SIGN_BMLD_SPW1
+                +"' and {alias}."+RuProcessTask_.nodeDefineKey.getName()+" != '"+FlowConstant.FLOW_SIGN_FGLD_SPW1+"' )"));
+        criteria.add(dis2);
         criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
         criteria.setMaxResults(6);
 

@@ -179,4 +179,14 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
 
     }
 
+    /**
+     * 统计专家抽取设定人数
+     * @param minBusinessId
+     * @return
+     */
+    @Override
+    public int getExtractEPCount(String minBusinessId) {
+        return expertSelConditionRepo.getExtractEPCount(minBusinessId);
+    }
+
 }

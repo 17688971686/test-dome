@@ -530,8 +530,15 @@
                 ids.push(isCheck[i].value);
             }
             expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
-                bsWin.success("操作成功");
-                vm.reFleshConfirmState(ids,"9");
+                if(data.flag || data.reCode=='ok'){
+                    vm.reFleshConfirmState(ids,"9");
+                    vm.checkAutoOfficeExpert = false;
+                    vm.checkAutoAntiExpert = false;
+                    bsWin.success(data.reMsg);
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+
             })
 
         }

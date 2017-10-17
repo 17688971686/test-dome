@@ -28,4 +28,10 @@ public interface ExpertSelConditionService {
 
 	ResultMsg saveConditionList(String businessId,String minBusinessId,String businessType,String reviewId,ExpertSelConditionDto[] recordList);
 
+	/**
+	 * 统计专家抽取设定人数
+	 * @param minBusinessId
+	 * @return
+	 */
+	int getExtractEPCount(String minBusinessId);
 }

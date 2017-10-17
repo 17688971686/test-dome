@@ -6,7 +6,8 @@
         "kendo.directives",
         'angular-loading-bar',
         'ngAnimate',
-        'froala'
+        'froala',
+        'ngFileSaver'
         ]).filter('trust2Html', ['$sce',function($sce) {
             return function(val) {
                 return $sce.trustAsHtml(val);
@@ -355,6 +356,12 @@
                 url: '/expertReviewList',
                 templateUrl: rootPath + '/expert/html/reviewList.html',
                 controller: 'expertReviewListCtrl',
+                controllerAs: 'vm'
+            })
+            .state('expertSelectHis',{
+                url: '/expertSelectHis',
+                templateUrl: rootPath + '/expert/html/selectHisList.html',
+                controller: 'expertSelectHisCtrl',
                 controllerAs: 'vm'
             })
             //end expert
@@ -998,7 +1005,7 @@
                 controller : 'statisticalListCtrl',
                 controllerAs: 'vm'
             })
-        //统计图表
+            //统计图表
             .state('statistical',{
                 url : '/statistical',
                 templateUrl : rootPath + "/statistical/html/list.html",

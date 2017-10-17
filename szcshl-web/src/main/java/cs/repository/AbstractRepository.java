@@ -2,17 +2,20 @@ package cs.repository;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.transform.Transformers;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -260,13 +263,13 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     }
 
     /**
-     * 返回List<Map>
+     * 根据sql 返回一个数组列表
      * @param sqlBuilder
      * @return
      */
     @Override
-    public List<Map> findMapListBySql(HqlBuilder sqlBuilder) {
-        NativeQuery<Map> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
+    public List<Object[]> getObjectArray(HqlBuilder sqlBuilder){
+        NativeQuery<Object[]> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
         List<String> params = sqlBuilder.getParams();
         List<Object> values = sqlBuilder.getValues();
         List<Type> types = sqlBuilder.getTypes();
@@ -279,7 +282,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
                 }
             }
         }
-        return q.list();
+        return q.getResultList();
     }
 
     @Override

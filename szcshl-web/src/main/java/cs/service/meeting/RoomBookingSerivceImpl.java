@@ -359,7 +359,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		String [] dates=date.split("-");
 		String start=dates[0].replace("/", "-");
 		String end=dates[1].replaceAll("/", "-");
-		List<Map> roomBookMap=findWeekRoom(start,rbType,mrId);
+		List<Object[]> roomBookMap = findWeekRoom(start,rbType,mrId);
 		if("0".equals(rbType)){
 			rbType="评审会";
 		}
@@ -448,7 +448,7 @@ return docFile;
 	 * 获取一周每天的会议安排信息
 	 */
 	@Override
-	public List<Map> findWeekRoom(String date,String rbType,String mrId) {
+	public List<Object[]> findWeekRoom(String date,String rbType,String mrId) {
 		HqlBuilder sqlBuilder=HqlBuilder.create();
 		sqlBuilder.append("select dd.wDate,rbdd.rbName from (select trunc(to_date('"+date+"','yyyy-mm-dd'),'iw') as wdate from dual union ");
 		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +1 as wDate from dual union ");
@@ -474,8 +474,7 @@ return docFile;
 		sqlBuilder.append(") rbd ");
 		sqlBuilder.append("group by rbd."+RoomBooking_.rbDay.getName()+") rbdd on rbdd.rbday = dd.wDate order by dd.wDate");
 		sqlBuilder.setParam("dates", date);
-		List<Map> roomMap=roomBookingRepo.findMapListBySql(sqlBuilder);
-		return roomMap;
+		return roomBookingRepo.getObjectArray(sqlBuilder);
 	}
 
     /**

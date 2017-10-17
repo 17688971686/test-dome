@@ -26,7 +26,7 @@ public class SignDispaWork {
      * 是否是优秀评审项目 9： 是    0或其他：否
      */
 
-    @Column(columnDefinition = "VARCHAR(2)")
+    @Column
     private String isAppraising;
 
     /**

@@ -30,6 +30,21 @@ public class ODataObj {
     private boolean isCount;
     private int count;
 
+    public void setTop(int top) {
+        this.top = top;
+    }
+
+    public boolean isCount() {
+        return isCount;
+    }
+
+    public void setCount(boolean count) {
+        isCount = count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     @SuppressWarnings("rawtypes")
     private List<ODataFilterItem> filter;

@@ -11,7 +11,7 @@
             grid: grid,
             deleteassistCostCount: deleteassistCostCount,			//删除协审费用记录
             saveAssistCost:saveAssistCost,							//协审费用保存
-            sumAssistCount:sumAssistCount,								//统计评审费用总和
+            sumAssistCount:sumAssistCount,							//统计评审费用总和
             initAssistlProject:initAssistlProject,					//初始化协审费用关联的项目
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
             assistExportExcel:assistExportExcel,					//专家协申费用导出

@@ -120,19 +120,19 @@ public class Expert extends DomainBase {
     @Column(columnDefinition = "varchar(2) ")
     private String unable;                              //是否作废（1为作废，0 为正常）
     
-    @OneToMany(mappedBy = "expert")
+    @OneToMany(mappedBy = "expert", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<WorkExpe> work;                        //专家工作经验
 
-    @OneToMany(mappedBy = "expert")
+    @OneToMany(mappedBy = "expert", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ProjectExpe> project;                  //专家项目经验
 
-    @OneToMany(mappedBy = "expert")
+    @OneToMany(mappedBy = "expert", fetch = FetchType.LAZY)
     private List<ExpertSelected> expertSelectedList;    //专家抽取条件
 
-    @OneToMany(mappedBy = "expert")
+    @OneToMany(mappedBy = "expert", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ExpertType> expertType;//专家类型
 
-    @OneToMany(mappedBy = "expert")
+    @OneToMany(mappedBy = "expert", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ExpertOffer> expertOfferList;//专家聘书
 
     public Date getBirthDay() {

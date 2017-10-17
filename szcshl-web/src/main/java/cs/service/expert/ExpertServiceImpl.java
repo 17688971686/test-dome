@@ -5,6 +5,7 @@ import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
@@ -51,69 +52,15 @@ public class ExpertServiceImpl implements ExpertService {
     public PageModelDto<ExpertDto> get(ODataObj odataObj) {
         PageModelDto<ExpertDto> pageModelDto = new PageModelDto<>();
         List<ExpertDto> listExpertDto = new ArrayList<>();
-        String maJorBigParam = "",maJorSamllParam="",expertTypeParam="";
-        //Criteria 查询
-        Criteria criteria = expertRepo.getExecutableCriteria();
-        if (Validate.isList(odataObj.getFilter())) {
-            Object value;
-            for (ODataFilterItem item : odataObj.getFilter()) {
-                value = item.getValue();
-                if (null == value) {
-                    continue;
-                }
-                if("maJorBigParam".equals(item.getField())){
-                    maJorBigParam = item.getValue().toString();
-                    continue;
-                }
-                if("maJorSamllParam".equals(item.getField())){
-                    maJorSamllParam = item.getValue().toString();
-                    continue;
-                }
-                if("expertTypeParam".equals(item.getField())){
-                    expertTypeParam = item.getValue().toString();
-                    continue;
-                }
-                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
-            }
-        }
-        //关联专家大类、小类和专业类型查询
-        if(Validate.isString(maJorBigParam) || Validate.isString(maJorSamllParam) || Validate.isString(expertTypeParam)){
-            StringBuffer sqlSB = new StringBuffer();
-            sqlSB.append(" (select count(ept.ID) from CS_EXPERT_TYPE ept where EPT.EXPERTID = "+criteria.getAlias()+"_.EXPERTID ");
-            //突出专业，大类
-            if (Validate.isString(maJorBigParam)) {
-                sqlSB.append(" and ept.maJorBig = '"+maJorBigParam+"' ");
-            }
-            //突出专业，小类
-            if (Validate.isString(maJorSamllParam)) {
-                sqlSB.append(" and ept.maJorSmall = '"+maJorSamllParam+"' ");
-            }
-            //专家类型
-            if (Validate.isString(expertTypeParam)) {
-                sqlSB.append(" and ept.expertType = '"+expertTypeParam+"' ");
-            }
-            sqlSB.append(" ) > 0 ");
-            criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
-        }
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        criteria.setProjection(null);
-        // 处理分页
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getSkip());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-
-        List<Expert> listExpert = criteria.list();
-        for (Expert item : listExpert) {
+        List<Expert> expertList = expertRepo.get(odataObj);
+        for (Expert item : expertList) {
             //把图片设置为空
             item.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(item, expertDto);
             listExpertDto.add(expertDto);
         }
-        pageModelDto.setCount(totalResult);
+        pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(listExpertDto);
         return pageModelDto;
     }
@@ -611,4 +558,66 @@ public class ExpertServiceImpl implements ExpertService {
         }
     }
 
+    /**
+     * 专家抽取统计
+     * @param expertSelectHis
+     * @return
+     */
+    @Override
+    public List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis) {
+        List<Object[]> epList = expertSelectedRepo.getSelectHis(expertSelectHis);
+        List<ExpertSelectHis> resultList = new ArrayList<>();
+        String expertID="";     //初始专家ID
+        ExpertSelectHis expertSelectHisObj =null;
+        List<ExpertSelectHis> childList = null;
+        for(int i=0,l=epList.size();i<l;i++){
+            Object[] expMap = epList.get(i);
+            String expId = expMap[0].toString();
+            String expName = expMap[1].toString();
+            String expCompany = expMap[2]==null?"":expMap[2].toString();
+            String expField = expMap[3]==null?"":expMap[3].toString();
+            String projectName = expMap[4]==null?"":expMap[4].toString();
+            String majorBig = expMap[5]==null?"":expMap[5].toString();
+            String marjorSmall = expMap[6]==null?"":expMap[6].toString();
+            String expertType = expMap[7]==null?"":expMap[7].toString();
+            String selectType = expMap[8]==null?"":expMap[8].toString();
+            String isConfirm = expMap[9]==null?"":expMap[9].toString();
+            String reviewType = expMap[10]==null?"":expMap[10].toString();
+            Date reviewDate = DateUtils.converToDate(expMap[11]==null?"":expMap[11].toString(),null);
+            String mainChargeUserName = expMap[12]==null?"":expMap[12].toString();
+
+            if(!Validate.isString(expertID) || !expertID.equals(expId)){
+                if(expertSelectHisObj != null){
+                    expertSelectHisObj.setChildList(childList);
+                    resultList.add(expertSelectHisObj);
+                }
+                expertID = expId;
+                expertSelectHisObj = new ExpertSelectHis();
+                childList = new ArrayList<>();
+                expertSelectHisObj.setEpId(expId);
+                expertSelectHisObj.setEpName(expName);
+                expertSelectHisObj.setEpCompany(expCompany);
+            }
+            ExpertSelectHis childObj = new ExpertSelectHis();
+            childObj.setEpId(expId);
+            childObj.setEpName(expName);
+            childObj.setEpCompany(expCompany);
+            childObj.setEpField(expField);
+            childObj.setProjectName(projectName);
+            childObj.setMajorBig(majorBig);
+            childObj.setMarjorSmall(marjorSmall);
+            childObj.setSelectType(Constant.EnumExpertSelectType.getName(selectType));
+            childObj.setIsConfirm(Constant.EnumState.YES.getValue().equals(isConfirm)?"已选定":"否");
+            childObj.setReviewType(reviewType);
+            childObj.setExpertType(expertType);
+            childObj.setReviewDate(reviewDate);
+            childObj.setMainChargeUserName(mainChargeUserName);
+            childList.add(childObj);
+            //最后一个
+            if(i == (l-1)){
+                resultList.add(expertSelectHisObj);
+            }
+        }
+        return resultList;
+    }
 }
