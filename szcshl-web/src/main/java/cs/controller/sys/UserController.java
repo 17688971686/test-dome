@@ -198,6 +198,13 @@ public class UserController {
         userService.cancelTakeUser();
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name="重置密码" , path = "resetPwd" , method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void resetPwd(@RequestParam String ids){
+       userService.resetPwd(ids);
+    }
+
     // begin#html
     @RequiresPermissions("user#html/list#get")
     @RequestMapping(name = "用户管理", path = "html/list", method = RequestMethod.GET)

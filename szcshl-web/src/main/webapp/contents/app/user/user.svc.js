@@ -3,9 +3,9 @@
 
     angular.module('app').factory('userSvc', user);
 
-    user.$inject = ['$http'];
+    user.$inject = ['$http' , 'bsWin'];
 
-    function user($http) {
+    function user($http , bsWin) {
         var url_user = rootPath + "/user", url_back = '#/user', url_role = rootPath + "/role/fingByOData",
             url_dictgroup = rootPath + "/dict";
         var service = {
@@ -19,10 +19,33 @@
             queryUser: queryUser,
             getZtreeChecked :getZtreeChecked ,
             //initUserNo : initUserNo//初始化 员工工号
+            resetPwd : resetPwd , //重置密码
         };
 
         return service;
-        
+
+
+        //begin resetPwd
+        function resetPwd(vm , ids ){
+            var httpOptions = {
+                method : 'put',
+                url : url_user + '/resetPwd' ,
+                params : {ids : ids}
+            }
+            var httpSuccess = function success(response){
+                bsWin.success("重置密码成功！");
+                vm.gridOptions.dataSource.read();
+            }
+            common.http({
+                vm : vm ,
+                httpOptions : httpOptions ,
+                success : httpSuccess ,
+                $http : $http
+            });
+        }
+        //end resetPwd
+
+
         //begin initUserNo
         /*function initUserNo(vm){
         

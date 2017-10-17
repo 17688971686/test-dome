@@ -22,8 +22,11 @@
             </@shiro.hasPermission>
             <@shiro.hasPermission name="user##delete">           
             <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        	</@shiro.hasPermission> 
-        </div>
+        	</@shiro.hasPermission>
+       <@shiro.hasPermission name="user##delete">
+           <button class="btn btn-sm btn-primary" ng-click="vm.resetPwd()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-repeat"></span>重置密码</button>
+       </@shiro.hasPermission>
+       </div>
      </form>
         <script type="text/template" id="columnBtns">
 		<@shiro.hasPermission name="user##delete">

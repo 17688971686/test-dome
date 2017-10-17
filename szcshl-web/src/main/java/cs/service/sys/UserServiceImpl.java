@@ -415,6 +415,7 @@ public class UserServiceImpl implements UserService {
      * @param org
      * @return
      */
+    @Override
     public UserDto filterOrgSLeader(List<UserDto> userList, Org org) {
         for (int i = 0, l = userList.size(); i < l; i++) {
             UserDto delUser = userList.get(i);
@@ -590,6 +591,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void fleshPostUserCache() {
         userRepo.findAllPostUser();
+    }
+
+    @Override
+    public void resetPwd(String ids) {
+        List<User> userList = userRepo.getCacheUserListById(ids);
+        for(User u : userList){
+            u.setPassword(Constant.PASSWORD);
+            u.setModifiedBy(SessionUtil.getDisplayName());
+            u.setModifiedDate(new Date());
+        }
+        userRepo.bathUpdate(userList);
     }
 
     @Override

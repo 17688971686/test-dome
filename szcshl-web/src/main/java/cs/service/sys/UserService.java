@@ -70,4 +70,10 @@ public interface UserService {
     List<User> findAllPostUser();
 
     void fleshPostUserCache();
+
+    /**
+     * 重置密码
+     * @param ids
+     */
+    void resetPwd(String ids);
 }
