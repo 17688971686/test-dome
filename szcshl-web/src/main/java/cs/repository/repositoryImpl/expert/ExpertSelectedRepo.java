@@ -2,13 +2,12 @@ package cs.repository.repositoryImpl.expert;
 
 import cs.common.ResultMsg;
 import cs.domain.expert.ExpertSelected;
-import cs.model.expert.ExpertSelectHis;
 import cs.model.expert.ExpertReviewConSimpleDto;
 import cs.model.expert.ExpertReviewCondDto;
+import cs.model.expert.ExpertSelectHis;
 import cs.repository.IRepository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 抽取专家 数据操作实现接口
@@ -47,5 +46,17 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto);
 
+    /**
+     * 专家评审基本情况详细综合
+     * @param expertReviewConSimpleDto
+     * @return
+     */
     ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
+
+    /**
+     * 专家评审基本情况不规则
+     * @param expertReviewConSimpleDto
+     * @return
+     */
+    ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
 }

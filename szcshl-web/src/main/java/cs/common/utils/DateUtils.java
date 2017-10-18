@@ -641,11 +641,111 @@ public class DateUtils {
         return date;
     }
 
+    /**
+     * 获取星期
+     * @param mdate
+     * @return
+     */
+    public static int  getDayOfWeek1(Date mdate) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(mdate);
+        int Dw = 0;
+        int i = c.get(Calendar.DAY_OF_WEEK);
+        switch(i){
+            case 1: Dw = 0;
+                break;
+            case 2: Dw = 1;
+                break;
+            case 3: Dw = 2;
+                break;
+            case 4: Dw = 3;
+                break;
+            case 5: Dw = 4;
+                break;
+            case 6: Dw = 5;
+                break;
+            case 7: Dw = 6;
+                break;
+        }
+        return Dw;
+    }
+
+
+
+    /**
+     * 获取当前时间是本年的第几周
+     * @param mdate
+     * @return
+     */
+    public static int weekOfYear(Date mdate){
+        Calendar c = Calendar.getInstance();
+        c.setTime(mdate);
+        return c.get(Calendar.WEEK_OF_YEAR);
+    }
+
+    /**
+     * 当前第几季度
+     * @param date
+     * @return
+     */
+    public static int getSeason(Date date) {
+
+        int season = 0;
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH);
+        switch (month) {
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+            case Calendar.MARCH:
+                season = 1;
+                break;
+            case Calendar.APRIL:
+            case Calendar.MAY:
+            case Calendar.JUNE:
+                season = 2;
+                break;
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+            case Calendar.SEPTEMBER:
+                season = 3;
+                break;
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+            case Calendar.DECEMBER:
+                season = 4;
+                break;
+            default:
+                break;
+        }
+        return season;
+    }
+
+
+    /**
+     * 取月
+     * @return
+
+     */
+    public static String getMonth(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH);
+        return String.valueOf(month + 1);
+    }
+
+
+
+
     public static void main(String[] args) throws ParseException {
-		String dateString = "2016年6月30日";
+/*		String dateString = "2016年6月30日";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		System.out.println(daysBetween(converToDate("2017-10-14","yyyy-MM-dd"),new Date()));
-        System.out.println("KKKKKKKK"+converToString(new Date(),"yy"));
-
+        System.out.println("KKKKKKKK"+converToString(new Date(),"yy"));*/
+        System.out.println(getSeason(new Date()));
+        System.out.println(weekOfYear(new Date()));
+        System.out.println(getDayOfWeek1(new Date()));
+        System.out.println(getMonth(new Date()));
 	}
 }

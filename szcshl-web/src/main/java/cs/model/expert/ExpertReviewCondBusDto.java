@@ -28,6 +28,8 @@ public class ExpertReviewCondBusDto {
 
     private String isLetterRw;
 
+    private String reportType;
+
 
     public Date getReviewDate() {
         return reviewDate;
@@ -83,5 +85,13 @@ public class ExpertReviewCondBusDto {
 
     public void setIsLetterRw(String isLetterRw) {
         this.isLetterRw = isLetterRw;
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
     }
 }
