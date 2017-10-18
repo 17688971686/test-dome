@@ -38,6 +38,7 @@ public class ProjectReviewCostDto {
     private BigDecimal authorizeValue;
 
     //签收时间
+    @JSONField(format = "yyyy-MM-dd")
     private Date signdate;
 
     private String businessId;
@@ -48,6 +49,31 @@ public class ProjectReviewCostDto {
     private String beginTime;
     private String endTime;
     private String deptName;
+    /**
+     * 警示灯
+     */
+     private String isLightUp;
+
+    /**
+     * 流程状态
+     */
+    private Integer processState;
+
+    public String getIsLightUp() {
+        return isLightUp;
+    }
+
+    public void setIsLightUp(String isLightUp) {
+        this.isLightUp = isLightUp;
+    }
+
+    public Integer getProcessState() {
+        return processState;
+    }
+
+    public void setProcessState(Integer processState) {
+        this.processState = processState;
+    }
 
     List<FinancialManagerDto> financialManagerDtoList;
 

@@ -779,4 +779,53 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
 
+	@Override
+	public PageModelDto<ProjectReviewCostDto> findProjectRevireCost() {
+		PageModelDto<ProjectReviewCostDto> pageModelDto = new PageModelDto<ProjectReviewCostDto>();
+		HqlBuilder sqlBuilder = HqlBuilder.create();
+		sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,r.businessid , s.processstate , s.islightup from cs_sign s  ");
+		sqlBuilder.append(" left join cs_expert_review r  ");
+		sqlBuilder.append("on s.signid = r.businessid  ");
+		sqlBuilder.append("left join cs_dispatch_doc d  ");
+		sqlBuilder.append("on s.signid = d.signid  ");
+		sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
+		sqlBuilder.append("ON s.signid = mo.bsignid  ");
+		sqlBuilder.append("where r.paydate is not null ");
+		List<Map> projectReviewCostList = expertSelectedRepo.findMapListBySql(sqlBuilder);
+
+		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<>();
+		if(projectReviewCostList.size()>0){
+			for(int i=0 ; i < projectReviewCostList.size() ; i++){
+				Object obj = projectReviewCostList.get(i);
+				Object[] projectReviewCost = (Object[]) obj;
+				ProjectReviewCostDto projectReviewCostDto = new ProjectReviewCostDto();
+				projectReviewCostDto.setProjectcode((String) projectReviewCost[0]);
+				projectReviewCostDto.setProjectname((String) projectReviewCost[1]);
+				projectReviewCostDto.setBuiltcompanyname((String) projectReviewCost[2]);
+				projectReviewCostDto.setReviewstage((String) projectReviewCost[3]);
+				projectReviewCostDto.setTotalCost((BigDecimal) projectReviewCost[4]);
+				projectReviewCostDto.setPayDate((Date) projectReviewCost[5]);
+				projectReviewCostDto.setDeclareValue((BigDecimal) projectReviewCost[6]);
+				projectReviewCostDto.setAuthorizeValue((BigDecimal) projectReviewCost[7]);
+				projectReviewCostDto.setSigndate((Date) projectReviewCost[8]);
+				projectReviewCostDto.setBusinessId((String) projectReviewCost[9]);
+				projectReviewCostDto.setIsLightUp((String) projectReviewCost[11]);
+				projectReviewCostDto.setProcessState(new Integer(projectReviewCost[10].toString()));
+
+				projectReviewCostDtoList.add(projectReviewCostDto);
+				User u = signPrincipalService.getMainPriUser(projectReviewCostDto.getBusinessId());
+				Integer totalCost = financialManagerService.sunCount(projectReviewCostDto.getBusinessId());
+				if (null != totalCost){
+					projectReviewCostDto.setTotalCost(BigDecimal.valueOf(totalCost));
+				}
+				projectReviewCostDto.setPrincipal(u.getDisplayName());
+			}
+		}
+		pageModelDto.setCount(projectReviewCostDtoList.size());
+		pageModelDto.setValue(projectReviewCostDtoList);
+
+
+		return pageModelDto;
+	}
+
 }
