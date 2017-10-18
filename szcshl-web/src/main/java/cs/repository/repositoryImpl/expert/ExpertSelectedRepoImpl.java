@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.expert;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.common.ResultMsg;
 import cs.common.utils.StringUtil;
@@ -190,7 +191,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     public ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
         Map<String, Object> resultMap = new HashMap<>();
         PageModelDto<ExpertReviewConSimpleDto> pageModelDto = new PageModelDto<ExpertReviewConSimpleDto>();
-        //评审、函次数sql
+        //评审、函次数
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.expertid,count(t.expertid)reviewCount,t.isletterrw from (   ");
         sqlBuilder.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s   ");
@@ -207,7 +208,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         //评审总次数
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
         sqlBuilder1.append("select t1.expertid,sum(t1.reviewCount) from (  ");
-        sqlBuilder1.append("select t.expertid,t.expertno,count(t.expertid) reviewCount,t.isletterrw   ");
         sqlBuilder1.append("select t.expertid,t.expertno,count(t.expertid) reviewCount,t.isletterrw  from (   ");
         sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s  ");
         sqlBuilder1.append("left join cs_expert_review r  ");
@@ -227,12 +227,42 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         List<Object[]> expertReviewConSimList = expertSelectedRepo.getObjectArray(sqlBuilder);
         List<Object[]> expertReviewConSimList1 = expertSelectedRepo.getObjectArray(sqlBuilder1);
         List<ExpertReviewConSimpleDto> expertRevConSimDtoList = new ArrayList<ExpertReviewConSimpleDto>();
+        String expertId = "";
         if (expertReviewConSimList.size() > 0) {
             for(int i=0;i<expertReviewConSimList.size();i++){
                 Object[] expertReviewConSim = expertReviewConSimList.get(i);
                 ExpertReviewConSimpleDto expertReviewSimDto = new ExpertReviewConSimpleDto();
                 if (null != expertReviewConSim[0]) {
                     expertReviewSimDto.setExpertID((String) expertReviewConSim[0]);
+                    if (expertId.equals(expertReviewSimDto.getExpertID())){
+                        ExpertReviewConSimpleDto expertReviewConSimpleDto1 = expertRevConSimDtoList.get(expertRevConSimDtoList.size()-1);
+                        if (null != expertReviewConSim[2]) {
+                            String temp = (String)expertReviewConSim[2];
+                            if (temp.equals("0")){//评审
+                                if (null != expertReviewConSim[1]) {
+                                    expertReviewConSimpleDto1.setReviewNum((BigDecimal) expertReviewConSim[1]);
+                                }else{
+                                    expertReviewConSimpleDto1.setReviewNum(null);
+                                }
+                            }else{//函评
+                                if (null != expertReviewConSim[1]) {
+                                    expertReviewConSimpleDto1.setLetterRwNum((BigDecimal) expertReviewConSim[1]);
+                                }else{
+                                    expertReviewConSimpleDto1.setLetterRwNum(null);
+                                }
+                            }
+                        }else{//评审
+                            if (null != expertReviewConSim[1]) {
+                                expertReviewConSimpleDto1.setReviewNum((BigDecimal) expertReviewConSim[1]);
+                            }else{
+                                expertReviewConSimpleDto1.setReviewNum(null);
+                            }
+                        }
+                        expertRevConSimDtoList.remove(expertRevConSimDtoList.size()-1);
+                        expertRevConSimDtoList.add(expertReviewConSimpleDto1);
+                        continue;
+                    }
+                    expertId = expertReviewSimDto.getExpertID();
                     Expert expert =  expertRepo.findById(expertReviewSimDto.getExpertID());
                     expertReviewSimDto.setName(expert.getName());
                     expertReviewSimDto.setComPany(expert.getComPany());
@@ -242,8 +272,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 }
 
                 if (null != expertReviewConSim[2]) {
-                    BigDecimal temp = (BigDecimal)expertReviewConSim[2];
-                    if (temp.equals(0)){//评审
+                    String temp = (String)expertReviewConSim[2];
+                    if (temp.equals("0")){//评审
                         if (null != expertReviewConSim[1]) {
                             expertReviewSimDto.setReviewNum((BigDecimal) expertReviewConSim[1]);
                         }else{
@@ -269,6 +299,72 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         }
         resultMap.put("expertRevConSimDtoList", expertRevConSimDtoList);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }
+
+    /**
+     * 专家评审情况（不规则）
+     * @param expertReviewConSimpleDto
+     * @return
+     */
+    @Override
+    public ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
+
+        return null;
+    }
+
+    /**
+     * 判断是否存在不规则专家评审次数（专家一周参会超过两次或者一个季度超过12次视为不规则）
+     * @param expertReviewConSimpleDto
+     * @return
+     */
+    private boolean isExistsConComplicated(ExpertReviewConSimpleDto expertReviewConSimpleDto){
+        boolean flag = true;
+        int begseason=0;
+        int begweak=0;
+        int begday=-1;
+        Date begDate = null;
+        Date endDate = null;
+
+
+        if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
+            begDate = DateUtils.converToDate(expertReviewConSimpleDto.getBeginTime(),"yyyy-MM-dd");
+            begseason = DateUtils.getSeason(begDate);
+            begweak = DateUtils.weekOfYear(begDate);
+            begday = DateUtils.getDayOfWeek1(begDate);
+        }
+
+        if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
+            endDate = DateUtils.converToDate(expertReviewConSimpleDto.getEndTime(),"yyyy-MM-dd");
+        }
+
+        //todo: 不规则暂按会议起始日期不为空计算
+        while (flag){
+          Date weakTemp =  DateUtils.addDay(begDate,7-begday);
+          if(weakTemp.compareTo(endDate)<=0){
+              if(DateUtils.getSeason(begDate)== begseason){
+            //todo:按周计算  周参会次数大于2  直接返回列表保存专家信息
+
+             begDate = DateUtils.addDay(weakTemp,1);
+             begweak = DateUtils.weekOfYear(begDate);
+             begday = DateUtils.getDayOfWeek1(begDate);
+                  //todo:累加参会次数
+              }else {
+                  begseason = DateUtils.getSeason(begDate);//改变季度
+                  //todo: 判断上一季度该专家参会次数 是否大于12 返回列表保存专家信息
+
+                  //todo:清空参会次数 然后按周计算  周参会次数大于2  直接返回列表保存专家信息
+
+                  //todo:累加参会次数
+                  begDate = DateUtils.addDay(weakTemp,1);
+                  begday = DateUtils.getDayOfWeek1(begDate);
+              }
+
+          }else{
+              //todo:begDate 与 endDate 之间参会次数是否大于12 保存专家信息
+              flag = false;
+          }
+        }
+        return  flag;
     }
 
     /**

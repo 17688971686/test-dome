@@ -14,11 +14,22 @@
 
         //专家评审基本情况详细统计
         function expertRevConCount(vm,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertSelected/expertReviewCondDetailCount",
-                data: vm.model
+            if(vm.model.reportType==1){
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/expertSelected/expertReviewCondDetailCount",
+                    data: vm.model
+                }
+            }else if(vm.model.reportType==2){
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/expertSelected/expertReviewCondCount",
+                    data: vm.model
+                }
+            }else if(vm.model.reportType==3){
+
             }
+
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
                     callBack(response.data);
