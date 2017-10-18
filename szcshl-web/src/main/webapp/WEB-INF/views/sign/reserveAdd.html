@@ -20,10 +20,10 @@
                 <td></td>
             </tr>
             <tr>
-                <td class="formAlignRight">委内收文编号： <span class="required">*</span></td>
+                <td class="formAlignRight">委内收文编号： </td>
                 <td>
-                    <input  type="text" maxlength="20" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true"  data-val-required="必填"
-                            data-val-regex-pattern="^(a|b|c|d|A|B|C|D)+20[1-4]+[0-9]{5}" data-val-regex="收文编号格式不正确" data-val-length-max="20">
+                    <input  type="text" maxlength="20" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true"  
+                             data-val-length-max="20">
                 </td>
                 <td><span data-valmsg-for="filecode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
@@ -50,10 +50,38 @@
 
             <tr>
                 <td class="formAlignRight">项目名称：</td>
-                <td colspan="3">
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.projectname" id="projectname" name="projectname" >
+                <td >
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectname" id="projectname" name="projectname" >
                 </td>
                 <td><span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">资料存放位置：</td>
+                <td>
+                    <textarea  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.palceStorage" id="palceStorage" name="palceStorage" />
+                </td>
+                <td><span data-valmsg-for="palceStorage" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">送来存放时间：</td>
+                <td >
+                    <input  type="text" maxlength="200" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "  ng-model="vm.model.palceTime" id="palceTime" name="palceTime" >
+                </td>
+                <td><span data-valmsg-for="palceTime" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+             <tr>
+                <td class="formAlignRight">联系人：</td>
+                <td >
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.contacts" id="contacts" name="contacts" >
+                </td>
+                <td><span data-valmsg-for="contacts" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+             <tr>
+                <td class="formAlignRight">联系方式：</td>
+                <td >
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.contactsPhone" id="contactsPhone" name="contactsPhone" >
+                </td>
+                <td><span data-valmsg-for="contactsPhone" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
         </table>
     </form>

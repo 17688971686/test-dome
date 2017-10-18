@@ -861,6 +861,31 @@ public class Sign extends DomainBase {
     //是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
     private String isAdvanced;
+    
+    /**
+     * 存放位置
+     */
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String palceStorage;
+    
+    /**
+     * 存放时间
+     */
+    @Column(columnDefinition = "DATE")
+    private Date palceTime;
+    
+    /**
+     * 联系人
+     */
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String contacts;
+    
+    /**
+     * 联系电话
+     */
+    @Column(columnDefinition = "VARCHAR(40)")
+    private String contactsPhone;
+    
 
     /**************************  状态字段放这里  ****************************/
 
@@ -2480,4 +2505,38 @@ public class Sign extends DomainBase {
     public void setIsAppraising(String isAppraising) {
         this.isAppraising = isAppraising;
     }
+
+	public String getPalceStorage() {
+		return palceStorage;
+	}
+
+	public void setPalceStorage(String palceStorage) {
+		this.palceStorage = palceStorage;
+	}
+
+	public Date getPalceTime() {
+		return palceTime;
+	}
+
+	public void setPalceTime(Date palceTime) {
+		this.palceTime = palceTime;
+	}
+
+	public String getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
+	}
+
+	public String getContactsPhone() {
+		return contactsPhone;
+	}
+
+	public void setContactsPhone(String contactsPhone) {
+		this.contactsPhone = contactsPhone;
+	}
+    
+    
 }

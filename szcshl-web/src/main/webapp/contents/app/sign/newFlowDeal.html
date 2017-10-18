@@ -10,14 +10,24 @@
 <input type="hidden" ng-model="vm.flow.processInstanceId" value="{{vm.flow.processInstanceId}}" /><!-- hidden processInstanceId -->
 <input type="hidden" ng-model="vm.flow.curNode.activitiId" value="{{vm.flow.curNode.activitiId}}" />
 
+
 <table class="table table-bordered">
       <tbody>
+      	 <tr ng-if="vm.model.ispresign==0 && vm.flow.curNode.activitiName=='项目负责人办理' ">
+          <td width="10%" class="text-center">资料存放位置</td>
+          <td>
+                {{vm.model.palceStorage}}
+          </td>
+        </tr>
         <tr>
           <td width="10%" class="text-center">本环节名称</td>
           <td>
                 {{vm.flow.curNode.activitiName}}
           </td>
         </tr>
+        
+       
+        
         <tr>
           <td width="10%" class="text-center">处理意见</td>
           <td>

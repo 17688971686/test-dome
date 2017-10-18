@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 public class SignDto extends BaseDto{
 
     /**
@@ -618,6 +620,26 @@ public class SignDto extends BaseDto{
      * 专家评审方案信息
      */
     private ExpertReviewDto expertReviewDto;
+    
+    /**
+     * 存放位置
+     */
+    private String palceStorage;
+    
+    /**
+     * 存放时间
+     */
+    private Date palceTime;
+    
+    /**
+     * 联系人
+     */
+    private String contacts;
+    
+    /**
+     * 联系电话
+     */
+    private String contactsPhone;
 
     public SignDto() {
     }
@@ -2273,4 +2295,37 @@ public class SignDto extends BaseDto{
     public void setOldProjectId(Integer oldProjectId) {
         this.oldProjectId = oldProjectId;
     }
+
+	public String getPalceStorage() {
+		return palceStorage;
+	}
+
+	public void setPalceStorage(String palceStorage) {
+		this.palceStorage = palceStorage;
+	}
+
+	public Date getPalceTime() {
+		return palceTime;
+	}
+
+	public void setPalceTime(Date palceTime) {
+		this.palceTime = palceTime;
+	}
+
+	public String getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
+	}
+
+	public String getContactsPhone() {
+		return contactsPhone;
+	}
+
+	public void setContactsPhone(String contactsPhone) {
+		this.contactsPhone = contactsPhone;
+	}
+    
 }

@@ -736,7 +736,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 			}
 		}
 	//	resultMap.put("projectReviewCostDtoList", projectReviewCostDtoList);
-		//pageModelDto.setCount();
+		pageModelDto.setCount(projectReviewCostDtoList.size());
 		pageModelDto.setValue(projectReviewCostDtoList);
 		return pageModelDto;
 	}
