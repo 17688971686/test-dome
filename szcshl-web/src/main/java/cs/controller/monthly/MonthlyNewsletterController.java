@@ -267,9 +267,15 @@ public class MonthlyNewsletterController {
 
 
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
-    @RequestMapping(name = "新建月报简报年度", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
+    @RequestMapping(name = "编辑月报简报年度", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
     public String monthlyMultiyearAdd() {
         return ctrlName+"/monthlyMultiyearAdd"; 
+    }
+    
+    @RequiresPermissions("monthlyNewsletter#html/monthlyYearAdd#get")
+    @RequestMapping(name = "新建月报简报年度", path = "html/monthlyYearAdd", method = RequestMethod.GET)
+    public String monthlyYearAdd() {
+        return ctrlName+"/monthlyYearAdd"; 
     }
 
     @RequiresAuthentication

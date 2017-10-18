@@ -65,6 +65,9 @@ public class MonthlyNewsletterDto extends BaseDto{
 	//月报简报类型:1:表示月报简报历史数据,2:表示月报简报年度
 	private String monthlyType;
 	
+	//业务ID
+	private String businessId;
+	
 	//备注
 	private String remark;
 
@@ -196,6 +199,15 @@ public class MonthlyNewsletterDto extends BaseDto{
 
 	public void setDeclarationSum(BigDecimal declarationSum) {
 		this.declarationSum = declarationSum;
+	}
+	
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
 	}
 
 	public BigDecimal getAssessorSum() {

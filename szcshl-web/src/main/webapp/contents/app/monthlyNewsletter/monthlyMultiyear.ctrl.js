@@ -3,12 +3,16 @@
 
     angular.module('app').controller('monthlyMultiyearCtrl', monthlyMultiyear);
 
-    monthlyMultiyear.$inject = ['$location', 'monthlyMultiyearSvc'];
+    monthlyMultiyear.$inject = ['$location', 'monthlyMultiyearSvc','$state'];
 
-    function monthlyMultiyear($location, monthlyMultiyearSvc) {
+    function monthlyMultiyear($location, monthlyMultiyearSvc,$state) {
         var vm = this;
         vm.title = '年度月报简报';
-
+        vm.monthly = {};
+        vm.monthly.businessId = $state.params.id;
+      //  vm.monthly.id = $state.params.id;
+       // alert(vm.monthly.id);
+        
         //查询
          vm.addSuppQuery = function(){
          	 monthlyMultiyearSvc.addSuppQuery(vm);

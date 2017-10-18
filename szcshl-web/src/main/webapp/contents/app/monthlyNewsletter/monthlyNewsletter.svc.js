@@ -421,7 +421,7 @@
                     width: 100,
                     filterable: false,
                     template:function(item){
-                    	return '<a href="#/monthlyFindByMultiyear/"'+item.id+'">'+item.monthlyNewsletterName+'</a>'
+                    	return '<a href="#/monthlyFindByMultiyear/'+item.id+'" >'+item.monthlyNewsletterName+'</a>';
                     }
                 },
                 {

@@ -730,7 +730,7 @@
 
              //年度月报简报列表理页面
              .state('monthlyFindByMultiyear', {
-                url: '/monthlyFindByMultiyear/:reportMultiyear',
+                url: '/monthlyFindByMultiyear/:id',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
                 controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
@@ -744,10 +744,18 @@
                 controllerAs: 'vm'
             })
 
-            //新建年度月报简报页面
+            //编辑新建年度月报简报页面
              .state('monthlyMultiyearEdit', {
                 url: '/monthlyMultiyearEdit/:id',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
+                controller: 'monthlyMultiyearEditCtrl',
+                controllerAs: 'vm'
+            })
+            
+            //新建年度月报简报页面
+             .state('monthlyMultiyearAdd', {
+                url: '/monthlyMultiyearAdd/:businessId',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyYearAdd.html',
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })

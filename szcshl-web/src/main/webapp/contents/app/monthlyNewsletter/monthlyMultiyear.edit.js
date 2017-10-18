@@ -14,6 +14,10 @@
         vm.suppletter ={};//文件稿纸对象
         vm.id = $state.params.id;
         vm.suppletter.id = $state.params.id;
+        
+        vm.suppletter.businessId = $state.params.businessId;
+        
+        console.log(vm.suppletter.businessId);
        
         if (vm.id) {
             vm.isUpdate = true;

@@ -8,7 +8,7 @@
     function monthlyNewsletter($location, monthlyNewsletterSvc) {
         var vm = this;
         vm.title = '月报简报';
-
+      
         vm.del = function (id) {
             common.confirm({
                 vm: vm,

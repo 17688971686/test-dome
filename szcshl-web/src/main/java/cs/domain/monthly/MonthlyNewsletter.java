@@ -92,6 +92,12 @@ public class MonthlyNewsletter extends DomainBase {
 	@Column(columnDefinition="varchar(4)")
 	private String monthlyType;
 	
+	/**
+	 * 业务ID
+	 */
+	@Column(columnDefinition="varchar(200)")
+	private String businessId;
+	
 	//备注
 	@Column(columnDefinition="varchar(255)")
 	private String remark;
@@ -243,6 +249,15 @@ public class MonthlyNewsletter extends DomainBase {
 	public void setMonthlyType(String monthlyType) {
 		this.monthlyType = monthlyType;
 	}
+
+	public String getBusinessId() {
+		return businessId;
+	}
+
+	public void setBusinessId(String businessId) {
+		this.businessId = businessId;
+	}
+	
 	
 	
 }

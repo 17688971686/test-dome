@@ -470,7 +470,7 @@
 
         // begin#中心文件查询列表
         function monthlyMultiyearGrid(vm) {
-
+        	//alert(vm.monthly.id);
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
