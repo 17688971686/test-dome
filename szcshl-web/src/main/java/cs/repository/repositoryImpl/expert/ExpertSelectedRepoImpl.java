@@ -86,13 +86,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         //todo:添加查询条件
         if(null != expertReviewCondDto){
         }
-        List<Map> expertReviewConList = expertSelectedRepo.findMapListBySql(sqlBuilder);
+        List<Object[]> expertReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         List<ExpertReviewCondDto> expertReviewConDtoList = new ArrayList<ExpertReviewCondDto>();
         String expertId = "";
         if (expertReviewConList.size() > 0) {
             for (int i = 0; i < expertReviewConList.size(); i++) {
-                Object obj = expertReviewConList.get(i);
-                Object[] expertReviewCon = (Object[]) obj;
+                Object[] expertReviewCon = expertReviewConList.get(i);
                 ExpertReviewCondDto expertReviewDto = new ExpertReviewCondDto();
                 if(StringUtil.isNotEmpty(expertId) && null != expertReviewCon[0]){
                     if(expertId.equals((String)expertReviewCon[0])){
@@ -225,13 +224,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         //todo:添加查询条件
         if(null != expertReviewConSimpleDto){
         }
-        List<Map> expertReviewConSimList = expertSelectedRepo.findMapListBySql(sqlBuilder);
-        List<Map> expertReviewConSimList1 = expertSelectedRepo.findMapListBySql(sqlBuilder1);
+        List<Object[]> expertReviewConSimList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<Object[]> expertReviewConSimList1 = expertSelectedRepo.getObjectArray(sqlBuilder1);
         List<ExpertReviewConSimpleDto> expertRevConSimDtoList = new ArrayList<ExpertReviewConSimpleDto>();
         if (expertReviewConSimList.size() > 0) {
             for(int i=0;i<expertReviewConSimList.size();i++){
-                Object obj = expertReviewConSimList.get(i);
-                Object[] expertReviewConSim = (Object[]) obj;
+                Object[] expertReviewConSim = expertReviewConSimList.get(i);
                 ExpertReviewConSimpleDto expertReviewSimDto = new ExpertReviewConSimpleDto();
                 if (null != expertReviewConSim[0]) {
                     expertReviewSimDto.setExpertID((String) expertReviewConSim[0]);
@@ -279,12 +277,11 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @param expertId
      * @return
      */
-    private BigDecimal getExpertRevTotalNum(List<Map>expertReviewConSimList1,String expertId){
+    private BigDecimal getExpertRevTotalNum(List<Object[]>expertReviewConSimList1,String expertId){
         BigDecimal totalNum = null  ;
         if(expertReviewConSimList1.size()>0){
             for(int i=0;i<expertReviewConSimList1.size();i++){
-                Object obj = expertReviewConSimList1.get(i);
-                Object[] expertReviewConSim = (Object[]) obj;
+                Object[] expertReviewConSim = expertReviewConSimList1.get(i);
                 if (null != expertReviewConSim[0]) {
                     String temp = (String) expertReviewConSim[0];
                     if (StringUtil.isNotEmpty(expertId) && StringUtil.isNotEmpty(temp) && expertId.equals(temp)){
