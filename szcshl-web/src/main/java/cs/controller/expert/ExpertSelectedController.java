@@ -112,6 +112,22 @@ public class ExpertSelectedController {
     }
 
     @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    @RequestMapping(name = "专家评审情况综合统计", path = "expertReviewCondCount", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg expertReviewCondTotal(@RequestBody ExpertReviewConSimpleDto expertReviewConSimpleDto){
+        return  expertSelectedService.expertReviewConSimpleCount(expertReviewConSimpleDto);
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    @RequestMapping(name = "专家评审情况详细统计", path = "expertReviewCondDetailCount", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg expertReviewCondDetailTotal(@RequestBody ExpertReviewCondDto expertReviewCondDto){
+        return  expertSelectedService.expertReviewCondDetailCount(expertReviewCondDto);
+    }
+
+    @RequiresAuthentication
     //@RequiresPermissions("expertSelected#expertCostDetailTotal#post")
     @RequestMapping(name = "专家评审费明细汇总", path = "expertCostDetailTotal", method = RequestMethod.POST)
     @ResponseBody

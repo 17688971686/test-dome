@@ -1,6 +1,9 @@
 package cs.repository.repositoryImpl.expert;
 
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertSelected;
+import cs.model.expert.ExpertReviewConSimpleDto;
+import cs.model.expert.ExpertReviewCondDto;
 import cs.repository.IRepository;
 
 /**
@@ -18,4 +21,13 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype);
+
+    /**
+     *专家评审基本情况详细统计
+     * @param expertReviewCondDto
+     * @return
+     */
+    ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto);
+
+    ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
 }

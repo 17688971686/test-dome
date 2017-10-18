@@ -177,14 +177,17 @@ public class FinancialManagerController {
 
     }
 
-
-
-
     // begin#html
     @RequiresPermissions("financialManager#html/list#get")
     @RequestMapping(name = "评审费统计", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
+    }
+
+    @RequiresPermissions("financialManager#html/expertReviewCondCount#get")
+    @RequestMapping(name = "专家评审情况统计", path = "html/expertReviewCondCount", method = RequestMethod.GET)
+    public String expertReviewCondCount() {
+        return ctrlName+"/expertReviewCondCount";
     }
 
     @RequiresPermissions("financialManager#html/proReviewConCount#get")

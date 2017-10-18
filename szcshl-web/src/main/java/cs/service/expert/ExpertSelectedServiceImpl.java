@@ -779,4 +779,24 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
 
+	/**
+	 * 专家评审基本情况详细统计
+	 * @param expertReviewCondDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto) {
+		return  expertSelectedRepo.expertReviewCondDetailCount(expertReviewCondDto);
+	}
+
+	/**
+	 * 专家评审基本情况综合统计
+	 * @param expertReviewConSimpleDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
+		return expertSelectedRepo.expertReviewConSimpleCount(expertReviewConSimpleDto);
+	}
+
 }

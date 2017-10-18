@@ -44,4 +44,18 @@ public interface ExpertSelectedService {
 	 */
 	ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto);
 
+	/**
+	 *专家评审基本情况详细统计
+	 * @param expertReviewCondDto
+	 * @return
+	 */
+	ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto);
+
+	/**
+	 * 专家评审基本情况综合统计
+	 * @param expertReviewConSimpleDto
+	 * @return
+	 */
+	ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
+
 }
