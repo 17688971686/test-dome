@@ -333,6 +333,9 @@ desired effect
                         <@shiro.hasPermission name="financialManager#html/expertCount#get">
                             <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li>
                         </@shiro.hasPermission>
+                        <@shiro.hasPermission name="financialManager#html/expertReviewCondCount#get">
+                        <li><a href="javascript:void(0)" ui-sref="expertRevCondCountList">专家评审情况统计</a></li>
+                        </@shiro.hasPermission>
                         <@shiro.hasPermission name="financialManager#html/proReviewConCount#get">
                         <li><a href="javascript:void(0)" ui-sref="proReviewConCountList">项目评审情况统计</a></li>
                         </@shiro.hasPermission>

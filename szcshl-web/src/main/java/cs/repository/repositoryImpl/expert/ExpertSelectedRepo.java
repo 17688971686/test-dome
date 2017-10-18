@@ -1,7 +1,10 @@
 package cs.repository.repositoryImpl.expert;
 
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertSelected;
 import cs.model.expert.ExpertSelectHis;
+import cs.model.expert.ExpertReviewConSimpleDto;
+import cs.model.expert.ExpertReviewCondDto;
 import cs.repository.IRepository;
 
 import java.util.List;
@@ -36,4 +39,13 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis);
+
+    /**
+     *专家评审基本情况详细统计
+     * @param expertReviewCondDto
+     * @return
+     */
+    ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto);
+
+    ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
 }

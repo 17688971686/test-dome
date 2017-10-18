@@ -674,6 +674,13 @@
                 controller: 'exportCountCtrl',
                 controllerAs: 'vm'
             })
+             //专家评审情况统计列表
+            .state('expertRevCondCountList', {
+                url: '/expertRevCondCountList',
+                templateUrl: rootPath + '/financialManager/html/expertReviewCondCount.html',
+                controller: 'expertRevConCountCtrl',
+                controllerAs: 'vm'
+            })
              //项目评审费统计列表
             .state('projectCostCountList', {
                 url: '/projectCostCountList',

@@ -1,0 +1,83 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+	<ol class="breadcrumb">
+		<li><a href="#/sharingPlatlform">专家评审基本情况统计</a></li>
+		<li class="active">{{vm.title}}</li>
+	</ol>
+	<form id="form" name="form">
+		<div class="well">
+			<table border="1px">
+				<tbody>
+				<tr>
+					<td class="formAlignRight">报表类型</td>
+					<td >
+						<select operator="eq" name="reviewtype"  class="form-control input-sm " ng-model="vm.model.reviewtype" style="width: 80%">
+							<option value="">请选择</option>
+							<option value="1">项目评审专家情况表（详细）</option>
+							<option value="2">项目评审专家情况表（综合）</option>
+							<option value="3">聘请专家不符合规则情况表</option>
+							</option>
+						</select>
+					</td>
+					<td colspan="6">
+						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.expertRevConCount()">统计</a>
+						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="formAlignRight">专家姓名</td>
+					<td>
+						<input type="text" style="width:80%" ng-model="vm.model.name">
+					</td>
+					<td width="6%" class="formAlignRight" >评审方式</td>
+					<td>
+						<select operator="eq" name="reviewtype"  class="form-control input-sm " ng-model="vm.model.reviewtype">
+							<option value="">请选择</option>
+							<option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+							</option>
+						</select>
+					</td>
+					<td><span class="help-inline" style="margin-left:10px;">会议日期：</span></td>
+					<td> <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" />
+						至
+						<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" />
+					</td>
+
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div>
+			<table border="1px" style="width: 90%;">
+				<caption class="text-center h3">
+					<strong>专家评审基本情况表</strong>
+				</caption>
+				<tr >
+					<td style="width:5%"  class="text-center">专家姓名</td>
+					<td style="width:30%"  class="text-center">工作单位</td>
+					<td style="width:10%"  class="text-center">会议日期</td>
+					<td style="width:30%"  class="text-center">项目名称<span style="color: red">(红色表示函评)</span></td>
+					<td style="width:15%"  class="text-center">评审阶段</td>
+					<!--<td style="width:10%"  class="text-center">负责人</td>-->
+				</tr>
+				<tbody ng-if="vm.expertReviewConDtoList" ng-repeat="x in vm.expertReviewConDtoList">
+				<tr>
+					<td class="text-center" rowspan={{x.expertReviewCondBusDtoList.length+1}}>{{x.name}}</td>
+					<td class="text-center" rowspan={{x.expertReviewCondBusDtoList.length+1}}>{{x.comPany}}</td>
+				</tr>
+				<tr ng-repeat="b in x.expertReviewCondBusDtoList track by $index">
+					<td class="text-center">{{b.reviewDate}}</td>
+					<td class="text-center">{{b.projectName}}</td>
+					<td class="text-center">{{b.reviewStage}}</td>
+					<!--<td class="text-center">{{b.reviewStage}}</td>-->
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</form>
+</div>
+

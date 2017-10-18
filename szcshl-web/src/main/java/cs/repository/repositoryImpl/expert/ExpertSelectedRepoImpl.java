@@ -3,17 +3,25 @@ package cs.repository.repositoryImpl.expert;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
+import cs.common.ResultMsg;
+import cs.common.utils.StringUtil;
+import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
 import cs.model.expert.ExpertSelectHis;
+import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewConSimpleDto;
+import cs.model.expert.ExpertReviewCondBusDto;
+import cs.model.expert.ExpertReviewCondDto;
 import cs.repository.AbstractRepository;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Description: 抽取专家 数据操作实现类
@@ -22,7 +30,10 @@ import java.util.Map;
  */
 @Repository
 public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, String> implements ExpertSelectedRepo {
-
+    @Autowired
+    private ExpertSelectedRepo expertSelectedRepo;
+    @Autowired
+    private  ExpertRepo expertRepo;
     /**
      * 根据大类，小类和专家类别确认已经抽取的专家
      * @param maJorBig
@@ -52,6 +63,242 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         criteria.add(Restrictions.eq(ExpertSelected_.expeRttype.getName(), expeRttype));
         return ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();*/
     }
+
+    /**
+     *专家评审基本情况详细统计
+     * @param expertReviewCondDto
+     * @return
+     */
+    @Override
+    public ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        PageModelDto<ExpertReviewCondDto> pageModelDto = new PageModelDto<ExpertReviewCondDto>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select t.* from (   ");
+        sqlBuilder.append("select e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw  from cs_sign s  ");
+        sqlBuilder.append("left join cs_expert_review r  ");
+        sqlBuilder.append("on s.signid = r.businessid  ");
+        sqlBuilder.append("left join cs_expert_selected a  ");
+        sqlBuilder.append("on s.signid = a.businessid  ");
+        sqlBuilder.append("left join cs_expert e  on a.expertid = e.expertid) t  ");
+        sqlBuilder.append("where t.expertid is not null  ");
+        sqlBuilder.append("order by t.expertno,t.isletterrw ");
+        //todo:添加查询条件
+        if(null != expertReviewCondDto){
+        }
+        List<Map> expertReviewConList = expertSelectedRepo.findMapListBySql(sqlBuilder);
+        List<ExpertReviewCondDto> expertReviewConDtoList = new ArrayList<ExpertReviewCondDto>();
+        String expertId = "";
+        if (expertReviewConList.size() > 0) {
+            for (int i = 0; i < expertReviewConList.size(); i++) {
+                Object obj = expertReviewConList.get(i);
+                Object[] expertReviewCon = (Object[]) obj;
+                ExpertReviewCondDto expertReviewDto = new ExpertReviewCondDto();
+                if(StringUtil.isNotEmpty(expertId) && null != expertReviewCon[0]){
+                    if(expertId.equals((String)expertReviewCon[0])){
+                        ExpertReviewCondBusDto expertReviewCondBusDto = new ExpertReviewCondBusDto();
+                        if (null != expertReviewCon[4]) {
+                            expertReviewCondBusDto.setReviewDate((Date) expertReviewCon[4]);
+                        }else{
+                            expertReviewCondBusDto.setReviewDate(null);
+                        }
+                        if (null != expertReviewCon[5]) {
+                            expertReviewCondBusDto.setProjectName((String) expertReviewCon[5]);
+                        }else{
+                            expertReviewCondBusDto.setProjectName(null);
+                        }
+                        if (null != expertReviewCon[6]) {
+                            expertReviewCondBusDto.setReviewStage((String) expertReviewCon[6]);
+                        }else{
+                            expertReviewCondBusDto.setReviewStage(null);
+                        }
+                        if (null != expertReviewCon[7]) {
+                            expertReviewCondBusDto.setSignId((String) expertReviewCon[7]);
+                        }else{
+                            expertReviewCondBusDto.setSignId(null);
+                        }
+                        if (null != expertReviewCon[8]) {
+                            expertReviewCondBusDto.setIsLetterRw((String) expertReviewCon[8]);
+                        }else{
+                            expertReviewCondBusDto.setIsLetterRw(null);
+                        }
+                        List<ExpertReviewCondBusDto> expertReviewCondBusDtoList =expertReviewConDtoList.get(expertReviewConDtoList.size()-1).getExpertReviewCondBusDtoList();
+                        expertReviewCondBusDtoList .add(expertReviewCondBusDto);
+                        expertReviewConDtoList.get(expertReviewConDtoList.size()-1).setExpertReviewCondBusDtoList(null);
+                        expertReviewConDtoList.get(expertReviewConDtoList.size()-1).setExpertReviewCondBusDtoList(expertReviewCondBusDtoList);
+                        continue;
+                    }
+                }
+                if (null != expertReviewCon[0]) {
+                    expertReviewDto.setExpertID((String) expertReviewCon[0]);
+                    expertId = expertReviewDto.getExpertID();
+                }else{
+                    expertReviewDto.setExpertID(null);
+                }
+                if (null != expertReviewCon[2]) {
+                    expertReviewDto.setName((String) expertReviewCon[2]);
+                }else{
+                    expertReviewDto.setName(null);
+                }
+
+                if (null != expertReviewCon[3]) {
+                    expertReviewDto.setComPany((String) expertReviewCon[3]);
+                }else{
+                    expertReviewDto.setComPany(null);
+                }
+                List<ExpertReviewCondBusDto> expertReviewCondBusDtoList = new ArrayList<ExpertReviewCondBusDto>();
+                ExpertReviewCondBusDto expertReviewCondBusDto = new ExpertReviewCondBusDto();
+                if (null != expertReviewCon[4]) {
+                    expertReviewCondBusDto.setReviewDate((Date) expertReviewCon[4]);
+                }else{
+                    expertReviewCondBusDto.setReviewDate(null);
+                }
+                if (null != expertReviewCon[5]) {
+                    expertReviewCondBusDto.setProjectName((String) expertReviewCon[5]);
+                }else{
+                    expertReviewCondBusDto.setProjectName(null);
+                }
+                if (null != expertReviewCon[6]) {
+                    expertReviewCondBusDto.setReviewStage((String) expertReviewCon[6]);
+                }else{
+                    expertReviewCondBusDto.setReviewStage(null);
+                }
+                if (null != expertReviewCon[7]) {
+                    expertReviewCondBusDto.setSignId((String) expertReviewCon[7]);
+                }else{
+                    expertReviewCondBusDto.setSignId(null);
+                }
+                if (null != expertReviewCon[8]) {
+                    expertReviewCondBusDto.setIsLetterRw((String) expertReviewCon[8]);
+                }else{
+                    expertReviewCondBusDto.setIsLetterRw(null);
+                }
+                expertReviewCondBusDtoList.add(expertReviewCondBusDto);
+                expertReviewDto.setExpertReviewCondBusDtoList(expertReviewCondBusDtoList);
+                expertReviewConDtoList.add(expertReviewDto);
+            }
+        }
+        resultMap.put("expertReviewConDtoList", expertReviewConDtoList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }
+
+    /**
+     * 专家评审基本情况综合统计
+     * @param expertReviewConSimpleDto
+     * @return
+     */
+    @Override
+    public ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        PageModelDto<ExpertReviewConSimpleDto> pageModelDto = new PageModelDto<ExpertReviewConSimpleDto>();
+        //评审、函次数sql
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select t.expertid,count(t.expertid)reviewCount,t.isletterrw from (   ");
+        sqlBuilder.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s   ");
+        sqlBuilder.append("left join cs_expert_review r  ");
+        sqlBuilder.append("on s.signid = r.businessid  ");
+        sqlBuilder.append("left join cs_expert_selected a  ");
+        sqlBuilder.append("on s.signid = a.businessid  ");
+        sqlBuilder.append("left join cs_expert e  ");
+        sqlBuilder.append("on a.expertid = e.expertid) t  ");
+        sqlBuilder.append("where t.expertid is not null   ");
+        sqlBuilder.append("group by t.expertid,t.expertno,t.isletterrw   ");
+        sqlBuilder.append("order by t.expertno  ");
+
+        //评审总次数
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder1.append("select t1.expertid,sum(t1.reviewCount) from (  ");
+        sqlBuilder1.append("select t.expertid,t.expertno,count(t.expertid) reviewCount,t.isletterrw   ");
+        sqlBuilder1.append("select t.expertid,t.expertno,count(t.expertid) reviewCount,t.isletterrw  from (   ");
+        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s  ");
+        sqlBuilder1.append("left join cs_expert_review r  ");
+        sqlBuilder1.append("on s.signid = r.businessid  ");
+        sqlBuilder1.append("left join cs_expert_selected a  ");
+        sqlBuilder1.append("on s.signid = a.businessid  ");
+        sqlBuilder1.append("left join cs_expert e  ");
+        sqlBuilder1.append(" on a.expertid = e.expertid) t  ");
+        sqlBuilder1.append(" where t.expertid is not null  ");
+        sqlBuilder1.append("group by t.expertid,t.expertno,t.isletterrw ) t1  ");
+        sqlBuilder1.append("group by t1.expertid,t1.expertno  ");
+        sqlBuilder1.append("order by t1.expertno  ");
+
+        //todo:添加查询条件
+        if(null != expertReviewConSimpleDto){
+        }
+        List<Map> expertReviewConSimList = expertSelectedRepo.findMapListBySql(sqlBuilder);
+        List<Map> expertReviewConSimList1 = expertSelectedRepo.findMapListBySql(sqlBuilder1);
+        List<ExpertReviewConSimpleDto> expertRevConSimDtoList = new ArrayList<ExpertReviewConSimpleDto>();
+        if (expertReviewConSimList.size() > 0) {
+            for(int i=0;i<expertReviewConSimList.size();i++){
+                Object obj = expertReviewConSimList.get(i);
+                Object[] expertReviewConSim = (Object[]) obj;
+                ExpertReviewConSimpleDto expertReviewSimDto = new ExpertReviewConSimpleDto();
+                if (null != expertReviewConSim[0]) {
+                    expertReviewSimDto.setExpertID((String) expertReviewConSim[0]);
+                    Expert expert =  expertRepo.findById(expertReviewSimDto.getExpertID());
+                    expertReviewSimDto.setName(expert.getName());
+                    expertReviewSimDto.setComPany(expert.getComPany());
+                    expertReviewSimDto.setTotalNum(getExpertRevTotalNum(expertReviewConSimList1,expertReviewSimDto.getExpertID()));
+                }else{
+                    expertReviewSimDto.setExpertID(null);
+                }
+
+                if (null != expertReviewConSim[2]) {
+                    BigDecimal temp = (BigDecimal)expertReviewConSim[2];
+                    if (temp.equals(0)){//评审
+                        if (null != expertReviewConSim[1]) {
+                            expertReviewSimDto.setReviewNum((BigDecimal) expertReviewConSim[1]);
+                        }else{
+                            expertReviewSimDto.setReviewNum(null);
+                        }
+                    }else{//函评
+                        if (null != expertReviewConSim[1]) {
+                            expertReviewSimDto.setLetterRwNum((BigDecimal) expertReviewConSim[1]);
+                        }else{
+                            expertReviewSimDto.setLetterRwNum(null);
+                        }
+                    }
+                }else{//评审
+                    if (null != expertReviewConSim[1]) {
+                        expertReviewSimDto.setReviewNum((BigDecimal) expertReviewConSim[1]);
+                    }else{
+                        expertReviewSimDto.setReviewNum(null);
+                    }
+                }
+                expertRevConSimDtoList.add(expertReviewSimDto);
+            }
+
+        }
+        resultMap.put("expertRevConSimDtoList", expertRevConSimDtoList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }
+
+    /**
+     * 获取总参会次数
+     * @param expertReviewConSimList1
+     * @param expertId
+     * @return
+     */
+    private BigDecimal getExpertRevTotalNum(List<Map>expertReviewConSimList1,String expertId){
+        BigDecimal totalNum = null  ;
+        if(expertReviewConSimList1.size()>0){
+            for(int i=0;i<expertReviewConSimList1.size();i++){
+                Object obj = expertReviewConSimList1.get(i);
+                Object[] expertReviewConSim = (Object[]) obj;
+                if (null != expertReviewConSim[0]) {
+                    String temp = (String) expertReviewConSim[0];
+                    if (StringUtil.isNotEmpty(expertId) && StringUtil.isNotEmpty(temp) && expertId.equals(temp)){
+                        totalNum = (BigDecimal) expertReviewConSim[1];
+                        break;
+                    }
+
+                }
+            }
+        }
+        return  totalNum;
+    }
+
+
 
     /**
      * 根据业务ID统计已经确认的抽取专家

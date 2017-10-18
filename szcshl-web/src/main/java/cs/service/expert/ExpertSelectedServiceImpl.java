@@ -636,7 +636,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		resultMap.put("projectReviewCostDtoList", projectReviewCostDtoList);
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
-	
+
 	/**
 	 * 协申费录入列表
 	 */
@@ -752,7 +752,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		pageModelDto.setValue(projectReviewCostDtoList);
 		return pageModelDto;
 	}
-	
+
 	@Override
 	public List<FinancialManagerDto> getFinancialManagerByBusid(String businessId) {
 		HqlBuilder hqlBuilder = HqlBuilder.create();
@@ -1015,7 +1015,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
 
-	
+
 	/**
 	 * 根据业务ID统计已经确认的抽取专家
 	 * @param businessId
@@ -1027,6 +1027,26 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	}
 
 
-	
+
+
+	/**
+	 * 专家评审基本情况详细统计
+	 * @param expertReviewCondDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto) {
+		return  expertSelectedRepo.expertReviewCondDetailCount(expertReviewCondDto);
+	}
+
+	/**
+	 * 专家评审基本情况综合统计
+	 * @param expertReviewConSimpleDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
+		return expertSelectedRepo.expertReviewConSimpleCount(expertReviewConSimpleDto);
+	}
 
 }
