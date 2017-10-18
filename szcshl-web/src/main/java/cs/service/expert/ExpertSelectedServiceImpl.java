@@ -1015,7 +1015,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
 		sqlBuilder.append("ON s.signid = mo.bsignid  ");
 		sqlBuilder.append("where r.paydate is not null ");
-		List<Map> projectReviewCostList = expertSelectedRepo.findMapListBySql(sqlBuilder);
+		List<Object[]> projectReviewCostList = expertSelectedRepo.getObjectArray(sqlBuilder);
 
 		List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<>();
 		if(projectReviewCostList.size()>0){
