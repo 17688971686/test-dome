@@ -78,4 +78,10 @@ public interface ExpertSelectedService {
 	 */
 	ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
 
+
+	/**
+	 * 查询项目评审费录入的项目信息列表
+	 * @return
+	 */
+	PageModelDto<ProjectReviewCostDto> findProjectRevireCost();
 }
