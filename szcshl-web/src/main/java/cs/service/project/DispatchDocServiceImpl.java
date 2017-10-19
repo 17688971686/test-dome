@@ -293,19 +293,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
     @Override
     public void createDisPatchTemplate(String signId) {
-        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
-        WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
         SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
 
         //获得拟聘专家信息
-       /* HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select  e.* from cs_expert_review er,cs_work_program wp,cs_expert_selected es,cs_expert e");
-        sqlBuilder.append(" where er."+ ExpertReview_.id.getName()+" = wp.expertreviewid");
-        sqlBuilder.append(" and er."+ExpertReview_.id.getName()+" =es.expertreviewid");
-        sqlBuilder.append(" and es.expertid =e."+ Expert_.expertID.getName());
-        sqlBuilder.append(" and wp." +WorkProgram_.id.getName()+" =:workProgramId");
-        sqlBuilder.setParam("workProgramId", workProgram.getId());
-        List<Expert> expertList=expertRepo.findBySql(sqlBuilder);*/
         List<Expert> expertList=expertRepo.findByBusinessId(signId);
 
         List<SysFile> sysFileList = new ArrayList<>();
