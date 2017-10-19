@@ -22,6 +22,7 @@
             formReset : formReset,				//重置页面
             exportToExcel : exportToExcel,      //导出excel功能
             expertSelectHis : expertSelectHis,	//专家抽取统计
+            expertScoreHis : expertScoreHis,	//专家评分统计
 		};
 		return service;	
 		
@@ -597,5 +598,24 @@
                 success : httpSuccess,
             });
         }//E_expertSelectHis
+
+        //S_专家评分统计
+        function expertScoreHis(epSelHis,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expert/expertScoreHis",
+                data : epSelHis
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            });
+        }//E_expertScoreHis
 	}
 })();

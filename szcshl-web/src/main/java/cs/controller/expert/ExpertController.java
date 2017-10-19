@@ -169,12 +169,18 @@ public class ExpertController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "专家抽取列表", path = "expertSelectHis", method = RequestMethod.POST)
+    @RequestMapping(name = "专家抽取统计", path = "expertSelectHis", method = RequestMethod.POST)
     @ResponseBody
     public List<ExpertSelectHis> expertSelectHis(@RequestBody ExpertSelectHis expertSelectHis) {
-        return expertService.expertSelectHis(expertSelectHis);
+        return expertService.expertSelectHis(expertSelectHis,false);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "专家评分统计", path = "expertScoreHis", method = RequestMethod.POST)
+    @ResponseBody
+    public List<ExpertSelectHis> expertScoreHis(@RequestBody ExpertSelectHis expertSelectHis) {
+        return expertService.expertSelectHis(expertSelectHis,true);
+    }
     // begin#html
     @RequiresPermissions("expert#html/repeat#get")
     @RequestMapping(name = "重复专家查询", path = "html/repeat", method = RequestMethod.GET)
@@ -215,11 +221,11 @@ public class ExpertController {
         return ctrlName + "/projectExpe";
     }
 
-    @RequiresPermissions("expert#html/reviewList#get")
-    @RequestMapping(name = "专家评分一览表", path = "html/reviewList", method = RequestMethod.GET)
+    @RequiresPermissions("expert#html/scoreList#get")
+    @RequestMapping(name = "专家评分一览表", path = "html/scoreList", method = RequestMethod.GET)
     public String reviewList() {
 
-        return ctrlName + "/reviewList";
+        return ctrlName + "/scoreList";
     }
 
     @RequiresPermissions("expert#html/selectHisList#get")

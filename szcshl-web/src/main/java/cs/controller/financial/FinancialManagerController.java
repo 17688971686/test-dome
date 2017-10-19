@@ -9,7 +9,9 @@ import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
+import cs.model.expert.ProjectReviewCostDto;
 import cs.model.financial.FinancialManagerDto;
+import cs.model.project.SignAssistCostDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
@@ -49,13 +51,10 @@ public class FinancialManagerController {
     private ExpertReviewService expertReviewService;
 
     @RequiresAuthentication
-    //@RequiresPermissions("financialManager#findByOData#post")
-    @RequestMapping(name = "获取评审费统用计列表数据", path = "findByOData", method = RequestMethod.POST)
+    @RequestMapping(name = "协审费录入页面", path = "findSingAssistCostList", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> financialManagerDtos = financialManagerService.get(odataObj);
-        return financialManagerDtos;
+    public List<SignAssistCostDto> findSingAssistCostList(@RequestBody SignAssistCostDto signAssistCost) {
+        return financialManagerService.signAssistCostList(signAssistCost,false);
     }
 
     @RequiresAuthentication
@@ -63,9 +62,9 @@ public class FinancialManagerController {
     @RequestMapping(name = "获取协审费用统计列表数据", path = "assistCostCountList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDto> assistCostCountList(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> financialManagerDtos = financialManagerService.assistCostCountGet(odataObj);
-        return financialManagerDtos;
+       /* ODataObj odataObj = new ODataObj(request);
+        PageModelDto<SignDto> financialManagerDtos = financialManagerService.assistCostCountGet(odataObj);*/
+        return null;
     }
 
     @RequiresAuthentication
@@ -173,9 +172,9 @@ public class FinancialManagerController {
         }catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
+
+
 
     // begin#html
     @RequiresPermissions("financialManager#html/list#get")

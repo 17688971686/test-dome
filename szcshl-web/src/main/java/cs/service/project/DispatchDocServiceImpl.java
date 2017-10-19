@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.domain.project.*;
+import cs.repository.repositoryImpl.project.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +28,10 @@ import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.Expert_;
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.DispatchDoc_;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
-import cs.domain.project.WorkProgram_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 
 @Service
@@ -62,6 +54,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
     @Autowired
     private SysFileRepo sysFileRepo;
+
+    @Autowired
+    private SignDispaWorkRepo signDispaWorkRepo;
 
     // 生成文件字号
     @Override
@@ -298,38 +293,30 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
     @Override
     public void createDisPatchTemplate(String signId) {
-        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
-        WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
+        SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
 
         //获得拟聘专家信息
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select  e.* from cs_expert_review er,cs_work_program wp,cs_expert_selected es,cs_expert e");
-        sqlBuilder.append(" where er."+ ExpertReview_.id.getName()+" = wp.expertreviewid");
-        sqlBuilder.append(" and er."+ExpertReview_.id.getName()+" =es.expertreviewid");
-        sqlBuilder.append(" and es.expertid =e."+ Expert_.expertID.getName());
-        sqlBuilder.append(" and wp." +WorkProgram_.id.getName()+" =:workProgramId");
-        sqlBuilder.setParam("workProgramId", workProgram.getId());
-        List<Expert> expertList=expertRepo.findBySql(sqlBuilder);
+        List<Expert> expertList=expertRepo.findByBusinessId(signId);
 
         List<SysFile> sysFileList = new ArrayList<>();
 
-        if(Constant.ProjectStage.STAGE_STUDY.getValue().equals(sign.getReviewstage())){//可行性研究报告
-            sysFileList.add(CreateTemplateUtils.createStudyTemplateOpinion(sign , workProgram));
-            sysFileList.add(CreateTemplateUtils.createStudyTemplateEstimate(sign ,workProgram));
-            sysFileList.add(CreateTemplateUtils.createStudyTemplateRoster(sign , workProgram , expertList));
-        }else if(Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())){//项目概算
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateEstimate(sign ,workProgram));
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateOpinion(sign , workProgram));
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateProjectCost(sign , workProgram));
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateRoster(sign , workProgram ,expertList));
-        }else if(Constant.ProjectStage.APPLY_REPORT.getValue().equals(sign.getReviewstage())){//资金申请报告
-            sysFileList.add( CreateTemplateUtils.createReportTemplateEstimate(sign ,workProgram));
-            sysFileList.add(CreateTemplateUtils.createReportTemplateOpinion(sign ,workProgram));
-            sysFileList.add(CreateTemplateUtils.createReportTemplateRoster(sign , workProgram ,expertList));
+        if(Constant.ProjectStage.STAGE_STUDY.getValue().equals(signDispaWork.getReviewstage())){//可行性研究报告
+            sysFileList.add(CreateTemplateUtils.createStudyTemplateOpinion(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createStudyTemplateEstimate(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createStudyTemplateRoster(signDispaWork , expertList));
+        }else if(Constant.ProjectStage.STAGE_BUDGET.getValue().equals(signDispaWork.getReviewstage())){//项目概算
+            sysFileList.add(CreateTemplateUtils.createBudgetTemplateEstimate(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createBudgetTemplateOpinion(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createBudgetTemplateProjectCost(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createBudgetTemplateRoster(signDispaWork  ,expertList));
+        }else if(Constant.ProjectStage.APPLY_REPORT.getValue().equals(signDispaWork.getReviewstage())){//资金申请报告
+            sysFileList.add( CreateTemplateUtils.createReportTemplateEstimate(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createReportTemplateOpinion(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createReportTemplateRoster(signDispaWork , expertList));
         }else{//项目建议书以及其他评审阶段
-            sysFileList.add(CreateTemplateUtils.createSugTemplateEstime(sign , workProgram));
-            sysFileList.add(CreateTemplateUtils.createSugTemplateOpinion(sign , workProgram));
-            sysFileList.add(CreateTemplateUtils.createSugTemplateRoster(sign , workProgram ,expertList));
+            sysFileList.add(CreateTemplateUtils.createSugTemplateEstime(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createSugTemplateOpinion(signDispaWork ));
+            sysFileList.add(CreateTemplateUtils.createSugTemplateRoster(signDispaWork , expertList));
         }
 
         //3、保存文件信息

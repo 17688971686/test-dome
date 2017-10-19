@@ -8,6 +8,7 @@ import cs.model.expert.ExpertSelectHis;
 import cs.repository.IRepository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 抽取专家 数据操作实现接口
@@ -35,9 +36,10 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
     /**
      * 专家抽取统计
      * @param expertSelectHis
+     * @param isScore 是否评分统计
      * @return
      */
-    List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis);
+    List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis,boolean isScore);
 
     /**
      *专家评审基本情况详细统计

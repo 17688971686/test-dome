@@ -88,17 +88,20 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
     /**
      * 查询分支负责人
      * @param signId
-     * @param branchId
+     * @param branchId ，没有分支，则查询所有
      * @return
      */
     @Override
     public List<User> getSignPriUser(String signId,String branchId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u where u." + User_.id.getName() + " in ( ");
-        hqlBuilder.append(" select pu." + SignPrincipal_.userId.getName() + " from " + SignPrincipal.class.getSimpleName() + " pu ");
+        hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u ");
+        hqlBuilder.append(" left join "+ SignPrincipal.class.getSimpleName() + " pu  on pu." + SignPrincipal_.userId.getName()+" = u."+User_.id.getName() );
         hqlBuilder.append(" where pu." + SignPrincipal_.signId.getName() + " =:signId ").setParam("signId", signId);
-        hqlBuilder.append(" and pu."+SignPrincipal_.flowBranch.getName()+" =:branchId ").setParam("branchId",branchId);
-        hqlBuilder.append(" )");
+        //如果有分支，则查询分支负责人，否则查询所有
+        if(Validate.isString(branchId)){
+            hqlBuilder.append(" and pu."+SignPrincipal_.flowBranch.getName()+" =:branchId ").setParam("branchId",branchId);
+        }
+        hqlBuilder.append(" order by pu."+SignPrincipal_.flowBranch.getName() +","+SignPrincipal_.isMainUser.getName()+" desc");
 
         return userRepo.findByHql(hqlBuilder);
     }

@@ -51,14 +51,6 @@ public interface ExpertSelectedService {
 	ResultMsg assistCostViewTotal(ProjectReviewCostDto projectReviewCostDto);
 
 	/**
-	 * 项目协审费录入列表
-	 * @param odataObj
-	 * @return
-	 */
-	PageModelDto<ProjectReviewCostDto> assistCostList(ProjectReviewCostDto projectReviewCostDto);
-
-
-	/**
 	 * 根据业务ID统计已经确认的抽取专家
 	 * @param minBusinessId
 	 * @return
