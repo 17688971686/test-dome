@@ -743,7 +743,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	@Override
 	public List<FinancialManagerDto> getFinancialManagerByBusid(String businessId) {
 		HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+ FinancialManager_.signid.getName()+ " =:businessId");
+		hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+ FinancialManager_.businessId.getName()+ " =:businessId");
 		hqlBuilder.setParam("businessId", businessId);
 		List<FinancialManager> financialManagerlist= financialManagerRepo.findByHql(hqlBuilder);
 		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
