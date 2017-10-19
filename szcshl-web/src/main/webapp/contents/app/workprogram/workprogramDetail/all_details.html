@@ -196,10 +196,10 @@
 <!-- start 协审项目（项目建议书/可行性研究报告） -->
 <div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:10px;"
      ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告') && (w.branchId != '1' && w.branchId != 1)">
-    <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="vm.model.workProgramDtoList.length > 1">
+    <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [协办分支_{{w.branchId}}_工作方案]
     </a>
-    <div id="aswp_{{$index}}" class="collapse" ng-class='{in: vm.model.workProgramDtoList.length==1}'>
+    <div id="aswp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9)|| w.isSigle=="单个评审" || vm.showAll}'>
         <table  class="table table-bordered" style="margin-bottom: 0px;">
             <tr>
                 <td style="width:10%;" >评审方式</td>

@@ -163,6 +163,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 			suppletterDto.setSecretLevel(sign.getSecrectlevel());
 			suppletterDto.setMergencyLevel(sign.getUrgencydegree());
 		}
+		 WorkProgram work =  workProgramRepo.findById(workId);
+		 suppletterDto.setWorkId(work.getId());
 		//  }
 
 
@@ -645,10 +647,14 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		if(!Validate.isString(addSuppLetter.getId())){
 			addSuppLetter.setId(null);
 		}
-		Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
+		/*Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
 		sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
 		sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
-		signRepo.save(sign);
+		signRepo.save(sign);*/
+		 WorkProgram work =  workProgramRepo.findById(addSuppLetterDto.getWorkId());
+         work.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
+         work.setSuppLetterDate(addSuppLetterDto.getDisapDate());
+         workProgramRepo.save(work);
 		addSuppLetter.setModifiedDate(now);
 		addSuppLetter.setCreatedDate(now);
 		addSuppLetterRepo.save(addSuppLetter);
