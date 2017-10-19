@@ -1086,4 +1086,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return expertSelectedRepo.expertReviewConSimpleCount(expertReviewConSimpleDto);
 	}
 
+	/**
+	 * 专家评审基本情况不规则统计
+	 * @param expertReviewConSimpleDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
+		return expertSelectedRepo.expertReviewConComplicatedCount(expertReviewConSimpleDto);
+	}
+
 }

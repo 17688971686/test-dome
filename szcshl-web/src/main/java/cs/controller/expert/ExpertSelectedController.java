@@ -147,6 +147,15 @@ public class ExpertSelectedController {
 
     @RequiresAuthentication
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    @RequestMapping(name = "专家评审情况不规则统计", path = "expertReviewCompliCount", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg expertReviewCompliCount(@RequestBody ExpertReviewConSimpleDto expertReviewConSimpleDto){
+        return  expertSelectedService.expertReviewConComplicatedCount(expertReviewConSimpleDto);
+    }
+
+
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "专家评审情况详细统计", path = "expertReviewCondDetailCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCondDetailTotal(@RequestBody ExpertReviewCondDto expertReviewCondDto){

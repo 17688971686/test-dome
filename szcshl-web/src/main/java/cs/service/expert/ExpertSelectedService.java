@@ -78,6 +78,12 @@ public interface ExpertSelectedService {
 	 */
 	ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
 
+	/**
+	 * 专家评审情况不规则统计
+	 * @param expertReviewConSimpleDto
+	 * @return
+	 */
+	ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
 
 	/**
 	 * 查询项目评审费录入的项目信息列表

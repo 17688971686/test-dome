@@ -7,27 +7,31 @@
 
     function expertRevConCount($http) {
         var service = {
-            expertRevConCount:expertRevConCount,                   //专家评审基本情况详细统计
+            expertRevConCount:expertRevConCount,                   //专家评审基本情况统计
         };
 
         return service;
 
-        //专家评审基本情况详细统计
+
         function expertRevConCount(vm,callBack) {
-            if(vm.model.reportType==1){
+            if(vm.model.reportType==1){ //专家评审基本情况详细统计
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/expertSelected/expertReviewCondDetailCount",
                     data: vm.model
                 }
             }else if(vm.model.reportType==2){
-                var httpOptions = {
+                var httpOptions = {//专家评审基本情况综合统计
                     method: 'post',
                     url: rootPath + "/expertSelected/expertReviewCondCount",
                     data: vm.model
                 }
             }else if(vm.model.reportType==3){
-
+                var httpOptions = {//专家评审基本情况不规则统计
+                    method: 'post',
+                    url: rootPath + "/expertSelected/expertReviewCompliCount",
+                    data: vm.model
+                }
             }
 
             var httpSuccess = function success(response) {

@@ -25,6 +25,8 @@ public class ExpertReviewConSimpleDto {
 
     private  String endTime;
 
+    private String reviewtype;
+
     public String getExpertID() {
         return expertID;
     }
@@ -87,5 +89,13 @@ public class ExpertReviewConSimpleDto {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getReviewtype() {
+        return reviewtype;
+    }
+
+    public void setReviewtype(String reviewtype) {
+        this.reviewtype = reviewtype;
     }
 }

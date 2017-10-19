@@ -2,24 +2,21 @@ package cs.repository.repositoryImpl.expert;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
-import cs.common.utils.DateUtils;
-import cs.common.utils.Validate;
 import cs.common.ResultMsg;
+import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
-import cs.model.expert.ExpertSelectHis;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewConSimpleDto;
 import cs.model.expert.ExpertReviewCondBusDto;
 import cs.model.expert.ExpertReviewCondDto;
+import cs.model.expert.ExpertSelectHis;
 import cs.repository.AbstractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -83,10 +80,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = a.businessid  ");
         sqlBuilder.append("left join cs_expert e  on a.expertid = e.expertid) t  ");
         sqlBuilder.append("where t.expertid is not null  ");
-        sqlBuilder.append("order by t.expertno,t.isletterrw ");
         //todo:添加查询条件
         if(null != expertReviewCondDto){
+            if(StringUtil.isNotEmpty(expertReviewCondDto.getName())){
+                sqlBuilder.append("and t.name like '%"+expertReviewCondDto.getName()+"%'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewCondDto.getReviewtype())){
+                sqlBuilder.append("and t.isletterrw = '"+expertReviewCondDto.getReviewtype()+"'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewCondDto.getBeginTime())){
+                String beginTime = expertReviewCondDto.getBeginTime()+" 00:00:00";
+                sqlBuilder.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewCondDto.getEndTime())){
+                String endTime = expertReviewCondDto.getEndTime()+" 23:59:59";
+                sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
         }
+        sqlBuilder.append("order by t.expertno,t.isletterrw ");
         List<Object[]> expertReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         List<ExpertReviewCondDto> expertReviewConDtoList = new ArrayList<ExpertReviewCondDto>();
         String expertId = "";
@@ -202,6 +213,22 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_expert e  ");
         sqlBuilder.append("on a.expertid = e.expertid) t  ");
         sqlBuilder.append("where t.expertid is not null   ");
+        if(null != expertReviewConSimpleDto){
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
+                sqlBuilder.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getReviewtype())){
+                sqlBuilder.append("and t.isletterrw = '"+expertReviewConSimpleDto.getReviewtype()+"'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
+                String beginTime = expertReviewConSimpleDto.getBeginTime()+" 00:00:00";
+                sqlBuilder.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
+                String endTime = expertReviewConSimpleDto.getEndTime()+" 23:59:59";
+                sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+        }
         sqlBuilder.append("group by t.expertid,t.expertno,t.isletterrw   ");
         sqlBuilder.append("order by t.expertno  ");
 
@@ -217,13 +244,26 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder1.append("left join cs_expert e  ");
         sqlBuilder1.append(" on a.expertid = e.expertid) t  ");
         sqlBuilder1.append(" where t.expertid is not null  ");
+        if(null != expertReviewConSimpleDto){
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
+                sqlBuilder1.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getReviewtype())){
+                sqlBuilder1.append("and t.isletterrw = '"+expertReviewConSimpleDto.getReviewtype()+"'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
+                String beginTime = expertReviewConSimpleDto.getBeginTime()+" 00:00:00";
+                sqlBuilder1.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
+                String endTime = expertReviewConSimpleDto.getEndTime()+" 23:59:59";
+                sqlBuilder1.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+        }
         sqlBuilder1.append("group by t.expertid,t.expertno,t.isletterrw ) t1  ");
         sqlBuilder1.append("group by t1.expertid,t1.expertno  ");
         sqlBuilder1.append("order by t1.expertno  ");
 
-        //todo:添加查询条件
-        if(null != expertReviewConSimpleDto){
-        }
         List<Object[]> expertReviewConSimList = expertSelectedRepo.getObjectArray(sqlBuilder);
         List<Object[]> expertReviewConSimList1 = expertSelectedRepo.getObjectArray(sqlBuilder1);
         List<ExpertReviewConSimpleDto> expertRevConSimDtoList = new ArrayList<ExpertReviewConSimpleDto>();
@@ -308,8 +348,59 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      */
     @Override
     public ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder1.append("select t1.expertid,t1.name,t1.company,sum(t1.reviewCount) from (  ");
+        sqlBuilder1.append("select t.expertid,t.expertno,t.name,t.company,count(t.expertid) reviewCount,t.isletterrw  from (   ");
+        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s  ");
+        sqlBuilder1.append("left join cs_expert_review r  ");
+        sqlBuilder1.append("on s.signid = r.businessid  ");
+        sqlBuilder1.append("left join cs_expert_selected a  ");
+        sqlBuilder1.append("on s.signid = a.businessid  ");
+        sqlBuilder1.append("left join cs_expert e  ");
+        sqlBuilder1.append(" on a.expertid = e.expertid) t  ");
+        sqlBuilder1.append(" where t.expertid is not null  ");
+        if(null != expertReviewConSimpleDto){
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
+                sqlBuilder1.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
+                String beginTime = expertReviewConSimpleDto.getBeginTime()+" 00:00:00";
+                sqlBuilder1.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
+                String endTime = expertReviewConSimpleDto.getEndTime()+" 23:59:59";
+                sqlBuilder1.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+            }
+        }
+        sqlBuilder1.append("group by t.expertid,t.expertno,t.name,t.company,t.isletterrw ) t1  ");
 
-        return null;
+        sqlBuilder1.append("group by t1.expertid,t1.expertno,t1.name,t1.company  ");
+        sqlBuilder1.append("order by t1.expertno   ");
+        List<Object[]> expertRevComplicateList = expertSelectedRepo.getObjectArray(sqlBuilder1);
+        List<Object []> expertRevCompliDtoList = getExistsConComplicated(expertReviewConSimpleDto,expertRevComplicateList);
+        List<ExpertReviewConSimpleDto> expertRevConCompDtoList = new ArrayList<ExpertReviewConSimpleDto>();
+        if(expertRevCompliDtoList.size()>0){
+            for(int i=0;i<expertRevCompliDtoList.size();i++){
+               Object[] tempArr = expertRevCompliDtoList.get(i);
+                ExpertReviewConSimpleDto expertReviewConSimpleDto1 = new ExpertReviewConSimpleDto();
+                if(null != tempArr[0]){
+                    expertReviewConSimpleDto1.setExpertID((String) tempArr[0]);
+                }
+                if(null != tempArr[1]){
+                    expertReviewConSimpleDto1.setName((String) tempArr[1]);
+                }
+                if(null != tempArr[2]){
+                    expertReviewConSimpleDto1.setComPany((String) tempArr[2]);
+                }
+                if(null != tempArr[3]){
+                    expertReviewConSimpleDto1.setTotalNum((BigDecimal) tempArr[3]);
+                }
+                expertRevConCompDtoList.add(expertReviewConSimpleDto1);
+            }
+        }
+        resultMap.put("expertRevConCompDtoList", expertRevConCompDtoList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 
     /**
@@ -317,54 +408,119 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @param expertReviewConSimpleDto
      * @return
      */
-    private boolean isExistsConComplicated(ExpertReviewConSimpleDto expertReviewConSimpleDto){
+    private List<Object[]> getExistsConComplicated(ExpertReviewConSimpleDto expertReviewConSimpleDto,List<Object[]>expertRevComplicateList ){
         boolean flag = true;
+        Integer revCount = 0;
         int begseason=0;
         int begweak=0;
         int begday=-1;
         Date begDate = null;
         Date endDate = null;
-
-
-        if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
-            begDate = DateUtils.converToDate(expertReviewConSimpleDto.getBeginTime(),"yyyy-MM-dd");
-            begseason = DateUtils.getSeason(begDate);
-            begweak = DateUtils.weekOfYear(begDate);
-            begday = DateUtils.getDayOfWeek1(begDate);
+        String expertId = "";
+        List<Object[]> expertCompliList = new ArrayList<Object[]>();
+        for(int i=0; i<expertRevComplicateList.size();i++){
+            flag = true;
+            revCount = 0;
+            Object[] tempArr = expertRevComplicateList.get(i);
+            expertId = (String)tempArr[0];
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
+                begDate = DateUtils.converToDate(expertReviewConSimpleDto.getBeginTime(),"yyyy-MM-dd");
+                begseason = DateUtils.getSeason(begDate);
+                begweak = DateUtils.weekOfYear(begDate);
+                begday = DateUtils.getDayOfWeek1(begDate);
+            }
+            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
+                endDate = DateUtils.converToDate(expertReviewConSimpleDto.getEndTime(),"yyyy-MM-dd");
+            }
+            //todo: 不规则暂按会议起始日期不为空计算
+            while (flag){
+                Date weakTemp =  DateUtils.addDay(begDate,7-begday);
+                if(weakTemp.compareTo(endDate)<=0){
+                    if(DateUtils.getSeason(begDate)== begseason){
+                        //当前季度内参会次数大于12
+                        if(revCount>12){
+                            expertCompliList.add(tempArr);
+                            revCount = 0;
+                            break;
+                        }
+                        //按周计算  周参会次数大于2
+                       int weakCount = getExpertRevTimes(begDate,weakTemp,expertId);
+                        revCount += weakCount;
+                        if(weakCount>2){
+                            expertCompliList.add(tempArr);
+                            revCount = 0;
+                            break;
+                        }
+                        begDate = DateUtils.addDay(weakTemp,1);
+                        begweak = DateUtils.weekOfYear(begDate);
+                        begday = DateUtils.getDayOfWeek1(begDate);
+                    }else {
+                        begseason = DateUtils.getSeason(begDate);
+                        revCount = 0;
+                        //按周计算  周参会次数大于2
+                        int weakCount = getExpertRevTimes(begDate,weakTemp,expertId);
+                        revCount += weakCount;
+                        if(weakCount>2){
+                            expertCompliList.add(tempArr);
+                            revCount = 0;
+                            break;
+                        }
+                        begDate = DateUtils.addDay(weakTemp,1);
+                        begday = DateUtils.getDayOfWeek1(begDate);
+                    }
+                }else{
+                    //begDate 与 endDate 之间专家参会次数是否大于2
+                    int weakCount = getExpertRevTimes(begDate,weakTemp,expertId);
+                    if(weakCount>2){
+                        expertCompliList.add(tempArr);
+                        revCount = 0;
+                        break;
+                    }
+                    flag = false;
+                }
+            }
         }
+        return  expertCompliList;
+    }
 
-        if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
-            endDate = DateUtils.converToDate(expertReviewConSimpleDto.getEndTime(),"yyyy-MM-dd");
+
+    /**
+     * 专家周评审次数
+     * @param begDate
+     * @param endDate
+     * @param expertId
+     * @return
+     */
+    private int getExpertRevTimes(Date begDate,Date endDate,String expertId){
+        Integer count = 0;
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder1.append("select t.expertid,count(t.expertid) from (   ");
+        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw  from cs_sign s  ");
+        sqlBuilder1.append("left join cs_expert_review r  ");
+        sqlBuilder1.append("on s.signid = r.businessid  ");
+        sqlBuilder1.append("left join cs_expert_selected a  ");
+        sqlBuilder1.append("on s.signid = a.businessid  ");
+        sqlBuilder1.append("left join cs_expert e  ");
+        sqlBuilder1.append("on a.expertid = e.expertid ) t   ");
+        sqlBuilder1.append(" where t.expertid = '"+expertId+"'  ");
+        if (null != begDate) {
+            String beginTime =   DateUtils.converToString(begDate,null)+" 00:00:00";
+            sqlBuilder1.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         }
-
-        //todo: 不规则暂按会议起始日期不为空计算
-        while (flag){
-          Date weakTemp =  DateUtils.addDay(begDate,7-begday);
-          if(weakTemp.compareTo(endDate)<=0){
-              if(DateUtils.getSeason(begDate)== begseason){
-            //todo:按周计算  周参会次数大于2  直接返回列表保存专家信息
-
-             begDate = DateUtils.addDay(weakTemp,1);
-             begweak = DateUtils.weekOfYear(begDate);
-             begday = DateUtils.getDayOfWeek1(begDate);
-                  //todo:累加参会次数
-              }else {
-                  begseason = DateUtils.getSeason(begDate);//改变季度
-                  //todo: 判断上一季度该专家参会次数 是否大于12 返回列表保存专家信息
-
-                  //todo:清空参会次数 然后按周计算  周参会次数大于2  直接返回列表保存专家信息
-
-                  //todo:累加参会次数
-                  begDate = DateUtils.addDay(weakTemp,1);
-                  begday = DateUtils.getDayOfWeek1(begDate);
-              }
-
-          }else{
-              //todo:begDate 与 endDate 之间参会次数是否大于12 保存专家信息
-              flag = false;
-          }
+        if (null != endDate) {
+            String endTime =   DateUtils.converToString(endDate,null)+" 23:59:59";
+            sqlBuilder1.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         }
-        return  flag;
+        sqlBuilder1.append(" group by t.expertid  ");
+        List<Object[]> expertReviewConSimList1 = expertSelectedRepo.getObjectArray(sqlBuilder1);
+        if(expertReviewConSimList1.size()>0){
+            Object[] tempArr =  expertReviewConSimList1.get(0);
+            if(null != tempArr[1]){
+                BigDecimal temp = (BigDecimal) tempArr[1];
+                count = temp.intValue();
+            }
+        }
+        return  count;
     }
 
     /**

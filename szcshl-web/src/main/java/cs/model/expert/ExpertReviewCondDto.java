@@ -12,6 +12,9 @@ public class ExpertReviewCondDto {
     private String expertNo;//专家ID
     private String name;//专家姓名
     private String comPany;//工作单位
+    private String beginTime;
+    private  String endTime;
+    private String reviewtype;
     List<ExpertReviewCondBusDto> expertReviewCondBusDtoList;
     public String getExpertID() {
         return expertID;
@@ -51,5 +54,29 @@ public class ExpertReviewCondDto {
 
     public void setExpertNo(String expertNo) {
         this.expertNo = expertNo;
+    }
+
+    public String getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getReviewtype() {
+        return reviewtype;
+    }
+
+    public void setReviewtype(String reviewtype) {
+        this.reviewtype = reviewtype;
     }
 }
