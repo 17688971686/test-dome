@@ -91,7 +91,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
 	public BigDecimal sunCount(String businessId) {
 		HqlBuilder hql = HqlBuilder.create();
 		hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
-		hql.append(" where " +FinancialManager_.signid.getName()+" =:businessId");
+		hql.append(" where " +FinancialManager_.businessId.getName()+" =:businessId");
 	    hql.setParam("businessId", businessId);
 
 

@@ -59,6 +59,7 @@
                     return "";
                     ;
 
+            }
         vm.create = function () {
             assistCostCountSvc.createassistCostCount(vm);
         };
