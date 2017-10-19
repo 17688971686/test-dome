@@ -1747,11 +1747,49 @@ public class SignServiceImpl implements SignService {
         BeanCopierUtils.copyProperties(signDto, sign);
         sign.setSignState(EnumState.NORMAL.getValue());
         //送件人默认魏俊辉(可以更改)
-        sign.setSendusersign(Constant.SEND_SIGN_NAME);
+        //sign.setSendusersign(Constant.SEND_SIGN_NAME);
         //预签收状态为0
         sign.setIspresign(Constant.EnumState.NO.getValue());
+        //2、是否是项目概算流程
+        if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
+            sign.setIsassistflow(EnumState.YES.getValue());
+        } else {
+            sign.setIsassistflow(EnumState.NO.getValue());
+        }
         Date now = new Date();
+        
+      //3、送件人为当前签收人，
+        sign.setSendusersign(SessionUtil.getDisplayName());
+
+        //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
+        if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())) {
+            sign.setDealOrgType(Constant.BusinessType.GX.getValue());
+            sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
+        } else {
+            sign.setDealOrgType(Constant.BusinessType.PX.getValue());
+            sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
+        }
+
+        //5、综合部、分管副主任默认办理信息
+        List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+        for (User user : roleList) {
+            if (sign.getDealOrgType().equals(user.getMngOrgType())) {
+                sign.setLeaderId(user.getId());
+                sign.setLeaderName(user.getDisplayName());
+                sign.setComprehensivehandlesug("请" + (user.getDisplayName()).substring(0, 1) + "主任阅示。");
+                sign.setComprehensiveName("综合部");
+                sign.setComprehensiveDate(new Date());
+                break;
+            }
+        }
+        if (!Validate.isString(sign.getSignNum())) {
+            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
+            sign.setSignSeq(maxSeq + 1);
+            String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
+            sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
+        }
         //签收时间
+        sign.setSigndate(now);
         sign.setCreatedDate(now);
         sign.setModifiedDate(now);
         sign.setCreatedBy(SessionUtil.getLoginName());
