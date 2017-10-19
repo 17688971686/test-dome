@@ -491,9 +491,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 				if (null != projectReviewCostDto1.getBusinessId()) {
 					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
-					Integer totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
+					BigDecimal totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
 					if (null != totalCost){
-						projectReviewCostDto1.setTotalCost(BigDecimal.valueOf(totalCost));
+						projectReviewCostDto1.setTotalCost(totalCost);
 					}
 				}
 
@@ -605,9 +605,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 				if (null != projectReviewCostDto1.getBusinessId()) {
 					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
-					Integer totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
+					BigDecimal totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
 					if (null != totalCost){
-						projectReviewCostDto1.setTotalCost(BigDecimal.valueOf(totalCost));
+						projectReviewCostDto1.setTotalCost(totalCost);
 					}
 				}
 
@@ -718,9 +718,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 				if (null != projectReviewCostDto1.getBusinessId()) {
 					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
-					Integer totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
+					BigDecimal totalCost = financialManagerService.sunCount(projectReviewCostDto1.getBusinessId());
 					if (null != totalCost){
-						projectReviewCostDto1.setTotalCost(BigDecimal.valueOf(totalCost));
+						projectReviewCostDto1.setTotalCost(totalCost);
 					}
 				}
 
@@ -743,7 +743,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	@Override
 	public List<FinancialManagerDto> getFinancialManagerByBusid(String businessId) {
 		HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+ FinancialManager_.businessId.getName()+ " =:businessId");
+		hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+ FinancialManager_.signid.getName()+ " =:businessId");
 		hqlBuilder.setParam("businessId", businessId);
 		List<FinancialManager> financialManagerlist= financialManagerRepo.findByHql(hqlBuilder);
 		List<FinancialManagerDto> financialManagerDtoList = new ArrayList<FinancialManagerDto>();
@@ -1037,9 +1037,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 				projectReviewCostDtoList.add(projectReviewCostDto);
 				User u = signPrincipalService.getMainPriUser(projectReviewCostDto.getBusinessId());
-				Integer totalCost = financialManagerService.sunCount(projectReviewCostDto.getBusinessId());
+				BigDecimal totalCost = financialManagerService.sunCount(projectReviewCostDto.getBusinessId());
 				if (null != totalCost){
-					projectReviewCostDto.setTotalCost(BigDecimal.valueOf(totalCost));
+					projectReviewCostDto.setTotalCost(totalCost);
 				}
 				projectReviewCostDto.setPrincipal(u.getDisplayName());
 			}

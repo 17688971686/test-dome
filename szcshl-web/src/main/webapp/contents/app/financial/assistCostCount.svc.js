@@ -78,7 +78,7 @@
             }
         }
        //S 初始化协审费用关联的项目
-        function initAssistlProject(vm){
+        function initAssistlProject(vm , callBack){
         	var httpOptions = {
                     method: 'get',
                     url: rootPath + "/financialManager/initfinancial",
@@ -87,8 +87,10 @@
                     }
                 };
                 var httpSuccess = function success(response) {
-                    vm.model = response.data.financialDto;
-                    vm.financials = response.data.financiallist;
+                    if(callBack != undefined && typeof  callBack == 'function'){
+                        callBack(response.data);
+                    }
+
                 };
                 common.http({
                     vm: vm,
@@ -135,6 +137,7 @@
     				   dataType : "json",
     				   data : angular.toJson(vm.financials),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
     		   }
+    		   console.log(vm.financials);
     		   var httpSuccess = function success(response) {
     			   common.requestSuccess({
     				   vm : vm,
@@ -328,7 +331,7 @@
                     width: 100,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                             item.businessId 
+                             "vm.addCost('"+ item.businessId +"')"
                             );
                     }
                 }

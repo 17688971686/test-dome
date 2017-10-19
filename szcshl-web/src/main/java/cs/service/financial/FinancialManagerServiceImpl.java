@@ -87,16 +87,16 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
         }
     }
 
-
     @Override
-    public Integer sunCount(String businessId) {
-        HqlBuilder hql = HqlBuilder.create();
-        hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
-        hql.append(" where " + FinancialManager_.businessId.getName() + " =:businessId");
-        hql.setParam("businessId", businessId);
+	public BigDecimal sunCount(String businessId) {
+		HqlBuilder hql = HqlBuilder.create();
+		hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
+		hql.append(" where " +FinancialManager_.signid.getName()+" =:businessId");
+	    hql.setParam("businessId", businessId);
 
-        return financialManagerRepo.returnIntBySql(hql);
-    }
+
+		return  new BigDecimal(financialManagerRepo.returnIntBySql(hql));
+	}
 
     @Override
     public Map<String, Object> initfinancialData(String businessId) {

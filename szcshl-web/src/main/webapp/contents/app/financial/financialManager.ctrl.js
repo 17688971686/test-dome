@@ -16,6 +16,8 @@
         //跳转到评审会发放表页面
         vm.findStageCostTable = function(){
             expertReviewSvc.initReview(vm.financial.businessId , "", function (data){
+                vm.expertReview = data;
+                console.log(vm.expertReview);
                 vm.reviewTitle = data.reviewTitle;
                 vm.payDate = data.payDate;
                 vm.expertSelectedDtoList = data.expertSelectedDtoList;

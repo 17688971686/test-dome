@@ -16,8 +16,8 @@ public class FinancialManagerDto extends BaseDto {
 
     private String id;
     private String chargeName;
-    private Integer charge;
-	private Integer stageCount;
+    private BigDecimal charge;
+	private BigDecimal stageCount;
 	@JSONField(format = "yyyy-MM-dd")
 	private Date paymentData;
 	private String projectName;
@@ -42,15 +42,6 @@ public class FinancialManagerDto extends BaseDto {
         return chargeName;
     }
 
-  
-    public Integer getCharge() {
-		return charge;
-	}
-
-	public void setCharge(Integer charge) {
-		this.charge = charge;
-	}
-
 	public void setChargeName(String chargeName) {
 		this.chargeName = chargeName;
 	}
@@ -63,15 +54,21 @@ public class FinancialManagerDto extends BaseDto {
         this.remarke = remarke;
     }
 
-	public Integer getStageCount() {
+	public BigDecimal getCharge() {
+		return charge;
+	}
+
+	public void setCharge(BigDecimal charge) {
+		this.charge = charge;
+	}
+
+	public BigDecimal getStageCount() {
 		return stageCount;
 	}
 
-	public void setStageCount(Integer stageCount) {
+	public void setStageCount(BigDecimal stageCount) {
 		this.stageCount = stageCount;
 	}
-
-	
 
 	public String getProjectName() {
 		return projectName;

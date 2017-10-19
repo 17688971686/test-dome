@@ -48,11 +48,16 @@
                                 <td>{{x.expertDto.idCard}}</td>
                                 <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                                 <td>
+                                    <div>
                                     <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
                                            class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
                                            data-val-regex="评审费用只能为正数" data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"
                                            data-val="true" data-val-required="必填">
                                     <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                                    </div>
+                                        <div ng-show="vm.model.expertReviewDto.state==9">
+                                        {{vm.expertReview.reviewCost}}
+                                    </div>
                                 </td>
                                 <td> {{x.reviewTaxes}}</td>
                                 <td> {{x.totalCost}}</td>
@@ -63,9 +68,9 @@
                             </tr>
                             <tr>
                                 <td colspan="4"></td>
-                                <td>{{expertReview.reviewCost}}</td>
-                                <td>{{expertReview.reviewTaxes}}</td>
-                                <td>{{expertReview.totalCost}}</td>
+                                <td>{{vm.expertReview.reviewCost}}</td>
+                                <td>{{vm.expertReview.reviewTaxes}}</td>
+                                <td>{{vm.expertReview.totalCost}}</td>
                                  
                             </tr>
                         </table>

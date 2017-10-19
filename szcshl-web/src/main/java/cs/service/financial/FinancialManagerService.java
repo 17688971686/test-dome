@@ -1,5 +1,6 @@
 package cs.service.financial;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,8 @@ public interface FinancialManagerService {
 
 	void delete(String id);
 
-	Integer sunCount(String signid);
+
+	BigDecimal sunCount(String signid);
 
 	Map<String, Object> initfinancialData(String signid);
 
