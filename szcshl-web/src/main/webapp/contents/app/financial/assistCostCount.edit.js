@@ -3,13 +3,14 @@
 
     angular.module('app').controller('assistCostCountEditCtrl', assistCostCount);
 
-    assistCostCount.$inject = ['$location', 'assistCostCountSvc', '$state','$http'];
+    assistCostCount.$inject = ['$location', 'assistCostCountSvc', '$state','$http' , 'expertReviewSvc'];
 
-    function assistCostCount($location, assistCostCountSvc, $state,$http) {
+    function assistCostCount($location, assistCostCountSvc, $state,$http , expertReviewSvc) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '协审费录入';
         vm.signAssistCost = {};
+        vm.financial ={};
         vm.i = 0;
         activate();
         function activate() {
@@ -20,16 +21,16 @@
 
         //查询
         vm.queryAssistCost = function(){
-        	assistCostCountSvc.assistCostCountList(vm ,function(data){
-        		 vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
-        	});
+            assistCostCountSvc.assistCostCountList(vm ,function(data){
+                vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
+            });
         }
         //重置
         vm.assistCostReset = function(){
-        	vm.model = {};
+            vm.model = {};
         }
-        
-        vm.lightState = function(lightState){
+
+        vm.lightState = function(lightState) {
             switch (lightState) {
                 case "4":          //暂停
                     return $('#span1').html();
@@ -60,6 +61,7 @@
                     ;
 
             }
+        }
         vm.create = function () {
             assistCostCountSvc.createassistCostCount(vm);
         };
@@ -71,6 +73,7 @@
          * 添加费用弹出框
          */
         vm.addCost = function(signId){
+            console.log(signId);
             vm.financial.businessId = signId;
             vm.signId =signId;
             assistCostCountSvc.initAssistlProject(vm , function(data){
@@ -138,7 +141,7 @@
             // var businessId =vm.financial.businessId;
             vm.financial = {};
             vm.financial.chargeType ="协审费用录入";
-            vm.financial.signid = vm.signId ;
+            vm.financial.businessId = vm.signId ;
             vm.financial.projectName= projectName;
             vm.financial.paymentData= paymentData;
             if(vm.i == 0){
@@ -200,15 +203,15 @@
         }
 
 
-            //协审费统计列表
-            assistCostCountSvc.assistCostCountList(vm,function(data){
-                vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
-            });
+        //协审费统计列表
+        // assistCostCountSvc.assistCostCountList(vm,function(data){
+        //     vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
+        // });
 
-            //协审费录入列表
-            assistCostCountSvc.assistCostList(vm,function(data){
-                vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
-            });
-        }
+        //协审费录入列表
+        // assistCostCountSvc.assistCostList(vm,function(data){
+        //     vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
+        // });
     }
+
 })();
