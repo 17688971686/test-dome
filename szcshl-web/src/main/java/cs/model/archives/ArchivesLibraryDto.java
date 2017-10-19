@@ -1,6 +1,5 @@
-package cs.model.Archives;
+package cs.model.archives;
 
-import cs.domain.Archives.ArchivesLibrary;
 import cs.model.BaseDto;
     
     
@@ -12,9 +11,6 @@ import cs.model.BaseDto;
     import java.util.Date;
 
 import com.alibaba.fastjson.annotation.JSONField;
-
-import java.util.Date;
-    
 
 
 /**

@@ -1,4 +1,4 @@
-package cs.domain.Archives;
+package cs.domain.archives;
 
 import java.util.Date;
 

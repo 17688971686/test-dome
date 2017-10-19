@@ -1,9 +1,8 @@
 package cs.service.archives;
 
 import cs.common.ResultMsg;
-import cs.domain.Archives.ArchivesLibrary;
 import cs.model.PageModelDto;
-import cs.model.Archives.ArchivesLibraryDto;
+import cs.model.archives.ArchivesLibraryDto;
 import cs.repository.odata.ODataObj;
 
 /**

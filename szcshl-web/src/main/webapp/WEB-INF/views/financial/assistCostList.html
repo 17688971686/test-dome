@@ -10,80 +10,80 @@
         <li class="active">财务管理</li>
         <li>协审费用统计</li>
     </ol>
-    <form id="form" name="form">
-        <div class="well">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.queryAssistCost()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">重置</button>
+    </div>
+    <table class="table table-bordered breadcrumb">
+        <tr>
+            <td style="width:80px;" class="formAlignRight">项目名称</td>
+            <td style="width: 40%;" >
+                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.projectName" placeholder="请输入">
+            </td>
+            <td style="width:80px;" class="formAlignRight">协审单位</td>
+            <td style="width: 40%;">
+                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" placeholder="请输入">
+            </td>
+        </tr>
+        <tr>
+            <td class="formAlignRight">协议登记号</td>
+            <td>
+                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" placeholder="请输入">
+            </td>
+            <td class="formAlignRight">签收日期</td>
+            <td >
+                <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                       ng-model="vm.signAssistCost.beginTime"/>
+                至
+                <input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                       ng-model="vm.signAssistCost.endTime"/>
+            </td>
+        </tr>
+    </table>
+    <ol class="breadcrumb">
+        <li class="active">
+            项目列表（颜色说明：
+            <span id="span2"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>已发文项目
+            <span id="span3"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>已发送存档
+            <span id="span4"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>项目暂停）
+        </li>
+    </ol>
 
-       <div class="well">
-       <table border="1px">
-		<tbody>
-			<tr>
-				
-				<td><span class="help-inline">项目名称：</span></td>
-				<td><input type="text" style="width:260px" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入"></td>
-				<td><span class="help-inline" style="margin-left:10px;">协审单位：</span></td>
-				<td><input type="text" style="width:260px" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入"></td>
-				<td><a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a></td>
-			</tr>
-			<tr>
-				<td><span class="help-inline">协议登记号：</span></td>
-				<td>	<input type="text" style="width:260px" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入"></td>
-				<td><span class="help-inline" style="margin-left:10px;">签收日期：</span></td>
-				<td> <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-			至
-			<input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" /></td>
-				<td><a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">重置</a></td>
-			</tr>
-		</tbody>
-	</table>
-        </div>
-        <ol class="breadcrumb">
-            <li class="active">
-                项目列表（颜色说明：
-                <span id="span2"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>已发文项目
-                <span id="span3"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>已发送存档
-                <span id="span4"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>项目暂停）
-            </li>
-        </ol>
-
-        <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
-            <table class="table table-bordered">
-                <tr class="active">
-                    <th class="text-center" style="width:60px"></th>
-                    <th class="text-center" style="width:70px">序号</th>
-                    <th class="text-center" style="width:18%">项目名称</th>
-                    <th class="text-center" style="width:12%">协审单位</th>
-                    <th class="text-center" style="width:13%">项目负责人</th>
-                    <th class="text-center" style="width:10%">协审登记号</th>
-                    <th class="text-center" style="width:10%">计划协审费用</th>
-                    <th class="text-center" style="width:10%;">实际协审费用</th>
-                    <th class="text-center" style="width:10%;">付款日期</th>
-                    <th class="text-center" style="width:8%;">申报金额</th>
-                </tr>
-                <tr ng-repeat="s in vm.signAssistCostList">
-                    <td class="text-center" >
-                        <span ng-if="s.isLightUp == 3"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>
-                        <span ng-if="s.isLightUp == 4"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>
-                        <span ng-if="s.isLightUp == 2"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>
-                    </td>
-                    <td class="text-center" >{{$index + 1}}</td>
-                    <td class="text-center" ><a ng-click="vm.addCost(s.signId)">{{s.projectName}}</a></td>
-                    <td class="text-center" >{{s.assistUnit}}</td>
-                    <td class="text-center" >{{s.changeUserName}}</td>
-                    <td class="text-center" >{{s.assistPlanNo}}</td>
-                    <td class="text-center" >{{s.planCost}}</td>
-                    <td class="text-center" >{{s.factCost}}</td>
-                    <td class="text-center" >{{s.payDate}}</td>
-                    <td class="text-center" >{{s.applyCost}}</td>
-                </tr>
-            </table>
-        </div>
-        <script type="text/template" id="columnBtns">
-            <@shiro.hasPermission name="#financialManager#put">
-            <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
-            </@shiro.hasPermission>
-        </script>
-
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    </form>
+    <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
+        <table class="table table-bordered">
+            <tr class="active">
+                <th class="text-center" style="width:60px"></th>
+                <th class="text-center" style="width:70px">序号</th>
+                <th class="text-center" style="width:18%">项目名称</th>
+                <th class="text-center" style="width:12%">协审单位</th>
+                <th class="text-center" style="width:13%">项目负责人</th>
+                <th class="text-center" style="width:10%">协审登记号</th>
+                <th class="text-center" style="width:10%">计划协审费用</th>
+                <th class="text-center" style="width:10%;">实际协审费用</th>
+                <th class="text-center" style="width:10%;">付款日期</th>
+                <th class="text-center" style="width:8%;">申报金额</th>
+            </tr>
+            <tr ng-repeat="s in vm.signAssistCostList">
+                <td class="text-center">
+                    <span ng-if="s.isLightUp == 3"><img src="${path}/contents/images/green.png"
+                                                        style="width: 16px; height: 16px;"></span>
+                    <span ng-if="s.isLightUp == 4"><img src="${path}/contents/images/red.png"
+                                                        style="width: 16px; height: 16px;"></span>
+                    <span ng-if="s.isLightUp == 2"><img src="${path}/contents/images/blue.png"
+                                                        style="width: 16px; height: 16px;"></span>
+                </td>
+                <td class="text-center">{{$index + 1}}</td>
+                <td class="text-center"><a ng-click="vm.addCost(s)">{{s.projectName}}</a></td>
+                <td class="text-center">{{s.assistUnit}}</td>
+                <td class="text-center">{{s.changeUserName}}</td>
+                <td class="text-center">{{s.assistPlanNo}}</td>
+                <td class="text-center">{{s.planCost}}</td>
+                <td class="text-center">{{s.factCost}}</td>
+                <td class="text-center">{{s.payDate}}</td>
+                <td class="text-center">{{s.applyCost}}</td>
+            </tr>
+        </table>
+    </div>
 </div>
-

@@ -1,4 +1,4 @@
-package cs.controller.Archives;
+package cs.controller.archives;
 
 import java.text.ParseException;
 import java.util.List;
@@ -20,9 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
-import cs.model.Archives.ArchivesLibraryDto;
+import cs.model.archives.ArchivesLibraryDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.archives.ArchivesLibraryService;

@@ -1,4 +1,4 @@
-package cs.controller.RestController;
+package cs.controller.restController;
 
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;

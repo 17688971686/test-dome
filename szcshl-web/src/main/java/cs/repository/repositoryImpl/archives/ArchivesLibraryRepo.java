@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.archives;
 
-import cs.domain.Archives.ArchivesLibrary;
+import cs.domain.archives.ArchivesLibrary;
 import cs.repository.IRepository;
 
 /**

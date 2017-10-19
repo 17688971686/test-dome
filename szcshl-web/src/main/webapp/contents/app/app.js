@@ -630,19 +630,11 @@
                 controller: 'assistCostCountEditCtrl',
                 controllerAs: 'vm'
             })
-
-             //协审费录入
-            .state('assistCostAdd', {
-                url: '/assistCostAdd/:signid',
-                templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
-                controller: 'assistCostCountCtrl',
-                controllerAs: 'vm'
-            })
             //协审费统计列表
              .state('assistCostCountList', {
                 url: '/assistCostCountList',
                 templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
-                controller: 'assistCostCountSvcEditCtrl',
+                controller: 'assistCostCountListCtrl',
                 controllerAs: 'vm'
             })
             //评审费统计列表

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.expert.ProjectReviewCostDto;
 import cs.model.financial.FinancialManagerDto;
@@ -29,8 +30,9 @@ public interface FinancialManagerService {
 
 	BigDecimal sunCount(String signid);
 
-	Map<String, Object> initfinancialData(String signid);
+	Map<String, Object> initfinancialData(String businessId,String businessType);
 
 	List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto,boolean isShowDetail);
 
+	ResultMsg save(FinancialManagerDto[] record);
 }

@@ -1,12 +1,16 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
+import cs.common.utils.Validate;
 import cs.domain.project.AssistPlan;
 import cs.model.project.SignAssistCostDto;
 import cs.repository.AbstractRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.logging.Handler;
 
 /**
  * Description: 协审方案 数据操作实现类
@@ -32,6 +36,25 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
         sqlBuilder.append(" WHERE CP.PLANSTATE = :planState AND CP.ID = CPS.PLANID ");
         //后面要改成9，只有完成的才可以发放费用
         sqlBuilder.setParam("planState", Constant.EnumState.PROCESS.getValue());
+        //加上查询条件
+        if(signAssistCostDto != null){
+            if(Validate.isString(signAssistCostDto.getProjectName())){
+                sqlBuilder.append(" AND CPS.PROJECTNAME like :projectName ").setParam("projectName","%"+signAssistCostDto.getProjectName()+"%");
+            }
+            if(Validate.isString(signAssistCostDto.getAssistPlanNo())){
+                sqlBuilder.append(" AND CP.PLANNAME like :planName ").setParam("planName","%"+signAssistCostDto.getAssistPlanNo()+"%");
+            }
+            if(Validate.isString(signAssistCostDto.getAssistUnit())){
+                sqlBuilder.append(" AND AU.UNITNAME like :assistUnit ").setParam("assistUnit","%"+signAssistCostDto.getAssistUnit()+"%");
+            }
+            if(Validate.isString(signAssistCostDto.getBeginTime())){
+                sqlBuilder.append(" AND FM.PAYMENTDATA > to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",signAssistCostDto.getBeginTime().trim() + " 00:00:00");
+            }
+            if(Validate.isString(signAssistCostDto.getEndTime())){
+                sqlBuilder.append(" AND FM.PAYMENTDATA > to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",signAssistCostDto.getEndTime() + " 23:59:59");
+            }
+        }
+
         sqlBuilder.append(" ORDER BY CP.PLANNAME, CPS.SPLITNUM ");
 
         return getObjectArray(sqlBuilder);

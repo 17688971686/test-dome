@@ -1,5 +1,6 @@
 package cs.model.project;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.financial.FinancialManagerDto;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -49,6 +50,7 @@ public class SignAssistCostDto {
     /**
      * 付款日期
      */
+    @JSONField(format = "yyyy-MM-dd")
     private Date payDate;
 
     /**

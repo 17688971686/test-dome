@@ -3,11 +3,84 @@
 
 <div class="" style="background:white; margin-bottom: 10px;">
     <div>
-        <span><span class="cs-icon-d" style="background-position: -266px -245px;">&nbsp;</span> 欢迎您：<b style="color:#ffae00;">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}</span>
+        <span><span class="cs-icon-d" style="background-position: -266px -245px;">&nbsp;</span> 欢迎您：<b
+                style="color:#ffae00;">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}</span>
     </div>
 </div>
-<div class="banner">
-   <img src="${path}/contents/images/banner.png" width="100%" />
+
+<div class="cared">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目待办</h3>
+                    <a class="box-tools pull-right" href="#/gtasks"><span
+                            class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span
+                            class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
+                            <th>最新待办</th>
+                            <th style="width: 80px" align="center">流程状态</th>
+                            <th style="width: 100px" align="center">日期</th>
+                        </tr>
+                        <tr ng-repeat="t in vm.tasksList|limitTo:5">
+                            <td ng-bind="$index+1"></td>
+                            <td>
+                                <a ng-if="t.processState == '1'"
+                                   href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
+                                <a ng-if="t.processState == '2'"
+                                   href="#/signFlowDetail/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
+                            </td>
+                            <td>
+                                <span ng-if="t.processState == '1'" style="color:green;">进行中</span>
+                                <span ng-if="t.processState == '2'" style="color:orange;">已暂停</span>
+                            </td>
+                            <td><span class="badge bg-red">{{t.createTime}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目办结</h3>
+                    <a class="box-tools pull-right" href="#/etasks"><span
+                            class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span
+                            class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
+                            <th>最新已办</th>
+                            <th style="width: 100px" align="center">日期</th>
+                        </tr>
+                        <tr ng-repeat="e in vm.endTasksList|limitTo:5">
+                            <td ng-bind="$index+1">1</td>
+                            <td>
+                                <a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}">{{e.businessName}}</a>
+                            </td>
+                            <td><span class="badge bg-yellow">{{e.createDate}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div class="cared">
@@ -16,7 +89,9 @@
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 公告通知</h3>
-                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment"><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
+                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment"><span
+                            class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span
+                            class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -41,158 +116,13 @@
             </div>
         </div>
 
-        <div class="col-xs-6">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目办结</h3>
-                    <a class="box-tools pull-right" href="#/etasks"><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
-                            <th>最新已办</th>
-                            <th style="width: 100px" align="center">日期</th>
-                        </tr>
-                        <tr ng-repeat="e in vm.endTasksList|limitTo:5">
-                             <td ng-bind="$index+1">1</td>
-                            <td><a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}">{{e.businessName}}</a></td>
-                            <td><span class="badge bg-yellow">{{e.createDate}}</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="cared">
-    <div class="row">
-        <#--<div class="col-xs-6 ">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 安装包管理</h3>
-                </div>
-                <!-- /.box-header &ndash;&gt;
-                <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr ng-repeat="pf in vm.pluginFileList|limitTo:5">
-                            <td>{{$index +1}}.</td>
-                            <td>{{pf.fileName}}</td>
-                            <td> <a class="btn btn-xs btn-primary" href="${path}{{'/'+pf.relativePath}}" ><i class="fa fa-download" aria-hidden="true"></i>下载</a></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- /.box-body &ndash;&gt;
-        </div>-->
-            <div class="col-xs-6">
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目待办</h3>
-                        <a class="box-tools pull-right" href="#/gtasks"><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body no-padding">
-                        <table class="table">
-                            <tbody>
-                            <tr>
-                                <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
-                                <th>最新待办</th>
-                                <th style="width: 80px" align="center">流程状态</th>
-                                <th style="width: 100px" align="center">日期</th>
-                            </tr>
-                            <tr ng-repeat="t in vm.tasksList|limitTo:5">
-                                <td ng-bind="$index+1"></td>
-                                <td>
-                                    <a ng-if="t.processState == '1'" href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
-                                    <a ng-if="t.processState == '2'" href="#/signFlowDetail/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a></td>
-                                <td >
-                                    <span  ng-if="t.processState == '1'" style="color:green;">进行中</span>
-                                    <span  ng-if="t.processState == '2'" style="color:orange;">已暂停</span>
-                                </td>
-                                <td><span class="badge bg-red">{{t.createTime}}</span></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-            </div>
-            <div class="col-xs-6 ">
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 月报简报审批</h3>
-                        <a class="box-tools pull-right" href="#/monthlyMultiyAppoveList" ><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body no-padding">
-                        <table class="table">
-                            <tbody>
-                            <tr>
-                                <th style="width: 10px"><span class="fa fa-commenting"></span></th>
-                                <th>文件标题</th>
-                                <th>拟稿人</th>
-                                <th style="width: 100px" align="center">拟稿日期</th>
-                            </tr>
-                            <tr ng-repeat="x in vm.monthlyList|limitTo:5">
-                                <td>{{$index +1}}.</td>
-                                <td><a href="#/monthlyMultiAppoveEdit/{{x.id}}">{{x.title}}</a></td>
-                                <td>{{x.userName}}</td>
-                                <td><span class="badge bg-red">{{x.suppLetterTime}}</span></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-            </div>
-
-    </div>
-</div>
-
-<div class="cared">
-    <div class="row">
         <div class="col-xs-6 ">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目暂停审批</h3>
-                    <a class="box-tools pull-right" href="#/pauseProject" ><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th style="width: 10px"><span class="fa fa-commenting"></span></th>
-                            <th>项目名称</th>
-                            <th>申请人</th>
-                            <th style="width: 100px" align="center">申请日期</th>
-                        </tr>
-                        <tr ng-repeat="x in vm.projectStopList|limitTo:5">
-                            <td>{{$index +1}}.</td>
-                            <td><a href="#/projectStopForm/{{x.sign.signid}}/{{x.stopid}}">{{x.sign.projectname}}</a></td>
-                            <td>{{x.createdBy}}</td>
-                            <td><span class="badge bg-red">{{x.createdDate | date : 'yyyy-MM-dd'}}</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- /.box-body -->
-        </div>
-        <div class="col-xs-6 ">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 拟补资料函审批</h3>
-                    <a class="box-tools pull-right" href="#/suppLetterApproveList" ><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 月报简报审批</h3>
+                    <a class="box-tools pull-right" href="#/monthlyMultiyAppoveList"><span
+                            class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span
+                            class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -204,9 +134,9 @@
                             <th>拟稿人</th>
                             <th style="width: 100px" align="center">拟稿日期</th>
                         </tr>
-                        <tr ng-repeat="x in vm.addSupLetterList|limitTo:5">
+                        <tr ng-repeat="x in vm.monthlyList|limitTo:5">
                             <td>{{$index +1}}.</td>
-                            <td><a href="#/suppLetterApproveEdit/{{x.id}}">{{x.title}}</a></td>
+                            <td><a href="#/monthlyMultiAppoveEdit/{{x.id}}">{{x.title}}</a></td>
                             <td>{{x.userName}}</td>
                             <td><span class="badge bg-red">{{x.suppLetterTime}}</span></td>
                         </tr>
@@ -215,39 +145,6 @@
                 </div>
                 <!-- /.box-body -->
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="cared">
-    <div class="row">
-        <div class="col-xs-6 ">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 评审报告评优审批</h3>
-                    <a class="box-tools pull-right" href="#/approveList" ><span class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th style="width: 10px"><span class="fa fa-commenting"></span></th>
-                            <th>评审报告名称</th>
-                            <th>申请人</th>
-                            <th style="width: 100px" align="center">申请日期</th>
-                        </tr>
-                        <tr ng-repeat="x in vm.appraiseList|limitTo:5">
-                            <td>{{$index +1}}.</td>
-                            <td><a href="#/approveWindow/x.signId/x.projecetName/{{x.id}}">{{x.appraiseReportName}}</a></td>
-                            <td>{{x.proposerName}}</td>
-                            <td><span class="badge bg-red">{{x.proposerTime}}</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- /.box-body -->
         </div>
 
     </div>

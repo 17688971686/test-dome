@@ -105,6 +105,13 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
                 BeanCopierUtils.copyProperties(sl, dto);
                 resultList.add(dto);
             });
+            //更新归档拟补充资料信息
+            FileRecord fileRecord = fileRecordRepo.findById("signid",saveList.get(0).getBusinessId());
+            if(fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
+                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))){
+                fileRecord.setIsSupplementary(Constant.EnumState.YES.getValue());
+                fileRecordRepo.save(fileRecord);
+            }
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",resultList);
         }else{
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请先填写补充资料！");

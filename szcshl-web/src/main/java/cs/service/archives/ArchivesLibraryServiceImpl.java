@@ -22,15 +22,10 @@ import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.Archives.ArchivesLibrary;
-import cs.domain.Archives.ArchivesLibrary_;
-import cs.domain.monthly.MonthlyNewsletter;
-import cs.domain.monthly.MonthlyNewsletter_;
-import cs.domain.project.ProjectStop;
+import cs.domain.archives.ArchivesLibrary;
+import cs.domain.archives.ArchivesLibrary_;
 import cs.model.PageModelDto;
-import cs.model.Archives.ArchivesLibraryDto;
-import cs.model.monthly.MonthlyNewsletterDto;
-import cs.model.project.ProjectStopDto;
+import cs.model.archives.ArchivesLibraryDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.archives.ArchivesLibraryRepo;
 

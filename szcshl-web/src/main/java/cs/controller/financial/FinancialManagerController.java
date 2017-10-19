@@ -1,6 +1,7 @@
 package cs.controller.financial;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.ExcelTools;
 import cs.domain.expert.Expert;
@@ -59,21 +60,18 @@ public class FinancialManagerController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("financialManager#assistCostCountList#post")
-    @RequestMapping(name = "获取协审费用统计列表数据", path = "assistCostCountList", method = RequestMethod.POST)
+    @RequestMapping(name = "协审费统计页面", path = "findSingAssistCostCount", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<SignDto> assistCostCountList(HttpServletRequest request) throws ParseException {
-       /* ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> financialManagerDtos = financialManagerService.assistCostCountGet(odataObj);*/
-        return null;
+    public List<SignAssistCostDto> findSingAssistCostCount(@RequestBody SignAssistCostDto signAssistCost) {
+        return financialManagerService.signAssistCostList(signAssistCost,true);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("financialManager#initfinancial#get")
-    @RequestMapping(name = "初始化财务页面", path = "initfinancial", method = RequestMethod.GET)
-    public @ResponseBody
-    Map<String, Object> initfinancial(@RequestParam String signid) throws Exception {
-        Map<String, Object> map = financialManagerService.initfinancialData(signid);
+    @RequestMapping(name = "初始化财务页面", path = "initfinancial", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> initfinancial(@RequestParam String businessId,String businessType) throws Exception {
+        Map<String, Object> map = financialManagerService.initfinancialData(businessId,businessType);
         return map;
     }
 
@@ -88,12 +86,10 @@ public class FinancialManagerController {
 
     @RequiresAuthentication
     //@RequiresPermissions("financialManager##post")
-    @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody FinancialManagerDto []record) {
-        for(FinancialManagerDto financialDto : record){
-            financialManagerService.save(financialDto);
-        }
+    @RequestMapping(name = "保存评审费", path = "", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg post(@RequestBody FinancialManagerDto[] record) {
+        return financialManagerService.save(record);
     }
 
 	@RequiresAuthentication
@@ -179,7 +175,7 @@ public class FinancialManagerController {
 
     // begin#html
     @RequiresPermissions("financialManager#html/list#get")
-    @RequestMapping(name = "评审费统计", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "评审费录入", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
@@ -191,7 +187,7 @@ public class FinancialManagerController {
     }
 
     @RequiresPermissions("financialManager#html/proReviewConCount#get")
-    @RequestMapping(name = "项目评审情况统计", path = "html/proReviewConCount", method = RequestMethod.GET)
+    @RequestMapping(name = "评审费统计", path = "html/proReviewConCount", method = RequestMethod.GET)
     public String proReviewConditionCount() {
         return ctrlName+"/proReviewConCount";
     }
@@ -222,7 +218,7 @@ public class FinancialManagerController {
     }
     
     @RequiresPermissions("financialManager#html/assistCostList#get")
-    @RequestMapping(name = "协审费用录入列表页面", path = "html/assistCostList", method = RequestMethod.GET)
+    @RequestMapping(name = "协审费用录入", path = "html/assistCostList", method = RequestMethod.GET)
     public String assistCostList() {
         return ctrlName+"/assistCostList";
     }

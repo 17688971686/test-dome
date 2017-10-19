@@ -7,7 +7,7 @@
     <div id="wp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9)|| w.isSigle=="单个评审" || vm.showAll}'>
         <table  class="table table-bordered" style="margin-bottom: 0px;" >
             <caption>
-                 <span style="float:content;">QR-4.9-02-A0</span>
+                 <span style="float:left;">QR-4.9-02-A0</span>
             </caption>
             <caption class="text-center h3"><strong>{{w.titleName}}</strong></caption>
             <caption style="width:100%;">
@@ -196,7 +196,7 @@
     <a  data-toggle="collapse" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [协审分支_{{w.branchId}}_工作方案]
     </a>
-    <div id="aswp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9)|| w.isSigle=="单个评审" || vm.showAll}'>
+    <div id="aswp_{{$index}}" class="collapse" ng-class="{in:(vm.model.workProgramDtoList.length==1 || vm.showAll)}">
         <table  class="table table-bordered" style="margin-bottom: 0px;">
             <tr>
                 <td style="width:10%;" >评审方式</td>

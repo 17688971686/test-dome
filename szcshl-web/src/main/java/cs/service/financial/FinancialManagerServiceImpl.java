@@ -1,6 +1,8 @@
 package cs.service.financial;
 
+import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
@@ -38,6 +40,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     private AssistPlanRepo assistPlanRepo;
     @Autowired
     private SignPrincipalService signPrincipalService;
+
     @Override
     @Transactional
     public void save(FinancialManagerDto record) {
@@ -45,12 +48,13 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
         BeanCopierUtils.copyProperties(record, domain);
         Date now = new Date();
 
-        if (record.getId() == null) {
+        if (!Validate.isString(record.getId())) {
             domain.setId(UUID.randomUUID().toString());
+            domain.setCreatedBy(SessionUtil.getDisplayName());
+            domain.setCreatedDate(now);
         }
-        domain.setCreatedBy(SessionUtil.getLoginName());
-        domain.setModifiedBy(SessionUtil.getLoginName());
-        domain.setCreatedDate(now);
+
+        domain.setModifiedBy(SessionUtil.getDisplayName());
         domain.setModifiedDate(now);
         financialManagerRepo.save(domain);
     }
@@ -58,11 +62,10 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     @Override
     @Transactional
     public void update(FinancialManagerDto record) {
-        FinancialManager domain = financialManagerRepo.findById(record.getId());
+        FinancialManager domain = financialManagerRepo.findById(FinancialManager_.id.getName(),record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        //domain.setModifiedBy(currentUser.getLoginName());
+        domain.setModifiedBy(SessionUtil.getDisplayName());
         domain.setModifiedDate(new Date());
-
         financialManagerRepo.save(domain);
     }
 
@@ -88,67 +91,62 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     }
 
     @Override
-	public BigDecimal sunCount(String businessId) {
-		HqlBuilder hql = HqlBuilder.create();
-		hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
-		hql.append(" where " +FinancialManager_.businessId.getName()+" =:businessId");
-	    hql.setParam("businessId", businessId);
+    public BigDecimal sunCount(String businessId) {
+        HqlBuilder hql = HqlBuilder.create();
+        hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
+        hql.append(" where " + FinancialManager_.businessId.getName() + " =:businessId");
+        hql.setParam("businessId", businessId);
+        return new BigDecimal(financialManagerRepo.returnIntBySql(hql));
+    }
 
-
-		return  new BigDecimal(financialManagerRepo.returnIntBySql(hql));
-	}
-
+    /**
+     * 初始化财务报销页面
+     *
+     * @param businessId   业务ID
+     * @param businessType 类型
+     * @return
+     */
     @Override
-    public Map<String, Object> initfinancialData(String businessId) {
+    public Map<String, Object> initfinancialData(String businessId, String businessType) {
         Map<String, Object> map = new HashMap<String, Object>();
-        Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
-        FinancialManagerDto financialDto = new FinancialManagerDto();
-        financialDto.setProjectName(sign.getProjectname());
-        financialDto.setSignid(sign.getSignid());
-        financialDto.setPaymentData(new Date());
+        if (Validate.isString(businessType)) {
 
-        financialDto.setAssissCost(sign.getDeclaration());                    //计划协审费用
-        financialDto.setAssistBuiltcompanyName(sign.getBuiltcompanyName());//协审单位
-
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + FinancialManager.class.getSimpleName() + " where " + FinancialManager_.businessId.getName() + " =:businessId");
-        hqlBuilder.setParam("businessId", businessId);
-        List<FinancialManager> financiallist = financialManagerRepo.findByHql(hqlBuilder);
-
+        }
+        List<FinancialManager> financiallist = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), businessId, null);
         map.put("financiallist", financiallist);
-        map.put("financialDto", financialDto);
         return map;
     }
 
     /**
      * 协审费用统计
+     *
      * @param signAssistCostDto
-     * @param isShowDetail 是否显示费用详情
+     * @param isShowDetail      是否显示费用详情
      * @return
      */
     @Override
-    public List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto,boolean isShowDetail) {
+    public List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto, boolean isShowDetail) {
         List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto);
-        if(Validate.isList(signAssistList)){
+        if (Validate.isList(signAssistList)) {
             List<SignAssistCostDto> resultList = new ArrayList<>(signAssistList.size());
-            for(int i=0,l=signAssistList.size();i<l;i++){
+            for (int i = 0, l = signAssistList.size(); i < l; i++) {
                 SignAssistCostDto saDto = new SignAssistCostDto();
                 Object[] obj = signAssistList.get(i);
-                String signId = obj[0]==null?"":obj[0].toString();
-                String projectName = obj[1]==null?"":obj[1].toString();
-                String assistUnit = obj[2]==null?"":obj[2].toString();
-                String assistPlanNo = obj[3]==null?"":obj[3].toString();
-                BigDecimal planCost = obj[4]==null?null:ObjectUtils.getBigDecimal(obj[4]);
-                BigDecimal factCost = obj[5]==null?null:ObjectUtils.getBigDecimal(obj[5]);
-                Date payDate =  DateUtils.converToDate(obj[6]==null?"":obj[6].toString(),null);
-                BigDecimal applyCost = obj[7]==null?null:ObjectUtils.getBigDecimal(obj[7]);
-                String lightState = obj[8]==null?"":obj[8].toString();
+                String signId = obj[0] == null ? "" : obj[0].toString();
+                String projectName = obj[1] == null ? "" : obj[1].toString();
+                String assistUnit = obj[2] == null ? "" : obj[2].toString();
+                String assistPlanNo = obj[3] == null ? "" : obj[3].toString();
+                BigDecimal planCost = obj[4] == null ? null : ObjectUtils.getBigDecimal(obj[4]);
+                BigDecimal factCost = obj[5] == null ? null : ObjectUtils.getBigDecimal(obj[5]);
+                Date payDate = DateUtils.converToDate(obj[6] == null ? "" : obj[6].toString(), null);
+                BigDecimal applyCost = obj[7] == null ? null : ObjectUtils.getBigDecimal(obj[7]);
+                String lightState = obj[8] == null ? "" : obj[8].toString();
 
                 String changeUserName = "";
-                List<User> priUserList = signPrincipalService.getSignPriUser(signId,null);
-                if(Validate.isList(priUserList)){
-                    for(int n=0,m=priUserList.size();n<m;n++){
-                        if(n > 0){
+                List<User> priUserList = signPrincipalService.getSignPriUser(signId, null);
+                if (Validate.isList(priUserList)) {
+                    for (int n = 0, m = priUserList.size(); n < m; n++) {
+                        if (n > 0) {
                             changeUserName += ",";
                         }
                         changeUserName += priUserList.get(n).getDisplayName();
@@ -166,13 +164,13 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 saDto.setApplyCost(applyCost);
                 saDto.setIsLightUp(lightState);
 
-                if(isShowDetail){
-                    List<FinancialManager> fmList = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(),signId,null);
-                    if(Validate.isList(fmList)){
+                if (isShowDetail) {
+                    List<FinancialManager> fmList = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), signId, null);
+                    if (Validate.isList(fmList)) {
                         List<FinancialManagerDto> fmDtoList = new ArrayList<>(fmList.size());
-                        fmList.forEach( fl -> {
+                        fmList.forEach(fl -> {
                             FinancialManagerDto fmDto = new FinancialManagerDto();
-                            BeanCopierUtils.copyProperties(fl,fmDto);
+                            BeanCopierUtils.copyProperties(fl, fmDto);
                             fmDtoList.add(fmDto);
                         });
                         saDto.setCostList(fmDtoList);
@@ -183,6 +181,42 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
             return resultList;
         }
         return null;
+    }
+
+    /**
+     * 批量保存评审费
+     * @param record
+     * @return
+     */
+    @Override
+    public ResultMsg save(FinancialManagerDto[] record) {
+        if(record == null || record.length == 0){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，请先填写费用项信息！");
+        }
+        List<FinancialManager> saveList = new ArrayList<>(record.length);
+        for(int i=0,l=record.length;i<l;i++){
+            FinancialManagerDto dto = record[i];
+            if(!Validate.isString(dto.getChargeName()) || !Validate.isObject(dto.getCharge())){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，存在费用名称或者费用没有填写！");
+            }
+            FinancialManager financialManager = new FinancialManager();
+            Date now = new Date();
+            if (Validate.isString(dto.getId())) {
+                financialManager = financialManagerRepo.findById(dto.getId());
+                BeanCopierUtils.copyPropertiesIgnoreNull(dto,financialManager);
+            }else{
+                BeanCopierUtils.copyProperties(dto, financialManager);
+                financialManager .setId(UUID.randomUUID().toString());
+                financialManager.setCreatedDate(now);
+                financialManager.setCreatedBy(SessionUtil.getDisplayName());
+            }
+            financialManager.setModifiedBy(SessionUtil.getDisplayName());
+            financialManager.setModifiedDate(now);
+            saveList.add(financialManager);
+        }
+        financialManagerRepo.bathUpdate(saveList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",saveList);
+
     }
 
 }

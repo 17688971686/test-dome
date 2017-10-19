@@ -7,8 +7,8 @@
 
     function assistCostCount($location, assistCostCountSvc,expertReviewSvc,$state,$http) {
         var vm = this;
-        vm.title = '协审费用统计管理';
-        vm.financials = new Array;
+        vm.title = '协审费用统计';
+        vm.financials = new Array();
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.financial.businessId = $state.params.signid;

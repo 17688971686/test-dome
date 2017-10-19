@@ -21,8 +21,9 @@ public enum FlowNextNodeFilter {
             if(Validate.isMap(businessMap)){
                 if(businessMap.get("prilUserList") != null){
                     for(int i=0;i<nextNodeList.size();i++){
-                        if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW))
+                        if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW)) {
                             nextNodeList.remove(i);
+                        }
                     }
                 }
             }
@@ -35,8 +36,9 @@ public enum FlowNextNodeFilter {
         public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
             if(businessMap.get("checkFileUser") != null){
                 for(int i=0;i<nextNodeList.size();i++){
-                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_QRGD))
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_QRGD)) {
                         nextNodeList.remove(i);
+                    }
                 }
             }
             return nextNodeList;
@@ -75,6 +77,20 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    SIGN_BMLD_QRFW_XB{
+        //协办部长审批发文
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            for(int i=0;i<nextNodeList.size();i++){
+                if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW)) {
+                    resultList.add(nextNodeList.get(i));
+                    break;
+                }
+            }
+            return resultList;
+        }
+    },
     SIGN_BMLD_QRFW{
         //主办部长审批
         @Override
@@ -94,6 +110,20 @@ public enum FlowNextNodeFilter {
                         resultList.add(nextNodeList.get(i));
                         break;
                     }
+                }
+            }
+            return resultList;
+        }
+    },
+    SIGN_FGLD_QRFW_XB{
+        //协办分管领导审批发文
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            for(int i=0;i<nextNodeList.size();i++){
+                if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_FGLD_QRFW)) {
+                    resultList.add(nextNodeList.get(i));
+                    break;
                 }
             }
             return resultList;
@@ -142,8 +172,12 @@ public enum FlowNextNodeFilter {
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FGLD_FB);
             case FlowConstant.FLOW_SIGN_QRFW:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_QRFW);
+            case FlowConstant.FLOW_SIGN_BMLD_QRFW_XB:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_BMLD_QRFW_XB);
             case FlowConstant.FLOW_SIGN_BMLD_QRFW:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_BMLD_QRFW);
+            case FlowConstant.FLOW_SIGN_FGLD_QRFW_XB:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FGLD_QRFW_XB);
             case FlowConstant.FLOW_SIGN_FWBH:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FWBH);
             default:

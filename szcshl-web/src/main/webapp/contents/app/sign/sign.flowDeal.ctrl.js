@@ -689,9 +689,10 @@
                        }
                     });
                     vm.businessFlag.principalUsers.push(priUser);
+                    //初始化处理人
+                    vm.initDealUserName(vm.businessFlag.principalUsers);
                 }
             }
-
         }
 
         //删除负责人
@@ -715,8 +716,29 @@
                         }
                     });
                 }
+                //初始化处理人
+                vm.initDealUserName(vm.businessFlag.principalUsers);
             }
         }//E_删除负责人
+
+        vm.initDealUserName = function(userList){
+            if(userList && userList.length > 0){
+                var defaultOption="请（";
+                angular.forEach(userList,function(u,i){
+                    if(i > 0){
+                        defaultOption += ","
+                    }
+                    defaultOption += u.userName;
+                })
+                defaultOption += " )组织办理。";
+                vm.flow.dealOption = defaultOption;
+            }else{
+                vm.flow.dealOption = "";
+            }
+        }
+
+
+
 
         //S_判断是否需要工作方案
         vm.checkNeedWP = function($event){

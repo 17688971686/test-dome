@@ -115,10 +115,11 @@
        //S 初始化关联项目评审费
         function initFinancialProject(vm){
         	var httpOptions = {
-                    method: 'get',
+                    method: 'post',
                     url: rootPath + "/expertPaymentCount/initfinancial",
                     params:{
-                    	signid: vm.financial.signid
+                    	businessId: vm.financial.signid,
+                        businessType:"SIGN"
                     }
                 };
                 var httpSuccess = function success(response) {

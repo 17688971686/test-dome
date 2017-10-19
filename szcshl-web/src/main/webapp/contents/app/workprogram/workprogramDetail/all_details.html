@@ -20,7 +20,7 @@
             <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9" > 主项目 </span>
             <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0" > 次项目 </span>
         </span>
-                <span style="float:right;">收文日期:{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
+                <span style="float:right;">{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
             </caption>
             <tr>
                 <td style="width:10%;" colspan="2" class="text-center">项目名称</td>
@@ -199,7 +199,7 @@
     <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [协办分支_{{w.branchId}}_工作方案]
     </a>
-    <div id="aswp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9)|| w.isSigle=="单个评审" || vm.showAll}'>
+    <div id="aswp_{{$index}}" class="collapse" ng-class='{in: vm.model.workProgramDtoList.length==1 || vm.showAll}'>
         <table  class="table table-bordered" style="margin-bottom: 0px;">
             <tr>
                 <td style="width:10%;" >评审方式</td>
