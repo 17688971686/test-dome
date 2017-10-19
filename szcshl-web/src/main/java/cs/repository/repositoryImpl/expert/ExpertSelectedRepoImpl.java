@@ -15,6 +15,9 @@ import cs.model.expert.ExpertReviewConSimpleDto;
 import cs.model.expert.ExpertReviewCondBusDto;
 import cs.model.expert.ExpertReviewCondDto;
 import cs.repository.AbstractRepository;
+
+import org.hibernate.type.DoubleType;
+import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -418,15 +421,28 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @return
      */
     @Override
-    public List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis) {
+    public List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis,boolean isScore) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" SELECT EX.EXPERTID,EX.NAME,EX.COMPANY,EX.EXPERTFIELD,WP.PROJECTNAME,ES.MAJORBIG,ES.MAJORSMALL,");
-        sqlBuilder.append(" ES.EXPERTTYPE, ES.SELECTTYPE, ES.ISCONFRIM,WP.REVIEWTYPE,ER.REVIEWDATE,WP.MIANCHARGEUSERNAME ");
-        sqlBuilder.append("  FROM CS_EXPERT ex ");
-        sqlBuilder.append("  LEFT JOIN CS_EXPERT_SELECTED es ON EX.EXPERTID = ES.EXPERTID ");
-        sqlBuilder.append("  LEFT JOIN CS_EXPERT_REVIEW er ON ER.ID = ES.EXPERTREVIEWID ");
-        sqlBuilder.append("  LEFT JOIN CS_WORK_PROGRAM wp ON WP.ID = ES.BUSINESSID ");
-        sqlBuilder.append("  WHERE ex.state != '3' AND ex.state != '4' AND ES.ID IS NOT NULL ");
+        sqlBuilder.append(" SELECT EX.EXPERTID,EX.NAME,EX.COMPANY,EX.EXPERTFIELD,WP.PROJECTNAME,ES.MAJORBIG,ES.MAJORSMALL,ES.EXPERTTYPE,");
+        sqlBuilder.append(" ES.SELECTTYPE, ES.ISCONFRIM,WP.REVIEWTYPE,ER.REVIEWDATE,WP.MIANCHARGEUSERNAME ,ES.SCORE,ES.DESCRIBES,WP.WORKREVIVESTAGE ");
+        sqlBuilder.append(" FROM CS_EXPERT ex ");
+        sqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED es ON EX.EXPERTID = ES.EXPERTID ");
+        sqlBuilder.append(" LEFT JOIN CS_EXPERT_REVIEW er ON ER.ID = ES.EXPERTREVIEWID ");
+        sqlBuilder.append(" LEFT JOIN CS_WORK_PROGRAM wp ON WP.ID = ES.BUSINESSID ");
+        sqlBuilder.append(" WHERE ex.state != '3' AND ex.state != '4' AND ES.ID IS NOT NULL ");
+        //如果是专家评分，则必须是已确定并且参加会议的人
+        if(isScore){
+            sqlBuilder.append(" AND ES.ISCONFRIM =:isConfirm ").setParam("isConfirm", Constant.EnumState.YES.getValue());
+            sqlBuilder.append(" AND ES.ISJOIN =:isJoin ").setParam("isJoin",Constant.EnumState.YES.getValue());
+
+            if(expertSelectHis.getScore() != null){
+                sqlBuilder.append(" AND ES.SCORE >:score ").setParam("score",expertSelectHis.getScore()-1, DoubleType.INSTANCE);
+            }
+
+            if(Validate.isString(expertSelectHis.getReviewStage())){
+                sqlBuilder.append(" AND WP.WORKREVIVESTAGE =:reviewStage ").setParam("reviewStage",expertSelectHis.getReviewStage(), StringType.INSTANCE);
+            }
+        }
         if(expertSelectHis != null){
             if(Validate.isString(expertSelectHis.getEpName())){
                 sqlBuilder.append(" AND EX.NAME like :epName ").setParam("epName","%"+expertSelectHis.getEpName()+"%");

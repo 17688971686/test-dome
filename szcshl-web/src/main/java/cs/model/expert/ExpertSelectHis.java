@@ -64,6 +64,20 @@ public class ExpertSelectHis {
      */
     private String mainChargeUserName;
 
+    /**
+     * 专家评分
+     */
+    private Double score;
+
+    /**
+     * 专家评分描述
+     */
+    private String describes;
+
+    /**
+     * 评审阶段
+     */
+    private String reviewStage;
     //以下字段用于查询用而已
     /**
      * 开始时间
@@ -205,5 +219,29 @@ public class ExpertSelectHis {
 
     public void setChildList(List<ExpertSelectHis> childList) {
         this.childList = childList;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
+    public String getDescribes() {
+        return describes;
+    }
+
+    public void setDescribes(String describes) {
+        this.describes = describes;
+    }
+
+    public String getReviewStage() {
+        return reviewStage;
+    }
+
+    public void setReviewStage(String reviewStage) {
+        this.reviewStage = reviewStage;
     }
 }

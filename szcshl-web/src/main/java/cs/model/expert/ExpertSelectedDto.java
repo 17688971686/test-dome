@@ -15,7 +15,7 @@ public class ExpertSelectedDto {
     private BigDecimal totalCost;
     //抽取类型（随机、自选、境外专家3种）
     private String selectType;
-    //评级描述
+    //评分描述
     private String describes;
     //是否参加
     private String isJoin;

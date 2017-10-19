@@ -42,5 +42,5 @@ public interface ExpertService {
      * @param expertSelectHis
      * @return
      */
-    List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis);
+    List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis,boolean isScore);
 }

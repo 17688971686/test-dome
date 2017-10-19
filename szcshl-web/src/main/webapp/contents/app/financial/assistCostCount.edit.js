@@ -1,24 +1,21 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('assistCostCountSvcEditCtrl', assistCostCount);
+    angular.module('app').controller('assistCostCountEditCtrl', assistCostCount);
 
     assistCostCount.$inject = ['$location', 'assistCostCountSvc', '$state','$http'];
 
     function assistCostCount($location, assistCostCountSvc, $state,$http) {
         /* jshint validthis:true */
         var vm = this;
-        vm.model={};
-        vm.title = '财务管理';
-        vm.sign = {}; //收文对象
-        vm.financial = {};//财务对象
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        vm.financial.businessId = $state.params.businessId;
-     
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新财务管理';
+        vm.title = '协审费录入';
+        vm.signAssistCost = {};
+
+        activate();
+        function activate() {
+            assistCostCountSvc.findSingAssistCostList(vm.signAssistCost,function (data) {
+                vm.signAssistCostList = data;
+            });
         }
 
         //查询
@@ -32,28 +29,37 @@
         	vm.model = {};
         }
         
-        vm.create = function () {
-            assistCostCountSvc.createassistCostCount(vm);
-        };
-        vm.update = function () {
-            assistCostCountSvc.updateassistCostCount(vm);
-        };
-    
-        activate();
-        function activate() {
-        	  assistCostCountSvc.grid(vm);
-            if (vm.isUpdate) {
-                assistCostCountSvc.getassistCostCountById(vm);
+        vm.lightState = function(lightState){
+            switch (lightState) {
+                case "4":          //暂停
+                    return $('#span1').html();
+                    break;
+                case "8":         	//存档超期
+                    return $('#span5').html();
+                    break;
+                case "7":           //超过25个工作日未存档
+                    return $('#span4').html();
+                    break;
+                case "6":          	//发文超期
+                    return $('#span3').html();
+                    break;
+                case "5":          //少于3个工作日
+                    return $('#span2').html();
+                    break;
+                case "1":          //在办
+                    return "";
+                    break;
+                case "2":           //已发文
+                    return "";
+                    break;
+                case "3":           //已发送存档
+                    return "";
+                    break;
+                default:
+                    return "";
+                    ;
             }
-            //协审费统计列表
-            assistCostCountSvc.assistCostCountList(vm,function(data){
-            	vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
-            });
-            
-            //协审费录入列表
-            assistCostCountSvc.assistCostList(vm,function(data){
-            	vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
-            });
         }
+
     }
 })();
