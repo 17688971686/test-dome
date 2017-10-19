@@ -871,7 +871,7 @@ public class Sign extends DomainBase {
     /**
      * 存放时间
      */
-    @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "Date")
     private Date palceTime;
     
     /**

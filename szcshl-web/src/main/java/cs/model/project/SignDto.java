@@ -622,13 +622,14 @@ public class SignDto extends BaseDto{
     private ExpertReviewDto expertReviewDto;
     
     /**
-     * 存放位置
+     * 资料存放位置
      */
     private String palceStorage;
     
     /**
-     * 存放时间
+     * 送来存放时间
      */
+    @JSONField(format = "yyyy-MM-dd")
     private Date palceTime;
     
     /**

@@ -9,6 +9,7 @@
         <li>协审费用统计</li>
     </ol>
     <form id="form" name="form">
+<<<<<<< Updated upstream
         <div class="well">
             <table border="1px">
                 <tbody>
@@ -36,6 +37,30 @@
                 </tr>
                 </tbody>
             </table>
+=======
+       <div class="well">
+       <table border="1px">
+		<tbody>
+			<tr>
+				
+				<td><span class="help-inline">项目名称：</span></td>
+				<td><input type="text" style="width:260px" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入"></td>
+				<td><span class="help-inline" style="margin-left:10px;">协审单位：</span></td>
+				<td><input type="text" style="width:260px" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入"></td>
+				<td><a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">查询</a></td>
+			</tr>
+			<tr>
+				<td><span class="help-inline">协议登记号：</span></td>
+				<td>	<input type="text" style="width:260px" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入"></td>
+				<td><span class="help-inline" style="margin-left:10px;">签收日期：</span></td>
+				<td> <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+			至
+			<input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" /></td>
+				<td><a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">重置</a></td>
+			</tr>
+		</tbody>
+	</table>
+>>>>>>> Stashed changes
         </div>
         <ol class="breadcrumb">
             <li class="active">
