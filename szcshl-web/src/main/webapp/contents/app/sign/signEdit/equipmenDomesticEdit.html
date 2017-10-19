@@ -18,7 +18,14 @@
 		        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
   	    	</tr>
 			
-			
+		  <tr ng-if="vm.model.ispresign==0">
+             <td width="15%" class="text-center">资料存放位置</td>
+             <td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.palceStorage" name="palceStorage" id="palceStorage" data-val="true" data-val-required="必填">
+             <span data-valmsg-for="palceStorage" data-valmsg-replace="true" class="errors"></span></td>
+            <td width="15%" class="text-center">资料送来时间</td>
+            <td> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
+           </tr>
+           
 			<tr>
 				<td width="15%" class="text-center">主办处室</td>
 				<td>

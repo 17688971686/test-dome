@@ -298,12 +298,13 @@ public class ExpertServiceImpl implements ExpertService {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select ep.* FROM CS_EXPERT ep ");
-        //1、关联本周未满2次，本月未满4次的专家
+        //1、关联本周未满2次，本季度不超过12次的专家
         hqlBuilder.append(" LEFT JOIN (  SELECT er.EXPERTID, COUNT (er.EXPERTID)  FROM ( ");
-        hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel LEFT JOIN CS_EXPERT_REVIEW ep_rev ");
-        hqlBuilder.append(" ON EP_SEL.EXPERTREVIEWID = EP_REV.ID WHERE EP_SEL.ISJOIN =:isJoin) er GROUP BY er.EXPERTID ");
-        hqlBuilder.setParam("isJoin", Constant.EnumState.YES.getValue());
-        hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-mm')) > 4 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
+        hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel , CS_EXPERT_REVIEW ep_rev ");
+        hqlBuilder.append(" WHERE EP_SEL.EXPERTREVIEWID = EP_REV.ID AND TO_CHAR (ep_rev.REVIEWDATE, 'q') = TO_CHAR (SYSDATE, 'q') ");
+        hqlBuilder.append(" AND EP_SEL.ISCONFRIM =:isConfrim AND EP_SEL.ISJOIN =:isJoin ) er GROUP BY er.EXPERTID ");
+        hqlBuilder.setParam("isConfrim",Constant.EnumState.YES.getValue()).setParam("isJoin", Constant.EnumState.YES.getValue());
+        hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'q')) > 12 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
         hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
         //2、排除跟工作方案单位的专家(保留，不影响)
         hqlBuilder.append(" LEFT JOIN (SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp ");
@@ -564,8 +565,8 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     @Override
-    public List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis) {
-        List<Object[]> epList = expertSelectedRepo.getSelectHis(expertSelectHis);
+    public List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis,boolean isScore) {
+        List<Object[]> epList = expertSelectedRepo.getSelectHis(expertSelectHis,isScore);
         List<ExpertSelectHis> resultList = new ArrayList<>();
         String expertID="";     //初始专家ID
         ExpertSelectHis expertSelectHisObj =null;
@@ -585,6 +586,9 @@ public class ExpertServiceImpl implements ExpertService {
             String reviewType = expMap[10]==null?"":expMap[10].toString();
             Date reviewDate = DateUtils.converToDate(expMap[11]==null?"":expMap[11].toString(),null);
             String mainChargeUserName = expMap[12]==null?"":expMap[12].toString();
+            Double score = expMap[13]==null?null:Double.valueOf(expMap[13].toString());
+            String describes = expMap[14]==null?"":expMap[14].toString();
+            String reviewStage = expMap[15]==null?"":expMap[15].toString();
 
             if(!Validate.isString(expertID) || !expertID.equals(expId)){
                 if(expertSelectHisObj != null){
@@ -612,6 +616,9 @@ public class ExpertServiceImpl implements ExpertService {
             childObj.setExpertType(expertType);
             childObj.setReviewDate(reviewDate);
             childObj.setMainChargeUserName(mainChargeUserName);
+            childObj.setScore(score);
+            childObj.setDescribes(describes);
+            childObj.setReviewStage(reviewStage);
             childList.add(childObj);
             //最后一个
             if(i == (l-1)){

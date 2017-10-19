@@ -133,7 +133,6 @@ public class TemplateUtil {
     /**
      * 生成模板并且同时生成附件
      * @param signId   收文ID
-     * @param workProjectId   工作方案ID
      * @param mainType   附件模块
      * @param businessType   附件业务
      * @param reviewStage  评审阶段(项目阶段)
@@ -143,7 +142,7 @@ public class TemplateUtil {
      * @param dataMap    数据
      * @return
      */
-    public static SysFile createTemplate(String signId , String workProjectId , String mainType , String businessType , String reviewStage,
+    public static SysFile createTemplate(String signId ,  String mainType , String businessType , String reviewStage,
                                         String templateUrl , String fileName , String fileType , Map<String , Object> dataMap){
 
         String  showName = fileName + fileType;
@@ -155,7 +154,7 @@ public class TemplateUtil {
         if(docFile !=null){
 //    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
 //                    String mainId,String mainType, String sysfileType, String sysBusiType)
-           sysFile = new SysFile(UUID.randomUUID().toString() , workProjectId , relativeFileUrl , showName ,
+           sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
                     Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
         }
         return sysFile;

@@ -83,21 +83,21 @@
     </ol>
 
 
-    <div style="max-height: 800px; overflow-y: scroll;">
+    <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
         <table class="table table-bordered">
-            <thead>
-                <td class="text-center">姓名</td>
-                <td class="text-center">工作单位</td>
-                <td class="text-center">项目名称</td>
-                <td class="text-center">专业大类</td>
-                <td class="text-center">专业小类</td>
-                <td class="text-center">专家类别</td>
-                <td class="text-center">抽取方式</td>
-                <td class="text-center">是否选定</td>
-                <td class="text-center">评审方式</td>
-                <td class="text-center">会议日期</td>
-                <td class="text-center">负责人</td>
-            </thead>
+            <tr class="active">
+                <th class="text-center">姓名</th>
+                <th class="text-center">工作单位</th>
+                <th class="text-center">项目名称</th>
+                <th class="text-center">专业大类</th>
+                <th class="text-center">专业小类</th>
+                <th class="text-center">专家类别</th>
+                <th class="text-center">抽取方式</th>
+                <th class="text-center">是否选定</th>
+                <th class="text-center">评审方式</th>
+                <th class="text-center">会议日期</th>
+                <th class="text-center">负责人</th>
+            </tr>
             <tbody ng-repeat="el in vm.expSelectList" style="border-bottom: none;">
                 <tr ng-repeat="e in el.childList">
                     <td rowspan="{{el.childList.length}}" ng-if="$index == 0" style="width:7%">

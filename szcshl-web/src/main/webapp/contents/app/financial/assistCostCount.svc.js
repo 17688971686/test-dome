@@ -16,18 +16,18 @@
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
             assistExportExcel:assistExportExcel,					//专家协申费用导出
             assistCostCountList:assistCostCountList,				//协审费用统计列表
-            assistCostList :assistCostList,							//协审费录入列表
+            findSingAssistCostList :findSingAssistCostList,			//协审费录入列表
            
         };
         
         return service;
         
-      //S 协审费录入列表
-       function assistCostList(vm,callBack){
+       //S 协审费录入列表
+       function findSingAssistCostList(singAssist,callBack){
     	   var httpOptions = {
                    method: 'post',
-                   url: rootPath + "/expertSelected/assistCostTotal",
-                   data: vm.model
+                   url: rootPath + "/financialManager/findSingAssistCostList",
+                   data: singAssist
                }
                var httpSuccess = function success(response) {
                    if (callBack != undefined && typeof callBack == 'function') {
@@ -209,14 +209,6 @@
                 transport: common.kendoGridConfig().transport(rootPath + "/expertSelected/assistCostList", $("#searchform")),
                 schema: {
                     data: "value",
-                    total: function (data) {
-                        if (data['count']) {
-                            $('#DO_SIGN_COUNT').html(data['count']);
-                        } else {
-                            $('#DO_SIGN_COUNT').html(0);
-                        }
-                        return data['count'];
-                    },
                     model: {
                         id: "id",
                         fields: {

@@ -352,10 +352,10 @@
                 controller: 'expertSelectCtrl',
                 controllerAs: 'vm'
             })
-            .state('expertReviewList',{
-                url: '/expertReviewList',
-                templateUrl: rootPath + '/expert/html/reviewList.html',
-                controller: 'expertReviewListCtrl',
+            .state('expertScore',{
+                url: '/expertScore',
+                templateUrl: rootPath + '/expert/html/scoreList.html',
+                controller: 'expertScoreCtrl',
                 controllerAs: 'vm'
             })
             .state('expertSelectHis',{
@@ -627,7 +627,7 @@
             .state('assistCostlist', {
                 url: '/assistCostlist',
                 templateUrl: rootPath + '/financialManager/html/assistCostList.html',
-                controller: 'assistCostCountSvcEditCtrl',
+                controller: 'assistCostCountEditCtrl',
                 controllerAs: 'vm'
             })
 

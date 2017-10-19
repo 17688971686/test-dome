@@ -1,9 +1,12 @@
 package cs.service.financial;
 
+import java.util.List;
 import java.util.Map;
 
 import cs.model.PageModelDto;
+import cs.model.expert.ProjectReviewCostDto;
 import cs.model.financial.FinancialManagerDto;
+import cs.model.project.SignAssistCostDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 
@@ -13,8 +16,6 @@ import cs.repository.odata.ODataObj;
  * Date: 2017-8-7 11:32:03
  */
 public interface FinancialManagerService {
-    
-    PageModelDto<SignDto> get(ODataObj odataObj);
 
 	void save(FinancialManagerDto record);
 
@@ -24,11 +25,10 @@ public interface FinancialManagerService {
 
 	void delete(String id);
 
-
 	Integer sunCount(String signid);
 
 	Map<String, Object> initfinancialData(String signid);
 
-	PageModelDto<SignDto> assistCostCountGet(ODataObj odataObj);
+	List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto,boolean isShowDetail);
 
 }

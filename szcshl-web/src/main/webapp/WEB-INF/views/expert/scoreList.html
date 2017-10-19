@@ -1,0 +1,90 @@
+﻿<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">专家抽取统计</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
+    </div>
+    <ol class="breadcrumb">
+        <form id="searchform" name="searchform">
+            <table style="width:100%">
+                <tr>
+                    <td class="formAlignRight" style="width:60px;">姓名</td>
+                    <td style="width: 5%;">
+                        <input name="name" type="text"  ng-model="vm.selectHis.epName" />
+                    </td>
+                    <td class="formAlignRight" style="width:80px;">会议日期</td>
+                    <td colspan="2">
+                        <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.selectHis.beginTime" />
+                        -
+                        <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.selectHis.endTime" />
+                    </td>
+                    <td class="formAlignRight" style="width:80px;">评审阶段</td>
+                    <td style="width: 10%">
+                        <select name="reviewStage" ng-model="vm.selectHis.reviewStage">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td>
+
+                    <td class="formAlignRight" style="width:80px;">评分大于</td>
+                    <td style="width: 10%">
+                        <select name="score" ng-model="vm.selectHis.score">
+                            <option value="">请选择</option>
+                            <option value="1">1星</option>
+                            <option value="2">2星</option>
+                            <option value="3">3星</option>
+                            <option value="4">4星</option>
+                            <option value="5">5星</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </ol>
+
+
+    <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
+        <table class="table table-bordered">
+            <tr class="active">
+                <th class="text-center" style="width:8%">姓名</th>
+                <th class="text-center" style="width:20%">工作单位</th>
+                <th class="text-center" style="width:15%">项目名称</th>
+                <th class="text-center" style="width:10%">评审阶段</th>
+                <th class="text-center" style="width:10%">会议日期</th>
+                <th class="text-center" style="width:8%">负责人</th>
+                <th class="text-center" style="width:13%;max-width: 130px;">评分</th>
+                <th class="text-center" >评分描述</th>
+            </tr>
+            <tbody ng-repeat="el in vm.expScoreList" >
+            <tr ng-repeat="e in el.childList">
+                <td rowspan="{{el.childList.length}}" ng-if="$index == 0" >
+                    {{el.epName}}<br>
+                    (共 {{el.childList.length}} 次)
+                </td>
+                <td rowspan="{{el.childList.length}}" ng-if="$index == 0" >
+                    {{el.epCompany}}
+                </td>
+                <td class="text-center" >{{e.projectName}}</td>
+                <td class="text-center" >{{e.reviewStage}}</td>
+                <td class="text-center" >{{e.reviewDate}}</td>
+                <td class="text-center" >{{e.mainChargeUserName}}</td>
+                <td class="text-center" >
+                    <span style='color:gold;font-size:20px;' ng-repeat="c in range(e.score) track by $index ">
+                        <i class='fa fa-star' aria-hidden='true'></i>
+                    </span>
+                </td>
+                <td class="text-center" >{{e.describes}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

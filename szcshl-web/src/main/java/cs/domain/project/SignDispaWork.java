@@ -169,6 +169,18 @@ public class SignDispaWork {
     private String aUserName;
 
     /**
+     * 中心领导名称
+     */
+    @Column
+    private String leaderName;
+
+    /**
+     * 部门负责人
+     */
+    @Column
+    private String ministerName;
+
+    /**
      * 评审部门
      */
     @Column
@@ -253,6 +265,23 @@ public class SignDispaWork {
      */
     @Column
     private String isassistproc;
+
+
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
+
+    public String getMinisterName() {
+        return ministerName;
+    }
+
+    public void setMinisterName(String ministerName) {
+        this.ministerName = ministerName;
+    }
 
     public String getIsassistproc() {
         return isassistproc;

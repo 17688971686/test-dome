@@ -17,7 +17,14 @@
         <td width="20%" class="text-center"></td>
         <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
     	</tr>
-			
+			<tr ng-if="vm.model.ispresign==0">
+           		 <td width="15%" class="text-center">资料存放位置</td>
+           		<td>
+           		{{vm.model.palceStorage}}
+          		</td>
+        		<td width="15%" class="text-center">资料送来时间</td>
+       			<td> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
+   		  </tr>
 			<tr>
 				<td width="15%" class="text-center">项目名称</td>
 				<td>{{vm.model.projectname}}</td>
