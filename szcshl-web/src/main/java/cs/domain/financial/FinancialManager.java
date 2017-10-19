@@ -30,11 +30,11 @@ public class FinancialManager extends DomainBase {
 	
 	//费用
 	@Column(columnDefinition = "INTEGER")
-    private Integer charge;
+    private BigDecimal charge;
 	
 	//费用总和
 	@Column(columnDefinition = "INTEGER")
-	private Integer stageCount;
+	private BigDecimal stageCount;
 	
 	//付款时间
 	@Column(columnDefinition="date")
@@ -56,10 +56,7 @@ public class FinancialManager extends DomainBase {
 	@Column(columnDefinition = "varchar(50)")
 	private String signid;
 
-	//业务ID
-	@Column(columnDefinition = "varchar(50)")
-	private String businessId;
-	
+
 	//费用类型：协审费用录入8,评审费用录入9
 	@Column(columnDefinition = "varchar(20)")
 	private String chargeType;
@@ -85,33 +82,22 @@ public class FinancialManager extends DomainBase {
     public void setChargeName(String chargeName) {
         this.chargeName = chargeName;
     }
-  
-    
-    public Integer getCharge() {
+
+	public BigDecimal getCharge() {
 		return charge;
 	}
 
-	public void setCharge(Integer charge) {
+	public void setCharge(BigDecimal charge) {
 		this.charge = charge;
 	}
 
-	public String getRemarke() {
-        return remarke;
-    }
-
-    public void setRemarke(String remarke) {
-        this.remarke = remarke;
-    }
-
-	public Integer getStageCount() {
+	public BigDecimal getStageCount() {
 		return stageCount;
 	}
 
-	public void setStageCount(Integer stageCount) {
+	public void setStageCount(BigDecimal stageCount) {
 		this.stageCount = stageCount;
 	}
-
-	
 
 	public String getProjectName() {
 		return projectName;
@@ -161,11 +147,4 @@ public class FinancialManager extends DomainBase {
 		this.assissCost = assissCost;
 	}
 
-	public String getBusinessId() {
-		return businessId;
-	}
-
-	public void setBusinessId(String businessId) {
-		this.businessId = businessId;
-	}
 }

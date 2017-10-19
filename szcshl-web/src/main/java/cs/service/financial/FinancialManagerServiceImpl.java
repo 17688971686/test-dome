@@ -1,5 +1,6 @@
 package cs.service.financial;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.activiti.engine.impl.bpmn.data.Data;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -24,11 +24,8 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
-import cs.domain.project.AssistPlanSign;
-import cs.domain.project.AssistPlanSign_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.model.project.SignDto;
@@ -86,10 +83,10 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		FinancialManager domain = new FinancialManager(); 
 		BeanCopierUtils.copyProperties(record, domain); 
 		Date now = new Date();
-		
 		if(record.getId() == null){
 			domain.setId(UUID.randomUUID().toString());
 		}
+
 		domain.setCreatedBy(SessionUtil.getLoginName());
 		domain.setModifiedBy(SessionUtil.getLoginName());
 		domain.setCreatedDate(now);
@@ -131,13 +128,14 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 
 
 	@Override
-	public Integer sunCount(String businessId) {
+	public BigDecimal sunCount(String businessId) {
 		HqlBuilder hql = HqlBuilder.create();
 		hql.append(" select sum(charge) from CS_FINANCIAL_MANAGER ");
-		hql.append(" where " +FinancialManager_.businessId.getName()+" =:businessId");
+		hql.append(" where " +FinancialManager_.signid.getName()+" =:businessId");
 	    hql.setParam("businessId", businessId);
+
 		
-		return financialManagerRepo.returnIntBySql(hql);
+		return  new BigDecimal(financialManagerRepo.returnIntBySql(hql));
 	}
 
 	@Override
@@ -153,7 +151,7 @@ public class FinancialManagerServiceImpl  implements FinancialManagerService {
 		 financialDto.setAssistBuiltcompanyName(sign.getBuiltcompanyName());//协审单位
 		 
 		 HqlBuilder hqlBuilder = HqlBuilder.create();
-		 hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+FinancialManager_.businessId.getName()+ " =:businessId");
+		 hqlBuilder.append(" from "+FinancialManager.class.getSimpleName() + " where "+FinancialManager_.signid.getName()+ " =:businessId");
 		 hqlBuilder.setParam("businessId", businessId);
 		 List<FinancialManager> financiallist= financialManagerRepo.findByHql(hqlBuilder);
 		

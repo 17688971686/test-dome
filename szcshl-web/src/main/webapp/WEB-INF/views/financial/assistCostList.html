@@ -2,7 +2,8 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
+<div ng-include src="'${path}/contents/app/financial/assistCostAdd.html'"></div>
+<div ng-include src="'${path}/contents/app/financial/assistCostTable.html'"></div>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sharingPlatlform">协审费用统计</a></li>
@@ -47,7 +48,7 @@
     </ol>
         <script type="text/template" id="columnBtns">
             <@shiro.hasPermission name="#financialManager#put">
-            <a class="btn btn-xs btn-primary" href="#/assistCostAdd/{0}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+            <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
             </@shiro.hasPermission>
         </script>
 

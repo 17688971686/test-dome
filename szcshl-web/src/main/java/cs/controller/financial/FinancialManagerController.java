@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,8 +82,8 @@ public class FinancialManagerController {
     //@RequiresPermissions("financialManager#html/sumfinancial#get")
     @RequestMapping(name = "统计评审总费用", path = "html/sumfinancial", method = RequestMethod.GET)
     @ResponseBody
-    public Integer sunFinancial(@RequestParam String businessId){
-        Integer intsumcount = financialManagerService.sunCount(businessId);
+    public BigDecimal sunFinancial(@RequestParam String businessId){
+        BigDecimal intsumcount = financialManagerService.sunCount(businessId);
         return intsumcount;
     }
 
