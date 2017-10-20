@@ -75,5 +75,5 @@ public interface ExpertSelectedService {
 	 * 查询项目评审费录入的项目信息列表
 	 * @return
 	 */
-	PageModelDto<ProjectReviewCostDto> findProjectRevireCost();
+	List<ProjectReviewCostDto> findProjectRevireCost(ProjectReviewCostDto projectReviewCost);
 }

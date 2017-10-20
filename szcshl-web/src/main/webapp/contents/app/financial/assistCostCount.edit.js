@@ -32,6 +32,7 @@
          * 添加费用弹出框
          */
         vm.addCost = function (signAssistCostObj) {
+            console.log(signAssistCostObj);
             assistCostCountSvc.initAssistlProject(signAssistCostObj.signId, function (data) {
                 vm.model = {};
                 vm.model.businessId = signAssistCostObj.signId;
@@ -157,10 +158,13 @@
         vm.changeName = function (index, changeName) {
             if (vm.financials.length > 0) {
                 for (var i = 0; i < (vm.financials.length) - 1; i++) {
-                    if (vm.financials[i].chargeName != undefined && vm.financials[i].chargeName == changeName) {
-                        bsWin.alert("该费用已经录入，不能重复录入！");
-                        vm.financials[index] = {};
+                    if(i != index){
+                        if (vm.financials[i].chargeName != undefined && vm.financials[i].chargeName == changeName) {
+                            bsWin.alert("该费用已经录入，不能重复录入！");
+                            vm.financials[index] = {};
+                        }
                     }
+
                 }
             }
         }

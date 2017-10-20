@@ -1,0 +1,84 @@
+<div id="reviewCostAddWindow" class="well well-sm" style="background:white;display: none;">
+
+    <ol class="breadcrumb">
+        <li><a href="#/financialManagerList">评审费录入</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button ng-click="vm.addFinancial()"  value="addFinancial" class="btn btn-sm btn-success"> <span class="glyphicon glyphicon-plus"></span>新建</button>
+        <button ng-click="vm.deleteFinancial()"  class="btn btn-sm btn-danger"  value="deleteFinancial"> <span class="glyphicon glyphicon-remove"></span>删除</button>
+        <button ng-click="vm.saveFinancial()" class="btn btn-sm btn-success"  value="saveCommonIdea"> <span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button  ng-click="vm.findStageCostTable()" class="btn btn-sm btn-primary" ><span class="glyphicon glyphicon-chevron-left"></span>查看评审费发放表</button>
+
+    </div>
+
+    <table class="table table-bordered" id="conditionTable">
+        <tr>
+            <input type="hidden" name="businessId" id="businessId"  value="{{vm.model.businessId}}">
+            <td width="15%" align="center">项目名称</td>
+            <td width="15%" colspan="3" >
+                <input type="text" class="form-control input-sm " style="width: 300px;" name="projectName" id="projectName" value="{{vm.model.projectName}}">
+            </td>
+
+        </tr>
+        <tr>
+            <td width="5%" align="center">付款日期</td>
+            <td width="5%" align="center">
+                <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'"
+                       ng-model="vm.model.paymentData"     id="paymentData" name="paymentData"  data-val="true"
+                       data-val-required="必填">
+            </td>
+            <td width="5%" align="center">评审费总额</td>
+            <td width="15%" align="center">
+                <span id="financialCount"></span>&nbsp;元
+            </td>
+        </tr>
+
+    </table>
+
+    <div style="max-height:800px; overflow: auto;">
+        <form id="fnFrom" >
+            <table class="table table-bordered seleteTable" id="financialsTable">
+                <tr>
+                    <td width="5%" align="center"><input type='checkbox' ng-model="financialsCheck"/></td>
+                    <td width="5%" align="center">序号</td>
+                    <td width="15%">费用名称</td>
+                    <td width="15%">费用</td>
+                    <td width="20%">备注</td>
+                </tr>
+                <tr ng-repeat="x in vm.financials">
+                    <td width="5%" align="center">
+                        <input type="checkbox" ng-checked="financialsCheck" name="financialsCheck" value="{{vm.financials[$index].id}}"/>
+                    </td>
+                    <td width="5%" align="center">{{$index+1}}</td>
+                    <td>
+                        <select ng-change="vm.changeName($index , vm.financials[$index].chargeName)"
+                                ng-model="vm.financials[$index].chargeName"
+                                style="width:220px;height:26px;">
+                            <option ng-repeat="d in DICT.CWBL_FYMC.dicts" value="{{d.dictName}}"
+                                    ng-selected="x.chargeName == d.dictName">{{d.dictName}}
+                            </option>
+                        </select>
+                        <input type="text" ng-model="vm.financials[$index].chargeName" name="chargeName"
+                               style="width:200px;height:26px;margin-left:-224px;">
+                    </td>
+                    <td>
+                        <input type="number"  class="form-control input-sm " style="width: 200px;"
+                               ng-model="vm.financials[$index].charge" id="charge_{{$index}}" name="charge"
+                               data-val="true" data-val-number="必须是有效数字"
+                               data-val-required="必填">
+                        <span data-valmsg-for="charge_{{$index}}" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm " style="width: 200px;"
+                               ng-model="vm.financials[$index].remarke"/>
+                    </td>
+
+                </tr>
+            </table>
+        </form>
+    </div>
+
+</div>
+
+</div>

@@ -15,14 +15,40 @@
             initFinancialProject:initFinancialProject,				//初始化关联项目评审费
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
             stageCostCountList:stageCostCountList,		 //评审费用统计列表
-            findStageCostTableList:findStageCostTableList, //查看评审费发放表
+            // findStageCostTableList:findStageCostTableList, //查看评审费发放表
             exportExcel : exportExcel , //评审费用统计表导出
+
+            initfinancial :initfinancial ,//初始化评审录入列表
         };
 
         return service;
         vm.businessFlag = {
             expertReviews : [],
         }
+
+        //begin initfinancial
+        function initfinancial(vm , callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + '/expertSelected/findProjectReviewCost',
+                data: vm.model
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack !=undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                vm : vm ,
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+
+        }
+        //end initfinancial
+
 
         //begin reportExcel
         function exportExcel(vm , businessId , fileName){
@@ -59,25 +85,7 @@
         //end reportExcel
 
 
-        //S 查看评审费发放表
-        function findStageCostTableList (signId,callBack){
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/getBySignId/" + signId
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
 
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        // E 查看评审费发放表
 
         //S 评审费用统计列表
         function stageCostCountList(vm){
@@ -106,20 +114,21 @@
             }
         }
         //S 初始化关联项目评审费
-        function initFinancialProject(vm){
+        function initFinancialProject(businessId, callBack){
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/financialManager/initfinancial",
                 params:{
-                    signid: vm.financial.businessId
+                    businessId: businessId
                 }
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data.financialDto;
-                vm.financials = response.data.financiallist;
+                if(callBack != undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+
             };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -128,12 +137,12 @@
         // E 初始化关联项目评审费
 
         //S 统计评审费用总和
-        function  sumFinancial(vm){
+        function  sumFinancial(vm , businessId){
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/financialManager/html/sumfinancial",
                 params:{
-                    businessId: vm.financial.businessId
+                    businessId: businessId
                 }
             };
             var httpSuccess = function success(response) {
@@ -152,7 +161,7 @@
         //E 统计评审费用总和
 
         //S 保存报销记录
-        function savefinancial(vm){
+        function savefinancial(financials , callBack){
             var httpOptions = {
                 method : 'post',
                 url : rootPath + "/financialManager",
@@ -161,27 +170,16 @@
                 },
                 traditional: true,
                 dataType : "json",
-                data : angular.toJson(vm.financials),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+                data : angular.toJson(financials),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm : vm,
-                    response : response,
-                    fn : function() {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            fn: function () {
-                                myrefresh();
-                            }
-                        })
-                    }
-                });
+               if(callBack != undefined && typeof  callBack == "function"){
+                   callBack(response.data);
+               }
 
             }
 
             common.http({
-                vm : vm,
                 $http : $http,
                 httpOptions : httpOptions,
                 success : httpSuccess
@@ -293,33 +291,7 @@
                                     break;
                             }
                         }
-                        /*if(item.processState == '9'){//已结办
-                            return $('#span5').html();
-                        }else if(item.processState == '4' || item.processState == '5'){ //已发文
-                            return $('#span2').html();
-                        }else if(item.processState == '7' || item.processState == '8'){//已发送存档
-                            return $('#span3').html();
-                        }
-                        else{
-                            switch (item.isLightUp) {
-                                case "1":          //在办
-                                    return $('#span1').html();
-                                    break;
-                                case "2":         	//已发文
-                                    return $('#span2').html();
-                                    break;
-                                case "3":           //已发送存档
-                                    return $('#span3').html();
-                                    break;
-                                case "4":          	//项目暂停
-                                    return $('#span4').html();
-                                    break;
 
-                                default:
-                                    return $('#span1').html();
-                                    break;
-                            }
-                        }*/
                     }
                 },
                 /* {
@@ -369,7 +341,8 @@
                     width: 160,
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/financialManager/'+item.businessId+'" >'+item.totalCost+'</a>';
+                        // return "";
+                        return "<button ng-click='vm.reviewCostWindow('" +item.businessId + "') '>"+item.totalCost+"</button>";
                     }
                 },
                 {

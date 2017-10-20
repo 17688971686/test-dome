@@ -100,8 +100,8 @@ public class ExpertSelectedController {
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "项目评审费录入", path = "findProjectReviewCost", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<ProjectReviewCostDto> findProjectReviewCost(){
-        return  expertSelectedService.findProjectRevireCost();
+    public List<ProjectReviewCostDto> findProjectReviewCost( @RequestBody ProjectReviewCostDto projectReviewCostDto){
+        return  expertSelectedService.findProjectRevireCost(projectReviewCostDto);
     }
     @RequiresAuthentication
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
