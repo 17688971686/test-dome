@@ -140,6 +140,14 @@ public class MonthlyNewsletterController {
     public @ResponseBody ResultMsg post(@RequestBody MonthlyNewsletterDto record) {
        return monthlyNewsletterService.saveTheMonthly(record);
     }
+    
+    @RequiresAuthentication
+    //@RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
+    @RequestMapping(name = "编辑月报简报", path = "monthlyEdit", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public  void monthlyEdit(@RequestBody MonthlyNewsletterDto record) {
+       monthlyNewsletterService.editTheMonthly(record);
+    }
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#deleteMonthlyData#delete")

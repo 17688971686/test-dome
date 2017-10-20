@@ -14,7 +14,7 @@
             <button class="btn btn-sm btn-success" ng-click="vm.createMothlyNewsletter()" ng-disabled="vm.isSubmit"
                     ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
             </button>
-            <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit"
+            <button class="btn btn-sm btn-success" ng-click="vm.updateMonthly()" ng-disabled="vm.isSubmit"
                     ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
             </button>
         </div>
@@ -32,39 +32,16 @@
 			<td width="20%" align="center">年度报告<span class="required">*</span></td>
 			<td width="20%" >
 			  <select style="width:40%"   ng-model="vm.monthly.reportMultiyear" id="reportMultiyear" name="reportMultiyear"  data-val="true" data-val-required="必填">
-						<option value="2000">2000</option>
-						<option value="2001">2001</option>
-						<option value="2002">2002</option>
-						<option value="2003">2003</option>
-						<option value="2004">2004</option>
-						<option value="2005">2005</option>
-						<option value="2006">2006</option>
-						<option value="2007">2007</option>
-						<option value="2008">2008</option>
-						<option value="2009">2009</option>
-						<option value="2010">2010</option>
-						<option value="2011" >2011</option>
-						<option value="2012">2012</option>
-						<option value="2013">2013</option>
-						<option value="2014">2014</option>
+						 <option value=" ">请选择</option>
+						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.reportMultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select> 
 				<span data-valmsg-for="reportMultiyear" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td width="20%" align="center"> 报告月份<span class="required">*</span></td>
 			<td width="20%" >
 			<select style="width:40%"  ng-model="vm.monthly.theMonths"  name="theMonths" id="theMonths"  data-val="true" data-val-required="必填">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
+						<option value=" ">请选择</option>
+						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.theMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 						</select> 
 						<span data-valmsg-for="reviewType" data-valmsg-replace="true" class="errors"></span>
 			</td>
@@ -77,39 +54,16 @@
 			<td width="20%" align="center">开始年度<span class="required">*</span></td>
 			<td width="20%">
 			<select style="width:40%" ng-model="vm.monthly.startMoultiyear" id="startMoultiyear" name="startMoultiyear" data-val="true" data-val-required="必填">
-                        <option value="2000">2000</option>
-						<option value="2001">2001</option>
-						<option value="2002">2002</option>
-						<option value="2003">2003</option>
-						<option value="2004">2004</option>
-						<option value="2005">2005</option>
-						<option value="2006">2006</option>
-						<option value="2007">2007</option>
-						<option value="2008">2008</option>
-						<option value="2009">2009</option>
-						<option value="2010">2010</option>
-						<option value="2011" >2011</option>
-						<option value="2012">2012</option>
-						<option value="2013">2013</option>
-						<option value="2014">2014</option>
+                         <option value=" ">请选择</option>
+						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.startMoultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
 				<span data-valmsg-for="startMoultiyear" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td  width="20%" align="center">开始月份<span class="required">*</span></td>
 			<td width="20%">
 			<select style="width:40%" ng-model="vm.monthly.staerTheMonths" id="staerTheMonths" name="staerTheMonths" data-val="true" data-val-required="必填">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
+						 <option value=" ">请选择</option>
+						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.staerTheMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
 						<span data-valmsg-for="staerTheMonths" data-valmsg-replace="true" class="errors"></span>
 			</td>
@@ -118,39 +72,16 @@
 			<td width="20%" align="center">结束年度<span class="required">*</span></td>
 			<td width="20%">
 				  <select style="width:40%" ng-model="vm.monthly.endMoultiyear" id="endMoultiyear" name="endMoultiyear" data-val="true" data-val-required="必填">
-                        <option value="2000">2000</option>
-						<option value="2001">2001</option>
-						<option value="2002">2002</option>
-						<option value="2003">2003</option>
-						<option value="2004">2004</option>
-						<option value="2005">2005</option>
-						<option value="2006">2006</option>
-						<option value="2007">2007</option>
-						<option value="2008">2008</option>
-						<option value="2009">2009</option>
-						<option value="2010">2010</option>
-						<option value="2011" >2011</option>
-						<option value="2012">2012</option>
-						<option value="2013">2013</option>
-						<option value="2014">2014</option>
+                       <option value=" ">请选择</option>
+						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.endMoultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
 						<span data-valmsg-for="endMoultiyear" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td width="20%" align="center">结束月份<span class="required">*</span></td>
 			<td width="20%">
 			<select style="width:40%" ng-model="vm.monthly.endTheMonths" id="endTheMonths" name="endTheMonths" data-val="true" data-val-required="必填" >
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
+						<option value=" ">请选择</option>
+						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.endTheMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 						</select>
 						<span data-valmsg-for="endTheMonths" data-valmsg-replace="true" class="errors"></span>
 			</td>

@@ -194,20 +194,26 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 	 */
 	@Override
 	public ResultMsg saveTheMonthly(MonthlyNewsletterDto record) {
-		MonthlyNewsletter domain = new MonthlyNewsletter(); 
-		BeanCopierUtils.copyProperties(record, domain); 
-		Date now = new Date();
-		domain.setId(UUID.randomUUID().toString());
-		domain.setCreatedBy(SessionUtil.getDisplayName());
-		domain.setModifiedBy(SessionUtil.getDisplayName());
-		domain.setAddTime(now);
-		domain.setAuthorizedUser(SessionUtil.getDisplayName());
-		domain.setAuthorizedTime(now);
-		domain.setMonthlyNewsletterName(record.getReportMultiyear()+"月报简报数据");
-		domain.setMonthlyType(EnumState.PROCESS.getValue());
-		domain.setCreatedDate(now);
-		domain.setModifiedDate(now);
-		monthlyNewsletterRepo.save(domain);
+		   MonthlyNewsletter domain = null;
+		   if(Validate.isString(record.getId())){
+			   MonthlyNewsletter monthly =  monthlyNewsletterRepo.findById(record.getId());
+			   BeanCopierUtils.copyPropertiesIgnoreNull(record,monthly);
+		   }else{
+			   BeanCopierUtils.copyProperties(record, domain); 
+				Date now = new Date();
+				domain.setId(UUID.randomUUID().toString());
+				domain.setCreatedBy(SessionUtil.getDisplayName());
+				domain.setModifiedBy(SessionUtil.getDisplayName());
+				domain.setAddTime(now);
+				domain.setAuthorizedUser(SessionUtil.getDisplayName());
+				domain.setAuthorizedTime(now);
+				domain.setMonthlyNewsletterName(record.getReportMultiyear()+"月报简报数据");
+				domain.setMonthlyType(EnumState.PROCESS.getValue());
+				domain.setCreatedDate(now);
+				domain.setModifiedDate(now);
+		   }
+			
+			monthlyNewsletterRepo.save(domain);
 		return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", domain);
 	}
 
@@ -295,6 +301,16 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 		BeanCopierUtils.copyProperties(domain, monthlyDto);
 		monthlyNewsletterRepo.save(domain);
 		
+	}
+
+	@Override
+	@Transactional
+	public void editTheMonthly(MonthlyNewsletterDto record) {
+		MonthlyNewsletter domain = monthlyNewsletterRepo.findById(record.getId());
+		BeanCopierUtils.copyPropertiesIgnoreNull(record,domain);
+		domain.setModifiedBy(SessionUtil.getDisplayName());
+	    domain.setModifiedDate(new Date());
+		monthlyNewsletterRepo.save(domain);
 	}
 	
 }

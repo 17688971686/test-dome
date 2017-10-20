@@ -40,5 +40,7 @@ public interface MonthlyNewsletterService {
 
 	void deleteMonthlyData(String id);
 
+	void editTheMonthly(MonthlyNewsletterDto record);
+
 
 }

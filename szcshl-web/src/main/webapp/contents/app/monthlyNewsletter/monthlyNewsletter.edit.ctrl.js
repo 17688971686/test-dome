@@ -34,8 +34,8 @@
 	        	   bsWin.alert("缺少部分没有填写，请仔细检查");
 	           }
         };
-        vm.update = function () {
-            monthlyNewsletterSvc.updateMonthlyNewsletter(vm);
+        vm.updateMonthly = function () {
+	      monthlyNewsletterSvc.updateMonthlyNewsletter(vm);
         };
 
         activate();

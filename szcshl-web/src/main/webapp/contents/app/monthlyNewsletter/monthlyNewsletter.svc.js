@@ -12,61 +12,57 @@
             monthlyDeleteGrid:monthlyDeleteGrid,//已删除月报简报列表
             theMonthGrid:theMonthGrid,//月报简报列表
             createMonthlyNewsletter: createMonthlyNewsletter,//保存月报简报
+            updateMonthlyNewsletter: updateMonthlyNewsletter, //月报简报编辑
             deleteMonthlyNewsletter: deleteMonthlyNewsletter,//删除月报简报记录
             getMonthlyNewsletterById: getMonthlyNewsletterById,
-            updateMonthlyNewsletter: updateMonthlyNewsletter
         };
 
         return service;
 
         // begin#updateMonthlyNewsletter
         function updateMonthlyNewsletter(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
+        	console.log(vm.monthly);
+        	 common.initJqValidation();
+             var isValid = $('form').valid();
+             if (isValid) {
+                 vm.isSubmit = true;
+                 vm.monthly.id = vm.id;// id
+                 var httpOptions = {
+                     method: 'put',
+                     url: url_monthlyNewsletter+"/monthlyEdit",
+                     data: vm.monthly
+                 }
+                 var httpSuccess = function success(response) {
+                     common.requestSuccess({
+                         vm: vm,
+                         response: response,
+                         fn: function () {
+                             common.alert({
+                                 vm: vm,
+                                 msg: "操作成功",
+                                 fn: function () {
+                                     vm.isSubmit = false;
+                                     $('.alertDialog').modal('hide');
+                                 }
+                             })
+                         }
 
-                var httpOptions = {
-                    method: 'put',
-                    url: url_monthlyNewsletter,
-                    data: vm.model
-                }
+                     })
+                 }
 
-                var httpSuccess = function success(response) {
+                 common.http({
+                     vm: vm,
+                     $http: $http,
+                     httpOptions: httpOptions,
+                     success: httpSuccess
+                 });
 
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
+             } else {
+                 // common.alert({
+                 // vm:vm,
+                 // msg:"您填写的信息不正确,请核对后提交!"
+                 // })
+             }
         }
 
         // begin#deleteMonthlyNewsletter
@@ -127,13 +123,14 @@
         
         // begin#getMonthlyNewsletterById
         function getMonthlyNewsletterById(vm) {
+      
         	var httpOptions = {
                 method: 'get',
                 url: rootPath + "/monthlyNewsletter/html/findById",
                 params:{id:vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
+                vm.monthly = response.data;
             };
 
             common.http({
@@ -238,7 +235,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                             item.id,"vm.del('" + item.id + "')");
                     }
                 }
             ];
