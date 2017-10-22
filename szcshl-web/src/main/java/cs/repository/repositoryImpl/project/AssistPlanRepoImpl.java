@@ -53,6 +53,10 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
             if(Validate.isString(signAssistCostDto.getEndTime())){
                 sqlBuilder.append(" AND FM.PAYMENTDATA > to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",signAssistCostDto.getEndTime() + " 23:59:59");
             }
+
+            if(Validate.isString(signAssistCostDto.getSignId())){
+                sqlBuilder.append(" AND CPS.SIGNID  = :signId ").setParam("signId",signAssistCostDto.getSignId());
+            }
         }
 
         sqlBuilder.append(" ORDER BY CP.PLANNAME, CPS.SPLITNUM ");

@@ -68,10 +68,19 @@ public class FinancialManagerController {
 
     @RequiresAuthentication
     //@RequiresPermissions("financialManager#initfinancial#get")
-    @RequestMapping(name = "初始化财务页面", path = "initfinancial", method = RequestMethod.POST)
+    @RequestMapping(name = "评审费录入", path = "initfinancial", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> initfinancial(@RequestParam String businessId,String businessType) throws Exception {
-        Map<String, Object> map = financialManagerService.initfinancialData(businessId,businessType);
+        Map<String, Object> map = financialManagerService.initfinancialData(businessId,businessType,false);
+        return map;
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("financialManager#initfinancial#get")
+    @RequestMapping(name = "协审费录入", path = "assistFinancial", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> assistFinancial(@RequestParam String businessId,String businessType) throws Exception {
+        Map<String, Object> map = financialManagerService.initfinancialData(businessId,businessType,true);
         return map;
     }
 

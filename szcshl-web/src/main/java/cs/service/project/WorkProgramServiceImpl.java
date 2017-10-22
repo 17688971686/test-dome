@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -80,6 +81,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private SignMergeRepo signMergeRepo;
     @Autowired
     private RoomBookingRepo roomBookingRepo;
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
 
     @Override
     @Transactional
@@ -106,6 +109,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 }
                 workProgram = workProgramRepo.findById(workProgramDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                //如果是专家函评，则要更新函评日期
+                if("专家函评".equals(workProgram.getReviewType())){
+                    expertReviewRepo.updateReviewDate(workProgram.getId(),Constant.BusinessType.SIGN_WP.getValue(),workProgram.getLetterDate());
+                }
             } else {
                 workProgram = new WorkProgram();
                 BeanCopierUtils.copyProperties(workProgramDto, workProgram);

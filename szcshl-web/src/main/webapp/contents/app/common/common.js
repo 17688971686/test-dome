@@ -495,9 +495,6 @@
             if(response.data.DO_TASK_COUNT){
                 $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
             }
-            if(response.data.PAUSE_COUNT){
-                $('#PAUSE_COUNT').html(response.data.PAUSE_COUNT);
-            }
             if(response.data.APPRAISE_COUNT){
                 $('#APPRAISE_COUNT').html(response.data.APPRAISE_COUNT);
             }

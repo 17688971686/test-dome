@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -152,8 +153,6 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private OrgDeptRepo orgDeptRepo;
     @Autowired
-    private DispatchDocService dispatchDocService;
-    @Autowired
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private AddRegisterFileRepo addRegisterFileRepo;
@@ -161,6 +160,8 @@ public class SignServiceImpl implements SignService {
     private AddSuppLetterRepo addSuppLetterRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;
+    @Autowired
+    private RoomBookingRepo roomBookingRepo;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -608,12 +609,12 @@ public class SignServiceImpl implements SignService {
 
         //4、跳过第一环节（主任审核）
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        taskService.addComment(task.getId(), processInstance.getId(), "系统自动处理");    //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
         taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_QS.getValue(), SessionUtil.getUserId()));
 
         //5、跳过第二环节（签收）
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        taskService.addComment(task.getId(), processInstance.getId(), "已经确认签收！");    //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
         taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZHB.getValue(), SessionUtil.getUserId()));
 
         //6、跳过第三个环节（综合部拟办意见）
@@ -656,6 +657,7 @@ public class SignServiceImpl implements SignService {
                 taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
                 taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZHB.getValue(), SessionUtil.getUserId()));
 
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
                 if (!Validate.isString(sign.getLeaderName())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
                 }
@@ -676,7 +678,7 @@ public class SignServiceImpl implements SignService {
                 //流程分支
                 List<SignBranch> saveBranchList = new ArrayList<>();
                 businessId = flowDto.getBusinessMap().get("MAIN_ORG").toString();   //主办部门ID
-                SignBranch signBranch1 = new SignBranch(signid, "1", EnumState.YES.getValue(), EnumState.NO.getValue(), EnumState.YES.getValue(), businessId, EnumState.NO.getValue());
+                SignBranch signBranch1 = new SignBranch(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), EnumState.YES.getValue(), EnumState.NO.getValue(), EnumState.YES.getValue(), businessId, EnumState.NO.getValue());
                 saveBranchList.add(signBranch1);
                 //设置流程参数
                 variables.put(FlowConstant.SignFlowParams.BRANCH1.getValue(), true);
@@ -878,12 +880,18 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
                 if (EnumState.YES.getValue().equals(businessId)) {
                     wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
-                    //如果是合并评审主项目，要合并评审次项目提交才能进行下一步
-                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
-                            && Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
-                            && EnumState.YES.getValue().equals(wk.getIsMainProject())
-                            && !signRepo.isMergeSignEndWP(signid)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
+                    //如果是主项目
+                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)){
+                        //如果是专家评审会，则一定要选会议室
+                        if(Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())){
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【专家评审会】，但是还没有选择会议室，请先预定会议室！");
+                        }
+                        //如果是合并评审，要合并评审次项目提交才能进行下一步
+                        if(Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
+                                && EnumState.YES.getValue().equals(wk.getIsMainProject())
+                                && !signRepo.isMergeSignEndWP(signid)){
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
+                        }
                     }
                     //如果做工作方案，则要判断该分支工作方案是否完成
                     if (!signBranchRepo.checkFinishWP(signid, branchIndex)) {

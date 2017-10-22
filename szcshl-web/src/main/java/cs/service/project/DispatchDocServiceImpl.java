@@ -220,7 +220,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //申报金额，与工作方案的、收文的一致，任何一个地方改了，都要同步更新
             dispatch.setDeclareValue(sign.getAppalyInvestment());
             //发文范围(艾传荣副巡视员（默认） + 投资处（获取收文主办室处） + 中心领导（默认）)
-            dispatch.setDispatchScope(Constant.DIS_SCOPE_XSY+" "+sign.getMaindeptName()+" "+Constant.DIS_SCOPE_ZXLD);
+            dispatch.setDispatchScope(Constant.DIS_SCOPE_XSY+" "+sign.getMaindeptName()==null?"":sign.getMaindeptName()+" "+Constant.DIS_SCOPE_ZXLD);
             dispatch.setPrintCount(5);
             //发文标题
             String fileTitle = "《";

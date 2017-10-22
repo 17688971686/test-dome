@@ -9,6 +9,7 @@ import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking_;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -115,6 +116,19 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
             return list.get(0).getRbDay();
         }
         return null;
+    }
+
+    /**
+     * 根据业务ID判断是否已经预定有会议室
+     * @param businessId
+     * @return
+     */
+    @Override
+    public boolean isHaveBookMeeting(String businessId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(RoomBooking_.businessId.getName(),businessId));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return totalResult > 0 ;
     }
 
 

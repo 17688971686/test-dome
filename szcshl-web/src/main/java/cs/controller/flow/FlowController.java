@@ -19,6 +19,7 @@ import cs.service.book.BookBuyBusinessService;
 import cs.service.flow.FlowNextNodeFilter;
 import cs.service.flow.FlowService;
 import cs.service.flow.IFlow;
+import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
 import cs.service.topic.TopicInfoService;
@@ -81,11 +82,16 @@ public class FlowController {
     @Qualifier("topicFlowImpl")
     private IFlow topicFlowImpl;
     @Autowired
+    @Qualifier("projectStopFlowImpl")
+    private IFlow projectStopFlowImpl;
+    @Autowired
     private TopicInfoService topicInfoService;
     @Autowired
     private BookBuyBusinessService bookBuyBusinessService;
     @Autowired
     private AssertStorageBusinessService assertStorageBusinessService;
+    @Autowired
+    private ProjectStopService projectStopService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -258,6 +264,9 @@ public class FlowController {
             case FlowConstant.ASSERT_STORAGE_FLOW:
                 flowDto.setBusinessMap(assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.PROJECT_STOP_FLOW:
+                flowDto.setBusinessMap(projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -312,6 +321,9 @@ public class FlowController {
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
                 resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
+                break;
+            case FlowConstant.PROJECT_STOP_FLOW:
+                resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -383,6 +395,9 @@ public class FlowController {
             case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowDeal";
                 break;
+            case FlowConstant.PROJECT_STOP_FLOW:
+                resultPage = "projectStop/flowDeal";
+                break;
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowDeal";
                 break;
@@ -408,6 +423,9 @@ public class FlowController {
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
                 resultPage = "asserts/assertStorageBusiness/flowDeal";
+            case FlowConstant.PROJECT_STOP_FLOW:
+                resultPage = "projectStop/flowDetail";
+                break;
             default:
                 ;
         }
@@ -426,6 +444,9 @@ public class FlowController {
             case FlowConstant.ASSERT_STORAGE_FLOW:
                  resultPage = "asserts/assertStorageBusiness/flowEnd";
                  break;
+            case FlowConstant.PROJECT_STOP_FLOW:
+                resultPage = "projectStop/flowEnd";
+                break;
             default:
                 ;
         }

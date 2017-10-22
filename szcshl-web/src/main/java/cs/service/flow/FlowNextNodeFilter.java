@@ -18,30 +18,43 @@ public enum FlowNextNodeFilter {
         //项目发文，有项目负责人，则隐藏部长审核环节
         @Override
         public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
-            if(Validate.isMap(businessMap)){
-                if(businessMap.get("prilUserList") != null){
-                    for(int i=0;i<nextNodeList.size();i++){
-                        if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW)) {
-                            nextNodeList.remove(i);
-                        }
+            List<Node> resultList = new ArrayList<>(1);
+            if(businessMap.get("prilUserList") != null){
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_QRFW)) {
+                        resultList.add(nextNodeList.get(i));
+                    }
+                }
+            //没有第二负责人，到部长审核发文环节
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_BMLD_QRFW)) {
+                        resultList.add(nextNodeList.get(i));
                     }
                 }
             }
-            return nextNodeList;
+            return resultList;
         }
     },
     SIGN_GD{
         //项目归档，如果有第二负责人，则隐藏确认归档环节
         @Override
         public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
             if(businessMap.get("checkFileUser") != null){
                 for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_DSFZR_QRGD)) {
+                        resultList.add(nextNodeList.get(i));
+                    }
+                }
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
                     if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_SIGN_QRGD)) {
-                        nextNodeList.remove(i);
+                        resultList.add(nextNodeList.get(i));
                     }
                 }
             }
-            return nextNodeList;
+            return resultList;
         }
     },
     SIGN_FGLD_FB{

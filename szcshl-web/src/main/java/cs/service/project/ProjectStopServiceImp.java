@@ -1,7 +1,10 @@
 package cs.service.project;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -9,17 +12,26 @@ import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.*;
 import cs.domain.sys.Role;
+import cs.domain.sys.User;
+import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
 import cs.model.project.ProjectStopDto;
+import cs.model.project.SignDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.flow.FlowService;
+import cs.service.rtx.RTXSendMsgPool;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.hibernate.hql.internal.ast.HqlParser;
@@ -29,283 +41,304 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static cs.common.Constant.SUPER_USER;
+
 @Service
 public class ProjectStopServiceImp implements ProjectStopService {
-	@Autowired
-	private ProjectStopRepo projectStopRepo;
+    @Autowired
+    private ProjectStopRepo projectStopRepo;
 
-	@Autowired
-	private SignRepo signRepo;
+    @Autowired
+    private ProcessEngine processEngine;
 
-	@Autowired
-	private SignDispaWorkRepo signDispaWorkRepo;
+    @Autowired
+    private SignDispaWorkRepo signDispaWorkRepo;
 
-	@Autowired
-	private FlowService flowService;
+    @Autowired
+    private FlowService flowService;
 
-	@Autowired
-	private RuntimeService runtimeService;
+    @Autowired
+    private RuntimeService runtimeService;
+    //flow service
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private UserRepo userRepo;
 
-	@Override
-	@Transactional
-	public List<ProjectStop> findProjectStopBySign(String signId) {
-
-		HqlBuilder hqlBuilder=HqlBuilder.create();
-
-		hqlBuilder.append("select ps from "+ProjectStop.class.getSimpleName()+" ps where ps."+ProjectStop_.sign.getName()+"."+Sign_.signid.getName()+"=:signId");
-		hqlBuilder.setParam("signId", signId);
-		List<ProjectStop> psList=projectStopRepo.findByHql(hqlBuilder);
-		return psList;
-	}
-
-	@Override
-	public SignDispaWork findSignBySignId(String signId) {
-		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select signid,projectname,builtcompanyname,mUserName,receivedate,mOrgName from V_SIGN_DISP_WORK where "+SignDispaWork_.signid.getName()+"=:signid");
-		sqlBuilder.setParam("signid",signId);
-		List<Object[]> signList=signDispaWorkRepo.getObjectArray(sqlBuilder);
-		SignDispaWork  signDispaWork=new SignDispaWork();
-		if(Validate.isList(signList)){
-			Object[] str = signList.get(0);
-			signDispaWork.setSignid((String) str[0]);
-			signDispaWork.setProjectname((String)str[1]);
-			signDispaWork.setBuiltcompanyname( (String)str[2]);
-			signDispaWork.setmUserName( (String)str[3]);
-			signDispaWork.setReceivedate((Date) str[4]);
-			signDispaWork.setmOrgName((String)str[5]);
-		}
-		return signDispaWork;
-	}
-
-	@Override
-	public int countUsedWorkday(String signId) {
-		HqlBuilder sqlBuilder=HqlBuilder.create();
-		sqlBuilder.append("select signdate from cs_sign where signid =:signId");
-		sqlBuilder.setParam("signId",signId);
-		List<Object[]> signList= signRepo.getObjectArray(sqlBuilder);
-		int count=0;
-		if(Validate.isList(signList)){
-			Date signDate = (Date)signList.get(0)[0];
-			QuartzUnit unit = new QuartzUnit();
-			count=unit.countWorkday( signDate );
-		}
-		return count;
-	}
-
-	@Override
-	@Transactional
-	public void savePauseProject(ProjectStopDto projectStopDto) {
-		ProjectStop projectStop = new ProjectStop();
-		Sign sign =new Sign();
-		sign.setSignid(projectStopDto.getSignid());
-		BeanCopierUtils.copyProperties(projectStopDto,projectStop);
-		projectStop.setCreatedBy(SessionUtil.getLoginName());
-		projectStop.setCreatedDate(new Date());
-		projectStop.setModifiedBy(SessionUtil.getLoginName());
-		projectStop.setModifiedDate(new Date());
-		projectStop.setStopid(UUID.randomUUID().toString());
-		projectStop.setSign(sign);
-		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!= null){
-			projectStop.setDirectorName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());//部长
-		}else{
-			projectStop.setDirectorName(SessionUtil.getLoginName());
-		}
-		if(SessionUtil.getUserInfo().getOrg()!=null && SessionUtil.getUserInfo().getOrg().getOrgSLeaderName()!=null){
-			projectStop.setLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());//分管副主任
-		}else{
-			projectStop.setLeaderName(SessionUtil.getLoginName());
-		}
-		projectStop.setIsactive(Constant.EnumState.NO.getValue());
-		projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
-		if(projectStopDto.getMaterial() != null){
-			String[] materials= projectStopDto.getMaterial().split(",");
-			for(int i=0; i<materials.length; i++){
-				if("中心发补充材料函".equals(materials[i])){
-					projectStop.setIsSupplementMaterial(Constant.EnumState.YES.getValue());
-				}
-				if("申报单位要求暂停审核函".equals(materials[i])){
-					projectStop.setIsPuaseApprove(Constant.EnumState.YES.getValue());
-				}
-			}
-		}
-		projectStopRepo.save(projectStop);
-
-	}
-
-	@Override
-	public PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj) {
-		PageModelDto<ProjectStopDto> pageModelDto = new PageModelDto<>();
-		Criteria criteria = projectStopRepo.getExecutableCriteria();
-		criteria = oDataObj.buildFilterToCriteria(criteria);
-		Boolean b=false;
-		//部长审核
-		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
-			b=true;
-			criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(),SessionUtil.getLoginName()));
-			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.NO.getValue()));
-		}
-		//分管副主任办理
-		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-			criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(),SessionUtil.getLoginName()));
-			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
-			b=true;
-		}
-		if(b){
-			Integer totalResult = ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-
-			pageModelDto.setCount(totalResult);
-
-			criteria.setProjection(null);
-			if(oDataObj.getSkip()>0){
-				criteria.setFirstResult(oDataObj.getSkip());
-			}
-			if(oDataObj.getTop() >0 ){
-				criteria.setMaxResults(oDataObj.getTop());
-			}
-
-			if(Validate.isString(oDataObj.getOrderby())){
-				if(oDataObj.isOrderbyDesc()){
-					criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-				}else{
-					criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
-				}
-			}
-			List<ProjectStop> projectStopList = criteria.list();
-			List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
-			for(ProjectStop projectStop : projectStopList){
-				ProjectStopDto projectStopDto = new ProjectStopDto();
-				BeanCopierUtils.copyProperties(projectStop,projectStopDto);
-				projectStopDtoList.add(projectStopDto);
-			}
-
-			pageModelDto.setValue(projectStopDtoList);
-		}
-		return pageModelDto;
-	}
-
-	@Override
-	public ProjectStopDto getProjectStopByStopId(String stopId) {
-		ProjectStop projectStop =projectStopRepo.findById(stopId);
-		ProjectStopDto projectStopDto = new ProjectStopDto();
-		BeanCopierUtils.copyProperties(projectStop,projectStopDto);
-		return projectStopDto;
-	}
-
-	@Override
-	@Transactional
-	public void updateProjectStop(ProjectStopDto projectStopDto) {
-
-		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("update "+ProjectStop.class.getSimpleName()+" set ");
-		//部长审核
-		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-				|| SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
-			sqlBuilder.append(ProjectStop_.directorIdeaContent.getName()+"=:directorIdeaContent , "+ProjectStop_.approveStatus.getName()+"=:approveStatus");
-			sqlBuilder.setParam("directorIdeaContent",projectStopDto.getDirectorIdeaContent());
-			sqlBuilder.setParam("approveStatus",Constant.EnumState.PROCESS.getValue());
-		}
-		//分管副主任办理
-		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-			sqlBuilder.append(ProjectStop_.leaderIdeaContent.getName()+"=:leaderIdeaContent ,"+ProjectStop_.approveStatus.getName()+"=:approveStatus ,"+ ProjectStop_.isactive.getName()+"=:isactive");
-			sqlBuilder.setParam("leaderIdeaContent",projectStopDto.getLeaderIdeaContent());
-			sqlBuilder.setParam("approveStatus",Constant.EnumState.YES.getValue());
-			sqlBuilder.setParam("isactive",Constant.EnumState.YES.getValue());
-
-			//修改项目状态
-			HqlBuilder hql=HqlBuilder.create();
-			hql.append("update "+ Sign.class.getSimpleName()+" set "+Sign_.signState.getName()+" =:signState ,"+Sign_.isProjectState.getName()+ " =:isProjectState ," + Sign_.isLightUp.getName()+"=:isLightUp");
-			hql.append(" where " + Sign_.signid.getName()+" =:signId");
-			hql.setParam("isLightUp" , Constant.signEnumState.PAUSE.getValue());
-			hql.setParam("signState",Constant.EnumState.STOP.getValue());
-			hql.setParam("isProjectState", Constant.EnumState.YES.getValue());
-			hql.setParam("signId",projectStopDto.getSign().getSignid());
-			signRepo.executeHql(hql);
-
-			//暂停流程
-			ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(projectStopDto.getSign().getSignid());
-			runtimeService.suspendProcessInstanceById(processInstance.getId());
-		}
-		sqlBuilder.append(" where "+ProjectStop_.stopid.getName()+"=:stopId");
-		sqlBuilder.setParam("stopId",projectStopDto.getStopid());
-		projectStopRepo.executeHql(sqlBuilder);
-
-	}
-
-
-	@Override
-	public List<ProjectStop> findPauseProjectSuccess() {
-		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select stopid,pausetime,pausedays from cs_projectStop where isactive=:isactive");
-		sqlBuilder.setParam("isactive",Constant.EnumState.YES.getValue());
-		List<Object[]> map = projectStopRepo.getObjectArray(sqlBuilder);
-		List<ProjectStop> projectStopList = new ArrayList<>();
-		if(Validate.isList(map)){
-			for(int i=0;i<map.size();i++){
-				Object[] objs= map.get(i);
-				ProjectStop projectStop = new ProjectStop();
-				projectStop.setStopid((String)objs[0]);
-				projectStop.setPausetime((Date) objs[1]);
-				projectStop.setPausedays((float)objs[2]);
-				projectStopList.add(projectStop);
-			}
-		}
-		return projectStopList;
-	}
-
-	@Override
-	public void updateProjectStopStatus(List<ProjectStop> projectStopList) {
-		projectStopRepo.bathUpdate(projectStopList);
-	}
-
-    /**
-     * 查询我的暂停项目待办总数
-     * @return
-     */
-	@Override
-	public int findMyPauseCount() {
-		Criteria criteria = projectStopRepo.getExecutableCriteria();
-		//部长审核
-		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
-			criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(),SessionUtil.getLoginName()));
-			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.NO.getValue()));
-		}
-		//分管副主任办理
-		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-			criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(),SessionUtil.getLoginName()));
-			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
-		}else{
-		    return 0;
-        }
-		return ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-	}
 
     @Override
-    public List<ProjectStopDto> findHomeProjectStop() {
+    @Transactional
+    public List<ProjectStop> findProjectStopBySign(String signId) {
 
-		List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
-		Criteria criteria = projectStopRepo.getExecutableCriteria();
-		//部长审核
-		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
-			criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(),SessionUtil.getLoginName()));
-			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.NO.getValue()));
-		}
-		//分管副主任办理
-		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-			criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(),SessionUtil.getLoginName()));
-			criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
-		}else{
-			return projectStopDtoList;
-		}
-		criteria.setMaxResults(6);
-		criteria.addOrder(Order.desc(ProjectStop_.createdDate.getName()));
-		List<ProjectStop> projectStopList = criteria.list();
+        HqlBuilder hqlBuilder = HqlBuilder.create();
 
-		for(ProjectStop p : projectStopList){
-			ProjectStopDto projectStopDto = new ProjectStopDto();
-			BeanCopierUtils.copyProperties( p , projectStopDto);
-			projectStopDtoList.add(projectStopDto);
-		}
-        return projectStopDtoList;
+        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId");
+        hqlBuilder.setParam("signId", signId);
+        List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
+        return psList;
+    }
+
+    /**
+     * 根据项目ID，初始化项目暂停信息
+     * @param signId
+     * @return
+     */
+    @Override
+    public SignDispaWork findSignBySignId(String signId) {
+        return signDispaWorkRepo.findById("signid",signId);
+    }
+
+    /*@Override
+    public int countUsedWorkday(String signId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select signdate from cs_sign where signid =:signId");
+        sqlBuilder.setParam("signId", signId);
+        List<Object[]> signList = signRepo.getObjectArray(sqlBuilder);
+        int count = 0;
+        if (Validate.isList(signList)) {
+            Date signDate = (Date) signList.get(0)[0];
+            QuartzUnit unit = new QuartzUnit();
+            count = unit.countWorkday(signDate);
+        }
+        return count;
+    }*/
+
+    /**
+     * 保存项目暂停信息
+     * @param projectStopDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg savePauseProject(ProjectStopDto projectStopDto) {
+        ProjectStop projectStop = new ProjectStop();
+        Sign sign = new Sign();
+        sign.setSignid(projectStopDto.getSignid());
+        projectStop.setSign(sign);
+        Date now = new Date();
+
+        BeanCopierUtils.copyProperties(projectStopDto, projectStop);
+        projectStop.setCreatedBy(SessionUtil.getDisplayName());
+        projectStop.setCreatedDate(now);
+        projectStop.setModifiedBy(SessionUtil.getDisplayName());
+        projectStop.setModifiedDate(now);
+        projectStop.setStopid(UUID.randomUUID().toString());
+        //设置默认值
+        projectStop.setIsactive(Constant.EnumState.NO.getValue());
+        projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+
+        //1、启动流程
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
+                ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER.getValue(), SessionUtil.getUserId()));
+
+        //2、设置流程实例名称
+        processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), projectStopDto.getProcessName());
+        //4、跳过第一环节（主任审核）
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+        String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null?SessionUtil.getUserId():SessionUtil.getUserInfo().getOrg().getOrgDirector();
+        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), userId));
+
+        //设置流程实例ID
+        projectStop.setProcessInstanceId(processInstance.getId());
+        projectStopRepo.save(projectStop);
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+
+    @Override
+    public PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj) {
+        PageModelDto<ProjectStopDto> pageModelDto = new PageModelDto<>();
+        Criteria criteria = projectStopRepo.getExecutableCriteria();
+        criteria = oDataObj.buildFilterToCriteria(criteria);
+        Boolean b = false;
+        //部长审核
+        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
+            b = true;
+            criteria.add(Restrictions.eq(ProjectStop_.directorName.getName(), SessionUtil.getLoginName()));
+            criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(), Constant.EnumState.NO.getValue()));
+        }
+        //分管副主任办理
+        else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
+            criteria.add(Restrictions.eq(ProjectStop_.leaderName.getName(), SessionUtil.getLoginName()));
+            criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+            b = true;
+        }
+        if (b) {
+            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+
+            pageModelDto.setCount(totalResult);
+
+            criteria.setProjection(null);
+            if (oDataObj.getSkip() > 0) {
+                criteria.setFirstResult(oDataObj.getSkip());
+            }
+            if (oDataObj.getTop() > 0) {
+                criteria.setMaxResults(oDataObj.getTop());
+            }
+
+            if (Validate.isString(oDataObj.getOrderby())) {
+                if (oDataObj.isOrderbyDesc()) {
+                    criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
+                } else {
+                    criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
+                }
+            }
+            List<ProjectStop> projectStopList = criteria.list();
+            List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
+            for (ProjectStop projectStop : projectStopList) {
+                ProjectStopDto projectStopDto = new ProjectStopDto();
+                BeanCopierUtils.copyProperties(projectStop, projectStopDto);
+                projectStopDtoList.add(projectStopDto);
+            }
+
+            pageModelDto.setValue(projectStopDtoList);
+        }
+        return pageModelDto;
+    }
+
+    /**
+     * 根据ID获取项目暂停信息
+     * @param stopId
+     * @return
+     */
+    @Override
+    public ProjectStopDto getProjectStopByStopId(String stopId) {
+        ProjectStop projectStop = projectStopRepo.findById(stopId);
+        ProjectStopDto projectStopDto = new ProjectStopDto();
+        BeanCopierUtils.copyProperties(projectStop, projectStopDto);
+        if(projectStop.getSign() != null ){
+            projectStopDto.setSignDispaWork(signDispaWorkRepo.findById("signid",projectStop.getSign().getSignid()));
+        }
+        return projectStopDto;
+    }
+
+   /* @Override
+    @Transactional
+    public void updateProjectStop(ProjectStopDto projectStopDto) {
+
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("update " + ProjectStop.class.getSimpleName() + " set ");
+        //部长审核
+        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())) {
+            sqlBuilder.append(ProjectStop_.directorIdeaContent.getName() + "=:directorIdeaContent , " + ProjectStop_.approveStatus.getName() + "=:approveStatus");
+            sqlBuilder.setParam("directorIdeaContent", projectStopDto.getDirectorIdeaContent());
+            sqlBuilder.setParam("approveStatus", Constant.EnumState.PROCESS.getValue());
+        }
+        //分管副主任办理
+        else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
+            sqlBuilder.append(ProjectStop_.leaderIdeaContent.getName() + "=:leaderIdeaContent ," + ProjectStop_.approveStatus.getName() + "=:approveStatus ," + ProjectStop_.isactive.getName() + "=:isactive");
+            sqlBuilder.setParam("leaderIdeaContent", projectStopDto.getLeaderIdeaContent());
+            sqlBuilder.setParam("approveStatus", Constant.EnumState.YES.getValue());
+            sqlBuilder.setParam("isactive", Constant.EnumState.YES.getValue());
+
+            //修改项目状态
+            HqlBuilder hql = HqlBuilder.create();
+            hql.append("update " + Sign.class.getSimpleName() + " set " + Sign_.signState.getName() + " =:signState ," + Sign_.isProjectState.getName() + " =:isProjectState ," + Sign_.isLightUp.getName() + "=:isLightUp");
+            hql.append(" where " + Sign_.signid.getName() + " =:signId");
+            hql.setParam("isLightUp", Constant.signEnumState.PAUSE.getValue());
+            hql.setParam("signState", Constant.EnumState.STOP.getValue());
+            hql.setParam("isProjectState", Constant.EnumState.YES.getValue());
+            hql.setParam("signId", projectStopDto.getSign().getSignid());
+            signRepo.executeHql(hql);
+
+            //暂停流程
+            ProcessInstance processInstance = flowService.findProcessInstanceByBusinessKey(projectStopDto.getSign().getSignid());
+            runtimeService.suspendProcessInstanceById(processInstance.getId());
+        }
+        sqlBuilder.append(" where " + ProjectStop_.stopid.getName() + "=:stopId");
+        sqlBuilder.setParam("stopId", projectStopDto.getStopid());
+        projectStopRepo.executeHql(sqlBuilder);
+
+    }*/
+
+
+    @Override
+    public List<ProjectStop> findPauseProjectSuccess() {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select stopid,pausetime,pausedays from cs_projectStop where isactive=:isactive");
+        sqlBuilder.setParam("isactive", Constant.EnumState.YES.getValue());
+        List<Object[]> map = projectStopRepo.getObjectArray(sqlBuilder);
+        List<ProjectStop> projectStopList = new ArrayList<>();
+        if (Validate.isList(map)) {
+            for (int i = 0; i < map.size(); i++) {
+                Object[] objs = map.get(i);
+                ProjectStop projectStop = new ProjectStop();
+                projectStop.setStopid((String) objs[0]);
+                projectStop.setPausetime((Date) objs[1]);
+                projectStop.setPausedays((float) objs[2]);
+                projectStopList.add(projectStop);
+            }
+        }
+        return projectStopList;
+    }
+
+    @Override
+    public void updateProjectStopStatus(List<ProjectStop> projectStopList) {
+        projectStopRepo.bathUpdate(projectStopList);
+    }
+
+    /**
+     * 项目暂停申请流程
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    @Override
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+        String businessId = processInstance.getBusinessKey(),
+                assigneeValue = "";                            //流程处理人
+        Map<String,Object> variables = null;                   //流程参数
+        User dealUser = null;                                  //用户
+        ProjectStop projectStop = null;                        //项目暂停对象
+
+        //环节处理人设定
+        switch (task.getTaskDefinitionKey()) {
+            //项目负责人填报
+            case FlowConstant.FLOW_STOP_FZR:
+                dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(),
+                        Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
+                break;
+            //部长审批
+            case FlowConstant.FLOW_STOP_BZ_SP:
+                projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessId);
+                projectStop.setDirectorId(SessionUtil.getUserId());
+                projectStop.setDirectorName(SessionUtil.getDisplayName());
+                projectStop.setDirectorIdeaContent(flowDto.getDealOption());
+                projectStop.setApproveStatus(Constant.EnumState.PROCESS.getValue());
+                projectStopRepo.save(projectStop);
+                dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(),
+                        Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
+                break;
+            //分管领导审批
+            case FlowConstant.FLOW_STOP_FGLD_SP:
+                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                }
+                projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessId);
+                projectStop.setLeaderId(SessionUtil.getUserId());
+                projectStop.setLeaderName(SessionUtil.getDisplayName());
+                projectStop.setLeaderIdeaContent(flowDto.getDealOption());
+                projectStop.setApproveStatus(Constant.EnumState.YES.getValue());
+                projectStop.setIsactive(flowDto.getBusinessMap().get("AGREE").toString());
+                projectStopRepo.save(projectStop);
+                break;
+            default:
+                break;
+        }
+        taskService.addComment(task.getId(), processInstance.getId(),(flowDto == null)?"":flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+        }
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
 }

@@ -609,18 +609,11 @@
                 controller: 'financialManagerCtrl',
                 controllerAs: 'vm'
             })
-            //查看评审费发放表
-            // .state('findStageCostTable', {
-            //     url: '/findStageCostTable/:signid',
-            //     templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
-            //     controller: 'financialManagerEditCtrl',
-            //     controllerAs: 'vm'
-            // })
-            //查看协审费发放表
-            .state('findAssistCostTable', {
-                url: '/findAssistCostTable/:signid',
-                templateUrl: rootPath + '/financialManager/html/stageCostTable.html',
-                controller: 'assistCostCountCtrl',
+            //协审费录入
+           .state('financialAssistManager', {
+               url: '/financialAssistManager/:businessId',
+                templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
+               controller: 'assistCostEditCtrl',
                 controllerAs: 'vm'
             })
             //协审费录入列表页面

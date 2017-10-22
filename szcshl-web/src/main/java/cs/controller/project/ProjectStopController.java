@@ -2,6 +2,7 @@ package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -28,22 +29,6 @@ public class ProjectStopController {
 	@Autowired
 	private ProjectStopService projectStopService;
 
-
-   /* @RequiresPermissions("ProjectStop#createpStop#post")
-    @RequestMapping(name="项目暂停",path="projectStop",method=RequestMethod.POST)
-    @ResponseBody
-    public void projectStop(@RequestParam String signid,String taskid){
-    	projectStopService.addProjectStop(signid,taskid);
-    	
-    }
-    
-    @RequiresPermissions("ProjectStop#projectStart#post")
-    @RequestMapping(name="项目启动",path="projectStart",method=RequestMethod.POST)
-    @ResponseBody
-    public void projectStart(@RequestParam String signid,String taskid){
-    	projectStopService.projectStart(signid,taskid);
-    }*/
-
    @RequiresAuthentication
     //@RequiresPermissions("projectStop#findByOData#post")
    @RequestMapping(name="查询暂停项目",path="findByOData" ,method = RequestMethod.POST)
@@ -56,50 +41,43 @@ public class ProjectStopController {
 
     @RequiresAuthentication
     //@RequiresPermissions("projectStop#initProjectBySignId#get")
-	@RequestMapping(name="通过收文id获取收文信息",path="initProjectBySignId" ,method=RequestMethod.GET)
+	@RequestMapping(name="通过收文id获取收文信息",path="initProjectBySignId" ,method=RequestMethod.POST)
 	@ResponseBody
 	public SignDispaWork initProjectBySignId(@RequestParam  String signId){
 		return projectStopService.findSignBySignId(signId);
 	}
 
-    @RequiresAuthentication
+   /* @RequiresAuthentication
     //@RequiresPermissions("projectStop#countUsedWorkday#get")
 	@RequestMapping(name="计算已用工作日",path="countUsedWorkday",method = RequestMethod.GET)
 	@ResponseBody
 	public int countUsedWorkday(@RequestParam  String signId){
 		return projectStopService.countUsedWorkday(signId);
-	}
+	}*/
 
     @RequiresAuthentication
-    //@RequiresPermissions("projectStop#savePauseProject#post")
-	@RequestMapping(name="添加暂停项目", path="savePauseProject" ,method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void pauseProject(@RequestBody  ProjectStopDto projectStopDto){
-		projectStopService.savePauseProject(projectStopDto);
+	@RequestMapping(name="保存信息", path="savePauseProject" ,method=RequestMethod.POST)
+	@ResponseBody
+	public ResultMsg pauseProject(@RequestBody  ProjectStopDto projectStopDto){
+		return projectStopService.savePauseProject(projectStopDto);
 	}
 
     @RequiresAuthentication
     //@RequiresPermissions("projectStop#getProjectStopByStopId#get")
-	@RequestMapping(name="通过Id获取暂停项目信息", path="getProjectStopByStopId" ,method=RequestMethod.GET)
+	@RequestMapping(name="通过Id获取暂停项目信息", path="getProjectStopByStopId" ,method=RequestMethod.POST)
 	@ResponseBody
 	public ProjectStopDto getProjectStopByStopId(@RequestParam String stopId){
 		return projectStopService.getProjectStopByStopId(stopId);
 	}
 
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     //@RequiresPermissions("projectStop#updateProjectStop#post")
 	@RequestMapping(name="更新暂停项目审批意见",path="updateProjectStop" ,method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateProjectStop(@RequestBody ProjectStopDto projectStopDto){
 		projectStopService.updateProjectStop(projectStopDto);
-	}
+	}*/
 
-	@RequiresAuthentication
-	@RequestMapping(name="获取主页上的项目暂停信息" , path = "findHomeProjectStop" , method = RequestMethod.GET)
-	@ResponseBody
-	public List<ProjectStopDto> findHomeProjectStop(){
-		return projectStopService.findHomeProjectStop();
-	}
     @RequiresAuthentication
 	//@RequiresPermissions("projectStop#findPausingProject#get")
 	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.GET)

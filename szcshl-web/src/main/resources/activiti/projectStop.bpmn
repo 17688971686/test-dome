@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="PROJECT_STOP_FLOW" name="项目暂停审批流程" isExecutable="true">
+    <startEvent id="START" name="开始"></startEvent>
+    <userTask id="STOP_FZR" name="负责人填报" activiti:assignee="${user}"></userTask>
+    <userTask id="STOP_BZ_SP" name="部长审批" activiti:assignee="${user_bz1}"></userTask>
+    <userTask id="STOP_FGLD_SP" name="分管领导审批" activiti:assignee="${user_fgld1}"></userTask>
+    <endEvent id="END" name="结束"></endEvent>
+    <sequenceFlow id="flow1" sourceRef="START" targetRef="STOP_FZR"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="STOP_FZR" targetRef="STOP_BZ_SP"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="STOP_BZ_SP" targetRef="STOP_FGLD_SP"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="STOP_FGLD_SP" targetRef="END"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_PROJECT_STOP_FLOW">
+    <bpmndi:BPMNPlane bpmnElement="PROJECT_STOP_FLOW" id="BPMNPlane_PROJECT_STOP_FLOW">
+      <bpmndi:BPMNShape bpmnElement="START" id="BPMNShape_START">
+        <omgdc:Bounds height="35.0" width="35.0" x="80.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="STOP_FZR" id="BPMNShape_STOP_FZR">
+        <omgdc:Bounds height="55.0" width="105.0" x="190.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="STOP_BZ_SP" id="BPMNShape_STOP_BZ_SP">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="STOP_FGLD_SP" id="BPMNShape_STOP_FGLD_SP">
+        <omgdc:Bounds height="55.0" width="105.0" x="560.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="END" id="BPMNShape_END">
+        <omgdc:Bounds height="35.0" width="35.0" x="740.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="115.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="190.0" y="127.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="295.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="127.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="475.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="127.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="665.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="740.0" y="127.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -5,6 +5,8 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
@@ -185,7 +187,15 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertReview.setModifiedDate(now);
             expertReview.setBusinessType(businessType);
             //获取评审会日期
-            expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
+            if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
+                WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
+                if("专家函评".equals(wp.getReviewType())){
+                    expertReview.setReviewDate(wp.getLetterDate());
+                }
+            }
+            if(expertReview.getReviewDate() == null){
+                expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
+            }
             //评审费发放标题
             expertReviewRepo.initReviewTitle(expertReview, businessId, businessType);
             expertReviewRepo.save(expertReview);

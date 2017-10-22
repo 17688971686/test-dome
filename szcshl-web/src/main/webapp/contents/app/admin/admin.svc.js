@@ -28,7 +28,6 @@
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
             excelExport : excelExport,              //项目统计导出
             statisticalGrid : statisticalGrid,
-            initProjectStop : initProjectStop ,//初始化项目暂停审批信息
             findHomeAppraise : findHomeAppraise, //初始化评审报告评优审批 信息
             findHomeAddSuppLetter : findHomeAddSuppLetter ,//初始化 拟补充资料函信息
             findHomeMonthly : findHomeMonthly , //初始化主页上的月报简报信息
@@ -71,24 +70,6 @@
             });
         }
         //end findHomeAddSuppLetter
-
-        //begin initProjectStop
-        function initProjectStop(vm){
-            var httpOptions = {
-                method : 'get',
-                url : rootPath + '/projectStop/findHomeProjectStop'
-            }
-            var httpSuccess = function success(response){
-                vm.projectStopList = response.data;
-            }
-            common.http({
-                vm :vm,
-                $http : $http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-        }
-        //end initProjectStop
 
         //begin findHomeAppraise
         function findHomeAppraise(vm){

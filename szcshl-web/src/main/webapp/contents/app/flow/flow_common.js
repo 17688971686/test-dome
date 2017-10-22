@@ -92,10 +92,11 @@
 
     //流程定义值
     var flowDefinedKey = {
-        FINAL_SIGN_FLOW : "FINAL_SIGN_FLOW",       //项目签收流程
-        TOPIC_FLOW : "TOPIC_FLOW",                 //课题研究流程
-        BOOKS_BUY_FLOW : "BOOKS_BUY_FLOW",            //图书采购流程
-        ASSERT_STORAGE_FLOW : "ASSERT_STORAGE_FLOW"   //资产入库流程
+        FINAL_SIGN_FLOW : "FINAL_SIGN_FLOW",            //项目签收流程
+        TOPIC_FLOW : "TOPIC_FLOW",                      //课题研究流程
+        BOOKS_BUY_FLOW : "BOOKS_BUY_FLOW",              //图书采购流程
+        ASSERT_STORAGE_FLOW : "ASSERT_STORAGE_FLOW",    //资产入库流程
+        PROJECT_STOP_FLOW : "PROJECT_STOP_FLOW",        //项目暂停流程
     }
     var service = {
         getFlowDefinedKey : function(){

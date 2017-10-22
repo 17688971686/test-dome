@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowDetailCtrl', flowDetail);
 
-    flowDetail.$inject = ['$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc'];
+    flowDetail.$inject = ['$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc','pauseProjectSvc'];
 
-    function flowDetail($state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc) {
+    function flowDetail($state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc,pauseProjectSvc) {
         var vm = this;
         vm.title = '在办任务详情页';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -48,6 +48,9 @@
                     break;
                 case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
                     assertStorageBusinessSvc.initFlowDeal(vm);
+                    break;
+                case flowcommon.getFlowDefinedKey().PROJECT_STOP_FLOW:      //项目暂停流程
+                    pauseProjectSvc.initFlowDeal(vm);
                     break;
             }
             //5、附件

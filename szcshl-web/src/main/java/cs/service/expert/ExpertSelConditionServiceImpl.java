@@ -12,6 +12,8 @@ import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelCondition_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.domain.topic.TopicInfo;
 import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
@@ -47,7 +49,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     @Autowired
     private RoomBookingRepo roomBookingRepo;
     @Autowired
-    private SignRepo signRepo;
+    private WorkProgramRepo workProgramRepo;
     @Autowired
     private TopicInfoRepo topicInfoRepo;
 
@@ -146,7 +148,15 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
                 //评审会标题
                 expertReviewRepo.initReviewTitle(reviewObj,businessId,businessType);
                 //获取评审会日期
-                reviewObj.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
+                if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
+                    WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
+                    if("专家函评".equals(wp.getReviewType())){
+                        reviewObj.setReviewDate(wp.getLetterDate());
+                    }
+                }
+                if(reviewObj.getReviewDate() == null){
+                    reviewObj.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
+                }
                 expertReviewRepo.save(reviewObj);
             }
             //先删除之前的，再保存

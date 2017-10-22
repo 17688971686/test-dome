@@ -13,18 +13,15 @@
             savefinancial:savefinancial,							//保存报销记录
             sumFinancial:sumFinancial,								//统计评审费用总和
             initFinancialProject:initFinancialProject,				//初始化关联项目评审费
+            initAssistProject : initAssistProject,                  //初始化项目协审费
             isUnsignedInteger:isUnsignedInteger,					//	数字校验
-            stageCostCountList:stageCostCountList,		 //评审费用统计列表
-            // findStageCostTableList:findStageCostTableList, //查看评审费发放表
-            exportExcel : exportExcel , //评审费用统计表导出
+            stageCostCountList:stageCostCountList,		            //评审费用统计列表
+            exportExcel : exportExcel ,                             //评审费用统计表导出
+            initfinancial :initfinancial ,                          //初始化评审录入列表
 
-            initfinancial :initfinancial ,//初始化评审录入列表
         };
 
         return service;
-        vm.businessFlag = {
-            expertReviews : [],
-        }
 
         //begin initfinancial
         function initfinancial(vm , callBack){
@@ -45,7 +42,6 @@
                 httpOptions : httpOptions ,
                 success : httpSuccess
             });
-
         }
         //end initfinancial
 
@@ -85,8 +81,6 @@
         //end reportExcel
 
 
-
-
         //S 评审费用统计列表
         function stageCostCountList(vm){
             var httpOptions = {
@@ -117,16 +111,16 @@
         function initFinancialProject(businessId, callBack){
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/financialManager/initfinancial",
-                params:{
-                    businessId: businessId
+                url: rootPath + "/financialManager/initfinancial",        
+                params: {
+                    businessId: businessId,
+                    businessType: "SIGN"
                 }
             };
             var httpSuccess = function success(response) {
                 if(callBack != undefined && typeof  callBack == "function"){
                     callBack(response.data);
                 }
-
             };
             common.http({
                 $http: $http,
@@ -135,6 +129,28 @@
             });
         }
         // E 初始化关联项目评审费
+
+        //S_初始化关联项目协审费
+        function initAssistProject(businessId, callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/financialManager/initfinancial",
+                params: {
+                    businessId: businessId,
+                    businessType: "SIGN"
+                }
+            };
+            var httpSuccess = function success(response) {
+                if(callBack != undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_initAssistProject
 
         //S 统计评审费用总和
         function  sumFinancial(vm , businessId){
@@ -176,9 +192,7 @@
                if(callBack != undefined && typeof  callBack == "function"){
                    callBack(response.data);
                }
-
             }
-
             common.http({
                 $http : $http,
                 httpOptions : httpOptions,
@@ -186,40 +200,22 @@
             });
         }
         //E 保存报销记录
-        //刷新页面
-        function myrefresh(){
-            window.location.reload();
-        }
 
         // begin#deleteFinancialManager
-        function deleteFinancialManager(vm, id) {
-            vm.isSubmit = true;
+        function deleteFinancialManager(id,callBack) {
             var httpOptions = {
                 method: 'delete',
-                url: url_financialManager,
+                url: rootPath + "/financialManager",
                 data: id
             };
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                                vm.isSubmit = false;
-                                myrefresh();
-                            }
-                        })
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

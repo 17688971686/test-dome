@@ -7,38 +7,15 @@
 
     function pauseProject($http, $state , bsWin) {
         var service = {
-            pauseProjectWindow : pauseProjectWindow,    //项目暂停弹出框
-            pauseProject: pauseProject,//保存暂停项目
-            initProject : initProject, //初始化项目信息
-            countUsedWorkday : countUsedWorkday,    //初始化已用工作日
+            initProject : initProject,                  //初始化项目信息
+            pauseProject: pauseProject,                 //保存暂停项目
+            initFlowDeal : initFlowDeal,                //初始化流程信息
             grid : grid,
             getProjectStopByStopId : getProjectStopByStopId,    //通过id获取暂停项目
             updateProjectStop : updateProjectStop,  //更新暂停项目审批信息
             findPausingProject : findPausingProject //查找正在申请暂停的项目
         };
         return service;
-
-        function pauseProjectWindow(vm,signid,stopid){
-            vm.sign={};
-            vm.projectStop = {};
-            vm.projectStop.signid = signid;
-            $("#spwindow").kendoWindow({
-                width: "1000px",
-                height: "600px",
-                title: "暂停项目审批处理",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-            initProject(vm,signid);
-            countUsedWorkday(vm,signid);
-            if(stopid !=""){
-                vm.showIdea=true;
-                getProjectStopByStopId(vm,stopid);
-            }
-
-        }
 
         //beign findPausingProject
         function findPausingProject(vm,signId){
@@ -67,19 +44,21 @@
         //end findPausingProject
 
         //begin initProject
-        function initProject(vm,signId){
-
+        function initProject(signId,callBack){
             var httpOptions={
-                method : "get",
+                method : "post",
                 url : rootPath + "/projectStop/initProjectBySignId",
-                params :{signId : signId}
+                params :{
+                    signId : signId
+                }
             }
 
             var httpSuccess=function success(response){
-                vm.sign=response.data;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -87,84 +66,51 @@
 
         }//end initProject
 
-        //begin countUsedWorkday
-        function countUsedWorkday(vm,signid){
-            var httpOptions={
-                method: "get",
-                url : rootPath +"/projectStop/countUsedWorkday",
-                params : {signId : signid}
+        //S_保存项目暂停表信息
+        function pauseProject(projectStop,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/projectStop/savePauseProject",
+                data: projectStop
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
 
-            var httpSuccess=function success(response){
-                vm.sign.countUsedWorkday=response.data;
-            }
             common.http({
-                vm : vm,
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
             });
-        }
-        //end countUsedWorkday
-
-        //start_pauseProject
-        function pauseProject(vm){
-            common.initJqValidation();
-            var isValid = $('#form').valid();
-            if (isValid) {
-                var materials = [];
-                if($("#file1").is(":checked")){
-
-                    materials.push($('#file1').val());
-                }
-                if($("#file2").is(":checked")){
-
-                    materials.push($('#file2').val());
-                }
-                var materialStr = materials.join(",");
-                vm.projectStop.material = materialStr;
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/projectStop/savePauseProject",
-                    data: vm.projectStop
-                }
-                var httpSuccess = function success(response) {
-                    bsWin.success("操作成功");
-                    $state.go("personDtasks");
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-            }
         } //end_pauseProject
 
+        //S_初始化项目暂停信息
+        function initFlowDeal(vm){
+            getProjectStopByStopId(vm.businessKey,function(data){
+                vm.model = data;
+                vm.sign = vm.model.signDispaWork;
+            });
+        }//E_initFlowDeal
+
         //begin getProjectStopByStopId
-        function getProjectStopByStopId(vm,stopId , callBack){
+        function getProjectStopByStopId(stopId , callBack){
             var httpOptions={
-                method : "get",
+                method : "post",
                 url : rootPath + "/projectStop/getProjectStopByStopId",
-                params : {stopId : stopId}
+                params : {
+                    stopId : stopId
+                }
             }
 
             var httpSuccess=function success(response){
                 if( callBack != undefined && typeof  callBack == 'function'){
                     return callBack(response.data);
                 }
-                // vm.projectStop = response.data;
-                // if( vm.projectStop.directorIdeaContent == undefined){
-                //     vm.projectStop.directorIdeaContent="";
-                // }
-                // if(vm.projectStop.leaderIdeaContent == undefined){
-                //     vm.projectStop.leaderIdeaContent="";
-                // }
             }
 
             common.http({
-                vm : vm,
                 $http : $http ,
                 httpOptions : httpOptions ,
                 success : httpSuccess

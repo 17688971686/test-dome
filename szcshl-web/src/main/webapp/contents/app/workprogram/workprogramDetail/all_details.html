@@ -4,7 +4,7 @@
     <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [{{w.titleName}}]
     </a>
-    <div id="wp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9)||(w.isSigle=="合并评审" && w.isMainProject == 0) || w.isSigle=="单个评审" || vm.showAll}'>
+    <div id="wp_{{$index}}" class="collapse in" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9) || w.isSigle=="单个评审" || vm.showAll}'>
         <table  class="table table-bordered" style="margin-bottom: 0px;" >
             <caption>
                 <span ng-show="w.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>

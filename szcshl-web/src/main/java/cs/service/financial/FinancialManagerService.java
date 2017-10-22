@@ -30,9 +30,27 @@ public interface FinancialManagerService {
 
 	BigDecimal sunCount(String signid);
 
-	Map<String, Object> initfinancialData(String businessId,String businessType);
+	/**
+	 * 初始化财务办理页面
+	 * @param businessId   业务ID
+	 * @param businessType 业务类型
+	 * @param isAssist     是否协审
+	 * @return
+	 */
+	Map<String, Object> initfinancialData(String businessId,String businessType,boolean isAssist);
 
+    /**
+     * 协审费统计列表
+     * @param signAssistCostDto
+     * @param isShowDetail
+     * @return
+     */
 	List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto,boolean isShowDetail);
 
+    /**
+     * 保存费用项信息
+     * @param record
+     * @return
+     */
 	ResultMsg save(FinancialManagerDto[] record);
 }

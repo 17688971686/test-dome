@@ -1,22 +1,11 @@
 package cs.domain.project;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import cs.domain.DomainBase;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.domain.DomainBase;
+import javax.persistence.*;
+import java.util.Date;
 /*
  * 添加项目资料补充函
  */
@@ -33,10 +22,6 @@ public class AddSuppLetter extends DomainBase {
    //拟稿部门
 	@Column(columnDefinition="VARCHAR(64)")
 	private String orgName;
-	
-	//拟稿人
-	@Column(columnDefinition = "VARCHAR(64)")	
-	private String userName;
 	
 	//拟稿时间
 	@Column(columnDefinition = "Date")
@@ -57,10 +42,6 @@ public class AddSuppLetter extends DomainBase {
 	//文件字号
 	@Column(columnDefinition ="VARCHAR(32)")
 	private String filenum;
-	
-	//用户登录id
-	@Column(columnDefinition ="VARCHAR(100)")
-	private String userId;
 	
 	//文件标题
 	@Column(columnDefinition = "VARCHAR(200)")
@@ -86,38 +67,10 @@ public class AddSuppLetter extends DomainBase {
 	@Column(columnDefinition = "INTEGER")
 	private Integer printnum;
 
-	/**
-	 * 业务ID
-	 */
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String businessId;
-	
-	/**
-	 * 工作方案ID
-	 */
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String workId;
-
-	/**
-	 * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
-	 */
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String businessType;
-	
-	@Column(columnDefinition = "VARCHAR(64)")
-	private String businessIdType;
 	//文字序号
     @Column(columnDefinition = "INTEGER")
 	private Integer fileSeq;
-    
-    //拟补充资料函状态：0：审批状态，9：查询状态
-    @Column(columnDefinition = "VARCHAR(4)")
-    private String addSuppStatus;
-    
-    //审批状态：0部长审批,1分管领导审批,2主任审批
-    @Column(columnDefinition = "VARCHAR(4)")
-    private String addSuppAppoveStatus;
-    
+
    //部门部长名称
     @Column(columnDefinition = "varchar(30)")
 	private String deptMinisterName;
@@ -173,17 +126,30 @@ public class AddSuppLetter extends DomainBase {
     //存档编号
     @Column(columnDefinition = "VARCHAR(64)")
     private String fileCode;
-    
+
     /**
-     * 月报简报状态：0表示为中心文件（审批）,9:表示：中心文件查询
+     * 业务ID
      */
-    @Column(columnDefinition = "VARCHAR(4)")
-    private String monthlyStatus;
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String businessId;
+
     /**
-     * 0:部长审批,1:主任审批,2:主任审批
-     * 
+     * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
      */
-    private String monthlyAppoveStatus;
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String businessType;
+
+    /**
+     * 审批状态：0部长审批,1分管领导审批,2主任审批,9审批完成
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String appoveStatus;
+
+    /**
+     * 文件类型，1：表示你补充资料函，2：表示月报简报
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String fileType;
     
 	public Integer getFileSeq() {
 		return fileSeq;
@@ -223,14 +189,6 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public Date getSuppLetterTime() {
@@ -305,14 +263,6 @@ public class AddSuppLetter extends DomainBase {
 		this.disapDate = disapDate;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getBusinessId() {
 		return businessId;
 	}
@@ -324,13 +274,6 @@ public class AddSuppLetter extends DomainBase {
     public String getBusinessType() {
         return businessType;
     }
-
-    public void setBusinessType(String businessType) {
-        this.businessType = businessType;
-    }
-	public void setBusinessIdType(String businessIdType) {
-		this.businessIdType = businessIdType;
-	}
 
 	public String getMissiveType() {
 		return missiveType;
@@ -356,18 +299,6 @@ public class AddSuppLetter extends DomainBase {
 		this.fileCode = fileCode;
 	}
 
-	public String getMonthlyStatus() {
-		return monthlyStatus;
-	}
-
-	public void setMonthlyStatus(String monthlyStatus) {
-		this.monthlyStatus = monthlyStatus;
-	}
-
-	public String getBusinessIdType() {
-		return businessIdType;
-	}
-
 	public String getMissiveMonthlyType() {
 		return missiveMonthlyType;
 	}
@@ -382,22 +313,6 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setMissiveOtherType(String missiveOtherType) {
 		this.missiveOtherType = missiveOtherType;
-	}
-
-	public String getAddSuppStatus() {
-		return addSuppStatus;
-	}
-
-	public void setAddSuppStatus(String addSuppStatus) {
-		this.addSuppStatus = addSuppStatus;
-	}
-
-	public String getAddSuppAppoveStatus() {
-		return addSuppAppoveStatus;
-	}
-
-	public void setAddSuppAppoveStatus(String addSuppAppoveStatus) {
-		this.addSuppAppoveStatus = addSuppAppoveStatus;
 	}
 
 	public String getDeptMinisterName() {
@@ -472,24 +387,23 @@ public class AddSuppLetter extends DomainBase {
 		this.deptDirectorDate = deptDirectorDate;
 	}
 
-	public String getMonthlyAppoveStatus() {
-		return monthlyAppoveStatus;
-	}
+    public String getAppoveStatus() {
+        return appoveStatus;
+    }
 
-	public void setMonthlyAppoveStatus(String monthlyAppoveStatus) {
-		this.monthlyAppoveStatus = monthlyAppoveStatus;
-	}
+    public void setAppoveStatus(String appoveStatus) {
+        this.appoveStatus = appoveStatus;
+    }
 
-	public String getWorkId() {
-		return workId;
-	}
+    public String getFileType() {
+        return fileType;
+    }
 
-	public void setWorkId(String workId) {
-		this.workId = workId;
-	}
-	
-	
-	
-	
-	
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
 }

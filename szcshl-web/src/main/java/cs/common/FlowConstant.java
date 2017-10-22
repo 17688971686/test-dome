@@ -47,6 +47,18 @@ public class FlowConstant {
     public static final String FLOW_SIGN_DSFZR_QRGD = "SIGN_DSFZR_QRGD";//第二负责人确认
     public static final String FLOW_SIGN_QRGD = "SIGN_QRGD";            //最终归档
 
+
+    /**
+     * 项目暂停审批流程
+     */
+    public final static String PROJECT_STOP_FLOW = "PROJECT_STOP_FLOW";           //项目签收流程
+    /**
+     * 项目暂停环节
+     */
+    public final static String FLOW_STOP_FZR = "STOP_FZR";           //项目负责人填报
+    public static final String FLOW_STOP_BZ_SP = "STOP_BZ_SP";       //部长审批
+    public static final String FLOW_STOP_FGLD_SP = "STOP_FGLD_SP";   //分管领导审批
+
     /**
      * 项目签收流程参数
      */
@@ -70,6 +82,7 @@ public class FlowConstant {
         XBFZR_SP("xbfzrsp"),                    //协办副主任审批
         HAVE_ZJPSF("zjpsf"),                    //是否有专家评审费
         /*一下是用户参数*/
+        USER("user"),                    //用户
         USER_ZR("user_zr"),              //主任
         USER_QS("user_qs"),              //项目签收人
         USER_ZHB("user_zhb"),            //综合部部长

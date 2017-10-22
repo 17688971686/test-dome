@@ -104,16 +104,40 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
      *
      * @param businessId   业务ID
      * @param businessType 类型
+     * @param isAssist     是否协审
      * @return
      */
     @Override
-    public Map<String, Object> initfinancialData(String businessId, String businessType) {
+    public Map<String, Object> initfinancialData(String businessId, String businessType,boolean isAssist) {
         Map<String, Object> map = new HashMap<String, Object>();
-        if (Validate.isString(businessType)) {
-
-        }
         List<FinancialManager> financiallist = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), businessId, null);
         map.put("financiallist", financiallist);
+        if (Validate.isString(businessType)) {
+            FinancialManagerDto dto = new FinancialManagerDto();
+            if(Constant.BusinessType.SIGN.getValue().equals(businessType)){
+                if(isAssist){
+                    SignAssistCostDto signAssistCost = new SignAssistCostDto();
+                    signAssistCost.setSignId(businessId);
+                    List<SignAssistCostDto> signAssistCostList = signAssistCostList(signAssistCost,false);
+                    if(Validate.isList(signAssistCostList)){
+                        signAssistCost = signAssistCostList.get(0);
+                        dto.setProjectName(signAssistCost.getProjectName());
+                        dto.setBusinessId(businessId);
+                        dto.setPaymentData(signAssistCost.getPayDate());
+                        dto.setAssistUnit(signAssistCost.getAssistUnit());
+                        dto.setAssissCost(signAssistCost.getPlanCost());
+                    }
+                }else{
+                    Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
+                    dto.setProjectName(sign.getProjectname());
+                    dto.setBusinessId(businessId);
+                    if(Validate.isList(financiallist)){
+                        dto.setPaymentData(financiallist.get(0).getPaymentData());
+                    }
+                }
+            }
+            map.put("financialDto", dto);
+        }
         return map;
     }
 
@@ -210,12 +234,22 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 financialManager.setCreatedDate(now);
                 financialManager.setCreatedBy(SessionUtil.getDisplayName());
             }
+            if(financialManager.getPaymentData() == null){
+                financialManager.setPaymentData(now);
+            }
             financialManager.setModifiedBy(SessionUtil.getDisplayName());
             financialManager.setModifiedDate(now);
             saveList.add(financialManager);
         }
         financialManagerRepo.bathUpdate(saveList);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",saveList);
+        //用于返回页面
+        List<FinancialManagerDto> resultList = new ArrayList<>(saveList.size());
+        saveList.forEach(l->{
+            FinancialManagerDto fmDto = new FinancialManagerDto();
+            BeanCopierUtils.copyPropertiesIgnoreNull(l,fmDto);
+            resultList.add(fmDto);
+        });
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",resultList);
 
     }
 

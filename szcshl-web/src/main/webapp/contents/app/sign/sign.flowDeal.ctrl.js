@@ -491,23 +491,16 @@
         }
         //end 保存项目关联
 
-        // S 评审费录入
+        // S_财务办理
         vm.addFinancialApply = function(){
-        	  $state.go('financialManager', {
-        		  businessId: vm.model.signid
-              });
+            if("9"==vm.model.isassistflow || 9==vm.model.isassistflow){
+                $state.go('financialAssistManager', {businessId: vm.model.signid});
+            }else{
+                $state.go('financialManager', {businessId: vm.model.signid});
+            }
         }
-        // E 评审费录入
-        
-        // S 评审费录入
-        vm.assistCostAdd = function(){
-        	  $state.go('assistCostAdd', {
-                  signid: vm.model.signid
-              });
-        }
-        // E 评审费录入
-        
-        
+        //E_财务办理
+
         vm.addDoFile = function () {
             $state.go('fileRecordEdit', {
                 signid: vm.model.signid

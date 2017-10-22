@@ -117,10 +117,10 @@
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess
-                });            
+                });
         }
        // E 初始化关联项目评审费
-        
+
         //S 统计评审费用总和
        function  sumFinancial(vm){
     		var httpOptions = {
@@ -133,7 +133,7 @@
                 var httpSuccess = function success(response) {
                 	vm.financial.stageCount = response.data;
                    $("#financialCount").html(vm.financial.stageCount);
-                   
+
                 };
 
                 common.http({
@@ -141,10 +141,10 @@
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess
-               });   
+               });
        }
      //E 统计评审费用总和
-       
+
        //S 保存报销记录
        function savefinancial(vm){
     		   var httpOptions = {
@@ -171,7 +171,7 @@
     					   })
     				   }
     			   });
-    		 
+
     	   }
 
     	   common.http({
@@ -274,7 +274,7 @@
                     width: 100,
                     filterable: false
                 },
-               
+
                 {
                     field: "expretCount",
                     title: "身份证号",
@@ -335,7 +335,7 @@
                     width: 100,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                             item.signid 
+                             item.signid
                             );
                     }
                 }

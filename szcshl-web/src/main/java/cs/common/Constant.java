@@ -423,6 +423,8 @@ public class Constant {
         DIS_SINGLE("1"),            //单个
         DIS_MERGE("2"),             //合并
         REVIEW_SELF("自评"),        //自评
+        REVIEW_MEETING("专家评审会"),
+        REVIEW_LEETER("专家函评"),
         REVIEW_MERGE("合并评审"),   //合并评审
         REVIEW_SIGNLE("单个评审");  //单个评审
         private String value;

@@ -115,4 +115,19 @@ public class HomeController {
 
 		return "init AssertStorage Flow success";
 	}
+
+	@RequiresAuthentication
+	@RequestMapping(name = "项目暂停流程",path = "projectStopFlow",method = RequestMethod.GET)
+	@Transactional
+	public @ResponseBody String projectStopFlow(){
+		//部署下一个版本
+		logger.info("开始项目暂停流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/projectStop.zip");
+		ZipInputStream zipIn=new ZipInputStream(in);
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目暂停审批流程").deploy();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+		logger.info("项目暂停流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+
+		return "init AssertStorage Flow success";
+	}
 }

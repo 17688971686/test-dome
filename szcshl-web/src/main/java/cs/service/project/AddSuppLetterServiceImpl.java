@@ -90,13 +90,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
          		}
                  //查询列表状态
                  addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
-                 addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());*/
+                 addSuppLetter.setappoveStatus(Constant.EnumState.NO.getValue());*/
 
              }
-             WorkProgram work =  workProgramRepo.findById(addSuppLetterDto.getWorkId());
-             work.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-             work.setSuppLetterDate(addSuppLetterDto.getDisapDate());
-             workProgramRepo.save(work);
+
              addSuppLetter.setModifiedDate(now);
              addSuppLetter.setCreatedDate(now);
              addSuppLetterRepo.save(addSuppLetter);
@@ -149,7 +146,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		//新增
 		if(Constant.BusinessType.SIGN.getValue().equals(businessType)){
 			Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
-			suppletterDto.setUserName(SessionUtil.getDisplayName());
 			suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
 			suppletterDto.setBusinessId(businessId);
 			suppletterDto.setBusinessType(businessType);
@@ -157,9 +153,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 			suppletterDto.setSecretLevel(sign.getSecrectlevel());
 			suppletterDto.setMergencyLevel(sign.getUrgencydegree());
 		}
-		 WorkProgram work =  workProgramRepo.findById(workId);
-		 suppletterDto.setWorkId(work.getId());
-		//  }
+
+
 
 
 		return suppletterDto;
@@ -277,10 +272,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 			}else{
 				addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
 			}
-			//查询列表状态
-			addSuppLetter.setMonthlyStatus(Constant.EnumState.NO.getValue());
-			//审批状态
-			addSuppLetter.setMonthlyAppoveStatus(Constant.EnumState.NO.getValue());
 		}
 
 		addSuppLetterRepo.save(addSuppLetter);
@@ -295,7 +286,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
 		Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
 		criteria = odataObj.buildFilterToCriteria(criteria);
-		criteria.add(Restrictions.eq(AddSuppLetter_.monthlyStatus.getName(), EnumState.NO.getValue()));
+		criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.NO.getValue()));
 		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
 		pageModelDto.setCount(totalResult);
 		criteria.setProjection(null);
@@ -333,18 +324,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			falg = true;
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
 		}
 		//分管领导
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
 			falg = true;
 		}
 		//主任
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
 			falg = true;
 		}
 		if(falg){
@@ -385,7 +376,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	@Override
 	public AddSuppLetterDto initMonthlyMutilyear() {
 		AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
-		suppletterDto.setUserName(SessionUtil.getLoginName());
 		suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
 		return suppletterDto;
 	}
@@ -413,7 +403,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
 		Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
 		criteria = odataObj.buildFilterToCriteria(criteria);
-		criteria.add(Restrictions.eq(AddSuppLetter_.addSuppStatus.getName(), EnumState.NO.getValue()));
+		criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.NO.getValue()));
 		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
 		pageModelDto.setCount(totalResult);
 		criteria.setProjection(null);
@@ -451,18 +441,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			falg = true;
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
 		}
 		//分管领导
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
 			falg = true;
 		}
 		//主任
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
 			falg = true;
 		}
 		if(falg){
@@ -509,30 +499,30 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
 				|| SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
 			sqlBuilder.append(AddSuppLetter_.deptMinisterIdeaContent.getName()+"=:deptMinisterIdeaContent , "
-					+AddSuppLetter_.addSuppAppoveStatus.getName()+"=:addSuppAppoveStatus , "
+					+AddSuppLetter_.appoveStatus.getName()+"=:appoveStatus , "
 					+AddSuppLetter_.deptMinisterDate.getName()+"=:deptMinisterDate");
 			sqlBuilder.setParam("deptMinisterIdeaContent", addSuppLetterDto.getDeptMinisterIdeaContent());
-			sqlBuilder.setParam("addSuppAppoveStatus",Constant.EnumState.PROCESS.getValue());
+			sqlBuilder.setParam("appoveStatus",Constant.EnumState.PROCESS.getValue());
 			sqlBuilder.setParam("deptMinisterDate",new Date());
 		}
 		//分管领导审批
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			sqlBuilder.append(AddSuppLetter_.deptSLeaderIdeaContent.getName()+"=:deptSLeaderIdeaContent , "
-					+AddSuppLetter_.addSuppAppoveStatus.getName()+ " =:addSuppAppoveStatus , "
+					+AddSuppLetter_.appoveStatus.getName()+ " =:appoveStatus , "
 					+AddSuppLetter_.deptSleaderDate.getName()+"=:deptSleaderDate");
 			sqlBuilder.setParam("deptSLeaderIdeaContent", addSuppLetterDto.getDeptSLeaderIdeaContent());
-			sqlBuilder.setParam("addSuppAppoveStatus",Constant.EnumState.STOP.getValue());
+			sqlBuilder.setParam("appoveStatus",Constant.EnumState.STOP.getValue());
 			sqlBuilder.setParam("deptSleaderDate",new Date());
 		}
 		//主任审批
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 
 			sqlBuilder.append(AddSuppLetter_.deptDirectorIdeaContent.getName()+"=:deptDirectorIdeaContent , "
-					+AddSuppLetter_.addSuppAppoveStatus.getName()+ "=:addSuppAppoveStatus ,"
+					+AddSuppLetter_.appoveStatus.getName()+ "=:appoveStatus ,"
 					+AddSuppLetter_.deptDirectorDate.getName()+"=:deptDirectorDate");
 
 			sqlBuilder.setParam("deptDirectorIdeaContent", addSuppLetterDto.getDeptDirectorIdeaContent());
-			sqlBuilder.setParam("addSuppAppoveStatus",Constant.EnumState.YES.getValue());
+			sqlBuilder.setParam("appoveStatus",Constant.EnumState.YES.getValue());
 			sqlBuilder.setParam("deptDirectorDate",new Date());
 			//生成拟稿最大编号
 			AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(),addSuppLetterDto.getId());
@@ -559,30 +549,30 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
 				|| SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
 			sqlBuilder.append(AddSuppLetter_.deptMinisterIdeaContent.getName()+"=:deptMinisterIdeaContent , "
-					+AddSuppLetter_.monthlyAppoveStatus.getName()+"=:monthlyAppoveStatus , "
+					+AddSuppLetter_.appoveStatus.getName()+"=:appoveStatus , "
 					+AddSuppLetter_.deptMinisterDate.getName()+"=:deptMinisterDate");
 			sqlBuilder.setParam("deptMinisterIdeaContent", addSuppLetterDto.getDeptMinisterIdeaContent());
-			sqlBuilder.setParam("monthlyAppoveStatus",Constant.EnumState.PROCESS.getValue());
+			sqlBuilder.setParam("appoveStatus",Constant.EnumState.PROCESS.getValue());
 			sqlBuilder.setParam("deptMinisterDate",new Date());
 		}
 		//分管领导审批
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			sqlBuilder.append(AddSuppLetter_.deptSLeaderIdeaContent.getName()+"=:deptSLeaderIdeaContent , "
-					+AddSuppLetter_.monthlyAppoveStatus.getName()+ " =:monthlyAppoveStatus , "
+					+AddSuppLetter_.appoveStatus.getName()+ " =:appoveStatus , "
 					+AddSuppLetter_.deptSleaderDate.getName()+"=:deptSleaderDate");
 			sqlBuilder.setParam("deptSLeaderIdeaContent", addSuppLetterDto.getDeptSLeaderIdeaContent());
-			sqlBuilder.setParam("monthlyAppoveStatus",Constant.EnumState.STOP.getValue());
+			sqlBuilder.setParam("appoveStatus",Constant.EnumState.STOP.getValue());
 			sqlBuilder.setParam("deptSleaderDate",new Date());
 		}
 		//主任审批
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 
 			sqlBuilder.append(AddSuppLetter_.deptDirectorIdeaContent.getName()+"=:deptDirectorIdeaContent , "
-					+AddSuppLetter_.monthlyAppoveStatus.getName()+ "=:monthlyAppoveStatus ,"
+					+AddSuppLetter_.appoveStatus.getName()+ "=:appoveStatus ,"
 					+AddSuppLetter_.deptDirectorDate.getName()+"=:deptDirectorDate");
 
 			sqlBuilder.setParam("deptDirectorIdeaContent", addSuppLetterDto.getDeptDirectorIdeaContent());
-			sqlBuilder.setParam("monthlyAppoveStatus",Constant.EnumState.YES.getValue());
+			sqlBuilder.setParam("appoveStatus",Constant.EnumState.YES.getValue());
 			sqlBuilder.setParam("deptDirectorDate",new Date());
 			//生成拟稿最大编号
 			AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(),addSuppLetterDto.getId());
@@ -634,25 +624,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 			addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
 		}
 		//查询列表状态
-		addSuppLetter.setAddSuppStatus(Constant.EnumState.NO.getValue());
-		addSuppLetter.setAddSuppAppoveStatus(Constant.EnumState.NO.getValue());
+		addSuppLetter.setAppoveStatus(Constant.EnumState.NO.getValue());
 
 		//  }
 		if(!Validate.isString(addSuppLetter.getId())){
 			addSuppLetter.setId(null);
 		}
-		/*Sign sign =  signRepo.findById(addSuppLetterDto.getBusinessId());
-		sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-		sign.setSuppLetterDate(addSuppLetterDto.getDisapDate());
-		signRepo.save(sign);*/
-		 WorkProgram work =  workProgramRepo.findById(addSuppLetterDto.getWorkId());
-         work.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-         work.setSuppLetterDate(addSuppLetterDto.getDisapDate());
-         workProgramRepo.save(work);
+
 		addSuppLetter.setModifiedDate(now);
 		addSuppLetter.setCreatedDate(now);
 		addSuppLetterRepo.save(addSuppLetter);
-		addSuppLetterDto.setId(addSuppLetter.getId());
+
 	}
 
 	/**
@@ -666,17 +648,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		//部长审批
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
 		}
 		//分管领导
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
 		}
 		//主任
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
 		}else{
 			return addSuppLetterDtoList;
 		}
@@ -703,17 +685,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		//部长审批
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
 		}
 		//分管领导
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
 		}
 		//主任
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
 		}else{
 			return addSuppLetterDtoList;
 		}
@@ -735,17 +717,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		//部长审批
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
 		}
 		//分管领导
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
 		}
 		//主任
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.addSuppAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
 		}else{
 			return 0;
 		}
@@ -760,17 +742,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 		//部长审批
 		if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.NO.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
 		}
 		//分管领导
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
 		}
 		//主任
 		else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 			criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-			criteria.add(Restrictions.eq(AddSuppLetter_.monthlyAppoveStatus.getName(), Constant.EnumState.STOP.getValue()));
+			criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
 		}else{
 			return 0;
 		}

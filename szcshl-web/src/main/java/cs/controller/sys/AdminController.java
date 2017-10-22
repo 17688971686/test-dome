@@ -97,7 +97,6 @@ public class AdminController {
                 || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
                 || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())
                 || Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
-            resultMap.put("PAUSE_COUNT",projectStopService.findMyPauseCount());
             resultMap.put("APPRAISE_COUNT" , appraiseService.countApprove());
             resultMap.put("MONTHLY_COUNT" , addSuppLetterService.countMonthly());
             resultMap.put("SUPPLETTER_COUNT" , addSuppLetterService.countSuppLetter());

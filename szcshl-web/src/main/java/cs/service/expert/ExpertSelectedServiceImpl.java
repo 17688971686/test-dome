@@ -832,12 +832,13 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				projectReviewCostDto.setProcessState(new Integer(result[10].toString()));
 
 				projectReviewCostDtoList.add(projectReviewCostDto);
-				User u = signPrincipalService.getMainPriUser(projectReviewCostDto.getBusinessId());
+
 				BigDecimal totalCost = financialManagerService.sunCount(projectReviewCostDto.getBusinessId());
 				if (null != totalCost){
 					projectReviewCostDto.setTotalCost(totalCost);
 				}
-				projectReviewCostDto.setPrincipal(u.getDisplayName());
+				User u = signPrincipalService.getMainPriUser(projectReviewCostDto.getBusinessId());
+				projectReviewCostDto.setPrincipal(u==null?"":u.getDisplayName());
 			}
 		}
 //		pageModelDto.setCount(projectReviewCostDtoList.size());
