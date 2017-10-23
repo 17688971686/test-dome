@@ -14,6 +14,12 @@ public class ExpertSelCondition {
     private String id;
 
     /**
+     * 综合评分
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Integer compositeScore;
+
+    /**
      * 突出专业(大类)
      */
     @Column(columnDefinition = "varchar(128) ")
@@ -66,6 +72,14 @@ public class ExpertSelCondition {
     @ManyToOne
     @JoinColumn(name = "expertReviewId")
     private ExpertReview expertReview;
+
+    public Integer getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Integer compositeScore) {
+        this.compositeScore = compositeScore;
+    }
 
     public String getId() {
         return id;

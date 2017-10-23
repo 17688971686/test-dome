@@ -321,10 +321,18 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.append(" AND CURSEL.ID IS NULL ");
 
         //加上选择的条件
-        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype())) {
+        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || Validate.isNumber(epSelCondition.getCompositeScore().toString())) {
             hqlBuilder.append(" AND (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
             buildCondition(hqlBuilder, "ept", epSelCondition);
             hqlBuilder.append(" ) > 0");
+            if(epSelCondition.getCompositeScore() != null &&   epSelCondition.getCompositeScore() > 0){
+                hqlBuilder.append(" and  ep.compositeScore>=:compositeScore");
+                hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
+            }else {
+                hqlBuilder.append(" and  ep.compositeScore is null or ep.compositeScore >=:compositeScore");
+                hqlBuilder.setParam("compositeScore" , epSelCondition.getCompositeScore() == null ? 0 : epSelCondition.getCompositeScore());
+
+            }
         }
 
         List<Expert> listExpert = expertRepo.findBySql(hqlBuilder);
@@ -361,6 +369,7 @@ public class ExpertServiceImpl implements ExpertService {
         if (Validate.isString(epSelCondition.getExpeRttype())) {
             hqlBuilder.append(" and " + alias + ".expertType = :rttype ").setParam("rttype", epSelCondition.getExpeRttype());
         }
+
     }
 
     @Override
@@ -438,11 +447,11 @@ public class ExpertServiceImpl implements ExpertService {
             int chooseCount = epConditon.getOfficialNum();
             //如果是再次抽取，则要计算已经确认的专家数
             if(notFirstTime){
-                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId,epConditon.getMaJorBig(),epConditon.getMaJorSmall(),epConditon.getExpeRttype());
+                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId,epConditon.getMaJorBig(),epConditon.getMaJorSmall(),epConditon.getExpeRttype() , epConditon.getCompositeScore());
                 chooseCount = (selectedEPCount > -1)?(chooseCount-selectedEPCount):chooseCount;
                 if(chooseCount < 1){
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),
-                            "专业大类【"+epConditon.getMaJorBig()+"】,专业小类【"+epConditon.getMaJorSmall()+"】，专家类型【"+epConditon.getExpeRttype()+"】抽取并确认的专家数已经满足，不用再次抽取！");
+                            "专业大类【"+epConditon.getMaJorBig()+"】,专业小类【"+epConditon.getMaJorSmall()+"】，专家类型【"+epConditon.getExpeRttype() + "】,综合评分【" +epConditon.getCompositeScore()+"】抽取并确认的专家数已经满足，不用再次抽取！");
                     return resultMsg;
                 }
             }

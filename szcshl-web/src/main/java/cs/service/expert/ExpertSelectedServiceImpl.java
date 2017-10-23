@@ -7,9 +7,7 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertSelected;
-import cs.domain.expert.ExpertSelected_;
+import cs.domain.expert.*;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
 import cs.domain.sys.User;
@@ -20,6 +18,7 @@ import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.ExpertCostCountRepo;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
@@ -56,6 +55,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	@Autowired
 	private FinancialManagerService financialManagerService;
 
+	@Autowired
+	private ExpertRepo expertRepo;
+
 
 	@Override
 	@Transactional
@@ -71,8 +73,20 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public void update(ExpertSelectedDto record) {
 		ExpertSelected domain = expertSelectedRepo.findById(record.getId());
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-
+		Expert expert = domain.getExpert();
+		expert.setScoreNum(expert.getScoreNum() == null ? 0 : expert.getScoreNum());
+		expert.setCompositeScore( expert.getCompositeScore() == null ? 0 : expert.getCompositeScore());
+		Double score = expert.getScoreNum() > 1 ? ((expert.getCompositeScore() + record.getScore())/(expert.getScoreNum()+1)) : record.getScore();
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+		hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.compositeScore.getName() + "=:compositeScore" );
+		hqlBuilder.append(" , " + Expert_.scoreNum.getName() + "=:scoreNum where " + Expert_.expertID.getName() + "=:expertId");
+		hqlBuilder.setParam("compositeScore" , score);
+		hqlBuilder.setParam("scoreNum" ,(expert.getScoreNum()+1));
+		hqlBuilder.setParam("expertId" , expert.getExpertID());
+		expertRepo.executeHql(hqlBuilder);
+		domain.setCompositeScore(expert.getCompositeScore());
 		expertSelectedRepo.save(domain);
+
 	}
 
 	@Override
@@ -122,14 +136,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				}
 				if("beginTime".equals(item.getField())){
 					beginTime = item.getValue().toString();
-                    bTime = DateUtils.converToDate1(beginTime,"EEE MMM dd HH:mm:ss Z yyyy");
-                    beginTime = DateUtils.converToString(bTime,"yyyy-MM-dd");
+					bTime = DateUtils.converToDate1(beginTime,"EEE MMM dd HH:mm:ss Z yyyy");
+					beginTime = DateUtils.converToString(bTime,"yyyy-MM-dd");
 					continue;
 				}
 				if("endTime".equals(item.getField())){
 					endTime = item.getValue().toString();
-                    eTime = DateUtils.converToDate1(endTime,"EEE MMM dd HH:mm:ss Z yyyy");
-                    endTime = DateUtils.converToString(eTime,"yyyy-MM-dd");
+					eTime = DateUtils.converToDate1(endTime,"EEE MMM dd HH:mm:ss Z yyyy");
+					endTime = DateUtils.converToString(eTime,"yyyy-MM-dd");
 					continue;
 				}
 				criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
@@ -138,19 +152,19 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		}
 		//根据评审费发放时间查询
 		if(beginTime != null || endTime != null){
-            StringBuffer sqlSB = new StringBuffer();
-            sqlSB.append(" (select count(t.id) from cs_expert_review t  where t.id = "+criteria.getAlias()+"_.EXPERTREVIEWID ");
-            if (Validate.isString(beginTime)) {
-                sqlSB.append(" and t.paydate >= to_date('"+beginTime+"', 'yyyy-mm-dd')");
-            }
-            if (Validate.isString(endTime)) {
-                sqlSB.append(" and t.paydate <= to_date('"+endTime+"', 'yyyy-mm-dd')");
-            }
-            sqlSB.append(" and "+criteria.getAlias()+"_.ISCONFRIM='9'");
-            sqlSB.append(" and "+criteria.getAlias()+"_.ISJOIN='9'");
-            sqlSB.append(" ) > 0 ");
-            criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
-        }
+			StringBuffer sqlSB = new StringBuffer();
+			sqlSB.append(" (select count(t.id) from cs_expert_review t  where t.id = "+criteria.getAlias()+"_.EXPERTREVIEWID ");
+			if (Validate.isString(beginTime)) {
+				sqlSB.append(" and t.paydate >= to_date('"+beginTime+"', 'yyyy-mm-dd')");
+			}
+			if (Validate.isString(endTime)) {
+				sqlSB.append(" and t.paydate <= to_date('"+endTime+"', 'yyyy-mm-dd')");
+			}
+			sqlSB.append(" and "+criteria.getAlias()+"_.ISCONFRIM='9'");
+			sqlSB.append(" and "+criteria.getAlias()+"_.ISJOIN='9'");
+			sqlSB.append(" ) > 0 ");
+			criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
+		}
 		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
 		criteria.setProjection(null);
 		// 处理分页
@@ -203,7 +217,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 			String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
 			String bTime = expertCostDto.getBeginTime()+"-01 00:00:00";
 			String eTime = expertCostDto.getBeginTime()+"-"+day+" 23:59:59";
-            sqlBuilder.append("and r.paydate is not null  ");
+			sqlBuilder.append("and r.paydate is not null  ");
 			sqlBuilder.append("and r.paydate >= to_date('"+bTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 			sqlBuilder.append(" and r.paydate <= to_date('"+eTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 			sqlBuilder.append("and s.isconfrim = '9' ");
@@ -217,8 +231,8 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
 		sqlBuilder.append("where r.paydate is not null and  r.paydate >= to_date('"+timeArr[0]+"-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ");
 		sqlBuilder.append("and  r.paydate <= to_date('"+timeArr[0]+"-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and s.isconfrim = '9' ");
-        sqlBuilder.append("and s.isjoin = '9' ");
+		sqlBuilder.append("and s.isconfrim = '9' ");
+		sqlBuilder.append("and s.isjoin = '9' ");
 		sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
 		sqlBuilder.append("having sum(s.reviewcost)>0 ) t ");
 		sqlBuilder.append("group by t.name,t.idcard,t.userphone ");
@@ -258,12 +272,12 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 	}
 
-    /**
-     * 专家评审费明细汇总
-     * @param expertCostDetailCountDto
-     * @return
-     */
-    @Override
+	/**
+	 * 专家评审费明细汇总
+	 * @param expertCostDetailCountDto
+	 * @return
+	 */
+	@Override
 	public ResultMsg expertCostDetailTotal(ExpertCostDetailCountDto expertCostDetailCountDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		String beginTime = "";
@@ -279,9 +293,9 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		if(null != expertCostDetailCountDto && null != expertCostDetailCountDto.getBeginTime()){
 			String[] timeArr = expertCostDetailCountDto.getBeginTime().split("-");
 			String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
-			 beginTime = expertCostDetailCountDto.getBeginTime()+"-01 00:00:00";
-			 endTime = expertCostDetailCountDto.getBeginTime()+"-"+day+" 23:59:59";
-            sqlBuilder.append(" and r.paydate is not null  ");
+			beginTime = expertCostDetailCountDto.getBeginTime()+"-01 00:00:00";
+			endTime = expertCostDetailCountDto.getBeginTime()+"-"+day+" 23:59:59";
+			sqlBuilder.append(" and r.paydate is not null  ");
 			sqlBuilder.append("and r.paydate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 			sqlBuilder.append(" and r.paydate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 		}
@@ -300,18 +314,18 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				if (null != expertCostCounts[0]) {
 					expertCostCountDto.setExpertId((String) expertCostCounts[0]);
 				}else{
-                    expertCostCountDto.setExpertId(null);
-                }
+					expertCostCountDto.setExpertId(null);
+				}
 				if (null != expertCostCounts[1]) {
 					expertCostCountDto.setName((String) expertCostCounts[1]);
 				}else{
-                    expertCostCountDto.setName(null);
-                }
+					expertCostCountDto.setName(null);
+				}
 				if (null != expertCostCounts[2]) {
 					expertCostCountDto.setExpertNo((String) expertCostCounts[2]);
 				}else{
-                    expertCostCountDto.setExpertNo(null);
-                }
+					expertCostCountDto.setExpertNo(null);
+				}
 				if (null != expertCostCounts[3]) {
 					expertCostCountDto.setReviewcost((BigDecimal) expertCostCounts[3]);
 				}
@@ -348,7 +362,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("on  s.businessid = p.id ");
 		sqlBuilder.append("where 1 = 1 ");
 		sqlBuilder.append("and e.expertid = '" + expertId + "' ");
-        sqlBuilder.append(" and r.paydate is not null ");
+		sqlBuilder.append(" and r.paydate is not null ");
 		sqlBuilder.append("and r.paydate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 		sqlBuilder.append(" and r.paydate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 		sqlBuilder.append("and s.isconfrim ='9' ");
@@ -364,33 +378,33 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				if (null != expertCostDetailCounts[0]) {
 					expertCostDetailCountDto.setExpertId((String) expertCostDetailCounts[0]);
 				}else{
-                    expertCostDetailCountDto.setExpertId(null);
-                }
+					expertCostDetailCountDto.setExpertId(null);
+				}
 				if (null != expertCostDetailCounts[1]) {
 					expertCostDetailCountDto.setName((String) expertCostDetailCounts[1]);
 				}else{
-                    expertCostDetailCountDto.setName(null);
-                }
+					expertCostDetailCountDto.setName(null);
+				}
 				if (null != expertCostDetailCounts[2]) {
 					expertCostDetailCountDto.setExpertNo((String) expertCostDetailCounts[2]);
 				}else{
-                    expertCostDetailCountDto.setExpertNo(null);
-                }
+					expertCostDetailCountDto.setExpertNo(null);
+				}
 				if (null != expertCostDetailCounts[3]) {
 					expertCostDetailCountDto.setReviewTitle((String) expertCostDetailCounts[3]);
 				}else{
-                    expertCostDetailCountDto.setReviewTitle(null);
-                }
+					expertCostDetailCountDto.setReviewTitle(null);
+				}
 				if (null != expertCostDetailCounts[4]) {
 					expertCostDetailCountDto.setReviewType((String) expertCostDetailCounts[4]);
 				}else{
-                    expertCostDetailCountDto.setReviewType(null);
-                }
+					expertCostDetailCountDto.setReviewType(null);
+				}
 				if (null != expertCostDetailCounts[5]) {
 					expertCostDetailCountDto.setReviewDate((Date) expertCostDetailCounts[5]);
 				}else{
-                    expertCostDetailCountDto.setReviewDate(null);
-                }
+					expertCostDetailCountDto.setReviewDate(null);
+				}
 				if (null != expertCostDetailCounts[6]) {
 					expertCostDetailCountDto.setReviewcost((BigDecimal) expertCostDetailCounts[6]);
 				}
