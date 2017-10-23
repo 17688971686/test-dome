@@ -369,5 +369,10 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         return pageModelDto;
     }
 
+    @Override
+    public PageModelDto<SignDispaWork> reviewProject(String expertId) {
+        return signDispaWorkRepo.reviewProject(expertId);
+    }
+
 
 }

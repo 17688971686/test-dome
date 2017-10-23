@@ -5,10 +5,12 @@ import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
+import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertService;
+import cs.service.project.SignDispaWorkService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -36,6 +38,9 @@ public class ExpertController {
     private String ctrlName = "expert";
     @Autowired
     private ExpertService expertService;
+
+    @Autowired
+    private SignDispaWorkService signDispaWorkService;
 
     @RequiresAuthentication
     //@RequiresPermissions("expert#findByOData#post")
@@ -181,6 +186,21 @@ public class ExpertController {
     public List<ExpertSelectHis> expertScoreHis(@RequestBody ExpertSelectHis expertSelectHis) {
         return expertService.expertSelectHis(expertSelectHis,true);
     }
+
+
+    @RequiresAuthentication
+    @RequestMapping(name="查询专家评审的项目信息" , path = "reviewProject" , method =  RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<SignDispaWork> reviewProject(@RequestParam String expertId){
+
+        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
+        if(!"" .equals(expertId)){
+
+            pageModelDto = signDispaWorkService.reviewProject(expertId.substring( 1, expertId.length()));
+        }
+        return pageModelDto;
+    }
+
     // begin#html
     @RequiresPermissions("expert#html/repeat#get")
     @RequestMapping(name = "重复专家查询", path = "html/repeat", method = RequestMethod.GET)

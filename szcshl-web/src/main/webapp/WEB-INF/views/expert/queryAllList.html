@@ -2,6 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/expert/reviewProjectList.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -87,8 +88,12 @@
  	</@shiro.hasPermission> 
 	<@shiro.hasPermission name="expert##put"> 
 	       <a class="btn btn-xs btn-primary" href="#/expertEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
- 	</@shiro.hasPermission> 
+ 	</@shiro.hasPermission>
+	<@shiro.hasPermission name="expert##post">
+    <button class="btn btn-xs btn-success" ng-click="{2}"><span class="glyphicon glyphicon-search"></span>评审项目</button>
+	</@shiro.hasPermission>
 </script>
+
 
 
 

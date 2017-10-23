@@ -23,6 +23,7 @@
             exportToExcel : exportToExcel,      //导出excel功能
             expertSelectHis : expertSelectHis,	//专家抽取统计
             expertScoreHis : expertScoreHis,	//专家评分统计
+			reviewProjectGrid : reviewProjectGrid,  //专家评审项目列表
 		};
 		return service;	
 		
@@ -205,7 +206,8 @@
 					title : "操作",
 					width : "8%",
 					template : function(item) {
-						return common.format($('#columnBtns').html(), "vm.del('" + item.expertID + "')", item.expertID);
+						return common.format($('#columnBtns').html(), "vm.del('" + item.expertID + "')", item.expertID ,
+						"vm.selReviewProject('" + item.expertID + "')");
 					}
 				}
 			];			
@@ -617,5 +619,109 @@
                 success : httpSuccess,
             });
         }//E_expertScoreHis
+
+		//begin reviewProjectGrid
+		function reviewProjectGrid(vm){
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/reviewProject?expertId=" ,+ vm.expertId),
+                schema: common.kendoGridConfig().schema({
+                    id: "signid",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "",
+                    title: "项目名称",
+                    width: 120,
+                    filterable: false,
+                    template: function (item) {
+                        if(item.processInstanceId){
+                            // $("#reviewProject").data("kendoWindow").close();
+                            return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
+                        }else{
+                            // $("#reviewProject").data("kendoWindow").close();
+                            return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
+                        }
+
+                    }
+                },
+                {
+                    field: "builtcompanyname",
+                    title: "建设单位",
+                    width: 100,
+                    filterable: false,
+                },
+                {
+                    field: "reviewstage",
+                    title: "项目阶段",
+                    width: 80,
+                    filterable: false,
+                },
+                {
+                    field: "signdate",
+                    title: "签收日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd}"
+                }
+            ];
+            // End:column
+
+            vm.reviewProjectOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true
+            };
+		}
+		//end reviewProjectGrid
 	}
 })();
