@@ -354,28 +354,10 @@ desired effect
                     </a>
                     <ul class="treeview-menu">
                         <@shiro.hasPermission name="archivesLibrary#html/archivesLibraryAdd#get">
-                            <li><a href="javascript:void(0)" ui-sref="libraryAdd">中心档案借阅</a></li>
+                            <li><a href="javascript:void(0)" ui-sref="libraryAdd">项目档案借阅</a></li>
                         </@shiro.hasPermission>
-
-                        <@shiro.hasPermission name="archivesLibrary#html/archivesCityEdit#get">
-                            <li><a href="javascript:void(0)" ui-sref="archivesCityEdit">市档案借阅</a></li>
-                        </@shiro.hasPermission>
-
-                        <@shiro.hasPermission name="archivesLibrary#html/archivesProjectList#get">
-                            <li>
-                                <a href="javascript:void(0)" ui-sref="archivesProjectRead">
-                                    项目查阅审批
-                                    <span class="label label-danger" id="PROJECT_COUNT">0</span>
-                                </a>
-                            </li>
-                        </@shiro.hasPermission>
-
                         <@shiro.hasPermission name="archivesLibrary#html/archivesLibraryList#get">
-                            <li><a href="javascript:void(0)" ui-sref="archivesLibraryList">中心档案查询</a></li>
-                        </@shiro.hasPermission>
-
-                        <@shiro.hasPermission name="archivesLibrary#html/archivesCityList#get">
-                            <li><a href="javascript:void(0)" ui-sref="archivesCityList">市档案查询</a></li>
+                            <li><a href="javascript:void(0)" ui-sref="archivesLibraryList">档案借阅查询</a></li>
                         </@shiro.hasPermission>
                     </ul>
                 </li>

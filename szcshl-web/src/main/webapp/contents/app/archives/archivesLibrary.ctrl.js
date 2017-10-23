@@ -3,44 +3,62 @@
 
     angular.module('app').controller('archivesLibraryCtrl', archivesLibrary);
 
-    archivesLibrary.$inject = ['$location', 'archivesLibrarySvc','bsWin'];
+    archivesLibrary.$inject = ['archivesLibrarySvc', 'bsWin', '$state'];
 
-    function archivesLibrary($location, archivesLibrarySvc,bsWin) {
+    function archivesLibrary(archivesLibrarySvc, bsWin, $state) {
         var vm = this;
         vm.model = {};
-        vm.title = '档案借阅管理';
+        vm.title = '项目档案借阅管理';
+        vm.id = $state.params.id;
 
-      //保存中心档案借阅
+        activate();
+        function activate() {
+            if ($state.params.id) {
+                archivesLibrarySvc.initArchivesLibrary($state.params.id, function (data) {
+                    vm.model = data;
+                });
+            }
+        }
+
+        //保存中心档案借阅
         vm.createLibrary = function () {
-        	 common.initJqValidation();
-             var isValid = $('form').valid();
-           if(isValid){
-            	archivesLibrarySvc.createArchivesLibrary(vm.model,function(data){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                archivesLibrarySvc.createArchivesLibrary(vm.model, function (data) {
                     if (data.flag || data.reCode == "ok") {
-                            bsWin.alert("操作成功！");
-                    }else{
+                        vm.model = data.reObj;
+                        bsWin.alert("操作成功！");
+                    } else {
                         bsWin.error(data.reMsg);
                     }
                 });
             }
         };
-        
-        //保存市档案借阅
-        vm.createCityLibrary =function(){
-        	 common.initJqValidation();
-             var isValid = $('form').valid();
-           if(isValid){
-            	archivesLibrarySvc.createCityLibrary(vm.model,function(data){
+
+        vm.startFlow = function () {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                archivesLibrarySvc.createArchivesLibrary(vm.model, function (data) {
                     if (data.flag || data.reCode == "ok") {
-                            bsWin.alert("操作成功！");
-                    }else{
+                        vm.model = data.reObj;
+                        archivesLibrarySvc.startFlow(vm.model.id, function (data) {
+                            if (data.flag || data.reCode == "ok") {
+                                bsWin.alert("操作成功！", function () {
+                                    $state.go("archivesLibraryList");
+                                });
+                            } else {
+                                bsWin.error(data.reMsg);
+                            }
+                        })
+                    } else {
                         bsWin.error(data.reMsg);
                     }
                 });
             }
         }
-       
-        
+
         vm.del = function (id) {
             common.confirm({
                 vm: vm,
@@ -69,13 +87,5 @@
             }
         };
 
-        activate();
-        function activate() {
-            archivesLibrarySvc.grid(vm);
-            //中心档案查询列表
-            archivesLibrarySvc.centerLibraryGrid(vm);
-            //市档案查询列表
-            archivesLibrarySvc.cityGridOptions(vm);
-        }
     }
 })();

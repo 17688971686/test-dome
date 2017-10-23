@@ -97,6 +97,7 @@
         BOOKS_BUY_FLOW : "BOOKS_BUY_FLOW",              //图书采购流程
         ASSERT_STORAGE_FLOW : "ASSERT_STORAGE_FLOW",    //资产入库流程
         PROJECT_STOP_FLOW : "PROJECT_STOP_FLOW",        //项目暂停流程
+        FLOW_ARCHIVES : "FLOW_ARCHIVES",                //档案归档流程
     }
     var service = {
         getFlowDefinedKey : function(){

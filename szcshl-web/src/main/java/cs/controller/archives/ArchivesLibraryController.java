@@ -53,64 +53,26 @@ public class ArchivesLibraryController {
         PageModelDto<ArchivesLibraryDto> archivesLibraryDtos = archivesLibraryService.get(odataObj);	
         return archivesLibraryDtos;
     }
-    
-    @RequiresAuthentication
-   // @RequiresPermissions("archivesLibrary#findByCenterList#post")
-    @RequestMapping(name = "中心档案查询列表", path = "findByCenterList", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<ArchivesLibraryDto> findByCenter(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<ArchivesLibraryDto> archivesLibraryDtos = archivesLibraryService.findByCenterData(odataObj);	
-        return archivesLibraryDtos;
-    }
-    
-    @RequiresAuthentication
-    //@RequiresPermissions("archivesLibrary#findByCityList#post")
-    @RequestMapping(name = "市档案查询列表", path = "findByCityList", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<ArchivesLibraryDto> findByCityList(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<ArchivesLibraryDto> archivesLibraryDtos = archivesLibraryService.findByCityList(odataObj);	
-        return archivesLibraryDtos;
-    }
-    
-    @RequiresAuthentication
-   // @RequiresPermissions("archivesLibrary#findByProjectList#post")
-    @RequestMapping(name = "查询审批项目列表", path = "findByProjectList", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<ArchivesLibraryDto> getProject(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<ArchivesLibraryDto> archivesLibraryDtos = archivesLibraryService.findByProjectList(odataObj);	
-        return archivesLibraryDtos;
-    }
-    
-    @RequiresAuthentication
-    //@RequiresPermissions("archivesLibrary#updateLibrary#put")
-    @RequestMapping(name = "项目审批处理", path = "updateLibrary", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void  updateLibrary(@RequestBody ArchivesLibraryDto record) {
-        archivesLibraryService.updateArchivesLibrary(record);
-    }
-    
+
 
     @RequiresAuthentication
     //@RequiresPermissions("archivesLibrary#savaLibrary#post")
-    @RequestMapping(name = "创建中心借阅记录", path = "savaLibrary", method = RequestMethod.POST)
+    @RequestMapping(name = "保存记录", path = "savaLibrary", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg post(@RequestBody ArchivesLibraryDto record) {
       return  archivesLibraryService.save(record);
     }
-    
-    @RequiresAuthentication
-   // @RequiresPermissions("archivesLibrary#saveCity#post")
-    @RequestMapping(name = "创建市借阅记录", path = "saveCity", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody ResultMsg cityAdd(@RequestBody ArchivesLibraryDto record) {
-      return  archivesLibraryService.saveCity(record);
-    }
 
     @RequiresAuthentication
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+    @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startFlow(@RequestParam(required = true) String id) {
+        return archivesLibraryService.startFlow(id);
+    }
+
+
+    @RequiresAuthentication
+	@RequestMapping(name = "主键查询", path = "findById",method=RequestMethod.POST)
 	public @ResponseBody ArchivesLibraryDto findById(@RequestParam(required = true)String id){		
 		return archivesLibraryService.findById(id);
 	}
@@ -141,46 +103,17 @@ public class ArchivesLibraryController {
     // begin#html
    
     @RequiresPermissions("archivesLibrary#html/archivesLibraryAdd#get")
-    @RequestMapping(name = "中心档案借阅", path = "html/archivesLibraryAdd", method = RequestMethod.GET)
+    @RequestMapping(name = "项目档案借阅", path = "html/archivesLibraryAdd", method = RequestMethod.GET)
     public String centerAdd() {
         return ctrlName+"/archivesLibraryAdd";
     }
-    
-    @RequiresPermissions("archivesLibrary#html/archivesLibraryEdit#get")
-    @RequestMapping(name = "中心档案借阅", path = "html/archivesLibraryEdit", method = RequestMethod.GET)
-    public String centerEdit() {
-        return ctrlName+"/archivesLibraryEdit";
-    }
-    
-    @RequiresPermissions("archivesLibrary#html/archivesCityEdit#get")
-    @RequestMapping(name = "市档案借阅", path = "html/archivesCityEdit", method = RequestMethod.GET)
-    public String edit() {
-        return ctrlName+"/archivesCityEdit";
-    }
-    
-    @RequiresPermissions("archivesLibrary#html/archivesProjectList#get")
-    @RequestMapping(name = "项目借阅审批", path = "html/archivesProjectList", method = RequestMethod.GET)
-    public String archivesProjectRead() {
-        return ctrlName+"/archivesProjectList";
-    }
-    
+
     @RequiresPermissions("archivesLibrary#html/archivesLibraryList#get")
-    @RequestMapping(name = "中心档案查询", path = "html/archivesLibraryList", method = RequestMethod.GET)
+    @RequestMapping(name = "档案借阅查询", path = "html/archivesLibraryList", method = RequestMethod.GET)
     public String archivesCenterList() {
         return ctrlName+"/archivesLibraryList"; 
     } 
-    
-    @RequiresPermissions("archivesLibrary#html/archivesCityList#get")
-    @RequestMapping(name = "市档案查询", path = "html/archivesCityList", method = RequestMethod.GET)
-    public String archivesCityList() {
-        return ctrlName+"/archivesCityList"; 
-    }
-    
-    @RequiresPermissions("archivesLibrary#html/archivesLibraryDetail#get")
-    @RequestMapping(name = "查看档案详细", path = "html/archivesLibraryDetail", method = RequestMethod.GET)
-    public String archivesDetail() {
-        return ctrlName+"/archivesLibraryDetail"; 
-    }
+
     // end#html
 
 }

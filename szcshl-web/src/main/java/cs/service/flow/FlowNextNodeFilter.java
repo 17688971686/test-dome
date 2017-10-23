@@ -165,7 +165,55 @@ public enum FlowNextNodeFilter {
             }
             return resultList;
         }
-    };
+    },
+    //以下是档案借阅环节
+    ARC_BZ_SP{
+        //部长审批档案借阅
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            if(businessMap.get(FlowConstant.FlowParams.FGLD_FZ.getValue()) != null){
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_FGLD_SP)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_GDY)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
+    },
+    ARC_FGLD_SP{
+        //分管领导审批档案借阅
+        @Override
+        public List<Node> filterNextNode(Map<String,Object> businessMap,List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            if(businessMap.get(FlowConstant.FlowParams.ZR_FZ.getValue()) != null){
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_ZR_SP)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }else{
+                for(int i=0;i<nextNodeList.size();i++){
+                    if((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_GDY)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
+    }
+    ;
 
     public abstract List<Node> filterNextNode(Map<String,Object> businessMap, List<Node> nextNodeList);
 
@@ -193,6 +241,11 @@ public enum FlowNextNodeFilter {
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FGLD_QRFW_XB);
             case FlowConstant.FLOW_SIGN_FWBH:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FWBH);
+            //以下是档案借阅环节
+            case FlowConstant.FLOW_ARC_BZ_SP:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_BZ_SP);
+            case FlowConstant.FLOW_ARC_FGLD_SP:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_FGLD_SP);
             default:
                 return null;
         }

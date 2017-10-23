@@ -59,6 +59,20 @@ public class FlowConstant {
     public static final String FLOW_STOP_BZ_SP = "STOP_BZ_SP";       //部长审批
     public static final String FLOW_STOP_FGLD_SP = "STOP_FGLD_SP";   //分管领导审批
 
+
+    /**
+     * 档案借阅流程
+     */
+    public final static String FLOW_ARCHIVES = "FLOW_ARCHIVES";           //项目签收流程
+    /**
+     * 档案借阅流程环节
+     */
+    public final static String FLOW_ARC_SQ = "ARC_SQ";              //填报
+    public static final String FLOW_ARC_BZ_SP = "ARC_BZ_SP";        //部长审批
+    public static final String FLOW_ARC_FGLD_SP = "ARC_FGLD_SP";    //分管领导审批
+    public static final String FLOW_ARC_GDY = "ARC_GDY";            //归档员
+    public static final String FLOW_ARC_ZR_SP = "ARC_ZR_SP";        //主任审批
+
     /**
      * 项目签收流程参数
      */
@@ -189,6 +203,8 @@ public class FlowConstant {
      * 流程参数
      */
     public static enum FlowParams{
+        ZR_FZ("zrfz"),                   //主任分支
+        FGLD_FZ("fgldfz"),               //分管领导分支
         USER("user"),                    //单个用户
         USERS("users"),                  //多个用户
         USER_BZ("user_bz"),              //部长
