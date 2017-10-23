@@ -24,7 +24,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @param expeRttype
      * @return
      */
-    int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype);
+    int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype , Integer compositeScort);
 
     /**
      * 根据业务ID统计已经确认的抽取专家

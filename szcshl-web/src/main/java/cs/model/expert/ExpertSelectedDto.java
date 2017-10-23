@@ -5,6 +5,10 @@ import java.math.BigDecimal;
 public class ExpertSelectedDto {
 
     private String id;
+    /**
+     * 综合评分
+     */
+    private Integer compositeScore;
     //评分
     private Double score;
     //评审费用
@@ -39,6 +43,14 @@ public class ExpertSelectedDto {
      * 是否函评
      */
     private String isLetterRw;
+
+    public Integer getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Integer compositeScore) {
+        this.compositeScore = compositeScore;
+    }
 
     private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;

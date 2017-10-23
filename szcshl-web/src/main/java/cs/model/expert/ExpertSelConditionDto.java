@@ -8,6 +8,11 @@ package cs.model.expert;
 public class ExpertSelConditionDto {
 
     private String id;
+
+    /**
+     * 综合评分
+     */
+    private Integer compositeScore;
     /**
      * 突出专业(大类)
      */
@@ -54,6 +59,14 @@ public class ExpertSelConditionDto {
     private ExpertReviewDto expertReviewDto;
 
     public ExpertSelConditionDto() {
+    }
+
+    public Integer getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Integer compositeScore) {
+        this.compositeScore = compositeScore;
     }
 
     public String getId() {

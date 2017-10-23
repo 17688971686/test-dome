@@ -23,6 +23,12 @@ public class ExpertSelected {
     @Column(columnDefinition = "NUMBER")
     private Double score;
 
+    /**
+     * 综合评分
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Double compositeScore;
+
     //评审费用
     @Column(columnDefinition = "NUMBER default 1000")
     private BigDecimal reviewCost;
@@ -88,6 +94,15 @@ public class ExpertSelected {
     @ManyToOne
     @JoinColumn(name = "expertId")
     private Expert expert;
+
+
+    public Double getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Double compositeScore) {
+        this.compositeScore = compositeScore;
+    }
 
     public String getId() {
         return id;
