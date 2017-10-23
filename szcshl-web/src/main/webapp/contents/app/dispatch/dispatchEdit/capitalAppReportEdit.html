@@ -45,6 +45,7 @@
                 <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                        ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true"
                        data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
+                <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
             </td>
         </tr>
 
@@ -91,7 +92,7 @@
 
 
         <tr>
-            <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+            <td style="width:150px;" class="text-center">发行范围</td>
             <td colspan="5">
                     <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
@@ -282,6 +283,7 @@
                                           ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.projectBuildNecess"
                                           id="projectBuildNecess" name="projectBuildNecess" data-val="true"
                                           data-val-required="必填"/>
+                            <span data-valmsg-for="projectBuildNecess" data-valmsg-replace="true" class="errors"></span>
                         </td>
                     </tr>
 
@@ -291,6 +293,7 @@
                                 <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                           rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent"
                                           name="buildSizeContent" data-val="true" data-val-required="必填"/>
+                            <span data-valmsg-for="buildSizeContent" data-valmsg-replace="true" class="errors"></span>
                         </td>
                     </tr>
 
@@ -300,6 +303,7 @@
                                 <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                           rows="3" ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin"
                                           name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
+                            <span data-valmsg-for="fundTotalOrigin" data-valmsg-replace="true" class="errors"></span>
                         </td>
                     </tr>
 
@@ -309,6 +313,7 @@
                                 <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                           rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
                                           name="nextWorkPlan" data-val="true" data-val-required="必填"/>
+                            <span data-valmsg-for="nextWorkPlan" data-valmsg-replace="true" class="errors"></span>
                         </td>
                     </tr>
 

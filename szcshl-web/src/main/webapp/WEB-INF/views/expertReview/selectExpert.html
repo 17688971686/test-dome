@@ -310,7 +310,7 @@
                 <td align="center">
                     <input type="checkbox" name="seletedEp" ng-checked="selectExpertList" value="{{x.id}}"/>
                 </td>
-                <td align="center">{{x.expertDto.name}}</td>
+                <td align="center"><a ng-click="vm.findName(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>

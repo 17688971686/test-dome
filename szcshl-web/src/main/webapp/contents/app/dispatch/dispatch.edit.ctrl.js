@@ -174,7 +174,13 @@
 
         // 创建发文
         vm.create = function () {
-            dispatchSvc.saveDispatch(vm);
+            common.initJqValidation($('#dispatch_form'));
+            var isValid = $('#dispatch_form').valid();
+            if(isValid){
+                dispatchSvc.saveDispatch(vm);
+            }else{
+                bsWin.alert("页面未填报完整或者为正确，请检查！");
+            }
         }
         // 核减（增）/核减率（增）计算
         vm.count = function () {
