@@ -352,6 +352,7 @@
                 controller: 'expertSelectCtrl',
                 controllerAs: 'vm'
             })
+            
             .state('expertScore',{
                 url: '/expertScore',
                 templateUrl: rootPath + '/expert/html/scoreList.html',

@@ -312,6 +312,7 @@
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
+                if(expertReview.reviewCost){
                 expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
                     if(data.flag || data.reCode == "ok"){
                         bsWin.alert("操作成功！",function(){
@@ -321,6 +322,9 @@
                         bsWin.alert(data.reMsg);
                     }
                 });
+                }else{
+                    bsWin.alert("请计算税率，再保存！");
+                }
             }else{
                 bsWin.alert("请正确填写专家评审费信息！");
             }

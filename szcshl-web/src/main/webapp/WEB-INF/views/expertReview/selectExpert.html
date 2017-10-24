@@ -4,7 +4,7 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <!--确认参加会议专家的弹窗公共页面-->
 <#include "/expertReview/expert_confirm.html"/>
-
+<#include "/expertReview/expertDetail.html"/>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li class="active">专家抽取</li>
@@ -162,7 +162,7 @@
                                 <td align="center">
                                     <input type="checkbox" name="autoEPCheck" ng-checked="vm.checkAutoOfficeExpert" value="{{x.id}}"/>
                                 </td>
-                                <td align="center">{{x.expertDto.name}}</td>
+                                <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                                 <td align="center">{{x.maJorBig}}</td>
                                 <td align="center">{{x.maJorSmall}}</td>
                                 <td align="center">{{x.expeRttype}}</td>
@@ -187,7 +187,7 @@
                                 <td align="center">
                                     <input type="checkbox" name="autoEPCheck" ng-checked="vm.checkAutoAntiExpert" value="{{x.id}}"/>
                                 </td>
-                                <td align="center">{{x.expertDto.name}}</td>
+                                <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                                 <td align="center">{{x.maJorBig}}</td>
                                 <td align="center">{{x.maJorSmall}}</td>
                                 <td align="center">{{x.expeRttype}}</td>
@@ -215,7 +215,7 @@
                     <td width="15%" align="center">备注</td>
                 </tr>
                 <tr ng-repeat="x in  vm.confirmEPList|filter:{selectType:'1',isConfrim:'9'} track by $index">
-                    <td align="center">{{x.expertDto.name}}</td>
+                    <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                     <td align="center">{{x.expertDto.comPany}}</td>
                     <td align="center">{{x.expertDto.job}}/{{x.post}}</td>
                     <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
@@ -271,7 +271,7 @@
                     <td width="15%" align="center">备注</td>
                 </tr>
                 <tr ng-repeat="x in vm.matchExpertList track by $index">
-                    <td align="center">{{x.name}}</td>
+                    <td align="center"><a ng-click="vm.findExportDetail(x.expertID)">{{x.name}}</a></td>
                     <td align="center">{{x.comPany}}</td>
                     <td align="center">{{x.job}}/{{x.post}}</td>
                     <td align="center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
@@ -310,7 +310,7 @@
                 <td align="center">
                     <input type="checkbox" name="seletedEp" ng-checked="selectExpertList" value="{{x.id}}"/>
                 </td>
-                <td align="center"><a ng-click="vm.findName(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
+                <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
@@ -401,7 +401,7 @@
                 <td align="center">
                     <input type="checkbox" name="seletedOutEp" ng-checked="selectOutExpertList" value="{{x.id}}"/>
                 </td>
-                <td align="center">{{x.expertDto.name}}</td>
+                <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}} {{x.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}} {{x.expertDto.majorWork}}</td>
@@ -479,7 +479,7 @@
                 <td width="10%" align="center">备注</td>
             </tr>
             <tr ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'9'} track by $index">
-                <td align="center">{{x.expertDto.name}}</td>
+                <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>

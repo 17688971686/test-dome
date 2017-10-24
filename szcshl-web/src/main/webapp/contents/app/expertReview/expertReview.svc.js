@@ -64,7 +64,10 @@
                     field: "name",
                     title: "姓名",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                  template: function (item) {
+                      return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
+                  }
                 },
                 {
                     field: "degRee",
@@ -72,6 +75,7 @@
                     width: 100,
                     filterable: false
                 },
+
                 {
                     field: "sex",
                     title: "性别",

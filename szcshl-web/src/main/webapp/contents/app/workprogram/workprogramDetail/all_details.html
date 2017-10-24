@@ -4,7 +4,7 @@
     <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [{{w.titleName}}]
     </a>
-    <div id="wp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9) ||w.isSigle=="合并评审" && w.isMainProject == 0 || w.isSigle=="单个评审" || vm.showAll}'>
+    <div id="wp_{{$index}}" class="collapse" ng-class='{in: (w.isSigle=="合并评审" && w.isMainProject == 9) || w.isSigle=="单个评审" || vm.showAll}'>
         <table  class="table table-bordered" style="margin-bottom: 0px;" >
             <caption>
                 <span ng-show="w.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
@@ -124,6 +124,11 @@
                 <td class="text-center" colspan="2">专家费用</td>
                 <td colspan="7">{{w.expertCost}}</td>
             </tr>
+            <tr  ng-if="w.reviewType == '专家函评'" >
+                <td class="text-center" colspan="2">函评会日期</td>
+                <td colspan="7">{{w.letterDate}}</td>
+            </tr>
+
             <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" style="width:20%;" colspan="2">评审会日期</td>
                 <td class="text-center" style="width:15%;">会议室名称</td>
@@ -235,6 +240,10 @@
             <tr>
                 <td class="text-center">专家费用</td>
                 <td colspan="7">{{w.expertCost}}</td>
+            </tr>
+            <tr  ng-if="w.reviewType == '专家函评'" >
+                <td class="text-center" colspan="2">函评会日期</td>
+                <td colspan="7">{{w.letterDate}}</td>
             </tr>
             <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" style="width:10%;">评审会日期</td>
