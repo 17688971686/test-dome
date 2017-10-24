@@ -144,11 +144,12 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     @Override
     public List<Expert> exportData(String filters) {
         int flag=0;
-        Boolean b = false;
+
         String[] filterArr = filters.split(",");
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select * from cs_expert  ");
         if(filterArr.length>0 && !"".equals(filterArr[0]) ){
+            Boolean b = false;
             hqlBuilder.append(" where ");
             for(int i=0 ; i<filterArr.length ; i++){
                 String filter = filterArr[i];
@@ -179,10 +180,11 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
                     }
                 }
             }
+            if(!b){
+                hqlBuilder.append(" )");
+            }
         }
-        if(!b){
-            hqlBuilder.append(" )");
-        }
+
         List<Expert> expertList = this.findBySql(hqlBuilder);
         return expertList;
     }
