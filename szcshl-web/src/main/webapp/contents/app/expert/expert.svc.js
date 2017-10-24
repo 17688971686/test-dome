@@ -563,7 +563,6 @@
         //S_导出综合查询的excel功能
         function exportToExcel(vm){
             var fileName = escape(encodeURIComponent(vm.fileName));
-            console.log(vm.expert);
             if(vm.expert && vm.expert !=undefined){
                 var filters = JSON.stringify(vm.expert);
                 var filterDate = filters.substring(1,filters.length-1);

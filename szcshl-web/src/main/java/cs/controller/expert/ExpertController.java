@@ -63,6 +63,7 @@ public class ExpertController {
     @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp ,@RequestParam String filterData ,@RequestParam String fileName){
+        ServletOutputStream sos = null;
         try {
 //            ODataObj odataObj = new ODataObj(request);
 //            odataObj.setTop(0);
@@ -94,12 +95,20 @@ public class ExpertController {
 
             resp.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
 
-            ServletOutputStream sos = resp.getOutputStream();
+            sos = resp.getOutputStream();
             wb.write(sos);
             sos.flush();
-            sos.close();
+
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try{
+                sos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+
         }
     }
 

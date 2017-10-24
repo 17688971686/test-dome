@@ -12,6 +12,7 @@
         vm.expertId = "";
         vm.headerType = "专家类型";
         vm.fileName = "专家信息";
+        vm.expert = {};
         activate();
         function activate() {
             expertSvc.grid(vm);
