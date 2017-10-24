@@ -153,6 +153,25 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     /**
+     * 根据主业务ID和分类获取附件信息
+     * @param mainId
+     * @return
+     */
+    @Override
+    public List<SysFileDto> queryFile(String mainId,String sysBusiType) {
+        List<SysFile> sysFiles = sysFileRepo.queryFileList(mainId,sysBusiType);
+        List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
+        if (sysFiles != null) {
+            sysFiles.forEach(sf -> {
+                SysFileDto sysFileDto = new SysFileDto();
+                BeanCopierUtils.copyProperties(sf, sysFileDto);
+                sysFileDtoList.add(sysFileDto);
+            });
+        }
+        return sysFileDtoList;
+    }
+
+    /**
      * 根据业务ID获取附件信息
      */
     /**

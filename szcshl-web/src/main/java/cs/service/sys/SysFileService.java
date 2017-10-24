@@ -27,4 +27,6 @@ public interface SysFileService {
     List<SysFileDto> findByBusinessId(String businessId);
 
     List<SysFileDto> findByMainId(String mainId);
+
+    List<SysFileDto> queryFile(String mainId,String sysBusiType);
 }

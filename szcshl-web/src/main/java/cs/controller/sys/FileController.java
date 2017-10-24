@@ -74,6 +74,13 @@ public class FileController {
         List<SysFileDto> sysfileDto = fileService.findByMainId(mainId);
         return sysfileDto;
     }
+    @RequiresAuthentication
+    @RequestMapping(name = "点树形图文件夹获取附件", path = "queryFile", method = RequestMethod.POST)
+    public @ResponseBody
+    List<SysFileDto> queryFile(@RequestParam String mainId,@RequestParam String sysBusiType)throws ParseException{
+        List<SysFileDto> sysfileDto = fileService.queryFile(mainId,sysBusiType);
+        return sysfileDto;
+    }
 
     /**
      *
@@ -289,6 +296,13 @@ public class FileController {
     public String pluginfile(Model model) {
         return ctrlName + "/pluginfile";
     }
+
+    @RequestMapping(name = "附件管理", path = "html/rightList")
+    public String rightList(Model model) {
+        return ctrlName + "/rightList";
+    }
+
+
 
 
     @RequiresAuthentication

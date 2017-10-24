@@ -9,4 +9,7 @@ public interface SysFileRepo extends IRepository<SysFile, String> {
 
 	List<SysFile> findBySignId(String signid);
 
+	List<SysFile> queryFileList(String mainId,String sysBusiType);
+
+
 }

@@ -1032,8 +1032,15 @@
                 controller : 'reviewFeeCtrl',
                 controllerAs : 'vm'
             })
+            //附件右边列表页
+            .state('signFlowDeal.fileList',{ //文件列表
+                url : '/fileList/:id/:type',
+                templateUrl : rootPath + '/file/html/rightList.html',
+                controller : 'fileListCtrl',
+                controllerAs : 'vm'
+            })
 
-        ;
+
     }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {
         //获取表头名称
         $rootScope.getTBHeadName = function(stageName,isAdvanced,type){

@@ -137,6 +137,7 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
+                    sysfileSvc.initZtreeClient(vm);//树形图
                 }
             });
             //初始化个人常用意见

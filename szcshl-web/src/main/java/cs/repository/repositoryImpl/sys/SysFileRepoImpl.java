@@ -22,4 +22,13 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
 		return sysFile;
 	}
 
+	@Override
+	public List<SysFile> queryFileList(String mainId,String sysBusiType){
+		Criteria criteria =getExecutableCriteria();
+ 		criteria.add(Restrictions.eq(SysFile_.mainId.getName(),mainId));
+		criteria.add(Restrictions.eq(SysFile_.sysBusiType.getName(),sysBusiType));
+		List<SysFile> sysFiles = criteria.list();
+		return sysFiles;
+	}
+
 }
