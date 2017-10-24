@@ -636,4 +636,17 @@ public class ExpertServiceImpl implements ExpertService {
         }
         return resultList;
     }
+
+    @Override
+    public List<ExpertDto> exportData(String filters) {
+        List<Expert> expertList = expertRepo.exportData(filters);
+        List<ExpertDto> expertDtoList = new ArrayList<>();
+        for(Expert expert : expertList){
+            ExpertDto expertDto = new ExpertDto();
+            BeanCopierUtils.copyProperties(expert , expertDto);
+            expertDto.setUnable(Constant.EnumState.NO.getValue().equals(expertDto.getUnable()) ? "否" : "是");
+            expertDtoList.add(expertDto);
+        }
+        return expertDtoList;
+    }
 }

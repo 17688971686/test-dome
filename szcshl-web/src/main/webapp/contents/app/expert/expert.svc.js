@@ -561,8 +561,15 @@
 		}//end updateAudit
 
         //S_导出综合查询的excel功能
-        function exportToExcel(){
-            var httpOptions ={
+        function exportToExcel(vm){
+            var fileName = escape(encodeURIComponent(vm.fileName));
+            console.log(vm.expert);
+            if(vm.expert && vm.expert !=undefined){
+                var filters = JSON.stringify(vm.expert);
+                var filterDate = filters.substring(1,filters.length-1);
+            }
+            window.open(rootPath + "/expert/exportToExcel?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" +fileName);
+           /* var httpOptions ={
                 method : 'post',
                 url : rootPath+"/expert/exportToExcel",
                 responseType: 'arraybuffer',
@@ -578,7 +585,7 @@
                 $http : $http ,
                 httpOptions : httpOptions,
                 success : httpSuccess
-            });
+            });*/
 
         }//E_exportToExcel
 
@@ -659,15 +666,6 @@
             // Begin:column
             var columns = [
                 {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {
                     field: "rowNumber",
                     title: "序号",
                     width: 50,
@@ -675,20 +673,10 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "",
+                    field: "projectname",
                     title: "项目名称",
                     width: 120,
                     filterable: false,
-                    template: function (item) {
-                        if(item.processInstanceId){
-                            // $("#reviewProject").data("kendoWindow").close();
-                            return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
-                        }else{
-                            // $("#reviewProject").data("kendoWindow").close();
-                            return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
-                        }
-
-                    }
                 },
                 {
                     field: "builtcompanyname",
@@ -708,7 +696,16 @@
                     width: 100,
                     filterable: false,
                     format: "{0:yyyy/MM/dd}"
-                }
+                },{
+					field : "",
+					title :"操作",
+					width : 100 ,
+                    filterable: false,
+					template : function(item){
+                        return common.format($('#columnBtns2').html(),
+                            "vm.queryDetail('" + item.signid + "','"+ item.processInstanceId+"')");
+					}
+				}
             ];
             // End:column
 
