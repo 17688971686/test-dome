@@ -90,7 +90,10 @@
         activate();
         function activate(){
             headerSvc.findHeaderListNoSelected(vm);
-            headerSvc.findHeaderListSelected(vm);
+            headerSvc.findHeaderListSelected(vm , function(data){
+                vm.selectedHeaderList = data;
+                vm.header = true;
+            });
         }
     }
 })();

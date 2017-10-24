@@ -3,13 +3,15 @@
 
     angular.module('app').controller('expertCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc'];
+    expert.$inject = ['$location', 'expertSvc' , '$state'];
 
-    function expert($location, expertSvc) {
+    function expert($location, expertSvc , $state) {
         var vm = this;
         vm.data = {};
         vm.title = '专家列表';
         vm.expertId = "";
+        vm.headerType = "专家类型";
+        vm.fileName = "专家信息";
         activate();
         function activate() {
             expertSvc.grid(vm);
@@ -62,7 +64,7 @@
          * 导出execl功能
          */
         vm.exportToExcel = function () {
-            expertSvc.exportToExcel();
+            expertSvc.exportToExcel(vm);
         }
 
         /**
@@ -81,6 +83,12 @@
                 closable: true,
                 actions: ["Pin", "Minimize", "Maximize", "close"]
             }).data("kendoWindow").center().open();
+
+        }
+
+        vm.queryDetail = function(signId , processInstanceId){
+            $("#reviewProject").data("kendoWindow").close();
+            $state.go('signDetails' ,{signid : signId , processInstanceId :  processInstanceId} );
 
         }
     }

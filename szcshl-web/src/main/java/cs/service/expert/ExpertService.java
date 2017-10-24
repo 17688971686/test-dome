@@ -3,6 +3,7 @@ package cs.service.expert;
 import java.util.List;
 
 import cs.common.ResultMsg;
+import cs.domain.expert.Expert;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;
@@ -43,4 +44,11 @@ public interface ExpertService {
      * @return
      */
     List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis,boolean isScore);
+
+    /**
+     * 通过查询条件，查询数据 -用于专家信息导出
+     * @param filters
+     * @return
+     */
+    List<ExpertDto> exportData(String filters);
 }

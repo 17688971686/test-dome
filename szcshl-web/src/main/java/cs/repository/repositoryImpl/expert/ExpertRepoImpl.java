@@ -140,4 +140,50 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
         }
         return  criteria.list();
     }
+
+    @Override
+    public List<Expert> exportData(String filters) {
+        int flag=0;
+        Boolean b = false;
+        String[] filterArr = filters.split(",");
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select * from cs_expert  ");
+        if(filterArr.length>0 && !"".equals(filterArr[0]) ){
+            hqlBuilder.append(" where ");
+            for(int i=0 ; i<filterArr.length ; i++){
+                String filter = filterArr[i];
+                String[] params = filter.split(":");
+                if("expertType".equals( params[0].substring(1,params[0].length()-1))
+                        || "maJorBig".equals( params[0].substring(1,params[0].length()-1))
+                        || "maJorSmall".equals( params[0].substring(1,params[0].length()-1))){
+                    if(flag == 0){
+
+                        hqlBuilder.append(" expertID in (select expertID from cs_expert_type where ");
+                    }
+                    if( flag > 0){
+                        hqlBuilder.append(" and ");
+                    }
+                    flag ++;
+                    hqlBuilder.append( params[0].substring(1,params[0].length()-1) + "=:");
+                    hqlBuilder.append( params[0].substring(1,params[0].length()-1));
+                    hqlBuilder.setParam(params[0].substring(1,params[0].length()-1) , params[1].substring(1,params[1].length()-1));
+                }else{
+                    if(flag >0){
+                        b =true;
+                        hqlBuilder.append(" )");
+                    }
+                    hqlBuilder.append( params[0].substring(1,params[0].length()-1) + "=:" + params[0].substring(1,params[0].length()-1) );
+                    hqlBuilder.setParam(params[0].substring(1,params[0].length()-1) , params[1].substring(1,params[1].length()-1));
+                    if(i<filterArr.length-1){
+                        hqlBuilder.append(" and ");
+                    }
+                }
+            }
+        }
+        if(!b){
+            hqlBuilder.append(" )");
+        }
+        List<Expert> expertList = this.findBySql(hqlBuilder);
+        return expertList;
+    }
 }

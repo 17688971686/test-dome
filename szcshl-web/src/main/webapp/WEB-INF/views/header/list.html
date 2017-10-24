@@ -73,8 +73,7 @@
                 <td>
                     <select  ng-model="vm.header.headerType" name="headerType" id="headerType" data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
-                        <option value="项目类型">项目类型</option>
-                        <option value="课题类型">课题类型</option>
+                        <option ng-repeat="x in DICT.HEADER_TYPE.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.header.headerType">{{x.dictName}}</option>
                     </select>
                     <span data-valmsg-for="headerType" data-valmsg-replace="true" class="errors"></span>
                 </td>

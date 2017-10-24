@@ -164,9 +164,7 @@
         function createHeader(vm){
             common.initJqValidation();
             var isValid = $('form').valid();
-            console.log(vm.header);
             if (vm.header.headerKey!=undefined && vm.header.headerName!=undefined && vm.header.headerType!=undefined) {
-                console.log(12324);
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + '/header/createHeader',

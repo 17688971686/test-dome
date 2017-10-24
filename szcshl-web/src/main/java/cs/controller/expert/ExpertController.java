@@ -5,12 +5,16 @@ import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
+import cs.domain.expert.Expert;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.Header;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
+import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertService;
 import cs.service.project.SignDispaWorkService;
+import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -42,6 +46,9 @@ public class ExpertController {
     @Autowired
     private SignDispaWorkService signDispaWorkService;
 
+    @Autowired
+    private HeaderService headerService;
+
     @RequiresAuthentication
     //@RequiresPermissions("expert#findByOData#post")
     @RequestMapping(name = "获取专家数据", path = "findByOData", method = RequestMethod.POST)
@@ -53,22 +60,39 @@ public class ExpertController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.POST)
+    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp){
+    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp ,@RequestParam String filterData ,@RequestParam String fileName){
         try {
-            ODataObj odataObj = new ODataObj(request);
-            odataObj.setTop(0);
-            odataObj.setCount(false);
-            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
+//            ODataObj odataObj = new ODataObj(request);
+//            odataObj.setTop(0);
+//            odataObj.setCount(false);
+//            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
+            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
+            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
+            List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("专家类型");//选中的表字段
+            List<Header> headerList = headerService.findHeaderByType("专家类型");//所有 表字段
+            List<ExpertDto> expertDtoList = expertService.exportData(filters);
             ExcelTools excelTools = new ExcelTools();
-            String [] headerPair =new String[]{"姓名=name","工作单位=comPany","办公电话=phone","手机号码=userPhone","职位=job","职称=post","专家类型=expertSort"};
-            HSSFWorkbook wb = excelTools.createExcelBook("专家信息" , headerPair , expertDtoList.getValue() , ExpertDto.class);
+            String[] headerPair ;
+            if(headerDtoList.size()>0) {
+                headerPair = new String[headerDtoList.size()];
+                for (int i = 0; i < headerDtoList.size(); i++) {
+                    headerPair[i] = headerDtoList.get(i).getHeaderName() + "=" + headerDtoList.get(i).getHeaderKey();
+                }
+            }else{
+                headerPair = new String[headerList.size()];
+                for (int i = 0; i < headerList.size(); i++) {
+                    headerPair[i] = headerList.get(i).getHeaderName() + "=" + headerList.get(i).getHeaderKey();
+                }
+            }
+            HSSFWorkbook wb = excelTools.createExcelBook("专家信息" , headerPair , expertDtoList , ExpertDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
-            resp.setHeader("Content-type" , "application/x-msexcel");
-            resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
-           /* String fileName = new String((title+".xls").getBytes("GB2312") , "ISO-8859-1");
-            resp.setHeader("Content-Disposition" , "attachment;filename="+fileName);*/
+            resp.setHeader("Content-type", "application/x-msexcel");
+            resp.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
+            String fileName2 = new String((title + ".xls").getBytes("GB2312"), "ISO-8859-1");
+
+            resp.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
 
             ServletOutputStream sos = resp.getOutputStream();
             wb.write(sos);
