@@ -26,6 +26,8 @@ import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,6 +58,52 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
+
+    /**
+     * 查询个人办理项目
+     * @param oDataObj
+     * @param isMianUser
+     * @return
+     */
+    @Override
+    public PageModelDto<SignDispaWork> findMyDoProject(ODataObj oDataObj,boolean isMianUser) {
+        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
+        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        criteria = oDataObj.buildFilterToCriteria(criteria);
+        if(isMianUser){
+            criteria.add(Restrictions.eq(SignDispaWork_.mUserId.getName() , SessionUtil.getUserId()));
+        }else{
+            criteria.add(Restrictions.like(SignDispaWork_.aUserID.getName() , SessionUtil.getUserId()));
+        }
+
+        //统计总数
+        Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        pageModelDto.setCount(totalResult);
+        //处理分页
+        criteria.setProjection(null);
+        if(oDataObj.getSkip() > 0){
+            criteria.setFirstResult(oDataObj.getSkip());
+        }
+        if(oDataObj.getTop() > 0){
+            criteria.setMaxResults(oDataObj.getTop());
+        }
+
+        //处理orderby
+        if(Validate.isString(oDataObj.getOrderby())){
+            if(oDataObj.isOrderbyDesc()){
+                criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
+            }else{
+                criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
+            }
+        }
+
+        List<SignDispaWork> signDispaWorkList = criteria.list();
+
+        pageModelDto.setValue(signDispaWorkList);
+
+
+        return pageModelDto;
+    }
     /**
      * 项目综合查询
      * @param odataObj

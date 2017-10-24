@@ -4,6 +4,7 @@ import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelTools;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
@@ -162,5 +163,24 @@ public class SignDispaWorkController {
     @RequestMapping(name = "项目查询统计", path = "html/signList", method = RequestMethod.GET)
     public String signList() {
         return "sign/signList";
+    }
+
+
+    @RequiresAuthentication
+    @RequestMapping(name="个人主办项目",path="html/personMainTasks",method=RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<SignDispaWork> personMainTasks(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj,true);
+        return pageModelDto;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name="个人协办项目",path="html/personAssistTasks",method=RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<SignDispaWork> personAssistTasks(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj,false);
+        return pageModelDto;
     }
 }

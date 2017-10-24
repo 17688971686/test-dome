@@ -88,6 +88,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
 
         if(Validate.isString(record.getId())){
             domain = archivesLibraryRepo.findById(record.getId());
+            BeanCopierUtils.copyPropertiesIgnoreNull(record,domain);
         }else{
             BeanCopierUtils.copyProperties(record, domain);
             domain.setId(UUID.randomUUID().toString());

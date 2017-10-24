@@ -11,9 +11,9 @@ import java.util.Date;
  * Author: mcl
  * Date: 2017/9/27 10:07
  */
-public class AppraiseReportDto extends BaseDto{
+public class AppraiseReportDto extends BaseDto {
 
-    private String id ;
+    private String id;
 
     /**
      * 申请原因
@@ -44,10 +44,27 @@ public class AppraiseReportDto extends BaseDto{
     private Date proposerTime;
 
     /**
+     * 部长ID
+     */
+    private String ministerId;
+    /**
      * 部长名称
      */
-    private String ministerName ;
+    private String ministerName;
 
+    /**
+     * 部长意见
+     */
+    private String ministerOpinion;
+
+    /**
+     * 综合部审批时间
+     */
+    private Date ministerDate;
+    /**
+     * 综合部处理人Id
+     */
+    private String generalConductorId;
 
     /**
      * 综合部处理人名称
@@ -56,23 +73,33 @@ public class AppraiseReportDto extends BaseDto{
 
 
     /**
-     * 部长意见
-     */
-    private String ministerOpinion;
-
-    /**
      * 综合部处理人意见
      */
     private String generalConductorOpinion;
 
-
+    /**
+     * 综合部审批时间
+     */
+    private Date generalConductorDate;
     /**
      * 审批环节  0 ： 未审批   1：部长审批   9：综合部审批
      */
     private String approveStatus;
 
+    /**
+     * 最终审批是否通过（9：通过，0：不通过）
+     */
+    private String isAgree;
 
+    /**
+     * 项目Id
+     */
     private String signId;
+
+    /**
+     * 流程实例ID
+     */
+    private String processInstanceId;
 
     public String getId() {
         return id;
@@ -168,5 +195,53 @@ public class AppraiseReportDto extends BaseDto{
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getMinisterId() {
+        return ministerId;
+    }
+
+    public void setMinisterId(String ministerId) {
+        this.ministerId = ministerId;
+    }
+
+    public String getGeneralConductorId() {
+        return generalConductorId;
+    }
+
+    public void setGeneralConductorId(String generalConductorId) {
+        this.generalConductorId = generalConductorId;
+    }
+
+    public String getIsAgree() {
+        return isAgree;
+    }
+
+    public void setIsAgree(String isAgree) {
+        this.isAgree = isAgree;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public Date getMinisterDate() {
+        return ministerDate;
+    }
+
+    public void setMinisterDate(Date ministerDate) {
+        this.ministerDate = ministerDate;
+    }
+
+    public Date getGeneralConductorDate() {
+        return generalConductorDate;
+    }
+
+    public void setGeneralConductorDate(Date generalConductorDate) {
+        this.generalConductorDate = generalConductorDate;
     }
 }

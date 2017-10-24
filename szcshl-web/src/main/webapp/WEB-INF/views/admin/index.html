@@ -163,13 +163,6 @@ desired effect
                                 </a>
                             </li>
                         </@shiro.hasPermission>
-                        <@shiro.hasPermission name="admin#personDtasks#get">
-                            <li>
-                                <a href="javascript:void(0)"  ui-sref="personDtasks">
-                                    <i class="glyphicon glyphicon-tasks"></i>个人主办项目
-                                </a>
-                            </li>
-                        </@shiro.hasPermission>
                         <@shiro.hasPermission name="admin#dtasks#get">
                             <li>
                                 <a href="javascript:void(0)"  ui-sref="dtasks">
@@ -206,13 +199,6 @@ desired effect
                                     <span class="label label-danger" id="SUPPLETTER_COUNT">0</span>
                                 </a>
                             </li>
-                        </@shiro.hasPermission>
-
-                        <@shiro.hasPermission name="reviewProjectAppraise#html/approveList#get">
-                            <li><a href="javascript:void(0)" ui-sref="approveList">
-                                评审报告评优审批
-                                <span class="label label-danger" id="APPRAISE_COUNT">0</span>
-                            </a></li>
                         </@shiro.hasPermission>
 
                         <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyAppoveList#get">
@@ -253,6 +239,7 @@ desired effect
                         <@shiro.hasPermission name="signView#html/signList#get">
                             <li><a href="javascript:void(0)"  ui-sref="signList">项目查询统计 </a></li>
                         </@shiro.hasPermission>
+
                         <@shiro.hasPermission name="assistPlan#html/manager#get">
                             <li><a href="javascript:void(0)" ui-sref="assistPlan">协审计划管理</a></li>
                         </@shiro.hasPermission>
@@ -260,21 +247,17 @@ desired effect
                             <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
                         </@shiro.hasPermission>
 
-                        <!-- start 项目资料函管理 -->
+                        <@shiro.hasPermission name="admin#personDtasks#get">
+                        <li><a href="javascript:void(0)" ui-sref="personDtasks">个人主办项目</a></li>
+                        </@shiro.hasPermission>
 
+                        <!-- start 项目资料函管理 -->
                         <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
                             <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
                         </@shiro.hasPermission>
 
                         <!-- end 项目资料函管理 -->
                         <!-- start 优秀评审报告管理 -->
-
-                        <@shiro.hasPermission name="reviewProjectAppraise#html/edit#get">
-                            <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseEdit">评审报告评优</a></li>
-                        </@shiro.hasPermission>
-
-
-
                         <@shiro.hasPermission name="reviewProjectAppraise#html/list#get">
                             <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseList">优秀评审报告查询</a></li>
                         </@shiro.hasPermission>

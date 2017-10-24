@@ -1,46 +1,43 @@
 (function(){
     'use strict';
     angular.module('app').controller('approveWindowCtrl' , approveWindow);
-    approveWindow.$inject = ['$state','reviewProjectAppraiseSvc'];
-    function approveWindow($state , reviewProjectAppraiseSvc){
+    approveWindow.$inject = ['$state','reviewProjectAppraiseSvc','bsWin'];
+    function approveWindow($state , reviewProjectAppraiseSvc,bsWin){
         var vm = this;
         var signId = $state.params.signId;
-        var projectName = $state.params.projectName;
-        var id = $state.params.id;
+        vm.model = {};
 
         activate();
         function  activate(){
-            if(id && id !=''){
-                vm.approve = true;
-                vm.idea = false;
-                reviewProjectAppraiseSvc.getAppraiseById(id , function(data){
-                    vm.appraise = data;
-                    vm.appraise.generalConductorOpinion = "9";
-                })
-            }else{
-                vm.approve = false;
-                vm.idea = true;
-                vm.appraise = {};
-                vm.appraise.signId = signId;
-                vm.appraise.projectName = projectName;
-                reviewProjectAppraiseSvc.initProposer(function(data){
-                    vm.appraise.proposerName = data.proposerName;
-                    vm.appraise.generalConductorOpinion = "9";
-                })
-            }
-
+            reviewProjectAppraiseSvc.initBySignId(signId,function(data){
+                vm.model = data;
+            })
         }
 
         /**
-         * 保存审批意见
+         * 发起流程
          */
         vm.commitApprove = function (){
-            if(id && id != ''){
-                reviewProjectAppraiseSvc.saveApprove(vm);
+            common.initJqValidation();
+            var isValid = $('#form').valid();
+            if(isValid){
+                reviewProjectAppraiseSvc.saveApply(vm.model,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.model = data.reObj;
+                        reviewProjectAppraiseSvc.startFlow(vm.model.id,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.success("操作成功！",function(){
+                                    $state.go("personDtasks");
+                                });
+                            }
+                        });
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
             }else{
-                reviewProjectAppraiseSvc.saveApply(vm);
+                bsWin.alert("优秀评审报告填报表单未填写正确！");
             }
-
         }
     }
 })();

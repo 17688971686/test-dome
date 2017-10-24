@@ -63,7 +63,7 @@ public class FlowConstant {
     /**
      * 档案借阅流程
      */
-    public final static String FLOW_ARCHIVES = "FLOW_ARCHIVES";           //项目签收流程
+    public final static String FLOW_ARCHIVES = "FLOW_ARCHIVES";
     /**
      * 档案借阅流程环节
      */
@@ -72,6 +72,18 @@ public class FlowConstant {
     public static final String FLOW_ARC_FGLD_SP = "ARC_FGLD_SP";    //分管领导审批
     public static final String FLOW_ARC_GDY = "ARC_GDY";            //归档员
     public static final String FLOW_ARC_ZR_SP = "ARC_ZR_SP";        //主任审批
+
+
+    /**
+     * 优秀评审报告流程
+     */
+    public final static String FLOW_APPRAISE_REPORT = "FLOW_APPRAISE_REPORT";
+    /**
+     * 优秀评审报告流程环节
+     */
+    public final static String FLOW_ARP_FZR = "ARP_FZR";              //负责填报
+    public static final String FLOW_ARP_BZ_SP = "ARP_BZ_SP";          //部长审批
+    public static final String FLOW_ARP_ZHB_SP = "ARP_ZHB_SP";        //综合部审批
 
     /**
      * 项目签收流程参数
@@ -203,11 +215,13 @@ public class FlowConstant {
      * 流程参数
      */
     public static enum FlowParams{
+        ISAGREE("agree"),                //是否同意
         ZR_FZ("zrfz"),                   //主任分支
         FGLD_FZ("fgldfz"),               //分管领导分支
         USER("user"),                    //单个用户
         USERS("users"),                  //多个用户
         USER_BZ("user_bz"),              //部长
+        USER_ZHB("user_zhb"),            //综合部人员
         USER_FGLD("user_fgld"),          //分管领导
         USER_ZR("user_zr"),              //主任
         USER_GDY("user_gdy"),            //归档员

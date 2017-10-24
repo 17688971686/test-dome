@@ -6,9 +6,32 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li>我的工作台</li>
+        <li>项目管理</li>
         <li class="active">{{vm.title}}</li>
     </ol>
+    <div class="well">
+        <form id="searchform" name="searchform">
+            <span class="help-inline">项目名称：</span>
+            <input type="text" operator="like" name="projectname" id="projectnam" placeholder="请输入">
+
+            <span class="help-inline" style="margin-left:10px;">项目状态：</span>
+            <select operator="eq" name="signState" id="signState" placeholder="请选择">
+                <option value="">请选择</option>
+                <option value="1">进行中</option>
+                <option value="2">已暂停</option>
+                <option value="8">强制结束</option>
+                <option value="9">已完成</option>
+                <option value="5">未发起</option>
+            </select>
+
+            <span class="help-inline" style="margin-left:10px;">签收日期：</span>
+            <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'" name="signdate"  operator="gt">
+            -
+            <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  name="signdate"  operator="lt"/>
+
+            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>
+        </form>
+    </div>
     <!--操作说明提示框-->
     <ol class="breadcrumb">
         <li class="active">
@@ -24,12 +47,11 @@
 </div>
 
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}/{3}"><span class="glyphicon glyphicon-pencil"></span>查看</a>
+    <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}"><span class="glyphicon glyphicon-pencil"></span>查看</a>
     <!-- 暂停项目 -->
-    <button class="btn btn-xs btn-warning" ng-click="{4}" ng-hide="{5}"><span class="glyphicon glyphicon-off"></span>暂停
-    </button>
+    <button class="btn btn-xs btn-warning" ng-click="{3}" ng-hide="{4}"><span class="glyphicon glyphicon-off"></span>暂停</button>
     <!-- 启动项目 -->
-    <button class="btn btn-xs btn-success" ng-click="{6}" ng-show="{7}"><span
-            class="glyphicon glyphicon-play-circle"></span>启动
-    </button>
+    <button class="btn btn-xs btn-success" ng-click="{5}" ng-show="{6}"><span class="glyphicon glyphicon-play-circle"></span>启动</button>
+    <!--项目评优-->
+    <a class="btn btn-xs btn-primary" href="#/approveWindow/{7}" ng-hide="{8}">评审报告评优</a>
 </script>

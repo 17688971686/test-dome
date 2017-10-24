@@ -23,6 +23,7 @@ import cs.service.flow.IFlow;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
+import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
@@ -88,6 +89,9 @@ public class FlowController {
     @Autowired
     @Qualifier("archivesFlowImpl")
     private IFlow archivesFlowImpl;
+    @Autowired
+    @Qualifier("appraiseFlowImpl")
+    private IFlow appraiseFlowImpl;
 
     @Autowired
     private TopicInfoService topicInfoService;
@@ -99,6 +103,9 @@ public class FlowController {
     private ProjectStopService projectStopService;
     @Autowired
     private ArchivesLibraryService archivesLibraryService;
+    @Autowired
+    private AppraiseService appraiseService;
+
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -132,16 +139,6 @@ public class FlowController {
     PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
-        return pageModelDto;
-    }
-
-    //@RequiresPermissions("flow#html/personDtasks#post")
-    @RequiresAuthentication
-    @RequestMapping(name="个人在办项目",path="html/personDtasks",method=RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<RuProcessTask> personDtasks(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<RuProcessTask> pageModelDto = flowService.queryPersonTasks(odataObj);
         return pageModelDto;
     }
 
@@ -277,6 +274,9 @@ public class FlowController {
             case FlowConstant.FLOW_ARCHIVES:
                 flowDto.setBusinessMap(archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                flowDto.setBusinessMap(appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -337,6 +337,9 @@ public class FlowController {
                 break;
             case FlowConstant.FLOW_ARCHIVES:
                 resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
+                break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -420,6 +423,9 @@ public class FlowController {
             case FlowConstant.FLOW_ARCHIVES:
                 resultPage = "archives/flowDeal";
                 break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                resultPage = "reviewProjectAppraise/flowDeal";
+                break;
             default:
                 ;
         }
@@ -447,6 +453,9 @@ public class FlowController {
             case FlowConstant.FLOW_ARCHIVES:
                 resultPage = "archives/flowDetail";
                 break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                resultPage = "reviewProjectAppraise/flowDetail";
+                break;
             default:
                 ;
         }
@@ -470,6 +479,9 @@ public class FlowController {
                 break;
             case FlowConstant.FLOW_ARCHIVES:
                 resultPage = "archives/flowEnd";
+                break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             default:
                 ;

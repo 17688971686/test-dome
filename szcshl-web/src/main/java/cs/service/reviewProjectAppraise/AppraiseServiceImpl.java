@@ -1,20 +1,32 @@
 package cs.service.reviewProjectAppraise;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.*;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
 import cs.model.project.AppraiseReportDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.reviewProjectAppraise.AppraiseRepo;
-import org.apache.regexp.RE;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.rtx.RTXSendMsgPool;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
@@ -22,10 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Description: 优秀评审项目
@@ -41,54 +50,23 @@ public class AppraiseServiceImpl implements AppraiseService {
     @Autowired
     private AppraiseRepo appraiseRepo;
 
-
     @Autowired
     private SignRepo signRepo;
+    @Autowired
+    private RuntimeService runtimeService;
+    @Autowired
+    private ProcessEngine processEngine;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
 
-    /**
-     * 查询办结项目信息
-     * @param oDataObj
-     * @return
-     */
-    @Override
-    public PageModelDto<SignDispaWork> findEndProject(ODataObj oDataObj) {
-        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
-        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
-        criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName() , Constant.EnumState.YES.getValue()));
-        criteria.add(Restrictions.eq(SignDispaWork_.mUserName.getName() , SessionUtil.getDisplayName()));
-
-        //统计总数
-        Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        //处理分页
-        criteria.setProjection(null);
-        if(oDataObj.getSkip() > 0){
-            criteria.setFirstResult(oDataObj.getSkip());
-        }
-        if(oDataObj.getTop() > 0){
-            criteria.setMaxResults(oDataObj.getTop());
-        }
-
-        //处理orderby
-        if(Validate.isString(oDataObj.getOrderby())){
-            if(oDataObj.isOrderbyDesc()){
-                criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-            }else{
-                criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
-            }
-        }
-
-        List<SignDispaWork> signDispaWorkList = criteria.list();
-
-        pageModelDto.setValue(signDispaWorkList);
-
-
-        return pageModelDto;
-    }
 
     /**
      * 查询优秀评审报告列表
+     *
      * @param oDataObj
      * @return
      */
@@ -97,25 +75,25 @@ public class AppraiseServiceImpl implements AppraiseService {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(SignDispaWork_.isAppraising.getName() , Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.eq(SignDispaWork_.isAppraising.getName(), Constant.EnumState.YES.getValue()));
 
         //统计总数
-        Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
         //处理分页
         criteria.setProjection(null);
-        if(oDataObj.getSkip() > 0){
+        if (oDataObj.getSkip() > 0) {
             criteria.setFirstResult(oDataObj.getSkip());
         }
-        if(oDataObj.getTop() > 0){
+        if (oDataObj.getTop() > 0) {
             criteria.setMaxResults(oDataObj.getTop());
         }
 
         //处理orderby
-        if(Validate.isString(oDataObj.getOrderby())){
-            if(oDataObj.isOrderbyDesc()){
+        if (Validate.isString(oDataObj.getOrderby())) {
+            if (oDataObj.isOrderbyDesc()) {
                 criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-            }else{
+            } else {
                 criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
             }
         }
@@ -132,65 +110,69 @@ public class AppraiseServiceImpl implements AppraiseService {
     @Transactional
     public void updateIsAppraising(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update "+ Sign.class.getSimpleName()+" set " + Sign_.isAppraising.getName() + "=:isAppraising " + " where " + Sign_.signid.getName()+"=:signId");
-        hqlBuilder.setParam("isAppraising" , Constant.EnumState.YES.getValue());
-        hqlBuilder.setParam("signId" , signId);
+        hqlBuilder.append("update " + Sign.class.getSimpleName() + " set " + Sign_.isAppraising.getName() + "=:isAppraising " + " where " + Sign_.signid.getName() + "=:signId");
+        hqlBuilder.setParam("isAppraising", Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("signId", signId);
         signRepo.executeHql(hqlBuilder);
 
     }
 
-    /**
-     * 初始化 申请人
-     * @return
-     */
-    @Override
-    public AppraiseReportDto initProposer() {
-
-        AppraiseReportDto appraiseReportDto = new AppraiseReportDto();
-        appraiseReportDto.setProposerName(SessionUtil.getDisplayName());
-        return appraiseReportDto;
-    }
 
     /**
      * 保存申请信息
+     *
      * @param appraiseReportDto
      */
     @Override
     @Transactional
-    public void saveApply(AppraiseReportDto appraiseReportDto) {
-
-        AppraiseReport appraiseReport = new AppraiseReport();
-        BeanCopierUtils.copyProperties(appraiseReportDto , appraiseReport);
-        appraiseReport.setId(UUID.randomUUID().toString());
-        appraiseReport.setCreatedBy(SessionUtil.getDisplayName());
-        Date now = new Date();
-        appraiseReport.setCreatedDate(now);
-        appraiseReport.setModifiedBy(SessionUtil.getDisplayName());
-        appraiseReport.setModifiedDate(now);
-        if(SessionUtil.getUserInfo().getOrg() != null && SessionUtil.getUserInfo().getOrg().getOrgDirectorName()!= null){
-            appraiseReport.setMinisterName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());//部长
-        }else{
-            appraiseReport.setMinisterName(SessionUtil.getDisplayName());
+    public ResultMsg saveApply(AppraiseReportDto appraiseReportDto) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReportDto.getSignId());
+        if (Validate.isString(sign.getIsAppraising()) && (Constant.EnumState.YES.getValue().equals(sign.getIsAppraising())
+                || Constant.EnumState.NO.getValue().equals(sign.getIsAppraising())) || Constant.EnumState.PROCESS.getValue().equals(sign.getIsAppraising())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已经申报过优秀评审报告评优，不能重复申请！");
         }
 
-        appraiseReport.setGeneralConductorName(Constant.GENERALCONDUTOR);//综合部处理人
+        AppraiseReport appraiseReport = new AppraiseReport();
+        Date now = new Date();
+        if (Validate.isString(appraiseReportDto.getId())) {
+            appraiseReport = appraiseRepo.findById(appraiseReportDto.getId());
+            BeanCopierUtils.copyPropertiesIgnoreNull(appraiseReportDto, appraiseReport);
+        } else {
+            BeanCopierUtils.copyProperties(appraiseReportDto, appraiseReport);
+            appraiseReport.setId(UUID.randomUUID().toString());
+            appraiseReport.setCreatedBy(SessionUtil.getDisplayName());
+            appraiseReport.setCreatedDate(now);
+            if (!Validate.isString(appraiseReport.getProposerName())) {
+                appraiseReport.setProposerName(SessionUtil.getDisplayName());
+            }
+            if (appraiseReport.getProposerTime() == null) {
+                appraiseReport.setProposerTime(now);
+            }
+        }
 
-        appraiseReport.setApproveStatus(Constant.EnumState.NO.getValue());//默认审批环节为：未审批
-
+        appraiseReport.setModifiedBy(SessionUtil.getDisplayName());
+        appraiseReport.setModifiedDate(now);
         appraiseRepo.save(appraiseReport);
 
-
         //修改收文 状态
-        HqlBuilder hql = HqlBuilder.create();
+        sign.setIsAppraising(Constant.EnumState.PROCESS.getValue());
+        signRepo.save(sign);
+       /* HqlBuilder hql = HqlBuilder.create();
         hql.append("update " +Sign.class.getSimpleName() + " set " + Sign_.isAppraising.getName() + "=:isAppraising");
         hql.append(" where " + Sign_.signid.getName() + "=:signId");
         hql.setParam("signId" , appraiseReportDto.getSignId());
         hql.setParam("isAppraising" , Constant.EnumState.PROCESS.getValue());//修改收文为：审核中
-        signRepo.executeHql(hql);
+        signRepo.executeHql(hql);*/
+
+        //复制返回值
+        BeanCopierUtils.copyProperties(appraiseReport, appraiseReportDto);
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", appraiseReportDto);
     }
 
     /**
      * 查询优秀评审报告审批列表
+     *
      * @param oDataObj
      * @return
      */
@@ -199,7 +181,7 @@ public class AppraiseServiceImpl implements AppraiseService {
         PageModelDto<AppraiseReportDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = appraiseRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        boolean b = false;
+       /*
         if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
                 || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){//部长
             criteria.add(Restrictions.eq(AppraiseReport_.ministerName.getName() , SessionUtil.getDisplayName()));
@@ -209,155 +191,213 @@ public class AppraiseServiceImpl implements AppraiseService {
             criteria.add(Restrictions.eq(AppraiseReport_.generalConductorName.getName() , SessionUtil.getDisplayName()));
             criteria.add(Restrictions.eq(AppraiseReport_.approveStatus.getName() , Constant.EnumState.PROCESS.getValue()));
             b=true;
+        }*/
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+
+        pageModelDto.setCount(totalResult);
+
+        criteria.setProjection(null);
+        if (oDataObj.getSkip() > 0) {
+            criteria.setFirstResult(oDataObj.getSkip());
         }
-        if(b) {
-            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-
-            pageModelDto.setCount(totalResult);
-
-            criteria.setProjection(null);
-            if (oDataObj.getSkip() > 0) {
-                criteria.setFirstResult(oDataObj.getSkip());
-            }
-            if (oDataObj.getTop() > 0) {
-                criteria.setMaxResults(oDataObj.getTop());
-            }
-
-            if (Validate.isString(oDataObj.getOrderby())) {
-                if (oDataObj.isOrderbyDesc()) {
-                    criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-                } else {
-                    criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
-                }
-            }
-            List<AppraiseReport> appraiseRepoList = criteria.list();
-            List<AppraiseReportDto> appraiseReportDtoList = new ArrayList<>();
-            for (AppraiseReport appraiseReport : appraiseRepoList) {
-                AppraiseReportDto appraiseReportDto = new AppraiseReportDto();
-                BeanCopierUtils.copyProperties(appraiseReport, appraiseReportDto);
-                appraiseReportDtoList.add(appraiseReportDto);
-            }
-            pageModelDto.setValue(appraiseReportDtoList);
+        if (oDataObj.getTop() > 0) {
+            criteria.setMaxResults(oDataObj.getTop());
         }
+
+        if (Validate.isString(oDataObj.getOrderby())) {
+            if (oDataObj.isOrderbyDesc()) {
+                criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
+            } else {
+                criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
+            }
+        }
+        List<AppraiseReport> appraiseRepoList = criteria.list();
+        List<AppraiseReportDto> appraiseReportDtoList = new ArrayList<>();
+        for (AppraiseReport appraiseReport : appraiseRepoList) {
+            AppraiseReportDto appraiseReportDto = new AppraiseReportDto();
+            BeanCopierUtils.copyProperties(appraiseReport, appraiseReportDto);
+            appraiseReportDtoList.add(appraiseReportDto);
+        }
+        pageModelDto.setValue(appraiseReportDtoList);
         return pageModelDto;
     }
 
     /**
      * 通过id获取优秀评审报告的信息
+     *
      * @param id
      * @return
      */
     @Override
     public AppraiseReportDto getAppraiseById(String id) {
-        AppraiseReport appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName() , id);
+        AppraiseReport appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), id);
         AppraiseReportDto appraiseReportDto = new AppraiseReportDto();
         BeanCopierUtils.copyProperties(appraiseReport, appraiseReportDto);
         return appraiseReportDto;
     }
 
     /**
-     * 保存审批意见
-     * @param appraiseReportDto
-     */
-    @Override
-    @Transactional
-    public void saveApprove(AppraiseReportDto appraiseReportDto) {
-
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update " + AppraiseReport.class.getSimpleName()+" set " );
-        hqlBuilder.append(" " + AppraiseReport_.approveStatus.getName() + "=:approveStatus");
-        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
-            hqlBuilder.append(" , " + AppraiseReport_.ministerOpinion.getName() + "=:ministerOption");
-            hqlBuilder.setParam("ministerOption" , appraiseReportDto.getMinisterOpinion());
-            hqlBuilder.setParam("approveStatus" , Constant.EnumState.PROCESS.getValue());
-
-        }else if(Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
-
-            hqlBuilder.append(" , " + AppraiseReport_.generalConductorOpinion.getName() + "=:generalConductorOpinion");
-
-            //修改收文 状态
-            HqlBuilder hql = HqlBuilder.create();
-            hql.append("update " +Sign.class.getSimpleName() + " set " + Sign_.isAppraising.getName() + "=:isAppraising");
-            hql.append(" where " + Sign_.signid.getName() + "=:signId");
-            hql.setParam("signId" , appraiseReportDto.getSignId());
-
-            if("8".equals(appraiseReportDto.getGeneralConductorOpinion())){//未通过
-
-                hqlBuilder.setParam("generalConductorOpinion" , "未通过");
-
-                hql.setParam("isAppraising" , Constant.EnumState.FORCE.getValue());//修改收文为：未通过
-            }else {
-                hqlBuilder.setParam("generalConductorOpinion", "通过");
-
-                hql.setParam("isAppraising" , Constant.EnumState.YES.getValue());//修改收文为：通过
-            }
-
-            hqlBuilder.setParam("approveStatus", Constant.EnumState.YES.getValue());
-
-            signRepo.executeHql(hql);
-
-        }
-
-        hqlBuilder.append(" where " + AppraiseReport_.id.getName() + "=:id");
-        hqlBuilder.setParam("id" , appraiseReportDto.getId());
-
-        appraiseRepo.executeHql(hqlBuilder);
-
-
-    }
-
-
-    /**
-     * 优秀评审报告统计
+     * 通过项目ID，初始化优秀评审报告
+     *
+     * @param signId
      * @return
      */
     @Override
-    @Transactional
-    public int countApprove() {
-        Criteria criteria = appraiseRepo.getExecutableCriteria();
-        //部长审核
-        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
-            criteria.add(Restrictions.eq(AppraiseReport_.ministerName.getName() , SessionUtil.getDisplayName()));
-            criteria.add(Restrictions.eq(AppraiseReport_.approveStatus.getName() , Constant.EnumState.NO.getValue()));
-        }
-        //综合部
-        else if(Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
-            criteria.add(Restrictions.eq(AppraiseReport_.generalConductorName.getName(),SessionUtil.getLoginName()));
-            criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
-        }else{
-            return 0;
-        }
-        return ((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+    public AppraiseReportDto initBySignId(String signId) {
+        AppraiseReportDto resultDto = new AppraiseReportDto();
+        Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
+        resultDto.setProposerName(SessionUtil.getDisplayName());
+        resultDto.setSignId(sign.getSignid());
+        resultDto.setProposerTime(new Date());
+        resultDto.setProjectName(sign.getProjectname());
+
+        return resultDto;
     }
 
+    /**
+     * 发起流程
+     *
+     * @param id
+     * @return
+     */
     @Override
-    public List<AppraiseReportDto> findHomeAppraise() {
+    public ResultMsg startFlow(String id) {
+        AppraiseReport appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), id);
+        if (appraiseReport == null) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "发起流程失败，该项目已不存在！");
+        }
+        if (Validate.isString(appraiseReport.getProcessInstanceId())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已发起流程！");
+        }
+        if (SessionUtil.getUserInfo().getOrg() == null || !Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgDirector())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您所在部门还没设置部长，请联系管理员进行设置！");
+        }
+        //1、启动流程
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.FLOW_APPRAISE_REPORT, id,
+                ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), SessionUtil.getUserId()));
 
-        Criteria criteria = appraiseRepo.getExecutableCriteria();
-        List<AppraiseReportDto> appraiseReportDtoList = new ArrayList<>();
-        //部长审核
-        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
-            criteria.add(Restrictions.eq(AppraiseReport_.ministerName.getName() , SessionUtil.getDisplayName()));
-            criteria.add(Restrictions.eq(AppraiseReport_.approveStatus.getName() , Constant.EnumState.NO.getValue()));
+        //2、设置流程实例名称
+        processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), appraiseReport.getAppraiseReportName());
+
+        //3、更改项目状态
+        appraiseReport.setProcessInstanceId(processInstance.getId());
+        appraiseReport.setApproveStatus(Constant.EnumState.NO.getValue());
+        appraiseRepo.save(appraiseReport);
+
+        //4、跳过第一环节（填报）
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+
+        //优秀评审报告申请部长和项目签收流程环节一致
+        //查询部门领导
+        OrgDept orgDept = orgDeptRepo.queryBySignBranchId(appraiseReport.getSignId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+        if (orgDept == null) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
         }
-        //综合部
-        else if(Constant.GENERALCONDUTOR.equals(SessionUtil.getDisplayName())){
-            criteria.add(Restrictions.eq(AppraiseReport_.generalConductorName.getName(),SessionUtil.getLoginName()));
-            criteria.add(Restrictions.eq(ProjectStop_.approveStatus.getName(),Constant.EnumState.PROCESS.getValue()));
-        }else{
-            return appraiseReportDtoList;
+        if (!Validate.isString(orgDept.getDirectorID())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
         }
-        criteria.setMaxResults(6);
-        criteria.addOrder(Order.desc(AppraiseReport_.createdDate.getName()));
-        List<AppraiseReport> appraiseReportList = criteria.list();
-        for(AppraiseReport a : appraiseReportList){
-            AppraiseReportDto appraiseReportDto = new AppraiseReportDto();
-            BeanCopierUtils.copyProperties(a , appraiseReportDto);
-            appraiseReportDtoList.add(appraiseReportDto);
+        User leadUser = userRepo.getCacheUserById(orgDept.getDirectorID());
+        String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue));
+
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    /**
+     * 流程处理
+     *
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    @Override
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+        String businessId = processInstance.getBusinessKey(),
+                assigneeValue = "";                            //流程处理人
+        Map<String, Object> variables = new HashMap<>();        //流程参数
+        User dealUser = null;                                  //用户
+        List<User> dealUserList = null;                        //用户列表
+        AppraiseReport appraiseReport = null;                //档案借阅管理
+
+        //环节处理人设定
+        switch (task.getTaskDefinitionKey()) {
+            //项目负责人填报
+            case FlowConstant.FLOW_ARP_FZR:
+                appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
+                OrgDept orgDept = orgDeptRepo.queryBySignBranchId(appraiseReport.getSignId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+                if (orgDept == null) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
+                }
+                if (!Validate.isString(orgDept.getDirectorID())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
+                }
+                User leadUser = userRepo.getCacheUserById(orgDept.getDirectorID());
+                assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+                break;
+            //部长审批
+            case FlowConstant.FLOW_ARP_BZ_SP:
+                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                }
+                appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
+                //同意
+                if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    appraiseReport.setMinisterId(SessionUtil.getUserId());
+                    appraiseReport.setMinisterName(SessionUtil.getDisplayName());
+                    appraiseReport.setMinisterOpinion(flowDto.getDealOption());
+                    appraiseReport.setMinisterDate(new Date());
+
+                    //获取综合部档案评审员用户
+                    dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.APPRAISE_REVIEWER.getValue());
+                    if (!Validate.isList(dealUserList)) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.APPRAISE_REVIEWER.getValue() + "】角色用户！");
+                    }
+                    dealUser = dealUserList.get(0);
+                    assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    variables.put(FlowConstant.FlowParams.USER_ZHB.getValue(), assigneeValue);
+                    variables.put(FlowConstant.FlowParams.ISAGREE.getValue(), true);
+                    //如果不同意，则直接结束
+                } else {
+                    Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReport.getSignId());
+                    sign.setIsAppraising(Constant.EnumState.NO.getValue());
+                    signRepo.save(sign);
+                    appraiseReport.setApproveStatus(Constant.EnumState.NO.getValue());
+                    variables.put(FlowConstant.FlowParams.ISAGREE.getValue(), false);
+                }
+                appraiseRepo.save(appraiseReport);
+                break;
+            //综合部负责人审批
+            case FlowConstant.FLOW_ARP_ZHB_SP:
+                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                }
+                appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
+                Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReport.getSignId());
+                if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    sign.setIsAppraising(Constant.EnumState.YES.getValue());
+                    appraiseReport.setApproveStatus(Constant.EnumState.YES.getValue());
+                } else {
+                    appraiseReport.setApproveStatus(Constant.EnumState.NO.getValue());
+                    sign.setIsAppraising(Constant.EnumState.NO.getValue());
+                }
+                signRepo.save(sign);
+                appraiseRepo.save(appraiseReport);
+                break;
+            default:
+                break;
         }
-        return appraiseReportDtoList;
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+        }
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 }

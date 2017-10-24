@@ -320,18 +320,18 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.append(" AND lwp.ID IS NULL ");
         hqlBuilder.append(" AND CURSEL.ID IS NULL ");
 
+
         //加上选择的条件
-        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || Validate.isNumber(epSelCondition.getCompositeScore().toString())) {
+        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || epSelCondition.getCompositeScore() != null ) {
             hqlBuilder.append(" AND (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
             buildCondition(hqlBuilder, "ept", epSelCondition);
             hqlBuilder.append(" ) > 0");
-            if(epSelCondition.getCompositeScore() != null &&   epSelCondition.getCompositeScore() > 0){
+            if(epSelCondition.getCompositeScore() != null &&  epSelCondition.getCompositeScore() > 0){
                 hqlBuilder.append(" and  ep.compositeScore>=:compositeScore");
                 hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
             }else {
                 hqlBuilder.append(" and  ep.compositeScore is null or ep.compositeScore >=:compositeScore");
                 hqlBuilder.setParam("compositeScore" , epSelCondition.getCompositeScore() == null ? 0 : epSelCondition.getCompositeScore());
-
             }
         }
 

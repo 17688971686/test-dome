@@ -12,11 +12,9 @@
             etasksGrid: etasksGrid,		                //个人办结项目
             dtasksGrid: dtasksGrid,                     //在办项目
             doingTaskGrid : doingTaskGrid,              //所有在办项目
-            persontasksGrid : persontasksGrid,          //个人在办项目
+            personMainTasksGrid : personMainTasksGrid,  //个人主办项目
             countWorakday: countWorakday,	            //计算工作日
-
             agendaTaskGrid:agendaTaskGrid,              //个人待办任务（除项目流程外）
-
             initFile: initFile,	        //初始化附件
             upload: upload,	            //	下载附件
             getSignList: getSignList,   //项目查询统计
@@ -28,7 +26,6 @@
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
             excelExport : excelExport,              //项目统计导出
             statisticalGrid : statisticalGrid,
-            findHomeAppraise : findHomeAppraise, //初始化评审报告评优审批 信息
             findHomeAddSuppLetter : findHomeAddSuppLetter ,//初始化 拟补充资料函信息
             findHomeMonthly : findHomeMonthly , //初始化主页上的月报简报信息
 
@@ -70,24 +67,6 @@
             });
         }
         //end findHomeAddSuppLetter
-
-        //begin findHomeAppraise
-        function findHomeAppraise(vm){
-            var httpOptions = {
-                method : 'get',
-                url : rootPath + '/reviewProjectAppraise/findHomeAppraise'
-            }
-            var httpSuccess = function success(response){
-                vm.appraiseList = response.data;
-            }
-            common.http({
-                vm :vm,
-                $http : $http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-        }
-        //end findHomeAppraise
 
         //begin excelExport
         function excelExport(vm , fileName , project){
@@ -976,10 +955,10 @@
         } //end_initSignList
 
         //begin persontasksGrid
-        function  persontasksGrid(vm) {
+        function  personMainTasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/personDtasks"),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks"),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -992,9 +971,9 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
+                pageSize: 15,
                 sort: {
-                    field: "createdDate",
+                    field: "signdate",
                     dir: "desc"
                 }
             });
@@ -1042,95 +1021,154 @@
                     width: 50
                 },
                 {
-                    field: "projectName",
-                    title: "项目名称",
-                    filterable: false,
-                    width: 150
-                },
-                {
-                    field: "reviewStage",
-                    title: "项目阶段",
-                    filterable: false,
-                    width: 150
-                },
-                {
-                    field: "nodeName",
-                    title: "当前环节",
-                    width: 120,
-                    filterable: false
-                },
-                {
-                    field: "preSignDate",
-                    title: "预签收时间",
-                    width: 120,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd}"
-                },
-                {
-                    field: "signDate",
-                    title: "正式签收时间",
-                    width: 120,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd}"
-                },
-                {
                     field: "",
-                    title: "剩余工作日",
-                    width: 100,
+                    title: "项目名称",
+                    width: 160,
                     filterable: false,
-                    template : function(item){
-                        if(item.surplusDays != undefined){
-                            if(item.surplusDays >=0){
-                                return item.surplusDays;
-                            }else{
-                                return 0;
-                            }
-                        }else{
-                            return "";
+                    template: function (item) {
+                        if (item.processInstanceId) {
+                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        } else {
+                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
 
                     }
                 },
                 {
-                    field: "displayName",
-                    title: "处理人",
+                    field: "reviewstage",
+                    title: "评审阶段",
                     width: 100,
-                    filterable: false,
+                    filterable: false
+                },
+                {
+                    field: "signdate",
+                    title: "收文日期",
+                    width: 100,
+                    filterable: false
                 },
                 {
                     field: "",
-                    title: "流程状态",
-                    width: 80,
+                    title: "项目状态",
+                    width: 100,
                     filterable: false,
                     template: function (item) {
-                        if (item.processState && item.processState == 2) {
-                            return '<span style="color:orange;">已暂停</span>';
-                        } else {
-                            return '<span style="color:green;">进行中</span>';
+                        var returnStr = "";
+                        switch (item.signState){
+                            case "1":
+                                returnStr = "进行中";
+                                break;
+                            case "2":
+                                returnStr = "暂停";
+                                break;
+                            case "8":
+                                returnStr = "强制结束";
+                                break;
+                            case "9":
+                                returnStr = "已完成";
+                                break;
+                            default:
+                                ;
                         }
+                        return returnStr;
                     }
+                },
+                {
+                    field: "dispatchtype",
+                    title: "发文日期",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "aUserName",
+                    title: "项目负责人",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "ffilenum",
+                    title: "归档编号",
+                    width: 130,
+                    filterable: false
+                },
+                {
+                    field: "dfilenum",
+                    title: "文件字号",
+                    width: 80,
+                    filterable: false
+                },
+                {
+                    field: "appalyinvestment",
+                    title: "申报投资",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "authorizevalue",
+                    title: "审定投资",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "extravalue",
+                    title: "核减[增]投资",
+                    width: 110,
+                    filterable: false
+                },
+                {
+                    field: "extrarate",
+                    title: "核减率",
+                    width: 80,
+                    filterable: false
+                },
+                {
+                    field: "approvevalue",
+                    title: "批复金额",
+                    width: 80,
+                    filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 150,
+                    width: 140,
                     template: function (item) {
-                        var isstart = false;
-                        if (item.processState == "2") {
+                        var isstart = false,applyArrrais = true;
+                        if (item.signState == "2") {
                             isstart = true;//显示已暂停，提示启动
                         } else {
                             isstart = false;//显示暂停
                         }
-                        //项目签收流程，则跳转到项目签收流程处理野人
-                        if (item.processKey == "FINAL_SIGN_FLOW" || item.processKey == "SIGN_XS_FLOW") {
-                            return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,
-                                "vm.pauseProject('"+item.businessKey+"')",isstart,"vm.startProject('"+item.businessKey+"')",isstart);
-                        } else {
-                            return '<a class="btn btn-xs btn-danger" >流程已停用</a>';
+
+                        //已经完成并且还未申请的，可以申请优秀评审报告
+                        if(item.signState == 9 && angular.isUndefined(item.isAppraising)){
+                            applyArrrais = false;
                         }
+
+                        return common.format($('#columnBtns').html(), "signDetails", item.signid, item.processInstanceId,
+                            "vm.pauseProject('"+item.signid+"')",isstart,"vm.startProject('"+item.signid+"')",isstart,item.signid,applyArrrais);
                     }
                 }
             ];
+
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+
             // End:column
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),

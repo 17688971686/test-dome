@@ -8,6 +8,15 @@ import cs.repository.odata.ODataObj;
 import java.util.List;
 
 public interface SignDispaWorkService {
+
+    /**
+     * 查询个人办理项目
+     * @param odataObj
+     * @param isMianUser
+     * @return
+     */
+    PageModelDto<SignDispaWork> findMyDoProject(ODataObj odataObj,boolean isMianUser);
+
     PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
 
     List<SignDispaWork> unMergeWPSign(String signId);

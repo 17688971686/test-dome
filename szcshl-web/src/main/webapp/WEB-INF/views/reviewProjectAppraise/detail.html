@@ -1,0 +1,66 @@
+<meta charset="UTF-8">
+<table class="table table-bordered">
+    <caption class="text-center"><h3><strong>评审中心优秀评审报告申请表</strong></h3></caption>
+    <tr>
+        <td class="text-center" width="20%">
+            项目名称
+        </td>
+        <td colspan="3">
+            {{vm.model.projectName}}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="text-center" >
+            申报标题
+        </td>
+        <td colspan="3">
+            {{vm.model.appraiseReportName}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">
+            申请人
+        </td>
+        <td>
+            {{vm.model.proposerName}}
+        </td>
+        <td class="text-center"  width="20%">
+            申请时间
+        </td>
+        <td class="text-center" width="30%">
+            {{vm.model.proposerTime}}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="text-center">
+            申请原因
+        </td>
+        <td colspan="3">
+            <div style="min-height: 50px;">
+                {{vm.model.appraiseCause}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">
+            部长审批
+        </td>
+        <td colspan="3">
+            <div style="min-height: 50px;">
+                {{vm.model.ministerOpinion}}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">
+            综合部审批
+        </td>
+        <td colspan="3">
+            <div style="min-height: 50px;">
+                {{vm.model.generalConductorOpinion}}
+            </div>
+        </td>
+    </tr>
+</table>

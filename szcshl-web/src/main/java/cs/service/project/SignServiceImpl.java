@@ -900,7 +900,7 @@ public class SignServiceImpl implements SignService {
                     //查询部门领导
                     orgDept = orgDeptRepo.queryBySignBranchId(signid, branchIndex);
                     if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置【" + orgDept.getName() + "】的部门负责人！");
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置该分支的部门负责人！");
                     }
                     dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();

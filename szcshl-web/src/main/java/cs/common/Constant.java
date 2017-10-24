@@ -66,7 +66,7 @@ public class Constant {
     /**
      * 评审报告评优 综合部负责人
      */
-    public static final String GENERALCONDUTOR = "王纯";
+    //public static final String GENERALCONDUTOR = "王纯";
 
 
     /**
@@ -214,6 +214,7 @@ public class Constant {
     public static enum EnumFlowNodeGroupName {
         SIGN_USER("签收员"),
         COMM_DEPT_DIRECTOR("综合部部长"),
+        APPRAISE_REVIEWER("优秀评审报告审批员"),
         VICE_DIRECTOR("副主任"),
         DIRECTOR("主任"),
         FILER("归档员"),

@@ -52,18 +52,16 @@ public class AppraiseReport extends DomainBase{
     private Date proposerTime;
 
     /**
-     * 部长名称
+     * 部长ID
      */
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String ministerName ;
-
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String ministerId ;
 
     /**
-     * 综合部处理人名称
+     * 部长名称
      */
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String generalConductorName;
-
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String ministerName ;
 
     /**
      * 部长意见
@@ -72,23 +70,56 @@ public class AppraiseReport extends DomainBase{
     private String ministerOpinion;
 
     /**
+     * 部长审批时间
+     */
+    @Column(columnDefinition = "DATE")
+    private Date ministerDate;
+    /**
+     * 综合部处理人Id
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String generalConductorId;
+
+    /**
+     * 综合部处理人名称
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String generalConductorName;
+
+
+    /**
      * 综合部处理人意见
      */
     @Column(columnDefinition = "VARCHAR(1000)")
     private String generalConductorOpinion;
 
     /**
+     * 综合部审批时间
+     */
+    @Column(columnDefinition = "DATE")
+    private Date generalConductorDate;
+    /**
      * 审批环节  0 ： 未审批   1：部长审批   9：综合部审批 ，
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String approveStatus;
 
-
+    /**
+     * 最终审批是否通过（9：通过，0：不通过）
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isAgree;
     /**
      * 收文ID
      */
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(64)")
     private String signId ;
+
+    /**
+     * 流程实例ID
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String processInstanceId;
 
     public String getId() {
         return id;
@@ -184,5 +215,53 @@ public class AppraiseReport extends DomainBase{
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getMinisterId() {
+        return ministerId;
+    }
+
+    public void setMinisterId(String ministerId) {
+        this.ministerId = ministerId;
+    }
+
+    public String getGeneralConductorId() {
+        return generalConductorId;
+    }
+
+    public void setGeneralConductorId(String generalConductorId) {
+        this.generalConductorId = generalConductorId;
+    }
+
+    public String getIsAgree() {
+        return isAgree;
+    }
+
+    public void setIsAgree(String isAgree) {
+        this.isAgree = isAgree;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public Date getMinisterDate() {
+        return ministerDate;
+    }
+
+    public void setMinisterDate(Date ministerDate) {
+        this.ministerDate = ministerDate;
+    }
+
+    public Date getGeneralConductorDate() {
+        return generalConductorDate;
+    }
+
+    public void setGeneralConductorDate(Date generalConductorDate) {
+        this.generalConductorDate = generalConductorDate;
     }
 }

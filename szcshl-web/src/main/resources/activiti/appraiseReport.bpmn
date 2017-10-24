@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="FLOW_APPRAISE_REPORT" name="优秀评审报告申报" isExecutable="true">
+    <startEvent id="ARP_START" name="开始"></startEvent>
+    <userTask id="ARP_BZ_SP" name="部长审批" activiti:assignee="${user_bz}"></userTask>
+    <userTask id="ARP_ZHB_SP" name="综合部审批" activiti:assignee="${user_zhb}"></userTask>
+    <endEvent id="ARP_END" name="结束"></endEvent>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <userTask id="ARP_FZR" name="负责人申请" activiti:assignee="${user}"></userTask>
+    <sequenceFlow id="flow1" sourceRef="ARP_START" targetRef="ARP_FZR"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="ARP_FZR" targetRef="ARP_BZ_SP"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="ARP_BZ_SP" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="ARP_ZHB_SP">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${agree == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="ARP_ZHB_SP" targetRef="ARP_END"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="ARP_END">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${agree == false}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_FLOW_APPRAISE_REPORT">
+    <bpmndi:BPMNPlane bpmnElement="FLOW_APPRAISE_REPORT" id="BPMNPlane_FLOW_APPRAISE_REPORT">
+      <bpmndi:BPMNShape bpmnElement="ARP_START" id="BPMNShape_ARP_START">
+        <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ARP_BZ_SP" id="BPMNShape_ARP_BZ_SP">
+        <omgdc:Bounds height="55.0" width="105.0" x="370.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ARP_ZHB_SP" id="BPMNShape_ARP_ZHB_SP">
+        <omgdc:Bounds height="55.0" width="105.0" x="630.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ARP_END" id="BPMNShape_ARP_END">
+        <omgdc:Bounds height="35.0" width="35.0" x="530.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="527.0" y="77.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ARP_FZR" id="BPMNShape_ARP_FZR">
+        <omgdc:Bounds height="55.0" width="105.0" x="200.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="135.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="200.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="305.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="370.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="475.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="527.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="567.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="682.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="547.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="547.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="547.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

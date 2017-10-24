@@ -157,11 +157,22 @@ public class SignDispaWork {
     private String industryType;
 
     /**
+     * 主负责人ID
+     */
+    @Column
+    private String mUserId;
+
+    /**
      * 主负责人名称
      */
     @Column
     private String mUserName;
 
+    /**
+     * 负责人ID
+     */
+    @Column
+    private String aUserID;
     /**
      * 负责人名称
      */
@@ -601,5 +612,29 @@ public class SignDispaWork {
 
     public void setProjectcode(String projectcode) {
         this.projectcode = projectcode;
+    }
+
+    public String getmUserId() {
+        return mUserId;
+    }
+
+    public void setmUserId(String mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    public String getaUserID() {
+        return aUserID;
+    }
+
+    public void setaUserID(String aUserID) {
+        this.aUserID = aUserID;
+    }
+
+    public String getaUserName() {
+        return aUserName;
+    }
+
+    public void setaUserName(String aUserName) {
+        this.aUserName = aUserName;
     }
 }

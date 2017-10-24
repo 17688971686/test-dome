@@ -791,9 +791,9 @@
                 controller: 'monthlyHistoryEditCtrl',
                 controllerAs: 'vm'
             })
-            //优秀评审报告 处理弹出框
+            //优秀评审报告填报
             .state('approveWindow', {
-                url: '/approveWindow/:signId/:projectName/:id',
+                url: '/approveWindow/:signId',
                 templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
                 controller: 'approveWindowCtrl',
                 controllerAs: 'vm'

@@ -1,6 +1,7 @@
 package cs.controller.reviewProjectAppraise;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.project.AppraiseReportDto;
@@ -33,12 +34,25 @@ public class ReviewProjectAppraiseController {
     private AppraiseService appraiseService;
 
     @RequiresAuthentication
-    //@RequiresPermissions("reviewProjectAppraise#findEndProject#post")
-    @RequestMapping(name="获取已办结项目" , path="findEndProject" , method= RequestMethod.POST)
+    @RequestMapping(name="通过项目ID初始化" , path="initBySignId" , method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<SignDispaWork> findEndProject(HttpServletRequest request) throws ParseException {
-        ODataObj oDataObj = new ODataObj(request);
-        return appraiseService.findEndProject(oDataObj);
+    public AppraiseReportDto initBySignId(@RequestParam String signId){
+        return  appraiseService.initBySignId(signId);
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("reviewProjectAppraise#saveApply#post")
+    @RequestMapping(name="保存申请信息" , path="saveApply" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveApply(@RequestBody  AppraiseReportDto appraiseReportDto){
+        return appraiseService.saveApply(appraiseReportDto);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name="发起流程" , path="startFlow" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startFlow(@RequestParam String id){
+        return appraiseService.startFlow(id);
     }
 
     @RequiresAuthentication
@@ -59,21 +73,6 @@ public class ReviewProjectAppraiseController {
         appraiseService.updateIsAppraising(signId);
     }
 
-    @RequiresAuthentication
-    //@RequiresPermissions("reviewProjectAppraise#initProposer#get")
-    @RequestMapping(name="初始化评审报告申请人" , path="initProposer" , method = RequestMethod.GET)
-    @ResponseBody
-    public AppraiseReportDto initProposer(){
-        return appraiseService.initProposer();
-    }
-
-    @RequiresAuthentication
-    //@RequiresPermissions("reviewProjectAppraise#saveApply#post")
-    @RequestMapping(name="保存申请信息" , path="saveApply" , method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveApply(@RequestBody  AppraiseReportDto appraiseReportDto){
-        appraiseService.saveApply(appraiseReportDto);
-    }
 
     @RequiresAuthentication
     //@RequiresPermissions("reviewProjectAppraise#getAppraiseReport#post")
@@ -86,25 +85,10 @@ public class ReviewProjectAppraiseController {
 
     @RequiresAuthentication
     //@RequiresPermissions("reviewProjectAppraise#getAppraiseById#get")
-    @RequestMapping(name="通过id查询优秀评审报告信息" , path="getAppraiseById" , method = RequestMethod.GET)
+    @RequestMapping(name="通过id查询优秀评审报告信息" , path="getAppraiseById" , method = RequestMethod.POST)
     @ResponseBody
     public AppraiseReportDto getAppraiseById(@RequestParam String id){
         return  appraiseService.getAppraiseById(id);
-    }
-
-    @RequiresAuthentication
-    //@RequiresPermissions("reviewProjectAppraise#saveApprove#put")
-    @RequestMapping(name="保存审批内容" , path="saveApprove" , method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveApprove(@RequestBody AppraiseReportDto appraiseReportDto){
-        appraiseService.saveApprove(appraiseReportDto);
-    }
-
-    @RequiresAuthentication
-    @RequestMapping(name="查询主页上评审报告评优审批的项目信息" , path="findHomeAppraise" , method = RequestMethod.GET)
-    @ResponseBody
-    public List<AppraiseReportDto> findHomeAppraise(){
-        return appraiseService.findHomeAppraise();
     }
 
     @RequiresPermissions("reviewProjectAppraise#html/list#get")
