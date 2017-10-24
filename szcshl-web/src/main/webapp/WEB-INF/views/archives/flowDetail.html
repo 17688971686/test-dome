@@ -1,5 +1,6 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -8,14 +9,14 @@
     </ol>
 
     <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" for-div="project_info">项目暂停申请表</a></li>
+        <li class="active"><a data-toggle="tab" for-div="project_info">项目档案借阅审批表</a></li>
         <li ><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li ><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>
 
     <div class="tab-content" style="background:white;">
         <div class="tab-pane fade in active" style="background:white;" id="project_info">
-            <#include "/projectStop/detail.html"/>
+            <#include "/archives/detail.html"/>
         </div><!-- end tab -->
 
         <div class="well well-sm tab-pane fade" style="background:white;" id="flow_diagram">

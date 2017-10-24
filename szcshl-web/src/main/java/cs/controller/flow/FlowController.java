@@ -14,6 +14,7 @@ import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
+import cs.service.archives.ArchivesLibraryService;
 import cs.service.asserts.assertStorageBusiness.AssertStorageBusinessService;
 import cs.service.book.BookBuyBusinessService;
 import cs.service.flow.FlowNextNodeFilter;
@@ -85,6 +86,10 @@ public class FlowController {
     @Qualifier("projectStopFlowImpl")
     private IFlow projectStopFlowImpl;
     @Autowired
+    @Qualifier("archivesFlowImpl")
+    private IFlow archivesFlowImpl;
+
+    @Autowired
     private TopicInfoService topicInfoService;
     @Autowired
     private BookBuyBusinessService bookBuyBusinessService;
@@ -92,6 +97,8 @@ public class FlowController {
     private AssertStorageBusinessService assertStorageBusinessService;
     @Autowired
     private ProjectStopService projectStopService;
+    @Autowired
+    private ArchivesLibraryService archivesLibraryService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -267,6 +274,9 @@ public class FlowController {
             case FlowConstant.PROJECT_STOP_FLOW:
                 flowDto.setBusinessMap(projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.FLOW_ARCHIVES:
+                flowDto.setBusinessMap(archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -324,6 +334,9 @@ public class FlowController {
                 break;
             case FlowConstant.PROJECT_STOP_FLOW:
                 resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -403,6 +416,10 @@ public class FlowController {
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
                 resultPage = "asserts/assertStorageBusiness/flowDeal";
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                resultPage = "archives/flowDeal";
+                break;
             default:
                 ;
         }
@@ -423,8 +440,12 @@ public class FlowController {
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
                 resultPage = "asserts/assertStorageBusiness/flowDeal";
+                break;
             case FlowConstant.PROJECT_STOP_FLOW:
                 resultPage = "projectStop/flowDetail";
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                resultPage = "archives/flowDetail";
                 break;
             default:
                 ;
@@ -446,6 +467,9 @@ public class FlowController {
                  break;
             case FlowConstant.PROJECT_STOP_FLOW:
                 resultPage = "projectStop/flowEnd";
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                resultPage = "archives/flowEnd";
                 break;
             default:
                 ;

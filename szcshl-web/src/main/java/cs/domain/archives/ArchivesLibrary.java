@@ -8,256 +8,371 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import cs.domain.DomainBase;
+
+/**
+ * 档案借阅表
+ */
 @Entity
 @Table(name = "cs_archives_Library")
 public class ArchivesLibrary extends DomainBase{
 
 	@Id
 	private String id;
-	
-	//查阅单位
+
+    /**
+     * 查阅单位
+     */
 	@Column(columnDefinition = "varchar(255)")
 	private String readCompany;
-	
-	//查阅人
-	@Column(columnDefinition = "varchar(20)")
+
+    /**
+     * 查阅人
+     */
+	@Column(columnDefinition = "varchar(256)")
 	private String readUsername;
-	
-	//查阅项目名称
+
+    /**
+     * 查阅项目名称
+     */
 	@Column(columnDefinition = "varchar(255)")
 	private String readProjectName;
-	
-	//档案编号
-    @Column(columnDefinition = "varchar(128)")
+
+    /**
+     * 档案编号
+     */
+    @Column(columnDefinition = "varchar(32)")
 	private String readArchivesCode;
-    
-	//部门部长
-    @Column(columnDefinition = "varchar(30)")
+
+    /**
+     * 部长ID
+     */
+	@Column(columnDefinition = "varchar(64)")
+	private String deptMinisterId;
+
+    /**
+     * 部长名称
+     */
+    @Column(columnDefinition = "varchar(32)")
 	private String deptMinister;
-    
-    //部长意见
-    @Column(columnDefinition = "varchar(215)")
-    private String deptMinisterIdeaContent;	
-    
-    //部长审批日期
+
+    /**
+     * 部长意见
+     */
+    @Column(columnDefinition = "varchar(512)")
+    private String deptMinisterIdeaContent;
+
+    /**
+     * 部长审批日期
+     */
     @Column(columnDefinition="date")
     private Date deptMinisterDate;
 
-    //分管副主任
-    @Column(columnDefinition = "varchar(30)")
+    /**
+     * 分管副主任ID
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String deptSLeaderId;
+
+    /**
+     * 分管副主任
+     */
+    @Column(columnDefinition = "varchar(32)")
 	private String deptSLeader;
-    
-    //分管副主任签批
-    @Column(columnDefinition = "varchar(215)")
-    private String deptSLeaderIdeaContent;	
-    
-    //分管主任审批日期
+
+    /**
+     * 分管副主任签批
+     */
+    @Column(columnDefinition = "varchar(512)")
+    private String deptSLeaderIdeaContent;
+
+    /**
+     * 分管主任审批日期
+     */
     @Column(columnDefinition="date")
     private Date deptSleaderDate;
-   
-    //主任
-    @Column(columnDefinition = "varchar(30)")
+
+    /**
+     * 主任ID
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String deptDirectorId;
+
+    /**
+     * 主任
+     */
+    @Column(columnDefinition = "varchar(32)")
     private String deptDirector;
-    
-    //主任意见
-    @Column(columnDefinition = "varchar(215)")
+
+    /**
+     * 主任意见
+     */
+    @Column(columnDefinition = "varchar(512)")
     private String deptDirectorIdeaContent;
-    
-    //主任审批日期
+
+    /**
+     * 主任审批日期
+     */
     @Column(columnDefinition="date")
     private Date deptDirectorDate;
-    
-	//查阅时间
+
+    /**
+     * 查阅时间
+     */
     @Column(columnDefinition="date")
 	private Date readDate;
-	
-	//归还世间
+
+    /**
+     * 归还时间
+     */
     @Column(columnDefinition="date")
 	private Date resotoreDate;
-	
-	//存档管理员签名
-    @Column(columnDefinition = "varchar(30)")
+
+    /**
+     * 存档管理员签名
+     */
+    @Column(columnDefinition = "varchar(32)")
 	private String archivesUserName;
     
    /**
     * 审批状态：0部长审批,1分管领导审批,2主任审批
     */
-    @Column(columnDefinition = "varchar(4)")
+    @Column(columnDefinition = "varchar(2)")
     private String archivesStatus;
     
     /**
-     * 借阅状态：0,中心档案借阅类型, 9市档案借阅类型
+     * 是否市档案保存的评审资料：9是，0否
      */
-    @Column(columnDefinition = "varchar(4)")
+    @Column(columnDefinition = "varchar(2)")
     private String archivesType;
+
     /**
-     * 隐藏部分表单：0隐藏员工填写表单
+     * 是否本单位人员借阅（9：是，0：否）
      */
-    @Column(columnDefinition = "varchar(4)")
-    private String hideStatus;
+    @Column(columnDefinition = "varchar(2)")
+    private String isSZECUser;
 
-	public String getId() {
-		return id;
-	}
+    /**
+     * 是否外借（9：是，0：否）
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String isLendOut;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * 是否同意借阅（9：同意，0：不同意）
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String isAgree;
 
-	public String getReadCompany() {
-		return readCompany;
-	}
+    /**
+     * 流程实例ID
+     */
+    private String processInstanceId;
 
-	public void setReadCompany(String readCompany) {
-		this.readCompany = readCompany;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getReadUsername() {
-		return readUsername;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setReadUsername(String readUsername) {
-		this.readUsername = readUsername;
-	}
+    public String getReadCompany() {
+        return readCompany;
+    }
 
-	public String getReadProjectName() {
-		return readProjectName;
-	}
+    public void setReadCompany(String readCompany) {
+        this.readCompany = readCompany;
+    }
 
-	public void setReadProjectName(String readProjectName) {
-		this.readProjectName = readProjectName;
-	}
+    public String getReadUsername() {
+        return readUsername;
+    }
 
-	public String getReadArchivesCode() {
-		return readArchivesCode;
-	}
+    public void setReadUsername(String readUsername) {
+        this.readUsername = readUsername;
+    }
 
-	public void setReadArchivesCode(String readArchivesCode) {
-		this.readArchivesCode = readArchivesCode;
-	}
+    public String getReadProjectName() {
+        return readProjectName;
+    }
 
-	public String getDeptMinister() {
-		return deptMinister;
-	}
+    public void setReadProjectName(String readProjectName) {
+        this.readProjectName = readProjectName;
+    }
 
-	public void setDeptMinister(String deptMinister) {
-		this.deptMinister = deptMinister;
-	}
+    public String getReadArchivesCode() {
+        return readArchivesCode;
+    }
 
-	public String getDeptSLeader() {
-		return deptSLeader;
-	}
+    public void setReadArchivesCode(String readArchivesCode) {
+        this.readArchivesCode = readArchivesCode;
+    }
 
-	public void setDeptSLeader(String deptSLeader) {
-		this.deptSLeader = deptSLeader;
-	}
+    public String getDeptMinisterId() {
+        return deptMinisterId;
+    }
 
-	public Date getReadDate() {
-		return readDate;
-	}
+    public void setDeptMinisterId(String deptMinisterId) {
+        this.deptMinisterId = deptMinisterId;
+    }
 
-	public void setReadDate(Date readDate) {
-		this.readDate = readDate;
-	}
+    public String getDeptMinister() {
+        return deptMinister;
+    }
 
-	public Date getResotoreDate() {
-		return resotoreDate;
-	}
+    public void setDeptMinister(String deptMinister) {
+        this.deptMinister = deptMinister;
+    }
 
-	public void setResotoreDate(Date resotoreDate) {
-		this.resotoreDate = resotoreDate;
-	}
+    public String getDeptMinisterIdeaContent() {
+        return deptMinisterIdeaContent;
+    }
 
-	public String getArchivesUserName() {
-		return archivesUserName;
-	}
+    public void setDeptMinisterIdeaContent(String deptMinisterIdeaContent) {
+        this.deptMinisterIdeaContent = deptMinisterIdeaContent;
+    }
 
-	public void setArchivesUserName(String archivesUserName) {
-		archivesUserName = archivesUserName;
-	}
+    public Date getDeptMinisterDate() {
+        return deptMinisterDate;
+    }
 
-	public String getDeptDirector() {
-		return deptDirector;
-	}
+    public void setDeptMinisterDate(Date deptMinisterDate) {
+        this.deptMinisterDate = deptMinisterDate;
+    }
 
-	public void setDeptDirector(String deptDirector) {
-		this.deptDirector = deptDirector;
-	}
+    public String getDeptSLeaderId() {
+        return deptSLeaderId;
+    }
 
-	public String getArchivesStatus() {
-		return archivesStatus;
-	}
+    public void setDeptSLeaderId(String deptSLeaderId) {
+        this.deptSLeaderId = deptSLeaderId;
+    }
 
-	public void setArchivesStatus(String archivesStatus) {
-		this.archivesStatus = archivesStatus;
-	}
+    public String getDeptSLeader() {
+        return deptSLeader;
+    }
 
-	public String getDeptMinisterIdeaContent() {
-		return deptMinisterIdeaContent;
-	}
+    public void setDeptSLeader(String deptSLeader) {
+        this.deptSLeader = deptSLeader;
+    }
 
-	public void setDeptMinisterIdeaContent(String deptMinisterIdeaContent) {
-		this.deptMinisterIdeaContent = deptMinisterIdeaContent;
-	}
+    public String getDeptSLeaderIdeaContent() {
+        return deptSLeaderIdeaContent;
+    }
 
-	public String getDeptSLeaderIdeaContent() {
-		return deptSLeaderIdeaContent;
-	}
+    public void setDeptSLeaderIdeaContent(String deptSLeaderIdeaContent) {
+        this.deptSLeaderIdeaContent = deptSLeaderIdeaContent;
+    }
 
-	public void setDeptSLeaderIdeaContent(String deptSLeaderIdeaContent) {
-		this.deptSLeaderIdeaContent = deptSLeaderIdeaContent;
-	}
+    public Date getDeptSleaderDate() {
+        return deptSleaderDate;
+    }
 
-	public String getDeptDirectorIdeaContent() {
-		return deptDirectorIdeaContent;
-	}
+    public void setDeptSleaderDate(Date deptSleaderDate) {
+        this.deptSleaderDate = deptSleaderDate;
+    }
 
-	public void setDeptDirectorIdeaContent(String deptDirectorIdeaContent) {
-		this.deptDirectorIdeaContent = deptDirectorIdeaContent;
-	}
+    public String getDeptDirectorId() {
+        return deptDirectorId;
+    }
 
-	public String getArchivesType() {
-		return archivesType;
-	}
+    public void setDeptDirectorId(String deptDirectorId) {
+        this.deptDirectorId = deptDirectorId;
+    }
 
-	public void setArchivesType(String archivesType) {
-		this.archivesType = archivesType;
-	}
+    public String getDeptDirector() {
+        return deptDirector;
+    }
 
-	public String getHideStatus() {
-		return hideStatus;
-	}
+    public void setDeptDirector(String deptDirector) {
+        this.deptDirector = deptDirector;
+    }
 
-	public void setHideStatus(String hideStatus) {
-		this.hideStatus = hideStatus;
-	}
+    public String getDeptDirectorIdeaContent() {
+        return deptDirectorIdeaContent;
+    }
 
-	public Date getDeptMinisterDate() {
-		return deptMinisterDate;
-	}
+    public void setDeptDirectorIdeaContent(String deptDirectorIdeaContent) {
+        this.deptDirectorIdeaContent = deptDirectorIdeaContent;
+    }
 
-	public void setDeptMinisterDate(Date deptMinisterDate) {
-		this.deptMinisterDate = deptMinisterDate;
-	}
+    public Date getDeptDirectorDate() {
+        return deptDirectorDate;
+    }
 
-	public Date getDeptSleaderDate() {
-		return deptSleaderDate;
-	}
+    public void setDeptDirectorDate(Date deptDirectorDate) {
+        this.deptDirectorDate = deptDirectorDate;
+    }
 
-	public void setDeptSleaderDate(Date deptSleaderDate) {
-		this.deptSleaderDate = deptSleaderDate;
-	}
+    public Date getReadDate() {
+        return readDate;
+    }
 
-	public Date getDeptDirectorDate() {
-		return deptDirectorDate;
-	}
+    public void setReadDate(Date readDate) {
+        this.readDate = readDate;
+    }
 
-	public void setDeptDirectorDate(Date deptDirectorDate) {
-		this.deptDirectorDate = deptDirectorDate;
-	}
-	
-	
-    
-    
-	
+    public Date getResotoreDate() {
+        return resotoreDate;
+    }
+
+    public void setResotoreDate(Date resotoreDate) {
+        this.resotoreDate = resotoreDate;
+    }
+
+    public String getArchivesUserName() {
+        return archivesUserName;
+    }
+
+    public void setArchivesUserName(String archivesUserName) {
+        this.archivesUserName = archivesUserName;
+    }
+
+    public String getArchivesStatus() {
+        return archivesStatus;
+    }
+
+    public void setArchivesStatus(String archivesStatus) {
+        this.archivesStatus = archivesStatus;
+    }
+
+    public String getArchivesType() {
+        return archivesType;
+    }
+
+    public void setArchivesType(String archivesType) {
+        this.archivesType = archivesType;
+    }
+
+    public String getIsSZECUser() {
+        return isSZECUser;
+    }
+
+    public void setIsSZECUser(String isSZECUser) {
+        this.isSZECUser = isSZECUser;
+    }
+
+    public String getIsLendOut() {
+        return isLendOut;
+    }
+
+    public void setIsLendOut(String isLendOut) {
+        this.isLendOut = isLendOut;
+    }
+
+    public String getIsAgree() {
+        return isAgree;
+    }
+
+    public void setIsAgree(String isAgree) {
+        this.isAgree = isAgree;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 }

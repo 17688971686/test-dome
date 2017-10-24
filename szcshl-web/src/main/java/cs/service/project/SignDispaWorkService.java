@@ -28,4 +28,11 @@ public interface SignDispaWorkService {
 
     //查询评审费发放超期的项目信息
     PageModelDto<SignDispaWork> findOverSignDispaWork();
+
+    /**
+     * 通过专家id 获取专家评审过的项目信息
+     * @param expertId
+     * @return
+     */
+    PageModelDto<SignDispaWork> reviewProject(String expertId);
 }

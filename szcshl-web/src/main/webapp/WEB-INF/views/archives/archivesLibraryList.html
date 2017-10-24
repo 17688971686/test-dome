@@ -1,23 +1,49 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/archivesLibrary">中心档案借阅管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="form" name="form">
-        <div class="toolbar">
-        </div>
-        <script type="text/template" id="columnBtns">
-            <@shiro.hasPermission name="archivesLibrary##put">
-            <a class="btn btn-xs btn-primary" href="#/archivesLibraryDetail/{0}"><span class="glyphicon glyphicon-pencil"></span>查看详细</a>
-            </@shiro.hasPermission>
-        </script>
 
-        <div class="grid" kendo-grid="grid" k-options="vm.centerGridOptions"></div>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
+    </div>
+    <form id="searchform" >
+        <table class="table breadcrumb">
+            <tr>
+                <td class="formAlignRight" style="width:80px;">借阅单位</td>
+                <td>
+                    <input name="readCompany" type="text"  operator="like" />
+                </td>
+
+                <td class="formAlignRight" style="width:80px;">借阅人</td>
+                <td>
+                    <input name="readUsername" type="text"  operator="like" />
+                </td>
+                <td class="formAlignRight" style="width:80px;">借阅时间</td>
+                <td>
+                    <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'" name="readDate" operator="gt"/>
+                    -
+                    <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  name="readDate" operator="lt"/>
+                </td>
+                <td class="formAlignRight" style="width:80px;">审批结果</td>
+                <td>
+                    <select name="isAgree" operator="eq">
+                        <option value="">全部</option>
+                        <option value="9">同意</option>
+                        <option value="0">不同意</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
     </form>
-</div>
 
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+
+    <script type="text/template" id="columnBtns">
+        <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}" ><span class="glyphicon glyphicon-pencil"></span>查看</a>
+    </script>
+</div>

@@ -50,6 +50,32 @@ public class ExpertDto extends BaseDto {
     private Date applyDate;    //申请日期
     private String unable;                              //是否作废（1为作废，0 为正常）
 
+    /**
+     * 综合评分
+     */
+    private Double compositeScore;
+
+    /**
+     * 点评数目
+     */
+    private Integer scoreNum;
+
+    public Integer getScoreNum() {
+        return scoreNum;
+    }
+
+    public void setScoreNum(Integer scoreNum) {
+        this.scoreNum = scoreNum;
+    }
+
+    public Double getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Double compositeScore) {
+        this.compositeScore = compositeScore;
+    }
+
     private List<WorkExpeDto> workDtoList;
 
     private List<ProjectExpeDto> projectDtoList;

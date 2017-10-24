@@ -57,6 +57,7 @@
                 <td style="width:17%;min-width:180px;" align="center">突出专业<br>（大类）</td>
                 <td style="width:16%;min-width:180px;" align="center">突出专业<br>（小类）</td>
                 <td style="width:12%;min-width:120px;" align="center">专家类别</td>
+                <td style="width:12%;min-width:120px;" align="center">综合评分</td>
                 <td style="width:9%;min-width:100px;" align="center">正选专家<br>人数</td>
                 <td style="width:9%;min-width:100px;" align="center">备选专家<br>人数</td>
                 <td style="width:5%;min-width:50px;" align="center">人数</td>
@@ -94,6 +95,18 @@
                         <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" ng-selected="x.expeRttype == dt.dictName"
                                 value="{{dt.dictName}}">{{dt.dictName}}
                         </option>
+                    </select>
+                </td>
+                <td align="center">
+                    <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="compositeScore{{x.id}}"
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScore"
+                            class="form-control input-sm ">
+                        <option value="" >请选择</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
                     </select>
                 </td>
                 <td align="center">
@@ -139,10 +152,11 @@
                             <caption class="text-center">正式专家</caption>
                             <tr>
                                 <td width="10%" align="center"><input type='checkbox' ng-model="vm.checkAutoOfficeExpert"/></td>
-                                <td width="20%" align="center">姓名</td>
-                                <td width="25%" align="center">突出专业<br>（大类）</td>
-                                <td width="25%" align="center">突出专业<br>（小类）</td>
+                                <td width="10%" align="center">姓名</td>
+                                <td width="20%" align="center">突出专业<br>（大类）</td>
+                                <td width="20%" align="center">突出专业<br>（小类）</td>
                                 <td width="20%" align="center">专家类别</td>
+                                <td width="20%" align="center">综合评分</td>
                             </tr>
                             <tr ng-repeat="x in vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:true} track by $index ">
                                 <td align="center">
@@ -152,6 +166,7 @@
                                 <td align="center">{{x.maJorBig}}</td>
                                 <td align="center">{{x.maJorSmall}}</td>
                                 <td align="center">{{x.expeRttype}}</td>
+                                <td align="center" >{{x.compositeScort}}</td>
                             </tr>
                         </table>
                         <!-- E 正式专家列表  -->
@@ -162,10 +177,11 @@
                             <caption class="text-center">备选专家</caption>
                             <tr>
                                 <td width="10%" align="center"><input type='checkbox' ng-model="vm.checkAutoAntiExpert"/></td>
-                                <td width="20%" align="center">姓名</td>
-                                <td width="25%" align="center">突出专业<br>（大类）</td>
-                                <td width="25%" align="center">突出专业<br>（小类）</td>
+                                <td width="10%" align="center">姓名</td>
+                                <td width="20%" align="center">突出专业<br>（大类）</td>
+                                <td width="20%" align="center">突出专业<br>（小类）</td>
                                 <td width="20%" align="center">专家类别</td>
+                                <td width="20%" align="center">综合评分</td>
                             </tr>
                             <tr ng-repeat="x in  vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:false} track by $index">
                                 <td align="center">
@@ -175,6 +191,7 @@
                                 <td align="center">{{x.maJorBig}}</td>
                                 <td align="center">{{x.maJorSmall}}</td>
                                 <td align="center">{{x.expeRttype}}</td>
+                                <td align="center">{{x.compositeScort}}</td>
                             </tr>
                         </table>
                         <!-- E 备选专家列表  -->
@@ -293,7 +310,7 @@
                 <td align="center">
                     <input type="checkbox" name="seletedEp" ng-checked="selectExpertList" value="{{x.id}}"/>
                 </td>
-                <td align="center">{{x.expertDto.name}}</td>
+                <td align="center"><a ng-click="vm.findName(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>

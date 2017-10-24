@@ -9,6 +9,7 @@ import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
+import cs.domain.expert.Expert_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewConSimpleDto;
 import cs.model.expert.ExpertReviewCondBusDto;
@@ -36,14 +37,15 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Autowired
     private  ExpertRepo expertRepo;
     /**
-     * 根据大类，小类和专家类别确认已经抽取的专家
+     * 根据大类，小类和专家类别，综合评分确认已经抽取的专家
      * @param maJorBig
      * @param maJorSmall
      * @param expeRttype
+     * @param compositeScore
      * @return
      */
     @Override
-    public int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype) {
+    public int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype , Integer compositeScore) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(ID) from cs_expert_selected where expertreviewid =:reviewId ");
         sqlBuilder.setParam("reviewId",reviewId);
@@ -55,6 +57,14 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.setParam("maJorSmall",maJorSmall);
         sqlBuilder.append(" and "+ExpertSelected_.expeRttype.getName()+" =:expeRttype ");
         sqlBuilder.setParam("expeRttype",expeRttype);
+        if(compositeScore != null && compositeScore > 0){
+            sqlBuilder.append(" and " + ExpertSelected_.compositeScore.getName() + ">=:compositeScore");
+            sqlBuilder.setParam("compositeScore", compositeScore);
+        }else {
+            sqlBuilder.append( " and " + Expert_.compositeScore.getName()+ " is null or " + Expert_.compositeScore.getName() + ">=:compositeScore");
+            sqlBuilder.setParam("compositeScore" , compositeScore == null ? 0 : compositeScore);
+
+        }
         return returnIntBySql(sqlBuilder);
 
         /*Criteria criteria = getExecutableCriteria();

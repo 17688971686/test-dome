@@ -20,6 +20,18 @@ public class Expert extends DomainBase {
     @Id
     private String expertID;//专家ID
 
+    /**
+     * 综合评分
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Double compositeScore;
+
+    /**
+     * 点评数目
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Integer scoreNum;
+
     @Column(columnDefinition = "varchar(10)")
     private String expertNo;//专家编号
 
@@ -144,8 +156,23 @@ public class Expert extends DomainBase {
 		return expertSort;
 	}
 
+    public Double getCompositeScore() {
+        return compositeScore;
+    }
 
-	public void setExpertSort(String expertSort) {
+    public void setCompositeScore(Double compositeScore) {
+        this.compositeScore = compositeScore;
+    }
+
+    public Integer getScoreNum() {
+        return scoreNum;
+    }
+
+    public void setScoreNum(Integer scoreNum) {
+        this.scoreNum = scoreNum;
+    }
+
+    public void setExpertSort(String expertSort) {
 		this.expertSort = expertSort;
 	}
 
