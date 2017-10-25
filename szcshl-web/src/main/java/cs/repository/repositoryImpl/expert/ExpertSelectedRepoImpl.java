@@ -10,10 +10,7 @@ import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertReviewConSimpleDto;
-import cs.model.expert.ExpertReviewCondBusDto;
-import cs.model.expert.ExpertReviewCondDto;
-import cs.model.expert.ExpertSelectHis;
+import cs.model.expert.*;
 import cs.repository.AbstractRepository;
 
 import org.hibernate.type.DoubleType;
@@ -403,6 +400,73 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             }
         }
         resultMap.put("expertRevConCompDtoList", expertRevConCompDtoList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }
+
+    /**
+     * 项目评审情况(按类别)
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public ResultMsg proReviewConditionByTypeCount(ProReviewConditionDto projectReviewConditionDto) {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select p.projecttype,count(s.projectcode) from cs_sign s   ");
+        sqlBuilder.append("left join cs_work_program p  ");
+        sqlBuilder.append("on s.signid = p.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+
+        //todo:添加查询条件
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("group by p.projecttype ");
+        sqlBuilder.append("having p.projecttype is not null  ");
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+        Integer totalNum = 0 ;
+        if (projectReviewConList.size() > 0) {
+            for (int i = 0; i < projectReviewConList.size(); i++) {
+                Object[] projectReviewCon = projectReviewConList.get(i);
+                ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+                if (null != projectReviewCon[0]) {
+                    proReviewConditionDto.setProjectType((String) projectReviewCon[0]);
+                }else{
+                    proReviewConditionDto.setProjectType(null);
+                }
+                if (null != projectReviewCon[1]) {
+                    proReviewConditionDto.setProjectTypeCount((BigDecimal) projectReviewCon[1]);
+                    totalNum += proReviewConditionDto.getProjectTypeCount().intValue();
+                }
+
+                projectReviewConDtoList.add(proReviewConditionDto);
+            }
+        }
+        resultMap.put("protReviewConditionList", projectReviewConDtoList);
+        resultMap.put("totalNum",totalNum);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 

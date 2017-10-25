@@ -1,33 +1,28 @@
 package cs.service.monthly;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-
+import cs.common.Constant;
+import cs.common.Constant.EnumState;
+import cs.common.Constant.MsgCode;
+import cs.common.ResultMsg;
+import cs.common.utils.*;
+import cs.domain.monthly.MonthlyNewsletter;
+import cs.domain.monthly.MonthlyNewsletter_;
+import cs.domain.sys.SysFile;
+import cs.model.PageModelDto;
+import cs.model.expert.ProReviewConditionDto;
+import cs.model.monthly.MonthlyNewsletterDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.expert.ExpertSelectedService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
-import cs.domain.monthly.MonthlyNewsletter;
-import cs.domain.monthly.MonthlyNewsletter_;
-import cs.domain.project.Sign;
-import cs.model.PageModelDto;
-import cs.model.monthly.MonthlyNewsletterDto;
-import cs.model.project.SignDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
+import javax.transaction.Transactional;
+import java.util.*;
 
 /**
  * Description: 月报简报 业务操作实现类
@@ -39,7 +34,13 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 
 	@Autowired
 	private MonthlyNewsletterRepo monthlyNewsletterRepo;
-	
+
+	@Autowired
+	private ExpertSelectedService expertSelectedService;
+
+	@Autowired
+	private SysFileRepo sysFileRepo;
+
 	@Override
 	public PageModelDto<MonthlyNewsletterDto> get(ODataObj odataObj) {
 		PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<MonthlyNewsletterDto>();
@@ -312,5 +313,51 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 	    domain.setModifiedDate(new Date());
 		monthlyNewsletterRepo.save(domain);
 	}
-	
+
+	/**
+	 * 生成月报简报模板
+	 * @param monthlyNewsletterDto
+	 */
+	@Override
+	public ResultMsg createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto) {
+		//todo:测试初始化数据
+		monthlyNewsletterDto.setReportMultiyear("2017");
+		monthlyNewsletterDto.setTheMonths("09");
+		monthlyNewsletterDto.setStartMoultiyear("2017");
+		monthlyNewsletterDto.setStaerTheMonths("01");
+		monthlyNewsletterDto.setEndTheMonths("09");
+		//当月月报
+		if(StringUtil.isNotEmpty(monthlyNewsletterDto.getReportMultiyear()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getTheMonths())){
+			ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+			proReviewConditionDto.setBeginTime(monthlyNewsletterDto.getReportMultiyear()+"-"+monthlyNewsletterDto.getTheMonths());
+			ResultMsg resultMsg = expertSelectedService.proReviewConditionCount(proReviewConditionDto);
+			Map<String, Object> resultMap = (Map<String, Object>)resultMsg.getReObj();
+			List<ProReviewConditionDto> proReviewConditionDtoList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
+			//至当前月月报
+			resultMsg = null;
+			resultMap.clear();
+			List<ProReviewConditionDto> proReviewConditionDtoAllList = new ArrayList<ProReviewConditionDto>();
+			List<ProReviewConditionDto> proReviewConditionByTypeAllList = new ArrayList<ProReviewConditionDto>();
+			Integer totalNum = 0;
+			if(StringUtil.isNotEmpty(monthlyNewsletterDto.getStartMoultiyear()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getStaerTheMonths()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getEndTheMonths())){
+				proReviewConditionDto.setBeginTime(monthlyNewsletterDto.getStartMoultiyear()+"-"+monthlyNewsletterDto.getStaerTheMonths());
+				proReviewConditionDto.setEndTime(monthlyNewsletterDto.getStartMoultiyear()+"-"+monthlyNewsletterDto.getEndTheMonths());
+				resultMsg = expertSelectedService.proReviewConditionCount(proReviewConditionDto);
+				resultMap = (Map<String, Object>)resultMsg.getReObj();
+				proReviewConditionDtoAllList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
+				//项目类别
+				resultMsg = null;
+				resultMap.clear();
+				resultMsg = expertSelectedService.proReviewConditionByTypeCount(proReviewConditionDto);
+				resultMap = (Map<String, Object>)resultMsg.getReObj();
+				proReviewConditionByTypeAllList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
+				 totalNum = (Integer) resultMap.get("totalNum");
+				}
+
+			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum);
+			//sysFileRepo.save(sysFile);
+		}
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
+}
+
 }

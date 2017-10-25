@@ -1,10 +1,8 @@
 package cs.service.monthly;
 
 import cs.common.ResultMsg;
-import cs.domain.monthly.MonthlyNewsletter;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
-import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 
 /**
@@ -41,6 +39,12 @@ public interface MonthlyNewsletterService {
 	void deleteMonthlyData(String id);
 
 	void editTheMonthly(MonthlyNewsletterDto record);
+
+	/**
+	 * 生成月报简报模板
+	 * @param monthlyNewsletterDto
+	 */
+	ResultMsg createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto);
 
 
 }

@@ -25,6 +25,11 @@ public class ProReviewConditionDto {
 
     private String beginTime;
     private String endTime;
+
+    //工程类型
+    private String projectType;
+    //工程类型项目数
+    private BigDecimal projectTypeCount;
     /**
      * 签收日期
      */
@@ -101,5 +106,21 @@ public class ProReviewConditionDto {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
+    }
+
+    public BigDecimal getProjectTypeCount() {
+        return projectTypeCount;
+    }
+
+    public void setProjectTypeCount(BigDecimal projectTypeCount) {
+        this.projectTypeCount = projectTypeCount;
     }
 }

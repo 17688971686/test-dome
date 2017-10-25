@@ -15,6 +15,7 @@
             updateMonthlyNewsletter: updateMonthlyNewsletter, //月报简报编辑
             deleteMonthlyNewsletter: deleteMonthlyNewsletter,//删除月报简报记录
             getMonthlyNewsletterById: getMonthlyNewsletterById,
+            createMonthReport: createMonthReport //生成月报简报
         };
 
         return service;
@@ -120,7 +121,26 @@
 
         }
         //end#保存月报简报
-        
+
+        // begin#生成月报简报
+        function createMonthReport(vm,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/monthlyNewsletter/createMonthReport",
+                data: vm.monthly
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_生成月报简报
+
         // begin#getMonthlyNewsletterById
         function getMonthlyNewsletterById(vm) {
       

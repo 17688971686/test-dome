@@ -38,6 +38,14 @@
 	      monthlyNewsletterSvc.updateMonthlyNewsletter(vm);
         };
 
+        /**
+         * 生成月报简报
+         */
+        vm.createMonthReport = function () {
+            monthlyNewsletterSvc.createMonthReport(vm,function(data){
+            });
+        }
+
         activate();
         function activate() {
             if (vm.isUpdate) {
