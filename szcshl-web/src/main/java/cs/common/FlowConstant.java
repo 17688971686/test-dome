@@ -86,6 +86,18 @@ public class FlowConstant {
     public static final String FLOW_ARP_ZHB_SP = "ARP_ZHB_SP";        //综合部审批
 
     /**
+     * 拟补充资料函流程
+     */
+    public final static String FLOW_SUPP_LETTER = "FLOW_SUPP_LETTER";
+    /**
+     * 拟补充资料函流程环节
+     */
+    public final static String FLOW_SPL_FZR = "SPL_FZR";              //负责填报
+    public static final String FLOW_SPL_BZ_SP = "SPL_BZ_SP";          //主办部长审核
+    public static final String FLOW_SPL_LD_HQ = "SPL_LD_HQ";          //领导会签
+    public static final String FLOW_SPL_FGLD_SP = "SPL_FGLD_SP";      //分管领导审批
+
+    /**
      * 项目签收流程参数
      */
     public static enum SignFlowParams {

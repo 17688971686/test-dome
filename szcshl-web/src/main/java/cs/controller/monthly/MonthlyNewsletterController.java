@@ -84,14 +84,6 @@ public class MonthlyNewsletterController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("monthlyNewsletter#updateApprove#post")
-    @RequestMapping(name = "领导审批（中心文件）处理", path = "updateApprove", method = RequestMethod.POST)
-    @ResponseBody
-    public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
-		addSuppLetterService.monthlyApproveEdit(addSuppLetterDto);
-    }
-
-    @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#deleteMutiyear#delete")
  	@RequestMapping(name = "删除年度（中心）月报简报记录", path = "deleteMutiyear", method = RequestMethod.DELETE)
      @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -102,13 +94,6 @@ public class MonthlyNewsletterController {
      	}else{
      		addSuppLetterService.delete(id);      
      	}
-     }
-
-     @RequiresAuthentication
-     @RequestMapping(name="查询主页上的月报简报审批处理信息" , path = "findHomeMonthly" , method = RequestMethod.GET)
-     @ResponseBody
-     public List<AddSuppLetterDto> findHomeMonthly(){
-        return addSuppLetterService.findHomeMonthly();
      }
 
     @RequiresAuthentication

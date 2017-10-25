@@ -22,8 +22,6 @@
             adminSvc.findtasks(vm);
             adminSvc.findendTasks(vm);
             //adminSvc.findHomePluginFile(vm);
-            adminSvc.findHomeAddSuppLetter(vm);
-            adminSvc.findHomeMonthly(vm);
         }
 
     }

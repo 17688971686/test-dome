@@ -1,17 +1,9 @@
 package cs.model.project;
 
-import cs.domain.project.AddSuppLetter;
-import cs.domain.project.Sign;
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-import com.alibaba.fastjson.annotation.JSONField;
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -21,115 +13,132 @@ import org.hibernate.annotations.GenericGenerator;
  */
 public class AddSuppLetterDto extends BaseDto {
 
-	//拟稿编号
-	private String id;
+    /**
+     * id
+     */
+    private String id;
 
-	//拟稿部门
-	private String orgName;
+    //拟稿部门
+    private String orgName;
 
-	//拟稿时间
-	@JSONField(format = "yyyy-MM-dd")
-	private Date suppLetterTime;
+    /**
+     * 拟稿人
+     */
+    private String userName;
+    //拟稿时间
+    @JSONField(format = "yyyy-MM-dd")
+    private Date suppLetterTime;
 
-	//发文日期
-	@JSONField(format = "yyyy-MM-dd")
-	private Date disapDate;
+    //发文日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date disapDate;
 
-	//秘密等级
-	private String secretLevel;
+    //秘密等级
+    private String secretLevel;
 
-	//缓急程度
-	private String mergencyLevel;
+    //缓急程度
+    private String mergencyLevel;
 
-	//文件字号
-	private String filenum;
+    //文件字号
+    private String filenum;
 
-	//文件标题
-	private String title;
+    //文件标题
+    private String title;
 
-	//发行范围
-	private String dispaRange;
+    //发行范围
+    private String dispaRange;
 
-	//核稿意见
-	private String suppleterSuggest;
+    //打印份数
+    private Integer printnum;
 
-	//会签意见
-	private String meetingSuggest;
+    //文字序号
+    private Integer fileSeq;
 
-	//领导意见
-	private String leaderSuggest;
+    //部长ID
+    private String deptMinisterId;
 
-	//打印份数
-	private Integer printnum;
+    //部长签名
+    private String deptMinisterName;
 
-	//文字序号
-	private Integer fileSeq;
+    //部长意见/核稿意见
+    private String deptMinisterIdeaContent;
 
-	//部门部长名称
-	private String deptMinisterName;
+    /**
+     * 会签意见
+     */
+    private String leaderSignIdeaContent;
 
-	//部长意见/核稿意见
-	private String deptMinisterIdeaContent;
+    //部长审批日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date deptMinisterDate;
 
-	//部长审批日期
-	@JSONField(format = "yyyy-MM-dd")
-	private Date deptMinisterDate;
+    //分管副主任名称
+    private String deptSLeaderId;
 
-	//分管副主任名称
-	private String deptSLeaderName;
+    //分管副主任名称
+    private String deptSLeaderName;
 
-	//分管副主任签批/会签意见
-	private String deptSLeaderIdeaContent;
+    //分管副主任签批/会签意见
+    private String deptSLeaderIdeaContent;
 
-	//分管主任审批日期
-	@JSONField(format = "yyyy-MM-dd")
-	private Date deptSleaderDate;
+    //分管主任审批日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date deptSleaderDate;
 
-	//主任名称
-	private String deptDirectorName;
+    /**
+     * 主任ID
+     */
+    private String deptDirectorId;
 
-	//主任意见/领导意见
-	private String deptDirectorIdeaContent;
+    //主任名称
+    private String deptDirectorName;
 
-	//主任审批日期
-	@JSONField(format = "yyyy-MM-dd")
-	private Date deptDirectorDate;
+    //主任意见/领导意见
+    private String deptDirectorIdeaContent;
 
-	//1公文类型
-	private String missiveType;
+    //主任审批日期
+    @JSONField(format = "yyyy-MM-dd")
+    private Date deptDirectorDate;
 
-	//2公文类型月报简报
-	private String missiveMonthlyType;
+    //1公文类型
+    private String missiveType;
 
-	//3公文类型月报简报
-	private String  missiveOtherType;
+    //2公文类型月报简报
+    private String missiveMonthlyType;
 
-	//月报简报类型
-	private String monthlyType;
+    //3公文类型月报简报
+    private String  missiveOtherType;
 
-	//存档编号
-	private String fileCode;
+    //月报简报类型
+    private String monthlyType;
 
-	/**
-	 * 业务ID
-	 */
-	private String businessId;
+    //存档编号
+    private String fileCode;
 
-	/**
-	 * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
-	 */
-	private String businessType;
+    /**
+     * 业务ID
+     */
+    private String businessId;
 
-	/**
-	 * 审批状态：0部长审批,1分管领导审批,2主任审批,9审批完成
-	 */
-	private String appoveStatus;
+    /**
+     * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
+     */
+    private String businessType;
 
-	/**
-	 * 文件类型，1：表示你补充资料函，2：表示月报简报
-	 */
-	private String fileType;
+    /**
+     * 审批状态：0部长审批,1分管领导审批,2主任审批,9审批完成
+     */
+    private String appoveStatus;
 
+    /**
+     * 文件类型，1：表示你补充资料函，2：表示月报简报
+     */
+    private String fileType;
+
+    /**
+     * 流程实例ID
+     */
+    private String processInstanceId;
 
     public String getId() {
         return id;
@@ -203,30 +212,6 @@ public class AddSuppLetterDto extends BaseDto {
         this.dispaRange = dispaRange;
     }
 
-    public String getSuppleterSuggest() {
-        return suppleterSuggest;
-    }
-
-    public void setSuppleterSuggest(String suppleterSuggest) {
-        this.suppleterSuggest = suppleterSuggest;
-    }
-
-    public String getMeetingSuggest() {
-        return meetingSuggest;
-    }
-
-    public void setMeetingSuggest(String meetingSuggest) {
-        this.meetingSuggest = meetingSuggest;
-    }
-
-    public String getLeaderSuggest() {
-        return leaderSuggest;
-    }
-
-    public void setLeaderSuggest(String leaderSuggest) {
-        this.leaderSuggest = leaderSuggest;
-    }
-
     public Integer getPrintnum() {
         return printnum;
     }
@@ -241,6 +226,14 @@ public class AddSuppLetterDto extends BaseDto {
 
     public void setFileSeq(Integer fileSeq) {
         this.fileSeq = fileSeq;
+    }
+
+    public String getDeptMinisterId() {
+        return deptMinisterId;
+    }
+
+    public void setDeptMinisterId(String deptMinisterId) {
+        this.deptMinisterId = deptMinisterId;
     }
 
     public String getDeptMinisterName() {
@@ -259,12 +252,28 @@ public class AddSuppLetterDto extends BaseDto {
         this.deptMinisterIdeaContent = deptMinisterIdeaContent;
     }
 
+    public String getLeaderSignIdeaContent() {
+        return leaderSignIdeaContent;
+    }
+
+    public void setLeaderSignIdeaContent(String leaderSignIdeaContent) {
+        this.leaderSignIdeaContent = leaderSignIdeaContent;
+    }
+
     public Date getDeptMinisterDate() {
         return deptMinisterDate;
     }
 
     public void setDeptMinisterDate(Date deptMinisterDate) {
         this.deptMinisterDate = deptMinisterDate;
+    }
+
+    public String getDeptSLeaderId() {
+        return deptSLeaderId;
+    }
+
+    public void setDeptSLeaderId(String deptSLeaderId) {
+        this.deptSLeaderId = deptSLeaderId;
     }
 
     public String getDeptSLeaderName() {
@@ -289,6 +298,14 @@ public class AddSuppLetterDto extends BaseDto {
 
     public void setDeptSleaderDate(Date deptSleaderDate) {
         this.deptSleaderDate = deptSleaderDate;
+    }
+
+    public String getDeptDirectorId() {
+        return deptDirectorId;
+    }
+
+    public void setDeptDirectorId(String deptDirectorId) {
+        this.deptDirectorId = deptDirectorId;
     }
 
     public String getDeptDirectorName() {
@@ -385,5 +402,21 @@ public class AddSuppLetterDto extends BaseDto {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

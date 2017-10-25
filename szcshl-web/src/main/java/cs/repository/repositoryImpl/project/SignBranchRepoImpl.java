@@ -63,7 +63,7 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     }
 
     /**
-     * 完成分支操作
+     * 完成分支流程
      * @param signId
      * @param branchId
      */
@@ -78,7 +78,7 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     }
 
     /**
-     * 分支工作方案状态
+     * 分支是否需要工作方案
      * @param signId
      * @param branchId
      * @param state

@@ -160,4 +160,19 @@ public class HomeController {
 
 		return "init AppraiseReport Flow success";
 	}
+
+	@RequiresAuthentication
+	@RequestMapping(name = "拟补充资料函流程",path = "suppLetterFlow",method = RequestMethod.GET)
+	@Transactional
+	public @ResponseBody String suppLetterFlow(){
+		//部署下一个版本
+		logger.info("开始拟补充资料函流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/suppLetter.zip");
+		ZipInputStream zipIn=new ZipInputStream(in);
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("拟补充资料函流程").deploy();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+		logger.info("拟补充资料函流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+
+		return "init SuppLetterFlow Flow success";
+	}
 }

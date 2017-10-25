@@ -93,13 +93,6 @@ public class AdminController {
         resultMap.put("DO_SIGN_COUNT",ruProcessTaskRepo.findMyDoingTask());
         resultMap.put("DO_TASK_COUNT",ruTaskRepo.findMyDoingTask());
 
-        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())){
-            resultMap.put("MONTHLY_COUNT" , addSuppLetterService.countMonthly());
-            resultMap.put("SUPPLETTER_COUNT" , addSuppLetterService.countSuppLetter());
-        }
-
         return resultMap;
     }
 

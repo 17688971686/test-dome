@@ -63,7 +63,7 @@ public class WorkProgramController {
 
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#findByPrincipalUser#get")
-    @RequestMapping(name="通过收文ID获取工作方案", path="findByPrincipalUser" ,method=RequestMethod.GET)
+    @RequestMapping(name="通过项目负责人获取项目信息", path="findByPrincipalUser" ,method=RequestMethod.GET)
     @ResponseBody
     public WorkProgramDto findByPrincipalUser(@RequestParam  String signId){
         return workProgramService.findByPrincipalUser(signId);

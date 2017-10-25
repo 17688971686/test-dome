@@ -6,9 +6,12 @@ import java.util.Map;
 import cs.common.ResultMsg;
 import cs.domain.project.AddSuppLetter;
 import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 /**
  * Description: 项目资料补充函 业务操作接口
@@ -16,16 +19,30 @@ import cs.repository.odata.ODataObj;
  * Date: 2017-8-1 18:05:57
  */
 public interface AddSuppLetterService {
-    
-    AddSuppLetterDto getbyId(String id);
-    
-    ResultMsg addSupp(AddSuppLetterDto addSuppLetterDto);
+
+	/**
+	 * 根据主键查询
+	 * @param id
+	 * @return
+	 */
+    AddSuppLetterDto findById(String id);
+
+	/**
+	 * 保存补充资料函
+	 */
+    ResultMsg saveSupp(AddSuppLetterDto addSuppLetterDto);
     
 	void delete(String id);
 	
     ResultMsg fileNum(String id);
 
-	AddSuppLetterDto initSuppLetter(String businessId, String businessType,String workId);
+	/**
+	 * 新增初始化
+	 * @param businessId
+	 * @param businessType
+	 * @return
+	 */
+	AddSuppLetterDto initSuppLetter(String businessId, String businessType);
 
 	List<AddSuppLetterDto> initSuppList(String businessId);
 
@@ -47,33 +64,19 @@ public interface AddSuppLetterService {
 
 	PageModelDto<AddSuppLetterDto> monthlyAppoveListData(ODataObj odataObj);
 
-	void monthlyApproveEdit(AddSuppLetterDto addSuppLetterDto);
+    /**
+     * 发起项目拟补充资料函流程
+     * @param id
+     * @return
+     */
+    ResultMsg startSignSupperFlow(String id);
 
-	void saveSupp(AddSuppLetterDto addSuppLetterDto);
-
-	/**
-	 * 查询主页上的拟补资料函信息
-	 * @return
-	 */
-	List<AddSuppLetterDto> findHomeAddSuppLetter();
-
-	/**
-	 * 查询主页上的月报简报信息列表
-	 * @return
-	 */
-	List<AddSuppLetterDto> findHomeMonthly();
-
-	/**
-	 * 统计 拟补充资料函数审批目
-	 * @return
-	 */
-	int countSuppLetter();
-
-	/**
-	 * 统计 月报简报审批处理数目
-	 * @return
-	 */
-	int countMonthly();
-
-
+    /**
+     * 拟补充资料函流程处理
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
 }

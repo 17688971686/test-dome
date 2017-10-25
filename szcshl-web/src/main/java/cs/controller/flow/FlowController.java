@@ -20,6 +20,7 @@ import cs.service.book.BookBuyBusinessService;
 import cs.service.flow.FlowNextNodeFilter;
 import cs.service.flow.FlowService;
 import cs.service.flow.IFlow;
+import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.project.SignServiceImpl;
@@ -55,7 +56,7 @@ import java.util.List;
 @RequestMapping(name = "流程", path = "flow")
 @MudoleAnnotation(name = "我的工作台",value = "permission#workbench")
 public class FlowController {
-    private static Logger log = Logger.getLogger(SignServiceImpl.class);
+    private static Logger log = Logger.getLogger(FlowController.class);
 
     @Autowired
     private RuntimeService runtimeService;
@@ -92,6 +93,9 @@ public class FlowController {
     @Autowired
     @Qualifier("appraiseFlowImpl")
     private IFlow appraiseFlowImpl;
+    @Autowired
+    @Qualifier("suppLetterFlowImpl")
+    private IFlow suppLetterFlowImpl;
 
     @Autowired
     private TopicInfoService topicInfoService;
@@ -105,7 +109,8 @@ public class FlowController {
     private ArchivesLibraryService archivesLibraryService;
     @Autowired
     private AppraiseService appraiseService;
-
+    @Autowired
+    private AddSuppLetterService addSuppLetterService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -134,7 +139,7 @@ public class FlowController {
 
     //@RequiresPermissions("flow#queryAgendaTask#post")
     @RequiresAuthentication
-    @RequestMapping(name = "所有待办任务", path = "queryAgendaTask", method = RequestMethod.POST)
+    @RequestMapping(name = "在办任务", path = "queryAgendaTask", method = RequestMethod.POST)
     public @ResponseBody
     PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
@@ -277,6 +282,9 @@ public class FlowController {
             case FlowConstant.FLOW_APPRAISE_REPORT:
                 flowDto.setBusinessMap(appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -340,6 +348,9 @@ public class FlowController {
                 break;
             case FlowConstant.FLOW_APPRAISE_REPORT:
                 resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
+                break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -426,6 +437,9 @@ public class FlowController {
             case FlowConstant.FLOW_APPRAISE_REPORT:
                 resultPage = "reviewProjectAppraise/flowDeal";
                 break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                resultPage = "addSuppLetter/letterFlowDeal";
+                break;
             default:
                 ;
         }
@@ -456,6 +470,9 @@ public class FlowController {
             case FlowConstant.FLOW_APPRAISE_REPORT:
                 resultPage = "reviewProjectAppraise/flowDetail";
                 break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                resultPage = "addSuppLetter/letterFlowDetail";
+                break;
             default:
                 ;
         }
@@ -482,6 +499,9 @@ public class FlowController {
                 break;
             case FlowConstant.FLOW_APPRAISE_REPORT:
                 resultPage = "reviewProjectAppraise/flowEnd";
+                break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                resultPage = "addSuppLetter/letterFlowEnd";
                 break;
             default:
                 ;
