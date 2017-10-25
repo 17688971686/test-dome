@@ -76,4 +76,11 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	List<ProjectReviewCostDto> findProjectRevireCost(ProjectReviewCostDto projectReviewCost);
+
+	/**
+	 * 项目评审情况统计(按类别)
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	ResultMsg proReviewConditionByTypeCount(ProReviewConditionDto projectReviewConditionDto);
 }

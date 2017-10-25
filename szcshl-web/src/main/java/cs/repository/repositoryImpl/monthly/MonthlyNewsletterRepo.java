@@ -9,4 +9,6 @@ import cs.repository.IRepository;
  * Date: 2017-9-8 11:23:41
  */
 public interface MonthlyNewsletterRepo extends IRepository<MonthlyNewsletter, String> {
+
+
 }

@@ -8,6 +8,8 @@ import cs.domain.project.*;
 import cs.domain.sys.Org;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
+import cs.model.expert.ProReviewConditionDto;
+import cs.model.monthly.MonthlyNewsletterDto;
 
 import java.util.*;
 
@@ -856,4 +858,98 @@ public class CreateTemplateUtils {
 
 
     /***********************end课题研究模板****************************************/
+
+
+    /**
+     * 生成月报简报模板
+     * @param monthlyNewsletterDto
+     * @param proReviewConditionDtoList
+     * @return
+     */
+    public static SysFile createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum) {
+        Map<String, Object> dataMap = new HashMap<>();
+        //报告年度
+        dataMap.put("reportMultiyear", monthlyNewsletterDto.getReportMultiyear());
+        //报告月份
+        dataMap.put("theMonths", monthlyNewsletterDto.getTheMonths());
+        //todo:初始化参数
+        dataMap.put("signTotal", "18");
+        dataMap.put("proTotal", "18");
+        dataMap.put("declareTotal", "110732.95");
+        dataMap.put("authorizeTotal", "18021");
+        dataMap.put("ljhjTotal", "92711.95");
+        dataMap.put("hjlTotal", "83.73%");
+
+        dataMap.put("proAllTotal", "23");
+        dataMap.put("declareAllTotal", "116655.17");
+        dataMap.put("authorizeAllTotal", "22505.38");
+        dataMap.put("ljhjAllTotal", "94149.79");
+        dataMap.put("hjlAllTotal", "80.71%");
+
+
+        String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","tqjr-提前介入","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
+        String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","tqjrTotal-提前介入","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
+        String[] projectType = {"projectTypeA-市政工程","projectTypeHouse-房建工程","projectTypeInfo-信息工程","projectTypeBuy-设备采购","projectTypeOther-其他"};
+        boolean flag = true;
+        //当月月报
+        if (proReviewConditionDtoList.size()>0){
+            for(int i=0;i<reviewStage.length;i++){
+                flag = true;
+                String [] tempArr = reviewStage[i].split("-");
+                for(int j=0;j<proReviewConditionDtoList.size();j++){
+                    if(tempArr[1].equals(proReviewConditionDtoList.get(j).getReviewStage())){
+                        flag = false;
+                        dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoList.get(j).getDeclareValue()
+                                +"亿元，审核后总投资"+proReviewConditionDtoList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoList.get(j).getHjl()+"%");
+                        break;
+                    }
+                }
+                if(flag){
+                    dataMap.put(tempArr[0],"");
+                }
+            }
+        }
+        //截止至当前月月报
+        if (proReviewConditionDtoAllList.size()>0){
+            for(int i=0;i<reviewStageTotal.length;i++){
+                flag = true;
+                String [] tempArr = reviewStageTotal[i].split("-");
+                for(int j=0;j<proReviewConditionDtoAllList.size();j++){
+                    if(tempArr[1].equals(proReviewConditionDtoAllList.get(j).getReviewStage())){
+                        flag = false;
+                        dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
+                                +"亿元，审核后总投资"+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoAllList.get(j).getHjl()+"%");
+                        break;
+                    }
+                }
+                if(flag){
+                    dataMap.put(tempArr[0],"");
+                }
+            }
+        }
+        //项目类别
+        String projectTypeItem = "1至"+monthlyNewsletterDto.getTheMonths()+"月评审的项目中,";
+        if(proReviewConditionByTypeList.size()>0){
+            for(int i=0;i<proReviewConditionByTypeList.size();i++){
+              for(int j=0;j<projectType.length;j++){
+                    String [] tempArr = projectType[j].split("-");
+                    if(tempArr[1].equals(proReviewConditionByTypeList.get(i).getProjectType())){
+                        if(i!=(proReviewConditionByTypeList.size()-1)){
+                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+(proReviewConditionByTypeList.get(i).getProjectTypeCount().intValue()/totalNum*100)+"%;";
+                        }else{
+                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+(proReviewConditionByTypeList.get(i).getProjectTypeCount().intValue()/totalNum*100)+"%。";
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        dataMap.put("projectTypeItem",projectTypeItem);
+             SysFile sysFile = null;
+             sysFile = TemplateUtil.createTemplate(null,null,
+                    "月报简报",null,
+                    Constant.Template.MONTH_REPORT.getKey(), Constant.Template.MONTH_REPORT.getValue(),
+                    Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+        return sysFile;
+    }
 }

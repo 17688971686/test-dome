@@ -906,4 +906,13 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return expertSelectedRepo.expertReviewConComplicatedCount(expertReviewConSimpleDto);
 	}
 
+	/**
+	 * 项目评审情况统计(按类别)
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	public ResultMsg proReviewConditionByTypeCount(ProReviewConditionDto projectReviewConditionDto){
+		return expertSelectedRepo.proReviewConditionByTypeCount(projectReviewConditionDto);
+	}
+
 }

@@ -8,7 +8,6 @@ import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
-
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -140,7 +138,7 @@ public class MonthlyNewsletterController {
     public @ResponseBody ResultMsg post(@RequestBody MonthlyNewsletterDto record) {
        return monthlyNewsletterService.saveTheMonthly(record);
     }
-    
+
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
     @RequestMapping(name = "编辑月报简报", path = "monthlyEdit", method = RequestMethod.PUT)
@@ -215,6 +213,13 @@ public class MonthlyNewsletterController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody MonthlyNewsletterDto record) {
         monthlyNewsletterService.update(record);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "生成月报简报", path = "createMonthReport", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody ResultMsg createMonthReport(@RequestBody MonthlyNewsletterDto monthlyNewsletterDto) {
+        return monthlyNewsletterService.createMonthTemplate(monthlyNewsletterDto);
     }
 
     // begin#html

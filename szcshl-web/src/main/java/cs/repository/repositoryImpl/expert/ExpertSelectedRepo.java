@@ -5,10 +5,10 @@ import cs.domain.expert.ExpertSelected;
 import cs.model.expert.ExpertReviewConSimpleDto;
 import cs.model.expert.ExpertReviewCondDto;
 import cs.model.expert.ExpertSelectHis;
+import cs.model.expert.ProReviewConditionDto;
 import cs.repository.IRepository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 抽取专家 数据操作实现接口
@@ -61,4 +61,11 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto);
+
+    /**
+     * 项目评审情况统计(按类别)
+     * @param projectReviewConditionDto
+     * @return
+     */
+    ResultMsg proReviewConditionByTypeCount(ProReviewConditionDto projectReviewConditionDto);
 }
