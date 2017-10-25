@@ -481,6 +481,160 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     }
 
     /**
+     * 项目评审情况汇总
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select sum(projectcount),sum(declarevalue),sum(authorizevalue),sum(ljhj),round(sum(ljhj)/sum(declarevalue),4)*100 from (  ");
+        sqlBuilder.append("select s.reviewstage,count(s.projectcode)projectcount ,sum(d.declarevalue) declarevalue,sum(d.authorizevalue) authorizevalue,(sum(d.declarevalue) - sum(d.authorizevalue)) ljhj from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d   ");
+        sqlBuilder.append("on s.signid = d.signid   ");
+        sqlBuilder.append("where 1 = 1 ");
+        //todo:添加查询条件
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("group by s.reviewstage ) ");
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+        if (projectReviewConList.size() > 0) {
+                Object[] projectReviewCon = projectReviewConList.get(0);
+
+                if (null != projectReviewCon[0]) {
+                    proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[0]);
+                }
+                if (null != projectReviewCon[1]) {
+                    proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[1]);
+                }else{
+                    proReviewConditionDto.setDeclareValue(null);
+                }
+                if (null != projectReviewCon[2]) {
+                    proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[2]);
+                }else{
+                    proReviewConditionDto.setAuthorizeValue(null);
+                }
+                if (null != projectReviewCon[3]) {
+                    proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[3]);
+                }else{
+                    proReviewConditionDto.setLjhj(null);
+                }
+                if (null != projectReviewCon[4]) {
+                    proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[4]);
+                }else{
+                    proReviewConditionDto.setLjhj(null);
+                }
+               // projectReviewConDtoList.add(proReviewConditionDto);
+
+        }
+        return proReviewConditionDto;
+    }
+
+    /**
+     * 项目评审情况明细
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname  from cs_sign s   ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+        //todo:添加查询条件
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("order by s.reviewstage ");
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        if (projectReviewConList.size() > 0) {
+            for (int i = 0; i < projectReviewConList.size(); i++) {
+                Object[] projectReviewCon = projectReviewConList.get(i);
+                ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+                if (null != projectReviewCon[0]) {
+                    proReviewConditionDto.setReviewStage((String) projectReviewCon[0]);
+                }else{
+                    proReviewConditionDto.setReviewStage(null);
+                }
+                if (null != projectReviewCon[1]) {
+                    proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[1]);
+                }
+                if (null != projectReviewCon[2]) {
+                    proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[2]);
+                }else{
+                    proReviewConditionDto.setDeclareValue(null);
+                }
+                if (null != projectReviewCon[3]) {
+                    proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[3]);
+                }else{
+                    proReviewConditionDto.setAuthorizeValue(null);
+                }
+                if (null != projectReviewCon[4]) {
+                    proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[4]);
+                }else{
+                    proReviewConditionDto.setLjhj(null);
+                }
+                if (null != projectReviewCon[5]) {
+                    proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[5]);
+                }else{
+                    proReviewConditionDto.setLjhj(null);
+                }
+                projectReviewConDtoList.add(proReviewConditionDto);
+            }
+        }
+        return projectReviewConDtoList;
+    }
+
+    /**
      * 判断是否存在不规则专家评审次数（专家一周参会超过两次或者一个季度超过12次视为不规则）
      * @param expertReviewConSimpleDto
      * @return

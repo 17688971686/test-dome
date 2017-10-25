@@ -915,4 +915,24 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		return expertSelectedRepo.proReviewConditionByTypeCount(projectReviewConditionDto);
 	}
 
+	/**
+	 * 项目情况统计汇总
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	@Override
+	public ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto) {
+		return expertSelectedRepo.proReviewConditionSum(projectReviewConditionDto);
+	}
+
+	/**
+	 * 项目评审情况明细
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	@Override
+	public List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto) {
+		return expertSelectedRepo.proReviewConditionDetail(projectReviewConditionDto);
+	}
+
 }

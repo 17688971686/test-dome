@@ -326,6 +326,8 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 		monthlyNewsletterDto.setStartMoultiyear("2017");
 		monthlyNewsletterDto.setStaerTheMonths("01");
 		monthlyNewsletterDto.setEndTheMonths("09");
+		ProReviewConditionDto proReviewConditionCur = new ProReviewConditionDto();//汇总当前月
+		ProReviewConditionDto proReviewConditionSum = new ProReviewConditionDto();//累计至当前月
 		//当月月报
 		if(StringUtil.isNotEmpty(monthlyNewsletterDto.getReportMultiyear()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getTheMonths())){
 			ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
@@ -333,6 +335,8 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 			ResultMsg resultMsg = expertSelectedService.proReviewConditionCount(proReviewConditionDto);
 			Map<String, Object> resultMap = (Map<String, Object>)resultMsg.getReObj();
 			List<ProReviewConditionDto> proReviewConditionDtoList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
+			//当前月汇总
+			proReviewConditionCur = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
 			//至当前月月报
 			resultMsg = null;
 			resultMap.clear();
@@ -345,6 +349,7 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 				resultMsg = expertSelectedService.proReviewConditionCount(proReviewConditionDto);
 				resultMap = (Map<String, Object>)resultMsg.getReObj();
 				proReviewConditionDtoAllList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
+				proReviewConditionSum = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
 				//项目类别
 				resultMsg = null;
 				resultMap.clear();
@@ -354,7 +359,7 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 				 totalNum = (Integer) resultMap.get("totalNum");
 				}
 
-			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum);
+			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum);
 			//sysFileRepo.save(sysFile);
 		}
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
