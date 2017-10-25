@@ -225,7 +225,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks"),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" , $("#gtasksForm")),
                 schema: {
                     data: "value",
                     total: function (data) {
