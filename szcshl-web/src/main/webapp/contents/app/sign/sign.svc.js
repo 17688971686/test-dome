@@ -150,7 +150,10 @@
                     filterable: false,
                     template: function (item) {
                         if (item.signState) {
-                            if (item.signState == 1) {
+                            if(item.signState == 0){
+                                return '<span style="color:red">预签收</span>';
+                            }
+                            else if (item.signState == 1) {
                                 return '<span style="color:green;">进行中</span>';
                             } else if (item.signState == 2) {
                                 return '<span style="color:orange;">已暂停</span>';

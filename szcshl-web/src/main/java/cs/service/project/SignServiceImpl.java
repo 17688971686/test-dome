@@ -1753,11 +1753,12 @@ public class SignServiceImpl implements SignService {
     public void reserveAddSign(SignDto signDto) {
         Sign sign = new Sign();
         BeanCopierUtils.copyProperties(signDto, sign);
-        sign.setSignState(EnumState.NORMAL.getValue());
+        //O 为预签收状态
+        sign.setSignState(EnumState.NO.getValue());
         //送件人默认魏俊辉(可以更改)
         //sign.setSendusersign(Constant.SEND_SIGN_NAME);
-        //预签收状态为0
-        sign.setIspresign(Constant.EnumState.NO.getValue());
+        //0 用于区别签收和预签收页面实现送来资料存放位置
+       sign.setIspresign(Constant.EnumState.NO.getValue());
         //2、是否是项目概算流程
         if (Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
             sign.setIsassistflow(EnumState.YES.getValue());

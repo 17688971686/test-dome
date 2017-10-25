@@ -224,18 +224,20 @@ desired effect
                     </a>
                     <ul class="treeview-menu">
                         <@shiro.hasPermission name="sign#html/list#get">
-                            <li><a href="javascript:void(0)" ui-sref="listSign">项目列表</a></li>
+                            <li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表</a></li>
                         </@shiro.hasPermission>
-                        <@shiro.hasPermission name="sign#html/add#get">
+                       <!-- <@shiro.hasPermission name="sign#html/add#get">
                             <li ><a href="javascript:void(0)" ui-sref="addSign">项目签收</a></li>
                         </@shiro.hasPermission>
 
                         <@shiro.hasPermission name="sign#html/reserveAdd#get">
                             <li><a href="javascript:void(0)" ui-sref="reserveAdd">项目预签收</a></li>
                         </@shiro.hasPermission>
+
                         <@shiro.hasPermission name="sign#html/reserveList#get">
                             <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表</a></li>
                         </@shiro.hasPermission>
+                         -->
                         <@shiro.hasPermission name="signView#html/signList#get">
                             <li><a href="javascript:void(0)"  ui-sref="signList">项目查询统计 </a></li>
                         </@shiro.hasPermission>
