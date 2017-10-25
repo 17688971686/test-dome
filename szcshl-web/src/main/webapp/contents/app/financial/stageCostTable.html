@@ -22,7 +22,7 @@
                 <td>合计（元）</td>
                 <td>是否函评</td>
             </tr>
-            <tr ng-repeat="x in vm.expertSelectedDtoList">
+            <tr ng-repeat="x in vm.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                 <td>{{$index+1}}</td>
                 <td>{{x.expertDto.name}}</td>
                 <td>{{x.expertDto.idCard}}</td>

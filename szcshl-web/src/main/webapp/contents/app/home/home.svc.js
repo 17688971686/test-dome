@@ -6,7 +6,7 @@
 	home.$inject = [ '$http' ];
 
 	function home($http) {
-		var url_account_password = "/account/password";
+		var url_account_password = rootPath + "/account/password";
 		
 		var service = {			
 			changePwd : changePwd
