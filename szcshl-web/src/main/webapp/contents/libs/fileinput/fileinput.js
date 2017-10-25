@@ -62,6 +62,7 @@
         MODAL_EVENTS: ['show', 'shown', 'hide', 'hidden', 'loaded'],
         objUrl: window.URL || window.webkitURL,
         compare: function (input, str, exact) {
+            console.log(exact);
             return input !== undefined && (exact ? input === str : input.match(str));
         },
         isIE: function (ver) {
@@ -2652,7 +2653,7 @@
                 if (fileCount === 0 && !$h.isEmpty(fileExt) && $h.isArray(fileExt) && !$h.isEmpty(fileExtExpr)) {
                     chk = $h.compare(caption, fileExtExpr);
                     fileCount += $h.isEmpty(chk) ? 0 : chk.length;
-                    if (fileCount === 0) {
+                    if (fileCount != 0) {
                         msg = self.msgInvalidFileExtension.setTokens({'name': caption, 'extensions': strExt});
                         self.isError = throwError(msg, file, previewId, i);
                         return;

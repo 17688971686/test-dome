@@ -38,7 +38,7 @@
         msgFilePreviewError: '读取 "{name}" 时出现了一个错误.',
         msgInvalidFileName: '文件名 "{name}" 包含非法字符.',
         msgInvalidFileType: '不正确的类型 "{name}". 只支持 "{types}" 类型的文件.',
-        msgInvalidFileExtension: '不正确的文件扩展名 "{name}". 只支持 "{extensions}" 的文件扩展名.',
+        msgInvalidFileExtension: '不正确的文件扩展名 "{name}". 不支持 "{extensions}" 的文件扩展名.',
         msgFileTypes: {
             'image': 'image',
             'html': 'HTML',
