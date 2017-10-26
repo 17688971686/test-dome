@@ -9,7 +9,7 @@
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<form id="form" name="form">
-		<div class="well">
+		<div class="well well-print">
 			<table width="100%" border="1px">
 				<tbody>
 				<tr>
@@ -28,6 +28,7 @@
 						<button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary"   value="saveCommonIdea">查看分类统计</button>
 						<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostCount()">统计</button>
 						<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</button>
+						<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
 					</td>
 				</tr>
 				<tr>
