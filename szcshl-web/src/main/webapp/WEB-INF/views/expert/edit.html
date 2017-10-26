@@ -19,7 +19,7 @@
 
                 <td  class="text-center" width="10%">性别<span class="required">*</span></td>
                 <td width="15%">
-                    <select ng-model="vm.model.sex" class="form-control input-sm " name="sex" data-val-required="必填"
+                    <select ng-model="vm.model.sex" class="form-control" name="sex" data-val-required="必填"
                             data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.SEX.dicts"
@@ -54,7 +54,7 @@
                 </td>
                 <td  class="text-center">最高学历<span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.qualifiCations" class="form-control input-sm " name="qualifiCations"
+                    <select ng-model="vm.model.qualifiCations" class="form-control " name="qualifiCations"
                             data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.QUALIFI_CATIONS.dicts"
@@ -66,7 +66,7 @@
                 </td>
                 <td  class="text-center">最高学位<span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.degRee" class="form-control input-sm " name="degRee"
+                    <select ng-model="vm.model.degRee" class="form-control" name="degRee"
                             data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.DEGREE.dicts" ng-selected="vm.model.degRee == x.dictName"

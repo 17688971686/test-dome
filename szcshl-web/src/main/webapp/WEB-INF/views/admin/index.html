@@ -375,7 +375,7 @@ desired effect
             <@shiro.hasPermission name="permission#expert">
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-users"></i> <span class="title">专家库管理</span>
+                        <i class="fa fa-users"></i><span class="title">专家库管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
@@ -407,8 +407,7 @@ desired effect
             <@shiro.hasPermission name="permission#meeting">
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-university"></i>
-                        <span class="title">会议室管理</span>
+                        <i class="fa fa-university"></i><span class="title">会议室管理</span>
                         <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -444,7 +443,7 @@ desired effect
                 <!-- begin 资产管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-cubes" aria-hidden="true"></i> <span class="title">资产管理</span>
+                        <i class="fa fa-cubes" aria-hidden="true"></i><span class="title">资产管理</span>
                         <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i></span>
                     </a>
                     <ul class="treeview-menu">
@@ -756,6 +755,13 @@ desired effect
 <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
 <script src="${path}/contents/shared/index.js"></script>
 <script type="text/javascript">
+
+    $(".sidebar-menu .treeview-menu > li > a").click(function(){
+        $(".sidebar-menu .treeview-menu > li > a").css({"font-weight":"normal"});
+        $(".sidebar-menu .treeview-menu > li").css({"background":"none"});
+        $(this).parent("li").css({"background":"rgb(230, 236, 242)"});
+        $(this).css({"font-weight":"bold"});
+    })
     common.initDictItems(${DICT_ITEMS});
     var rtxSessionKey = "${RTX_SEESION_KEY}";
     if(rtxSessionKey){
