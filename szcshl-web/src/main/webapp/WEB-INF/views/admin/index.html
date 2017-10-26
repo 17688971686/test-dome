@@ -138,7 +138,7 @@ desired effect
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
                 <li class="treeview menu" style="height: 47px;">
-                    <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-业务管理</span></a>
+                    <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -337px;"></span> <span class="title">菜单</span></a>
                 </li>
 
 
@@ -457,13 +457,13 @@ desired effect
             <!-- /.sidebar-menu -->
             <!--/业务管理-->
 
-            <ul class="sidebar-menu box-hide">
-                <li class="treeview menu" style="height: 47px;">
+            <ul class="sidebar-menu">
+               <!-- <li class="treeview menu" style="height: 47px;">
                     <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-系统管理</span></a>
-                </li>
+                </li>-->
                 <!-- begin 系统管理 -->
             <@shiro.hasPermission name="permission#system">
-                <li class="treeview active">
+                <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa  fa-wrench"></i>
                         <span class="title">系统管理</span>
@@ -516,13 +516,13 @@ desired effect
             <!-- /.sidebar-menu -->
 
 
-            <ul class="sidebar-menu box-hide">
-                <li class="treeview menu" style="height: 47px;">
+            <ul class="sidebar-menu">
+                <!--<li class="treeview menu" style="height: 47px;">
                     <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-文件管理</span></a>
-                </li>
+                </li>-->
                 <!-- start 共享平台-->
             <@shiro.hasPermission name="permission#annountment">
-                <li class="treeview active">
+                <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-bullhorn" aria-hidden="true"></i>
                         <span class="title">公告资料管理</span>
@@ -589,10 +589,10 @@ desired effect
 
 
             <!--begin系统管理员-->
-            <ul class="sidebar-menu box-hide">
-                <li class="treeview menu" style="height: 47px;">
+            <ul class="sidebar-menu">
+               <!-- <li class="treeview menu" style="height: 47px;">
                     <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-系统管理员</span></a>
-                </li>
+                </li>-->
             <@shiro.hasPermission name="permission#manager">
                 <li class="treeview">
                     <a href="javascript:void(0)">
@@ -610,12 +610,12 @@ desired effect
             </@shiro.hasPermission>
             </ul>
             <!--end系统管理员-->
-            <ul class="sidebar-menu box-hide">
-                <li class="treeview menu" style="height: 47px;">
+            <ul class="sidebar-menu">
+               <!-- <li class="treeview menu" style="height: 47px;">
                     <a href="javascript:void(0)" style="color:#fff;"><span class="cs-icon-w" style="background-position: -101px -340px;"></span> <span class="title">菜单-其他</span></a>
-                </li>
+                </li>-->
             <@shiro.hasPermission name="permission#other">
-                <li class="treeview active">
+                <li class="treeview">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cog" aria-hidden="true"></i><span class="title">其它</span>
                         <span class="pull-right-container">
@@ -647,7 +647,7 @@ desired effect
     </aside>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <div class="content-nav">
+        <!--<div class="content-nav">
             <ul>
                 <li class="cs-active"><a href="javascript:;"><span class="cs-icon-d" style="background-position: -266px 0px;">&nbsp;</span> 业务管理</a> </li>
                 <li><a href="javascript:;"><span class="cs-icon-d" style="background-position: -136px -340px;">&nbsp;</span> 系统管理</a> </li>
@@ -655,7 +655,7 @@ desired effect
                 <li><a href="javascript:;"><span class="cs-icon-d" style="background-position: -101px -216px;">&nbsp;</span> 系统管理员</a> </li>
                 <li><a href="javascript:;"><span class="cs-icon-d" style="background-position: -168px -62px;">&nbsp;</span> 其他</a> </li>
             </ul>
-        </div>
+        </div>-->
         <!-- Main content -->
         <section class="content">
             <!-- Your Page Content Here -->

@@ -114,7 +114,6 @@ input,textarea{ outline:none;}
 .menu{
     background: #03004c;
     margin-top: 5px !important;
-
 }
 .menu>a{
     border:0 !important;
@@ -521,4 +520,22 @@ div.k-grid-footer, div.k-grid-header {
 .print-content .table-responsive{
     overflow: visible !important;
     max-height: none !important;
+}
+div.k-window-content {
+    border-color: #fff;
+    border-top-color: #d9ecf5;
+}
+.k-window-title {
+    border-bottom: 1px solid #e8e6e6;
+}
+.k-window-titlebar{
+    border-top-style:solid;
+    border-top-color: #fff !important;
+    border-top-width: 1px;
+    background: #f1f1f1;
+}
+div.k-window{
+    border:1px solid #fff;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
 }
