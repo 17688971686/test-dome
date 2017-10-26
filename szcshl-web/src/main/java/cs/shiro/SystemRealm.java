@@ -2,7 +2,6 @@ package cs.shiro;
 
 
 import cs.domain.sys.User;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -11,12 +10,11 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Set;
-
-import static cs.domain.sys.User_.password;
+import org.apache.log4j.Logger;
 
 public class SystemRealm extends AuthorizingRealm {
+    private static Logger logger = Logger.getLogger(SystemRealm.class);
+    private static final String ALGORITHM = "MD5";
 
     @Autowired
     private UserService userService;
@@ -38,9 +36,9 @@ public class SystemRealm extends AuthorizingRealm {
      * 授权,只有成功通过doGetAuthenticationInfo方法的认证后才会执行。
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        System.out.println("authentication process");
-        // TODO Auto-generated method stub
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String username = (String) token.getPrincipal();
         String userName = (String) token.getPrincipal(); // 得到用户名
         SimplePrincipalCollection principals = new SimplePrincipalCollection(userName, getName());
         super.doClearCache(principals);

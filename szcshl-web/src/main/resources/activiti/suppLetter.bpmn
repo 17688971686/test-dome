@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="FLOW_SUPP_LETTER" name="拟补充资料函流程" isExecutable="true">
+    <startEvent id="SPL_START" name="开始"></startEvent>
+    <userTask id="SPL_FZR" name="项目负责人拟函" activiti:assignee="${user}"></userTask>
+    <userTask id="SPL_BZ_SP" name="部长审核" activiti:assignee="${user_bz}"></userTask>
+    <userTask id="SPL_LD_HQ" name="领导会签" activiti:assignee="${user_hq}">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="user_hq_list" activiti:elementVariable="user_hq">
+        <completionCondition>${confirmDisMulitiTask.leadConSign(execution)}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    <userTask id="SPL_FGLD_SP" name="分管领导审核" activiti:assignee="${user_fgld}"></userTask>
+    <endEvent id="SPL_END" name="结束"></endEvent>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow1" sourceRef="SPL_START" targetRef="SPL_FZR"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="SPL_LD_HQ">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${fgldfz==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="SPL_LD_HQ" targetRef="SPL_FGLD_SP"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="SPL_FGLD_SP" targetRef="SPL_END"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="exclusivegateway1" targetRef="SPL_FGLD_SP">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${fgldfz==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="SPL_FZR" targetRef="SPL_BZ_SP"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="SPL_BZ_SP" targetRef="exclusivegateway1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_FLOW_SUPP_LETTER">
+    <bpmndi:BPMNPlane bpmnElement="FLOW_SUPP_LETTER" id="BPMNPlane_FLOW_SUPP_LETTER">
+      <bpmndi:BPMNShape bpmnElement="SPL_START" id="BPMNShape_SPL_START">
+        <omgdc:Bounds height="35.0" width="35.0" x="130.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SPL_FZR" id="BPMNShape_SPL_FZR">
+        <omgdc:Bounds height="55.0" width="105.0" x="250.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SPL_BZ_SP" id="BPMNShape_SPL_BZ_SP">
+        <omgdc:Bounds height="55.0" width="105.0" x="425.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SPL_LD_HQ" id="BPMNShape_SPL_LD_HQ">
+        <omgdc:Bounds height="55.0" width="105.0" x="690.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SPL_FGLD_SP" id="BPMNShape_SPL_FGLD_SP">
+        <omgdc:Bounds height="55.0" width="105.0" x="558.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SPL_END" id="BPMNShape_SPL_END">
+        <omgdc:Bounds height="35.0" width="35.0" x="440.0" y="190.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="590.0" y="67.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="165.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="630.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="690.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="742.0" y="115.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="558.0" y="207.0"></omgdi:waypoint>
+        <omgdi:waypoint x="475.0" y="207.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="610.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="355.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="425.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="530.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

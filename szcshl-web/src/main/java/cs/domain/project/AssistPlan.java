@@ -41,7 +41,7 @@ public class AssistPlan extends DomainBase {
     /**
      * 抽签时间
      */
-    @Column(columnDefinition="VARCHAR(100)")
+    @Column(columnDefinition="VARCHAR(128)")
     private String drawTime;
 
     /**

@@ -582,7 +582,11 @@
              //资料共享详情页
              .state('sharingDetil', {
                 url: '/sharingDetil/:sharId',
+<<<<<<< Upstream, based on origin/develop
                 templateUrl: rootPath + '/sharingPlatlform/html/letterFlowDetail.html',
+=======
+                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
+>>>>>>> 33a4c85 样式提交
                 controller: 'sharingDetailCtrl',
                 controllerAs: 'vm'
             })

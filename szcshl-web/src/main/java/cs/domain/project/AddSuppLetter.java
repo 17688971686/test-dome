@@ -53,7 +53,7 @@ public class AddSuppLetter extends DomainBase {
 	private String filenum;
 	
 	//文件标题
-	@Column(columnDefinition = "VARCHAR(128)")
+	@Column(columnDefinition = "VARCHAR(256)")
 	private String title;
 	
 	//发行范围

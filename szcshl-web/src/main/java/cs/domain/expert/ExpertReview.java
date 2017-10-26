@@ -39,7 +39,7 @@ public class ExpertReview extends DomainBase {
     /**
      * 评审费发送标题
      */
-    @Column(columnDefinition = "VARCHAR(128)")
+    @Column(columnDefinition = "VARCHAR(256)")
     private String reviewTitle;
 
     /**
