@@ -30,6 +30,9 @@ public class ProReviewConditionDto {
     private String projectType;
     //工程类型项目数
     private BigDecimal projectTypeCount;
+
+    private String projectName;//项目名称
+
     /**
      * 签收日期
      */
@@ -122,5 +125,13 @@ public class ProReviewConditionDto {
 
     public void setProjectTypeCount(BigDecimal projectTypeCount) {
         this.projectTypeCount = projectTypeCount;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }
