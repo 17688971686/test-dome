@@ -2,8 +2,8 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/financial/assistCostAdd.html'"></div>
-<div ng-include src="'${path}/contents/app/financial/assistCostTable.html'"></div>
+
+<#include "/financial/costAdd.html"/>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -75,7 +75,7 @@
                                                         style="width: 16px; height: 16px;"></span>
                 </td>
                 <td class="text-center">{{$index + 1}}</td>
-                <td class="text-center"><a ng-click="vm.addCost(s)">{{s.projectName}}</a></td>
+                <td class="text-center"><a ng-click="vm.addCostWindow(s)">{{s.projectName}}</a></td>
                 <td class="text-center">{{s.assistUnit}}</td>
                 <td class="text-center">{{s.changeUserName}}</td>
                 <td class="text-center">{{s.assistPlanNo}}</td>

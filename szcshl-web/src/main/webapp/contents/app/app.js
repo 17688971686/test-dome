@@ -619,9 +619,9 @@
             })
             //协审费录入列表页面
             .state('assistCostlist', {
-                url: '/assistCostlist',
+                url: '/assistCostlist/:costType',
                 templateUrl: rootPath + '/financialManager/html/assistCostList.html',
-                controller: 'assistCostCountEditCtrl',
+                controller: 'addCostCtrl',
                 controllerAs: 'vm'
             })
             //协审费统计列表
@@ -631,11 +631,11 @@
                 controller: 'assistCostCountListCtrl',
                 controllerAs: 'vm'
             })
-            //评审费统计列表
+            //评审费录入列表
              .state('financialManagerList', {
-                url: '/financialManagerList',
+                url: '/financialManagerList/:costType',
                 templateUrl: rootPath + '/financialManager/html/list.html',
-                controller: 'financialManagerEditCtrl',
+                controller: 'addCostCtrl',
                 controllerAs: 'vm'
             })
 

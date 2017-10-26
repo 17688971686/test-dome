@@ -1,6 +1,7 @@
 package cs.controller.financial;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.ExcelTools;
@@ -137,20 +138,22 @@ public class FinancialManagerController {
 
         for(ExpertSelectedDto expertSelectedDto : expertReviewDto.getExpertSelectedDtoList()){
             ExpertSelected expertSelected = new ExpertSelected();
-            BeanCopierUtils.copyProperties(expertSelectedDto , expertSelected);
-//            expertSelectedList.add(expertSelected);
-            ExpertDto expertDto = expertSelectedDto.getExpertDto();
-            Expert expert = new Expert();
-            BeanCopierUtils.copyProperties(expertDto , expert);
-            Map<String , Object> dataMap = new HashMap<>();
-            dataMap.put("NAME" , expert.getName());
-            dataMap.put("IDCARD" , expert.getIdCard() == null ? "" : expert.getIdCard());
-            dataMap.put("OPENINGBANK" , (expert.getOpeningBank() == null ? "" : expert.getOpeningBank()) + "/" + (expert.getBankAccount() == null ? "" : expert.getBankAccount()));
-            dataMap.put("REVIEWCOST" , expertSelected.getReviewCost());
-            dataMap.put("REVIEWTAXES" , expertSelected.getReviewTaxes());
-            dataMap.put("TOTALCOST" , expertSelected.getTotalCost() );
-            dataMap.put("ISLETTERRW" , "9".equals(expertSelected.getIsLetterRw()) ? "是" : "否");
-            exportMap.add(dataMap);
+            if(Constant.EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())
+                    && Constant.EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())){
+                BeanCopierUtils.copyProperties(expertSelectedDto , expertSelected);
+                ExpertDto expertDto = expertSelectedDto.getExpertDto();
+                Expert expert = new Expert();
+                BeanCopierUtils.copyProperties(expertDto , expert);
+                Map<String , Object> dataMap = new HashMap<>();
+                dataMap.put("NAME" , expert.getName());
+                dataMap.put("IDCARD" , expert.getIdCard() == null ? "" : expert.getIdCard());
+                dataMap.put("OPENINGBANK" , (expert.getOpeningBank() == null ? "" : expert.getOpeningBank()) + "/" + (expert.getBankAccount() == null ? "" : expert.getBankAccount()));
+                dataMap.put("REVIEWCOST" , expertSelected.getReviewCost());
+                dataMap.put("REVIEWTAXES" , expertSelected.getReviewTaxes());
+                dataMap.put("TOTALCOST" , expertSelected.getTotalCost() );
+                dataMap.put("ISLETTERRW" , "9".equals(expertSelected.getIsLetterRw()) ? "是" : "否");
+                exportMap.add(dataMap);
+            }
         }
 
         try{

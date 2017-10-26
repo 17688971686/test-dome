@@ -162,8 +162,8 @@
                 }
             };
             var httpSuccess = function success(response) {
-                vm.financial.stageCount = response.data;
-                $("#financialCount").html(vm.financial.stageCount);
+                // vm.financial.stageCount = response.data;
+                $("#financialCount").html(response.data);
 
             };
 
