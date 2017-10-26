@@ -10,11 +10,11 @@
 	</ol>
 	<form id="form" name="form">
 		<div class="well">
-			<table border="1px">
+			<table width="100%" border="1px">
 				<tbody>
 				<tr>
 
-					<td><span class="help-inline" style="margin-left:10px;">项目名称：</span></td>
+					<td height="50"><span class="help-inline" style="margin-left:10px;">项目名称：</span></td>
 					<td>
 						<input type="text" style="width:200px" ng-model="vm.model.projectname" operator="like">
 					</td>
@@ -24,10 +24,10 @@
 					<td>
 						<input type="text" style="width:100px" ng-model="vm.model.builtcompanyname" operator="like">
 					</td>
-					<td colspan="3">
-						<button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary" style="margin-left:90px;"  value="saveCommonIdea">查看分类统计</button>
-						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostCount()">统计</a>
-						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
+					<td colspan="3" align="center">
+						<button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary"   value="saveCommonIdea">查看分类统计</button>
+						<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostCount()">统计</button>
+						<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</button>
 					</td>
 				</tr>
 				<tr>

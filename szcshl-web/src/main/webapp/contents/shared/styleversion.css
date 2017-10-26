@@ -29,18 +29,18 @@ a{
 *{ padding:0; margin:0;}
 ul,li{list-style-type:none;}
 .clear{ clear:both; font-size:0;line-height:0; height:1px;}
-a{ font-size:12px; text-decoration:none; }
-a:link{font-size:12px;  text-decoration:none;}
-a:visited{font-size:12px;  text-decoration:none;}
-a:hover{ font-size:12px; text-decoration:none;}
-a:active{font-size:12px;  text-decoration:none;}
+/*a{ font-size:14px; text-decoration:none; }
+a:link{font-size:14px;  text-decoration:none;}
+a:visited{font-size:14px;  text-decoration:none;}
+a:hover{ font-size:14px; text-decoration:none;}
+a:active{font-size:14px;  text-decoration:none;}*/
 
 .fl{ float:left; margin-top:5px;}
 .fr{float:right; margin-top:0px; padding-top:5px; position:absolute; right:100px;z-index: 1000;}
 img{border:none}
 div.head{overflow:hidden;}
 div{height:auto}
-table {/*border-collapse: collapse;*/border-spacing: 0px;cellspacing:0px; cellpadding:0px;border:0}
+table {/*border-collapse: collapse;*/border-spacing: 0px;cellspacing:0px; cellpadding:0px;/*border:0*/}
 /*div{word-wrap:break-word; word-break:break-all}英文字母强制折行*/
 .middle{margin:0 auto;}
 .marbtm10{ margin-bottom:10px;}
@@ -83,7 +83,7 @@ input,textarea{ outline:none;}
     position: relative;
     max-height: 100px;
     z-index: 1030;
-    background-image:url("../images/black-linen.png");
+  /*  background-image:url("../images/black-linen.png");*/
 }
 .header{
     background-image:url("../images/headerbg.png");
@@ -163,7 +163,8 @@ input,textarea{ outline:none;}
 }
 /* 表格 */
 
-/* 初始化 */
+/* kendo表格样式自定义初始化 */
+    /* kendo按钮样式自定义初始化 */
 .k-header, .k-grid-header, .k-toolbar, .k-dropdown-wrap, .k-picker-wrap, .k-numeric-wrap, .k-grouping-header, .k-pager-wrap, .k-textbox, .k-button, .k-progressbar, .k-draghandle, .k-autocomplete, .k-state-highlight, .k-tabstrip-items .k-item, .k-panelbar .k-tabstrip-items .k-item, .km-pane-wrapper>.km-pane>.km-view>.km-content {
     /*background-image: url('textures/highlight.png'); */
     background-image: none,-webkit-linear-gradient(top,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%);
@@ -185,11 +186,57 @@ input,textarea{ outline:none;}
     color:#fff;.
 }
 
+
+
+
+
+/* kendo表格底部分页样式自定义初始化 */
+.k-block, .k-widget, .k-input, .k-textbox, .k-group, .k-content, .k-header, .k-filter-row>th, .k-editable-area, .k-separator, .k-colorpicker .k-i-arrow-s, .k-textbox>input, .k-autocomplete, .k-dropdown-wrap, .k-toolbar, .k-group-footer td, .k-grid-footer, .k-footer-template td, .k-state-default, .k-state-default .k-select, .k-state-disabled, .k-grid-header, .k-grid-header-wrap, .k-grid-header-locked, .k-grid-footer-locked, .k-grid-content-locked, .k-grid td, .k-grid td.k-state-selected, .k-grid-footer-wrap, .k-pager-wrap, .k-pager-wrap .k-link, .k-pager-refresh, .k-grouping-header, .k-grouping-header .k-group-indicator, .k-panelbar>.k-item>.k-link, .k-panel>.k-item>.k-link, .k-panelbar .k-panel, .k-panelbar .k-content, .k-treemap-tile, .k-calendar th, .k-slider-track, .k-splitbar, .k-dropzone-active, .k-tiles, .k-toolbar, .k-tooltip, .k-button-group .k-tool, .k-upload-files {
+    border-color: #989898;
+}
+.k-state-disabled,.k-pager-wrap,.k-link{
+    border-color:#00a0e9;
+}
+
+
+.k-grid-content {
+    position: relative;
+    width: 100%;
+    overflow: auto;
+    overflow-x: auto;
+    overflow-y: scroll;
+    zoom: 1;
+    min-height: 0;
+    border-bottom: 1px solid #fff;
+
+}
+.grid{
+  /*  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);*/
+}
+
+
+.k-pager-wrap {
+    background-color: #d9ecf5 !important;
+    color: #00435e;
+    border-top: 0px;
+    border-bottom: 3px solid #badbea;
+}
+div.k-grid-footer, div.k-grid-header {
+    background: #d9ecf5;
+   text-shadow: #ffffff 0 1px 0;
+}
+.k-filter-row th, .k-grid-header th.k-header {
+    font-size: 15px;
+}
+/* kendo表格样式自定义初始化 */
 .k-dropdown .k-input, .k-dropdown .k-state-focused .k-input, .k-menu .k-popup {
     color: #FFFFFF;
 }
-.k-block, .k-widget, .k-input, .k-textbox, .k-group, .k-content, .k-header, .k-filter-row>th, .k-editable-area, .k-separator, .k-colorpicker .k-i-arrow-s, .k-textbox>input, .k-autocomplete, .k-dropdown-wrap, .k-toolbar, .k-group-footer td, .k-grid-footer, .k-footer-template td, .k-state-default, .k-state-default .k-select, .k-state-disabled, .k-grid-header, .k-grid-header-wrap, .k-grid-header-locked, .k-grid-footer-locked, .k-grid-content-locked, .k-grid td, .k-grid td.k-state-selected, .k-grid-footer-wrap, .k-pager-wrap, .k-pager-wrap .k-link, .k-pager-refresh, .k-grouping-header, .k-grouping-header .k-group-indicator, .k-panelbar>.k-item>.k-link, .k-panel>.k-item>.k-link, .k-panelbar .k-panel, .k-panelbar .k-content, .k-treemap-tile, .k-calendar th, .k-slider-track, .k-splitbar, .k-dropzone-active, .k-tiles, .k-toolbar, .k-tooltip, .k-button-group .k-tool, .k-upload-files {
-    border-color: #ECF0F5;
+
+.k-grid td {
+    border: 1px solid #989898;
+    border-top: 2px solid #fff;
+    border-right: 2px solid #fff;
 }
 
 /* 删除按钮的样式 */
@@ -229,6 +276,13 @@ input,textarea{ outline:none;}
     border-color: #00A0E9;
     background-color: #00A0E9;
 }
+
+/*adminlet-table线条修改*/
+.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+    border: 1px solid #989898;
+}
+
+
 
 /* 发文表单基本样式 */
 .newpaper .form-group, .newpaper .form-group p{overflow:hidden;    margin: 0px; padding: 2px;}
@@ -383,7 +437,7 @@ input,textarea{ outline:none;}
     -o-transition: font-size 1s;
 }
 .cared .box{
-    border: 1px solid #e1e1e1;
+    border: 1px solid #c7c7c7;
     min-height: 280px;
     border-radius: 0px;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
@@ -406,8 +460,8 @@ input,textarea{ outline:none;}
     display: block;
 }
 .sidebar-menu .treeview-menu > li > a {
-    color: #8b8b8c;
-    padding-left: 25px;
+    color: #03004c;
+    padding-left: 32px;
     margin: 0px;
 }
 /*.sidebar-menu .treeview-menu > li > a:last-child{
@@ -429,7 +483,9 @@ input,textarea{ outline:none;}
 .treeview-menu{
     background: #fff;
 }
-
+.select-sm{
+    line-height: inherit;
+}
 /*折叠后二级菜单*/
 @media (min-width: 768px){
     .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right), .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {

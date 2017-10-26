@@ -47,7 +47,7 @@
                 <tr>
                     <td class="formAlignRight">项目类型</td>
                     <td>
-                        <select name="projectType" operator="eq" class="form-control input-sm " ng-model="vm.project.projecttype">
+                        <select name="projectType" operator="eq" class="form-control select" ng-model="vm.project.projecttype">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -63,7 +63,7 @@
                     </td>
                     <td class="formAlignRight">主管部门</td>
                     <td>
-                        <select name="mOrgId"  class="form-control input-sm " operator="eq" ng-model="vm.project.mOrgId">
+                        <select name="mOrgId"  class="form-control select " operator="eq" ng-model="vm.project.mOrgId">
                             <option value="">请选择</option>
                             <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}">{{x.name}}</option>
                         </select>
@@ -72,7 +72,7 @@
                 <tr>
                     <td class="formAlignRight">评审阶段</td>
                     <td>
-                        <select name="reviewstage"  operator="eq" class="form-control input-sm "  ng-model="vm.project.reviewstage">
+                        <select name="reviewstage"  operator="eq" class="form-control select "  ng-model="vm.project.reviewstage">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
@@ -87,14 +87,14 @@
 
                     <td class="formAlignRight">缓急程度</td>
                     <td>
-                        <select operator="eq" name="urgencydegree" class="form-control input-sm " ng-model="vm.project.urgencydegree">
+                        <select operator="eq" name="urgencydegree" class="form-control select " ng-model="vm.project.urgencydegree">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
                     </td>
                     <td class="formAlignRight">评审方式</td>
                     <td>
-                        <select operator="eq" name="reviewtype"  class="form-control input-sm " ng-model="vm.project.reviewtype">
+                        <select operator="eq" name="reviewtype"  class="form-control select " ng-model="vm.project.reviewtype">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -109,25 +109,25 @@
                     </td>
                     <td class="formAlignRight" style="width:150px;">收文日期</td>
                     <td>
-                        <input type="text" name="signdate" class="form-control input-sm "  operator="eq" ng-model="vm.project.signdate"
+                        <input type="text" name="signdate" class="form-control input" style="width: 100%"  operator="eq" ng-model="vm.project.signdate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
 
                     <td class="formAlignRight">发文日期</td>
                     <td>
-                        <input type="text" name="dispatchdate" class="form-control input-sm " operator="eq" ng-model="vm.project.dispatchdate"
+                        <input type="text" name="dispatchdate" class="form-control input-sm " style="width: 100%" operator="eq" ng-model="vm.project.dispatchdate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
                     <td class="formAlignRight">归档日期</td>
                     <td>
-                        <input type="text" name="filedate" class="form-control input-sm " operator="eq" ng-model="vm.project.filedate"
+                        <input type="text" name="filedate" class="form-control input-sm " style="width: 100%" operator="eq" ng-model="vm.project.filedate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
                 <tr>
                     <td class="formAlignRight">发文类型</td>
                     <td>
-                        <select operator="eq" name="dispatchType" class="form-control input-sm " ng-model="vm.project.dispatchType">
+                        <select operator="eq" name="dispatchType" class="form-control select " ng-model="vm.project.dispatchType">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -140,7 +140,7 @@
                     </td>
                     <td class="formAlignRight">行业类型</td>
                     <td>
-                        <select operator="eq" name="industryType" ng-model="vm.project.industryType"  class="form-control input-sm ">
+                        <select operator="eq" name="industryType" ng-model="vm.project.industryType"  class="form-control select">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -149,7 +149,7 @@
                     <td class="formAlignRight">秘密等级</td>
                     <td>
                         <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel"
-                                class="form-control input-sm ">
+                                class="form-control select ">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
