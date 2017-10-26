@@ -69,7 +69,7 @@
 
             //begin#添加拟补充资料函
             .state('addSupp', {
-                url: '/addSupp/:businessId/:businessType/:workId',
+                url: '/addSupp/:businessId/:businessType',
                 templateUrl: rootPath + '/addSuppLetter/edit.html',
                 controller: 'addSuppLetterCtrl',
                 controllerAs: 'vm'
@@ -108,14 +108,6 @@
                 controller: 'addSuppLetterQueryEditCtrl',
                 controllerAs: 'vm'
             })//end#拟补充资料函详细信息
-
-             //begin#拟补充资料函审批
-            .state('suppLetterApproveList', {
-                url: '/suppLetterApproveList',
-                templateUrl: rootPath + '/addSuppLetter/suppLetterApproveList.html',
-                controller: 'addSuppLetterQueryCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函审批
 
 
             //begin#拟补充资料函审批处理页面
@@ -591,7 +583,7 @@
              //资料共享详情页
              .state('sharingDetil', {
                 url: '/sharingDetil/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/flowDetail.html',
+                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
                 controller: 'sharingDetailCtrl',
                 controllerAs: 'vm'
             })
@@ -631,11 +623,11 @@
                 controller: 'assistCostCountListCtrl',
                 controllerAs: 'vm'
             })
-            //评审费统计列表
+            //评审费录入列表
              .state('financialManagerList', {
-                url: '/financialManagerList',
+                url: '/financialManagerList/:costType',
                 templateUrl: rootPath + '/financialManager/html/list.html',
-                controller: 'financialManagerEditCtrl',
+                controller: 'addCostCtrl',
                 controllerAs: 'vm'
             })
 

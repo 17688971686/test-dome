@@ -106,7 +106,7 @@ header{
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body" >
-        <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" action="">
+        <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
             <div>
                 <span ng-show="vm.message" class="errors" ng-bind="vm.message">${msg!''}</span>
             </div>
@@ -114,7 +114,7 @@ header{
                 <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
             </div>
             <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="用户名" maxlength="100" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
+                <input type="text" class="form-control" placeholder="用户名" maxlength="100" name="username" id="username" ng-model="vm.model.username" data-val="true" data-val-required="用户名必填">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div>
