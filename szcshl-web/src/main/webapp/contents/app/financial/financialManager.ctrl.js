@@ -1,3 +1,6 @@
+/**
+ * 停用
+ */
 (function () {
     'use strict';
 
