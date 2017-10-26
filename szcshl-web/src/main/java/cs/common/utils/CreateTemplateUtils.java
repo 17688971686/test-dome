@@ -866,14 +866,14 @@ public class CreateTemplateUtils {
      * @param proReviewConditionDtoList
      * @return
      */
-    public static SysFile createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum,ProReviewConditionDto proReviewConditionCur,ProReviewConditionDto proReviewConditionSum) {
+    public static SysFile createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,Integer signCount,Integer reviewCount,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum,ProReviewConditionDto proReviewConditionCur,ProReviewConditionDto proReviewConditionSum,Map<String,List<ProReviewConditionDto> > proReviewCondDetailMap,Integer[] proCountArr) {
         Map<String, Object> dataMap = new HashMap<>();
         //报告年度
         dataMap.put("reportMultiyear", monthlyNewsletterDto.getReportMultiyear());
         //报告月份
         dataMap.put("theMonths", monthlyNewsletterDto.getTheMonths());
         //todo:初始化参数
-        dataMap.put("signTotal", proReviewConditionCur.getProCount());
+        dataMap.put("signTotal", signCount);
         dataMap.put("proTotal", proReviewConditionCur.getProCount());
         dataMap.put("declareTotal", proReviewConditionCur.getDeclareValue());
         dataMap.put("authorizeTotal",proReviewConditionCur.getAuthorizeValue());
@@ -885,10 +885,12 @@ public class CreateTemplateUtils {
         dataMap.put("authorizeAllTotal", proReviewConditionSum.getAuthorizeValue());
         dataMap.put("ljhjAllTotal", proReviewConditionSum.getLjhj());
         dataMap.put("hjlAllTotal", proReviewConditionSum.getHjl()+"%");
+        dataMap.put("reviewCount",reviewCount);//评审会次数
         List<ProReviewConditionDto> proReviewCondition = proReviewConditionDtoList;
         List<ProReviewConditionDto> proReviewConditionAll = proReviewConditionDtoAllList;
         dataMap.put("proReviewConditionList",proReviewCondition);
         dataMap.put("proReviewConditionAllList",proReviewConditionAll);
+        dataMap.put("proReviewCondDetailMap",proReviewCondDetailMap);
 
         String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","tqjr-提前介入","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
         String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","tqjrTotal-提前介入","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
@@ -948,6 +950,17 @@ public class CreateTemplateUtils {
             }
         }
         dataMap.put("projectTypeItem",projectTypeItem);
+        //投资金额
+        for(int i=0;i<proCountArr.length;i++){
+            dataMap.put("proCount"+(i+1),proCountArr[i]);
+            if(proCountArr[i]!=0){
+                double temp = (double)proCountArr[i]/(double)totalNum;
+                Float result = Float.parseFloat(String.format("%.2f",temp));
+                dataMap.put("proCountCent"+(i+1),result*100+"%");
+            }else{
+                dataMap.put("proCountCent"+(i+1),0+"%");
+            }
+        }
              SysFile sysFile = null;
              sysFile = TemplateUtil.createTemplate(null,null,
                     "月报简报",null,

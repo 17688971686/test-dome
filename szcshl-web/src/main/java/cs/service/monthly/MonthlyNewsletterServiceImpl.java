@@ -328,6 +328,8 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 		monthlyNewsletterDto.setEndTheMonths("09");
 		ProReviewConditionDto proReviewConditionCur = new ProReviewConditionDto();//汇总当前月
 		ProReviewConditionDto proReviewConditionSum = new ProReviewConditionDto();//累计至当前月
+		Integer reviewCount = 0;//当月专家评审会次数
+		Integer signCount = 0;//当月签收项目数
 		//当月月报
 		if(StringUtil.isNotEmpty(monthlyNewsletterDto.getReportMultiyear()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getTheMonths())){
 			ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
@@ -337,12 +339,32 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 			List<ProReviewConditionDto> proReviewConditionDtoList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
 			//当前月汇总
 			proReviewConditionCur = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
+			//专家评审明细
+			List<ProReviewConditionDto> proReviewCondDetailList =  expertSelectedService.proReviewConditionDetail(proReviewConditionDto);
+			Map<String,List<ProReviewConditionDto> > proReviewCondDetailMap = new HashMap<String,List<ProReviewConditionDto>>();
+			for(int i=0;i<proReviewConditionDtoList.size();i++){
+				List<ProReviewConditionDto> proReviewConditionDetailList = new ArrayList<ProReviewConditionDto>();
+				String key = "";
+				 for(int j=0;j<proReviewCondDetailList.size();j++){
+				 	if(StringUtil.isNotEmpty(proReviewConditionDtoList.get(i).getReviewStage()) && StringUtil.isNotEmpty(proReviewCondDetailList.get(j).getReviewStage())&&proReviewConditionDtoList.get(i).getReviewStage().equals(proReviewCondDetailList.get(j).getReviewStage())){
+						proReviewConditionDetailList.add(proReviewCondDetailList.get(j));
+						key = NumUtils.NumberToChn(i+1)+"、"+ proReviewConditionDtoList.get(i).getReviewStage();
+					}
+					 if(j==(proReviewCondDetailList.size()-1)){
+						 proReviewCondDetailMap.put(key,proReviewConditionDetailList);
+						 break;
+					 }
+				 }
+			}
+			signCount = expertSelectedService.proReviewCount(proReviewConditionDto);
+			reviewCount = expertSelectedService.proReviewMeetingCount(proReviewConditionDto);//本月专家评审会次数
 			//至当前月月报
 			resultMsg = null;
 			resultMap.clear();
 			List<ProReviewConditionDto> proReviewConditionDtoAllList = new ArrayList<ProReviewConditionDto>();
 			List<ProReviewConditionDto> proReviewConditionByTypeAllList = new ArrayList<ProReviewConditionDto>();
-			Integer totalNum = 0;
+			Integer[] proCountArr = null; //按投资金额的项目数
+			Integer totalNum = 0; //项目数
 			if(StringUtil.isNotEmpty(monthlyNewsletterDto.getStartMoultiyear()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getStaerTheMonths()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getEndTheMonths())){
 				proReviewConditionDto.setBeginTime(monthlyNewsletterDto.getStartMoultiyear()+"-"+monthlyNewsletterDto.getStaerTheMonths());
 				proReviewConditionDto.setEndTime(monthlyNewsletterDto.getStartMoultiyear()+"-"+monthlyNewsletterDto.getEndTheMonths());
@@ -355,11 +377,13 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 				resultMap.clear();
 				resultMsg = expertSelectedService.proReviewConditionByTypeCount(proReviewConditionDto);
 				resultMap = (Map<String, Object>)resultMsg.getReObj();
-				proReviewConditionByTypeAllList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
+				 proReviewConditionByTypeAllList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
 				 totalNum = (Integer) resultMap.get("totalNum");
+				 //投资金额
+				  proCountArr = expertSelectedService.proReviewCondByDeclare(proReviewConditionDto);
 				}
 
-			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum);
+			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,signCount,reviewCount,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum,proReviewCondDetailMap,proCountArr);
 			//sysFileRepo.save(sysFile);
 		}
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");

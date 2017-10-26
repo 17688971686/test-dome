@@ -13,7 +13,6 @@ import cs.domain.expert.Expert_;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.AbstractRepository;
-
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -427,6 +426,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_work_program p  ");
         sqlBuilder.append("on s.signid = p.signid  ");
         sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9'  ");
 
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -490,10 +490,11 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select sum(projectcount),sum(declarevalue),sum(authorizevalue),sum(ljhj),round(sum(ljhj)/sum(declarevalue),4)*100 from (  ");
-        sqlBuilder.append("select s.reviewstage,count(s.projectcode)projectcount ,sum(d.declarevalue) declarevalue,sum(d.authorizevalue) authorizevalue,(sum(d.declarevalue) - sum(d.authorizevalue)) ljhj from cs_sign s  ");
+        sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/(sum(d.declarevalue)*10000),5)*100 hjl  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d   ");
         sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9'  ");
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
@@ -556,6 +557,70 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     }
 
     /**
+     *专家评审会次数
+     * @param projectReviewConditionDto
+     * @return
+     */
+    public Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto){
+        Integer proCount = 0;
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select count(t.reviewdate) from cs_expert_review t   ");
+        sqlBuilder.append("where 1 = 1 ");
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        if (projectReviewConList.size()>0){
+            Object[] projectReviewCon = projectReviewConList.get(0);
+            if (null != projectReviewCon[0]) {
+                proCount = (Integer) projectReviewCon[0];
+            }
+        }
+        return proCount;
+    }
+
+    /**
+     * 项目评审次数
+     * @param projectReviewConditionDto
+     * @return
+     */
+   public  Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto){
+       Integer proCount = 0;
+       Map<String, Object> resultMap = new HashMap<>();
+       HqlBuilder sqlBuilder = HqlBuilder.create();
+       sqlBuilder.append("select count(s.projectcode) from cs_sign s  ");
+       sqlBuilder.append("left join cs_dispatch_doc d ");
+       sqlBuilder.append("on s.signid = d.signid ");
+       sqlBuilder.append("where 1 = 1 ");
+       if(null != projectReviewConditionDto){
+           if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+               String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+               String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+               String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+               sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+               sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+           }
+       }
+       List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+       if (projectReviewConList.size()>0){
+           Object[] projectReviewCon = projectReviewConList.get(0);
+           if (null != projectReviewCon[0]) {
+               proCount = (Integer) projectReviewCon[0];
+           }
+       }
+        return  proCount;
+   }
+
+    /**
      * 项目评审情况明细
      * @param projectReviewConditionDto
      * @return
@@ -568,6 +633,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9' ");
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -600,38 +666,95 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             for (int i = 0; i < projectReviewConList.size(); i++) {
                 Object[] projectReviewCon = projectReviewConList.get(i);
                 ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
-                if (null != projectReviewCon[0]) {
-                    proReviewConditionDto.setReviewStage((String) projectReviewCon[0]);
+                if (null != projectReviewCon[1]) {
+                    proReviewConditionDto.setReviewStage((String) projectReviewCon[1]);
                 }else{
                     proReviewConditionDto.setReviewStage(null);
                 }
-                if (null != projectReviewCon[1]) {
-                    proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[1]);
-                }
+
                 if (null != projectReviewCon[2]) {
-                    proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[2]);
+                    proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
                 }else{
-                    proReviewConditionDto.setDeclareValue(null);
+                    proReviewConditionDto.setProjectName(null);
                 }
-                if (null != projectReviewCon[3]) {
-                    proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[3]);
-                }else{
-                    proReviewConditionDto.setAuthorizeValue(null);
-                }
-                if (null != projectReviewCon[4]) {
-                    proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[4]);
-                }else{
-                    proReviewConditionDto.setLjhj(null);
-                }
-                if (null != projectReviewCon[5]) {
-                    proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[5]);
-                }else{
-                    proReviewConditionDto.setLjhj(null);
-                }
+
                 projectReviewConDtoList.add(proReviewConditionDto);
             }
         }
         return projectReviewConDtoList;
+    }
+
+    /**
+     * 项目评审情况汇总(按照申报投资金额)
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public Integer[] proReviewCondByDeclare(ProReviewConditionDto projectReviewConditionDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        String beginTime = "";
+        String endTime = "";
+        sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9'  ");
+        //todo:添加查询条件
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+
+            }
+        }
+        sqlBuilder.append("and d.declarevalue < 3000  ");
+        sqlBuilder.append("union all  ");
+        sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
+        sqlBuilder.append("union all  ");
+        sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and d.declarevalue >= 10000  and d.declarevalue < 100000   ");
+        sqlBuilder.append("union all  ");
+        sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and d.declarevalue >= 100000   ");
+
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        Integer[] proCountArr = new Integer[projectReviewConList.size()];
+        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+        if (projectReviewConList.size() > 0) {
+            for(int i=0;i<projectReviewConList.size();i++){
+                Object[] projectReviewCon = projectReviewConList.get(0);
+                if (null != projectReviewCon[0]) {
+                    proCountArr[i] = (Integer) projectReviewCon[0];
+                }
+            }
+
+
+        }
+        return proCountArr;
     }
 
     /**
@@ -862,4 +985,5 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
         return getObjectArray(sqlBuilder);
     }
+
 }
