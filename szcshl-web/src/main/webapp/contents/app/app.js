@@ -360,7 +360,7 @@
             //end expert
             //begin#sign
             .state('addSign', {
-                url: '/addSign/:signid',
+                url: '/addSign',
                 templateUrl: rootPath + '/sign/html/add.html',
                 controller: 'signCreateCtrl',
                 controllerAs: 'vm'
@@ -421,7 +421,7 @@
                 controllerAs: 'vm'
             })
             .state('reserveAdd', {	//新增预签收
-                url: '/reserveAdd/:signid',
+                url: '/reserveAdd',
                 templateUrl: rootPath + '/sign/html/reserveAdd.html',
                 controller: 'signReserveAddCtrl',
                 controllerAs: 'vm'
@@ -582,11 +582,7 @@
              //资料共享详情页
              .state('sharingDetil', {
                 url: '/sharingDetil/:sharId',
-<<<<<<< Upstream, based on origin/develop
-                templateUrl: rootPath + '/sharingPlatlform/html/letterFlowDetail.html',
-=======
                 templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
->>>>>>> 33a4c85 样式提交
                 controller: 'sharingDetailCtrl',
                 controllerAs: 'vm'
             })
