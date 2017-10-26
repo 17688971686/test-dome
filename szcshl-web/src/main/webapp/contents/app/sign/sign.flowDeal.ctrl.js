@@ -76,7 +76,11 @@
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
 
         vm.signId = vm.model.signid;
+<<<<<<< Upstream, based on origin/develop
 
+=======
+        
+>>>>>>> 87f674e 财务管理：费用录入的修改（包括流程的财务办理）
         active();
         function active() {
             $('#myTab li').click(function (e) {
@@ -404,7 +408,19 @@
         
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
+<<<<<<< Upstream, based on origin/develop
             $state.go('addSupp', {businessId: vm.model.signid,businessType:"SIGN"});
+=======
+        	 signSvc.findWorkProgramBySignId(vm,function(){
+                // signSvc.meetingDoc(vm);
+        		 // console.log(vm.workProgramId);
+        		 if(vm.workProgramId){
+        			 $state.go('addSupp', {businessId: vm.model.signid,businessType:"SIGN",workId:vm.workProgramId});
+        		 }else{
+        			 bsWin.alert("请先保存工作方案");
+        		 }
+             });
+>>>>>>> 87f674e 财务管理：费用录入的修改（包括流程的财务办理）
         }// E_跳转到 拟补充资料函 编辑页面
         
         //S 拟补充资料函列表
