@@ -8,3 +8,15 @@ $(".content-nav ul li").click(function(){
     $(".sidebar-menu").hide();
     $(".sidebar-menu:eq("+n+")").show();
 })
+
+//打印功能
+function printpage(act){
+$(".main-sidebar,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+$(act).addClass("print-hide");
+$(".content-wrapper").addClass("print-content");
+print();
+$(".main-sidebar,.header,.breadcrumb,.toolbar,#myTab").removeClass("print-hide");
+$(act).removeClass("print-hide");
+$(".content-wrapper").removeClass("print-content");
+
+}

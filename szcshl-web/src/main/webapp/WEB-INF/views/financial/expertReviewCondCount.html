@@ -9,7 +9,7 @@
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<form id="form" name="form">
-		<div class="well">
+		<div class="well well-print">
 			<table border="1px" width="100%">
 				<tbody>
 				<tr>
@@ -25,6 +25,7 @@
 					<td colspan="6">
 						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.expertRevConCount()">统计</a>
 						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
+						<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
 					</td>
 				</tr>
 				<tr>
