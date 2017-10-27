@@ -118,6 +118,9 @@
                     <td class="text-center" style="width:7%">{{e.mainChargeUserName}}</td>
                 </tr>
             </tbody>
+            <tr ng-if="vm.noData">
+                <td colspan="11" class="text-center">没有相应的数据！</td>
+            </tr>
         </table>
     </div>
 </div>
