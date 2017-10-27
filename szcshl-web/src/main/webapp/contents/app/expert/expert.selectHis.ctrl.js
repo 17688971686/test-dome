@@ -15,8 +15,15 @@
          * 查询
          */
         vm.search = function(){
+            vm.isSubmit = true;
             expertSvc.expertSelectHis(vm.selectHis,function(data){
-                vm.expSelectList = data;
+                vm.isSubmit = false;
+                if(!data || data.length ==0){
+                    vm.noData = true;
+                }else{
+                    vm.noData = false;
+                    vm.expScoreList = data;
+                }
             });
         }
         /**

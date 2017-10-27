@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/expertList">专家抽取统计</a></li>
+        <li><a href="#/expertList">专家库管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
@@ -84,6 +84,9 @@
                 <td class="text-center" >{{e.describes}}</td>
             </tr>
             </tbody>
+            <tr ng-if="vm.noData">
+                <td colspan="8" class="text-center">没有相应的数据！</td>
+            </tr>
         </table>
     </div>
 </div>

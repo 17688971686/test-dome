@@ -576,62 +576,66 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     public List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis,boolean isScore) {
         List<Object[]> epList = expertSelectedRepo.getSelectHis(expertSelectHis,isScore);
-        List<ExpertSelectHis> resultList = new ArrayList<>();
+        List<ExpertSelectHis> resultList = null;
         String expertID="";     //初始专家ID
-        ExpertSelectHis expertSelectHisObj =null;
+        ExpertSelectHis expertSelectHisObj = null;
         List<ExpertSelectHis> childList = null;
-        for(int i=0,l=epList.size();i<l;i++){
-            Object[] expMap = epList.get(i);
-            String expId = expMap[0].toString();
-            String expName = expMap[1].toString();
-            String expCompany = expMap[2]==null?"":expMap[2].toString();
-            String expField = expMap[3]==null?"":expMap[3].toString();
-            String projectName = expMap[4]==null?"":expMap[4].toString();
-            String majorBig = expMap[5]==null?"":expMap[5].toString();
-            String marjorSmall = expMap[6]==null?"":expMap[6].toString();
-            String expertType = expMap[7]==null?"":expMap[7].toString();
-            String selectType = expMap[8]==null?"":expMap[8].toString();
-            String isConfirm = expMap[9]==null?"":expMap[9].toString();
-            String reviewType = expMap[10]==null?"":expMap[10].toString();
-            Date reviewDate = DateUtils.converToDate(expMap[11]==null?"":expMap[11].toString(),null);
-            String mainChargeUserName = expMap[12]==null?"":expMap[12].toString();
-            Double score = expMap[13]==null?null:Double.valueOf(expMap[13].toString());
-            String describes = expMap[14]==null?"":expMap[14].toString();
-            String reviewStage = expMap[15]==null?"":expMap[15].toString();
+        if(Validate.isList(epList)){
+            resultList = new ArrayList<>();
 
-            if(!Validate.isString(expertID) || !expertID.equals(expId)){
-                if(expertSelectHisObj != null){
-                    expertSelectHisObj.setChildList(childList);
+            for(int i=0,l=epList.size();i<l;i++){
+                Object[] expMap = epList.get(i);
+                String expId = expMap[0].toString();
+                String expName = expMap[1].toString();
+                String expCompany = expMap[2]==null?"":expMap[2].toString();
+                String expField = expMap[3]==null?"":expMap[3].toString();
+                String projectName = expMap[4]==null?"":expMap[4].toString();
+                String majorBig = expMap[5]==null?"":expMap[5].toString();
+                String marjorSmall = expMap[6]==null?"":expMap[6].toString();
+                String expertType = expMap[7]==null?"":expMap[7].toString();
+                String selectType = expMap[8]==null?"":expMap[8].toString();
+                String isConfirm = expMap[9]==null?"":expMap[9].toString();
+                String reviewType = expMap[10]==null?"":expMap[10].toString();
+                Date reviewDate = DateUtils.converToDate(expMap[11]==null?"":expMap[11].toString(),null);
+                String mainChargeUserName = expMap[12]==null?"":expMap[12].toString();
+                Double score = expMap[13]==null?null:Double.valueOf(expMap[13].toString());
+                String describes = expMap[14]==null?"":expMap[14].toString();
+                String reviewStage = expMap[15]==null?"":expMap[15].toString();
+
+                if(!Validate.isString(expertID) || !expertID.equals(expId)){
+                    if(expertSelectHisObj != null){
+                        expertSelectHisObj.setChildList(childList);
+                        resultList.add(expertSelectHisObj);
+                    }
+                    expertID = expId;
+                    expertSelectHisObj = new ExpertSelectHis();
+                    childList = new ArrayList<>();
+                    expertSelectHisObj.setEpId(expId);
+                    expertSelectHisObj.setEpName(expName);
+                    expertSelectHisObj.setEpCompany(expCompany);
+                }
+                ExpertSelectHis childObj = new ExpertSelectHis();
+                childObj.setEpId(expId);
+                childObj.setEpName(expName);
+                childObj.setEpCompany(expCompany);
+                childObj.setEpField(expField);
+                childObj.setProjectName(projectName);
+                childObj.setMajorBig(majorBig);
+                childObj.setMarjorSmall(marjorSmall);
+                childObj.setSelectType(Constant.EnumExpertSelectType.getName(selectType));
+                childObj.setIsConfirm(Constant.EnumState.YES.getValue().equals(isConfirm)?"已选定":"否");
+                childObj.setReviewType(reviewType);
+                childObj.setExpertType(expertType);
+                childObj.setReviewDate(reviewDate);
+                childObj.setMainChargeUserName(mainChargeUserName);
+                childObj.setScore(score);
+                childObj.setDescribes(describes);
+                childObj.setReviewStage(reviewStage);
+                childList.add(childObj);
+                //最后一个
+                if(i == (l-1)){
                     resultList.add(expertSelectHisObj);
                 }
-                expertID = expId;
-                expertSelectHisObj = new ExpertSelectHis();
-                childList = new ArrayList<>();
-                expertSelectHisObj.setEpId(expId);
-                expertSelectHisObj.setEpName(expName);
-                expertSelectHisObj.setEpCompany(expCompany);
-            }
-            ExpertSelectHis childObj = new ExpertSelectHis();
-            childObj.setEpId(expId);
-            childObj.setEpName(expName);
-            childObj.setEpCompany(expCompany);
-            childObj.setEpField(expField);
-            childObj.setProjectName(projectName);
-            childObj.setMajorBig(majorBig);
-            childObj.setMarjorSmall(marjorSmall);
-            childObj.setSelectType(Constant.EnumExpertSelectType.getName(selectType));
-            childObj.setIsConfirm(Constant.EnumState.YES.getValue().equals(isConfirm)?"已选定":"否");
-            childObj.setReviewType(reviewType);
-            childObj.setExpertType(expertType);
-            childObj.setReviewDate(reviewDate);
-            childObj.setMainChargeUserName(mainChargeUserName);
-            childObj.setScore(score);
-            childObj.setDescribes(describes);
-            childObj.setReviewStage(reviewStage);
-            childList.add(childObj);
-            //最后一个
-            if(i == (l-1)){
-                resultList.add(expertSelectHisObj);
             }
         }
         return resultList;
