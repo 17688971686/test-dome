@@ -282,12 +282,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //2、删除记录信息
         sharingPlatlformRepo.deleteById(SharingPlatlform_.sharId.getName(),id);
         //3、删除附件
-        HqlBuilder queryHql = HqlBuilder.create();
-        queryHql.append(" from "+SysFile.class.getSimpleName());
-        queryHql.bulidPropotyString("where",SysFile_.businessId.getName(),id);
-
-        List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
-        if(fileList != null && fileList.size() > 0){
+        List<SysFile> fileList = sysFileRepo.findByIds(SysFile_.businessId.getName(),id,null);
+        if(Validate.isList(fileList)){
             fileList.forEach(f->{
                 sysFileRepo.delete(f);
                 SysFileUtil.deleteFile(SysFileUtil.getUploadPath() + f.getFileUrl());

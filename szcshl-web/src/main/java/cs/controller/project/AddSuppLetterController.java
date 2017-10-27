@@ -33,6 +33,21 @@ public class AddSuppLetterController {
     private AddSuppLetterService addSuppLetterService;
 
     @RequiresAuthentication
+    //@RequiresPermissions("addSuppLetter#submitSupp#post")
+    @RequestMapping(name = "提交拟补充资料函", path = "saveSupp", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveSupp(@RequestBody AddSuppLetterDto addSuppLetterDto){
+        return  addSuppLetterService.saveSupp(addSuppLetterDto);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "发起项目拟补充资料函流程", path = "startSignSupperFlow", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startSignSupperFlow(@RequestParam(required = true) String id) {
+        return addSuppLetterService.startSignSupperFlow(id);
+    }
+
+    @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppListDate#post")
     @RequestMapping(name = "初始化拟补充资料函列表", path = "initSuppListDate", method = RequestMethod.POST)
     public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String businessId){
@@ -70,39 +85,15 @@ public class AddSuppLetterController {
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppLetter#post")
     @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)
-    public @ResponseBody AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType,String workId){
-        return addSuppLetterService.initSuppLetter(businessId,businessType,workId);
+    public @ResponseBody AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType){
+        return addSuppLetterService.initSuppLetter(businessId,businessType);
     }
 
-    @RequiresAuthentication
-    //@RequiresPermissions("addSuppLetter#submitSupp#post")
-    @RequestMapping(name = "提交拟补充资料函", path = "submitSupp", method = RequestMethod.POST)
-    @ResponseBody
-    public ResultMsg add(@RequestBody AddSuppLetterDto addSuppLetterDto){
-        return  addSuppLetterService.addSupp(addSuppLetterDto);
-    }
-
-    @RequiresAuthentication
-    //@RequiresPermissions("addSuppLetter#save#post")
-    @RequestMapping(name = "保存拟补充资料函", path = "saveSupp", method = RequestMethod.POST)
-    @ResponseBody
-    public AddSuppLetterDto save(@RequestBody AddSuppLetterDto addSuppLetterDto){
-        addSuppLetterService.saveSupp(addSuppLetterDto);
-        return addSuppLetterDto;
-    }
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#findById#get")
-    @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.GET)
-    public @ResponseBody AddSuppLetterDto getbyId(@RequestParam String id){
-        AddSuppLetterDto addSuppLetterDto = addSuppLetterService.getbyId(id);
-        return addSuppLetterDto;
-    }
-
-    @RequiresAuthentication
-    @RequestMapping(name="查询主页上的拟补充资料函信息" , path = "findHomeAddSuppLetter" , method =  RequestMethod.GET)
-    @ResponseBody
-    public List<AddSuppLetterDto> findHomeAddSupletter(){
-        return addSuppLetterService.findHomeAddSuppLetter();
+    @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.POST)
+    public @ResponseBody AddSuppLetterDto findById(@RequestParam String id){
+        return addSuppLetterService.findById(id);
     }
 
     @RequiresAuthentication
@@ -147,12 +138,6 @@ public class AddSuppLetterController {
         return ctrlName+"/suppLetterList";
     }
 
-
-    @RequiresPermissions("addSuppLetter#html/suppLetterApproveList#get")
-    @RequestMapping(name = "拟补充资料函审批", path = "suppLetterApproveList", method = RequestMethod.GET)
-    public String suppLetterApproveList() {
-        return ctrlName+"/suppLetterApproveList";
-    }
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/suppLetterApproveEdit#get")

@@ -257,7 +257,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     public int deleteById(String idPropertyName, String idValue) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" delete from  " + getPersistentClass().getSimpleName()+" ");
-        hqlBuilder.bulidPropotyString("where",idPropertyName,idValue);
+        hqlBuilder.bulidPropotyString(" where ",idPropertyName,idValue);
 
         return executeHql(hqlBuilder);
     }

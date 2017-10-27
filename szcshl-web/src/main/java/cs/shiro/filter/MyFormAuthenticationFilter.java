@@ -38,6 +38,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
      */
     private String successUrl;
 
+    @Override
     protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception {
         AuthenticationToken token = createToken(request, response);
         if (token == null) {
@@ -64,6 +65,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         }
     }
 
+    @Override
     protected void issueSuccessRedirect(ServletRequest request, ServletResponse response)
             throws Exception {
         // 清除记录的前一个请求
@@ -118,6 +120,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         return true;*/
     }
 
+    @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         if (isLoginRequest(request, response)){
             if (isLoginSubmission(request, response)){

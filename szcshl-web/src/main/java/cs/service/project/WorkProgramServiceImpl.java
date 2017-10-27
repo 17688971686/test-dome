@@ -1,13 +1,25 @@
 package cs.service.project;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import cs.common.Constant;
+import cs.common.Constant.EnumState;
+import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.*;
+import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertReview_;
+import cs.domain.expert.Expert_;
+import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBooking_;
+import cs.domain.project.*;
+import cs.domain.sys.*;
+import cs.model.project.WorkProgramDto;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -15,46 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.CreateTemplateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.SysFileUtil;
-import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.Expert_;
-import cs.domain.meeting.RoomBooking;
-import cs.domain.meeting.RoomBooking_;
-import cs.domain.project.AssistPlanSign;
-import cs.domain.project.AssistPlanSign_;
-import cs.domain.project.AssistUnit;
-import cs.domain.project.Sign;
-import cs.domain.project.SignPrincipal;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
-import cs.domain.project.WorkProgram_;
-import cs.domain.sys.Org;
-import cs.domain.sys.OrgDept;
-import cs.domain.sys.SysFile;
-import cs.domain.sys.SysFile_;
-import cs.domain.sys.User;
-import cs.model.project.WorkProgramDto;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
-import cs.repository.repositoryImpl.project.AssistUnitRepo;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
+import java.util.*;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -254,55 +227,17 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         return resultMap;
     }
 
- /*   *//**
-     * entity 转成 dto
-     * @param workProgram
-     * @param workProgramDto
-     *//*
-    @Override
-    public void initWorkProgramDto(WorkProgram workProgram,WorkProgramDto workProgramDto){
-        BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-        //1、初始化会议室预定情况
-        List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(),workProgram.getId(),null);
-        if (Validate.isList(roomBookings)) {
-            List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
-            roomBookings.forEach(r -> {
-                RoomBookingDto rbDto = new RoomBookingDto();
-                BeanCopierUtils.copyProperties(r, rbDto);
-                rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(), "HH:mm"));
-                rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
-                roomBookingDtos.add(rbDto);
-            });
-            workProgramDto.setRoomBookingDtos(roomBookingDtos);
-        }
-        //2、拟聘请专家
-        List<Expert> expertList = expertRepo.findByBusinessId(workProgram.getId());
-        if(Validate.isList(expertList)){
-            List<ExpertDto> expertDtoList = new ArrayList<>(expertList.size());
-            expertList.forEach( el ->{
-                ExpertDto expertDto = new ExpertDto();
-                el.setPhoto(null);
-                BeanCopierUtils.copyProperties(el,expertDto);
-                expertDtoList.add(expertDto);
-            });
-            workProgramDto.setExpertDtoList(expertDtoList);
-        }
-    }
-*/
     /**
-     * 通过收文id获取工作方案
+     * 通过项目负责人获取项目信息
      * @param signId
      * @return
      */
     @Override
     public WorkProgramDto findByPrincipalUser(String signId) {
-
         WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
         WorkProgramDto workProgramDto = new WorkProgramDto();
-        if(workProgram !=null){
+        if(workProgram != null){
             BeanCopierUtils.copyProperties(workProgram , workProgramDto);
-        }else{
-            workProgramDto.setId("");
         }
         return workProgramDto;
     }
@@ -483,9 +418,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
     }
 
+    /**
+     * 根据ID初始Dto
+     * @param workId
+     * @return
+     */
 	@Override
 	public WorkProgramDto initWorkProgramById(String workId) {
-		WorkProgram work = workProgramRepo.findById(workId);
+		WorkProgram work = workProgramRepo.findById(WorkProgram_.id.getName(),workId);
 		WorkProgramDto workDto = new WorkProgramDto();
 		BeanCopierUtils.copyProperties(work, workDto);
 		return workDto;

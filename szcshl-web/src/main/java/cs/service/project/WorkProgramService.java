@@ -21,6 +21,11 @@ public interface WorkProgramService {
 
     WorkProgramDto initWorkProgramById(String workId);
 
+    /**
+     * 通过项目负责人获取项目信息
+     * @param signId
+     * @return
+     */
     WorkProgramDto findByPrincipalUser(String signId);
 
     /**

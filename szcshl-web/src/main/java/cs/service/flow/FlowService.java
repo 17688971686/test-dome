@@ -14,6 +14,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import java.util.List;
 
@@ -60,4 +61,21 @@ public interface FlowService {
      * @return
      */
     ResultMsg dealFlowByBusinessKey(String businessKey,String activiName,FlowDto flowDto,String definitionKey);
+
+    /**
+     * 取回流程
+     * @param taskId    当前任务ID
+     * @param activityId 取回节点ID
+     * @return ResultMsg
+     */
+    ResultMsg callBackProcess(String taskId, String activityId)throws Exception;
+
+    /**
+     * 根据流程实例ID和任务key值查询所有同级任务集合
+     *
+     * @param processInstanceId
+     * @param key
+     * @return
+     */
+    List<Task> findTaskListByKey(String processInstanceId, String key);
 }

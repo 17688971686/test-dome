@@ -23,7 +23,6 @@
             meetingDoc: meetingDoc,             //生成会前准备材
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
             realSign : realSign ,               //正式签收
-            findWorkProgramBySignId : findWorkProgramBySignId,   //通过收文Id获取工作方案
             createDispatchTemplate : createDispatchTemplate ,//生成发文模板
 
         };
@@ -150,7 +149,10 @@
                     filterable: false,
                     template: function (item) {
                         if (item.signState) {
-                            if (item.signState == 1) {
+                            if(item.signState == 0){
+                                return '<span style="color:red">预签收</span>';
+                            }
+                            else if (item.signState == 1) {
                                 return '<span style="color:green;">进行中</span>';
                             } else if (item.signState == 2) {
                                 return '<span style="color:orange;">已暂停</span>';
@@ -546,29 +548,6 @@
             });
         }
         //end initAssociateSigns
-
-        //begin findWorkProgramBySignId
-        function findWorkProgramBySignId(vm,callBack){
-            var httpOptions = {
-                method : "get",
-                url : rootPath + "/workprogram/findByPrincipalUser",
-                params : {signId : vm.model.signid}
-            }
-
-            var httpSuccess = function success(response){
-                vm.workProgramId = response.data.id;
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack();
-                }
-            }
-            common.http({
-                vm : vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end findWorkProgramBySignId
 
         //S_meetingDoc
         function meetingDoc(vm) {

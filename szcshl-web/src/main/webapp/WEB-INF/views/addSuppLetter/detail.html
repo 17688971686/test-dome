@@ -1,99 +1,83 @@
-<#assign path=request.contextPath/>
 <meta charset="UTF-8">
-
 <div class="well well-sm" style="background:white; color: red">
-<div class="toolbar">
-    <button ng-show='false'class="btn btn-sm btn-success" ng-click="vm.getFilenum()" ng-disabled="vm.isCommit">
-        <span class="glyphicon glyphicon-ok"></span>生成文件字号
-    </button>
-    <button  ng-show='false'class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit">
-        <span class="glyphicon glyphicon-ok"></span>保存
-    </button>
-    <button ng-show='false'class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
-        <span class="glyphicon glyphicon-ok"></span>打印
-    </button>
-    <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
-    </button>
-</div>
-     <!-- s form -->
-    <form id="suppletter_form" name="suppletter_form">
-        <!-- s table -->
-        <table class="table table-bordered">
-            <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</strong></caption>
-            <tbody>
-            <tr>
-                <td style="width:150px;" class="text-center">拟稿部门<br>拟稿人</td>
-                <td>
-                   {{vm.suppletter.orgName}}<br>
-                   {{vm.suppletter.userName}}
-                </td>
+    <table class="table table-bordered">
+        <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</strong></caption>
+        <tbody>
+        <tr>
+            <td style="width:150px;" class="text-center">拟稿部门<br>拟稿人</td>
+            <td>
+                {{vm.suppletter.orgName}}<br>
+                {{vm.suppletter.userName}}
+            </td>
 
-                <td style="width:150px;" class="text-center">拟稿时间</td>
-                <td >
+            <td style="width:150px;" class="text-center">拟稿时间</td>
+            <td >
                 {{vm.suppletter.suppLetterTime}}
-                </td>
-            </tr>
-            <tr>
-                <td style="width:150px;" class="text-center">秘密等级</td>
-                <td>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">秘密等级</td>
+            <td>
                 {{vm.suppletter.secretLevel}}
-                </td>
+            </td>
 
-                <td style="width:150px;" class="text-center">缓急程度</td>
-                <td>
+            <td style="width:150px;" class="text-center">缓急程度</td>
+            <td>
                 {{vm.suppletter.mergencyLevel}}
-                </td>
-            </tr>
-            <tr>
-                <td style="width:150px;" class="text-center">发文日期</td>
-                <td>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">发文日期</td>
+            <td>
                 {{vm.suppletter.disapDate}}
-                </td>
+            </td>
 
-                <td style="width:150px;" class="text-center">文件字号</td>
-                <td> {{vm.suppletter.filenum}} </td>
-            </tr>
+            <td style="width:150px;" class="text-center">文件字号</td>
+            <td> {{vm.suppletter.filenum}} </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
-                <td colspan="3">
+        <tr>
+            <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+            <td colspan="3">
                 {{vm.suppletter.title}}
-                </td>
-            </tr>
-            <tr>
-                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
-                <td colspan="3">
-                {{vm.suppletter.dispaRange}}
-                </td>
-            </tr>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+            <td colspan="3">
+                <div style="min-height: 50px;">
+                    {{vm.suppletter.dispaRange}}
+                </div>
+                <span style="float: right;">
+                    (印{{vm.suppletter.printnum}}份)
+                </span>
+            </td>
+        </tr>
 
 
-            <tr>
-                <td style="width:150px;" class="text-center">核稿意见</td>
-                <td colspan="3">
+        <tr>
+            <td style="width:150px;" class="text-center">核稿意见</td>
+            <td colspan="3">
                 <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
-			 	 <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
-			     <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
-                </td>
-            </tr>
+                <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
+                <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
+            </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">会签意见</td>
-                <td colspan="3">
-                 <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
-			 	 <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
-			     <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width:150px;" class="text-center">领导意见</td>
-                <td colspan="3">
-                    <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
-			 		<p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>
-			     	<p class="text-right" ng-if="vm.suppletter.deptDirectorDate">日期：{{vm.suppletter.deptDirectorDate}}</p>
-                </td>
-            </tr>
-            </tbody>
-        </table>    <!-- end table -->
-    </form> <!-- end form -->
+        <tr>
+            <td style="width:150px;" class="text-center">会签意见</td>
+            <td colspan="3">
+                <div style="min-height: 50px;" ng-bind-html="vm.suppletter.leaderSignIdeaContent | trust2Html"></div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">领导意见</td>
+            <td colspan="3">
+                <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
+                <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
+                <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>    <!-- end table -->
 </div>

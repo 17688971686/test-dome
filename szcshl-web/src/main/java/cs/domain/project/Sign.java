@@ -40,7 +40,7 @@ public class Sign extends DomainBase {
     /**
      * 是否已发送存档
      */
-    @Column(columnDefinition = "VARCHAR(2) COMMENT '是否已发送存档,9是0否'")
+    @Column(columnDefinition = "VARCHAR(2)")
     private String isSendFileRecord;
 
     /**

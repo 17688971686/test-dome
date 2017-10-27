@@ -68,4 +68,42 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     ResultMsg proReviewConditionByTypeCount(ProReviewConditionDto projectReviewConditionDto);
+
+    /**
+     * 项目评审情况汇总
+     * @param projectReviewConditionDto
+     * @return
+     */
+    ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto);
+
+
+    /**
+     * 项目评审情况明细
+     * @param projectReviewConditionDto
+     * @return
+     */
+    List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto);
+
+    /**
+     * 项目评审情况汇总(按照申报投资金额)
+     * @param projectReviewConditionDto
+     * @return
+     */
+    Integer[]  proReviewCondByDeclare(ProReviewConditionDto projectReviewConditionDto);
+
+    /**
+     * 专家评审会次数
+     * @param projectReviewConditionDto
+     * @return
+     */
+    Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto);
+
+    /**
+     * 项目评审次数
+     * @param projectReviewConditionDto
+     * @return
+     */
+    Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto);
+
+
 }

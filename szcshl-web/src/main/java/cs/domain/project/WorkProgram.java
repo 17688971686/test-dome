@@ -107,7 +107,7 @@ public class WorkProgram extends DomainBase {
     private String contactPersonFax;
 
     //申报建设规模
-    @Column(columnDefinition = "VARCHAR(1024)")
+    @Column(columnDefinition = "VARCHAR(1500)")
     private String buildSize;
 
     //申报投资

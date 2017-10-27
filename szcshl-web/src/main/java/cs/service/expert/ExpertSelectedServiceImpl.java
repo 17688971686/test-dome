@@ -711,10 +711,11 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)declarevalue,sum(d.authorizevalue)authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/sum(d.declarevalue),4)*100  hjl  from cs_sign s  ");
+		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/(sum(d.declarevalue)*10000),5)*100  hjl  from cs_sign s   ");
 		sqlBuilder.append("left join cs_dispatch_doc d  ");
 		sqlBuilder.append("on s.signid = d.signid  ");
 		sqlBuilder.append("where 1 = 1 ");
+		sqlBuilder.append("and s.signstate = '9'  ");
 
 		//todo:添加查询条件
 		if(null != projectReviewConditionDto){
@@ -914,5 +915,55 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public ResultMsg proReviewConditionByTypeCount(ProReviewConditionDto projectReviewConditionDto){
 		return expertSelectedRepo.proReviewConditionByTypeCount(projectReviewConditionDto);
 	}
+
+	/**
+	 * 项目情况统计汇总
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	@Override
+	public ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto) {
+		return expertSelectedRepo.proReviewConditionSum(projectReviewConditionDto);
+	}
+
+	/**
+	 * 项目评审情况明细
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	@Override
+	public List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto) {
+		return expertSelectedRepo.proReviewConditionDetail(projectReviewConditionDto);
+	}
+
+	/**
+	 * 项目评审情况汇总(按照申报投资金额)
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	public Integer[]  proReviewCondByDeclare(ProReviewConditionDto projectReviewConditionDto){
+
+		return expertSelectedRepo.proReviewCondByDeclare(projectReviewConditionDto);
+	}
+
+	/**
+	 * 专家评审会次数
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	public Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto){
+
+		return  expertSelectedRepo.proReviewMeetingCount(projectReviewConditionDto);
+	}
+
+	/**
+	 * 项目评审次数
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	public Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto){
+		return expertSelectedRepo.proReviewCount(projectReviewConditionDto);
+	}
+
 
 }

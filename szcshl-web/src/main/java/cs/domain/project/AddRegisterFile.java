@@ -20,7 +20,7 @@ public class AddRegisterFile extends DomainBase {
 	private String id;
 	
    //资料名称
-	@Column(columnDefinition="VARCHAR(64)")
+	@Column(columnDefinition="VARCHAR(256)")
 	private String fileName;
 	
 	//份数

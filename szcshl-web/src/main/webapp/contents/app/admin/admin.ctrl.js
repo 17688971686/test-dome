@@ -15,5 +15,9 @@
         vm.countWorkday=function(){
         	adminSvc.countWorakday(vm);
         }
+
+        vm.query = function(){
+            vm.gridOptions.dataSource.read();
+        }
     }
 })();

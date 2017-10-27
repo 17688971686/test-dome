@@ -51,7 +51,7 @@
         <tr ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'9',isJoin:'0'} track by $index">
             <td align="center"><input type="checkbox" name="notJoinExpert" ng-checked="notjoinExpertList"
                                       value="{{x.id}}"/></td>
-            <td align="center">{{x.expertDto.name}}</td>
+            <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
             <td align="center">{{x.expertDto.comPany}}</td>
             <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
             <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>

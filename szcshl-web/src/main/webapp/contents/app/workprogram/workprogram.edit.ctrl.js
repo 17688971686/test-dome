@@ -69,10 +69,18 @@
         }
         //评审方式修改
         vm.reviewTypeChange = function(){
+
+            if("专家评审会" == vm.work.reviewType){
+                if("合并评审" == vm.work.isSigle){
+                    vm.work.isMainProject = 9;
+                }
+            }
             //自评的话，不需要会议和专家
-            if("自评" == vm.work.reviewType){
+           else if("自评" == vm.work.reviewType){
+
                 if("合并评审" == vm.work.isSigle){
                     vm.work.isSigle = "单个评审";
+
                     common.alert({
                         vm: vm,
                         msg: "自评方案不能进行合并评审！",

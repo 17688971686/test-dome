@@ -269,9 +269,15 @@ public class AppraiseServiceImpl implements AppraiseService {
         if (Validate.isString(appraiseReport.getProcessInstanceId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已发起流程！");
         }
-        if (SessionUtil.getUserInfo().getOrg() == null || !Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgDirector())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您所在部门还没设置部长，请联系管理员进行设置！");
+        //判断项目的主办部门
+        OrgDept orgDept = orgDeptRepo.queryBySignBranchId(appraiseReport.getSignId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+        if (orgDept == null) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
         }
+        if (!Validate.isString(orgDept.getDirectorID())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
+        }
+
         //1、启动流程
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.FLOW_APPRAISE_REPORT, id,
                 ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), SessionUtil.getUserId()));
@@ -290,13 +296,7 @@ public class AppraiseServiceImpl implements AppraiseService {
 
         //优秀评审报告申请部长和项目签收流程环节一致
         //查询部门领导
-        OrgDept orgDept = orgDeptRepo.queryBySignBranchId(appraiseReport.getSignId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-        if (orgDept == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
-        }
-        if (!Validate.isString(orgDept.getDirectorID())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
-        }
+
         User leadUser = userRepo.getCacheUserById(orgDept.getDirectorID());
         String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
         taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue));

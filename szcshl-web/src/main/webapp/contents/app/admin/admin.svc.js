@@ -11,7 +11,7 @@
             gtasksGrid: gtasksGrid,		                //个人待办项目
             etasksGrid: etasksGrid,		                //个人办结项目
             dtasksGrid: dtasksGrid,                     //在办项目
-            doingTaskGrid : doingTaskGrid,              //所有在办项目
+            doingTaskGrid : doingTaskGrid,              //在办任务
             personMainTasksGrid : personMainTasksGrid,  //个人主办项目
             countWorakday: countWorakday,	            //计算工作日
             agendaTaskGrid:agendaTaskGrid,              //个人待办任务（除项目流程外）
@@ -26,47 +26,8 @@
             findHomePluginFile :findHomePluginFile, //获取首页安装文件
             excelExport : excelExport,              //项目统计导出
             statisticalGrid : statisticalGrid,
-            findHomeAddSuppLetter : findHomeAddSuppLetter ,//初始化 拟补充资料函信息
-            findHomeMonthly : findHomeMonthly , //初始化主页上的月报简报信息
-
         }
         return service;
-
-        //begin findHomeMonthly
-        function findHomeMonthly(vm){
-            var httpOptions = {
-                method : 'get',
-                url : rootPath + '/monthlyNewsletter/findHomeMonthly'
-            }
-            var httpSuccess = function success(response){
-                vm.monthlyList = response.data;
-            }
-            common.http({
-                vm :vm,
-                $http : $http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-        }
-        //end findHomeMonthly
-
-        //begin findHomeAddSuppLetter
-        function findHomeAddSuppLetter(vm){
-            var httpOptions = {
-                method : 'get',
-                url : rootPath + '/addSuppLetter/findHomeAddSuppLetter'
-            }
-            var httpSuccess = function success(response){
-                vm.addSupLetterList = response.data;
-            }
-            common.http({
-                vm :vm,
-                $http : $http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-        }
-        //end findHomeAddSuppLetter
 
         //begin excelExport
         function excelExport(vm , fileName , project){
@@ -225,7 +186,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks"),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" , $("#gtasksForm")),
                 schema: {
                     data: "value",
                     total: function (data) {

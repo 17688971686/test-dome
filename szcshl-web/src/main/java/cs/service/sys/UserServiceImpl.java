@@ -1,27 +1,13 @@
 package cs.service.sys;
 
-import java.util.*;
-
-import cs.common.ResultMsg;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.sys.Org;
-import cs.domain.sys.Org_;
-import cs.domain.sys.Role;
-import cs.domain.sys.Role_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
+import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.RoleDto;
@@ -30,6 +16,14 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.RoleRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {

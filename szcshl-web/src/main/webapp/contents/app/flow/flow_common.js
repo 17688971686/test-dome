@@ -99,7 +99,9 @@
         PROJECT_STOP_FLOW : "PROJECT_STOP_FLOW",        //项目暂停流程
         FLOW_ARCHIVES : "FLOW_ARCHIVES",                //档案归档流程
         FLOW_APPRAISE_REPORT : "FLOW_APPRAISE_REPORT",  //优秀评审报告申报流程
+        FLOW_SUPP_LETTER : "FLOW_SUPP_LETTER",          //拟补充资料函流程
     }
+
     var service = {
         getFlowDefinedKey : function(){
             return flowDefinedKey;               //流程定义值

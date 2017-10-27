@@ -15,18 +15,27 @@ import java.util.Date;
 public class AddSuppLetter extends DomainBase {
 	//拟稿编号
 	@Id
-	@GeneratedValue(generator = "noticeGenerator")
-    @GenericGenerator(name = "noticeGenerator", strategy = "uuid")
+	@GeneratedValue(generator = "suppLetterGenerator")
+    @GenericGenerator(name = "suppLetterGenerator", strategy = "uuid")
 	private String id;
-	
-   //拟稿部门
+
+	/**
+	 * 拟稿部门
+	 */
 	@Column(columnDefinition="VARCHAR(64)")
 	private String orgName;
-	
+
+	/**
+	 * 拟稿人
+	 */
+	@Column(columnDefinition="VARCHAR(64)")
+	private String userName;
+
+
 	//拟稿时间
 	@Column(columnDefinition = "Date")
 	private Date suppLetterTime;
-	
+
 	//发文日期
 	@Column(columnDefinition = "Date")
 	private Date disapDate;
@@ -36,7 +45,7 @@ public class AddSuppLetter extends DomainBase {
 	private String secretLevel;
 	
 	//缓急程度
-	@Column(columnDefinition = "VARCHAR(10)")
+	@Column(columnDefinition = "VARCHAR(16)")
 	private String mergencyLevel;
 	
 	//文件字号
@@ -44,25 +53,13 @@ public class AddSuppLetter extends DomainBase {
 	private String filenum;
 	
 	//文件标题
-	@Column(columnDefinition = "VARCHAR(200)")
+	@Column(columnDefinition = "VARCHAR(256)")
 	private String title;
 	
 	//发行范围
-	@Column(columnDefinition = "VARCHAR(225)")
+	@Column(columnDefinition = "VARCHAR(256)")
 	private String dispaRange;
-	
-	//核稿意见
-	@Column(columnDefinition = "VARCHAR(225)")
-	private String suppleterSuggest;
-	
-	//会签意见
-	@Column(columnDefinition = "VARCHAR(225)")
-	private String meetingSuggest;
-	
-	//领导意见
-	@Column(columnDefinition = "VARCHAR(225)")
-	private String leaderSuggest;
-	
+
 	//打印份数
 	@Column(columnDefinition = "INTEGER")
 	private Integer printnum;
@@ -71,36 +68,53 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "INTEGER")
 	private Integer fileSeq;
 
-   //部门部长名称
-    @Column(columnDefinition = "varchar(30)")
+	//部长ID
+	@Column(columnDefinition = "varchar(64)")
+	private String deptMinisterId;
+
+   //部长签名
+    @Column(columnDefinition = "varchar(32)")
 	private String deptMinisterName;
     
     //部长意见/核稿意见
-    @Column(columnDefinition = "varchar(215)")
-    private String deptMinisterIdeaContent;	
-    
+    @Column(columnDefinition = "varchar(256)")
+    private String deptMinisterIdeaContent;
+
+    /**
+     * 会签意见
+     */
+    @Column(columnDefinition = "varchar(1024)")
+    private String leaderSignIdeaContent;
+
     //部长审批日期
     @Column(columnDefinition="date")
     private Date deptMinisterDate;
 
     //分管副主任名称
-    @Column(columnDefinition = "varchar(30)")
+    @Column(columnDefinition = "varchar(64)")
+    private String deptSLeaderId;
+
+    //分管副主任名称
+    @Column(columnDefinition = "varchar(32)")
 	private String deptSLeaderName;
     
     //分管副主任签批/会签意见
-    @Column(columnDefinition = "varchar(215)")
+    @Column(columnDefinition = "varchar(256)")
     private String deptSLeaderIdeaContent;	
     
     //分管主任审批日期
     @Column(columnDefinition="date")
     private Date deptSleaderDate;
-   
+
+    @Column(columnDefinition = "varchar(32)")
+    private String deptDirectorId;
+
     //主任名称
-    @Column(columnDefinition = "varchar(30)")
+    @Column(columnDefinition = "varchar(32)")
     private String deptDirectorName;
     
     //主任意见/领导意见
-    @Column(columnDefinition = "varchar(215)")
+    @Column(columnDefinition = "varchar(256)")
     private String deptDirectorIdeaContent;
     
     //主任审批日期
@@ -150,29 +164,19 @@ public class AddSuppLetter extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String fileType;
-    
+
+    /**
+     * 流程实例ID
+     */
+    @Column(columnDefinition = "VARCHAR(63)")
+    private String processInstanceId;
+
 	public Integer getFileSeq() {
 		return fileSeq;
 	}
 
 	public void setFileSeq(Integer fileSeq) {
 		this.fileSeq = fileSeq;
-	}
-
-	public String getMeetingSuggest() {
-		return meetingSuggest;
-	}
-
-	public void setMeetingSuggest(String meetingSuggest) {
-		this.meetingSuggest = meetingSuggest;
-	}
-
-	public String getLeaderSuggest() {
-		return leaderSuggest;
-	}
-
-	public void setLeaderSuggest(String leaderSuggest) {
-		this.leaderSuggest = leaderSuggest;
 	}
 
 	public String getId() {
@@ -237,14 +241,6 @@ public class AddSuppLetter extends DomainBase {
 
 	public void setDispaRange(String dispaRange) {
 		this.dispaRange = dispaRange;
-	}
-
-	public String getSuppleterSuggest() {
-		return suppleterSuggest;
-	}
-
-	public void setSuppleterSuggest(String suppleterSuggest) {
-		this.suppleterSuggest = suppleterSuggest;
 	}
 
     public Integer getPrintnum() {
@@ -405,5 +401,53 @@ public class AddSuppLetter extends DomainBase {
 
     public void setBusinessType(String businessType) {
         this.businessType = businessType;
+    }
+
+    public String getDeptMinisterId() {
+        return deptMinisterId;
+    }
+
+    public void setDeptMinisterId(String deptMinisterId) {
+        this.deptMinisterId = deptMinisterId;
+    }
+
+    public String getLeaderSignIdeaContent() {
+        return leaderSignIdeaContent;
+    }
+
+    public void setLeaderSignIdeaContent(String leaderSignIdeaContent) {
+        this.leaderSignIdeaContent = leaderSignIdeaContent;
+    }
+
+    public String getDeptSLeaderId() {
+        return deptSLeaderId;
+    }
+
+    public void setDeptSLeaderId(String deptSLeaderId) {
+        this.deptSLeaderId = deptSLeaderId;
+    }
+
+    public String getDeptDirectorId() {
+        return deptDirectorId;
+    }
+
+    public void setDeptDirectorId(String deptDirectorId) {
+        this.deptDirectorId = deptDirectorId;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

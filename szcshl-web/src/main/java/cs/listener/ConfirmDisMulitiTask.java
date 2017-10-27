@@ -1,12 +1,8 @@
 package cs.listener;
 
-import cs.common.Constant;
 import cs.common.FlowConstant;
-import cs.common.utils.Validate;
-import cs.domain.sys.User_;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * 发文会签监听类
@@ -64,5 +60,17 @@ public class ConfirmDisMulitiTask {
             return true;
         }
         return (nrOfCompletedInstances==nrOfInstances)?true:false;
+    }
+
+    /**
+     * 领导会签，只要每个领导会签即可
+     * @param execution
+     * @return
+     */
+    public boolean leadConSign(DelegateExecution execution) {
+        Integer nrOfInstances = (Integer) execution.getVariable("nrOfInstances"),
+                nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
+
+        return (nrOfCompletedInstances == nrOfInstances)?true:false;
     }
 }

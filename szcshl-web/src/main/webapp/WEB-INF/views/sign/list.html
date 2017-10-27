@@ -7,7 +7,15 @@
     <ol class="breadcrumb">
         <li><a href="#/listSign">项目签收管理</a></li>
         <li class="active">{{vm.title}}</li>
-    </ol>    
+    </ol>
+
+	<@shiro.hasPermission name="sign##post">
+	<a class="btn btn-sm btn-primary" href="#/addSign"><span class="glyphicon glyphicon-plus"></span>项目签收</a>
+  </@shiro.hasPermission>
+
+ <@shiro.hasPermission name="sign##post">
+ <a class="btn btn-sm btn-primary" href="#/reserveAdd"><span class="glyphicon glyphicon-plus"></span>项目预签收</a>
+ </@shiro.hasPermission>
     <div class="well">
 	    <form id="searchform" name="searchform">
 	    	<span class="help-inline">项目名称：</span>
@@ -19,6 +27,7 @@
             <span class="help-inline" style="margin-left:10px;">流程状态：</span>
             <select operator="eq" name="signState" id="signState" placeholder="请选择">
 				<option value="">请选择</option>
+				<option value="0">预签收</option>
 				<option value="1">进行中</option>
                 <option value="2">已暂停</option>
                 <option value="8">强制结束</option>
