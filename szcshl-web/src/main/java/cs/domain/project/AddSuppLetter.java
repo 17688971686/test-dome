@@ -15,8 +15,8 @@ import java.util.Date;
 public class AddSuppLetter extends DomainBase {
 	//拟稿编号
 	@Id
-	@GeneratedValue(generator = "noticeGenerator")
-    @GenericGenerator(name = "noticeGenerator", strategy = "uuid")
+	@GeneratedValue(generator = "suppLetterGenerator")
+    @GenericGenerator(name = "suppLetterGenerator", strategy = "uuid")
 	private String id;
 
 	/**

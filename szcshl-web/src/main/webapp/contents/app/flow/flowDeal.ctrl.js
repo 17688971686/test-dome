@@ -77,6 +77,8 @@
                     addSuppLetterSvc.initFlowDeal(vm);
                     break;
             }
+            //5、初始化个人常用意见
+            ideaSvc.initIdea(vm);
         }
 
         /***************  S_初始化附件上传控件  ***************/

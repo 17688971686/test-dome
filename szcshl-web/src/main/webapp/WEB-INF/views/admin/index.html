@@ -4,7 +4,7 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
-<html>
+<html lang="zh-CN">
 <head>
     <script>
         window.rootPath = '${path}';
@@ -195,15 +195,6 @@ desired effect
                                 </a>
                             </li>
                         </@shiro.hasPermission>
-                        <!--
-                        <@shiro.hasPermission name="monthlyNewsletter#html/monthlyMultiyAppoveList#get">
-                            <li>
-                                <a href="javascript:void(0)" ui-sref="monthlyMultiyAppoveList">
-                                    月报简报审批<span class="label label-danger" id="MONTHLY_COUNT">0</span>
-                                </a>
-                            </li>
-                        </@shiro.hasPermission>
--->
                     </ul>
                 </li>
             </@shiro.hasPermission>
@@ -212,7 +203,7 @@ desired effect
             <@shiro.hasPermission name="permission#sign">
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-cloud-download"></i><span class="title">项目管理</span>
+                        <i class="fa fa-archive" aria-hidden="true"></i><span class="title">项目管理</span>
                         <span class="pull-right-container">
 							<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -267,7 +258,7 @@ desired effect
                 <!-- start 月报简报报管理 -->
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-money" aria-hidden="true"></i><span class="title">月报简报管理</span>
+                        <i class="fa fa-clipboard" aria-hidden="true"></i><span class="title">月报简报管理</span>
                         <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -300,7 +291,7 @@ desired effect
             <@shiro.hasPermission name="permission#financial">
                 <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-money" aria-hidden="true"></i><span class="title">财务管理</span>
+                        <i class="fa fa-gg-circle" aria-hidden="true"></i><span class="title">财务管理</span>
                         <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -389,7 +380,7 @@ desired effect
               <!-- end -->
               <li class="treeview">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-university"></i><span class="title">查询统计</span>
+                        <i class="fa fa-line-chart" aria-hidden="true"></i><span class="title">查询统计</span>
                         <span class="pull-right-container">
                         	<i class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -703,6 +694,7 @@ desired effect
     <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
+
 </div>
 
 <!-- ./wrapper -->
