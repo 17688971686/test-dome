@@ -891,6 +891,8 @@ public class CreateTemplateUtils {
         dataMap.put("proReviewConditionList",proReviewCondition);
         dataMap.put("proReviewConditionAllList",proReviewConditionAll);
         dataMap.put("proReviewCondDetailMap",proReviewCondDetailMap);
+        String dayStr =  DateUtils.converToString(new Date(),null).split("-")[2];
+        dataMap.put("curDay",dayStr);
 
         String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","tqjr-提前介入","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
         String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","tqjrTotal-提前介入","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
@@ -915,16 +917,35 @@ public class CreateTemplateUtils {
             }
         }
         //截止至当前月月报
+        int reviewTotal = 0;
+        String proCent = "";
         if (proReviewConditionDtoAllList.size()>0){
+            for(int k=0;k<proReviewConditionDtoAllList.size();k++){
+                if("提前介入".equals(proReviewConditionDtoAllList.get(k).getReviewStage())){
+                    reviewTotal = proReviewConditionSum.getProCount().intValue() -  proReviewConditionDtoAllList.get(k).getProCount().intValue();
+                    break;
+                }
+            }
             for(int i=0;i<reviewStageTotal.length;i++){
                 flag = true;
                 String [] tempArr = reviewStageTotal[i].split("-");
                 for(int j=0;j<proReviewConditionDtoAllList.size();j++){
                     if(tempArr[1].equals(proReviewConditionDtoAllList.get(j).getReviewStage())){
-                        flag = false;
-                        dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
-                                +"亿元，审核后总投资"+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoAllList.get(j).getHjl()+"%");
-                        break;
+                        if(!tempArr[1].equals("提前介入")){
+                            flag = false;
+                            if(reviewTotal !=0 ){
+                                proCent = String.format("%.2f",(proReviewConditionDtoAllList.get(j).getProCount().floatValue()/(float) reviewTotal)*100)+"%";
+                            }
+
+                            dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，占评审项目数的+"+proCent+"+申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
+                                    +"亿元，审核后总投资"+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoAllList.get(j).getHjl()+"%");
+                            break;
+                        }else{
+                            dataMap.put(tempArr[0], "另，完成"+tempArr[1]+"项目评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
+                                    +"亿元，审核后总投资"+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoAllList.get(j).getHjl()+"%");
+                            break;
+                        }
+
                     }
                 }
                 if(flag){
@@ -939,10 +960,12 @@ public class CreateTemplateUtils {
               for(int j=0;j<projectType.length;j++){
                     String [] tempArr = projectType[j].split("-");
                     if(tempArr[1].equals(proReviewConditionByTypeList.get(i).getProjectType())){
+                        proCent = String.format("%.2f",(proReviewConditionByTypeList.get(i).getProjectTypeCount().floatValue()/totalNum.floatValue()*100))+"%";
+
                         if(i!=(proReviewConditionByTypeList.size()-1)){
-                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+(proReviewConditionByTypeList.get(i).getProjectTypeCount().intValue()/totalNum*100)+"%;";
+                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+proCent+";";
                         }else{
-                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+(proReviewConditionByTypeList.get(i).getProjectTypeCount().intValue()/totalNum*100)+"%。";
+                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+proCent+"。";
                         }
                         break;
                     }
@@ -954,9 +977,9 @@ public class CreateTemplateUtils {
         for(int i=0;i<proCountArr.length;i++){
             dataMap.put("proCount"+(i+1),proCountArr[i]);
             if(proCountArr[i]!=0){
-                double temp = (double)proCountArr[i]/(double)totalNum;
-                Float result = Float.parseFloat(String.format("%.2f",temp));
-                dataMap.put("proCountCent"+(i+1),result*100+"%");
+                double temp = (double)proCountArr[i]/(double)totalNum*100;
+                String result = String.format("%.2f",temp)+"%";
+                dataMap.put("proCountCent"+(i+1),result);
             }else{
                 dataMap.put("proCountCent"+(i+1),0+"%");
             }

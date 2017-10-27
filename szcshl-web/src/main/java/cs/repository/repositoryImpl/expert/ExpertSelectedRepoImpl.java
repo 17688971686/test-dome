@@ -490,7 +490,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select sum(projectcount),sum(declarevalue),sum(authorizevalue),sum(ljhj),round(sum(ljhj)/sum(declarevalue),4)*100 from (  ");
-        sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/(sum(d.declarevalue)*10000),5)*100 hjl  from cs_sign s  ");
+        sqlBuilder.append("select s.reviewstage, count(s.projectcode) projectcount,sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/(sum(d.declarevalue)*10000),5)*100 hjl  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d   ");
         sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
@@ -577,11 +577,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
-        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         if (projectReviewConList.size()>0){
-            Object[] projectReviewCon = projectReviewConList.get(0);
-            if (null != projectReviewCon[0]) {
-                proCount = (Integer) projectReviewCon[0];
+            if (null != projectReviewConList.get(0)) {
+                proCount = Integer.valueOf(String.valueOf(projectReviewConList.get(0)));
             }
         }
         return proCount;
@@ -610,11 +609,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
            }
        }
-       List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+       List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
        if (projectReviewConList.size()>0){
-           Object[] projectReviewCon = projectReviewConList.get(0);
-           if (null != projectReviewCon[0]) {
-               proCount = (Integer) projectReviewCon[0];
+           if (null != projectReviewConList.get(0)) {
+               proCount =  Integer.valueOf(String.valueOf(projectReviewConList.get(0)));
            }
        }
         return  proCount;
@@ -741,18 +739,15 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 100000   ");
 
-        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         Integer[] proCountArr = new Integer[projectReviewConList.size()];
         ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
         if (projectReviewConList.size() > 0) {
             for(int i=0;i<projectReviewConList.size();i++){
-                Object[] projectReviewCon = projectReviewConList.get(0);
-                if (null != projectReviewCon[0]) {
-                    proCountArr[i] = (Integer) projectReviewCon[0];
+                if (null != projectReviewConList.get(i)) {
+                    proCountArr[i] = Integer.valueOf(String.valueOf(projectReviewConList.get(i)));
                 }
             }
-
-
         }
         return proCountArr;
     }
