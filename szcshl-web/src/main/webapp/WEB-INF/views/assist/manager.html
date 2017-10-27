@@ -37,26 +37,58 @@
             <tr >
                 <td >
                     <p>中心在办核算项目</p>
-                    <table class="table table-bordered scrolltable" width="43%">
-                        <thead style="display:block;">
-                        <tr>
-                            <th style="width: 60px;">选择</th>
-                            <th style="width: 60px;">序号</th>
-                            <th style="width: 180px;">项目名称</th>
-                            <th style="width: 180px;">收文编号</th>
-                            <th style="width: 180px;">建设单位</th>
-                        </tr>
-                        </thead>
-                        <tbody style="display:block; max-height:300px;overflow-y: auto;">
-                        <tr ng-repeat="ss in vm.assistSign | filter:vm.filterSign">
-                            <td style="width: 60px;"><input type="checkbox" name="selASTSign"  value="{{ss.signid}}"/></td>
-                            <td style="width: 60px;">{{ $index + 1}}</td>
-                            <td style="width: 180px;">{{ss.projectname}}</td>
-                            <td style="width: 180px;">{{ss.filecode}}</td>
-                            <td style="width: 180px;">{{ss.builtcompanyName}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+
+                    <div class="grid k-grid k-widget">
+                        <div class="k-grid-header" style="padding-right: 17px;background:#e6ecf2;">
+                            <div class="k-grid-header-wrap">
+                                <table>
+                                    <colgroup>
+
+                                        <col style="width:60px">
+                                        <col style="width:60px">
+                                        <col style="width:180px">
+                                        <col style="width:180px">
+                                        <col style="width:180px">
+                                    </colgroup>
+                                    <thead >
+                                        <tr >
+                                            <th  class="k-header ">选择</th>
+                                            <th  class="k-header ">序号</th>
+                                            <th  class="k-header ">项目名称</th>
+                                            <th  class="k-header ">收文编号</th>
+                                            <th  class="k-header ">建设单位</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <div class="k-resize-handle" style="top: 0px; left: 857px; height: 33px; width: 9px; display: none;">
+                                    <div class="k-resize-handle-inner"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="k-grid-content" style="overflow-y:scroll;max-height: 300px;">
+                            <table >
+                                <colgroup>
+
+                                    <col style="width:60px">
+                                    <col style="width:60px">
+                                    <col style="width:180px">
+                                    <col style="width:180px">
+                                    <col style="width:180px">
+                                </colgroup>
+                                <tbody>
+                                <tr ng-repeat="ss in vm.assistSign | filter:vm.filterSign">
+                                    <td style="width: 60px;"><input type="checkbox" name="selASTSign"  value="{{ss.signid}}"/></td>
+                                    <td style="width: 60px;">{{ $index + 1}}</td>
+                                    <td style="width: 180px;">{{ss.projectname}}</td>
+                                    <td style="width: 180px;">{{ss.filecode}}</td>
+                                    <td style="width: 180px;">{{ss.builtcompanyName}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </td>
                 <td width="14%;" style="text-align:center;vertical-align:middle;">
                     <p>
@@ -74,31 +106,64 @@
                 </td>
                 <td width="43%">
                     <p>计划已挑选的项目情况</p>
-                    <table class="table table-bordered scrolltable" width="43%">
-                        <thead style="display:block;">
-                        <tr>
-                            <th style="width: 60px;">选择</th>
-                            <th style="width: 60px;">序号</th>
-                            <th style="width: 180px;">项目名称</th>
-                            <th style="width: 180px;">收文编号</th>
-                            <th style="width: 180px;">建设单位</th>
-                        </tr>
-                        </thead>
-                        <tbody style="display:block; max-height:300px;overflow-y: auto;">
-                        <tr ng-repeat="sas in vm.pickMainSign track by $index">
-                            <td style="width: 60px;"><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
-                            <td style="width: 60px;">{{ $index + 1}}</td>
-                            <td style="width: 180px;" style="background-color: #0d6aad;" ng-show="sas.assistType == '合并项目'">
-                                <a ng-show="sas.assistType == '合并项目'" ng-dblclick="vm.showPickLowSign(sas.signid)">{{sas.projectname}}</a>
-                            </td>
-                            <td style="width: 180px;" ng-show="sas.assistType == '独立项目'">
-                                {{sas.projectname}}
-                            </td>
-                            <td style="width: 180px;">{{sas.filecode}}</td>
-                            <td style="width: 180px;">{{sas.builtcompanyName}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+
+                    <div class="grid k-grid k-widget">
+                        <div class="k-grid-header" style="padding-right: 17px;background:#e6ecf2;">
+                            <div class="k-grid-header-wrap">
+                                <table>
+                                    <colgroup>
+
+                                        <col style="width:60px">
+                                        <col style="width:60px">
+                                        <col style="width:180px">
+                                        <col style="width:180px">
+                                        <col style="width:180px">
+                                    </colgroup>
+                                    <thead >
+                                    <tr >
+
+                                        <th  class="k-header ">选择</th>
+                                        <th  class="k-header ">序号</th>
+                                        <th  class="k-header ">项目名称</th>
+                                        <th  class="k-header ">收文编号</th>
+                                        <th  class="k-header ">建设单位</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="k-resize-handle" style="top: 0px; left: 857px; height: 33px; width: 9px; display: none;">
+                                    <div class="k-resize-handle-inner"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="k-grid-content" style="overflow-y:scroll;max-height: 300px;">
+                            <table >
+                                <colgroup>
+
+                                    <col style="width:60px">
+                                    <col style="width:60px">
+                                    <col style="width:180px">
+                                    <col style="width:180px">
+                                    <col style="width:180px">
+                                </colgroup>
+                                <tbody>
+                                <tr ng-repeat="sas in vm.pickMainSign track by $index">
+                                    <td style="width: 60px;"><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
+                                    <td style="width: 60px;">{{ $index + 1}}</td>
+                                    <td style="width: 180px;" style="background-color: #0d6aad;" ng-show="sas.assistType == '合并项目'">
+                                        <a ng-show="sas.assistType == '合并项目'" ng-dblclick="vm.showPickLowSign(sas.signid)">{{sas.projectname}}</a>
+                                    </td>
+                                    <td style="width: 180px;" ng-show="sas.assistType == '独立项目'">
+                                        {{sas.projectname}}
+                                    </td>
+                                    <td style="width: 180px;">{{sas.filecode}}</td>
+                                    <td style="width: 180px;">{{sas.builtcompanyName}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </td>
             </tr>
         </table>

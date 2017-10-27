@@ -45,21 +45,29 @@
 <!--End:自定义css -->
 <style>
     body{
-        /* background:url(${path}/contents/images/loginbg.jpg); */
+        background:url(${path}/contents/images/bg.jpg) no-repeat;
+        background-size: cover;
     }
-    .login-box-body{
-        background:none;
-        width:480px;
-        margin-left: -56px;
-        padding: 20px 90px;
+    .login-box-body {
+        background: rgba(255,255,255,1);
+        width: 460px;
+        float: right;
+        padding: 50px;
+        padding-top: 40px;
+        padding-bottom: 30px;
+        margin: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0px 1px 6px rgba(0,0,0,0.3);
+        -moz-box-shadow: 0px 1px 6px rgba(0,0,0,0.3);
+        box-shadow: 0px 1px 6px rgba(0,0,0,0.3);
     }
-    .login-logo{
+/*    .login-logo{
    		 width:480px;
    		 line-height: 40px;
    		 margin-top: 240px;
    		 margin-left:  -136px;
 
-    }
+    }*/
     .vcode{
         cursor:pointer;
     }
@@ -71,11 +79,30 @@
         color:red;
     }
     .has-feedback .form-control {
-    border-radius: 30px;
-}
+        padding-right: 42.5px;
+        border-radius: 3px;
+        height: 50px;
+        margin: 20px 0px;
+        background-color: #fafafa;
+        border: 1px solid #fff;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+    .form-control-feedback{
+        height: 50px;
+        line-height: 50px;
+    }
 .btn.btn-flat {
-    border-radius: 30px;
+    border-radius: 3px;
 }
+
+    .btn-primary {
+        background-color: #0089e9;
+        border-color: #0089e9;
+        padding: 13px 12px;
+    }
 footer{    position: absolute;
     bottom: 0px;
     width: 100%;
@@ -85,52 +112,68 @@ footer{    position: absolute;
     line-height: 40px;
     color: #fff;}
 header{
-    height:60px; padding:5px;
-    background:rgba(0,0,0,0.05)
-}    
+    text-align: center;
+    line-height: 180px;
+}
+    .slogan {
+        position: absolute;
+        z-index: -2;
+        padding: 40px;
+    }
+    @media (min-width: 1200px){
+        .login-box, .register-box {
+            width: 1200px;
+            margin: 2% auto;
+            overflow: hidden;
+        }
+    }
 </style>
 
-<div class="loginbg">
-    <img src="${path}/contents/images/loginbg.jpg" height="100%"/>
-    <div class="mask"></div>
-</div>
-<header><img src="${path}/contents/libs/adminLTE/dist/img/szlogo.png" height="50px"></header>
+<header><img src="${path}/contents/images/logintitle.png"></header>
 
 <div class="login-box" ng-app="loginApp" ng-controller="LoginCtrl as vm">
 
     <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
     <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
-    <div class="login-logo">
-        <img src="${path}/contents/images/loglogo.png"/>
+    <div class="slogan">
+        <img src="${path}/contents/images/solgan.png"/>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body" >
+        <h3><span style="color:#0089e9; padding-bottom: 10px">系统登录</span></h3>
         <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" action="">
             <div>
                 <span ng-show="vm.message" class="errors" ng-bind="vm.message">${msg!''}</span>
             </div>
             <div>
-                <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
+
             </div>
             <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="用户名" maxlength="100" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
+                <input type="text" class="form-control" style="border-radius: 5px 5px 0px 0px;margin-top: 40px;" placeholder="用户名" maxlength="100" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div>
-                <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
+
             </div>
             <div class="form-group has-feedback">
-                <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
+                <input type="password" class="form-control" style="border-radius: 0px 0px 5px 5px;margin-top: -21px;" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
+
+            <div style="height: 30px">
+                <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
+                <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
+            </div>
+
 
             <div class="row">
                 <!-- /.col -->
                 <div class="pull-right col-sm-12">
                     <button  type="button" ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-primary btn-block btn-flat">登 录</button>
-                    <button  type="button" ng-click="vm.sysInfo()" class="btn btn-info btn-block btn-flat">说明</button>
+                   <!-- <button  type="button" ng-click="vm.sysInfo()" class="btn btn-info btn-block btn-flat">说明</button>-->
+                    <p style="margin: 30px 0px">温馨提示：系统常见问题请<a href="javascript:;" ng-click="vm.sysInfo()">点击这里</a> </p>
                 </div>
+
                 <!-- /.col -->
             </div>
         </form>

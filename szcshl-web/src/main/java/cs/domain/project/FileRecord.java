@@ -60,7 +60,7 @@ public class FileRecord extends DomainBase{
 	private String projectCode;
 	
 	//文件标题
-	@Column(columnDefinition="VARCHAR(180)")
+	@Column(columnDefinition="VARCHAR(512)")
 	private String fileTitle;
 	
 	//文号
@@ -767,7 +767,7 @@ public class FileRecord extends DomainBase{
 	private Integer electronicCount;
 
 	//7.建筑
-	@Column(columnDefinition="VARCHAR(2)")
+	@Column(columnDefinition="VARCHAR(16)")
 	private String architecture;
 	
 	//8.结构

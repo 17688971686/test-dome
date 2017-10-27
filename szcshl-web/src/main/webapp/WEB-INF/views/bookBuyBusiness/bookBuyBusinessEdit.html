@@ -1,16 +1,10 @@
 <#assign path=request.contextPath />
 <meta charset="UTF-8">
-<!--<head>
-    <style>
-        .bookBuyInfo td{
-            border-top: 0px;
-        }
-    </style>
-</head>-->
+
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
+<div class="well well-sm " style="background: white;">
     <ol class="breadcrumb">
-        <li><a href="#/expertList">图书管理</a></li>
+        <li>图书管理</li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
@@ -23,16 +17,10 @@
         <button class="btn btn-sm btn-success" ng-click="vm.startFlow()"  ng-hide="vm.isCommit">
             <span class="glyphicon glyphicon-ok"></span>发起流程
         </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.addCondition()" ng-disabled="vm.isCommit"><span
-                class="glyphicon glyphicon-ok"></span>添加条件
-        </button>
-        <button class="btn btn-sm btn-danger" ng-click="vm.removeCondition()" ng-disabled="vm.isCommit"><span
-                class="glyphicon glyphicon-remove"></span>删除条件
-        </button>
     </div>
-    <p class="pro_title_1" style="margin:10px;margin-left:0px;">图书管理信息</p>
+
     <form id="form" name="form">
-        <table class="" style="width: 90%;">
+        <table class="table table-bordered">
             <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
             <tr>
                 <input type="hidden"  id="businessId"/>
@@ -90,19 +78,28 @@
                 </td>
             </tr>
         </table>
-        <table style="width: 90%;">
+
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.addCondition()" ng-disabled="vm.isCommit"><span
+                    class="glyphicon glyphicon-ok"></span>添加
+            </button>
+            <button class="btn btn-sm btn-danger" ng-click="vm.removeCondition()" ng-disabled="vm.isCommit"><span
+                    class="glyphicon glyphicon-remove"></span>删除
+            </button>
+        </div>
+        <table class="table table-bordered">
             <tr class="bookBuyInfo">
-                <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
-                <td style="width:7%;min-width:50px;" align="center">序号</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">书刊名称</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">图书\期刊分类</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">出版社</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">书号\刊号</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">作者</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">购买数量</td>
-                <td class="text-center" style="width:8%;border-top: 0px;">库存确认</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">价格</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">合计</td>
+                <td style="width:5%;min-width:30px;" class="text-center"><input type='checkbox' ng-model="epCondtion"/></td>
+                <td style="width:7%;min-width:50px;" class="text-center">序号</td>
+                <td class="text-center" style="width:10%;">书刊名称</td>
+                <td class="text-center" style="width:10%;">图书\期刊分类</td>
+                <td class="text-center" style="width:10%;">出版社</td>
+                <td class="text-center" style="width:10%;">书号\刊号</td>
+                <td class="text-center" style="width:10%;">作者</td>
+                <td class="text-center" style="width:10%;">购买数量</td>
+                <td class="text-center" style="width:8%;">库存确认</td>
+                <td class="text-center" style="width:10%;">价格</td>
+                <td class="text-center" style="width:10%;">合计</td>
             </tr>
 
             <tr  ng-repeat="x in vm.conditions">

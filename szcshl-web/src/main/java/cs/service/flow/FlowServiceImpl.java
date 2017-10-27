@@ -29,6 +29,7 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -53,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
@@ -89,6 +91,7 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("topicFlowBackImpl")
     private IFlowBack topicFlowBackImpl;
+
     /**
      * 回退到上一环节或者指定环节
      *
@@ -128,31 +131,31 @@ public class FlowServiceImpl implements FlowService {
 
         // 完成任务
         Task task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
-        if(task == null){
+        if (task == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
         }
 
         String backActivitiId = "";
         // 建立新出口
         List<TransitionImpl> newTransitions = new ArrayList<TransitionImpl>();
-        switch (instance.getProcessDefinitionKey()){
+        switch (instance.getProcessDefinitionKey()) {
             case FlowConstant.SIGN_FLOW:
-                backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(),task.getTaskDefinitionKey());
+                backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                 break;
             case FlowConstant.TOPIC_FLOW:
-                backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(),task.getTaskDefinitionKey());
+                backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                 break;
             default:
                 backActivitiId = "";
         }
         //如果有指定回退环节，则回退到指定环节
-        if(Validate.isString(backActivitiId)){
+        if (Validate.isString(backActivitiId)) {
             ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition).findActivity(backActivitiId);
             TransitionImpl newTransition = currActivity.createOutgoingTransition();
             newTransition.setDestination(nextActivityImpl);
             newTransitions.add(newTransition);
-        //没有指定环节，则回退到上一个环节
-        }else{
+            //没有指定环节，则回退到上一个环节
+        } else {
             List<PvmTransition> nextTransitionList = currActivity.getIncomingTransitions();
             for (PvmTransition nextTransition : nextTransitionList) {
                 PvmActivity nextActivity = nextTransition.getSource();
@@ -166,9 +169,9 @@ public class FlowServiceImpl implements FlowService {
         }
 
         //取得之前定义的环节处理人信息，不用重新赋值，用之前的就行了（前提是 用户参数是唯一的）
-        Map<String,Object> valiables = taskService.getVariables(task.getId());
+        Map<String, Object> valiables = taskService.getVariables(task.getId());
         taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption());    //添加处理信息
-        taskService.complete(task.getId(),valiables );
+        taskService.complete(task.getId(), valiables);
 
         // 恢复方向
         for (TransitionImpl transitionImpl : newTransitions) {
@@ -179,17 +182,17 @@ public class FlowServiceImpl implements FlowService {
         }
 
         //如果是合并评审环节，还要合并回退
-        switch (instance.getProcessDefinitionKey()){
+        switch (instance.getProcessDefinitionKey()) {
             case FlowConstant.SIGN_FLOW:
-                if(FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(task.getTaskDefinitionKey())
-                   || FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(task.getTaskDefinitionKey())){
-                   WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-                    if(Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())){
-                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(),instance.getBusinessKey(),null);
-                        if(Validate.isList(mergeList)){
+                if (FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(task.getTaskDefinitionKey())
+                        || FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(task.getTaskDefinitionKey())) {
+                    WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+                    if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())) {
+                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), instance.getBusinessKey(), null);
+                        if (Validate.isList(mergeList)) {
                             FlowDto flowDto2 = new FlowDto();
                             flowDto2.setDealOption(flowDto.getDealOption());
-                            for(SignMerge s : mergeList){
+                            for (SignMerge s : mergeList) {
                                 Task task2 = taskService.createTaskQuery().processInstanceBusinessKey(instance.getBusinessKey()).active().singleResult();
                                 flowDto2.setTaskId(task2.getId());
                                 rollBackLastNode(flowDto2);
@@ -239,7 +242,7 @@ public class FlowServiceImpl implements FlowService {
                         nextNode.setActivitiId(ac.getId());
                         nextNode.setActivitiName((String) ac.getProperty("name"));
                         nextNodeList.add(nextNode);
-                    }else{
+                    } else {
                         String taskType = (String) ac.getProperty("type");
                         System.out.print(taskType);
                     }
@@ -308,7 +311,7 @@ public class FlowServiceImpl implements FlowService {
                 taskDto.setEndDate(h.getEndTime());
                 taskDto.setDurationInMillis(h.getDurationInMillis());
                 taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
-                taskDto.setFlowKey(h.getProcessDefinitionId().substring(0,h.getProcessDefinitionId().indexOf(":")));
+                taskDto.setFlowKey(h.getProcessDefinitionId().substring(0, h.getProcessDefinitionId().indexOf(":")));
                 list.add(taskDto);
             });
             pageModelDto.setValue(list);
@@ -316,6 +319,7 @@ public class FlowServiceImpl implements FlowService {
 
         return pageModelDto;
     }
+
     /**
      * 在办任务查询
      *
@@ -346,8 +350,8 @@ public class FlowServiceImpl implements FlowService {
         }
         List<RuProcessTask> runProcessList = criteria.list();
         //合并评审项目处理
-        runProcessList.forEach(rl ->{
-            if(Constant.EnumState.YES.getValue().equals(rl.getReviewType())){
+        runProcessList.forEach(rl -> {
+            if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
                 rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
             }
         });
@@ -359,13 +363,14 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 根据环节实例ID获取流程的处理记录信息
+     *
      * @param processInstanceId
      * @return
      */
     @Override
     public List<HiProcessTask> getProcessHistory(String processInstanceId) {
         Criteria criteria = hiProcessTaskRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(HiProcessTask_.procInstId.getName(),processInstanceId));
+        criteria.add(Restrictions.eq(HiProcessTask_.procInstId.getName(), processInstanceId));
         criteria.addOrder(Order.asc(HiProcessTask_.startTime.getName()));
         List<HiProcessTask> resultList = criteria.list();
         return resultList;
@@ -373,6 +378,7 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 查询首页的个人待办任务
+     *
      * @return
      */
     @Override
@@ -385,11 +391,11 @@ public class FlowServiceImpl implements FlowService {
         //排除合并评审阶段的次项目数据
         Disjunction dis2 = Restrictions.disjunction();
         dis2.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
-        dis2.add(Restrictions.eq(RuProcessTask_.reviewType.getName(),""));
+        dis2.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), ""));
         dis2.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
-        dis2.add(Restrictions.sqlRestriction(" ( {alias}."+RuProcessTask_.reviewType.getName()+"= '"+ Constant.EnumState.NO.getValue()
-                +"' and {alias}."+RuProcessTask_.nodeDefineKey.getName()+" != '"+FlowConstant.FLOW_SIGN_BMLD_SPW1
-                +"' and {alias}."+RuProcessTask_.nodeDefineKey.getName()+" != '"+FlowConstant.FLOW_SIGN_FGLD_SPW1+"' )"));
+        dis2.add(Restrictions.sqlRestriction(" ( {alias}." + RuProcessTask_.reviewType.getName() + "= '" + Constant.EnumState.NO.getValue()
+                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_BMLD_SPW1
+                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
         criteria.add(dis2);
         criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
         criteria.setMaxResults(6);
@@ -399,6 +405,7 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 查询首页我的办结任务
+     *
      * @return
      */
     @Override
@@ -450,6 +457,7 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 查询我的待办任务（除项目签收流程外）
+     *
      * @param oDataObj
      * @return
      */
@@ -479,6 +487,7 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 所有在办任务
+     *
      * @param odataObj
      * @return
      */
@@ -493,34 +502,249 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 流程处理，只有一个分支的情况
-     * @param businessKey       业务ID
-     * @param activiName        环节名称
+     *
+     * @param businessKey 业务ID
+     * @param activiName  环节名称
      * @return
      */
     @Override
-    public ResultMsg dealFlowByBusinessKey(String businessKey, String activiName, FlowDto flowDto,String definitionKey) {
+    public ResultMsg dealFlowByBusinessKey(String businessKey, String activiName, FlowDto flowDto, String definitionKey) {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
-        if(processInstance == null){
-            return new ResultMsg(false, Constant.MsgCode.FLOW_INSTANCE_NULL.getValue(),"流程已处理完毕！");
+        if (processInstance == null) {
+            return new ResultMsg(false, Constant.MsgCode.FLOW_INSTANCE_NULL.getValue(), "流程已处理完毕！");
         }
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        if(task == null){
-            return new ResultMsg(false, Constant.MsgCode.FLOW_TASK_NULL.getValue(),"流程已处理完毕！");
+        if (task == null) {
+            return new ResultMsg(false, Constant.MsgCode.FLOW_TASK_NULL.getValue(), "流程已处理完毕！");
         }
-        if(!task.getTaskDefinitionKey().equals(activiName)){
-            return new ResultMsg(false, Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue(),"环节名称不一致！");
+        if (!task.getTaskDefinitionKey().equals(activiName)) {
+            return new ResultMsg(false, Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue(), "环节名称不一致！");
         }
 
         ResultMsg resultMsg = null;
-        switch (processInstance.getProcessDefinitionKey()){
+        switch (processInstance.getProcessDefinitionKey()) {
             case FlowConstant.SIGN_FLOW:
-                resultMsg = signService.dealFlow(processInstance,task,flowDto);
+                resultMsg = signService.dealFlow(processInstance, task, flowDto);
                 break;
         }
-        if(resultMsg == null){
-            resultMsg = new ResultMsg(false,Constant.MsgCode.FLOW_NOT_MATCH.getValue(),"没有匹配的流程！");
+        if (resultMsg == null) {
+            resultMsg = new ResultMsg(false, Constant.MsgCode.FLOW_NOT_MATCH.getValue(), "没有匹配的流程！");
         }
         return resultMsg;
     }
 
+    /**
+     * 取回流程
+     *
+     * @param taskId     当前任务ID
+     * @param activityId 取回节点ID
+     * @return ResultMsg
+     */
+    @Override
+    public ResultMsg callBackProcess(String taskId, String activityId) throws Exception{
+        if (!Validate.isString(activityId)) {
+            throw new Exception("目标节点ID为空！");
+        }
+
+        // 查找所有并行任务节点，同时取回
+        List<Task> taskList = findTaskListByKey(findProcessInstanceByTaskId(
+                taskId).getId(), findTaskById(taskId).getTaskDefinitionKey());
+        for (Task task : taskList) {
+            commitProcess(task.getId(), null, activityId);
+        }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+    /**
+     * 根据任务ID获取对应的流程实例
+     *
+     * @param taskId
+     *            任务ID
+     * @return
+     * @throws Exception
+     */
+    private ProcessInstance findProcessInstanceByTaskId(String taskId)
+            throws Exception {
+        // 找到流程实例
+        ProcessInstance processInstance = runtimeService
+                .createProcessInstanceQuery().processInstanceId(findTaskById(taskId).getProcessInstanceId()).singleResult();
+        if (processInstance == null) {
+            throw new Exception("流程实例未找到!");
+        }
+        return processInstance;
+    }
+    /**
+     * 根据流程实例ID和任务key值查询所有同级任务集合
+     *
+     * @param processInstanceId
+     * @param key
+     * @return
+     */
+    @Override
+    public List<Task> findTaskListByKey(String processInstanceId, String key) {
+        return taskService.createTaskQuery().processInstanceId(
+                processInstanceId).taskDefinitionKey(key).list();
+    }
+
+    /**
+     * @param taskId     当前任务ID
+     * @param variables  流程变量
+     * @param activityId 流程转向执行任务节点ID<br>
+     *                   此参数为空，默认为提交操作
+     * @throws Exception
+     */
+    private void commitProcess(String taskId, Map<String, Object> variables,
+                               String activityId) throws Exception {
+        if (variables == null) {
+            variables = new HashMap<String, Object>();
+        }
+        // 跳转节点为空，默认提交操作
+        if (!Validate.isString(activityId)) {
+            taskService.complete(taskId, variables);
+        } else {// 流程转向操作
+            turnTransition(taskId, activityId, variables);
+        }
+    }
+
+    /**
+     * 流程转向操作
+     *
+     * @param taskId     当前任务ID
+     * @param activityId 目标节点任务ID
+     * @param variables  流程变量
+     * @throws Exception
+     */
+    private void turnTransition(String taskId, String activityId,
+                                Map<String, Object> variables) throws Exception {
+        // 当前节点
+        ActivityImpl currActivity = findActivitiImpl(taskId, null);
+        // 清空当前流向
+        List<PvmTransition> oriPvmTransitionList = clearTransition(currActivity);
+
+        // 创建新流向
+        TransitionImpl newTransition = currActivity.createOutgoingTransition();
+        // 目标节点
+        ActivityImpl pointActivity = findActivitiImpl(taskId, activityId);
+        // 设置新流向的目标节点
+        newTransition.setDestination(pointActivity);
+
+        // 执行转向任务
+        taskService.complete(taskId, variables);
+        // 删除目标节点新流入
+        pointActivity.getIncomingTransitions().remove(newTransition);
+
+        // 还原以前流向
+        restoreTransition(currActivity, oriPvmTransitionList);
+    }
+
+    /**
+     * 清空指定活动节点流向
+     *
+     * @param activityImpl 活动节点
+     * @return 节点流向集合
+     */
+    private List<PvmTransition> clearTransition(ActivityImpl activityImpl) {
+        // 存储当前节点所有流向临时变量
+        List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
+        // 获取当前节点所有流向，存储到临时变量，然后清空
+        List<PvmTransition> pvmTransitionList = activityImpl
+                .getOutgoingTransitions();
+        for (PvmTransition pvmTransition : pvmTransitionList) {
+            oriPvmTransitionList.add(pvmTransition);
+        }
+        pvmTransitionList.clear();
+
+        return oriPvmTransitionList;
+    }
+
+    /**
+     * 根据任务ID和节点ID获取活动节点 <br>
+     *
+     * @param taskId     任务ID
+     * @param activityId 活动节点ID <br>
+     *                   如果为null或""，则默认查询当前活动节点 <br>
+     *                   如果为"end"，则查询结束节点 <br>
+     * @return
+     * @throws Exception
+     */
+    private ActivityImpl findActivitiImpl(String taskId, String activityId)
+            throws Exception {
+        // 取得流程定义
+        ProcessDefinitionEntity processDefinition = findProcessDefinitionEntityByTaskId(taskId);
+
+        // 获取当前活动节点ID
+        if (!Validate.isString(activityId)) {
+            activityId = findTaskById(taskId).getTaskDefinitionKey();
+        }
+
+        // 根据流程定义，获取该流程实例的结束节点
+        if (activityId.toUpperCase().equals("END")) {
+            for (ActivityImpl activityImpl : processDefinition.getActivities()) {
+                List<PvmTransition> pvmTransitionList = activityImpl
+                        .getOutgoingTransitions();
+                if (pvmTransitionList.isEmpty()) {
+                    return activityImpl;
+                }
+            }
+        }
+
+        // 根据节点ID，获取对应的活动节点
+        ActivityImpl activityImpl = ((ProcessDefinitionImpl) processDefinition).findActivity(activityId);
+
+        return activityImpl;
+    }
+
+    /**
+     * 根据任务ID获得任务实例
+     *
+     * @param taskId 任务ID
+     * @return
+     * @throws Exception
+     */
+    private TaskEntity findTaskById(String taskId) throws Exception {
+        TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (task == null) {
+            throw new Exception("任务实例未找到!");
+        }
+        return task;
+    }
+
+    /**
+     * 根据任务ID获取流程定义
+     *
+     * @param taskId
+     *            任务ID
+     * @return
+     * @throws Exception
+     */
+    private ProcessDefinitionEntity findProcessDefinitionEntityByTaskId( String taskId) throws Exception {
+        // 取得流程定义
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(findTaskById(taskId).getProcessDefinitionId());
+
+        if (processDefinition == null) {
+            throw new Exception("流程定义未找到!");
+        }
+
+        return processDefinition;
+    }
+
+    /**
+     * 还原指定活动节点流向
+     *
+     * @param activityImpl
+     *            活动节点
+     * @param oriPvmTransitionList
+     *            原有节点流向集合
+     */
+    private void restoreTransition(ActivityImpl activityImpl,
+                                   List<PvmTransition> oriPvmTransitionList) {
+        // 清空现有流向
+        List<PvmTransition> pvmTransitionList = activityImpl
+                .getOutgoingTransitions();
+        pvmTransitionList.clear();
+        // 还原以前流向
+        for (PvmTransition pvmTransition : oriPvmTransitionList) {
+            pvmTransitionList.add(pvmTransition);
+        }
+    }
 }

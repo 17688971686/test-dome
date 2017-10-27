@@ -15,8 +15,8 @@ import java.util.Date;
 public class AddSuppLetter extends DomainBase {
 	//拟稿编号
 	@Id
-	@GeneratedValue(generator = "noticeGenerator")
-    @GenericGenerator(name = "noticeGenerator", strategy = "uuid")
+	@GeneratedValue(generator = "suppLetterGenerator")
+    @GenericGenerator(name = "suppLetterGenerator", strategy = "uuid")
 	private String id;
 
 	/**
@@ -53,7 +53,7 @@ public class AddSuppLetter extends DomainBase {
 	private String filenum;
 	
 	//文件标题
-	@Column(columnDefinition = "VARCHAR(128)")
+	@Column(columnDefinition = "VARCHAR(256)")
 	private String title;
 	
 	//发行范围

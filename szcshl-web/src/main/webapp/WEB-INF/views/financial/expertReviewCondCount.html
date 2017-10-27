@@ -9,13 +9,13 @@
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<form id="form" name="form">
-		<div class="well">
-			<table border="1px">
+		<div class="well well-print">
+			<table border="1px" width="100%">
 				<tbody>
 				<tr>
 					<td class="formAlignRight">报表类型</td>
 					<td >
-						<select  ng-change="vm.dropSlelectedCount()" name="reportType"  class="form-control input-sm " ng-model="vm.model.reportType" style="width: 80%">
+						<select  ng-change="vm.dropSlelectedCount()" name="reportType"  class="form-control select" ng-model="vm.model.reportType" style="width: 80%">
 							<option value="1" ng-selected="vm.model.reportType == '1'">项目评审专家情况表（详细）</option>
 							<option value="2" ng-selected="vm.model.reportType == '2'">项目评审专家情况表（综合）</option>
 							<option value="3" ng-selected="vm.model.reportType == '3'">聘请专家不符合规则情况表</option>
@@ -25,6 +25,7 @@
 					<td colspan="6">
 						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.expertRevConCount()">统计</a>
 						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
+						<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
 					</td>
 				</tr>
 				<tr>
@@ -32,9 +33,9 @@
 					<td>
 						<input type="text" style="width:80%" ng-model="vm.model.name">
 					</td>
-					<td ng-if="vm.model.reportType == '1' || vm.model.reportType=='2'" width="6%" class="formAlignRight" >评审方式</td>
+					<td ng-if="vm.model.reportType == '1' || vm.model.reportType=='2'" width="10%" class="formAlignRight" >评审方式</td>
 					<td ng-if="vm.model.reportType == '1' || vm.model.reportType=='2'">
-						<select name="reviewtype"  class="form-control input-sm " ng-model="vm.model.reviewtype">
+						<select name="reviewtype"  class="form-control select " ng-model="vm.model.reviewtype">
 							<option value="">请选择</option>
 							<option value="0" ng-selected="vm.model.reportType == '0'">专家评审会</option>
 							<option value="9" ng-selected="vm.model.reportType == '9'">专家函评</option>
@@ -52,7 +53,7 @@
 			</table>
 		</div>
 		<div>
-			<table border="1px" style="width: 90%;" ng-if="vm.model.reportType == '1'">
+			<table border="1px" style="width: 90%; margin: auto" ng-if="vm.model.reportType == '1'">
 				<caption class="text-center h3">
 					<strong>专家评审基本情况表</strong>
 				</caption>

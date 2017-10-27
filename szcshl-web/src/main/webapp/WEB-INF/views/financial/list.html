@@ -15,6 +15,7 @@
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">重置</button>
+        <button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
     </div>
     <table class="table table-bordered breadcrumb">
         <tr>
@@ -30,7 +31,7 @@
         <tr>
             <td style="width:80px;" class="formAlignRight">评审部门：</td>
             <td style="width: 40%;">
-                <select ng-model="vm.model.deptName"  style="height:70%;">
+                <select ng-model="vm.model.deptName"  style="height:30px;">
                     <option value="">请选择</option>
                     <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
                 </select>

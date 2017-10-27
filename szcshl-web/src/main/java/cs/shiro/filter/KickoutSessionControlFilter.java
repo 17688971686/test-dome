@@ -20,9 +20,9 @@ import java.util.LinkedList;
  */
 public class KickoutSessionControlFilter extends AccessControlFilter {
 
-    private String kickoutUrl; //踢出后到的地址
-    private boolean kickoutAfter = false; //踢出之前登录的/之后登录的用户 默认踢出之前登录的用户
-    private int maxSession = 1; //同一个帐号最大会话数 默认1
+    private String kickoutUrl;              //踢出后到的地址
+    private boolean kickoutAfter = false;   //踢出之前登录的/之后登录的用户 默认踢出之前登录的用户
+    private int maxSession = 1;             //同一个帐号最大会话数 默认1
 
     private SessionManager sessionManager;
     private Cache<String, Deque<Serializable>> cache;
@@ -44,9 +44,12 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
     }
 
     public void setCacheManager(CacheManager cacheManager) {
-        this.cache = cacheManager.getCache("shiro-kickout-session");
+        this.cache = cacheManager.getCache("shiro-activeSessionCache");
     }
 
+    /**
+     * 是否允许访问，返回true表示允许
+     */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
         return false;
@@ -62,7 +65,8 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
         Session session = subject.getSession();
         String username = (String) subject.getPrincipal();
         Serializable sessionId = session.getId();
-        //TODO 同步控制
+
+        // 初始化用户的队列放到缓存里
         Deque<Serializable> deque = cache.get(username);
         if(deque == null) {
             deque = new LinkedList<Serializable>();
@@ -77,7 +81,9 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
         //如果队列里的sessionId数超出最大会话数，开始踢人
         while(deque.size() > maxSession) {
             Serializable kickoutSessionId = null;
-            if(kickoutAfter) { //如果踢出后者
+            if(kickoutAfter) {
+                //如果踢出后者
+                kickoutSessionId = deque.getFirst();
                 kickoutSessionId = deque.removeFirst();
             } else { //否则踢出前者
                 kickoutSessionId = deque.removeLast();
@@ -89,6 +95,7 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
                     kickoutSession.setAttribute("kickout", true);
                 }
             } catch (Exception e) {//ignore exception
+                e.printStackTrace();
             }
         }
 
@@ -99,11 +106,9 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
                 subject.logout();
             } catch (Exception e) { //ignore
             }
-            saveRequest(request);
             WebUtils.issueRedirect(request, response, kickoutUrl);
             return false;
         }
-
         return true;
     }
 }

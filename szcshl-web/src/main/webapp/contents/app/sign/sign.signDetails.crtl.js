@@ -22,7 +22,6 @@
             tabSysFile:false,           // 附件信息tab
             tabAssociateSigns:false,    // 关联项目tab
         };
-
         //业务控制对象
         vm.businessFlag = {
             expertReviews : [],         // 专家评审方案

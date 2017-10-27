@@ -2,9 +2,9 @@
 <meta charset="UTF-8">
 
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
+<div class="well well-sm" style="background: white;">
     <ol class="breadcrumb">
-        <li><a href="#/expertList">固定资产申购管理</a></li>
+        <li>固定资产申购管理</li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
@@ -23,19 +23,19 @@
                 class="glyphicon glyphicon-remove"></span>删除条件
         </button>
     </div>
-    <p class="pro_title_1" style="margin:10px;margin-left:0px;">固定资产申购管理信息</p>
+
     <form id="form" name="form">
-        <table class=""style="width: 70%;">
+        <table class="table table-bordered">
             <caption class="text-center"> <h3><strong>固定资产及办公用品申购单</strong></h3></caption>
             <tbody>
             <tr>
                 <input type="hidden"  id="businessId"/>
-                <td class="formAlignRight" width="20%">申请部室</td>
+                <td  class="text-center" width="20%">申请部室</td>
                 <td width="30%">
                     <input type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"
                            ng-model="vm.model.applyDept" ng-init="vm.model.applyDept = '${CURRENT_USER.org.name}'"  id="applyDept" name="applyDept">
                 </td>
-                <td class="formAlignRight" width="20%">经办人</td>
+                <td  class="text-center" width="20%">经办人</td>
                 <td width="30%">
                     <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
                            ng-model="vm.model.operator" ng-init="vm.model.operator = '${CURRENT_USER.loginName}'" id="operator" name="operator">
@@ -43,17 +43,17 @@
             </tr>
             <tr>
                 <td colspan="4" >
-                    <table class="assertInfo" style="width: 100%;">
+                    <table class="table table-bordered" >
                         <tr>
                             <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
                             <td style="width:7%;min-width:50px;" align="center">序号</td>
-                        <td class="formAlignRight">物品名称</td>
-                        <td class="formAlignRight" >规格</td>
-                            <td class="formAlignRight" >型号</td>
-                        <td class="formAlignRight" >单位</td>
-                        <td class="formAlignRight" >估价</td>
-                        <td class="formAlignRight">数量</td>
-                        <td class="formAlignRight">合计</td>
+                            <td  class="text-center">物品名称</td>
+                            <td  class="text-center" >规格</td>
+                            <td  class="text-center" >型号</td>
+                            <td  class="text-center" >单位</td>
+                            <td  class="text-center" >估价</td>
+                            <td  class="text-center">数量</td>
+                            <td  class="text-center">合计</td>
                         </tr>
                         <tr  ng-repeat="x in vm.conditions">
                             <td align="center">
@@ -100,11 +100,11 @@
                 </td>
             </tr>
            <tr>
-                <td  class="formAlignRight" width="20%">采购资金合计</td>
+                <td   class="text-center" width="20%">采购资金合计</td>
                 <td width="80%" colspan="3"></td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="20%">申请理由</td>
+                <td  class="text-center" width="20%">申请理由</td>
                 <td width="80%" colspan="3" >
                          <textarea maxlength="200" class="form-control input-sm " rows="3"
                                    ng-disabled="vm.showFlag.bookBuyBzTr" ng-model="vm.model.applyReason"
@@ -113,7 +113,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="20%">综合部意见</td>
+                <td  class="text-center" width="20%">综合部意见</td>
                 <td width="80%" colspan="3" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
                                 ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.comprehensivehandlesug"
@@ -122,7 +122,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="20%">中心领导审批</td>
+                <td  class="text-center" width="20%">中心领导审批</td>
                 <td width="80%" colspan="3" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
                                 ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.leaderhandlesug"

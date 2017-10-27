@@ -21,10 +21,10 @@ public class SysFile extends DomainBase {
     @Column(columnDefinition = "varchar(64) NOT NULL")
     private String businessId;
 
-    @Column(columnDefinition = "varchar(200) NOT NULL")
+    @Column(columnDefinition = "varchar(256) NOT NULL")
     private String fileUrl;
 
-    @Column(columnDefinition = "varchar(100) NOT NULL")
+    @Column(columnDefinition = "varchar(256) NOT NULL")
     private String showName;
 
     @Column(columnDefinition = "INTEGER")
