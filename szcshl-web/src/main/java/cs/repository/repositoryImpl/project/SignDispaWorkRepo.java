@@ -4,6 +4,9 @@ import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.repository.IRepository;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Description: 项目统计视图 数据操作实现接口
  * author: ldm
@@ -17,4 +20,13 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      * @return
      */
     PageModelDto<SignDispaWork> reviewProject(String expertId);
+
+    /**
+     * 通过时间段 获取项目信息，用于项目查询统计分析
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<Map<String , Object[]>> findByTime(String startTime , String endTime);
+
 }

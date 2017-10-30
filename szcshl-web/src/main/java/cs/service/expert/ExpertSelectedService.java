@@ -100,10 +100,11 @@ public interface ExpertSelectedService {
 
 	/**
 	 * 项目评审情况汇总(按照申报投资金额)
-	 * @param projectReviewConditionDto
+	 * @param beginTime
+	 * @param  endTime
 	 * @return
 	 */
-	Integer[]  proReviewCondByDeclare(ProReviewConditionDto projectReviewConditionDto);
+	Integer[]  proReviewCondByDeclare(String beginTime , String endTime);
 
 	/**
 	 * 专家评审会次数

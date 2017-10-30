@@ -28,6 +28,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -938,12 +939,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 	/**
 	 * 项目评审情况汇总(按照申报投资金额)
-	 * @param projectReviewConditionDto
+	 * @param beginTime
+	 * @param endTime
 	 * @return
 	 */
-	public Integer[]  proReviewCondByDeclare(ProReviewConditionDto projectReviewConditionDto){
+	@Override
+	public Integer[]  proReviewCondByDeclare(String beginTime , String endTime){
 
-		return expertSelectedRepo.proReviewCondByDeclare(projectReviewConditionDto);
+		return expertSelectedRepo.proReviewCondByDeclare(beginTime , endTime);
 	}
 
 	/**
@@ -951,6 +954,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	 * @param projectReviewConditionDto
 	 * @return
 	 */
+	@Override
 	public Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto){
 
 		return  expertSelectedRepo.proReviewMeetingCount(projectReviewConditionDto);

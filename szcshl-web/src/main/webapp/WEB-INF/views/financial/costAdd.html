@@ -1,5 +1,5 @@
 <div id="addCostWindow" class="well well-sm" style="background:white;display: none;">
-    <ul id="myTab" class="nav nav-tabs">
+    <ul id="costTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="addCost">费用录入</a></li>
         <li ><a data-toggle="tab" for-div="costList">费用列表</a></li>
 
@@ -21,13 +21,13 @@
             <table class="table table-bordered" id="conditionTable">
                 <tr>
                     <td width="15%" align="center">项目名称</td>
-                    <td width="15%" colspan="3">{{vm.model.projectName}}</td>
+                    <td width="15%" colspan="3">{{vm.financial.projectName}}</td>
                 </tr>
                 <tr>
                     <td width="5%" align="center">费付款日期</td>
                     <td width="5%" align="center">
                         <input kendo-date-picker k-format="'yyyy-MM-dd'"
-                               ng-model="vm.model.paymentData" id="paymentData" name="paymentData" data-val="true"
+                               ng-model="vm.financial.paymentData" id="paymentData" name="paymentData" data-val="true"
                                data-val-required="必填">
                     </td>
                     <td width="5%" align="center">费用总额</td>
@@ -90,7 +90,7 @@
                 </button>
 
 
-                <div id="expertConst" class="collapse" >
+                <div id="expertConst" class="collapse in" ng-show="vm.showReviewCost">
                     <table class="table table-bordered">
                         <caption class="text-center h3"><strong>{{vm.reviewTitle}}</strong></caption>
                         <tr>
@@ -120,7 +120,7 @@
                             <td>{{vm.expertReview.reviewCost}}</td>
                             <td>{{vm.expertReview.reviewTaxes}}</td>
                             <td>{{vm.expertReview.totalCost}}</td>
-
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </div>
@@ -129,19 +129,19 @@
                 <a  data-toggle="collapse" data-target="#reviewConst" >
                     【项目协审费】总计:{{vm.signAssistCostCounList[0].assistCost}}
                 </a>
-                <div id="reviewConst" class="collapse">
+                <div id="reviewConst" class="collapse in" ng-show="vm.showAssistCost">
 
                     <table class="table table-bordered">
                         <tr class="active">
-                            <th class="text-center" style="width:70px">序号</th>
-                            <th class="text-center" style="width:18%">项目名称</th>
-                            <th class="text-center" style="width:12%">协审单位</th>
-                            <th class="text-center" style="width:13%">项目负责人</th>
-                            <th class="text-center" style="width:10%">协审登记号</th>
-                            <th class="text-center" style="width:10%">计划协审费用</th>
-                            <th class="text-center" style="width:10%;">实际协审费用</th>
-                            <th class="text-center" style="width:10%;">付款日期</th>
-                            <th class="text-center" style="width:8%;">申报金额</th>
+                            <td class="text-center" style="width:70px">序号</td>
+                            <td class="text-center" style="width:18%">项目名称</td>
+                            <td class="text-center" style="width:12%">协审单位</td>
+                            <td class="text-center" style="width:13%">项目负责人</td>
+                            <td class="text-center" style="width:10%">协审登记号</td>
+                            <td class="text-center" style="width:10%">计划协审费用</td>
+                            <td class="text-center" style="width:10%;">实际协审费用</td>
+                            <td class="text-center" style="width:10%;">付款日期</td>
+                            <td class="text-center" style="width:8%;">申报金额</td>
                         </tr>
                         <tr ng-repeat="s in vm.signAssistCostCounList">
                             <td class="text-center">{{$index + 1}}</td>

@@ -1,0 +1,64 @@
+
+<div>
+    <go-back></go-back>
+    <button class="btn btn-sm btn-success" ng-click="vm.resetChart()">确认</button>
+</div>
+<div class="row" style="background:white;width: 100%; height: 100%;">
+
+    <div style="width: 15%; float: left;margin-left: 50px ; margin-top: 20px; margin-right: 50px;" >
+        <form name="chartForm" id="chartForm">
+
+            <div style="margin-bottom:80px;">
+                <h4><strong> 图表类型 </strong></h4>
+                <ul >
+                    <li style="float: left;margin-right: 5px;">
+                        <input type="radio" name="chart" value="histogram"
+                               ng-model="vm.chartType" ng-change="vm.radioChecked()"
+                               ng-checked="vm.chartType == 'histogram'" /> 柱状图
+                    </li>
+                    <li style="float: left;margin-right: 5px;">
+                        <input type="radio" name="chart" value="lineChart"
+                               ng-model="vm.chartType" ng-change="vm.radioChecked()"
+                               ng-checked="vm.chartType == 'lineChart'" /> 折线图
+                    </li>
+                    <li style="float: none;">
+                        <input type="radio" name="chart" value="pie"
+                               ng-model="vm.chartType" ng-change="vm.radioChecked()"
+                               ng-checked="vm.chartType == 'pie'" /> 饼图
+                    </li>
+                </ul>
+            </div>
+            <div style="margin-bottom:80px;">
+                <h4><strong> 时间范围 </strong></h4>
+                <ul>
+                    <li style="margin-bottom: 10px;">
+                     <span>
+                            开始日期：<input  kendo-date-picker k-format="'yyyy-MM-dd'"
+                                         ng-model="vm.startTime" name="studyBeginTime"
+                                         id="studyBeginTime"
+                                         min="vm.startDateTime" max="vm.endDateTime"
+                                         data-bind="value:start,invisible:isAllDay" />
+                        </span>
+                    </li>
+                    <li>
+                     <span>
+                            结束日期：<input  kendo-date-picker k-format="'yyyy-MM-dd'" name="studyEndTime" id="studyEndTime"
+                                         ng-model="vm.endTime"
+                                         min="vm.startDateTime" max="vm.endDateTime"
+                                         data-bind="value:end,invisible:isAllDay" data-datecompare-msg="结束日期必须大于开始日期"/>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </form>
+
+    </div>
+    <div style="width: 75%; height: 100%; float: left; border-left: solid 1px gray; ">
+        <div id="histogram" ng-show="vm.showHistogram" style="width: 1100px; height: 700px; ; margin: auto auto;"></div>
+        <div id="pie" ng-show="vm.showPie" style="width: 100%; height: 1100px ; margin: auto auto;"></div>
+        <div id="lineChart" ng-show="vm.showLineChart" style="width: 1100px; height: 700px; margin: auto auto;"></div>
+
+    </div>
+
+
+</div>

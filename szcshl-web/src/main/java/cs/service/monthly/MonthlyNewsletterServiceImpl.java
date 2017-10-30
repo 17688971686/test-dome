@@ -413,7 +413,11 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 				 proReviewConditionByTypeAllList =  (List<ProReviewConditionDto>)resultMap.get("protReviewConditionList");
 				 totalNum = (Integer) resultMap.get("totalNum");
 				 //投资金额
-				  proCountArr = expertSelectedService.proReviewCondByDeclare(proReviewConditionDto);
+				String beginTime = proReviewConditionDto.getBeginTime()+"-01 00:00:00";
+				String[] timeArr = proReviewConditionDto.getEndTime().split("-");
+				String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+				String endTime = proReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+				  proCountArr = expertSelectedService.proReviewCondByDeclare(beginTime , endTime);
 				}
 
 			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,signCount,reviewCount,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum,proReviewCondDetailMap,proCountArr);

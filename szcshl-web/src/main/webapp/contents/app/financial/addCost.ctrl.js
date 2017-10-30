@@ -34,7 +34,7 @@
          */
         vm.addCostWindow = function(object){
 
-            $('#myTab li').click(function (e) {
+            $('#costTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
                 aObj.tab('show');
@@ -52,21 +52,27 @@
                 vm.projectName =  object.projectName;
             }
             financialManagerSvc.initFinancialProject(vm.businessId ,  function(data){
-                vm.model = {};
-                vm.model.businessId = vm.businessId;
-                vm.model.projectName = vm.projectName;
+                vm.financial = {};
+                vm.financial.businessId = vm.businessId;
+                vm.financial.projectName = vm.projectName;
                 // vm.model.assissCost = object.totalCost;
-                vm.model.paymentData = object.payDate;
-                expertReviewSvc.initReview(vm.model.businessId, "", function (data) {
+                vm.financial.paymentData = object.payDate;
+                expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
                     vm.expertReview = data;
                     vm.reviewTitle = data.reviewTitle;
                     vm.payDate = data.payDate;
                     vm.expertSelectedDtoList = data.expertSelectedDtoList;
+                    if(vm.expertSelectedDtoList.length >0){
+                        vm.showReviewCost = true;
+                    }
                 });
 
                 vm.signAssistCost.signId =  vm.businessId;
                 assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
                     vm.signAssistCostCounList = data;
+                    if(vm.signAssistCostCounList.length >0){
+                        vm.showAssistCost = true;
+                    }
                 });
 
                 vm.financials = data.financiallist;
@@ -90,7 +96,7 @@
          */
         vm.costExportExcel = function (){
             var fileName = vm.reviewTitle + "(" + vm.payDate + ")";
-            financialManagerSvc.exportExcel(vm , vm.model.businessId ,fileName );
+            financialManagerSvc.exportExcel(vm , vm.financial.businessId ,fileName );
         }
 
         /**
@@ -130,9 +136,9 @@
         vm.addFinancial =  function () {
             var financial = {};
             financial.chargeType = "8";
-            financial.businessId = vm.model.businessId;
-            financial.projectName = vm.model.projectName;
-            financial.paymentData = vm.model.paymentData;
+            financial.businessId = vm.financial.businessId;
+            financial.projectName = vm.financial.projectName;
+            financial.paymentData = vm.financial.paymentData;
             if(!vm.financials){
                 vm.financials = [];
             }
@@ -197,7 +203,7 @@
          * 重置
          */
         vm.resetQuery = function(){
-            vm.model = {};
+            vm.financial = {};
         }
 
         activate();

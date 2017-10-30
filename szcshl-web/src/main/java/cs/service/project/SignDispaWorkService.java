@@ -6,6 +6,7 @@ import cs.model.PageModelDto;
 import cs.repository.odata.ODataObj;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SignDispaWorkService {
 
@@ -44,4 +45,12 @@ public interface SignDispaWorkService {
      * @return
      */
     PageModelDto<SignDispaWork> reviewProject(String expertId);
+
+    /**
+     * 通过时间段查询项目信息，用于项目查询统计分析
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<Map<String , Object[]>> findByTime(String startTime , String endTime);
 }
