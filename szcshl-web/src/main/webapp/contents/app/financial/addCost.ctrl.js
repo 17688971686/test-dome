@@ -33,7 +33,6 @@
          * 费用录入弹出框
          */
         vm.addCostWindow = function(object){
-
             $('#costTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -42,6 +41,7 @@
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#" + showDiv).addClass("active").addClass("in").show(500);
             })
+
             if(vm.costType == "REVIEW"){
                 financialManagerSvc.sumFinancial(vm , object.businessId);
                 vm.businessId = object.businessId;
@@ -62,7 +62,7 @@
                     vm.reviewTitle = data.reviewTitle;
                     vm.payDate = data.payDate;
                     vm.expertSelectedDtoList = data.expertSelectedDtoList;
-                    if(vm.expertSelectedDtoList.length >0){
+                    if( vm.expertSelectedDtoList && vm.expertSelectedDtoList.length >0){
                         vm.showReviewCost = true;
                     }
                 });
@@ -70,13 +70,13 @@
                 vm.signAssistCost.signId =  vm.businessId;
                 assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
                     vm.signAssistCostCounList = data;
-                    if(vm.signAssistCostCounList.length >0){
+                    if(vm.signAssistCostCounList && vm.signAssistCostCounList.length >0){
                         vm.showAssistCost = true;
                     }
                 });
 
                 vm.financials = data.financiallist;
-
+                vm.countCost();
                 $("#addCostWindow").kendoWindow({
                     width: "70%",
                     height: "600px;",
@@ -103,15 +103,15 @@
          * 计算总金额
          */
         vm.countCost = function(){
+            var totalCost = 0;
             if(vm.financials && vm.financials.length > 0){
-                var totalCost = 0;
                 angular.forEach(vm.financials,function (f,i) {
                     if(f.charge){
                         totalCost += f.charge;
                     }
                 })
-                $("#financialCount").html(totalCost);
             }
+            $("#financialCount").html(totalCost);
         }
 
         /**
