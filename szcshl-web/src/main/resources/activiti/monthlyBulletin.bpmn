@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="myProcess" name="My process" isExecutable="true">
+    <startEvent id="MONTH_START" name="开始"></startEvent>
+    <endEvent id="MONTH_END" name="流程结束"></endEvent>
+    <userTask id="MONTH_YB" name="月报填报" activiti:assignee="${user}"></userTask>
+    <userTask id="MONTH_BZ" name="部长审批" activiti:assignee="${user_bz}"></userTask>
+    <userTask id="MONTH_FG" name="分管领导审批" activiti:assignee="${user_fgld}"></userTask>
+    <userTask id="MONTH_ZR" name="主任审批" activiti:assignee="${user_zr}"></userTask>
+    <sequenceFlow id="flow1" sourceRef="MONTH_START" targetRef="MONTH_YB"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="MONTH_YB" targetRef="MONTH_BZ"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="MONTH_BZ" targetRef="MONTH_FG"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="MONTH_FG" targetRef="MONTH_ZR"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="MONTH_ZR" targetRef="MONTH_END"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+      <bpmndi:BPMNShape bpmnElement="MONTH_START" id="BPMNShape_MONTH_START">
+        <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MONTH_END" id="BPMNShape_MONTH_END">
+        <omgdc:Bounds height="35.0" width="35.0" x="680.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MONTH_YB" id="BPMNShape_MONTH_YB">
+        <omgdc:Bounds height="55.0" width="105.0" x="120.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MONTH_BZ" id="BPMNShape_MONTH_BZ">
+        <omgdc:Bounds height="55.0" width="105.0" x="260.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MONTH_FG" id="BPMNShape_MONTH_FG">
+        <omgdc:Bounds height="55.0" width="105.0" x="400.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MONTH_ZR" id="BPMNShape_MONTH_ZR">
+        <omgdc:Bounds height="55.0" width="105.0" x="550.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="177.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="225.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="177.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="365.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="177.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="505.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="177.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="655.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="680.0" y="177.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

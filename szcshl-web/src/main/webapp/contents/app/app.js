@@ -723,7 +723,7 @@
 
             //编辑新建年度月报简报页面
              .state('monthlyMultiyearEdit', {
-                url: '/monthlyMultiyearEdit/:id',
+                url: '/monthlyMultiyearEdit/:id/:businessId',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
@@ -737,13 +737,6 @@
                 controllerAs: 'vm'
             })
 
-            //年度(中心文件)月报简报审批处理页面
-             .state('monthlyMultiAppoveEdit', {
-                url: '/monthlyMultiAppoveEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyAppoveEdit.html',
-                controller: 'monthlyMultiyearEditCtrl',
-                controllerAs: 'vm'
-            })
             //年度(中心文件)月报简报查询页面
              .state('monthlyMultiyFileList', {
                 url: '/monthlyMultiyFileList/:id',

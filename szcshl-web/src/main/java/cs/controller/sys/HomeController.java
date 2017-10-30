@@ -175,4 +175,19 @@ public class HomeController {
 
 		return "init SuppLetterFlow Flow success";
 	}
+
+	@RequestMapping(name = "月报简报流程",path = "monthlyBulletinFlow",method = RequestMethod.GET)
+	@Transactional
+	public @ResponseBody String monthlyBulletinFlow(){
+		//部署下一个版本
+		logger.info("开始项月报简报审批流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/monthlyBulletin.zip");
+		ZipInputStream zipIn=new ZipInputStream(in);
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("月报简报流程").deploy();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+		logger.info("月报简报流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+		return "init AppraiseReport Flow success";
+	}
+
+
 }

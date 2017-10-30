@@ -81,7 +81,9 @@ public class ODataObj {
     public List<ODataFilterItem> getFilter() {
         return filter;
     }
-
+    public void setFilter(List<ODataFilterItem> filter) {
+        this.filter = filter;
+    }
     private static Logger logger = Logger.getLogger(ODataObj.class);
 
     // method

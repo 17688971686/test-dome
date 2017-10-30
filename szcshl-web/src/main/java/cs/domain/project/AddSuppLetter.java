@@ -106,7 +106,7 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition="date")
     private Date deptSleaderDate;
 
-    @Column(columnDefinition = "varchar(32)")
+    @Column(columnDefinition = "varchar(64)")
     private String deptDirectorId;
 
     //主任名称
