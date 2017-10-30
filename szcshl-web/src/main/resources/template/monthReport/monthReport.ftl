@@ -2401,7 +2401,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewCondition.declareValue}</w:t>
+                                        <w:t>${proReviewCondition.declareStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2438,7 +2438,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewCondition.authorizeValue}</w:t>
+                                        <w:t>${proReviewCondition.authorizeStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2476,7 +2476,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewCondition.ljhj}</w:t>
+                                        <w:t>${proReviewCondition.ljhjStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2514,7 +2514,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewCondition.hjl}</w:t>
+                                        <w:t>${proReviewCondition.hjlStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -3547,7 +3547,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewConditionAll.declareValue}</w:t>
+                                        <w:t>${proReviewConditionAll.declareStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -3584,7 +3584,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewConditionAll.authorizeValue}</w:t>
+                                        <w:t>${proReviewConditionAll.authorizeStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -3622,7 +3622,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewConditionAll.ljhj}</w:t>
+                                        <w:t>${proReviewConditionAll.ljhjStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -3660,7 +3660,7 @@
                                             <w:kern w:val="0"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${proReviewConditionAll.hjl}</w:t>
+                                        <w:t>${proReviewConditionAll.hjlStr}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="008537CD" w:rsidRDefault="008537CD" w:rsidP="000967C9">

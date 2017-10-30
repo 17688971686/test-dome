@@ -875,15 +875,15 @@ public class CreateTemplateUtils {
         //todo:初始化参数
         dataMap.put("signTotal", signCount);
         dataMap.put("proTotal", proReviewConditionCur.getProCount());
-        dataMap.put("declareTotal", proReviewConditionCur.getDeclareValue());
-        dataMap.put("authorizeTotal",proReviewConditionCur.getAuthorizeValue());
-        dataMap.put("ljhjTotal", proReviewConditionCur.getLjhj());
+        dataMap.put("declareTotal", proReviewConditionCur.getDeclareValue()+"");
+        dataMap.put("authorizeTotal",proReviewConditionCur.getAuthorizeValue()+"");
+        dataMap.put("ljhjTotal", proReviewConditionCur.getLjhj()+"");
         dataMap.put("hjlTotal", proReviewConditionCur.getHjl()+"%");
 
         dataMap.put("proAllTotal", proReviewConditionSum.getProCount());
-        dataMap.put("declareAllTotal", proReviewConditionSum.getDeclareValue());
-        dataMap.put("authorizeAllTotal", proReviewConditionSum.getAuthorizeValue());
-        dataMap.put("ljhjAllTotal", proReviewConditionSum.getLjhj());
+        dataMap.put("declareAllTotal", proReviewConditionSum.getDeclareValue()+"");
+        dataMap.put("authorizeAllTotal", proReviewConditionSum.getAuthorizeValue()+"");
+        dataMap.put("ljhjAllTotal", proReviewConditionSum.getLjhj()+"");
         dataMap.put("hjlAllTotal", proReviewConditionSum.getHjl()+"%");
         dataMap.put("reviewCount",reviewCount);//评审会次数
         List<ProReviewConditionDto> proReviewCondition = proReviewConditionDtoList;
@@ -924,6 +924,8 @@ public class CreateTemplateUtils {
                 if("提前介入".equals(proReviewConditionDtoAllList.get(k).getReviewStage())){
                     reviewTotal = proReviewConditionSum.getProCount().intValue() -  proReviewConditionDtoAllList.get(k).getProCount().intValue();
                     break;
+                }else{
+                    reviewTotal = proReviewConditionSum.getProCount().intValue();
                 }
             }
             for(int i=0;i<reviewStageTotal.length;i++){
@@ -937,7 +939,7 @@ public class CreateTemplateUtils {
                                 proCent = String.format("%.2f",(proReviewConditionDtoAllList.get(j).getProCount().floatValue()/(float) reviewTotal)*100)+"%";
                             }
 
-                            dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，占评审项目数的+"+proCent+"+申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
+                            dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，占评审项目数的"+proCent+"申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
                                     +"亿元，审核后总投资"+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoAllList.get(j).getHjl()+"%");
                             break;
                         }else{
@@ -974,10 +976,10 @@ public class CreateTemplateUtils {
         }
         dataMap.put("projectTypeItem",projectTypeItem);
         //投资金额
-        for(int i=0;i<proCountArr.length;i++){
+        for(int i=0;i<proCountArr.length-1;i++){
             dataMap.put("proCount"+(i+1),proCountArr[i]);
             if(proCountArr[i]!=0){
-                double temp = (double)proCountArr[i]/(double)totalNum*100;
+                double temp = (double)proCountArr[i]/(double)proCountArr[proCountArr.length-1]*100;
                 String result = String.format("%.2f",temp)+"%";
                 dataMap.put("proCountCent"+(i+1),result);
             }else{

@@ -740,14 +740,17 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and d.declarevalue >= 100000   ");
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
-        Integer[] proCountArr = new Integer[projectReviewConList.size()];
+        Integer[] proCountArr = new Integer[projectReviewConList.size()+1];
         ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+        Integer totalNum = 0;
         if (projectReviewConList.size() > 0) {
             for(int i=0;i<projectReviewConList.size();i++){
                 if (null != projectReviewConList.get(i)) {
                     proCountArr[i] = Integer.valueOf(String.valueOf(projectReviewConList.get(i)));
+                    totalNum +=  proCountArr[i];
                 }
             }
+            proCountArr[proCountArr.length-1] = totalNum;
         }
         return proCountArr;
     }
