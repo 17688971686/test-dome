@@ -684,8 +684,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
     /**
      * 项目评审情况汇总(按照申报投资金额)
-     * @param beginTime
-     * @param endTime
+     * @param projectReviewConditionDto
      * @return
      */
     @Override
@@ -741,14 +740,17 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and d.declarevalue >= 100000   ");
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
-        Integer[] proCountArr = new Integer[projectReviewConList.size()];
-//        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+        Integer[] proCountArr = new Integer[projectReviewConList.size()+1];
+        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+        Integer totalNum = 0;
         if (projectReviewConList.size() > 0) {
             for(int i=0;i<projectReviewConList.size();i++){
                 if (null != projectReviewConList.get(i)) {
                     proCountArr[i] = Integer.valueOf(String.valueOf(projectReviewConList.get(i)));
+                    totalNum +=  proCountArr[i];
                 }
             }
+            proCountArr[proCountArr.length-1] = totalNum;
         }
         return proCountArr;
     }

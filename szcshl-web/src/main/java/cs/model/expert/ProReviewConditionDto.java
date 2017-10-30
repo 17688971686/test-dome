@@ -38,6 +38,17 @@ public class ProReviewConditionDto {
      */
     @JSONField(format = "yyyy-MM-dd")
     private Date signDate;
+    /***
+     * 以下字段为生成月报简报使用
+     */
+    //申报金额
+    private String declareStr;
+    //审定金额
+    private String authorizeStr;
+    //累计净核减投资
+    private String ljhjStr;
+    //核减率
+    private String hjlStr;
 
     public BigDecimal getProCount() {
         return proCount;
@@ -133,5 +144,37 @@ public class ProReviewConditionDto {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getDeclareStr() {
+        return declareStr;
+    }
+
+    public void setDeclareStr(String declareStr) {
+        this.declareStr = declareStr;
+    }
+
+    public String getAuthorizeStr() {
+        return authorizeStr;
+    }
+
+    public void setAuthorizeStr(String authorizeStr) {
+        this.authorizeStr = authorizeStr;
+    }
+
+    public String getLjhjStr() {
+        return ljhjStr;
+    }
+
+    public void setLjhjStr(String ljhjStr) {
+        this.ljhjStr = ljhjStr;
+    }
+
+    public String getHjlStr() {
+        return hjlStr;
+    }
+
+    public void setHjlStr(String hjlStr) {
+        this.hjlStr = hjlStr;
     }
 }

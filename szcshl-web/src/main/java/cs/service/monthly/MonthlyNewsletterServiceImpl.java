@@ -354,11 +354,11 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 	@Override
 	public ResultMsg createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto) {
 		//todo:测试初始化数据
-		monthlyNewsletterDto.setReportMultiyear("2017");
+/*		monthlyNewsletterDto.setReportMultiyear("2017");
 		monthlyNewsletterDto.setTheMonths("09");
 		monthlyNewsletterDto.setStartMoultiyear("2017");
 		monthlyNewsletterDto.setStaerTheMonths("01");
-		monthlyNewsletterDto.setEndTheMonths("09");
+		monthlyNewsletterDto.setEndTheMonths("09");*/
 		ProReviewConditionDto proReviewConditionCur = new ProReviewConditionDto();//汇总当前月
 		ProReviewConditionDto proReviewConditionSum = new ProReviewConditionDto();//累计至当前月
 		Integer reviewCount = 0;//当月专家评审会次数
@@ -419,6 +419,7 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 				String endTime = proReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
 				  proCountArr = expertSelectedService.proReviewCondByDeclare(beginTime , endTime);
 				}
+
 
 			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,signCount,reviewCount,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum,proReviewCondDetailMap,proCountArr);
 			//sysFileRepo.save(sysFile);

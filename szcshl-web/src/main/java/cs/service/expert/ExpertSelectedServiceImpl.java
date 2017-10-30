@@ -712,7 +712,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/(sum(d.declarevalue)*10000),5)*100  hjl  from cs_sign s   ");
+		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/10000/(sum(d.declarevalue)/10000),5)*100  hjl  from cs_sign s   ");
 		sqlBuilder.append("left join cs_dispatch_doc d  ");
 		sqlBuilder.append("on s.signid = d.signid  ");
 		sqlBuilder.append("where 1 = 1 ");
@@ -761,23 +761,30 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				}
 				if (null != projectReviewCon[2]) {
 					proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[2]);
+					proReviewConditionDto.setDeclareStr(String.valueOf(projectReviewCon[2]));
 				}else{
 					proReviewConditionDto.setDeclareValue(null);
+					proReviewConditionDto.setDeclareStr(null);
 				}
 				if (null != projectReviewCon[3]) {
 					proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[3]);
+					proReviewConditionDto.setAuthorizeStr(String.valueOf(projectReviewCon[3]));
 				}else{
-					proReviewConditionDto.setAuthorizeValue(null);
+					proReviewConditionDto.setAuthorizeStr(null);
 				}
 				if (null != projectReviewCon[4]) {
 					proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[4]);
+					proReviewConditionDto.setLjhjStr(String.valueOf(projectReviewCon[4]));
 				}else{
 					proReviewConditionDto.setLjhj(null);
+					proReviewConditionDto.setLjhjStr(null);
 				}
 				if (null != projectReviewCon[5]) {
 					proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[5]);
+					proReviewConditionDto.setHjlStr(String.valueOf(projectReviewCon[5])+"%");
 				}else{
 					proReviewConditionDto.setLjhj(null);
+					proReviewConditionDto.setHjlStr(null);
 				}
 				projectReviewConDtoList.add(proReviewConditionDto);
 			}
