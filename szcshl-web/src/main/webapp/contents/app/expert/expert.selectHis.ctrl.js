@@ -22,7 +22,7 @@
                     vm.noData = true;
                 }else{
                     vm.noData = false;
-                    vm.expScoreList = data;
+                    vm.expSelectList = data;
                 }
             });
         }
