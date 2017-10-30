@@ -989,6 +989,13 @@
                 controller : 'fileListCtrl',
                 controllerAs : 'vm'
             })
+            //项目查询统计图表分析
+            .state('signChart',{
+                url : '/signChart',
+                templateUrl : rootPath + "/signView/html/signChart.html",
+                controller : 'signChartCtrl',
+                controllerAs : 'vm'
+            })
 
 
     }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {

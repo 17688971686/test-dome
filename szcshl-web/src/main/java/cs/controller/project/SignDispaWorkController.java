@@ -3,13 +3,16 @@ package cs.controller.project;
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
+import cs.model.expert.ProReviewConditionDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
+import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -26,7 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 项目详情信息视图控制器
@@ -42,6 +47,9 @@ public class SignDispaWorkController {
 
     @Autowired
     private HeaderService headerService;
+
+    @Autowired
+    private ExpertSelectedService expertSelectedService;
 
 
     //@RequiresPermissions("signView#getSignList#post")
@@ -182,5 +190,43 @@ public class SignDispaWorkController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj,false);
         return pageModelDto;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "通过时间段获取项目信息" , path = "findByTime" , method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map<String , Object[]>> findByTime(@RequestParam String startTime , @RequestParam String endTime){
+        return signDispaWorkService.findByTime(startTime , endTime);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name="项目评审情况汇总(按照申报投资金额)" , path="pieDate" , method = RequestMethod.POST)
+    @ResponseBody
+    public Integer[] pieDate(@RequestParam String startTime ,@RequestParam  String endTime){
+
+        Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
+        Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
+        Integer[] result = null;
+        if(DateUtils.daysBetween(start , end) >0){
+            Integer[] integers = expertSelectedService.proReviewCondByDeclare(startTime , endTime);
+            Integer num = 0;
+           result = new Integer[integers.length];
+            for(Integer i :integers){
+                num += i;
+            }
+            for(int i=0 ; i<integers.length ; i++){
+                double temp = (double)integers[i]/(double)num*100;
+                String str = String.format("%.0f",temp);
+                result[i] =Integer.valueOf(str);
+
+            }
+        }
+        return result;
+    }
+
+    @RequiresPermissions("signView#html/signChart#get")
+    @RequestMapping(name="项目查询统计分析图" , path = "html/signChart" , method = RequestMethod.GET)
+    public String signChart(){
+        return "sign/signChart";
     }
 }

@@ -70,7 +70,7 @@ public class SignDispaWork {
      * 投资申报
      */
     @Column
-    private String appalyinvestment;
+    private BigDecimal appalyinvestment;
 
     /**
      * 是否有其他关联
@@ -366,11 +366,11 @@ public class SignDispaWork {
         this.builtcompanyname = builtcompanyname;
     }
 
-    public String getAppalyinvestment() {
+    public BigDecimal getAppalyinvestment() {
         return appalyinvestment;
     }
 
-    public void setAppalyinvestment(String appalyinvestment) {
+    public void setAppalyinvestment(BigDecimal appalyinvestment) {
         this.appalyinvestment = appalyinvestment;
     }
 

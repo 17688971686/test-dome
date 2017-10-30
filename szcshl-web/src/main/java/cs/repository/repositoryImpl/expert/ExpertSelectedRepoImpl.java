@@ -684,32 +684,33 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
     /**
      * 项目评审情况汇总(按照申报投资金额)
-     * @param projectReviewConditionDto
+     * @param beginTime
+     * @param endTime
      * @return
      */
     @Override
-    public Integer[] proReviewCondByDeclare(ProReviewConditionDto projectReviewConditionDto) {
+    public Integer[] proReviewCondByDeclare(String beginTime , String endTime) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        String beginTime = "";
-        String endTime = "";
+//        String beginTime = "";
+//        String endTime = "";
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
         //todo:添加查询条件
-        if(null != projectReviewConditionDto){
-            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
-                beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
-                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
-                endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+//        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)){
+//                beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+//                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+//                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+//                endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 
             }
-        }
+//        }
         sqlBuilder.append("and d.declarevalue < 3000  ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
@@ -741,7 +742,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         Integer[] proCountArr = new Integer[projectReviewConList.size()];
-        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+//        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
         if (projectReviewConList.size() > 0) {
             for(int i=0;i<projectReviewConList.size();i++){
                 if (null != projectReviewConList.get(i)) {

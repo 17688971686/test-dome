@@ -33,10 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 项目信息视图 Service
@@ -420,6 +417,17 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     public PageModelDto<SignDispaWork> reviewProject(String expertId) {
         return signDispaWorkRepo.reviewProject(expertId);
+    }
+
+    /**
+     * 通过时间段查询项目信息，用于项目查询统计分析
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<Map<String , Object[]>> findByTime(String startTime, String endTime) {
+        return signDispaWorkRepo.findByTime(startTime , endTime);
     }
 
 

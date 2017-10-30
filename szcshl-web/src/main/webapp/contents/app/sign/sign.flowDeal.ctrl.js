@@ -507,7 +507,7 @@
                 // $state.go('financialManager', {businessId: vm.model.signid});
             }
 
-            $('#myTab li').click(function (e) {
+            $('#costTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
                 aObj.tab('show');
@@ -518,18 +518,24 @@
 
             financialManagerSvc.sumFinancial(vm , vm.signId);
             financialManagerSvc.initFinancialProject(vm.signId ,  function(data){
-                vm.model = data.financialDto;
+                vm.financial = data.financialDto;
                 vm.financials = data.financiallist;
                 expertReviewSvc.initReview(vm.signId, "", function (data) {
                     vm.expertReview = data;
                     vm.reviewTitle = data.reviewTitle;
                     vm.payDate = data.payDate;
                     vm.expertSelectedDtoList = data.expertSelectedDtoList;
+                    if(vm.expertSelectedDtoList.length >0){
+                        vm.showReviewCost = true;
+                    }
                 });
                 vm.signAssistCost = {};//项目协审费用
                 vm.signAssistCost.signId =  vm.signId;
                 assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
                     vm.signAssistCostCounList = data;
+                    if(vm.signAssistCostCounList.length >0){
+                        vm.showAssistCost = true;
+                    }
                 });
 
                 vm.financials = data.financiallist;
@@ -591,9 +597,9 @@
         vm.addFinancial =  function () {
             var financial = {};
             financial.chargeType = "8";
-            financial.businessId = vm.model.businessId;
-            financial.projectName = vm.model.projectName;
-            financial.paymentData = vm.model.paymentData;
+            financial.businessId = vm.financial.businessId;
+            financial.projectName = vm.financial.projectName;
+            financial.paymentData = vm.financial.paymentData;
             if(!vm.financials){
                 vm.financials = [];
             }
@@ -608,6 +614,7 @@
                 financialManagerSvc.savefinancial(vm.financials,function(data){
                     if(data.flag || data.reCode == 'ok'){
                         vm.financials = data.reObj;
+                        vm.countCost();
                         bsWin.success(data.reMsg);
                     }else{
                         bsWin.error(data.reMsg);
@@ -636,6 +643,7 @@
                     });
                     var idsStr = ids.join(",");
                     financialManagerSvc.deleteFinancialManager(idsStr , function(){
+                        vm.countCost();
                         bsWin.success("删除成功！");
                     });
                 }
