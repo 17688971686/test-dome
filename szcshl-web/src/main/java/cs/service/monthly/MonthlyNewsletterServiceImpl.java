@@ -3,18 +3,34 @@ package cs.service.monthly;
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
+import cs.common.FlowConstant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.monthly.MonthlyNewsletter_;
+import cs.domain.project.AddSuppLetter;
+import cs.domain.project.AddSuppLetter_;
+import cs.domain.sys.Org;
+import cs.domain.sys.OrgDept;
 import cs.domain.sys.SysFile;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.ProReviewConditionDto;
+import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
+import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.expert.ExpertSelectedService;
+import cs.service.rtx.RTXSendMsgPool;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -40,6 +56,23 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 
 	@Autowired
 	private SysFileRepo sysFileRepo;
+
+	@Autowired
+	private AddSuppLetterRepo addSuppLetterRepo;
+
+	@Autowired
+	private RuntimeService runtimeService;
+
+	@Autowired
+	private ProcessEngine processEngine;
+
+	@Autowired
+	private TaskService taskService;
+
+	@Autowired
+	private UserRepo userRepo;
+	@Autowired
+	private OrgDeptRepo orgDeptRepo;
 
 	@Override
 	public PageModelDto<MonthlyNewsletterDto> get(ODataObj odataObj) {
@@ -195,7 +228,7 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 	 */
 	@Override
 	public ResultMsg saveTheMonthly(MonthlyNewsletterDto record) {
-		   MonthlyNewsletter domain = null;
+		   MonthlyNewsletter domain = new MonthlyNewsletter();
 		   if(Validate.isString(record.getId())){
 			   MonthlyNewsletter monthly =  monthlyNewsletterRepo.findById(record.getId());
 			   BeanCopierUtils.copyPropertiesIgnoreNull(record,monthly);
@@ -388,5 +421,127 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 		}
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
 }
+
+	/**
+	 * 月报简报发起流程
+	 *
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public ResultMsg startFlow(String id) {
+		AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), id);
+		if (addSuppLetter == null) {
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "发起流程失败，该项目已不存在！");
+		}
+		if (Validate.isString(addSuppLetter.getProcessInstanceId())) {
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已发起流程！");
+		}
+		if (SessionUtil.getUserInfo().getOrg() == null || !Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgDirector())) {
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您所在部门还没设置部长，请联系管理员进行设置！");
+		}
+
+		//查询部门领导
+		User user=userRepo.findOrgDirector(addSuppLetter.getCreatedBy());//查询用户的所在部门领导
+		if (!Validate.isString(user.getDisplayName())) {//判断是否有部门领导
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + user.getOrg().getName() + "】的部长未设置，请先设置！");
+		}
+		//1、启动流程
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.MONTHLY_BULLETIN_FLOW, id,
+				ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER.getValue(), SessionUtil.getUserId()));
+
+		//2、设置流程实例名称
+		processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), addSuppLetter.getTitle());
+
+		//3、更改项目状态
+		addSuppLetter.setProcessInstanceId(processInstance.getId());
+		addSuppLetter.setAppoveStatus(Constant.EnumState.NO.getValue());
+		addSuppLetterRepo.save(addSuppLetter);
+
+		//4、跳过第一环节（填报）
+		Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+		taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+
+		User leadUser = userRepo.getCacheUserById(user.getId());
+		String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+		taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), assigneeValue));
+
+		//放入腾讯通消息缓冲池
+		RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+	}
+
+	/**
+	 * 月报简报流程处理
+	 *
+	 * @param processInstance
+	 * @param task
+	 * @param flowDto
+	 * @return
+	 */
+	@Override
+	public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+		String businessId = processInstance.getBusinessKey(),
+				assigneeValue = "";                            //流程处理人
+		Map<String, Object> variables = new HashMap<>();       //流程参数
+		User dealUser = null;                                  //用户
+		List<User> dealUserList = null;                        //用户列表
+		AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(businessId);
+		task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+		//环节处理人设定
+		switch (task.getTaskDefinitionKey()) {
+			//项目负责人填报
+			case FlowConstant.MONTH_YB:
+				flowDto.setDealOption("");//默认意见为空
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector());
+				break;
+			//部长审批
+			case FlowConstant.MONTH_BZ:
+				addSuppLetter.setDeptMinisterId(SessionUtil.getUserId());
+				addSuppLetter.setDeptMinisterName(SessionUtil.getDisplayName());
+				addSuppLetter.setDeptMinisterDate(new Date());
+				addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
+				addSuppLetter.setAppoveStatus(EnumState.PROCESS.getValue());
+				addSuppLetterRepo.save(addSuppLetter);
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+				break;
+			//分管领导审批
+			case FlowConstant.MONTH_FG:
+				addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
+				addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
+				addSuppLetter.setDeptSleaderDate(new Date());
+				addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
+				addSuppLetter.setAppoveStatus(EnumState.STOP.getValue());
+				addSuppLetterRepo.save(addSuppLetter);
+				//查询部门领导
+				User user=userRepo.findOrgDirector(addSuppLetter.getCreatedBy());//查询用户的所在部门
+				if (!Validate.isString(user.getOrg().getOrgMLeader())) {//判断是否有部门主任
+					return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + user.getOrg().getName() + "】的主任未设置，请先设置！");
+				}
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_ZR.getValue(), user.getOrg().getOrgMLeader());
+				break;
+
+			//主任审批
+			case FlowConstant.MONTH_ZR:
+				addSuppLetter.setDeptDirectorId(SessionUtil.getUserId());
+				addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
+				addSuppLetter.setDeptDirectorDate(new Date());
+				addSuppLetter.setDeptDirectorIdeaContent(flowDto.getDealOption());
+				addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
+				addSuppLetterRepo.save(addSuppLetter);
+				break;
+			default:
+			    	break;
+		}
+		taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+		if (flowDto.isEnd()) {
+			taskService.complete(task.getId());
+		} else {
+			taskService.complete(task.getId(), variables);
+		}
+		//放入腾讯通消息缓冲池
+		RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+	}
 
 }

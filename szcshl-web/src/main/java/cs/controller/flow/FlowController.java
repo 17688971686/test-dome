@@ -8,6 +8,7 @@ import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
+import cs.domain.monthly.MonthlyNewsletter;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -20,6 +21,7 @@ import cs.service.book.BookBuyBusinessService;
 import cs.service.flow.FlowNextNodeFilter;
 import cs.service.flow.FlowService;
 import cs.service.flow.IFlow;
+import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
@@ -111,6 +113,8 @@ public class FlowController {
     private AppraiseService appraiseService;
     @Autowired
     private AddSuppLetterService addSuppLetterService;
+    @Autowired
+    private MonthlyNewsletterService monthlyNewsletterService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -285,6 +289,9 @@ public class FlowController {
             case FlowConstant.FLOW_SUPP_LETTER:
                 flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -351,6 +358,9 @@ public class FlowController {
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
                 resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
+                break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -440,6 +450,9 @@ public class FlowController {
             case FlowConstant.FLOW_SUPP_LETTER:
                 resultPage = "addSuppLetter/letterFlowDeal";
                 break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                resultPage = "monthlyNewsletter/flow/flowDeal";
+                break;
             default:
                 ;
         }
@@ -473,6 +486,9 @@ public class FlowController {
             case FlowConstant.FLOW_SUPP_LETTER:
                 resultPage = "addSuppLetter/letterFlowDetail";
                 break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                resultPage = "monthlyNewsletter/flow/flowDeal";
+                break;
             default:
                 ;
         }
@@ -502,6 +518,9 @@ public class FlowController {
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
                 resultPage = "addSuppLetter/letterFlowEnd";
+                break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                resultPage = "monthlyNewsletter/flow/flowDeal";
                 break;
             default:
                 ;

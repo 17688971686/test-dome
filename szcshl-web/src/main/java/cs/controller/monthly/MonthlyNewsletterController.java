@@ -5,9 +5,11 @@ import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
+import javafx.collections.ObservableList;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +69,16 @@ public class MonthlyNewsletterController {
     //@RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
     @RequestMapping(name = "获取（中心）文件查询列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
+    public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request,String businessId) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);	
+        List<ODataFilterItem> filterItemsList = odataObj.getFilter();//获取filter
+        ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
+        oDataFilterItem.setField("businessId");
+        oDataFilterItem.setOperator("eq");
+        oDataFilterItem.setValue(businessId);
+        filterItemsList.add(oDataFilterItem);//加入业务ID的查询条件
+        odataObj.setFilter(filterItemsList);//写入查询条件
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);
         return addSuppLetterDtos;
     }
 
@@ -191,6 +200,13 @@ public class MonthlyNewsletterController {
     		monthlyNewsletterService.delete(id);      
     	}
     }
+    @RequiresAuthentication
+    @RequestMapping(name="发起流程" , path="startFlow" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startFlow(@RequestParam String id){
+        return monthlyNewsletterService.startFlow(id);
+    }
+
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter##put")

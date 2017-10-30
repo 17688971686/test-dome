@@ -2,8 +2,11 @@ package cs.service.monthly;
 
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.repository.odata.ODataObj;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 /**
  * Description: 月报简报 业务操作接口
@@ -46,5 +49,19 @@ public interface MonthlyNewsletterService {
 	 */
 	ResultMsg createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto);
 
+	/**
+	 * 月报简报发起流程
+	 * @param id
+	 * @return
+	 */
+	ResultMsg startFlow(String id);
 
+	/**
+	 * 月报简报流程处理
+	 * @param processInstance
+	 * @param task
+	 * @param flowDto
+	 * @return
+	 */
+	ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
 }

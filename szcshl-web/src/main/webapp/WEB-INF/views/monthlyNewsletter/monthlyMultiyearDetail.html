@@ -12,13 +12,12 @@
         <li class="active" >{{vm.title}}</li>
     </ol>
 <div class="toolbar">
+    <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
     <span ng-show="vm.suppletter.id">
             <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent()">
             <span class="glyphicon glyphicon-search"></span>查看附件
             </button>
-      </sapn>
-    <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
-    </button>
+      </span>
 </div>
    		<!--  hidden input -->
 		 <input type="hidden" ng-model="vm.suppletter.id" name="suppletter" value="{{vm.suppletter.id}}"id="suppletterId"  >  
@@ -72,13 +71,13 @@
            
 
             <tr>
-                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td style="width:150px; height: 80px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题 <span class="required">*</span></td>
                 <td colspan="3">
                 {{vm.suppletter.title}}
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td style="width:150px; height: 80px; vertical-align: middle !important;text-align: center;" class="text-center">发行范围<span class="required">*</span></td>
                 <td colspan="3">
                 {{vm.suppletter.dispaRange}}
                 </td>
@@ -86,7 +85,7 @@
 
 
             <tr>
-                <td style="width:150px;" class="text-center">核稿意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">核稿意见</td>
                 <td colspan="3">
                     <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
 			 	 <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
@@ -95,7 +94,7 @@
             </tr>
 
             <tr>
-                <td style="width:150px;" class="text-center">会签意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">会签意见</td>
                 <td colspan="3">
                    <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
 			 	 <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
@@ -103,7 +102,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">领导意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">领导意见</td>
                 <td colspan="3">
                     <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
 			 		<p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>

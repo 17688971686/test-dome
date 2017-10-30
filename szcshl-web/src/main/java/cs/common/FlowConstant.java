@@ -222,6 +222,18 @@ public class FlowConstant {
     /*************** E 图书采购流程 环节名称  ****************/
 
 
+    /**
+     * 月报简报流程
+     */
+    public final static String MONTHLY_BULLETIN_FLOW = "MONTHLY_BULLETIN_FLOW";
+    /**
+     * 月报简报流程环节
+     */
+    public final static String MONTH_YB = "MONTH_YB";              //月报填报
+    public static final String MONTH_BZ = "MONTH_BZ";          //部长审批
+    public static final String MONTH_FG = "MONTH_FG";        //分管领导审批
+    public static final String MONTH_ZR = "MONTH_ZR";        //主任审批
+
 
     /**
      * 流程参数
@@ -303,6 +315,26 @@ public class FlowConstant {
         private String value;
 
         CodeKey(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 月报简报流程参数
+     */
+    public static enum MonthlyNewsletterFlowParams{
+        USER("user"),         //用户申请
+        USER_BZ("user_bz"),    //部长
+        USER_FGLD("user_fgld"),  //分管领导
+        USER_ZR("user_zr"); //主任
+
+        private String value;
+
+        MonthlyNewsletterFlowParams(String value) {
             this.value = value;
         }
 

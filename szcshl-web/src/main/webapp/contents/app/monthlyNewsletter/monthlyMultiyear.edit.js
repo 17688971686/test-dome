@@ -8,20 +8,19 @@
     function monthlyMultiyear( monthlyMultiyearSvc,sysfileSvc, $state,bsWin,$scope) {
         /* jshint validthis:true */
         var vm = this;
-        vm.title = '添加中心文件稿纸';
+        vm.title = '添加月报简报稿纸';
         vm.isuserExist = false;
         vm.isSubmit = true;
         vm.suppletter ={};//文件稿纸对象
         vm.id = $state.params.id;
+        vm.type=$state.params.type;
         vm.suppletter.id = $state.params.id;
-        
-        vm.suppletter.businessId = $state.params.businessId;
-        
-        console.log(vm.suppletter.businessId);
-       
+        vm.businessId = $state.params.businessId;
+
         if (vm.id) {
             vm.isUpdate = true;
-            vm.title = '更新中心文件稿纸';
+            vm.isflow=true;//显示发起流程的按钮
+            vm.title = '更新月报简报稿纸';
         }
 
          vm.businessFlag ={
@@ -81,9 +80,15 @@
             common.initJqValidation();
             var isValid = $('form').valid();
 	          if(isValid){
-	        	  monthlyMultiyearSvc.createmonthlyMultiyear(vm.suppletter,function(data){
+	              vm.suppletter.fileType="2";//区分是不是简报
+                  vm.suppletter.businessId=vm.businessId;//业务ID
+                  monthlyMultiyearSvc.createmonthlyMultiyear(vm.suppletter,function(data){
 	                   if (data.flag || data.reCode == "ok") {
-	                           bsWin.alert("操作成功！");
+	                           bsWin.alert("操作成功！",function(){
+                                   vm.id=data.reObj.id;//保存后取得id,流程发起需要
+                                   location.href =  "#/monthlyFindByMultiyear/"+vm.businessId+"";//保存成功后跳转到列表
+	                           })
+
 	                   }else{
 	                       bsWin.error(data.reMsg);
 	                   }
@@ -108,17 +113,65 @@
  	        	   bsWin.alert("缺少部分没有填写，请仔细检查");
  	           }
         };
+        //************************** S 以下是新流程处理js **************************//
+        vm.startNewFlow = function(id){
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认已经完成填写，并且发起流程么？",
+                onOk: function () {
+                    $('.confirmDialog').modal('hide');
+                    if(id!=""){//当是更新提交时，先更新在提交
+                        monthlyMultiyearSvc.updatemonthlyMultiyear(vm.suppletter,function(data){//提交时先更新在提交
+                            if (data.flag || data.reCode == "ok") {
+                                monthlyMultiyearSvc.startFlow(id,function(data){//更新的提交
+                                    if(data.flag || data.reCode == 'ok'){
+                                        bsWin.success("操作成功！",function(){
+                                            location.href =  "#/monthlyFindByMultiyear/"+vm.suppletter.businessId+"";//保存成功后跳转到列表
+                                        });
+                                    }else{
+                                        bsWin.error(data.reMsg);
+                                    }
+                                });
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    }else{//当是保存时提交就先保存
+                        vm.suppletter.fileType="2";//区分是不是简报
+                        vm.suppletter.businessId=vm.businessId;//业务ID
+                        monthlyMultiyearSvc.createmonthlyMultiyear(vm.suppletter,function(data) {
+                            if (data.flag || data.reCode == "ok") {
+                                vm.id = data.reObj.id;//保存后取得id,流程发起需要
+                                monthlyMultiyearSvc.startFlow(vm.id,function(data){//更新的提交
+                                    if(data.flag || data.reCode == 'ok'){
+                                        bsWin.success("操作成功！",function(){
+                                            location.href =  "#/monthlyFindByMultiyear/"+vm.suppletter.businessId+"";//保存成功后跳转到列表
+                                        });
+                                    }else{
+                                        bsWin.error(data.reMsg);
+                                    }
+                                });
+                            } else {
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    }
 
+                }
+            });
+        }
         
         activate();
         function activate() {
           if (vm.isUpdate) {
-                monthlyMultiyearSvc.getmonthlyMultiyearById(vm);
+                monthlyMultiyearSvc.getmonthlyMultiyearById(vm.id,function (data) {
+                    vm.suppletter = data;
+                    vm.businessId=vm.suppletter.businessId;//返回的链接业务Id
+                });
             }
             monthlyMultiyearSvc.initMonthlyMultiyear(vm);
           //根据主业务获取所有的附件信息
             monthlyMultiyearSvc.findByBusinessId(vm);
-           // monthlyMultiyearSvc.getmonthlyMultiyearById(vm);
         }
     }
 })();

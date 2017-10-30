@@ -8,30 +8,32 @@
 <#include "/monthlyNewsletter/monthlyUpload.html"/>
 <div class="well well-sm" style="background:white; color: red">
    <ol class="breadcrumb">
-        <li><a href="#/meeting">中心文件稿纸管理</a></li>       
+        <li><a href="#/monthlyFindByMultiyear/{{vm.businessId}}">年度月报简报</a></li>
         <li class="active" >{{vm.title}}</li>
     </ol>
 <div class="toolbar">
+    <a href="#/monthlyFindByMultiyear/{{vm.businessId}}" class="btn btn-sm btn-danger"  ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left">返回</span>
+    </a>
     <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit" ng-hide="vm.isUpdate">
-        <span class="glyphicon glyphicon-ok"></span>保存
+        <span class="glyphicon glyphicon-ok"></span>暂存
     </button>
      <button class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
         <span class="glyphicon glyphicon-ok"></span>更新
     </button>
+    <button  class="btn btn-sm btn-default" ng-click="vm.startNewFlow(vm.id)"><span class="glyphicon glyphicon-share-alt"></span>发起流程</button>
    <!--   <button ng-show="vm.suppletter.id" class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
         <span class="glyphicon glyphicon-ok"></span>发送到综合部存档
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>打印
     </button> -->
-    <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
-    </button>
+
     <span ng-show="vm.suppletter.id">
             <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>上传附件</button>
             <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent()">
             <span class="glyphicon glyphicon-search"></span>查看附件
             </button>
-      </sapn>
+      </span>
 </div>
    		<!--  hidden input -->
 		 <input type="hidden" ng-model="vm.suppletter.id" name="suppletter" value="{{vm.suppletter.id}}"id="suppletterId"  >  
@@ -57,29 +59,32 @@
 			<option ng-repeat="x in DICT.MONTHLY.dicts"
 				ng-selected="x.dictName == vm.suppletter.missiveOtherType"
 				value="{{x.dictName}}">{{x.dictName}}</option>
-		</select> 
-    
+		</select>
+        <div class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）</br><br></strong></div>
+
+        <div style="width: 100%;margin-bottom: 20px;" >
+            <div style="float: left;margin-left: 3%">
+           <span>分&nbsp&nbsp&nbsp&nbsp&nbsp类:</span>
+                <select ng-model="vm.suppletter.monthlyType" name="monthlyType" id="monthlyType" style="width: 280px;" class=" input-sm ">
+                    <option ng-repeat="x in DICT.MONTHLY.dicts" ng-selected="x.dictName == vm.suppletter.monthlyType"
+                            value="{{x.dictName}}">{{x.dictName}}</option>
+                </select>
+
+            </div>
+            <div style="margin-left: 53%;">
+            <td style="width:150px;" class="text-center">存档编号:</td>
+            <td>
+
+            </td>
+            </div>
+        </div>
         <!-- s table -->
         <table class="table table-bordered">
-            <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）</br><br></strong></caption>
+
           
             <tbody>
-              <tr>
-                <td style="width:150px;" class="text-center">分类</td>
-                <td>
-                    <select ng-model="vm.suppletter.monthlyType" name="monthlyType" id="monthlyType" style="width: 280px;" class="form-control input-sm ">
-                        <option ng-repeat="x in DICT.MONTHLY.dicts" ng-selected="x.dictName == vm.suppletter.monthlyType"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select> 
-                </td>
-
-                <td style="width:150px;" class="text-center">存档编号</td>
-                <td>
-                {{vm.suppletter.fileCode}}
-                </td>
-            </tr>
             <tr>
-                <td style="width:150px;" class="text-center">拟稿部门<br>拟稿人</td>
+                <td style="width:150px;height:50px;" class="text-center">拟稿部门<br>拟稿人</td>
                 <td>
                    {{vm.suppletter.orgName}}<br>
                    {{vm.suppletter.userName}}
@@ -96,7 +101,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">秘密等级</td>
                 <td>
-                     <select ng-model="vm.suppletter.secretLevel" name="secretLevel" id="secretLevel" style="width: 280px;" class="form-control input-sm ">
+                     <select  ng-model="vm.suppletter.secretLevel" name="secretLevel" id="secretLevel" style="width: 280px;" class="form-control input-sm ">
                         <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="x.dictName == vm.suppletter.secretLevel"
                                 value="{{x.dictName}}">{{x.dictName}}</option>
                     </select> 
@@ -113,7 +118,7 @@
            
 
             <tr>
-                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题 <span class="required">*</span></td>
                 <td colspan="3">
                 <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.suppletter.title" id="title" name="title"
@@ -121,7 +126,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+                <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">发行范围<span class="required">*</span></td>
                 <td colspan="3">
                     <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.suppletter.dispaRange" id="dispaRange" name="dispaRange"
@@ -132,27 +137,19 @@
 
 
             <tr>
-                <td style="width:150px;" class="text-center">核稿意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">核稿意见</td>
                 <td colspan="3">
-                     <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
-                              ng-model="vm.suppletter.deptMinisterIdeaContent" id="deptMinisterIdeaContent" name="deptMinisterIdeaContent"/>
                 </td>
             </tr>
 
             <tr>
-                <td style="width:150px;" class="text-center">会签意见</td>
+                <td style="width:150px; height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">会签意见</td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.suppletter.deptSLeaderIdeaContent" id="deptSLeaderIdeaContent"
-                              name="deptSLeaderIdeaContent"/>
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">领导意见</td>
-                <td colspan="3">
-                   <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.suppletter.deptDirectorIdeaContent" id="deptDirectorIdeaContent"
-                              name="deptDirectorIdeaContent"/>
+                <td style="width:150px; height: 120px; vertical-align: middle !important;text-align: center; " class="text-center">领导意见</td>
+                <td colspan="3" >
                 </td>
             </tr>
             </tbody>
