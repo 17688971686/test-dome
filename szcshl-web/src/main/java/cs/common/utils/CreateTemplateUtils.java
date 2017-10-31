@@ -11,6 +11,7 @@ import cs.domain.sys.User;
 import cs.model.expert.ProReviewConditionDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -866,7 +867,7 @@ public class CreateTemplateUtils {
      * @param proReviewConditionDtoList
      * @return
      */
-    public static SysFile createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,Integer signCount,Integer reviewCount,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum,ProReviewConditionDto proReviewConditionCur,ProReviewConditionDto proReviewConditionSum,Map<String,List<ProReviewConditionDto> > proReviewCondDetailMap,Integer[] proCountArr) {
+    public static File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,Integer signCount,Integer reviewCount,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum,ProReviewConditionDto proReviewConditionCur,ProReviewConditionDto proReviewConditionSum,Map<String,List<ProReviewConditionDto> > proReviewCondDetailMap,Integer[] proCountArr) {
         Map<String, Object> dataMap = new HashMap<>();
         //报告年度
         dataMap.put("reportMultiyear", monthlyNewsletterDto.getReportMultiyear());
@@ -986,11 +987,11 @@ public class CreateTemplateUtils {
                 dataMap.put("proCountCent"+(i+1),0+"%");
             }
         }
-             SysFile sysFile = null;
-             sysFile = TemplateUtil.createTemplate(null,null,
-                    "月报简报",null,
-                    Constant.Template.MONTH_REPORT.getKey(), Constant.Template.MONTH_REPORT.getValue(),
-                    Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
-        return sysFile;
+        String  showName = Constant.Template.MONTH_REPORT.getValue() +  Constant.Template.OUTPUT_SUFFIX.getKey();
+        String path = SysFileUtil.getUploadPath();
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path ,  Constant.Template.MONTH_REPORT.getValue() ,null , null , showName);
+
+        File docFile = TemplateUtil.createDoc(dataMap , Constant.Template.MONTH_REPORT.getKey() , path + File.separator + relativeFileUrl);
+        return docFile;
     }
 }

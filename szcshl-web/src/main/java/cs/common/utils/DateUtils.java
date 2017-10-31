@@ -537,8 +537,19 @@ public class DateUtils {
 		 
 		 return now.get(Calendar.YEAR);
 	}
-	
-	/** 
+
+    /**
+     * 获取当月
+     * @return
+     */
+    public static int getCurMonth(){
+        Calendar now = Calendar.getInstance();
+
+        return now.get(Calendar.MONDAY);
+    }
+
+
+    /**
     * 将Date类型时间转换为字符串 (yyyy-MM-dd HH:mm:ss)
     * @param date 
     * @return 

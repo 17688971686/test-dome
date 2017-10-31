@@ -42,8 +42,7 @@
          * 生成月报简报
          */
         vm.createMonthReport = function () {
-            monthlyNewsletterSvc.createMonthReport(vm,function(data){
-            });
+            monthlyNewsletterSvc.createMonthReport(vm);
         }
 
         activate();

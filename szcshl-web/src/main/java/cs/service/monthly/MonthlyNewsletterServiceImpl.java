@@ -10,9 +10,6 @@ import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.monthly.MonthlyNewsletter_;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
-import cs.domain.sys.Org;
-import cs.domain.sys.OrgDept;
-import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.ProReviewConditionDto;
@@ -38,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -352,13 +350,14 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 	 * @param monthlyNewsletterDto
 	 */
 	@Override
-	public ResultMsg createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto) {
+	public File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto) {
 		//todo:测试初始化数据
 /*		monthlyNewsletterDto.setReportMultiyear("2017");
 		monthlyNewsletterDto.setTheMonths("09");
 		monthlyNewsletterDto.setStartMoultiyear("2017");
 		monthlyNewsletterDto.setStaerTheMonths("01");
 		monthlyNewsletterDto.setEndTheMonths("09");*/
+		File docFile = null;
 		ProReviewConditionDto proReviewConditionCur = new ProReviewConditionDto();//汇总当前月
 		ProReviewConditionDto proReviewConditionSum = new ProReviewConditionDto();//累计至当前月
 		Integer reviewCount = 0;//当月专家评审会次数
@@ -421,10 +420,9 @@ public class MonthlyNewsletterServiceImpl  implements MonthlyNewsletterService {
 				}
 
 
-			SysFile sysFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,signCount,reviewCount,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum,proReviewCondDetailMap,proCountArr);
-			//sysFileRepo.save(sysFile);
+			 docFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto,signCount,reviewCount,proReviewConditionDtoList,proReviewConditionDtoAllList,proReviewConditionByTypeAllList,totalNum,proReviewConditionCur,proReviewConditionSum,proReviewCondDetailMap,proCountArr);
 		}
-		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
+		return docFile;
 }
 
 	/**

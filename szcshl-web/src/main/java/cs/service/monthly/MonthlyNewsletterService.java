@@ -8,6 +8,8 @@ import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import java.io.File;
+
 /**
  * Description: 月报简报 业务操作接口
  * author: sjy
@@ -47,7 +49,7 @@ public interface MonthlyNewsletterService {
 	 * 生成月报简报模板
 	 * @param monthlyNewsletterDto
 	 */
-	ResultMsg createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto);
+	File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto);
 
 	/**
 	 * 月报简报发起流程

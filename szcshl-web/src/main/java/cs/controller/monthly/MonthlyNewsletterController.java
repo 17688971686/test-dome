@@ -2,6 +2,8 @@ package cs.controller.monthly;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.DateUtils;
+import cs.common.utils.StringUtil;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
@@ -9,7 +11,6 @@ import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
-import javafx.collections.ObservableList;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 
@@ -218,9 +224,48 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     @RequestMapping(name = "生成月报简报", path = "createMonthReport", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody ResultMsg createMonthReport(@RequestBody MonthlyNewsletterDto monthlyNewsletterDto) {
-        return monthlyNewsletterService.createMonthTemplate(monthlyNewsletterDto);
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void createMonthReport(HttpServletResponse resp ,@RequestBody  MonthlyNewsletterDto monthlyNewsletterDto) {
+        InputStream is = null;
+        ServletOutputStream out = null;
+
+        try {
+            if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getReportMultiyear())){
+                monthlyNewsletterDto.setReportMultiyear(String.valueOf(DateUtils.getCurYear()));
+            }
+            if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getTheMonths())){
+                monthlyNewsletterDto.setTheMonths(String.valueOf(DateUtils.getCurMonth()+1));
+            }
+            if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getStartMoultiyear())){
+                monthlyNewsletterDto.setStartMoultiyear(monthlyNewsletterDto.getReportMultiyear());
+            }
+            if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getEndMoultiyear())){
+                monthlyNewsletterDto.setEndMoultiyear(monthlyNewsletterDto.getReportMultiyear());
+            }
+            if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getStaerTheMonths())){
+                monthlyNewsletterDto.setStaerTheMonths("1");
+            }
+            if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getEndTheMonths())){
+                monthlyNewsletterDto.setEndTheMonths(monthlyNewsletterDto.getTheMonths());
+            }
+
+            File docFile = monthlyNewsletterService.createMonthTemplate(monthlyNewsletterDto);
+            is = new FileInputStream(docFile);
+            resp.setCharacterEncoding("utf-8");
+            resp.setContentType("application/msword");
+            // 设置浏览器以下载的方式处理该文件默认
+            String fileName2 = new String((monthlyNewsletterDto.getTheMonths()+"月月报" + ".doc").getBytes("GB2312"), "ISO-8859-1");
+            resp.addHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            out = resp.getOutputStream();
+            byte[] buffer = new byte[512];  // 缓冲区
+            int bytesToRead = -1;
+            // 通过循环将读入的Word文件的内容输出到浏览器中
+            while((bytesToRead = is.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesToRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // begin#html

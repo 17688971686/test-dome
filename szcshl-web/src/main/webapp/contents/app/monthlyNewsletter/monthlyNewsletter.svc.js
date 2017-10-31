@@ -22,7 +22,6 @@
 
         // begin#updateMonthlyNewsletter
         function updateMonthlyNewsletter(vm) {
-        	console.log(vm.monthly);
         	 common.initJqValidation();
              var isValid = $('form').valid();
              if (isValid) {
@@ -123,16 +122,20 @@
         //end#保存月报简报
 
         // begin#生成月报简报
-        function createMonthReport(vm,callBack) {
+        function createMonthReport(vm) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/monthlyNewsletter/createMonthReport",
                 data: vm.monthly
             }
             var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
+                if(vm.monthly.theMonths != null){
+                    var fileName = vm.monthly.theMonths+"月月报.doc";
+                }else{
+                    var fileName = "月报简报.doc";
                 }
+                var fileType ="msword";
+                common.downloadReport(response.data , fileName , fileType);
             }
             common.http({
                 $http: $http,
