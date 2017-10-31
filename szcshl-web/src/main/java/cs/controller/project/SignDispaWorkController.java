@@ -2,6 +2,7 @@ package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
@@ -193,16 +194,21 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "通过时间段获取项目信息" , path = "findByTime" , method = RequestMethod.POST)
+    @RequestMapping(name = "通过时间段获取项目信息(按评审阶段)" , path = "findByTime" , method = RequestMethod.POST)
     @ResponseBody
-    public List<Map<String , Object[]>> findByTime(@RequestParam String startTime , @RequestParam String endTime){
+    public ResultMsg findByTime(@RequestParam String startTime , @RequestParam String endTime){
         return signDispaWorkService.findByTime(startTime , endTime);
     }
-
+    @RequiresAuthentication
+    @RequestMapping(name = "通过时间段获取项目信息(按评审阶段、项目类别)" , path = "findByTypeAndReview" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg findByTypeAndReview(@RequestParam String startTime , @RequestParam String endTime){
+        return signDispaWorkService.findByTypeAndReview(startTime , endTime);
+    }
     @RequiresAuthentication
     @RequestMapping(name="项目评审情况汇总(按照申报投资金额)" , path="pieDate" , method = RequestMethod.POST)
     @ResponseBody
-    public Integer[] pieDate(@RequestParam String startTime ,@RequestParam  String endTime){
+    public ResultMsg pieDate(@RequestParam String startTime ,@RequestParam  String endTime){
 
         Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
@@ -211,17 +217,26 @@ public class SignDispaWorkController {
             Integer[] integers = expertSelectedService.proReviewCondByDeclare(startTime , endTime);
             Integer num = 0;
            result = new Integer[integers.length];
-            for(Integer i :integers){
-                num += i;
-            }
-            for(int i=0 ; i<integers.length ; i++){
-                double temp = (double)integers[i]/(double)num*100;
-                String str = String.format("%.0f",temp);
-                result[i] =Integer.valueOf(str);
-
-            }
+               for(Integer i :integers){
+                   num += i;
+               }
+               Boolean b = false;
+               for(int i=0 ; i<integers.length ; i++){
+                   if(num > 0 ){
+                       b = true;
+                       double temp = (double)integers[i]/(double)num*100;
+                       String str = String.format("%.0f",temp);
+                       result[i] =Integer.valueOf(str);
+                   }
+               }
+               if(b){
+                   return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功" , result);
+               }else{
+                   return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据失败" , null);
+               }
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "结束日期必须大于开始日期！" , null);
         }
-        return result;
     }
 
     @RequiresPermissions("signView#html/signChart#get")

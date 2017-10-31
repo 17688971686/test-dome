@@ -420,14 +420,25 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     }
 
     /**
-     * 通过时间段查询项目信息，用于项目查询统计分析
+     * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      * @param startTime
      * @param endTime
      * @return
      */
     @Override
-    public List<Map<String , Object[]>> findByTime(String startTime, String endTime) {
+    public ResultMsg findByTime(String startTime, String endTime) {
         return signDispaWorkRepo.findByTime(startTime , endTime);
+    }
+
+    /**
+     * 通过评审阶段，项目类别，统计项目信息
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public ResultMsg findByTypeAndReview(String startTime, String endTime) {
+        return signDispaWorkRepo.findByTypeAndReview(startTime , endTime);
     }
 
 
