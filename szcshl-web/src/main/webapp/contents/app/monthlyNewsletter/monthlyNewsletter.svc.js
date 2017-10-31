@@ -132,7 +132,9 @@
                 if(vm.monthly.theMonths != null){
                     var fileName = vm.monthly.theMonths+"月月报.doc";
                 }else{
-                    var fileName = "月报简报.doc";
+                    var date=new Date;
+                    var month=date.getMonth()+1;
+                    var fileName = month+"月报简报.doc";
                 }
                 var fileType ="msword";
                 common.downloadReport(response.data , fileName , fileType);
