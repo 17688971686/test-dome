@@ -4,10 +4,12 @@
 <form id="dispatch_form" name="dispatch_form">
     <!-- s table -->
     <table class="table table-bordered">
-
+        <caption>
+            <span >QR-4.3-10-A3</span>
+        </caption>
         <caption class="text-center h3"><strong><p>深圳市政府投资项目评审中心</p><p>项目发文审批表</p></strong></caption>
         <caption>
-            <span>QR-4.3-10-A3</span>
+
             <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
             <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
             <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
