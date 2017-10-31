@@ -14,21 +14,42 @@
         vm.reviewStage = [];//评审阶段
         vm.appalyinvestment = [];//申报金额
         vm.authorizeValue = [];//审定金额
+        vm.sz = [];//市政工程
+        vm.fj = [];//房建工程
+        vm.xx = [] ;//信息工程
+        vm.sb = [] ;//设备采购
+        vm.qt = [];//其他
         vm.series = [];
-        vm.resultData = [];
+        vm.resultData = [];//存series中Data的值
         vm.projectCount = [];//各阶段项目数目
         vm.capital = ['申报金额' , '审定金额'];
+        vm.projectType =['市政工程' , '房建工程' , '信息工程' , '设备采购' , '其他'];
+        vm.stage = ['3000万以下','3000万-1亿' ,'1亿-10亿','10亿以上'];
+        vm.review = ['项目概算' , '项目建议书' , '进口设备' , '资金申请报告' , '设备清单（进口）' , '设备清单（国产）' , '可行性研究报告' , '其他' ];
 
         /**
          * 通过开始和结束日期重新统计项目信息情况
          */
         vm.resetChart = function(){
-            vm.series = [];
-            vm.reviewStage = [];
+            vm.reviewStage = [];//评审阶段
             vm.appalyinvestment = [];//申报金额
             vm.authorizeValue = [];//审定金额
-            vm.resultData = [];
-            activate();
+            vm.sz = [];//市政工程
+            vm.fj = [];//房建工程
+            vm.xx = [] ;//信息工程
+            vm.sb = [] ;//设备采购
+            vm.qt = [];//其他
+            vm.series = [];
+            vm.resultData = [];//存series中Data的值
+            vm.projectCount = [];//各阶段项目数目
+            var typeChecked = $("input[type='radio']:checked").val();
+            if (typeChecked == 'lineChart'){
+                vm.gotoLineChart();
+            }else if(typeChecked == 'histogram'){
+                activate();
+            }else if(typeChecked == 'pie'){
+                vm.gotoPie();
+            }
         }
 
         /**
@@ -69,31 +90,53 @@
         vm.gotoLineChart = function(){
             vm.showHistogram=false;
             vm.showPie = false;
-            vm.showLineChart = true;
-            vm.series.push(
-                {
-                    name : '数目',
-                    type : 'line', //bar line
-                    data : vm.projectCount,
-                    itemStyle : {
-                        normal: {
-                            label : {
-                                show: true,
-                                position: 'top',
-                                textStyle:{ //设置图表上数目的大小
-                                    fontWeight : 'normal',
-                                    fontSize : 15
-                                },
-                                formatter: function (params) {
-                                    return params.value;
-                                },
+            vm.showLineChart = true;signChartSvc.findByTypeAndReview(vm ,function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    var resultData = data.reObj;
+                    if(resultData !=undefined && resultData.length >0){
+                        for(var i =0; i<resultData.length ; i++){
+                            $.each(resultData[i] , function(key , value){
+                                vm.reviewStage.push( key);
+                                vm.sz.push(value[0]);
+                                vm.fj.push(value[1]);
+                                vm.xx.push(value[2]);
+                                vm.sb.push(value[3]);
+                                vm.qt.push(value[4]);
 
-                            }
+                            });
                         }
-                    },
+                        vm.resultData.push(vm.sz , vm.fj , vm.xx , vm.sb , vm.qt);
+                        for(var i =0 ; i<vm.projectType.length ; i++){
+                            vm.series.push(
+                                {
+                                    name : vm.projectType[i],
+                                    type : 'line', //bar line
+                                    data : vm.resultData[i],
+                                    itemStyle : {
+                                        normal: {
+                                            label : {
+                                                show: true,
+                                                position: 'top',
+                                                textStyle:{ //设置图表上数目的大小
+                                                    fontWeight : 'normal',
+                                                    fontSize : 15
+                                                },
+                                                formatter: function (params) {
+                                                    return params.value;
+                                                },
+
+                                            }
+                                        }
+                                    },
+                                }
+                            );
+                        }
+                    }
+                    vm.initLineChart();
+                }else{
+                    bsWin.error(data.reMsg);
                 }
-            );
-            vm.initLineChart();
+            });
         }
 
         /**
@@ -103,31 +146,39 @@
             vm.showHistogram=false;
             vm.showLineChart = false;
             vm.showPie = true;
-            vm.seriesData = [];
-            vm.stage = ['3000万以下','3000万-1亿' ,'1亿-10亿','10亿以上'];
             signChartSvc.pieData(vm , function(data){
-                if(data !=undefined && data.length > 0 ){
-                    for(var i =0 ; i<data.length ; i++){
-                        vm.seriesData .push(
-                            {
-                                value : data[i],
-                                name : vm.stage[i],
-                                label : {
-                                    normal :{
-                                        formatter : ' {b} : {c}%',
-                                        textStyle:{
-                                            fontWeight : 'normal',
-                                            fontSize : 15
+                if(data.flag || data.reCode == 'ok') {
+                    var resultData = data.reObj;
+                    console.log(resultData);
+                    if(resultData !=undefined && resultData != null){
+                        if (resultData != undefined && resultData.length > 0) {
+                            for (var i = 0; i < resultData.length; i++) {
+                                vm.series.push(
+                                    {
+                                        value: resultData[i],
+                                        name: vm.stage[i],
+                                        label: {
+                                            normal: {
+                                                formatter: ' {b} : {c}%',
+                                                textStyle: {
+                                                    fontWeight: 'normal',
+                                                    fontSize: 15
+                                                }
+                                            }
                                         }
                                     }
-                                }
+                                )
                             }
-                        )
+                        }
+                        vm.initPie();
+                    }else{
+                        bsWin.error("该时间段没有数据！");
                     }
+
                 }else{
-                    bsWin.error("结束日期必须大于开始日期！");
+                    bsWin.error(data.reMsg);
                 }
-                vm.initPie();
+
             });
 
         }
@@ -182,7 +233,7 @@
                 xAxis :{
                     type : 'category',
                     name : '评审阶段',
-                    data :vm.reviewStage,
+                    data :vm.review,
                     axisTick :{
                         alignWithLabel :true
                     },
@@ -221,7 +272,7 @@
             var myChart = echarts.init(document.getElementById('lineChart'));
             var option = {
                 title : {
-                    text :'评审项目数目情况',
+                    text :'评审项目类别统计情况',
                     subtext : '按评审阶段划分',
                     x : 'center'
                 },
@@ -247,13 +298,13 @@
                 legend :{
                     orient : 'vertical',
                     left : 'left',
-                    data : ['数目']
+                    data : vm.projectType
                 },
                 xAxis : {
                     type : 'category',
                     name : '评审阶段',
                     splitLine: {show: false},
-                    data :vm.reviewStage,
+                    data :vm.review,
                     axisLabel :{
                         interval : 0,
                         rotate : 35 ,//倾斜度 -90 至 90 之间，默认为0
@@ -268,7 +319,14 @@
                     type : 'value',
                     name : '项目个数'
                 },
-                series : vm.series
+                series : vm.series,
+                lineStyle : {
+                    emphasis :{
+                        shadowBlur : 10 ,
+                        shadowOffsetX : 0,
+                        shadowColor : 'rgba(0,0,0,0.5)'
+                    }
+                }
             };
             myChart.setOption(option);
 
@@ -289,6 +347,12 @@
                     trigger : 'item',
                     formatter : "{a} <br/> {b} : {c}% "
                 },
+                grid :{
+                    left : '10%',
+                    right : '10%',
+                    bottom : '10%',
+                    containLabel : true,
+                },
                 toolbox :{
                     show : true,
                     feature : {
@@ -305,10 +369,10 @@
                 series : [
                     {
                         type : 'pie',
-                        radius : '45%',//半径
+                        radius : '30%',//半径
                         center : ['50%','50%'],
                         selectMode : 'single',
-                        data : vm.seriesData,
+                        data : vm.series,
                         itemStyle : {
                             emphasis :{
                                 shadowBlur : 10 ,
@@ -325,39 +389,28 @@
             myChart.setOption(option);
         }//end initPie
 
-        /**
-         * 统计图切换
-         */
-        vm.radioChecked = function(){
-            vm.series = [];
-            if (vm.chartType == 'lineChart'){
-                vm.gotoLineChart();
-            }else if(vm.chartType == 'histogram'){
-                vm.gotoHistogram();
-            }else if(vm.chartType = 'pie'){
-                vm.gotoPie();
-            }
-        }
 
         activate();
         function activate(){
             signChartSvc.findByTime(vm , function(data){
-                if(data !=undefined && data.length >0){
-                    for(var i =0; i<data.length ; i++){
-                        $.each(data[i] , function(key , value){
-                            vm.reviewStage.push( key);
-                            vm.appalyinvestment.push(value[0]);
-                            vm.authorizeValue.push(value[1]);
-                            vm.projectCount.push(value[2]);
-                        });
-
+                if(data.flag || data.reCode == 'ok'){
+                    var resultData = data.reObj;
+                    if(resultData !=undefined && resultData.length >0){
+                        for(var i =0; i<resultData.length ; i++){
+                            $.each(resultData[i] , function(key , value){
+                                vm.reviewStage.push( key);
+                                vm.appalyinvestment.push(value[0]);
+                                vm.authorizeValue.push(value[1]);
+                                vm.projectCount.push(value[2]);
+                            });
+                        }
+                        vm.resultData.push(vm.appalyinvestment , vm.authorizeValue);
+                        vm.gotoHistogram();
                     }
-                    vm.resultData.push(vm.appalyinvestment , vm.authorizeValue);
-                    vm.gotoHistogram();
-                    // vm.gotoLineChart();
                 }else{
-                    bsWin.error("结束日期必须大于开始日期！");
+                    bsWin.error(data.reMsg);
                 }
+
 
             });
         }

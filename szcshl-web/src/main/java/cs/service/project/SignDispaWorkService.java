@@ -47,10 +47,18 @@ public interface SignDispaWorkService {
     PageModelDto<SignDispaWork> reviewProject(String expertId);
 
     /**
-     * 通过时间段查询项目信息，用于项目查询统计分析
+     * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      * @param startTime
      * @param endTime
      * @return
      */
-    List<Map<String , Object[]>> findByTime(String startTime , String endTime);
+    ResultMsg findByTime(String startTime , String endTime);
+
+    /**
+     * 通过评审阶段，项目类别，统计项目信息
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    ResultMsg findByTypeAndReview(String startTime , String endTime);
 }

@@ -7,6 +7,7 @@
         var service = {
             findByTime : findByTime , //通过时间段获取项目信息
             pieData : pieData , //通过申报金额统计项目信息
+            findByTypeAndReview : findByTypeAndReview ,//按评审阶段’项目类别 查询项目信息
 
         }
         return service;
@@ -54,5 +55,27 @@
             });
         }
         //end pieData
+
+        //begin findByTypeAndReview
+        function findByTypeAndReview(vm , callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + '/signView/findByTypeAndReview',
+                params : {startTime : vm.startTime , endTime : vm.endTime}
+            }
+
+            var httpSuccess = function(response){
+                if(callBack != undefined && typeof  callBack=='function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                vm : vm,
+                httpOptions : httpOptions ,
+                $http : $http ,
+                success : httpSuccess
+            });
+        }
+        //end findByTypeAndReview
     }
 })();
