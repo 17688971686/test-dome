@@ -4,11 +4,14 @@
     <form id="dispatch_form" name="dispatch_form">
         <!-- s table -->
         <table class="table table-bordered"  >
-       
+
             <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
+            <caption>
+                <span >QR-4.9-09-A0</span>
+            </caption>
             <caption >
                 <span>
-                  QR-4.9-09-A0<br>
+                  <br>
                     	发文方式：
                     <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
                         <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
@@ -57,32 +60,20 @@
             </tr>
             
             <tr>
-                <td style="width:150px;" class="text-center">秘密等级</td>
-                <td> {{vm.dispatchDoc.secretLevel}}</td>
-
-                <td style="width:150px;" class="text-center">紧急程度</td>
-                <td>{{vm.dispatchDoc.urgentLevel}}</td>
-
-                <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
-                <td>
-                    <span>
-                        <input type="checkbox" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated" />是
-                    </span>
-                    <span style="margin-left:10px;">
-                        <input type="checkbox" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated" />否
-                    </span>
-                </td>
-            </tr>
-              <tr>
                 <td style="width:150px;" class="text-center">发文日期</td>
                 <td>
-                  <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  name="dispatchDate">
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate"  name="dispatchDate">
                 </td>
 
                 <td style="width:150px;" class="text-center">文件字号</td>
-                <td colspan="3">{{vm.dispatchDoc.fileNum}}</td>
+                <td>{{vm.dispatchDoc.fileNum}}</td>
 
+                <td style="width:150px;" class="text-center">紧密程度</td>
+                <td>
+                    {{vm.dispatchDoc.urgentLevel}}
+                </td>
             </tr>
+
 			 <tr>
                 <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
                 <td colspan="5">
