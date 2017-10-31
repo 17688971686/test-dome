@@ -215,16 +215,12 @@ public class SignDispaWorkController {
         Integer[] result = null;
         if(DateUtils.daysBetween(start , end) >0){
             Integer[] integers = expertSelectedService.proReviewCondByDeclare(startTime , endTime);
-            Integer num = 0;
-           result = new Integer[integers.length];
-               for(Integer i :integers){
-                   num += i;
-               }
+           result = new Integer[integers.length - 1];
                Boolean b = false;
-               for(int i=0 ; i<integers.length ; i++){
-                   if(num > 0 ){
+               for(int i=0 ; i<integers.length-1 ; i++){
+                   if(integers[integers.length-1] > 0 ){
                        b = true;
-                       double temp = (double)integers[i]/(double)num*100;
+                       double temp = (double)integers[i]/(double)integers[integers.length-1]*100;
                        String str = String.format("%.0f",temp);
                        result[i] =Integer.valueOf(str);
                    }
