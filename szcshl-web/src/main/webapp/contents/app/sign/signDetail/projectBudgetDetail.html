@@ -10,13 +10,12 @@
                 </strong>
             </caption>
            <!--  <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption> -->
+	 <caption>
+		 <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.7-01-A2</span>
+		 <span style="width: 200px;float: right;padding: 5px 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
+	 </caption>
        <tbody>
-        <tr>
-        <td width="15%" class="text-center">QR-4.7-01-A2</td>
-        <td></td>
-        <td width="20%" class="text-center"></td>
-        <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}} </td>
-    	</tr>
+
 			<tr ng-if="vm.model.ispresign == 0">
            		 <td width="15%" class="text-center">资料存放位置</td>
            		<td>
@@ -328,8 +327,7 @@
 			<tr>
 				<td width="15%" class="text-center">送件人：</td>
 				<td colspan="3">
-					<input style="width:100px;" class="form-control input-sm"  ng-model="vm.model.sendusersign" name="sendusersign" id="sendusersign" data-val="true" data-val-required="必填">
-					<span data-valmsg-for="sendusersign" data-valmsg-replace="true" class="errors"></span>
+					 {{vm.model.sendusersign}}
 				</td>
 			</tr>
 			
