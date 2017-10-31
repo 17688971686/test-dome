@@ -79,6 +79,7 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
+                    vm.urlType="signDetails";//附件右边的列表显示
                     sysfileSvc.initZtreeClient(vm);//树形图
                 }
             });
