@@ -7,12 +7,11 @@
         <li><a href="#/etasks">办结任务</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-
-
+    
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">课题研究计划</a></li>
-        <li ng-show="vm.topic.workPlanDto"><a id="show_workprogram_a" data-toggle="tab"  for-div="busi_workplan">工作方案</a></li>
-        <li ng-show="vm.topic.filingDto"><a id="show_filerecord_a" data-toggle="tab" for-div="busi_filerecord">归档信息</a></li>
+        <li ng-show="vm.model.workPlanDto"><a id="show_workprogram_a" data-toggle="tab"  for-div="busi_workplan">工作方案</a></li>
+        <li ng-show="vm.model.filingDto"><a id="show_filerecord_a" data-toggle="tab" for-div="busi_filerecord">归档信息</a></li>
         <li ng-show="vm.showFlag.showUploadFile"><a data-toggle="tab" for-div="sign_upload">附件列表</a></li>
         <li ><a data-toggle="tab" for-div="sign_history">处理记录</a></li>
     </ul>

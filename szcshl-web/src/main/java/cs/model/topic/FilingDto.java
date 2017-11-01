@@ -1,5 +1,6 @@
 package cs.model.topic;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 import cs.model.project.AddRegisterFileDto;
 
@@ -59,6 +60,7 @@ public class FilingDto extends BaseDto {
     private String principal;
     private String director;
     private String filingUser;
+    @JSONField(format = "yyyy-MM-dd")
     private Date filingDate;
     private TopicInfoDto topicInfoDto;
     private String topicId;
