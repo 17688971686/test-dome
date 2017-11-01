@@ -83,8 +83,7 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    vm.urlType="signFlowDetail";
-                    sysfileSvc.initZtreeClient(vm);//树形图
+                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
                 }
             });
         }
