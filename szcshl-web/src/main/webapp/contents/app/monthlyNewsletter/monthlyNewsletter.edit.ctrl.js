@@ -17,6 +17,26 @@
             vm.isUpdate = true;
             vm.title = '更新月报简报';
         }
+        //报告月份
+        vm.selectMonthly =function(){
+            var theMonths =vm.monthly.theMonths;
+            vm.monthly.endTheMonths =theMonths;
+
+        }
+        //报告年度
+        vm.reportYear = function() {
+            var reportMultiyear = vm.monthly.reportMultiyear;
+            vm.monthly.startMoultiyear = reportMultiyear;
+            vm.monthly.endMoultiyear = reportMultiyear;
+        }
+        //开始月份
+        vm.startMonthly = function(){
+            if( vm.monthly.endTheMonths < vm.monthly.staerTheMonths){
+                bsWin.alert("开始月份不能大于结束月份");
+                vm.monthly.staerTheMonths ="";
+                return false;
+            }
+        }
 
         //添加月报简报
         vm.createMothlyNewsletter = function () {

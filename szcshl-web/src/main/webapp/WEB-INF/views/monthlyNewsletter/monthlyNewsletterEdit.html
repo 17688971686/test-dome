@@ -31,7 +31,7 @@
 		<tr>
 			<td width="20%" align="center">年度报告<span class="required">*</span></td>
 			<td width="20%" >
-			  <select style="width:40%"   ng-model="vm.monthly.reportMultiyear" id="reportMultiyear" name="reportMultiyear"  data-val="true" data-val-required="必填">
+			  <select style="width:40%"   ng-model="vm.monthly.reportMultiyear" ng-change="vm.reportYear()"id="reportMultiyear" name="reportMultiyear"  data-val="true" data-val-required="必填">
 						 <option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.reportMultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select> 
@@ -39,7 +39,7 @@
 			</td>
 			<td width="20%" align="center"> 报告月份<span class="required">*</span></td>
 			<td width="20%" >
-			<select style="width:40%"  ng-model="vm.monthly.theMonths"  name="theMonths" id="theMonths"  data-val="true" data-val-required="必填">
+			<select style="width:40%"  ng-model="vm.monthly.theMonths"  name="theMonths" id="theMonths" ng-change="vm.selectMonthly()"  data-val="true" data-val-required="必填">
 						<option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.theMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 						</select> 
@@ -53,15 +53,17 @@
 		<tr>
 			<td width="20%" align="center">开始年度<span class="required">*</span></td>
 			<td width="20%">
-			<select style="width:40%" ng-model="vm.monthly.startMoultiyear" id="startMoultiyear" name="startMoultiyear" data-val="true" data-val-required="必填">
+			<!--<select style="width:40%" ng-model="vm.monthly.startMoultiyear" id="startMoultiyear" name="startMoultiyear" data-val="true" data-val-required="必填">
                          <option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.startMoultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select>
+                    </select>-->
+				<input type="text" maxlength="20" style="width:40%"  ng-disabled="true"    ng-model="vm.monthly.startMoultiyear"
+					   id="startMoultiyear" name="startMoultiyear" data-val="true" data-val-required="必填" />
 				<span data-valmsg-for="startMoultiyear" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td  width="20%" align="center">开始月份<span class="required">*</span></td>
 			<td width="20%">
-			<select style="width:40%" ng-model="vm.monthly.staerTheMonths" id="staerTheMonths" name="staerTheMonths" data-val="true" data-val-required="必填">
+			<select style="width:40%" ng-model="vm.monthly.staerTheMonths" ng-change="vm.startMonthly()" id="staerTheMonths" name="staerTheMonths" data-val="true" data-val-required="必填">
 						 <option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.staerTheMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
 				</select>
@@ -71,10 +73,12 @@
 		<tr>
 			<td width="20%" align="center">结束年度<span class="required">*</span></td>
 			<td width="20%">
-				  <select style="width:40%" ng-model="vm.monthly.endMoultiyear" id="endMoultiyear" name="endMoultiyear" data-val="true" data-val-required="必填">
+				 <!-- <select style="width:40%" ng-model="vm.monthly.endMoultiyear" id="endMoultiyear" name="endMoultiyear" data-val="true" data-val-required="必填">
                        <option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.endMoultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select>
+                    </select>-->
+				<input type="text" maxlength="20" style="width:40%" ng-disabled="true"   ng-model="vm.monthly.endMoultiyear"
+					   id="endMoultiyear" name="endMoultiyear" data-val="true" data-val-required="必填" />
 						<span data-valmsg-for="endMoultiyear" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td width="20%" align="center">结束月份<span class="required">*</span></td>
