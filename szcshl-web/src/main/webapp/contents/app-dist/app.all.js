@@ -401,12 +401,6 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
-            .state('projectStopInfo', { //项目暂停表单（多个）
-                url: '/projectStopInfo/:signId',
-                templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
-                controller: 'projectStopInfoCtrl',
-                controllerAs: 'vm'
-            })//end#signList
             .state('selectHeader',{
                 url : '/selectHeader',
                 templateUrl : rootPath + '/sign/html/selectHeader.html',
@@ -981,36 +975,13 @@
                 controller : 'reviewFeeCtrl',
                 controllerAs : 'vm'
             })
-            //待办的附件右边列表页
+            //附件右边列表页
             .state('signFlowDeal.fileList',{ //文件列表
                 url : '/fileList/:id/:type',
                 templateUrl : rootPath + '/file/html/rightList.html',
                 controller : 'fileListCtrl',
                 controllerAs : 'vm'
             })
-            //在办的附件右边列表页
-            .state('signFlowDetail.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //已办结的附件右边列表页
-            .state('endSignDetail.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //详细信息的附件右边列表页
-            .state('signDetails.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-
-
             //项目查询统计图表分析
             .state('signChart',{
                 url : '/signChart',
@@ -2587,13 +2558,6 @@
         function activate() {
             adminSvc.agendaTaskGrid(vm);
         }
-
-        /**
-         * 通过流程类别查找
-         */
-        vm.query = function(){
-            vm.gridOptions.dataSource.read();
-        }
     }
 })();
 
@@ -2616,6 +2580,9 @@
         	adminSvc.countWorakday(vm);
         }
 
+        vm.query = function(){
+            vm.gridOptions.dataSource.read();
+        }
     }
 })();
 
@@ -2796,9 +2763,9 @@
 
     angular.module('app').controller('adminSignListCtrl', admin);
 
-    admin.$inject = ['signSvc', 'adminSvc','bsWin','$state' , 'headerSvc' , 'pauseProjectSvc'];
+    admin.$inject = ['signSvc', 'adminSvc','bsWin','$state' , 'headerSvc'];
 
-    function admin(signSvc, adminSvc,bsWin , $state , headerSvc , pauseProjectSvc) {
+    function admin(signSvc, adminSvc,bsWin , $state , headerSvc) {
         var vm = this;
         vm.title = '项目查询统计';
         vm.currentAssociateSign = {};
@@ -2897,13 +2864,6 @@
                 var filterDate = filters.substring(1,filters.length-1);
             }
             window.open(rootPath + "/signView/excelExport?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" +fileName);
-        }
-
-        /**
-         * 查看项目暂停信息
-         */
-        vm.ProjectStopInfo = function(signId){
-            $state.go('projectStopInfo' , {signId : signId});
         }
     }
 })();
@@ -3096,7 +3056,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" ),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" , $("#gtasksForm")),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -3783,22 +3743,6 @@
                     title: "发文后工作日",
                     width: 140,
                     filterable: false
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    filterable: false,
-                    template: function (item) {
-                        if(item.signState == '2'){
-                            return common.format($('#columnBtns').html(),
-                                "vm.ProjectStopInfo('" +item.signid+ "')");
-
-                        }else{
-                            return "";
-                        }
-
-                    }
                 }
             ];
             
@@ -4083,7 +4027,7 @@
         function agendaTaskGrid(vm){
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask" , $('#agendaTaskForm')),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask"),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -24893,32 +24837,9 @@
             grid : grid,
             getProjectStopByStopId : getProjectStopByStopId,    //通过id获取暂停项目
             updateProjectStop : updateProjectStop,  //更新暂停项目审批信息
-            findPausingProject : findPausingProject, //查找正在申请暂停的项目
-            getListInfo : getListInfo , //获取审批结果通过的项目列表
+            findPausingProject : findPausingProject //查找正在申请暂停的项目
         };
         return service;
-
-        //begin getListInfo
-        function getListInfo(signId , callBack){
-            var httpOptions = {
-                method : 'post',
-                url : rootPath + "/projectStop/getListInfo",
-                params : {signId : signId}
-            }
-            var httpSuccess = function success(response){
-                if(callBack !=undefined && typeof  callBack == "function"){
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http : $http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-
-        }
-        //end getListInfo
 
         //beign findPausingProject
         function findPausingProject(vm,signId){
@@ -25124,7 +25045,7 @@
                     width : 100,
                     filterable : false,
                     template : function(item){
-                        return common.format($("#columnBtns").html(),item.sign.signid , item.stopid );
+                            return common.format($("#columnBtns").html(),item.sign.signid , item.stopid );
                     }
                 }
             ];
@@ -25232,32 +25153,6 @@
             vm.projectStop.leaderIdeaContent += vm.leaderIdea;
         }
 
-    }
-})();
-(function(){
-    'use strict';
-    angular.module('app').controller('projectStopInfoCtrl' , projectStopInfo);
-    projectStopInfo.$inject = ['$state' , 'pauseProjectSvc'];
-    function projectStopInfo( $state , pauseProjectSvc){
-        var vm = this ;
-        var signId = $state.params.signId ;
-        vm.sign = {};
-        activate();
-        function activate(){
-            pauseProjectSvc.initProject(signId,function(data){
-                vm.sign = data;
-                if(vm.sign.reviewstage == '可行性研究报告' || vm.sign.reviewstage == '项目概算'){
-
-                    vm.sign.countUsedWorkday = 15-vm.sign.surplusdays;
-                }else{
-
-                    vm.sign.countUsedWorkday = 12-vm.sign.surplusdays;
-                }
-            });
-            pauseProjectSvc.getListInfo(signId , function(data){
-                vm.projectStopList = data;
-            });
-        }
     }
 })();
 (function(){
@@ -29797,7 +29692,6 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    vm.urlType="endSignDetail";//附件右边列表的显示
                     sysfileSvc.initZtreeClient(vm);//树形图
 
                 }
@@ -30467,7 +30361,6 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    vm.urlType="signFlowDeal";//附件右边的列表显示
                     sysfileSvc.initZtreeClient(vm);//树形图
                 }
             });
@@ -31439,7 +31332,6 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    vm.urlType="signFlowDetail";
                     sysfileSvc.initZtreeClient(vm);//树形图
                 }
             });
@@ -31922,7 +31814,6 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    vm.urlType="signDetails";//附件右边的列表显示
                     sysfileSvc.initZtreeClient(vm);//树形图
                 }
             });
@@ -32527,7 +32418,6 @@
                                             if(data || data.length > 0){
                                                 vm.showFlag.tabSysFile = true;
                                                 vm.sysFileList = data;
-                                                vm.urlType="signFlowDeal";//附件右边的列表显示
                                                 sysfileSvc.initZtreeClient(vm);//树形图
 
                                             }
@@ -33619,7 +33509,7 @@
         }
 
         //删除参数
-       /* vm.del = function (ids) {
+        vm.del = function (ids) {
             var checkSign = $("input[name='configid']:checked");
             if (checkSign.length < 1) {
                 common.alert({
@@ -33641,7 +33531,7 @@
                     }
                 })
             }
-        }*/
+        }
 
     }//E_sysConfig
 })();
@@ -34324,7 +34214,7 @@
                 var nodes = new Object();//定义父类的对象
                 nodes.id=array[j].mainId;
                 nodes.name = name;
-                nodes.urlType=vm.urlType;
+
                 var ss = [];//定义子类对象数组
                 for (var i = 0; i < array.length;) {
                     if (array[i].sysBusiType == name) {//判断是否是属于父类
@@ -34350,20 +34240,7 @@
          //点击跳转
         function zTreeOnClick(event, treeId, treeNode) {
             if(treeNode.check_Child_State==0){//点击文件夹时展开列表
-                if(treeNode.urlType=="signFlowDetail"){//判断右边的列表显示
-                    $state.go('signFlowDetail.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-                if(treeNode.urlType=="signFlowDeal"){
-                    $state.go('signFlowDeal.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-                if(treeNode.urlType=="endSignDetail"){
-                    $state.go('endSignDetail.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-                if(treeNode.urlType=="signDetails"){
-                    $state.go('signDetails.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-
-
+                $state.go('signFlowDeal.fileList', { id: treeNode.id,type:treeNode.name});
             }
         };
 
