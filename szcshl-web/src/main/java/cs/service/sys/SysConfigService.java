@@ -1,5 +1,6 @@
 package cs.service.sys;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.SysConfigDto;
 import cs.repository.odata.ODataObj;
@@ -15,7 +16,7 @@ public interface SysConfigService {
 
     PageModelDto<SysConfigDto> get(ODataObj odataObj);
 
-    void save(SysConfigDto record);
+    ResultMsg save(SysConfigDto record);
 
     SysConfigDto findById(String id);
 

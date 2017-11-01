@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.domain.sys.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.sys.*;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -59,13 +61,6 @@ import cs.domain.project.SignMerge_;
 import cs.domain.project.SignPrincipal;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
-import cs.domain.sys.Company;
-import cs.domain.sys.Org;
-import cs.domain.sys.OrgDept;
-import cs.domain.sys.SysFile;
-import cs.domain.sys.SysFile_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.external.DeptDto;
@@ -94,11 +89,6 @@ import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.sys.CompanyRepo;
-import cs.repository.repositoryImpl.sys.OrgDeptRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
@@ -162,6 +152,9 @@ public class SignServiceImpl implements SignService {
     private SignMergeRepo signMergeRepo;
     @Autowired
     private RoomBookingRepo roomBookingRepo;
+
+    @Autowired
+    private SysConfigRepo sysConfigRepo;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -239,13 +232,27 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
             sign.setIssign(EnumState.YES.getValue());       //正式签收
-            boolean is15Days = (Validate.isString(sign.getReviewstage()) &&
+            if(Validate.isString(sign.getReviewstage())){
+                //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
+                SysConfig sysConfig = sysConfigRepo.findByConfigName(sign.getReviewstage());
+                if(sysConfig != null ){
+                    sign.setSurplusdays(Float.parseFloat(sysConfig.getConfigValue()));
+                }else{
+                    if((Constant.ProjectStage.STAGE_STUDY.getValue()).equals(sign.getReviewstage())
+                            || (Constant.ProjectStage.STAGE_BUDGET.getValue()).equals(sign.getReviewstage())){
+                        sign.setSurplusdays(Constant.WORK_DAY_15);
+                    }else{
+                        sign.setSurplusdays(Constant.WORK_DAY_12);
+                    }
+                }
+            }
+           /* boolean is15Days = (Validate.isString(sign.getReviewstage()) &&
                     (Constant.ProjectStage.STAGE_STUDY.getValue().equals(sign.getReviewstage()) || Constant.ProjectStage.STAGE_BUDGET.getValue().equals(sign.getReviewstage())));
             if (is15Days) {
                 sign.setSurplusdays(Constant.WORK_DAY_15);
             } else {
                 sign.setSurplusdays(Constant.WORK_DAY_12);
-            }
+            }*/
         }
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);

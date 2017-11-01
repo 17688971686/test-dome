@@ -3,9 +3,9 @@
 
     angular.module('app').controller('sysConfigCtrl', sysConfig);
 
-    sysConfig.$inject = ['$location', 'sysConfigSvc'];
+    sysConfig.$inject = ['$location', 'sysConfigSvc' , 'bsWin'];
 
-    function sysConfig($location, sysConfigSvc) {
+    function sysConfig($location, sysConfigSvc , bsWin) {
         var vm = this;
         vm.model = {};      // 参数对象
         vm.title = '系统配置';
@@ -33,6 +33,7 @@
         //关闭窗口
         vm.closeWin = function () {
             window.parent.$("#configdiv").data("kendoWindow").close();
+            activate();
         }
 
         //保存参数
@@ -40,7 +41,15 @@
             common.initJqValidation();
             var isValid = $('#configForm').valid();
             if (isValid) {
-                sysConfigSvc.saveConfig(vm);
+                sysConfigSvc.saveConfig(vm , function(data){
+                    if(data.flag || data.reCode=='ok'){
+                        bsWin.success("操作成功！");
+                        window.parent.$("#configdiv").data("kendoWindow").close();
+                        activate();
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
             }
         }
 
@@ -64,29 +73,29 @@
         }
 
         //删除参数
-       /* vm.del = function (ids) {
-            var checkSign = $("input[name='configid']:checked");
-            if (checkSign.length < 1) {
-                common.alert({
-                    vm: vm,
-                    msg: "请选择删除的参数"
-                })
-            } else {
-                common.confirm({
-                    vm: vm,
-                    title: "",
-                    msg: "确认删除数据吗？",
-                    fn: function () {
-                        $('.confirmDialog').modal('hide');
-                        var ids = [];
-                        for (var i = 0; i < checkSign.length; i++) {
-                            ids.push(checkSign[i].value);
-                        }
-                        sysConfigSvc.deleteConfig(vm, ids.join(","));
-                    }
-                })
-            }
-        }*/
+        /* vm.del = function (ids) {
+         var checkSign = $("input[name='configid']:checked");
+         if (checkSign.length < 1) {
+         common.alert({
+         vm: vm,
+         msg: "请选择删除的参数"
+         })
+         } else {
+         common.confirm({
+         vm: vm,
+         title: "",
+         msg: "确认删除数据吗？",
+         fn: function () {
+         $('.confirmDialog').modal('hide');
+         var ids = [];
+         for (var i = 0; i < checkSign.length; i++) {
+         ids.push(checkSign[i].value);
+         }
+         sysConfigSvc.deleteConfig(vm, ids.join(","));
+         }
+         })
+         }
+         }*/
 
     }//E_sysConfig
 })();
