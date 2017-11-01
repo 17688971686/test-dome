@@ -103,6 +103,7 @@
              var isValid = $('form').valid();
  	          if(isValid){
  	        	  monthlyMultiyearSvc.updatemonthlyMultiyear(vm.suppletter,function(data){
+ 	        	      console.log(data);
  	                   if (data.flag || data.reCode == "ok") {
  	                           bsWin.alert("操作成功！");
  	                   }else{

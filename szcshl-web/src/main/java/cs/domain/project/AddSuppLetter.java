@@ -141,6 +141,10 @@ public class AddSuppLetter extends DomainBase {
     @Column(columnDefinition = "VARCHAR(64)")
     private String fileCode;
 
+	//月报的文字序号
+	@Column(columnDefinition = "INTEGER")
+	private Integer MonthlySeq;
+
     /**
      * 业务ID
      */
@@ -450,4 +454,12 @@ public class AddSuppLetter extends DomainBase {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+	public Integer getMonthlySeq() {
+		return MonthlySeq;
+	}
+
+	public void setMonthlySeq(Integer monthlySeq) {
+		MonthlySeq = monthlySeq;
+	}
 }
