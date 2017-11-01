@@ -78,11 +78,13 @@ public class MonthlyNewsletterController {
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request,String businessId) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         List<ODataFilterItem> filterItemsList = odataObj.getFilter();//获取filter
-        ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
-        oDataFilterItem.setField("businessId");
-        oDataFilterItem.setOperator("eq");
-        oDataFilterItem.setValue(businessId);
-        filterItemsList.add(oDataFilterItem);//加入业务ID的查询条件
+        if(filterItemsList != null){
+            ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
+            oDataFilterItem.setField("businessId");
+            oDataFilterItem.setOperator("eq");
+            oDataFilterItem.setValue(businessId);
+            filterItemsList.add(oDataFilterItem);//加入业务ID的查询条件
+        }
         odataObj.setFilter(filterItemsList);//写入查询条件
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);
         return addSuppLetterDtos;

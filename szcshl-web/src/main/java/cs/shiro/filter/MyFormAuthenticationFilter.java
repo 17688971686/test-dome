@@ -107,17 +107,6 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         //自己处理用户登录错误跳转
         logger.warn("用户【" + username + "】登录失败！");
         return super.onLoginFailure(token, e, request, response);
-
-        /*String className = e.getClass().getName();
-        request.setAttribute(getFailureKeyAttribute(), className);
-        if(Validate.isString(loginUrl)){
-            try {
-                request.getRequestDispatcher(loginUrl).forward(request, response);
-            }  catch (Exception e1) {
-
-            }
-        }
-        return true;*/
     }
 
     @Override
