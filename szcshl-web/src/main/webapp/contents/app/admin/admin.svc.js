@@ -186,7 +186,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" , $("#gtasksForm")),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" ),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -873,6 +873,22 @@
                     title: "发文后工作日",
                     width: 140,
                     filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    filterable: false,
+                    template: function (item) {
+                        if(item.signState == '2'){
+                            return common.format($('#columnBtns').html(),
+                                "vm.ProjectStopInfo('" +item.signid+ "')");
+
+                        }else{
+                            return "";
+                        }
+
+                    }
                 }
             ];
             
@@ -1157,7 +1173,7 @@
         function agendaTaskGrid(vm){
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask"),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask" , $('#agendaTaskForm')),
                 schema: {
                     data: "value",
                     total: function (data) {

@@ -64,7 +64,7 @@
         }
 
         //删除参数
-        vm.del = function (ids) {
+       /* vm.del = function (ids) {
             var checkSign = $("input[name='configid']:checked");
             if (checkSign.length < 1) {
                 common.alert({
@@ -86,7 +86,7 @@
                     }
                 })
             }
-        }
+        }*/
 
     }//E_sysConfig
 })();

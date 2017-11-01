@@ -369,12 +369,13 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findBySql(hqlBuilder);
         for(SignDispaWork s : signDispaWorkList){
-            s.setIsAppraising( "9".equals(s.getIsAppraising()) ? "是" : "否" );
-            s.setIsassistproc( "9".equals(s.getIsassistproc()) ? "是" : "否");
-            s.setIsRelated( "9".equals(s.getIsRelated()) ? "是" : "否");
-            s.setIshaveeia( "9".equals(s.getIshaveeia()) ? "是" : "否");
-            s.setIsSupplementary( "9".equals(s.getIsSupplementary())? "是" : "否");
-            s.setIsHaveSuppLetter( "9".equals(s.getIsHaveSuppLetter())? "是" : "否");
+            s.setIsAppraising(( Constant.EnumState.YES.getValue()).equals(s.getIsAppraising()) ? "是" : "否" );
+            s.setIsassistproc( ( Constant.EnumState.YES.getValue()).equals(s.getIsassistproc()) ? "是" : "否");
+            s.setIsRelated( ( Constant.EnumState.YES.getValue()).equals(s.getIsRelated()) ? "是" : "否");
+            s.setIshaveeia( ( Constant.EnumState.YES.getValue()).equals(s.getIshaveeia()) ? "是" : "否");
+            s.setIsSupplementary( ( Constant.EnumState.YES.getValue()).equals(s.getIsSupplementary())? "是" : "否");
+            s.setIsHaveSuppLetter( ( Constant.EnumState.YES.getValue()).equals(s.getIsHaveSuppLetter())? "是" : "否");
+            s.setSignState((Constant.EnumState.STOP.getValue()).equals(s.getSignState()) ? "是" : "否");
 
         }
         return signDispaWorkList;

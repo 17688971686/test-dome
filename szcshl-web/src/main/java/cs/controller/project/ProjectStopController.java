@@ -94,6 +94,18 @@ public class ProjectStopController {
 		return result;
 	}
 
+	@RequiresAuthentication
+	@RequestMapping(name="通过收文ID获取审批通过的项目信息" , path="getListInfo" , method = RequestMethod.POST)
+	@ResponseBody
+	public List<ProjectStopDto> getListInfo(@RequestParam String signId){
+		return projectStopService.getStopList(signId);
+	}
+
+	@RequiresPermissions("projectStop#html/projectStopInfo#get")
+	@RequestMapping(name="项目暂停信息表单（多个）" , path = "html/projectStopInfo" , method = RequestMethod.GET)
+	public String stopInfoList(){
+		return ctrlName + "/projectStopInfo";
+	}
 	@RequiresPermissions("projectStop#html/projectStopForm#get")
 	@RequestMapping(name="项目暂停表单" , path="html/projectStopForm" , method =  RequestMethod.GET)
 	public String projectForm(){

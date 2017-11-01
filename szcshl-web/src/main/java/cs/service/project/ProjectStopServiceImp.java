@@ -341,4 +341,14 @@ public class ProjectStopServiceImp implements ProjectStopService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
+    /**
+     * 通过收文ID获取审批通过的项目暂停信息
+     * @param signId
+     * @return
+     */
+    @Override
+    public List<ProjectStopDto> getStopList(String signId) {
+        return projectStopRepo.getStopList(signId);
+    }
+
 }

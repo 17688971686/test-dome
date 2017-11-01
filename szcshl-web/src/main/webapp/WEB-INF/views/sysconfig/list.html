@@ -11,9 +11,6 @@
     <div class="toolbar">
         <button class="btn btn-sm btn-primary" ng-click="vm.addConfig()"><span class="glyphicon glyphicon-plus"></span>新增
         </button>
-        <button class="btn btn-sm btn-danger" ng-click="vm.del()" ng-disabled="vm.isSubmit"><span
-                class="glyphicon glyphicon-remove"></span>批量删除
-        </button>
     </div>
 
     <table class="table table-bordered">
@@ -61,7 +58,7 @@
             <tr>
                 <td class="formAlignRight" width="25%">参数名称： <span class="required">*</span></td>
                 <td width="60%">
-                    <input maxlength="32" class="form-control input-sm " ng-model="vm.model.configName" id="configName"
+                    <input maxlength="32" class="form-control input-xs " ng-model="vm.model.configName" id="configName"
                            name="configName" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="configName" data-valmsg-replace="true" class="errors"></span></td>
@@ -69,7 +66,7 @@
             <tr>
                 <td class="formAlignRight">参数Key： <span class="required">*</span></td>
                 <td>
-                    <input maxlength="32" class="form-control input-sm " ng-model="vm.model.configKey " id="configKey"
+                    <input maxlength="32" class="form-control input-xs " ng-model="vm.model.configKey " id="configKey"
                            name="configKey" data-val="true" data-val-required="必填">
                 </td>
                 <td>
@@ -78,11 +75,21 @@
             <tr>
                 <td class="formAlignRight">参数值： <span class="required">*</span></td>
                 <td>
-                    <input maxlength="32" class="form-control input-sm " ng-model="vm.model.configValue "
+                    <input maxlength="32" class="form-control input-xs " ng-model="vm.model.configValue "
                            id="configValue" name="configValue" data-val="true" data-val-required="必填">
                 </td>
                 <td>
                     <span data-valmsg-for="configValue" data-valmsg-replace="true" class="errors"></span></td>
+            </tr>
+            <tr>
+                <td class="formAlignRight">是否显示： </td>
+                <td>
+                    <input type="radio"  ng-model="vm.model.isShow " name="isShow" >是
+                    <input type="radio" ng-model="vm.model.isShow " name="isShow" >否
+                </td>
+                <td>
+                &nbsp;
+                </td>
             </tr>
 
             <tr>

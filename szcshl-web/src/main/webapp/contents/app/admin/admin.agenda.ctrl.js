@@ -12,6 +12,13 @@
         function activate() {
             adminSvc.agendaTaskGrid(vm);
         }
+
+        /**
+         * 通过流程类别查找
+         */
+        vm.query = function(){
+            vm.gridOptions.dataSource.read();
+        }
     }
 })();
 

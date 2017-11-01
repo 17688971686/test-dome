@@ -80,34 +80,44 @@ public class SignCountWorkdayExecute implements Job {
 				// 通过不同的项目阶段，判断，设置状态
 				switch (reviewstage) {
 					case "项目建议书":
+						//剩余工作日
 						sign.setSurplusdays(12-usedWorkDay);
 						updateLightUpState(sign , usedWorkDay , 12);
+						//评审天数
+						sign.setReviewdays(12 - sign.getSurplusdays());
 						break;
 
 					case "可行性研究报告":
 						sign.setSurplusdays(15-usedWorkDay);
 						updateLightUpState(sign , usedWorkDay , 15);
+						sign.setReviewdays(15 - sign.getSurplusdays());
+
 						break;
 
 					case "项目概算":
 						sign.setSurplusdays(15-usedWorkDay);
 						updateLightUpState(sign , usedWorkDay , 15);
+						sign.setReviewdays( 15 - sign.getSurplusdays());
 						break;
 
 					case "资金申请报告":
 						sign.setSurplusdays(12-usedWorkDay);
 						updateLightUpState(sign , usedWorkDay , 12);
+						sign.setReviewdays(12 - sign.getSurplusdays());
 						break;
 
 					case "设备清单（国产）":
 						sign.setSurplusdays(12-usedWorkDay);
 						updateLightUpState(sign , usedWorkDay , 12);
+						sign.setReviewdays(12 - sign.getSurplusdays());
 						break;
 
 					case "设备清单（进产）":
 						sign.setSurplusdays(12-usedWorkDay);
 						updateLightUpState(sign , usedWorkDay , 12);
+						sign.setReviewdays(12 - sign.getSurplusdays());
 						break;
+					default:break;
 				}
 			}
 

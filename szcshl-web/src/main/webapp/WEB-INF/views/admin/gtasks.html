@@ -20,19 +20,6 @@
         </li>
     </ol>
 
-    <form id="gtasksForm" name="gtasksForm">
-        <span class="help-inline">流程类型：</span>
-        <select name="processKey" operator="eq">
-            <option value="">请选择</option>
-            <option value="FINAL_SIGN_FLOW">项目签收流程</option>
-            <option value="FLOW_APPRAISE_REPORT">优秀评审报告申报</option>
-            <option value="FLOW_ARCHIVES">项目档案查阅流程</option>
-            <option value="PROJECT_STOP_FLOW">项目暂停审批流程</option>
-            <option value="TOPIC_FLOW">课题研究流程</option>
-        </select>
-        <button class="btn btn-xs btn-primary" style="margin-left:10px;" ng-click="vm.query()">查询</button>
-    </form>
-
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions" id="grid"></div>
 </div>
 <script type="text/template" id="columnBtns">
