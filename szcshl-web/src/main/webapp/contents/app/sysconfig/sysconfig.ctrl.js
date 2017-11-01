@@ -20,8 +20,8 @@
             vm.model = {};
             //显示次项目窗口
             $("#configdiv").kendoWindow({
-                width: "700px",
-                height: "440px",
+                width: "70%px",
+                height: "500px",
                 title: "参数编辑",
                 visible: false,
                 modal: true,

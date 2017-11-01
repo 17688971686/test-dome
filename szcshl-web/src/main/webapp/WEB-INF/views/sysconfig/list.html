@@ -54,49 +54,42 @@
             <!-- 隐藏字段-->
             <input ng-show="vm.model.id" name="id" ng-hide="true" style="display: none;">
             <tr>
-                <td class="formAlignRight" width="25%">参数名称： <span class="required">*</span></td>
-                <td width="60%">
-                    <input maxlength="32" class="form-control input-xs " ng-model="vm.model.configName" id="configName"
-                           name="configName" data-val="true" data-val-required="必填">
+                <td class="text-right" width="20%">参数名称： <span class="required">*</span></td>
+                <td>
+                    <input type="text" class="form-control input-sm " style="width: 80%;" ng-model="vm.model.configName" id="configName"
+                           maxlength="32"  name="configName" data-val="true" data-val-required="必填">
+                    <span data-valmsg-for="configName" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="configName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">参数Key： <span class="required">*</span></td>
+                <td class="text-right">参数Key： <span class="required">*</span></td>
                 <td>
-                    <input maxlength="32" class="form-control input-xs " ng-model="vm.model.configKey " id="configKey"
+                    <input maxlength="32" class="form-control input-sm " style="width: 80%;" ng-model="vm.model.configKey " id="configKey"
                            name="configKey" data-val="true" data-val-required="必填">
+                    <span data-valmsg-for="configKey" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td>
-                    <span data-valmsg-for="configKey" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">参数值： <span class="required">*</span></td>
+                <td class="text-right">参数值： <span class="required">*</span></td>
                 <td>
-                    <input maxlength="32" class="form-control input-xs " ng-model="vm.model.configValue "
+                    <input maxlength="32" class="form-control input-sm " style="width: 80%;" ng-model="vm.model.configValue "
                            id="configValue" name="configValue" data-val="true" data-val-required="必填">
+                    <span data-valmsg-for="configValue" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td>
-                    <span data-valmsg-for="configValue" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">是否显示： </td>
+                <td class="text-right">是否显示： </td>
                 <td>
                     <input type="radio"  ng-model="vm.model.isShow " name="isShow" ng-checked="vm.model.isShow == '9'" checked="checked">是
                     <input type="radio" ng-model="vm.model.isShow " name="isShow" ng-checked="vm.model.isShow == '0'">否
                 </td>
-                <td>
-                &nbsp;
-                </td>
             </tr>
-
             <tr>
-                <td class="formAlignRight">备注：</td>
+                <td class="text-right">备注：</td>
                 <td>
-                    <textarea class="form-control" maxlength="200" name="descInfo" id="descInfo"
-                              ng-model="vm.model.descInfo" style="height:120px;"></textarea>
+                    <textarea class="text-area" rows="3" style="width: 95%;" maxlength="200" name="descInfo" id="descInfo"
+                              ng-model="vm.model.descInfo" ></textarea>
                 </td>
-                <td><span data-valmsg-for="descInfo" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
         </table>
     </form>
