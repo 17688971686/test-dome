@@ -10,4 +10,18 @@ import cs.repository.IRepository;
  */
 public interface SysConfigRepo extends IRepository<SysConfig, String> {
 
+    /**
+     * 通过配置的key值判断是否已经存在，确认key值唯一性
+     * @param configKey
+     * @return
+     */
+    Boolean existByKey(String configKey);
+
+    /**
+     * 通过参数名获取对象
+     * @param configName
+     * @return
+     */
+    SysConfig findByConfigName(String configName);
+
 }

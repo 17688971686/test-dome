@@ -29,10 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 项目详情信息视图控制器
@@ -235,6 +232,17 @@ public class SignDispaWorkController {
         }
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name="获取半年前的日期" , path="getDate" , method = RequestMethod.POST)
+    @ResponseBody
+    public Date getDate(){
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.MONTH , -6);
+        return calendar.getTime();
+
+    }
     @RequiresPermissions("signView#html/signChart#get")
     @RequestMapping(name="项目查询统计分析图" , path = "html/signChart" , method = RequestMethod.GET)
     public String signChart(){

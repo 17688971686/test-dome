@@ -1,6 +1,8 @@
 package cs.service.sys;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.cache.CacheFactory;
 import cs.common.cache.DefaultCacheFactory;
 import cs.common.cache.ICache;
@@ -55,28 +57,37 @@ public class SysConfigServiceImpl implements SysConfigService {
 
     @Override
     @Transactional
-    public void save(SysConfigDto record) {
+    public ResultMsg save(SysConfigDto record) {
         SysConfig domain = new SysConfig();
 
         Date now = new Date();
-        if (!Validate.isString(record.getId())) {
-            record.setCreatedBy(SessionUtil.getLoginName());
-            record.setCreatedDate(now);
+        //判断新增的key值是否已经存在
+        Boolean excitKey = sysConfigRepo.existByKey(record.getConfigKey());
+        if(!excitKey){
+            if (!Validate.isString(record.getId())) {
+                record.setCreatedBy(SessionUtil.getLoginName());
+                record.setCreatedDate(now);
+            }
+
+            if(!Validate.isString(record.getIsShow())){
+                record.setIsShow(Constant.EnumState.YES.getValue());
+            }
+            record.setModifiedBy(SessionUtil.getLoginName());
+            record.setModifiedDate(now);
+
+            BeanCopierUtils.copyProperties(record, domain);
+            sysConfigRepo.save(domain);
+
+            //清除缓存
+            CacheFactory cacheFactory = new DefaultCacheFactory();
+            ICache cache = cacheFactory.getCache();
+            cache.clear(Constant.EnumConfigKey.CONFIG_LIST.getValue());
+
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "添加数据成功！" , null);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "配置key："+record.getConfigKey() + "已经存在，请重新输入！" , null);
         }
 
-        if(!Validate.isString(record.getIsShow())){
-            record.setIsShow(Constant.EnumState.YES.getValue());
-        }
-        record.setModifiedBy(SessionUtil.getLoginName());
-        record.setModifiedDate(now);
-
-        BeanCopierUtils.copyProperties(record, domain);
-        sysConfigRepo.save(domain);
-
-        //清除缓存
-        CacheFactory cacheFactory = new DefaultCacheFactory();
-        ICache cache = cacheFactory.getCache();
-        cache.clear(Constant.EnumConfigKey.CONFIG_LIST.getValue());
     }
 
     @Override

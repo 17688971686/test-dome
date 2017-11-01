@@ -8,8 +8,8 @@
 
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00");
-        vm.startTime = "2017-06-01";
-        vm.endTime = "2017-10-31";
+        vm.startTime = "";
+        vm.endTime = new Date().toISOString().slice(0,10) ;
         vm.chartType = 'histogram';//默认为柱状图
         vm.reviewStage = [];//评审阶段
         vm.appalyinvestment = [];//申报金额
@@ -392,27 +392,33 @@
 
         activate();
         function activate(){
-            signChartSvc.findByTime(vm , function(data){
-                if(data.flag || data.reCode == 'ok'){
-                    var resultData = data.reObj;
-                    if(resultData !=undefined && resultData.length >0){
-                        for(var i =0; i<resultData.length ; i++){
-                            $.each(resultData[i] , function(key , value){
-                                vm.reviewStage.push( key);
-                                vm.appalyinvestment.push(value[0]);
-                                vm.authorizeValue.push(value[1]);
-                                vm.projectCount.push(value[2]);
-                            });
+            signChartSvc.getDate(function(data){
+                var start = data.replace(/-/g , "\/");
+                vm.startTime = new Date(Date.parse(start.substring(1,start.length-1))).toISOString().slice(0,10);
+
+                signChartSvc.findByTime(vm , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        var resultData = data.reObj;
+                        if(resultData !=undefined && resultData.length >0){
+                            for(var i =0; i<resultData.length ; i++){
+                                $.each(resultData[i] , function(key , value){
+                                    vm.reviewStage.push( key);
+                                    vm.appalyinvestment.push(value[0]);
+                                    vm.authorizeValue.push(value[1]);
+                                    vm.projectCount.push(value[2]);
+                                });
+                            }
+                            vm.resultData.push(vm.appalyinvestment , vm.authorizeValue);
+                            vm.gotoHistogram();
                         }
-                        vm.resultData.push(vm.appalyinvestment , vm.authorizeValue);
-                        vm.gotoHistogram();
+                    }else{
+                        bsWin.error(data.reMsg);
                     }
-                }else{
-                    bsWin.error(data.reMsg);
-                }
 
 
+                });
             });
+
         }
 
 

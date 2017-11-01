@@ -68,12 +68,12 @@
         <property name="arguments" ref="securityManager"/>
     </bean>
     <!-- 基于Form表单的身份验证过滤器 -->
-    <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+    <bean id="formAuthenticationFilter" class="cs.shiro.filter.MyFormAuthenticationFilter">
         <property name="usernameParam" value="loginName"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
-        <!--新增两个参数-->
         <property name="loginUrl" value="/account/login"/>
+        <property name="successUrl" value="/admin/index"/>
     </bean>
 
     <!-- 缓存管理器 -->
@@ -96,7 +96,7 @@
         <property name="authenticationCacheName" value="authenticationCache" />
         <property name="authorizationCachingEnabled" value="true" />
         <property name="authorizationCacheName" value="authorizationCache" />
-        <!--密码加密
+        <!--
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
         -->
     </bean>
@@ -146,9 +146,11 @@
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
           depends-on="lifecycleBeanPostProcessor"/>
+
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
+
     <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
         <property name="exceptionMappings">
             <props>

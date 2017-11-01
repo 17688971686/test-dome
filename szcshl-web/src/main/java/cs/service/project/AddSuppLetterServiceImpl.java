@@ -567,6 +567,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	 */
 	@Override
 	public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+		ResultMsg rturnReuslt = null;
 		String businessId = processInstance.getBusinessKey(),
 				assigneeValue = "";                            //流程处理人
 		Map<String, Object> variables = new HashMap<>();       //流程参数
@@ -637,12 +638,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 
 			//分管领导审批
 			case FlowConstant.FLOW_SPL_FGLD_SP:
+                //生成发文字号失败，则
+                rturnReuslt = fileNum(addSuppLetter.getId());
+                if(!rturnReuslt.isFlag()){
+                    return rturnReuslt;
+                }
 				addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
 				addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
 				addSuppLetter.setDeptSleaderDate(new Date());
 				addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
 				addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
 				addSuppLetterRepo.save(addSuppLetter);
+
 				break;
 			default:
 				break;
