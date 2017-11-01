@@ -13,18 +13,33 @@ public class SysConfig extends DomainBase {
     @GenericGenerator(name = "plansignGenerator", strategy = "uuid")
     private String id;
 
+    /**
+     * 参数名
+     */
     @Column(columnDefinition = "VARCHAR(64)")
     private String configName;
 
+    /**
+     * 参数key
+     */
     @Column(columnDefinition = "VARCHAR(32)")
     private String configKey;
 
+    /**
+     * 参数值
+     */
     @Column(columnDefinition = "VARCHAR(32)")
     private String configValue;
 
+    /**
+     * 描述
+     */
     @Column(columnDefinition = "VARCHAR(256)")
     private String descInfo;
 
+    /**
+     * 是否显示
+     */
     @Column(columnDefinition = "VARCHAR(2)")
     private String isShow;
 

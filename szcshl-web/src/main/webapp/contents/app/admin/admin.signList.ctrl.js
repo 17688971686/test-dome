@@ -3,9 +3,9 @@
 
     angular.module('app').controller('adminSignListCtrl', admin);
 
-    admin.$inject = ['signSvc', 'adminSvc','bsWin','$state' , 'headerSvc'];
+    admin.$inject = ['signSvc', 'adminSvc','bsWin','$state' , 'headerSvc' , 'pauseProjectSvc'];
 
-    function admin(signSvc, adminSvc,bsWin , $state , headerSvc) {
+    function admin(signSvc, adminSvc,bsWin , $state , headerSvc , pauseProjectSvc) {
         var vm = this;
         vm.title = '项目查询统计';
         vm.currentAssociateSign = {};
@@ -104,6 +104,13 @@
                 var filterDate = filters.substring(1,filters.length-1);
             }
             window.open(rootPath + "/signView/excelExport?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" +fileName);
+        }
+
+        /**
+         * 查看项目暂停信息
+         */
+        vm.ProjectStopInfo = function(signId){
+            $state.go('projectStopInfo' , {signId : signId});
         }
     }
 })();

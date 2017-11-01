@@ -1,0 +1,118 @@
+<div class="well well-sm" style="background:white;">
+
+    <div class="toolbar">
+        <go-back></go-back>
+    </div>
+    <div ng-repeat="x in vm.projectStopList">
+        <a  data-toggle="collapse" data-target="#stopForm_{{$index}}" >
+            项目暂停审批表【{{$index+1}}】
+        </a>
+        <div id="stopForm_{{$index}}" class="collapse in">
+            <form id="form" name="form">
+                <table class="table table-bordered">
+                    <caption class="text-center h3"><strong>项目暂停审批表【{{$index+1}}】</strong></caption>
+                    <caption>WR-4.3-04-01-A0</caption>
+                    <tr>
+                        <td width="15%" class="text-right">项目名称:</td>
+                        <td colspan="3">
+                            {{vm.sign.projectname}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">申报单位:</td>
+                        <td colspan="3">
+                            {{vm.sign.builtcompanyname}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">评审部门:</td>
+                        <td style="width:35%;">
+                            {{vm.sign.mOrgName}}
+                        </td>
+                        <td width="15%" class="text-right">项目负责人:</td>
+                        <td >
+                            {{vm.sign.mUserName}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">收文时间:</td>
+                        <td >
+                            {{vm.sign.receivedate}}
+                        </td>
+                        <td width="15%" class="text-right">已用工作日:</td>
+                        <td >
+                            {{vm.sign.countUsedWorkday}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">项目暂停天数<br>(工作日):<span class="required">*</span></td>
+                        <td colspan="3">
+                            <input type="number" class="form-control input-sm " style="width: 120px;" id="pausedays" name="pausedays"
+                                   ng-model="x.pausedays" data-val="true" data-val-required="必填"/>
+                            <span data-valmsg-for="pausedays" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">项目基本情况:<span class="required">*</span></td>
+                        <td colspan="3">
+                    <textarea style="width:98%;"  cols="10" rows="4" name="projectDesc" id="projectDesc"
+                              ng-model="x.projectDesc" ng-disabled="vm.showIdea" data-val="true"
+                              data-val-required="必填"></textarea>
+                            <span data-valmsg-for="projectDesc" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">要求暂定原因:<span class="required">*</span></td>
+                        <td colspan="3">
+                    <textarea style="width:98%;"  cols="10" rows="4" name="pasedescription" id="pasedescription"
+                              ng-model="x.pasedescription" ng-disabled="vm.showIdea" data-val="true"
+                              data-val-required="必填"></textarea>
+                            <span data-valmsg-for="pasedescription" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" class="text-right">项目文件函:</td>
+                        <td colspan="3" >
+                            <p>中心发补充材料函
+                                <input type="checkbox" ng-model="x.isSupplementMaterial" ng-true-value="9" ng-false-value="0"
+                                       ng-click="vm.Checked($event,true)" ng-checked="vm.projectStop.isSupplementMaterial == '9'"/>
+                            </p>
+                            <p>申报单位要求暂停审核函
+                                <input type="checkbox"ng-model="x.isPuaseApprove" ng-true-value="9" ng-false-value="0"
+                                       ng-click="vm.Checked($event,true)" ng-checked="vm.projectStop.isPuaseApprove == '9'"/>
+                            </p>
+                            <p>无以上文件
+                                <input type="checkbox"  ng-click="vm.Checked($event,false)" ng-model="vm.noFile"
+                                       ng-checked="vm.projectStop.isPuaseApprove != '9' && vm.projectStop.isSupplementMaterial!= '9'"/>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr >
+                        <td  width="15%" class="text-right">部长意见:</td>
+                        <td colspan="3">
+                    <textarea style="width:98%;"  cols="10" rows="3" name="directorIdeaContent" id="directorIdeaContent"
+                              ng-model="x.directorIdeaContent" ng-disabled="true" ></textarea>
+                        </td>
+                    </tr>
+                    <tr >
+                        <td  width="15%" class="text-right">分管副主任签批:</td>
+                        <td colspan="3">
+                    <textarea style="width:98%;" cols="10" rows="3" name="leaderIdeaContent" id="leaderIdeaContent"
+                              ng-model="x.leaderIdeaContent"ng-disabled="true" ></textarea>
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+            <div>
+                备注：项目暂停申请表与评审中心补充资料函或项目单位要求暂停审核函一并签批；
+                项目暂停申请表需与补充资料函或要求暂定审核函一起并存。
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+</div>

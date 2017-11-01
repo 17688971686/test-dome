@@ -13,9 +13,32 @@
             grid : grid,
             getProjectStopByStopId : getProjectStopByStopId,    //通过id获取暂停项目
             updateProjectStop : updateProjectStop,  //更新暂停项目审批信息
-            findPausingProject : findPausingProject //查找正在申请暂停的项目
+            findPausingProject : findPausingProject, //查找正在申请暂停的项目
+            getListInfo : getListInfo , //获取审批结果通过的项目列表
         };
         return service;
+
+        //begin getListInfo
+        function getListInfo(signId , callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/projectStop/getListInfo",
+                params : {signId : signId}
+            }
+            var httpSuccess = function success(response){
+                if(callBack !=undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+
+        }
+        //end getListInfo
 
         //beign findPausingProject
         function findPausingProject(vm,signId){
@@ -221,7 +244,7 @@
                     width : 100,
                     filterable : false,
                     template : function(item){
-                            return common.format($("#columnBtns").html(),item.sign.signid , item.stopid );
+                        return common.format($("#columnBtns").html(),item.sign.signid , item.stopid );
                     }
                 }
             ];

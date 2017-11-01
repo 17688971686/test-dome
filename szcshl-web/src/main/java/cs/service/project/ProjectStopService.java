@@ -41,4 +41,11 @@ public interface ProjectStopService {
      * @return
      */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
+    /**
+     * 通过收文ID获取审批通过的项目暂停信息
+     * @param signId
+     * @return
+     */
+    List<ProjectStopDto> getStopList(String signId);
 }
