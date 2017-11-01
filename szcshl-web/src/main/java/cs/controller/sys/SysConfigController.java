@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.SysConfigDto;
 import cs.repository.odata.ODataObj;
@@ -51,9 +52,9 @@ public class SysConfigController {
     //@RequiresPermissions("sysConfig##post")
     @RequiresAuthentication
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody SysConfigDto record) {
-        sysConfigService.save(record);
+    @ResponseBody
+    public ResultMsg post(@RequestBody SysConfigDto record) {
+      return   sysConfigService.save(record);
     }
 
     @RequiresAuthentication

@@ -73,29 +73,16 @@
         }//E_deleteConfig
 
         //S_saveConfig
-        function saveConfig(vm){
+        function saveConfig(vm , callBack){
             var httpOptions = {
                 method : 'post',
                 url : rootPath+"/sysConfig",
                 data :vm.model
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm:vm,
-                    response:response,
-                    fn:function() {
-                        common.alert({
-                            vm:vm,
-                            msg:"操作成功",
-                            fn:function(){
-                                $('.alertDialog').modal('hide');
-                                $('.modal-backdrop').remove();
-                                vm.isSubmit=false;
-                                queryList(vm);
-                            }
-                        })
-                    }
-                });
+               if(callBack !=undefined && typeof  callBack =='function'){
+                   callBack(response.data);
+               }
             }
             common.http({
                 vm:vm,

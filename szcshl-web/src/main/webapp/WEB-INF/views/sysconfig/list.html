@@ -15,7 +15,6 @@
 
     <table class="table table-bordered">
         <tr>
-            <th style="width: 60px;">选择</th>
             <th style="width: 60px;">序号</th>
             <th style="width: 180px;">参数名</th>
             <th style="width: 180px;">参数Key</th>
@@ -24,15 +23,14 @@
             <th style="width: 260px;">操作</th>
         </tr>
         <tr ng-repeat="c in vm.configList">
-            <td><input type="checkbox" name="configid" value="{{c.id}}"/></td>
             <td>{{ $index + 1}}</td>
             <td>{{c.configName}}</td>
             <td>{{c.configKey}}</td>
             <td>{{c.configValue}}</td>
             <td>{{c.descInfo}}</td>
             <td>
-                <button class="btn btn-xs btn-primary" ng-click="vm.editConfig(c.id)"><span
-                        class="glyphicon glyphicon-plus"></span>编辑
+                <button class="btn btn-xs btn-primary" ng-click="vm.editConfig(c.id)">
+                    <span class="glyphicon glyphicon-pencil"></span>编辑
                 </button>
             </td>
         </tr>
@@ -84,8 +82,8 @@
             <tr>
                 <td class="formAlignRight">是否显示： </td>
                 <td>
-                    <input type="radio"  ng-model="vm.model.isShow " name="isShow" >是
-                    <input type="radio" ng-model="vm.model.isShow " name="isShow" >否
+                    <input type="radio"  ng-model="vm.model.isShow " name="isShow" ng-checked="vm.model.isShow == '9'" checked="checked">是
+                    <input type="radio" ng-model="vm.model.isShow " name="isShow" ng-checked="vm.model.isShow == '0'">否
                 </td>
                 <td>
                 &nbsp;
