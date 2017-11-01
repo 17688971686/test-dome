@@ -347,7 +347,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 variables = findPrinUser(businessId,assigneeValue);
                 break;
 
-            //联系合作单位
+           /* //联系合作单位
             case FlowConstant.TOPIC_LXDW :
                 variables = findPrinUser(businessId,assigneeValue);
                 break;
@@ -362,7 +362,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             //内部初审
             case FlowConstant.TOPIC_NBCS :
                 variables = findPrinUser(businessId,assigneeValue);
-                break;
+                break;*/
             //提出成果鉴定会
             case FlowConstant.TOPIC_GZFA :
                 workPlan = workPlanRepo.findById("topId", businessId);
@@ -407,10 +407,10 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 workPlan.setMleaderDate(new Date());
                 workPlanRepo.save(workPlan);
                 break;
-            //召开成果鉴定会
+            /*//召开成果鉴定会
             case FlowConstant.TOPIC_CGJD :
                 variables = findPrinUser(businessId,assigneeValue);
-                break;
+                break;*/
             //完成课题报告
             case FlowConstant.TOPIC_KTBG :
                 variables = findOrgLeader(businessId,false,assigneeValue);
@@ -458,10 +458,10 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             case FlowConstant.TOPIC_ZRSH_JT :
                 variables = findPrinUser(businessId,assigneeValue);
                 break;
-            //印发资料
+            /*//印发资料
             case FlowConstant.TOPIC_YFZL :
                 variables = findMainPrinUser(businessId,assigneeValue);
-                break;
+                break;*/
             //资料归档
             case FlowConstant.TOPIC_ZLGD :
                 filing = filingRepo.findById("topId", businessId);
@@ -494,6 +494,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 topicInfo.setState(Constant.EnumState.YES.getValue());
                 topicInfoRepo.save(topicInfo);
                 break;
+            default:
+                ;
         }
 
         taskService.addComment(task.getId(), processInstance.getId(),(flowDto == null)?"":flowDto.getDealOption());    //添加处理信息
