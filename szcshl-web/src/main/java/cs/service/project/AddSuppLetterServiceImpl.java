@@ -13,6 +13,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
 import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -64,6 +65,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	private UserRepo userRepo;
 	@Autowired
 	private SignBranchRepo signBranchRepo;
+	@Autowired
+	private MonthlyNewsletterRepo monthlyNewsletterRepo;
 
 	/**
 	 * 保存补充资料函
@@ -231,7 +234,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 	}
 
 	/**
-	 * 保存（中心）文件稿纸
+	 * 保存月报（中心）文件稿纸
 	 */
 	@Override
 	@Transactional
@@ -249,27 +252,11 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 			addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
 			addSuppLetter.setModifiedDate(now);
 			addSuppLetter.setCreatedDate(now);
-
-	/*		//部长名称
-			if (SessionUtil.getUserInfo().getOrg() != null && SessionUtil.getUserInfo().getOrg().getOrgDirectorName() != null) {
-				addSuppLetter.setDeptMinisterName(SessionUtil.getUserInfo().getOrg().getOrgDirectorName());
-			} else {
-				addSuppLetter.setDeptMinisterName(SessionUtil.getDisplayName());
-			}
-			//分管副主任
-			if (SessionUtil.getUserInfo().getOrg() != null && SessionUtil.getUserInfo().getOrg().getOrgSLeaderName() != null) {
-				addSuppLetter.setDeptSLeaderName(SessionUtil.getUserInfo().getOrg().getOrgSLeaderName());
-			} else {
-				addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
-			}
-			//主任
-			if (SessionUtil.getUserInfo().getOrg() != null && SessionUtil.getUserInfo().getOrg().getOrgMLeaderName() != null) {
-				addSuppLetter.setDeptDirectorName(SessionUtil.getUserInfo().getOrg().getOrgMLeaderName());
-			} else {
-				addSuppLetter.setDeptDirectorName(SessionUtil.getDisplayName());
-			}*/
+			//获取最大的序号
+			int curYearMaxSeq=addSuppLetterRepo.findybMaxSeq(addSuppLetter.getBusinessId());
+			int seq=curYearMaxSeq+1;
+			addSuppLetter.setMonthlySeq(seq);
 		}
-
 		addSuppLetterRepo.save(addSuppLetter);
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
 	}
