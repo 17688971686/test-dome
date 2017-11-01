@@ -151,7 +151,6 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             }
         }
         flowPrincipalRepo.bathUpdate(flPrinUserList);
-
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功", record);
     }
 

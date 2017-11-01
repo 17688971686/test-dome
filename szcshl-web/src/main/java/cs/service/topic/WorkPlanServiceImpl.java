@@ -144,7 +144,10 @@ public class WorkPlanServiceImpl implements WorkPlanService {
         }
         WorkPlanDto result = new WorkPlanDto();
         BeanCopierUtils.copyProperties(workPlan, result);
-        result = findLinkBusiness(workPlan,result);
+        if(Validate.isString(workPlan.getId())){
+            result = findLinkBusiness(workPlan,result);
+        }
+
         return result;
     }
 

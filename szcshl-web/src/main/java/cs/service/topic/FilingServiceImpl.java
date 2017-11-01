@@ -8,6 +8,7 @@ import cs.common.utils.*;
 import cs.domain.project.AddRegisterFile;
 import cs.domain.project.AddRegisterFile_;
 import cs.domain.project.FileRecord_;
+import cs.domain.sys.User;
 import cs.domain.topic.*;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
@@ -15,6 +16,7 @@ import cs.model.topic.FilingDto;
 import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.FilingRepo;
 import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import cs.service.project.AddRegisterFileService;
@@ -105,6 +107,9 @@ public class FilingServiceImpl implements FilingService {
         //4、设置其他一些属性
         domain.setModifiedBy(SessionUtil.getUserId());
         domain.setModifiedDate(now);
+        //5、项目第一负责人签名
+        domain.setPrincipal(SessionUtil.getDisplayName());
+
         filingRepo.save(domain);
 
         BeanCopierUtils.copyProperties(domain, record);
