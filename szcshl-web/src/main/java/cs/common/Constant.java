@@ -29,9 +29,9 @@ public class Constant {
      */
     public static final String SEND_FILE_UNIT = "深圳市发展和改革委员会";
     /**
-     * 默认送件人
+     * 停用
      */
-    public static final String SEND_SIGN_NAME = "魏俊辉";
+    public static final String UNUSER = "停用";
 
     /**
      * 发文范围默认值

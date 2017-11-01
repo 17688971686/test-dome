@@ -16,11 +16,11 @@ import java.util.List;
  */
 public class SessionUtil {
 
-    public static void setSessionCache(Object key,Object value) {
+    public static void setSessionCache(Object key, Object value) {
         Subject subject = SecurityUtils.getSubject();
         Session session = (subject != null) ? subject.getSession() : null;
-        if(session != null){
-            session.setAttribute(key,value);
+        if (session != null) {
+            session.setAttribute(key, value);
         }
     }
 
@@ -31,45 +31,53 @@ public class SessionUtil {
 
     public static User getUserInfo() {
         Session session = getSession();
-        if (null == session) return null;
-            return (User) session.getAttribute(Constant.USER_SESSION_KEY);
+        if (null == session) {
+            return null;
+        }
+        return (User) session.getAttribute(Constant.USER_SESSION_KEY);
     }
 
     public static String getUserId() {
         User user = getUserInfo();
-        if (null == user) return null;
+        if (null == user) {
+            return null;
+        }
         return user.getId();
     }
 
     public static String getLoginName() {
         User user = getUserInfo();
-        if (null == user) return null;
+        if (null == user) {
+            return null;
+        }
         return user.getLoginName();
     }
 
     public static String getDisplayName() {
         User user = getUserInfo();
-        if (null == user) return null;
+        if (null == user) {
+            return null;
+        }
         return user.getDisplayName();
     }
 
-    public static boolean checkPermissions(String... permissions ){
+    public static boolean checkPermissions(String... permissions) {
         Subject subject = SecurityUtils.getSubject();
-        try{
+        try {
             subject.checkPermissions(permissions);
             return true;
-        } catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             return false;
         }
     }
 
-    public static boolean hashRole(String role){
+    public static boolean hashRole(String role) {
         Subject subject = SecurityUtils.getSubject();
-        return  subject.hasRole(role);
+        return subject.hasRole(role);
     }
 
-    public static boolean hashAllRole(List<String> roles){
+    public static boolean hashAllRole(List<String> roles) {
         Subject subject = SecurityUtils.getSubject();
-        return  subject.hasAllRoles(roles);
+        return subject.hasAllRoles(roles);
     }
 }

@@ -25,19 +25,17 @@ import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
-import cs.service.project.SignServiceImpl;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +65,7 @@ public class FlowController {
     @Autowired
     private ProcessEngineConfiguration processEngineConfiguration;
     @Autowired
-    private ProcessEngine processEngine;
+    private HistoryService historyService;
     @Autowired
     private SignService signService;
     @Autowired
@@ -212,7 +210,8 @@ public class FlowController {
             return null;
         }
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);
+        /**********************************   第一版本  ******************************/
+       /* List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);
         // 使用spring注入引擎请使用下面的这行代码
         processEngineConfiguration = processEngine.getProcessEngineConfiguration();
         Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngineConfiguration);
@@ -220,9 +219,69 @@ public class FlowController {
         ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
         InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", activeActivityIds, activeActivityIds,
                 processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(),
-                processEngineConfiguration.getClassLoader(), 1.0);
+                processEngineConfiguration.getClassLoader(), 1.0);*/
 
-        return imageStream;
+        /**********************************   第二版本  ******************************/
+        /*// 经过的节点
+        List<String> activeActivityIds = new ArrayList<>();
+        List<String> finishedActiveActivityIds = new ArrayList<>();
+
+        // 已执行完的任务节点
+        List<HistoricActivityInstance> finishedInstances = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).finished().list();
+        for (HistoricActivityInstance hai : finishedInstances) {
+            finishedActiveActivityIds.add(hai.getActivityId());
+        }
+
+        // 已完成的节点+当前节点
+        activeActivityIds.addAll(finishedActiveActivityIds);
+        activeActivityIds.addAll(runtimeService.getActiveActivityIds(processInstance.getId()));
+
+        // 经过的流
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+        List<String> highLightedFlows = new ArrayList<>();
+        getHighLightedFlows(processDefinitionEntity.getActivities(), highLightedFlows, activeActivityIds);
+
+        ProcessDiagramGenerator pdg = processEngineConfiguration.getProcessDiagramGenerator();
+        InputStream inputStream = pdg.generateDiagram(bpmnModel, "PNG", activeActivityIds, highLightedFlows,
+                processEngineConfiguration.getProcessEngineConfiguration().getActivityFontName(),
+                processEngineConfiguration.getProcessEngineConfiguration().getLabelFontName(),
+                processEngineConfiguration.getProcessEngineConfiguration().getProcessEngineConfiguration().getClassLoader(), 2.0);
+       */
+        /**********************************   第三版本  ******************************/
+        // 经过的节点
+        List<String> activeActivityIds = new ArrayList<>();
+
+        // 已执行完的任务节点
+        List<HistoricActivityInstance> finishedInstances = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).finished().list();
+        for (HistoricActivityInstance hai : finishedInstances) {
+            activeActivityIds.add(hai.getActivityId());
+        }
+        // 已完成的节点+当前节点
+        activeActivityIds.addAll(runtimeService.getActiveActivityIds(processInstance.getId()));
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+        InputStream inputStream = cs.activiti.ProcessDiagramGenerator.generateDiagram(processDefinitionEntity, "PNG", activeActivityIds);
+        return inputStream;
+
+    }
+    /*
+    * 递归查询经过的流
+    */
+    private void getHighLightedFlows(List<ActivityImpl> activityList, List<String> highLightedFlows, List<String> historicActivityInstanceList) {
+        for (ActivityImpl activity : activityList) {
+            if (activity.getProperty("type").equals("subProcess")) {
+                getHighLightedFlows(activity.getActivities(), highLightedFlows, historicActivityInstanceList);
+            }
+
+            if (historicActivityInstanceList.contains(activity.getId())) {
+                List<PvmTransition> pvmTransitionList = activity.getOutgoingTransitions();
+                for (PvmTransition pvmTransition : pvmTransitionList) {
+                    String destinationFlowId = pvmTransition.getDestination().getId();
+                    if (historicActivityInstanceList.contains(destinationFlowId)) {
+                        highLightedFlows.add(pvmTransition.getId());
+                    }
+                }
+            }
+        }
     }
 
     @RequestMapping(name = "读取流程历史记录", path = "processInstance/history/{processInstanceId}", method = RequestMethod.POST)
