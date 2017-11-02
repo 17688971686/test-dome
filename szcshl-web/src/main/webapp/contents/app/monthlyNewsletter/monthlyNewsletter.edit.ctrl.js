@@ -45,7 +45,8 @@
 	          if(isValid){
 	        	  monthlyNewsletterSvc.createMonthlyNewsletter(vm.monthly,function(data){
 	                   if (data.flag || data.reCode == "ok") {
-	                           bsWin.alert("操作成功！");
+                           vm.monthly = data.reObj;
+                           bsWin.alert("操作成功！");
 	                   }else{
 	                       bsWin.error(data.reMsg);
 	                   }
