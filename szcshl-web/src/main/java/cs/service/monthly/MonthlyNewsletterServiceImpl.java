@@ -29,6 +29,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -252,32 +253,30 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     }
 
     /**
-     * 获取月报简报管理数据列表
+     * 年度月报简报,不用分页，筛选出每年第一条记录即可
      */
     @Override
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(ODataObj odataObj) {
-        PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<MonthlyNewsletterDto>();
+        PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = monthlyNewsletterRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName(), EnumState.PROCESS.getValue()));
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        criteria.setProjection(null);
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getTop());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
+        criteria.addOrder(Order.desc(MonthlyNewsletter_.createdDate.getName()));
         List<MonthlyNewsletter> monthlist = criteria.list();
-        List<MonthlyNewsletterDto> monthDtos = new ArrayList<MonthlyNewsletterDto>(monthlist == null ? 0 : monthlist.size());
+        List<MonthlyNewsletterDto> monthDtos = new ArrayList<>(monthlist == null ? 0 : monthlist.size());
 
-        if (monthlist != null && monthlist.size() > 0) {
+        //取每年添加第一条即可
+        if (Validate.isList(monthlist)) {
+            Map<String,Object> cacheMap = new HashMap<>();
             monthlist.forEach(x -> {
-                MonthlyNewsletterDto monthDto = new MonthlyNewsletterDto();
-                BeanCopierUtils.copyProperties(x, monthDto);
-                monthDtos.add(monthDto);
+                if(cacheMap.get(x.getReportMultiyear()) == null){
+                    MonthlyNewsletterDto monthDto = new MonthlyNewsletterDto();
+                    BeanCopierUtils.copyProperties(x, monthDto);
+                    monthDtos.add(monthDto);
+                    cacheMap.put(x.getReportMultiyear(),true);
+                }
             });
+            cacheMap.clear();
         }
         pageModelDto.setValue(monthDtos);
 

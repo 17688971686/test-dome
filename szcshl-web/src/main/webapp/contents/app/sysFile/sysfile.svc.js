@@ -46,7 +46,7 @@
                 TOPIC_PLAN: "课题计划书",
                 TOPIC_WORKPLAN: "课题工作方案",
                 TOPIC_FILING: "课题归档",
-                CENTER_FILE: "中心文件（稿纸）",
+                MONTH_FILE: "月报简报",
                 AADSUPP_FILE: "拟补充资料函"
             }
         }
