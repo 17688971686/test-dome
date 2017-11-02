@@ -21,7 +21,7 @@
         return service;
 
         function previewFile() {
-            alert(12);
+            //alert(12);
         }
 
         // 各大模块附件根目录(跟后台Constant.SysFileMainType 同步)

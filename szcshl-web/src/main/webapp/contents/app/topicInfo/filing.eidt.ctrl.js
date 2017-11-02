@@ -51,7 +51,6 @@
                 var ids = [];
                 for (var i = 0; i < isCheck.length; i++) {
                     if(isCheck[i].value){
-                        alert(isCheck[i].value);
                         ids.push(isCheck[i].value);
                     }
                     $.each(vm.filing.registerFileDto,function(c,obj){
