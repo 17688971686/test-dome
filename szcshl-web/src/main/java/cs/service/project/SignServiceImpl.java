@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import cs.domain.sys.*;
+import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.sys.*;
+import cs.service.sys.SysConfigService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -156,6 +158,9 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private SysConfigRepo sysConfigRepo;
 
+    @Autowired
+    private SysConfigService sysConfigService;
+
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -234,9 +239,27 @@ public class SignServiceImpl implements SignService {
             sign.setIssign(EnumState.YES.getValue());       //正式签收
             if(Validate.isString(sign.getReviewstage())){
                 //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
-                SysConfig sysConfig = sysConfigRepo.findByConfigName(sign.getReviewstage());
-                if(sysConfig != null ){
-                    sign.setSurplusdays(Float.parseFloat(sysConfig.getConfigValue()));
+                SysConfigDto sysConfigDto = null;
+                if((Constant.ProjectStage.STAGE_SUG.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_SUG.getValue());
+                }else if((Constant.ProjectStage.STAGE_STUDY.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_STUDY.getValue());
+                }else if((Constant.ProjectStage.STAGE_BUDGET.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_BUDGET.getValue());
+                }else if((Constant.ProjectStage.APPLY_REPORT.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_REPORT.getValue());
+                }else if((Constant.ProjectStage.DEVICE_BILL_HOMELAND.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_HOMELAND.getValue());
+                }else if((Constant.ProjectStage.DEVICE_BILL_IMPORT.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_IMPORT.getValue());
+                }else if((Constant.ProjectStage.IMPORT_DEVICE.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_DEVICE.getValue());
+                }else if((Constant.ProjectStage.OTHERS.getValue()).equals(sign.getReviewstage())){
+                    sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_OTHER.getValue());
+                }
+
+                if(sysConfigDto != null ){
+                    sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
                 }else{
                     if((Constant.ProjectStage.STAGE_STUDY.getValue()).equals(sign.getReviewstage())
                             || (Constant.ProjectStage.STAGE_BUDGET.getValue()).equals(sign.getReviewstage())){

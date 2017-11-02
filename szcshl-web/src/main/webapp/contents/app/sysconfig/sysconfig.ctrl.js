@@ -18,6 +18,7 @@
         //新增参数
         vm.addConfig = function () {
             vm.model = {};
+            vm.model.isShow = '9';//是否显示
             //显示次项目窗口
             $("#configdiv").kendoWindow({
                 width: "70%px",
