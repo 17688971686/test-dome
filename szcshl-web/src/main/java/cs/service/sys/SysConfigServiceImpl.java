@@ -61,8 +61,12 @@ public class SysConfigServiceImpl implements SysConfigService {
         SysConfig domain = new SysConfig();
 
         Date now = new Date();
+        Boolean excitKey = false ;
+        if(!Validate.isString(record.getId())){
+            excitKey = sysConfigRepo.existByKey(record.getConfigKey());
+        }
+
         //判断新增的key值是否已经存在
-        Boolean excitKey = sysConfigRepo.existByKey(record.getConfigKey());
         if(!excitKey){
             if (!Validate.isString(record.getId())) {
                 record.setCreatedBy(SessionUtil.getLoginName());

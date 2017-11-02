@@ -22,6 +22,7 @@
         vm.series = [];
         vm.resultData = [];//存series中Data的值
         vm.projectCount = [];//各阶段项目数目
+        vm.tooltipFormater = []; // 饼图提示框对应
         vm.capital = ['申报金额' , '审定金额'];
         vm.projectType =['市政工程' , '房建工程' , '信息工程' , '设备采购' , '其他'];
         vm.stage = ['3000万以下','3000万-1亿' ,'1亿-10亿','10亿以上'];
@@ -42,6 +43,7 @@
             vm.series = [];
             vm.resultData = [];//存series中Data的值
             vm.projectCount = [];//各阶段项目数目
+            vm.tooltipFormater = []; // 饼图提示框对应
             var typeChecked = $("input[type='radio']:checked").val();
             if (typeChecked == 'lineChart'){
                 vm.gotoLineChart();
@@ -149,13 +151,12 @@
             signChartSvc.pieData(vm , function(data){
                 if(data.flag || data.reCode == 'ok') {
                     var resultData = data.reObj;
-                    console.log(resultData);
                     if(resultData !=undefined && resultData != null){
-                        if (resultData != undefined && resultData.length > 0) {
-                            for (var i = 0; i < resultData.length; i++) {
+                        if (resultData[1] != undefined && resultData[1].length > 0) {
+                            for (var i = 0; i < resultData[1].length; i++) {
                                 vm.series.push(
                                     {
-                                        value: resultData[i],
+                                        value: resultData[1][i],
                                         name: vm.stage[i],
                                         label: {
                                             normal: {
@@ -168,6 +169,20 @@
                                         }
                                     }
                                 )
+
+                                vm.tooltipFormater.push(
+                                    {
+                                        seriesName: "项目数",
+                                        totalName : "项目总数",
+                                        totalValue : resultData[2],
+                                        name: vm.stage[i],
+                                        pidName : "占百分比",
+                                        data:  resultData[0][i],
+                                        value : resultData[1][i]
+
+                                    }
+
+                                );
                             }
                         }
                         vm.initPie();
@@ -345,7 +360,18 @@
                 },
                 tooltip :{
                     trigger : 'item',
-                    formatter : "{a} <br/> {b} : {c}% "
+                    width : 150,
+                    formatter : function(params){
+                        for(var i = 0 ; i<vm.tooltipFormater.length ; i++){
+                            if(vm.tooltipFormater[i].name == params.name){
+                                return  params.name + "<br/>"
+                                    +vm.tooltipFormater[i].seriesName + " : " + vm.tooltipFormater[i].data + "<br/>"
+                                    + vm.tooltipFormater[i].totalName + " : " + vm.tooltipFormater[i].totalValue + "<br/>"
+                                    + vm.tooltipFormater[i].pidName + " : " + vm.tooltipFormater[i].value + "%";
+                            }
+
+                        }
+                    }
                 },
                 grid :{
                     left : '10%',

@@ -625,4 +625,27 @@ public class Constant {
             this.value = value;
         }
     }
+
+    /**
+     * 评审阶段key值
+     */
+    public static enum RevireStageKey{
+        KEY_SUG("STAGE_SUG"),//项目建议书
+        KEY_STUDY("STAGE_STUDY"),//可行性研究报告
+        KEY_BUDGET("STAGE_BUDGET"),//项目概算
+        KEY_REPORT("STAGE_REPORT"),//资金申请报告
+        KEY_HOMELAND("STAGE_HOMELAND"),//设备清单（国产）
+        KEY_IMPORT("STAGE_IMPORT"),//设备清单（进口）
+        KEY_DEVICE("STAGE_DEVICE"),//进口设备
+        KEY_OTHER("STAGE_OTHER");//其它
+
+        private String value;
+        RevireStageKey(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+
+    }
 }
