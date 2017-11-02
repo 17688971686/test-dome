@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="myProcess" name="My process" isExecutable="true">
+  <process id="MONTHLY_BULLETIN_FLOW" name="月报简报流程" isExecutable="true">
     <startEvent id="MONTH_START" name="开始"></startEvent>
     <endEvent id="MONTH_END" name="流程结束"></endEvent>
     <userTask id="MONTH_YB" name="月报填报" activiti:assignee="${user}"></userTask>
@@ -13,8 +13,8 @@
     <sequenceFlow id="flow4" sourceRef="MONTH_FG" targetRef="MONTH_ZR"></sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="MONTH_ZR" targetRef="MONTH_END"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
-    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_MONTHLY_BULLETIN_FLOW">
+    <bpmndi:BPMNPlane bpmnElement="MONTHLY_BULLETIN_FLOW" id="BPMNPlane_MONTHLY_BULLETIN_FLOW">
       <bpmndi:BPMNShape bpmnElement="MONTH_START" id="BPMNShape_MONTH_START">
         <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="160.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
