@@ -703,51 +703,27 @@
                 controllerAs: 'vm'
             })
 
-             //月报管理列表
+             //年度月报简报
              .state('theMonthsList', {
                 url: '/theMonthsList',
                 templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
-                controller: 'monthlyNewsletterCtrl',
+                controller: 'yearMonthlyNewsletterCtrl',
                 controllerAs: 'vm'
             })
 
              //年度月报简报列表理页面
              .state('monthlyFindByMultiyear', {
-                url: '/monthlyFindByMultiyear/:id',
+                url: '/monthlyFindByMultiyear/:year',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
-                controller: 'monthlyMultiyearCtrl',
-                controllerAs: 'vm'
-            })
-
-            //年度（中心文件）月报简报审批列表理页面
-             .state('monthlyMultiyAppoveList', {
-                url: '/monthlyMultiyAppoveList/:reportMultiyear',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyAppoveList.html',
                 controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
             })
 
             //编辑新建年度月报简报页面
              .state('monthlyMultiyearEdit', {
-                url: '/monthlyMultiyearEdit/:id/:businessId',
+                url: '/monthlyMultiyearEdit/:id',
                 templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
                 controller: 'monthlyMultiyearEditCtrl',
-                controllerAs: 'vm'
-            })
-            
-            //新建年度月报简报页面
-             .state('monthlyMultiyearAdd', {
-                url: '/monthlyMultiyearAdd/:businessId',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyYearAdd.html',
-                controller: 'monthlyMultiyearEditCtrl',
-                controllerAs: 'vm'
-            })
-
-            //年度(中心文件)月报简报查询页面
-             .state('monthlyMultiyFileList', {
-                url: '/monthlyMultiyFileList/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
-                controller: 'monthlyMultiyearCtrl',
                 controllerAs: 'vm'
             })
 
@@ -758,15 +734,6 @@
                 controller: 'monthlyMultiyearEditCtrl',
                 controllerAs: 'vm'
             })
-
-             //上传附件页面
-             .state('uploadMonthly', {
-                url: '/uploadMonthly/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyUpload.html',
-                controller: 'monthlyMultiyearEditCtrl',
-                controllerAs: 'vm'
-            })
-
 
             //月报简报历史数据列表
              .state('monthlyHistoryList', {

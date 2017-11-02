@@ -72,25 +72,6 @@ public class MonthlyNewsletterController {
 
 
     @RequiresAuthentication
-    //@RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
-    @RequestMapping(name = "获取（中心）文件查询列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request,String businessId) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        List<ODataFilterItem> filterItemsList = odataObj.getFilter();//获取filter
-        if(filterItemsList != null){
-            ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
-            oDataFilterItem.setField("businessId");
-            oDataFilterItem.setOperator("eq");
-            oDataFilterItem.setValue(businessId);
-            filterItemsList.add(oDataFilterItem);//加入业务ID的查询条件
-        }
-        odataObj.setFilter(filterItemsList);//写入查询条件
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);
-        return addSuppLetterDtos;
-    }
-
-    @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#monthlyAppoveList#post")
     @RequestMapping(name = "获取（中心）文件审批列表数据", path = "monthlyAppoveList", method = RequestMethod.POST)
     @ResponseBody
@@ -115,11 +96,11 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#getMonthlyList#post")
-    @RequestMapping(name = "获取月报简报管理数据列表", path = "getMonthlyList", method = RequestMethod.POST)
+    @RequestMapping(name = "年度月报简报列表", path = "getMonthlyList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.getMonthlyList(odataObj);	
+        PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.getMonthlyList(odataObj);
         return monthlyNewsletterDtos;
     }
 
@@ -358,13 +339,5 @@ public class MonthlyNewsletterController {
     public String monthlyExcellentList() {
         return ctrlName+"/monthlyExcellentList";
     }
-
-    @RequiresAuthentication
-    //@RequiresPermissions("monthlyNewsletter#html/monthlyUpload#get")
-    @RequestMapping(name = "上传附件页面", path = "html/monthlyUpload", method = RequestMethod.GET)
-    public String monthlyUpload() {
-        return ctrlName+"/monthlyUpload";
-    }
-    // end#html
 
 }

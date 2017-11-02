@@ -8,8 +8,17 @@
     function monthlyMultiyear($location, monthlyMultiyearSvc,$state,bsWin) {
         var vm = this;
         vm.title = '年度月报简报';
-        vm.monthly = {};
-        vm.monthly.businessId = $state.params.id;
+        vm.suppletter = {};
+        vm.suppletter.monthLetterYearName = $state.params.year;
+
+        activate();
+        function activate() {
+            //monthlyMultiyearSvc.monthlyMultiyearGrid(vm);
+            monthlyMultiyearSvc.monthlyYearGrid(vm);
+            monthlyMultiyearSvc.findAllOrg(vm);
+            //monthlyMultiyearSvc.findAllUser(vm);
+        }
+
         //查询
          vm.addSuppQuery = function(){
          	 monthlyMultiyearSvc.addSuppQuery(vm);
@@ -49,14 +58,5 @@
                 vm.del(idStr);
             }
         };
-
-       
-        activate();
-        function activate() {
-            monthlyMultiyearSvc.monthlyMultiyearGrid(vm);
-            monthlyMultiyearSvc.monthlyYearGrid(vm);
-            monthlyMultiyearSvc.findAllOrg(vm);
-            monthlyMultiyearSvc.findAllUser(vm);
-        }
     }
 })();
