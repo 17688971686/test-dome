@@ -550,7 +550,7 @@
         //end initAssociateSigns
 
         //S_meetingDoc
-        function meetingDoc(vm) {
+        function meetingDoc(vm,$scope) {
             var wpId = "";
             switch (vm.flow.curNode.activitiId) {
                 case flowcommon.getSignFlowNode().SIGN_XMFZR1:
@@ -595,6 +595,7 @@
                                             if(data || data.length > 0){
                                                 vm.showFlag.tabSysFile = true;
                                                 vm.sysFileList = data;
+                                                vm.urlType="signFlowDeal";//附件右边的列表显示
                                                 sysfileSvc.initZtreeClient(vm,$scope);//树形图
 
                                             }
