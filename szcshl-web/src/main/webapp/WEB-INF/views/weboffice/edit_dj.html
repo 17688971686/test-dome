@@ -113,7 +113,7 @@
     function WebOffice_OpenOfficeFile(){
         if(filePath){
             try{
-                document.all.WebOffice.LoadOriginalFile(filePath, "xls");
+                document.all.WebOffice.LoadOriginalFile(filePath, fileType);
             }catch(e){
                 alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
             }
