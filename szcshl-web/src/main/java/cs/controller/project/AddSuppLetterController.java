@@ -3,6 +3,7 @@ package cs.controller.project;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
@@ -74,13 +75,13 @@ public class AddSuppLetterController {
         return addSuppLetterDtos;
     }
 
-    @RequiresAuthentication
+   /* @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#updateApprove#post")
     @RequestMapping(name = "领导审批处理", path = "updateApprove", method = RequestMethod.POST)
     @ResponseBody
     public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
         addSuppLetterService.updateApprove(addSuppLetterDto);
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppLetter#post")
@@ -146,4 +147,12 @@ public class AddSuppLetterController {
         return ctrlName+"/suppLetterApproveEdit";
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "年度月报简报详情", path = "monthlyMultiyearList", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);
+        return addSuppLetterDtos;
+    }
 }

@@ -56,7 +56,7 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#saveMonthlyMultiyear#post")
-    @RequestMapping(name = "保存（中心）文件稿纸", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
+    @RequestMapping(name = "保存月报简报", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg monthlyMultiyearAdd(@RequestBody AddSuppLetterDto record) {
        return addSuppLetterService.saveMonthlyMultiyear(record);
@@ -64,31 +64,12 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#initMonthlyMultiyear#post")
-    @RequestMapping(name = "初始化（中心）文件稿纸", path = "initMonthlyMultiyear", method = RequestMethod.POST)
+    @RequestMapping(name = "初始化月报简报", path = "initMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto initMutilyear(){
     	return addSuppLetterService.initMonthlyMutilyear();
     }
 
-
-    @RequiresAuthentication
-    //@RequiresPermissions("monthlyNewsletter#monthlyMultiyearList#post")
-    @RequestMapping(name = "获取（中心）文件查询列表数据", path = "monthlyMultiyearList", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request,String businessId) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        List<ODataFilterItem> filterItemsList = odataObj.getFilter();//获取filter
-        if(filterItemsList != null){
-            ODataFilterItem<String> oDataFilterItem = new ODataFilterItem<String>();
-            oDataFilterItem.setField("businessId");
-            oDataFilterItem.setOperator("eq");
-            oDataFilterItem.setValue(businessId);
-            filterItemsList.add(oDataFilterItem);//加入业务ID的查询条件
-        }
-        odataObj.setFilter(filterItemsList);//写入查询条件
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);
-        return addSuppLetterDtos;
-    }
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#monthlyAppoveList#post")
@@ -115,11 +96,11 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#getMonthlyList#post")
-    @RequestMapping(name = "获取月报简报管理数据列表", path = "getMonthlyList", method = RequestMethod.POST)
+    @RequestMapping(name = "年度月报简报列表", path = "getMonthlyList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.getMonthlyList(odataObj);	
+        PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.getMonthlyList(odataObj);
         return monthlyNewsletterDtos;
     }
 
@@ -314,18 +295,18 @@ public class MonthlyNewsletterController {
         return ctrlName+"/monthlyMultiyFileList"; 
     } 
     
-    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveList#get")
+    /*@RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveList#get")
     @RequestMapping(name = "月报简报审批列表", path = "html/monthlyMultiyAppoveList", method = RequestMethod.GET)
     public String monthlyMultiyAppoveList() {
         return ctrlName+"/monthlyMultiyAppoveList";
     }
-    
+
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveEdit#get")
     @RequestMapping(name = "月报简报审批处理", path = "html/monthlyMultiyAppoveEdit", method = RequestMethod.GET)
     public String monthlyMultiyAppoveEdit() {
         return ctrlName+"/monthlyMultiyAppoveEdit";
     }
-
+*/
 
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
     @RequestMapping(name = "编辑月报简报年度", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
@@ -358,13 +339,5 @@ public class MonthlyNewsletterController {
     public String monthlyExcellentList() {
         return ctrlName+"/monthlyExcellentList";
     }
-
-    @RequiresAuthentication
-    //@RequiresPermissions("monthlyNewsletter#html/monthlyUpload#get")
-    @RequestMapping(name = "上传附件页面", path = "html/monthlyUpload", method = RequestMethod.GET)
-    public String monthlyUpload() {
-        return ctrlName+"/monthlyUpload";
-    }
-    // end#html
 
 }

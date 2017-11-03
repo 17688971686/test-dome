@@ -65,7 +65,7 @@
                 <td class="text-right">参数Key： <span class="required">*</span></td>
                 <td>
                     <input maxlength="32" class="form-control input-sm " style="width: 80%;" ng-model="vm.model.configKey " id="configKey"
-                           name="configKey" data-val="true" data-val-required="必填">
+                           name="configKey" ng-disabled="vm.model.id !=null" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="configKey" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -80,8 +80,8 @@
             <tr>
                 <td class="text-right">是否显示： </td>
                 <td>
-                    <input type="radio"  ng-model="vm.model.isShow " name="isShow" ng-checked="vm.model.isShow == '9'" checked="checked">是
-                    <input type="radio" ng-model="vm.model.isShow " name="isShow" ng-checked="vm.model.isShow == '0'">否
+                    <input type="radio"  name="isShow" ng-model="vm.model.isShow "  ng-checked="vm.model.isShow == '9' || vm.model.isShow == 9" checked="checked"  ng-value="9">是
+                    <input type="radio" name="isShow" ng-model="vm.model.isShow "  ng-checked="vm.model.isShow == '0' || vm.model.isShow == 0" ng-value="0">否
                 </td>
             </tr>
             <tr>

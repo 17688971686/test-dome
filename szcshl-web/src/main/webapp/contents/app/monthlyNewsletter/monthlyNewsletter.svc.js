@@ -6,14 +6,14 @@
     monthlyNewsletter.$inject = ['$http'];
 
     function monthlyNewsletter($http) {
-        var url_monthlyNewsletter = rootPath + "/monthlyNewsletter", url_back = '#/monthlyNewsletterList';
+        var url_monthlyNewsletter = rootPath + "/monthlyNewsletter";
         var service = {
-            monthlyNewsletterGrid: monthlyNewsletterGrid,//月报简报管理列表
-            monthlyDeleteGrid:monthlyDeleteGrid,//已删除月报简报列表
-            theMonthGrid:theMonthGrid,//月报简报列表
-            createMonthlyNewsletter: createMonthlyNewsletter,//保存月报简报
-            updateMonthlyNewsletter: updateMonthlyNewsletter, //月报简报编辑
-            deleteMonthlyNewsletter: deleteMonthlyNewsletter,//删除月报简报记录
+            monthlyNewsletterGrid: monthlyNewsletterGrid,       //月报简报管理列表
+            monthlyDeleteGrid:monthlyDeleteGrid,                //已删除月报简报列表
+            theMonthGrid:theMonthGrid,                          //年度月报简报列表
+            createMonthlyNewsletter: createMonthlyNewsletter,   //保存月报简报
+            updateMonthlyNewsletter: updateMonthlyNewsletter,   //月报简报编辑
+            deleteMonthlyNewsletter: deleteMonthlyNewsletter,   //删除月报简报记录
             getMonthlyNewsletterById: getMonthlyNewsletterById,
             createMonthReport: createMonthReport //生成月报简报
         };
@@ -168,11 +168,10 @@
 
         // begin#月报简报管理列表
         function monthlyNewsletterGrid(vm) {
-
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/getMonthlyList"),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData"),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -184,7 +183,7 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 5,
+                pageSize: 10,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -295,7 +294,7 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 5,
+                pageSize: 10,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -381,12 +380,12 @@
 
         }// end fun 删除月报简报列表
 
-        // begin#月报简报列表
+        // begin#年度月报简报列表
         function theMonthGrid(vm) {
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/getMonthlyList"),
+                transport: common.kendoGridConfig().transport(rootPath+"/monthlyNewsletter/getMonthlyList"),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -395,25 +394,18 @@
                         }
                     }
                 }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
                 sort: {
                     field: "createdDate",
-                    dir: "desc"
+                    dir: "asc"
                 }
             });
-
             // End:dataSource
 
           //S_序号
             var  dataBound=function () {
                 var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
                 $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
+                    var index = $(this).index() + 1;
                     var rowLabel = $(this).find(".row-number");
                     $(rowLabel).html(index);
                 });
@@ -421,15 +413,6 @@
             //S_序号
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
                 {
 				    field: "rowNumber",
 				    title: "序号",
@@ -440,28 +423,28 @@
                 {
                     field: "monthlyNewsletterName",
                     title: "名称",
-                    width: 100,
+                    width: "30%",
                     filterable: false,
                     template:function(item){
-                    	return '<a href="#/monthlyFindByMultiyear/'+item.id+'" >'+item.monthlyNewsletterName+'</a>';
+                    	return '<a href="#/monthlyFindByMultiyear/'+item.reportMultiyear+'" >'+item.monthlyNewsletterName+'</a>';
                     }
                 },
                 {
                     field: "reportMultiyear",
                     title: "年份",
-                    width: 100,
+                    width: "15%",
                     filterable: false,
                 },
                 {
                     field: "remark",
                     title: "备注",
-                    width: 100,
+                    width: "40%",
                     filterable: false
                 },
                 {
                     field: "authorizedTime",
                     title: "添加时间",
-                    width: 100,
+                    width: "15%",
                     filterable: false
                 },
                 
@@ -471,7 +454,6 @@
             vm.theMonthGridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 dataBound:dataBound,
                 columns: columns,

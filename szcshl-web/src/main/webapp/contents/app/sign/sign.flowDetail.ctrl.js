@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signFlowDetailCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope'];
 
-    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope) {
         var vm = this;
         vm.title = "项目流程信息";
         vm.model = {};
@@ -83,6 +83,7 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
+                    vm.urlType="signFlowDetail";
                     sysfileSvc.initZtreeClient(vm,$scope);//树形图
                 }
             });

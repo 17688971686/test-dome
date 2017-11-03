@@ -99,7 +99,7 @@ public class FilingServiceImpl implements FilingService {
                 fileNumValue = (maxSeq + 1) + "";
             }
             //课题代码(课题代码2017KT001，归档编号2016KD17001)
-            fileNumValue = domain.getFilingCode().substring(0, 4) + FlowConstant.CodeKey.TOPIC_FILING_CODE.getValue()
+            fileNumValue = domain.getFilingCode().substring(0, 4) + Constant.FILE_RECORD_KEY.KD.getValue()
                     + year.substring(2, 4) + fileNumValue;
             domain.setFileNo(fileNumValue);
         }

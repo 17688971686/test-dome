@@ -5,94 +5,88 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 <!-- 查看中心文件附件页面 -->
-<#include "/monthlyNewsletter/monthlyUpload.html"/>
 <div class="well well-sm" style="background:white; color: red">
-   <ol class="breadcrumb">
+    <ol class="breadcrumb">
         <li><a href="#/monthlyFindByMultiyear/{{vm.businessId}}">年度月报简报</a></li>
-        <li class="active" >{{vm.title}}</li>
+        <li class="active">{{vm.title}}</li>
     </ol>
-<div class="toolbar">
-    <a href="#/monthlyFindByMultiyear/{{vm.businessId}}" class="btn btn-sm btn-danger"  ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left">返回</span>
-    </a>
-    <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit" ng-hide="vm.isUpdate">
-        <span class="glyphicon glyphicon-ok"></span>暂存
-    </button>
-     <button class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
-        <span class="glyphicon glyphicon-ok"></span>更新
-    </button>
-    <button  class="btn btn-sm btn-default" ng-click="vm.startNewFlow(vm.id)"><span class="glyphicon glyphicon-share-alt"></span>发起流程</button>
-   <!--   <button ng-show="vm.suppletter.id" class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
-        <span class="glyphicon glyphicon-ok"></span>发送到综合部存档
-    </button>
-    <button class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
-        <span class="glyphicon glyphicon-ok"></span>打印
-    </button> -->
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit"
+                ng-hide="vm.isUpdate">
+            <span class="glyphicon glyphicon-ok"></span>暂存
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit"
+                ng-show="vm.isUpdate">
+            <span class="glyphicon glyphicon-ok"></span>更新
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.startNewFlow(vm.id)"><span
+                class="glyphicon glyphicon-share-alt"></span>发起流程
+        </button>
+        <!--   <button ng-show="vm.suppletter.id" class="btn btn-sm btn-success" ng-click="vm.updateAddSuppletter()" ng-disabled="vm.isCommit" ng-show="vm.isUpdate">
+             <span class="glyphicon glyphicon-ok"></span>发送到综合部存档
+         </button>
+         <button class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
+             <span class="glyphicon glyphicon-ok"></span>打印
+         </button> -->
 
-    <span ng-show="vm.suppletter.id">
-            <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>上传附件</button>
-            <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent()">
-            <span class="glyphicon glyphicon-search"></span>查看附件
-            </button>
-      </span>
-</div>
-   		<!--  hidden input -->
-		 <input type="hidden" ng-model="vm.suppletter.id" name="suppletter" value="{{vm.suppletter.id}}"id="suppletterId"  >  
-		<input type="hidden" ng-model="vm.suppletter.signid" value="{{vm.suppletter.signid}}" > 
-		<!--  s table -->
-     <!-- s form -->
+        <button class="btn btn-sm btn-success" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+        <go-back></go-back>
+    </div>
+
+    <!--  s table -->
+    <!-- s form -->
     <form id="suppletter_form" name="suppletter_form">
- 
-    公文分类： <select ng-model="vm.suppletter.missiveType" 
-			name="missiveType" id="missiveType" style="width: 120px;">
-			<option ng-repeat="x in DICT.YWYJ.dicts"
-				ng-selected="x.dictName == vm.suppletter.missiveType"
-				value="{{x.dictName}}">{{x.dictName}}</option>
-		</select> 
-    	 <select ng-model="vm.suppletter.missiveMonthlyType"
-			name="missiveMonthlyType" id="missiveMonthlyType" style="width: 120px;">
-			<option ng-repeat="x in DICT.MONTHLY.dicts"
-				ng-selected="x.dictName == vm.suppletter.missiveMonthlyType"
-				value="{{x.dictName}}">{{x.dictName}}</option>
-		</select> 
-		 <select ng-model="vm.suppletter.missiveOtherType"
-			name="missiveOtherType" id="missiveOtherType" style="width: 120px;">
-			<option ng-repeat="x in DICT.MONTHLY.dicts"
-				ng-selected="x.dictName == vm.suppletter.missiveOtherType"
-				value="{{x.dictName}}">{{x.dictName}}</option>
-		</select>
-        <div class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）</br><br></strong></div>
+        公文分类：
+        <select ng-model="vm.suppletter.missiveType" name="missiveType" id="missiveType" style="width: 120px;" ng-disabled="true">
+            <option value="公文分类" ng-selected="true" >公文分类</option>
+        </select>
+        <select ng-model="vm.suppletter.missiveMonthlyType" name="missiveMonthlyType" id="missiveMonthlyType" style="width: 120px;">
+            <option ng-repeat="x in DICT.MONTHLY.dicts"
+                    ng-selected="x.dictName == vm.suppletter.missiveMonthlyType"
+                    value="{{x.dictName}}">{{x.dictName}}
+            </option>
+        </select>
+        <select ng-model="vm.suppletter.missiveOtherType" name="missiveOtherType" id="missiveOtherType" style="width: 120px;">
+            <option ng-repeat="x in DICT.MONTHLY.dicts"
+                    ng-selected="x.dictName == vm.suppletter.missiveOtherType"
+                    value="{{x.dictName}}">{{x.dictName}}
+            </option>
+        </select>
+        <div class="text-center h3"><strong>深圳市政府投资项目评审中心文件（稿纸）</br><br></strong></div>
 
-        <div style="width: 100%;margin-bottom: 20px;" >
+        <div style="width: 100%;margin-bottom: 20px;">
             <div style="float: left;margin-left: 3%">
-           <span>分&nbsp&nbsp&nbsp&nbsp&nbsp类:</span>
-                <select ng-model="vm.suppletter.monthlyType" name="monthlyType" id="monthlyType" style="width: 280px;" class=" input-sm ">
+                <span>分&nbsp&nbsp&nbsp&nbsp&nbsp类:</span>
+                <select ng-model="vm.suppletter.monthlyType" name="monthlyType" id="monthlyType" style="width: 280px;"
+                        class=" input-sm ">
                     <option ng-repeat="x in DICT.MONTHLY.dicts" ng-selected="x.dictName == vm.suppletter.monthlyType"
-                            value="{{x.dictName}}">{{x.dictName}}</option>
+                            value="{{x.dictName}}">{{x.dictName}}
+                    </option>
                 </select>
 
             </div>
             <div style="margin-left: 53%;">
-            <td style="width:150px;" class="text-center">存档编号:</td>
-            <td>
+                <td style="width:150px;" class="text-center">存档编号:</td>
+                <td>
 
-            </td>
+                </td>
             </div>
         </div>
         <!-- s table -->
         <table class="table table-bordered">
-
-          
             <tbody>
             <tr>
                 <td style="width:150px;height:50px;" class="text-center">拟稿部门<br>拟稿人</td>
                 <td>
-                   {{vm.suppletter.orgName}}<br>
-                   {{vm.suppletter.userName}}
+                    {{vm.suppletter.orgName}}<br>
+                    {{vm.suppletter.userName}}
                 </td>
 
                 <td style="width:150px;" class="text-center">拟稿时间</td>
-                <td >
-                    <input type="text" name="suppLetterTime" id="suppLetterTime" style="width: 210px;text-align: center;"
+                <td>
+                    <input type="text" name="suppLetterTime" id="suppLetterTime"
+                           style="width: 210px;text-align: center;"
                            class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.suppletter.suppLetterTime"
                            data-val-date="必须为日期">
@@ -101,60 +95,75 @@
             <tr>
                 <td style="width:150px;" class="text-center">秘密等级</td>
                 <td>
-                     <select  ng-model="vm.suppletter.secretLevel" name="secretLevel" id="secretLevel" style="width: 280px;" class="form-control input-sm ">
-                        <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="x.dictName == vm.suppletter.secretLevel"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select> 
+                    <select ng-model="vm.suppletter.secretLevel" name="secretLevel" id="secretLevel"
+                            style="width: 280px;" class="form-control input-sm ">
+                        <option ng-repeat="x in DICT.SECRECTLEVEL.dicts"
+                                ng-selected="x.dictName == vm.suppletter.secretLevel"
+                                value="{{x.dictName}}">{{x.dictName}}
+                        </option>
+                    </select>
                 </td>
 
                 <td style="width:150px;" class="text-center">缓急程度</td>
                 <td>
-                      <select ng-model="vm.suppletter.mergencyLevel" name="isSigle" id="mergencyLevel" style="width: 280px;" class="form-control input-sm ">
-                        <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="x.dictName == vm.suppletter.mergencyLevel"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
+                    <select ng-model="vm.suppletter.mergencyLevel" name="isSigle" id="mergencyLevel"
+                            style="width: 280px;" class="form-control input-sm ">
+                        <option ng-repeat="x in DICT.BAOMI.dicts"
+                                ng-selected="x.dictName == vm.suppletter.mergencyLevel"
+                                value="{{x.dictName}}">{{x.dictName}}
+                        </option>
                     </select>
                 </td>
             </tr>
-           
+
 
             <tr>
-                <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题
+                    <span class="required">*</span></td>
                 <td colspan="3">
                 <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
-                              ng-model="vm.suppletter.title" id="title" name="title"
-                              data-val="true" data-val-required="必填" />
+                          ng-model="vm.suppletter.title" id="title" name="title"
+                          data-val="true" data-val-required="必填"/>
                 </td>
             </tr>
             <tr>
-                <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">发行范围<span class="required">*</span></td>
+                <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">
+                    发行范围<span class="required">*</span></td>
                 <td colspan="3">
                     <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.suppletter.dispaRange" id="dispaRange" name="dispaRange"
-                              data-val="true" data-val-required="必填" />
-                    <span style="float: right;">(印<input type="text" name="printnum" ng-model="vm.suppletter.printnum" style="width: 50px">份)</span>
+                              data-val="true" data-val-required="必填"/>
+                    <span style="float: right;">(印<input type="text" name="printnum" ng-model="vm.suppletter.printnum"
+                                                         style="width: 50px">份)</span>
                 </td>
             </tr>
 
 
             <tr>
-                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">核稿意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">核稿意见
+                </td>
                 <td colspan="3">
                 </td>
             </tr>
 
             <tr>
-                <td style="width:150px; height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">会签意见</td>
+                <td style="width:150px; height: 120px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">会签意见
+                </td>
                 <td colspan="3">
                 </td>
             </tr>
             <tr>
-                <td style="width:150px; height: 120px; vertical-align: middle !important;text-align: center; " class="text-center">领导意见</td>
-                <td colspan="3" >
+                <td style="width:150px; height: 120px; vertical-align: middle !important;text-align: center; "
+                    class="text-center">领导意见
+                </td>
+                <td colspan="3">
                 </td>
             </tr>
             </tbody>
         </table>    <!-- end table -->
     </form> <!-- end form -->
-        
+
 </div>
 <!--E 年度月报简报添加页面 -->

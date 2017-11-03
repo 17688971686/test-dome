@@ -306,24 +306,6 @@ public class FlowConstant {
     }
 
     /**
-     * 流程参数
-     */
-    public static enum CodeKey{
-        TOPIC_INFO_CODE("KT"),                    //课题编号
-        TOPIC_FILING_CODE("KD");                  //课题归档编号
-
-        private String value;
-
-        CodeKey(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
      * 月报简报流程参数
      */
     public static enum MonthlyNewsletterFlowParams{

@@ -625,4 +625,49 @@ public class Constant {
             this.value = value;
         }
     }
+
+    /**
+     * 评审阶段key值
+     */
+    public static enum RevireStageKey{
+        KEY_SUG("STAGE_SUG"),//项目建议书
+        KEY_STUDY("STAGE_STUDY"),//可行性研究报告
+        KEY_BUDGET("STAGE_BUDGET"),//项目概算
+        KEY_REPORT("STAGE_REPORT"),//资金申请报告
+        KEY_HOMELAND("STAGE_HOMELAND"),//设备清单（国产）
+        KEY_IMPORT("STAGE_IMPORT"),//设备清单（进口）
+        KEY_DEVICE("STAGE_DEVICE"),//进口设备
+        KEY_OTHER("STAGE_OTHER");//其它
+
+        private String value;
+        RevireStageKey(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+
+    }
+
+
+    /**
+     * 存档编号KEY值
+     * 评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD
+     */
+    public static enum FILE_RECORD_KEY{
+        KT("KT"),                //课题编号
+        KD("KD"),                //课题归档编号
+        YD("YD"),                //月报简报
+        PD("PD"),
+        GD("GD"),
+        SD("SD");
+        private String value;
+        FILE_RECORD_KEY(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+
+    }
 }

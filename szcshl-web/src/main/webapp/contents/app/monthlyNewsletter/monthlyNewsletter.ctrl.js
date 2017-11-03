@@ -7,7 +7,13 @@
 
     function monthlyNewsletter($location, monthlyNewsletterSvc) {
         var vm = this;
-        vm.title = '月报简报';
+        vm.title = '月报简报列表';
+
+        activate();
+        function activate() {
+            monthlyNewsletterSvc.monthlyNewsletterGrid(vm);
+            monthlyNewsletterSvc.monthlyDeleteGrid(vm);
+        }
       
         vm.del = function (id) {
             common.confirm({
@@ -36,13 +42,6 @@
                 vm.del(idStr);
             }
         };
-        
 
-        activate();
-        function activate() {
-            monthlyNewsletterSvc.monthlyNewsletterGrid(vm);
-            monthlyNewsletterSvc.monthlyDeleteGrid(vm);
-            monthlyNewsletterSvc.theMonthGrid(vm);
-        }
     }
 })();

@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope'];
 
-    function sign(sysfileSvc, signSvc,$state,flowSvc) {
+    function sign(sysfileSvc, signSvc,$state,flowSvc,$scope) {
         var vm = this;
     	vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
@@ -79,6 +79,7 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
+                    vm.urlType="signDetails";//附件右边的列表显示
                     sysfileSvc.initZtreeClient(vm,$scope);//树形图
                 }
             });

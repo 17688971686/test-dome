@@ -209,24 +209,33 @@ public class SignDispaWorkController {
 
         Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
-        Integer[] result = null;
+        Integer[][] result = null;
+        Boolean b = false;
         if(DateUtils.daysBetween(start , end) >0){
             Integer[] integers = expertSelectedService.proReviewCondByDeclare(startTime , endTime);
-           result = new Integer[integers.length - 1];
-               Boolean b = false;
-               for(int i=0 ; i<integers.length-1 ; i++){
-                   if(integers[integers.length-1] > 0 ){
-                       b = true;
-                       double temp = (double)integers[i]/(double)integers[integers.length-1]*100;
-                       String str = String.format("%.0f",temp);
-                       result[i] =Integer.valueOf(str);
-                   }
-               }
-               if(b){
-                   return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功" , result);
-               }else{
-                   return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据失败" , null);
-               }
+            if(integers.length>0){
+                //存项目数目
+                Integer[] result2= new Integer[integers.length - 1];
+                //对项目数目的百分比
+                Integer[] result3 = new Integer[integers.length - 1];
+
+                for(int i=0 ; i<integers.length-1 ; i++){
+                    if(integers[integers.length-1] > 0 ){
+                        b = true;
+                        result2[i] = integers[i];
+                        double temp = (double)integers[i]/(double)integers[integers.length-1]*100;
+                        String str = String.format("%.0f",temp);
+                        result3[i] =Integer.valueOf(str);
+                    }
+                }
+                result = new Integer[][]{result2 , result3 ,{integers[ integers.length -1 ]}};
+            }
+            if(b){
+                return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功" , result);
+            }else{
+                return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据失败" , null);
+            }
+
         }else{
             return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "结束日期必须大于开始日期！" , null);
         }

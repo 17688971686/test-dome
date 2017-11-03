@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signEndCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope'];
 
-    function sign(sysfileSvc,signSvc,$state,flowSvc) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc,$scope) {
         var vm = this;
         vm.title = "已办结项目详情";
         vm.model = {};
@@ -78,6 +78,7 @@
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
+                    vm.urlType="endSignDetail";//附件右边列表的显示
                     sysfileSvc.initZtreeClient(vm,$scope);//树形图
 
                 }

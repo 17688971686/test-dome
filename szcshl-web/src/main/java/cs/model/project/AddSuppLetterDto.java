@@ -142,6 +142,12 @@ public class AddSuppLetterDto extends BaseDto {
      */
     private String processInstanceId;
 
+    /**
+     * 月报简报月份(用于按年分类，不用保存到数据库)
+     * @return
+     */
+    private String monthLetterYearName;
+
     public String getId() {
         return id;
     }
@@ -428,5 +434,13 @@ public class AddSuppLetterDto extends BaseDto {
 
     public void setMonthlySeq(Integer monthlySeq) {
         MonthlySeq = monthlySeq;
+    }
+
+    public String getMonthLetterYearName() {
+        return monthLetterYearName;
+    }
+
+    public void setMonthLetterYearName(String monthLetterYearName) {
+        this.monthLetterYearName = monthLetterYearName;
     }
 }

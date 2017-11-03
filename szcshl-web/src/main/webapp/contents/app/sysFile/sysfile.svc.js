@@ -21,7 +21,7 @@
         return service;
 
         function previewFile() {
-            alert(12);
+            //alert(12);
         }
 
         // 各大模块附件根目录(跟后台Constant.SysFileMainType 同步)
@@ -46,7 +46,7 @@
                 TOPIC_PLAN: "课题计划书",
                 TOPIC_WORKPLAN: "课题工作方案",
                 TOPIC_FILING: "课题归档",
-                CENTER_FILE: "中心文件（稿纸）",
+                MONTH_FILE: "月报简报",
                 AADSUPP_FILE: "拟补充资料函"
             }
         }
@@ -341,6 +341,7 @@
                 var nodes = new Object();//定义父类的对象
                 nodes.id=array[j].mainId;
                 nodes.name = name;
+                nodes.urlType=vm.urlType;
                 var ss = [];//定义子类对象数组
                 for (var i = 0; i < array.length;) {
                     if (array[i].sysBusiType == name) {//判断是否是属于父类
@@ -368,7 +369,18 @@
          //点击跳转
         function zTreeOnClick(event, treeId, treeNode) {
             if(treeNode.check_Child_State==0){//点击文件夹时展开列表
-                $state.go('signFlowDeal.fileList', { id: treeNode.id,type:treeNode.name});
+                if(treeNode.urlType=="signFlowDetail"){//判断右边的列表显示
+                    $state.go('signFlowDetail.fileList', { id: treeNode.id,type:treeNode.name});
+                }
+                if(treeNode.urlType=="signFlowDeal"){
+                    $state.go('signFlowDeal.fileList', { id: treeNode.id,type:treeNode.name});
+                }
+                if(treeNode.urlType=="endSignDetail"){
+                    $state.go('endSignDetail.fileList', { id: treeNode.id,type:treeNode.name});
+                }
+                if(treeNode.urlType=="signDetails"){
+                    $state.go('signDetails.fileList', { id: treeNode.id,type:treeNode.name});
+                }
             }
         };
 

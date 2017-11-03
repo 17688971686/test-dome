@@ -21,6 +21,7 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
      * @param businessId
      * @return
      */
+    @Deprecated
     @Override
     public  String findYear(String businessId){
         Criteria criteria = getExecutableCriteria();

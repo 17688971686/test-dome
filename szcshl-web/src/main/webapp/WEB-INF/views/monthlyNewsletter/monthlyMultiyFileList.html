@@ -6,48 +6,39 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/monthlyNewsletter">年度月报简报列表</a></li>
+        <li>月报简报管理</li>
         <li class="active">{{vm.title}}</li>
     </ol>
-  <!--   <form id="form" name="form">
-          
-         <ol class="breadcrumb">
-         </br>
-       		 <li> <span class="help-inline">文件名称：</span>
-            <input type="text" ng-model="vm.suppletter.title" operator="like" name="title" id="title" operator="like" placeholder="请输入">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.addSuppQuery()"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.resetAddSupp()">重置</button>
+        <go-back></go-back>
+    </div>
+    <form id="form" name="form">
+        <ol class="breadcrumb">
+            <li><span class="help-inline">文件名称：</span>
+                <input type="text" operator="like" name="title" id="title" placeholder="">
 
-            <span class="help-inline" style="margin-left:10px;">拟稿部门：</span>
-	          <select ng-model="vm.suppletter.orgName" name="orgName" id="orgName" style="width:77px">
-	          <option>请选择</option>
-	          <option repaet="" value="">{{}}</option>
-	          </select>
-            <span class="help-inline" style="margin-left:10px;">拟稿人员：</span>
-            	 <select style="width:77px">
-	          <option>请选择</option>
-	          </select>
-            <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
-            <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-           	 至
-            <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
+                <span class="help-inline" style="margin-left:10px;">拟稿人员：</span>
+                <input type="text" operator="like" name="userName" id="userName" placeholder="">
+
+                <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
+                <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"
+                       operator="ge"/>
+                至
+                <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"
+                       operator="le"/>
             </li>
-            </br></br>
-            <div align="right">
-           <button class="btn btn-sm btn-success" ng-click="vm.addSuppQuery()" >
-            <span class="glyphicon glyphicon-search"></span>查询
-            </button>
-            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetAddSupp()">重置</a>
-      	 </div> 
-   		 </ol>
-   		 </form> -->
-        <script type="text/template" id="columnBtns">
-			
-            <@shiro.hasPermission name="monthlyNewsletter##put">
-            <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearDetail/{0}"><span class="glyphicon glyphicon-pencil"></span>查看详细</a>
-            </@shiro.hasPermission>
-        </script>
- 		<!-- <ol class="breadcrumb">
-        <li>2014年度月报简报列表（单击进入详细资料 <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>  正在办理 ）</li>
-   		 </ol> -->
-        <div class="grid" kendo-grid="grid" k-options="vm.multiyearGrid"></div>
+        </ol>
+    </form>
+    <script type="text/template" id="columnBtns">
+        <@shiro.hasPermission name="monthlyNewsletter##put">
+        <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearDetail/{0}"><span
+                class="glyphicon glyphicon-pencil"></span>查看详细</a>
+        </@shiro.hasPermission>
+    </script>
+    <div class="grid" kendo-grid="grid" k-options="vm.multiyearGrid"></div>
 </div>
 <!--E 中心文件查询列表页面 -->
