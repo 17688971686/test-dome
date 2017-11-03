@@ -43,6 +43,15 @@
                 </div>
             </td>
         </tr>
+        <tr ng-show="vm.flow.curNode.activitiId=='MONTH_YB'">
+            <td width="10%" class="text-center">
+                业务编辑
+            </td>
+
+            <td>
+                <a class="btn btn-sm btn-primary" href="#/monthlyMultiyearEdit/{{vm.suppletter.id}}"><span class="glyphicon glyphicon-pencil">修改月报简报</span></a>
+            </td>
+        </tr>
 
         <tr ng-if="vm.flow.curNode.activitiId == 'ARP_BZ_SP' || vm.flow.curNode.activitiId == 'ARP_ZHB_SP' ">
             <td width="10%" class="text-center">
