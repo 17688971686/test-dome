@@ -5,6 +5,8 @@ import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.FtpUtil;
+import cs.common.utils.PropertyUtil;
 import cs.common.utils.SysFileUtil;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
@@ -41,6 +43,13 @@ public class FileController {
     private static Logger logger = Logger.getLogger(FileController.class);
     
     private static final String plugin_file_path = "contents/plugins";
+
+    private static String FTP_IP1 = "FTP_IP1";
+    private static String FTP_PORT1 = "FTP_PORT1";
+    private static String FTP_USER = "FTP_USER";
+    private static String FTP_PWD = "FTP_PWD";
+    private static String FTP_BASE_PATH = "FTP_BASE_PATH";
+    private static String FTP_FILE_PATH = "FTP_FILE_PATH";
     
     private String ctrlName = "file";
 
@@ -103,8 +112,11 @@ public class FileController {
         String fileName = multipartFile.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
         fileType = fileType.toLowerCase();      //统一转成小写
-
-        if (!multipartFile.isEmpty()) {
+        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+        boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(FTP_IP1),Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)),
+                propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "",
+                new String(fileName.getBytes("GBK"), "ISO-8859-1"), multipartFile.getInputStream());
+        if (result) {
            return  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
