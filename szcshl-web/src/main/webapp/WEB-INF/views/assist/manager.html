@@ -13,9 +13,9 @@
     </div>
     <div class="well well-sm" style="background:white;">
         修改已有的项目计划审批包：
-        <select ng-model="vm.selectPlanId" ng-change = "vm.initSelPlan()">
+        <select ng-model="vm.selectPlanId" ng-change = "vm.initSelPlan()" id="planName">
             <option value="">请选择</option>
-            <option ng-repeat="s in vm.planList" value="{{s.id}}" ng-selected="s.id == vm.selectPlanId">{{s.planName}}</option>
+            <option ng-repeat="s in vm.planList"  value="{{s.id}}" ng-selected="s.id == vm.selectPlanId">{{s.planName}}</option>
         </select>
         <button class="btn btn-xs btn-danger"  ng-click="vm.doDelete()"><i class="fa fa-times" aria-hidden="true"></i>删除计划审批包</button>
         <table class="table table-bordered" style="margin-top:10px;">
@@ -92,7 +92,7 @@
                 </td>
                 <td width="14%;" style="text-align:center;vertical-align:middle;">
                     <p>
-                        <input type="radio" ng-model="vm.plan.assistType" name="selAssistType" value="独立项目" >独立项目
+                        <input type="radio" ng-model="vm.plan.assistType" name="selAssistType" value="独立项目" ng-checked="vm.plan.assistType == '独立项目'">独立项目
                         <span ng-show="vm.plan.assistType=='独立项目'">
                             <select ng-model="vm.plan.spliNum" >
                                 <option ng-repeat="i in vm.splitNumArr" value="{{i}}">{{i}}</option>
