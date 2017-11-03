@@ -262,12 +262,10 @@
                 //课题计划环节
                 case flowcommon.getTopicFlowNode().TOPIC_JHTC:
                     showFlag.businessTr = true;
-                    showFlag.showUploadBT = true;
                     break;
                 //工作方案填报环节
                 case flowcommon.getTopicFlowNode().TOPIC_GZFA:
                     showFlag.businessTr = true;
-                    showFlag.showUploadBT = true;
                     if(flow.businessMap) {  //判断是否第一负责人
                         showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
                     }
@@ -275,7 +273,6 @@
                 //归档环节
                 case flowcommon.getTopicFlowNode().TOPIC_ZLGD:
                     showFlag.businessTr = true;
-                    showFlag.showUploadBT = true;
                     break;
             }
         }//E_initFlowNode

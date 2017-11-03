@@ -229,6 +229,27 @@ public enum FlowNextNodeFilter {
             }
             return resultList;
         }
+    },
+    //以下是课题流程
+    TOPIC_ZRSH_JH {
+        //主办部长审批拟补充资料函
+        @Override
+        public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            boolean sendFgw = businessMap.get(FlowConstant.FlowParams.SEND_FGW.getValue()) != null ? true : false;
+            for (int i = 0; i < nextNodeList.size(); i++) {
+                //直接到分管领导环节
+                if (sendFgw && (nextNodeList.get(i).getActivitiId()).equals(FlowConstant.TOPIC_BFGW)) {
+                    resultList.add(nextNodeList.get(i));
+                    break;
+                    //协办领导会签环节
+                } else if (!sendFgw && (nextNodeList.get(i).getActivitiId()).equals(FlowConstant.TOPIC_GZFA)) {
+                    resultList.add(nextNodeList.get(i));
+                    break;
+                }
+            }
+            return resultList;
+        }
     };
 
     public abstract List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList);
@@ -262,9 +283,14 @@ public enum FlowNextNodeFilter {
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_BZ_SP);
             case FlowConstant.FLOW_ARC_FGLD_SP:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_FGLD_SP);
-            //以下是你补充资料函环节
+            //以下是拟补充资料函环节
             case FlowConstant.FLOW_SPL_BZ_SP:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SPL_BZ_SP);
+            //以下是课题环节
+            case FlowConstant.TOPIC_ZRSH_JH:
+                return FlowNextNodeFilter.valueOf(FlowConstant.TOPIC_ZRSH_JH);
+
+
             default:
                 return null;
         }

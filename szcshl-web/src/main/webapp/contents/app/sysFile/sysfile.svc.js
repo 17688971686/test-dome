@@ -10,10 +10,10 @@
             delSysFile: delSysFile,                     // 删除系统文件
             downloadFile: downloadFile,                 // 系统文件下载
             queryPluginfile: queryPluginfile,           // 查询系统安装包
-            findByMianId: findByMianId,             // 根据主业务ID获取所有的附件信息
-            findByBusinessId: findByBusinessId,        // 根据业务ID 获取上传附件
-            mainTypeValue: mainTypeValue,            // 各大模块附件根目录
-            previewFile: previewFile,                  // pdf 预览
+            findByMianId: findByMianId,                 // 根据主业务ID获取所有的附件信息
+            findByBusinessId: findByBusinessId,         // 根据业务ID 获取上传附件
+            mainTypeValue: mainTypeValue,               // 各大模块附件根目录
+            previewFile: previewFile,                   // pdf 预览
             initZtreeClient: initZtreeClient,
             queryFile:queryFile
 

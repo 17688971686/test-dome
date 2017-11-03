@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowEndCtrl', flowEnd);
 
-    flowEnd.$inject = ['$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc','pauseProjectSvc','archivesLibrarySvc','reviewProjectAppraiseSvc','addSuppLetterSvc'];
+    flowEnd.$inject = ['$scope','$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc','pauseProjectSvc','archivesLibrarySvc','reviewProjectAppraiseSvc','addSuppLetterSvc'];
 
-    function flowEnd($state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc,pauseProjectSvc,archivesLibrarySvc,reviewProjectAppraiseSvc,addSuppLetterSvc) {
+    function flowEnd($scope,$state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc,pauseProjectSvc,archivesLibrarySvc,reviewProjectAppraiseSvc,addSuppLetterSvc) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -18,7 +18,7 @@
         vm.showFlag={
             businessNext : false,                              //是否显示下一环节处理人tr
             businessTr : false,                                //是否显示业务处理tr
-            showUploadFile : false,                            //显示附件
+            tabSysFile : false,                                //显示附件
             buttBack : false,                                  //显示回退按钮
         }
         activate();
@@ -60,12 +60,14 @@
                     break;
             }
             //5、附件
-            sysfileSvc.findByBusinessId(vm.businessKey,function(data){
+            sysfileSvc.findByMianId(vm.businessKey,function(data){
                 if(data && data.length > 0){
-                    vm.sysFilelists = data;
-                    vm.showFlag.showUploadFile = true;
+                    vm.showFlag.tabSysFile = true;
+                    vm.sysFileList = data;
+                    vm.urlType="flowEnd";//附件右边的列表显示
+                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
                 }
-            })
+            });
         }
 
     }
