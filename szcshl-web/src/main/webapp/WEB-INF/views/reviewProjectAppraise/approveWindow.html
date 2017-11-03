@@ -2,8 +2,15 @@
 <meta charset="UTF-8">
 <div class="well well-sm " style="background: white;">
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.commitApprove()"><span class="glyphicon glyphicon-ok"></span>发起流程</button>
-        <go-back></go-back>
+        <button ng-show="vm.mode.processInstanceId" class="btn btn-sm btn-success" ng-click="vm.commitApprove()"><span class="glyphicon glyphicon-ok"></span>发起流程</button>
+        <go-back ng-show="vm.mode.processInstanceId"></go-back>
+
+        <!--退回时的处理,判断是否有流程实例ID-->
+        <button ng-hide="vm.mode.processInstanceId" class="btn btn-sm btn-success" ng-click="vm.addApprove()" ng-disabled="vm.isCommit">
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <a ng-hide="vm.mode.processInstanceId" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+
     </div>
     <form id="form" name="form">
         <table class="table table-bordered">
@@ -16,7 +23,6 @@
                     {{vm.model.projectName}}
                 </td>
             </tr>
-
             <tr>
                 <td class="text-center" >
                     申报标题<span class="required">*</span>

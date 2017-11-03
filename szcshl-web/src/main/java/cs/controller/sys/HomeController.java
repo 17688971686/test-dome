@@ -186,7 +186,7 @@ public class HomeController {
 		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("月报简报流程").deploy();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
 		logger.info("月报简报流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
-		return "init AppraiseReport Flow success";
+		return "init monthlyBulletin Flow success";
 	}
 
 

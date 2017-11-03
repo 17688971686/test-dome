@@ -92,6 +92,16 @@ public class FlowServiceImpl implements FlowService {
     @Qualifier("topicFlowBackImpl")
     private IFlowBack topicFlowBackImpl;
 
+    @Autowired
+    @Qualifier("appraiseFlowBackImpl")
+    private IFlowBack appraiseFlowBackImpl;
+    @Autowired
+    @Qualifier("archivesFlowBackImpl")
+    private IFlowBack archivesFlowBackImpl;
+    @Autowired
+    @Qualifier("suppLetterFlowBackImpl")
+    private IFlowBack suppLetterFlowBackImpl;
+
     /**
      * 回退到上一环节或者指定环节
      *
@@ -144,6 +154,15 @@ public class FlowServiceImpl implements FlowService {
                 break;
             case FlowConstant.TOPIC_FLOW:
                 backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                backActivitiId = appraiseFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                backActivitiId = archivesFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                backActivitiId = suppLetterFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                 break;
             default:
                 backActivitiId = "";

@@ -233,7 +233,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
 
         String businessId = processInstance.getBusinessKey(),
                 assigneeValue = "";                            //流程处理人
-        Map<String,Object> variables = null;                   //流程参数
+        Map<String,Object> variables = new HashMap<>();                   //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
         ArchivesLibrary archivesLibrary = null;                //档案借阅管理
