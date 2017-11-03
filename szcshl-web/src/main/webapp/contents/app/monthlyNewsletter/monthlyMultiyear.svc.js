@@ -15,7 +15,7 @@
             monthlyYearGrid: monthlyYearGrid,  			    //月报简报详情列表（跟拟补充资料函一个表）
             getmonthlyMultiyearById: getmonthlyMultiyearById,//根据ID查找中心文件稿纸
             updatemonthlyMultiyear: updatemonthlyMultiyear,	//更新中心文件稿纸
-            updateApprove: updateApprove,					//领导审批中心文件
+            //updateApprove: updateApprove,					//领导审批中心文件
             addSuppQuery: addSuppQuery,						//查询
             findAllOrg: findAllOrg,							//查询部门
             findAllUser: findAllUser,  						//查询用户
@@ -72,7 +72,7 @@
         }
 
         //S 领导审批中心文件处理
-        function updateApprove(vm) {
+       /* function updateApprove(vm) {
             var httpOptions = {
                 method: 'post',
                 url: url_monthlyMultiyear + "/updateApprove",
@@ -87,30 +87,27 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }
+        }*/
         //E 领导审批中心文件处理
 
         //S 初始化中心文件稿纸
-        function initMonthlyMultiyear(vm) {
-            vm.isSubmit = true;
+        function initMonthlyMultiyear(callBack) {
             var httpOptions = {
                 method: 'post',
                 url: url_monthlyMultiyear + "/initMonthlyMultiyear",
             };
 
             var httpSuccess = function success(response) {
-                vm.suppletter = response.data;
-                //初始化附件上传
-                vm.initFileUpload();
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
         }
-
         //E 初始化中心文件稿纸
 
         // begin#updatemonthlyMultiyear
