@@ -127,17 +127,16 @@ public class AppraiseServiceImpl implements AppraiseService {
     @Transactional
     public ResultMsg saveApply(AppraiseReportDto appraiseReportDto) {
         Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReportDto.getSignId());
-        if (Validate.isString(sign.getIsAppraising()) && (Constant.EnumState.YES.getValue().equals(sign.getIsAppraising())
-                || Constant.EnumState.NO.getValue().equals(sign.getIsAppraising())) || Constant.EnumState.PROCESS.getValue().equals(sign.getIsAppraising())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已经申报过优秀评审报告评优，不能重复申请！");
-        }
-
         AppraiseReport appraiseReport = new AppraiseReport();
         Date now = new Date();
         if (Validate.isString(appraiseReportDto.getId())) {
             appraiseReport = appraiseRepo.findById(appraiseReportDto.getId());
             BeanCopierUtils.copyPropertiesIgnoreNull(appraiseReportDto, appraiseReport);
         } else {
+            if (Validate.isString(sign.getIsAppraising()) && (Constant.EnumState.YES.getValue().equals(sign.getIsAppraising())
+                    || Constant.EnumState.NO.getValue().equals(sign.getIsAppraising())) || Constant.EnumState.PROCESS.getValue().equals(sign.getIsAppraising())) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已经申报过优秀评审报告评优，不能重复申请！");
+            }
             BeanCopierUtils.copyProperties(appraiseReportDto, appraiseReport);
             appraiseReport.setId(UUID.randomUUID().toString());
             appraiseReport.setCreatedBy(SessionUtil.getDisplayName());

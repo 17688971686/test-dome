@@ -13,5 +13,10 @@ import java.util.Date;
 public interface AddSuppLetterRepo extends IRepository<AddSuppLetter, String> {
     boolean isHaveSuppLetter(String businessId);
 
-    Integer findybMaxSeq(String businessId);
+    /**
+     * 根据业务类型，查询最大序号
+     * @param fileType
+     * @return
+     */
+    Integer findybMaxSeq(String fileType);
 }

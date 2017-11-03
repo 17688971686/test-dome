@@ -258,10 +258,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             addSuppLetter.setModifiedBy(SessionUtil.getUserInfo().getId());
             addSuppLetter.setModifiedDate(now);
             addSuppLetter.setCreatedDate(now);
-            //获取最大的序号
-            int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getBusinessId());
-            int seq = curYearMaxSeq + 1;
-            addSuppLetter.setMonthlySeq(seq);
         }
         addSuppLetterRepo.save(addSuppLetter);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
@@ -272,8 +268,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj) {
-        //不统计分页
-        odataObj.setCount(false);
         Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
         if (Validate.isList(odataObj.getFilter())) {
             Object value;
@@ -282,16 +276,23 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 if (null == value) {
                     continue;
                 }
+                //如果是月报简报年度列表，则不分页
                 if("monthLetterYearName".equals(item.getField())){
-                    criteria.add(Restrictions.gt(AddSuppLetter_.suppLetterTime.getName(),DateUtils.converToDate(value.toString()+"-01-01 00:00:00","yyyy-MM-dd HH:mm:ss")));
-                    criteria.add(Restrictions.lt(AddSuppLetter_.suppLetterTime.getName(),DateUtils.converToDate(value.toString()+"-12-31 24:00:00","yyyy-MM-dd HH:mm:ss")));
-                    //criteria.add(Restrictions.sqlRestriction(""));
+                    //不统计分页
+                    odataObj.setCount(false);
+                    criteria.add(Restrictions.gt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-01-01 00:00:00","yyyy-MM-dd HH:mm:ss")));
+                    criteria.add(Restrictions.lt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-12-31 24:00:00","yyyy-MM-dd HH:mm:ss")));
                     continue;
                 }
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
             }
         }
-
+        //如果统计分页
+        if(odataObj.isCount()){
+            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            criteria.setProjection(null);
+            odataObj.setCount(totalResult);
+        }
         List<AddSuppLetter> suppLetterList = criteria.list();
         List<AddSuppLetterDto> suppLetterDtoList = new ArrayList<AddSuppLetterDto>();
         if (Validate.isList(suppLetterList)) {
@@ -301,8 +302,11 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 suppLetterDtoList.add(addDto);
             });
         }
+
         PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
         pageModelDto.setValue(suppLetterDtoList);
+        pageModelDto.setCount(odataObj.getCount());
+
         return pageModelDto;
     }
 
@@ -372,6 +376,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     public AddSuppLetterDto initMonthlyMutilyear() {
         AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
         suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
+        suppletterDto.setUserName(SessionUtil.getDisplayName());
+        suppletterDto.setSuppLetterTime(new Date());
         return suppletterDto;
     }
 

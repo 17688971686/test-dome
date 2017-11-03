@@ -1,7 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.common.HqlBuilder;
-import cs.common.utils.DateUtils;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
 import cs.repository.AbstractRepository;
@@ -10,8 +9,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.Date;
 
 /**
  * Description: 项目资料补充函 数据操作实现类
@@ -39,15 +36,15 @@ public class AddSuppLetterRepoImpl extends AbstractRepository<AddSuppLetter, Str
     }
 
     /**
-     * 根据业务Id查找出最高的序号
-     * @param businessId
+     * 根据业务类型，查询最大序号
+     * @param fileType
      * @return
      */
     @Override
-    public  Integer findybMaxSeq(String businessId){
+    public  Integer findybMaxSeq(String fileType){
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max(" + AddSuppLetter_.MonthlySeq.getName() + ") from cs_add_suppLetter" );
-        sqlBuilder.append(" where " + AddSuppLetter_.businessId.getName() + " =:businessId ").setParam("businessId", businessId);
+        sqlBuilder.append(" where " + AddSuppLetter_.fileType.getName() + " =:fileType ").setParam("fileType", fileType);
         return addSuppLetterRepo.returnIntBySql(sqlBuilder);
     }
 

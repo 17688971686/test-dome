@@ -648,4 +648,26 @@ public class Constant {
         }
 
     }
+
+
+    /**
+     * 存档编号KEY值
+     * 评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD
+     */
+    public static enum FILE_RECORD_KEY{
+        KT("KT"),                //课题编号
+        KD("KD"),                //课题归档编号
+        YD("YD"),                //月报简报
+        PD("PD"),
+        GD("GD"),
+        SD("SD");
+        private String value;
+        FILE_RECORD_KEY(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+
+    }
 }

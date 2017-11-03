@@ -1,12 +1,12 @@
 (function() {
-	'use strict';
-	
-	angular.module('app').factory('assistSvc', assist);
+    'use strict';
+
+    angular.module('app').factory('assistSvc', assist);
 
     assist.$inject = ['$http','$state'];
 
-	function assist($http,$state) {
-		var service = {
+    function assist($http,$state) {
+        var service = {
             initPlanPage : initPlanPage,						//初始化计划方案表
             initPlanGrid : initPlanGrid,                        //舒适化表格
             saveAssistPlan : saveAssistPlan,                    //保存协审计划
@@ -28,9 +28,9 @@
             getAllUnit : getAllUnit,			                    //获取所有的协审单位
             saveAddChooleUnit : saveAddChooleUnit,		//保存手动选择的协审单位
             initAssistUnitByPlanId : initAssistUnitByPlanId	//初始化计划项目的协审单位
-            
-		};
-		return service;
+
+        };
+        return service;
 
         function getPlanColumns(){
             var columns = [
@@ -113,8 +113,8 @@
 
         }//E_initPlanGrid
 
-		//S_initPlanPage
-		function initPlanPage(vm){
+        //S_initPlanPage
+        function initPlanPage(vm){
             //1、查找正在办理的项目概算流程
             var httpOptions = {
                 method : 'get',
@@ -125,6 +125,7 @@
                     vm:vm,
                     response:response,
                     fn:function() {
+
                         vm.planList = new Array();
                         if(response.data.signList && response.data.signList.length > 0){
                             vm.assistSign = response.data.signList;
@@ -148,7 +149,7 @@
                 httpOptions:httpOptions,
                 success:httpSuccess
             });
-		}//E_initPlanPage
+        }//E_initPlanPage
 
         //S_saveAssistPlan
         function saveAssistPlan(planModel,isCommit,callBack){
@@ -204,6 +205,7 @@
                 params : {planId : planId},
             }
             var httpSuccess = function success(response) {
+                $('#planName').val(vm.selectPlanId);
                 common.requestSuccess({
                     vm:vm,
                     response:response,
@@ -211,7 +213,6 @@
                         vm.pickSign = response.data;             //已选项目列表
                         vm.pickMainSign = new Array();          //主项目对象全部清空
                         vm.lowerSign = new Array();             //次项目对象
-
                         //挑选主项目
                         if(vm.showPlan.assistPlanSignDtoList){
                             vm.pickSign.forEach(function(ps,index) {
@@ -275,30 +276,30 @@
 
         //S_saveLowPlanSign
         function saveLowPlanSign(vm,signIdArr){
-           var saveLowSignArr = new Array();
-           vm.assistSign.forEach(function(asts,index){
-               for(var i=0,l=signIdArr.length;i<l;i++){
-                   if(asts.signid == signIdArr[i]){
-                       var LowSign = {};
-                       LowSign.signId = asts.signid;
-                       LowSign.projectName = asts.projectname;
-                       LowSign.assistType = '合并项目';
-                       LowSign.isMain = '0';
-                       LowSign.mainSignId = vm.selectMainSignId;
-                       saveLowSignArr.push(LowSign);
-                   }
-               }
-           });
+            var saveLowSignArr = new Array();
+            vm.assistSign.forEach(function(asts,index){
+                for(var i=0,l=signIdArr.length;i<l;i++){
+                    if(asts.signid == signIdArr[i]){
+                        var LowSign = {};
+                        LowSign.signId = asts.signid;
+                        LowSign.projectName = asts.projectname;
+                        LowSign.assistType = '合并项目';
+                        LowSign.isMain = '0';
+                        LowSign.mainSignId = vm.selectMainSignId;
+                        saveLowSignArr.push(LowSign);
+                    }
+                }
+            });
 
-           vm.model = vm.showPlan;
-           vm.model.assistPlanSignDtoList = saveLowSignArr;
-           vm.isCommit = true;
-           var httpOptions = {
+            vm.model = vm.showPlan;
+            vm.model.assistPlanSignDtoList = saveLowSignArr;
+            vm.isCommit = true;
+            var httpOptions = {
                 method : 'post',
                 url : rootPath+"/assistPlan/saveLowPlanSign",
                 data : vm.model,
-           }
-           var httpSuccess = function success(response) {
+            }
+            var httpSuccess = function success(response) {
                 common.requestSuccess({
                     vm:vm,
                     response:response,
@@ -396,167 +397,167 @@
         function queryPlan(vm){
             vm.gridOptions.dataSource.read();
         }//E_queryPlan
-        
+
         //begin getPlanSignByPlan
         function getPlanSignByPlanId(vm,planId){
-        	vm.reviewNum=''; //几个评审单位
-	        var httpOptions={
-	        	method:'get',
-	        	url:rootPath+'/assistPlanSign/getPlanSignByPlanId',
-	        	params:{planId:planId}
-	        }
-	        var httpSuccess=function success(response){
-	        	vm.assistPlanSign=response.data;
-	        	vm.reviewNum=vm.assistPlanSign.length;
-	        	 if(vm.assistPlanSign.length > 0){
-			           initPlanByPlanId(vm,planId);//初始化协审计划
-			           initAssistUnitByPlanId(vm,planId);//初始化协审单位
+            vm.reviewNum=''; //几个评审单位
+            var httpOptions={
+                method:'get',
+                url:rootPath+'/assistPlanSign/getPlanSignByPlanId',
+                params:{planId:planId}
+            }
+            var httpSuccess=function success(response){
+                vm.assistPlanSign=response.data;
+                vm.reviewNum=vm.assistPlanSign.length;
+                if(vm.assistPlanSign.length > 0){
+                    initPlanByPlanId(vm,planId);//初始化协审计划
+                    initAssistUnitByPlanId(vm,planId);//初始化协审单位
 //			           getUnitUser(vm);
-           		}
-	        }
-	        
-	        common.http({
-	        	vm:vm,
-	        	$http:$http,
-	        	httpOptions:httpOptions,
-	        	success:httpSuccess
-	        });
-        	
+                }
+            }
+
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+
         }//end 
-        
+
         //begin savePlanSign
         function savePlanSign(vm){
-        	vm.assistPlan.ministerOpinion=$("#ministerOpinion").val();
-        	vm.assistPlan.viceDirectorOpinion=$("#viceDirectorOpinion").val();
-        	vm.assistPlan.directorOpinion=$("#directorOpinion").val();
-        	var httpOptions={
-        		method:"put",
-        		url: rootPath +"/assistPlanSign/savePlanSign",
-        		headers:{
-                 "contentType":"application/json;charset=utf-8"  //设置请求头信息
-              },
-			  dataType : "json",
-			  data:angular.toJson(vm.assistPlanSign)
-        	}
-        	
-        	 var httpSuccess=function success(response){
-        	 	}
-	        
-	        common.http({
-	        	vm:vm,
-	        	$http:$http,
-	        	httpOptions:httpOptions,
-	        	success:httpSuccess
-	        });
+            vm.assistPlan.ministerOpinion=$("#ministerOpinion").val();
+            vm.assistPlan.viceDirectorOpinion=$("#viceDirectorOpinion").val();
+            vm.assistPlan.directorOpinion=$("#directorOpinion").val();
+            var httpOptions={
+                method:"put",
+                url: rootPath +"/assistPlanSign/savePlanSign",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                dataType : "json",
+                data:angular.toJson(vm.assistPlanSign)
+            }
+
+            var httpSuccess=function success(response){
+            }
+
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
         }
         //end savePlanSign
-        
+
         //begin savePlan
         function savePlan(vm){
-        var httpOptions={
-        		method:"put",
-        		url: rootPath +"/assistPlan",
-        		data:vm.assistPlan
-        	}
-        	 var httpSuccess=function success(response){
-        	 	alert("保存成功！");
-        	 	 window.parent.$("#planInfo").data("kendoWindow").close();
-	        }
-	        
-	        common.http({
-	        	vm:vm,
-	        	$http:$http,
-	        	httpOptions:httpOptions,
-	        	success:httpSuccess
-	        });
-        	
+            var httpOptions={
+                method:"put",
+                url: rootPath +"/assistPlan",
+                data:vm.assistPlan
+            }
+            var httpSuccess=function success(response){
+                alert("保存成功！");
+                window.parent.$("#planInfo").data("kendoWindow").close();
+            }
+
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+
         }
         //end savePlan
-        
+
         //begin initPlanByPlanId
         function initPlanByPlanId(vm,planId){
-        	var httpOptions={
-        		method:"get",
-        		url:rootPath+'/assistPlan/html/findById',
-        		params:{id:planId}
-        	}
-        	
-        	var httpSuccess=function success(response){
-        		vm.assistPlan=response.data;
-        	}
-        	
-        	common.http({
-        		vm: vm,
-        		$http: $http,
-        		httpOptions: httpOptions,
-        		success: httpSuccess
-        	});
-        	
+            var httpOptions={
+                method:"get",
+                url:rootPath+'/assistPlan/html/findById',
+                params:{id:planId}
+            }
+
+            var httpSuccess=function success(response){
+                vm.assistPlan=response.data;
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
         }//end initPlanByPlanId
 
         //begin chooseAssistUnit
         function chooseAssistUnit(vm){
-        	var httpOptions={
-        		method:"get",
-        		url:rootPath+'/assistUnit/chooseAssistUnit',
-        		params:{planId:vm.planId,number:vm.number,drawType:vm.drawType}
-        	}
-        	
-        	var httpSuccess=function success(response){
-        		vm.unitList=response.data;
-        		vm.signNum=vm.unitList.length;
-        		vm.isChoose=true;
-        	}
-        	
-        	common.http({
-        		vm: vm,
-        		$http: $http,
-        		httpOptions: httpOptions,
-        		success: httpSuccess
-        	});
+            var httpOptions={
+                method:"get",
+                url:rootPath+'/assistUnit/chooseAssistUnit',
+                params:{planId:vm.planId,number:vm.number,drawType:vm.drawType}
+            }
+
+            var httpSuccess=function success(response){
+                vm.unitList=response.data;
+                vm.signNum=vm.unitList.length;
+                vm.isChoose=true;
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }//end chooseAssistUnit
-        
-        
-         // begin  getUnitUser
+
+
+        // begin  getUnitUser
         function getUnitUser(vm){
-        	var httpOptions={
-        		method:"post",
-        		url:rootPath+'/assistUnitUser/findByOData'
-        	}
-        	
-        	var httpSuccess=function success(response){
-        		vm.unitUserList=response.data.value;
-        		
-        	}
-        	
-        	common.http({
-        		vm: vm,
-        		$http: $http,
-        		httpOptions: httpOptions,
-        		success: httpSuccess
-        	});
-        	
+            var httpOptions={
+                method:"post",
+                url:rootPath+'/assistUnitUser/findByOData'
+            }
+
+            var httpSuccess=function success(response){
+                vm.unitUserList=response.data.value;
+
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
         }
         //end getUnitUser
-        
+
         //begin getAllUnit
         function getAllUnit(vm){
-        	var httpOptions={
-        		method:"post",
-        		url:rootPath+'/assistUnit/fingByOData'
-        	}
-        	
-        	var httpSuccess=function success(response){
-        		vm.allUnitList=response.data.value;
-        		
-        	}
-        	
-        	common.http({
-        		vm: vm,
-        		$http: $http,
-        		httpOptions: httpOptions,
-        		success: httpSuccess
-        	});
+            var httpOptions={
+                method:"post",
+                url:rootPath+'/assistUnit/fingByOData'
+            }
+
+            var httpSuccess=function success(response){
+                vm.allUnitList=response.data.value;
+
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
         //end  getAllUnit
 
@@ -614,75 +615,75 @@
             });
         }
         //end saveDrawAssistUnit
-        
+
         //begin saveAddChooleUnit
         function saveAddChooleUnit(vm,unitObject){
-        	if(vm.unitList.length<vm.num){
-	        	var i=0;
-	        	vm.unitList.forEach(function(x){
-	        		if(unitObject.id == x.id){
-	        			i=-1;
-	        			common.alert({
-	        				vm:vm,
-	        				msg:"该协审单位已被选中！"
-	        			});
-	        			return;
-	        		}
-	        	});
-	        	if(i!=-1){
-	        		var httpOptions={
-	        			method:"post",
-	        			url:rootPath+"/assistPlan/saveChooleUnit",
-	        			params:{planId:vm.showPlan.id,unitId:unitObject.id}
-	        		}
-	        		var httpSuccess=function success(response){
-		        		common.alert({
-		        			vm:vm,
-	        				msg:"添加成功！"
-	        			});
-	        		}
-	        		
-	        		common.http({
-		                vm:vm,
-		                $http:$http,
-		                httpOptions:httpOptions,
-		                success:httpSuccess
-	           		});
-	        	}
-        	}else{
-        		common.alert({
-        				vm:vm,
-        				msg:"当前只能"+vm.num+"家单位参与抽签"
-        			});
-        	}
+            if(vm.unitList.length<vm.num){
+                var i=0;
+                vm.unitList.forEach(function(x){
+                    if(unitObject.id == x.id){
+                        i=-1;
+                        common.alert({
+                            vm:vm,
+                            msg:"该协审单位已被选中！"
+                        });
+                        return;
+                    }
+                });
+                if(i!=-1){
+                    var httpOptions={
+                        method:"post",
+                        url:rootPath+"/assistPlan/saveChooleUnit",
+                        params:{planId:vm.showPlan.id,unitId:unitObject.id}
+                    }
+                    var httpSuccess=function success(response){
+                        common.alert({
+                            vm:vm,
+                            msg:"添加成功！"
+                        });
+                    }
+
+                    common.http({
+                        vm:vm,
+                        $http:$http,
+                        httpOptions:httpOptions,
+                        success:httpSuccess
+                    });
+                }
+            }else{
+                common.alert({
+                    vm:vm,
+                    msg:"当前只能"+vm.num+"家单位参与抽签"
+                });
+            }
         }
         //end saveAddChooleUnit
-        
+
         //begin initAssistUnitByPlanId
         function initAssistUnitByPlanId(vm){
-        	var httpOptions={
-        		method : "get",
-        		url : rootPath+"/assistPlan/initAssistUnit",
-        		params:{planId : vm.showPlan.id }
-        	}
-        	
-        	var httpSuccess=function success(response){
-		        	vm.unitList=response.data;	
-		        	vm.signNum=vm.unitList.length;
-		        	if(vm.signNum>0){
-			        	vm.isChoose=true;
-		        	}
-	        }
-	        		
-	        common.http({
-		          vm:vm,
-		          $http:$http,
-		          httpOptions:httpOptions,
-		          success:httpSuccess
-	         });
-        	
+            var httpOptions={
+                method : "get",
+                url : rootPath+"/assistPlan/initAssistUnit",
+                params:{planId : vm.showPlan.id }
+            }
+
+            var httpSuccess=function success(response){
+                vm.unitList=response.data;
+                vm.signNum=vm.unitList.length;
+                if(vm.signNum>0){
+                    vm.isChoose=true;
+                }
+            }
+
+            common.http({
+                vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+
         }
         //end  initAssistUnitByPlanId
 
-	}		
+    }
 })();

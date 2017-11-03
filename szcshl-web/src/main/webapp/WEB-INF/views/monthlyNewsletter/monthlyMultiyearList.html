@@ -27,21 +27,21 @@
             <input type="text" ng-model="vm.suppletter.title" operator="like" name="title" id="title" placeholder="请输入">
 
             <span class="help-inline" style="margin-left:10px;">拟稿部门：</span>
-            <select ng-model="vm.suppletter.orgName" name="orgName" id="orgName" style="width:80px" operator="eq">
+            <select name="orgName" id="orgName" style="width:80px" operator="eq">
                 <option value="">请选择</option>
                 <option ng-repeat="o in vm.orglist" value="{{o.name}}">{{o.name}}</option>
             </select>
             <span class="help-inline" style="margin-left:10px;">拟稿人：</span>
-            <input type="text" ng-model="vm.suppletter.userName" name="userName" id="userName" operator="like"
+            <input type="text" name="userName" id="userName" operator="like"
                    placeholder="请输入">
 
 
             <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
-            <input name="startTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                   ng-model="vm.suppletter.startTime" value="" type="text" operator="and"/>
+            <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                    value="" type="text" operator="ge"/>
             至
-            <input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                   ng-model="vm.suppletter.endTime" value="" type="text" operator="and"/>
+            <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                   value="" type="text" operator="le"/>
         </ol>
     </form>
     <script type="text/template" id="columnBtns">

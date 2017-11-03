@@ -11,11 +11,11 @@
         var service = {
             createmonthlyMultiyear: createmonthlyMultiyear, //添加中心文件稿纸
             initMonthlyMultiyear: initMonthlyMultiyear,     //初始化中心文件稿纸
-            monthlyMultiyearGrid: monthlyMultiyearGrid,     //年度（中心）文件查询列表
+            monthlyMultiyearGrid: monthlyMultiyearGrid,     //月报简报文件查询列表
             monthlyYearGrid: monthlyYearGrid,  			    //月报简报详情列表（跟拟补充资料函一个表）
             getmonthlyMultiyearById: getmonthlyMultiyearById,//根据ID查找中心文件稿纸
             updatemonthlyMultiyear: updatemonthlyMultiyear,	//更新中心文件稿纸
-            updateApprove: updateApprove,					//领导审批中心文件
+            //updateApprove: updateApprove,					//领导审批中心文件
             addSuppQuery: addSuppQuery,						//查询
             findAllOrg: findAllOrg,							//查询部门
             findAllUser: findAllUser,  						//查询用户
@@ -72,7 +72,7 @@
         }
 
         //S 领导审批中心文件处理
-        function updateApprove(vm) {
+       /* function updateApprove(vm) {
             var httpOptions = {
                 method: 'post',
                 url: url_monthlyMultiyear + "/updateApprove",
@@ -87,30 +87,27 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }
+        }*/
         //E 领导审批中心文件处理
 
         //S 初始化中心文件稿纸
-        function initMonthlyMultiyear(vm) {
-            vm.isSubmit = true;
+        function initMonthlyMultiyear(callBack) {
             var httpOptions = {
                 method: 'post',
                 url: url_monthlyMultiyear + "/initMonthlyMultiyear",
             };
 
             var httpSuccess = function success(response) {
-                vm.suppletter = response.data;
-                //初始化附件上传
-                vm.initFileUpload();
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
         }
-
         //E 初始化中心文件稿纸
 
         // begin#updatemonthlyMultiyear
@@ -210,9 +207,22 @@
 
         //S 年度月报简报列表
         function monthlyYearGrid(vm) {
-            // Begin:dataSource
-            var dataSource = common.kendoGridDataSource(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter: "monthLetterYearName eq " + vm.suppletter.monthLetterYearName + ""});
-            // End:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type : 'odata',
+                transport : common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter:"monthLetterYearName lt '"+vm.suppletter.monthLetterYearName+"'"}),
+                schema : common.kendoGridConfig().schema({
+                    id : "id",
+                    fields : {
+                        createdDate : {
+                            type : "date"
+                        }
+                    }
+                }),
+                sort : {
+                    field : "createdDate",
+                    dir : "desc"
+                }
+            });
 
             //S_序号
             var dataBound = function () {
@@ -292,17 +302,13 @@
                 resizable: true
             };
         }
-
         //E 年度月报简报列表
-
 
         // begin#中心文件查询列表
         function monthlyMultiyearGrid(vm) {
-            //alert(vm.monthly.id);
-            // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyMultiyear + "/monthlyMultiyearList", $("#form")),
+                transport: common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form"), {filter: "fileType eq '2'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -320,7 +326,6 @@
                     dir: "desc"
                 }
             });
-
             // End:dataSource
 
             //S_序号
@@ -393,13 +398,11 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            item.id, item.appoveStatus);
+                        return common.format($('#columnBtns').html(),item.id, item.appoveStatus);
                     }
                 }
             ];
             // End:column
-
             vm.multiyearGrid = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
@@ -409,7 +412,6 @@
                 columns: columns,
                 resizable: true
             };
-
         }// end#中心文件查询列表
 
 

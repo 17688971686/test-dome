@@ -56,7 +56,7 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#saveMonthlyMultiyear#post")
-    @RequestMapping(name = "保存（中心）文件稿纸", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
+    @RequestMapping(name = "保存月报简报", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody ResultMsg monthlyMultiyearAdd(@RequestBody AddSuppLetterDto record) {
        return addSuppLetterService.saveMonthlyMultiyear(record);
@@ -64,7 +64,7 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#initMonthlyMultiyear#post")
-    @RequestMapping(name = "初始化（中心）文件稿纸", path = "initMonthlyMultiyear", method = RequestMethod.POST)
+    @RequestMapping(name = "初始化月报简报", path = "initMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto initMutilyear(){
     	return addSuppLetterService.initMonthlyMutilyear();
@@ -295,18 +295,18 @@ public class MonthlyNewsletterController {
         return ctrlName+"/monthlyMultiyFileList"; 
     } 
     
-    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveList#get")
+    /*@RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveList#get")
     @RequestMapping(name = "月报简报审批列表", path = "html/monthlyMultiyAppoveList", method = RequestMethod.GET)
     public String monthlyMultiyAppoveList() {
         return ctrlName+"/monthlyMultiyAppoveList";
     }
-    
+
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyAppoveEdit#get")
     @RequestMapping(name = "月报简报审批处理", path = "html/monthlyMultiyAppoveEdit", method = RequestMethod.GET)
     public String monthlyMultiyAppoveEdit() {
         return ctrlName+"/monthlyMultiyAppoveEdit";
     }
-
+*/
 
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
     @RequestMapping(name = "编辑月报简报年度", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
