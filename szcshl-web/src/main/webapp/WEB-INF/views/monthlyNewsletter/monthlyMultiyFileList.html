@@ -1,0 +1,44 @@
+<!--S 中心文件查询列表页面 -->
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li>月报简报管理</li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.addSuppQuery()"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.resetAddSupp()">重置</button>
+        <go-back></go-back>
+    </div>
+    <form id="form" name="form">
+        <ol class="breadcrumb">
+            <li><span class="help-inline">文件名称：</span>
+                <input type="text" operator="like" name="title" id="title" placeholder="">
+
+                <span class="help-inline" style="margin-left:10px;">拟稿人员：</span>
+                <input type="text" operator="like" name="userName" id="userName" placeholder="">
+
+                <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
+                <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"
+                       operator="ge"/>
+                至
+                <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"
+                       operator="le"/>
+            </li>
+        </ol>
+    </form>
+    <script type="text/template" id="columnBtns">
+        <@shiro.hasPermission name="monthlyNewsletter##put">
+        <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearDetail/{0}"><span
+                class="glyphicon glyphicon-pencil"></span>查看详细</a>
+        </@shiro.hasPermission>
+    </script>
+    <div class="grid" kendo-grid="grid" k-options="vm.multiyearGrid"></div>
+</div>
+<!--E 中心文件查询列表页面 -->

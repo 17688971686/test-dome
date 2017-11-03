@@ -727,6 +727,14 @@
                 controllerAs: 'vm'
             })
 
+            //月报简报查询页面
+             .state('monthlyMultiyFileList', {
+                url: '/monthlyMultiyFileList',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
+                controller: 'monthlyMultiFileCtrl',
+                controllerAs: 'vm'
+            })
+
              //年度(中心文件)月报简报详细页面
              .state('monthlyMultiyearDetail', {
                 url: '/monthlyMultiyearDetail/:id',

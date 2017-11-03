@@ -11,15 +11,14 @@
 
     <!-- 流程处理页面 -->
     <div ng-hide="vm.flow.curNode.activitiId=='MONTH_YB'">
-    <#include "/monthlyNewsletter/flow/dealOption.html"/>
+        <#include "/monthlyNewsletter/flow/dealOption.html"/>
     </div>
+
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">月报简报</a></li>
         <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>
-
-
 
     <div   class="tab-content" style="background:white;">
         <!--不是月报发起人时，-->

@@ -13,10 +13,8 @@
 
         activate();
         function activate() {
-            //monthlyMultiyearSvc.monthlyMultiyearGrid(vm);
             monthlyMultiyearSvc.monthlyYearGrid(vm);
             monthlyMultiyearSvc.findAllOrg(vm);
-            //monthlyMultiyearSvc.findAllUser(vm);
         }
 
         //查询

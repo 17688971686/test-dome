@@ -54,26 +54,6 @@
             });
         }
 
-        //跳转上传附件页面
-        vm.addSuppContent = function () {
-            if (vm.suppletter.id) {
-                vm.showsupp = true;
-                var ideaEditWindow = $("#addsuppMonthly");
-                ideaEditWindow.kendoWindow({
-                    width: "60%",
-                    height: "90%",
-                    title: "中心文件附件",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "close"]
-                }).data("kendoWindow").center().open();
-                monthlyMultiyearSvc.findByBusinessId(vm);
-            } else {
-                bsWin.alert("请先保存业务数据");
-            }
-        }
-
         //保存中心文件（稿纸）
         vm.saveAddSuppletter = function () {
             common.initJqValidation();
@@ -82,11 +62,9 @@
                 vm.suppletter.fileType = "2";//区分是不是简报
                 monthlyMultiyearSvc.createmonthlyMultiyear(vm.suppletter, function (data) {
                     if (data.flag || data.reCode == "ok") {
-                        bsWin.alert("操作成功！", function () {
-                            vm.id = data.reObj.id;//保存后取得id,流程发起需要
-                            location.href = "#/monthlyFindByMultiyear/" + vm.businessId + "";//保存成功后跳转到列表
-                        })
-
+                        vm.suppletter = data.reObj;
+                        vm.id = data.reObj.id;//保存后取得id,流程发起需要
+                        bsWin.alert("操作成功！");
                     } else {
                         bsWin.error(data.reMsg);
                     }
@@ -119,13 +97,13 @@
                 message: "确认已经完成填写，并且发起流程么？",
                 onOk: function () {
                     $('.confirmDialog').modal('hide');
-                    if (id != "") {//当是更新提交时，先更新在提交
+                    if (id) {//当是更新提交时，先更新在提交
                         monthlyMultiyearSvc.updatemonthlyMultiyear(vm.suppletter, function (data) {//提交时先更新在提交
                             if (data.flag || data.reCode == "ok") {
                                 monthlyMultiyearSvc.startFlow(id, function (data) {//更新的提交
                                     if (data.flag || data.reCode == 'ok') {
                                         bsWin.success("操作成功！", function () {
-                                            location.href = "#/monthlyFindByMultiyear/" + vm.suppletter.businessId + "";//保存成功后跳转到列表
+                                            location.href = "#/theMonthsList";//保存成功后跳转到列表
                                         });
                                     } else {
                                         bsWin.error(data.reMsg);
@@ -137,14 +115,14 @@
                         });
                     } else {//当是保存时提交就先保存
                         vm.suppletter.fileType = "2";//区分是不是简报
-                        vm.suppletter.businessId = vm.businessId;//业务ID
                         monthlyMultiyearSvc.createmonthlyMultiyear(vm.suppletter, function (data) {
                             if (data.flag || data.reCode == "ok") {
-                                vm.id = data.reObj.id;//保存后取得id,流程发起需要
+                                vm.suppletter = data.reObj;
+                                vm.id = data.reObj.id;                            //保存后取得id,流程发起需要
                                 monthlyMultiyearSvc.startFlow(vm.id, function (data) {//更新的提交
                                     if (data.flag || data.reCode == 'ok') {
                                         bsWin.success("操作成功！", function () {
-                                            location.href = "#/monthlyFindByMultiyear/" + vm.suppletter.businessId + "";//保存成功后跳转到列表
+                                            location.href = "#/theMonthsList";//保存成功后跳转到列表
                                         });
                                     } else {
                                         bsWin.error(data.reMsg);
@@ -155,7 +133,6 @@
                             }
                         });
                     }
-
                 }
             });
         }

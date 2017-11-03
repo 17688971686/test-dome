@@ -130,7 +130,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             }else{
                 fileNumValue = (maxSeq+1)+"";
             }
-            domain.setTopicCode(yearString+FlowConstant.CodeKey.TOPIC_INFO_CODE.getValue()+fileNumValue);
+            domain.setTopicCode(yearString+Constant.FILE_RECORD_KEY.KT.getValue()+fileNumValue);
         }
         topicInfoRepo.save(domain);
         //修改流程负责人

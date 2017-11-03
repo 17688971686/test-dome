@@ -14,6 +14,7 @@ public interface MonthlyNewsletterRepo extends IRepository<MonthlyNewsletter, St
      * @param businessId
      * @return
      */
+    @Deprecated
     String findYear(String businessId);
 
 

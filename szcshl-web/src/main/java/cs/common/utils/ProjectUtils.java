@@ -1,5 +1,7 @@
 package cs.common.utils;
 
+import cs.common.Constant;
+
 /**
  * 项目工具类
  * Created by ldm on 2017/8/22.
@@ -14,13 +16,12 @@ public class ProjectUtils {
     public static String getFileRecordTypeByStage(String signStage){
         if(Validate.isString(signStage)){
             if(signStage.indexOf("概算") > -1){
-                return "GD";
+                return Constant.FILE_RECORD_KEY.GD.getValue();
             }
             if(signStage.indexOf("设备") > -1){
-                return "SD";
+                return Constant.FILE_RECORD_KEY.SD.getValue();
             }
-
-            return "PD";
+            return Constant.FILE_RECORD_KEY.PD.getValue();
         }else{
             return "";
         }
