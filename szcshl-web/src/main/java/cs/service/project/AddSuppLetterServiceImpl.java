@@ -173,8 +173,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该补充资料函已经生成过发文字号，不能重复生成！");
         }
         //获取拟稿最大编号
-        int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getDisapDate());
-        String filenum = Constant.DISPATCH_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getDisapDate(), "yyyy") + "]" + (curYearMaxSeq + 1);
+        int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
+        String filenum = Constant.DISPATCH_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + (curYearMaxSeq + 1);
         addSuppLetter.setFilenum(filenum);
         addSuppLetter.setFileSeq((curYearMaxSeq + 1));
         addSuppLetterRepo.save(addSuppLetter);
@@ -602,8 +602,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         Map<String, Object> variables = new HashMap<>();       //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
-        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(businessId);
-
+        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //项目负责人填报
@@ -654,13 +653,14 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
 
+                String signString = "";
                 //旧的会签记录
                 String oldMsg = addSuppLetter.getLeaderSignIdeaContent();
                 if (Validate.isString(oldMsg) && !"null".equals(oldMsg)) {
-                    oldMsg += "<br>";
+                    signString += oldMsg+"<br>";
                 }
-                String signString = flowDto.getDealOption() + "<br>" + SessionUtil.getDisplayName() + "  " + DateUtils.converToString(new Date(), null);
-                addSuppLetter.setLeaderSignIdeaContent(oldMsg + signString);
+                signString += flowDto.getDealOption() + "<br>" + SessionUtil.getDisplayName() + "  " + DateUtils.converToString(new Date(), null);
+                addSuppLetter.setLeaderSignIdeaContent(signString);
                 //2表示到分管领导会签
                 addSuppLetterRepo.save(addSuppLetter);
                 break;
@@ -668,7 +668,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             //分管领导审批
             case FlowConstant.FLOW_SPL_FGLD_SP:
                 //生成发文字号失败，则
-                rturnReuslt = fileNum(addSuppLetter.getId());
+                   rturnReuslt = fileNum(addSuppLetter.getId());
                 if (!rturnReuslt.isFlag()) {
                     return rturnReuslt;
                 }
