@@ -27,7 +27,9 @@ public class TopicFlowBackImpl implements IFlowBack {
             case FlowConstant.TOPIC_ZRSH_JH:
                 backActivitiId = FlowConstant.TOPIC_FGLD_JH;
                 break;
-
+            case FlowConstant.TOPIC_GZFA:
+                backActivitiId = FlowConstant.TOPIC_ZRSH_JH;
+                break;
             case FlowConstant.TOPIC_BZSH_FA:
                 backActivitiId = FlowConstant.TOPIC_GZFA;
                 break;

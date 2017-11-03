@@ -26,9 +26,19 @@
             isInitFileOption: false,   //是否已经初始化附件上传控件
         }
 
-        //领导审批中心文件
-        vm.updateApprove = function () {
-            monthlyMultiyearSvc.updateApprove(vm);
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                monthlyMultiyearSvc.getmonthlyMultiyearById(vm.id, function (data) {
+                    vm.suppletter = data;
+                    vm.initFileUpload();
+                });
+            }else{
+                monthlyMultiyearSvc.initMonthlyMultiyear(function(data){
+                    vm.suppletter = data;
+                    vm.initFileUpload();
+                });
+            }
         }
 
         //初始化附件上传控件
@@ -135,18 +145,6 @@
                     }
                 }
             });
-        }
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                monthlyMultiyearSvc.getmonthlyMultiyearById(vm.id, function (data) {
-                    vm.suppletter = data;
-                    vm.initFileUpload();
-                });
-            }else{
-                vm.initFileUpload();
-            }
         }
     }
 })();

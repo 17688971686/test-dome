@@ -426,6 +426,12 @@
                 controller: 'projectStopFormCtrl',
                 controllerAs: 'vm'
             })
+            .state('projectStopFormEdit', { //编辑项目暂停表单
+                url: '/projectStopFormEdit/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormEditCtrl',
+                controllerAs: 'vm'
+            })
             .state('reserveAdd', {	//新增预签收
                 url: '/reserveAdd',
                 templateUrl: rootPath + '/sign/html/reserveAdd.html',
@@ -762,6 +768,13 @@
                 url: '/approveWindow/:signId',
                 templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
                 controller: 'approveWindowCtrl',
+                controllerAs: 'vm'
+            })
+            //优秀评审报告编辑
+            .state('approveWindowEdit', {
+                url: '/approveWindowEdit/:id',
+                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                controller: 'approveWindowEditCtrl',
                 controllerAs: 'vm'
             })
 

@@ -544,18 +544,16 @@ public class ProcessDiagramGenerator {
 
             // Draw highlighted activities
             // 如果高亮节点List中包含当前节点，则当前节点绘制为高亮样式
-            logger.info("当前节点=【" + activity.getId() + "】");
-            logger.info("节点类型：[" + type + "]");
+           /* logger.info("当前节点=【" + activity.getId() + "】");
+            logger.info("节点类型：[" + type + "]");*/
             if (highLightedActivities.contains(activity.getId())) {
                 drawHighLight(processDiagramCanvas, activity);
             }
-
         }
 
         // Outgoing transitions of activity
 
         for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-
             List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();
             for (int i = 2; i < waypoints.size(); i += 2) { // waypoints.size() // minimally 4: x1, y1, // x2, y2
                 boolean drawConditionalIndicator = (i == 2) && sequenceFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION) != null

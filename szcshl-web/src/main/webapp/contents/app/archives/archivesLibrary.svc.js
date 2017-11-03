@@ -250,7 +250,7 @@
                     width: 100,
                     template: function (item) {
                         if(item.processInstanceId){
-                            return common.format($('#columnBtns').html(),"flowEnd/"+item.id, "FLOW_ARCHIVES", item.processInstanceId);
+                            return common.format($('#columnBtns').html(),"flowEnd/"+item.id, flowcommon.getFlowDefinedKey().FLOW_ARCHIVES, item.processInstanceId);
                         }else{
                             return "";
                         }

@@ -19,9 +19,9 @@
      <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent(vm.suppletter.id)">
             <span class="glyphicon glyphicon-search"></span>查看附件
      </button>
-     
-    <button class="btn btn-sm btn-danger" ng-click="vm.comeBack();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
-    </button>
+    <a  class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+<#--    <button class="btn btn-sm btn-danger" ng-click="vm.comeBack();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
+    </button>-->
 </div>
    		<!--  hidden input -->
 		 <input type="hidden" ng-model="vm.suppletter.id" name="id" value="{{vm.suppletter.id}}"id="id"  >  

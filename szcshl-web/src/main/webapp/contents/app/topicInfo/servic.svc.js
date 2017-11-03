@@ -140,15 +140,6 @@
             // Begin:column
             var columns = [
                 {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {
                     field: "rowNumber",
                     title: "序号",
                     width: 50,
@@ -170,7 +161,7 @@
                 {
                     field: "createdDate",
                     title: "创建日期",
-                    width: "15%",
+                    width: "25%",
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
                 },
@@ -187,14 +178,14 @@
                         }
                     }
                 },
-
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: "15%",
                     template: function (item) {
+                        //如果已经发起流程，则只能查看
                         var isStartFlow = item.processInstanceId?true:false;
-                        return common.format($('#columnBtns').html(), item.id, isStartFlow);
+                        return common.format($('#columnBtns').html(), item.id, isStartFlow,"flowEnd/"+item.id+"/"+flowcommon.getFlowDefinedKey().TOPIC_FLOW+"/"+item.processInstanceId,!isStartFlow);
                     }
                 }
             ];
