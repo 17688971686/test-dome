@@ -24,6 +24,7 @@
         vm.selectMainSignId = "";               //查看的主项目ID
         vm.initPickLowSign = false;             //是否初始化选择的次项目信息
         vm.drawType="";
+        vm.plan.assistType = "独立项目";
 
         active();
         function active(){
