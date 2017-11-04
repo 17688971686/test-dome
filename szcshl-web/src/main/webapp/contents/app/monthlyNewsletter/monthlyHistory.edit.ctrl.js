@@ -24,6 +24,7 @@
 	          if(isValid){
 	        	  monthlyHistorySvc.createmonthlyHistory(vm.monthly,function(data){
 	                   if (data.flag || data.reCode == "ok") {
+                              vm.monthly = data.reObj;
 	                           bsWin.alert("操作成功！");
 	                   }else{
 	                       bsWin.error(data.reMsg);
@@ -33,7 +34,7 @@
 	        	   bsWin.alert("缺少部分没有填写，请仔细检查");
 	           }
         };
-        vm.update = function () {
+        vm.updateMonthly = function () {
             monthlyHistorySvc.updatemonthlyHistory(vm);
         };
 

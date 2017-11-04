@@ -5,22 +5,25 @@
 <div class="well well-sm conttent_list" style="background: white;min-height:900px;">
 
     <ol class="breadcrumb">
-        <li><a href="#/monthlyNewsletterList">月报简报基本信息</a></li>
+        <li>月报简报基本信息</li>
         <li class="active">{{vm.title}}</li>
     </ol>
  <form id="form" name="form">
         <div class="toolbar">
-            <a class="btn btn-sm btn-primary" href="#/monthlyNewsletter"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+
             <button class="btn btn-sm btn-success" ng-click="vm.createMothlyNewsletter()" ng-disabled="vm.isSubmit"
                     ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
             </button>
             <button class="btn btn-sm btn-success" ng-click="vm.updateMonthly()" ng-disabled="vm.isSubmit"
                     ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
             </button>
+			<button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span
+					class="glyphicon glyphicon-chevron-left"></span>返回
+			</button>
         </div>
-        
+
          <div><h4>1、月报简报基本信息</h4></div>
-            
+
         <table style="width:80%" >
           <!-- <tr>
                 <td class="formAlignRight" style="width:150px;"></td>
@@ -34,7 +37,7 @@
 			  <select style="width:40%"   ng-model="vm.monthly.reportMultiyear" ng-change="vm.reportYear()"id="reportMultiyear" name="reportMultiyear"  data-val="true" data-val-required="必填">
 						 <option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.reportMultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-				</select> 
+				</select>
 				<span data-valmsg-for="reportMultiyear" data-valmsg-replace="true" class="errors"></span>
 			</td>
 			<td width="20%" align="center"> 报告月份<span class="required">*</span></td>
@@ -42,8 +45,8 @@
 			<select style="width:40%"  ng-model="vm.monthly.theMonths"  name="theMonths" id="theMonths" ng-change="vm.selectMonthly()"  data-val="true" data-val-required="必填">
 						<option value=" ">请选择</option>
 						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.theMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-						</select> 
-						<span data-valmsg-for="reviewType" data-valmsg-replace="true" class="errors"></span>
+						</select>
+						<span data-valmsg-for="theMonths" data-valmsg-replace="true" class="errors"></span>
 			</td>
 		</tr>
 		<tr>
@@ -96,15 +99,16 @@
 			  <textarea class="form-control input-sm " ng-model="vm.monthly.remark" rows="" cols="" id="remark" name="remark">
                            </textarea>
 			</td>
-			
+
 		</tr>
 	</table>
+ </form>
         <div><h4>2、月报简报正文</h4></div>
         <div class="toolbar">
              <button class="btn btn-sm btn-success" ng-click="vm.createMonthReport()"
                     ><span class="glyphicon glyphicon-ok"></span>生成月报简报正文
             </button>
         </div>
-    </form>
+
 </div>
 <!--E 月报简报添加页面 -->

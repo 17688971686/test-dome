@@ -12,8 +12,8 @@
             deleteGridOptions:deleteGridOptions,//已删除月报简报列表
             createmonthlyHistory: createmonthlyHistory,//添加月报简报历史数据
             deletemonthlyHistory: deletemonthlyHistory,//删除月报简报记录
-            getmonthlyHistoryById: getmonthlyHistoryById,
-            updatemonthlyHistory: updatemonthlyHistory
+            getmonthlyHistoryById: getmonthlyHistoryById,//根据ID查询
+            updatemonthlyHistory: updatemonthlyHistory//编辑月报简报
         };
 
         return service;
@@ -24,21 +24,17 @@
             var isValid = $('form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
+                vm.monthly.id = vm.id;// id
                 var httpOptions = {
                     method: 'put',
-                    url: url_monthlyHistory,
-                    data: vm.model
+                    url: url_monthlyHistory+"/monthlyEdit",
+                    data: vm.monthly
                 }
-
                 var httpSuccess = function success(response) {
-
                     common.requestSuccess({
                         vm: vm,
                         response: response,
                         fn: function () {
-
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功",
@@ -89,6 +85,7 @@
                             fn: function () {
                             	vm.isSubmit = false;
                                 vm.gridOptions.dataSource.read();
+                                refresh();
                             }
                         })
                     }
@@ -102,7 +99,10 @@
                 success: httpSuccess
             });
         }
-
+        //刷新页面
+        function refresh(){
+            window.location.reload();
+        }
         // begin#添加月报简报历史数据
         function createmonthlyHistory(monthly,callBack) {
                 var httpOptions = {
@@ -129,11 +129,11 @@
         function getmonthlyHistoryById(vm) {
         	var httpOptions = {
                 method: 'get',
-                url: rootPath + "/monthlyHistory/html/findById",
+                url: rootPath + "/monthlyNewsletter/html/findById",
                 params:{id:vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
+                vm.monthly = response.data;
             };
 
             common.http({
@@ -162,7 +162,7 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 5,
+                pageSize: 10,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -253,7 +253,7 @@
                     width: 100,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                            item.id,"vm.del('" + item.id + "')");
                     }
                 }
             ];
@@ -288,7 +288,7 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 5,
+                pageSize: 10,
                 sort: {
                     field: "createdDate",
                     dir: "desc"

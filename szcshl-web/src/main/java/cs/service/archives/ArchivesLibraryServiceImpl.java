@@ -294,9 +294,9 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 //同意
                 if(EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
                     archivesLibrary.setIsAgree(EnumState.YES.getValue());
-                    archivesLibrary.setDeptDirectorId(SessionUtil.getUserId());
-                    archivesLibrary.setDeptDirector(SessionUtil.getDisplayName());
-                    archivesLibrary.setDeptDirectorIdeaContent(flowDto.getDealOption());
+                    archivesLibrary.setDeptSLeaderId(SessionUtil.getUserId());
+                    archivesLibrary.setDeptSLeader(SessionUtil.getDisplayName());
+                    archivesLibrary.setDeptSLeaderIdeaContent(flowDto.getDealOption());
                     archivesLibrary.setArchivesStatus(Constant.EnumState.PROCESS.getValue());   //1表示部长已经审批
                     //如果是外借档案或者是借阅市中心文档，则由主任审批
                     if(EnumState.YES.getValue().equals(archivesLibrary.getIsLendOut()) || EnumState.YES.getValue().equals(archivesLibrary.getArchivesType())){

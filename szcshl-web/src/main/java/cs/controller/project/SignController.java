@@ -81,7 +81,14 @@ public class SignController {
     public @ResponseBody ResultMsg post(@RequestBody SignDto signDto) {
         return signService.createSign(signDto);
     }
-    
+
+    @RequiresPermissions("sign#html/reserveAddPost#post")
+    @RequestMapping(name = "项目预签收" ,path = "html/reserveAddPost",method = RequestMethod.POST)
+    public @ResponseBody SignDto reserveAddPost(@RequestBody SignDto signDto){
+        signService.reserveAddSign(signDto);
+        return signDto;
+    }
+
     @RequiresPermissions("sign#html/reserveAdd#get")
     @RequestMapping(name = "项目预签收" ,path = "html/reserveAdd",method = RequestMethod.GET)
     public String reserveAdd(){
@@ -100,16 +107,7 @@ public class SignController {
         return ctrlName + "/add";
     }
 
-    @RequiresPermissions("sign#html/reserveAddPost#post")
-    @RequestMapping(name = "项目预签收" ,path = "html/reserveAddPost",method = RequestMethod.POST)
-    public @ResponseBody SignDto reserveAddPost(@RequestBody SignDto signDto){
-    	if(!Validate.isString(signDto.getSignid())){
-    		signDto.setSignid(UUID.randomUUID().toString());
-    	}
-    	signService.reserveAddSign(signDto);
-    	
-    	return signDto;
-    }
+
     
     @RequiresPermissions("sign#html/reserveList#get")
     @RequestMapping(name = "项目预签收列表" ,path = "html/reserveList",method = RequestMethod.GET)
