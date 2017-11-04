@@ -76,7 +76,7 @@
 					<td style="width:10%"  class="text-center">签收日期</td>
 				</tr>
 				<tbody ng-if="vm.projectReviewCostDtoList" ng-repeat="x in vm.projectReviewCostDtoList">
-				<tr ng-dblclick="vm.initFinancial(x.businessId)">
+				<tr >
 					<td rowspan="{{x.financialManagerDtoList.length+1}}">{{$index+1}}</td>
 					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.projectname}}</td>
 					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.builtcompanyname}}</td>

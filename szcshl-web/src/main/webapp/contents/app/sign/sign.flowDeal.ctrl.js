@@ -920,9 +920,24 @@
                 msg:"如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
                 fn:function () {
                     $('.confirmDialog').modal('hide');
-                    signSvc.findWorkProgramBySignId(vm,function(){
-                        signSvc.meetingDoc(vm,$scope);
-                    });
+                    // signSvc.findWorkProgramBySignId(vm,function(){
+                        signSvc.meetingDoc(vm,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.success("操作成功");
+                                sysfileSvc.findByMianId(vm.model.signid,function(data){
+                                    if(data || data.length > 0){
+                                        vm.showFlag.tabSysFile = true;
+                                        vm.sysFileList = data;
+                                        vm.urlType="signFlowDeal";//附件右边的列表显示
+                                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+
+                                    }
+                                });
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    // });
                 }
             })
         }

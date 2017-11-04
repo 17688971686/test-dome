@@ -1,6 +1,7 @@
 package cs.model.project;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.DomainBase;
 import cs.domain.project.SignDispaWork;
 
@@ -85,6 +86,18 @@ public class ProjectStopDto extends DomainBase {
     private String leaderIdeaContent;
 
     /**
+     * 分管副主任审批日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date leaderDate;
+
+    /**
+     * 部长审批意见
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date directorDate;
+
+    /**
      * 审批环节状态
      * 0：已发起审批
      * 1：部长已审批
@@ -133,6 +146,22 @@ public class ProjectStopDto extends DomainBase {
     private SignDto signDto;
 
     private SignDispaWork signDispaWork;
+
+    public Date getLeaderDate() {
+        return leaderDate;
+    }
+
+    public void setLeaderDate(Date leaderDate) {
+        this.leaderDate = leaderDate;
+    }
+
+    public Date getDirectorDate() {
+        return directorDate;
+    }
+
+    public void setDirectorDate(Date directorDate) {
+        this.directorDate = directorDate;
+    }
 
     public String getStopid() {
         return stopid;
