@@ -91,6 +91,14 @@
                 controllerAs: 'vm'
             })//end#拟补充资料函查看流程详细页面
 
+            //begin#拟补充资料函查看流程详细页面
+            .state('suppLetterView', {
+                url: '/suppLetterView/:id',
+                templateUrl: rootPath + '/addSuppLetter/view.html',
+                controller: 'suppLetterViewCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函查看流程详细页面
+
 
             //begin#拟补充资料函查询
             .state('suppletterList', {

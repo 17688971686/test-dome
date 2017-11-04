@@ -21,7 +21,7 @@
         </div>
      </form> -->
      <div class="toolbar">
-		 <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left">返回</span></button>
+         <a  class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
      </div>
 
       <table class="table-bordered table">
@@ -41,7 +41,8 @@
 			<td class="text-center">{{a.filenum}}</td>
 			<td class="text-center">
 				<!-- <button class="btn btn-xs btn-primary" ng-hide="a.filenum" ng-click="vm.getFilenum(a.id);"> <span class="glyphicon glyphicon-pencil">生成文件字号</span></button> -->
-				<button class="btn btn-xs btn-primary" ng-click="vm.findByIdAddSuppLetter(a.id);"><span class="glyphicon glyphicon-pencil">编辑</span></button>
+				<button ng-hide="a.processInstanceId" class="btn btn-xs btn-primary" ng-click="vm.findByIdAddSuppLetter(a.id);"><span class="glyphicon glyphicon-pencil">编辑</span></button>
+                <a ng-show="a.processInstanceId" class="btn btn-xs btn-info" href="#/suppLetterView/{{a.id}}"><span class="glyphicon glyphicon-search">查看</span></a>
 			</td>
 		</tr>
 	</table>
