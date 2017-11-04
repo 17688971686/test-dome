@@ -10,6 +10,8 @@ import cs.domain.project.SignDispaWork_;
 import cs.model.PageModelDto;
 import cs.model.expert.ProReviewConditionDto;
 import cs.repository.AbstractRepository;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -326,6 +328,24 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "结束日期必须大于开始日期" , null) ;
         }
 
+    }
+
+
+    /**
+     * 通过收文id获取项目信息
+     * @param signId
+     * @return
+     */
+    @Override
+    public SignDispaWork findSDPBySignId(String signId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignDispaWork_.signid.getName() , signId));
+        List<SignDispaWork> signDispaWorkList = criteria.list();
+        if(signDispaWorkList!=null && signDispaWorkList.size()>0){
+            return signDispaWorkList.get(0);
+        }else{
+            return null;
+        }
     }
 
 }

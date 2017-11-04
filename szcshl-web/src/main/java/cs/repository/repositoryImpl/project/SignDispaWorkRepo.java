@@ -37,4 +37,11 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      * @return
      */
     ResultMsg findByTypeAndReview(String startTime , String endTime);
+
+    /**
+     * 通过收文id获取项目信息
+     * @param signId
+     * @return
+     */
+    SignDispaWork findSDPBySignId(String signId);
 }

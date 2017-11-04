@@ -6,12 +6,20 @@
     function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin){
         var vm = this;
         vm.title = '项目列表';
+        vm.reviewFee = {};
 
 
         activate();
 
         function activate(){
             reviewFeeSvc.projectGrid(vm);
+        }
+
+        /**
+         * 查询
+         */
+        vm.query = function(){
+            vm.gridOptions.dataSource.read();
         }
 
         /**

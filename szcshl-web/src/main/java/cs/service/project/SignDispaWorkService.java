@@ -36,7 +36,7 @@ public interface SignDispaWorkService {
 
     List<SignDispaWork> getSignDispaWork(String filters);
 
-    //查询评审费发放超期的项目信息
+    //查询评审费发放超期的项目信息  （停用）
     PageModelDto<SignDispaWork> findOverSignDispaWork();
 
     /**
@@ -61,4 +61,5 @@ public interface SignDispaWorkService {
      * @return
      */
     ResultMsg findByTypeAndReview(String startTime , String endTime);
+
 }
