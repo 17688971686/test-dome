@@ -10,7 +10,7 @@
     </ol>
 
     <!-- 流程处理页面 -->
-    <div ng-hide="vm.flow.curNode.activitiId=='MONTH_YB'">
+    <div >
         <#include "/monthlyNewsletter/flow/dealOption.html"/>
     </div>
 
@@ -22,12 +22,8 @@
 
     <div   class="tab-content" style="background:white;">
         <!--不是月报发起人时，-->
-        <div ng-if="vm.flow.curNode.activitiId!='MONTH_YB'" class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
+        <div  class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
             <#include "/monthlyNewsletter/flow/detail.html"/>
-        </div><!-- end tab -->
-        <!--是月报发起人时，-->
-        <div ng-if="vm.flow.curNode.activitiId=='MONTH_YB'"  class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
-        <#include "/monthlyNewsletter/flow/monthlyMultiyearYB.html"/>
         </div><!-- end tab -->
 
         <div class="tab-pane fade" style="background:white;" id="flow_diagram">
