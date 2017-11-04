@@ -466,7 +466,7 @@ return docFile;
 			sqlBuilder.setParam("mrId", mrId);
 		}
 		if("0".equals(rbType)){
-			sqlBuilder.append(" and workProgramId is not null");
+			sqlBuilder.append(" and " + RoomBooking_.businessType.getName() + "=:businessType").setParam("businessType" , Constant.BusinessType.SIGN_WP.getValue());
 		}
 		/*if("1".equals(rbType)){
 			sqlBuilder.append(" and workProgramId is null");

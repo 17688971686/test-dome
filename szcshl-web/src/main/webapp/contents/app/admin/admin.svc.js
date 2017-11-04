@@ -1108,11 +1108,12 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        var isstart = false,applyArrrais = true;
+                        var isstart = false,applyArrrais = true , isStop =false;
                         if (item.signState == "2") {
                             isstart = true;//显示已暂停，提示启动
                         } else {
-                            isstart = false;//显示暂停
+                            if(item.signState == "1")
+                            isStop = true;//显示暂停
                         }
 
                         //已经完成并且还未申请的，可以申请优秀评审报告
@@ -1121,7 +1122,7 @@
                         }
 
                         return common.format($('#columnBtns').html(), "signDetails", item.signid, item.processInstanceId,
-                            "vm.pauseProject('"+item.signid+"')",isstart,"vm.startProject('"+item.signid+"')",isstart,item.signid,applyArrrais);
+                            "vm.pauseProject('"+item.signid+"')",isStop,"vm.startProject('"+item.signid+"')",isstart,item.signid,applyArrrais);
                     }
                 }
             ];

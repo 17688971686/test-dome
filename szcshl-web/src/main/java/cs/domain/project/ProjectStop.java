@@ -87,6 +87,19 @@ public class ProjectStop extends DomainBase {
     private String leaderIdeaContent;
 
     /**
+     * 分管副主任审批日期
+     */
+    @Column(columnDefinition = "DATE")
+    private Date leaderDate;
+
+    /**
+     * 部长审批意见
+     */
+    @Column(columnDefinition = "DATE")
+    private Date directorDate;
+
+
+    /**
      * 已用工作日
      */
     @Column(columnDefinition = "NUMBER")
@@ -128,6 +141,21 @@ public class ProjectStop extends DomainBase {
     @JoinColumn(name = "signid")
     private Sign sign;
 
+    public Date getLeaderDate() {
+        return leaderDate;
+    }
+
+    public void setLeaderDate(Date leaderDate) {
+        this.leaderDate = leaderDate;
+    }
+
+    public Date getDirectorDate() {
+        return directorDate;
+    }
+
+    public void setDirectorDate(Date directorDate) {
+        this.directorDate = directorDate;
+    }
 
     public String getDirectorName() {
         return directorName;

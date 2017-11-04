@@ -46,11 +46,14 @@
     <tr>
         <td class="text-center">
             部长审批
-        </td>
+        </td>s
         <td colspan="3">
-            <div style="min-height: 50px;">
+            <p> {{vm.model.ministerOpinion}}</p>
+            <p class="text-right" ng-if="vm.model.ministerName">签名：{{vm.model.ministerName}}</p>
+            <p class="text-right" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+            <#--<div style="min-height: 50px;">
                 {{vm.model.ministerOpinion}}
-            </div>
+            </div>-->
         </td>
     </tr>
     <tr>
@@ -58,9 +61,12 @@
             综合部审批
         </td>
         <td colspan="3">
-            <div style="min-height: 50px;">
+            <p> {{vm.model.generalConductorOpinion}}</p>
+            <p class="text-right" ng-if="vm.model.generalConductorName">签名：{{vm.model.generalConductorName}}</p>
+            <p class="text-right" ng-if="vm.model.generalConductorDate">日期：{{vm.model.generalConductorDate}}</p>
+            <#--<div style="min-height: 50px;">
                 {{vm.model.generalConductorOpinion}}
-            </div>
+            </div>-->
         </td>
     </tr>
 </table>

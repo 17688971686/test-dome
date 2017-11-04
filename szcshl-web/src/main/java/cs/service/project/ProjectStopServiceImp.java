@@ -313,6 +313,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 projectStop.setDirectorId(SessionUtil.getUserId());
                 projectStop.setDirectorName(SessionUtil.getDisplayName());
                 projectStop.setDirectorIdeaContent(flowDto.getDealOption());
+                projectStop.setDirectorDate(new Date());
                 projectStop.setApproveStatus(Constant.EnumState.PROCESS.getValue());
                 projectStopRepo.save(projectStop);
                 dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
@@ -328,6 +329,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 projectStop.setLeaderId(SessionUtil.getUserId());
                 projectStop.setLeaderName(SessionUtil.getDisplayName());
                 projectStop.setLeaderIdeaContent(flowDto.getDealOption());
+                projectStop.setLeaderDate(new Date());
                 projectStop.setApproveStatus(Constant.EnumState.YES.getValue());
                 projectStop.setIsactive(flowDto.getBusinessMap().get("AGREE").toString());
                 projectStopRepo.save(projectStop);

@@ -550,61 +550,19 @@
         //end initAssociateSigns
 
         //S_meetingDoc
-        function meetingDoc(vm,$scope) {
-            var wpId = "";
-            switch (vm.flow.curNode.activitiId) {
-                case flowcommon.getSignFlowNode().SIGN_XMFZR1:
-                case flowcommon.getSignFlowNode().SIGN_XMFZR2:
-                case flowcommon.getSignFlowNode().SIGN_XMFZR3:
-                case flowcommon.getSignFlowNode().SIGN_XMFZR4:
-                    if ( !angular.isUndefined(vm.workProgramId) && vm.workProgramId) {
-                        wpId = vm.workProgramId;
-                    }
-
-                    break;
-                default :
-                    wpId="";
-                    break;
-
-            }
-            if (wpId) {
+        function meetingDoc(vm,callBack) {
                 var httpOptions = {
                     method: 'get',
                     url: rootPath + "/workprogram/createMeetingDoc",
                     params: {
                         signId: vm.model.signid,
-                        workprogramId: wpId
+                        // workprogramId: wpId
                     }
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: response.data.reMsg,
-                                closeDialog: true,
-                                fn: function () {
-                                    if (response.data.reCode == "error") {
-                                        vm.isCommit = false;
-                                    } else {
-
-                                        // 初始化上传附件
-                                        sysfileSvc.findByMianId(vm.model.signid,function(data){
-                                            if(data || data.length > 0){
-                                                vm.showFlag.tabSysFile = true;
-                                                vm.sysFileList = data;
-                                                vm.urlType="signFlowDeal";//附件右边的列表显示
-                                                sysfileSvc.initZtreeClient(vm,$scope);//树形图
-
-                                            }
-                                        });
-                                    }
-                                }
-                            })
-                        }
-                    })
+                    if(callBack !=undefined && typeof  callBack=="function"){
+                        callBack(response.data);
+                    }
                 }
                 common.http({
                     vm: vm,
@@ -612,12 +570,6 @@
                     httpOptions: httpOptions,
                     success: httpSuccess
                 });
-            } else {
-                common.alert({
-                    vm: vm,
-                    msg: "请先填写工作方案信息！"
-                })
-            }
         }//E_meetingDoc
 
 

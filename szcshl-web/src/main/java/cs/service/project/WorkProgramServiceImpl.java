@@ -301,19 +301,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * TODO:目前只是做一个简单的模板生成，后期再完善
      * 生成会前准备材料
      * @param signId
-     * @param workprogramId
      * @return
      */
     @Override
     @Transactional
-    public ResultMsg createMeetingDoc(String signId, String workprogramId) {
+    public ResultMsg createMeetingDoc(String signId) {
         Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
         if(sign == null || StringUtil.isEmpty(sign.getSignid())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法收文信息");
         }
-        WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(),workprogramId);
+//        WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(),workprogramId);
+        WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
         if(workProgram == null || StringUtil.isEmpty(workProgram.getId())){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取工作方案信息");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先填写工作方案");
         }
         String path = SysFileUtil.getUploadPath();
         //1、如果已经生成会前准备材料，则先删除之前的文件
@@ -322,7 +322,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             queryHql.append(" from "+SysFile.class.getSimpleName()+" where "+ SysFile_.mainId.getName()+" =:signId ");
             queryHql.setParam("signId",signId);
             queryHql.append(" and "+ SysFile_.businessId.getName()+" =:businessId ");
-            queryHql.setParam("businessId",workprogramId);
+            queryHql.setParam("businessId",workProgram.getId());
             queryHql.append(" and "+ SysFile_.sysfileType.getName()+" =:sysfileType ");
             queryHql.setParam("sysfileType",Constant.SysFileType.WORKPROGRAM.getValue());   //模块类型
             queryHql.append(" and "+ SysFile_.sysBusiType.getName()+" =:sysBusiType ");
@@ -340,14 +340,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<SysFile> saveFile = new ArrayList<>();
 
         //获得拟聘专家信息
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select  e.* from cs_expert_review er,cs_work_program wp,cs_expert_selected es,cs_expert e");
-        sqlBuilder.append(" where er."+ExpertReview_.id.getName()+" = wp.expertreviewid");
-        sqlBuilder.append(" and er."+ExpertReview_.id.getName()+" =es.expertreviewid");
-        sqlBuilder.append(" and es.expertid =e."+Expert_.expertID.getName());
-        sqlBuilder.append(" and wp." +WorkProgram_.id.getName()+" =:workProgramId");
-        sqlBuilder.setParam("workProgramId", workprogramId);
-        List<Expert> expertList=expertRepo.findBySql(sqlBuilder);
+//        HqlBuilder sqlBuilder = HqlBuilder.create();
+//        sqlBuilder.append(" select  e.* from cs_expert_review er,cs_work_program wp,cs_expert_selected es,cs_expert e");
+//        sqlBuilder.append(" where er."+ExpertReview_.id.getName()+" = wp.expertreviewid");
+//        sqlBuilder.append(" and er."+ExpertReview_.id.getName()+" =es.expertreviewid");
+//        sqlBuilder.append(" and es.expertid =e."+Expert_.expertID.getName());
+//        sqlBuilder.append(" and wp." +WorkProgram_.id.getName()+" =:workProgramId");
+//        sqlBuilder.setParam("workProgramId", workprogramId);
+        List<Expert> expertList=expertRepo.findByBusinessId(signId);
 
         User user = signPrincipalService.getMainPriUser(signId);//获取项目第一负责人
 
