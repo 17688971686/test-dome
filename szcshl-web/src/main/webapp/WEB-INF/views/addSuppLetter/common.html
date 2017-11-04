@@ -58,26 +58,24 @@
         <tr>
             <td class="text-center">核稿意见</td>
             <td colspan="3">
-                 <p>  {{x.deptMinisterIdeaContent}}</p>
-			 	 <p class="text-right" >签名：{{x.deptMinisterName}}</p>
-			     <p class="text-right" >日期：{{x.deptMinisterDate}}</p>
+                <p> {{x.deptMinisterIdeaContent}}</p>
+                <p class="text-right" ng-if="x.deptMinisterName">签名：{{x.deptMinisterName}}</p>
+                <p class="text-right" ng-if="x.deptMinisterDate">日期：{{x.deptMinisterDate}}</p>
             </td>
         </tr>
 
         <tr>
             <td class="text-center">会签意见</td>
             <td colspan="3">
-                 <p> {{x.deptSLeaderIdeaContent}}</p>
-			 	 <p class="text-right" >签名：{{x.deptSLeaderName}}</p>
-			     <p class="text-right" >日期：{{x.deptSleaderDate}}</p>
+                <div style="min-height: 50px;" ng-bind-html="x.leaderSignIdeaContent | trust2Html"></div>
             </td>
         </tr>
         <tr>
             <td class="text-center">领导意见</td>
             <td colspan="3">
-                   <p> {{x.deptDirectorIdeaContent}}</p>
-			 		<p class="text-right" >签名：{{x.deptDirectorName}}</p>
-			     	<p class="text-right">日期：{{x.deptDirectorDate}}</p>
+                <p> {{x.deptSLeaderIdeaContent}}</p>
+                <p class="text-right" ng-if="x.deptSLeaderName">签名：{{x.deptSLeaderName}}</p>
+                <p class="text-right" ng-if="x.deptSleaderDate">日期：{{x.deptSleaderDate}}</p>
             </td>
         </tr>
         </tbody>
