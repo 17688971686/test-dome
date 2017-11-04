@@ -376,6 +376,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     public AddSuppLetterDto initMonthlyMutilyear() {
         AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
         suppletterDto.setOrgName(SessionUtil.getUserInfo().getOrg() == null ? "" : SessionUtil.getUserInfo().getOrg().getName());
+        suppletterDto.setUserName(SessionUtil.getDisplayName());
+        suppletterDto.setSuppLetterTime(new Date());
         return suppletterDto;
     }
 

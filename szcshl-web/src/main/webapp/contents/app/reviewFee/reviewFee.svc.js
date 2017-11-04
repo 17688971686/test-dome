@@ -39,7 +39,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/reviewFee/findSignDispaWork"),
+                transport: common.kendoGridConfig().transport(rootPath + "/reviewFee/findReviewFee" , $("#reviewFeeForm")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -76,31 +76,39 @@
                     width: 50
                 },
                 {
-                    field: "",
-                    title: "项目名称",
+                    field: "name",
+                    title: "名称",
                     width: 160,
                     filterable: false,
-                    template: function (item) {
-                        if(item.processInstanceId){
-                            return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
-                        }else{
-                            return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
-                        }
-
-                    }
+                    // template: function (item) {
+                    //     if(item.processInstanceId){
+                    //         return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
+                    //     }else{
+                    //         return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
+                    //     }
+                    //
+                    // }
                 },
                 {
-                    field: "reviewstage",
-                    title: "评审阶段",
+                    field: "",
+                    title: "业务类型",
                     width: 140,
-                    filterable: false
+                    filterable: false,
+                    template : function(item){
+                        if(item.businessType == "SIGN"){
+                            return "项目签收";
+                        }
+                        if(item.businessType == "TOPIC"){
+                            return "课题研究";
+                        }
+                    }
                 },
                 {
                     field: "",
                     title: "操作",
                     width: "6%",
                     template: function (item) {
-                      return common.format($('#columnBtns').html(), "vm.dealWindow('" +item.signid+ "')");
+                      return common.format($('#columnBtns').html(), "vm.dealWindow('" +item.businessId+ "')");
                     }
                 }
             ];// End:column

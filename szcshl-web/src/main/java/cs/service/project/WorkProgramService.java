@@ -17,7 +17,12 @@ public interface WorkProgramService {
 
     void delete(String id);
 
-    ResultMsg createMeetingDoc(String signId, String workprogramId);
+    /**
+     * 生成会前准备材料
+     * @param signId
+     * @return
+     */
+    ResultMsg createMeetingDoc(String signId);
 
     WorkProgramDto initWorkProgramById(String workId);
 

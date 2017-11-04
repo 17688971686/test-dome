@@ -6,6 +6,7 @@ import cs.model.expert.ExpertReviewDto;
 import cs.repository.IRepository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description: 专家评审 数据操作实现接口
@@ -47,4 +48,10 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
     boolean isFinishEPGrade(String businessId);
 
     void initReviewTitle(ExpertReview expertReview, String businessId, String businessType);
+
+    /**
+     * 查询专家评审费超期发放的信息
+     * @return
+     */
+    List<ExpertReview> findReviewOverTime();
 }

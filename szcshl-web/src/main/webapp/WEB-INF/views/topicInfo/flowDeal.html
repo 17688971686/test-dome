@@ -18,13 +18,13 @@
         </li>
         <li ng-show="vm.model.filingDto"><a id="show_filerecord_a" data-toggle="tab" for-div="busi_filerecord">归档信息</a>
         </li>
-        <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab"
-                                                                                                    for-div="expert_score">专家评分</a>
+        <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList">
+            <a data-toggle="tab" for-div="expert_score">专家评分</a>
         </li>
-        <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab"
-                                                                                                    for-div="expert_payment">评审费发放表</a>
+        <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList">
+            <a data-toggle="tab" for-div="expert_payment">评审费发放表</a>
         </li>
-        <li ng-show="vm.showFlag.showUploadFile"><a data-toggle="tab" for-div="flow_upload_file">附件列表</a></li>
+        <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="flow_upload_file">附件列表</a></li>
         <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>

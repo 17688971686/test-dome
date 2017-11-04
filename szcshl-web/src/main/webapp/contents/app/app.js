@@ -91,6 +91,14 @@
                 controllerAs: 'vm'
             })//end#拟补充资料函查看流程详细页面
 
+            //begin#拟补充资料函查看流程详细页面
+            .state('suppLetterView', {
+                url: '/suppLetterView/:id',
+                templateUrl: rootPath + '/addSuppLetter/view.html',
+                controller: 'suppLetterViewCtrl',
+                controllerAs: 'vm'
+            })//end#拟补充资料函查看流程详细页面
+
 
             //begin#拟补充资料函查询
             .state('suppletterList', {
@@ -424,6 +432,12 @@
                 url: '/projectStopForm/:signId/:stopId',
                 templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
                 controller: 'projectStopFormCtrl',
+                controllerAs: 'vm'
+            })
+            .state('projectStopFormEdit', { //编辑项目暂停表单
+                url: '/projectStopFormEdit/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormEditCtrl',
                 controllerAs: 'vm'
             })
             .state('reserveAdd', {	//新增预签收
@@ -762,6 +776,13 @@
                 url: '/approveWindow/:signId',
                 templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
                 controller: 'approveWindowCtrl',
+                controllerAs: 'vm'
+            })
+            //优秀评审报告编辑
+            .state('approveWindowEdit', {
+                url: '/approveWindowEdit/:id',
+                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                controller: 'approveWindowEditCtrl',
                 controllerAs: 'vm'
             })
 

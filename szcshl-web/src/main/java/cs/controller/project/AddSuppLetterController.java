@@ -75,13 +75,13 @@ public class AddSuppLetterController {
         return addSuppLetterDtos;
     }
 
-    @RequiresAuthentication
+   /* @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#updateApprove#post")
     @RequestMapping(name = "领导审批处理", path = "updateApprove", method = RequestMethod.POST)
     @ResponseBody
     public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
         addSuppLetterService.updateApprove(addSuppLetterDto);
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppLetter#post")
@@ -139,6 +139,11 @@ public class AddSuppLetterController {
         return ctrlName+"/suppLetterList";
     }
 
+    //@RequiresPermissions("addSuppLetter#html/suppLetterList#get")
+    @RequestMapping(name = "拟补充资料函查看", path = "view", method = RequestMethod.GET)
+    public String view() {
+        return ctrlName+"/view";
+    }
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/suppLetterApproveEdit#get")

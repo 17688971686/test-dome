@@ -4,7 +4,7 @@
             class="glyphicon glyphicon-ok"></span>提交
     </button>
     <button class="btn btn-sm btn-warning" ng-click="vm.backFlow()" ng-disabled="vm.isCommit"
-            ng-show="vm.showFlag.buttBack"><span class="glyphicon glyphicon-step-backward"></span>回退
+            ng-show="vm.flow.curNode.activitiId=='SPL_FGLD_SP'||vm.flow.curNode.activitiId=='SPL_BZ_SP'"><span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
     <flow-file-button ng-if="vm.showFlag.showUploadBT"></flow-file-button>   <!--附件上传按钮-->
@@ -40,6 +40,15 @@
                 <div ng-repeat="x in vm.flow.nextNode">
                     <span>{{x.activitiName}}</span>
                 </div>
+            </td>
+        </tr>
+        <tr ng-show="vm.flow.curNode.activitiId=='SPL_FZR'">
+            <td width="10%" class="text-center">
+                业务编辑
+            </td>
+
+            <td>
+                <a class="btn btn-sm btn-primary" href="#/addSuppLetterEdit/{{vm.suppletter.id}}"><span class="glyphicon glyphicon-pencil">修改补充资料函</span></a>
             </td>
         </tr>
 

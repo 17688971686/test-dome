@@ -90,15 +90,21 @@
                     <tr >
                         <td  width="15%" class="text-right">部长意见:</td>
                         <td colspan="3">
-                    <textarea style="width:98%;"  cols="10" rows="3" name="directorIdeaContent" id="directorIdeaContent"
+                            <p> {{vm.projectStop.directorIdeaContent}}</p>
+                            <p class="text-right" ng-if="vm.projectStop.directorName">签名：{{vm.projectStop.directorName}}</p>
+                            <p class="text-right" ng-if="vm.projectStop.directorDate">日期：{{vm.model.directorDate}}</p>
+                    <#--<textarea style="width:98%;"  cols="10" rows="3" name="directorIdeaContent" id="directorIdeaContent"
                               ng-model="x.directorIdeaContent" ng-disabled="true" ></textarea>
-                        </td>
+                        </td>-->
                     </tr>
                     <tr >
                         <td  width="15%" class="text-right">分管副主任签批:</td>
                         <td colspan="3">
-                    <textarea style="width:98%;" cols="10" rows="3" name="leaderIdeaContent" id="leaderIdeaContent"
-                              ng-model="x.leaderIdeaContent"ng-disabled="true" ></textarea>
+                            <p> {{vm.projectStop.leaderIdeaContent}}</p>
+                            <p class="text-right" ng-if="vm.projectStop.leaderName">签名：{{vm.model.leaderName}}</p>
+                            <p class="text-right" ng-if="vm.projectStop.leaderDate">日期：{{vm.model.leaderDate}}</p>
+                   <#-- <textarea style="width:98%;" cols="10" rows="3" name="leaderIdeaContent" id="leaderIdeaContent"
+                              ng-model="x.leaderIdeaContent"ng-disabled="true" ></textarea>-->
                         </td>
                     </tr>
 

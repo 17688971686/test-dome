@@ -180,4 +180,29 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
             expertReview.setReviewTitle("《" + topicInfo.getTopicName() + "》");
         }
     }
+
+
+    /**
+     * 查询专家评审费超期发放的信息
+     * @return
+     */
+    @Override
+    public List<ExpertReview> findReviewOverTime() {
+
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from " + ExpertReview.class.getSimpleName() + " where " + ExpertReview_.state.getName() + "<>:state");
+        hqlBuilder.append(" or " + ExpertReview_.state.getName() + " is null");
+        hqlBuilder.setParam("state" , Constant.EnumState.YES.getValue());
+        List<ExpertReview> expertReviewList = this.findByHql(hqlBuilder);
+
+        List<ExpertReview> resultList = new ArrayList<>();
+        if(expertReviewList!=null && expertReviewList.size()>0){
+            for(ExpertReview e : expertReviewList){
+                if(DateUtils.daysBetween(e.getReviewDate(),new Date())>1){
+                    resultList.add(e);
+                }
+            }
+        }
+        return resultList;
+    }
 }

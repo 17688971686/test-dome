@@ -73,8 +73,8 @@ public class WorkProgramController {
     //@RequiresPermissions("workprogram#createMeetingDoc#get")
     @RequestMapping(name = "生成会前准备材料", path = "createMeetingDoc", method = RequestMethod.GET)
     @ResponseBody
-    public ResultMsg createMeetingDoc(@RequestParam(required = true) String signId, @RequestParam(required = true) String workprogramId) {
-        return workProgramService.createMeetingDoc(signId, workprogramId);
+    public ResultMsg createMeetingDoc(@RequestParam(required = true) String signId) {
+        return workProgramService.createMeetingDoc(signId);
     }
 
     @RequiresAuthentication

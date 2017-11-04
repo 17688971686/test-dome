@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowDetailCtrl', flowDetail);
 
-    flowDetail.$inject = ['$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc','pauseProjectSvc','archivesLibrarySvc','reviewProjectAppraiseSvc','addSuppLetterSvc'];
+    flowDetail.$inject = ['$scope','$state','topicSvc','flowSvc','sysfileSvc','bookBuyBusinessSvc','assertStorageBusinessSvc','pauseProjectSvc','archivesLibrarySvc','reviewProjectAppraiseSvc','addSuppLetterSvc'];
 
-    function flowDetail($state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc,pauseProjectSvc,archivesLibrarySvc,reviewProjectAppraiseSvc,addSuppLetterSvc) {
+    function flowDetail($scope,$state,topicSvc,flowSvc,sysfileSvc,bookBuyBusinessSvc,assertStorageBusinessSvc,pauseProjectSvc,archivesLibrarySvc,reviewProjectAppraiseSvc,addSuppLetterSvc) {
         var vm = this;
         vm.title = '在办任务详情页';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -19,7 +19,7 @@
         vm.showFlag={
             businessNext : false,                              //是否显示下一环节处理人tr
             businessTr : false,                                //是否显示业务处理tr
-            showUploadFile : false,                            //显示附件
+            tabSysFile : false,                                //显示附件
             buttBack : false,                                  //显示回退按钮
         }
         activate();
@@ -62,13 +62,15 @@
                     addSuppLetterSvc.initFlowDeal(vm);
                     break;
             }
-            //5、附件
-            sysfileSvc.findByBusinessId(vm.businessKey,function(data){
+            // 初始化上传附件
+            sysfileSvc.findByMianId(vm.businessKey,function(data){
                 if(data && data.length > 0){
-                    vm.sysFilelists = data;
-                    vm.showFlag.showUploadFile = true;
+                    vm.showFlag.tabSysFile = true;
+                    vm.sysFileList = data;
+                    vm.urlType="flowDetail";//附件右边的列表显示
+                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
                 }
-            })
+            });
         }
 
     }

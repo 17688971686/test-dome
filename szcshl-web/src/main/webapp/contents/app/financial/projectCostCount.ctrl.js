@@ -21,10 +21,10 @@
             });
         }
 
-        vm.initFinancial = function (businessId) {
-            var url = $state.href('financialManager',{businessId:businessId});
-            window.open(url,'_blank');
-        }
+        // vm.initFinancial = function (businessId) {
+        //     var url = $state.href('financialManager',{businessId:businessId});
+        //     window.open(url,'_blank');
+        // }
 
         //重置查询表单
         vm.formReset = function(){

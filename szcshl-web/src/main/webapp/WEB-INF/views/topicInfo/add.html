@@ -19,7 +19,7 @@
         <table class="table table-bordered">
             <caption class="text-center"><h3><strong>课题研究计划书</strong></h3></caption>
             <tr>
-                <td class="formAlignRight" style="width:15%;max-width:180px;">课题名称： <span class="required">*</span></td>
+                <td class="text-right" style="width:15%;max-width:180px;">课题名称： <span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="128" class="form-control input-sm " ng-model="vm.model.topicName"
                             id="topicName" name="topicName" data-val="true"  data-val-required="必填" data-val-length-max="128">
@@ -27,7 +27,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">合作研究单位： <span class="required">*</span></td>
+                <td class="text-right">合作研究单位： <span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.cooperator"
                             id="cooperator" name="cooperator" data-val="true" data-val-required="必填" data-val-length-max="256">
@@ -35,25 +35,25 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">申报部门： <span class="required">*</span></td>
+                <td class="text-right">申报部门： <span class="required">*</span></td>
                 <td>
                     <input  type="text" class="form-control input-sm " ng-hide="true" ng-model="vm.model.orgId" ng-init="vm.model.orgId = '${CURRENT_USER.org.id}'">
                     <input  type="text" class="form-control input-sm " ng-disabled="true" ng-model="vm.model.orgName" ng-init="vm.model.orgName = '${CURRENT_USER.org.name}'" >
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">是否报发改委审批：<span class="required">*</span></td>
+                <td class="text-right">是否报发改委审批：<span class="required">*</span></td>
                 <td >
                     <label>
-                        <input type="radio" ng-value="9" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 9 || vm.model.sendFgw == '9'" name="sendFgw" />是
+                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 9 || vm.model.sendFgw == '9'" name="sendFgw" />是
                     </label>
                     <label>
-                        <input type="radio" ng-value="0" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 0 || vm.model.sendFgw == '0'" name="sendFgw" />否
+                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 0 || vm.model.sendFgw == '0'" name="sendFgw" />否
                     </label>
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">是否委里立项：<span class="required">*</span></td>
+                <td class="text-right">是否委里立项：<span class="required">*</span></td>
                 <td >
                     <label>
                         <input type="radio" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 9 || vm.model.fgwlx == '9'" name="fgwlx" />是
@@ -64,17 +64,19 @@
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">主要负责人：</td>
+                <td class="text-right">主要负责人：<span class="required">*</span></td>
                 <td >
-                    <select ng-model="vm.model.mainPrinUserId" name="mainPrinUserId" id="mainPrinUserId" ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
+                    <select ng-model="vm.model.mainPrinUserId" name="mainPrinUserId" id="mainPrinUserId"
+                            ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId">{{x.displayName}}</option>
+                        <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId ">{{x.displayName}}</option>
                     </select>
+                    <span data-valmsg-for="mainPrinUserId" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
 
             <tr>
-                <td class="formAlignRight">课题负责人：</td>
+                <td class="text-right">课题负责人：</td>
                 <td>
                     <ul id="principalUser_ul">
                         <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
@@ -88,7 +90,7 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">备注信息：</td>
+                <td class="text-right">备注信息：</td>
                 <td >
                     <textarea cols="100" rows="5"  name="remark" id="remark" ng-model="vm.model.remark" maxlength="512"
                               class="form-control input-sm " ></textarea>

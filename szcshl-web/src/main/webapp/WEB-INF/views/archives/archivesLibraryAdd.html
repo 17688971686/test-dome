@@ -11,11 +11,17 @@
                 ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-ok"></span>保存
         </button>
         <!--填报的时候直接发起流程-->
-        <button class="btn btn-sm btn-success" ng-click="vm.startFlow()" ng-hide="vm.isCommit">
+        <button class="btn btn-sm btn-success" ng-click="vm.startFlow()" ng-hide="vm.isCommit || vm.model.processInstanceId">
             <span class="glyphicon glyphicon-ok"></span>发起流程
         </button>
-        <a class="btn btn-sm btn-primary" href="#/archivesLibrary"><span
+        <a ng-show="!vm.model.processInstanceId" class="btn btn-sm btn-primary" href="#/archivesLibrary"><span
                 class="glyphicon glyphicon-chevron-left"></span>返回</a>
+
+        <!--退回时的处理,判断是否有流程实例ID-->
+        <button class="btn btn-sm btn-success" ng-click="vm.createLibrary()" ng-show="vm.model.processInstanceId">
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <a ng-show="vm.model.processInstanceId"  class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
     </div>
     <form id="form" name="form">
         <p style="width: 100%;">

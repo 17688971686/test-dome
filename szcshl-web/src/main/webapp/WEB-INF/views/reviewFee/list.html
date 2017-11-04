@@ -9,6 +9,16 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
+    <form id="reviewFeeForm" name="reviewFeeForm">
+        <span class="help-inline">业务类型：</span>
+        <select  operator="eq" name="businessType" id="businessType" ng-model="vm.reviewFee.businessType">
+            <option value="">请选择</option>
+            <option value="TOPIC">课题研究</option>
+            <option value="SIGN">项目签收</option>
+        </select>
+        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">查询</a>
+    </form>
+
     <script type="text/template" id="columnBtns">
         <@shiro.hasPermission name="reviewFee##put">
         <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>处理</button>
@@ -92,6 +102,7 @@
                             <td>{{vm.expertReview.reviewCost}}</td>
                             <td>{{vm.expertReview.reviewTaxes}}</td>
                             <td>{{vm.expertReview.totalCost}}</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>

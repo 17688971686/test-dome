@@ -258,7 +258,7 @@ public class SignServiceImpl implements SignService {
                     sysConfigDto = sysConfigService.findByKey(Constant.RevireStageKey.KEY_OTHER.getValue());
                 }
 
-                if(sysConfigDto != null ){
+                if(sysConfigDto != null && sysConfigDto.getConfigValue() !=null ){
                     sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
                 }else{
                     if((Constant.ProjectStage.STAGE_STUDY.getValue()).equals(sign.getReviewstage())
