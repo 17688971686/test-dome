@@ -71,22 +71,29 @@
             common.initJqValidation($("#suppletter_form"));
             var isValid = $("#suppletter_form").valid();
             if (isValid) {
-                addSuppLetterSvc.saveSuppLetter(vm.suppletter,vm.isCommit,function(data){
-                    vm.isCommit = false;
-                    if(data.flag || data.reCode == 'ok'){
-                        vm.suppletter = data.reObj;
-                        //保存成功，则发起流程
-                        addSuppLetterSvc.startSignSupperFlow(vm.suppletter.id,function(data){
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认已经完成填写，并且发起流程么？",
+                    onOk: function () {
+                        addSuppLetterSvc.saveSuppLetter(vm.suppletter,vm.isCommit,function(data){
+                            vm.isCommit = false;
                             if(data.flag || data.reCode == 'ok'){
-                                bsWin.success("操作成功！");
+                                vm.suppletter = data.reObj;
+                                //保存成功，则发起流程
+                                addSuppLetterSvc.startSignSupperFlow(vm.suppletter.id,function(data){
+                                    if(data.flag || data.reCode == 'ok'){
+                                        bsWin.success("操作成功！");
+
+                                    }else{
+                                        bsWin.error(data.reMsg);
+                                    }
+                                })
                             }else{
                                 bsWin.error(data.reMsg);
                             }
-                        })
-                    }else{
-                        bsWin.error(data.reMsg);
+                        });
                     }
-                });
+               });
             } else {
                 bsWin.alert("表格填写不正确，请检查相应的必填项信息！");
             }
