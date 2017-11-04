@@ -1,6 +1,5 @@
 package cs.service.sys;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheFactory;
@@ -14,7 +13,6 @@ import cs.domain.sys.SysConfig_;
 import cs.model.PageModelDto;
 import cs.model.sys.SysConfigDto;
 import cs.repository.odata.ODataObj;
-
 import cs.repository.repositoryImpl.sys.SysConfigRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -23,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description: 系统参数 业务操作实现类

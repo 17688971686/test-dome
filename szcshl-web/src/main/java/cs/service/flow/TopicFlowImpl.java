@@ -1,14 +1,21 @@
 package cs.service.flow;
 
+import cs.common.Constant;
 import cs.common.FlowConstant;
+import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
 import cs.domain.sys.User;
+import cs.domain.topic.TopicInfo;
+import cs.domain.topic.TopicInfo_;
 import cs.repository.repositoryImpl.flow.FlowPrincipalRepo;
+import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static cs.common.Constant.SUPER_USER;
 
 /**
  * Created by ldm on 2017/9/05.
@@ -17,7 +24,8 @@ import java.util.Map;
 public class TopicFlowImpl implements IFlow {
     @Autowired
     private FlowPrincipalRepo flowPrincipalRepo;
-
+    @Autowired
+    private TopicInfoRepo topicInfoRepo;
     /**
      * 获取流程参数
      * @param businessKey
@@ -28,6 +36,13 @@ public class TopicFlowImpl implements IFlow {
     public Map<String, Object> getFlowBusinessMap(String businessKey,String taskDefinitionKey) {
         Map<String, Object> businessMap = new HashMap<>();
         switch (taskDefinitionKey) {
+            case FlowConstant.TOPIC_ZRSH_JH:
+                TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessKey);
+                //如果送发改委
+                if(Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw())){
+                    businessMap.put(FlowConstant.FlowParams.SEND_FGW.getValue(), true);
+                }
+                break;
             case FlowConstant.TOPIC_GZFA:
             case FlowConstant.TOPIC_CGJD:
             case FlowConstant.TOPIC_KTBG:

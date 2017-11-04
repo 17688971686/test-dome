@@ -3,11 +3,11 @@
 
     angular.module('app').controller('workPlanEditCtrl', workPlan);
 
-    workPlan.$inject = ['bsWin', 'meetingSvc', 'roomSvc', 'workPlanSvc','$state'];
+    workPlan.$inject = ['bsWin', 'meetingSvc', 'roomSvc', 'workPlanSvc','$state','$scope','sysfileSvc'];
 
-    function workPlan(bsWin, meetingSvc, roomSvc, workPlanSvc,$state) {
+    function workPlan(bsWin, meetingSvc, roomSvc, workPlanSvc,$state,$scope,sysfileSvc) {
         var vm = this;
-        vm.title = '课题研究成果鉴定会工作方案编辑';
+        vm.title = '课题研究成果鉴定会工作方案';
         vm.workplan = {};
         if($state.params.topicId){
             vm.workplan.topicId = $state.params.topicId;
@@ -19,6 +19,7 @@
                 workPlanSvc.findByTopicId(vm.workplan.topicId,function(data){
                     vm.workplan = data;
                     vm.workplan.topicId = $state.params.topicId;
+                    vm.initFileUpload();
                 })
             }
         }
@@ -34,6 +35,31 @@
                 }
             })
         }//E_saveWorkPlan
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.workplan.id){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.workplan.id",function (newValue, oldValue) {
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId : vm.workplan.id,
+                mainId : vm.workplan.topicId,
+                mainType : sysfileSvc.mainTypeValue().TOPIC,
+                sysfileType:sysfileSvc.mainTypeValue().TOPIC_WORKPLAN,
+                sysBusiType:sysfileSvc.mainTypeValue().TOPIC_WORKPLAN,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId:"sysfileinput",
+                vm:vm
+            });
+        }
 
         //S_会议室预定
         vm.bookMeeting = function () {
