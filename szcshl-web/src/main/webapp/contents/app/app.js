@@ -1138,7 +1138,7 @@
             }else{
                 bsWin.alert("该文件不支持在线预览");
             }
-        }
+}
 
         //kendo 语言
         kendo.culture("zh-CN");

@@ -5,10 +5,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -99,7 +96,11 @@ public  class  FtpUtil {
         FTPClient ftp = new FTPClient();
         try {
             int reply;
-            ftp.connect(host, port);
+            if (port!=0){
+                ftp.connect(host, port);
+            }else{
+                ftp.connect(host);
+            }
             // 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
             ftp.login(username, password);// 登录
             reply = ftp.getReplyCode();
@@ -110,8 +111,9 @@ public  class  FtpUtil {
             ftp.changeWorkingDirectory(remotePath);// 转移到FTP服务器目录
             FTPFile[] fs = ftp.listFiles();
             for (FTPFile ff : fs) {
-                if (ff.getName().equals(fileName)) {
-                    File localFile = new File(localPath + "/" + ff.getName());
+                String localFileName=new String(ff.getName().getBytes("ISO-8859-1"),"GBK");
+                if (localFileName.equals(fileName)) {
+                    File localFile = new File(localPath + "/" + localFileName);
 
                     OutputStream is = new FileOutputStream(localFile);
                     ftp.retrieveFile(ff.getName(), is);
@@ -134,9 +136,9 @@ public  class  FtpUtil {
         return result;
     }
 
-/*    public static void main(String[] args){
-        uploadFile(String host, int port, String username, String password, String basePath,
-                String filePath, String filename, InputStream input);
-    }*/
+    public static void main(String[] args){
+       System.out.println(SysFileUtil.getUploadPath()+File.separator+"需要完善的问题.docx");
+
+    }
 
 }
