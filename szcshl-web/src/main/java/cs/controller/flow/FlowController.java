@@ -63,8 +63,6 @@ public class FlowController {
     @Autowired
     private RepositoryService repositoryService;
     @Autowired
-    private ProcessEngineConfiguration processEngineConfiguration;
-    @Autowired
     private HistoryService historyService;
     @Autowired
     private SignService signService;
@@ -440,9 +438,10 @@ public class FlowController {
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
     public @ResponseBody ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
-        return signService.restartFlow(businessKey);
+        return flowService.restartFlow(businessKey);
     }
 
+    @Deprecated
     /**
      * 流程挂起
      * @param businessKey
@@ -452,10 +451,9 @@ public class FlowController {
     @Transactional
     @RequestMapping(name = "挂起流程", path = "suspend/{businessKey}", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey,@RequestBody ProjectStopDto projectStopDto) {
+    public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程挂起成功！businessKey=" + businessKey);
-        return signService.stopFlow(businessKey,projectStopDto);
-
+        return flowService.stopFlow(businessKey);
     }
 
     @RequiresAuthentication

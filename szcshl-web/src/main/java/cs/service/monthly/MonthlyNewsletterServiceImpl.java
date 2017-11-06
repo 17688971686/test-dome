@@ -34,8 +34,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.File;
 import java.util.*;
 
@@ -492,6 +492,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
                 assigneeValue = "";                            //流程处理人

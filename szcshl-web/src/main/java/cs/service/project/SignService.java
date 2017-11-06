@@ -30,15 +30,27 @@ public interface SignService {
 
     SignDto findById(String signid, boolean queryAll);
 
-    //流程处理begin
+    /**
+     * 发起流程
+     * @param signid
+     * @return
+     */
     ResultMsg startNewFlow(String signid);
 
-    ResultMsg stopFlow(String signid, ProjectStopDto projectStopDto);
-
-    ResultMsg restartFlow(String signid);
-
+    /**
+     * 终止流程
+     * @param signid
+     * @return
+     */
     ResultMsg endFlow(String signid);
 
+    /**
+     * 流程处理
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
     //流程处理end
 
@@ -54,7 +66,11 @@ public interface SignService {
 
     List<Sign> getAssociates(String signId);
 
-    List<Sign> selectSignNotFinish();//查询正在办理的项目
+    /**
+     * 查询正在办理的项目，用于计算剩余工作日
+     * @return
+     */
+    List<Sign> selectSignNotFinish();
 
     void bathUpdate(List<Sign> signList);
 

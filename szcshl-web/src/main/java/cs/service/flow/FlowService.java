@@ -78,4 +78,18 @@ public interface FlowService {
      * @return
      */
     List<Task> findTaskListByKey(String processInstanceId, String key);
+
+    /**
+     * 根据业务ID，暂停流程
+     * @param businessKey
+     * @return
+     */
+    ResultMsg stopFlow(String businessKey);
+
+    /**
+     * 根据业务ID，激活流程
+     * @param businessKey
+     * @return
+     */
+    ResultMsg restartFlow(String businessKey);
 }

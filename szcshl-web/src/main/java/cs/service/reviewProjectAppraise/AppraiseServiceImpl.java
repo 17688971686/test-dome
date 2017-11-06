@@ -314,6 +314,7 @@ public class AppraiseServiceImpl implements AppraiseService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
                 assigneeValue = "";                            //流程处理人

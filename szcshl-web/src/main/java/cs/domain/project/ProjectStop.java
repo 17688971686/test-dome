@@ -132,6 +132,11 @@ public class ProjectStop extends DomainBase {
     private String isactive;
 
     /**
+     * 是否已经执行（9表示已经执行，1:表示正在执行）
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isOverTime;
+    /**
      * 流程实例ID
      */
     @Column(columnDefinition = "VARCHAR(64)")
@@ -324,5 +329,13 @@ public class ProjectStop extends DomainBase {
 
     public void setUserDays(Float userDays) {
         this.userDays = userDays;
+    }
+
+    public String getIsOverTime() {
+        return isOverTime;
+    }
+
+    public void setIsOverTime(String isOverTime) {
+        this.isOverTime = isOverTime;
     }
 }

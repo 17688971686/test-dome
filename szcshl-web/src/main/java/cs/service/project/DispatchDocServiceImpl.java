@@ -251,7 +251,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //如果评审阶段是可研和概算的，才关联到前一阶段
         String reviewStage = sign.getReviewstage();
         if (Validate.isString(reviewStage) && sign.getAssociateSign() != null &&
-          (Constant.ProjectStage.STAGE_STUDY.getValue().equals(reviewStage) || Constant.ProjectStage.STAGE_BUDGET.getValue().equals(reviewStage)) ) {
+          (Constant.STAGE_STUDY.equals(reviewStage) || Constant.STAGE_BUDGET.equals(reviewStage)) ) {
             List<Sign> associateSigns = signService.getAssociates(sign.getAssociateSign().getSignid());
             if (associateSigns != null && associateSigns.size() > 0) {
                 List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());
@@ -300,16 +300,16 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         List<SysFile> sysFileList = new ArrayList<>();
 
-        if(Constant.ProjectStage.STAGE_STUDY.getValue().equals(signDispaWork.getReviewstage())){//可行性研究报告
+        if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){//可行性研究报告
             sysFileList.add(CreateTemplateUtils.createStudyTemplateOpinion(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createStudyTemplateEstimate(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createStudyTemplateRoster(signDispaWork , expertList));
-        }else if(Constant.ProjectStage.STAGE_BUDGET.getValue().equals(signDispaWork.getReviewstage())){//项目概算
+        }else if(Constant.STAGE_BUDGET.equals(signDispaWork.getReviewstage())){//项目概算
             sysFileList.add(CreateTemplateUtils.createBudgetTemplateEstimate(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createBudgetTemplateOpinion(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createBudgetTemplateProjectCost(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createBudgetTemplateRoster(signDispaWork  ,expertList));
-        }else if(Constant.ProjectStage.APPLY_REPORT.getValue().equals(signDispaWork.getReviewstage())){//资金申请报告
+        }else if(Constant.APPLY_REPORT.equals(signDispaWork.getReviewstage())){//资金申请报告
             sysFileList.add( CreateTemplateUtils.createReportTemplateEstimate(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createReportTemplateOpinion(signDispaWork ));
             sysFileList.add(CreateTemplateUtils.createReportTemplateRoster(signDispaWork , expertList));

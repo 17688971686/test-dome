@@ -229,6 +229,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
 
         String businessId = processInstance.getBusinessKey(),

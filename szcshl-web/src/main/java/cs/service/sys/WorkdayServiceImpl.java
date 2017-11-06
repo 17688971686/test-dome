@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,11 +95,20 @@ public class WorkdayServiceImpl implements WorkdayService {
     public List<Workday> selectSpecialDays(String status) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select t from " + Workday.class.getSimpleName() + " t where t." + Workday_.status.getName() + "=:status");
-//		hqlBuilder.append("select t.dates from CS_WORKDAY t where t.status=:status");
         hqlBuilder.setParam("status", status);
         List<Workday> datesList = workdayRepo.findByHql(hqlBuilder);
         return datesList;
     }
 
+    /**
+     * 计算从当前日期开始，一年内的调休记录
+     * @return
+     */
+    @Override
+    public List<Workday> findWorkDayByNow() {
+        Date endDate = new Date();
+        Date beginDate = DateUtils.addDay(endDate,-365);
+        return workdayRepo.findWorkDay(DateUtils.converToString(beginDate,DateUtils.DATE_YEAR),DateUtils.converToString(endDate,DateUtils.DATE_YEAR));
+    }
 
 }

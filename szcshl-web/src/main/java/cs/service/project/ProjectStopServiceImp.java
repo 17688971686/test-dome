@@ -4,10 +4,7 @@ import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.*;
@@ -47,23 +44,24 @@ import static cs.common.Constant.SUPER_USER;
 public class ProjectStopServiceImp implements ProjectStopService {
     @Autowired
     private ProjectStopRepo projectStopRepo;
-
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private SignRepo signRepo;
     @Autowired
     private ProcessEngine processEngine;
-
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-
     @Autowired
-    private FlowService flowService;
+    private SignService signService;
 
-    @Autowired
-    private RuntimeService runtimeService;
     //flow service
     @Autowired
     private TaskService taskService;
     @Autowired
-    private UserRepo userRepo;
+    private RuntimeService runtimeService;
+    @Autowired
+    private FlowService flowService;
 
 
     @Override
@@ -259,24 +257,16 @@ public class ProjectStopServiceImp implements ProjectStopService {
     }*/
 
 
+    /**
+     * 查询正在执行的暂停项目
+     * @return
+     */
     @Override
     public List<ProjectStop> findPauseProjectSuccess() {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select stopid,pausetime,pausedays from cs_projectStop where isactive=:isactive");
-        sqlBuilder.setParam("isactive", Constant.EnumState.YES.getValue());
-        List<Object[]> map = projectStopRepo.getObjectArray(sqlBuilder);
-        List<ProjectStop> projectStopList = new ArrayList<>();
-        if (Validate.isList(map)) {
-            for (int i = 0; i < map.size(); i++) {
-                Object[] objs = map.get(i);
-                ProjectStop projectStop = new ProjectStop();
-                projectStop.setStopid((String) objs[0]);
-                projectStop.setPausetime((Date) objs[1]);
-                projectStop.setPausedays((float) objs[2]);
-                projectStopList.add(projectStop);
-            }
-        }
-        return projectStopList;
+        Criteria criteria = projectStopRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(ProjectStop_.isactive.getName(), Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.eq(ProjectStop_.isOverTime.getName(), Constant.EnumState.PROCESS.getValue()));
+        return criteria.list();
     }
 
     @Override
@@ -292,9 +282,10 @@ public class ProjectStopServiceImp implements ProjectStopService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                            //流程处理人
+               assigneeValue = "";                             //流程处理人
         Map<String,Object> variables = null;                   //流程参数
         User dealUser = null;                                  //用户
         ProjectStop projectStop = null;                        //项目暂停对象
@@ -325,13 +316,36 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
-                projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessId);
+                String isactive = flowDto.getBusinessMap().get("AGREE").toString();
+                isactive = Constant.EnumState.YES.getValue().equals(isactive)?Constant.EnumState.YES.getValue():Constant.EnumState.NO.getValue();
+                projectStop = projectStopRepo.findById(businessId);
+                //审批通过，暂停还未开始执行，由定时器去启动
+                //暂停时间，如果没有，就按审批通过算起。有就按暂停日期算起
+                if(null == projectStop.getPausetime() || DateUtils.daysBetween(new Date(),projectStop.getPausetime()) == 0){
+                    projectStop.setPausetime(new Date());
+                    projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
+                    Sign sign = projectStop.getSign();
+                    //如果领导同意，则将流程暂停
+                    if(Constant.EnumState.YES.getValue().equals(isactive)){
+                        ResultMsg stopResult = flowService.stopFlow(projectStop.getSign().getSignid());
+                        if(!stopResult.isFlag()){
+                            return stopResult;
+                        }
+                    }
+                    //更改项目状态
+                    sign.setSignState(Constant.EnumState.STOP.getValue());
+                    sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                    signRepo.save(sign);
+                }else{
+                    projectStop.setIsOverTime(Constant.EnumState.NO.getValue());
+                }
                 projectStop.setLeaderId(SessionUtil.getUserId());
                 projectStop.setLeaderName(SessionUtil.getDisplayName());
                 projectStop.setLeaderIdeaContent(flowDto.getDealOption());
                 projectStop.setLeaderDate(new Date());
                 projectStop.setApproveStatus(Constant.EnumState.YES.getValue());
-                projectStop.setIsactive(flowDto.getBusinessMap().get("AGREE").toString());
+                projectStop.setIsactive(isactive);
+
                 projectStopRepo.save(projectStop);
                 break;
             default:
