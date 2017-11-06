@@ -39,8 +39,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 import static cs.common.Constant.SUPER_USER;
@@ -304,6 +304,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
      * @return ResultMsg
      */
     @Override
+    @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
                assigneeValue = "";                             //流程处理人

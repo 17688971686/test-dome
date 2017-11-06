@@ -26,8 +26,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -35,7 +33,6 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
-import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -602,6 +599,39 @@ public class FlowServiceImpl implements FlowService {
     public List<Task> findTaskListByKey(String processInstanceId, String key) {
         return taskService.createTaskQuery().processInstanceId(
                 processInstanceId).taskDefinitionKey(key).list();
+    }
+
+    /**
+     * 根据业务ID，暂停流程
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public ResultMsg stopFlow(String businessKey) {
+        try{
+            ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
+            runtimeService.suspendProcessInstanceById(processInstance.getId());
+        }catch(Exception e){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作异常："+e.getMessage());
+        }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+
+    /**
+     * 根据业务ID，激活流程
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public ResultMsg restartFlow(String businessKey) {
+        //激活流程
+        try{
+            ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
+            runtimeService.activateProcessInstanceById(processInstance.getId());
+        }catch (Exception e){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作异常："+e.getMessage());
+        }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
     /**

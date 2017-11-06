@@ -29,8 +29,16 @@ public interface ProjectStopService {
      */
     ProjectStopDto getProjectStopByStopId(String stopId);
 
+    /**
+     * 查询正在执行的暂停项目
+     * @return
+     */
     List<ProjectStop> findPauseProjectSuccess();
 
+    /**
+     * 批量更新暂停信息
+     * @param projectStopList
+     */
     void updateProjectStopStatus(List<ProjectStop> projectStopList);
 
     /**

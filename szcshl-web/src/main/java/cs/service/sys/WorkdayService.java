@@ -21,4 +21,9 @@ public interface WorkdayService {
 	
 	List<Workday> selectSpecialDays(String status);
 
+    /**
+     * 计算从当前日期开始，一年内的调休记录
+     * @return
+     */
+	List<Workday> findWorkDayByNow();
 }

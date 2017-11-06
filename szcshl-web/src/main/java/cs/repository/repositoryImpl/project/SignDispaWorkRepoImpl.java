@@ -73,22 +73,22 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     Object[] value = {((BigDecimal) obj[1] ) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)) ,
                             ((BigDecimal) obj[2] ) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)) ,
                             obj[3] == null ? 0 : obj[3]}; //[申报金额，审定金额，数目]
-                    if((Constant.ProjectStage.STAGE_SUG.getValue()).equals((String)obj[0])){
-                        map.put( Constant.ProjectStage.STAGE_SUG.getValue() , value);
-                    }else if((Constant.ProjectStage.STAGE_STUDY.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.STAGE_STUDY.getValue() , value);
-                    }else if((Constant.ProjectStage.STAGE_BUDGET.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.STAGE_BUDGET.getValue() , value);
-                    }else if((Constant.ProjectStage.APPLY_REPORT.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.APPLY_REPORT.getValue() , value);
-                    }else if((Constant.ProjectStage.DEVICE_BILL_HOMELAND.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.DEVICE_BILL_HOMELAND.getValue() , value);
-                    }else if((Constant.ProjectStage.DEVICE_BILL_IMPORT.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.DEVICE_BILL_IMPORT.getValue() , value);
-                    }else if((Constant.ProjectStage.IMPORT_DEVICE.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.IMPORT_DEVICE.getValue() , value);
-                    }else if((Constant.ProjectStage.OTHERS.getValue()).equals((String)obj[0])){
-                        map.put(Constant.ProjectStage.OTHERS.getValue() , value);
+                    if((Constant.STAGE_SUG).equals((String)obj[0])){
+                        map.put( Constant.STAGE_SUG , value);
+                    }else if((Constant.STAGE_STUDY).equals((String)obj[0])){
+                        map.put(Constant.STAGE_STUDY , value);
+                    }else if((Constant.STAGE_BUDGET).equals((String)obj[0])){
+                        map.put(Constant.STAGE_BUDGET, value);
+                    }else if((Constant.APPLY_REPORT).equals((String)obj[0])){
+                        map.put(Constant.APPLY_REPORT, value);
+                    }else if((Constant.DEVICE_BILL_HOMELAND).equals((String)obj[0])){
+                        map.put(Constant.DEVICE_BILL_HOMELAND, value);
+                    }else if((Constant.DEVICE_BILL_IMPORT).equals((String)obj[0])){
+                        map.put(Constant.DEVICE_BILL_IMPORT, value);
+                    }else if((Constant.IMPORT_DEVICE).equals((String)obj[0])){
+                        map.put(Constant.IMPORT_DEVICE, value);
+                    }else if((Constant.OTHERS).equals((String)obj[0])){
+                        map.put(Constant.OTHERS, value);
                     }
                     resultList.add(map);
                 }
@@ -135,7 +135,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             if(objctList != null && objctList.size()>0){
                 for(int i=0 ; i<objctList.size() ; i++){
                     Object[] objects =objctList.get(i);
-                    if((Constant.ProjectStage.STAGE_SUG.getValue()).equals((String)objects[0])){
+                    if((Constant.STAGE_SUG).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 sugs[0] = Integer.parseInt((objects[2]).toString());
@@ -155,7 +155,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.STAGE_STUDY.getValue()).equals((String)objects[0])){
+                    }else if((Constant.STAGE_STUDY).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 studys[0] = Integer.parseInt((objects[2]).toString());
@@ -175,7 +175,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.STAGE_BUDGET.getValue()).equals((String)objects[0])){
+                    }else if((Constant.STAGE_BUDGET).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 budgets[0] = Integer.parseInt((objects[2]).toString());
@@ -195,7 +195,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.APPLY_REPORT.getValue()).equals((String)objects[0])){
+                    }else if((Constant.APPLY_REPORT).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 reports[0] = Integer.parseInt(objects[2].toString());
@@ -215,7 +215,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.DEVICE_BILL_HOMELAND.getValue()).equals((String)objects[0])){
+                    }else if((Constant.DEVICE_BILL_HOMELAND).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 homelands[0] = Integer.parseInt(objects[2].toString());
@@ -235,7 +235,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.DEVICE_BILL_IMPORT.getValue()).equals((String)objects[0])){
+                    }else if((Constant.DEVICE_BILL_IMPORT).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 imports[0] = Integer.parseInt(objects[2].toString());
@@ -255,7 +255,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.IMPORT_DEVICE.getValue()).equals((String)objects[0])){
+                    }else if((Constant.IMPORT_DEVICE).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 devices[0] = Integer.parseInt(objects[2].toString());
@@ -275,7 +275,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.ProjectStage.OTHERS.getValue()).equals((String)objects[0])){
+                    }else if((Constant.OTHERS).equals((String)objects[0])){
                         switch ((String)objects[1]){
                             case "市政工程":
                                 others[0] = Integer.parseInt(objects[2].toString());
@@ -299,21 +299,21 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                 }
             }
             Map<String ,Object[]> sugMap = new HashMap<>();
-            sugMap.put(Constant.ProjectStage.STAGE_SUG.getValue() , sugs);
+            sugMap.put(Constant.STAGE_SUG, sugs);
             Map<String , Object[]> studyMap = new HashMap<>();
-            studyMap.put(Constant.ProjectStage.STAGE_STUDY.getValue() , studys);
+            studyMap.put(Constant.STAGE_STUDY, studys);
             Map<String , Object[]> budgetMap = new HashMap<>();
-            budgetMap.put(Constant.ProjectStage.STAGE_BUDGET.getValue() , budgets);
+            budgetMap.put(Constant.STAGE_BUDGET, budgets);
             Map<String , Object[]> reportMap = new HashMap<>();
-            reportMap.put(Constant.ProjectStage.APPLY_REPORT.getValue() , reports);
+            reportMap.put(Constant.APPLY_REPORT, reports);
             Map<String , Object[]> homeLandMap = new HashMap<>();
-            homeLandMap.put(Constant.ProjectStage.DEVICE_BILL_HOMELAND.getValue() , homelands);
+            homeLandMap.put(Constant.DEVICE_BILL_HOMELAND, homelands);
             Map<String , Object[]> importMap = new HashMap<>();
-            importMap.put(Constant.ProjectStage.DEVICE_BILL_IMPORT.getValue() , imports);
+            importMap.put(Constant.DEVICE_BILL_IMPORT, imports);
             Map<String , Object[]> deviceMap = new HashMap<>();
-            deviceMap.put(Constant.ProjectStage.IMPORT_DEVICE.getValue() , devices);
+            deviceMap.put(Constant.IMPORT_DEVICE, devices);
             Map<String ,Object[]> otherMap = new HashMap<>();
-            otherMap.put(Constant.ProjectStage.OTHERS.getValue() , others);
+            otherMap.put(Constant.OTHERS, others);
             resultList.add(sugMap);
             resultList.add(studyMap);
             resultList.add(budgetMap);

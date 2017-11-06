@@ -597,6 +597,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         ResultMsg rturnReuslt = null;
         String businessId = processInstance.getBusinessKey(),

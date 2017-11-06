@@ -24,5 +24,10 @@ public interface SysConfigService {
 
     List<SysConfigDto> queryAll();
 
+    /**
+     * 根据key获取系统参数配置信息
+     * @param key
+     * @return
+     */
     SysConfigDto findByKey(String key);
 }

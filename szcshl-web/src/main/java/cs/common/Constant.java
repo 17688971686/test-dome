@@ -59,6 +59,15 @@ public class Constant {
     public static Float WORK_DAY_12 = 12f;
 
     /**
+     * 25
+     */
+    public static Float WORK_DAY_25 = 25f;
+
+    /**
+     * 25
+     */
+    public static Float WORK_DAY_3 = 3f;
+    /**
      * 初始化用户密码
      */
     public static final String PASSWORD = "123456";
@@ -550,29 +559,6 @@ public class Constant {
 
 
     /**
-     * 项目阶段
-     */
-    public static enum ProjectStage{
-        STAGE_SUG("项目建议书"),
-        STAGE_STUDY("可行性研究报告"),
-        STAGE_BUDGET("项目概算"),
-        APPLY_REPORT ("资金申请报告"),
-        OTHERS("其它"),
-        DEVICE_BILL_HOMELAND("设备清单（国产）"),
-        DEVICE_BILL_IMPORT("设备清单（进口）"),
-        IMPORT_DEVICE("进口设备");
-
-        private String value;
-
-        ProjectStage(String value) {
-            this.value = value;
-        }
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
      * 表头类型
      */
     public static enum HeaderType{
@@ -625,6 +611,18 @@ public class Constant {
             this.value = value;
         }
     }
+
+    /**
+     * 项目阶段
+     */
+    public static final String STAGE_SUG = "项目建议书";
+    public static final String STAGE_STUDY = "可行性研究报告";
+    public static final String STAGE_BUDGET = "项目概算";
+    public static final String APPLY_REPORT = "资金申请报告";
+    public static final String OTHERS = "其它";
+    public static final String DEVICE_BILL_HOMELAND = "设备清单（国产）";
+    public static final String DEVICE_BILL_IMPORT = "设备清单（进口）";
+    public static final String IMPORT_DEVICE = "进口设备";
 
     /**
      * 评审阶段key值
