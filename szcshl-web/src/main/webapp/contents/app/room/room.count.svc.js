@@ -171,12 +171,12 @@
 						width : 160,						
 						filterable : false,
 					},
-					{
-						field : "rbType",
-						title : "会议类型",
-						width : 100,						
-						filterable : false
-					},
+					// {
+					// 	field : "rbType",
+					// 	title : "会议类型",
+					// 	width : 100,
+					// 	filterable : false
+					// },
 					{
 						field : "dueToPeople",
 						title : "会议预定人",

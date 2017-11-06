@@ -1,9 +1,9 @@
 (function(){
     'use strict';
     angular.module('app').controller('reviewFeeCtrl' , reviewFee);
-    reviewFee.$inject = [ 'reviewFeeSvc' , 'expertReviewSvc' , 'bsWin'];
+    reviewFee.$inject = [ 'reviewFeeSvc' , 'expertReviewSvc' , 'bsWin' , '$state'];
 
-    function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin){
+    function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin , $state){
         var vm = this;
         vm.title = '项目列表';
         vm.reviewFee = {};
@@ -32,7 +32,7 @@
                 $("#payFromWindow").kendoWindow({
                     width: "70%",
                     height: "60%",
-                    title: "评审费发放",
+                    title: "专家评审费发放",
                     visible: false,
                     modal: true,
                     closable: true,
@@ -148,6 +148,21 @@
             }else{
                 bsWin.alert("请正确填写专家评审费信息！");
             }
+        }
+
+        /**
+         * 查看详情
+         * @param businessId
+         * @param businessType
+         */
+        vm.detail = function(businessId , businessType){
+            if(businessType == "SIGN"){
+                $state.go("signDetails" , {signid : businessId});
+            }
+            if(businessType == "TOPIC"){
+                $state.go("flowDetail" , {businessKey : businessId });
+            }
+
         }
     }
 })();

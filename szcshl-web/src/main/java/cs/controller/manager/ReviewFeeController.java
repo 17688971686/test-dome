@@ -3,9 +3,11 @@ package cs.controller.manager;
 import cs.ahelper.MudoleAnnotation;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.manager.ReviewFee;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
+import cs.service.expert.ExpertReviewService;
 import cs.service.manager.ReviewFeeService;
 import cs.service.project.SignDispaWorkService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -36,11 +38,14 @@ public class ReviewFeeController {
     @Autowired
     private ReviewFeeService reviewFeeService;
 
+    @Autowired
+    private ExpertReviewService expertReviewService;
+
 
     @RequiresAuthentication
     @RequestMapping(name="查询评审费发放超期的（项目、课题）信息" , path = "findReviewFee" , method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<ReviewFee> findSignDispaWork(HttpServletRequest request) throws ParseException {
+    public PageModelDto<ExpertReviewDto> findSignDispaWork(HttpServletRequest request) throws ParseException {
         ODataObj oDataObj = new ODataObj(request);
         String businessType = null;
         if(oDataObj.getFilter() !=null && oDataObj.getFilter().size()>0){
@@ -48,7 +53,8 @@ public class ReviewFeeController {
             businessType = reviewFeeODataFilterItem.getValue().toString();
         }
 
-        return reviewFeeService.findOverTimeReviewFee(businessType);
+//        return reviewFeeService.findOverTimeReviewFee(businessType);
+        return expertReviewService.findOverTimeReview(businessType);
     }
 
 

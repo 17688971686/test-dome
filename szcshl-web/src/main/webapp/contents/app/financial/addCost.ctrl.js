@@ -56,7 +56,7 @@
                 vm.financial.businessId = vm.businessId;
                 vm.financial.projectName = vm.projectName;
                 // vm.model.assissCost = object.totalCost;
-                vm.financial.paymentData = object.payDate;
+                vm.financial.paymentData = data.financialDto.paymentData;
                 expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
                     vm.expertReview = data;
                     vm.reviewTitle = data.reviewTitle;

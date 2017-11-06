@@ -231,12 +231,14 @@
         
         //保存预定会议室信息
         vm.saveRoom = function(){
+
             roomSvc.saveRoom(vm.roombook,function(data){
                 if (data.flag || data.reCode == "ok") {
                     //替换修改的会议信息
                     $.each( vm.work.roomBookingDtos, function(key, val) {
                         if(vm.roombook.id == val.id){
-                            val = data.reObj;
+                            vm.roombook = data.reObj;
+                            vm.work.roomBookingDtos[key].rbDate = vm.roombook.rbDate;
                         }
                     } );
                     bsWin.success("操作成功！",function () {
