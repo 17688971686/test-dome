@@ -9,13 +9,10 @@
         var url_sign = rootPath + "/sign";
         var url_back = '#/sign';
         var service = {
-            grid: grid,
-            getsignById: getsignById,
-            reserveAdd: reserveAdd,
-            deleteReserveSign: deleteReserveSign,
-            updatesign: updatesign,
-            querySign: querySign,		//会议室查询
-            roomUseState: roomUseState
+            grid: grid,                                  //预签收列表
+            getsignById: getsignById,                    //根据id查询
+            reserveAdd: reserveAdd,                     //新增预签收记录
+            deleteReserveSign: deleteReserveSign,       //删除预签收记录
         };
 
         return service;
@@ -25,54 +22,27 @@
             vm.gridOptions.dataSource.read();
         }//E_查询grid
 
-        // begin#updateUser
-        function updatesign(vm) {
-
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-                var httpOptions = {
-                    method: 'put',
-                    url: url_sign,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
+        // begin# E_项目预签收
+        function reserveAdd(model ,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/sign/html/reserveAddPost",
+                data: model
             }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
 
         }
+        //end E_项目预签收
+
 
         // begin#deleteUser
         function deleteReserveSign(vm, id) {
@@ -103,75 +73,8 @@
             });
         }
 
-        function roomUseState(vm) {
-            var httpOptions = {
-                method: 'put',
-                url: url_sign + "/roomUseState",
-                data: vm.model
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.gridOptions.dataSource.read();
-                    }
 
-                });
 
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#reserveAdd
-        function reserveAdd(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                var httpOptions = {
-                    method: 'post',
-                    url: url_sign+"/html/reserveAddPost",
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                        	 common.alert({
-                                 vm: vm,
-                                 msg: "操作成功,请继续填写报审登记表！",
-                                 closeDialog: true,
-                                 fn: function () {
-                                     //跳转并刷新页面
-                                     $state.go('fillSign', {signid: response.data.signid}, {reload: true});
-                                 }
-                             })
-                        }
-                    });
-
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess,
-                    onError: function (response) {
-                        vm.iscommit = false;
-                    }
-                });
-
-            }
-        }
-        //end reserveAdd
         
         // begin#getUserById
         function getsignById(vm) {

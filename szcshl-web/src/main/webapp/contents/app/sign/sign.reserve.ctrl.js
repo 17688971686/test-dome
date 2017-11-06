@@ -21,11 +21,7 @@
                }
            })
        }
-       //查询
-       vm.querySign = function (){
-    	   reserveSignSvc.querySign(vm);
-       }
-       
+
         active();
         function active(){
         	reserveSignSvc.grid(vm);

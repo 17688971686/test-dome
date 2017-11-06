@@ -21,6 +21,7 @@
         vm.selectMonthly =function(){
             var theMonths =vm.monthly.theMonths;
             vm.monthly.endTheMonths =theMonths;
+            vm.monthly.staerTheMonths = "";
 
         }
         //报告年度
@@ -31,10 +32,11 @@
         }
         //开始月份
         vm.startMonthly = function(){
-            if( vm.monthly.endTheMonths < vm.monthly.staerTheMonths){
+            var   end =  parseInt(vm.monthly.endTheMonths);
+            var start =  parseInt(vm.monthly.staerTheMonths);
+            if( end < start){
                 bsWin.alert("开始月份不能大于结束月份");
                 vm.monthly.staerTheMonths ="";
-                return false;
             }
         }
 
