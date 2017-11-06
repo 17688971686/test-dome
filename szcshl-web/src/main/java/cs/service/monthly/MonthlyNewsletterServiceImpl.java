@@ -100,19 +100,25 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Transactional
     public ResultMsg save(MonthlyNewsletterDto record) {
         MonthlyNewsletter domain = new MonthlyNewsletter();
-        BeanCopierUtils.copyProperties(record, domain);
-        Date now = new Date();
-        domain.setId(UUID.randomUUID().toString());
-        domain.setCreatedBy(SessionUtil.getDisplayName());
-        domain.setModifiedBy(SessionUtil.getDisplayName());
-        domain.setAddTime(now);
-        domain.setAuthorizedUser(SessionUtil.getDisplayName());
-        domain.setAuthorizedTime(now);
-        domain.setMonthlyType(EnumState.NORMAL.getValue());
-        domain.setCreatedDate(now);
-        domain.setModifiedDate(now);
+        if(Validate.isString(record.getId())){
+             domain =   monthlyNewsletterRepo.findById(record.getId());
+            BeanCopierUtils.copyPropertiesIgnoreNull(record,domain);
+        }else{
+            BeanCopierUtils.copyProperties(record, domain);
+            Date now = new Date();
+            domain.setId(UUID.randomUUID().toString());
+            domain.setCreatedBy(SessionUtil.getDisplayName());
+            domain.setModifiedBy(SessionUtil.getDisplayName());
+            domain.setAddTime(now);
+            domain.setAuthorizedUser(SessionUtil.getDisplayName());
+            domain.setAuthorizedTime(now);
+            domain.setMonthlyType(EnumState.NORMAL.getValue());
+            domain.setCreatedDate(now);
+            domain.setModifiedDate(now);
+        }
         monthlyNewsletterRepo.save(domain);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", domain);
+
+        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", record);
     }
 
     @Override

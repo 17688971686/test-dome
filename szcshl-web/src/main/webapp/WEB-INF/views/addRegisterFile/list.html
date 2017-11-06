@@ -54,12 +54,12 @@
             <td>
                 <input type="checkbox" style="width:50px;"
                        ng-model="vm.addRegisters[$index].isHasOriginfile" id="isHasOriginfile"
-                       name="isHasOriginfile" ng-true-value="9" ng-false-value="0">
+                       name="isHasOriginfile"  ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
                 <input type="checkbox" style="width:50px;"
                        ng-model="vm.addRegisters[$index].isHasCopyfile" id="isHasCopyfile"
-                       name="isHasCopyfile" ng-true-value="9" ng-false-value="0">
+                       name="isHasCopyfile" ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
                 <select ng-model="vm.addRegisters[$index].suppleDeclare" class="form-control input-sm ">

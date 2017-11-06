@@ -7,7 +7,7 @@
 
     function monthlyHistory($location, monthlyHistorySvc) {
         var vm = this;
-        vm.title = '优秀评审报告管理';
+        vm.title = '月报简报历史数据管理';
 
         vm.del = function (id) {
             common.confirm({

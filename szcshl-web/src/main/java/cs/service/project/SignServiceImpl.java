@@ -1827,8 +1827,10 @@ public class SignServiceImpl implements SignService {
             String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
             sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
         }
+
         //签收时间
         sign.setSigndate(now);
+        sign.setSignid(UUID.randomUUID().toString());
         sign.setCreatedDate(now);
         sign.setModifiedDate(now);
         sign.setCreatedBy(SessionUtil.getLoginName());

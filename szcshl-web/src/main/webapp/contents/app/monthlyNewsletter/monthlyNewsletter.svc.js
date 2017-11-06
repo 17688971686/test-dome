@@ -85,6 +85,7 @@
                             fn: function () {
                             	vm.isSubmit = false;
                                 vm.gridOptions.dataSource.read();
+                                refresh();
                             }
                         })
                     }
@@ -97,6 +98,11 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
+        }
+
+        //刷新页面
+        function refresh(){
+            window.location.reload();
         }
 
         // begin#保存月报简报

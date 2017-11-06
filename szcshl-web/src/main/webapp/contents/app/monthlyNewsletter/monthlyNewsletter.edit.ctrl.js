@@ -40,8 +40,8 @@
 
         //添加月报简报
         vm.createMothlyNewsletter = function () {
-        	 common.initJqValidation();
-             var isValid = $('form').valid();
+            common.initJqValidation();
+            var isValid = $('#form').valid();
 	          if(isValid){
 	        	  monthlyNewsletterSvc.createMonthlyNewsletter(vm.monthly,function(data){
 	                   if (data.flag || data.reCode == "ok") {
@@ -55,6 +55,7 @@
 	        	   bsWin.alert("缺少部分没有填写，请仔细检查");
 	           }
         };
+        //编辑月报简报
         vm.updateMonthly = function () {
 	      monthlyNewsletterSvc.updateMonthlyNewsletter(vm);
         };
