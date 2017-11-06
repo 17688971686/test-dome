@@ -18,6 +18,10 @@ public interface SysFileService {
     ResultMsg save(byte[] bytes, String fileName, String businessId, String fileType,
                    String mainId,String mainType, String sysfileType, String sysBusiType);
 
+    ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType,
+                   String mainId,String mainType, String sysfileType, String sysBusiType, String ftpIp,
+                   String port,String ftpUser, String ftpPwd, String ftpBasePath, String  ftpFilePath);
+
     void deleteById(String sysFileId);
 
     PageModelDto<SysFileDto> get(ODataObj odataObj);

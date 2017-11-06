@@ -56,6 +56,28 @@ public class SysFile extends DomainBase {
     private String sysBusiType;
 
 
+    @Column(columnDefinition = "varchar(30)")
+    private String ftpIp;
+
+
+    @Column(columnDefinition = "varchar(10)")
+    private String port;
+
+
+    @Column(columnDefinition = "varchar(30)")
+    private String ftpUser;
+
+
+    @Column(columnDefinition = "varchar(50)")
+    private String ftpPwd;
+
+    @Column(columnDefinition = "varchar(50)")
+    private String ftpBasePath;
+
+    @Column(columnDefinition = "varchar(50)")
+    private String ftpFilePath;
+
+
     public String getSysFileId() {
         return sysFileId;
     }
@@ -136,6 +158,54 @@ public class SysFile extends DomainBase {
         this.mainType = mainType;
     }
 
+    public String getFtpIp() {
+        return ftpIp;
+    }
+
+    public void setFtpIp(String ftpIp) {
+        this.ftpIp = ftpIp;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getFtpUser() {
+        return ftpUser;
+    }
+
+    public void setFtpUser(String ftpUser) {
+        this.ftpUser = ftpUser;
+    }
+
+    public String getFtpPwd() {
+        return ftpPwd;
+    }
+
+    public void setFtpPwd(String ftpPwd) {
+        this.ftpPwd = ftpPwd;
+    }
+
+    public String getFtpBasePath() {
+        return ftpBasePath;
+    }
+
+    public void setFtpBasePath(String ftpBasePath) {
+        this.ftpBasePath = ftpBasePath;
+    }
+
+    public String getFtpFilePath() {
+        return ftpFilePath;
+    }
+
+    public void setFtpFilePath(String ftpFilePath) {
+        this.ftpFilePath = ftpFilePath;
+    }
+
     public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
                    String mainId, String mainType, String sysfileType, String sysBusiType) {
         this.sysFileId = sysFileId;
@@ -148,6 +218,25 @@ public class SysFile extends DomainBase {
         this.mainType = mainType;
         this.sysfileType = sysfileType;
         this.sysBusiType = sysBusiType;
+    }
+
+    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
+        this.sysFileId = sysFileId;
+        this.businessId = businessId;
+        this.fileUrl = fileUrl;
+        this.showName = showName;
+        this.fileSize = fileSize;
+        this.fileType = fileType;
+        this.mainId = mainId;
+        this.mainType = mainType;
+        this.sysfileType = sysfileType;
+        this.sysBusiType = sysBusiType;
+        this.ftpIp = ftpIp;
+        this.port = port;
+        this.ftpUser = ftpUser;
+        this.ftpPwd = ftpPwd;
+        this.ftpBasePath = ftpBasePath;
+        this.ftpFilePath = ftpFilePath;
     }
 
     public SysFile() {
