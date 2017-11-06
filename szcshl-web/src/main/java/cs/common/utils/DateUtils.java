@@ -786,6 +786,6 @@ public class DateUtils {
 
     public static void main(String[] args) throws ParseException {
         long totalDay = DateUtils.daysBetween(DateUtils.converToDate("2017-11-12","yyyy-MM-dd"),DateUtils.converToDate("2017-11-26","yyyy-MM-dd"));
-        System.out.println(totalDay);
+        System.out.println(15/7);
     }
 }

@@ -79,6 +79,7 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
 
     /**
      * 批量保存
+     *
      * @param addRegisterFileDtos
      * @return
      */
@@ -88,7 +89,7 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
         if (addRegisterFileDtos != null && addRegisterFileDtos.length > 0) {
             List<AddRegisterFileDto> resultList = new ArrayList<>(addRegisterFileDtos.length);
             List<AddRegisterFile> saveList = new ArrayList<>(addRegisterFileDtos.length);
-            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(),addRegisterFileDtos[0].getBusinessId());
+            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), addRegisterFileDtos[0].getBusinessId());
             Date now = new Date();
             for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
                 AddRegisterFile addRegisterFile = new AddRegisterFile();
@@ -100,28 +101,27 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
                 saveList.add(addRegisterFile);
             }
             addRegisterFileRepo.bathUpdate(saveList);
-            saveList.forEach(sl ->{
+            saveList.forEach(sl -> {
                 AddRegisterFileDto dto = new AddRegisterFileDto();
                 BeanCopierUtils.copyProperties(sl, dto);
                 resultList.add(dto);
             });
             //更改收文状态
-            Sign  sign = signRepo.findById("signid",saveList.get(0).getBusinessId());
-            if(sign != null && (!Validate.isString(sign.getIsSupplementary()) ||
-                    Constant.EnumState.NO.getValue().equals(sign.getIsSupplementary()))){
+            Sign sign = signRepo.findById(Sign_.signid.getName(), saveList.get(0).getBusinessId());
+            if (!Validate.isString(sign.getIsSupplementary()) || Constant.EnumState.NO.getValue().equals(sign.getIsSupplementary())) {
                 sign.setIsSupplementary(Constant.EnumState.YES.getValue());
-                signRepo.save(sign );
+                signRepo.save(sign);
             }
             //更新归档拟补充资料信息
-            FileRecord fileRecord = fileRecordRepo.findById("signid",saveList.get(0).getBusinessId());
-            if(fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
-                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))){
+            FileRecord fileRecord = fileRecordRepo.findById(Sign_.signid.getName(), saveList.get(0).getBusinessId());
+            if (fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
+                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))) {
                 fileRecord.setIsSupplementary(Constant.EnumState.YES.getValue());
                 fileRecordRepo.save(fileRecord);
             }
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",resultList);
-        }else{
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请先填写补充资料！");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultList);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先填写补充资料！");
         }
     }
 
@@ -194,18 +194,17 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
     }
 
     /**
-     *
      * @param businessId
      * @return
      */
     @Override
     public List<AddRegisterFileDto> findByBusinessId(String businessId) {
         List<AddRegisterFile> fileList = addRegisterFileRepo.findByBusinessId(businessId);
-        if(Validate.isList(fileList)){
+        if (Validate.isList(fileList)) {
             List<AddRegisterFileDto> resultList = new ArrayList<>(fileList.size());
             fileList.forEach(fl -> {
                 AddRegisterFileDto rfDto = new AddRegisterFileDto();
-                BeanCopierUtils.copyProperties(fl,rfDto);
+                BeanCopierUtils.copyProperties(fl, rfDto);
                 resultList.add(rfDto);
             });
             return resultList;

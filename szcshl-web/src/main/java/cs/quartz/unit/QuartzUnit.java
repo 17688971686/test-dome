@@ -53,10 +53,8 @@ public class QuartzUnit {
             int startSatOffset = Calendar.SATURDAY - weekDay1;//判断一年的第一天隔最近的星期六有几天
             //计算一共有几个星期六
             if (betweenDay > startSatOffset) {
-                result = (betweenDay - startSatOffset) % 7;
-                if (result > 1) {
-                    result = (result - 1) * 5;      //计算完整的工作日
-                }
+                result = (betweenDay - startSatOffset) / 7;
+                result = result * 5;      //计算完整的工作日
             }
             result += (startSatOffset > 5) ? 5 : startSatOffset;           //加上离第一个周六最近工作日
             //计算当前日期里周日有几天
