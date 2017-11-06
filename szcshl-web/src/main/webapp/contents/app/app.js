@@ -1006,6 +1006,13 @@
                 controllerAs : 'vm'
             })
 
+            //课题研究的附件右边列表页
+            .state('flowDeal.fileList',{ //文件列表
+                url : '/flowDeal/:id/:type',
+                templateUrl : rootPath + '/file/html/rightList.html',
+                controller : 'fileListCtrl',
+                controllerAs : 'vm'
+            })
 
             //项目查询统计图表分析
             .state('signChart',{

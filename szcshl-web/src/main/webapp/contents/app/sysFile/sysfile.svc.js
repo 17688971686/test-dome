@@ -341,7 +341,6 @@
                 var nodes = new Object();//定义父类的对象
                 nodes.id=array[j].mainId;
                 nodes.name = name;
-                nodes.urlType=vm.urlType;
                 var ss = [];//定义子类对象数组
                 for (var i = 0; i < array.length;) {
                     if (array[i].sysBusiType == name) {//判断是否是属于父类
@@ -369,17 +368,11 @@
          //点击跳转
         function zTreeOnClick(event, treeId, treeNode) {
             if(treeNode.check_Child_State==0){//点击文件夹时展开列表
-                if(treeNode.urlType=="signFlowDetail"){//判断右边的列表显示
-                    $state.go('signFlowDetail.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-                if(treeNode.urlType=="signFlowDeal"){
-                    $state.go('signFlowDeal.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-                if(treeNode.urlType=="endSignDetail"){
-                    $state.go('endSignDetail.fileList', { id: treeNode.id,type:treeNode.name});
-                }
-                if(treeNode.urlType=="signDetails"){
-                    $state.go('signDetails.fileList', { id: treeNode.id,type:treeNode.name});
+                var test = window.location.hash;//获取到地址栏的参数从#开始获取
+                var arr=[];
+                arr= test.split("/");//截取字符串是数组的
+                if(treeNode.check_Child_State==0){//点击文件夹时展开列表
+                    $state.go(arr[1]+'.fileList', { id: treeNode.id,type:treeNode.name});//获第二个参数
                 }
             }
         };
