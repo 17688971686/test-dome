@@ -82,11 +82,10 @@ public class SignController {
         return signService.createSign(signDto);
     }
 
-    @RequiresPermissions("sign#html/reserveAddPost#post")
+    @RequiresAuthentication
     @RequestMapping(name = "项目预签收" ,path = "html/reserveAddPost",method = RequestMethod.POST)
-    public @ResponseBody SignDto reserveAddPost(@RequestBody SignDto signDto){
-        signService.reserveAddSign(signDto);
-        return signDto;
+    public @ResponseBody ResultMsg reserveAddPost(@RequestBody SignDto signDto){
+        return  signService.reserveAddSign(signDto);
     }
 
     @RequiresPermissions("sign#html/reserveAdd#get")

@@ -1780,7 +1780,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     @Transactional
-    public void reserveAddSign(SignDto signDto) {
+    public ResultMsg reserveAddSign(SignDto signDto) {
         Sign sign = new Sign();
         BeanCopierUtils.copyProperties(signDto, sign);
         //O 为预签收状态
@@ -1837,7 +1837,7 @@ public class SignServiceImpl implements SignService {
         sign.setModifiedBy(SessionUtil.getLoginName());
         sign.setIsLightUp("0");//默认为不亮灯
         signRepo.save(sign);
-
+        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
 
     @Override

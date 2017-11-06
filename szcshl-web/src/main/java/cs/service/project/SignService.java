@@ -62,7 +62,7 @@ public interface SignService {
 
     ResultMsg realSign(String signId);
 
-	void reserveAddSign(SignDto signDto);
+    ResultMsg reserveAddSign(SignDto signDto);
 
 	PageModelDto<SignDto> findAllReserve(ODataObj odataObj);
 

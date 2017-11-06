@@ -86,10 +86,12 @@
 			</td>
 			<td width="20%" align="center">结束月份<span class="required">*</span></td>
 			<td width="20%">
-			<select style="width:40%" ng-model="vm.monthly.endTheMonths" id="endTheMonths" name="endTheMonths" data-val="true" data-val-required="必填" >
-						<option value=" ">请选择</option>
-						 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.endTheMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
-						</select>
+				<!--<select style="width:40%" ng-model="vm.monthly.endTheMonths" id="endTheMonths" name="endTheMonths" data-val="true" data-val-required="必填" >
+                            <option value=" ">请选择</option>
+                             <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.endTheMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+                            </select>-->
+				<input type="text" maxlength="20" style="width:40%"  ng-disabled="true"    ng-model="vm.monthly.endTheMonths"
+					   id="endTheMonths" name="endTheMonths" data-val="true" data-val-required="必填" />
 						<span data-valmsg-for="endTheMonths" data-valmsg-replace="true" class="errors"></span>
 			</td>
 		</tr>
