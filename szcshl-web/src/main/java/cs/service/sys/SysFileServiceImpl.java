@@ -82,7 +82,7 @@ public class SysFileServiceImpl implements SysFileService {
     public ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
-            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
+           // String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
 
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
@@ -90,7 +90,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFile.setFileSize(bytes.length);
             sysFile.setShowName(fileName);
             sysFile.setFileType(fileType);
-            sysFile.setFileUrl(relativeFileUrl);
+           // sysFile.setFileUrl(relativeFileUrl);
             sysFile.setSysfileType(sysfileType);
             sysFile.setMainId(mainId);
             sysFile.setMainType(mainType);
@@ -111,9 +111,9 @@ public class SysFileServiceImpl implements SysFileService {
             sysFileRepo.save(sysFile);
 
             //先保存成功，
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
+         /*   BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
             stream.write(bytes);
-            stream.close();
+            stream.close();*/
             SysFileDto sysFileDto = new SysFileDto();
             BeanCopierUtils.copyProperties(sysFile,sysFileDto);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！",sysFileDto);

@@ -4,6 +4,7 @@ import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.FtpUtil;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.SysFileUtil;
@@ -30,6 +31,8 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static cs.domain.sys.SysFile_.sysFileId;
 
 /**
  * @author lqs
@@ -129,11 +132,28 @@ public class FileController {
      * @throws IOException
      */
     @RequiresAuthentication
-    @RequestMapping(name = "ftp文件同步", path = "fileSysUpload", method = RequestMethod.POST)
+    @RequestMapping(name = "ftp文件同步", path = "fileSysUpload", method = RequestMethod.GET)
     @ResponseBody
-    public  ResultMsg fileSysUpload() throws IOException {
-
-        return null;
+    public  ResultMsg fileSysUpload( String sysFileId) throws IOException {
+        logger.debug("==================ftp文件同步==================");
+       SysFile sysFile = fileService.findFileById(sysFileId);
+        //文件路径
+        String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
+        filePath = filePath.replaceAll("\\\\", "/");
+        File file = new File (filePath);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+        boolean result = FtpUtil.uploadFile(sysFile.getFtpIp(),Integer.parseInt(sysFile.getPort()),
+                sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(), "",
+                new String(sysFile.getShowName().getBytes("GBK"), "ISO-8859-1"), fileInputStream);
+        if (result) {
+            file.delete();
+            SysFileDto sysFileDto = new SysFileDto();
+            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件同步成功！",sysFileDto);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件同步失败！");
+        }
     }
 
     @RequiresAuthentication
@@ -141,22 +161,26 @@ public class FileController {
     public @ResponseBody
     void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) throws IOException {
         logger.debug("==================附件下载==================");
-        SysFile file = fileService.findFileById(sysfileId);
-        String path = SysFileUtil.getUploadPath();
-        String url = file.getFileUrl();
-        String fileType = file.getFileType().toLowerCase(); //最小化
-        String filename = file.getShowName();
+        SysFile sysFile = fileService.findFileById(sysfileId);
+        //文件路径
+        String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
+       // filePath = filePath.replaceAll("\\\\", "/");
+        //下载ftp服务器附件到本地
+        Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
+                sysFile.getShowName(), SysFileUtil.getUploadPath());
+
+
+        String fileType = sysFile.getFileType().toLowerCase(); //最小化
+        String filename = sysFile.getShowName();
         filename = URLDecoder.decode(filename, "UTF-8");
-        //获取文件保存路径
-        String pathUrl = path + url;
         String reg = ".*\\\\(.*)";
         //文件名
-        String fileNames = pathUrl.replaceAll(reg, "$1");
+        String fileNames = filePath.replaceAll(reg, "$1");
         if (fileNames == null || fileNames.equals(" ")) {
             return;
         }
         //调用输出流
-        File f = new File(pathUrl);
+        File f = new File(filePath);
         if (!f.exists()) {
             return;
         }
@@ -280,8 +304,11 @@ public class FileController {
     public String editFile(Model model,@RequestParam(required = true) String sysFileId){
         SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
-        String filePath = SysFileUtil.getUploadPath()+sysFile.getFileUrl();
+        String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
         filePath = filePath.replaceAll("\\\\", "/");
+        //下载ftp服务器附件到本地
+        Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
+                sysFile.getShowName(), SysFileUtil.getUploadPath());
         model.addAttribute("filePath",filePath);
         //文件类型
         String fileTyp ;
