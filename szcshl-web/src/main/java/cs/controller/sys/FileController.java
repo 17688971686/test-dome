@@ -1,6 +1,5 @@
 package cs.controller.sys;
 
-import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
@@ -117,10 +116,24 @@ public class FileController {
                 propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "",
                 new String(fileName.getBytes("GBK"), "ISO-8859-1"), multipartFile.getInputStream());
         if (result) {
-           return  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
+           return  fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType,propertyUtil.readProperty(FTP_IP1),propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER),propertyUtil.readProperty(FTP_PWD),propertyUtil.readProperty(FTP_BASE_PATH),"");
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
         }
+    }
+
+
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "ftp文件同步", path = "fileSysUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public  ResultMsg fileSysUpload() throws IOException {
+
+        return null;
     }
 
     @RequiresAuthentication

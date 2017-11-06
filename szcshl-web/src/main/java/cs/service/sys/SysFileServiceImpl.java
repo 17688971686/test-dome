@@ -79,6 +79,51 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     @Override
+    public ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
+        try {
+            String fileUploadPath = SysFileUtil.getUploadPath();
+            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
+
+            SysFile sysFile = new SysFile();
+            sysFile.setSysFileId(UUID.randomUUID().toString());
+            sysFile.setBusinessId(businessId);
+            sysFile.setFileSize(bytes.length);
+            sysFile.setShowName(fileName);
+            sysFile.setFileType(fileType);
+            sysFile.setFileUrl(relativeFileUrl);
+            sysFile.setSysfileType(sysfileType);
+            sysFile.setMainId(mainId);
+            sysFile.setMainType(mainType);
+            sysFile.setSysBusiType(sysBusiType);
+
+            Date now = new Date();
+            sysFile.setCreatedBy(SessionUtil.getLoginName());
+            sysFile.setModifiedBy(SessionUtil.getLoginName());
+            sysFile.setCreatedDate(now);
+            sysFile.setModifiedDate(now);
+            sysFile.setFtpIp(ftpIp);
+            sysFile.setPort(port);
+            sysFile.setFtpUser(ftpUser);
+            sysFile.setFtpPwd(ftpPwd);
+            sysFile.setFtpBasePath(ftpBasePath);
+            sysFile.setFtpFilePath(ftpFilePath);
+
+            sysFileRepo.save(sysFile);
+
+            //先保存成功，
+            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
+            stream.write(bytes);
+            stream.close();
+            SysFileDto sysFileDto = new SysFileDto();
+            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！",sysFileDto);
+
+        } catch (Exception e) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传错误，请联系系统管理员确认！");
+        }
+    }
+
+    @Override
     public PageModelDto<SysFileDto> get(ODataObj odataObj) {
         List<SysFile> sysFileList = sysFileRepo.findByOdata(odataObj);
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>();
