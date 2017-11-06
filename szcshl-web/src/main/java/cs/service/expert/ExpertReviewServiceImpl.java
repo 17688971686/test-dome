@@ -405,4 +405,26 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
+    /**
+     * 查询专家评审费超期发放的信息
+     * @param businessType
+     * @return
+     */
+    @Override
+    public PageModelDto<ExpertReviewDto> findOverTimeReview(String businessType) {
+        List<ExpertReview> expertReviewList = expertReviewRepo.findReviewOverTime(businessType);
+        List<ExpertReviewDto> expertReviewDtoList = new ArrayList<>();
+        PageModelDto<ExpertReviewDto> pageModelDto = new PageModelDto<>();
+        if(expertReviewList != null && expertReviewList.size()>0){
+            for(ExpertReview expertReview : expertReviewList){
+                ExpertReviewDto expertReviewDto = new ExpertReviewDto();
+                BeanCopierUtils.copyProperties(expertReview , expertReviewDto);
+                expertReviewDtoList.add(expertReviewDto);
+            }
+        }
+        pageModelDto.setValue(expertReviewDtoList);
+        pageModelDto.setCount(expertReviewDtoList.size());
+        return pageModelDto;
+    }
+
 }

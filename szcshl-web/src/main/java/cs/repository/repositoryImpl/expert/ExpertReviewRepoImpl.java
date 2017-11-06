@@ -184,13 +184,18 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
 
     /**
      * 查询专家评审费超期发放的信息
+     * @param businessType
      * @return
      */
     @Override
-    public List<ExpertReview> findReviewOverTime() {
+    public List<ExpertReview> findReviewOverTime(String businessType) {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + ExpertReview.class.getSimpleName() + " where " + ExpertReview_.state.getName() + "<>:state");
+
+       if(Validate.isString(businessType)){
+           hqlBuilder.append(" and " + ExpertReview_.businessType.getName() + "=:businessType").setParam("businessType" , businessType);
+       }
         hqlBuilder.append(" or " + ExpertReview_.state.getName() + " is null");
         hqlBuilder.setParam("state" , Constant.EnumState.YES.getValue());
         List<ExpertReview> expertReviewList = this.findByHql(hqlBuilder);

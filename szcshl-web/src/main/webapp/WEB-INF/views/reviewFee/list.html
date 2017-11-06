@@ -23,6 +23,9 @@
         <@shiro.hasPermission name="reviewFee##put">
         <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>处理</button>
         </@shiro.hasPermission>
+        <@shiro.hasPermission name="reviewFee##put">
+        <button class="btn btn-xs btn-primary" ng-click="{1}"><span class="glyphicon glyphicon-pencil"></span>查看详情</button>
+        </@shiro.hasPermission>
     </script>
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>

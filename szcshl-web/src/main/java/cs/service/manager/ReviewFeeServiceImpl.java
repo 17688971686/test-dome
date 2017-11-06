@@ -33,7 +33,7 @@ public class ReviewFeeServiceImpl implements  ReviewFeeService{
     private TopicInfoRepo topicInfoRepo;
 
     /**
-     * 查找评审费发放超期的（项目、课题）信息
+     * 查找评审费发放超期的（项目、课题）信息 (停用)
      * param businessType
      * @return
      */
@@ -42,7 +42,8 @@ public class ReviewFeeServiceImpl implements  ReviewFeeService{
 
         PageModelDto<ReviewFee> pageModelDto = new PageModelDto<>();
         List<ReviewFee> reviewFeeList = new ArrayList<>();
-        List<ExpertReview> expertReviewList = expertReviewRepo.findReviewOverTime();
+//        List<ExpertReview> expertReviewList = expertReviewRepo.findReviewOverTime();
+        List<ExpertReview> expertReviewList = expertReviewRepo.findReviewOverTime(businessType);
         if(expertReviewList != null && expertReviewList.size()>0){
             for(ExpertReview expertReview : expertReviewList){
                 ReviewFee reviewFee = new ReviewFee();
@@ -80,7 +81,7 @@ public class ReviewFeeServiceImpl implements  ReviewFeeService{
                         reviewFee.setName(topicInfo.getTopicName());
                     }
                 }
-                if(Validate.isString(reviewFee.getBusinessId())){
+                if(Validate.isString(reviewFee)){
                     reviewFeeList.add(reviewFee);
                 }
             }

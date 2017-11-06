@@ -37,4 +37,11 @@ public interface ExpertReviewService {
     void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 
 	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview);
+
+	/**
+	 * 查询专家评审费超期发放的信息
+	 * @param businessType
+	 * @return
+	 */
+	PageModelDto<ExpertReviewDto> findOverTimeReview(String businessType);
 }

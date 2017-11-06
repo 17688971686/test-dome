@@ -76,39 +76,25 @@
                     width: 50
                 },
                 {
-                    field: "name",
-                    title: "名称",
+                    field: "reviewTitle",
+                    title: "评审费标题",
                     width: 160,
                     filterable: false,
-                    // template: function (item) {
-                    //     if(item.processInstanceId){
-                    //         return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
-                    //     }else{
-                    //         return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
-                    //     }
-                    //
-                    // }
                 },
                 {
-                    field: "",
-                    title: "业务类型",
+                    field: "reviewDate",
+                    title: "评审日期",
                     width: 140,
                     filterable: false,
-                    template : function(item){
-                        if(item.businessType == "SIGN"){
-                            return "项目签收";
-                        }
-                        if(item.businessType == "TOPIC"){
-                            return "课题研究";
-                        }
-                    }
+                    format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "",
                     title: "操作",
                     width: "6%",
                     template: function (item) {
-                      return common.format($('#columnBtns').html(), "vm.dealWindow('" +item.businessId+ "')");
+                      return common.format($('#columnBtns').html(), "vm.dealWindow('" +item.businessId+ "')"
+                          , "vm.detail('" + item.businessId + "','" + item.businessType + "')");
                     }
                 }
             ];// End:column
