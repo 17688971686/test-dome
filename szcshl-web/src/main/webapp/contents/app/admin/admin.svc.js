@@ -3,65 +3,84 @@
 
     angular.module('app').factory('adminSvc', admin);
 
-    admin.$inject = ['$rootScope', '$http' , 'bsWin'];
+    admin.$inject = ['$rootScope', '$http', 'bsWin'];
 
-    function admin($rootScope, $http , bsWin) {
+    function admin($rootScope, $http, bsWin) {
 
         var service = {
             gtasksGrid: gtasksGrid,		                //个人待办项目
-            etasksGrid: etasksGrid,		                //个人办结项目
+            etasksGrid: etasksGrid,		                //办结项目
             dtasksGrid: dtasksGrid,                     //在办项目
-            doingTaskGrid : doingTaskGrid,              //在办任务
-            personMainTasksGrid : personMainTasksGrid,  //个人主办项目
+            doingTaskGrid: doingTaskGrid,               //在办任务
+            personMainTasksGrid: personMainTasksGrid,   //个人主办项目
             countWorakday: countWorakday,	            //计算工作日
-            agendaTaskGrid:agendaTaskGrid,              //个人待办任务（除项目流程外）
+            agendaTaskGrid: agendaTaskGrid,             //个人待办任务（除项目流程外）
             initFile: initFile,	        //初始化附件
             upload: upload,	            //	下载附件
             getSignList: getSignList,   //项目查询统计
             initSignList: initSignList, //初始化項目查詢統計
-           // <!-- 以下是首页方法-->
-            initAnnountment: initAnnountment,	    //初始化通知公告栏
-            findendTasks: findendTasks,             //已办项目列表
-            findtasks: findtasks,                   //待办项目列表
-            findHomePluginFile :findHomePluginFile, //获取首页安装文件
-            excelExport : excelExport,              //项目统计导出
-            statisticalGrid : statisticalGrid,
+            // <!-- 以下是首页方法-->
+            initWelComePage: initWelComePage,           //初始化首页方法
+            /* initAnnountment: initAnnountment,	    //初始化通知公告栏
+             findendTasks: findendTasks,                //已办项目列表
+             findtasks: findtasks,                      //待办项目列表
+             findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
+            excelExport: excelExport,                   //项目统计导出
+            statisticalGrid: statisticalGrid,
         }
         return service;
 
         //begin excelExport
-        function excelExport(vm , fileName , project){
+        function excelExport(vm, fileName, project) {
             var fileName = escape(encodeURIComponent(fileName));
-            window.open(rootPath + "/signView/excelExport?filterData=" + project + "&fileName=" +fileName);
-           /* var httpOptions ={
-                method : 'post',
-                url : rootPath + "/signView/excelExport",
-                headers : {
-                    "contentType" : "application/json;charset=utf-8"
-                },
-                traditional : true,
-                dataType : "json",
-                responseType: 'arraybuffer',
-                data : angular.toJson(exportData),
-                params:{
-                    fileName :fileName
-                }
+            window.open(rootPath + "/signView/excelExport?filterData=" + project + "&fileName=" + fileName);
+            /* var httpOptions ={
+             method : 'post',
+             url : rootPath + "/signView/excelExport",
+             headers : {
+             "contentType" : "application/json;charset=utf-8"
+             },
+             traditional : true,
+             dataType : "json",
+             responseType: 'arraybuffer',
+             data : angular.toJson(exportData),
+             params:{
+             fileName :fileName
+             }
 
-            }
-            var httpSuccess = function success(response){
-                fileName =fileName + ".xls";
-                var fileType ="vnd.ms-excel";
-                common.downloadReport(response.data , fileName , fileType);
-            }
-            common.http({
-                vm : vm,
-                $http : $http ,
-                httpOptions : httpOptions,
-                success : httpSuccess
-            });*/
+             }
+             var httpSuccess = function success(response){
+             fileName =fileName + ".xls";
+             var fileType ="vnd.ms-excel";
+             common.downloadReport(response.data , fileName , fileType);
+             }
+             common.http({
+             vm : vm,
+             $http : $http ,
+             httpOptions : httpOptions,
+             success : httpSuccess
+             });*/
         }
+
         //end excelExport
 
+        //S_初始化首页方法
+        function initWelComePage(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/initWelComePage"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_initWelComePage
 
         //begin countWorakday
         function countWorakday(vm) {
@@ -82,81 +101,81 @@
         }//end countWorakday
 
         //begin initAnnountment
-        function initAnnountment(vm) {
-            vm.i = 1;
-            var httpOptions = {
-                method: "get",
-                url: rootPath + "/annountment/getHomePageAnnountment"
-            }
+        /*function initAnnountment(vm) {
+         vm.i = 1;
+         var httpOptions = {
+         method: "get",
+         url: rootPath + "/annountment/getHomePageAnnountment"
+         }
 
-            var httpSuccess = function success(response) {
-                vm.annountmentList = response.data;
-            }
+         var httpSuccess = function success(response) {
+         vm.annountmentList = response.data;
+         }
 
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
+         common.http({
+         vm: vm,
+         $http: $http,
+         httpOptions: httpOptions,
+         success: httpSuccess
+         });
 
-        }//end initAnnountment
+         }*///end initAnnountment
 
         //S_获取本地安装包
-        function findHomePluginFile(vm){
-            var httpOptions = {
-                method: "post",
-                url: rootPath + "/file/listHomeFile"
-            }
-            var httpSuccess = function success(response) {
-                vm.pluginFileList = {};
-                vm.pluginFileList = response.data;
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_findHomePluginFile
+        /*function findHomePluginFile(vm){
+         var httpOptions = {
+         method: "post",
+         url: rootPath + "/file/listHomeFile"
+         }
+         var httpSuccess = function success(response) {
+         vm.pluginFileList = {};
+         vm.pluginFileList = response.data;
+         }
+         common.http({
+         vm: vm,
+         $http: $http,
+         httpOptions: httpOptions,
+         success: httpSuccess
+         });
+         }*///E_findHomePluginFile
 
         //查找待办
-        function findtasks(vm) {
-            var httpOptions = {
-                method: "post",
-                url: rootPath + "/flow/getMyHomeTasks"
-            }
-            var httpSuccess = function success(response) {
-                vm.tasksList = {};
-                vm.tasksList = response.data;
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
+        /* function findtasks(vm) {
+         var httpOptions = {
+         method: "post",
+         url: rootPath + "/flow/getMyHomeTasks"
+         }
+         var httpSuccess = function success(response) {
+         vm.tasksList = {};
+         vm.tasksList = response.data;
+         }
+         common.http({
+         vm: vm,
+         $http: $http,
+         httpOptions: httpOptions,
+         success: httpSuccess
+         });
+         }*/
 
         //查找已办
-        function findendTasks(vm) {
-            vm.endTasksList = {};
-            var httpOptions = {
-                method: "post",
-                url: rootPath + "/flow/getMyHomeEndTask"
-            }
+        /*function findendTasks(vm) {
+         vm.endTasksList = {};
+         var httpOptions = {
+         method: "post",
+         url: rootPath + "/flow/getMyHomeEndTask"
+         }
 
-            var httpSuccess = function success(response) {
-                vm.endTasksList = response.data;
-            }
+         var httpSuccess = function success(response) {
+         vm.endTasksList = response.data;
+         }
 
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
+         common.http({
+         vm: vm,
+         $http: $http,
+         httpOptions: httpOptions,
+         success: httpSuccess
+         });
+         }*/
 
         //begin initFile
         function initFile(vm) {
@@ -186,7 +205,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks" ),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks"),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -264,10 +283,10 @@
                     filterable: false,
                     width: "15%",
                     template: function (item) {
-                        if(checkCanEdit(item)){
-                            return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
-                        }else{
-                            return '<a href="#/signFlowDeal/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        if (checkCanEdit(item)) {
+                            return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                        } else {
+                            return '<a href="#/signFlowDeal/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         }
                     }
                 },
@@ -288,14 +307,14 @@
                     title: "合并评审",
                     width: "10%",
                     filterable: false,
-                    template : function(item){
-                        if(item.reviewType){
-                            if(item.reviewType == 9 || item.reviewType == '9'){
+                    template: function (item) {
+                        if (item.reviewType) {
+                            if (item.reviewType == 9 || item.reviewType == '9') {
                                 return "合并评审[主项目]";
-                            }else{
+                            } else {
                                 return "合并评审[次项目]";
                             }
-                        }else{
+                        } else {
                             return "否";
                         }
                     }
@@ -305,17 +324,17 @@
                     title: "合并项目",
                     width: "10%",
                     filterable: false,
-                    template : function(item){
-                        if(item.reviewSignDtoList){
+                    template: function (item) {
+                        if (item.reviewSignDtoList) {
                             var projectName = '';
-                            angular.forEach(item.reviewSignDtoList, function(data,index,array){
-                                if(index > 0){
+                            angular.forEach(item.reviewSignDtoList, function (data, index, array) {
+                                if (index > 0) {
                                     projectName += ",";
                                 }
                                 projectName += data.projectname;
                             });
                             return projectName;
-                        }else{
+                        } else {
                             return "";
                         }
                     }
@@ -339,10 +358,10 @@
                     title: "剩余工作日",
                     width: "10%",
                     filterable: false,
-                    template : function(item){
-                        if(item.surplusDays != undefined){
-                            return (item.surplusDays > 0)?item.surplusDays:0;
-                        }else{
+                    template: function (item) {
+                        if (item.surplusDays != undefined) {
+                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                        } else {
                             return "";
                         }
                     }
@@ -371,9 +390,9 @@
                     title: "操作",
                     width: "6%",
                     template: function (item) {
-                        if(checkCanEdit(item)){
+                        if (checkCanEdit(item)) {
                             return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
-                        }else{
+                        } else {
                             return common.format($('#columnBtns').html(), "signFlowDeal", item.businessKey, item.taskId, item.processInstanceId);
                         }
                     }
@@ -401,10 +420,10 @@
         }//E_gtasksGrid
 
         //判断是否显示处理按钮（主要针对合并评审项目,部长审核和分管领导审核两个环节）
-        function checkCanEdit(item){
-            var isDetailBt = (item.processState == 2)?true:false;
-            if(!isDetailBt){
-                if(item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && (item.nodeDefineKey == 'SIGN_BMLD_SPW1' || item.nodeDefineKey =='SIGN_FGLD_SPW1')){
+        function checkCanEdit(item) {
+            var isDetailBt = (item.processState == 2) ? true : false;
+            if (!isDetailBt) {
+                if (item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && (item.nodeDefineKey == 'SIGN_BMLD_SPW1' || item.nodeDefineKey == 'SIGN_FGLD_SPW1')) {
                     isDetailBt = true;
                 }
             }
@@ -495,9 +514,9 @@
                     template: function (item) {
                         if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
                             return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId);
-                        }else if(item.flowKey){
-                            return common.format($('#columnBtns').html(), "flowEnd/"+item.businessKey, item.flowKey, item.processInstanceId);
-                        }else{
+                        } else if (item.flowKey) {
+                            return common.format($('#columnBtns').html(), "flowEnd/" + item.businessKey, item.flowKey, item.processInstanceId);
+                        } else {
                             return "";
                         }
                     }
@@ -596,7 +615,7 @@
                     filterable: false,
                     width: "18%",
                     template: function (item) {
-                        return '<a href="#/signFlowDetail/'+item.businessKey+'/'+item.taskId+'/'+item.processInstanceId+'" >'+item.projectName+'</a>';
+                        return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                     }
                 },
                 {
@@ -630,10 +649,10 @@
                     title: "剩余工作日",
                     width: "10%",
                     filterable: false,
-                    template : function(item){
-                        if(item.surplusDays != undefined){
-                            return (item.surplusDays > 0)?item.surplusDays:0;
-                        }else{
+                    template: function (item) {
+                        if (item.surplusDays != undefined) {
+                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                        } else {
                             return "";
                         }
                     }
@@ -684,7 +703,7 @@
                         $(rowLabel).html(index);
                     });
                 }
-                
+
             };
         }//E_dtasksGrid
 
@@ -727,10 +746,10 @@
                     width: 160,
                     filterable: false,
                     template: function (item) {
-                        if(item.processInstanceId){
-                            return '<a href="#/signDetails/'+item.signid+'/'+item.processInstanceId+'" >'+item.projectname+'</a>';
-                        }else{
-                            return '<a href="#/signDetails/'+item.signid+'/" >'+item.projectname+'</a>';
+                        if (item.processInstanceId) {
+                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        } else {
+                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
 
                     }
@@ -764,14 +783,14 @@
                     title: "剩余工作日",
                     width: 140,
                     filterable: false,
-                    template : function(item){
-                        if(item.surplusdays != undefined){
-                            if(item.surplusdays >=0){
+                    template: function (item) {
+                        if (item.surplusdays != undefined) {
+                            if (item.surplusdays >= 0) {
                                 return item.surplusdays;
-                            }else{
+                            } else {
                                 return 0;
                             }
-                        }else{
+                        } else {
                             return "";
                         }
 
@@ -880,18 +899,18 @@
                     width: 140,
                     filterable: false,
                     template: function (item) {
-                        if(item.signState == '2'){
+                        if (item.signState == '2') {
                             return common.format($('#columnBtns').html(),
-                                "vm.ProjectStopInfo('" +item.signid+ "')");
+                                "vm.ProjectStopInfo('" + item.signid + "')");
 
-                        }else{
+                        } else {
                             return "";
                         }
 
                     }
                 }
             ];
-            
+
             // End:column
             vm.signListOptions = {
                 dataSource: common.gridDataSource(dataSource),
@@ -932,7 +951,7 @@
         } //end_initSignList
 
         //begin persontasksGrid
-        function  personMainTasksGrid(vm) {
+        function personMainTasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks"),
@@ -1030,7 +1049,7 @@
                     filterable: false,
                     template: function (item) {
                         var returnStr = "";
-                        switch (item.signState){
+                        switch (item.signState) {
                             case "1":
                                 returnStr = "进行中";
                                 break;
@@ -1108,21 +1127,21 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        var isstart = false,applyArrrais = true , isStop =false;
+                        var isstart = false, applyArrrais = true, isStop = false;
                         if (item.signState == "2") {
                             isstart = true;//显示已暂停，提示启动
                         } else {
-                            if(item.signState == "1")
-                            isStop = true;//显示暂停
+                            if (item.signState == "1")
+                                isStop = true;//显示暂停
                         }
 
                         //已经完成并且还未申请的，可以申请优秀评审报告
-                        if(item.signState == 9 && angular.isUndefined(item.isAppraising)){
+                        if (item.signState == 9 && angular.isUndefined(item.isAppraising)) {
                             applyArrrais = false;
                         }
 
                         return common.format($('#columnBtns').html(), "signDetails", item.signid, item.processInstanceId,
-                            "vm.pauseProject('"+item.signid+"')",isStop,"vm.startProject('"+item.signid+"')",isstart,item.signid,applyArrrais);
+                            "vm.pauseProject('" + item.signid + "')", isStop, "vm.startProject('" + item.signid + "')", isstart, item.signid, applyArrrais);
                     }
                 }
             ];
@@ -1168,13 +1187,14 @@
 
             };
         }
+
         //end persontasksGrid
 
         //S_个人待办任务
-        function agendaTaskGrid(vm){
+        function agendaTaskGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask" , $('#agendaTaskForm')),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryMyAgendaTask", $('#agendaTaskForm')),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -1247,7 +1267,7 @@
                     title: "操作",
                     width: "15%",
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.businessKey,item.processKey,item.taskId,item.instanceId);
+                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId);
                     }
                 }
             ];
@@ -1274,7 +1294,7 @@
         }//E_agendaTaskGrid
 
         //S_所有在办任务
-        function doingTaskGrid(vm){
+        function doingTaskGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask"),
@@ -1345,7 +1365,7 @@
                     title: "操作",
                     width: "15%",
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.businessKey,item.processKey,item.taskId,item.instanceId);
+                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId);
                     }
                 }
             ];

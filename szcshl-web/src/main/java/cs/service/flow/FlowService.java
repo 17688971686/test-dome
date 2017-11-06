@@ -39,9 +39,23 @@ public interface FlowService {
 
     List<HiProcessTask> getProcessHistory(String processInstanceId);
 
+    /**
+     * 查询主页上的待办任务
+     * @return
+     */
     List<RuProcessTask> queryMyRunProcessTasks();
 
+    /**
+     * 查询主页上的办结任务
+     * @return
+     */
     List<TaskDto> queryMyEndTasks();
+
+    /**
+     * 查询主页上的待办任务
+     * @return
+     */
+    List<RuTask> queryMyHomeAgendaTask();
 
     PageModelDto<RuProcessTask> queryPersonTasks(ODataObj oDataObj);
 

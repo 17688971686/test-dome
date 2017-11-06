@@ -1,13 +1,13 @@
 <meta charset="UTF-8">
 <p style="width: 100%;">
     <span style="width:30%;float:left; ">借阅人员：
-        <select ng-model="vm.model.isSZECUser">
+        <select ng-model="vm.model.isSZECUser" ng-disabled="true">
             <option value="9" ng-selected="!vm.model.archivesType || vm.model.archivesType == 9">本单位人员</option>
             <option value="0" ng-selected="vm.model.isSZECUser == 0" >非本单位人员</option>
         </select>
     </span>
     <span style="width:30%;float:left;  ">资料存放地：
-        <select ng-model="vm.model.archivesType">
+        <select ng-model="vm.model.archivesType" ng-disabled="true">
             <option value="9" ng-selected="!vm.model.archivesType || vm.model.archivesType == 9">市存档资料</option>
             <option value="0" ng-selected="vm.model.archivesType == 0">评审中心存档资料</option>
         </select>
@@ -15,10 +15,10 @@
     <span style="width:30%;float:left;">
         <span >
         <input type="checkbox" ng-model="vm.model.isLendOut" ng-true-value="9" ng-false-value="0"
-               ng-checked="vm.model.isLendOut == '9'"/>外借</span>
+               ng-checked="vm.model.isLendOut == '9'" ng-disabled="true"/>外借</span>
         <span style="margin-left:10px;">
         <input type="checkbox" ng-model="vm.model.isLendOut" ng-true-value="0" ng-false-value="9"
-               ng-checked="!vm.model.isLendOut || vm.model.isLendOut == 0"/>非外借
+               ng-checked="!vm.model.isLendOut || vm.model.isLendOut == 0" ng-disabled="true"/>非外借
         </span>
     </span>
 </p>

@@ -18,11 +18,29 @@
         vm.title = '主页';
         activate();
         function activate() {
-        	adminSvc.initAnnountment(vm);
-            adminSvc.findtasks(vm);
-            adminSvc.findendTasks(vm);
-            //adminSvc.findHomePluginFile(vm);
-        }
+            adminSvc.initWelComePage(function(data){
+                console.log(data);
+                if(data){
+                    if(data.proTaskList){
+                        vm.tasksList = data.proTaskList;
+                    }
+                    if(data.comTaskList){
+                        vm.agendaTaskList = data.comTaskList;
+                    }
+                    if(data.endTaskList){
+                        vm.endTasksList = data.endTaskList;
+                    }
+                    if(data.annountmentList){
+                        vm.annountmentList = data.annountmentList;
+                    }
+                }
+            });
 
+        }
+        //旧的初始化方法
+        /*adminSvc.initAnnountment(vm);
+         adminSvc.findtasks(vm);
+         adminSvc.findendTasks(vm);
+         adminSvc.findHomePluginFile(vm);*/
     }
 })();

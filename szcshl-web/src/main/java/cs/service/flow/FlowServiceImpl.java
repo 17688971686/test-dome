@@ -442,10 +442,23 @@ public class FlowServiceImpl implements FlowService {
                 taskDto.setEndDate(h.getEndTime());
                 taskDto.setDurationInMillis(h.getDurationInMillis());
                 taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
+                taskDto.setFlowKey(h.getProcessDefinitionId().substring(0, h.getProcessDefinitionId().indexOf(":")));
                 list.add(taskDto);
             });
         }
         return list;
+    }
+
+    @Override
+    public List<RuTask> queryMyHomeAgendaTask() {
+        Criteria criteria = ruTaskRepo.getExecutableCriteria();
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuTask_.assignee.getName(), SessionUtil.getUserId()));
+        dis.add(Restrictions.like(RuTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
+        criteria.add(dis);
+        criteria.addOrder(Order.desc(RuTask_.createTime.getName()));
+        criteria.setMaxResults(6);
+        return criteria.list();
     }
 
     @Override

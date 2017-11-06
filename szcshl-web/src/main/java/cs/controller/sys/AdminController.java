@@ -8,10 +8,12 @@ import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.service.flow.FlowService;
 import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
+import cs.service.sys.AnnountmentService;
 import cs.service.sys.DictService;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.log4j.Logger;
@@ -56,6 +58,10 @@ public class AdminController {
 
     @Autowired
     private AddSuppLetterService addSuppLetterService;
+    @Autowired
+    private AnnountmentService annService;
+    @Autowired
+    private FlowService flowService;
 
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
@@ -95,6 +101,30 @@ public class AdminController {
 
         return resultMap;
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "初始化个人首页", path = "initWelComePage", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> initWelComePage(HttpServletRequest request) throws ParseException {
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        //根据不同的角色，初始化不同的页面（待实现）
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+            logger.info("副主任登录系统");
+        }else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+            logger.info("主任登录系统");
+        }
+        /*******************   以下是普通用户的首页   ********************/
+        //1、查询个人待办项目
+        resultMap.put("proTaskList",flowService.queryMyRunProcessTasks());
+        //2、查询个人待办任务
+        resultMap.put("comTaskList",flowService.queryMyHomeAgendaTask());
+        //3、查询通知公告
+        resultMap.put("annountmentList",annService.getHomePageAnnountment());
+        //4、查询办结任务
+        resultMap.put("endTaskList",flowService.queryMyEndTasks());
+        return resultMap;
+    }
+
 
     @RequiresPermissions("admin#gtasks#get")
     @RequestMapping(name = "待办项目", path = "gtasks")
