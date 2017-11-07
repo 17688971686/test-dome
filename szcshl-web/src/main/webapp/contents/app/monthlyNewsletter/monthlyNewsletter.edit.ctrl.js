@@ -35,7 +35,7 @@
             var start = parseInt(vm.monthly.staerTheMonths);
             if (end < start) {
                 bsWin.alert("开始月份不能大于结束月份");
-                vm.monthly.staerTheMonths = "";
+                vm.monthly.staerTheMonths = " ";
             }
         }
 
