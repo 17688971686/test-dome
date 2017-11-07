@@ -874,27 +874,30 @@ public class CreateTemplateUtils {
         //报告月份
         dataMap.put("theMonths", monthlyNewsletterDto.getTheMonths());
         //todo:初始化参数
-        dataMap.put("signTotal", signCount);
-        dataMap.put("proTotal", proReviewConditionCur.getProCount());
-        dataMap.put("declareTotal", proReviewConditionCur.getDeclareValue()+"");
-        dataMap.put("authorizeTotal",proReviewConditionCur.getAuthorizeValue()+"");
-        dataMap.put("ljhjTotal", proReviewConditionCur.getLjhj()+"");
-        dataMap.put("hjlTotal", proReviewConditionCur.getHjl()+"%");
+        dataMap.put("signTotal", signCount!=null?signCount:0);
+        dataMap.put("proTotal", proReviewConditionCur.getProCount()!=null?proReviewConditionCur.getProCount():0);
+        dataMap.put("declareTotal", proReviewConditionCur.getDeclareValue()!=null?proReviewConditionCur.getDeclareValue()+"":0);
+        dataMap.put("authorizeTotal",proReviewConditionCur.getAuthorizeValue()!=null?proReviewConditionCur.getAuthorizeValue()+"":0);
+        dataMap.put("ljhjTotal", proReviewConditionCur.getLjhj()!=null?proReviewConditionCur.getLjhj()+"":0);
+        dataMap.put("hjlTotal", proReviewConditionCur.getHjl()!=null?proReviewConditionCur.getHjl()+"%":0+"%");
 
-        dataMap.put("proAllTotal", proReviewConditionSum.getProCount());
-        dataMap.put("declareAllTotal", proReviewConditionSum.getDeclareValue()+"");
-        dataMap.put("authorizeAllTotal", proReviewConditionSum.getAuthorizeValue()+"");
-        dataMap.put("ljhjAllTotal", proReviewConditionSum.getLjhj()+"");
-        dataMap.put("hjlAllTotal", proReviewConditionSum.getHjl()+"%");
-        dataMap.put("reviewCount",reviewCount);//评审会次数
+        dataMap.put("proAllTotal", proReviewConditionSum.getProCount()!=null?proReviewConditionSum.getProCount():0);
+        dataMap.put("declareAllTotal", proReviewConditionSum.getDeclareValue()!=null?proReviewConditionSum.getDeclareValue()+"":0);
+        dataMap.put("authorizeAllTotal", proReviewConditionSum.getAuthorizeValue()!=null?proReviewConditionSum.getAuthorizeValue()+"":0);
+        dataMap.put("ljhjAllTotal",proReviewConditionSum.getLjhj()!=null?proReviewConditionSum.getLjhj()+"":0);
+        dataMap.put("hjlAllTotal", proReviewConditionSum.getHjl()!=null?proReviewConditionSum.getHjl()+"%":0+"%");
+        dataMap.put("reviewCount",reviewCount!=null?reviewCount:0);//评审会次数
         List<ProReviewConditionDto> proReviewCondition = proReviewConditionDtoList;
         List<ProReviewConditionDto> proReviewConditionAll = proReviewConditionDtoAllList;
         dataMap.put("proReviewConditionList",proReviewCondition);
         dataMap.put("proReviewConditionAllList",proReviewConditionAll);
         dataMap.put("proReviewCondDetailMap",proReviewCondDetailMap);
+        String curYear =  DateUtils.converToString(new Date(),null).split("-")[0];
+        String curMonth =  DateUtils.converToString(new Date(),null).split("-")[1];
         String dayStr =  DateUtils.converToString(new Date(),null).split("-")[2];
         dataMap.put("curDay",dayStr);
-
+        dataMap.put("curMonth",curMonth);
+        dataMap.put("curYear",curYear);
         String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","tqjr-提前介入","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
         String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","tqjrTotal-提前介入","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
         String[] projectType = {"projectTypeA-市政工程","projectTypeHouse-房建工程","projectTypeInfo-信息工程","projectTypeBuy-设备采购","projectTypeOther-其他"};

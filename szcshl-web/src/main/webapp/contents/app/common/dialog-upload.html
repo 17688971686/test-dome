@@ -23,7 +23,7 @@
             <td style="width: 150px;" align="center" bgcolor="#eeeeee">分类</td>
             <td style="width: 100px;" align="center" bgcolor="#eeeeee">上传人</td>
             <td style="width: 150px;" align="center" bgcolor="#eeeeee">时间</td>
-            <td style="width: 150px;" align="center" bgcolor="#eeeeee">操作</td>
+            <td style="width: 250px;" align="center" bgcolor="#eeeeee">操作</td>
         </tr>
         <tr ng-repeat="x in vm.sysFilelists ">
             <td >
@@ -39,9 +39,26 @@
             <td style="text-align: center;">{{ x.createdDate }}</td>
             <td style="text-align: center;">
                 <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
+                <!-- word 类型，在线编辑&ndash;&gt;-->
+                <span ng-if="x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'">
+                <button ng-click="previewFile(x.sysFileId,'office')" class="btn btn-xs btn-primary"><span
+                        class="glyphicon glyphicon-pencil"></span>编辑</button>
+            </span>
+                <!-- pdf 文件&ndash;&gt;-->
+                <span ng-if="x.fileType =='.pdf'">
+                <button ng-click="previewFile(x.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+            </span>
+                <!-- image 文件&ndash;&gt;-->
+                <span ng-if="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'">
+                <button ng-click="previewFile(x.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+            </span>
                 <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
             </td>
         </tr>
     </table>
 </div>
 <!-- E 附件上传列表 -->
+
+<div id="previewModal" style="display:none;">
+    <iframe id="iframePreview" width='100%' height='800' allowfullscreen webkitallowfullscreen></iframe>
+</div>
