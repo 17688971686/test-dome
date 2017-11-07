@@ -1,12 +1,12 @@
 <div id="addCostWindow" class="well well-sm" style="background:white;display: none;">
-    <ul id="costTab" class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" for-div="addCost">费用录入</a></li>
-        <li ><a data-toggle="tab" for-div="costList">费用列表</a></li>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a  for-div="financeAdd">费用录入</a></li>
+        <li ><a  for-div="financeList">费用列表</a></li>
 
     </ul>
 
     <div class="tab-content" style="background:white;">
-        <div class="tab-pane fade in active" style="background:white;" id="addCost">
+        <div class="tab-pane fade in active" style="background:white;" id="financeAdd">
             <div class="toolbar">
                 <button ng-click="vm.addFinancial()" value="addFinancial" class="btn btn-sm btn-success"><span
                         class="glyphicon glyphicon-plus"></span>新建
@@ -79,8 +79,8 @@
                 </form>
             </div>
         </div>
-        <div class="well well-sm tab-pane fade" style="background:white;" id="costList">
-            <div>
+        <div class="tab-pane fade" style="background:white;" id="financeList">
+            <div ng-if="vm.expertSelectedDtoList">
                 <a  data-toggle="collapse" data-target="#expertConst" >
                     【{{vm.titleName}}】总计:{{vm.expertReview.totalCost}}
                 </a>
@@ -125,7 +125,7 @@
                     </table>
                 </div>
             </div>
-            <div>
+            <div ng-if="vm.signAssistCostCounList">
                 <a  data-toggle="collapse" data-target="#reviewConst" >
                     【项目协审费】总计:{{vm.signAssistCostCounList[0].assistCost}}
                 </a>

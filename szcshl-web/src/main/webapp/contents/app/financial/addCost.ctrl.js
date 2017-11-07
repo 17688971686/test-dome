@@ -1,3 +1,6 @@
+/**
+ * 停用
+ */
 (function () {
     'use strict';
 
@@ -33,14 +36,10 @@
          * 费用录入弹出框
          */
         vm.addCostWindow = function(object){
-            $('#costTab li').click(function (e) {
-                var aObj = $("a", this);
-                e.preventDefault();
-                aObj.tab('show');
-                var showDiv = aObj.attr("for-div");
-                $(".tab-pane").removeClass("active").removeClass("in");
-                $("#" + showDiv).addClass("active").addClass("in").show(500);
-            })
+            vm.signAssistCostCounList = {};
+            vm.expertSelectedDtoList = {};
+            vm.signAssistCost = {};
+
 
             if(vm.costType == "REVIEW"){
                 financialManagerSvc.sumFinancial(vm , object.businessId);

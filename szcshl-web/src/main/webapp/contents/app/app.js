@@ -632,7 +632,7 @@
             .state('assistCostlist', {
                 url: '/assistCostlist/:costType',
                 templateUrl: rootPath + '/financialManager/html/assistCostList.html',
-                controller: 'addCostCtrl',
+                controller: 'assistCostCountListCtrl',
                 controllerAs: 'vm'
             })
             //协审费统计列表
@@ -646,7 +646,7 @@
              .state('financialManagerList', {
                 url: '/financialManagerList/:costType',
                 templateUrl: rootPath + '/financialManager/html/list.html',
-                controller: 'addCostCtrl',
+                controller: 'financialManagerEditCtrl',
                 controllerAs: 'vm'
             })
 
