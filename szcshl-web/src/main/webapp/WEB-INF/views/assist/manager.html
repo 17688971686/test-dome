@@ -3,7 +3,7 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
-<div class="well well-sm" style="background:white;">
+<div style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sign">项目签收管理</a></li>
         <li class="active">{{vm.title}}</li>
@@ -33,137 +33,73 @@
             </tr>
         </table>
 
-        <table class="table table-bordered" style="margin-top:10px;" >
+        <table class="table table-bordered" style="margin-top:10px;max-height: 320px;" >
             <tr >
-                <td >
-                    <p>中心在办核算项目</p>
-
-                    <div class="grid k-grid k-widget">
-                        <div class="k-grid-header" style="padding-right: 17px;background:#e6ecf2;">
-                            <div class="k-grid-header-wrap">
-                                <table>
-                                    <colgroup>
-
-                                        <col style="width:60px">
-                                        <col style="width:60px">
-                                        <col style="width:180px">
-                                        <col style="width:180px">
-                                        <col style="width:180px">
-                                    </colgroup>
-                                    <thead >
-                                        <tr >
-                                            <th  class="k-header ">选择</th>
-                                            <th  class="k-header ">序号</th>
-                                            <th  class="k-header ">项目名称</th>
-                                            <th  class="k-header ">收文编号</th>
-                                            <th  class="k-header ">建设单位</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                                <div class="k-resize-handle" style="top: 0px; left: 857px; height: 33px; width: 9px; display: none;">
-                                    <div class="k-resize-handle-inner"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="k-grid-content" style="overflow-y:scroll;max-height: 300px;">
-                            <table >
-                                <colgroup>
-
-                                    <col style="width:60px">
-                                    <col style="width:60px">
-                                    <col style="width:180px">
-                                    <col style="width:180px">
-                                    <col style="width:180px">
-                                </colgroup>
-                                <tbody>
-                                <tr ng-repeat="ss in vm.assistSign | filter:vm.filterSign">
-                                    <td style="width: 60px;"><input type="checkbox" name="selASTSign"  value="{{ss.signid}}"/></td>
-                                    <td style="width: 60px;">{{ $index + 1}}</td>
-                                    <td style="width: 180px;">{{ss.projectname}}</td>
-                                    <td style="width: 180px;">{{ss.filecode}}</td>
-                                    <td style="width: 180px;">{{ss.builtcompanyName}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
+                <td style="width: 45%">
+                    <table class="table table-bordered">
+                        <caption>中心在办核算项目</caption>
+                        <thead >
+                        <tr >
+                            <th >选择</th>
+                            <th >序号</th>
+                            <th >项目名称</th>
+                            <th >收文编号</th>
+                            <th >建设单位</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="ss in vm.assistSign | filter:vm.filterSign">
+                            <td ><input type="checkbox" name="selASTSign"  value="{{ss.signid}}"/></td>
+                            <td >{{ $index + 1}}</td>
+                            <td >{{ss.projectname}}</td>
+                            <td >{{ss.filecode}}</td>
+                            <td >{{ss.builtcompanyName}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </td>
-                <td width="14%;" style="text-align:center;vertical-align:middle;">
+                <td width="10%;" style="text-align:center;vertical-align:middle;">
                     <p>
                         <input type="radio" ng-model="vm.plan.assistType" name="selAssistType" value="独立项目" ng-checked="vm.plan.assistType == '独立项目'">独立项目
+                        <br>
                         <span ng-show="vm.plan.assistType=='独立项目'">
+                            拆分个数
                             <select ng-model="vm.plan.spliNum" >
                                 <option ng-repeat="i in vm.splitNumArr" value="{{i}}">{{i}}</option>
                             </select>
-                            拆分个数
                         </span>
                     </p>
                     <p><input type="radio" ng-model="vm.plan.assistType" value="合并项目" ng-change="vm.initSplit('合并项目');">合并项目</p>
                     <p ><button class="btn btn-xs btn-default"  ng-click="vm.affirmSign()" ng-disabled="vm.isCommit"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i> 挑选项目</button></p>
                     <p ><button class="btn btn-xs btn-default"  ng-click="vm.cancelSign()" ng-disabled="vm.isCommit"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
                 </td>
-                <td width="43%">
-                    <p>计划已挑选的项目情况</p>
-
-                    <div class="grid k-grid k-widget">
-                        <div class="k-grid-header" style="padding-right: 17px;background:#e6ecf2;">
-                            <div class="k-grid-header-wrap">
-                                <table>
-                                    <colgroup>
-
-                                        <col style="width:60px">
-                                        <col style="width:60px">
-                                        <col style="width:180px">
-                                        <col style="width:180px">
-                                        <col style="width:180px">
-                                    </colgroup>
-                                    <thead >
-                                    <tr >
-
-                                        <th  class="k-header ">选择</th>
-                                        <th  class="k-header ">序号</th>
-                                        <th  class="k-header ">项目名称</th>
-                                        <th  class="k-header ">收文编号</th>
-                                        <th  class="k-header ">建设单位</th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                                <div class="k-resize-handle" style="top: 0px; left: 857px; height: 33px; width: 9px; display: none;">
-                                    <div class="k-resize-handle-inner"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="k-grid-content" style="overflow-y:scroll;max-height: 300px;">
-                            <table >
-                                <colgroup>
-
-                                    <col style="width:60px">
-                                    <col style="width:60px">
-                                    <col style="width:180px">
-                                    <col style="width:180px">
-                                    <col style="width:180px">
-                                </colgroup>
-                                <tbody>
-                                <tr ng-repeat="sas in vm.pickMainSign track by $index">
-                                    <td style="width: 60px;"><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
-                                    <td style="width: 60px;">{{ $index + 1}}</td>
-                                    <td style="width: 180px;" style="background-color: #0d6aad;" ng-show="sas.assistType == '合并项目'">
-                                        <a ng-show="sas.assistType == '合并项目'" ng-dblclick="vm.showPickLowSign(sas.signid)">{{sas.projectname}}</a>
-                                    </td>
-                                    <td style="width: 180px;" ng-show="sas.assistType == '独立项目'">
-                                        {{sas.projectname}}
-                                    </td>
-                                    <td style="width: 180px;">{{sas.filecode}}</td>
-                                    <td style="width: 180px;">{{sas.builtcompanyName}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
+                <td style="width: 45%">
+                    <table class="table table-bordered">
+                        <caption>计划已挑选的项目情况</caption>
+                        <thead >
+                        <tr >
+                            <th >选择</th>
+                            <th >序号</th>
+                            <th >项目名称</th>
+                            <th >收文编号</th>
+                            <th >建设单位</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="sas in vm.pickMainSign track by $index">
+                            <td ><input type="checkbox" name="checkASTSign"  value="{{sas.signid}}"/></td>
+                            <td >{{ $index + 1}}</td>
+                            <td style="background-color: #0d6aad;" ng-show="sas.assistType == '合并项目'">
+                                <a ng-show="sas.assistType == '合并项目'" ng-dblclick="vm.showPickLowSign(sas.signid)">{{sas.projectname}}</a>
+                            </td>
+                            <td style="width: 180px;" ng-show="sas.assistType == '独立项目'">
+                                {{sas.projectname}}
+                            </td>
+                            <td >{{sas.filecode}}</td>
+                            <td >{{sas.builtcompanyName}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </td>
             </tr>
         </table>
@@ -172,7 +108,7 @@
     <div class="toolbar" >
         2、编制协审计划审批表
     </div>
-    <div class="well well-sm" style="background:white;">
+    <div style="background:white;">
         <form id="searchform" name="searchform">
             <span class="help-inline">协审计划名称：</span>
             <input type="text" operator="like" name="planName" id="projectnam" placeholder="请输入">

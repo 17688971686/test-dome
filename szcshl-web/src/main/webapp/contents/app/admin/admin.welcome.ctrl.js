@@ -19,7 +19,6 @@
         activate();
         function activate() {
             adminSvc.initWelComePage(function(data){
-                console.log(data);
                 if(data){
                     if(data.proTaskList){
                         vm.tasksList = data.proTaskList;
