@@ -1659,7 +1659,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>${reportMultiyear}</w:t>
+                            <w:t>${curYear}</w:t>
                         </w:r>
                         <w:r w:rsidR="001F4E25">
                             <w:rPr>
@@ -1675,7 +1675,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>${theMonths}</w:t>
+                            <w:t>${curMonth}</w:t>
                         </w:r>
                         <w:r w:rsidR="001F4E25">
                             <w:rPr>

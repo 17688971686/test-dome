@@ -32,7 +32,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cs.domain.sys.SysFile_.sysFileId;
 
 /**
  * @author lqs
@@ -259,7 +258,12 @@ public class FileController {
     @ResponseStatus(value = HttpStatus.OK)
     public void preview(@PathVariable String sysFileId, HttpServletResponse response) throws IOException {
         SysFile sysFile = fileService.findFileById(sysFileId);
-        String filePath = SysFileUtil.getUploadPath()+sysFile.getFileUrl();
+        //文件路径
+        String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
+        filePath = filePath.replaceAll("\\\\", "/");
+        //下载ftp服务器附件到本地
+        Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
+                sysFile.getShowName(), SysFileUtil.getUploadPath());
         File file = new File(filePath);
         if(!file.exists()){
             file = new File(realPathResolver.get(plugin_file_path)+File.separator+"nofile.png");

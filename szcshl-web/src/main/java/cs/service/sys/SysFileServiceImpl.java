@@ -3,10 +3,7 @@ package cs.service.sys;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.SysFileUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
@@ -82,7 +79,7 @@ public class SysFileServiceImpl implements SysFileService {
     public ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
-           // String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
+            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
 
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
@@ -90,7 +87,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFile.setFileSize(bytes.length);
             sysFile.setShowName(fileName);
             sysFile.setFileType(fileType);
-           // sysFile.setFileUrl(relativeFileUrl);
+            sysFile.setFileUrl(relativeFileUrl);
             sysFile.setSysfileType(sysfileType);
             sysFile.setMainId(mainId);
             sysFile.setMainType(mainType);
@@ -157,7 +154,8 @@ public class SysFileServiceImpl implements SysFileService {
             fileList.forEach(f -> {
                 if(SessionUtil.getLoginName().equals(f.getCreatedBy())){
                     sysFileRepo.delete(f);
-                    SysFileUtil.deleteFile(path + f.getFileUrl());
+                   // SysFileUtil.deleteFile(path + f.getFileUrl());
+                    FtpUtil.removeFile(f.getFtpIp(),f.getPort()!=null?Integer.parseInt(f.getPort()):0,f.getFtpUser(),f.getFtpPwd(),f.getFtpBasePath(),f.getShowName(),"");
                 }else{
                     throw new IllegalArgumentException("您没有权限删除该文件！");
                 }

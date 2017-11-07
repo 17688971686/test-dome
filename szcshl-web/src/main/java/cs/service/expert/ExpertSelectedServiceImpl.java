@@ -758,33 +758,35 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				}
 				if (null != projectReviewCon[1]) {
 					proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[1]);
+				}else{
+					proReviewConditionDto.setProCount(BigDecimal.ZERO);
 				}
 				if (null != projectReviewCon[2]) {
 					proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[2]);
 					proReviewConditionDto.setDeclareStr(String.valueOf(projectReviewCon[2]));
 				}else{
 					proReviewConditionDto.setDeclareValue(null);
-					proReviewConditionDto.setDeclareStr(null);
+					proReviewConditionDto.setDeclareStr("0");
 				}
 				if (null != projectReviewCon[3]) {
 					proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[3]);
 					proReviewConditionDto.setAuthorizeStr(String.valueOf(projectReviewCon[3]));
 				}else{
-					proReviewConditionDto.setAuthorizeStr(null);
+					proReviewConditionDto.setAuthorizeStr("0");
 				}
 				if (null != projectReviewCon[4]) {
 					proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[4]);
 					proReviewConditionDto.setLjhjStr(String.valueOf(projectReviewCon[4]));
 				}else{
 					proReviewConditionDto.setLjhj(null);
-					proReviewConditionDto.setLjhjStr(null);
+					proReviewConditionDto.setLjhjStr("0");
 				}
 				if (null != projectReviewCon[5]) {
 					proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[5]);
 					proReviewConditionDto.setHjlStr(String.valueOf(projectReviewCon[5])+"%");
 				}else{
 					proReviewConditionDto.setLjhj(null);
-					proReviewConditionDto.setHjlStr(null);
+					proReviewConditionDto.setHjlStr("0");
 				}
 				projectReviewConDtoList.add(proReviewConditionDto);
 			}

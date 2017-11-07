@@ -136,9 +136,58 @@ public  class  FtpUtil {
         return result;
     }
 
+
+    /**
+     *
+     * 删除ftp上的文件
+     * @author zsl
+     * @param
+     * @return true || false
+     */
+    public static boolean removeFile(String host, int port, String username, String password, String remoteBasePath,
+                              String fileName, String filePath)
+    {
+        boolean result = false;
+        FTPClient ftp = new FTPClient();
+        try {
+            int reply;
+            if (port!=0){
+                ftp.connect(host, port);
+            }else{
+                ftp.connect(host);
+            }
+            // 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
+            ftp.login(username, password);// 登录
+            reply = ftp.getReplyCode();
+            if (!FTPReply.isPositiveCompletion(reply)) {
+                ftp.disconnect();
+                return result;
+            }
+            if(ftp != null){
+                ftp.deleteFile(remoteBasePath+File.separator+fileName);
+            }
+
+            ftp.logout();
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (ftp.isConnected()) {
+                try {
+                    ftp.disconnect();
+                } catch (Exception ioe) {
+                }
+            }
+        }
+        return result;
+    }//end method removeFile
+
     public static void main(String[] args){
-       System.out.println(SysFileUtil.getUploadPath()+File.separator+"需要完善的问题.docx");
+       removeFile("192.168.1.23",21,"ftp","123456","/doc","dialog-upload.html","");
+       // FtpUtil.removeFile("192.168.1.23",21,"ftp","123456","/doc","dialog-upload.html","");
 
     }
+
+
 
 }
